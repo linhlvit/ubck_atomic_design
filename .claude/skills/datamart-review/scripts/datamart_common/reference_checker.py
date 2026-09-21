@@ -416,6 +416,48 @@ def audit_module_references(root: Path, module: str) -> RefAuditResult:
     return res
 
 
+def issue_key(i: "RefIssue") -> str:
+    """Khóa ổn định để so sánh giữa 2 lần chạy — dùng cho chế độ --baseline."""
+    return f"{i.code}|{i.where}"
+
+
+def render_report_delta(res: RefAuditResult, baseline_keys: set) -> str:
+    """In DELTA so với baseline thay vì lặp lại toàn bộ danh sách issue mỗi lần.
+
+    Lý do: trong phiên marathon nhiều Nhóm, chạy lại Gate 0 sau MỌI Edit (đúng
+    hard rule CLAUDE.md) nhưng in lại nguyên 13-16 dòng warning y hệt mỗi lần là
+    nguồn phình ngữ cảnh đo được lớn nhất (xem context_window_analysis 2026-09-21,
+    mục 2 khoản #2) — vì phần lớn issue là pre-existing, không đổi giữa các lần.
+    """
+    current: Dict[str, RefIssue] = {issue_key(i): i for i in res.issues}
+    cur_keys = set(current)
+    new_keys = sorted(cur_keys - baseline_keys)
+    resolved_keys = sorted(baseline_keys - cur_keys)
+    unchanged = len(cur_keys & baseline_keys)
+
+    L = ["=" * 70,
+         f" Datamart Reference Integrity Audit (DELTA vs baseline): {res.module} "
+         f"[{'PASS' if res.passed else 'FAIL'}]",
+         "=" * 70,
+         f"  CRITICAL hiện tại: {len(res.critical)}   WARNING hiện tại: {len(res.issues) - len(res.critical)}",
+         f"  Không đổi so với baseline: {unchanged}   Mới phát sinh: {len(new_keys)}   Đã hết: {len(resolved_keys)}"]
+    if new_keys:
+        L += ["", "-" * 70, " MỚI phát sinh (chưa có trong baseline)", "-" * 70]
+        for k in new_keys[:100]:
+            i = current[k]
+            mark = "[X]" if i.severity == "CRITICAL" else "[!]"
+            L.append(f"  {mark} [{i.code}] {i.where}")
+            L.append(f"      {i.message}")
+    if resolved_keys:
+        L += ["", "-" * 70, " ĐÃ HẾT so với baseline", "-" * 70]
+        for k in resolved_keys[:100]:
+            L.append(f"  [-] {k}")
+    if not new_keys and not resolved_keys:
+        L.append("\nⓘ Không có thay đổi nào so với baseline.")
+    L.append("=" * 70)
+    return "\n".join(L)
+
+
 def render_report(res: RefAuditResult) -> str:
     L = ["=" * 70,
          f" Datamart Reference Integrity Audit: {res.module} "

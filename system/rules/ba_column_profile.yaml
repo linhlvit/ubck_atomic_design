@@ -125,10 +125,14 @@ modules:
     note: "Trùng tên cột 'Kết quả' ở index 26 và 29."
 
   PTTT:
-    expect_columns: 26
+    expect_columns: 27
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
-    note: "Cột index 20 có tên rỗng -> parser phải chịu được header rỗng."
+    note: "[CẬP NHẬT 2026-09-21, xác minh trực tiếp qua header sống] File thực tế có 27 cột (trước khai 26) — có
+      THÊM 1 cột cuối (index 26, sau 'Loại dữ liệu') tên rỗng, ngoài cột tên rỗng đã biết ở index 20 (giữa
+      'Note' và 'Kết quả Test'). Parser phải chịu được cả 2 header rỗng. Không phải lỗi ragged row — cột cuối
+      hiếm khi có dữ liệu (VD dòng STT=1 'KL CK lưu hành tại ngày' có ghi chú bổ sung ở đây), nhưng vẫn là
+      cột hợp lệ trên mọi dòng của file, không phải phần tràn do dấu phẩy không escape."
 
   QLCB:
     expect_columns: 23

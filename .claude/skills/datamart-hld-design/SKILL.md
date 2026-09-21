@@ -65,6 +65,9 @@ description: |
 
 Ghi ngược lại file gốc bằng `apply_patch.py` — **không** Edit tay file lớn, **không** append mù
 (append chỉ đúng khi viết mới, sai khi sửa lại một Nhóm đã có: sinh Nhóm trùng và phá thứ tự TC6).
+Sau khi `apply_patch.py` báo ghi thành công, **không Read lại file lớn vừa ghi để "kiểm tra"** — diff
+đã in ra (hoặc `--quiet` xác nhận số dòng thêm/bớt) là bằng chứng đủ; đọc lại cả file chỉ tốn ngân
+sách 500K mà không phát hiện thêm gì so với diff đã thấy.
 
 Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước khi chạy bước nặng:
 

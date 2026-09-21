@@ -73,6 +73,10 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_market_risk_snpst_flat ON CLUSTER '
     margin_stress_status                        Nullable(String)        COMMENT 'Ngưỡng trạng thái Margin Stress',
     corr_index_interbank_rate                   Nullable(Decimal(5,4))  COMMENT 'Tương quan 30 phiên VN-Index & Δ lãi suất liên ngân hàng',
     corr_index_dxy                              Nullable(Decimal(5,4))  COMMENT 'Tương quan 30 phiên VN-Index & return DXY Index',
+    total_market_cap_vsdc                       Nullable(Decimal(23,2)) COMMENT 'Tổng vốn hóa thị trường ngày t theo nguồn VSDC',
+    total_market_cap_vsdc_average_n_days        Nullable(Decimal(23,2)) COMMENT 'Vốn hóa thị trường bình quân N phiên (VSDC)',
+    turnover_velocity_index                     Nullable(Decimal(8,4))  COMMENT 'Tốc độ vòng quay thị trường (TVI)',
+    turnover_velocity_status                    Nullable(String)        COMMENT 'Phân loại TVI (Cold/Healthy/Overheated)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                                Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'
@@ -126,6 +130,13 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_sector_risk_snpst_flat ON CLUSTER '
     snpst_dt_dim_id     String                  COMMENT 'FK → Calendar Date Dimension',
     industry_dim_id       String                  COMMENT 'FK → Industry Dimension',
     total_val_sector    Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch toàn bộ cổ phiếu trong ngành ngày t',
+    total_market_cap_sector          Nullable(Decimal(23,2)) COMMENT 'Tổng vốn hóa thị trường toàn ngành ngày t (TotalCap_Sector)',
+    stress_score_sector               Nullable(Decimal(5,2))  COMMENT 'Chỉ số căng thẳng ngành tổng hợp — weighted average StressScore theo tỷ trọng vốn hóa',
+    sector_liquid_score                Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ thanh khoản ngành = Tổng GTGD ngành / Tổng vốn hóa ngành',
+    stress_score_sector_previous_day  Nullable(Decimal(5,2))  COMMENT 'Sector Stress Score kỳ (ngày giao dịch) trước',
+    sector_stress_delta                Nullable(Decimal(5,2))  COMMENT 'Biến động áp lực ngành = Stress Score Sector kỳ này trừ kỳ trước',
+    sector_rating                       Nullable(String)        COMMENT 'Xếp hạng mức độ căng thẳng ngành',
+    sector_debt_score                    Nullable(Decimal(8,4))  COMMENT 'Hệ số nợ/vốn chủ sở hữu toàn ngành (Sector Debt Score)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt        Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -138,6 +149,30 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), industry_dim_id)
 COMMENT 'Flat table — Fact Sector Risk Snapshot × Calendar Date Dimension × Industry Dimension'
+;
+
+
+-- ============================================================
+-- 3b. FACT: pttt_fct_cap_grp_snpst_flat
+--    GTGD và tỷ trọng thanh khoản theo nhóm vốn hóa (Small/Mid/Large-cap, ngưỡng USD)
+--    Grain: 1 row / nhóm vốn hóa / ngày
+--    Joins: Calendar Date (snpst_dt_dim_id JOIN)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.pttt_fct_cap_grp_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Cap Group Snapshot
+    snpst_dt_dim_id       String                  COMMENT 'FK → Calendar Date Dimension',
+    cap_group_code        String                  COMMENT 'Nhóm vốn hóa (Small-cap/Mid-cap/Large-cap) — grain key',
+    total_trading_val     Nullable(Decimal(23,2)) COMMENT 'GTGD khớp lệnh toàn nhóm vốn hóa tại ngày t',
+    liquidity_share_ratio Nullable(Decimal(5,2))  COMMENT 'Tỷ trọng thanh khoản nhóm = GTGD nhóm / GTGD toàn thị trường x 100',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt          Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), cap_group_code)
+COMMENT 'Flat table — Fact Cap Group Snapshot × Calendar Date Dimension'
 ;
 
 
@@ -410,7 +445,14 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_opr_corporate_bond_issuer_credit_monito
     outstanding_vol         Nullable(Decimal(23,2)) COMMENT 'KL TP lưu hành per TCPH tại ngày t',
     audit_opinion_text      Nullable(String)        COMMENT 'Ý kiến kiểm toán per TCPH',
     ranking_code             Nullable(String)        COMMENT 'Xếp hạng tín nhiệm per TCPH',
-    risk_rating_text         Nullable(String)        COMMENT 'Xếp loại rủi ro per TCPH'
+    risk_rating_text         Nullable(String)        COMMENT 'Xếp loại rủi ro per TCPH',
+    total_liabilities_amt    Nullable(Decimal(23,2)) COMMENT 'Tổng nợ phải trả per TCPH tại kỳ báo cáo gần nhất',
+    owner_equity_ending_amt  Nullable(Decimal(23,2)) COMMENT 'VCSH cuối kỳ per TCPH',
+    owner_equity_beginning_amt Nullable(Decimal(23,2)) COMMENT 'VCSH đầu kỳ per TCPH',
+    owner_equity_average_amt  Nullable(Decimal(23,2)) COMMENT 'VCSH bình quân per TCPH',
+    net_profit_after_tax_amt  Nullable(Decimal(23,2)) COMMENT 'LNST per TCPH',
+    debt_to_equity_ratio      Nullable(Decimal(8,2))  COMMENT 'Hệ số D/E per TCPH',
+    roe_pct                    Nullable(Decimal(8,4))  COMMENT 'ROE per TCPH'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(snpst_dt)

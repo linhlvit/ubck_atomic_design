@@ -66,18 +66,29 @@ def backup(root: Path, p: Path) -> Path:
     return out
 
 
-def show_diff(old: List[str], new: List[str], name: str) -> bool:
+def show_diff(old: List[str], new: List[str], name: str, quiet: bool = False) -> bool:
+    """quiet=True: bỏ qua in nguyên văn diff, chỉ in số dòng thêm/bớt.
+
+    Dùng cho lần apply THẬT sau khi --dry-run đã được duyệt ở lượt trước trong
+    cùng phiên — tránh in lại 2 lần cùng 1 diff lớn (etl_logic dài hàng nghìn
+    ký tự), vốn là nguồn phình ngữ cảnh #1 đo được trong phiên PTTT 2026-09-21
+    (xem context_window_analysis, mục 2 khoản #1).
+    """
     diff = list(difflib.unified_diff(old, new, fromfile=f"a/{name}", tofile=f"b/{name}",
                                      lineterm="", n=2))
     if not diff:
         print("ⓘ Không có thay đổi nào — nội dung mới trùng nội dung hiện tại.")
         return False
+    adds = sum(1 for x in diff if x.startswith("+") and not x.startswith("+++"))
+    dels = sum(1 for x in diff if x.startswith("-") and not x.startswith("---"))
+    if quiet:
+        print(f"ⓘ --quiet: bỏ qua in diff ({adds} dòng thêm, {dels} dòng bớt) — "
+              f"đã duyệt qua --dry-run trước đó.")
+        return True
     for line in diff[:400]:
         print(line)
     if len(diff) > 400:
         print(f"… (còn {len(diff) - 400} dòng diff)")
-    adds = sum(1 for x in diff if x.startswith("+") and not x.startswith("+++"))
-    dels = sum(1 for x in diff if x.startswith("-") and not x.startswith("---"))
     print(f"\n→ {adds} dòng thêm, {dels} dòng bớt.")
     return True
 
@@ -97,6 +108,33 @@ def clean_payload(text: str) -> str:
     return "\n".join(lines).rstrip()
 
 
+def find_nhom_block(lines: List[str], nhom: str) -> Optional[Tuple[int, int]]:
+    """(start, end) của khối `#### Nhóm {nhom}` trong `lines`, end = dòng heading tiếp theo
+    (##/###/####) hoặc EOF. None nếu Nhóm chưa tồn tại. Dùng chung giữa patch_hld (ghi cả khối)
+    và apply_kpi_patch.py (đọc/sửa 1 dòng KPI trong khối)."""
+    pat = _nhom_re(nhom)
+    start = next((i for i, l in enumerate(lines) if pat.match(l)), None)
+    if start is None:
+        return None
+    end = len(lines)
+    for i in range(start + 1, len(lines)):
+        if lines[i].startswith("#### ") or lines[i].startswith("### ") \
+                or lines[i].startswith("## "):
+            end = i
+            break
+    return start, end
+
+
+def get_nhom_block_text(path: Path, nhom: str) -> str:
+    """Text nguyên văn khối `#### Nhóm {nhom}` (bắt đầu bằng chính dòng heading đó)."""
+    lines = path.read_text(encoding="utf-8").split("\n")
+    span = find_nhom_block(lines, nhom)
+    if span is None:
+        raise SystemExit(f"❌ HLD chưa có `#### Nhóm {nhom}`.")
+    start, end = span
+    return "\n".join(lines[start:end]).rstrip("\n")
+
+
 def patch_hld(root: Path, path: Path, nhom: str, payload: str,
               insert_after: Optional[str]) -> Tuple[List[str], List[str]]:
     lines = path.read_text(encoding="utf-8").split("\n")
@@ -105,16 +143,10 @@ def patch_hld(root: Path, path: Path, nhom: str, payload: str,
         raise SystemExit(f"❌ Nội dung mới phải bắt đầu bằng `#### Nhóm {nhom} …`, "
                          f"hiện bắt đầu bằng: {body.split(chr(10))[0][:80]!r}")
 
-    pat = _nhom_re(nhom)
-    start = next((i for i, l in enumerate(lines) if pat.match(l)), None)
+    span = find_nhom_block(lines, nhom)
 
-    if start is not None:
-        end = len(lines)
-        for i in range(start + 1, len(lines)):
-            if lines[i].startswith("#### ") or lines[i].startswith("### ") \
-                    or lines[i].startswith("## "):
-                end = i
-                break
+    if span is not None:
+        start, end = span
         new = lines[:start] + body.split("\n") + [""] + lines[end:]
         return lines, new
 
@@ -184,6 +216,10 @@ def main() -> None:
     ap.add_argument("--from", dest="src", required=True, help="File chứa nội dung mới")
     ap.add_argument("--insert-after", help="Chỉ với --target hld: chèn sau Nhóm này nếu chưa tồn tại")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--quiet", action="store_true",
+                     help="Bỏ in nguyên văn diff khi ghi thật (chỉ in số dòng thêm/bớt) — "
+                          "dùng SAU KHI đã --dry-run và được duyệt trong cùng phiên, tránh "
+                          "in lặp 2 lần cùng 1 diff lớn. Không ảnh hưởng --dry-run (vẫn in đủ để duyệt).")
     ap.add_argument("--root", default=None)
     args = ap.parse_args()
 
@@ -199,10 +235,13 @@ def main() -> None:
     tp = Path(tp)
     rel = tp.relative_to(root).as_posix()
 
+    # --quiet chỉ có hiệu lực ở lần ghi THẬT — --dry-run luôn in đủ diff để duyệt.
+    quiet_effective = args.quiet and not args.dry_run
+
     if args.target == "hld":
         old, new = patch_hld(root, tp, args.nhom, src.read_text(encoding="utf-8"),
                              args.insert_after)
-        if not show_diff(old, new, rel):
+        if not show_diff(old, new, rel, quiet=quiet_effective):
             return
         if args.dry_run:
             print("\nⓘ --dry-run: chưa ghi gì.")
@@ -213,7 +252,7 @@ def main() -> None:
     else:
         cur, new = patch_dm(tp, args.nhom, src)
         fmt = lambda t: [",".join(r) for r in t.rows]  # noqa: E731
-        if not show_diff(fmt(cur), fmt(new), rel):
+        if not show_diff(fmt(cur), fmt(new), rel, quiet=quiet_effective):
             return
         if args.dry_run:
             print("\nⓘ --dry-run: chưa ghi gì.")

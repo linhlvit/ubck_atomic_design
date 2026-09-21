@@ -501,6 +501,10 @@ erDiagram
         string Margin_Stress_Status
         float Corr_Index_Interbank_Rate
         float Corr_Index_Dxy
+        float Total_Market_Cap_VSDC
+        float Total_Market_Cap_VSDC_Average_N_Days
+        float Turnover_Velocity_Index
+        string Turnover_Velocity_Status
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -640,6 +644,10 @@ erDiagram
         string Margin_Stress_Status
         float Corr_Index_Interbank_Rate
         float Corr_Index_Dxy
+        float Total_Market_Cap_VSDC
+        float Total_Market_Cap_VSDC_Average_N_Days
+        float Turnover_Velocity_Index
+        string Turnover_Velocity_Status
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -873,6 +881,10 @@ erDiagram
         string Margin_Stress_Status
         float Corr_Index_Interbank_Rate
         float Corr_Index_Dxy
+        float Total_Market_Cap_VSDC
+        float Total_Market_Cap_VSDC_Average_N_Days
+        float Turnover_Velocity_Index
+        string Turnover_Velocity_Status
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1042,6 +1054,10 @@ erDiagram
         string Margin_Stress_Status
         float Corr_Index_Interbank_Rate
         float Corr_Index_Dxy
+        float Total_Market_Cap_VSDC
+        float Total_Market_Cap_VSDC_Average_N_Days
+        float Turnover_Velocity_Index
+        string Turnover_Velocity_Status
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1176,6 +1192,10 @@ erDiagram
         string Margin_Stress_Status
         float Corr_Index_Interbank_Rate
         float Corr_Index_Dxy
+        float Total_Market_Cap_VSDC
+        float Total_Market_Cap_VSDC_Average_N_Days
+        float Turnover_Velocity_Index
+        string Turnover_Velocity_Status
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1228,9 +1248,10 @@ flowchart LR
 #### Nhóm 7 - Biểu đồ áp lực ngành
 
 > Phân loại: **Phân tích**
-> Atomic: `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE/HNX — **READY** | `Public Company` ← IDS.COMPANY_PROFILES — **READY** | `Classification Business Line` (`cl_business_line`) ← ECAT.BUSINESS_LINE_LEVEL_1 — **READY** | `Public Company Financial Report Value` — **PENDING** (đã loại khỏi scope Atomic hoàn toàn, quyết định 2026-07-14, xem O_PTTT_12) | Khối lượng cổ phiếu lưu hành (VSDC.TT138_2025_BaoCaoKLCK) — **PENDING** (chưa có Atomic entity, xem O_PTTT_3)
+> Atomic: `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE/HNX — **READY** | `Public Company` ← IDS.COMPANY_PROFILES — **READY** | `Classification Business Line` (`cl_business_line`) ← ECAT.BUSINESS_LINE_LEVEL_1 — **READY** | `Public Company Financial Report Value` (`fr_value`/`fr_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`) — **READY** (2026-09-21, xem O_PTTT_12 Resolved — 5 entity đã approved trên Atomic, đồng bộ chain đã dùng cho GSTT/Nhóm 21) | Khối lượng cổ phiếu lưu hành cho grain per-mã-CK Nhóm 7 (`listed_share_info`, VSDC_OUTSTANDING_SHARES) — **READY** (ngoại lệ Data Modeler xác nhận 2026-09-21, đồng bộ GSTT — chưa có manifest entry chính thức; **KHÔNG thuộc phạm vi O_PTTT_3** — O_PTTT_3 là blocker riêng cho MCAPₜ trong công thức Margin ratio ở Nhóm 1/2, vẫn giữ nguyên PENDING theo quyết định 2026-07-30 "VSDC là nguồn pháp lý riêng có thể khác giá trị")
 >
 > **[SỬA 2026-08-04 — Kịch bản D]** (1) Alias `pblc_co.category_l1_id` là tên bịa — entity thật `public_company` (IDS.COMPANY_PROFILES), field `business_line_level_1_code` (FK → `cl_business_line.cl_business_line_id`, JOIN qua Id không phải Code trực tiếp theo comment YAML Atomic). `category_l1_id` chỉ là ID kỹ thuật IDS.CATEGORIES dùng để join lấy `INDUSTRY_CD`, không phải field final. `Industry Dimension` (`industry_dim`) reuse cấu trúc code+name từ `cl_business_line`, giữ Dimension riêng theo quyết định người thiết kế (không denormalize vào Fact như pattern NDTNN). (2) K_PTTT_97 (Sector Debt Score) đã đánh sai READY dù nguồn `Public Company Financial Report Value` không tồn tại trên Atomic (loại khỏi scope 2026-07-14) — chuyển lại đúng PENDING, xem O_PTTT_12.
+> **[SỬA 2026-09-21]** Data Modeler xác nhận dùng `listed_share_info` (nguồn `uat_vsdc_stg.outstanding_shares`, `src_stm_code = 'VSDC_OUTSTANDING_SHARES'` — xem `mapping_vsdc_ods_atm.md`) làm nguồn KL cổ phiếu lưu hành cho chuỗi Nhóm 7 — cùng ngoại lệ đã chấp nhận cho GSTT (chưa có LDM YAML/manifest chính thức). **Lưu ý phạm vi:** quyết định này KHÔNG đóng O_PTTT_3 — O_PTTT_3 là blocker riêng, chặt chẽ hơn, cho MCAPₜ trong công thức Margin ratio (K_PTTT_5/9/18/21-24, Nhóm 1/2), nơi Data Modeler đã từ chối dứt khoát mọi nguồn thay thế ngoài đúng báo cáo VSDC TT138 Mẫu 01 (quyết định 2026-07-30) — giữ nguyên PENDING, không đụng tới trong lần sửa này. Mở khóa toàn bộ chuỗi K_PTTT_98~106 (trừ K_PTTT_97 — vẫn PENDING vì phụ thuộc `Public Company Financial Report Value`, gap khác không liên quan). W1/W2/W3 của StressScore_i (K_PTTT_95) dùng `risk_weight_config` với `risk_factor_type = 'Chỉ số áp lực ngành'` (3 mã `W1_DRAWDOWN`/`W2_VOLATILITY`/`W3_SELLING`) — đồng bộ pattern đã chấp nhận ở Nhóm 4 (O_PTTT_2). Bổ sung 6 cột mới trên `Fact Sector Risk Snapshot`: `total_market_cap_sector`, `stress_score_sector`, `sector_liquid_score`, `stress_score_sector_previous_day`, `sector_stress_delta`, `sector_rating`.
 
 **Mockup:**
 
@@ -1243,7 +1264,7 @@ flowchart LR
 | Dầu khí | 35 | 66 | 76 | STABLE |
 | Bán lẻ | 42 | 70 | 83 | WATCH |
 
-*(StressScoreSector tổng hợp, LiquidScore, Xếp hạng — PENDING do thiếu MarketCap, xem cột Trạng thái)*
+*(Toàn bộ KPI của Nhóm này nay đã READY — xem quyết định 2026-09-21: ngoại lệ `listed_share_info` cho StressScore/LiquidScore/Đánh giá, và O_PTTT_12 Resolved cho cột "Nợ (D/E)")*
 
 **Source:** `Fact Sector Risk Snapshot` → `Calendar Date Dimension`
 
@@ -1266,18 +1287,18 @@ flowchart LR
 | K_PTTT_92 | SellVolume_i — Khối lượng bán chủ động N phiên | KL | Phái sinh | `SUM(security_match_log.match_vol)` WHERE `trade_direction_code = 'S'` GROUP BY `security_match_log.symbol`, N phiên | Nguồn `TransLog` (MDDS) — khác entity với K_PTTT_93 (BA dùng 2 nguồn riêng: TransLog cho chiều chủ động qua `trade_direction_code`/LASTCOLOR, TRADE_BOOK cho tổng KLGD không phân biệt chiều) | READY |
 | K_PTTT_93 | TotalVolume_i — Tổng khối lượng giao dịch N phiên | KL | Phái sinh | `SUM(securities_trade.execution_vol)` per `security_symbol_code`, N phiên WHERE `market_id_code IN ('STO','STX','UPX')` | Nguồn `TRADE_BOOK_HOSE/HNX` (ORDERTRADE) — không cần filter chiều, khác entity với K_PTTT_92 | READY |
 | K_PTTT_94 | Pselling — Selling Pressure | Điểm (0–1) | Phái sinh | `K_PTTT_92 / K_PTTT_93` | per stock | READY |
-| K_PTTT_95 | StressScore từng mã CK (StressScoreᵢ) | Điểm (0–100) | Phái sinh | `(W₁ × K_PTTT_91) + (W₂ × K_PTTT_89) + (W₃ × K_PTTT_94 × 100)` | W₁+W₂+W₃=1; cấu hình từ Kho dữ liệu | READY |
+| K_PTTT_95 | StressScore từng mã CK (StressScoreᵢ) | Điểm (0–100) | Phái sinh | `(W₁ × K_PTTT_91) + (W₂ × K_PTTT_89) + (W₃ × K_PTTT_94 × 100)` | **[SỬA 2026-09-21]** W₁+W₂+W₃=1; cấu hình từ `risk_weight_config` (`risk_factor_type = 'Chỉ số áp lực ngành'`, mã `W1_DRAWDOWN`/`W2_VOLATILITY`/`W3_SELLING`) — đồng bộ pattern Nhóm 4 (O_PTTT_2) | READY |
 | K_PTTT_96 | TotalValue_Sector — Tổng GTGD ngành | Tỷ VND | Phái sinh | `SUM(security_trading_snapshot.close_price × securities_trade.execution_vol)` JOIN `security_trading_snapshot.symbol = securities_trade.security_symbol_code` AND `security_trading_snapshot.trading_dt = securities_trade.trade_dt` GROUP BY `public_company.business_line_level_1_code` AND `trading_dt` | **[SỬA 2026-08-04]** Giá từ security_trading_snapshot; KL khớp từ securities_trade; ngành từ `public_company.business_line_level_1_code` (không phải `pblc_co.category_l1_id` bịa). **[SỬA 2026-09-07]** sửa tên cột JOIN sai — `security_trading_snapshot` dùng cột `symbol` (không phải `security_symbol_code`), `securities_trade` dùng cột `trade_dt` (không phải `trading_dt`) — verify lại theo Atomic YAML approved | READY |
-| K_PTTT_97 | Sector Debt Score (D/E ngành) | Lần | Phái sinh | TBD — chờ Atomic | **[SỬA 2026-08-04 — Kịch bản D]** Chuyển lại đúng PENDING — nguồn `pblc_co_fnc_rpt_val`/`Public Company Financial Report Value` đã bị loại khỏi scope Atomic hoàn toàn (quyết định 2026-07-14, xem `atomic_out_of_scope.yaml` + [[project_financial_report_value_eav_deprecated]]), không phải READY như HLD cũ ghi sai. **Lý do pending:** cùng gap EAV báo cáo tài chính CTĐC — xem O_PTTT_12 (đã bổ sung K_PTTT_97 vào danh sách). **Atomic cần bổ sung:** entity chuẩn hóa giá trị báo cáo tài chính CTĐC (RROW/RCOL/REPORT_CATALOG hiện chỉ có metadata draft). **Mart dự kiến:** `Fact Sector Risk Snapshot` — grain 1 row/ngành/ngày | PENDING |
-| K_PTTT_98 | KL cổ phiếu lưu hành per mã CK | — | Cơ sở | TBD — chờ Atomic | **Lý do pending:** Khối lượng cổ phiếu lưu hành per mã CK đến từ VSDC (Báo cáo TT138.2025.TT.BTC) — chưa có Atomic entity tương ứng. **Atomic cần bổ sung:** Atomic entity cho KL CK lưu hành từ VSDC — hiện `security_trading_snapshot.tot_listing_vol` chỉ có cho MDDS.StockInfor, xem O_PTTT_3. **Mart dự kiến:** `Fact Sector Risk Snapshot` — grain 1 row/ngành/ngày | PENDING |
-| K_PTTT_99 | MarketCap_i (Vốn hóa từng mã) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_98 đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_98. **Mart dự kiến:** `Fact Sector Risk Snapshot` — grain 1 row/ngành/ngày | PENDING |
-| K_PTTT_100 | TotalCap_Sector (Tổng vốn hóa ngành) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_99 đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_98. **Mart dự kiến:** `Fact Sector Risk Snapshot` — grain 1 row/ngành/ngày | PENDING |
-| K_PTTT_101 | wᵢ — Trọng số vốn hóa per mã trong ngành | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_99/98 đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_98. **Mart dự kiến:** `Fact Sector Risk Snapshot` — grain 1 row/ngành/ngày | PENDING |
-| K_PTTT_102 | StressScoreSector — Chỉ số căng thẳng ngành tổng hợp | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_101 (wᵢ) đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_98. **Mart dự kiến:** `Fact Sector Risk Snapshot` — bổ sung Sector_Stress_Score_Weighted khi hết PENDING | PENDING |
-| K_PTTT_103 | Sector Liquid Score (TotalValue / TotalCap) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_100 (TotalCap_Sector) đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_98. **Mart dự kiến:** `Fact Sector Risk Snapshot` — bổ sung Sector_Liquid_Score khi hết PENDING | PENDING |
-| K_PTTT_104 | Sector Stress Score kỳ trước | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_102 đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_98. **Mart dự kiến:** `Fact Sector Risk Snapshot` — grain 1 row/ngành/ngày | PENDING |
-| K_PTTT_105 | Biến động áp lực (Stress Score kỳ này − kỳ trước) = K_PTTT_102 − K_PTTT_104 | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_102/232 đang PENDING. **Atomic cần bổ sung:** xem K_PTTT_98. **Mart dự kiến:** `Fact Sector Risk Snapshot` — bổ sung Sector_Stress_Delta khi hết PENDING | PENDING |
-| K_PTTT_106 | Xếp hạng ngành (Rất thấp/Thấp/Trung bình/Cao/Rất cao) | Text | Phái sinh | `LOOKUP status_threshold_config ON status_threshold_config.index_code = 'STRESS_SCORE' AND fct_sector_risk_snpst.stress_score_sector BETWEEN status_threshold_config.from_value AND status_threshold_config.to_value → status_threshold_config.status` | **Lý do pending:** phụ thuộc K_PTTT_102 (StressScoreSector) đang PENDING theo AND — bảng ngưỡng `status_threshold_config` đã có (0-20 Rất thấp, 20-40 Thấp, 40-60 Trung bình, 60-80 Cao, 80-100 Rất cao, user cung cấp 2026-08-04), nhưng công thức vẫn PENDING vì input chưa sẵn sàng. **Atomic cần bổ sung:** xem K_PTTT_98/O_PTTT_3. **Mart dự kiến:** `Fact Sector Risk Snapshot` — bổ sung Sector_Rating khi hết PENDING | PENDING |
+| K_PTTT_97 | Sector Debt Score (D/E ngành) | Lần | Phái sinh | `SUM(Nợ phải trả toàn ngành) / SUM(VCSH toàn ngành)` — dùng chain `pc_report_submission`→`fr_value`→`fr_catalog`→`fr_row_template`→`fr_column_template`, BCDKT row_desc 300(DN/BH)/400(TD) cho Nợ phải trả, 400(DN/BH)/500(TD) col_desc=1 cho VCSH | **[SỬA 2026-09-21 — O_PTTT_12 Resolved]** `fr_value`/`fr_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission` đã approved trên Atomic (đồng bộ GSTT). Cột vật lý mới `fct_sector_risk_snpst.sector_debt_score` = tỷ lệ thô (BA ghi thêm "cần quy đổi ra điểm số 0-100" nhưng không cho ngưỡng cụ thể — giữ nguyên tỷ lệ, cần BA xác nhận công thức quy đổi nếu cần hiển thị dạng điểm) | READY |
+| K_PTTT_98 | KL cổ phiếu lưu hành per mã CK | — | Cơ sở | `listed_share_info.outstanding_share_quantity` WHERE `listed_share_info.ticker_symbol = symbol` AND `src_stm_code = 'VSDC_OUTSTANDING_SHARES'` AND lookback bản ghi gần nhất `<= trading_dt` | **[SỬA 2026-09-21]** Ngoại lệ Data Modeler xác nhận, đồng bộ GSTT (`listed_share_info` chưa có manifest entry chính thức) — không thuộc phạm vi O_PTTT_3 (xem ghi chú Nhóm đầu trang). Sub-component chuỗi K_PTTT_99~102 — không lưu cột riêng trên Fact Sector Risk Snapshot | READY |
+| K_PTTT_99 | MarketCap_i (Vốn hóa từng mã) | — | Phái sinh | `security_trading_snapshot.close_price × K_PTTT_98` | **[SỬA 2026-09-21]** Sub-component chuỗi K_PTTT_100~102 — không lưu cột riêng | READY |
+| K_PTTT_100 | TotalCap_Sector (Tổng vốn hóa ngành) | Tỷ VND | Phái sinh | `SUM(K_PTTT_99)` GROUP BY `public_company.business_line_level_1_code`, `trading_dt` | **[SỬA 2026-09-21]** Cột vật lý mới `fct_sector_risk_snpst.total_market_cap_sector` | READY |
+| K_PTTT_101 | wᵢ — Trọng số vốn hóa per mã trong ngành | — | Phái sinh | `K_PTTT_99 / K_PTTT_100` | **[SỬA 2026-09-21]** Sub-component chuỗi K_PTTT_102 — không lưu cột riêng | READY |
+| K_PTTT_102 | StressScoreSector — Chỉ số căng thẳng ngành tổng hợp | Điểm (0–100) | Phái sinh | `SUM(K_PTTT_95 × K_PTTT_101)` GROUP BY `public_company.business_line_level_1_code`, `trading_dt` | **[SỬA 2026-09-21]** Cột vật lý mới `fct_sector_risk_snpst.stress_score_sector` | READY |
+| K_PTTT_103 | Sector Liquid Score (TotalValue / TotalCap) | % | Phái sinh | `K_PTTT_96 / K_PTTT_100` | **[SỬA 2026-09-21]** Cột vật lý mới `fct_sector_risk_snpst.sector_liquid_score` | READY |
+| K_PTTT_104 | Sector Stress Score kỳ trước | Điểm (0–100) | Phái sinh | `LAG(K_PTTT_102)` OVER (PARTITION BY `industry_dim_id` ORDER BY `cdr_dt_dim.cdr_dt`) | **[SỬA 2026-09-21]** Cột vật lý mới `fct_sector_risk_snpst.stress_score_sector_previous_day` | READY |
+| K_PTTT_105 | Biến động áp lực (Stress Score kỳ này − kỳ trước) | Điểm | Phái sinh | `K_PTTT_102 − K_PTTT_104` | **[SỬA 2026-09-21]** Cột vật lý mới `fct_sector_risk_snpst.sector_stress_delta` | READY |
+| K_PTTT_106 | Xếp hạng ngành (Rất thấp/Thấp/Trung bình/Cao/Rất cao) | Text | Phái sinh | `LOOKUP status_threshold_config ON status_threshold_config.index_code = 'STRESS_SCORE' AND fct_sector_risk_snpst.stress_score_sector BETWEEN status_threshold_config.from_value AND status_threshold_config.to_value → status_threshold_config.status` | **[SỬA 2026-09-21]** Input K_PTTT_102 nay READY — bảng ngưỡng `status_threshold_config` đã có sẵn (0-20 Rất thấp, 20-40 Thấp, 40-60 Trung bình, 60-80 Cao, 80-100 Rất cao). Cột vật lý mới `fct_sector_risk_snpst.sector_rating` | READY |
 
 **Star Schema:**
 
@@ -1287,6 +1308,13 @@ erDiagram
         int Snapshot_Date_Dimension_Id FK
         int Industry_Id FK
         float Sector_Total_Value
+        float Total_Market_Cap_Sector
+        float Stress_Score_Sector
+        float Sector_Liquid_Score
+        float Stress_Score_Sector_Previous_Day
+        float Sector_Stress_Delta
+        string Sector_Rating
+        float Sector_Debt_Score
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1306,7 +1334,7 @@ erDiagram
     Industry_Dimension ||--o{ Fact_Sector_Risk_Snapshot : "Industry_Id"
 ```
 
-> **Ghi chú:** `Sector_Liquid_Score`/`Sector_Stress_Score_Weighted`/`Sector_Stress_Delta`/`Sector_Rating` (K_PTTT_99~107) **chưa đưa vào Star Schema** — phụ thuộc gap Atomic KL cổ phiếu lưu hành VSDC (xem O_PTTT_3), sẽ bổ sung khi hết PENDING. `Sector_Debt_Score` (K_PTTT_97) **[SỬA 2026-08-04]** cũng chưa đưa vào Star Schema — nguồn `Public Company Financial Report Value` đã loại khỏi scope Atomic (xem O_PTTT_12), sẽ bổ sung khi có entity chuẩn hóa. **[SỬA 2026-08-04]** Đã loại bỏ `Sector_Avg_Pdrawdown`/`Sector_Avg_Pvolatility`/`Sector_Avg_Pselling`/`Sector_Avg_Stress_Score` khỏi Star Schema — đây là cột suy diễn không trace được về KPI nào (K_PTTT_89/91/94/95 là measure **per mã CK**, không phải per-ngành; chỉ số ngành thật `StressScoreSector` weighted theo MarketCap là K_PTTT_102, hiện PENDING do thiếu MarketCap — xem K_PTTT_98).
+> **Ghi chú:** **[SỬA 2026-09-21]** `Total_Market_Cap_Sector`/`Stress_Score_Sector`/`Sector_Liquid_Score`/`Stress_Score_Sector_Previous_Day`/`Sector_Stress_Delta`/`Sector_Rating` (K_PTTT_100,102,103,104,105,106) nay đã READY và đưa vào Star Schema — nhờ ngoại lệ dùng `listed_share_info` (đồng bộ GSTT), quyết định 2026-09-21 tách biệt không đụng tới O_PTTT_3 (blocker Margin ratio, vẫn Open). `Sector_Debt_Score` (K_PTTT_97) cũng nay đã READY và đưa vào Star Schema — nguồn `Public Company Financial Report Value` đã approved trên Atomic (O_PTTT_12 Resolved), không còn ngoài scope như quyết định 2026-07-14. **[SỬA 2026-08-04]** Đã loại bỏ `Sector_Avg_Pdrawdown`/`Sector_Avg_Pvolatility`/`Sector_Avg_Pselling`/`Sector_Avg_Stress_Score` khỏi Star Schema — đây là cột suy diễn không trace được về KPI nào (K_PTTT_89/91/94/95 là measure **per mã CK**, không phải per-ngành).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1325,11 +1353,7 @@ flowchart LR
 | Calendar Date Dimension | 1 row / ngày |
 | Industry Dimension | 1 row / ngành |
 
-**Bảng mapping nguồn (Atomic Placeholder):**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| KL cổ phiếu lưu hành per mã (K_PTTT_98~107) | VSDC.TT138_2025_BaoCaoKLCK | Security Listing Volume | scr_listing_vol hoặc TBD |
+**Bảng mapping nguồn (Atomic Placeholder):** Không còn — toàn bộ chỉ tiêu Nhóm này đã READY (xem O_PTTT_12 Resolved).
 
 ---
 
@@ -1338,9 +1362,10 @@ flowchart LR
 #### Nhóm 8 - Chỉ số chung
 
 > Phân loại: **Phân tích**
-> Atomic: `Securities Trade` (`securities_trade`) ← ORDERTRADE.TRADE_BOOK_HOSE/TRADE_BOOK_HNX — **READY** | EAV báo cáo định kỳ CTCK (`SSC_SCMS.MEMBER_REPORT`/...) — **PENDING** (xem O_PTTT_13) | `Security Listing Volume` từ VSDC — **PENDING** (xem O_PTTT_3)
+> Atomic: `Securities Trade` (`securities_trade`) ← ORDERTRADE.TRADE_BOOK_HOSE/TRADE_BOOK_HNX — **READY** | EAV báo cáo định kỳ CTCK (`SSC_SCMS.MEMBER_REPORT`/...) — **PENDING** (xem O_PTTT_13) | Khối lượng cổ phiếu lưu hành cho TVI (`listed_share_info`, VSDC_OUTSTANDING_SHARES) — **READY** (ngoại lệ Data Modeler xác nhận 2026-09-21, đồng bộ Nhóm 7/GSTT — KHÔNG thuộc phạm vi O_PTTT_3, blocker Margin ratio riêng vẫn Open)
 >
 > **[SỬA 2026-08-03 — Kịch bản D, phát hiện khi chuẩn hóa lại format Nhóm 8]** Chuyển đúng format 1 bảng KPI duy nhất (bỏ tách `##### READY`/`##### PENDING`). Đồng thời sửa 2 lỗi nội dung sót từ trước: (1) alias `scr_mtch_log`/`mkt_id`/`brd_tp_code`/`tdg_dt` là tên bịa — physical_name thật là `securities_trade` (`trade_dt`/`execution_val`/`execution_vol`/`market_id_code`/`board_tp_code`), đồng nhất Nhóm 1/11/12/13; (2) K_PTTT_58 (Dư nợ margin) dùng entity giả `mbr_rpt_ind_val` (đã xác nhận không tồn tại, xem O_PTTT_13) — chuyển lại đúng **PENDING** theo đúng nguyên tắc reuse chỉ kế thừa trạng thái từ KPI khai sinh gốc (Nhóm 4), không tự nâng cấp READY.
+> **[SỬA 2026-09-21]** TVI (K_PTTT_117/118) dùng `listed_share_info` (VSDC_OUTSTANDING_SHARES) cho MarketCap toàn thị trường — theo đúng Câu lệnh tham khảo BA (dòng 216/217, BA yêu cầu rõ nguồn `BM1_BCKLLH`, KHÔNG dùng `security_trading_snapshot.total_listing_vol`/MDDS dù đã có sẵn cho `Total Market Cap`/K_PTTT_8 — 2 khái niệm vốn hóa khác nhau, không thay thế lẫn nhau). Bổ sung 4 cột mới trên `Fact Market Risk Snapshot`: `total_market_cap_vsdc`, `total_market_cap_vsdc_average_n_days`, `turnover_velocity_index`, `turnover_velocity_status`. N=252 phiên cho trung bình vốn hóa — giả định theo hệ số annualization ×252 của công thức TVI, **cần BA xác nhận lại số phiên chính xác**. Ngưỡng phân loại TVI (A<0.5/B 0.5-3.0/C>5.0) dùng `status_threshold_config` (index_code='TVI') — khoảng 3.0-5.0 BA không định nghĩa, giữ nguyên gap như SQL BA gốc.
 
 **Mockup:**
 
@@ -1350,7 +1375,7 @@ flowchart LR
 | Dư nợ margin (Tỷ VND) | 252.000 | +3.1% |
 | Quy mô lệnh TB (M) | 45.2 | Stable |
 
-*(Dư nợ margin — PENDING do gap Atomic EAV báo cáo định kỳ CTCK, xem O_PTTT_13. Tốc độ vòng quay TVI — PENDING do gap KL CK lưu hành VSDC, xem O_PTTT_3)*
+*(Dư nợ margin — PENDING do gap Atomic EAV báo cáo định kỳ CTCK, xem O_PTTT_13. Tốc độ vòng quay TVI nay đã READY — xem quyết định 2026-09-21)*
 
 **Source:** `Fact Market Risk Snapshot` → `Calendar Date Dimension`; `Fact Securities Company Financial Structure Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`, `Report Indicator Dimension`
 
@@ -1368,12 +1393,12 @@ flowchart LR
 | K_PTTT_112 | Tổng số lệnh khớp tại ngày | Lệnh | Phái sinh | `COUNT(*)` FROM `securities_trade` WHERE `trade_dt = :input_date` AND `market_id_code IN ('STO','STX','UPX')` AND `board_tp_code IN ('G1','G2','G3')` | Mỗi bản ghi = 1 lệnh khớp | READY |
 | K_PTTT_113 | Quy mô lệnh trung bình | Triệu VND | Phái sinh | `K_PTTT_111 / K_PTTT_112` | | READY |
 | K_PTTT_114 | KLGD khớp lệnh tại ngày | Cổ phần | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `trade_dt = :input_date` AND `market_id_code IN ('STO','STX','UPX')` AND `board_tp_code IN ('G1','G2','G3')` | Execution-Volume (HOSE) hoặc Trade_quantity (HNX) | READY |
-| K_PTTT_98 | KL cổ phiếu lưu hành per mã CK | — | Cơ sở | TBD — chờ Atomic | **Lý do pending:** nguồn VSDC BM1 (`Chưa có CSDL - Map biểu mẫu`). Reuse từ Nhóm 7. **Atomic cần bổ sung:** xem O_PTTT_3. **Mart dự kiến:** `Fact Market Risk Snapshot` | PENDING |
-| K_PTTT_99 | MarketCap_i — Vốn hóa từng mã | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_98 đang PENDING. Reuse từ Nhóm 7. **Atomic cần bổ sung:** xem O_PTTT_3. **Mart dự kiến:** `Fact Market Risk Snapshot` | PENDING |
-| K_PTTT_115 | Σ Average MarketCap — Tổng vốn hóa bình quân toàn thị trường | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_99 đang PENDING. **Atomic cần bổ sung:** xem O_PTTT_3. **Mart dự kiến:** `Fact Market Risk Snapshot` | PENDING |
-| K_PTTT_116 | Vốn hóa bình quân qua N ngày — AVG(MarketCapₜ) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_115 đang PENDING. **Atomic cần bổ sung:** xem O_PTTT_3. **Mart dự kiến:** `Fact Market Risk Snapshot` | PENDING |
-| K_PTTT_117 | Tốc độ vòng quay TVI | Lần | Phái sinh | TBD — chờ Atomic | **Lý do pending:** TVI = Σ GTGD / Σ Average MarketCap × 252 — phụ thuộc K_PTTT_116 đang PENDING. **Atomic cần bổ sung:** xem O_PTTT_3. **Mart dự kiến:** `Fact Market Risk Snapshot` | PENDING |
-| K_PTTT_118 | Phân loại TVI (Cold / Healthy / Overheated) | Text | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_117 đang PENDING. **Atomic cần bổ sung:** xem O_PTTT_3. **Mart dự kiến:** `Fact Market Risk Snapshot` | PENDING |
+| K_PTTT_98 | KL cổ phiếu lưu hành per mã CK | — | Cơ sở | `listed_share_info.outstanding_share_quantity` (VSDC_OUTSTANDING_SHARES, lookback `<= trading_dt`) | **[SỬA 2026-09-21]** Reuse pattern từ Nhóm 7. Sub-component chuỗi K_PTTT_99/115 — không lưu cột riêng | READY |
+| K_PTTT_99 | MarketCap_i — Vốn hóa từng mã | — | Phái sinh | `security_trading_snapshot.close_price × K_PTTT_98` | **[SỬA 2026-09-21]** Sub-component chuỗi K_PTTT_115 — không lưu cột riêng | READY |
+| K_PTTT_115 | Σ Average MarketCap — Tổng vốn hóa bình quân toàn thị trường | Tỷ VND | Phái sinh | `SUM(K_PTTT_99)` GROUP BY `trading_dt` (toàn thị trường, không GROUP BY ngành) | **[SỬA 2026-09-21]** Cột vật lý mới `fct_market_risk_snpst.total_market_cap_vsdc` — khác `Total Market Cap` (K_PTTT_8, dùng MDDS) theo đúng yêu cầu nguồn VSDC riêng của BA cho TVI | READY |
+| K_PTTT_116 | Vốn hóa bình quân qua N ngày — AVG(MarketCapₜ) | Tỷ VND | Phái sinh | `AVG(K_PTTT_115)` trên N phiên gần nhất | **[SỬA 2026-09-21]** Cột vật lý mới `fct_market_risk_snpst.total_market_cap_vsdc_average_n_days` — N=252 giả định theo hệ số ×252 công thức TVI, cần BA xác nhận lại | READY |
+| K_PTTT_117 | Tốc độ vòng quay TVI | Lần | Phái sinh | `K_PTTT_107 / K_PTTT_116 × 252` | **[SỬA 2026-09-21]** Cột vật lý mới `fct_market_risk_snpst.turnover_velocity_index` | READY |
+| K_PTTT_118 | Phân loại TVI (Cold / Healthy / Overheated) | Text | Phái sinh | `LOOKUP status_threshold_config ON status_threshold_config.index_code = 'TVI' AND fct_market_risk_snpst.turnover_velocity_index BETWEEN status_threshold_config.from_value AND status_threshold_config.to_value → status_threshold_config.status` | **[SỬA 2026-09-21]** Cột vật lý mới `fct_market_risk_snpst.turnover_velocity_status`. Ngưỡng A<0.5/B 0.5-3.0/C>5.0 — khoảng 3.0-5.0 BA không định nghĩa (giữ gap như SQL gốc, cần BA xác nhận) | READY |
 
 **Star Schema:**
 
@@ -1431,6 +1456,10 @@ erDiagram
         string Margin_Stress_Status
         float Corr_Index_Interbank_Rate
         float Corr_Index_Dxy
+        float Total_Market_Cap_VSDC
+        float Total_Market_Cap_VSDC_Average_N_Days
+        float Turnover_Velocity_Index
+        string Turnover_Velocity_Status
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1477,7 +1506,7 @@ erDiagram
     Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
 ```
 
-> **Ghi chú:** Bỏ cột `Margin_Debt_Total` khỏi Star Schema Nhóm này — K_PTTT_58 chuyển PENDING, chưa có measure thật populate. Cột này vẫn tồn tại trên schema hợp nhất chung (xem Nhóm 1) do các Nhóm khác dùng chung Fact có thể có measure liên quan khác trạng thái. **[SỬA 2026-08-04]** `% thay đổi GTGD phiên` (K_PTTT_109) và `GTGD phiên tổng kỳ` (K_PTTT_110) không đưa vào schema — derived runtime từ `Total_Trading_Value_Matched`/`Total_Trading_Value_Matched_Previous_Day`, không lưu cột riêng.
+> **Ghi chú:** Bỏ cột `Margin_Debt_Total` khỏi Star Schema Nhóm này — K_PTTT_58 chuyển PENDING, chưa có measure thật populate. Cột này vẫn tồn tại trên schema hợp nhất chung (xem Nhóm 1) do các Nhóm khác dùng chung Fact có thể có measure liên quan khác trạng thái. **[SỬA 2026-08-04]** `% thay đổi GTGD phiên` (K_PTTT_109) và `GTGD phiên tổng kỳ` (K_PTTT_110) không đưa vào schema — derived runtime từ `Total_Trading_Value_Matched`/`Total_Trading_Value_Matched_Previous_Day`, không lưu cột riêng. **[SỬA 2026-09-21]** `Total_Market_Cap_VSDC`/`Total_Market_Cap_VSDC_Average_N_Days`/`Turnover_Velocity_Index`/`Turnover_Velocity_Status` (K_PTTT_115~118) nay đã READY và đưa vào Star Schema — dùng ngoại lệ `listed_share_info`, KHÔNG đụng tới O_PTTT_3 (blocker Margin ratio, vẫn Open).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1485,7 +1514,7 @@ erDiagram
 flowchart LR
     fct_market_risk_snpst["Fact Market Risk Snapshot"]
     cdr_dt_dim["Calendar Date Dimension"]
-    rpt_nhom8["Nhóm 8 - Chỉ số chung (Thanh khoản & Đòn bẩy): K_PTTT_43,107-114"]
+    rpt_nhom8["Nhóm 8 - Chỉ số chung (Thanh khoản & Đòn bẩy): K_PTTT_43,107-118"]
     cdr_dt_dim --> fct_market_risk_snpst
     fct_market_risk_snpst --> rpt_nhom8
     cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_financial_structure_snpst
@@ -1508,7 +1537,6 @@ flowchart LR
 | Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
 | Dư nợ margin (K_PTTT_58) | SSC_SCMS.MEMBER_REPORT/FORM_REPORT/REPORT_CELL_VALUE | Entity chuẩn hóa báo cáo định kỳ CTCK (chưa thiết kế) | TBD — xem O_PTTT_13 |
-| KL CK lưu hành, MarketCap, TVI (K_PTTT_98,100,117-120) | VSDC.TT138_2025_BaoCaoKLCK | Security Listing Volume | scr_listing_vol hoặc TBD — xem O_PTTT_3 |
 
 #### Nhóm 9 - Xu hướng thanh khoản thị trường
 
@@ -1593,6 +1621,10 @@ erDiagram
         string Margin_Stress_Status
         float Corr_Index_Interbank_Rate
         float Corr_Index_Dxy
+        float Total_Market_Cap_VSDC
+        float Total_Market_Cap_VSDC_Average_N_Days
+        float Turnover_Velocity_Index
+        string Turnover_Velocity_Status
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1709,6 +1741,10 @@ erDiagram
         string Margin_Stress_Status
         float Corr_Index_Interbank_Rate
         float Corr_Index_Dxy
+        float Total_Market_Cap_VSDC
+        float Total_Market_Cap_VSDC_Average_N_Days
+        float Turnover_Velocity_Index
+        string Turnover_Velocity_Status
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1849,37 +1885,73 @@ flowchart LR
 
 #### Nhóm 12 - Phân bổ thanh khoản theo nhóm vốn hóa
 
-**KPI liên quan:** K_PTTT_129 (mới); K_PTTT_130 (mới); K_PTTT_131 (mới); K_PTTT_132 (mới); K_PTTT_98, K_PTTT_99 (reuse từ Nhóm 7); K_PTTT_43, K_PTTT_82, K_PTTT_114, K_PTTT_120 (reuse từ các Nhóm trước)
+> Phân loại: **Phân tích**
+> Atomic: `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE/HNX — **READY** | `Security Trading Snapshot` ← MDDS.StockInfor — **READY** | Khối lượng cổ phiếu lưu hành (`listed_share_info`, VSDC_OUTSTANDING_SHARES) — **READY** (ngoại lệ Data Modeler xác nhận 2026-09-21, đồng bộ Nhóm 7/8 — KHÔNG thuộc phạm vi O_PTTT_3, blocker Margin ratio riêng vẫn Open) | Tỷ giá USD/VND (`cl_risk_indicator_value`, EX_RATE_VND_USD) ← MRMS.RISK_INDICATOR_VALUE — **READY** (reuse từ Nhóm 3, O_PTTT_11 Resolved)
+>
+> **[SỬA 2026-09-21 — Kịch bản B, khai sinh Fact mới]** Toàn bộ Nhóm chuyển từ "100% PENDING chờ Atomic" (O_PTTT_3/O_PTTT_6) sang READY nhờ ngoại lệ `listed_share_info` (đồng bộ Nhóm 7/8) kết hợp tỷ giá USD/VND đã có sẵn từ Nhóm 3. Khai sinh Fact mới **`Fact Cap Group Snapshot`** (`fct_cap_grp_snpst`) — grain 1 row/nhóm vốn hóa/ngày, đăng ký trong `DTM_PTTT_Entities.csv`. Nhóm vốn hóa (Small/Mid/Large-cap) là **Classification tính toán theo ngưỡng** (không phải Atomic classification scheme có sẵn) — theo đúng pattern `status_threshold_config` đã dùng cho Sentiment Index/Margin Tension/Systemic Vol (Nhóm 4)/StressScore Sector (Nhóm 7)/TVI (Nhóm 8), thêm `index_code = 'CAP_GROUP'` với 3 ngưỡng USD: <2 tỷ Small-cap, 2–10 tỷ Mid-cap, ≥10 tỷ Large-cap — **cần DWH admin nhập 3 dòng threshold mới**, chưa có sẵn dữ liệu. K_PTTT_129/130 (BA liệt kê 2 dòng cùng định nghĩa, dòng 241/242 BA_analyst) dùng chung 1 cột `cap_group_code`.
 
-**Lý do pending:** Phân nhóm vốn hóa (Large/Mid/Small-cap) yêu cầu MarketCap = Giá đóng cửa × KL CK lưu hành. KL CK lưu hành đến từ VSDC (Báo cáo TT138.2025.TT.BTC) — chưa có Atomic entity tương ứng. Blocker đồng nhất với Nhóm 7 (O_PTTT_3 + O_PTTT_6).
+**Mockup:**
 
-**Atomic cần bổ sung:** Atomic entity `Security Listing Volume` từ VSDC — xem O_PTTT_3 và O_PTTT_6.
+| Nhóm vốn hóa | GTGD nhóm (Tỷ VND) | Tỷ trọng thanh khoản |
+|---|---|---|
+| Large-cap | 18,200 | 71.5% |
+| Mid-cap | 5,900 | 23.1% |
+| Small-cap | 1,400 | 5.4% |
 
-**Mart dự kiến:**
-- `Fact Cap Group Snapshot` (`fct_cap_grp_snpst`) — grain: 1 row / nhóm vốn hóa / ngày
+**Source:** `Fact Cap Group Snapshot` → `Calendar Date Dimension`
 
-**Bảng mapping nguồn (Atomic Placeholder):**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| KL CK lưu hành per mã CK | VSDC.TT138_2025_BaoCaoKLCK | Security Listing Volume | scr_listing_vol hoặc TBD |
-| Giá đóng cửa per mã CK | MDDS.StockInfor (PriceBoardAPI) | Security Trading Snapshot | scr_tdg_snpst |
-| GTGD khớp lệnh per mã CK | ORDERTRADE.TRADE_BOOK_HOSE / TRADE_BOOK_HNX | Securities Trade | securities_trade |
-
-**Bảng KPI PENDING:**
+**Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_PTTT_43 | Ngày thống kê (Chiều Thời gian) | Ngày | Chiều | TBD — chờ Atomic | Reuse từ Nhóm 4; **Lý do pending:** phụ thuộc blocker KL CP lưu hành VSDC BM1 (O_PTTT_3/O_PTTT_6) — cả Nhóm PENDING theo AND. **Mart dự kiến:** `Fact Cap Group Snapshot` | PENDING |
-| K_PTTT_98 | KL cổ phiếu lưu hành per mã CK | CP | Cơ sở | TBD — chờ Atomic | Reuse từ Nhóm 7; **Lý do pending:** nguồn VSDC BM1 (`Chưa có CSDL - Map biểu mẫu`), xem O_PTTT_3/O_PTTT_6. **Mart dự kiến:** `Fact Cap Group Snapshot` | PENDING |
-| K_PTTT_82 | Giá đóng cửa mã CK tại t | VND | Cơ sở | TBD — chờ Atomic | Reuse từ Nhóm 7; **Lý do pending:** phụ thuộc K_PTTT_99 cần cả 2 input, cả Nhóm PENDING theo AND. **Mart dự kiến:** `Fact Cap Group Snapshot` | PENDING |
-| K_PTTT_99 | MarketCap_i — Vốn hóa từng mã | Tỷ VND | Phái sinh | TBD — chờ Atomic | Reuse từ Nhóm 7; **Lý do pending:** phụ thuộc K_PTTT_98 (KL CP lưu hành) đang PENDING. **Mart dự kiến:** `Fact Cap Group Snapshot` | PENDING |
-| K_PTTT_114 | KL khớp lệnh per mã CK tại ngày | Cổ phần | Cơ sở | `SUM(securities_trade.execution_vol)` GROUP BY `security_symbol_code`, `trade_dt` WHERE `trade_dt = :input_date` AND `market_id_code IN ('STO','STX','UPX')` | Reuse từ Nhóm 8; bản thân đã READY nhưng cả Nhóm PENDING theo AND vì cần K_PTTT_99 (MarketCap) để phân nhóm vốn hóa | PENDING |
-| K_PTTT_120 | Giá khớp per giao dịch | VND | Cơ sở | `securities_trade.execution_price` WHERE `market_id_code IN ('STO','STX','UPX')` | Reuse từ Nhóm 9; bản thân đã READY nhưng cả Nhóm PENDING theo AND | PENDING |
-| K_PTTT_129 | Nhóm vốn hóa (Cap Group) — Chiều phân nhóm Large/Mid/Small-cap | Text | Chiều | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_99 (MarketCap) đang PENDING. **Atomic cần bổ sung:** xem O_PTTT_3/O_PTTT_6. **Mart dự kiến:** `Fact Cap Group Snapshot` | PENDING |
-| K_PTTT_130 | Phân loại vốn hóa — band ngưỡng (< 2 tỷ USD / 2–10 tỷ USD / ≥ 10 tỷ USD) | Text | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_129 đang PENDING; cần tỷ giá USD/VND (đã có qua K_PTTT_34, nhưng blocker chính vẫn là MarketCap) | PENDING |
-| K_PTTT_131 | GTGD nhóm vốn hóa — tổng GTGD khớp per nhóm per ngày | Tỷ VND | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_129 (Nhóm vốn hóa) đang PENDING để GROUP BY. **Mart dự kiến:** `Fact Cap Group Snapshot` | PENDING |
-| K_PTTT_132 | Tỷ trọng thanh khoản nhóm — GTGD nhóm / GTGD toàn thị trường × 100 | % | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_131 đang PENDING | PENDING |
+| K_PTTT_43 | Ngày thống kê (Chiều Thời gian) | Ngày | Chiều | `cdr_dt_dim.cdr_dt` qua `fct_cap_grp_snpst.snpst_dt_dim_id` | Reuse Calendar Date Dimension | READY |
+| K_PTTT_98 | KL cổ phiếu lưu hành per mã CK | CP | Cơ sở | `listed_share_info.outstanding_share_quantity` (VSDC_OUTSTANDING_SHARES, lookback `<= trading_dt`) | Reuse từ Nhóm 7. Sub-component chuỗi K_PTTT_99/129 — không lưu cột riêng | READY |
+| K_PTTT_82 | Giá đóng cửa mã CK tại t | VND | Cơ sở | `security_trading_snapshot.close_price` WHERE `trading_dt=:input_date` AND `floor_code IN ('02','04','10')` | Reuse từ Nhóm 7. Sub-component chuỗi K_PTTT_99/129 — không lưu cột riêng | READY |
+| K_PTTT_99 | MarketCap_i — Vốn hóa từng mã | Tỷ VND | Phái sinh | `K_PTTT_82 × K_PTTT_98` | Sub-component chuỗi K_PTTT_129 — không lưu cột riêng | READY |
+| K_PTTT_114 | KL khớp lệnh per mã CK tại ngày | Cổ phần | Cơ sở | `SUM(securities_trade.execution_vol)` GROUP BY `security_symbol_code`, `trade_dt` WHERE `trade_dt = :input_date` AND `market_id_code IN ('STO','STX','UPX')` | Reuse từ Nhóm 8 — building-block per mã CK, không dùng trực tiếp trong GTGD nhóm (K_PTTT_131 dùng `execution_val`) | READY |
+| K_PTTT_120 | Giá khớp per giao dịch | VND | Cơ sở | `securities_trade.execution_price` WHERE `market_id_code IN ('STO','STX','UPX')` | Reuse từ Nhóm 9/11 — grain per-trade, không lưu cột riêng | READY |
+| K_PTTT_129 | Nhóm vốn hóa (Cap Group) | Text | Chiều | `LOOKUP status_threshold_config ON status_threshold_config.index_code = 'CAP_GROUP' AND (K_PTTT_99 / cl_risk_indicator_value.val WHERE cl_risk_ind_code='EX_RATE_VND_USD') BETWEEN status_threshold_config.from_value AND status_threshold_config.to_value → status_threshold_config.status` | Grain key `Fact Cap Group Snapshot.cap_group_code`. Ngưỡng USD: <2 tỷ Small-cap, 2–10 tỷ Mid-cap, ≥10 tỷ Large-cap — **cần DWH admin nhập 3 dòng threshold `CAP_GROUP` vào `status_threshold_config`** | READY |
+| K_PTTT_130 | Phân loại vốn hóa | Text | Phái sinh | Trùng định nghĩa K_PTTT_129 (BA dòng 241/242 cùng ngưỡng) | Dùng chung cột `cap_group_code`, không tạo cột riêng | READY |
+| K_PTTT_131 | GTGD nhóm vốn hóa | Tỷ VND | Phái sinh | `SUM(securities_trade.execution_val)` GROUP BY `K_PTTT_129 (cap_group_code)`, `trading_dt` WHERE `market_id_code IN ('STO','STX','UPX')` | Cột vật lý mới `fct_cap_grp_snpst.total_trading_val` | READY |
+| K_PTTT_132 | Tỷ trọng thanh khoản nhóm | % | Phái sinh | `K_PTTT_131 / SUM(K_PTTT_131 mọi nhóm cùng ngày) × 100` | Cột vật lý mới `fct_cap_grp_snpst.liquidity_share_ratio` | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Cap_Group_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        string Cap_Group_Code
+        float Total_Trading_Value
+        float Liquidity_Share_Ratio
+    }
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Calendar_Year
+        int Calendar_Quarter
+        int Calendar_Month
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Cap_Group_Snapshot : "Snapshot_Date_Dimension_Id"
+```
+
+> **Ghi chú:** `Cap Group Code` không phải Dimension riêng (theo Rule #11 — bảng chỉ có 3 giá trị cố định, không phải Atomic classification scheme có sẵn) mà là Classification tính-toán-theo-ngưỡng lưu trực tiếp trên Fact, cùng pattern `status_threshold_config` đã dùng ở Nhóm 4/7/8 — khác với `Industry Dimension` (Nhóm 7, có Atomic classification scheme thật từ ECAT).
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    fct_cap_grp_snpst["Fact Cap Group Snapshot"] --> rpt_nhom12["Nhóm 12 - Phân bổ thanh khoản theo nhóm vốn hóa: K_PTTT_43,82,98,99,114,120,129-132"]
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_cap_grp_snpst
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Cap Group Snapshot | 1 row / nhóm vốn hóa / ngày |
+| Calendar Date Dimension | 1 row / ngày |
 
 ---
 
@@ -3136,11 +3208,13 @@ flowchart LR
 #### Nhóm 21 - Danh mục tổ chức phát hành cần giám sát tín dụng
 
 > Phân loại: **Tác nghiệp**
-> Atomic: `Security Trading Snapshot` ← `MDDS.JAD_STOCKINFOR` — **READY** | `Public Company Bond Evaluation` (`pc_bond_evaluation`) ← `IDS.EVALUATION_CBONDS` — **READY** | `Public Company Evaluation Detail`/`Criterion`/`Group`/`Evaluation`/`Period` ← `IDS.EVALUATION_DETAILS`/`CRITERIA`/`GROUPS`/`EVALUATIONS`/`PERIODS` — **READY** | `Public Company Financial Report Value` — **PENDING** (đã loại khỏi scope Atomic hoàn toàn, quyết định 2026-07-14, xem O_PTTT_12)
+> Atomic: `Security Trading Snapshot` ← `MDDS.JAD_STOCKINFOR` — **READY** | `Public Company Bond Evaluation` (`pc_bond_evaluation`) ← `IDS.EVALUATION_CBONDS` — **READY** | `Public Company Evaluation Detail`/`Criterion`/`Group`/`Evaluation`/`Period` ← `IDS.EVALUATION_DETAILS`/`CRITERIA`/`GROUPS`/`EVALUATIONS`/`PERIODS` — **READY** | `Public Company Financial Report Value` (`fr_value`/`fr_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`) ← `IDS.DATA`/`REPORT_CATALOG`/`RROW`/`RCOL`/`COMPANY_DATA` — **READY** (2026-09-21, xem O_PTTT_12 Resolved — 5 entity đã approved trên Atomic, đồng bộ chain đã dùng cho GSTT)
 >
 > **[THIẾT KẾ LẠI 2026-08-03 — Kịch bản D, phát hiện khi chuẩn hóa lại format Nhóm 21]** Chuyển đúng format 1 bảng KPI duy nhất (bỏ header `##### READY` thừa). Đối chiếu BA (16/16 dòng Done) phát hiện HLD trước đây **bỏ sót 8/16 dòng BA** — không có KPI_ID cho "Dư nợ", "Mệnh giá", "KL TP lưu hành" (nguồn `JAD_STOCKINFOR.ListedShare`, đã READY qua `security_trading_snapshot.total_listing_vol`, đồng nhất Nhóm 18/20), và "Ý kiến kiểm toán"/"Xếp hạng tín nhiệm"/"Xếp loại rủi ro" (nguồn `IDS.EVALUATION_CBONDS`/`EVALUATION_DETAILS`+`CRITERIA`+`GROUPS`+`EVALUATIONS`+`PERIODS` — grep xác nhận cả 2 nhóm entity đều đã READY trên Atomic: `pc_bond_evaluation.ranking_code`, `pc_evaluation_detail.evaluation_score`/`evaluation_result_text` join `pc_evaluation_criterion.pc_evaluation_criterion_code`/`pc_evaluation_group.pc_evaluation_group_code`). Bổ sung đủ 8 KPI còn thiếu, tất cả READY.
 >
 > **[SỬA 2026-08-04 — Kịch bản D]** Phát hiện tiếp: K_PTTT_187-193 (7 KPI, Tổng nợ/VCSH/D-E/LNST/ROE per TCPH) đã đánh sai READY dù nguồn `Public Company Financial Report Value` không tồn tại trên Atomic (loại khỏi scope 2026-07-14, cùng gap đã ghi nhận đúng ở O_PTTT_12 cho Nhóm 19 nhưng bị bỏ sót khi thiết kế lại Nhóm 21 03/08). Chuyển lại đúng PENDING, bổ sung vào O_PTTT_12.
+>
+> **[SỬA 2026-09-21 — O_PTTT_12 Resolved]** Grep xác nhận `fr_value`/`fr_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission` đều đã **approved** trong `DataModel/Atomic/` (chain giống hệt đã dùng cho GSTT, sync 2026-09-19) — quyết định "loại khỏi scope Atomic hoàn toàn" 2026-07-14 đã lỗi thời. Chuyển K_PTTT_187-193 sang READY: BCDKT row_desc 300(DN/BH)/400(TD) col_desc=1 cho Tổng nợ phải trả; row_desc 400(DN/BH)/500(TD) col_desc=1(cuối kỳ)/2(đầu kỳ) cho VCSH; BCKQKD row_desc 60(DN/BH)/21(TD) col_desc=1 cho LNST — theo đúng mã BA cung cấp (dòng 338-344 BA_analyst_PTTT.csv), khớp quy ước row_description_reference đã dùng cho GSTT (60/21 NPAT, 400/500 Owner Equity). D/E và ROE tính runtime từ các measure trên. Bổ sung 7 cột vật lý mới trên `Operational Corporate Bond Issuer Credit Monitor`.
 
 **Mockup:**
 
@@ -3164,16 +3238,16 @@ flowchart LR
 | K_PTTT_184 | Dư nợ TP per TCPH | Tỷ VND | Phái sinh | `100000 × security_trading_snapshot.total_listing_vol` WHERE `stock_tp_code IN ('B','1','D')` AND `trading_dt = :ngay_gd` | `ListedShare × 100000`, đồng nhất Nhóm 18/20 | READY |
 | K_PTTT_185 | Mệnh giá trái phiếu (100.000 VND/TP) | VND | Cơ sở | `100000` (hardcode) | Reuse từ Nhóm 18 | READY |
 | K_PTTT_186 | KL TP lưu hành per TCPH | TP | Cơ sở | `security_trading_snapshot.total_listing_vol` WHERE `stock_tp_code IN ('B','1','D')` AND `trading_dt = :ngay_gd` | Reuse từ Nhóm 18 | READY |
-| K_PTTT_187 | Tổng nợ phải trả per TCPH | Tỷ VND | Cơ sở | TBD — chờ Atomic | **[SỬA 2026-08-04 — Kịch bản D]** Chuyển lại đúng PENDING — nguồn `pblc_co_fnc_rpt_val`/`Public Company Financial Report Value` đã loại khỏi scope Atomic hoàn toàn (2026-07-14). **Lý do pending:** xem O_PTTT_12 (đã bổ sung K_PTTT_187). **Mart dự kiến:** `Operational Corporate Bond Issuer Credit Monitor` | PENDING |
-| K_PTTT_188 | VCSH cuối kỳ per TCPH | Tỷ VND | Cơ sở | TBD — chờ Atomic | **Lý do pending:** cùng nguồn K_PTTT_187, xem O_PTTT_12. **Mart dự kiến:** `Operational Corporate Bond Issuer Credit Monitor`. Trace BA: gộp 2 dòng BA cùng khái niệm VCSH cuối kỳ ("VCSH cuối kỳ" và "VCSH" trần — cùng `row_desc IN ('400','500')`, `col_desc='1'`); dòng "VCSH" trần dùng làm input cho K_PTTT_189 (D/E per TCPH) | PENDING |
-| K_PTTT_189 | Hệ số D/E per TCPH | Lần | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_187/188 đang PENDING theo AND, xem O_PTTT_12. **Mart dự kiến:** `Operational Corporate Bond Issuer Credit Monitor` | PENDING |
-| K_PTTT_190 | VCSH đầu kỳ per TCPH | Tỷ VND | Cơ sở | TBD — chờ Atomic | **Lý do pending:** cùng nguồn K_PTTT_187, xem O_PTTT_12. **Mart dự kiến:** `Operational Corporate Bond Issuer Credit Monitor` | PENDING |
-| K_PTTT_191 | VCSH bình quân per TCPH | Tỷ VND | Cơ sở | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_190/188 đang PENDING theo AND, xem O_PTTT_12. **Mart dự kiến:** `Operational Corporate Bond Issuer Credit Monitor` | PENDING |
-| K_PTTT_192 | LNST per TCPH | Tỷ VND | Cơ sở | TBD — chờ Atomic | **Lý do pending:** cùng nguồn K_PTTT_187, xem O_PTTT_12. **Mart dự kiến:** `Operational Corporate Bond Issuer Credit Monitor` | PENDING |
-| K_PTTT_193 | ROE per TCPH | % | Phái sinh | TBD — chờ Atomic | **Lý do pending:** phụ thuộc K_PTTT_192/191 đang PENDING theo AND, xem O_PTTT_12. **Mart dự kiến:** `Operational Corporate Bond Issuer Credit Monitor` | PENDING |
+| K_PTTT_187 | Tổng nợ phải trả per TCPH | Tỷ VND | Cơ sở | `fr_value.data_val` — BCDKT, `row_description_reference` 300 (DN/BH) / 400 (TD), `column_description_reference` = 1, kỳ báo cáo gần nhất đã duyệt (ưu tiên HN>TH>ME>RI) | **[SỬA 2026-09-21 — O_PTTT_12 Resolved]** Chain `pc_report_submission`→`fr_value`→`fr_catalog`→`fr_row_template`→`fr_column_template` đã approved trên Atomic | READY |
+| K_PTTT_188 | VCSH cuối kỳ per TCPH | Tỷ VND | Cơ sở | `fr_value.data_val` — BCDKT, row_desc 400(DN/BH)/500(TD), col_desc=1 (cuối kỳ) | **[SỬA 2026-09-21]** | READY |
+| K_PTTT_189 | Hệ số D/E per TCPH | Lần | Phái sinh | `K_PTTT_187 / K_PTTT_188` | **[SỬA 2026-09-21]** | READY |
+| K_PTTT_190 | VCSH đầu kỳ per TCPH | Tỷ VND | Cơ sở | `fr_value.data_val` — BCDKT, row_desc 400(DN/BH)/500(TD), col_desc=2 (đầu kỳ) | **[SỬA 2026-09-21]** | READY |
+| K_PTTT_191 | VCSH bình quân per TCPH | Tỷ VND | Cơ sở | `(K_PTTT_190 + K_PTTT_188) / 2` — nếu đầu kỳ NULL thì lấy đúng cuối kỳ (BA note) | **[SỬA 2026-09-21]** | READY |
+| K_PTTT_192 | LNST per TCPH | Tỷ VND | Cơ sở | `fr_value.data_val` — BCKQKD, row_desc 60(DN/BH)/21(TD), col_desc=1 | **[SỬA 2026-09-21]** | READY |
+| K_PTTT_193 | ROE per TCPH | % | Phái sinh | `K_PTTT_192 / K_PTTT_191 × 100` | **[SỬA 2026-09-21]** | READY |
 | K_PTTT_194 | Ý kiến kiểm toán per TCPH | Text | Cơ sở | `pc_evaluation_detail.evaluation_result_text`, `evaluation_score` JOIN `pc_evaluation_criterion` ON `pc_evaluation_criterion_code = 'TAI_CHINH_YKKT'` JOIN `pc_evaluation_group` ON `pc_evaluation_group_code = 'TAI_CHINH'` JOIN `pc_evaluation`/`pc_evaluation_period` WHERE `pc_id = :p_company_id` AND `evaluation_year = :p_year` AND `evaluation_month = :p_month` | IDS.EVALUATION_DETAILS/CRITERIA/GROUPS/EVALUATIONS/PERIODS — 5 entity đều READY | READY |
 | K_PTTT_195 | Xếp hạng tín nhiệm per TCPH | Text | Cơ sở | `pc_bond_evaluation.ranking_code` WHERE `pc_id = :p_company_id` AND `evaluation_year = :p_year` AND `evaluation_month = :p_month` | IDS.EVALUATION_CBONDS → pc_bond_evaluation | READY |
-| K_PTTT_196 | Xếp loại rủi ro per TCPH | Text | Phái sinh | `CASE WHEN K_PTTT_195 IN ('AAA'..'A-') THEN 'Thấp' WHEN K_PTTT_195 IN ('BBB+','BBB','BBB-') THEN 'Trung bình' WHEN K_PTTT_195 IN ('BB+'..'D') THEN 'Cao' ELSE 'Chưa xếp hạng' END` | Derive từ K_PTTT_195 theo đúng CASE WHEN BA cung cấp | READY |
+| K_PTTT_196 | Xếp loại rủi ro per TCPH | Text | Phái sinh | `CASE WHEN K_PTTT_195 IN ('AAA'..'A-') THEN 'Thấp' WHEN K_PTTT_195 IN ('BBB+','BBB','BBB-') THEN 'Trung bình' WHEN K_PTTT_195 IN ('BB+'..'D') THEN 'Cao' ELSE 'Chưa xếp hạng' END | Derive từ K_PTTT_195 theo đúng CASE WHEN BA cung cấp | READY |
 
 **Lineage Mart → Báo cáo:**
 
@@ -3188,11 +3262,7 @@ flowchart LR
 |---|---|
 | Operational Corporate Bond Issuer Credit Monitor | 1 row / TCPH / kỳ báo cáo |
 
-**Bảng mapping nguồn (Atomic Placeholder):**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| Tổng nợ phải trả, VCSH đầu/cuối kỳ/bình quân, LNST, D/E, ROE per TCPH (nhánh riêng lẻ) | IDS.data/report_catalog/rrow/rcol | Entity chuẩn hoá báo cáo tài chính (chưa thiết kế) | TBD — xem O_PTTT_12 |
+**Bảng mapping nguồn (Atomic Placeholder):** Không còn — toàn bộ 16/16 chỉ tiêu đã READY (xem O_PTTT_12 Resolved).
 
 ---
 
@@ -3361,7 +3431,7 @@ graph TB
 |---|---|---|---|---|
 | Fact Market Risk Snapshot | Chỉ số rủi ro hệ thống tổng hợp theo ngày — Risk Index, Volatility, 6 Z-score, 6 Mức độ tác động, 6 Tỷ trọng (denormalized as measures) | Fact Snapshot | 1 row / ngày | Market Index Snapshot (MDDS), Securities Trade (ORDERTRADE), Classification Risk Indicator Value (MRMS), Security Trading Snapshot (MDDS), Risk Weight Configuration (Kho dữ liệu). **[SỬA 2026-09-18]** Bỏ entity giả `Member Report Indicator Value`; các measure margin lấy từ `Fact Securities Company Financial Structure Snapshot` ở grain kỳ báo cáo (carry-forward lên trục ngày) |
 | Fact Macro Indicator Snapshot | Chỉ tiêu vĩ mô (lãi suất, tỷ giá, CPI, GDP) theo kỳ báo cáo — 1 dòng per chỉ tiêu per kỳ | Fact Snapshot | 1 row / indicator_code / kỳ báo cáo (prd_dt) | Risk Indicator (MRMS), Risk Indicator Value (MRMS) |
-| Fact Sector Risk Snapshot | Chỉ số áp lực, thanh khoản và sức khỏe tài chính theo ngành — StressScore, D/E, GTGD ngành | Fact Snapshot | 1 row / ngành / ngày | Security Trading Snapshot (MDDS.JAD_STOCKINFOR), Securities Trade (ORDERTRADE), Public Company (IDS); Public Company Financial Report Value (IDS) PENDING — gap EAV báo cáo tài chính, xem O_PTTT_12 |
+| Fact Sector Risk Snapshot | Chỉ số áp lực, thanh khoản và sức khỏe tài chính theo ngành — StressScore, D/E, GTGD ngành | Fact Snapshot | 1 row / ngành / ngày | Security Trading Snapshot (MDDS.JAD_STOCKINFOR), Securities Trade (ORDERTRADE), Public Company (IDS), Listed Share Info (VSDC, ngoại lệ), Public Company Financial Report Value (IDS, READY từ 2026-09-21, xem O_PTTT_12 Resolved) |
 | Fact Order Size Snapshot | GTGD và phân loại quy mô lệnh per mã CK theo ngày — phân band ≥ 1 tỷ / < 1 tỷ | Fact Snapshot | 1 row / mã CK / order_size_band / ngày | Securities Trade (ORDERTRADE.TRADE_BOOK_HOSE/HNX) |
 | Fact Investor Flow Snapshot | GTGD mua, GTGD bán và dòng tiền ròng theo nhóm nhà đầu tư (NĐTNN / Tự doanh / Tổ chức / Cá nhân) per ngày | Fact Snapshot | 1 row / nhóm NĐT / ngày | Securities Trade (ORDERTRADE.TRADE_BOOK_HOSE/HNX) |
 | Fact Foreign Net Trade Snapshot | GTGD mua, GTGD bán và dòng tiền ròng của NĐTNN per mã CK per ngày — phục vụ bảng Top mua/bán ròng | Fact Snapshot | 1 row / mã CK / ngày | Securities Trade (ORDERTRADE.TRADE_BOOK_HOSE/HNX) |
@@ -3439,13 +3509,13 @@ graph TB
 | O_PTTT_3 | KL CK lưu hành cho MCAPₜ trong công thức Margin ratio (Mₜ=MDₜ/MCAPₜ) — BA xác nhận nguồn chính thức là VSDC TT138.2025.TT.BTC Mẫu 01 "BM1_Báo cáo về khối lượng chứng khoán đang lưu hành" (BA đã cung cấp SQL tham khảo đầy đủ, join `JAD_STOCKINFOR` lấy giá đóng cửa + `BM1_BCKLLH` lấy KL lưu hành), nhưng cột "Loại dữ liệu" vẫn đánh **"Chưa có CSDL - Map biểu mẫu"** — báo cáo giấy/biểu mẫu VSDC chưa có bảng vật lý tích hợp hệ thống. Lưu ý: đây là MCAP riêng cho công thức Margin ratio, KHÁC với MCAPₜ tổng vốn hóa thị trường (K_PTTT_8 — dùng `scr_tdg_snpst.tot_listing_vol` từ MDDS, vẫn READY, không thuộc blocker này). | Giữ **PENDING** theo gating "Loại dữ liệu" — không dùng tạm `security_trading_snapshot.total_listing_vol` (MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY, đã READY trên Atomic, đang dùng cho K_PTTT_8) để thay thế cho MCAP trong công thức Margin, vì VSDC là nguồn pháp lý riêng có thể khác giá trị (user xác nhận trực tiếp, 2026-07-30). Atomic cần bổ sung: entity `Security Listing Volume` chuẩn hóa từ VSDC BM1 (cột MCK/KLLH/ngày báo cáo/loại CK). Risk Index (K_PTTT_18), Z-score/Tỷ lệ Dư nợ Margin (K_PTTT_5, 10, 24~27) đều PENDING theo AND vì phụ thuộc blocker này. | K_PTTT_18, K_PTTT_5, K_PTTT_9, K_PTTT_21, K_PTTT_22, K_PTTT_23, K_PTTT_24 | Open |
 | O_PTTT_4 | ~~Z-score Huy động vốn cổ phần cần 3 nguồn chưa có mapping chi tiết~~ **[ĐÃ GIẢI QUYẾT]** — xem O_PTTT_1 | BA cung cấp SQL đầy đủ (UNION ALL theo ngày công văn, Z-score đảo chiều trên 20 phiên) — không còn vấn đề mở | K_PTTT_19, K_PTTT_20 | Resolved |
 | O_PTTT_5 | Sub-components Z-score Dư nợ Margin (K_PTTT_21~24) BA ghi Pending — cần xác nhận mã chỉ tiêu dư nợ margin trong `SCMS.DM_CHI_TIEU` (TEN_CHI_TIEU = 'Giá trị chứng khoán ký quỹ') để map sang `mbr_rpt_ind_val.rpt_ind_code` | Tổng dư nợ margin MDₜ (K_PTTT_8 sub) đã Done từ SCMS.BC_BAO_CAO_GT. K_PTTT_5 (Z-score tổng hợp) giữ READY vì có đủ công thức Atomic-level. K_PTTT_21~24 là sub-components chi tiết chưa đủ mapping chuỗi lịch sử | K_PTTT_21, K_PTTT_22, K_PTTT_23, K_PTTT_24 | Open |
-| O_PTTT_6 | Nhóm 12 cần phân loại MarketCap theo ngưỡng USD (< 2 tỷ / 2–10 tỷ / ≥ 10 tỷ) — ngoài blocker KL CK lưu hành (VSDC), còn cần tỷ giá USD/VND tại ngày t để quy đổi MarketCap từ VND sang USD | Tỷ giá USD/VND đã có trong `rsk_ind_val` (bsn_key = 'EX_RATE_VND_USD') — reuse K_PTTT_34. KL CK lưu hành vẫn là blocker chính (O_PTTT_3). Khi Atomic VSDC sẵn sàng, phân loại cap band = MarketCap_VND / FX_rate: LARGE ≥ 10B USD, MID 2–10B USD, SMALL < 2B USD | K_PTTT_129, K_PTTT_130, K_PTTT_131, K_PTTT_132 | Open |
+| O_PTTT_6 | ~~Nhóm 12 cần phân loại MarketCap theo ngưỡng USD (< 2 tỷ / 2–10 tỷ / ≥ 10 tỷ) — ngoài blocker KL CK lưu hành (VSDC), còn cần tỷ giá USD/VND tại ngày t để quy đổi MarketCap từ VND sang USD~~ **[ĐÃ GIẢI QUYẾT, 2026-09-21]** — KL CK lưu hành nay dùng ngoại lệ `listed_share_info` (đồng bộ Nhóm 7/8, KHÔNG phải O_PTTT_3 — đó là blocker riêng cho Margin ratio, vẫn Open). Tỷ giá USD/VND lấy trực tiếp `cl_risk_indicator_value.val WHERE cl_risk_ind_code = 'EX_RATE_VND_USD'` (reuse Nhóm 3, O_PTTT_11). Khai sinh `Fact Cap Group Snapshot`, phân loại qua `status_threshold_config` (`index_code = 'CAP_GROUP'`): LARGE ≥ 10 tỷ USD, MID 2–10 tỷ USD, SMALL < 2 tỷ USD | Đã thiết kế đầy đủ Nhóm 12 — xem HLD Nhóm 12 + `DTM_PTTT_fct_cap_grp_snpst.csv`. Còn lại: DWH admin cần nhập 3 dòng threshold `CAP_GROUP` vào `status_threshold_config` trước khi ETL chạy được | K_PTTT_129, K_PTTT_130, K_PTTT_131, K_PTTT_132 | Resolved |
 | O_PTTT_7 | **[SỬA 2026-08-03 — cập nhật ID theo thiết kế hiện hành]** Nhóm 19 (nhánh riêng lẻ, không niêm yết): Mệnh giá/KL TP lưu hành từ `VSDC.BM29_QUY_MO_DKGD_KL_LUU_HANH` chưa có Atomic entity — blocker cho luồng riêng lẻ của K_PTTT_174 (Mệnh giá)/K_PTTT_175 (KL TP lưu hành)/K_PTTT_176 (Tổng dư nợ TP)/K_PTTT_178 (Giá trị đáo hạn rủi ro cao). Luồng niêm yết của các KPI này đã READY (dùng `security_trading_snapshot.total_listing_vol`, xem ghi chú Nhóm 19) — chỉ luồng riêng lẻ (BM29) còn PENDING. | Chờ HTTT phản hồi thiết kế CSDL VSDC BM29. Atomic entity dự kiến: chuẩn hóa từ `VSDC.BM29_QUY_MO_DKGD_KL_LUU_HANH`. Đánh giá tổng thể theo mức thấp nhất (1 measure 2 luồng ETL khác mức độ sẵn sàng) — cả 4 KPI vẫn PENDING cho tới khi luồng riêng lẻ sẵn sàng. | K_PTTT_174, K_PTTT_175, K_PTTT_176, K_PTTT_178 | Open |
 | O_PTTT_8 | ~~Nhóm 19/21 — Xếp hạng tín nhiệm DN và Ý kiến kiểm toán: nguồn IDS-GSĐC chưa có bảng trong thiết kế CSDL~~ **[ĐÃ GIẢI QUYẾT một phần, 2026-08-03]** — grep xác nhận `pc_bond_evaluation` (IDS.EVALUATION_CBONDS, có `ranking_code`) và `pc_evaluation_detail`/`pc_evaluation_criterion`/`pc_evaluation_group`/`pc_evaluation`/`pc_evaluation_period` (IDS.EVALUATION_DETAILS/CRITERIA/GROUPS/EVALUATIONS/PERIODS) đều đã READY trên Atomic — Nhóm 21 đã bổ sung đủ K_PTTT_194 (Ý kiến kiểm toán)/K_PTTT_195 (Xếp hạng tín nhiệm)/K_PTTT_196 (Xếp loại rủi ro), tất cả READY. Riêng Nhóm 19 (Xếp hạng tín nhiệm K_PTTT_178, Giá trị đáo hạn rủi ro cao K_PTTT_177) và mapping ngành TCPH cho Tổng dư nợ TP theo nhóm ngành — vẫn cần xác nhận khi review lại Nhóm 19 (chưa nằm trong scope lần sửa này, giữ nguyên trạng thái hiện tại của Nhóm 19). | Atomic cho "Ý kiến kiểm toán"/"Xếp hạng tín nhiệm"/"Xếp loại rủi ro" KHÔNG còn là gap — đã READY, xem Nhóm 21. Nhóm 19 chưa được xác nhận lại trong lần sửa này. | K_PTTT_194, K_PTTT_195, K_PTTT_196 (đã Resolved qua Nhóm 21); Nhóm 19 còn Open | Resolved một phần |
 | O_PTTT_10 | **[SỬA 2026-07-31 — phát hiện khi review Nhóm 26]** Kết luận gốc "Atomic layer chưa có entity cho thị trường FDS" là **sai** cho Nhóm 26-31 — grep xác nhận `security_trading_snapshot` (MDDS.JAD_STOCKINFOR, có `stock_tp_code`='FU', `floor_code`='03', `underlying_symbol`, `maturity_month_year`, `close_price`, `reference_price`, `open_interest`) và `securities_trade` (ORDERTRADE.TRADE_BOOK_HNX, status approved, có `market_id_code`, `execution_vol`, `buy/sell_foreign_investor_tp_code`, `buy/sell_client_house_cl_code`) đã tồn tại và đủ field cho equity-pattern áp dụng sang Phái sinh (không cần entity `Futures Trading Snapshot`/`Futures Match Log` riêng — dữ liệu Phái sinh nằm CHUNG trong 2 entity equity này, phân biệt bằng `stock_tp_code`/`floor_code`/`underlying_symbol`). Đã sửa Nhóm 26 (7 KPI, 6 READY), Nhóm 27 (8 KPI, READY toàn bộ), Nhóm 28 (7 KPI, READY toàn bộ), Nhóm 29 (7 KPI, 6 READY, reuse-Chiều từ Nhóm 26), Nhóm 30 (8 KPI, READY toàn bộ, reuse từ Nhóm 27), Nhóm 31 (7 KPI, READY toàn bộ, reuse từ Nhóm 28). | Chỉ `Futures Open Interest` (VSDC.TT138, K_PTTT_214 ở Nhóm 26/29) vẫn PENDING thật — nguồn `Chưa có CSDL - Map biểu mẫu`, không phải do thiếu Atomic entity chuẩn hóa mà do báo cáo giấy chưa tích hợp hệ thống. Còn Nhóm 32-34 (STT=32~34) chưa được review lại — sẽ xác minh khi review tới đúng Nhóm. | K_PTTT_214 (còn PENDING, Nhóm 26/29) | Open |
 | O_PTTT_9 | Mâu thuẫn ngưỡng xếp hạng ATTC giữa screenshot Nhóm 23 và SQL tham khảo BA: screenshot hiển thị >160% = Cao / 121–160% = Trung bình / ≤120% = Thấp; SQL BA Nhóm 23 dùng ngưỡng >150% = Cao / 120–150% = Trung bình / <120% = Thấp — đồng nhất với SQL Nhóm 22. | **Đã xác nhận (BA SQL):** Dùng bộ ngưỡng duy nhất >150%/120–150%/<120% cho cả Nhóm 22 và 23 (K_PTTT_201, 195, 196, 197, 199). Screenshot mockup không phản ánh ngưỡng chính xác. | K_PTTT_201, K_PTTT_203, K_PTTT_205, K_PTTT_206, K_PTTT_207, K_PTTT_204 | Confirmed |
 | O_PTTT_11 | ~~Entity `Risk Indicator`/`Risk Indicator Value` (nguồn `RISK_INDICATOR`/`RISK_INDICATOR_VALUE`) chưa tồn tại trên Atomic repo~~ **[ĐÃ GIẢI QUYẾT, 2026-09-17]** — grep xác nhận 2 entity Atomic Classification `cl_risk_indicator` và `cl_risk_indicator_value` đã tồn tại trên Atomic repo (`DataModel/Atomic/classification/`). Đã thiết kế Fact `fct_macro_indicator_snpst` và unblock toàn bộ 13 KPI của Nhóm 3 (K_PTTT_30~42) cùng các Z-score vĩ mô sang READY. | Đã unblock toàn bộ các chỉ tiêu lãi suất LNH, tỷ giá USD/VND, CPI, GDP sang READY trên Datamart bằng cách kết nối với `cl_risk_indicator` & `cl_risk_indicator_value`. | K_PTTT_6, K_PTTT_24, K_PTTT_31, K_PTTT_32, K_PTTT_33, K_PTTT_34, K_PTTT_35, K_PTTT_36, K_PTTT_37, K_PTTT_38, K_PTTT_39, K_PTTT_40, K_PTTT_41, K_PTTT_42, K_PTTT_30, K_PTTT_71, K_PTTT_72, K_PTTT_73, K_PTTT_74, K_PTTT_75, K_PTTT_76, K_PTTT_77, K_PTTT_78, K_PTTT_80 | Resolved |
-| O_PTTT_12 | Nhóm 7/19/21 — Sector Debt Score, Tổng nợ phải trả, VCSH đầu/cuối kỳ/bình quân, LNST, D/E, ROE, Dư nợ TP per TCPH đều nguồn `IDS.data/report_catalog/rrow/rcol` (EAV báo cáo tài chính CTĐC dạng biểu mẫu report_cd/row_desc/col_desc) — entity Atomic chuẩn hoá cho cấu trúc EAV này chưa được thiết kế, chỉ có metadata (`report_catalog`) draft, không có entity lưu giá trị (`data`/`rrow`/`rcol`/`company_data`). Đã loại khỏi scope Atomic hoàn toàn (quyết định 2026-07-14). | Đã verify Atomic thật cho các entity liên quan khác trong cùng Nhóm 21 (Bond Evaluation, Evaluation Detail/Criterion/Group) — đều READY, không thuộc gap này. Gap chỉ còn ở nhánh báo cáo tài chính dạng bảng biểu (BCĐKT/BCKQKD) chưa chuẩn hoá EAV. Xem `[[project_financial_report_value_eav_deprecated]]` — không dùng cấu trúc RROW/RCOL/REPORT_CATALOG làm nền Fact, chờ entity Atomic chuẩn hoá dùng chung nhiều module. **[SỬA 2026-08-04]** Bổ sung K_PTTT_97 (Nhóm 7)/K_PTTT_187 (Nhóm 21) — cả 2 đã bị đánh sai READY trong bảng KPI trước đây dù cùng gap này. | K_PTTT_97, K_PTTT_178, K_PTTT_187, K_PTTT_188, K_PTTT_189, K_PTTT_190, K_PTTT_191, K_PTTT_192, K_PTTT_193 | Open |
+| O_PTTT_12 | ~~Nhóm 7/19/21 — Sector Debt Score, Tổng nợ phải trả, VCSH đầu/cuối kỳ/bình quân, LNST, D/E, ROE, Dư nợ TP per TCPH đều nguồn `IDS.data/report_catalog/rrow/rcol` (EAV báo cáo tài chính CTĐC dạng biểu mẫu report_cd/row_desc/col_desc) — entity Atomic chuẩn hoá cho cấu trúc EAV này chưa được thiết kế~~ **[ĐÃ GIẢI QUYẾT MỘT PHẦN, 2026-09-21]** — grep xác nhận `fr_value`/`fr_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission` đều đã **approved** trong `DataModel/Atomic/` (chain giống hệt đã dùng cho GSTT, sync 2026-09-19) — quyết định loại khỏi scope 2026-07-14 đã lỗi thời. Đã thiết kế xong **Nhóm 7** (K_PTTT_97) và **Nhóm 21** (K_PTTT_187-193, 7/7) — cả 2 chuyển READY. | Nhóm 7 (K_PTTT_97) và Nhóm 21 (7 KPI) đã READY — xem HLD tương ứng. **K_PTTT_178 (Nhóm 19)** vẫn PENDING — phụ thuộc K_PTTT_176 (gap khác: VSDC BM29 trái phiếu riêng lẻ, không liên quan EAV báo cáo tài chính), không đóng được dù O_PTTT_12 đã resolve phần EAV. | K_PTTT_178 (còn Open, gap khác); K_PTTT_97, K_PTTT_187, K_PTTT_188, K_PTTT_189, K_PTTT_190, K_PTTT_191, K_PTTT_192, K_PTTT_193 (đã Resolved) | Resolved một phần |
 | O_PTTT_14 | **[MỞ 2026-08-03 — phát hiện khi review Nhóm 32/33/34]** (1) BA tái cấu trúc lại STT=32/33/34 sang nội dung Data Explorer hoàn toàn khác (Thống kê theo chỉ số / Theo ngành / Vốn hóa thị trường) — nội dung "Biến động/GD NĐTNN-Tự doanh HĐTL TPCP" (trước đây gán nhầm vào các STT này, reuse K_PTTT_209-212/213-218/221-224 từ Nhóm 26-28) không còn khớp bất kỳ STT nào trong BA hiện tại, cần xác nhận có còn nằm trong scope báo cáo hay đã bị loại bỏ hoàn toàn. (2) Chiều "Ngành nghề kinh tế" (`IDS.CATEGORIES`, dùng ở Nhóm 33/34, K_PTTT_241/247) và Chiều "Chỉ số" (`market_index_snapshot.market_code`, Nhóm 32/34, K_PTTT_228) chưa có Atomic entity/Classification Value chuẩn hóa — grep xác nhận không tồn tại trong `dm_manifest.yaml` lẫn `working/Atomic/lld/manifest.yaml`. | (1) Chờ user xác nhận: nội dung HĐTL TPCP có còn scope báo cáo không, và nếu còn thì gán vào STT nào. (2) Atomic cần bổ sung: entity/Classification Value cho `IDS.CATEGORIES` (ngành nghề kinh tế) dùng chung cho Nhóm 33/34; chiều Chỉ số hiện tạm dùng trực tiếp `market_code` làm text trên Fact, chưa tách Dimension riêng — xem xét tách khi có Atomic entity danh mục chỉ số chuẩn hóa. | K_PTTT_228, K_PTTT_241, K_PTTT_242, K_PTTT_243, K_PTTT_244, K_PTTT_247 | Open |
 | O_PTTT_13 | ~~Nhóm 22-25 (Tab An toàn CTCK) dùng entity giả `Member Report Indicator Value` (`mbr_rpt_ind_val`)~~ **[RESOLVED MỘT PHẦN, 2026-09-18 — thay thế kết luận "ĐÃ GIẢI QUYẾT" ngày 2026-09-17]** — Nguồn Atomic chuẩn hoá thật cho báo cáo định kỳ CTCK là `sc_report_input_value` (`SCMS.REPORT_INPUT_CELL_VALUE`, approved tại `working/Atomic/lld`), `sc_report_input_submission` và `sc_periodic_report`. PTTT reuse 100% Fact `fct_securities_company_financial_structure_snpst` từ QLKD. **Giới hạn quan trọng:** Fact này có grain **1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu**, KHÔNG phải 1 CTCK/ngày — chỉ các chỉ tiêu ở grain kỳ báo cáo mới được chuyển READY. | Đã chuyển READY ở grain kỳ báo cáo: K_PTTT_58, 59, 60, 121, 122, 123, 125, 126, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 251, 252, 253, 254 (Nhóm 4/8/10/22/23/24/25). Các chỉ tiêu đòi grain ngày vẫn PENDING — tách sang O_PTTT_16. Bảng tác nghiệp `opr_mbr_sfty_monitor` bị bãi bỏ (xem Section 4). | K_PTTT_58, K_PTTT_197, K_PTTT_198, K_PTTT_199, K_PTTT_200 (Resolved) | Resolved một phần |
 | O_PTTT_15 | **[MỞ 2026-09-18]** Ánh xạ `cell_id` → `report_indicator_dim.indicator_code` cho nhóm chỉ tiêu An toàn CTCK chưa được BA xác nhận: `DU_NO_MARGIN` (dư nợ margin) và `TY_LE_VON_KHA_DUNG` (tỷ lệ vốn khả dụng). QLKD đã chuẩn hoá được cell_id cho khối BCTC (TS*/NV*/KQ*), nhưng 2 chỉ tiêu trên nằm ở biểu mẫu báo cáo an toàn tài chính khác, chưa có danh mục cell_id. Kèm theo: công thức K_PTTT_125 (Margin Stress) trộn 2 hệ quy chiếu thời gian — tử số Δ Margin ở grain **kỳ báo cáo tháng**, mẫu số K_PTTT_124 (GTGD bình quân) ở grain **N phiên giao dịch** — cần BA xác nhận có đúng ý đồ nghiệp vụ không. | Thiết kế giữ READY dựa trên giả định BA sẽ cung cấp cell_id cho 2 chỉ tiêu này; ETL chưa chạy được cho tới khi có danh mục ánh xạ. Công thức Margin Stress giữ nguyên theo SQL BA gốc. | K_PTTT_58, K_PTTT_121, K_PTTT_122, K_PTTT_123, K_PTTT_125, K_PTTT_126, K_PTTT_202, K_PTTT_203, K_PTTT_252 | Open |

@@ -19,7 +19,7 @@ triggers:
 4. **Tuân Thủ Tuyệt Đối 8 CỔNG KIỂM SOÁT (8 CONTROL GATES):**
    - **GATE 0 (Reference Integrity):** chặn cứng khi có tham chiếu tới thứ không tồn tại — cột Atomic sai tên (`L0-ATOMIC-COLUMN-NOT-FOUND`), cột mart không có trong Attributes (`L0-MART-COLUMN-NOT-FOUND`), file CSV vỡ cột (`L0-CSV-STRUCTURE-BROKEN`), hoặc trạng thái KPI lệch giữa HLD và Detail Mapping (`L0-HLD-LLD-STATUS-DESYNC`). Chạy `check_references.py`.
    - **GATE 1 (Sanity Stop):** Dừng bắt buộc sau Bước 0b/0c Macro-Audit; chặn cứng nếu phát hiện Orphan 3 chiều, Parity mismatch, Role Date FK violation, Delete sót, hoặc Grain Mismatch kiến trúc (`L1-GRAIN-MISMATCH`) / Window Storage trên Dimension (`L2-WINDOW-STORAGE-INVALID`).
-   - **GATE 2 (Group Checkpoint):** Dừng kiểm tra sau mỗi nhóm Micro-Review có lỗi Critical 🔴 hoặc Warning 🟡; chỉ tự động đi tiếp khi 4 Lớp đều PASS (OK).
+   - **GATE 2 (Group Checkpoint):** Dừng kiểm tra sau mỗi nhóm Micro-Review có lỗi Critical 🔴 hoặc Warning 🟡; chỉ tự động đi tiếp khi 4 Lớp đều PASS (OK). **Kèm bộ đếm phiên:** tới Nhóm thứ 6 có thiết kế mới liên tiếp trong cùng phiên (không tính Nhóm chỉ OK/không sửa gì) → DỪNG dù 4 Lớp đều PASS, tóm tắt tiến độ, hỏi human tiếp tục ngay hay mở phiên mới (xem CLAUDE.md — "QUY TẮC CỨNG — NGƯỠNG NGỮ CẢNH CẤP PHIÊN").
    - **GATE 3 (HLD/LLD Parity Gate — Handover Blocking Gate):** Cổng chặn cứng kiểm định tính đồng nhất giữa HLD và LLD trước khi chuyển giao hoặc sinh mã Flat Table: bắt buộc 0 parity mismatch (`check_parity.py --strict`), 0 orphan (`check_orphan.py --strict`), 0 linter violation (Detail Mapping Rule L4, L15, L16), và 0 Date FK violation.
    - **GATE 4 (Flat Table Delivery Gate):** Cổng kiểm định chất lượng phân phối Flat Table ClickHouse với 6 tiêu chí cốt lõi: Coverage, 1-1 Projection Alignment, Column Drift, Parameter Consistency (`:etl_date`), Common Dimensions Sync (`datamart.cdr_dt_flat`).
    - **GATE 5 (HLD Structure — Bước 5B, 14 mục):** Cổng kiểm cấu trúc HLD sau mọi chỉnh sửa. Chạy `check_hld_5b.py`.
@@ -133,6 +133,8 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
           * OK ➔ Tự động in "✅ Nhóm N — OK" và sang Nhóm N+1.
           * Info 🔵 ➔ Ghi nhận vào Backlog, tiếp tục sang Nhóm N+1.
           * Critical 🔴 / Warning 🟡 ➔ DỪNG hỏi human: (a) Sửa ngay qua skill con, (b) Ghi nhận, (c) Dừng.
+          * Đã xử lý ≥6 Nhóm có thiết kế mới liên tiếp trong phiên hiện tại ➔ DỪNG dù PASS, báo tiến độ,
+            hỏi human tiếp tục ngay hay mở phiên mới.
         ↓ (Hoàn tất toàn bộ nhóm)
 [Giai đoạn 3: TỔNG HỢP & BÀN GIAO]
   Bước 3: Xuất Bảng Tổng hợp Scorecard & Action Items theo Kịch bản A-E.

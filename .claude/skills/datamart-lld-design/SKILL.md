@@ -86,6 +86,9 @@ description: |
 
 Ghi ngược lại file gốc bằng `apply_patch.py` — **không** Edit tay file lớn, **không** append mù
 (append chỉ đúng khi viết mới, sai khi sửa lại một Nhóm đã có: sinh Nhóm trùng và phá thứ tự TC6).
+Sau khi `apply_patch.py` báo ghi thành công, **không Read lại file lớn vừa ghi để "kiểm tra"** — diff
+đã in ra (hoặc `--quiet` xác nhận số dòng thêm/bớt) là bằng chứng đủ; đọc lại cả file chỉ tốn ngân
+sách 500K mà không phát hiện thêm gì so với diff đã thấy.
 
 Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước khi chạy bước nặng:
 
@@ -279,6 +282,9 @@ Loop mỗi nhóm N — Phase 1 (HOÀN THÀNH TOÀN BỘ NHÓM TRƯỚC KHI CHUY�
              → DỪNG chờ human duyệt từng file
              → hỏi merge master → DỪNG chờ human xác nhận merge
              → ghi datamart_model.yaml (upsert new / append delta)
+             → đã xử lý ≥6 Nhóm new/partial liên tiếp trong phiên hiện tại → DỪNG, báo tiến độ,
+               hỏi human tiếp tục ngay hay mở phiên mới (xem CLAUDE.md — "QUY TẮC CỨNG — NGƯỠNG
+               NGỮ CẢNH CẤP PHIÊN"); human xác nhận tiếp tục → reset bộ đếm, làm Nhóm N+1 Phase 1
              → làm Nhóm N+1 Phase 1 → ... → làm đến hết Nhóm cuối Phase 1
 
 > **GATE CỨNG — chuyển Phase 2:**
@@ -303,7 +309,11 @@ Loop mỗi nhóm N — Phase 2 (theo TODO LIST vừa lập, N = 1 → N_max, x�
                nhóm đã append trước đó — xem TC6)
              → SELF-REVIEW 4 TC → sửa nếu FAIL → trình bày SELF-REVIEW + block KPI
              → DỪNG chờ human duyệt block KPI nhóm N
-             → cập nhật todo list (đánh dấu Nhóm N đã xong) → làm Nhóm N+1 Phase 2 → ... → hết Nhóm cuối
+             → cập nhật todo list (đánh dấu Nhóm N đã xong)
+             → đã xử lý ≥6 Nhóm READY (có block KPI thật, không tính PENDING toàn bộ) liên tiếp trong
+               phiên hiện tại → DỪNG, báo tiến độ, hỏi human tiếp tục ngay hay mở phiên mới; human
+               xác nhận tiếp tục → reset bộ đếm, làm Nhóm N+1 Phase 2
+             → làm Nhóm N+1 Phase 2 → ... → hết Nhóm cuối
 
   → Sau khi tất cả nhóm trong todo list đã xử lý:
              Chạy SELF-REVIEW module-level TC5 (đối chiếu tổng số nhóm/KPI) + TC6 (thứ tự nhóm)
@@ -1161,8 +1171,14 @@ ATTRIBUTES CHECK:
 **Output:** Ghi block KPI của nhóm N vào `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv` bằng
 `python .claude/skills/datamart-review/scripts/apply_patch.py --module {MODULE} --target dm --nhom {N} --from <file rows>` — không tạo file riêng từng nhóm.
 **KHÔNG append mù và KHÔNG Edit tay file này** (QLKD 552K token): append chỉ đúng khi viết mới, sai khi
-sửa lại một Nhóm đã có — sinh Nhóm trùng và phá thứ tự TC6. `apply_patch.py` thay đúng các dòng của
-Nhóm N nếu đã tồn tại, hoặc chèn đúng vị trí theo số nhóm tăng dần nếu là Nhóm mới; luôn chạy `--dry-run` trước.
+sửa lại một Nhóm đã có — sinh Nhóm trùng và phá thứ tự TC6. `apply_patch.py --target dm` thay THẾ
+NGUYÊN bộ dòng của Nhóm N nếu đã tồn tại (phải đưa đủ toàn bộ dòng của Nhóm, không chỉ dòng mới),
+hoặc chèn đúng vị trí theo số nhóm tăng dần nếu là Nhóm mới; luôn chạy `--dry-run` trước.
+
+**Chỉ thêm/sửa 1 KPI vào Nhóm đã có sẵn nhiều dòng khác** (không soạn lại cả Nhóm): dùng
+`apply_kpi_patch.py -m {MODULE} --nhom {N} --json spec.json --dry-run` — patch đồng thời cả 3 tầng
+HLD/Detail Mapping/Attributes trong 1 lệnh, upsert đúng 1 dòng theo `kpi_id`, không đụng các dòng
+khác của Nhóm (xem docstring script để biết cấu trúc JSON).
 
 Header:
 ```

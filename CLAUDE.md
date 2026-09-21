@@ -32,7 +32,15 @@ Nhóm nặng nhất toàn repo chỉ ~66K token.
 
 Ghi ngược vào HLD/Detail Mapping bằng `apply_patch.py --dry-run` rồi mới ghi thật — **không Edit tay
 file lớn, không append mù** (append chỉ đúng khi viết mới; sửa lại một Nhóm đã có sẽ sinh Nhóm trùng
-và phá thứ tự nhóm tăng dần của TC6).
+và phá thứ tự nhóm tăng dần của TC6). Sau khi `--dry-run` đã được duyệt trong CÙNG lượt, lần ghi thật
+thêm `--quiet` — không cần in lại nguyên văn diff lần thứ 2 (etl_logic có thể dài hàng nghìn ký tự).
+
+**Thêm 1 KPI/cột mới vào 1 Nhóm ĐÃ CÓ sẵn dòng khác** (không phải soạn nguyên khối Nhóm mới): dùng
+`apply_kpi_patch.py -m {M} --nhom {N} --json spec.json --dry-run` — 1 lệnh JSON patch cả 3 tầng
+(HLD 1 dòng bảng KPI + Detail Mapping 1 dòng + Attributes CSV 0..n dòng cột vật lý), không phải gõ
+lại cùng 1 công thức etl_logic 3 lần qua 3 lệnh `apply_patch.py` riêng và không có rủi ro làm mất
+các dòng khác của Nhóm (khác `apply_patch.py --target dm` vốn thay THẾ NGUYÊN bộ dòng của cả Nhóm).
+Soạn nguyên khối Nhóm mới hoặc sửa nhiều dòng cùng lúc vẫn dùng `apply_patch.py`.
 
 Mọi script ở `.claude/skills/datamart-review/scripts/`. Lát cắt sinh ra nằm trong `Datamart/context/`
 — **artifact gốc trong `BRD/BA/`, `Datamart/hld/`, `Datamart/lld/`, `Datamart/flat-table/` không bị sửa**.
@@ -45,6 +53,39 @@ Kiểm ngân sách trước bước nặng: `python .claude/skills/datamart-revi
 
 **Lý do quy tắc này nằm ở CLAUDE.md:** nó phải có hiệu lực cả khi thao tác trực tiếp bằng Read/Edit
 giữa hội thoại, không qua Skill tool — giống hệt lý do của quy tắc Bước 5B bên dưới.
+
+## QUY TẮC CỨNG — NGƯỠNG NGỮ CẢNH CẤP PHIÊN (700K), KHÁC TRẦN 500K/BƯỚC Ở TRÊN
+
+Trần 500K ở mục trên đo **1 bước nặng nhất** (`ctx_budget.py`) — không đo **tích lũy cộng dồn qua
+nhiều bước trong cùng 1 phiên hội thoại**. Phân tích phiên PTTT 2026-09-21 (14 Nhóm liên tục 1 phiên)
+cho thấy trần 500K/bước vẫn PASS ở từng bước nhưng phiên vẫn phình nặng vì lặp lại nhiều lần:
+
+1. `apply_patch.py` in nguyên diff 2 lần cho mỗi patch (dry-run + apply thật) — **đã sửa**: dùng
+   `--quiet` ở lần ghi thật (xem mục trên).
+2. Các Gate script (`check_references.py`, `check_orphan.py`, `check_parity.py`) in lại **toàn bộ**
+   danh sách issue y hệt mỗi lần chạy, dù phần lớn là pre-existing không đổi — **đã sửa**: cả 3 script
+   hỗ trợ `--save-baseline` (lưu snapshot 1 lần đầu phiên) rồi `--baseline` (chỉ in DELTA mới/đã hết)
+   cho các lần chạy lặp lại sau đó trong cùng phiên. (`run_quality_gates.py` vốn đã chỉ in PASS/FAIL/SKIP
+   ngắn gọn mỗi Gate — không cần baseline.)
+3. Cùng 1 công thức etl_logic dài xuất hiện lặp ở nhiều tầng (Attributes CSV, Detail Mapping diff,
+   HLD KPI table diff) × 2 (dry-run/apply) — giảm nhờ mục 1, và giảm tiếp khi thêm 1 KPI vào Nhóm
+   đã có sẵn nhờ `apply_kpi_patch.py` (gõ etl_logic 1 lần, patch cả 3 tầng — xem mục trên).
+
+**Quy tắc bắt buộc:** Khi làm việc nhiều Nhóm liên tục trong 1 phiên (thiết kế mới, không phải fix
+nhãn nhỏ):
+- Dùng `--save-baseline` ở lần chạy Gate 0/Gate 1 ĐẦU phiên cho `check_references.py`/`check_orphan.py`/
+  `check_parity.py`, `--baseline` cho mọi lần chạy SAU đó trong cùng phiên. Snapshot lưu ở
+  `Datamart/context/.gate_baseline/` (đã gitignore — không commit, không đại diện trạng thái thật,
+  chỉ để so sánh trong phiên).
+- Dùng `--quiet` cho mọi lần `apply_patch.py` ghi thật sau khi đã `--dry-run` duyệt trong cùng lượt.
+- **Theo dõi số Nhóm đã xử lý có phát sinh thiết kế mới (không tính fix nhãn 1 dòng) trong phiên
+  hiện tại.** Tới Nhóm thứ **6** trở đi, chủ động dừng lại sau khi hoàn tất Nhóm đang làm, tóm tắt
+  tiến độ, và hỏi user có muốn tiếp tục ngay hay mở phiên mới — **không tự ý phán đoán "còn ngữ cảnh"
+  rồi đi tiếp**. Lý do dùng được ngưỡng cứng theo SỐ NHÓM (không phải ước lượng token mơ hồ): mọi
+  quyết định thiết kế đã ghi ra HLD/LLD/Detail Mapping trên đĩa — phiên mới đọc lại đúng Nhóm cần
+  qua `ctx_slice.py`/`ba_slice.py` là đủ để tiếp tục, KHÔNG cần giữ lịch sử hội thoại cũ. Dừng sớm
+  không mất gì, đi tiếp mù thì rủi ro attention dilution ở vùng 50–70% cửa sổ ngữ cảnh (xem
+  `context_window_analysis`, mục 4).
 
 ## QUY TẮC CỨNG — SELF-CHECK BƯỚC 5B SAU MỌI CHỈNH SỬA HLD DATAMART
 
