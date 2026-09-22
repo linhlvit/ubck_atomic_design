@@ -213,19 +213,32 @@ FROM datamart.tkniengiam_market_annual_rpt o
 
 
 -- ============================================================
--- 13. OPERATIONAL: bm030amss_market_trading_rpt
+-- 13. FACT: fct_market_trading_snpst
+--    [SỬA 2026-09-22, datamart-review — Kịch bản D] Thay thế bm030amss_market_trading_rpt (DEPRECATED)
+--    trade_cal: JOIN + WHERE cdr_dt = :etl_date
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_bm030amss_market_trading_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_bm030amss_market_trading_rpt_flat
+TRUNCATE TABLE IF EXISTS datamart.tknb_fct_market_trading_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.tknb_fct_market_trading_snpst_flat
 SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.bm030amss_market_trading_rpt o
+    -- From: FACT Fact Market Trading Snapshot
+    f.snpst_dt_dim_id,
+    f.total_trading_val,
+    f.total_trading_vol,
+    f.matched_trading_val,
+    f.matched_trading_vol,
+    f.negotiated_trading_val,
+    f.negotiated_trading_vol,
+    f.odd_lot_trading_val,
+    f.odd_lot_trading_vol,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    trade_cal.cdr_dt                   AS trade_cdr_dt
+
+FROM datamart.fct_market_trading_snpst f
+JOIN datamart.cdr_dt_dim trade_cal
+    ON trade_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+WHERE trade_cal.cdr_dt = :etl_date
 ;
 
 
@@ -264,19 +277,56 @@ FROM datamart.bm030emss_fund_cert_etf_cw_trading_rpt o
 
 
 -- ============================================================
--- 16. OPERATIONAL: bm031amss_foreign_proprietary_trading_rpt
+-- 16. FACT: fct_foreign_proprietary_trading_index_snpst
+--    [SỬA 2026-09-22, datamart-review — Kịch bản D] Thay thế bm031amss_foreign_proprietary_trading_rpt (DEPRECATED)
+--    trade_cal: JOIN theo ngày giao dịch. idx_dim: LEFT JOIN qua Index Constituent Dimension Id
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_bm031amss_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_bm031amss_foreign_proprietary_trading_rpt_flat
+TRUNCATE TABLE IF EXISTS datamart.tknb_fct_foreign_proprietary_trading_index_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.tknb_fct_foreign_proprietary_trading_index_snpst_flat
 SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.bm031amss_foreign_proprietary_trading_rpt o
+    -- From: FACT Fact Foreign Proprietary Trading Index Snapshot
+    f.snpst_dt_dim_id,
+    f.index_constituent_dim_id,
+    f.foreign_investor_total_buy_vol,
+    f.foreign_investor_total_sell_vol,
+    f.foreign_investor_total_buy_val,
+    f.foreign_investor_total_sell_val,
+    f.foreign_investor_negotiated_buy_vol,
+    f.foreign_investor_negotiated_sell_vol,
+    f.foreign_investor_negotiated_buy_val,
+    f.foreign_investor_negotiated_sell_val,
+    f.foreign_investor_matched_buy_vol,
+    f.foreign_investor_matched_sell_vol,
+    f.foreign_investor_matched_buy_val,
+    f.foreign_investor_matched_sell_val,
+    f.proprietary_total_buy_vol,
+    f.proprietary_total_sell_vol,
+    f.proprietary_total_buy_val,
+    f.proprietary_total_sell_val,
+    f.proprietary_negotiated_buy_vol,
+    f.proprietary_negotiated_sell_vol,
+    f.proprietary_negotiated_buy_val,
+    f.proprietary_negotiated_sell_val,
+    f.proprietary_matched_buy_vol,
+    f.proprietary_matched_sell_vol,
+    f.proprietary_matched_buy_val,
+    f.proprietary_matched_sell_val,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    trade_cal.cdr_dt                   AS trade_cdr_dt,
+
+    -- From: INDEX CONSTITUENT DIMENSION
+    idx_dim.index_code                 AS index_code,
+    idx_dim.index_id                   AS index_id,
+    idx_dim.index_nm                   AS index_nm
+
+FROM datamart.fct_foreign_proprietary_trading_index_snpst f
+JOIN datamart.cdr_dt_dim trade_cal
+    ON trade_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.index_constituent_dim idx_dim
+    ON idx_dim.index_constituent_dim_id = f.index_constituent_dim_id
+WHERE trade_cal.cdr_dt = :etl_date
 ;
 
 

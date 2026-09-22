@@ -180,6 +180,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_index_constituent_snpst_flat ON CLU
     idx_foreign_net_val                 Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] GTNN ròng toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
     idx_total_negotiated_vol            Nullable(Int64)         COMMENT '[MỚI 2026-09-14] Tổng KLGD thỏa thuận toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
     idx_total_negotiated_val            Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] Tổng GTGD thỏa thuận toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
+    idx_market_index_val                Nullable(Decimal(23,4)) COMMENT '[MỚI] Giá trị (điểm số) rổ chỉ số theo Index+Date',
     idx_market_cap                      Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14, SỬA 2026-09-16] Vốn hóa thị trường toàn rổ chỉ số theo Index+Date (nguồn VSDC listed_share_info) — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
     idx_free_float_market_cap           Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14] Vốn hóa tự do chuyển nhượng toàn rổ chỉ số theo Index+Date — lặp lại trên mọi dòng symbol cùng rổ, không SUM lại',
     idx_pe                               Nullable(Decimal(10,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 6] P/E CỦA CHỈ SỐ = SUM(Vốn hóa mã có LNST TTM)/SUM(LNST TTM) theo Index+Date — khác K_GSTT_58 (P/E từng mã, trên fct_stock_portfolio_snpst). Lặp lại trên mọi dòng symbol cùng rổ, không SUM/AVG lại',
