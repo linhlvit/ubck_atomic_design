@@ -95,13 +95,13 @@ attributes:
   - name: Required Indicator
     physical_name: required_ind
     business_meaning: "Cờ bắt buộc: 1=Bắt buộc, 0=Tùy chọn."
-    data_domain: Indicator
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATE_SPECIALIZATIONS
     source_column: NHNCK.CERTIFICATE_SPECIALIZATIONS.IS_REQUIRED
-    comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn NUMBER(1)."
+    comment: "BCV: không có term riêng — flag 1/0, dùng Small Counter (int) khớp tự nhiên với nguồn NUMBER(1)."
     classification_context: null
     etl_derived_value: null

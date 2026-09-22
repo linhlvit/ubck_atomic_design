@@ -134,23 +134,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Signed By Officer Id
-    physical_name: signed_by_officer_id
-    business_meaning: "FK -> USERS: Người thực hiện ký số."
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DECISION_DOCUMENTS
-    source_column: NHNCK.DECISION_DOCUMENTS.SIGNED_BY
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Nguồn lưu NVARCHAR2(255) — giả định đã là USERNAME (không cần crosswalk qua USERS.ID như các FK Officer khác); hash_id('IAM_USERS', SIGNED_BY) | Chưa xác nhận value set khớp danh mục IAM.USERS, và chưa xác nhận SIGNED_BY có đúng là USERNAME hay tên hiển thị tự do — cần profile dữ liệu trước go-live."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Signed By Officer Code
-    physical_name: signed_by_officer_code
-    business_meaning: Mã cán bộ thực hiện ký số.
+  - name: Signed By Officer Name
+    physical_name: signed_by_officer_nm
+    business_meaning: Tên cán bộ thực hiện ký số.
     data_domain: Text
     data_type: string
     nullable: true
@@ -158,7 +144,7 @@ attributes:
     source_system: NHNCK
     source_table: DECISION_DOCUMENTS
     source_column: NHNCK.DECISION_DOCUMENTS.SIGNED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Signed By Officer Id. Giá trị lấy trực tiếp từ NHNCK.DECISION_DOCUMENTS.SIGNED_BY (giả định đã là USERNAME) — chi tiết xem comment Signed By Officer Id."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
