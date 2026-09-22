@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_securities_foreign_trading_snpst_f
     issuer_nm                       Nullable(String)         COMMENT 'Tổ chức phát hành — từ Securities Dimension',
     listing_dt                      Nullable(Date)           COMMENT 'Ngày niêm yết — từ Securities Dimension',
     symbol_status_code              Nullable(String)         COMMENT 'Trạng thái mã CK — từ Securities Dimension',
+    trading_time                    Nullable(String)         COMMENT '[MỚI 2026-09-22] Thời gian ghi nhận snapshot (dùng đối chiếu MAX theo Stock Type Code khi ETL) — từ Securities Dimension',
     securities_src_stm_code         Nullable(String)         COMMENT 'Mã hệ thống nguồn — từ Securities Dimension',
 
     -- From: PUBLIC COMPANY DIMENSION

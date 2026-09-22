@@ -40,6 +40,7 @@ SELECT
     sec_dim.issuer_nm                  AS issuer_nm,
     sec_dim.listing_dt                 AS listing_dt,
     sec_dim.symbol_status_code         AS symbol_status_code,
+    sec_dim.trading_time               AS trading_time,
     sec_dim.src_stm_code                AS securities_src_stm_code,
 
     -- From: PUBLIC COMPANY DIMENSION

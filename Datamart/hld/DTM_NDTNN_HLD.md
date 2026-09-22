@@ -341,6 +341,7 @@ flowchart LR
 > Atomic (Box 1): `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE / ORDERTRADE.TRADE_BOOK_HNX — **READY**
 > Atomic (Box 2-4): xem dòng PENDING trong bảng KPI dưới đây
 > Loại dữ liệu: Dữ liệu tĩnh (Box 1, BA đã chốt logic mapping + SQL tham khảo đầy đủ) / Dữ liệu động (Box 2-4)
+> **[SỬA 2026-09-22]** K_NDTNN_1/2/3 (Foreign Buy/Sell Value, Total Market Value) — bổ sung lọc `Securities Dimension.Stock Type Code IN ('1','2','3')` bị thiếu trước đây, đúng phạm vi CTE `stockinfor` trong SQL tham khảo BA STT 1. Chi tiết xem Nhóm 2 (nơi khai sinh Fact).
 
 **Source:** `Fact Securities Foreign Trading Snapshot` → `Calendar Date Dimension`
 
@@ -383,6 +384,7 @@ erDiagram
         string Issuer_Name
         date Listing_Date
         varchar Symbol_Status_Code
+        string Trading_Time
         string Source_System_Code
     }
     Fact_Securities_Foreign_Trading_Snapshot {
@@ -447,6 +449,7 @@ flowchart LR
 > Atomic (Mã CK → Ngành): `Public Company` ← IDS.COMPANY_PROFILES — **READY (draft, working)** — join qua `Equity Ticker Symbol` = `Securities_Dimension.Symbol`, và `Business Line Level 1/2 Code` → `Classification Business Line Code`
 > Atomic (Danh mục mã CK): `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR — **READY (draft, working)** — xem Cụm 1a (Section 1). Dimension `Securities Dimension` (grain 1 mã CK, SCD4A) thay thế join text-match trực tiếp trước đây.
 > Loại dữ liệu: Dữ liệu tĩnh
+> **[SỬA 2026-09-22, rà soát theo yêu cầu Data Modeler — đối chiếu lại câu lệnh tham khảo BA STT 1]** Đối chiếu nguyên văn SQL tham khảo của BA (STT 1, dòng "Tỷ lệ tham gia") phát hiện thiết kế trước đây **thiếu hoàn toàn** điều kiện lọc phạm vi mã CK — BA dùng CTE `stockinfor` (`js.stocktype in (1,2,3)`, tức Trái phiếu/Cổ phiếu/Chứng chỉ quỹ) **INNER JOIN** vào `trade_book` trước khi SUM, loại hẳn phái sinh/chứng quyền/các loại CK khác khỏi cả 3 measure (GT mua NĐTNN, GT bán NĐTNN, Tổng GTGD toàn thị trường) — thiết kế cũ SUM thẳng trên toàn bộ `securities_trade` không lọc, làm phồng số liệu do lẫn cả GD phái sinh/CW. Đã bổ sung `INNER JOIN securities_dim ... AND securities_dim.stock_tp_code IN ('1','2','3')` vào ETL logic của `Foreign Buy Value`/`Foreign Sell Value`/`Total Market Value` (không cần cột/Fact mới — `Securities Dimension.Stock Type Code` đã có sẵn). Phần `MAX(tradingtime) GROUP BY stocktype` trong SQL BA chỉ là cách lấy "ngày hiện tại" cho câu lệnh ad-hoc không tham số hóa (BA không có `:etl_date`) — ở tầng Datamart, ETL batch đã chạy theo đúng `:etl_date` nên KHÔNG cần replicate logic MAX(tradingtime), chỉ cần lọc đúng phạm vi loại chứng khoán như trên.
 
 **Source:** `Fact Securities Foreign Trading Snapshot` → `Calendar Date Dimension`, `Securities Dimension`, `Public Company Dimension` (join `Classification Business Line` cho Top ngành)
 
@@ -492,6 +495,7 @@ erDiagram
         string Issuer_Name
         date Listing_Date
         varchar Symbol_Status_Code
+        string Trading_Time
         string Source_System_Code
     }
     Public_Company_Dimension {
@@ -540,7 +544,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Foreign Trading Snapshot | 1 row = 1 mã CK × 1 ngày giao dịch (ETL pre-aggregate SUM Execution Value từ Securities Trade theo mã CK, tách theo Buy/Sell Foreign Investor Type Code) |
+| Fact Securities Foreign Trading Snapshot | 1 row = 1 mã CK × 1 ngày giao dịch (ETL pre-aggregate SUM Execution Value từ Securities Trade theo mã CK, tách theo Buy/Sell Foreign Investor Type Code). **[SỬA 2026-09-22]** Chỉ tính mã CK có `Securities Dimension.Stock Type Code IN ('1','2','3')` (Trái phiếu/Cổ phiếu/Chứng chỉ quỹ) — đúng phạm vi CTE `stockinfor` của BA, loại phái sinh/chứng quyền |
 | Public Company Dimension | 1 row = 1 công ty đại chúng (SCD4A current-state) — bao gồm Classification Business Line Name đệm sẵn; `Equity_Ticker_Symbol` là snapshot hiện tại (current-state), không phủ lịch sử đổi mã/nhiều loại CK — xem O_NDTNN_28 |
 | Securities Dimension | 1 row = 1 mã chứng khoán (SCD4A current-state) — ETL derive từ `Security Trading Snapshot` (Fact Snapshot), lấy bản ghi mới nhất theo Symbol |
 | Calendar Date Dimension | 1 row = 1 ngày giao dịch |
