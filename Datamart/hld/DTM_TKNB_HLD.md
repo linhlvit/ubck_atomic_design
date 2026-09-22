@@ -308,27 +308,48 @@ flowchart LR
 
 ---
 
-### Cụm 18: BM030a_MSS — Thống kê giao dịch toàn thị trường cổ phiếu
+### Cụm 18a: BM030a_MSS — Chỉ số thị trường (Fact Market Index Snapshot, reuse)
+
+> **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Tách khỏi bảng phẳng `bm030amss_market_trading_rpt` cũ — "Loại chỉ số"/"Giá trị chỉ số" (K_TKNB_1013/1014) có grain khác hẳn 8 đo lường GTGD/KLGD còn lại của Nhóm 18 (1 (Trade Date × Market Code) so với 1 Trade Date), bị gộp sai vào cùng 1 bảng EAV. Reuse trực tiếp `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD, đã dùng bởi NDTNN/GSTT) thay vì dựng lại 1 bảng phẳng riêng — xem Section 4 lý do ngoại lệ so với quy ước TKNB "mỗi báo cáo 1 bảng phẳng riêng".
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
         S1["MDDS.JAD_MARKETINFOR"]
-        S2["ORDERTRADE.TRADE_BOOK_HOSE"]
-        S3["ORDERTRADE.TRADE_BOOK_HNX"]
     end
     subgraph SIL["Atomic"]
         A1["Market Index Snapshot"]
-        A2["Securities Trade"]
     end
     subgraph GOLD["Datamart"]
-        G1["bm030amss_market_trading_rpt"]
+        G1["Fact Market Index Snapshot"]
+        G2["Market Index Dimension"]
     end
     S1 --> A1
-    S2 --> A2
-    S3 --> A2
     A1 --> G1
-    A2 --> G1
+    A1 --> G2
+```
+
+---
+
+### Cụm 18b: BM030a_MSS — GTGD/KLGD toàn thị trường cổ phiếu (Fact Market Trading Snapshot)
+
+> **[MỚI 2026-09-22, datamart-review — Kịch bản D]** 8 đo lường GTGD/KLGD (Tổng/Khớp lệnh/Thỏa thuận/Lô lẻ × Value/Volume) — không phụ thuộc "Loại chỉ số", grain thật = 1 Trade Date. Tách khỏi bảng phẳng `bm030amss_market_trading_rpt` cũ (đã DEPRECATED, xem Section 4), thiết kế Fact mới thay vì EAV.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["ORDERTRADE.TRADE_BOOK_HOSE"]
+        S2["ORDERTRADE.TRADE_BOOK_HNX"]
+    end
+    subgraph SIL["Atomic"]
+        A1["Securities Trade"]
+    end
+    subgraph GOLD["Datamart"]
+        G1["Fact Market Trading Snapshot"]
+    end
+    S1 --> A1
+    S2 --> A1
+    A1 --> G1
 ```
 
 ---
@@ -379,7 +400,9 @@ flowchart LR
 
 ---
 
-### Cụm 23: BM031a_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường cổ phiếu
+### Cụm 23: BM031a_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường cổ phiếu (Fact Foreign Proprietary Trading Index Snapshot)
+
+> **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Thay bảng phẳng EAV `bm031amss_foreign_proprietary_trading_rpt` cũ (đã DEPRECATED, xem Section 4) bằng Fact mới — toàn bộ 24 đo lường đều JOIN `Index Constituent Snapshot` breakdown theo Index Code, grain nhất quán 1 (Trade Date × Index Code) suốt Nhóm, không có grain mismatch nội bộ. Reuse `Index Constituent Dimension` (sở hữu GSTT) làm FK thay vì tự tạo Dimension riêng. Bỏ nhánh `Market Index Snapshot`/`MDDS.JAD_MARKETINFOR` khỏi Cụm này so với bản cũ — rà lại Detail Mapping xác nhận không có KPI nào thực sự dùng nguồn này (Chiều "Chỉ số" K_TKNB_1069 lấy từ `Index Constituent Dimension`, không phải `Market Index Snapshot`).
 
 ```mermaid
 flowchart LR
@@ -387,23 +410,21 @@ flowchart LR
         S1["ORDERTRADE.TRADE_BOOK_HOSE"]
         S2["ORDERTRADE.TRADE_BOOK_HNX"]
         S3["MDDS.JAD_CSIDXInfor"]
-        S4["MDDS.JAD_MARKETINFOR"]
     end
     subgraph SIL["Atomic"]
         A1["Securities Trade"]
         A2["Index Constituent Snapshot"]
-        A3["Market Index Snapshot"]
     end
     subgraph GOLD["Datamart"]
-        G1["bm031amss_foreign_proprietary_trading_rpt"]
+        G1["Fact Foreign Proprietary Trading Index Snapshot"]
+        G2["Index Constituent Dimension"]
     end
     S1 --> A1
     S2 --> A1
     S3 --> A2
-    S4 --> A3
     A1 --> G1
     A2 --> G1
-    A3 --> G1
+    A2 --> G2
 ```
 
 ---
@@ -1999,27 +2020,102 @@ flowchart LR
 
 **Phân loại:** Báo cáo tổng hợp giao dịch cổ phiếu toàn thị trường theo ngày — gồm 4 chỉ số thị trường (HNXIndex, VNIndex, HNX30, VN30) + 8 chỉ tiêu KL/GT giao dịch (Tổng, Khớp lệnh, Thỏa thuận, Lô lẻ) cộng gộp cả 3 sàn HOSE/HNX/UPCoM.
 
-**Atomic:**
-- `Market Index Snapshot` (nguồn `MDDS.JAD_MARKETINFOR`) — READY. Lấy `market_index_val` theo `market_code IN ('HOSE','HNX','UPCOM')`, bản ghi cuối cùng trong ngày (`trading_dt` + `index_time` DESC).
-- `Securities Trade` (nguồn `ORDERTRADE.TRADE_BOOK_HOSE` + `TRADE_BOOK_HNX`) — READY. Filter Cổ phiếu toàn thị trường: `market_id_code IN ('STO','STX','UPX')` ('STO'=HOSE, 'STX'=HNX, 'UPX'=UPCoM — cả 'STX'/'UPX' cùng nguồn TRADE_BOOK_HNX). Khớp lệnh: `board_tp_code IN ('G1','G2','G3','G4','G7','G8')`. Thỏa thuận: `board_tp_code IN ('T1','T2','T3','T4','TR')`. Lô lẻ: `board_tp_code IN ('G4','T4','T6')`.
+> **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Thiết kế lại từ bảng phẳng EAV `bm030amss_market_trading_rpt` (đã DEPRECATED — xem Section 4) sang 2 Fact tách theo đúng grain thật, phát hiện qua review: "Loại chỉ số"/"Giá trị chỉ số" (grain 1 Trade Date × Market Code) và 8 đo lường GTGD/KLGD (grain 1 Trade Date) bị gộp sai vào cùng 1 bảng phẳng trước đây.
 
-**Mockup:** Báo cáo BM030a_MSS — user cung cấp template thật, 11 cột khớp đúng BA (Ngày GD, Loại chỉ số, Giá trị chỉ số, Tổng GTGD, Tổng KLGD, KLGD/GTGD khớp lệnh, KLGD/GTGD thỏa thuận, KLGD/GTGD lô lẻ). Cấu trúc long/EAV: mỗi Ngày GD có 4 dòng (1 dòng/loại chỉ số); 8 chỉ tiêu thị trường không phụ thuộc loại chỉ số nên tách thành item_code riêng, không lặp theo 4 dòng chỉ số.
+**Atomic:**
+- `Market Index Snapshot` (nguồn `MDDS.JAD_MARKETINFOR`) — READY. Lấy `market_index_val` theo `market_code IN ('HOSE','HNX','UPCOM')`, bản ghi cuối cùng trong ngày (`trading_dt` + `index_time` DESC). Reuse `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD) — xem Cụm 18a.
+- `Securities Trade` (nguồn `ORDERTRADE.TRADE_BOOK_HOSE` + `TRADE_BOOK_HNX`) — READY. Filter Cổ phiếu toàn thị trường: `market_id_code IN ('STO','STX','UPX')` ('STO'=HOSE, 'STX'=HNX, 'UPX'=UPCoM — cả 'STX'/'UPX' cùng nguồn TRADE_BOOK_HNX). Khớp lệnh: `board_tp_code IN ('G1','G2','G3','G4','G7','G8')`. Thỏa thuận: `board_tp_code IN ('T1','T2','T3','T4','T6','R1')`. Lô lẻ: `board_tp_code IN ('G4','T4','T6')`. Fact mới `Fact Market Trading Snapshot` — xem Cụm 18b.
+
+**Mockup:** Báo cáo BM030a_MSS — user cung cấp template thật, 11 cột khớp đúng BA (Ngày GD, Loại chỉ số, Giá trị chỉ số, Tổng GTGD, Tổng KLGD, KLGD/GTGD khớp lệnh, KLGD/GTGD thỏa thuận, KLGD/GTGD lô lẻ). Trình bày dạng long/EAV trên báo cáo (mỗi Ngày GD có 4 dòng hiển thị/loại chỉ số) nhưng lưu trữ vật lý theo 2 grain tách biệt — presentation layer JOIN 2 Fact theo Trade Date khi build báo cáo.
+
+**Source:** `Fact Market Index Snapshot` (reuse — sở hữu QLKD, xem Cụm 18a) + `Fact Market Trading Snapshot` (mới, xem Cụm 18b) → `Calendar Date Dimension`, `Market Index Dimension` (reuse — sở hữu QLKD)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_1012 | Ngày GD | - | Chiều | `trading_dt` (Market Index Snapshot) / `trade_dt` (Securities Trade) | [STT=1, item_code=`dim_trade_date_mss030a`] Chiều thời gian chung cho toàn báo cáo. | READY |
-| K_TKNB_1013 | Loại chỉ số | - | Chiều | `market_code` (Market Index Snapshot) — `IN ('HOSE','HNX','UPCOM')` → tên hiển thị VN-Index/HNX-Index/UPCoM-Index | [STT=2, item_code=`dim_index_type_mss030a`] BA yêu cầu 4 giá trị: HNXIndex, VNIndex, HNX30, VN30. Chỉ xác nhận Atomic cho 3/4 (VNIndex/HNXIndex/UPCoM qua `market_code`); HNX30/VN30 không có SQL/điều kiện lọc từ BA, scheme `index_tp_code` (MDDS_INDEX_TYPE) chưa sync values — không đủ chứng cứ. Theo rule "domain chưa đầy đủ → PENDING toàn KPI", đánh PENDING cả dòng chờ bổ sung nguồn HNX30/VN30. Xem Open Issue #25. Atomic cần bổ sung: xác nhận index_tp_code cho HNX30/VN30 hoặc nguồn khác. | PENDING |
-| K_TKNB_1014 | Giá trị chỉ số CP toàn thị trường | Điểm | Cơ sở | `market_index_val` FROM `market_index_snapshot` WHERE `market_code` khớp Loại chỉ số, lấy bản ghi cuối trong ngày (`trading_dt` + `index_time` DESC) | [STT=3, item_code=`market_index_value`] Đánh giá="Trùng" — đã tính ở Nhóm 1 (K_TKNB_2xx dạng khác), nhưng BA yêu cầu lặp lại cho báo cáo này với grain riêng. Phụ thuộc trực tiếp Chiều K_TKNB_1013 (PENDING do thiếu 2/4 giá trị) — kéo theo PENDING. Atomic cần bổ sung: như K_TKNB_1013. | PENDING |
-| K_TKNB_1015 | Tổng giá trị giao dịch CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt` | [STT=4, item_code=`total_trading_value_mss030a`] Không phụ thuộc Loại chỉ số — giá trị lặp lại trên 4 dòng cùng Ngày GD. Atomic READY. | READY |
-| K_TKNB_1016 | Tổng khối lượng giao dịch CP toàn thị trường | CP | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt` | [STT=5, item_code=`total_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
-| K_TKNB_1017 | KLGD khớp lệnh CP toàn thị trường | CP | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code IN ('STO','STX','UPX')` AND `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt` | [STT=6, item_code=`matched_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
-| K_TKNB_1018 | GTGD khớp lệnh CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code IN ('STO','STX','UPX')` AND `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt` | [STT=7, item_code=`matched_trading_value_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
-| K_TKNB_1019 | KLGD thỏa thuận CP toàn thị trường | CP | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code IN ('STO','STX','UPX')` AND `board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt` | [STT=8, item_code=`negotiated_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
-| K_TKNB_1020 | GTGD thỏa thuận CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code IN ('STO','STX','UPX')` AND `board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt` | [STT=9, item_code=`negotiated_trading_value_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
-| K_TKNB_1021 | KLGD lô lẻ CP toàn thị trường | CP | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code IN ('STO','STX','UPX')` AND `board_tp_code IN ('G4','T4','T6')` GROUP BY `trade_dt` | [STT=10, item_code=`odd_lot_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
-| K_TKNB_1022 | GTGD lô lẻ CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code IN ('STO','STX','UPX')` AND `board_tp_code IN ('G4','T4','T6')` GROUP BY `trade_dt` | [STT=11, item_code=`odd_lot_trading_value_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
+| K_TKNB_1012 | Ngày GD | - | Chiều | `cdr_dt_dim.cdr_dt` | [STT=1, item_code=`dim_trade_date_mss030a`] Chiều thời gian chung cho toàn báo cáo — FK `Snapshot Date Dimension Id` trên cả 2 Fact. | READY |
+| K_TKNB_1013 | Loại chỉ số | - | Chiều | `market_index_dim.market_code` — `IN ('HOSE','HNX','UPCOM')` → tên hiển thị VN-Index/HNX-Index/UPCoM-Index | [STT=2, item_code=`dim_index_type_mss030a`] BA yêu cầu 4 giá trị: HNXIndex, VNIndex, HNX30, VN30. Chỉ xác nhận Atomic cho 3/4 (VNIndex/HNXIndex/UPCoM qua `market_code`); HNX30/VN30 không có SQL/điều kiện lọc từ BA, scheme `index_tp_code` (MDDS_INDEX_TYPE) chưa sync values — không đủ chứng cứ. Theo rule "domain chưa đầy đủ → PENDING toàn KPI", đánh PENDING cả dòng chờ bổ sung nguồn HNX30/VN30. Xem Section 5 — Vấn đề mở, mục 18. Atomic cần bổ sung: xác nhận index_tp_code cho HNX30/VN30 hoặc nguồn khác. | PENDING |
+| K_TKNB_1014 | Giá trị chỉ số CP toàn thị trường | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` ON `market_index_dim_id` WHERE `market_index_dim.market_code` khớp Loại chỉ số JOIN `cdr_dt_dim` ON `snpst_dt_dim_id` | [STT=3, item_code=`market_index_value`] Đánh giá="Trùng" — đã tính ở Nhóm 1 (K_TKNB_2xx dạng khác), nhưng BA yêu cầu lặp lại cho báo cáo này với grain riêng. Phụ thuộc trực tiếp Chiều K_TKNB_1013 (PENDING do thiếu 2/4 giá trị) — kéo theo PENDING. **[SỬA 2026-09-22]** Reuse `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD) thay vì lưu trong bảng phẳng riêng — xem Cụm 18a. Atomic cần bổ sung: như K_TKNB_1013. | PENDING |
+| K_TKNB_1015 | Tổng giá trị giao dịch CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(fct_market_trading_snpst.total_trading_val)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt` | [STT=4, item_code=`total_trading_value_mss030a`] Không phụ thuộc Loại chỉ số — giá trị lặp lại trên 4 dòng cùng Ngày GD ở tầng trình diễn. Atomic READY. **[SỬA 2026-09-22]** Lưu vật lý trên `Fact Market Trading Snapshot` (mới) — xem Cụm 18b. | READY |
+| K_TKNB_1016 | Tổng khối lượng giao dịch CP toàn thị trường | CP | Cơ sở | `SUM(fct_market_trading_snpst.total_trading_vol)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt` | [STT=5, item_code=`total_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
+| K_TKNB_1017 | KLGD khớp lệnh CP toàn thị trường | CP | Cơ sở | `SUM(fct_market_trading_snpst.matched_trading_vol)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt` | [STT=6, item_code=`matched_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
+| K_TKNB_1018 | GTGD khớp lệnh CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(fct_market_trading_snpst.matched_trading_val)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt` | [STT=7, item_code=`matched_trading_value_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
+| K_TKNB_1019 | KLGD thỏa thuận CP toàn thị trường | CP | Cơ sở | `SUM(fct_market_trading_snpst.negotiated_trading_vol)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt` | [STT=8, item_code=`negotiated_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
+| K_TKNB_1020 | GTGD thỏa thuận CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(fct_market_trading_snpst.negotiated_trading_val)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt` | [STT=9, item_code=`negotiated_trading_value_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
+| K_TKNB_1021 | KLGD lô lẻ CP toàn thị trường | CP | Cơ sở | `SUM(fct_market_trading_snpst.odd_lot_trading_vol)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` AND `securities_trade.board_tp_code IN ('G4','T4','T6')` GROUP BY `trade_dt` | [STT=10, item_code=`odd_lot_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
+| K_TKNB_1022 | GTGD lô lẻ CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(fct_market_trading_snpst.odd_lot_trading_val)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` AND `securities_trade.board_tp_code IN ('G4','T4','T6')` GROUP BY `trade_dt` | [STT=11, item_code=`odd_lot_trading_value_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Market_Index_Dimension {
+        string Market_Index_Dimension_Id PK
+        string Market_Id
+        string Market_Code
+        string Index_Type_Code
+        string TSC_Product_Group_Id
+        string Market_Status_Code
+        string Source_System_Code
+    }
+    Fact_Market_Index_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Market_Index_Dimension_Id FK
+        decimal Market_Index_Value
+    }
+    Fact_Market_Trading_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        decimal Total_Trading_Value
+        int Total_Trading_Volume
+        decimal Matched_Trading_Value
+        int Matched_Trading_Volume
+        decimal Negotiated_Trading_Value
+        int Negotiated_Trading_Volume
+        decimal Odd_Lot_Trading_Value
+        int Odd_Lot_Trading_Volume
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : "Snapshot_Date_Dimension_Id"
+    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : "Market_Index_Dimension_Id"
+    Calendar_Date_Dimension ||--o{ Fact_Market_Trading_Snapshot : "Snapshot_Date_Dimension_Id"
+```
+
+> **Ghi chú:** `Fact Market Index Snapshot` (`fct_market_index_snpst`) và `Market Index Dimension` (`market_index_dim`) sở hữu bởi QLKD, TKNB reuse — không tạo lại. `Fact Market Trading Snapshot` (`fct_market_trading_snpst`) là Fact mới, sở hữu TKNB, không có FK Dimension nào ngoài Calendar Date (8 đo lường không breakdown theo chiều nào khác ngoài Ngày GD).
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Market Index Snapshot"]
+        G2["Market Index Dimension"]
+        G3["Fact Market Trading Snapshot"]
+        G4["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_TKNB_1012,1015-1022: Thong ke giao dich toan thi truong co phieu (BM030a_MSS)"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+    G4 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Market Index Snapshot (`fct_market_index_snpst`, reuse — sở hữu QLKD) | 1 row = 1 chỉ số (market_code) × 1 ngày |
+| Market Index Dimension (`market_index_dim`, reuse — sở hữu QLKD) | 1 row = 1 combo Market_Id + Market_Code (SCD4A current-state) |
+| Fact Market Trading Snapshot (`fct_market_trading_snpst`, mới — sở hữu TKNB) | 1 row = 1 Trade Date (cộng gộp cả 3 sàn HOSE/HNX/UPCoM) |
+| Calendar Date Dimension | 1 row = 1 ngày |
 
 **Bảng mapping nguồn (Atomic Placeholder — cho dòng PENDING):**
 
@@ -2153,43 +2249,123 @@ flowchart LR
 
 **Phân loại:** Báo cáo chi tiết GD NĐTNN + GD tự doanh trên thị trường cổ phiếu, breakdown theo 4 chỉ số (VNIndex, HNXIndex, HNX30, VN30) × Toàn thị trường/Thỏa thuận/Khớp lệnh × Mua/Bán × KL/GT.
 
+> **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Thiết kế lại từ bảng phẳng EAV `bm031amss_foreign_proprietary_trading_rpt` (đã DEPRECATED — xem Section 4) sang 1 Fact mới `Fact Foreign Proprietary Trading Index Snapshot`. Toàn bộ 24 đo lường có cùng grain 1 (Trade Date × Index Code) — không có grain mismatch nội bộ như Nhóm 18, nên chỉ cần 1 Fact duy nhất (khác Nhóm 18 phải tách 2 Fact).
+
 **Atomic:**
-- `Securities Trade` (nguồn `ORDERTRADE.TRADE_BOOK_HOSE` + `TRADE_BOOK_HNX`) — READY. `buy_foreign_investor_tp_code`/`sell_foreign_investor_tp_code <> '00'` xác định GD NĐTNN; `buy_client_house_cl_code`/`sell_client_house_cl_code = '30'` xác định GD tự doanh. Khớp lệnh: `board_tp_code IN ('G1','G2','G3','G4','G7','G8')`. Thỏa thuận: `board_tp_code IN ('T1','T2','T3','T4','TR')`. Filter Cổ phiếu toàn thị trường: `market_id_code IN ('STO','STX','UPX')`.
-- `Index Constituent Snapshot` (nguồn `MDDS.JAD_CSIDXINFOR`) — READY (entity mới, lần đầu dùng trong module TKNB). JOIN theo `symbol`+`trading_dt` với `Securities Trade` (`security_symbol_code`/`trade_dt`) để lấy `index_code` — breakdown measure theo từng chỉ số (VNIndex/HNXIndex/HNX30/VN30) mà mã CK đó thuộc rổ chỉ số.
-- `Market Index Snapshot` (nguồn `MDDS.JAD_MARKETINFOR`) — READY, dùng cho dòng Chiều "Chỉ số" (giống Nhóm 18).
+- `Securities Trade` (nguồn `ORDERTRADE.TRADE_BOOK_HOSE` + `TRADE_BOOK_HNX`) — READY. `buy_foreign_investor_tp_code`/`sell_foreign_investor_tp_code <> '00'` xác định GD NĐTNN; `buy_client_house_cl_code`/`sell_client_house_cl_code = '30'` xác định GD tự doanh. Khớp lệnh: `board_tp_code IN ('G1','G2','G3','G4','G7','G8')`. Thỏa thuận: `board_tp_code IN ('T1','T2','T3','T4','T6','R1')`. Filter Cổ phiếu toàn thị trường: `market_id_code IN ('STO','STX','UPX')`.
+- `Index Constituent Snapshot` (nguồn `MDDS.JAD_CSIDXINFOR`) — READY. JOIN theo `symbol`+`trading_dt` với `Securities Trade` (`security_symbol_code`/`trade_dt`) để lấy `index_code` — breakdown measure theo từng chỉ số (VNIndex/HNXIndex/HNX30/VN30) mà mã CK đó thuộc rổ chỉ số. **[SỬA 2026-09-22]** Reuse `Index Constituent Dimension` (sở hữu GSTT) làm FK Dimension thay vì lưu `index_code` trực tiếp trên bảng phẳng — xem Cụm 23.
 
 **Mockup:** Báo cáo BM031a_MSS — user cung cấp template thật, cấu trúc: Thời gian × Loại chỉ số (VNIndex/HNXIndex/HNX30/VN30) × NĐTNN (Tổng KL mua/bán, Tổng GT mua/bán, KL/GT mua/bán thỏa thuận, KL/GT mua/bán khớp lệnh) × Tự doanh (cùng 12 measure) — khớp đúng 26 dòng BA (2 Chiều + 24 measure).
+
+**Source:** `Fact Foreign Proprietary Trading Index Snapshot` (mới) → `Calendar Date Dimension`, `Index Constituent Dimension` (reuse — sở hữu GSTT)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_1068 | Kỳ báo cáo | - | Chiều | `trade_dt` (Securities Trade) | [STT=1, item_code=`dim_report_period_mss031a`] Chiều thời gian, mô tả BA "Kỳ báo cáo: ngày giao dịch". | READY |
-| K_TKNB_1069 | Chỉ số (VNIndex, HNXIndex, HNX30, VN30) | - | Chiều | `index_code` (Index Constituent Snapshot), JOIN `securities_trade` theo `symbol`+`trading_dt` | [STT=2, item_code=`dim_index_type_mss031a`] Chiều slicer 4 giá trị — breakdown measure theo từng chỉ số mã CK thuộc rổ. | READY |
-| K_TKNB_1070 | NĐTNN Tổng KL mua | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c ON symbol+trading_dt WHERE `t.buy_foreign_investor_tp_code<>'00'` AND `t.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt`,`c.index_code` | [STT=3, item_code=`foreign_investor_total_buy_volume_mss031a`] Đánh giá="Trùng" — cùng khái niệm GD NĐTNN đã dùng ở Nhóm 16/17 nhưng breakdown theo chỉ số ở đây. Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1071 | NĐTNN Tổng KL bán | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.sell_foreign_investor_tp_code<>'00'` AND `t.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt`,`c.index_code` | [STT=4, item_code=`foreign_investor_total_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1072 | NĐTNN Tổng GT mua | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.buy_foreign_investor_tp_code<>'00'` AND `t.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt`,`c.index_code` | [STT=5, item_code=`foreign_investor_total_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1073 | NĐTNN Tổng GT bán | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.sell_foreign_investor_tp_code<>'00'` AND `t.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt`,`c.index_code` | [STT=6, item_code=`foreign_investor_total_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1074 | NĐTNN KL mua thỏa thuận | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.buy_foreign_investor_tp_code<>'00'` AND `t.board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt`,`c.index_code` | [STT=7, item_code=`foreign_investor_negotiated_buy_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1075 | NĐTNN KL bán thỏa thuận | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.sell_foreign_investor_tp_code<>'00'` AND `t.board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt`,`c.index_code` | [STT=8, item_code=`foreign_investor_negotiated_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1076 | NĐTNN GT mua thỏa thuận | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.buy_foreign_investor_tp_code<>'00'` AND `t.board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt`,`c.index_code` | [STT=9, item_code=`foreign_investor_negotiated_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1077 | NĐTNN GT bán thỏa thuận | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.sell_foreign_investor_tp_code<>'00'` AND `t.board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt`,`c.index_code` | [STT=10, item_code=`foreign_investor_negotiated_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1078 | NĐTNN KL mua khớp lệnh | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.buy_foreign_investor_tp_code<>'00'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=11, item_code=`foreign_investor_matched_buy_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1079 | NĐTNN KL bán khớp lệnh | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.sell_foreign_investor_tp_code<>'00'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=12, item_code=`foreign_investor_matched_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1080 | NĐTNN GT mua khớp lệnh | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.buy_foreign_investor_tp_code<>'00'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=13, item_code=`foreign_investor_matched_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1081 | NĐTNN GT bán khớp lệnh | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.sell_foreign_investor_tp_code<>'00'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=14, item_code=`foreign_investor_matched_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1082 | Giao dịch khối tự doanh Tổng KL mua | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.buy_client_house_cl_code='30'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=15, item_code=`proprietary_total_buy_volume_mss031a`] BA note: SQL mẫu chỉ tổng hợp GD khớp lệnh cho tự doanh (`Board ID/Type IN (G1..G8)`), không cộng thỏa thuận vào "Tổng" — khác pattern NĐTNN (Tổng = cộng cả 2 loại GD). Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1083 | Giao dịch khối tự doanh Tổng KL bán | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.sell_client_house_cl_code='30'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=16, item_code=`proprietary_total_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1084 | Giao dịch khối tự doanh Tổng GT mua | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.buy_client_house_cl_code='30'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=17, item_code=`proprietary_total_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1085 | Giao dịch khối tự doanh Tổng GT bán | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.sell_client_house_cl_code='30'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=18, item_code=`proprietary_total_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1086 | Giao dịch khối tự doanh KL mua thỏa thuận | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.buy_client_house_cl_code='30'` AND `t.board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt`,`c.index_code` | [STT=19, item_code=`proprietary_negotiated_buy_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1087 | Giao dịch khối tự doanh KL bán thỏa thuận | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.sell_client_house_cl_code='30'` AND `t.board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt`,`c.index_code` | [STT=20, item_code=`proprietary_negotiated_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1088 | Giao dịch khối tự doanh GT mua thỏa thuận | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.buy_client_house_cl_code='30'` AND `t.board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt`,`c.index_code` | [STT=21, item_code=`proprietary_negotiated_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1089 | Giao dịch khối tự doanh GT bán thỏa thuận | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.sell_client_house_cl_code='30'` AND `t.board_tp_code IN ('T1','T2','T3','T4','TR')` GROUP BY `trade_dt`,`c.index_code` | [STT=22, item_code=`proprietary_negotiated_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1090 | Giao dịch khối tự doanh KL mua khớp lệnh | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.buy_client_house_cl_code='30'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=23, item_code=`proprietary_matched_buy_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1091 | Giao dịch khối tự doanh KL bán khớp lệnh | CP | Cơ sở | `SUM(t.execution_vol)` JOIN `index_constituent_snapshot` c WHERE `t.sell_client_house_cl_code='30'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=24, item_code=`proprietary_matched_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1092 | Giao dịch khối tự doanh GT mua khớp lệnh | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.buy_client_house_cl_code='30'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=25, item_code=`proprietary_matched_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
-| K_TKNB_1093 | Giao dịch khối tự doanh GT bán khớp lệnh | Tỷ đồng | Cơ sở | `SUM(t.execution_val)` JOIN `index_constituent_snapshot` c WHERE `t.sell_client_house_cl_code='30'` AND `t.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`,`c.index_code` | [STT=26, item_code=`proprietary_matched_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1068 | Kỳ báo cáo | - | Chiều | `cdr_dt_dim.cdr_dt` | [STT=1, item_code=`dim_report_period_mss031a`] Chiều thời gian, mô tả BA "Kỳ báo cáo: ngày giao dịch". FK `Snapshot Date Dimension Id`. | READY |
+| K_TKNB_1069 | Chỉ số (VNIndex, HNXIndex, HNX30, VN30) | - | Chiều | `index_constituent_dim.index_code` | [STT=2, item_code=`dim_index_type_mss031a`] Chiều slicer 4 giá trị — breakdown measure theo từng chỉ số mã CK thuộc rổ. **[SỬA 2026-09-22]** Reuse `Index Constituent Dimension` (sở hữu GSTT) — xem Cụm 23. | READY |
+| K_TKNB_1070 | NĐTNN Tổng KL mua | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_total_buy_vol)` WHERE `securities_trade.buy_foreign_investor_tp_code<>'00'` AND `securities_trade.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt`, `index_code` | [STT=3, item_code=`foreign_investor_total_buy_volume_mss031a`] Đánh giá="Trùng" — cùng khái niệm GD NĐTNN đã dùng ở Nhóm 16/17 nhưng breakdown theo chỉ số ở đây. Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1071 | NĐTNN Tổng KL bán | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_total_sell_vol)` WHERE `securities_trade.sell_foreign_investor_tp_code<>'00'` AND `securities_trade.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt`, `index_code` | [STT=4, item_code=`foreign_investor_total_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1072 | NĐTNN Tổng GT mua | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_total_buy_val)` WHERE `securities_trade.buy_foreign_investor_tp_code<>'00'` AND `securities_trade.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt`, `index_code` | [STT=5, item_code=`foreign_investor_total_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1073 | NĐTNN Tổng GT bán | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_total_sell_val)` WHERE `securities_trade.sell_foreign_investor_tp_code<>'00'` AND `securities_trade.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt`, `index_code` | [STT=6, item_code=`foreign_investor_total_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1074 | NĐTNN KL mua thỏa thuận | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_negotiated_buy_vol)` WHERE `securities_trade.buy_foreign_investor_tp_code<>'00'` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt`, `index_code` | [STT=7, item_code=`foreign_investor_negotiated_buy_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1075 | NĐTNN KL bán thỏa thuận | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_negotiated_sell_vol)` WHERE `securities_trade.sell_foreign_investor_tp_code<>'00'` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt`, `index_code` | [STT=8, item_code=`foreign_investor_negotiated_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1076 | NĐTNN GT mua thỏa thuận | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_negotiated_buy_val)` WHERE `securities_trade.buy_foreign_investor_tp_code<>'00'` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt`, `index_code` | [STT=9, item_code=`foreign_investor_negotiated_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1077 | NĐTNN GT bán thỏa thuận | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_negotiated_sell_val)` WHERE `securities_trade.sell_foreign_investor_tp_code<>'00'` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt`, `index_code` | [STT=10, item_code=`foreign_investor_negotiated_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1078 | NĐTNN KL mua khớp lệnh | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_matched_buy_vol)` WHERE `securities_trade.buy_foreign_investor_tp_code<>'00'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=11, item_code=`foreign_investor_matched_buy_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1079 | NĐTNN KL bán khớp lệnh | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_matched_sell_vol)` WHERE `securities_trade.sell_foreign_investor_tp_code<>'00'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=12, item_code=`foreign_investor_matched_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1080 | NĐTNN GT mua khớp lệnh | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_matched_buy_val)` WHERE `securities_trade.buy_foreign_investor_tp_code<>'00'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=13, item_code=`foreign_investor_matched_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1081 | NĐTNN GT bán khớp lệnh | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.foreign_investor_matched_sell_val)` WHERE `securities_trade.sell_foreign_investor_tp_code<>'00'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=14, item_code=`foreign_investor_matched_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1082 | Giao dịch khối tự doanh Tổng KL mua | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_total_buy_vol)` WHERE `securities_trade.buy_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=15, item_code=`proprietary_total_buy_volume_mss031a`] BA note: SQL mẫu chỉ tổng hợp GD khớp lệnh cho tự doanh (`Board ID/Type IN (G1..G8)`), không cộng thỏa thuận vào "Tổng" — khác pattern NĐTNN (Tổng = cộng cả 2 loại GD). Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1083 | Giao dịch khối tự doanh Tổng KL bán | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_total_sell_vol)` WHERE `securities_trade.sell_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=16, item_code=`proprietary_total_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1084 | Giao dịch khối tự doanh Tổng GT mua | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_total_buy_val)` WHERE `securities_trade.buy_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=17, item_code=`proprietary_total_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1085 | Giao dịch khối tự doanh Tổng GT bán | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_total_sell_val)` WHERE `securities_trade.sell_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=18, item_code=`proprietary_total_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1086 | Giao dịch khối tự doanh KL mua thỏa thuận | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_negotiated_buy_vol)` WHERE `securities_trade.buy_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt`, `index_code` | [STT=19, item_code=`proprietary_negotiated_buy_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1087 | Giao dịch khối tự doanh KL bán thỏa thuận | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_negotiated_sell_vol)` WHERE `securities_trade.sell_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt`, `index_code` | [STT=20, item_code=`proprietary_negotiated_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1088 | Giao dịch khối tự doanh GT mua thỏa thuận | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_negotiated_buy_val)` WHERE `securities_trade.buy_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt`, `index_code` | [STT=21, item_code=`proprietary_negotiated_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1089 | Giao dịch khối tự doanh GT bán thỏa thuận | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_negotiated_sell_val)` WHERE `securities_trade.sell_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('T1','T2','T3','T4','T6','R1')` GROUP BY `trade_dt`, `index_code` | [STT=22, item_code=`proprietary_negotiated_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1090 | Giao dịch khối tự doanh KL mua khớp lệnh | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_matched_buy_vol)` WHERE `securities_trade.buy_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=23, item_code=`proprietary_matched_buy_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1091 | Giao dịch khối tự doanh KL bán khớp lệnh | CP | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_matched_sell_vol)` WHERE `securities_trade.sell_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=24, item_code=`proprietary_matched_sell_volume_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1092 | Giao dịch khối tự doanh GT mua khớp lệnh | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_matched_buy_val)` WHERE `securities_trade.buy_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=25, item_code=`proprietary_matched_buy_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+| K_TKNB_1093 | Giao dịch khối tự doanh GT bán khớp lệnh | Tỷ đồng | Cơ sở | `SUM(fct_foreign_proprietary_trading_index_snpst.proprietary_matched_sell_val)` WHERE `securities_trade.sell_client_house_cl_code='30'` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt`, `index_code` | [STT=26, item_code=`proprietary_matched_sell_value_mss031a`] Cộng cả 2 sàn. Atomic READY. | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Index_Constituent_Dimension {
+        string Index_Constituent_Dimension_Id PK
+        string Index_Code
+        string Index_Id
+        string Index_Name
+        string Source_System_Code
+    }
+    Fact_Foreign_Proprietary_Trading_Index_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Index_Constituent_Dimension_Id FK
+        int Foreign_Investor_Total_Buy_Volume
+        int Foreign_Investor_Total_Sell_Volume
+        decimal Foreign_Investor_Total_Buy_Value
+        decimal Foreign_Investor_Total_Sell_Value
+        int Foreign_Investor_Negotiated_Buy_Volume
+        int Foreign_Investor_Negotiated_Sell_Volume
+        decimal Foreign_Investor_Negotiated_Buy_Value
+        decimal Foreign_Investor_Negotiated_Sell_Value
+        int Foreign_Investor_Matched_Buy_Volume
+        int Foreign_Investor_Matched_Sell_Volume
+        decimal Foreign_Investor_Matched_Buy_Value
+        decimal Foreign_Investor_Matched_Sell_Value
+        int Proprietary_Total_Buy_Volume
+        int Proprietary_Total_Sell_Volume
+        decimal Proprietary_Total_Buy_Value
+        decimal Proprietary_Total_Sell_Value
+        int Proprietary_Negotiated_Buy_Volume
+        int Proprietary_Negotiated_Sell_Volume
+        decimal Proprietary_Negotiated_Buy_Value
+        decimal Proprietary_Negotiated_Sell_Value
+        int Proprietary_Matched_Buy_Volume
+        int Proprietary_Matched_Sell_Volume
+        decimal Proprietary_Matched_Buy_Value
+        decimal Proprietary_Matched_Sell_Value
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Proprietary_Trading_Index_Snapshot : "Snapshot_Date_Dimension_Id"
+    Index_Constituent_Dimension ||--o{ Fact_Foreign_Proprietary_Trading_Index_Snapshot : "Index_Constituent_Dimension_Id"
+```
+
+> **Ghi chú:** `Index Constituent Dimension` (`index_constituent_dim`) sở hữu bởi GSTT, TKNB reuse — không tạo lại. `Fact Foreign Proprietary Trading Index Snapshot` (`fct_foreign_proprietary_trading_index_snpst`) là Fact mới, sở hữu TKNB.
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Foreign Proprietary Trading Index Snapshot"]
+        G2["Index Constituent Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_TKNB_1068-1093: Bang du lieu giao dich NDTNN/tu doanh thi truong co phieu (BM031a_MSS)"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Proprietary Trading Index Snapshot (`fct_foreign_proprietary_trading_index_snpst`, mới — sở hữu TKNB) | 1 row = 1 Trade Date × 1 Index Code |
+| Index Constituent Dimension (`index_constituent_dim`, reuse — sở hữu GSTT) | 1 row = 1 Index Code (SCD4A current-state) |
+| Calendar Date Dimension | 1 row = 1 ngày |
 
 #### Nhóm 24 - Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường TPCP (BM031b_MSS)
 
@@ -2479,6 +2655,8 @@ flowchart LR
 ```mermaid
 graph TB
     classDef oper fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
+    classDef fact fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
+    classDef dim fill:#E6F1FB,stroke:#185FA5,color:#0C447C
 
     OpHNX01["Stock Trading Report (HNX01)"]:::oper
     OpHNX03["Derivative Trading Report (HNX03)"]:::oper
@@ -2491,23 +2669,88 @@ graph TB
     OpQG0513["Offering Result Report (QG0513)"]:::oper
     OpTK04BTC["Market Summary Report (TK-04.BTC)"]:::oper
     OpNienGiam["Market Annual Report (Niên giám)"]:::oper
-    OpMSS030a["Market Trading Report (BM030a)"]:::oper
     OpMSS030c["Corp Bond Trading Report (BM030c)"]:::oper
     OpMSS030e["Fund Cert ETF CW Trading Report (BM030e)"]:::oper
-    OpMSS031a["Foreign Proprietary Trading Report (BM031a)"]:::oper
     OpMSS031b["Gov Bond Foreign Proprietary Trading Report (BM031b)"]:::oper
     OpMSS031c["Corp Bond Foreign Proprietary Trading Report (BM031c)"]:::oper
     OpMSS031d["Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d)"]:::oper
     OpMSS031f["Derivatives Foreign Proprietary Trading Report (BM031f)"]:::oper
     OpMSS035["Security Trading Detail Report (BM035)"]:::oper
     OpMSS043["Derivatives Security Detail Report (BM043)"]:::oper
+
+    FactMktIdx["Fact Market Index Snapshot"]:::fact
+    DimMktIdx["Market Index Dimension"]:::dim
+    FactMktTrading["Fact Market Trading Snapshot"]:::fact
+    FactFrgnPropIdx["Fact Foreign Proprietary Trading Index Snapshot"]:::fact
+    DimIdxConst["Index Constituent Dimension"]:::dim
+
+    DimMktIdx --> FactMktIdx
+    DimIdxConst --> FactFrgnPropIdx
 ```
 
-> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 8 (HNX11), Nhóm 9 (HNX12), Nhóm 13 (TTLK01), Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING).
+> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 8 (HNX11), Nhóm 9 (HNX12), Nhóm 13 (TTLK01), Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ.
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 
-Không có — toàn bộ báo cáo TKNB dùng bảng Tác nghiệp (xem 3.3), không có Fact Star Schema.
+> **[MỚI 2026-09-22, datamart-review — Kịch bản D]** Ngoại lệ duy nhất của module — xem Section 4 lý do không theo quy ước "mỗi báo cáo 1 bảng phẳng riêng" cho 2 bảng dưới đây.
+
+| Bảng | Pattern | Grain | KPI | Trạng thái |
+|---|---|---|---|---|
+| `fct_market_index_snpst` (reuse — sở hữu QLKD) | Periodic Snapshot | 1 row = 1 chỉ số (market_code) × 1 ngày | K_TKNB_1014 (Nhóm 18) | READY |
+| `fct_market_trading_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 Trade Date (cộng gộp cả 3 sàn HOSE/HNX/UPCoM) | K_TKNB_1015–1022 (Nhóm 18) | READY |
+| `fct_foreign_proprietary_trading_index_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 Trade Date × 1 Index Code | K_TKNB_1070–1093 (Nhóm 23) | READY |
+
+```mermaid
+erDiagram
+    fct_market_index_snpst {
+        string snpst_dt_dim_id FK
+        string market_index_dim_id FK
+        decimal market_index_val
+    }
+    fct_market_trading_snpst {
+        string snpst_dt_dim_id FK
+        decimal total_trading_val
+        int total_trading_vol
+        decimal matched_trading_val
+        int matched_trading_vol
+        decimal negotiated_trading_val
+        int negotiated_trading_vol
+        decimal odd_lot_trading_val
+        int odd_lot_trading_vol
+        string src_stm_code
+    }
+    fct_foreign_proprietary_trading_index_snpst {
+        string snpst_dt_dim_id FK
+        string index_constituent_dim_id FK
+        int foreign_investor_total_buy_vol
+        int foreign_investor_total_sell_vol
+        decimal foreign_investor_total_buy_val
+        decimal foreign_investor_total_sell_val
+        int foreign_investor_negotiated_buy_vol
+        int foreign_investor_negotiated_sell_vol
+        decimal foreign_investor_negotiated_buy_val
+        decimal foreign_investor_negotiated_sell_val
+        int foreign_investor_matched_buy_vol
+        int foreign_investor_matched_sell_vol
+        decimal foreign_investor_matched_buy_val
+        decimal foreign_investor_matched_sell_val
+        int proprietary_total_buy_vol
+        int proprietary_total_sell_vol
+        decimal proprietary_total_buy_val
+        decimal proprietary_total_sell_val
+        int proprietary_negotiated_buy_vol
+        int proprietary_negotiated_sell_vol
+        decimal proprietary_negotiated_buy_val
+        decimal proprietary_negotiated_sell_val
+        int proprietary_matched_buy_vol
+        int proprietary_matched_sell_vol
+        decimal proprietary_matched_buy_val
+        decimal proprietary_matched_sell_val
+        string src_stm_code
+    }
+```
+
+> `fct_market_index_snpst` (reuse — sở hữu QLKD) không có `Source_System_Code` riêng trên chính khối này trong TKNB vì attribute đó thuộc schema gốc QLKD (không sửa lại ở đây, tránh trùng định nghĩa entity dùng chung — xem `DTM_QLKD_HLD.md` Cụm 6b cho block đầy đủ).
 
 ### 3.3 Bảng Tác nghiệp
 
@@ -2525,10 +2768,8 @@ Không có — toàn bộ báo cáo TKNB dùng bảng Tác nghiệp (xem 3.3), k
 | `0513hubckqg_offering_result_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `hnx01_stock_trading_rpt` | K_TKNB_846–874 (Nhóm 15) | READY (29/29 KPI) |
 | `tk04btc_market_summary_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ gốc (`period_marker` ∈ {Q1, Q2, Q3}, KHÔNG lưu H1/9M — derive lúc đọc theo `measure_type`) | K_TKNB_875–917 (Nhóm 16) | READY (17/43 KPI, +2 — K_TKNB_876/877 sửa 2026-09-16) / PENDING (26/43 KPI — 8 nhóm gap biểu mẫu/entity riêng biệt, xem Bảng mapping) |
 | `tkniengiam_market_annual_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 năm báo cáo (`report_period_dt`) — EAV cơ bản theo năm, không cần `period_marker`/`period_type` | K_TKNB_918–1011 (Nhóm 17) | READY (74/94 KPI, +4 — K_TKNB_923/924/925/926 sửa 2026-09-16) / PENDING (20/94 KPI — 8 nhóm gap biểu mẫu TPCP/TPDNRL, xem Bảng mapping) |
-| `bm030amss_market_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `hnx01_stock_trading_rpt`, không cần `period_type`/`period_marker` (báo cáo theo ngày, không có cột song song kỳ) | K_TKNB_1012–1022 (Nhóm 18) | READY (9/11 KPI) / PENDING (2/11 KPI — Chiều "Loại chỉ số" thiếu bằng chứng Atomic cho HNX30/VN30) |
 | `bm030cmss_corp_bond_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm030amss_market_trading_rpt` | K_TKNB_1037–1045 (Nhóm 20) | READY (9/9 KPI) |
 | `bm030emss_fund_cert_etf_cw_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm030amss_market_trading_rpt`/`bm030cmss_corp_bond_trading_rpt` | K_TKNB_1053–1067 (Nhóm 22) | READY (15/15 KPI) |
-| `bm031amss_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với các bảng `mss03xx`, breakdown thêm theo `index_code` trong `item_code` (không tách cột riêng) | K_TKNB_1068–1093 (Nhóm 23) | READY (26/26 KPI) |
 | `bm031bmss_gov_bond_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm031amss_foreign_proprietary_trading_rpt` | K_TKNB_1094–1112 (Nhóm 24) | READY (4/19 KPI) / PENDING (15/19 KPI — biểu mẫu HNX.BM29, khối NĐTNN) |
 | `bm031cmss_corp_bond_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm031amss_foreign_proprietary_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt` | K_TKNB_1113–1122 (Nhóm 25) | READY (10/10 KPI) |
 | `bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với các bảng `mss031x` | K_TKNB_1123–1173 (Nhóm 26) | READY (51/51 KPI) |
@@ -2536,7 +2777,7 @@ Không có — toàn bộ báo cáo TKNB dùng bảng Tác nghiệp (xem 3.3), k
 | `bm035mss_security_trading_detail_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 mã CK (`security_symbol_code`) / 1 kỳ báo cáo (`report_period_dt`) — grain chi tiết theo TỪNG MÃ CK, khác các bảng EAV thị trường tổng khác của module | K_TKNB_1187–1239 (Nhóm 28) | READY (51/53 KPI) / PENDING (2/53 KPI — biểu mẫu VSDC.BM64, tỷ lệ sở hữu NĐTNN) |
 | `bm043mss_derivatives_security_detail_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 mã CK (`security_symbol_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc grain chi tiết theo mã CK với `bm035mss_security_trading_detail_rpt`, áp dụng riêng cho CKPS | K_TKNB_1240–1255 (Nhóm 29) | READY (15/16 KPI) / PENDING (1/16 KPI — biểu mẫu VSDC.BM1, KL hợp đồng đang lưu hành) |
 
-**Composite key**: `hnx01_stock_trading_rpt`/`hnx03_derivative_trading_rpt`/`hnx07_corp_bond_trading_rpt`/`hsx01_stock_trading_rpt`/`hsx04_proprietary_trading_rpt`/`0513hubckqg_offering_result_rpt`/`tkniengiam_market_annual_rpt`/`bm030amss_market_trading_rpt`/`bm030cmss_corp_bond_trading_rpt`/`bm030emss_fund_cert_etf_cw_trading_rpt`/`bm031amss_foreign_proprietary_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt`/`bm031cmss_corp_bond_foreign_proprietary_trading_rpt`/`bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt`/`bm031fmss_derivatives_foreign_proprietary_trading_rpt` = `report_code + report_period_dt + item_code`; `bm035mss_security_trading_detail_rpt`/`bm043mss_derivatives_security_detail_rpt` = `report_code + report_period_dt + security_symbol_code + item_code` (thêm `security_symbol_code` do grain chi tiết theo mã CK); `hnx04_market_scale_rpt`/`hsx02_listing_trading_rpt` = `report_code + report_period_dt + item_code + period_type`; `tk04btc_market_summary_rpt` = `report_code + report_period_dt + item_code + period_marker` (period_marker khác period_type — 3 giá trị Q1/Q2/Q3 cố định, không phải trong_ky/cong_don); `ttlk10_cw_outstanding_rpt` = `report_code + report_period_dt + listed_cw_code` (khóa nghiệp vụ mã CW, không dùng `item_code` vì đây là bảng danh sách không phải EAV). Không dùng surrogate key riêng cho cả 21 bảng.
+**Composite key**: `hnx01_stock_trading_rpt`/`hnx03_derivative_trading_rpt`/`hnx07_corp_bond_trading_rpt`/`hsx01_stock_trading_rpt`/`hsx04_proprietary_trading_rpt`/`0513hubckqg_offering_result_rpt`/`tkniengiam_market_annual_rpt`/`bm030cmss_corp_bond_trading_rpt`/`bm030emss_fund_cert_etf_cw_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt`/`bm031cmss_corp_bond_foreign_proprietary_trading_rpt`/`bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt`/`bm031fmss_derivatives_foreign_proprietary_trading_rpt` = `report_code + report_period_dt + item_code`; `bm035mss_security_trading_detail_rpt`/`bm043mss_derivatives_security_detail_rpt` = `report_code + report_period_dt + security_symbol_code + item_code` (thêm `security_symbol_code` do grain chi tiết theo mã CK); `hnx04_market_scale_rpt`/`hsx02_listing_trading_rpt` = `report_code + report_period_dt + item_code + period_type`; `tk04btc_market_summary_rpt` = `report_code + report_period_dt + item_code + period_marker` (period_marker khác period_type — 3 giá trị Q1/Q2/Q3 cố định, không phải trong_ky/cong_don); `ttlk10_cw_outstanding_rpt` = `report_code + report_period_dt + listed_cw_code` (khóa nghiệp vụ mã CW, không dùng `item_code` vì đây là bảng danh sách không phải EAV). Không dùng surrogate key riêng cho 19 bảng Tác nghiệp còn lại. **[SỬA 2026-09-22]** `bm030amss_market_trading_rpt`/`bm031amss_foreign_proprietary_trading_rpt` đã DEPRECATED, thay bằng Fact có surrogate key chuẩn (xem 3.2 và Section 4).
 
 **`tk04btc_market_summary_rpt` — cột `measure_type` quyết định cách derive H1 (6 tháng)/9M (9 tháng) ở tầng BI, KHÔNG lưu vật lý 2 giá trị này**: `measure_type='flow'` → H1=SUM(Q1,Q2), 9M=SUM(Q1,Q2,Q3); `measure_type='snapshot'` → H1=giá trị Q2, 9M=giá trị Q3 (lookup, không SUM). Quyết định thiết kế này (phương án C trong 3 phương án đã so sánh) nhằm tránh trùng lặp vật lý và khớp đúng granularity nguồn thật (đa số nguồn biểu mẫu chỉ có sẵn theo Quý/6-tháng/9-tháng, không có breakdown ngày/tháng).
 
@@ -2657,15 +2898,6 @@ erDiagram
         float item_value
         string Source_System_Code
     }
-    bm030amss_market_trading_rpt {
-        string report_code PK
-        date report_period_dt PK
-        string item_code PK
-        int item_stt
-        string item_unit
-        float item_value
-        string Source_System_Code
-    }
     bm030cmss_corp_bond_trading_rpt {
         string report_code PK
         date report_period_dt PK
@@ -2676,15 +2908,6 @@ erDiagram
         string Source_System_Code
     }
     bm030emss_fund_cert_etf_cw_trading_rpt {
-        string report_code PK
-        date report_period_dt PK
-        string item_code PK
-        int item_stt
-        string item_unit
-        float item_value
-        string Source_System_Code
-    }
-    bm031amss_foreign_proprietary_trading_rpt {
         string report_code PK
         date report_period_dt PK
         string item_code PK
@@ -2755,7 +2978,14 @@ erDiagram
 
 ### 3.4 Bảng Dimension
 
-Không có — TKNB không tách Dimension dùng chung (theo quyết định thiết kế ở đầu file), toàn bộ chiều (Sàn, Chỉ số, Loại CK...) nằm trong `item_code` của từng bảng Tác nghiệp.
+*Tất cả Dimension áp dụng SCD Type 4A.*
+
+19/21 bảng Tác nghiệp của TKNB không tách Dimension dùng chung (theo quyết định thiết kế ở đầu file), toàn bộ chiều (Sàn, Chỉ số, Loại CK...) nằm trong `item_code` của từng bảng Tác nghiệp. **[MỚI 2026-09-22]** 2 Dimension dưới đây là ngoại lệ, phục vụ riêng 2 Fact của Nhóm 18/23 — xem Section 4 lý do ngoại lệ.
+
+| Dimension | Loại | Mô tả | Scheme | Trạng thái |
+|---|---|---|---|---|
+| Market Index Dimension (`market_index_dim`, reuse — sở hữu QLKD) | Dùng chung (conformed, cross-module) | Danh mục chỉ số thị trường — 1 row / combo Market Id + Market Code | — | READY |
+| Index Constituent Dimension (`index_constituent_dim`, reuse — sở hữu GSTT) | Dùng chung (conformed, cross-module) | Danh mục rổ chỉ số — 1 row / Index Code | — | READY |
 
 ---
 
@@ -2775,10 +3005,15 @@ Không có — TKNB không tách Dimension dùng chung (theo quyết định thi
 | Báo cáo kết quả thực hiện phát hành (Biểu 0513.H.UBCK.QG) | 0513hubckqg_offering_result_rpt | new | Bảng phẳng EAV mới — lần đầu module TKNB dùng nguồn `Public Company Securities Offering Result` (IDS). Không reuse entity này với bất kỳ Fact/Dim module khác dù cùng nguồn Atomic — theo quyết định thiết kế TKNB (mỗi báo cáo = 1 bảng phẳng riêng). |
 | Báo cáo tổng hợp thị trường chứng khoán theo quý/lũy kế (Biểu TK-04.BTC) | tk04btc_market_summary_rpt | new | Bảng phẳng EAV mở rộng `period_marker`+`measure_type` — không reuse `hnx01_stock_trading_rpt`/`hsx01_stock_trading_rpt` dù dùng chung entity `Securities Trade` cho các measure III/VII/VIII, vì đây là báo cáo tổng hợp toàn thị trường quốc gia (cộng cả 2 sàn) khác grain/mục đích với 2 bảng theo từng sàn riêng. |
 | Niên giám thống kê thị trường chứng khoán (TK_NienGiam) | tkniengiam_market_annual_rpt | new | Bảng phẳng EAV theo năm — không reuse `hnx01_stock_trading_rpt`/`hsx01_stock_trading_rpt`/`tk04btc_market_summary_rpt` dù dùng chung entity `Securities Trade`/`Market Index Snapshot`/`Security Trading Snapshot`, vì đây là báo cáo năm tổng hợp riêng biệt, breakdown theo sàn khác grain 2 bảng HNX/HSX theo từng sàn và khác `period_marker` của TK-04.BTC. Lần đầu module TKNB dùng nguồn `Public Company` (IDS), `Securities Company` (SCMS), `Fund Management Company` (FMS) — 3 entity Involved Party mới cho module này. |
-| Thống kê giao dịch toàn thị trường cổ phiếu (BM030a_MSS) | bm030amss_market_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `hnx01_stock_trading_rpt`/`hsx01_stock_trading_rpt`/`tk04btc_market_summary_rpt` dù cùng nguồn Atomic (`Market Index Snapshot`, `Securities Trade`) và cùng cấu trúc EAV, vì BM030a_MSS là báo cáo tổng hợp TOÀN THỊ TRƯỜNG (cộng cả 3 sàn HOSE+HNX+UPCoM trên cùng 1 dòng) theo grain ngày — khác 2 bảng HNX01/HSX01 breakdown riêng theo từng sàn, và khác TK-04.BTC theo grain quý/lũy kế. |
+| Thống kê giao dịch toàn thị trường cổ phiếu (BM030a_MSS) | bm030amss_market_trading_rpt | **DEPRECATED** | **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Bãi bỏ — qua review phát hiện bảng EAV này gộp sai 2 grain khác nhau ("Loại chỉ số"/"Giá trị chỉ số" grain 1 Trade Date × Market Code, và 8 đo lường GTGD/KLGD grain 1 Trade Date) vào cùng 1 bảng. Thay bằng: reuse `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD) cho phần chỉ số + Fact mới `Fact Market Trading Snapshot` (sở hữu TKNB) cho 8 đo lường — xem dòng riêng bên dưới và 3.2/3.4. All-Tier Cleanup Protocol đã thực hiện (xóa Attributes/master registry/model.yaml/Flat Table cũ). |
+| Fact Market Index Snapshot (phần Nhóm 18) | fct_market_index_snpst | reuse | **[MỚI 2026-09-22]** Reuse Fact sở hữu bởi QLKD (đã reuse bởi NDTNN/GSTT) — TKNB thêm module thứ 4 dùng chung, không sửa schema. Phục vụ K_TKNB_1014 (Nhóm 18) — filter `market_code IN ('HOSE','HNX','UPCOM')`, grain 1 chỉ số × 1 ngày. **Ngoại lệ so với quyết định thiết kế TKNB** "mỗi báo cáo 1 bảng phẳng riêng, không tách Dimension" (xem 3.4) — lý do: bảng EAV gốc `bm030amss_market_trading_rpt` che giấu lỗi Grain Mismatch kiến trúc thật (2 grain khác nhau gộp chung 1 bảng phẳng), không đơn thuần là chọn phong cách lưu trữ; giữ nguyên quy ước cũ cho 19 bảng còn lại của module vì không có vấn đề grain tương tự. |
+| Market Index Dimension (phần Nhóm 18) | market_index_dim | reuse | **[MỚI 2026-09-22]** Reuse Dimension sở hữu QLKD, cùng lý do ngoại lệ như dòng Fact Market Index Snapshot ở trên. |
+| Fact Market Trading Snapshot (phần Nhóm 18) | fct_market_trading_snpst | new | **[MỚI 2026-09-22]** Fact mới, sở hữu TKNB — 8 đo lường GTGD/KLGD (Tổng/Khớp lệnh/Thỏa thuận/Lô lẻ × Value/Volume) tách khỏi `bm030amss_market_trading_rpt` cũ, grain 1 Trade Date, không FK Dimension nào ngoài Calendar Date. Phục vụ K_TKNB_1015–1022 (Nhóm 18). |
 | Thống kê giao dịch toàn thị trường trái phiếu doanh nghiệp niêm yết (BM030c_MSS) | bm030cmss_corp_bond_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm030amss_market_trading_rpt` (Nhóm 18, cùng dạng "toàn thị trường theo ngày") dù cùng nguồn Atomic `Securities Trade` và cấu trúc EAV giống hệt, vì đây là báo cáo riêng cho TPDN niêm yết (`market_id_code IN ('BDO','HCX')`) — khác đối tượng chứng khoán với BM030a_MSS (cổ phiếu). Cũng không reuse `hnx07_corp_bond_trading_rpt` (Nhóm 6, TK-HNX07) dù cùng khái niệm TPDN niêm yết và cùng entity nguồn, vì HNX07 chỉ tính riêng sàn HNX (`market_id_code='HCX'`), còn BM030c_MSS cộng gộp cả 2 sàn HOSE+HNX (`market_id_code IN ('BDO','HCX')`) — khác grain/phạm vi tổng hợp. |
 | Thống kê giao dịch thị trường chứng chỉ quỹ, ETF và CW (BM030e_MSS) | bm030emss_fund_cert_etf_cw_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm030amss_market_trading_rpt`/`bm030cmss_corp_bond_trading_rpt` (Nhóm 18/20, cùng dạng "toàn thị trường theo ngày") dù cùng nguồn Atomic `Securities Trade` và cấu trúc EAV giống hệt, vì đối tượng chứng khoán khác (CCQ/ETF/CW thay vì cổ phiếu/TPDN). Cũng không reuse `hsx04_proprietary_trading_rpt` (Nhóm 12, TK-HSX04) dù cùng dùng `Security Trading Snapshot` để phân loại CCQ/ETF/CW theo `stock_tp_code`/`fund_tp_code`, vì HSX04 chỉ tính GD tự doanh trên riêng sàn HOSE, còn BM030e_MSS tính toàn thị trường (mọi loại NĐT) cộng gộp cả 2 sàn HOSE+HNX — khác phạm vi lọc và grain tổng hợp. |
-| Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường cổ phiếu (BM031a_MSS) | bm031amss_foreign_proprietary_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm030amss_market_trading_rpt` (Nhóm 18, cùng đối tượng cổ phiếu toàn thị trường) dù cùng nguồn Atomic `Securities Trade`, vì BM031a_MSS breakdown thêm theo chỉ số (`index_code` từ `Index Constituent Snapshot`, entity lần đầu dùng trong module) — khác grain với BM030a_MSS không có chiều chỉ số. Lần đầu module TKNB dùng entity `Index Constituent Snapshot` (nguồn `MDDS.JAD_CSIDXINFOR`). |
+| Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường cổ phiếu (BM031a_MSS) | bm031amss_foreign_proprietary_trading_rpt | **DEPRECATED** | **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Bãi bỏ — qua review phát hiện Detail Mapping trỏ sai `mart_table`/`mart_column` (đã fix tạm ở LLD trước khi đánh giá lại kiến trúc) và bảng EAV không tận dụng được `Index Constituent Dimension` đã có sẵn cross-module. Toàn bộ 24 đo lường cùng grain 1 (Trade Date × Index Code) — thay bằng Fact mới `Fact Foreign Proprietary Trading Index Snapshot` (sở hữu TKNB) + reuse `Index Constituent Dimension` (sở hữu GSTT) — xem dòng riêng bên dưới và 3.2/3.4. All-Tier Cleanup Protocol đã thực hiện. |
+| Fact Foreign Proprietary Trading Index Snapshot | fct_foreign_proprietary_trading_index_snpst | new | **[MỚI 2026-09-22]** Fact mới, sở hữu TKNB — 24 đo lường NĐTNN/tự doanh (Tổng/thỏa thuận/khớp lệnh × Mua/Bán × KL/GT), grain 1 (Trade Date × Index Code) nhất quán suốt Nhóm. Phục vụ K_TKNB_1070–1093 (Nhóm 23). **Ngoại lệ so với quyết định thiết kế TKNB** — cùng lý do ngoại lệ như Fact Market Index Snapshot ở Nhóm 18 (grain mismatch/reuse cơ hội thật, không phải chọn phong cách lưu trữ tùy tiện). |
+| Index Constituent Dimension (phần Nhóm 23) | index_constituent_dim | reuse | **[MỚI 2026-09-22]** Reuse Dimension sở hữu GSTT — TKNB thêm module thứ 2 dùng chung. Phục vụ K_TKNB_1069 (Chiều "Chỉ số") + FK trên Fact Foreign Proprietary Trading Index Snapshot. Thay thế nhánh `Market Index Snapshot`/`MDDS.JAD_MARKETINFOR` trong Cụm 23 cũ (không thực sự dùng — đã xác nhận qua rà soát Detail Mapping). |
 | Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường TPCP (BM031b_MSS) | bm031bmss_gov_bond_foreign_proprietary_trading_rpt | new | Bảng phẳng EAV theo ngày, mixed READY/PENDING — không reuse `bm031amss_foreign_proprietary_trading_rpt` (Nhóm 23, cùng khái niệm GD NĐTNN/tự doanh) dù cùng entity nguồn `Securities Trade`, vì đối tượng chứng khoán khác (TPCP thay vì cổ phiếu, `market_id_code='BDX'` thay vì `IN ('STO','STX','UPX')`) và không có chiều chỉ số. Phần tự doanh (4/19 KPI) dùng `Securities Trade` READY; phần NĐTNN (15/19 KPI) PENDING do nguồn biểu mẫu HNX.BM29 — cùng gap đã ghi ở Nhóm 21 (BM030d_MSS). |
 | Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường TPDN niêm yết (BM031C_MSS) | bm031cmss_corp_bond_foreign_proprietary_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm031amss_foreign_proprietary_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt` (Nhóm 23/24, cùng khái niệm GD NĐTNN/tự doanh) dù cùng entity nguồn `Securities Trade`, vì đối tượng chứng khoán khác (TPDN niêm yết, `market_id_code='HCX'`). Cũng không reuse `bm030cmss_corp_bond_trading_rpt` (Nhóm 20, cùng đối tượng TPDN niêm yết) vì BM030c_MSS là tổng hợp toàn thị trường (không NĐTNN/tự doanh) và cộng cả 2 sàn HOSE+HNX, còn BM031C_MSS chỉ tính riêng HNX theo đúng nguồn BA cung cấp — không tự suy diễn thêm HOSE dù cùng khái niệm nghiệp vụ. |
 | Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường CCQ, ETF, CW (BM031d_MSS) | bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm031amss_foreign_proprietary_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt`/`bm031cmss_corp_bond_foreign_proprietary_trading_rpt` (Nhóm 23/24/25, cùng khái niệm GD NĐTNN/tự doanh) dù cùng entity nguồn `Securities Trade`, vì đối tượng chứng khoán khác (CCQ/ETF/CW thay vì cổ phiếu/TPCP/TPDN). Cũng không reuse `bm030emss_fund_cert_etf_cw_trading_rpt` (Nhóm 22, cùng đối tượng CCQ/ETF/CW) vì BM030e_MSS là tổng hợp toàn thị trường (không NĐTNN/tự doanh) — khác nghiệp vụ, dù cùng dùng `Security Trading Snapshot` để phân loại 3 loại CK. |
@@ -2823,3 +3058,4 @@ Không có — TKNB không tách Dimension dùng chung (theo quyết định thi
 27. **Nhóm 27 (BM031f_MSS) — "KL hợp đồng đang lưu hành TTCK phái sinh" (K_TKNB_1178) nghi vấn trùng khái niệm với "Open Interest" đã PENDING ở Nhóm 3**: BA tự đặt câu hỏi mở trong cột Note "Kiểm tra trường openInterest (OI) có phải là KL chứng khoán đang lưu hành không?" — Nhóm 27 dùng nguồn `VSDC.BM1_Báo cáo về khối lượng chứng khoán đang lưu hành` (khối lượng CK lưu hành nói chung), còn Nhóm 3 (K_TKNB_279) dùng `VSDC.BM2_Báo cáo về khối lượng mở cuối ngày` (Open Interest — khối lượng hợp đồng mở, khái niệm chuyên biệt của CKPS). Cả 2 hiện đều PENDING (khác gap, chưa có Atomic) nên chưa ảnh hưởng thiết kế hiện tại, nhưng nếu 2 khái niệm thực chất là 1 thì khi Atomic bổ sung xong, có thể gộp thành 1 entity dùng chung cho cả 2 KPI — cần BA/team quản trị dữ liệu VSDC xác nhận trước khi thiết kế Atomic.
 30. **[MỚI 2026-09-16] Sửa 14 KPI vốn hóa thị trường cổ phiếu (K_TKNB_20/21/22, 313/314/315, 588/589, 876/877, 923/924/925/926) từ PENDING sang READY — nguồn `listed_share_info` chưa có entry manifest chính thức**: Cùng gốc rễ với O_GSTT_22 (module GSTT) — Số CP lưu hành/Vốn hóa thị trường trên GSTT từng NULL 100% trên UAT vì trỏ nhầm nguồn IDS (`pc_share_statistics_hstr`) thay vì VSDC. Nguồn đúng là Atomic entity `listed_share_info` (VSDC `outstanding_shares`) — đã có tài liệu mapping Bronze→Atomic chi tiết (`DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md`) và đã verify hoạt động thực tế trên UAT, nhưng **CHƯA có entry chính thức** trong `DataModel/Atomic/dm_manifest.yaml` lẫn `DataModel/working/Atomic/lld/manifest.yaml`, cũng chưa có file LLD YAML entity riêng. Quyết định (xác nhận trực tiếp từ user, 2026-09-16): vẫn dùng làm nguồn cho cả GSTT và TKNB vì đã verify UAT, nhưng cần Atomic team đăng ký bổ sung `listed_share_info` vào manifest + tạo LLD YAML chuẩn sớm để tránh nợ kỹ thuật tích lũy. **Kiến trúc:** mỗi báo cáo TKNB (HNX01/HNX04/HSX01/TK-04.BTC/TK_NienGiam) tự tính `SUM(security_trading_snapshot.close_price × listed_share_info.outstanding_share_quantity)` filter theo `floor_code` riêng của báo cáo đó, populate trực tiếp cột `Item Value` của chính bảng Tác nghiệp đó (KHÔNG qua Fact dùng chung — giữ đúng quy ước TKNB "mỗi báo cáo 1 bảng riêng", xem Section 3.2). K_TKNB_876 thu hẹp phạm vi còn `= K_TKNB_877` (bỏ K_TKNB_878/trái phiếu khỏi tổng) — cần BA xác nhận lại phạm vi đúng. K_TKNB_21/22/314/315/589/924/925/926 (breakdown theo sàn) đều READY; K_TKNB_590–600 (breakdown theo ngành GICS, Nhóm 10) và K_TKNB_878 (trái phiếu) vẫn PENDING — khác gap, ngoài phạm vi sửa lần này.
 29. **[MỞ 2026-09-10] Nhóm 4 (HNX04) mục 6-11 — filter `stock_tp_code` trên `Security Trading Snapshot` dùng code suy đoán từ mô tả scheme, chưa profile dữ liệu thật**: khi thiết kế Phase 2 Detail Mapping cho 54 KPI (K_TKNB_418-471), Công thức cần lọc CPNY/CPDKGD/CCQETF/TPDN theo `stock_tp_code` — nhưng scheme `MDDS_STOCK_TYPE` trong `classification_schemes.yaml` mới chỉ có `name: "Loại chứng khoán MDDS — ST/BO/MF/FU/OP/EF/CW theo sàn"`, chưa có `values` cụ thể (list rỗng, chưa profile dữ liệu thật `MDDS.StockInfor`). Đã tạm dùng `stock_tp_code='ST'` (cổ phiếu), `'BO'` (trái phiếu), `'EF'` (ETF) suy trực tiếp từ mô tả tên scheme (không phải suy đoán tùy tiện, cũng không phải giá trị BA cung cấp). Cần team quản trị Atomic profile dữ liệu `MDDS.StockInfor` để sync đủ `values` cho `MDDS_STOCK_TYPE` và xác nhận lại 3 code này trước khi build ETL chính thức — rủi ro nếu sai: đếm nhầm loại chứng khoán giữa CP/TP/CCQ ở toàn bộ 24 sub-item (mục 6.1/6.2/6.6/6.8 và tương ứng ở mục 7-11) dùng chung filter này. (Ghi chú liên quan: cột `floor_code` dùng đúng theo scheme `MDDS_FLOOR_CODE` đã có values xác nhận — không có rủi ro tương tự.)
+31. **[MỚI 2026-09-22, datamart-review — Kịch bản D] Nhóm 18 (BM030a_MSS) và Nhóm 23 (BM031a_MSS) là 2 ngoại lệ duy nhất trong module thoát khỏi quy ước "mỗi báo cáo 1 bảng phẳng riêng, không tách Dimension"**: Qua `datamart-review` phát hiện bảng EAV `bm030amss_market_trading_rpt` gộp sai 2 grain khác nhau vào cùng 1 bảng phẳng (Nhóm 18 — "Loại chỉ số"/"Giá trị chỉ số" grain 1 Trade Date × Market Code, và 8 đo lường GTGD/KLGD grain 1 Trade Date), đồng thời phát hiện 2 bug LLD cấp thấp trên chính bảng này và `bm031amss_foreign_proprietary_trading_rpt` (mart_table trỏ sai Atomic entity, board_tp_code dùng code `'TR'` không tồn tại trong domain — đã fix tạm trước khi đánh giá lại kiến trúc). User xác nhận trực tiếp (2026-09-22): thiết kế lại 2 Nhóm này sang Fact/Dim chuẩn — reuse `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD) và `Index Constituent Dimension` (sở hữu GSTT), tạo mới `Fact Market Trading Snapshot` và `Fact Foreign Proprietary Trading Index Snapshot` (sở hữu TKNB) — thay 2 bảng EAV cũ (nay DEPRECATED, xem Section 4). **Đây là ngoại lệ có chủ đích, KHÔNG áp dụng ngược lại cho 19 bảng còn lại của module** — lý do ngoại lệ là lỗi grain mismatch kiến trúc thật + cơ hội reuse cross-module đã tồn tại sẵn trong `datamart_model.yaml`, không phải thay đổi sở thích phong cách lưu trữ. Nếu phát sinh Nhóm khác nghi ngờ có cùng vấn đề grain mismatch, xử lý case-by-case tương tự (không tự động áp dụng hàng loạt).

@@ -274,24 +274,32 @@ COMMENT 'Flat table — Market Annual Report (TK_NienGiam)'
 
 
 -- ============================================================
--- 13. OPERATIONAL: bm030amss_market_trading_rpt
---    Market Trading Report (BM030a)
+-- 13. FACT: fct_market_trading_snpst
+--    Fact Market Trading Snapshot
+--    [SỬA 2026-09-22, datamart-review — Kịch bản D] Thay thế bm030amss_market_trading_rpt
+--    (EAV, DEPRECATED — đã gộp sai 2 grain khác nhau) bằng Fact chuẩn Star Schema.
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_bm030amss_market_trading_rpt_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_market_trading_snpst_flat ON CLUSTER 'my_cluster'
 (
-    -- From: OPERATIONAL Market Trading Report (BM030a)
-    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM030a_MSS',
-    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, chỉ số thị trường hoặc khối lượng/giá trị giao dịch cổ phiếu toàn thị trường (cộng gộp HOSE+HNX+UPCoM)',
-    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+    -- From: FACT Fact Market Trading Snapshot
+    snpst_dt_dim_id         String      COMMENT 'FK tới Calendar Date Dimension theo ngày giao dịch',
+    total_trading_val       Decimal(23,2) COMMENT 'Tổng giá trị giao dịch cổ phiếu toàn thị trường (cộng gộp HOSE+HNX+UPCoM) trong ngày',
+    total_trading_vol       Int64       COMMENT 'Tổng khối lượng giao dịch cổ phiếu toàn thị trường trong ngày',
+    matched_trading_val     Decimal(23,2) COMMENT 'Giá trị giao dịch khớp lệnh toàn thị trường trong ngày',
+    matched_trading_vol     Int64       COMMENT 'Khối lượng giao dịch khớp lệnh toàn thị trường trong ngày',
+    negotiated_trading_val  Decimal(23,2) COMMENT 'Giá trị giao dịch thỏa thuận toàn thị trường trong ngày',
+    negotiated_trading_vol  Int64       COMMENT 'Khối lượng giao dịch thỏa thuận toàn thị trường trong ngày',
+    odd_lot_trading_val     Decimal(23,2) COMMENT 'Giá trị giao dịch lô lẻ toàn thị trường trong ngày',
+    odd_lot_trading_vol     Int64       COMMENT 'Khối lượng giao dịch lô lẻ toàn thị trường trong ngày',
+    src_stm_code            String      COMMENT 'Mã hệ thống nguồn dữ liệu',
+
+    -- From: CALENDAR DATE DIMENSION
+    trade_cdr_dt             Nullable(Date) COMMENT 'Ngày giao dịch — từ Calendar Date Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code)
-COMMENT 'Flat table — Market Trading Report (BM030a)'
+PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))
+ORDER BY (assumeNotNull(trade_cdr_dt))
+COMMENT 'Flat table — Fact Market Trading Snapshot'
 ;
 
 
@@ -340,24 +348,54 @@ COMMENT 'Flat table — Fund Cert ETF CW Trading Report (BM030e)'
 
 
 -- ============================================================
--- 16. OPERATIONAL: bm031amss_foreign_proprietary_trading_rpt
---    Foreign Proprietary Trading Report (BM031a)
+-- 16. FACT: fct_foreign_proprietary_trading_index_snpst
+--    Fact Foreign Proprietary Trading Index Snapshot
+--    [SỬA 2026-09-22, datamart-review — Kịch bản D] Thay thế bm031amss_foreign_proprietary_trading_rpt
+--    (EAV, DEPRECATED) bằng Fact chuẩn Star Schema, reuse Index Constituent Dimension (GSTT).
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_bm031amss_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_foreign_proprietary_trading_index_snpst_flat ON CLUSTER 'my_cluster'
 (
-    -- From: OPERATIONAL Foreign Proprietary Trading Report (BM031a)
-    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM031a_MSS',
-    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code và chỉ số breakdown, khối lượng/giá trị giao dịch NĐTNN/tự doanh thị trường cổ phiếu theo từng chỉ số (VNIndex/HNXIndex/HNX30/VN30)',
-    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+    -- From: FACT Fact Foreign Proprietary Trading Index Snapshot
+    snpst_dt_dim_id                         String      COMMENT 'FK tới Calendar Date Dimension theo ngày giao dịch',
+    index_constituent_dim_id                String      COMMENT 'FK tới Index Constituent Dimension',
+    foreign_investor_total_buy_vol          Int64       COMMENT 'Khối lượng mua của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_total_sell_vol         Int64       COMMENT 'Khối lượng bán của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_total_buy_val          Decimal(23,2) COMMENT 'Giá trị mua của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_total_sell_val         Decimal(23,2) COMMENT 'Giá trị bán của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_negotiated_buy_vol     Int64       COMMENT 'Khối lượng mua thỏa thuận của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_negotiated_sell_vol    Int64       COMMENT 'Khối lượng bán thỏa thuận của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_negotiated_buy_val     Decimal(23,2) COMMENT 'Giá trị mua thỏa thuận của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_negotiated_sell_val    Decimal(23,2) COMMENT 'Giá trị bán thỏa thuận của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_matched_buy_vol        Int64       COMMENT 'Khối lượng mua khớp lệnh của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_matched_sell_vol       Int64       COMMENT 'Khối lượng bán khớp lệnh của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_matched_buy_val        Decimal(23,2) COMMENT 'Giá trị mua khớp lệnh của NĐTNN theo chỉ số trong ngày',
+    foreign_investor_matched_sell_val       Decimal(23,2) COMMENT 'Giá trị bán khớp lệnh của NĐTNN theo chỉ số trong ngày',
+    proprietary_total_buy_vol               Int64       COMMENT 'Khối lượng mua của khối tự doanh theo chỉ số trong ngày',
+    proprietary_total_sell_vol              Int64       COMMENT 'Khối lượng bán của khối tự doanh theo chỉ số trong ngày',
+    proprietary_total_buy_val               Decimal(23,2) COMMENT 'Giá trị mua của khối tự doanh theo chỉ số trong ngày',
+    proprietary_total_sell_val              Decimal(23,2) COMMENT 'Giá trị bán của khối tự doanh theo chỉ số trong ngày',
+    proprietary_negotiated_buy_vol          Int64       COMMENT 'Khối lượng mua thỏa thuận của khối tự doanh theo chỉ số trong ngày',
+    proprietary_negotiated_sell_vol         Int64       COMMENT 'Khối lượng bán thỏa thuận của khối tự doanh theo chỉ số trong ngày',
+    proprietary_negotiated_buy_val          Decimal(23,2) COMMENT 'Giá trị mua thỏa thuận của khối tự doanh theo chỉ số trong ngày',
+    proprietary_negotiated_sell_val         Decimal(23,2) COMMENT 'Giá trị bán thỏa thuận của khối tự doanh theo chỉ số trong ngày',
+    proprietary_matched_buy_vol             Int64       COMMENT 'Khối lượng mua khớp lệnh của khối tự doanh theo chỉ số trong ngày',
+    proprietary_matched_sell_vol            Int64       COMMENT 'Khối lượng bán khớp lệnh của khối tự doanh theo chỉ số trong ngày',
+    proprietary_matched_buy_val             Decimal(23,2) COMMENT 'Giá trị mua khớp lệnh của khối tự doanh theo chỉ số trong ngày',
+    proprietary_matched_sell_val            Decimal(23,2) COMMENT 'Giá trị bán khớp lệnh của khối tự doanh theo chỉ số trong ngày',
+    src_stm_code                            String      COMMENT 'Mã hệ thống nguồn dữ liệu',
+
+    -- From: CALENDAR DATE DIMENSION
+    trade_cdr_dt              Nullable(Date) COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+
+    -- From: INDEX CONSTITUENT DIMENSION
+    index_code                Nullable(String) COMMENT 'Mã chỉ số — từ Index Constituent Dimension',
+    index_id                  Nullable(String) COMMENT 'ID nội bộ của chỉ số — từ Index Constituent Dimension',
+    index_nm                  Nullable(String) COMMENT 'Tên chỉ số — từ Index Constituent Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code)
-COMMENT 'Flat table — Foreign Proprietary Trading Report (BM031a)'
+PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))
+ORDER BY (assumeNotNull(trade_cdr_dt), index_constituent_dim_id)
+COMMENT 'Flat table — Fact Foreign Proprietary Trading Index Snapshot'
 ;
 
 
