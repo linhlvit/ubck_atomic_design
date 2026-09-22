@@ -301,6 +301,8 @@ erDiagram
         decimal Open_Price
         decimal High_Price
         decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
         decimal Reference_Price
         decimal Close_Price
         decimal Price_Change
@@ -1646,13 +1648,14 @@ flowchart LR
 > **Atomic:** 100% reuse Nhóm 1 (`Security Trading Snapshot`, `Public Company`, `Classification Business Line`) + Nhóm 6 (`Public Company Share Statistics` Resolved 2026-08-26) + Nhóm 21 (KL/GT mua-bán ròng NĐTNN) — không có nguồn mới.
 >
 > **Ghi chú tái sử dụng (sửa 2026-09-05 — rà soát BA↔KPI phát hiện thiếu KPI):** BA liệt kê 14 dòng con — 13 dòng đã có KPI ID sẵn từ Nhóm 1 (Mã, Ngành, Ngày, Giá, % thay đổi, KLGD, GTGD), Nhóm 6 (Số CP lưu hành, Vốn hóa) — reuse thẳng. **[SỬA 2026-09-18, review Nhóm 21]** Bốn chỉ tiêu KLNN/GTNN mua-bán **gộp** (K_GSTT_70–73) **khai sinh tại Nhóm này**, không phải reuse từ Nhóm 21 (Nhóm 21 dùng bộ ròng K_GSTT_135–138 từ [SỬA 2026-09-07]). Không khai sinh KPI nào khác, không tạo/sửa Fact hay Dimension nào. "KLNN mua"/"KLNN bán"/"GTNN mua"/"GTNN bán" ở đây cùng bản chất và cùng nguồn với K_GSTT_70–72 (Nhóm 21, KL/GT mua-bán ròng NĐTNN) — chỉ khác cách hiển thị (bản đồ nhiệt màu theo cường độ, thay vì bảng), không phải chỉ tiêu mới. Bản chất báo cáo là "bản đồ nhiệt" (treemap) — không có cấu trúc Datamart riêng, chỉ là biến thể trực quan hóa tại tầng BI trên cùng `Fact Stock Portfolio Snapshot`. Dòng thứ 14 ("tính % thay đổi giá của nhóm ngành") là chỉ tiêu mới — xem ghi chú dưới đây.
+> **[MỚI 2026-09-22, BA bổ sung gấp 2 dòng "Giá trần"/"Giá sàn"]** BA thêm 2 dòng con mới vào STT 23 (Nguồn MDDS, Bảng nguồn JAD_STOCKINFOR, Trường nguồn `Celling`/`floor`, Đánh giá: Trùng) — BA liệt kê nay là **16 dòng con**. Atomic entity `Security Trading Snapshot` đã sẵn có `Ceiling Price`/`Floor Price` (nguồn `MDDS.JAD_STOCKINFOR.CEILING`/`.FLOOR`, đúng khớp `Celling`/`floor` BA ghi) — READY, chỉ chưa được kéo lên `Security Trading Snapshot Dimension` (coverage rule, cùng cách Nhóm 3 đã bổ sung Open/High/Low trước đây). **Bổ sung cột `Ceiling_Price`/`Floor_Price` lên Dimension** (đã đồng bộ cả 4 vị trí vẽ erDiagram của entity này trong file — Nhóm 1/25/28/30) và khai 2 KPI mới `K_GSTT_159`/`K_GSTT_160`, logic 1:1 trực tiếp từ cột nguồn, không qua derive.
 > **Ghi chú "% thay đổi giá của nhóm ngành" (K_GSTT_123, mới, bổ sung 2026-09-05 — xem O_GSTT_19, chuyển READY 2026-09-08):** BA cho công thức `(Σ(Giá đóng cửa × KL CP lưu hành) / Σ(Giá tham chiếu × KL CP lưu hành) − 1) × 100` — % thay đổi bình quân gia quyền theo vốn hóa của TOÀN NGÀNH (khác K_GSTT_12 vốn là % thay đổi của TỪNG mã CK riêng lẻ), cùng nguồn `JAD_STOCKINFOR.closeprice`/`outstanding_shares` đã dùng cho K_GSTT_10/55. Dữ liệu cần GROUP BY Ngành. **Mâu thuẫn dữ liệu BA (2026-09-05):** cột "Loại dữ liệu" của dòng này ghi `Chưa có CSDL - Map biểu mẫu` (thường dành cho báo cáo giấy chưa số hóa) — nhưng Bảng nguồn/Trường nguồn lại ghi rõ nguồn online có thật (`JAD_STOCKINFOR`), và cột `Phân loại`/`Đánh giá` của dòng này đều để trống (khác mọi dòng khác trong Nhóm). **Xác nhận 2026-09-08 (Data Modeler, review issue thiết kế):** đây là BA mô tả nhầm cột "Loại dữ liệu" (copy-paste sai giá trị) — nguồn `JAD_STOCKINFOR.closeprice`/`referprice`/`outstanding_shares` đã có thật và đã dùng cho K_GSTT_10/55/61 (READY), dimension phân loại ngành (`classification_business_line_nm`) cũng đã có sẵn — đủ điều kiện thiết kế, không cần chờ BA sửa lại CSV. Chuyển **READY**, không tạo Fact/Dimension/cột mới — derive tại tầng BI từ cột đã có, GROUP BY Ngành.
 
 **Mockup:**
 
-| Mã | Ngành | Ngày | Giá | % thay đổi | Số cổ phiếu lưu hành | Vốn hóa | KLGD | GTGD | KLNN mua | KLNN bán | GTNN mua | GTNN bán |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| VCB | Ngân hàng | 27/07/2026 | 82.50 | +0.61% | *(pending)* | *(pending)* | 548 Tr | 22.1 Tỷ | 12 Tr | 8 Tr | 1.0 Tỷ | 0.6 Tỷ |
+| Mã | Ngành | Ngày | Giá | Giá trần | Giá sàn | % thay đổi | Số cổ phiếu lưu hành | Vốn hóa | KLGD | GTGD | KLNN mua | KLNN bán | GTNN mua | GTNN bán |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| VCB | Ngân hàng | 27/07/2026 | 82.50 | 88.20 | 76.80 | +0.61% | *(pending)* | *(pending)* | 548 Tr | 22.1 Tỷ | 12 Tr | 8 Tr | 1.0 Tỷ | 0.6 Tỷ |
 
 **Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` — 100% reuse, hiển thị dạng treemap (màu/kích thước ô theo Vốn hóa hoặc measure được chọn) tại tầng BI.
 
@@ -1664,6 +1667,8 @@ flowchart LR
 | K_GSTT_2 | Ngành | — | Chiều | `Public Company Dimension.Business Line Level 1 Code`, `Classification Business Line Name` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_7 | Ngày | — | Chiều | `Calendar Date Dimension.Calendar Date` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_10 | Giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10 = Giá đóng cửa) | READY |
+| K_GSTT_159 | Giá trần | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Ceiling Price` | **[MỚI 2026-09-22, BA bổ sung gấp]** Khai sinh tại Nhóm này — BA STT 23 dòng "Giá trần" (Nguồn MDDS.JAD_STOCKINFOR.Celling, Đánh giá: Trùng). Atomic `Security Trading Snapshot.Ceiling Price` đã READY sẵn — chỉ bổ sung cột lên Dimension theo coverage rule (cùng cách Nhóm 3 đã làm với Open/High/Low). Logic 1:1, không derive | READY |
+| K_GSTT_160 | Giá sàn | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Floor Price` | **[MỚI 2026-09-22, BA bổ sung gấp]** Khai sinh tại Nhóm này — BA STT 23 dòng "Giá sàn" (Nguồn MDDS.JAD_STOCKINFOR.floor, Đánh giá: Trùng). Cùng cơ chế K_GSTT_159. Logic 1:1, không derive | READY |
 | K_GSTT_12 | % thay đổi | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 — dùng làm màu sắc ô treemap | READY |
 | K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | Reuse từ Nhóm 6 — Resolved 2026-08-26, sửa nguồn 2026-09-16 (`listed_share_info`, xem O_GSTT_2 + O_GSTT_22) | READY |
 | K_GSTT_61 | Vốn hóa | VNĐ | Chỉ tiêu phái sinh | `MAX(K_GSTT_10 (Giá đóng cửa) × K_GSTT_55 (Số CP lưu hành)) GROUP BY Symbol, Trade Date` (Vốn hóa TỪNG MÃ CK, không phải theo Index — sửa 2026-09-14, phát hiện qua review Data Modeler: bảng Top-N theo mã CK không phải theo rổ chỉ số, cùng pattern Nhóm 23) | Reuse từ Nhóm 6 — Resolved 2026-08-26 (K_GSTT_55 đã có nguồn) — dùng làm kích thước ô treemap | READY |
@@ -1675,7 +1680,7 @@ flowchart LR
 | K_GSTT_73 | GTNN bán | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Sell Foreign Investor Type Code IN ('10','20')) GROUP BY Symbol, Trade Date` | **[SỬA 2026-09-18, review Nhóm 21]** Khai sinh tại Nhóm này. Trước ghi "Reuse từ Nhóm 21" — sai từ [SỬA 2026-09-07] khi Nhóm 21 chuyển sang K_GSTT_135–138 (ròng, range-based), để K_GSTT_73 mồ côi không nhóm nào khai sinh. Đây là **GTNN bán GỘP**, KHÔNG phải ròng (công thức là SUM một chiều mua hoặc bán) | READY |
 | K_GSTT_123 | % thay đổi giá của nhóm ngành | % | Phái sinh | `(SUM(Security Trading Snapshot Dimension.Close Price × Fact Stock Portfolio Snapshot.Outstanding Share Quantity) / SUM(Security Trading Snapshot Dimension.Reference Price × Fact Stock Portfolio Snapshot.Outstanding Share Quantity) − 1) × 100 GROUP BY Public Company Dimension.Classification Business Line Name` | **Chuyển READY 2026-09-08** (mới 2026-09-05), xem ghi chú "% thay đổi giá của nhóm ngành" ở trên (O_GSTT_19) — BA mô tả nhầm cột "Loại dữ liệu", nguồn thực tế đã đủ. Không cần Fact/cột mới — derive tại tầng BI từ cột đã có (Close Price, Reference Price, Outstanding Share Quantity), GROUP BY Ngành | READY |
 
-**Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1. K_GSTT_123 không cần cột mới — derive tại tầng BI từ cột đã có (Close Price, Reference Price, Outstanding Share Quantity), GROUP BY Ngành.
+**Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension` đã vẽ ở Nhóm 1. K_GSTT_123 không cần cột mới — derive tại tầng BI từ cột đã có (Close Price, Reference Price, Outstanding Share Quantity), GROUP BY Ngành. **[MỚI 2026-09-22]** `Security Trading Snapshot Dimension` bổ sung 2 cột `Ceiling_Price`/`Floor_Price` (đã đồng bộ mọi nơi vẽ entity này trong file — Nhóm 1/25/28/30) phục vụ K_GSTT_159/160.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1809,6 +1814,8 @@ erDiagram
         decimal Open_Price
         decimal High_Price
         decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
         decimal Reference_Price
         decimal Close_Price
         decimal Price_Change
@@ -2030,6 +2037,8 @@ erDiagram
         decimal Open_Price
         decimal High_Price
         decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
         decimal Reference_Price
         decimal Close_Price
         decimal Price_Change
@@ -2202,6 +2211,8 @@ erDiagram
         decimal Open_Price
         decimal High_Price
         decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
         decimal Reference_Price
         decimal Close_Price
         decimal Price_Change

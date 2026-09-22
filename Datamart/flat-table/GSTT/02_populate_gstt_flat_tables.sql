@@ -114,6 +114,8 @@ SELECT
     sec_dim.open_price                             AS open_price,
     sec_dim.high_price                             AS high_price,
     sec_dim.low_price                              AS low_price,
+    sec_dim.ceiling_price                          AS ceiling_price,
+    sec_dim.floor_price                            AS floor_price,
     sec_dim.reference_price                        AS reference_price,
     sec_dim.close_price                            AS close_price,
     sec_dim.price_change                           AS price_change,

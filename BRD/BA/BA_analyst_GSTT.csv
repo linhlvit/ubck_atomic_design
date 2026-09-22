@@ -1,4 +1,4 @@
-,,,,,,,,,,,,,,,Khai thác nguồn,,,,,,,Review design,,,,
+﻿,,,,,,,,,,,,,,,Khai thác nguồn,,,,,,,Review design,,,,
 STT,Mã,Dashboard/báo cáo,Thông tin,Mô tả,Nhóm yêu cầu,Phân loại,Đánh giá,Độ chi tiết,Nguồn,Cần phân tích?,Cần test?,DL lịch sử?,Trạng thái mapping,Mapping (nghiệp vụ),Bảng nguồn,Trường nguồn,Điều kiện chung ,Câu lệnh tham khảo,Note,Câu lệnh màn,Kết quả Test,Model,DMT,Hoàn thành DEV,Loại dữ liệu,Kết quả SIT
 ,,,Tên chiều/chỉ tiêu/thuộc tính,,Dashboard/báo cáo/Data Explorer,Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh,"Dễ: lấy 1: 1 từ nguồn
 TB: có tính toán tổng hợp
@@ -22599,6 +22599,8 @@ ORDER BY c.symbol ASC
 ",,,,Done,Dữ liệu tĩnh,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Giá,Giá đóng cửa,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,"Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
+23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Giá,Giá trần,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,Celling,,,,,,,,,Dữ liệu tĩnh,
+23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Giá,Giá sàn,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,floor,,,,,,,,,Dữ liệu tĩnh,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",% thay đổi,Mức biến động giá trong phiên,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,,,,,,,Done,Dữ liệu tĩnh,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",Khối lượng cổ phiếu lưu hành ,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,CSDLTT,,,,Done,Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày),outstanding_shares,outstanding_shares,,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,
 23,,"Theo dõi bản đồ nhiệt của các cổ phiếu, ngành theo Vốn hóa thị trường / KLGD / GTGD / KLNN mua / KLNN bán / GTNN mua / GTNN bán",tính % thay đổi giá của nhóm ngành,( Σ(Giá đóng cửa * KL CK lưu hành) / Σ(Giá tham chiếu * KL CK lưu hành) - 1 ) * 100,,,,,MDDS,,,,Done,,"JAD_STOCKINFOR

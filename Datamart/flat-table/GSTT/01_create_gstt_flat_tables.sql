@@ -112,6 +112,8 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     open_price                           Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa — từ Security Trading Snapshot Dimension',
     high_price                           Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất — từ Security Trading Snapshot Dimension',
     low_price                            Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất — từ Security Trading Snapshot Dimension',
+    ceiling_price                        Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-22, BA bổ sung gấp] Giá trần (K_GSTT_159) — từ Security Trading Snapshot Dimension',
+    floor_price                          Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-22, BA bổ sung gấp] Giá sàn (K_GSTT_160) — từ Security Trading Snapshot Dimension',
     reference_price                     Nullable(Decimal(23,2)) COMMENT 'Giá tham chiếu — từ Security Trading Snapshot Dimension',
     close_price                         Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa — từ Security Trading Snapshot Dimension',
     price_change                        Nullable(Decimal(23,2)) COMMENT 'Thay đổi giá — từ Security Trading Snapshot Dimension',
