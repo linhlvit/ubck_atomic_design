@@ -17,17 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Map trực tiếp vào Fundamental entity dùng chung Classification Value (cl_value)\
-    \ — không tạo Atomic entity riêng, theo quyết định Data Modeler (MRMS_HLD_Tier1.md\
-    \ 6f T1-01), tham khảo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml/APPLICATION_STATUSES.yaml/DOCUMENTS.yaml/SPECIALIZATIONS.yaml,\
-    \ revert 2026-08-20). Scheme: MRMS_RISK_INDICATOR_CATEGORY (đăng ký trong classification_schemes.yaml,\
-    \ dùng bởi Risk Indicator Category Code trên lld_MRMS_RISK_INDICATOR.yaml). File\
-    \ này là Level 1 LLD; cần chạy Level 2 consolidation (generate_entity_consolidation.py)\
-    \ gộp vào entity_cl_value.yaml cùng các source khác trước khi generate ra DataModel/Atomic.\
-    \ SET_CODE và STATUS không có chỗ trong schema chuẩn cl_value (chỉ Code/Name/Description)\
-    \ — document pending_design.yaml, không map ở đây. Audit fields (CREATED_AT/CREATED_BY_ID/CREATED_BY_NAME/UPDATED_AT/UPDATED_BY_ID/UPDATED_BY_NAME/DELETED)\
-    \ không thiết kế — cl_value không có audit fields nghiệp vụ, chỉ có ds_* (technical,\
-    \ ETL job tự quản lý), theo convention NHNCK."
+  notes: "Map trực tiếp vào Fundamental entity dùng chung Classification Value (cl_value) — không tạo Atomic entity riêng, theo quyết định Data Modeler (MRMS_HLD_Tier1.md 6f T1-01), tham khảo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml/APPLICATION_STATUSES.yaml/DOCUMENTS.yaml/SPECIALIZATIONS.yaml, revert 2026-08-20). Scheme: MRMS_RISK_INDICATOR_CATEGORY (đăng ký trong classification_schemes.yaml, dùng bởi Risk Indicator Category Code trên lld_MRMS_RISK_INDICATOR.yaml). File này là Level 1 LLD; cần chạy Level 2 consolidation (generate_entity_consolidation.py) gộp vào entity_cl_value.yaml cùng các source khác trước khi generate ra DataModel/Atomic. SET_CODE và STATUS không có chỗ trong schema chuẩn cl_value (chỉ Code/Name/Description) — document pending_design.yaml, không map ở đây. Audit fields (CREATED_AT/CREATED_BY_ID/CREATED_BY_NAME/UPDATED_AT/UPDATED_BY_ID/UPDATED_BY_NAME/DELETED) không thiết kế — cl_value không có audit fields nghiệp vụ, chỉ có ds_* (technical, ETL job tự quản lý), theo convention NHNCK."
 attributes:
 - attribute_name: "Classification Code"
   physical_name: "cl_code"
@@ -42,7 +32,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Schema Code"
   physical_name: "schema_code"
   description: "Mã loại phân loại."
@@ -55,7 +44,6 @@ attributes:
   classification_context: null
   etl_derived_value: "MRMS.RISK_INDICATOR_CATEGORY"
   data_type: "string"
-
 - attribute_name: "Schema Name"
   physical_name: "schema_nm"
   description: "Tên loại phân loại."
@@ -68,7 +56,6 @@ attributes:
   classification_context: null
   etl_derived_value: "MRMS - Nhóm chỉ tiêu tài chính rủi ro"
   data_type: "string"
-
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã nguồn dữ liệu."
@@ -81,7 +68,6 @@ attributes:
   classification_context: "SOURCE_SYSTEM=MRMS_RISK_INDICATOR_CATEGORY"
   etl_derived_value: "MRMS_RISK_INDICATOR_CATEGORY"
   data_type: "string"
-
 - attribute_name: "Classification Name"
   physical_name: "cl_nm"
   description: "Tên giá trị phân loại (tiếng Việt)."
@@ -95,7 +81,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Classification Name English"
   physical_name: "cl_nm_english"
   description: "Tên giá trị phân loại (tiếng Anh)."
@@ -108,7 +93,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Classification Description"
   physical_name: "cl_description"
   description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."

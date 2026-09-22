@@ -17,16 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "STATUS (nguồn) nay đã map thành \"Status Code\" (2026-08-18) — chính sách\
-    \ cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột mang\
-    \ tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng nên map\
-    \ Classification Value. ID không map — PK kỹ thuật, BK dùng CODE. Hạ về draft\
-    \ (2026-08-14) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Decision\
-    \ Document Id\" — trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) thay\
-    \ vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml.\
-    \ Bổ sung (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: RESULT_UPDATER_ID —\
-    \ FK tới IAM.USERS (cán bộ cập nhật kết quả thi), mirror pattern Assignee Officer\
-    \ Id/Code đã dùng cho lld_NHNCK_APPLICATIONS.yaml."
+  notes: "STATUS (nguồn) nay đã map thành \"Status Code\" (2026-08-18) — chính sách cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột mang tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng nên map Classification Value. ID không map — PK kỹ thuật, BK dùng CODE. Hạ về draft (2026-08-14) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Decision Document Id\" — trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) thay vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml. Bổ sung (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: RESULT_UPDATER_ID — FK tới IAM.USERS (cán bộ cập nhật kết quả thi), mirror pattern Assignee Officer Id/Code đã dùng cho lld_NHNCK_APPLICATIONS.yaml."
 attributes:
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
   physical_name: "sp_qualification_examination_assessment_id"
@@ -36,8 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"Assessment\" (Communication). Đợt thi sát hạch chứng\
-    \ chỉ hành nghề."
+  comment: "PK surrogate. BCV: \"Assessment\" (Communication). Đợt thi sát hạch chứng chỉ hành nghề."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -88,8 +78,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.YEAR"
-  comment: "Xác nhận DDL UAT không có REPORT_YEAR (2026-07-28) — YEAR là cột thật\
-    \ duy nhất, rename từ REPORT_YEAR đã áp dụng đúng trong lần đối chiếu 2026-07-15/20."
+  comment: "Xác nhận DDL UAT không có REPORT_YEAR (2026-07-28) — YEAR là cột thật duy nhất, rename từ REPORT_YEAR đã áp dụng đúng trong lần đối chiếu 2026-07-15/20."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
@@ -232,11 +221,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.DECISION_ID"
-  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: EXAM_SESSIONS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
-    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: EXAM_SESSIONS.DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -249,10 +234,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -265,9 +247,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.BANKS.BANK_CODE"
-  comment: "SCHEMA_CODE=NHNCK.BANKS. Cần ETL crosswalk sang NHNCK.BANKS: EXAM_SESSIONS.BANK_ID = BANKS.ID\
-    \ để xác nhận NHNCK.BANKS.BANK_CODE, sau đó lưu BANK_CODE (không lưu ID kỹ thuật) vào\
-    \ cột này."
+  comment: "SCHEMA_CODE=NHNCK.BANKS. Cần ETL crosswalk sang NHNCK.BANKS: EXAM_SESSIONS.BANK_ID = BANKS.ID để xác nhận NHNCK.BANKS.BANK_CODE, sau đó lưu BANK_CODE (không lưu ID kỹ thuật) vào cột này."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -319,9 +299,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.RESULT_UPDATER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Cần ETL crosswalk sang NHNCK.USERS: EXAM_SESSIONS.RESULT_UPDATER_ID = USERS.ID\
-    \ để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: EXAM_SESSIONS.RESULT_UPDATER_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -334,9 +312,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.USERNAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Result Updater Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau\
-    \ ETL crosswalk — chi tiết xem comment Result Updater Officer Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Result Updater Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Result Updater Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

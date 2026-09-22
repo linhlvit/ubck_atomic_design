@@ -3,8 +3,7 @@ schema_version: "2.0"
 metadata:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
-  atomic_entity: "Securities Practitioner License Application Education Certificate\
-    \ Document"
+  atomic_entity: "Securities Practitioner License Application Education Certificate Document"
   entity_physical_name: "sp_license_application_education_certificate_document"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Education Certificate"
@@ -18,26 +17,9 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-08-17, xác nhận tường minh bởi Data Modeler) để bổ sung\
-    \ trường \"Appraisal Status Code\" (cột nguồn STATUS — trước đây bị loại trừ theo\
-    \ chính sách 2026-07-07, nay map Classification Value vì mang ý nghĩa nghiệp vụ\
-    \ 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động; dùng lại scheme APPRAISAL_STATUS\
-    \ đã đăng ký sẵn cho đúng cột này, đổi tên thành NHNCK.APPLICATION_SPECIALIZATIONS.STATUS).\
-    \ Cần review/approve lại. Lịch sử trước: design_status quay lại draft (2026-07-09)\
-    \ — đổi Specialization Type Code thành Classification Specialization Code + thêm\
-    \ FK Classification Specialization Id. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
-    \ FK \"Securities Practitioner License Application Id\" và \"Classification Specialization\
-    \ Id\" — trước đây hash trực tiếp theo ID kỹ thuật (APPLICATION_ID/SPECIALIZATION_ID)\
-    \ thay vì Code của bảng đích (APPLICATION_CODE/SPECIALIZATION_CODE). Hạ về draft\
-    \ lại (2026-08-20): Classification Specialization Id + Code đổi thành 1 trường\
-    \ Classification Value \"Specialization Code\" (scheme SPECIALIZATION) — do NHNCK.SPECIALIZATIONS\
-    \ revert về Classification Value, không còn là Atomic entity riêng. Hạ về draft\
-    \ (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: bổ sung \"Public Service Portal\
-    \ Document Component Code\" (MCDT_MA_THANH_PHAN_HOSO, map 1:1). SUBMIT_LATER không\
-    \ tồn tại trên bảng này (chỉ có trên APPLICATION_DOCUMENTS) — không map."
+  notes: "Hạ về draft (2026-08-17, xác nhận tường minh bởi Data Modeler) để bổ sung trường \"Appraisal Status Code\" (cột nguồn STATUS — trước đây bị loại trừ theo chính sách 2026-07-07, nay map Classification Value vì mang ý nghĩa nghiệp vụ 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động; dùng lại scheme APPRAISAL_STATUS đã đăng ký sẵn cho đúng cột này, đổi tên thành NHNCK.APPLICATION_SPECIALIZATIONS.STATUS). Cần review/approve lại. Lịch sử trước: design_status quay lại draft (2026-07-09) — đổi Specialization Type Code thành Classification Specialization Code + thêm FK Classification Specialization Id. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Application Id\" và \"Classification Specialization Id\" — trước đây hash trực tiếp theo ID kỹ thuật (APPLICATION_ID/SPECIALIZATION_ID) thay vì Code của bảng đích (APPLICATION_CODE/SPECIALIZATION_CODE). Hạ về draft lại (2026-08-20): Classification Specialization Id + Code đổi thành 1 trường Classification Value \"Specialization Code\" (scheme SPECIALIZATION) — do NHNCK.SPECIALIZATIONS revert về Classification Value, không còn là Atomic entity riêng. Hạ về draft (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: bổ sung \"Public Service Portal Document Component Code\" (MCDT_MA_THANH_PHAN_HOSO, map 1:1). SUBMIT_LATER không tồn tại trên bảng này (chỉ có trên APPLICATION_DOCUMENTS) — không map."
 attributes:
-- attribute_name: "Securities Practitioner License Application Education Certificate\
-    \ Document Id"
+- attribute_name: "Securities Practitioner License Application Education Certificate Document Id"
   physical_name: "sp_license_application_education_certificate_document_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
@@ -45,13 +27,11 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: Documentation. Securities Practitioner License Application\
-    \ Education Certificate Document."
+  comment: "PK surrogate. BCV: Documentation. Securities Practitioner License Application Education Certificate Document."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Securities Practitioner License Application Education Certificate\
-    \ Document Code"
+- attribute_name: "Securities Practitioner License Application Education Certificate Document Code"
   physical_name: "sp_license_application_education_certificate_document_code"
   description: "Mã định danh bản ghi chuyên môn. BK"
   data_domain: "Text"
@@ -85,11 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-    \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
-    \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -167,10 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID\
-    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa\
-    \ xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang NHNCK.USERS: APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -183,9 +156,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.USERNAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Appraised By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
-    \ crosswalk — chi tiết xem comment Appraised By Officer Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Appraised By Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Appraised By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -237,8 +208,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.MCDT_MA_THANH_PHAN_HOSO"
-  comment: "Mirror pattern Public Service Portal Content Item Code trên lld_NHNCK_APPLICATIONS.yaml\
-    \ — mã đồng bộ với Cổng Dịch vụ công quốc gia. Bổ sung theo DDL mới (2026-09-10)."
+  comment: "Mirror pattern Public Service Portal Content Item Code trên lld_NHNCK_APPLICATIONS.yaml — mã đồng bộ với Cổng Dịch vụ công quốc gia. Bổ sung theo DDL mới (2026-09-10)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

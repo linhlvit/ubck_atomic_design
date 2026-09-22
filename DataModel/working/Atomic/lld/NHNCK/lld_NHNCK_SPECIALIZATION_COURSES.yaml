@@ -17,20 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "BCO doi Event -> Business Activity theo yeu cau Data Modeler (2026-07-24)\
-    \ - dung catch-all term chung voi entity con Training Class Enrollment (SPECIALIZATION_COURSE_DETAILS).\
-    \ Hạ về draft (2026-08-18) để sửa lỗi thiết kế: SPECIALIZATION_ID trước đây map\
-    \ thành \"Specialization Type Code\" (Classification Value, scheme SPECIALIZATION)\
-    \ — scheme này đã deprecate từ 2026-07-09 khi SPECIALIZATIONS nâng cấp thành Atomic\
-    \ entity thật 'Classification Specialization' (cl_specialization). Các bảng khác\
-    \ tiêu thụ SPECIALIZATIONS (APPLICATION_SPECIALIZATIONS, CERTIFICATE_SPECIALIZATIONS)\
-    \ đã đổi sang FK Id+Code chuẩn nhưng SPECIALIZATION_COURSES bị bỏ sót — nay sửa\
-    \ sang cặp Classification Specialization Id + Code, kèm crosswalk join SPECIALIZATION_ID\
-    \ → SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE trước khi hash (đồng bộ với\
-    \ lld_NHNCK_SPECIALIZATION_COURSE_DETAILS.yaml sửa cùng lượt). Hạ về draft lại\
-    \ (2026-08-20): Classification Specialization Id + Code đổi thành 1 trường Classification\
-    \ Value \"Specialization Code\" (scheme SPECIALIZATION) — do NHNCK.SPECIALIZATIONS\
-    \ revert về Classification Value, không còn là Atomic entity riêng."
+  notes: "BCO doi Event -> Business Activity theo yeu cau Data Modeler (2026-07-24) - dung catch-all term chung voi entity con Training Class Enrollment (SPECIALIZATION_COURSE_DETAILS). Hạ về draft (2026-08-18) để sửa lỗi thiết kế: SPECIALIZATION_ID trước đây map thành \"Specialization Type Code\" (Classification Value, scheme SPECIALIZATION) — scheme này đã deprecate từ 2026-07-09 khi SPECIALIZATIONS nâng cấp thành Atomic entity thật 'Classification Specialization' (cl_specialization). Các bảng khác tiêu thụ SPECIALIZATIONS (APPLICATION_SPECIALIZATIONS, CERTIFICATE_SPECIALIZATIONS) đã đổi sang FK Id+Code chuẩn nhưng SPECIALIZATION_COURSES bị bỏ sót — nay sửa sang cặp Classification Specialization Id + Code, kèm crosswalk join SPECIALIZATION_ID → SPECIALIZATIONS.ID để lấy SPECIALIZATION_CODE trước khi hash (đồng bộ với lld_NHNCK_SPECIALIZATION_COURSE_DETAILS.yaml sửa cùng lượt). Hạ về draft lại (2026-08-20): Classification Specialization Id + Code đổi thành 1 trường Classification Value \"Specialization Code\" (scheme SPECIALIZATION) — do NHNCK.SPECIALIZATIONS revert về Classification Value, không còn là Atomic entity riêng."
 attributes:
 - attribute_name: "Securities Practitioner Professional Training Class Id"
   physical_name: "sp_professional_training_class_id"
@@ -156,12 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID"
-  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-    \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSES.PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
-    \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
-    \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
-    \ trước go-live."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: SPECIALIZATION_COURSES.PROVINCE_ID = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW', PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

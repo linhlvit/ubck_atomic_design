@@ -17,8 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: "Chien Nguyen"
   approved_at: "2026-07-03"
-  notes: "Snapshot trạng thái chỉ số thị trường (VNINDEX/HNX-Index/UPCOM-Index). Grain\
-    \ = 1 lần chụp của 1 chỉ số (historyid). Tier 1 độc lập."
+  notes: "Snapshot trạng thái chỉ số thị trường (VNINDEX/HNX-Index/UPCOM-Index). Grain = 1 lần chụp của 1 chỉ số (historyid). Tier 1 độc lập."
 attributes:
 - attribute_name: "Market Index Snapshot Id"
   physical_name: "market_index_snpst_id"
@@ -28,8 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ số thị\
-    \ trường tại 1 thời điểm."
+  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ số thị trường tại 1 thời điểm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -117,8 +115,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_MARKETINFOR.INDEXTIME"
-  comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile\
-    \ trước khi convert sang Timestamp."
+  comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -157,8 +154,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_MARKETINFOR.INDEXCOLOR"
-  comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor\
-    \ — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
+  comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
   classification_context: "MDDS_PRICE_CHANGE_COLOR"
   etl_derived_value: null
   data_type: "string"
@@ -171,8 +167,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_MARKETINFOR.HALTRSNCODE"
-  comment: "Cần profile giá trị — có thể promote sang Classification Value sau khi\
-    \ profile."
+  comment: "Cần profile giá trị — có thể promote sang Classification Value sau khi profile."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -185,8 +180,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_MARKETINFOR.MARKETINDEX"
-  comment: "Domain Currency Amount vì đây là điểm số tài chính. Nguồn double precision\
-    \ — không mất dữ liệu."
+  comment: "Domain Currency Amount vì đây là điểm số tài chính. Nguồn double precision — không mất dữ liệu."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
@@ -271,8 +265,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_MARKETINFOR.TOTALVOLUME"
-  comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng\
-    \ CK, cùng pattern với advancesvolumn/declinesvolumn."
+  comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng CK, cùng pattern với advancesvolumn/declinesvolumn."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
@@ -478,8 +471,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_MARKETINFOR.SEQUENCE"
-  comment: "Thứ tự update — không phải business sequence number của Sở, chỉ dùng\
-    \ để order các lần update trong ngày."
+  comment: "Thứ tự update — không phải business sequence number của Sở, chỉ dùng để order các lần update trong ngày."
   classification_context: null
   etl_derived_value: null
   data_type: "int"

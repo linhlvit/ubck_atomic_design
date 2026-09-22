@@ -17,18 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Source thực tế: parse Document.Content->>'DoiTuongNopHoSo' tại tầng ODS\
-    \ → bảng ODS AP_DOCUMENT_APPLICANT. PK ghép (AP_DOCUMENT_ID, AP_DOCUMENT_APPLICANT_ID)\
-    \ — cùng AP_DOCUMENT_APPLICANT_ID (ContentItemId đối tượng) có thể xuất hiện\
-    \ trong nhiều hồ sơ khác nhau, nên không hash từ AP_DOCUMENT_APPLICANT_id đơn\
-    \ lẻ. Hai phiên bản schema (ranh giới 07/02/2025–30/05/2025): schema cũ —\
-    \ đối tượng nộp lưu đầy đủ trong bag nhúng tại root JSON, ten_hien_thi/dia_chi/\
-    \ so_dien_thoai/email lấy trực tiếp từ bag; schema mới — HoSoTTHC chỉ còn\
-    \ field tham chiếu ContentItemIds, không còn bag nhúng đầy đủ, email lấy từ\
-    \ HoSoTTHC.DoiTuongNopHoSoEmail, SoDienThoai lấy từ HoSoTTHC.SoDienThoai.\
-    \ Cảnh báo mục 3.2 bàn giao: ID tham chiếu (ContentItemIds trong HoSoTTHC)\
-    \ và bag nhúng tại root là 2 nguồn ĐỘC LẬP, có thể lệch nhau — ETL phải so\
-    \ khớp ID để gán vai_tro chính xác, không giả định 2 nguồn luôn khớp."
+  notes: "Source thực tế: parse Document.Content->>'DoiTuongNopHoSo' tại tầng ODS → bảng ODS AP_DOCUMENT_APPLICANT. PK ghép (AP_DOCUMENT_ID, AP_DOCUMENT_APPLICANT_ID) — cùng AP_DOCUMENT_APPLICANT_ID (ContentItemId đối tượng) có thể xuất hiện trong nhiều hồ sơ khác nhau, nên không hash từ AP_DOCUMENT_APPLICANT_id đơn lẻ. Hai phiên bản schema (ranh giới 07/02/2025–30/05/2025): schema cũ — đối tượng nộp lưu đầy đủ trong bag nhúng tại root JSON, ten_hien_thi/dia_chi/ so_dien_thoai/email lấy trực tiếp từ bag; schema mới — HoSoTTHC chỉ còn field tham chiếu ContentItemIds, không còn bag nhúng đầy đủ, email lấy từ HoSoTTHC.DoiTuongNopHoSoEmail, SoDienThoai lấy từ HoSoTTHC.SoDienThoai. Cảnh báo mục 3.2 bàn giao: ID tham chiếu (ContentItemIds trong HoSoTTHC) và bag nhúng tại root là 2 nguồn ĐỘC LẬP, có thể lệch nhau — ETL phải so khớp ID để gán vai_tro chính xác, không giả định 2 nguồn luôn khớp."
 attributes:
 - attribute_name: "Administrative Procedure Document Applicant Id"
   physical_name: "ap_document_applicant_id"
@@ -38,9 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Involved Party] Involved Party\". Hash: hash_id('TTHC_AP_DOCUMENT_APPLICANT',\
-    \ AP_DOCUMENT_APPLICANT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType\
-    \ = 'DoiTuongNopHoSo')."
+  comment: "PK surrogate. BCV: \"[Involved Party] Involved Party\". Hash: hash_id('TTHC_AP_DOCUMENT_APPLICANT', AP_DOCUMENT_APPLICANT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'DoiTuongNopHoSo')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -78,9 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT_APPLICANT.DISPLAY_NAME"
-  comment: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].TenHienThi\
-    \ (schema cũ — bag nhúng). Schema mới: NULL cho tới khi tra cứu bổ sung từ\
-    \ content item đối tượng."
+  comment: "Nguồn thực: Document.Content->'DoiTuongNopHoSo'->items[].TenHienThi (schema cũ — bag nhúng). Schema mới: NULL cho tới khi tra cứu bổ sung từ content item đối tượng."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -93,9 +78,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT_APPLICANT.PHONE_NUMBER"
-  comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].SoDienThoai\
-    \ (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'SoDienThoai'->'Text'.\
-    \ ODS đã gộp 2 nguồn."
+  comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].SoDienThoai (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'SoDienThoai'->'Text'. ODS đã gộp 2 nguồn."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -108,10 +91,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT_APPLICANT.EMAIL"
-  comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].Email\
-    \ (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'DoiTuongNopHoSoEmail'->'Text'.\
-    \ ODS đã gộp 2 nguồn."
+  comment: "Nguồn thực: schema cũ = Document.Content->'DoiTuongNopHoSo'->items[].Email (bag nhúng); schema mới = Document.Content->'HoSoTTHC'->'DoiTuongNopHoSoEmail'->'Text'. ODS đã gộp 2 nguồn."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-

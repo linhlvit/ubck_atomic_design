@@ -21,8 +21,7 @@ metadata:
 attributes:
 - attribute_name: "Securities Practitioner Employment Status Id"
   physical_name: "sp_employment_status_id"
-  description: "Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của\
-    \ người hành nghề chứng khoán (surrogate key)."
+  description: "Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của người hành nghề chứng khoán (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
@@ -85,20 +84,14 @@ attributes:
   data_type: "string"
 - attribute_name: "Securities Organization Reference Id"
   physical_name: "securities_organization_reference_id"
-  description: "Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành\
-    \ nghề làm việc."
+  description: "Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành nghề làm việc."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID"
-  comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-    \ Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID\
-    \ = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS',\
-    \ ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật)\
-    \ gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang\
-    \ crosswalk 2026-08-11."
+  comment: "FK target: securities_organization_reference.securities_organization_reference_id. Cần ETL crosswalk sang NHNCK.ORGANIZATIONS: PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID = ORGANIZATIONS.ID để xác nhận ORGANIZATION_CODE sau đó hash_id('NHNCK_ORGANIZATIONS', ORGANIZATION_CODE) | Trước đây hash trực tiếp theo ORGANIZATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ ORGANIZATION_CODE) — đã sửa sang crosswalk 2026-08-11."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -111,16 +104,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
-  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-    \ Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
+  comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Securities Organization Reference Id. Giá trị lấy từ NHNCK.ORGANIZATIONS.ORGANIZATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Department Name"
   physical_name: "department_nm"
-  description: "Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc (snapshot\
-    \ text)."
+  description: "Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc (snapshot text)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -133,16 +123,14 @@ attributes:
   data_type: "string"
 - attribute_name: "Workplace Name"
   physical_name: "workplace_nm"
-  description: "Tên tổ chức / nơi làm việc dạng text (có thể khác ORGANIZATION_NAME\
-    \ khi tổ chức đổi tên hoặc chưa có trong ORGANIZATIONS)."
+  description: "Tên tổ chức / nơi làm việc dạng text (có thể khác ORGANIZATION_NAME khi tổ chức đổi tên hoặc chưa có trong ORGANIZATIONS)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_WORK_HISTORIES.WORKPLACE"
-  comment: "Denormalized — giữ lại vì có thể không trùng với Securities Organization\
-    \ Reference Name."
+  comment: "Denormalized — giữ lại vì có thể không trùng với Securities Organization Reference Name."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -181,10 +169,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.POSITIONS.POSITION_CODE"
-  comment: "SCHEMA_CODE=POSITION"
-  comment: "SCHEMA_CODE=NHNCK.POSITIONS. Cần ETL crosswalk sang NHNCK.POSITIONS: PROFESSIONAL_WORK_HISTORIES.POSITION_ID = POSITIONS.ID\
-    \ để xác nhận NHNCK.POSITIONS.POSITION_CODE, sau đó lưu POSITION_CODE (không lưu ID kỹ thuật) vào\
-    \ cột này."
+  comment: "SCHEMA_CODE=NHNCK.POSITIONS. Cần ETL crosswalk sang NHNCK.POSITIONS: PROFESSIONAL_WORK_HISTORIES.POSITION_ID = POSITIONS.ID để xác nhận NHNCK.POSITIONS.POSITION_CODE, sau đó lưu POSITION_CODE (không lưu ID kỹ thuật) vào cột này."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

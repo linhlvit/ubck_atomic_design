@@ -17,17 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Đưa vào scope (2026-09-11) theo yêu cầu Data Modeler — trước đây out_of_scope\
-    \ (không có scope_reason cụ thể trong brd_NHNCK.yaml). HLD Tier1 6d đã dự kiến\
-    \ trước đó (\"Chỉ có Code + Name → Classification Value, không tạo Atomic entity\"),\
-    \ nay hiện thực hóa. Map trực tiếp vào Fundamental entity dùng chung Classification\
-    \ Value (cl_value), mirror pattern lld_NHNCK_APPLICATION_STATUSES.yaml / lld_NHNCK_DEPARTMENTS.yaml.\
-    \ POSITION_CODE mô tả nguồn còn TBD trong BRD — cần profile dữ liệu xác nhận NOT\
-    \ NULL/unique trước go-live (Code đóng vai trò BK). Scheme: NHNCK.POSITIONS (đăng\
-    \ ký trong classification_schemes.yaml). File này là Level 1 LLD; cần chạy Level\
-    \ 2 consolidation (generate_entity_consolidation.py) gộp vào entity_cl_value.yaml\
-    \ cùng các source khác trước khi generate ra DataModel/Atomic. 4 cột ds_* không\
-    \ thiết kế ở đây — ETL job tự quản lý (SCD, không map từ cột nguồn)."
+  notes: "Đưa vào scope (2026-09-11) theo yêu cầu Data Modeler — trước đây out_of_scope (không có scope_reason cụ thể trong brd_NHNCK.yaml). HLD Tier1 6d đã dự kiến trước đó (\"Chỉ có Code + Name → Classification Value, không tạo Atomic entity\"), nay hiện thực hóa. Map trực tiếp vào Fundamental entity dùng chung Classification Value (cl_value), mirror pattern lld_NHNCK_APPLICATION_STATUSES.yaml / lld_NHNCK_DEPARTMENTS.yaml. POSITION_CODE mô tả nguồn còn TBD trong BRD — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (Code đóng vai trò BK). Scheme: NHNCK.POSITIONS (đăng ký trong classification_schemes.yaml). File này là Level 1 LLD; cần chạy Level 2 consolidation (generate_entity_consolidation.py) gộp vào entity_cl_value.yaml cùng các source khác trước khi generate ra DataModel/Atomic. 4 cột ds_* không thiết kế ở đây — ETL job tự quản lý (SCD, không map từ cột nguồn)."
 attributes:
 - attribute_name: "Classification Code"
   physical_name: "cl_code"
@@ -38,8 +28,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.POSITIONS.POSITION_CODE"
-  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Mô tả nguồn còn TBD trong\
-    \ BRD — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Mô tả nguồn còn TBD trong BRD — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -81,8 +70,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Classification Name"
   physical_name: "cl_nm"
-  description: "Tên giá trị phân loại (tiếng Việt). Tên chức vụ tại thời điểm công\
-    \ tác (snapshot)."
+  description: "Tên giá trị phân loại (tiếng Việt). Tên chức vụ tại thời điểm công tác (snapshot)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false

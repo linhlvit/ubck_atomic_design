@@ -17,23 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế mới (2026-07-07): trước đây NHNCK.CERTIFICATES chỉ tồn tại dưới\
-    \ dạng Classification Value scheme rỗng (CERTIFICATE_TYPE/NHNCK_CERTIFICATE_TYPE,\
-    \ đã xóa khỏi classification_schemes.yaml). Bảng có PROCESSING_DAYS/SORT_ORDER/\
-    \ DESCRIPTION nên là entity concept thật (rule 11 CLAUDE.md), không phải reference\
-    \ data set thuần. Là FK target cross-source cho IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID\
-    \ (xem lld_IAM_USERS.yaml) và cho 5 file NHNCK retrofit (APPLICATIONS, CERTIFICATE_RECORDS,\
-    \ EXAM_DETAILS, EXAM_SESSION_FEES, ORGANIZATION_REPORTS). Hạ lại design_status\
-    \ approved → draft (2026-07-13): đổi pattern Id+Code+Unique Key → Id+Code (bỏ\
-    \ Unique Key, Code nay = CERTIFICATE_CODE thay vì ID) — cần review/approve lại.\
-    \ Các file downstream tham chiếu Code cũ (ID-based) cần rà soát riêng. STATUS\
-    \ (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo chính sách\
-    \ Data Modeler (2026-07-07), chỉ đổi tên qua DDL UAT remap 2026-07-15/20. Xem\
-    \ pending_design.yaml (cập nhật lại source_column 2026-07-24). Đổi tên attribute\
-    \ Certificate Name → Certificate Type Name (2026-08-04), nhất quán với Datamart\
-    \ SP License Certificate Type Dimension (đã dùng tên này từ trước) — physical_name\
-    \ certificate_nm → certificate_tp_nm. Hạ design_status approved → draft do sửa\
-    \ sau approve — cần review/approve lại."
+  notes: "Thiết kế mới (2026-07-07): trước đây NHNCK.CERTIFICATES chỉ tồn tại dưới dạng Classification Value scheme rỗng (CERTIFICATE_TYPE/NHNCK_CERTIFICATE_TYPE, đã xóa khỏi classification_schemes.yaml). Bảng có PROCESSING_DAYS/SORT_ORDER/ DESCRIPTION nên là entity concept thật (rule 11 CLAUDE.md), không phải reference data set thuần. Là FK target cross-source cho IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID (xem lld_IAM_USERS.yaml) và cho 5 file NHNCK retrofit (APPLICATIONS, CERTIFICATE_RECORDS, EXAM_DETAILS, EXAM_SESSION_FEES, ORGANIZATION_REPORTS). Hạ lại design_status approved → draft (2026-07-13): đổi pattern Id+Code+Unique Key → Id+Code (bỏ Unique Key, Code nay = CERTIFICATE_CODE thay vì ID) — cần review/approve lại. Các file downstream tham chiếu Code cũ (ID-based) cần rà soát riêng. STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo chính sách Data Modeler (2026-07-07), chỉ đổi tên qua DDL UAT remap 2026-07-15/20. Xem pending_design.yaml (cập nhật lại source_column 2026-07-24). Đổi tên attribute Certificate Name → Certificate Type Name (2026-08-04), nhất quán với Datamart SP License Certificate Type Dimension (đã dùng tên này từ trước) — physical_name certificate_nm → certificate_tp_nm. Hạ design_status approved → draft do sửa sau approve — cần review/approve lại."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Type Id"
   physical_name: "sp_license_certificate_tp_id"
@@ -43,24 +27,20 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE). BCV:\
-    \ [Documentation] Gov. Registration Document."
+  comment: "PK surrogate. Hash: hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE). BCV: [Documentation] Gov. Registration Document."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Type Code"
   physical_name: "sp_license_certificate_tp_code"
-  description: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: MGCK, PTTC,\
-    \ QLQ). BK duy nhất — Id hash từ trường này."
+  description: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: MGCK, PTTC, QLQ). BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATES.CERTIFICATE_CODE"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
-    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
-    \ trước go-live."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -78,16 +58,14 @@ attributes:
   data_type: "string"
 - attribute_name: "Certificate Type Name"
   physical_name: "certificate_tp_nm"
-  description: "Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi\
-    \ giới CK)"
+  description: "Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi giới CK)"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATES.CERTIFICATE_NAME"
-  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Đổi tên từ Certificate\
-    \ Name (2026-08-04) để nhất quán với Datamart SP License Certificate Type Dimension."
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Đổi tên từ Certificate Name (2026-08-04) để nhất quán với Datamart SP License Certificate Type Dimension."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -119,9 +97,8 @@ attributes:
   data_type: "int"
 - attribute_name: "Original Data Indicator"
   physical_name: "original_data_ind"
-  description: "Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người\
-    \ dùng tạo"
-  data_domain: "Indicator"
+  description: "Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -130,4 +107,4 @@ attributes:
   comment: "BCV: không có term riêng. Nguồn NUMBER(1)."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"

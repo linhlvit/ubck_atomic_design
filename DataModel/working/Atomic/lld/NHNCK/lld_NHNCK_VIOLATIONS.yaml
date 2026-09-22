@@ -17,10 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-08-14) để sửa lỗi hash-mismatch FK \"Securities Practitioner\
-    \ License Decision Document Id\" — trước đây hash trực tiếp theo DECISION_ID (ID\
-    \ kỹ thuật) thay vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên\
-    \ lld_NHNCK_DECISIONS.yaml."
+  notes: "Hạ về draft (2026-08-14) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Decision Document Id\" — trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) thay vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml."
 attributes:
 - attribute_name: "Securities Practitioner Violation Id"
   physical_name: "sp_violation_id"
@@ -30,8 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"Business Activity\" (Conduct Violation). Vi phạm\
-    \ đạo đức nghề nghiệp của người hành nghề chứng khoán."
+  comment: "PK surrogate. BCV: \"Business Activity\" (Conduct Violation). Vi phạm đạo đức nghề nghiệp của người hành nghề chứng khoán."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -95,11 +91,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.VIOLATIONS.DECISION_ID"
-  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: VIOLATIONS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với\
-    \ Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: VIOLATIONS.DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -112,10 +104,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -128,8 +117,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.VIOLATIONS.FULL_NAME"
-  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại\
-    \ PROFESSIONALS."
+  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại PROFESSIONALS."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -142,8 +130,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.VIOLATIONS.BIRTH_DATE"
-  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại\
-    \ PROFESSIONALS."
+  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Không join lại PROFESSIONALS."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -156,8 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.VIOLATIONS.IDENTITY_NUMBER"
-  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Grain ≠ Involved\
-    \ Party nên không tách IP Alt Identification."
+  comment: "Snapshot — lưu giá trị tại thời điểm ghi nhận vi phạm. Grain ≠ Involved Party nên không tách IP Alt Identification."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

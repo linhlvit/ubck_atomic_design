@@ -17,26 +17,22 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Không phải Involved Party — không tách shared entity. CREATED_BY, MODIFY_BY\
-    \ document trong pending_design.yaml. Lưu ý: giá trị PERIOD (1=Giữa năm, 2=Cuối\
-    \ năm) ngược thứ tự so với RANK.RANK_TYPE (1=Cuối năm, 2=Giữa năm) dùng cùng scheme\
-    \ FMS_RATING_PERIOD_TYPE — cần đối chiếu kỹ khi thiết kế Member Rating (Tier 2)."
+  notes: "Không phải Involved Party — không tách shared entity. CREATED_BY, MODIFY_BY document trong pending_design.yaml. Lưu ý: giá trị PERIOD (1=Giữa năm, 2=Cuối năm) ngược thứ tự so với RANK.RANK_TYPE (1=Cuối năm, 2=Giữa năm) dùng cùng scheme FMS_RATING_PERIOD_TYPE — cần đối chiếu kỹ khi thiết kế Member Rating (Tier 2)."
 attributes:
 - attribute_name: "Member Rating Period Id"
-  physical_name: "member_rating_period_id"
+  physical_name: "m_ember_rating_period_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Business Activity] Assessment Period\". Kỳ đánh\
-    \ giá xếp loại công ty QLQ, được FK từ Member Rating (Tier 2)."
+  comment: "PK surrogate. BCV: \"[Business Activity] Assessment Period\". Kỳ đánh giá xếp loại công ty QLQ, được FK từ Member Rating (Tier 2)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Member Rating Period Code"
-  physical_name: "member_rating_period_code"
+  physical_name: "m_ember_rating_period_code"
   description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
   data_domain: "Text"
   nullable: false
@@ -82,16 +78,13 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.RATING_PD.PERIOD"
-  comment: "Scheme: FMS_RATING_PERIOD_TYPE. ETL map: 1=MID_YEAR;2=YEAR_END. [LƯU Ý]\
-    \ Thứ tự mã ngược với RANK.RANK_TYPE dùng cùng scheme (1=YEAR_END;2=MID_YEAR)\
-    \ — cần xác nhận nghiệp vụ khi thiết kế Member Rating (Tier 2)."
+  comment: "Scheme: FMS_RATING_PERIOD_TYPE. ETL map: 1=MID_YEAR;2=YEAR_END. [LƯU Ý] Thứ tự mã ngược với RANK.RANK_TYPE dùng cùng scheme (1=YEAR_END;2=MID_YEAR) — cần xác nhận nghiệp vụ khi thiết kế Member Rating (Tier 2)."
   classification_context: "FMS_RATING_PERIOD_TYPE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Active Status Flag"
   physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false

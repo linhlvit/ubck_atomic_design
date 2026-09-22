@@ -17,16 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Source thực tế: parse Document.Content->>'ThongTinNhanHoSoTuBuuChinh'\
-    \ tại tầng ODS → bảng ODS AP_DOCUMENT_POSTAL_RECEIPT. Chỉ tồn tại bản ghi khi\
-    \ AP_DOCUMENT.return_method_code = 2 — nếu = 0 hoặc 1, key ThongTinNhanHoSoTuBuuChinh\
-    \ thường vắng mặt hoàn toàn trong JSON nguồn (không phải rỗng {}, confirmed\
-    \ trên mẫu dữ liệu thực). AP_DOCUMENT_POSTAL_RECEIPT_ID = ContentItemId của\
-    \ content item bưu chính (KHÁC với AP_DOCUMENT_ID). Schema thiết kế cho phép 1-N\
-    \ (FK AP_DOCUMENT_ID không unique) để mở đường lưu lịch sử đổi địa chỉ về sau;\
-    \ dữ liệu quan sát thực tế là 1-1. Một số trường chỉ thấy ở schema cũ:\
-    \ postal_code, district_code, note — schema mới có thể NULL hoặc không\
-    \ có field trong JSON."
+  notes: "Source thực tế: parse Document.Content->>'ThongTinNhanHoSoTuBuuChinh' tại tầng ODS → bảng ODS AP_DOCUMENT_POSTAL_RECEIPT. Chỉ tồn tại bản ghi khi AP_DOCUMENT.return_method_code = 2 — nếu = 0 hoặc 1, key ThongTinNhanHoSoTuBuuChinh thường vắng mặt hoàn toàn trong JSON nguồn (không phải rỗng {}, confirmed trên mẫu dữ liệu thực). AP_DOCUMENT_POSTAL_RECEIPT_ID = ContentItemId của content item bưu chính (KHÁC với AP_DOCUMENT_ID). Schema thiết kế cho phép 1-N (FK AP_DOCUMENT_ID không unique) để mở đường lưu lịch sử đổi địa chỉ về sau; dữ liệu quan sát thực tế là 1-1. Một số trường chỉ thấy ở schema cũ: postal_code, district_code, note — schema mới có thể NULL hoặc không có field trong JSON."
 attributes:
 - attribute_name: "Administrative Procedure Document Postal Receipt Id"
   physical_name: "ap_document_postal_receipt_id"
@@ -36,9 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Documentation] Documentation\". Hash: hash_id('TTHC_AP_DOCUMENT_POSTAL_RECEIPT',\
-    \ AP_DOCUMENT_POSTAL_RECEIPT_ID). Nguồn thực: ContentItemIndex.ContentItemId\
-    \ (ContentType = 'thongtinnhanbuurchinh')."
+  comment: "PK surrogate. BCV: \"[Documentation] Documentation\". Hash: hash_id('TTHC_AP_DOCUMENT_POSTAL_RECEIPT', AP_DOCUMENT_POSTAL_RECEIPT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'thongtinnhanbuurchinh')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -75,9 +64,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "FK target: ap_document.ap_document_id. Hash: hash_id('TTHC_AP_DOCUMENT',\
-    \ AP_DOCUMENT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'HoSoTTHC').\
-    \ FK không unique — cho phép 1-N về sau."
+  comment: "FK target: ap_document.ap_document_id. Hash: hash_id('TTHC_AP_DOCUMENT', AP_DOCUMENT_ID). Nguồn thực: ContentItemIndex.ContentItemId (ContentType = 'HoSoTTHC'). FK không unique — cho phép 1-N về sau."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -103,8 +90,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT_POSTAL_RECEIPT.POSTAL_CODE"
-  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaBuuChinh'->'Text'.\
-    \ Chỉ thấy ở schema cũ (trước 07/02/2025). Schema mới thường NULL."
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'MaBuuChinh'->'Text'. Chỉ thấy ở schema cũ (trước 07/02/2025). Schema mới thường NULL."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -122,7 +108,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Receipt Address"
-  physical_name: "receipt_address"
+  physical_name: "receipt_adr"
   description: "Địa chỉ nhận kết quả hồ sơ qua bưu chính — text tự do."
   data_domain: "Text"
   nullable: true
@@ -130,8 +116,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT_POSTAL_RECEIPT.RECEIPT_ADDRESS"
-  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'DiaChiNhanHoSo'->'Text'.\
-    \ Text tự do — không luôn đi kèm province_code/district_code."
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'DiaChiNhanHoSo'->'Text'. Text tự do — không luôn đi kèm province_code/district_code."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -183,8 +168,7 @@ attributes:
   status: "draft"
   source_columns:
   - "TTHC.AP_DOCUMENT_POSTAL_RECEIPT.NOTE"
-  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'GhiChu'->'Text'.\
-    \ Chỉ thấy ở schema cũ. Schema mới thường NULL."
+  comment: "Nguồn thực: Document.Content->'ThongTinNhanHoSoTuBuuChinh'->'GhiChu'->'Text'. Chỉ thấy ở schema cũ. Schema mới thường NULL."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

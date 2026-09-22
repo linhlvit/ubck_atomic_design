@@ -17,10 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Tách IP Postal Address + IP Electronic Address (xem lld_FMS_BRANCHS_IP_*.yaml).\
-    \ TL_ID FK đến Fund Management Company Employee (TL_PROFILES, cùng batch Tier\
-    \ 2). CREATED_BY, MODIFY_BY, FILE_NAME/FILE_DATA, DELETED, DATA_MIGRATION, BR_IDOWNER\
-    \ document trong pending_design.yaml."
+  notes: "Tách IP Postal Address + IP Electronic Address (xem lld_FMS_BRANCHS_IP_*.yaml). TL_ID FK đến Fund Management Company Employee (TL_PROFILES, cùng batch Tier 2). CREATED_BY, MODIFY_BY, FILE_NAME/FILE_DATA, DELETED, DATA_MIGRATION, BR_IDOWNER document trong pending_design.yaml."
 attributes:
 - attribute_name: "Fund Management Company Organization Unit Id"
   physical_name: "fmc_ou_id"
@@ -30,8 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Chi nhánh/VPĐD trực\
-    \ thuộc Fund Management Company trong nước."
+  comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Chi nhánh/VPĐD trực thuộc Fund Management Company trong nước."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -69,8 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BRANCHS.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES', SEC_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -83,8 +78,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BRANCHS.SEC_ID"
-  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
-    \ Company Id."
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -110,8 +104,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BRANCHS.BR_TYPE"
-  comment: "Scheme: FMS_ORG_UNIT_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d —\
-    \ bổ sung classification_schemes.yaml. ETL map: 1=BRANCH;2=REPRESENTATIVE_OFFICE."
+  comment: "Scheme: FMS_ORG_UNIT_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml. ETL map: 1=BRANCH;2=REPRESENTATIVE_OFFICE."
   classification_context: "FMS_ORG_UNIT_TYPE"
   etl_derived_value: null
   data_type: "string"
@@ -163,8 +156,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BRANCHS.TL_NAME"
-  comment: "Denormalized snapshot — khác với FK Fund Management Company Employee Id\
-    \ (giữ giá trị tại thời điểm ghi nhận, không tự cập nhật theo entity)."
+  comment: "Denormalized snapshot — khác với FK Fund Management Company Employee Id (giữ giá trị tại thời điểm ghi nhận, không tự cập nhật theo entity)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -203,8 +195,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BRANCHS.DORF"
-  comment: "Scheme: FMS_ORG_TERRITORY_TYPE (tái sử dụng từ SECURITIES.BORF_FLAG, Tier\
-    \ 1). ETL derived: 1=DOMESTIC;2=FOREIGN — LƯU Ý encoding khác BORF_FLAG (1=DOMESTIC;0=FOREIGN)."
+  comment: "Scheme: FMS_ORG_TERRITORY_TYPE (tái sử dụng từ SECURITIES.BORF_FLAG, Tier 1). ETL derived: 1=DOMESTIC;2=FOREIGN — LƯU Ý encoding khác BORF_FLAG (1=DOMESTIC;0=FOREIGN)."
   classification_context: "FMS_ORG_TERRITORY_TYPE"
   etl_derived_value: null
   data_type: "string"
@@ -249,8 +240,7 @@ attributes:
   data_type: "string"
 - attribute_name: "License Decision Date"
   physical_name: "license_decision_dt"
-  description: "Ngày ban hành quyết định/giấy phép thành lập hoặc chấp thuận hoạt\
-    \ động."
+  description: "Ngày ban hành quyết định/giấy phép thành lập hoặc chấp thuận hoạt động."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
@@ -302,8 +292,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Active Status Flag"
   physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
