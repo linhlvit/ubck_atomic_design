@@ -110,6 +110,16 @@ GATE_SPECS = [
     },
 ]
 
+# NOTE: datamart_progress_analyzer.py (BA <-> HLD count reconciliation) is
+# deliberately NOT wired in here as an auto-gate. Its exit code is 1 whenever
+# ANY delta exists, including deltas that are legitimate and already explained
+# in the HLD Ghi chú (derived/reuse KPIs, per-Nhom whitelisted exceptions) —
+# wiring it in unconditionally would turn this runner red for most modules,
+# not just genuine gaps. Run it as a separate, explicit step instead (see
+# SKILL.md "Đối chiếu SỐ LƯỢNG BA ↔ HLD" checklist item) and read its per-Nhóm
+# delta table for the specific Nhóm(s) just touched — do not pipe through
+# `tail`/`head` when checking it (see 2026-09-22 GSTT incident note).
+
 
 def run_gate(
     gate_spec: Dict[str, Any],

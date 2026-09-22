@@ -342,10 +342,10 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_investor_category_trading_snpst_fla
     investor_category_code              Nullable(String)        COMMENT 'Phân loại NĐT: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI (Classification Value)',
     buy_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị mua theo Phân loại NĐT (khớp lệnh + thỏa thuận) (K_GSTT_86, K_GSTT_90)',
     sell_val                            Nullable(Decimal(23,2)) COMMENT 'Giá trị bán theo Phân loại NĐT (khớp lệnh + thỏa thuận) (K_GSTT_87, K_GSTT_91)',
-    matched_buy_val                     Nullable(Decimal(23,2)) COMMENT 'Giá trị mua khớp lệnh thuần theo Phân loại NĐT (K_GSTT_88)',
-    matched_sell_val                    Nullable(Decimal(23,2)) COMMENT 'Giá trị bán khớp lệnh thuần theo Phân loại NĐT (K_GSTT_88)',
-    negotiated_buy_val                  Nullable(Decimal(23,2)) COMMENT 'Giá trị mua thỏa thuận theo Phân loại NĐT (K_GSTT_89)',
-    negotiated_sell_val                 Nullable(Decimal(23,2)) COMMENT 'Giá trị bán thỏa thuận theo Phân loại NĐT (K_GSTT_89)',
+    matched_buy_val                     Nullable(Decimal(23,2)) COMMENT 'Giá trị mua khớp lệnh thuần theo Phân loại NĐT (K_GSTT_88 tổng mua+bán, K_GSTT_153 riêng mua)',
+    matched_sell_val                    Nullable(Decimal(23,2)) COMMENT 'Giá trị bán khớp lệnh thuần theo Phân loại NĐT (K_GSTT_88 tổng mua+bán, K_GSTT_154 riêng bán)',
+    negotiated_buy_val                  Nullable(Decimal(23,2)) COMMENT 'Giá trị mua thỏa thuận theo Phân loại NĐT (K_GSTT_89 tổng mua+bán, K_GSTT_156 riêng mua)',
+    negotiated_sell_val                 Nullable(Decimal(23,2)) COMMENT 'Giá trị bán thỏa thuận theo Phân loại NĐT (K_GSTT_89 tổng mua+bán, K_GSTT_157 riêng bán)',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',

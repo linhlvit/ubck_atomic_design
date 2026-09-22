@@ -24456,74 +24456,95 @@ Nếu CL mua và bán > 0 -> GT tự doanh mua ròng
 Nếu CL mua và bán < 0 -> GT tự doanh bán ròng",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"CL mua và bán = GT tự doanh mua -GT tự doanh bán 
 Nếu CL mua và bán > 0 -> GT tự doanh mua ròng
 Nếu CL mua và bán < 0 -> GT tự doanh bán ròng",,,đã bổ sung thêm tham khảo câu lệnh sql,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,"Phân loại nhà đầu tư (cá nhân,tự doanh,..)","""Dựa trên phân loại của sổ lệnh 
-1. Hose: Thông tin Buy - Invest Type / Sell - Invest Type: 
-1000 / 8000: Cá nhân (Individual)
-1100: Cá nhân trong nước
-1200: Cá nhân chuyên nghiệp
-2000: Công ty bảo hiểm
-2100: Công ty bảo hiểm nhân thọ
-2200: Bảo hiểm phi nhân thọ
-3000: Quỹ đầu tư
-3100: Quỹ cụ thể (mutual fund)
-3200: ETF
-3300: Hedge fund
-4000: Ngân hàng
-5000: Công ty chứng khoán
-5100: CTCK tự doanh
-5200: CTCK môi giới
-6000: Tổ chức khác
-7000: Nhà đầu tư nước ngoài
-7100: Tổ chức nước ngoài
-7200: Cá nhân nước ngoài
-9000: Không xác định / khác
-2. HNX: Thông tin Sell investor classification code / Buy investor classification code:
-1000  Securities company and Futures company
-2000  Insurance company
-3000  Asset management company and Investment  company
-3100  Private fund
-4000  Bank
-5000  General finance company, Mutual savings bank
-6000  Pension, Fund and  Mutual aid
-7000  Country,  Self-governing body and International organization
-7100  Misc coorporation
-8000  Individual""",Dashboard,Chiều,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
-Buy_Acct No
-Sell_Acct No
-Trade_HNX:
-Buy account number
-sell_account_number","""Dựa trên phân loại của sổ lệnh 
-1. Hose: Thông tin Buy - Invest Type / Sell - Invest Type: 
-1000 / 8000: Cá nhân (Individual)
-1100: Cá nhân trong nước
-1200: Cá nhân chuyên nghiệp
-2000: Công ty bảo hiểm
-2100: Công ty bảo hiểm nhân thọ
-2200: Bảo hiểm phi nhân thọ
-3000: Quỹ đầu tư
-3100: Quỹ cụ thể (mutual fund)
-3200: ETF
-3300: Hedge fund
-4000: Ngân hàng
-5000: Công ty chứng khoán
-5100: CTCK tự doanh
-5200: CTCK môi giới
-6000: Tổ chức khác
-7000: Nhà đầu tư nước ngoài
-7100: Tổ chức nước ngoài
-7200: Cá nhân nước ngoài
-9000: Không xác định / khác
-2. HNX: Thông tin Sell investor classification code / Buy investor classification code:
-1000  Securities company and Futures company
-2000  Insurance company
-3000  Asset management company and Investment  company
-3100  Private fund
-4000  Bank
-5000  General finance company, Mutual savings bank
-6000  Pension, Fund and  Mutual aid
-7000  Country,  Self-governing body and International organization
-7100  Misc coorporation
-8000  Individual""",,Hiện tại chưa có cơ sở để phân biệt chính xác về phân loại hình NĐT. Theo CĐS hiện tại sẽ phân biệt qua số tài khoản của nhà đầu tư,đã sừa lại rule,,,,Done,Dữ liệu tĩnh,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,"Phân loại nhà đầu tư:
+Tự doanh 
+Cá nhân 
+Tổ chức trong nước 
+Nước ngoài ","1. HOSE/HNX:
+	*Tổng GTGD:
+Tự doanh: 
+	buy_client_house_classification_(code) = '30'
+	sell_client_house_classification_(code) = '30'
+NĐTNN:
+	buy_foreigner_investor_type_(code) <> '00'
+	sell_foreigner_investor_type_(code) <> '00'
+Cá nhân trong nước:
+	buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+	sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước:
+	buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+	sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+	
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+	*Tổng GTGD:
+Tự doanh: 
+	buy_client_house_classification_(code) = '30'
+	sell_client_house_classification_(code) = '30'
+NĐTNN:
+	buy_foreigner_investor_type_(code) <> '00'
+	sell_foreigner_investor_type_(code) <> '00'
+Cá nhân trong nước:
+	buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+	sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước:
+	buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+	sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'",Dashboard,Chiều,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"1. HOSE/HNX:
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
+Cá nhân trong nước:
+        buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+        sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước:
+        buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+        sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+        
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
+Cá nhân trong nước:
+        buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+        sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước:
+        buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+        sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'","1. HOSE/HNX:
+	*Tổng GTGD:
+Tự doanh: 
+	buy_client_house_classification_(code) = '30'
+	sell_client_house_classification_(code) = '30'
+NĐTNN:
+	buy_foreigner_investor_type_(code) <> '00'
+	sell_foreigner_investor_type_(code) <> '00'
+Cá nhân trong nước:
+	buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+	sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước:
+	buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+	sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+	
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+	*Tổng GTGD:
+Tự doanh: 
+	buy_client_house_classification_(code) = '30'
+	sell_client_house_classification_(code) = '30'
+NĐTNN:
+	buy_foreigner_investor_type_(code) <> '00'
+	sell_foreigner_investor_type_(code) <> '00'
+Cá nhân trong nước:
+	buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+	sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước:
+	buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+	sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'",,Hiện tại chưa có cơ sở để phân biệt chính xác về phân loại hình NĐT. Theo CĐS hiện tại sẽ phân biệt qua số tài khoản của nhà đầu tư,đã sừa lại rule,,,,Done,Dữ liệu tĩnh,
 28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Mã ck ,,Dashboard,Chiều,TB,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"tradingdate = :ngay_gd
 FloorCode IN ('10','02','04')
 StockType NOT IN ('B','1','BO','D')
@@ -24535,7 +24556,8 @@ FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
   AND s.FloorCode IN ('10','02','04')
   AND s.StockType NOT IN ('B','1','BO','D');",- Cần check lại điều kiện,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá mở cửa,Giá mở cửa,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,open,,"""-- Lấy marketIndex tại thời điểm cuối ngày
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Chỉ số,,,,,,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexname,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá mở cửa,Giá mở cửa,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR/JAD_STOCKINFOR,open,,"""-- Lấy marketIndex tại thời điểm cuối ngày
 SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low 
 FROM (
   SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low
@@ -24547,7 +24569,7 @@ FROM (
   WHERE tradingdate = :ngay_gd
 ) WHERE rn = 1
 """,giá cao nhất đến thời điểm xem,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá cao nhất,Giá giao dịch cao nhất trong phiên của chỉ số,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,high,,"""-- Lấy marketIndex tại thời điểm cuối ngày
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá cao nhất,Giá giao dịch cao nhất trong phiên theo chỉ số hoặc mã chứng khoán tra cứu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR/JAD_STOCKINFOR,high,,"""-- Lấy marketIndex tại thời điểm cuối ngày
 SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low 
 FROM (
   SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low
@@ -24559,7 +24581,7 @@ FROM (
   WHERE tradingdate = :ngay_gd
 ) WHERE rn = 1
 """,giá cao nhất đến thời điểm xem,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá thấp nhất,Giá giao dịch thấp nhất trong ngày của chỉ số ,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,Low,,"""-- Lấy marketIndex tại thời điểm cuối ngày
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá thấp nhất,Giá giao dịch thấp nhất trong ngày theo chỉ số hoặc mã chứng khoán tra cứu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR/JAD_STOCKINFOR,Low,,"""-- Lấy marketIndex tại thời điểm cuối ngày
 SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low 
 FROM (
   SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low
@@ -24571,7 +24593,7 @@ FROM (
   WHERE tradingdate = :ngay_gd
 ) WHERE rn = 1
 """,giá cao nhất đến thời điểm xem,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,marketIndex,marketIndex (MAX indexTime),"-- Lấy marketIndex tại thời điểm cuối ngày
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá đóng cửa,Giá giao dịch cuối cùng trong phiên theo chỉ số hoặc mã chứng khoán tra cứu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR/JAD_STOCKINFOR,marketIndex/Closeprice,,"-- Lấy marketIndex tại thời điểm cuối ngày
 SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,
 FROM (
   SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,
@@ -24583,7 +24605,7 @@ FROM (
   WHERE tradingdate = :ngay_gd
 ) WHERE rn = 1
 ","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,% thay đổi,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,marketIndex,,"SELECT
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,thay đổi,So sánh giữa giá tham chiếu với giá đóng cửa,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR/JAD_STOCKINFOR,marketIndex/chage,,"SELECT
     ""tradingdate"",
     ""marketCode"",
     closeIndex,
@@ -24610,383 +24632,77 @@ FROM
 WHERE rn = 1
 --AND  ""marketId"" = '10'
 ORDER BY ""tradingdate"";",Lấy giá cuối ngày hôm nay - giá cuối ngày hôm trước,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị mua theo phân loại nhà đầu tư,"GTGD mua theo từng phân loại nhà đầu tư: 
-- Tính từ sổ lệnh khớp
-- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
-- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
-- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
-  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
-  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",,,,,,,,,,,,,,,,,,,,,,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị bán theo phân loại nhà đầu tư,"GTGD mua theo từng phân loại nhà đầu tư: 
-- Tính từ sổ lệnh khớp
-- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
-- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
-- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
-  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
-  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",,,,,,,,,,,,,,,,,,,,,,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị ròng theo phân loại nhà đầu tư,GTGD ròng =  GTGD mua - GTGD bán theo từng phân loại nhà đầu tư,,,,,,,,,,,,,,,,,,,,,,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị mua  ròng theo phân loại nhà đầu tư,GTGD ròng > 0,,,,,,,,,,,,,,,,,,,,,,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,Giá trị bán ròng theo phân loại nhà đầu tư,GTGD ròng < 0,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE
- SUM(CASE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
-                     AND t.buy_acct_no NOT LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
-                     AND t.sell_acct_no NOT LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_ban
-HNX 
-SUM(CASE
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.BUY_ACCOUNT_NUMBER NOT LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.SELL_ACCOUNT_NUMBER NOT LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_ban","HOSE
- SUM(CASE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
-                     AND t.buy_acct_no NOT LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
-                     AND t.sell_acct_no NOT LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_ban
-HNX 
-SUM(CASE
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.BUY_ACCOUNT_NUMBER NOT LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.SELL_ACCOUNT_NUMBER NOT LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_ban","WITH ca_nhan AS (
-    -- HOSE: buy_acct_no / sell_acct_no
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,% thay đổi,So sánh giữa giá tham chiếu với giá đóng cửa,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR/JAD_STOCKINFOR,"marketIndex/ROUND((s.change / s.reference) * 100, 2)",,"SELECT
+    ""tradingdate"",
+    ""marketCode"",
+    closeIndex,
+    closeIndex
+        - LAG(closeIndex) OVER (
+            PARTITION BY ""marketCode""
+            ORDER BY ""tradingdate""
+        ) AS closeIndexChange
+FROM
+(
     SELECT
-        t.Symbol       AS ma_ck,
-        t.Trade_date   AS ngay_gd,
-        SUM(CASE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
-                     AND t.buy_acct_no NOT LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('C','E') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
-                     AND t.sell_acct_no NOT LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_ban
-    FROM krx.TRADE_BOOK_HOSE t
-    WHERE 1=1
-      AND date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = 20260302
-      AND t.Market_ID = 'STK'
-    GROUP BY t.Symbol, t.Trade_date
-    UNION ALL
-    -- HNX / UPCOM: BUY_ACCOUNT_NUMBER / SELL_ACCOUNT_NUMBER
-    SELECT
-        t.Issue_Code AS ma_ck,
-        t.Trade_date   AS ngay_gd,
-        SUM(CASE
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.BUY_ACCOUNT_NUMBER NOT LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('C','E')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.SELL_ACCOUNT_NUMBER NOT LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_ban
-    FROM krx.TRADE_BOOK_HNX t
-    WHERE t.Trade_date = 20260302
-      AND t.Market_ID IN ('STX','UPX')
-    GROUP BY t.Issue_Code, t.Trade_date
+        ""tradingdate"",
+        ""marketCode"",
+        ""marketIndex"" AS closeIndex,
+        ""marketId"",
+        ""indexTime"",
+        ROW_NUMBER() OVER (
+            PARTITION BY ""tradingdate"", ""marketCode""
+            ORDER BY ""indexTime"" DESC
+        ) AS rn
+    FROM FSSTRAINING.PUBLIC_JAD_MARKETINFOR
+    where   ""marketId"" = '10'
 )
-SELECT
-    ma_ck,
-    ngay_gd,
-    SUM(gt_mua)               AS gt_ca_nhan_mua,
-    SUM(gt_ban)               AS gt_ca_nhan_ban,
-    SUM(gt_mua) - SUM(gt_ban) AS gt_ca_nhan_rong
-FROM ca_nhan
-GROUP BY ma_ck, ngay_gd
-ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;",,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT tổ chức trong nước ròng ,"GTGD mua theo từng phân loại nhà đầu tư: 
+WHERE rn = 1
+--AND  ""marketId"" = '10'
+ORDER BY ""tradingdate"";",Lấy giá cuối ngày hôm nay - giá cuối ngày hôm trước,,,,,Done,Dữ liệu tĩnh,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,"Giá trị mua theo phân loại nhà đầu tư
+Tự doanh 
+Cá nhân 
+Tổ chức trong nước 
+Nước ngoài ","GTGD mua theo từng phân loại nhà đầu tư: 
 - Tính từ sổ lệnh khớp
-- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
+- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,EXecution_value/TRADE_PRICE*TRADE_QUANTITY,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,"Giá trị bán theo phân loại nhà đầu tư
+Tự doanh 
+Cá nhân 
+Tổ chức trong nước 
+Nước ngoài ","GTGD bán theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,EXecution_value/TRADE_PRICE*TRADE_QUANTITY,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,"Giá trị ròng theo phân loại nhà đầu tư
+Tự doanh 
+Cá nhân 
+Tổ chức trong nước 
+Nước ngoài ",GTGD ròng =  GTGD mua - GTGD bán theo từng phân loại nhà đầu tư,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,"Giá trị mua theo phân loại nhà đầu tư loại khớp lệnhk
+Tự doanh 
+Cá nhân 
+Tổ chức trong nước 
+Nước ngoài ","GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
 - Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
 - Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
   + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
-  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE
- SUM(CASE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
-                     AND t.buy_acct_no  LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
-                     AND t.sell_acct_no LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_ban
-HNX 
-SUM(CASE
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.BUY_ACCOUNT_NUMBER  LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.SELL_ACCOUNT_NUMBER  LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_ban","HOSE
- SUM(CASE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
-                     AND t.buy_acct_no  LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
-                     AND t.sell_acct_no LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_ban
-HNX 
-SUM(CASE
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.BUY_ACCOUNT_NUMBER  LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.SELL_ACCOUNT_NUMBER  LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_ban","WITH ca_nhan AS (
-    -- HOSE: buy_acct_no / sell_acct_no
-    SELECT
-        t.Symbol       AS ma_ck,
-        t.Trade_date   AS ngay_gd,
-        SUM(CASE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.buy_acct_no, 4, 1) = 'B'
-                     AND t.buy_acct_no  LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) IN ('P','A') THEN t.EXECUTION_VALUE
-                WHEN SUBSTRING(t.sell_acct_no, 4, 1) = 'B'
-                     AND t.sell_acct_no LIKE '%/%'          THEN t.EXECUTION_VALUE
-                ELSE 0
-            END) AS gt_ban
-    FROM krx.TRADE_BOOK_HOSE t
-    WHERE 1=1
-      AND date_format(to_date(t.TRADE_DATE, 'd/M/yyyy'), 'yyyyMMdd') = 20260302
-      AND t.Market_ID = 'STK'
-    GROUP BY t.Symbol, t.Trade_date
-    UNION ALL
-    -- HNX / UPCOM: BUY_ACCOUNT_NUMBER / SELL_ACCOUNT_NUMBER
-    SELECT
-        t.Issue_Code AS ma_ck,
-        t.Trade_date   AS ngay_gd,
-        SUM(CASE
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.BUY_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.BUY_ACCOUNT_NUMBER  LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_mua,
-        SUM(CASE
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) IN ('P','A')
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                WHEN SUBSTRING(t.SELL_ACCOUNT_NUMBER, 4, 1) = 'B'
-                     AND t.SELL_ACCOUNT_NUMBER  LIKE '%/%'
-                     THEN CAST(t.Trade_price AS DOUBLE) * CAST(t.Trade_quantity AS DOUBLE)
-                ELSE 0
-            END) AS gt_ban
-    FROM krx.TRADE_BOOK_HNX t
-    WHERE t.Trade_date = 20260302
-      AND t.Market_ID IN ('STX','UPX')
-    GROUP BY t.Issue_Code, t.Trade_date
-)
-SELECT
-    ma_ck,
-    ngay_gd,
-    SUM(gt_mua)               AS gt_ca_nhan_mua,
-    SUM(gt_ban)               AS gt_ca_nhan_ban,
-    SUM(gt_mua) - SUM(gt_ban) AS gt_ca_nhan_rong
-FROM ca_nhan
-GROUP BY ma_ck, ngay_gd
-ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;""",,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT tự doanh ròng ,"GTGD mua theo từng phân loại nhà đầu tư: 
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,EXecution_value/TRADE_PRICE*TRADE_QUANTITY,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,"Giá trị bán theo phân loại nhà đầu tư loại khớp lệnh
+Tự doanh 
+Cá nhân 
+Tổ chức trong nước 
+Nước ngoài ","GTGD bán theo từng phân loại nhà đầu tư: 
 - Tính từ sổ lệnh khớp
-- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
 - Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
 - Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
   + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
-  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE:
-  [Execution - Value]
-  WHERE [Buy/Sell - Client/House Classification Code]='30'
-HNX:
-  [Trade price]*[Trade quantity]
-  WHERE [Buy/Sell client/house classification]='30'","Tự doanh (House trade) = '30':
-  - HOSE: Buy/Sell - Client/House Classification Code = '30'
-  - HNX:  Buy/Sell client/house classification = '30'
-Market IN ('STO','STX','UPX')
-GT ròng = GT mua - GT bán
-
-","-- GT tự doanh ròng (HOSE + HNX)
-WITH tu_doanh AS (
-    -- HOSE
-    SELECT
-        t.Symbol       AS ma_ck,
-        t.Trade_date   AS ngay_gd,
-        SUM(CASE WHEN t.Buy_Client_House_Classification_Code = '30'
-                 THEN t.Execution_Value ELSE 0 END) AS gt_mua,
-        SUM(CASE WHEN t.Sell_Client_House_Classification_Code = '30'
-                 THEN t.Execution_Value ELSE 0 END) AS gt_ban
-    FROM TRADE_BOOK_HOSE t
-    WHERE t.Trade_date = :ngay_gd
-      AND t.Market_ID = 'STO'
-    GROUP BY t.Symbol, t.Trade_date
-
-    UNION ALL
-
-    -- HNX / UPCOM
-    SELECT
-        t.Issue_Code   AS ma_ck,
-        t.Trade_date   AS ngay_gd,
-        SUM(CASE WHEN t.Buy_client_house_classification = '30'
-                 THEN CAST(t.Trade_price    AS DOUBLE)
-                    * CAST(t.Trade_quantity AS DOUBLE)
-                 ELSE 0 END) AS gt_mua,
-        SUM(CASE WHEN t.Sell_client_house_classification = '30'
-                 THEN CAST(t.Trade_price    AS DOUBLE)
-                    * CAST(t.Trade_quantity AS DOUBLE)
-                 ELSE 0 END) AS gt_ban
-    FROM TRADE_BOOK_HNX t
-    WHERE t.Trade_date = :ngay_gd
-      AND t.Market_ID IN ('STX','UPX')
-    GROUP BY t.Issue_Code, t.Trade_date
-)
-SELECT
-    ma_ck,
-    ngay_gd,
-    SUM(gt_mua)               AS gt_tudoanh_mua,
-    SUM(gt_ban)               AS gt_tudoanh_ban,
-    SUM(gt_mua) - SUM(gt_ban) AS gt_tudoanh_rong
-FROM tu_doanh
-GROUP BY ma_ck, ngay_gd
-ORDER BY ABS(SUM(gt_mua) - SUM(gt_ban)) DESC;",,,,,,Done,Dữ liệu tĩnh,
-28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,GT NN ròng ,"GTGD mua theo từng phân loại nhà đầu tư: 
-- Tính từ sổ lệnh khớp
-- Nếu không chọn ""Khớp lệnh"": Là tổng GTGD.
-- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
-- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
-  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
-  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,JAD_CSIDXINFOR/ TRADE_BOOK_HOSE/TRADE_BOOK_HNX,"HNX/UPCOM:
-Buy Foreign Investor Type Code
-Trade quantity * Trade price
-Sell Foreign Investor Type Code
-HOSE:
-Buy - Foreigner Investor
-Execution - Value
-Sell - Foreigner Investor
-JAD_CSIDXINFOR:
-indexCode
-symbol","Market ID in ( 'STO', 'STX', 'UPX')","-- Bước 1: Lấy danh sách mã thuộc rổ chỉ số từ JAD_CSIDXINFOR
--- Bước 2: Tính GTNN ròng từ TRADE_BOOK_HOSE/Trade_HNX, lọc theo mã thuộc rổ
-SELECT
-1. HNX:
-    -- KL NN mua: dòng mà BÊN MUA là nước ngoài
-    SUM(CASE WHEN t.[Buy Foreign Investor Type Code] IN ('10','20')
-             THEN t.[Trade quantity] * Trade price ELSE 0 END)    AS kl_nn_mua,
-
-    -- KL NN bán: dòng mà BÊN BÁN là nước ngoài
-    SUM(CASE WHEN t.[Sell Foreign Investor Type Code] IN ('10','20')
-             THEN t.[Trade quantity] * Trade price ELSE 0 END)    AS kl_nn_ban,
-
-    -- KLNN ròng = mua - bán
-    SUM(CASE WHEN t.[Buy Foreign Investor Type Code]  IN ('10','20')
-             THEN  t.[Trade quantity] * Trade price ELSE 0 END)
-  - SUM(CASE WHEN t.[Sell Foreign Investor Type Code] IN ('10','20')
-             THEN  t.[Trade quantity] * Trade price ELSE 0 END)   AS kl_nn_rong
-
-FROM Trade_HNX t
-JOIN JAD_CSIDXINFOR idx
-    ON t.Symbol = idx.symbol
-WHERE t.[Trade date] = :ngay_gd
-  AND t.[Market ID] IN ('STX','UPX')       -- HNX niêm yết + UPCOM, loại trừ DVX/BDX/HCX
-GROUP BY t.[Issue Code], t.[Trade date];
-2.HOSE
-SELECT
-    t.Symbol,
-    t.[Trade Date]                  AS ngay_gd,
-
-    -- KL NN mua: dòng mà BÊN MUA là nước ngoài
-    SUM(CASE WHEN t.[Buy - Foreigner Investor type] IN ('10','20')
-             THEN t.[Execution - Value] ELSE 0 END)    AS kl_nn_mua,
-
-    -- KL NN bán: dòng mà BÊN BÁN là nước ngoài
-    SUM(CASE WHEN t.[Sell - Foreigner Investor type] IN ('10','20')
-             THEN t.[Execution - Value] ELSE 0 END)    AS kl_nn_ban,
-
-    -- KLNN ròng = mua - bán
-    SUM(CASE WHEN t.[Buy  - Foreigner Investor type] IN ('10','20')
-             THEN  t.[Execution - Value] ELSE 0 END)
-  - SUM(CASE WHEN t.[Sell - Foreigner Investor type] IN ('10','20')
-             THEN  t.[Execution - Value] ELSE 0 END)   AS kl_nn_rong
-
-FROM TRADE_BOOK_HOSE t
-JOIN JAD_CSIDXINFOR idx
-    ON t.Symbol = idx.symbol
-WHERE t.[Trade Date] = :ngay_gd
-AND t.[Market ID] = 'STO'    
-GROUP BY t.indexCode, t.[Trade Date];",,,,,,Done,Dữ liệu tĩnh,
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,EXecution_value/TRADE_PRICE*TRADE_QUANTITY,,,,,,,,,,
+28,,Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem biểu đồ giá trị ròng theo nhà đầu tư ,"Giá trị ròng theo phân loại nhà đầu tư theo khớp lệnh
+Tự doanh 
+Cá nhân 
+Tổ chức trong nước 
+Nước ngoài ",GTGD ròng =  GTGD mua - GTGD bán theo từng phân loại nhà đầu tư,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,,,,,,,,,,,
 29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",Mã chứng khoán,,Dashboard,Chiều,TB,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"tradingdate = :ngay_gd
 FloorCode IN ('10','02','04')
 StockType NOT IN ('B','1','BO','D')
@@ -25161,176 +24877,37 @@ FROM chi_so_gia v
 JOIN gt_rong_theo_ngay g ON g.ngay_gd = v.ngay_gd   -- JOIN thường (không LEFT) vì cần có ít nhất 1 mã giao dịch
 GROUP BY v.ngay_gd, g.symbol, v.gia_dong_cua
 ORDER BY v.ngay_gd, g.symbol;",,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng","Phân loại nhà đầu tư (cá nhân,tự doanh,..)","""Dựa trên phân loại của sổ lệnh 
-1. Hose: Thông tin Buy - Invest Type / Sell - Invest Type: 
-1000 / 8000: Cá nhân (Individual)
-1100: Cá nhân trong nước
-1200: Cá nhân chuyên nghiệp
-2000: Công ty bảo hiểm
-2100: Công ty bảo hiểm nhân thọ
-2200: Bảo hiểm phi nhân thọ
-3000: Quỹ đầu tư
-3100: Quỹ cụ thể (mutual fund)
-3200: ETF
-3300: Hedge fund
-4000: Ngân hàng
-5000: Công ty chứng khoán
-5100: CTCK tự doanh
-5200: CTCK môi giới
-6000: Tổ chức khác
-7000: Nhà đầu tư nước ngoài
-7100: Tổ chức nước ngoài
-7200: Cá nhân nước ngoài
-9000: Không xác định / khác
-2. HNX: Thông tin Sell investor classification code / Buy investor classification code:
-1000  Securities company and Futures company
-2000  Insurance company
-3000  Asset management company and Investment  company
-3100  Private fund
-4000  Bank
-5000  General finance company, Mutual savings bank
-6000  Pension, Fund and  Mutual aid
-7000  Country,  Self-governing body and International organization
-7100  Misc coorporation
-8000  Individual""",Dashboard,Chiều,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng","Phân loại nhà đầu tư :
+Tự doanh 
+Nước ngoài","1. HOSE/HNX:
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'        
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
++ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'",Dashboard,Chiều,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
 Buy_Acct No
 Sell_Acct No
 Trade_HNX:
 Buy account number
-sell_account_number",,,"""""""Dựa trên phân loại của sổ lệnh 
-1. Hose: Thông tin Buy - Invest Type / Sell - Invest Type: 
-1000 / 8000: Cá nhân (Individual)
-1100: Cá nhân trong nước
-1200: Cá nhân chuyên nghiệp
-2000: Công ty bảo hiểm
-2100: Công ty bảo hiểm nhân thọ
-2200: Bảo hiểm phi nhân thọ
-3000: Quỹ đầu tư
-3100: Quỹ cụ thể (mutual fund)
-3200: ETF
-3300: Hedge fund
-4000: Ngân hàng
-5000: Công ty chứng khoán
-5100: CTCK tự doanh
-5200: CTCK môi giới
-6000: Tổ chức khác
-7000: Nhà đầu tư nước ngoài
-7100: Tổ chức nước ngoài
-7200: Cá nhân nước ngoài
-9000: Không xác định / khác
-2. HNX: Thông tin Sell investor classification code / Buy investor classification code:
-1000  Securities company and Futures company
-2000  Insurance company
-3000  Asset management company and Investment  company
-3100  Private fund
-4000  Bank
-5000  General finance company, Mutual savings bank
-6000  Pension, Fund and  Mutual aid
-7000  Country,  Self-governing body and International organization
-7100  Misc coorporation
-8000  Individual""""""",,,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT khớp lệnh,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Value: 
-Trade_HNX:
-Trade quantity * trade price: ","- TRADE_BOOK_HOSE: 
-Board Type in ('G1','G2','G3','G4')
-- Trade_HNX: 
-Board ID in  ('G1','G2','G3','G4')","""-- HOSE
-SELECT
-    SUM(t.[Execution - Value])     AS tong_kl_khop
-FROM TRADE_BOOK_HOSE t
-WHERE t.[Trade Date] = :ngay_gd
-and Market ID in (UPX,STX,STO)
-UNION ALL
--- HNX / UPCOM
-SELECT
-    SUM(t.[Trade quantity] * trade price )         AS tong_kl_khop
-FROM Trade_HNX t
-WHERE t.[Trade date] = :ngay_gd
-and Market ID in (UPX,STX,STO)
-
-""","- TRADE_BOOK_HOSE: 
-Board Type in ('G1','G2','G3','G4')
-- Trade_HNX: 
-Board ID in  ('G1','G2','G3','G4')",,,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT thỏa thuận,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Value: 
-Trade_HNX:
-Trade quantity * trade price: ","- TRADE_BOOK_HOSE: 
-Board Type in ('T1','T2','T3','T4','T6,'R1')
-- Trade_HNX: 
-Board ID in ('T1','T2','T3','T4','T6, 'R1')","""-- HOSE
-SELECT
-    SUM(t.[Execution - Value])     AS tong_kl_khop
-FROM TRADE_BOOK_HOSE t
-WHERE t.[Trade Date] = :ngay_gd
-and Market ID in (UPX,STX,STO)
-UNION ALL
--- HNX / UPCOM
-SELECT
-    SUM(t.[Trade quantity] * trade price )         AS tong_kl_khop
-FROM Trade_HNX t
-WHERE t.[Trade date] = :ngay_gd
-and Market ID in (UPX,STX,STO)
-
-""","- TRADE_BOOK_HOSE: 
-Board Type in ('T1','T2','T3','T4','T6)
-- Trade_HNX: 
-Board ID in ('T1','T2','T3','T4','T6)",,,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",Tổng GTGD,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Value: 
-Trade_HNX:
-Trade quantity * trade price: ",,"""-- HOSE
-SELECT
-    SUM(t.[Execution - Value])     AS tong_kl_khop
-FROM TRADE_BOOK_HOSE t
-WHERE t.[Trade Date] = :ngay_gd
-and Market ID in (UPX,STX,STO)
-UNION ALL
--- HNX / UPCOM
-SELECT
-    SUM(t.[Trade quantity] * trade price )         AS tong_kl_khop
-FROM Trade_HNX t
-WHERE t.[Trade date] = :ngay_gd
-and Market ID in (UPX,STX,STO)
-
-""","(TRADE_BOOK_HOSE):
-Execution - Volume: Khối lượng khớp lệnh
-Trade_HNX:
-Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT mua,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE:
- [Execution - Value]
-  Phân loại theo chiều NĐT
- HNX:
- [Trade price] * [Trade quantity]
- Phân loại theo chiều NĐT", Phân loại theo chiều NĐT,,Cần check lại điều kiện,,,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT bán,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"HOSE:
- [Execution - Value]
-  Phân loại theo chiều NĐT
- HNX:
- [Trade price] * [Trade quantity]
-  Phân loại theo chiều NĐT", Phân loại theo chiều NĐT,,Cần check lại điều kiện,,,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT ròng,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"Tính từ GT mua và GT bán:
- GT ròng = GT mua - GT bán
- Phân loại theo từng nhóm NĐT
- (cá nhân / tổ chức / tự doanh / NN)",,,"Tính từ GT mua và GT bán:
- GT ròng = GT mua - GT bán
- Phân loại theo từng nhóm NĐT
- (cá nhân / tổ chức / tự doanh / NN)",,,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT mua ròng,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"Tính từ GT mua và GT bán:
- GT ròng = GT mua - GT bán > 0
- Phân loại theo từng nhóm NĐT
- (cá nhân / tổ chức / tự doanh / NN)",,,"Tính từ GT mua và GT bán:
- GT ròng = GT mua - GT bán
- Phân loại theo từng nhóm NĐT
- (cá nhân / tổ chức / tự doanh / NN)",,,,,Done,Dữ liệu tĩnh,
-29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT bán ròng,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"Tính từ GT mua và GT bán:
- GT ròng = GT mua - GT bán < 0
- Phân loại theo từng nhóm NĐT
- (cá nhân / tổ chức / tự doanh / NN)",,,"Tính từ GT mua và GT bán:
- GT ròng = GT mua - GT bán
- Phân loại theo từng nhóm NĐT
- (cá nhân / tổ chức / tự doanh / NN)",,,,,Done,Dữ liệu tĩnh,
+sell_account_number",,,,,,,,Done,Dữ liệu tĩnh,
 29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",Giá,Giá đóng cửa,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,"SELECT * 
 FROM 
 (
@@ -25359,8 +24936,303 @@ SELECT
 	AND s.FloorCode   IN ('10', '02', '04', '03')
 	AND s.StockType  NOT IN ('1')
 	)
-	WHERE rn = 1",Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,
+	WHERE rn = 1",,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",thay đổi,So sánh giữa giá tham chiếu với giá đóng cửa,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR/JAD_STOCKINFOR,marketIndex/chage,,"SELECT
+    ""tradingdate"",
+    ""marketCode"",
+    closeIndex,
+    closeIndex
+        - LAG(closeIndex) OVER (
+            PARTITION BY ""marketCode""
+            ORDER BY ""tradingdate""
+        ) AS closeIndexChange
+FROM
+(
+    SELECT
+        ""tradingdate"",
+        ""marketCode"",
+        ""marketIndex"" AS closeIndex,
+        ""marketId"",
+        ""indexTime"",
+        ROW_NUMBER() OVER (
+            PARTITION BY ""tradingdate"", ""marketCode""
+            ORDER BY ""indexTime"" DESC
+        ) AS rn
+    FROM FSSTRAINING.PUBLIC_JAD_MARKETINFOR
+    where   ""marketId"" = '10'
+)
+WHERE rn = 1
+--AND  ""marketId"" = '10'
+ORDER BY ""tradingdate"";",,,,,,Done,Dữ liệu tĩnh,
 29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",% thay đổi,,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,(change / giá_tham_chiếu) × 100,,"SELECT    s.symbol,    s.tradingdate,    s.changePercent          AS pct_thay_doiFROM JAD_STOCKINFOR s",,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT Mua của tổng GTGT theo phân loại nhà đầu tư tự doanh/ nước ngoài,"GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu không chọn ""Khớp lệnh/thỏa thuận "": Là tổng GTGD.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Value: 
+Trade_HNX:
+Trade quantity * trade price: ","""1. HOSE/HNX:
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'        
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
++ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'""","""-- HOSE
+SELECT
+    SUM(t.[Execution - Value])     AS tong_gt_khop
+FROM TRADE_BOOK_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+UNION ALL
+-- HNX / UPCOM
+SELECT
+    SUM(t.[Trade quantity] * trade price )         AS tong_gt_khop
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+
+""",,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT Bán của tổng GTGT theo phân loại nhà đầu tư tự doanh/ nước ngoài,"GTGD bán theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu không chọn ""Khớp lệnh/thỏa thuận"": Là tổng GTGD.",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Value: 
+Trade_HNX:
+Trade quantity * trade price: ","""1. HOSE/HNX:
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'        
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
++ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'""","""-- HOSE
+SELECT
+    SUM(t.[Execution - Value])     AS tong_kl_khop
+FROM TRADE_BOOK_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+UNION ALL
+-- HNX / UPCOM
+SELECT
+    SUM(t.[Trade quantity] * trade price )         AS tong_kl_khop
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+
+""",,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT ròng theo phân loại nhà đầu tư tự doanh/ nước ngoài,GT Mua của tổng GTGT - GT Bán của tổng GTGT,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"Tính từ GT mua và GT bán:
+ GT ròng = GT mua - GT bán
+ Phân loại theo từng nhóm NĐT
+ (cá nhân / tổ chức / tự doanh / NN)",,,,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT Mua của khớp lệnh  theo phân loại nhà đầu tư tự doanh/ nước ngoài,"GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Value: 
+Trade_HNX:
+Trade quantity * trade price: ","- TRADE_BOOK_HOSE: 
+Board Type in ('G1','G2','G3','G4')
+- Trade_HNX: 
+Board ID in  ('G1','G2','G3','G4')
+""1. HOSE/HNX:
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'        
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
++ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'""",,,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT Bán của khớp lệnh theo phân loại nhà đầu tư tự doanh/ nước ngoài,"GTGD bán theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu chọn ""Khớp lệnh"": Là GTGD khớp lệnh.
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm G1, G2, G3, G4, G7, G8",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Value: 
+Trade_HNX:
+Trade quantity * trade price: ","- TRADE_BOOK_HOSE: 
+Board Type in ('G1','G2','G3','G4')
+- Trade_HNX: 
+Board ID in  ('G1','G2','G3','G4')
+""1. HOSE/HNX:
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'        
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
++ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'""",,,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT ròng của khớp lệnh theo phân loại nhà đầu tư tự doanh/ nước ngoài,GT Mua của tổng GTGT khớp lệnh  - GT Bán của tổng GTGT khớp lệnh,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"Tính từ GT mua và GT bán:
+ GT ròng = GT mua - GT bán
+ Phân loại theo từng nhóm NĐT
+ (cá nhân / tổ chức / tự doanh / NN)",,,,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT Mua của thỏa thuận  theo phân loại nhà đầu tư tự doanh/ nước ngoài,"GTGD mua theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+- Nếu chọn ""thỏa thuận"": Là GTGD thỏa thuận
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Value: 
+Trade_HNX:
+Trade quantity * trade price: ","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')
+""1. HOSE/HNX:
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'        
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
++ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'""","""-- HOSE
+SELECT
+    SUM(t.[Execution - Value])     AS tong_kl_khop
+FROM TRADE_BOOK_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+UNION ALL
+-- HNX / UPCOM
+SELECT
+    SUM(t.[Trade quantity] * trade price )         AS tong_kl_khop
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+
+""",,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT Bán của thỏa thuận theo phân loại nhà đầu tư tự doanh/ nước ngoài,"GTGD bán theo từng phân loại nhà đầu tư: 
+- Tính từ sổ lệnh khớp
+-  Nếu chọn ""thỏa thuận"": Là GTGD thỏa thuận
+- Điều kiện tổng hợp dữ liệu từ sổ lệnh: 
+  + Giao dịch cổ phiếu: MARKET_ID gồm STK, STX, UPX
+  + Giao dịch khớp lệnh: BOARD_TYPE/BOARD_ID gồm IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')",Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Value: 
+Trade_HNX:
+Trade quantity * trade price: ","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')
+""1. HOSE/HNX:
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'        
++ Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'
++ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
+        *Tổng GTGD:
+Tự doanh: 
+        buy_client_house_classification_(code) = '30'
+        sell_client_house_classification_(code) = '30'
+NĐTNN:
+        buy_foreigner_investor_type_(code) <> '00'
+        sell_foreigner_investor_type_(code) <> '00'""","""-- HOSE
+SELECT
+    SUM(t.[Execution - Value])     AS tong_kl_khop
+FROM TRADE_BOOK_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+UNION ALL
+-- HNX / UPCOM
+SELECT
+    SUM(t.[Trade quantity] * trade price )         AS tong_kl_khop
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+
+""",,,,,,Done,Dữ liệu tĩnh,
+29,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng",GT ròng của thỏa thuận theo phân loại nhà đầu tư tự doanh/ nước ngoài,GT Mua của tổng GTGT thỏa thuân - GT Bán của tổng GTGT thỏa thuân,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"Tính từ GT mua và GT bán:
+ GT ròng = GT mua - GT bán",,,,,,,,Done,Dữ liệu tĩnh,
 30,,Biểu đồ phân tích kỹ thuật,Mã,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
       'B', '1',   -- Trái phiếu HOSE
       'BO',       -- Trái phiếu HNX

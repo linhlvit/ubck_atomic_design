@@ -103,6 +103,16 @@ Runner này chạy Gate 0 (Reference Integrity) → Gate 5 (Bước 5B). Dán ng
 
 **Không đủ nếu chỉ ghi trong SKILL.md** — vì SKILL.md chỉ được đọc khi Skill tool được gọi tường minh; khi thao tác trực tiếp bằng Edit/Read theo yêu cầu hội thoại (không gọi lại Skill), rule trong đó không tự kích hoạt. Đây là lý do quy tắc này phải nằm ở CLAUDE.md — được nạp vào mọi phiên làm việc, không phụ thuộc có gọi skill hay không.
 
+**Thêm bắt buộc — đối chiếu SỐ LƯỢNG BA ↔ HLD cho đúng (các) Nhóm vừa sửa** (`run_quality_gates.py` KHÔNG bao gồm bước này, phải chạy riêng):
+
+```bash
+python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}
+```
+
+Tìm đúng dòng của (các) Nhóm vừa sửa trong bảng delta (`| Nhóm N | ... | BA | HLD | LLD | Δ | ... |`), xác nhận `Δ = 0` hoặc lệch đã giải trình rõ trong Ghi chú HLD. **TUYỆT ĐỐI KHÔNG được xem output qua `| tail -N` / `| head -N` rồi kết luận "sạch"** — bảng delta nằm ở vị trí cố định giữa output đầy đủ (không phải cuối); nếu cần lọc, dùng `grep "Nhóm {N} "` đích danh thay vì cắt bớt.
+
+**Lý do:** Đã xảy ra thực tế (module GSTT, 2026-09-22) — sau khi sửa Nhóm 28/29 theo yêu cầu user và chạy `run_quality_gates.py --strict` (PASS 7/8, chỉ fail Gate 0 vì 5 warning không liên quan), agent báo đã xong. Thực ra Nhóm 28 vẫn thiếu 2 KPI reuse có sẵn dòng BA rõ ràng (`Đánh giá: Trùng`) — "Giá mở cửa" (→ K_GSTT_27) và "Thay đổi" (→ K_GSTT_11) — bị bỏ sót từ một ghi chú lịch sử cũ khẳng định sai "Nhóm 3 không có Giá mở cửa". `datamart_progress_analyzer.py` **đã in đúng** `🔴 Lệch số lượng` cho Nhóm 28 ngay từ lần chạy trước đó, nhưng agent chỉ xem qua `| tail -30` nên bỏ lỡ đúng đoạn bảng delta — chỉ phát hiện khi user tự đọc lại BA và hỏi lại. `run_quality_gates.py` không tự phát hiện được lỗi này vì `datamart_progress_analyzer.py` không nằm trong danh sách Gate của nó (xem ghi chú trong chính script này).
+
 ## NGÔN NGỮ
 
 - Viết bằng tiếng Việt. Giữ nguyên thuật ngữ kỹ thuật tiếng Anh.
