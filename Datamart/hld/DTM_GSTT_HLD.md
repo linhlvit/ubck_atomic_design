@@ -676,12 +676,12 @@ flowchart LR
 
 > **[SỬA 2026-09-19]** `P/E`, `P/B`, `EPS`, `Vốn hóa TT` là chỉ tiêu **CỦA CẢ RỔ CHỈ SỐ** (K_GSTT_149/150/151/61) — giá trị lặp lại giống nhau trên MỌI dòng Mã CK thuộc cùng Chỉ số + Ngày (broadcast, không phải P/E riêng của VCB). `Giá đóng cửa`, `Số CP lưu hành`, `LNST`, `VCSH` mới là giá trị THEO TỪNG MÃ.
 
-| Mã CK | sàn | Chỉ số | Ngày | Giá đóng cửa | Số CP lưu hành | LNST | VCSH | P/E (của Chỉ số) | P/B (của Chỉ số) | EPS (của Chỉ số) | Vốn hóa TT (theo Chỉ số) |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| VCB | HOSE | VN30 | 27/07/2026 | 82.50 | 5,589,067,000 | 12,450,000,000 | 87,240,000,000 | 15.8 | 1.9 | 3,250 | 461,161,157,750,000 |
-| ACB | HOSE | VN30 | 27/07/2026 | 24.10 | 3,860,000,000 | 6,200,000,000 | 41,500,000,000 | 15.8 | 1.9 | 3,250 | 461,161,157,750,000 |
+| Mã CK | sàn | Chỉ số | Ngày | Giá đóng cửa | Giá trị chỉ số | Số CP lưu hành | LNST | VCSH | P/E (của Chỉ số) | P/B (của Chỉ số) | EPS (của Chỉ số) | Vốn hóa TT (theo Chỉ số) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| VCB | HOSE | VN30 | 27/07/2026 | 82.50 | 1,280.50 | 5,589,067,000 | 12,450,000,000 | 87,240,000,000 | 15.8 | 1.9 | 3,250 | 461,161,157,750,000 |
+| ACB | HOSE | VN30 | 27/07/2026 | 24.10 | 1,280.50 | 3,860,000,000 | 6,200,000,000 | 41,500,000,000 | 15.8 | 1.9 | 3,250 | 461,161,157,750,000 |
 
-**Source:** `Fact Stock Portfolio Snapshot` (mở rộng, Nhóm 1) → `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension` — 1 Fact duy nhất, không tạo Fact/Dimension mới.
+**Source:** `Fact Stock Portfolio Snapshot` (mở rộng, Nhóm 1) → `Security Trading Snapshot Dimension`, `Public Company Dimension`, `Calendar Date Dimension`, `Index Constituent Dimension`; bổ sung `Fact Market Index Snapshot` để lấy điểm chỉ số.
 
 **Bảng KPI:**
 
@@ -690,7 +690,7 @@ flowchart LR
 | K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 1 (không phải biến thể Market Index Dimension của Nhóm 5) | READY |
 | K_GSTT_3 | sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | Reuse từ Nhóm 1 | READY |
 | K_GSTT_33 | Ngày | — | Chiều | `Calendar Date Dimension.Calendar Date` | Reuse từ Nhóm 1 | READY |
-| K_GSTT_10 | Giá trị chỉ số | Điểm | Chỉ tiêu phái sinh | `Security Trading Snapshot Dimension.Close Price` | BA tham chiếu `JAD_MARKETINFOR.marketIndex` (điểm chỉ số) — đã sửa dùng Giá đóng cửa thật theo mã CK (xem ghi chú sửa nguồn giá ở trên), trùng hoàn toàn K_GSTT_10, không khai KPI mới | READY |
+| K_GSTT_35 | Giá trị chỉ số | Điểm | Cơ sở | `Fact Market Index Snapshot.Market Index Value` | **[SỬA 2026-09-22 theo yêu cầu user]** Đã nắn lại đúng nguyên bản SQL BA: lấy trực tiếp điểm số `marketIndex` tại thời điểm cuối phiên (cùng logic `rn=1` `indexTime DESC`) qua Fact Market Index Snapshot. Khôi phục bản chất Điểm chỉ số thay vì ép thành Giá đóng cửa cổ phiếu (K_GSTT_10) như thiết kế trước. Nhóm 6 sẽ hiển thị thêm Điểm chỉ số của rổ. | READY |
 | K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 — dòng con này của BA cùng công thức với "Giá trị chỉ số" ở trên (cả 2 cùng tham chiếu `marketIndex` gốc), không khai KPI mới | READY |
 | K_GSTT_55 | Số cổ phiếu đang lưu hành | Cổ phiếu | Cơ sở | `Fact Stock Portfolio Snapshot.Outstanding Share Quantity` | **Resolved 2026-08-26, sửa lookback 2026-09-08, [SỬA NGUỒN 2026-09-16, xem O_GSTT_22].** Nguồn VSDC "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành" — nay lấy trực tiếp qua `listed_share_info` (`outstanding_shares`, `src_stm_code='VSDC_OUTSTANDING_SHARES'`, cùng nguồn với `Free Float Share Quantity`), thay cho `pc_share_statistics_hstr` (IDS) trước đây — IDS chỉ báo cáo theo quý/năm, không có biến động hàng ngày và chưa đồng bộ cho HNX/UPCOM trên UAT, khiến cột bị NULL 100% và kéo theo Vốn hóa/P-E/P-B bị NULL/0 (phát hiện qua review thực tế UAT, xem O_GSTT_22). Lấy bản ghi gần nhất `<= Trading Date` (lookback — tránh NULL khi NSD chọn ngày không phải ngày giao dịch). Cột trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension` | READY |
 | K_GSTT_56 | LNST | VNĐ | Cơ sở | `Fact Stock Portfolio Snapshot.Net Profit After Tax` | **Resolved 2026-08-26 — rule GSĐC.** Point-in-time theo kỳ QUÝ (1-4) gần nhất ĐÃ CÔNG BỐ tính đến ngày giao dịch (lookback, **[SỬA 2026-09-19, dev report SIT]** bỏ công thức lùi-kỳ cứng theo lịch) — join `public_company → pc_report_submission → fr_value → fr_catalog (BCKQKD, row_desc 60 DN/BH · 21 TD, col_desc 1) → fr_row_template → fr_column_template`, chốt đúng 1 báo cáo/kỳ trước khi xếp hạng (ưu tiên HN>TH>ME>RI, trùng lấy `submission_dt` mới nhất). **[SỬA 2026-09-19, dev report SIT]** Đã bỏ điều kiện `violation_report` (sai ngữ nghĩa). Cột trên `Fact Stock Portfolio Snapshot`, join qua `Public Company Dimension`. Khác `Net Profit After Tax TTM` (dùng riêng cho P/E/EPS, xem K_GSTT_58/60) | READY |
@@ -707,6 +707,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     F1["Fact Stock Portfolio Snapshot"] --> RPT6["Định giá thị trường"]
+    F2["Fact Market Index Snapshot"] --> RPT6
     D1["Security Trading Snapshot Dimension"] --> RPT6
     D2["Public Company Dimension"] --> RPT6
     D3["Calendar Date Dimension"] --> RPT6
