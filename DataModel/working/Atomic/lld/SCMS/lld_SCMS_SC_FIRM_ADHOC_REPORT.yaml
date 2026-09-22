@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Transaction"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -19,11 +19,37 @@ metadata:
   approved_at: null
   notes: "Mỗi dòng = 1 báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN. DETAIL_TYPE\
     \ phân loại: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu cầu; KHAC=Khác. SC_FIRM_FOREIGN_BRANCH_ID\
-    \ và BANK_ID: nullable FK cho báo cáo của chi nhánh/ngân hàng. EFORM_DATA + IMPORT_DU_LIEU_JSON\
-    \ excluded (raw JSON payload). Audit: CREATED_AT + LAST_MODIFIED_AT (không có\
-    \ CREATED_BY/LAST_MODIFIED_BY); CANCELLED_BY + SENDER_ID → pending. Hạ về draft\
-    \ (2026-07-27) để sửa lỗi hash-mismatch FK Securities Company Id — trước đây hash\
-    \ trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích."
+    \ và BANK_ID: nullable FK cho báo cáo của chi nhánh/ngân hàng. EFORM_DATA + IMPORT_DATA_JSON\
+    \ (đổi tên từ IMPORT_DU_LIEU_JSON) excluded (raw JSON payload). Audit: CREATED_AT\
+    \ + LAST_MODIFIED_AT (không có CREATED_BY/LAST_MODIFIED_BY); CANCELLED_BY + SENDER_ID\
+    \ → pending. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities Company\
+    \ Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích. FORM_REPORT_ID\
+    \ (2026-09-17) nay model FK cứng sang Securities Company Report — hash trực tiếp\
+    \ (Code=ID theo convention FORM_REPORT). FORM_VERSION_ID (2026-09-17, Data Modeler\
+    \ xác nhận) là ID của FORM_REPORT tại thời điểm nộp (snapshot phiên bản đã dùng\
+    \ khi nộp, có thể khác FORM_REPORT_ID nếu biểu mẫu có phiên bản mới hơn phát sinh\
+    \ sau đó) — đổi tên thành \"Submitted Securities Company Report Id/Code\", cùng\
+    \ target sc_report, hash trực tiếp tương tự. REPORT_INPUT_SUBMISSION_ID (2026-09-17)\
+    \ nay model FK cứng sang Securities Company Report Input Submission — hash trực\
+    \ tiếp (BK của REPORT_INPUT_SUBMISSION dùng ID kỹ thuật trực tiếp, không có mã\
+    \ nghiệp vụ tự nhiên). Đối chiếu lại với DDL UAT thực tế (Source/DDL UAT 1/SCMS_UAT_schema.txt,\
+    \ 2026-09-18) phát hiện SO_NGAY_GUI_MUON/HAN_GUI KHÔNG bị loại bỏ như ghi nhận\
+    \ (sai) trước đó — thực chất chỉ ĐỔI TÊN thành LATE_SUBMISSION_DAYS/SUBMISSION_DEADLINE;\
+    \ đã khôi phục Overdue Days/Submission Deadline Timestamp với source_columns cập\
+    \ nhật theo tên mới. Cùng đợt đối chiếu phát hiện 1 chỉnh sửa trung gian (không\
+    \ rõ nguồn gốc) đã xóa nhầm 4 attribute vẫn còn cột nguồn hợp lệ (Summary/Attachment\
+    \ Path/Note/Cancellation Reason — SUMMARY/ATTACHMENT_PATH/NOTE/CANCELLATION_REASON\
+    \ vẫn tồn tại trong DDL UAT) và làm hỏng 3 attribute Classification Value (Adhoc\
+    \ Report Type Code/Signature Type Code/Report Submission Status Code bị đổi domain\
+    \ sang Text hoặc sai cú pháp comment \"SCHEMA_CODE=...\" không khớp chuẩn dự án,\
+    \ mất liên kết tới scheme đã đăng ký sẵn trong classification_schemes.yaml) — đã\
+    \ khôi phục cả 4 attribute và sửa lại 3 Classification Value về đúng chuẩn (2026-09-18).\
+    \ Bổ sung 2 cột mới phát sinh trong DDL UAT chưa có trong LLD: BANK_SCOPE (Depositary\
+    \ Bank Scope Code, scheme SCMS_SC_FIRM_ADHOC_REPORT_BANK_SCOPE) và PREVIOUS_SUBMIT_STATUS\
+    \ (Previous Report Submission Status Code, pending — tạm dùng chung scheme RECORD_STATUS,\
+    \ cần Data Modeler xác nhận tập giá trị thực tế). Source/SCMS_Columns.csv vẫn chưa\
+    \ cập nhật theo DDL UAT mới nhất (tên cột cũ SO_NGAY_GUI_MUON/HAN_GUI/IMPORT_DU_LIEU_JSON,\
+    \ thiếu BANK_SCOPE/PREVIOUS_SUBMIT_STATUS) — cần chạy reconcile qua source-survey."
 attributes:
 - attribute_name: "Securities Company Adhoc Report Id"
   physical_name: "sc_adhoc_rpt_id"
@@ -59,7 +85,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_ADHOC_REPORT"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_ADHOC_REPORT"
   etl_derived_value: "SCMS_SC_FIRM_ADHOC_REPORT"
   data_type: "string"
 - attribute_name: "Securities Company Id"
@@ -73,9 +99,7 @@ attributes:
   - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -88,9 +112,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -103,8 +127,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign\
-    \ Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
+  comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+    \ SC_FIRM_FOREIGN_BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -117,13 +141,13 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign\
-    \ Branch Code. Pair with Securities Company Foreign Branch Id."
+  comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with Securities\
+    \ Company Foreign Branch Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Bank Id"
-  physical_name: "bank_id"
+- attribute_name: "Securities Company Depositary Bank Id"
+  physical_name: "sc_depositary_bank_id"
   description: "FK đến ngân hàng liên quan đến báo cáo (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -131,12 +155,12 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
-  comment: "FK target: Bank.Bank Id. Hash: hash_id('SCMS.BANK', BANK_ID)."
+  comment: "FK target: sc_depositary_bank.sc_depositary_bank_id. Hash: hash_id('SCMS_BANK', BANK_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Bank Code"
-  physical_name: "bank_code"
+- attribute_name: "Securities Company Depositary Bank Code"
+  physical_name: "sc_depositary_bank_code"
   description: "Mã ngân hàng."
   data_domain: "Text"
   nullable: true
@@ -144,46 +168,92 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
-  comment: "Lookup pair: Bank.Bank Code. Pair with Bank Id."
+  comment: "Lookup pair: sc_depositary_bank.sc_depositary_bank_code. Pair with Bank\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Form Report Id"
-  physical_name: "form_rpt_id"
+- attribute_name: "Securities Company Report Id"
+  physical_name: "sc_rpt_id"
   description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
-  data_domain: "Text"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID"
-  comment: "Pending — FK target FORM_REPORT nằm ngoài scope. NUMBER(19)."
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Form Version Id"
-  physical_name: "form_version_id"
-  description: "Phiên bản biểu mẫu báo cáo."
+- attribute_name: "Securities Company Report Code"
+  physical_name: "sc_rpt_code"
+  description: "Mã biểu mẫu báo cáo liên quan."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submitted Securities Company Report Id"
+  physical_name: "submitted_sc_rpt_id"
+  description: "Phiên bản biểu mẫu báo cáo. ID của FORM_REPORT tại thời điểm nộp —\
+    \ phiên bản cụ thể đã dùng khi nộp, có thể khác Securities Company Report Id nếu\
+    \ biểu mẫu đã phát sinh phiên bản mới hơn sau khi nộp (Data Modeler xác nhận 2026-09-17)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID"
-  comment: "Pending — FK target chưa xác định. NUMBER(19). Mô tả gốc BRD trống."
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_VERSION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Input Submission Id"
-  physical_name: "rpt_input_submission_id"
-  description: "FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION)."
+- attribute_name: "Submitted Securities Company Report Code"
+  physical_name: "submitted_sc_rpt_code"
+  description: "Mã biểu mẫu báo cáo tại thời điểm nộp."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Submitted Securities Company\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Input Submission Id"
+  physical_name: "sc_rpt_input_submission_id"
+  description: "FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID"
-  comment: "Pending — FK target REPORT_INPUT_SUBMISSION nằm ngoài scope. NUMBER(19)."
+  comment: "FK target: sc_report_input_submission.sc_rpt_input_submission_id. Hash:\
+    \ hash_id('SCMS_REPORT_INPUT_SUBMISSION', REPORT_INPUT_SUBMISSION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Input Submission Code"
+  physical_name: "sc_rpt_input_submission_code"
+  description: "Mã phiên gửi báo cáo liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID"
+  comment: "Lookup pair: sc_report_input_submission.sc_rpt_input_submission_code.\
+    \ Pair with Securities Company Report Input Submission Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -239,31 +309,29 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Adhoc Report Type Code"
-  physical_name: "adhoc_rpt_tp_code"
-  description: "Loại báo cáo chi tiết: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu\
-    \ cầu; KHAC=Khác."
-  data_domain: "Classification Value"
+- attribute_name: "Adhoc Report Code"
+  physical_name: "adhoc_rpt_code"
+  description: "Mã chi tiết loại báo cáo (TT96/nhóm stakeholder), tùy chọn.."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.DETAIL_TYPE"
-  comment: "Scheme: SCMS_ADHOC_REPORT_TYPE. NVARCHAR2(100)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Category Code"
   physical_name: "category_code"
   description: "Phân loại báo cáo đột xuất."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.CATEGORY"
-  comment: "Pending — VARCHAR2(30), mô tả gốc BRD trống. Cần xác nhận values để tạo\
-    \ scheme. Tạm để pending."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -271,13 +339,13 @@ attributes:
   physical_name: "signature_tp_code"
   description: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload file ký;\
     \ NONE=Không yêu cầu chữ ký."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.SIGNATURE_TYPE"
-  comment: "Scheme: SCMS_SIGNATURE_TYPE. NVARCHAR2(30)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -291,24 +359,36 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
-  comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10). Lưu ý: values khác\
-    \ với PERIODIC_REPORT (không có -1=Từ chối)."
+  comment: "SCHEMA_CODE=SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Overdue Days"
-  physical_name: "overdue_days"
-  description: "Số ngày gửi báo cáo muộn."
+- attribute_name: "Previous Report Submission Status Code"
+  physical_name: "previous_rpt_submission_status_code"
+  description: "Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống)."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.SO_NGAY_GUI_MUON"
-  comment: "NUMBER(10). Tên cột tiếng Việt — SO_NGAY_GUI_MUON."
+  - "SCMS.SC_FIRM_ADHOC_REPORT.PREVIOUS_SUBMIT_STATUS"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Depositary Bank Scope Code"
+  physical_name: "depositary_bank_scope_code"
+  description: "Phân loại ngân hàng lúc tạo báo cáo: LUU_KY=Lưu ký; GIAM_SAT=Giám sát."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.BANK_SCOPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Allow Import Indicator"
   physical_name: "allow_import_ind"
   description: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không cho phép."
@@ -322,6 +402,32 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Overdue Days"
+  physical_name: "overdue_days"
+  description: "Số ngày gửi báo cáo muộn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.LATE_SUBMISSION_DAYS"
+  comment: "NUMBER(10). Đổi tên từ SO_NGAY_GUI_MUON — DDL UAT hiện tại: LATE_SUBMISSION_DAYS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Submission Deadline Timestamp"
+  physical_name: "submission_deadline_tms"
+  description: "Hạn nộp báo cáo đột xuất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SUBMISSION_DEADLINE"
+  comment: "TIMESTAMP(6). Đổi tên từ HAN_GUI — DDL UAT hiện tại: SUBMISSION_DEADLINE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
 - attribute_name: "Requires Disclosure Indicator"
   physical_name: "requires_disclosure_ind"
   description: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
@@ -344,7 +450,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
     \ EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -363,19 +469,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Submission Deadline Timestamp"
-  physical_name: "submission_deadline_tms"
-  description: "Hạn nộp báo cáo đột xuất (tên cột: HAN_GUI)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.HAN_GUI"
-  comment: "TIMESTAMP(6). Tên cột tiếng Việt HAN_GUI = Hạn gửi."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
 - attribute_name: "Event Date"
   physical_name: "event_dt"
   description: "Ngày xảy ra sự kiện báo cáo đột xuất."
@@ -438,8 +531,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', SENDER_ID) | Chưa xác nhận join key SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Hash: hash_id('IAM_USERS', SENDER_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -467,8 +559,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', CANCELLED_BY) | Chưa xác nhận join key SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -486,19 +577,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Summary"
-  physical_name: "summary"
-  description: "Tóm tắt nội dung trích yếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.SUMMARY"
-  comment: "NCLOB."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Import File Path"
   physical_name: "import_file_path"
   description: "Đường dẫn file Excel import dữ liệu."
@@ -509,45 +587,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.IMPORT_FILE_PATH"
   comment: "VARCHAR2(2000)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Attachment Path"
-  physical_name: "attachment_path"
-  description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.ATTACHMENT_PATH"
-  comment: "NCLOB."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Note"
-  physical_name: "note"
-  description: "Ghi chú bổ sung, không bắt buộc."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.NOTE"
-  comment: "NCLOB."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Cancellation Reason"
-  physical_name: "cancellation_reason"
-  description: "Lý do hủy báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLATION_REASON"
-  comment: "NCLOB."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

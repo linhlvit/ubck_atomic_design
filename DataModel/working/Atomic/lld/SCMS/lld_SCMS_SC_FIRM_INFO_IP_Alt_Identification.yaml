@@ -42,7 +42,7 @@ attributes:
   - "SCMS.SC_FIRM_INFO.ID"
   comment: "FK target: securities_company.sc_id. Shared entity. Cần ETL crosswalk\
     \ sang SCMS.SC_FIRM_INFO: SC_FIRM_INFO.ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo ID (ID\
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk\
     \ 2026-07-27."
   classification_context: null
@@ -57,9 +57,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Involved\
-    \ Party Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Involved Party Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party Id.\
+    \ Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Involved Party Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_INFO"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_INFO"
   etl_derived_value: "SCMS_SC_FIRM_INFO"
   data_type: "string"
 - attribute_name: "Identification Type Code"
@@ -83,9 +83,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATION_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
-  etl_derived_value: "OPERATION_LICENSE"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: "BUSINESS_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -97,7 +97,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_NUMBER"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -110,7 +110,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Issue Place"
@@ -122,58 +122,6 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_ISSUER"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh — giấy phép thành lập."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE — tách biệt với giấy\
-    \ phép thành lập+hoạt động UBCKNN (OPERATION_LICENSE) ở trên."
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-  etl_derived_value: "BUSINESS_LICENSE"
-  data_type: "string"
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số giấy phép thành lập."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_NUMBER"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp giấy phép thành lập."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_DATE"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-  etl_derived_value: null
-  data_type: "date"
-- attribute_name: "Identification Issue Place"
-  physical_name: "identification_issue_place"
-  description: "Cơ quan cấp giấy phép thành lập."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_ISSUER"
   comment: null
   classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
@@ -203,96 +151,6 @@ attributes:
   classification_context: "IP_ALT_ID_TYPE=TAX_ID"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh — mã số doanh nghiệp."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ENTERPRISE_CODE."
-  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
-  etl_derived_value: "ENTERPRISE_CODE"
-  data_type: "string"
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Mã số doanh nghiệp của CTCK."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.ENTERPRISE_CODE"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh — chứng nhận generic (chưa rõ loại)."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CERTIFICATE — CERTIFICATE_NUMBER chưa\
-    \ rõ là loại chứng nhận gì, cần Data Modeler profile lại dữ liệu thực tế trước\
-    \ go-live."
-  classification_context: "IP_ALT_ID_TYPE=CERTIFICATE"
-  etl_derived_value: "CERTIFICATE"
-  data_type: "string"
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số chứng nhận (generic, chưa rõ loại)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.CERTIFICATE_NUMBER"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=CERTIFICATE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh — chứng nhận lưu ký."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_CERT."
-  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_CERT"
-  etl_derived_value: "CUSTODIAN_CERT"
-  data_type: "string"
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số chứng nhận lưu ký."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_NUMBER"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_CERT"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp chứng nhận lưu ký."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_DATE"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_CERT"
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh — chứng nhận thành viên lưu ký."

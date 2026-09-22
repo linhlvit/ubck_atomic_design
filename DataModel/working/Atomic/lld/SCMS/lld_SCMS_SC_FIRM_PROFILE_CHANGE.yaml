@@ -62,7 +62,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_PROFILE_CHANGE"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_PROFILE_CHANGE"
   etl_derived_value: "SCMS_SC_FIRM_PROFILE_CHANGE"
   data_type: "string"
 - attribute_name: "Securities Company Id"
@@ -76,7 +76,7 @@ attributes:
   - "SCMS.SC_FIRM_PROFILE_CHANGE.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. NUMBER(19). Cần ETL crosswalk sang\
     \ SCMS.SC_FIRM_INFO: SC_FIRM_PROFILE_CHANGE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID\
-    \ để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash\
+    \ để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash\
     \ trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main\
     \ (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -91,9 +91,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -136,7 +136,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
     \ EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -285,10 +285,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_PROFILE_CHANGE.PERFORMED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(19) trong khi\
-    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
-    \ 2 hệ thống."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(19) trong khi IAM.USERS.ID\
+    \ là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -301,9 +300,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_PROFILE_CHANGE.PERFORMED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Performed By IAM User Id. Cross-source FK (SCMS → IAM),\
-    \ pending crosswalk (xem comment Id)."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Performed By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk\
+    \ (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

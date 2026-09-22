@@ -3,11 +3,11 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "RCOL"
-  atomic_entity: "Financial Report Column Template"
-  entity_physical_name: "fr_column_template"
+  atomic_entity: "Financial Report Column"
+  entity_physical_name: "fr_column"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
-  table_type: "Fundamental"
+  table_type: "Relative"
   group: "T2"
   design_status: "approved"
   version: "1.0"
@@ -18,28 +18,31 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "ID kỹ thuật loại khỏi model — COL_CD (mã cột) → Financial Report Column\
-    \ Template Code (BK duy nhất), Id hash từ Code. Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
+    \ Code (BK duy nhất), Id hash từ Code. Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
     \ loại bỏ — mirror quyết định đã áp dụng cho toàn phân hệ IDS (xem pending_design.yaml,\
     \ lld_IDS_REPORT_CATALOG.yaml). Table Type = Fundamental theo quyết định tường\
     \ minh Data Modeler (HLD Tier2.md 6a, 2026-08-05) dù còn FK đến Financial Report\
     \ Catalog — khớp pattern override đã áp dụng cho nhiều entity Tier 2/3 khác trong\
-    \ dự án."
+    \ dự án. ĐẢO NGƯỢC 2026-09-15 (theo yêu cầu tường minh Data Modeler): Table Type\
+    \ Fundamental → Relative; bỏ chữ \"Template\" khỏi tên (atomic_entity \"Financial\
+    \ Report Column Template\" → \"Financial Report Column\", entity_physical_name\
+    \ fr_column_template → fr_column)."
 attributes:
-- attribute_name: "Financial Report Column Template Id"
-  physical_name: "fr_column_template_id"
+- attribute_name: "Financial Report Column Id"
+  physical_name: "fr_column_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS_RCOL', ID). BCV: \"[Documentation]\
-    \ Form Document\"."
+  comment: "PK surrogate. Hash: hash_id('IDS_RCOL', ID). BCV: \"[Documentation] Form\
+    \ Document\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Column Template Code"
-  physical_name: "fr_column_template_code"
+- attribute_name: "Financial Report Column Code"
+  physical_name: "fr_column_code"
   description: "Mã cột. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
@@ -53,8 +56,8 @@ attributes:
   data_type: "string"
 - attribute_name: "Column Code"
   physical_name: "column_code"
-  description: "Mã cột. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm\
-    \ business reference field."
+  description: "Mã cột. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm business\
+    \ reference field."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -77,8 +80,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS_RCOL"
   etl_derived_value: "IDS_RCOL"
   data_type: "string"
-- attribute_name: "Financial Report Column Template Name"
-  physical_name: "fr_column_template_nm"
+- attribute_name: "Financial Report Column Name"
+  physical_name: "fr_column_nm"
   description: "Tên cột (tiếng Việt)."
   data_domain: "Text"
   nullable: true
@@ -90,8 +93,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Column Template English Name"
-  physical_name: "fr_column_template_english_nm"
+- attribute_name: "Financial Report Column English Name"
+  physical_name: "fr_column_english_nm"
   description: "Tên cột (tiếng Anh)."
   data_domain: "Text"
   nullable: true

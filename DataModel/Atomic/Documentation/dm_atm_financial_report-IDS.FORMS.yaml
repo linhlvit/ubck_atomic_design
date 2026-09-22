@@ -2,19 +2,19 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-fr_template-IDS.FORMS
-  logical_name: Financial Report Template
-  physical_name: fr_template
+  id: ATM-financial_report-IDS.FORMS
+  logical_name: Financial Report
+  physical_name: financial_report
   layer: Atomic
   version: "1.0"
   status: draft
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Form Document"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  table_type: Relative
+  etl_pattern: SCD2
   source: IDS
   description: |
-    Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc, phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ "Disclosure Form Definition" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý: "Disclosure Form Definition Notification Recipient" và "Disclosure Form Definition Violation Template" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này. Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21.
+    Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc, phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ "Disclosure Form Definition" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý: "Disclosure Form Definition Notification Recipient" và "Disclosure Form Definition Violation Template" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này. Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21. Bỏ chữ "Template" khỏi tên (entity_physical_name fr_template → financial_report, BCV Term rỗng nên trùng Domain Prefix) và Table Type Fundamental → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -22,8 +22,8 @@ ldm:
     brd: BRD-SRC-IDS-FORMS
 
 attributes:
-  - name: Financial Report Template Id
-    physical_name: fr_template_id
+  - name: Financial Report Id
+    physical_name: fr_id
     business_meaning: Khóa đại diện (surrogate key).
     data_domain: Surrogate Key
     data_type: string
@@ -32,12 +32,12 @@ attributes:
     source_system: IDS
     source_table: FORMS
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('IDS_FORMS', FORM_CD). BCV: \"[Documentation] Form Document\". Đổi tên entity 2026-08-05."
+    comment: "PK surrogate. Hash: hash_id('IDS_FORMS', FORM_CD). BCV: \"[Documentation] Form Document\". Đổi tên entity 2026-08-05, bỏ chữ \"Template\" 2026-09-15."
     classification_context: null
     etl_derived_value: null
 
-  - name: Financial Report Template Code
-    physical_name: fr_template_code
+  - name: Financial Report Code
+    physical_name: fr_code
     business_meaning: Mã form. BK duy nhất — Id hash từ trường này.
     data_domain: Text
     data_type: string
@@ -64,8 +64,8 @@ attributes:
     classification_context: "Source System Code = 'IDS_FORMS'"
     etl_derived_value: IDS_FORMS
 
-  - name: Parent Financial Report Template Id
-    physical_name: parent_fr_template_id
+  - name: Parent Financial Report Id
+    physical_name: parent_fr_id
     business_meaning: Khóa cha (tự tham chiếu).
     data_domain: Surrogate Key
     data_type: string
@@ -74,12 +74,12 @@ attributes:
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.PARENT_ID
-    comment: "FK target: fr_template.fr_template_id (self-reference). Resolve: join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS_FORMS', FORM_CD_CHA)."
+    comment: "FK target: financial_report.fr_id (self-reference). Resolve: join PARENT_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS_FORMS', FORM_CD_CHA)."
     classification_context: null
     etl_derived_value: null
 
-  - name: Parent Financial Report Template Code
-    physical_name: parent_fr_template_code
+  - name: Parent Financial Report Code
+    physical_name: parent_fr_code
     business_meaning: Mã form cha.
     data_domain: Text
     data_type: string
@@ -88,12 +88,12 @@ attributes:
     source_system: IDS
     source_table: FORMS
     source_column: IDS.FORMS.PARENT_ID
-    comment: "Lookup pair: fr_template.fr_template_code. Pair with Parent Financial Report Template Id."
+    comment: "Lookup pair: financial_report.fr_code. Pair with Parent Financial Report Id."
     classification_context: null
     etl_derived_value: null
 
-  - name: Financial Report Template Name
-    physical_name: fr_template_nm
+  - name: Financial Report Name
+    physical_name: fr_nm
     business_meaning: Tên form (tiếng Việt).
     data_domain: Text
     data_type: string
@@ -106,8 +106,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Financial Report Template English Name
-    physical_name: fr_template_english_nm
+  - name: Financial Report English Name
+    physical_name: fr_english_nm
     business_meaning: Tên form (tiếng Anh).
     data_domain: Text
     data_type: string
@@ -120,8 +120,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Financial Report Template Type Code
-    physical_name: fr_template_tp_code
+  - name: Financial Report Type Code
+    physical_name: fr_tp_code
     business_meaning: Loại tin hay hồ sơ.
     data_domain: Text
     data_type: string

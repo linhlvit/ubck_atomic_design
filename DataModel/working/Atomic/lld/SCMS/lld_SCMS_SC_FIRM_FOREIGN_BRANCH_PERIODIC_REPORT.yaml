@@ -62,7 +62,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
   etl_derived_value: "SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
   data_type: "string"
 - attribute_name: "Securities Company Foreign Branch Id"
@@ -74,8 +74,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign\
-    \ Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
+  comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+    \ SC_FIRM_FOREIGN_BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -88,8 +88,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign\
-    \ Branch Code. Pair with Securities Company Foreign Branch Id."
+  comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with Securities\
+    \ Company Foreign Branch Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -102,7 +102,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
     \ EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -434,10 +434,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.CANCELLED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
-    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
-    \ 2 hệ thống."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID\
+    \ là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -450,9 +449,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.CANCELLED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Cancelled By IAM User Id. Cross-source FK (SCMS → IAM),\
-    \ pending crosswalk (xem comment Id)."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Cancelled By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk\
+    \ (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

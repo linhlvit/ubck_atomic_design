@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Warning Notice"
   table_type: "Fact Append"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -67,8 +67,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_WARNING.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Hash: hash_id('IDS_AF_PROFILES',\
-    \ AF_PROFILE_ID)."
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_WARNING.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+    \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -80,7 +81,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.AF_WARNING.AF_PROFILE_ID"
+  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -109,8 +110,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_WARNING.AF_AUDITOR_PROFILE_ID"
-  comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit\
-    \ Firm Auditor Id."
+  comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -138,8 +139,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_WARNING.AF_INSPECTION_ID"
-  comment: "Lookup pair: af_inspection.af_inspection_code. Pair with\
-    \ Audit Firm Inspection Id."
+  comment: "Lookup pair: af_inspection.af_inspection_code. Pair with Audit Firm Inspection\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -152,9 +153,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_WARNING.TARGET_TYPE_CD"
-  comment: "Scheme: IDS_WARNING_TARGET_TYPE. Values load từ LOOKUP_VALUES — scheme\
-    \ đã đăng ký sẵn."
-  classification_context: "IDS_WARNING_TARGET_TYPE"
+  comment: "SCHEMA_CODE=IDS.AF_TARGET_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_TARGET_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Warning Source Type Code"
@@ -166,9 +166,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_WARNING.SOURCE_TYPE_CD"
-  comment: "Scheme: IDS_WARNING_SOURCE_TYPE. Values load từ LOOKUP_VALUES — scheme\
-    \ đã đăng ký sẵn."
-  classification_context: "IDS_WARNING_SOURCE_TYPE"
+  comment: "SCHEMA_CODE=IDS.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Warning Document Number"
@@ -245,21 +244,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_WARNING.WARNING_TYPE_CD"
-  comment: "Scheme: IDS_WARNING_TYPE (no_lookup) — chưa liệt kê trong HLD Tier3 6d,\
-    \ bổ sung scheme mới."
-  classification_context: "IDS_WARNING_TYPE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Soft delete - 0: Active, 1: Deleted."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_WARNING.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  comment: "SCHEMA_CODE=IDS.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"

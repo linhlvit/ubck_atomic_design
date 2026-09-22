@@ -59,7 +59,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.DISCLOSURE_REPORT"
+  classification_context: "SOURCE_SYSTEM=SCMS_DISCLOSURE_REPORT"
   etl_derived_value: "SCMS_DISCLOSURE_REPORT"
   data_type: "string"
 - attribute_name: "Securities Company Id"
@@ -73,7 +73,7 @@ attributes:
   - "SCMS.DISCLOSURE_REPORT.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ DISCLOSURE_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó\
-    \ hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
     \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
     \ crosswalk 2026-07-27."
   classification_context: null
@@ -88,9 +88,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -103,8 +103,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.PERIODIC_REPORT_ID"
-  comment: "FK target: Securities Company Periodic Report.Securities Company Periodic\
-    \ Report Id. Hash: hash_id('SCMS.SC_FIRM_PERIODIC_REPORT', PERIODIC_REPORT_ID)."
+  comment: "FK target: sc_periodic_report.sc_periodic_rpt_id. Hash: hash_id('SCMS_SC_FIRM_PERIODIC_REPORT',\
+    \ PERIODIC_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -117,8 +117,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.PERIODIC_REPORT_ID"
-  comment: "Lookup pair: Securities Company Periodic Report.Securities Company Periodic\
-    \ Report Code. Pair with Securities Company Periodic Report Id."
+  comment: "Lookup pair: sc_periodic_report.sc_periodic_rpt_code. Pair with Securities\
+    \ Company Periodic Report Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -131,8 +131,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.SC_FIRM_ADHOC_REPORT_ID"
-  comment: "FK target: Securities Company Adhoc Report.Securities Company Adhoc Report\
-    \ Id. Hash: hash_id('SCMS.SC_FIRM_ADHOC_REPORT', SC_FIRM_ADHOC_REPORT_ID)."
+  comment: "FK target: sc_adhoc_report.sc_adhoc_rpt_id. Hash: hash_id('SCMS_SC_FIRM_ADHOC_REPORT',\
+    \ SC_FIRM_ADHOC_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -145,8 +145,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.SC_FIRM_ADHOC_REPORT_ID"
-  comment: "Lookup pair: Securities Company Adhoc Report.Securities Company Adhoc\
-    \ Report Code. Pair with Securities Company Adhoc Report Id."
+  comment: "Lookup pair: sc_adhoc_report.sc_adhoc_rpt_code. Pair with Securities Company\
+    \ Adhoc Report Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -159,8 +159,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign\
-    \ Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
+  comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+    \ SC_FIRM_FOREIGN_BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -173,8 +173,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign\
-    \ Branch Code. Pair with Securities Company Foreign Branch Id."
+  comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with Securities\
+    \ Company Foreign Branch Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -187,9 +187,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.ORIGINAL_DISCLOSURE_ID"
-  comment: "FK target: Securities Company Disclosure Report.Securities Company Disclosure\
-    \ Report Id (self). Hash: hash_id('SCMS.DISCLOSURE_REPORT', ORIGINAL_DISCLOSURE_ID).\
-    \ Nullable — chỉ có giá trị khi CORRECTION=1."
+  comment: "FK target: sc_disclosure_report.sc_disclosure_rpt_id (self). Hash: hash_id('SCMS_DISCLOSURE_REPORT',\
+    \ ORIGINAL_DISCLOSURE_ID). Nullable — chỉ có giá trị khi CORRECTION=1."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -202,8 +201,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.ORIGINAL_DISCLOSURE_ID"
-  comment: "Lookup pair: Securities Company Disclosure Report.Securities Company Disclosure\
-    \ Report Code (self). Pair with Original Disclosure Report Id."
+  comment: "Lookup pair: sc_disclosure_report.sc_disclosure_rpt_code (self). Pair\
+    \ with Original Disclosure Report Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -229,7 +228,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.NEWS_TYPE"
-  comment: "SCHEMA_CODE=SCMS.DISCLOSURE_REPORT.NEWS_TYPE"
+  comment: "SCHEMA_CODE=SCMS.GROUP_EVENT_TYPE"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -268,7 +267,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
     \ EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -583,10 +582,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.APPROVED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
-    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
-    \ 2 hệ thống."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID\
+    \ là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -599,9 +597,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.APPROVED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Approved By IAM User Id. Cross-source FK (SCMS → IAM),\
-    \ pending crosswalk (xem comment Id)."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Approved By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk\
+    \ (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -614,10 +612,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.SENDER_ID"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
-    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
-    \ 2 hệ thống."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID\
+    \ là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -630,9 +627,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.SENDER_ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Sender IAM User Id. Cross-source FK (SCMS → IAM), pending\
-    \ crosswalk (xem comment Id)."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Sender IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk\
+    \ (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -645,10 +642,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
-    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
-    \ 2 hệ thống."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID\
+    \ là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -661,9 +657,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Cancelled By IAM User Id. Cross-source FK (SCMS → IAM),\
-    \ pending crosswalk (xem comment Id)."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Cancelled By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk\
+    \ (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

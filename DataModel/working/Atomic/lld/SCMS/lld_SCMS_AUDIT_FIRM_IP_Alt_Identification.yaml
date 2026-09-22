@@ -31,7 +31,7 @@ attributes:
   source_columns:
   - "SCMS.AUDIT_FIRM.ID"
   comment: "FK target: audit_firm.af_id. Shared entity. Cần ETL crosswalk sang SCMS.AUDIT_FIRM:\
-    \ AUDIT_FIRM.ID = AUDIT_FIRM.ID để xác nhận CODE sau đó hash_id('SCMS.AUDIT_FIRM',\
+    \ AUDIT_FIRM.ID = AUDIT_FIRM.ID để xác nhận CODE sau đó hash_id('SCMS_AUDIT_FIRM',\
     \ CODE) | Trước đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của\
     \ bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -46,9 +46,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.AUDIT_FIRM.CODE"
-  comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Involved Party Id.\
-    \ Giá trị lấy từ SCMS.AUDIT_FIRM.CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Involved Party Id."
+  comment: "Lookup pair: audit_firm.af_code. Pair with Involved Party Id. Giá trị\
+    \ lấy từ SCMS.AUDIT_FIRM.CODE sau ETL crosswalk — chi tiết xem comment Involved\
+    \ Party Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.AUDIT_FIRM"
+  classification_context: "SOURCE_SYSTEM=SCMS_AUDIT_FIRM"
   etl_derived_value: "SCMS_AUDIT_FIRM"
   data_type: "string"
 - attribute_name: "Identification Type Code"

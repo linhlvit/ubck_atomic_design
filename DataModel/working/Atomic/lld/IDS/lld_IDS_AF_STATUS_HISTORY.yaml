@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Status History"
   table_type: "Fact Append"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -65,8 +65,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_STATUS_HISTORY.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Hash: hash_id('IDS_AF_PROFILES',\
-    \ AF_PROFILE_ID)."
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_STATUS_HISTORY.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+    \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -78,7 +79,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.AF_STATUS_HISTORY.AF_PROFILE_ID"
+  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -93,22 +94,21 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_STATUS_HISTORY.STATUS_TYPE"
-  comment: "Scheme: IDS_AF_STATUS_TYPE. Values lấy trực tiếp từ cột nguồn."
-  classification_context: "IDS_AF_STATUS_TYPE"
+  comment: "SCHEMA_CODE=IDS.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Suspension Status Type Code"
   physical_name: "suspension_status_tp_code"
   description: "Trạng thái đình chỉ (đang đình chỉ, đã kết thúc, chưa đến thời hạn)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.AF_STATUS_HISTORY.SUSPENSION_STATUS_TYPE"
-  comment: "Scheme: IDS_AF_SUSPENSION_STATUS_TYPE (no_lookup) — chưa liệt kê trong\
-    \ HLD Tier2 6d, bổ sung scheme mới."
-  classification_context: "IDS_AF_SUSPENSION_STATUS_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Number"
@@ -202,16 +202,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_STATUS_HISTORY.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

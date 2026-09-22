@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Condition] Format Condition"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -120,19 +120,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Allow Select"
-  physical_name: "allow_select"
-  description: "Cờ cho phép người dùng chọn giá trị lọc khi khai thác báo cáo."
-  data_domain: "Small Counter"
+- attribute_name: "Allow Select Code"
+  physical_name: "allow_select_code"
+  description: "Cờ cho phép người dùng chọn giá trị lọc khi khai thác báo cáo. 1-chọn 1, 2-chọn nhiều"
+  data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.OUTPUT_REPORT_FILTER.ALLOW_SELECT"
-  comment: null
+  comment: "SCHEMA_CODE=SCMS.OUTPUT_REPORT_FILTER.ALLOW_SELECT"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
 - attribute_name: "Default Value"
   physical_name: "default_val"
   description: "Giá trị lọc mặc định."

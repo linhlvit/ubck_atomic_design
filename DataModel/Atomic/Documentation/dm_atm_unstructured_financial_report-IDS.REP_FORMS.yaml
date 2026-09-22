@@ -1,0 +1,135 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-unstructured_financial_report-IDS.REP_FORMS
+  logical_name: Unstructured Financial Report
+  physical_name: unstructured_financial_report
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  description: |
+    Template báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC: xác định cấu trúc form cho từng loại kỳ báo cáo. Đổi tên từ "Periodic Report Form" (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e. Bổ sung table_type/entity_physical_name (trước đây để trống) và đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21. Đổi Domain Prefix từ "Financial Report" sang "Unstructured Financial Report" (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN) — xem IDS_HLD_Overview.md 7e #22. Bỏ chữ "Sub" khỏi tên entity/field (2026-08-27, theo yêu cầu tường minh Data Modeler) — xem 7e #23. Bỏ chữ "Template" khỏi tên (entity_physical_name ufr_template → unstructured_financial_report, BCV Term rỗng nên trùng Domain Prefix) và Table Type Fundamental → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-REP_FORMS
+
+attributes:
+  - name: Unstructured Financial Report Id
+    physical_name: ufr_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: REP_FORMS
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS_REP_FORMS', ID). BCV: \"[Documentation] Form Document\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Code
+    physical_name: ufr_code
+    business_meaning: BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_FORMS
+    source_column: IDS.REP_FORMS.ID
+    comment: "BK chính — chuyển từ mã nghiệp vụ (REPORT_CD) sang ID kỹ thuật nguồn do REPORT_CD không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định Data Modeler 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_FORMS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_REP_FORMS'"
+    etl_derived_value: IDS_REP_FORMS
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: Mã form. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm business reference field.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_FORMS
+    source_column: IDS.REP_FORMS.REPORT_CD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Name
+    physical_name: ufr_nm
+    business_meaning: Tên form báo cáo (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_FORMS
+    source_column: IDS.REP_FORMS.REPORT_NAME_VI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report English Name
+    physical_name: ufr_english_nm
+    business_meaning: Tên form báo cáo (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_FORMS
+    source_column: IDS.REP_FORMS.REPORT_NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Type Code
+    physical_name: ufr_tp_code
+    business_meaning: Tần suất báo cáo (tháng/quý/năm...).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_FORMS
+    source_column: IDS.REP_FORMS.RP_REPORT_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Link
+    physical_name: ufr_link
+    business_meaning: Đường link cấu hình biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_FORMS
+    source_column: IDS.REP_FORMS.REPORT_LINK
+    comment: null
+    classification_context: null
+    etl_derived_value: null

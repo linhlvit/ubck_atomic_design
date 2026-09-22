@@ -82,9 +82,11 @@ Hệ thống nguồn chính: **Temenos T24/Transact** — core banking platform.
 10. **Gộp entity khi hợp lý**: Cấu trúc tương tự + ít trường → gộp, dùng Classification Value phân biệt.
 11. **Phân biệt entity concept vs reference data set**: Bảng chỉ có Code + Name, không có instance data → Classification Value (reference data set), không phải Atomic entity.
 
-## 12 DATA DOMAIN CHUẨN
+## 13 DATA DOMAIN CHUẨN
 
-Text, Date, Timestamp, Currency Amount, Interest Rate, Exchange Rate, Percentage, Surrogate Key, Classification Value, Indicator, Boolean, Small Counter.
+Text, Date, Timestamp, Currency Amount, Interest Rate, Exchange Rate, Percentage, Surrogate Key, Classification Value, Indicator, Boolean, Small Counter, Large Counter.
+
+`Large Counter` (→ `bigint`) dùng khi `Small Counter` (→ `int`) không đủ dải giá trị (số đếm/số lượng lớn, có thể vượt giới hạn int32).
 
 ## LỖI PHỔ BIẾN
 

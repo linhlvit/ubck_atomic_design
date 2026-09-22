@@ -58,7 +58,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.REPORT_VIOLATION"
+  classification_context: "SOURCE_SYSTEM=SCMS_REPORT_VIOLATION"
   etl_derived_value: "SCMS_REPORT_VIOLATION"
   data_type: "string"
 - attribute_name: "Securities Company Id"
@@ -71,7 +71,7 @@ attributes:
   source_columns:
   - "SCMS.REPORT_VIOLATION.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ REPORT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO',\
+    \ REPORT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO',\
     \ CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai\
     \ lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -86,9 +86,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -127,10 +127,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.REPORT_VIOLATION.USER_ID"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
-    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
-    \ 2 hệ thống."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID\
+    \ là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -143,9 +142,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.REPORT_VIOLATION.USER_ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with User IAM User Id. Cross-source FK (SCMS → IAM), pending\
-    \ crosswalk (xem comment Id)."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with User IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk\
+    \ (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

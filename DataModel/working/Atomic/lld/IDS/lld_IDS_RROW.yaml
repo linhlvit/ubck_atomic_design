@@ -3,11 +3,11 @@ schema_version: "2.0"
 metadata:
   source_system: "IDS"
   source_table: "RROW"
-  atomic_entity: "Financial Report Row Template"
-  entity_physical_name: "fr_row_template"
+  atomic_entity: "Financial Report Row"
+  entity_physical_name: "fr_row"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
-  table_type: "Fundamental"
+  table_type: "Relative"
   group: "T2"
   design_status: "approved"
   version: "1.0"
@@ -18,28 +18,31 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "ID kỹ thuật loại khỏi model — ROW_CD (mã tự sinh r+sequence) → Financial\
-    \ Report Row Template Code (BK duy nhất), Id hash từ Code. Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
+    \ Report Row Code (BK duy nhất), Id hash từ Code. Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
     \ loại bỏ — mirror quyết định đã áp dụng cho toàn phân hệ IDS (xem pending_design.yaml,\
     \ lld_IDS_REPORT_CATALOG.yaml). Table Type = Fundamental theo quyết định tường\
     \ minh Data Modeler (HLD Tier2.md 6a, 2026-08-05) dù còn FK đến Financial Report\
     \ Catalog — khớp pattern override đã áp dụng cho nhiều entity Tier 2/3 khác trong\
-    \ dự án."
+    \ dự án. ĐẢO NGƯỢC 2026-09-15 (theo yêu cầu tường minh Data Modeler): Table Type\
+    \ Fundamental → Relative; bỏ chữ \"Template\" khỏi tên (atomic_entity \"Financial\
+    \ Report Row Template\" → \"Financial Report Row\", entity_physical_name fr_row_template\
+    \ → fr_row)."
 attributes:
-- attribute_name: "Financial Report Row Template Id"
-  physical_name: "fr_row_template_id"
+- attribute_name: "Financial Report Row Id"
+  physical_name: "fr_row_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS_RROW', ID). BCV: \"[Documentation]\
-    \ Form Document\"."
+  comment: "PK surrogate. Hash: hash_id('IDS_RROW', ID). BCV: \"[Documentation] Form\
+    \ Document\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Row Template Code"
-  physical_name: "fr_row_template_code"
+- attribute_name: "Financial Report Row Code"
+  physical_name: "fr_row_code"
   description: "BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
@@ -47,16 +50,16 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.RROW.ID"
-  comment: "BK chính — chuyển từ mã nghiệp vụ (ROW_CD) sang ID kỹ thuật nguồn do\
-    \ ROW_CD không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định Data\
-    \ Modeler 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string."
+  comment: "BK chính — chuyển từ mã nghiệp vụ (ROW_CD) sang ID kỹ thuật nguồn do ROW_CD\
+    \ không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định Data Modeler\
+    \ 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Row Code"
   physical_name: "row_code"
-  description: "Mã tự sinh của chỉ tiêu hàng (quy tắc r+sequence). Trước đây là\
-    \ BK nhưng không đảm bảo unique — giữ lại làm business reference field."
+  description: "Mã tự sinh của chỉ tiêu hàng (quy tắc r+sequence). Trước đây là BK\
+    \ nhưng không đảm bảo unique — giữ lại làm business reference field."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -79,8 +82,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=IDS_RROW"
   etl_derived_value: "IDS_RROW"
   data_type: "string"
-- attribute_name: "Financial Report Row Template Name"
-  physical_name: "fr_row_template_nm"
+- attribute_name: "Financial Report Row Name"
+  physical_name: "fr_row_nm"
   description: "Tên hàng (tiếng Việt)."
   data_domain: "Text"
   nullable: true
@@ -92,8 +95,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Row Template English Name"
-  physical_name: "fr_row_template_english_nm"
+- attribute_name: "Financial Report Row English Name"
+  physical_name: "fr_row_english_nm"
   description: "Tên hàng (tiếng Anh)."
   data_domain: "Text"
   nullable: true

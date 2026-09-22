@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Audit Firm"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,16 +18,16 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Shared entity với SCMS.AUDIT_FIRM (cùng atomic_entity Audit Firm, xem lld_SCMS_AUDIT_FIRM.yaml)\
-    \ — cần Level 2 Entity Consolidation sau khi cả 2 nguồn approved. ADDRESS →\
-    \ Involved Party Postal Address (1 địa chỉ, type HEAD_OFFICE — khớp pattern SCMS).\
-    \ PHONE_NO/FAX_NO/WEBSITE → Involved Party Electronic Address (không có EMAIL\
-    \ tại nguồn IDS, khác SCMS có thêm kênh EMAIL). BUSINESS_REG_NO/ELIGIBILITY_CERT_NO\
-    \ → Involved Party Alternative Identification (2 block: BUSINESS_LICENSE,\
-    \ BUSINESS_ELIGIBILITY_LICENSE — theo yêu cầu Data Modeler, xem pending_design.yaml).\
-    \ ID kỹ thuật (auto-increment) loại khỏi model — AUDIT_FIRM_CD (mã nghiệp vụ)\
-    \ → Audit Firm Code (BK duy nhất), Id hash từ Code. Thiết kế lại theo DDL\
-    \ Source/DDL UAT 1/GMS_AUDIT_UAT_schema.txt (bảng AF_PROFILES đã bị xóa khỏi\
-    \ manifest ở commit 7759ecfc — phục hồi + cập nhật chuẩn hash gạch dưới hiện tại)."
+    \ — cần Level 2 Entity Consolidation sau khi cả 2 nguồn approved. ADDRESS → Involved\
+    \ Party Postal Address (1 địa chỉ, type HEAD_OFFICE — khớp pattern SCMS). PHONE_NO/FAX_NO/WEBSITE\
+    \ → Involved Party Electronic Address (không có EMAIL tại nguồn IDS, khác SCMS\
+    \ có thêm kênh EMAIL). BUSINESS_REG_NO/ELIGIBILITY_CERT_NO → Involved Party Alternative\
+    \ Identification (2 block: BUSINESS_LICENSE, BUSINESS_ELIGIBILITY_LICENSE — theo\
+    \ yêu cầu Data Modeler, xem pending_design.yaml). ID kỹ thuật (auto-increment)\
+    \ loại khỏi model — AUDIT_FIRM_CD (mã nghiệp vụ) → Audit Firm Code (BK duy nhất),\
+    \ Id hash từ Code. Thiết kế lại theo DDL Source/DDL UAT 1/GMS_AUDIT_UAT_schema.txt\
+    \ (bảng AF_PROFILES đã bị xóa khỏi manifest ở commit 7759ecfc — phục hồi + cập\
+    \ nhật chuẩn hash gạch dưới hiện tại)."
 attributes:
 - attribute_name: "Audit Firm Id"
   physical_name: "af_id"
@@ -37,8 +37,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS_AF_PROFILES', AUDIT_FIRM_CD). BCV: \"[Involved\
-    \ Party] Audit Firm\"."
+  comment: "PK surrogate. Hash: hash_id('IDS_AF_PROFILES', AUDIT_FIRM_CD). BCV: \"\
+    [Involved Party] Audit Firm\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -181,8 +181,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_PROFILES.STATUS_CD"
-  comment: "Scheme: IDS_AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP = 'AF_STATUS')."
-  classification_context: "IDS_AF_STATUS"
+  comment: "SCHEMA_CODE=IDS.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "External Reference ID"
@@ -209,9 +209,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_PROFILES.APPROVAL_STATUS_CD"
-  comment: "Scheme: IDS_APPROVAL_STATUS. Dùng chung scheme với Audit Firm Auditor.Approval\
-    \ Status Code — cùng bản chất workflow phê duyệt hồ sơ IDS."
-  classification_context: "IDS_APPROVAL_STATUS"
+  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Approver Comment"
@@ -227,16 +226,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_PROFILES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

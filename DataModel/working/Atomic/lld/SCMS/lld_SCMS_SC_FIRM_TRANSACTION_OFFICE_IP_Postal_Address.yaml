@@ -32,9 +32,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_TRANSACTION_OFFICE.ID"
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE',\
-    \ ID)."
+  comment: "FK target: sc_organization_unit.sc_ou_id. Shared entity — không có PK\
+    \ surrogate riêng. Hash: hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -47,8 +46,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_TRANSACTION_OFFICE.ID"
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code. Pair with Involved Party Id."
+  comment: "Lookup pair: sc_organization_unit.sc_ou_code. Pair with Involved Party\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -61,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_TRANSACTION_OFFICE"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_TRANSACTION_OFFICE"
   etl_derived_value: "SCMS_SC_FIRM_TRANSACTION_OFFICE"
   data_type: "string"
 - attribute_name: "Address Type Code"
@@ -102,7 +101,7 @@ attributes:
   - "SCMS.SC_FIRM_TRANSACTION_OFFICE.PROVINCE_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_TRANSACTION_OFFICE.PROVINCE_ID\
-    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
     \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
     \ ECAT — cần profile dữ liệu trước go-live."
@@ -118,7 +117,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.CAT_PROVINCE.PROVINCE_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_PROVINCE). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE\
     \ sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
@@ -135,7 +134,7 @@ attributes:
   - "SCMS.SC_FIRM_TRANSACTION_OFFICE.DISTRICT_ID"
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_TRANSACTION_OFFICE.DISTRICT_ID\
-    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
@@ -153,7 +152,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.CAT_DISTRICT.DISTRICT_CODE"
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT\
     \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
     \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
@@ -170,7 +169,7 @@ attributes:
   - "SCMS.SC_FIRM_TRANSACTION_OFFICE.WARD_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_TRANSACTION_OFFICE.WARD_ID\
-    \ = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE)\
+    \ = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT_WARD_NEW', WARD_CODE)\
     \ | SCMS.CAT_WARD ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT —\
     \ cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
@@ -185,7 +184,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.CAT_WARD.WARD_CODE"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau\
     \ ETL crosswalk — chi tiết xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"

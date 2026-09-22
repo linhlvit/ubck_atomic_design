@@ -636,6 +636,26 @@ entities:
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Financial Report"
+  table_type: "Relative"
+  domain_prefix: "Financial Report"
+  entity_physical_name: "financial_report"
+  description: "Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc,\
+    \ phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ \"Disclosure\
+    \ Form Definition\" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý:\
+    \ \"Disclosure Form Definition Notification Recipient\" và \"Disclosure Form Definition\
+    \ Violation Template\" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên\
+    \ entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này. Đổi BCV\
+    \ Concept từ \"[Condition] Form Definition\" (term không tồn tại trong knowledge/terms.csv)\
+    \ sang \"[Documentation] Form Document\" (2026-08-13, theo yêu cầu tường minh\
+    \ Data Modeler) — xem IDS_HLD_Overview.md 7e #21. Bỏ chữ \"Template\" khỏi tên\
+    \ (entity_physical_name fr_template → financial_report, BCV Term rỗng nên trùng\
+    \ Domain Prefix) và Table Type Fundamental → Relative (2026-09-15, theo yêu cầu\
+    \ tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e."
+  source_table: "IDS.FORMS"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
   atomic_entity: "Financial Report Column"
   table_type: "Relative"
   domain_prefix: "Financial Report"
@@ -667,26 +687,6 @@ entities:
     \ Fundamental → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler, đảo\
     \ ngược quyết định giữ Fundamental 2026-08-05) — xem IDS_HLD_Overview.md 7e."
   source_table: "IDS.RROW"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Financial Report"
-  table_type: "Relative"
-  domain_prefix: "Financial Report"
-  entity_physical_name: "financial_report"
-  description: "Template/form dùng để công bố thông tin (CBTT): xác định cấu trúc,\
-    \ phiên bản, và hệ thống phân cấp form qua self-reference. Đổi tên từ \"Disclosure\
-    \ Form Definition\" (2026-08-05, theo yêu cầu tường minh Data Modeler). LƯU Ý:\
-    \ \"Disclosure Form Definition Notification Recipient\" và \"Disclosure Form Definition\
-    \ Violation Template\" chưa đổi tên theo — vi phạm rule#8 (entity con chứa tên\
-    \ entity cha) cho tới khi Data Modeler xác nhận đổi tên 2 entity này. Đổi BCV\
-    \ Concept từ \"[Condition] Form Definition\" (term không tồn tại trong knowledge/terms.csv)\
-    \ sang \"[Documentation] Form Document\" (2026-08-13, theo yêu cầu tường minh\
-    \ Data Modeler) — xem IDS_HLD_Overview.md 7e #21. Bỏ chữ \"Template\" khỏi tên\
-    \ (entity_physical_name fr_template → financial_report, BCV Term rỗng nên trùng\
-    \ Domain Prefix) và Table Type Fundamental → Relative (2026-09-15, theo yêu cầu\
-    \ tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e."
-  source_table: "IDS.FORMS"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
@@ -937,6 +937,28 @@ entities:
   status: "approved"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Unstructured Financial Report"
+  table_type: "Relative"
+  domain_prefix: "Unstructured Financial Report"
+  entity_physical_name: "unstructured_financial_report"
+  description: "Template báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC: xác định\
+    \ cấu trúc form cho từng loại kỳ báo cáo. Đổi tên từ \"Periodic Report Form\"\
+    \ (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e. Bổ sung table_type/entity_physical_name\
+    \ (trước đây để trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term\
+    \ không tồn tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\"\
+    \ (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md\
+    \ 7e #21. Đổi Domain Prefix từ \"Financial Report\" sang \"Unstructured Financial\
+    \ Report\" (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity\
+    \ REP_FORMS/REP_ROW/REP_COLUMN) — xem IDS_HLD_Overview.md 7e #22. Bỏ chữ \"Sub\"\
+    \ khỏi tên entity/field (2026-08-27, theo yêu cầu tường minh Data Modeler) — xem\
+    \ 7e #23. Bỏ chữ \"Template\" khỏi tên (entity_physical_name ufr_template → unstructured_financial_report,\
+    \ BCV Term rỗng nên trùng Domain Prefix) và Table Type Fundamental → Relative\
+    \ (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md\
+    \ 7e."
+  source_table: "IDS.REP_FORMS"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
   atomic_entity: "Unstructured Financial Report Column"
   table_type: "Relative"
   domain_prefix: "Unstructured Financial Report"
@@ -976,28 +998,6 @@ entities:
     \ → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md\
     \ 7e."
   source_table: "IDS.REP_ROW"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Unstructured Financial Report"
-  table_type: "Relative"
-  domain_prefix: "Unstructured Financial Report"
-  entity_physical_name: "unstructured_financial_report"
-  description: "Template báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC: xác định\
-    \ cấu trúc form cho từng loại kỳ báo cáo. Đổi tên từ \"Periodic Report Form\"\
-    \ (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e. Bổ sung table_type/entity_physical_name\
-    \ (trước đây để trống) và đổi BCV Concept từ \"[Condition] Form Definition\" (term\
-    \ không tồn tại trong knowledge/terms.csv) sang \"[Documentation] Form Document\"\
-    \ (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md\
-    \ 7e #21. Đổi Domain Prefix từ \"Financial Report\" sang \"Unstructured Financial\
-    \ Report\" (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity\
-    \ REP_FORMS/REP_ROW/REP_COLUMN) — xem IDS_HLD_Overview.md 7e #22. Bỏ chữ \"Sub\"\
-    \ khỏi tên entity/field (2026-08-27, theo yêu cầu tường minh Data Modeler) — xem\
-    \ 7e #23. Bỏ chữ \"Template\" khỏi tên (entity_physical_name ufr_template → unstructured_financial_report,\
-    \ BCV Term rỗng nên trùng Domain Prefix) và Table Type Fundamental → Relative\
-    \ (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md\
-    \ 7e."
-  source_table: "IDS.REP_FORMS"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
@@ -1357,7 +1357,7 @@ entities:
     \ FMS.FUNDS, FMS.INVES, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.MB_FUND, FMS.INSIDER,\
     \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.BANK_EMPLOY,\
     \ FMS.TL_PRO_RELA, FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA, FMS.INSDER_RPRST,\
-    \ IDS.COMPANY_PROFILES, IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.IDENTITY,\
+    \ IDS.COMPANY_PROFILES, IDS.AF_PROFILES, IDS.AF_AUDITOR_PROFILES, IDS.IDENTITY,\
     \ FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REG_REPRESENTATIVE"
   status: "approved"
 - bcv_core_object: "Involved Party"
@@ -1874,26 +1874,6 @@ entities:
   source_table: "ECAT.BUSINESS_LINE_LEVEL_1, ECAT.BUSINESS_LINE_LEVEL_2"
   status: "draft"
 - bcv_core_object: "Common"
-  bcv_concept: "[Common] Business Line"
-  atomic_entity: "Classification Business Transaction"
-  table_type: "Classification"
-  domain_prefix: "Classification"
-  entity_physical_name: "cl_business_transaction"
-  description: "Danh mục nghiệp vụ kinh doanh chứng khoán được UBCKNN cấp phép cho\
-    \ CTCK (môi giới, tự doanh, bảo lãnh phát hành, tư vấn đầu tư, quản lý quỹ...)\
-    \ — mã, tên, vốn pháp định tối thiểu theo quy định pháp luật cho từng nghiệp vụ.\
-    \ Nâng cấp từ Classification Value (scheme SCMS_BUSINESS_LINE) lên entity thật.\
-    \ Đổi tên từ \"Classification SCMS Business Line\" theo yêu cầu tường minh của\
-    \ Data Modeler (bỏ tiền tố nguồn + đổi BCV Term hiển thị thành \"Business Transaction\"\
-    ); BCV Concept giữ nguyên [Common] Business Line do không tìm thấy BCV Term \"\
-    Business Transaction\" khớp hơn trong knowledge/terms.csv. Xem SCMS_HLD_Overview.md\
-    \ #55 / 7e #16. **DEPRECATED 2026-09-12** — gộp vào `Classification Securities\
-    \ Firm Service` (SCMS.CAT_SERVICE_LEGAL_CAPITAL), vai trò nay là attribute \"\
-    Application Type Code\". Chờ Data Modeler đổi design_status của lld_SCMS_CAT_BUSINESS_LINE.yaml\
-    \ khỏi approved trước khi xoá dòng này (xem SCMS_HLD_Tier1.md 6f T1-11)."
-  source_table: "SCMS.CAT_BUSINESS_LINE"
-  status: "draft"
-- bcv_core_object: "Common"
   bcv_concept: "[Common] Event Type"
   atomic_entity: "Classification FMS Event Type"
   table_type: "Relative"
@@ -1993,21 +1973,6 @@ entities:
     \ Đổi tên 2026-09-16: Classification Firm Status → Classification Securities Company\
     \ Firm Status theo chỉ đạo Data Modeler. Xem 7e #11."
   source_table: "SCMS.CAT_SC_FIRM_STATUS"
-  status: "draft"
-- bcv_core_object: "Common"
-  bcv_concept: "[Common] Service"
-  atomic_entity: "Classification Service"
-  table_type: "Classification"
-  domain_prefix: "Classification"
-  entity_physical_name: "cl_service"
-  description: "Danh mục dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK. Nâng cấp\
-    \ từ Classification Value (scheme SCMS_SERVICE_TYPE) lên entity thật. FK target\
-    \ cho Classification Service Id trên Securities Company Licensed Service. Xem\
-    \ 7e #11/#14. **DEPRECATED 2026-09-12** — gộp vào `Classification Securities Firm\
-    \ Service` (SCMS.CAT_SERVICE_LEGAL_CAPITAL). Chờ Data Modeler đổi design_status\
-    \ của lld_SCMS_CAT_SERVICE.yaml khỏi approved trước khi xoá dòng này (xem SCMS_HLD_Tier1.md\
-    \ 6f T1-11)."
-  source_table: "SCMS.CAT_SERVICE"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Classification] Common"
@@ -2812,18 +2777,6 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Securities Company Business Transaction Relationship"
-  table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: ""
-  description: "Ghi nhận CTCK được cấp phép hoạt động nghiệp vụ kinh doanh chứng khoán\
-    \ nào (FK Securities Company + Classification Business Transaction), kèm trạng\
-    \ thái liên kết (RECORD_STATUS). BCV Concept `[Event] Party Registration` — cùng\
-    \ pattern với Securities Company Licensed Service. Có PK riêng + attri"
-  source_table: "SCMS.LNK_SC_FIRM_BUSINESS_LINE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
   atomic_entity: "Securities Company Complaint Petition"
   table_type: ""
   domain_prefix: ""
@@ -2954,18 +2907,6 @@ entities:
     \ extend source_table vào Securities Practitioner từ NHNCK. Ghi nhận số CCHN,\
     \ loại CCHN, ngày bổ nhiệm và đơn vị công tác."
   source_table: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Company Practitioner Business Transaction Relationship"
-  table_type: ""
-  domain_prefix: "Securities Company Practitioner"
-  entity_physical_name: ""
-  description: "Ghi nhận người hành nghề chứng khoán (Securities Company Practitioner)\
-    \ được phép thực hiện nghiệp vụ kinh doanh chứng khoán nào (FK Securities Company\
-    \ Practitioner + Classification Business Transaction). Bảng nguồn chỉ có 2 cột\
-    \ FK, không có attribute riêng — theo yêu cầu tường"
-  source_table: "SCMS.LNK_PRACTITIONER_BUSINESS_LINE"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""

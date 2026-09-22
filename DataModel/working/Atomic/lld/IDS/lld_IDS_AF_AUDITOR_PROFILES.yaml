@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,8 +17,12 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Grain = Involved Party (Individual) — IDENTITY_NO không tách IP Alt Identification\
-    \ (không có type-code scheme), giữ Text denormalized theo Bước 3h."
+  notes: "Grain = Involved Party (Individual) — theo Bước 4, tách IDENTITY_NO, PRACTICE_CERT_NO/ISSUE_DATE,\
+    \ AUDIT_CERT_NO/ISSUE_DATE ra shared entity Involved Party Alternative Identification\
+    \ (3 block: CITIZEN_ID, PRACTITIONER_LICENSE, AUDITOR_CERTIFICATE — xem lld_IDS_AF_AUDITOR_PROFILES_IP_Alt_Identification.yaml).\
+    \ Trước đây giữ denormalized do nhầm lẫn \"không có type-code scheme\" — IDENTITY_NO\
+    \ mô tả rõ là CCCD (không ambiguous như AF_LEGAL_REPRESENTATIVE), PRACTICE_CERT_NO/AUDIT_CERT_NO\
+    \ là 2 loại giấy tờ/chứng chỉ khác nhau nên đều xác định được type. Sửa 2026-09-05."
 attributes:
 - attribute_name: "Audit Firm Auditor Id"
   physical_name: "af_auditor_id"
@@ -66,8 +70,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_AUDITOR_PROFILES.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Hash: hash_id('IDS_AF_PROFILES',\
-    \ AF_PROFILE_ID)."
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_AUDITOR_PROFILES.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+    \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -79,7 +84,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.AF_AUDITOR_PROFILES.AF_PROFILE_ID"
+  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -97,20 +102,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Identity Number"
-  physical_name: "identity_nbr"
-  description: "Số CCCD."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_AUDITOR_PROFILES.IDENTITY_NO"
-  comment: "Denormalized text — không gộp vào IP Alt Identification (không có type-code\
-    \ scheme kèm theo)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Position Title Code"
   physical_name: "position_title_code"
   description: "Chức vụ."
@@ -120,36 +111,10 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_AUDITOR_PROFILES.POSITION_TITLE_CD"
-  comment: "Scheme: IDS_AF_POSITION_TITLE. Values load từ LOOKUP_VALUES."
-  classification_context: "IDS_AF_POSITION_TITLE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Practice Certificate Number"
-  physical_name: "practice_certificate_nbr"
-  description: "Số GCN đăng ký hành nghề kiểm toán."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_NO"
-  comment: null
+  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Practice Certificate Issue Date"
-  physical_name: "practice_certificate_issue_dt"
-  description: "Ngày cấp GCN đăng ký hành nghề kiểm toán."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_ISSUE_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Practice Start Date"
   physical_name: "practice_start_dt"
   description: "Ngày bắt đầu hành nghề."
@@ -176,32 +141,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Audit Certificate Number"
-  physical_name: "audit_certificate_nbr"
-  description: "Số chứng chỉ kiểm toán viên."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Audit Certificate Issue Date"
-  physical_name: "audit_certificate_issue_dt"
-  description: "Ngày cấp chứng chỉ kiểm toán viên."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_ISSUE_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Auditor Status Code"
   physical_name: "auditor_status_code"
   description: "Trạng thái kiểm toán viên."
@@ -211,9 +150,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_AUDITOR_PROFILES.STATUS_CD"
-  comment: "Scheme: IDS_AUDITOR_STATUS. Values load từ LOOKUP_VALUES — chưa liệt kê\
-    \ trong HLD Tier2 6d, bổ sung scheme mới."
-  classification_context: "IDS_AUDITOR_STATUS"
+  comment: "SCHEMA_CODE=IDS.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Affiliation End Date"
@@ -229,19 +167,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Record Changed Indicator"
-  physical_name: "record_changed_ind"
-  description: "Đánh dấu bản ghi có bị thay đổi hay không."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_AUDITOR_PROFILES.REC_CHANGED_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Email Sent Indicator"
   physical_name: "email_sent_ind"
   description: "Đánh dấu bản ghi đã được gửi email hay chưa."
@@ -279,9 +204,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_AUDITOR_PROFILES.APPROVAL_STATUS_CD"
-  comment: "Scheme: IDS_APPROVAL_STATUS. Dùng chung scheme với Public Company/Audit\
-    \ Firm.Approval Status Code."
-  classification_context: "IDS_APPROVAL_STATUS"
+  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Approver Comment"
@@ -307,19 +231,6 @@ attributes:
   source_columns:
   - "IDS.AF_AUDITOR_PROFILES.IS_WORKING"
   comment: "Giá trị 1 → true (đang làm việc); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_AUDITOR_PROFILES.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
   classification_context: null
   etl_derived_value: null
   data_type: "int"

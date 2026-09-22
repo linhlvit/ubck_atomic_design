@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,9 +18,13 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "2 loại giấy tờ: BUSINESS_LICENSE (Giấy chứng nhận ĐKKD, từ BUSINESS_REG_NO)\
-    \ và BUSINESS_ELIGIBILITY_LICENSE (Giấy chứng nhận đủ điều kiện kinh doanh, từ\
-    \ ELIGIBILITY_CERT_NO). Mỗi loại = 1 block. Theo yêu cầu Data Modeler (2026-07-14,\
-    \ xem pending_design.yaml) — không giữ denormalized Text tại entity chính."
+    \ và ELIGIBILITY_CERTIFICATE (Giấy chứng nhận đủ điều kiện kinh doanh, từ ELIGIBILITY_CERT_NO).\
+    \ Mỗi loại = 1 block. Theo yêu cầu Data Modeler (2026-07-14, xem pending_design.yaml)\
+    \ — không giữ denormalized Text tại entity chính. Hạ về draft (2026-09-05) — sửa\
+    \ lỗi cấu trúc: header (Involved Party Id/Code/Source System Code) từng lặp lại\
+    \ cho mỗi block, không đúng chuẩn shared entity IP Alt Identification dùng chung\
+    \ dự án (header chỉ xuất hiện 1 lần, xem lld_SCMS_SC_FIRM_INFO_IP_Alt_Identification.yaml\
+    \ — 7 block chỉ 1 header). Không đổi mapping/giá trị, chỉ gộp header trùng lặp."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -87,45 +91,6 @@ attributes:
   classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến Audit Firm."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
-  comment: "FK target: audit_firm.af_id. Shared entity — không có PK surrogate riêng.\
-    \ Hash: hash_id('IDS_AF_PROFILES', AUDIT_FIRM_CD)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã Audit Firm."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
-  comment: "Lookup pair: audit_firm.af_code. Pair with Involved Party Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IDS_AF_PROFILES"
-  etl_derived_value: "IDS_AF_PROFILES"
-  data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ — giấy chứng nhận đủ điều kiện kinh doanh."
@@ -134,9 +99,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_ELIGIBILITY_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_ELIGIBILITY_LICENSE"
-  etl_derived_value: "BUSINESS_ELIGIBILITY_LICENSE"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ELIGIBILITY_CERTIFICATE."
+  classification_context: "IP_ALT_ID_TYPE=ELIGIBILITY_CERTIFICATE"
+  etl_derived_value: "ELIGIBILITY_CERTIFICATE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -149,6 +114,6 @@ attributes:
   - "IDS.AF_PROFILES.ELIGIBILITY_CERT_NO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_ELIGIBILITY_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ELIGIBILITY_CERTIFICATE"
   etl_derived_value: null
   data_type: "string"

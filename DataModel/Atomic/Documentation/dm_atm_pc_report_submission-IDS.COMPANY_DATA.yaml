@@ -10,11 +10,11 @@ ldm:
   status: approved
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Regulatory Report"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  table_type: Relative
+  etl_pattern: SCD2
   source: IDS
   description: |
-    Lần nộp báo cáo/tin công bố thông tin (CBTT) của CTĐC: form, trạng thái duyệt, ngày nộp/duyệt/từ chối, tin đính chính. BRD hiện tại thiếu 4 FK có trên DDL thực tế (Legal Entity, Securities Offering, Company Tender Offer, Company Treasury Stock). Khôi phục scope 2026-08-05 — xem IDS_HLD_Overview.md 7e #15.
+    Lần nộp báo cáo/tin công bố thông tin (CBTT) của CTĐC: form, trạng thái duyệt, ngày nộp/duyệt/từ chối, tin đính chính. BRD hiện tại thiếu 4 FK có trên DDL thực tế (Legal Entity, Securities Offering, Company Tender Offer, Company Treasury Stock). Khôi phục scope 2026-08-05 — xem IDS_HLD_Overview.md 7e #15. Table Type Fundamental → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -92,8 +92,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Financial Report Template Id
-    physical_name: fr_template_id
+  - name: Financial Report Id
+    physical_name: fr_id
     business_meaning: ID form.
     data_domain: Surrogate Key
     data_type: string
@@ -102,12 +102,12 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.COMPANY_DATA.FORM_ID
-    comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS: COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS', FORM_CD)."
+    comment: "FK target: financial_report.fr_id. Cần ETL crosswalk sang IDS.FORMS: COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS', FORM_CD)."
     classification_context: null
     etl_derived_value: null
 
-  - name: Financial Report Template Code
-    physical_name: fr_template_code
+  - name: Financial Report Code
+    physical_name: fr_code
     business_meaning: Mã form.
     data_domain: Text
     data_type: string
@@ -116,7 +116,7 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.FORMS.FORM_CD
-    comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id. Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem comment Financial Report Template Id."
+    comment: "Lookup pair: financial_report.fr_code. Pair with Financial Report Id. Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem comment Financial Report Id."
     classification_context: null
     etl_derived_value: null
 
@@ -190,8 +190,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Submission Status Code
-    physical_name: submission_status_code
+  - name: Approval Status Code
+    physical_name: approval_status_code
     business_meaning: Trạng thái (Chờ duyệt; Đã duyệt; Từ chối; Đóng quy trình).
     data_domain: Classification Value
     data_type: string
@@ -200,7 +200,7 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.COMPANY_DATA.NEWS_STATUS_CD
-    comment: "SCHEMA_CODE=IDS.COMPANY_DATA.NEWS_STATUS_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+    comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
     classification_context: null
     etl_derived_value: null
 
@@ -498,20 +498,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: System Origin Code
-    physical_name: stm_origin_code
-    business_meaning: Mã hệ thống phát sinh bản ghi.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: COMPANY_DATA
-    source_column: IDS.COMPANY_DATA.SYSTEM_CD
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
   - name: Close Timestamp
     physical_name: close_tms
     business_meaning: Thời điểm đóng hồ sơ/tin.
@@ -662,7 +648,7 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.COMPANY_DATA.APPROVER_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_DATA.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
     classification_context: null
     etl_derived_value: null
 

@@ -35,12 +35,15 @@ metadata:
     \ crosswalk sang FORM_INDICATOR_INPUT để lấy CODE. FORM_REPORT_ID trên bảng nguồn\
     \ là FK dư thừa (denormalize từ FORM_SHEET) — không model, xem Tier4 6f T4-03/pending_design.yaml.\
     \ INDICATOR_ID — 2 cột khả nghi cùng trỏ chỉ tiêu (INDICATOR_ID vs FORM_SHEET_CELL_INPUT_ID),\
-    \ mô tả gốc BRD trống cho cả 2, không tagged FK — tạm giữ INDICATOR_ID dạng Text\
-    \ denormalized (không FK), FORM_SHEET_CELL_INPUT_ID là FK chính theo tên cột khớp\
-    \ trực tiếp \"CELL_INPUT\" — xem Tier4 6f T4-01, cần Data Modeler xác nhận khi\
-    \ có thêm thông tin. TEMPLATE_FORM_REPORT_ID (FK điều kiện, chỉ có giá trị khi\
-    \ ô hiển thị ngày gửi báo cáo) — giữ plain attribute, không model FK cứng, xem\
-    \ Tier4 6f T4-02. Audit block (CREATED_BY/CREATED_AT/LAST_MODIFIED_BY/LAST_MODIFIED_AT/LAST_MODIFIED_AT_ALT)\
+    \ mô tả gốc BRD trống cho cả 2. Theo quyết định Data Modeler (2026-09-17), INDICATOR_ID\
+    \ nay cũng model FK sang FORM_INDICATOR_INPUT (Legacy Securities Company Report\
+    \ Indicator Id/Code) — cần ETL crosswalk lấy CODE tương tự FORM_SHEET_CELL_INPUT_ID;\
+    \ xem Tier4 6f T4-01. TEMPLATE_FORM_REPORT_ID (FK điều kiện, chỉ có giá trị khi\
+    \ ô hiển thị ngày gửi báo cáo) nay model FK cứng sang FORM_REPORT (Template Securities\
+    \ Company Report Id/Code, hash trực tiếp) theo quyết định Data Modeler (2026-09-17)\
+    \ — khác với REPORT_INPUT_SUBMISSION.REF_ID (Tier2 T2-14) vẫn giữ soft pointer\
+    \ không model FK cứng, do REF_ID polymorphic theo REF_TYPE còn TEMPLATE_FORM_REPORT_ID\
+    \ trỏ cố định 1 entity (FORM_REPORT). Xem Tier4 6f T4-02. Audit block (CREATED_BY/CREATED_AT/LAST_MODIFIED_BY/LAST_MODIFIED_AT/LAST_MODIFIED_AT_ALT)\
     \ loại bỏ theo convention SCMS — LAST_MODIFIED_AT_ALT là cột trùng lặp/lịch sử\
     \ không có mô tả gốc, loại cùng nhóm audit."
 attributes:
@@ -212,20 +215,37 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Legacy Indicator Id"
-  physical_name: "legacy_ind_id"
-  description: "ID kỹ thuật khả nghi thứ 2 cùng ý nghĩa chỉ tiêu (mô tả gốc BRD trống)."
+- attribute_name: "Legacy Securities Company Report Indicator Id"
+  physical_name: "legacy_sc_rpt_ind_id"
+  description: "FK -> form_indicator_input: ID kỹ thuật khả nghi thứ 2 cùng ý nghĩa\
+    \ chỉ tiêu (mô tả gốc BRD trống)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_SHEET_CELL.INDICATOR_ID"
+  comment: "FK target: sc_report_indicator.sc_rpt_ind_id. Cần ETL crosswalk sang SCMS.FORM_INDICATOR_INPUT:\
+    \ FORM_SHEET_CELL.INDICATOR_ID = FORM_INDICATOR_INPUT.ID để xác nhận CODE sau\
+    \ đó hash_id('SCMS_FORM_INDICATOR_INPUT', CODE) | Có thể là cột legacy trước khi\
+    \ tách FORM_INDICATOR_INPUT ra bảng riêng — 2 cột khả nghi cùng trỏ chỉ tiêu (INDICATOR_ID\
+    \ vs FORM_SHEET_CELL_INPUT_ID), xem Tier4 6f T4-01."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legacy Securities Company Report Indicator Code"
+  physical_name: "legacy_sc_rpt_ind_code"
+  description: "Mã chỉ tiêu báo cáo (cột legacy khả nghi)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
-  - "SCMS.FORM_SHEET_CELL.INDICATOR_ID"
-  comment: "Không model FK — mục đích/quan hệ với FORM_SHEET_CELL_INPUT_ID (Securities\
-    \ Company Report Indicator Id) chưa xác nhận, có thể là cột legacy trước khi tách\
-    \ FORM_INDICATOR_INPUT ra bảng riêng. Xem Tier4 6f T4-01. Giữ nguyên giá trị ID\
-    \ kỹ thuật gốc dạng denormalized text. Nguồn lưu dạng số (NUMBER(10,0)) — ETL\
-    \ convert sang string."
+  - "SCMS.FORM_INDICATOR_INPUT.CODE"
+  comment: "Lookup pair: sc_report_indicator.sc_rpt_ind_code. Pair with Legacy Securities\
+    \ Company Report Indicator Id. Giá trị lấy từ SCMS.FORM_INDICATOR_INPUT.CODE sau\
+    \ ETL crosswalk — chi tiết xem comment Legacy Securities Company Report Indicator\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -433,18 +453,29 @@ attributes:
   data_type: "int"
 - attribute_name: "Template Securities Company Report Id"
   physical_name: "template_sc_rpt_id"
-  description: "Biểu mẫu báo cáo ID đối với các định dạng ký tự là ngày gửi báo cáo\
-    \ (FK điều kiện)."
+  description: "FK -> form_report: Biểu mẫu báo cáo ID đối với các định dạng ký tự\
+    \ là ngày gửi báo cáo (FK điều kiện)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_SHEET_CELL.TEMPLATE_FORM_REPORT_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', TEMPLATE_FORM_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Template Securities Company Report Code"
+  physical_name: "template_sc_rpt_code"
+  description: "Mã biểu mẫu báo cáo (FK điều kiện)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.FORM_SHEET_CELL.TEMPLATE_FORM_REPORT_ID"
-  comment: "Không model FK cứng — chỉ có giá trị khi ô hiển thị ngày gửi báo cáo (điều\
-    \ kiện áp dụng), cùng cách xử lý FK có điều kiện khác trong SCMS (VD REPORT_INPUT_SUBMISSION.REF_ID).\
-    \ Giữ nguyên giá trị ID kỹ thuật gốc dạng denormalized text. Nguồn lưu dạng số\
-    \ (NUMBER(10,0)) — ETL convert sang string. Xem Tier4 6f T4-02."
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Template Securities Company\
+    \ Report Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

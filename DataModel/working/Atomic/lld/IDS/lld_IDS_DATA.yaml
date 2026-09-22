@@ -7,7 +7,7 @@ metadata:
   entity_physical_name: "fr_value"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
-  table_type: "Fundamental"
+  table_type: "Classification"
   group: "T2"
   design_status: "approved"
   version: "1.0"
@@ -24,7 +24,9 @@ metadata:
     \ với Public Company Report Submission (xem HLD Tier2.md 6f T2-11). Audit block\
     \ (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE) loại bỏ — mirror quyết định\
     \ đã áp dụng cho toàn phân hệ IDS (xem pending_design.yaml). Table Type = Fundamental\
-    \ theo quyết định tường minh Data Modeler (HLD Overview 7e #15/#16, 2026-08-05)."
+    \ theo quyết định tường minh Data Modeler (HLD Overview 7e #15/#16, 2026-08-05).\
+    \ ĐẢO NGƯỢC 2026-09-15 (theo yêu cầu tường minh Data Modeler): Table Type Fundamental\
+    \ → Classification."
 attributes:
 - attribute_name: "Financial Report Value Id"
   physical_name: "fr_val_id"
@@ -89,7 +91,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REPORT_CATALOG.ID"
-  comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report Catalog Id."
+  comment: "Lookup pair: fr_catalog.fr_catalog_code. Pair with Financial Report Catalog\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -102,7 +105,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.DATA.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -128,9 +132,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.DATA.ROW_CD"
-  comment: "Denormalized — đối chiếu giá trị text với fr_row_template.Financial Report\
-    \ Row Template Code, không phải FK constraint (không join theo surrogate key).\
-    \ Kết hợp Row Code + Column Code xác định ô cụ thể trong biểu mẫu."
+  comment: "Denormalized — đối chiếu giá trị text với fr_row.Financial Report Row\
+    \ Code, không phải FK constraint (không join theo surrogate key). Kết hợp Row\
+    \ Code + Column Code xác định ô cụ thể trong biểu mẫu."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -143,9 +147,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.DATA.COL_CD"
-  comment: "Denormalized — đối chiếu giá trị text với fr_column_template.Financial\
-    \ Report Column Template Code, không phải FK constraint. Kết hợp Row Code + Column\
-    \ Code xác định ô cụ thể trong biểu mẫu."
+  comment: "Denormalized — đối chiếu giá trị text với fr_column.Financial Report Column\
+    \ Code, không phải FK constraint. Kết hợp Row Code + Column Code xác định ô cụ\
+    \ thể trong biểu mẫu."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -171,8 +175,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.DATA.REPORT_YEAR"
-  comment: "Nguồn NUMBER(4,0) — Small Counter (khác Text của fr_catalog.Report\
-    \ Year, vốn nguồn VARCHAR2(4))."
+  comment: "Nguồn NUMBER(4,0) — Small Counter (khác Text của fr_catalog.Report Year,\
+    \ vốn nguồn VARCHAR2(4))."
   classification_context: null
   etl_derived_value: null
   data_type: "int"

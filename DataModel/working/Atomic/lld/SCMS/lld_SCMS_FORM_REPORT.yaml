@@ -228,8 +228,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT.FORM_REPORT_ID"
-  comment: "FK target: sc_report.sc_report_id. Self-reference (biểu mẫu liên quan,\
-    \ khác PARENT_ID phân cấp). Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+  comment: "FK target: sc_report.sc_rpt_id. Self-reference (biểu mẫu liên quan, khác\
+    \ PARENT_ID phân cấp). Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -242,7 +242,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT.FORM_REPORT_ID"
-  comment: "Lookup pair: sc_report.sc_report_code. Pair with Parent Securities Company\
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Parent Securities Company\
     \ Report Id."
   classification_context: null
   etl_derived_value: null
@@ -271,7 +271,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT.DISCLOSURE_NEWS_TYPE"
-  comment: "SCHEMA_CODE=SCMS.DISCLOSURE_REPORT.NEWS_TYPE"
+  comment: "SCHEMA_CODE=SCMS.GROUP_EVENT_TYPE"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -284,9 +284,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT.NEXT_FORM_ID"
-  comment: "FK target: sc_report.sc_report_id. Self-reference (biểu mẫu tiếp theo\
-    \ trong chuỗi). FK suy luận — không có key:FK khai báo trong BRD nhưng mô tả gốc\
-    \ xác nhận trỏ về FORM_REPORT. Hash: hash_id('SCMS_FORM_REPORT', NEXT_FORM_ID)."
+  comment: "FK target: sc_report.sc_rpt_id. Self-reference (biểu mẫu tiếp theo trong\
+    \ chuỗi). FK suy luận — không có key:FK khai báo trong BRD nhưng mô tả gốc xác\
+    \ nhận trỏ về FORM_REPORT. Hash: hash_id('SCMS_FORM_REPORT', NEXT_FORM_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -299,7 +299,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT.NEXT_FORM_ID"
-  comment: "Lookup pair: sc_report.sc_report_code. Pair with Next Securities Company\
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Next Securities Company\
     \ Report Id."
   classification_context: null
   etl_derived_value: null

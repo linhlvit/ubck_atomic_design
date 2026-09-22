@@ -1,0 +1,317 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ufr_value-IDS.REP_DATA
+  logical_name: Unstructured Financial Report Value
+  physical_name: ufr_value
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: IDS
+  description: |
+    Giá trị từng ô số liệu/chuỗi trong báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC theo hàng/cột template, liên kết đến bản ghi nộp báo cáo. Cùng vai trò với "Financial Report Value" (DATA) nhưng cho họ template Unstructured Financial Report/Row/Column (REP_FORMS/REP_ROW/REP_COLUMN) thay vì Financial Report Catalog/Row/Column. Domain Prefix "Unstructured Financial Report" mở rộng từ 3 sang 4 entity — cần Data Modeler xác nhận (xem IDS_HLD_Overview.md 7e #24, IDS_HLD_Tier4.md 6f T4-04). Thiết kế mới (2026-09-05). Table Type Fundamental → Classification (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-REP_DATA
+
+attributes:
+  - name: Unstructured Financial Report Value Id
+    physical_name: ufr_val_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS_REP_DATA', ID). BCV: \"[Documentation] Regulatory Report\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Value Code
+    physical_name: ufr_val_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn (không có cột mã nghiệp vụ riêng).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.ID
+    comment: BK chính. PK nguồn NUMBER(19) tự tăng — mirror pattern fr_value.Financial Report Value Code (không có business code riêng).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_REP_DATA'"
+    etl_derived_value: IDS_REP_DATA
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: ID Hồ sơ doanh nghiệp.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.COMPANY_PROFILE_ID
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã Hồ sơ doanh nghiệp.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.COMPANY_PROFILE_ID
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Entity Id
+    physical_name: legal_entity_id
+    business_meaning: "ID Nhà đầu tư (NNB, NLQ, CĐ) — chỉ có khi giá trị báo cáo gắn với 1 cá nhân/tổ chức liên quan cụ thể thay vì trực tiếp CTĐC."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.LEGAL_ENTITY_ID
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES', LEGAL_ENTITY_ID) | Soft-FK — không tagged key:FK trong BRD. Nullable — chỉ có khi báo cáo gắn với 1 nhà đầu tư cụ thể (NNB/NLQ/CĐ). Cần Data Modeler xác nhận ý nghĩa khi cùng khác NULL với Public Company Id (xem IDS_HLD_Tier4.md 6f T4-06)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Entity Code
+    physical_name: legal_entity_code
+    business_meaning: Mã Nhà đầu tư (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.LEGAL_ENTITY_ID
+    comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Report Submission Id
+    physical_name: pc_rpt_submission_id
+    business_meaning: Lưu ID tin — lần nộp báo cáo/tin CBTT gắn với giá trị này.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.COMPANY_DATA_ID
+    comment: "FK target: pc_report_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA', COMPANY_DATA_ID) | Soft-FK — không tagged key:FK trong BRD, cần Data Modeler xác nhận constraint thực tế tại nguồn (xem IDS_HLD_Tier4.md 6f T4-05)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Report Submission Code
+    physical_name: pc_rpt_submission_code
+    business_meaning: Mã lần nộp báo cáo/tin CBTT (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.COMPANY_DATA_ID
+    comment: "Lookup pair: pc_report_submission.pc_rpt_submission_code. Pair with Public Company Report Submission Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Id
+    physical_name: ufr_id
+    business_meaning: ID của báo cáo (form) có cấu trúc tương ứng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.REP_FORM_ID
+    comment: "FK target: unstructured_financial_report.ufr_id. Hash: hash_id('IDS_REP_FORMS', REP_FORM_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Code
+    physical_name: ufr_code
+    business_meaning: Mã form báo cáo (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.REP_FORM_ID
+    comment: "Lookup pair: unstructured_financial_report.ufr_code. Pair with Unstructured Financial Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Row Id
+    physical_name: ufr_row_id
+    business_meaning: ID của Hàng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.REP_ROW_ID
+    comment: "FK target: ufr_row.ufr_row_id. Hash: hash_id('IDS_REP_ROW', REP_ROW_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Row Code
+    physical_name: ufr_row_code
+    business_meaning: Mã hàng (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.REP_ROW_ID
+    comment: "Lookup pair: ufr_row.ufr_row_code. Pair with Unstructured Financial Report Row Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Column Id
+    physical_name: ufr_column_id
+    business_meaning: ID của cột.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.REP_COL_ID
+    comment: "FK target: ufr_column.ufr_column_id. Hash: hash_id('IDS_REP_COLUMN', REP_COL_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Column Code
+    physical_name: ufr_column_code
+    business_meaning: Mã cột (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.REP_COL_ID
+    comment: "Lookup pair: ufr_column.ufr_column_code. Pair with Unstructured Financial Report Column Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Value
+    physical_name: data_val
+    business_meaning: Lưu dữ liệu kiểu số (cả số; tỷ lệ).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.DATA_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Text Value
+    physical_name: text_val
+    business_meaning: Lưu dữ liệu kiểu chuỗi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.TEXT_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Index
+    physical_name: row_index
+    business_meaning: STT của hàng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.REP_ROW_INDEX
+    comment: "Denormalized copy của ufr_row.Row Index (thứ tự hiển thị) — snapshot tại thời điểm ghi giá trị, không phải business attribute độc lập."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Index
+    physical_name: column_index
+    business_meaning: "STT của cột - sử dụng để hiển thị lần lượt trên danh sách theo số thứ tự này."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.REP_COL_INDEX
+    comment: "Denormalized copy của ufr_column.Column Index (thứ tự hiển thị) — snapshot tại thời điểm ghi giá trị, không phải business attribute độc lập."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Data Type Code
+    physical_name: column_data_tp_code
+    business_meaning: "Kiểu dữ liệu N(Number), T(Text)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.COL_DATA_TYPE
+    comment: "SCHEMA_CODE=IDS.RF_C_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_C_DATA_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Data Type Code
+    physical_name: row_data_tp_code
+    business_meaning: "Kiểu dữ liệu V(Value), D(Description)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_DATA
+    source_column: IDS.REP_DATA.ROW_DATA_TYPE
+    comment: "SCHEMA_CODE=IDS.RF_R_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_R_DATA_TYPE')."
+    classification_context: null
+    etl_derived_value: null

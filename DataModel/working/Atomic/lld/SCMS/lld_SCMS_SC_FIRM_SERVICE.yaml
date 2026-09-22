@@ -26,12 +26,14 @@ metadata:
     \ (knowledge/terms.csv #9819 — formal granting of rights bởi authorized body cho\
     \ 1 Involved Party) — sát nghĩa hơn [Event] Business Activity dùng trước đây (pattern\
     \ mượn từ SC_FIRM_ADMIN_PENALTY_DECISION/SC_FIRM_ADMIN_SANCTION vốn là biện pháp\
-    \ chế tài, khác bản chất). SERVICE_ID → CAT_SERVICE: cập nhật (HLD bổ sung SCMS\
-    \ Tier1) — CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification Service'\
-    \ (table_type Classification), thay cho scheme SCMS_SERVICE_TYPE cũ (nay deprecated).\
+    \ chế tài, khác bản chất). SERVICE_ID → CAT_SERVICE_LEGAL_CAPITAL: CAT_SERVICE\
+    \ (và CAT_BUSINESS_LINE) deprecated theo quyết định Data Modeler (2026-09-12,\
+    \ xem SCMS_HLD_Tier1.md 6f T1-11) — gộp vào entity thật 'Classification Securities\
+    \ Company Firm Service' (table_type Classification, physical_name cl_securities_company_firm_service).\
     \ SERVICE_ID đổi từ single Classification Value code sang cặp FK chuẩn Classification\
-    \ Service Id + Classification Service Code. DM_DICH_VU_ID nghi ngờ trùng SERVICE_ID\
-    \ — xem pending_design.yaml."
+    \ Securities Company Firm Service Id + Code (retarget 2026-09-17, thay thế cặp\
+    \ FK Classification Service Id/Code trỏ CAT_SERVICE cũ — file lld_SCMS_CAT_SERVICE.yaml\
+    \ đã gỡ bỏ). DM_DICH_VU_ID nghi ngờ trùng SERVICE_ID — xem pending_design.yaml."
 attributes:
 - attribute_name: "Securities Company Licensed Service Id"
   physical_name: "sc_licensed_service_id"
@@ -68,7 +70,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SERVICE"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_SERVICE"
   etl_derived_value: "SCMS_SC_FIRM_SERVICE"
   data_type: "string"
 - attribute_name: "Securities Company Id"
@@ -81,7 +83,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SERVICE.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ SC_FIRM_SERVICE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_SERVICE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO',\
     \ CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai\
     \ lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -96,37 +98,39 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Service Id"
-  physical_name: "cl_service_id"
-  description: "FK -> cat_service: Dịch vụ chứng khoán được cấp phép."
+- attribute_name: "Classification Securities Company Firm Service Id"
+  physical_name: "cl_sc_firm_service_id"
+  description: "FK -> cat_service_legal_capital: Dịch vụ/nghiệp vụ kinh doanh chứng\
+    \ khoán được cấp phép."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SERVICE.SERVICE_ID"
-  comment: "FK target: Classification Service.Classification Service Id. Hash: hash_id('SCMS.CAT_SERVICE',\
-    \ SERVICE_ID)."
+  comment: "FK target: cl_securities_company_firm_service.cl_sc_firm_service_id. Hash:\
+    \ hash_id('SCMS_CAT_SERVICE_LEGAL_CAPITAL', SERVICE_ID). Retarget theo SCMS_HLD_Tier1.md\
+    \ 6f T1-11 — CAT_SERVICE deprecated, gộp vào CAT_SERVICE_LEGAL_CAPITAL (2026-09-17)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Service Code"
-  physical_name: "cl_service_code"
-  description: "Mã dịch vụ chứng khoán được cấp phép."
+- attribute_name: "Classification Securities Company Firm Service Code"
+  physical_name: "cl_sc_firm_service_code"
+  description: "Mã dịch vụ/nghiệp vụ kinh doanh chứng khoán được cấp phép."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SERVICE.SERVICE_ID"
-  comment: "Lookup pair: Classification Service.Classification Service Code. Pair\
-    \ with Classification Service Id."
+  comment: "Lookup pair: cl_securities_company_firm_service.cl_sc_firm_service_code.\
+    \ Pair with Classification Securities Company Firm Service Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

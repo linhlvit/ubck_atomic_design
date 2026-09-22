@@ -2,19 +2,19 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-fr_row_template-IDS.RROW
-  logical_name: Financial Report Row Template
-  physical_name: fr_row_template
+  id: ATM-fr_row-IDS.RROW
+  logical_name: Financial Report Row
+  physical_name: fr_row
   layer: Atomic
   version: "1.0"
   status: draft
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Form Document"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  table_type: Relative
+  etl_pattern: SCD2
   source: IDS
   description: |
-    Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng, tên, cấp phân cấp, công thức tổng hợp. Khôi phục scope 2026-08-05 (xem IDS_HLD_Overview.md 7e #15) — tên bỏ chữ "Form" so với thiết kế trước đây. Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21.
+    Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng, tên, cấp phân cấp, công thức tổng hợp. Khôi phục scope 2026-08-05 (xem IDS_HLD_Overview.md 7e #15) — tên bỏ chữ "Form" so với thiết kế trước đây. Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21. Đổi tên từ "Financial Report Row Template" (entity_physical_name fr_row_template → fr_row) và Table Type Fundamental → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler, đảo ngược quyết định giữ Fundamental 2026-08-05) — xem IDS_HLD_Overview.md 7e.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -22,8 +22,8 @@ ldm:
     brd: BRD-SRC-IDS-RROW
 
 attributes:
-  - name: Financial Report Row Template Id
-    physical_name: fr_row_template_id
+  - name: Financial Report Row Id
+    physical_name: fr_row_id
     business_meaning: Khóa đại diện (surrogate key).
     data_domain: Surrogate Key
     data_type: string
@@ -36,8 +36,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Financial Report Row Template Code
-    physical_name: fr_row_template_code
+  - name: Financial Report Row Code
+    physical_name: fr_row_code
     business_meaning: BK duy nhất — Id hash từ trường này.
     data_domain: Text
     data_type: string
@@ -78,8 +78,8 @@ attributes:
     classification_context: "Source System Code = 'IDS_RROW'"
     etl_derived_value: IDS_RROW
 
-  - name: Financial Report Row Template Name
-    physical_name: fr_row_template_nm
+  - name: Financial Report Row Name
+    physical_name: fr_row_nm
     business_meaning: Tên hàng (tiếng Việt).
     data_domain: Text
     data_type: string
@@ -92,8 +92,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Financial Report Row Template English Name
-    physical_name: fr_row_template_english_nm
+  - name: Financial Report Row English Name
+    physical_name: fr_row_english_nm
     business_meaning: Tên hàng (tiếng Anh).
     data_domain: Text
     data_type: string

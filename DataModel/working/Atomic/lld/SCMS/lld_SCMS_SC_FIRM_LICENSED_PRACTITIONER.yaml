@@ -28,11 +28,11 @@ metadata:
     \ là FK nullable khi đối chiếu được. Shared IP entities: DIACHITHUONGTRU/PERMANENT_ADDRESS\
     \ → IP Postal (2 types: PERMANENT, HOUSEHOLD_REGISTRY); DIENTHOAI/DIDONG/EMAIL\
     \ → IP Electronic; NATIONAL_ID/SOCMT → IP Alt Identification. BUSINESS_LINE_ID\
-    \ đổi từ Classification Value scheme SCMS_BUSINESS_LINE (deprecated) sang cặp\
-    \ FK Classification Business Transaction Id+Code (tên attribute dùng nguyên tên\
-    \ entity đích, nhất quán với mọi FK Classification SCMS khác trong source này),\
-    \ đồng bộ sau khi CAT_BUSINESS_LINE được promote thành Atomic entity thật (xem\
-    \ lld_SCMS_CAT_BUSINESS_LINE.yaml)."
+    \ (nguồn VARCHAR2(100), list SERVICE_ID phân tách) map thành Array<Text> \"Licensed\
+    \ Service Codes\" — KHÔNG thiết kế cặp Id/Code theo quyết định tường minh Data\
+    \ Modeler (xem SCMS_HLD_Tier1.md 6f T1-11, 2026-09-12). CAT_BUSINESS_LINE (và\
+    \ CAT_SERVICE) đã deprecated/gỡ bỏ LLD (2026-09-17) — gộp vào Classification Securities\
+    \ Company Firm Service (CAT_SERVICE_LEGAL_CAPITAL)."
 attributes:
 - attribute_name: "Securities Company Practitioner Id"
   physical_name: "sc_practitioner_id"
@@ -71,7 +71,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_LICENSED_PRACTITIONER"
   etl_derived_value: "SCMS_SC_FIRM_LICENSED_PRACTITIONER"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
@@ -84,9 +84,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NHN_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Bridge\
-    \ chéo hệ thống — nullable vì không phải mọi practitioner SCMS đã đối chiếu với\
-    \ NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', NHN_ID)."
+  comment: "FK target: securities_practitioner.sp_id. Bridge chéo hệ thống — nullable\
+    \ vì không phải mọi practitioner SCMS đã đối chiếu với NHNCK. Hash: hash_id('NHNCK_PROFESSIONALS',\
+    \ NHN_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -99,8 +99,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NHN_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -115,7 +115,7 @@ attributes:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận\
-    \ CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo\
+    \ CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo\
     \ SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE)\
     \ — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -130,9 +130,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -145,8 +145,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_BRANCH_ID"
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID)."
+  comment: "FK target: sc_organization_unit.sc_ou_id. Hash: hash_id('SCMS_SC_FIRM_BRANCH',\
+    \ SC_FIRM_BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -159,8 +159,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_BRANCH_ID"
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
+  comment: "Lookup pair: sc_organization_unit.sc_ou_code."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -173,8 +172,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_TRANSACTION_OFFICE_ID"
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE', SC_FIRM_TRANSACTION_OFFICE_ID)."
+  comment: "FK target: sc_organization_unit.sc_ou_id. Hash: hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE',\
+    \ SC_FIRM_TRANSACTION_OFFICE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -187,8 +186,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_TRANSACTION_OFFICE_ID"
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
+  comment: "Lookup pair: sc_organization_unit.sc_ou_code."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -201,8 +199,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_REP_OFFICE_ID"
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE', SC_FIRM_REP_OFFICE_ID)."
+  comment: "FK target: sc_organization_unit.sc_ou_id. Hash: hash_id('SCMS_SC_FIRM_REP_OFFICE',\
+    \ SC_FIRM_REP_OFFICE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -215,8 +213,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_REP_OFFICE_ID"
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
+  comment: "Lookup pair: sc_organization_unit.sc_ou_code."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -229,8 +226,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID"
-  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
-    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS_CAT_NATIONALITY',\
+    \ NATIONALITY_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -243,8 +240,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID"
-  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
-    \ Pair with Classification Nationality Id."
+  comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with Classification\
+    \ Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -411,19 +408,24 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Classification Securities Company Firm Service Id"
-  physical_name: "cl_sc_firm_service_id"
-  description: "Nghiệp vụ kinh doanh người hành nghề phụ trách."
-  data_domain: "Text"
+- attribute_name: "Licensed Service Codes"
+  physical_name: "licensed_service_codes"
+  description: "Danh sách mã nghiệp vụ kinh doanh/dịch vụ người hành nghề phụ trách\
+    \ (denormalized từ BUSINESS_LINE_ID)."
+  data_domain: "Array<Text>"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID"
-  comment: null
+  comment: "Nguồn VARCHAR2(100) — list SERVICE_ID phân tách (dấu phẩy), ETL parse\
+    \ thành mảng. Tham chiếu cl_securities_company_firm_service.cl_sc_firm_service_code\
+    \ — KHÔNG thiết kế cặp Id/Code theo quyết định Data Modeler (xem SCMS_HLD_Tier1.md\
+    \ 6f T1-11). Trước đây map nhầm thành cặp FK Classification Business Transaction\
+    \ Id/Code (CAT_BUSINESS_LINE, nay deprecated) — đã sửa 2026-09-17."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "array<string>"
 - attribute_name: "Business Division Id"
   physical_name: "business_division_id"
   description: "ID phân khu kinh doanh (pending FK target)."

@@ -7,7 +7,7 @@ metadata:
   entity_physical_name: "pc_report_submission"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
-  table_type: "Fundamental"
+  table_type: "Relative"
   group: "T3"
   design_status: "approved"
   version: "1.0"
@@ -40,7 +40,10 @@ metadata:
     \ cũ trước khi loại scope) do nay có FK đến Public Company Securities Offering\
     \ (Tier 3). group đổi T2→T3; entity đã chuyển từ IDS_HLD_Tier2.md (6a + 6f T2-12)\
     \ sang IDS_HLD_Tier3.md; manifest.yaml đồng bộ group=T3. design_status revert\
-    \ về draft để chờ review lại toàn bộ (không chỉ 11 cột mới)."
+    \ về draft để chờ review lại toàn bộ (không chỉ 11 cột mới). Table Type Fundamental\
+    \ → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler). FK \"Financial\
+    \ Report Template Id/Code\" đổi tên thành \"Financial Report Id/Code\" cùng đợt\
+    \ — theo đúng việc đổi tên entity FORMS (xem atomic_entities.yaml)."
 attributes:
 - attribute_name: "Public Company Report Submission Id"
   physical_name: "pc_rpt_submission_id"
@@ -109,8 +112,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Template Id"
-  physical_name: "fr_template_id"
+- attribute_name: "Financial Report Id"
+  physical_name: "fr_id"
   description: "ID form."
   data_domain: "Surrogate Key"
   nullable: false
@@ -118,14 +121,14 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.COMPANY_DATA.FORM_ID"
-  comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
+  comment: "FK target: financial_report.fr_id. Cần ETL crosswalk sang IDS.FORMS:\
     \ COMPANY_DATA.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS',\
     \ FORM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Financial Report Template Code"
-  physical_name: "fr_template_code"
+- attribute_name: "Financial Report Code"
+  physical_name: "fr_code"
   description: "Mã form."
   data_domain: "Text"
   nullable: false
@@ -133,9 +136,9 @@ attributes:
   status: "approved"
   source_columns:
   - "IDS.FORMS.FORM_CD"
-  comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report\
-    \ Template Id. Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem\
-    \ comment Financial Report Template Id."
+  comment: "Lookup pair: financial_report.fr_code. Pair with Financial Report Id.\
+    \ Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem comment Financial\
+    \ Report Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -502,19 +505,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "System Origin Code"
-  physical_name: "stm_origin_code"
-  description: "Mã hệ thống phát sinh bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "approved"
-  source_columns:
-  - "IDS.COMPANY_DATA.SYSTEM_CD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Close Timestamp"
   physical_name: "close_tms"
   description: "Thời điểm đóng hồ sơ/tin."
@@ -670,12 +660,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "IDS.COMPANY_DATA.APPROVER_USER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_DATA.APPROVER_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -685,7 +674,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "IDS.COMPANY_DATA.APPROVER_USER_ID"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\

@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,12 +17,15 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "PHONE_NO → Involved Party Electronic Address. IDENTITY_NO → Involved Party\
-    \ Alternative Identification (không có issue date/place). HLD Tier2 6a liệt kê\
-    \ bảng này là nguồn Involved Party Postal Address, nhưng BRD thực tế (brd_IDS_AF_LEGAL_REPRESENTATIVE.yaml)\
-    \ không có cột địa chỉ nào — không tạo file Postal Address cho nguồn này. Điểm\
-    \ cần xác nhận: HLD Tier2 cần cập nhật lại danh sách source_table của Involved\
-    \ Party Postal Address."
+  notes: "PHONE_NO → Involved Party Electronic Address. IDENTITY_NO giữ denormalized\
+    \ trực tiếp trên entity chính, KHÔNG tách shared entity IP Alt Identification\
+    \ — nguồn không có cột phân biệt loại giấy tờ nên không đủ thông tin để xác định\
+    \ type (quyết định Data Modeler 2026-09-05, mirror quyết định đã áp dụng cho LEGAL_REPRESENTATIVE\
+    \ 2026-09-04 — thay thế cách làm cũ dùng lld_IDS_AF_LEGAL_REPRESENTATIVE_IP_Alt_Identification.yaml,\
+    \ file đã xóa). HLD Tier2 6a liệt kê bảng này là nguồn Involved Party Postal Address,\
+    \ nhưng BRD thực tế (brd_IDS_AF_LEGAL_REPRESENTATIVE.yaml) không có cột địa chỉ\
+    \ nào — không tạo file Postal Address cho nguồn này. Điểm cần xác nhận: HLD Tier2\
+    \ cần cập nhật lại danh sách source_table của Involved Party Postal Address."
 attributes:
 - attribute_name: "Audit Firm Legal Representative Id"
   physical_name: "af_legal_representative_id"
@@ -70,8 +73,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Hash: hash_id('IDS_AF_PROFILES',\
-    \ AF_PROFILE_ID)."
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+    \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -83,7 +87,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID"
+  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -101,6 +105,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số CMND/hộ chiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO"
+  comment: "Denormalized — nguồn không có cột phân biệt loại giấy tờ, không đủ thông\
+    \ tin để tách shared entity IP Alt Identification."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Position Title Code"
   physical_name: "position_title_code"
   description: "Chức vụ."
@@ -110,9 +128,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_LEGAL_REPRESENTATIVE.POSITION_TITLE_CD"
-  comment: "Scheme: IDS_AF_POSITION_TITLE. Dùng chung scheme với Audit Firm Auditor.Position\
-    \ Title Code."
-  classification_context: "IDS_AF_POSITION_TITLE"
+  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Appointment Start Date"
@@ -141,16 +158,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Trạng thái xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_LEGAL_REPRESENTATIVE.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

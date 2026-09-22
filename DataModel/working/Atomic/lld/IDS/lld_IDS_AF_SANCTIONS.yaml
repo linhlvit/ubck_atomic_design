@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Enforcement Action"
   table_type: "Fact Append"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -65,8 +65,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_SANCTIONS.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Hash: hash_id('IDS_AF_PROFILES',\
-    \ AF_PROFILE_ID)."
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_SANCTIONS.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+    \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -78,7 +79,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.AF_SANCTIONS.AF_PROFILE_ID"
+  - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -86,14 +87,13 @@ attributes:
 - attribute_name: "Sanction Authority Code"
   physical_name: "sanction_authority_code"
   description: "Đơn vị xử phạt (BTC hay UB)."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.AF_SANCTIONS.SANCTION_AUTHORITY_CD"
-  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
-    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  comment: "SCHEMA_CODE=IDS.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -149,16 +149,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_SANCTIONS.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

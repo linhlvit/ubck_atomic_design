@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Status History"
   table_type: "Fact Append"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -79,8 +79,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID"
-  comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit\
-    \ Firm Auditor Id."
+  comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -93,9 +93,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.AF_AUDITOR_STATUS_HISTORY.EVENT_TYPE"
-  comment: "Scheme: IDS_AUDITOR_STATUS_EVENT_TYPE (no_lookup). Loại sự kiện thay đổi\
-    \ trạng thái kiểm toán viên."
-  classification_context: "IDS_AUDITOR_STATUS_EVENT_TYPE"
+  comment: "SCHEMA_CODE=IDS.AF_AUDITOR_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDITOR_STATUS')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Effective Date"
@@ -137,16 +136,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_AUDITOR_STATUS_HISTORY.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

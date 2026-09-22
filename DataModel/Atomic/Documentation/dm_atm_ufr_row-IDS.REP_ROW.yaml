@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ufr_row-IDS.REP_ROW
+  logical_name: Unstructured Financial Report Row
+  physical_name: ufr_row
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  description: |
+    Định nghĩa từng hàng trong template báo cáo định kỳ. Đổi tên từ "Periodic Report Form Row Template" (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e #15. Bổ sung table_type/entity_physical_name (trước đây để trống) và đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e #21. Đổi Domain Prefix từ "Financial Report" sang "Unstructured Financial Report" (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN) — xem IDS_HLD_Overview.md 7e #22. Bỏ chữ "Sub" khỏi tên entity/field (2026-08-27, theo yêu cầu tường minh Data Modeler) — xem 7e #23. Bỏ chữ "Template" khỏi tên (entity_physical_name ufr_row_template → ufr_row) và Table Type Fundamental → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-REP_ROW
+
+attributes:
+  - name: Unstructured Financial Report Row Id
+    physical_name: ufr_row_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS_REP_ROW', ID). BCV: \"[Documentation] Form Document\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Row Code
+    physical_name: ufr_row_code
+    business_meaning: BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.ID
+    comment: "BK chính — chuyển từ mã nghiệp vụ (ROW_CD) sang ID kỹ thuật nguồn do ROW_CD không đảm bảo unique (xác nhận qua profile dữ liệu — quyết định Data Modeler 2026-08-27). Nguồn NUMBER(10,0) — ETL cast sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_REP_ROW'"
+    etl_derived_value: IDS_REP_ROW
+
+  - name: Row Code
+    physical_name: row_code
+    business_meaning: Mã tự sinh của chỉ tiêu hàng. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm business reference field.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.ROW_CD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Id
+    physical_name: ufr_id
+    business_meaning: ID của form báo cáo tương ứng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.REP_FORM_ID
+    comment: "FK target: unstructured_financial_report.ufr_id. Hash: hash_id('IDS_REP_FORMS', REP_FORM_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Unstructured Financial Report Code
+    physical_name: ufr_code
+    business_meaning: Mã form báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_FORMS.ID
+    comment: "Lookup pair: unstructured_financial_report.ufr_code. Pair with Unstructured Financial Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Name
+    physical_name: row_nm
+    business_meaning: Tên dòng (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.ROW_NAME_VI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row English Name
+    physical_name: row_english_nm
+    business_meaning: Tên dòng (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.ROW_NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Index
+    physical_name: row_index
+    business_meaning: Thứ tự dòng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.ROW_INDEX
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Duplicate Row Indicator
+    physical_name: duplicate_row_ind
+    business_meaning: Cho phép nhân đôi dòng hay không.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.DUPLICATE_ROW_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Data Type Code
+    physical_name: row_data_tp_code
+    business_meaning: "Kiểu dữ liệu, lookup group RF_R_DATA_TYPE."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.DATA_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.RF_R_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_R_DATA_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Allow Column Sum Indicator
+    physical_name: allow_column_sum_ind
+    business_meaning: "Check tính tổng cột (1 có, 2 không)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.ALLOW_COL_SUM_FLG
+    comment: Giá trị 1 → true; 2 → false (lưu ý nguồn dùng 2 thay vì 0 cho false — cần ETL map lại). Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Description
+    physical_name: row_description
+    business_meaning: Mô tả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REP_ROW
+    source_column: IDS.REP_ROW.ROW_DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null

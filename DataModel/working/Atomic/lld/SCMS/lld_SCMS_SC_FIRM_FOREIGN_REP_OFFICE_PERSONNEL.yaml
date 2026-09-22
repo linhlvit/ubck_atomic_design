@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
   etl_derived_value: "SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
   data_type: "string"
 - attribute_name: "Representative Office Organization Unit Id"
@@ -73,8 +73,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.SC_FIRM_FOREIGN_REP_OFFICE_ID"
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE', SC_FIRM_FOREIGN_REP_OFFICE_ID)."
+  comment: "FK target: sc_organization_unit.sc_ou_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_REP_OFFICE',\
+    \ SC_FIRM_FOREIGN_REP_OFFICE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -87,8 +87,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.SC_FIRM_FOREIGN_REP_OFFICE_ID"
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code. Pair with Representative Office Organization Unit Id."
+  comment: "Lookup pair: sc_organization_unit.sc_ou_code. Pair with Representative\
+    \ Office Organization Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

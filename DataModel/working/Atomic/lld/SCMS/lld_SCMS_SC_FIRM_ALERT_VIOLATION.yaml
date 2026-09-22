@@ -69,7 +69,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_ALERT_VIOLATION"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_ALERT_VIOLATION"
   etl_derived_value: "SCMS_SC_FIRM_ALERT_VIOLATION"
   data_type: "string"
 - attribute_name: "Data Date"
@@ -104,7 +104,7 @@ attributes:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
     \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
     \ crosswalk 2026-07-27."
   classification_context: null
@@ -119,9 +119,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -134,11 +134,12 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
-  comment: "FK target: sc_alert_indicator.sc_alert_indicator_id. Cần ETL crosswalk\
-    \ sang SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID\
-    \ để xác nhận ALERT_CODE sau đó hash_id('SCMS.ALERT_INDICATOR', ALERT_CODE) |\
-    \ Trước đây hash trực tiếp theo ALERT_INDICATOR_ID (ID kỹ thuật) gây sai lệch\
-    \ với Id của bảng main (hash từ ALERT_CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: sc_alert_indicator.sc_alert_ind_id. Cần ETL crosswalk sang\
+    \ SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID\
+    \ để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE)\
+    \ | Đổi hash key sang INDICATOR_CODE theo yêu cầu Data Modeler (2026-09-18, xem\
+    \ lld_SCMS_ALERT_INDICATOR.yaml) — trước đó dùng ALERT_CODE (đã sửa sang crosswalk\
+    \ 2026-07-27)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -150,11 +151,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.ALERT_INDICATOR.ALERT_CODE"
-  comment: "Lookup pair: Securities Company Alert Indicator.Securities Company Alert\
-    \ Indicator Code. Pair with Securities Company Alert Indicator Id. Giá trị lấy\
-    \ từ SCMS.ALERT_INDICATOR.ALERT_CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Company Alert Indicator Id."
+  - "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
+  comment: "Lookup pair: sc_alert_indicator.sc_alert_ind_code. Pair with Securities\
+    \ Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.INDICATOR_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Company Alert Indicator\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -167,9 +168,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID"
-  comment: "FK target: Securities Company Alert Indicator Condition.Securities Company\
-    \ Alert Indicator Condition Id. Hash: hash_id('SCMS.ALERT_INDICATOR_CONDITION',\
-    \ ALERT_CONDITION_ID)."
+  comment: "FK target: sc_alert_indicator_condition.sc_alert_ind_condition_id. Hash:\
+    \ hash_id('SCMS_ALERT_INDICATOR_CONDITION', ALERT_CONDITION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -182,9 +182,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID"
-  comment: "Lookup pair: Securities Company Alert Indicator Condition.Securities Company\
-    \ Alert Indicator Condition Code. Pair with Securities Company Alert Indicator\
-    \ Condition Id."
+  comment: "Lookup pair: sc_alert_indicator_condition.sc_alert_ind_condition_code.\
+    \ Pair with Securities Company Alert Indicator Condition Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -199,7 +198,7 @@ attributes:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
   comment: "FK target: sc_alert_run.sc_alert_run_id. Cần ETL crosswalk sang SCMS.ALERT_RUN:\
     \ SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID = ALERT_RUN.ID để xác nhận RUN_ID sau đó\
-    \ hash_id('SCMS.ALERT_RUN', RUN_ID) | Resolved 2026-07-12 — ALERT_RUN đã được\
+    \ hash_id('SCMS_ALERT_RUN', RUN_ID) | Resolved 2026-07-12 — ALERT_RUN đã được\
     \ đưa vào scope HLD/LLD SCMS (xem lld_SCMS_ALERT_RUN.yaml). Trước đây hash trực\
     \ tiếp theo ALERT_RUN_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
     \ từ RUN_ID) — đã sửa sang crosswalk 2026-07-27."
@@ -215,9 +214,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.ALERT_RUN.RUN_ID"
-  comment: "Lookup pair: Securities Company Alert Run.Securities Company Alert Run\
-    \ Code. Pair with Securities Company Alert Run Id. Giá trị lấy từ SCMS.ALERT_RUN.RUN_ID\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Company Alert Run Id."
+  comment: "Lookup pair: sc_alert_run.sc_alert_run_code. Pair with Securities Company\
+    \ Alert Run Id. Giá trị lấy từ SCMS.ALERT_RUN.RUN_ID sau ETL crosswalk — chi tiết\
+    \ xem comment Securities Company Alert Run Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -491,7 +490,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', PROCESSOR_ID) | Cross-source FK (SCMS → IAM). Pending\
+    \ Hash: hash_id('IAM_USERS', PROCESSOR_ID) | Cross-source FK (SCMS → IAM). Pending\
     \ — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận\
     \ cơ chế crosswalk/join key giữa 2 hệ thống."
   classification_context: null

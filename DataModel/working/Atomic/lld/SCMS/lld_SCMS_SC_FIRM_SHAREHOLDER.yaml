@@ -63,7 +63,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_SHAREHOLDER"
   etl_derived_value: "SCMS_SC_FIRM_SHAREHOLDER"
   data_type: "string"
 - attribute_name: "Securities Company Id"
@@ -77,7 +77,7 @@ attributes:
   - "SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó\
-    \ hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
     \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
     \ crosswalk 2026-07-27."
   classification_context: null
@@ -92,9 +92,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -107,9 +107,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_PERSONNEL_ID"
-  comment: "FK target: Securities Company Senior Personnel.Securities Company Senior\
-    \ Personnel Id. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', SC_FIRM_PERSONNEL_ID).\
-    \ Nullable — cổ đông có thể không phải nhân sự cao cấp."
+  comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Hash: hash_id('SCMS_SC_FIRM_SENIOR_PERSONNEL',\
+    \ SC_FIRM_PERSONNEL_ID). Nullable — cổ đông có thể không phải nhân sự cao cấp."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -122,8 +121,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_PERSONNEL_ID"
-  comment: "Lookup pair: Securities Company Senior Personnel.Securities Company Senior\
-    \ Personnel Code. Pair with Securities Company Senior Personnel Id."
+  comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Securities\
+    \ Company Senior Personnel Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -179,8 +178,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID"
-  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
-    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS_CAT_NATIONALITY',\
+    \ NATIONALITY_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -193,8 +192,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID"
-  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
-    \ Pair with Classification Nationality Id."
+  comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with Classification\
+    \ Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

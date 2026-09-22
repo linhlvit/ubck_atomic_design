@@ -62,7 +62,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER_TRANSFER"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_SHAREHOLDER_TRANSFER"
   etl_derived_value: "SCMS_SC_FIRM_SHAREHOLDER_TRANSFER"
   data_type: "string"
 - attribute_name: "Securities Company Id"
@@ -76,7 +76,7 @@ attributes:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
-    \ sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
     \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
     \ crosswalk 2026-07-27."
   classification_context: null
@@ -91,9 +91,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -106,9 +106,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEROR_SHAREHOLDER_ID"
-  comment: "FK target: Securities Company Shareholder.Securities Company Shareholder\
-    \ Id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', TRANSFEROR_SHAREHOLDER_ID). Prefix\
-    \ Transferor phân biệt với Transferee cùng target entity."
+  comment: "FK target: sc_shareholder.sc_shareholder_id. Hash: hash_id('SCMS_SC_FIRM_SHAREHOLDER',\
+    \ TRANSFEROR_SHAREHOLDER_ID). Prefix Transferor phân biệt với Transferee cùng\
+    \ target entity."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -121,8 +121,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEROR_SHAREHOLDER_ID"
-  comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder\
-    \ Code. Pair with Transferor Securities Company Shareholder Id."
+  comment: "Lookup pair: sc_shareholder.sc_shareholder_code. Pair with Transferor\
+    \ Securities Company Shareholder Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -135,9 +135,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEREE_SHAREHOLDER_ID"
-  comment: "FK target: Securities Company Shareholder.Securities Company Shareholder\
-    \ Id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', TRANSFEREE_SHAREHOLDER_ID). Prefix\
-    \ Transferee phân biệt với Transferor cùng target entity."
+  comment: "FK target: sc_shareholder.sc_shareholder_id. Hash: hash_id('SCMS_SC_FIRM_SHAREHOLDER',\
+    \ TRANSFEREE_SHAREHOLDER_ID). Prefix Transferee phân biệt với Transferor cùng\
+    \ target entity."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -150,8 +150,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEREE_SHAREHOLDER_ID"
-  comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder\
-    \ Code. Pair with Transferee Securities Company Shareholder Id."
+  comment: "Lookup pair: sc_shareholder.sc_shareholder_code. Pair with Transferee\
+    \ Securities Company Shareholder Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -164,7 +164,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
     \ EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null

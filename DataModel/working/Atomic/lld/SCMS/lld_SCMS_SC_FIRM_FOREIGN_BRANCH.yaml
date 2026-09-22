@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH"
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_FOREIGN_BRANCH"
   etl_derived_value: "SCMS_SC_FIRM_FOREIGN_BRANCH"
   data_type: "string"
 - attribute_name: "Securities Company Id"
@@ -74,7 +74,7 @@ attributes:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_FOREIGN_BRANCH.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
     \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
     \ crosswalk 2026-07-27."
   classification_context: null
@@ -89,9 +89,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -157,7 +157,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
     \ EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -438,8 +438,8 @@ attributes:
   data_type: "int"
 - attribute_name: "Service Type Codes"
   physical_name: "service_tp_codes"
-  description: "Danh sách loại dịch vụ được cấp phép cho chi nhánh (denormalized từ\
-    \ LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE)."
+  description: "Danh sách loại dịch vụ/nghiệp vụ kinh doanh được cấp phép cho chi\
+    \ nhánh (denormalized từ LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE)."
   data_domain: "Array<Struct>"
   nullable: true
   is_primary_key: false
@@ -447,9 +447,10 @@ attributes:
   source_columns:
   - "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE.CAT_SERVICE_ID"
   comment: "Pure junction LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE → denormalize thành ARRAY.\
-    \ Struct: {classification_service_id: Surrogate Key; classification_service_code:\
-    \ Text}. Scheme nguồn: Classification Service (SCMS.CAT_SERVICE) — đã nâng cấp\
-    \ từ Classification Value đơn. HLD decision: SCMS_HLD_Tier2.md §6d."
+    \ Struct: {cl_sc_firm_service_id: Surrogate Key; cl_sc_firm_service_code: Text}.\
+    \ Scheme nguồn: Classification Securities Company Firm Service (SCMS.CAT_SERVICE_LEGAL_CAPITAL)\
+    \ — retarget 2026-09-17, thay CAT_SERVICE (deprecated, xem SCMS_HLD_Tier1.md 6f\
+    \ T1-11). HLD decision: SCMS_HLD_Tier2.md §6d."
   classification_context: null
   etl_derived_value: null
   data_type: "array<struct<...>>"
