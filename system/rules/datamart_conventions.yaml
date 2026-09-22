@@ -1,0 +1,90 @@
+# ============================================================
+# datamart_conventions.yaml — RFC Đ5
+# Quy ước giá trị hợp lệ cho các cột enum trong artifact thiết kế Datamart.
+#
+# Vì sao cần file này: khảo sát 2026-09-18 trên 9 file Detail Mapping cho thấy
+#   column_role  có 9 biến thể  (MEASURE / Measure / SLICER / Dimension / Attribute / ...)
+#   tinh_chat    có 8 biến thể  (Base / Cơ sở / Chiều / Phái sinh / Attribute / N/A / ...)
+# Trộn lẫn làm linter và BI layer hiểu sai. File này là nguồn sự thật duy nhất,
+# `check_references.py` đọc trực tiếp thay vì suy luận theo đa số của từng file.
+#
+# Quy trình đổi quy ước: sửa file này -> chạy check_references.py --module ALL --strict
+# -> sửa dữ liệu -> commit cùng lúc.
+# ============================================================
+
+schema_type: datamart_conventions
+schema_version: "1.0"
+
+# ------------------------------------------------------------
+# Detail Mapping — cột column_role
+# ------------------------------------------------------------
+column_role:
+  allowed:
+    - MEASURE       # số đo hiển thị, có cột vật lý trên Fact/Operational
+    - SLICER        # chiều lọc/nhóm trên báo cáo, trỏ cột Dimension
+    - FILTER        # điều kiện lọc tĩnh lấy từ WHERE của SQL tham khảo BA
+    - DERIVED       # chỉ tiêu BI phái sinh — BẮT BUỘC để trống mart_table/mart_column
+    - GROUP_BY      # cột nằm trong mệnh đề GROUP BY của công thức hiển thị
+    - JOIN_KEY      # khoá join hiển thị trong Detail Mapping
+    - LABEL         # nhãn tĩnh trên báo cáo
+    - DEPRECATED    # chỉ tiêu đã bãi bỏ — để trống 2 cột mart, logic ghi lý do
+    - ""            # dòng PENDING (Quy tắc L4: để trống đủ 4 cột kỹ thuật)
+  empty_required_when_role_in: [DERIVED, DEPRECATED, ""]
+  deprecated_aliases:         # gặp giá trị này -> sửa về giá trị bên phải
+    Measure: MEASURE
+    Dimension: SLICER
+    Attribute: MEASURE
+    ATTRIBUTE: MEASURE
+    Filter: FILTER
+    Derived: DERIVED
+
+# ------------------------------------------------------------
+# Detail Mapping — cột tinh_chat
+# ------------------------------------------------------------
+tinh_chat:
+  # Hai bộ từ vựng đang song song tồn tại; cả hai đều được chấp nhận trong giai đoạn
+  # chuyển đổi để không phải sửa 3.176 dòng trong một lần.
+  #   bộ tiếng Việt (đích) : Cơ sở / Chiều / Phái sinh / Thuộc tính
+  #   bộ cũ (còn chấp nhận): Base
+  allowed: [Cơ sở, Chiều, Phái sinh, Thuộc tính, Base, ""]   # "" = dòng PENDING
+  target_vocabulary: [Cơ sở, Chiều, Phái sinh, Thuộc tính]
+  deprecated_aliases:
+    Base: Cơ sở
+    Attribute: Thuộc tính
+    Deprecated: Phái sinh
+  migration_note: >
+    Hết giai đoạn chuyển đổi thì bỏ "Base" khỏi `allowed`, chạy
+    check_references.py --module ALL --strict để liệt kê dòng cần sửa.
+
+# ------------------------------------------------------------
+# Detail Mapping — cột mart_table
+# ------------------------------------------------------------
+mart_table_naming:
+  style: logical            # logical = "Fact Market Risk Snapshot"; physical = "fct_market_risk_snpst"
+  note: >
+    Trộn logical và physical trong cùng một file làm checker không resolve được cột.
+    Dấu "/" trong mart_column vừa có thể là ký tự trong tên cột ("EBIT / Lãi vay"),
+    vừa có thể là dấu liệt kê nhiều cột cho một slicer — checker khớp nguyên chuỗi trước,
+    chỉ tách khi nguyên chuỗi không khớp.
+
+# ------------------------------------------------------------
+# LLD Attributes — cột etl_logic_type
+# ------------------------------------------------------------
+etl_logic_type:
+  allowed: [direct, direct_atomic, computed, join_atomic, join_mart, lookup_dim,
+            lookup_date, hardcode, pending, Generated]
+
+# ------------------------------------------------------------
+# Flat table SQL
+# ------------------------------------------------------------
+flat_table:
+  dialect: clickhouse
+  etl_date_param: ":etl_date"
+  banned_syntax:              # cú pháp Oracle lọt vào file ClickHouse (đã gặp thật ở QLKD)
+    - "TO_DATE("
+    - "TO_NUMBER("
+    - "NVL("
+    - "DEFAULT NULL ON CONVERSION ERROR"
+  note: >
+    Mệnh đề lọc ngày ETL phải là `WHERE <col> = :etl_date` nguyên vẹn.
+    Bọc thêm hàm (toYYYYMM/LAST_DAY/TO_DATE) khiến Gate 4 chặn và cũng sai dialect.

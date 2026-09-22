@@ -74,10 +74,11 @@ def render_mermaid(mmd_code: str, out_png: Path) -> bool:
         tmp_mmd = Path(f.name)
 
     try:
+        flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
         res = subprocess.run(
             [str(mmdc), "-i", str(tmp_mmd), "-o", str(out_png), "-b", "white", "-s", "2"],
-            shell=True,
-            capture_output=True, text=True
+            capture_output=True, text=True,
+            creationflags=flags
         )
         if res.returncode != 0:
             print(f"[WARN] mmdc render error for {out_png.name}: {res.stderr}", file=sys.stderr)

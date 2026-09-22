@@ -229,14 +229,14 @@ Dưới đây là bảng đối chiếu cụ thể theo đúng cấu trúc 11 c�
 | Tính chất | `tinh_chat` | `Base` | `Base` | |
 | Phân hệ nguồn | `source_module` | `GSTT` | `GSTT` | |
 | **Bảng Mart** | `mart_table` | `Fact Stock Portfolio Snapshot` | *(để trống)* | ❌ **SAI NGHIÊM TRỌNG:** Fact đã có bảng nhưng lại để trống |
-| **Cột Mart** | `mart_column` | `Total Volume` | *(để trống)* | ❌ **SAI NGHIÊM TRỌNG:** Fact đã có cột nhưng lại để trống |
+| **Cột Mart** | `mart_column` | `Total Matched Volume` | *(để trống)* | ❌ **SAI NGHIÊM TRỌNG:** Fact đã có cột nhưng lại để trống (lưu ý: phải dùng Total Matched Volume theo đúng SQL tham khảo BA, không dùng Total Volume gộp thỏa thuận) |
 | **Vai trò cột** | `column_role` | `MEASURE` | `MEASURE` (hoặc để trống) | |
-| **Công thức** | `logic` | `SUM(fct_stock_portfolio_snpst.total_vol)` | `SUM(fct_stock_portfolio_snpst.total_vol)` | |
+| **Công thức** | `logic` | `SUM(fct_stock_portfolio_snpst.total_matched_vol)` | `SUM(fct_stock_portfolio_snpst.total_vol)` | |
 | **Ghi chú** | `ghi_chu` | `Reuse từ Nhóm 1 (K_GSTT_13) — measure có sẵn trên Fact Stock Portfolio Snapshot` | `Reuse từ Nhóm 1` | Để trống bảng/cột làm Phase 3 Flat Table không lấy được cột vào SELECT list |
 
 *Dạng dòng CSV hợp lệ:*
 ```csv
-"K_GSTT_13","GIAO DỊCH","Nhóm 7 — Top giao dịch cổ phiếu","Khối lượng giao dịch khớp lệnh","Base","GSTT","Fact Stock Portfolio Snapshot","Total Volume","MEASURE","SUM(fct_stock_portfolio_snpst.total_vol)","Reuse từ Nhóm 1 (K_GSTT_13) — measure có sẵn trên Fact Stock Portfolio Snapshot"
+"K_GSTT_13","GIAO DỊCH","Nhóm 7 — Top giao dịch cổ phiếu","Khối lượng giao dịch khớp lệnh","Base","GSTT","Fact Stock Portfolio Snapshot","Total Matched Volume","MEASURE","SUM(fct_stock_portfolio_snpst.total_matched_vol)","Reuse từ Nhóm 1 (K_GSTT_13) — measure có sẵn trên Fact Stock Portfolio Snapshot"
 ```
 
 ---
@@ -512,6 +512,37 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 
 ---
 
+### L17 — Bắt buộc bám sát Câu lệnh tham khảo (Reference SQL) & Điều kiện chung trong file BA
+
+**Pattern:** 
+File BA analyst (`BRD/BA/BA_analyst_{MODULE}.csv`) cung cấp các cột kỹ thuật rất chi tiết: `Câu lệnh tham khảo` (SQL mẫu), `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note`.
+Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên chỉ tiêu (`Thông tin`) và `Phân loại` mà bỏ qua `Câu lệnh tham khảo` thì sẽ mắc các lỗi nghiêm trọng:
+1. **Bỏ sót các điều kiện lọc tĩnh (`WHERE` clause):** Trong SQL tham khảo có điều kiện lọc sàn (`FloorCode IN ('10','02','04')`), loại trừ chứng khoán (`StockType NOT IN (1,4)`), phân loại bảng lệnh (`Board Type IN ('T1','T2','T3','T4','T6','R1')`), trạng thái hoạt động (`active_flg = 1`), hoặc phân loại nhà đầu tư (`Buyer/Seller Foreign Investor Type IN ('10','20')`). Nếu Detail Mapping không sinh các dòng `column_role = FILTER` tương ứng (hoặc Fact/Dim chưa nhúng trong ETL), dữ liệu tầng báo cáo sẽ bị lẫn tạp chất.
+2. **Nhầm lẫn giữa các biến thể số đo (Measure Misalignment):**
+   - **Khớp lệnh vs Thỏa thuận:** Khớp lệnh thuần (`Board Type NOT IN ('T1','T2','T3','T4','T6','R1')`) phải map sang `Total Matched Volume` / `total_matched_vol` và `Total Matched Value` / `total_matched_val`. TUYỆT ĐỐI KHÔNG map nhầm sang `Total Volume` / `total_vol` (vốn là số gộp cả thỏa thuận). Thỏa thuận phải map sang `Total Negotiated Volume` / `total_negotiated_vol`.
+   - **Mua vs Bán vs Ròng:** Chỉ tiêu Mua / Bán / Ròng (NĐTNN, Tự doanh) phải đối chiếu đúng công thức trong SELECT của SQL tham khảo (ví dụ: `SUM(kl_nn_mua) - SUM(kl_nn_ban)` ➔ `foreign_net_vol`).
+3. **Bỏ sót logic tính toán phái sinh (Window / Rolling / Lag / TTM):**
+   - Các chỉ tiêu KLGDTB X ngày, Tỷ lệ KLGD / KLGDTB, Đỉnh/Đáy cũ X tháng, LNST 4 quý gần nhất (TTM) có logic rolling window chi tiết trong CTE / subquery của SQL tham khảo. Cần đọc SQL để viết đúng công thức trong cột `logic` và ghi chú rõ grain tính toán.
+
+**Quy tắc bắt buộc:**
+1. **Đọc trọn vẹn SQL tham khảo:** Trước khi thiết kế bất kỳ KPI nào, BẮT BUỘC mở file BA đọc cột `Câu lệnh tham khảo` + `Điều kiện chung` + `Note`.
+2. **Bóc tách 4 thành phần:**
+   - `SELECT` ➔ Đối chiếu số đo (`mart_column`, phép tính `SUM`/`COUNT`/`AVG` trong `logic`).
+   - `WHERE` ➔ Tách thành các dòng `column_role = FILTER` explicit trong Detail Mapping (nếu Fact chưa lọc sẵn tại ETL).
+   - `FROM/JOIN` ➔ Kiểm tra đủ Dimension và FK liên kết.
+   - `GROUP BY` ➔ Đối chiếu grain của bảng Fact/Operational và các dòng `SLICER`/`GROUP_BY`.
+3. **Ghi chú đối soát:** Nếu một điều kiện lọc trong SQL tham khảo đã được xử lý ngầm ở tầng ETL (ví dụ: Fact table chỉ nạp giao dịch khớp lệnh), cột `ghi_chu` của Detail Mapping phải ghi rõ: `"Đã lọc sẵn tại ETL Fact theo SQL tham khảo BA: <điều kiện>"`.
+
+**Kiểm tra:**
+- Với mọi chỉ tiêu có SQL tham khảo trong BA: kiểm tra xem mọi điều kiện `WHERE` đã được ánh xạ thành dòng `FILTER` hoặc ghi nhận trong ETL chưa.
+- Kiểm tra `mart_column` và `logic` có phản ánh đúng biểu thức trong mệnh đề `SELECT` của SQL tham khảo không.
+
+❌ BA SQL có `Board Type NOT IN ('T1','T2','T3','T4','T6','R1')` (khớp lệnh thuần) nhưng Detail Mapping lại map vào `Total Volume` / `SUM(total_vol)` (gộp thỏa thuận) → vi phạm L17.
+❌ BA SQL có `FloorCode IN ('10','02','04') AND StockType NOT IN (1,4)` nhưng Detail Mapping không có dòng FILTER Stock Type Code tương ứng → vi phạm L17.
+✅ Phản ánh đầy đủ dòng FILTER `Stock Type Code`, và map đúng `Total Matched Volume` / `SUM(total_matched_vol)` cho chỉ tiêu khớp lệnh.
+
+---
+
 ### Checklist bổ sung — kiểm tra trước khi giao file Phase 2
 
 ```
@@ -531,6 +562,7 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 □ L14: Mọi dòng `ghi_chu` chứa "Reuse từ Nhóm X" mà `logic` có GROUP BY/PARTITION BY/SUM/MAX theo 1 chiều cụ thể → xác định grain hiển thị thật của Nhóm đang reuse (nhìn cột lân cận trong mockup: 1 dòng = 1 mã CK hay 1 chỉ số hay 1 công ty?) và đối chiếu đúng với GROUP BY trong logic — KHÔNG mặc định giữ nguyên GROUP BY của Nhóm gốc chỉ vì đang copy công thức
 □ L15: Mọi dòng REUSE Case 1 (measure/dim vật lý) → điền đầy đủ mart_table và mart_column; Mọi dòng REUSE Case 2 (presentation/derived) → để trống mart_table và mart_column, column_role = DERIVED (không tạo cột ảo)
 □ L16: Mọi chỉ tiêu đã thống nhất bãi bỏ với BA → column_role = DEPRECATED, mart_table/mart_column để trống, logic = 'Đã loại bỏ — không tạo cột/slicer' — TUYỆT ĐỐI KHÔNG đánh tráo thành PENDING
+□ L17: Bám sát Câu lệnh tham khảo (Reference SQL) & Điều kiện chung trong file BA: đọc trọn vẹn SQL tham khảo, bóc tách WHERE clause thành dòng FILTER, ánh xạ đúng số đo trong SELECT (khớp lệnh vs thỏa thuận, mua vs bán vs ròng, rolling window), ghi rõ vào ghi_chu nếu đã lọc ngầm ở ETL Fact
 ```
 
 > **L12 và L13 là 2 testcase module-level** (chạy 1 lần sau khi TOÀN BỘ nhóm đã xử lý, tương ứng TC6 và TC5 trong `SKILL.md`) — khác với L1–L11 vốn kiểm tra trong phạm vi từng nhóm/dòng riêng lẻ.

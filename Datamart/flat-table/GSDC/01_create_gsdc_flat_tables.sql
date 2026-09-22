@@ -644,6 +644,8 @@ COMMENT 'Flat table — Fact Public Company Financial Summary Snapshot × Calend
 --     Nguồn VSDC listed_security_info_snapshot + foreign_ownership_info_snapshot (mới bổ sung Atomic).
 --     [SỬA 2026-09-07 lần 2] + IDS pc_state_capital (K_GSDC_1389/1390, sở hữu nhà nước).
 --     10/10 KPI READY (Nhóm 31, K_GSDC_1381-1390).
+--     [MỚI 2026-09-18, cross-module reuse NDTNN] + foreign_holding_value phục vụ K_NDTNN_51
+--     (module NDTNN, Nhóm 8 "Phân ngành của NĐTNN") — xem DTM_NDTNN_HLD.md.
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_listing_info_snpst_flat ON CLUSTER 'my_cluster'
 (
@@ -660,6 +662,7 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_listing_info_snpst_f
     remaining_foreign_holding_quantity Nullable(Int64)         COMMENT 'Room ngoại còn lại (K_GSDC_1388).',
     state_owned_share_quantity         Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu sở hữu nhà nước — SUM theo công ty/tháng (K_GSDC_1389).',
     state_ownership_ratio_percentage   Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu nhà nước — SUM theo công ty/tháng (K_GSDC_1390).',
+    foreign_holding_value              Nullable(Decimal(23,2)) COMMENT 'Giá trị cổ phiếu khối ngoại đang sở hữu = Current Foreign Holding Quantity x giá đóng cửa gần nhất <= ngày snapshot (K_NDTNN_51, module NDTNN, xem O_NDTNN_12 Resolved một phần 2026-09-18).',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                       Nullable(Date)          COMMENT 'Ngày snapshot (kỳ tháng) — từ Calendar Date Dimension.',

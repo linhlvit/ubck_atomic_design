@@ -2,7 +2,7 @@
 -- QLKD Flat Tables — CREATE
 -- Module: Quản lý kinh doanh (Hoạt động CTCK) — QLKD
 -- Generated: Phase 3 LLD Datamart
--- 14 bảng: 5 fact + 9 operational
+-- 15 bảng: 6 fact + 9 operational
 -- ============================================================
 
 -- ============================================================
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_compliance_repor
     report_tp_code                  String                  COMMENT 'Loại báo cáo — ADHOC (đột xuất) hoặc PERIODIC (định kỳ)',
     report_id                       String                  COMMENT 'Định danh báo cáo (degenerate) — dùng làm khóa COUNT DISTINCT',
     rpt_submission_status_code      Nullable(String)        COMMENT 'Mã trạng thái nộp báo cáo — giá trị riêng theo bộ ADHOC/PERIODIC',
-    fct_src_stm_code                 String                  COMMENT 'Mã hệ thống nguồn — SCMS_SC_FIRM_ADHOC_REPORT hoặc SCMS_SC_FIRM_PERIODIC_REPORT',
+    src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn — SCMS_SC_FIRM_ADHOC_REPORT hoặc SCMS_SC_FIRM_PERIODIC_REPORT',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -187,7 +187,59 @@ COMMENT 'Flat table — Fact Market Index Snapshot × Calendar Date × Market In
 
 
 -- ============================================================
--- 6. OPERATIONAL: qlkd_opr_securities_company_personnel_profile_flat
+-- 6. FACT: qlkd_fct_securities_company_service_assignment_snpst_flat
+--    Fact Securities Company Service Assignment Snapshot
+--    Grain: 1 CTCK × 1 dịch vụ/nghiệp vụ × 1 ngày snapshot D (còn hiệu lực:
+--    Start Date <= D AND (End Date IS NULL OR End Date > D))
+--    Mới 17/09/2026 — Nhóm 2/3/4.
+--    Joins: Calendar Date (snpst_dt_dim_id) × Securities Company Dimension ×
+--    Securities Service Classification Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_service_assignment_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Securities Company Service Assignment Snapshot
+    snpst_dt_dim_id                    String                  COMMENT 'FK ngày snapshot D — ETL runtime date, full-scan assignment còn hiệu lực',
+    securities_company_dim_id          String                  COMMENT 'FK CTCK',
+    securities_service_cl_dim_id       String                  COMMENT 'FK dịch vụ/nghiệp vụ kinh doanh chứng khoán',
+    license_nbr                        Nullable(String)        COMMENT 'Số giấy phép dịch vụ chứng khoán hiện hành',
+    license_dt                         Nullable(Date)          COMMENT 'Ngày cấp giấy phép dịch vụ',
+    start_dt                           Nullable(Date)          COMMENT 'Ngày bắt đầu hiệu lực — dùng lọc còn hiệu lực tại ngày D',
+    end_dt                             Nullable(Date)          COMMENT 'Ngày hết hiệu lực — dùng lọc còn hiệu lực tại ngày D',
+    src_stm_code                       String                  COMMENT 'Mã hệ thống nguồn — từ Fact',
+
+    -- From: CALENDAR DATE DIMENSION (Snapshot Date)
+    cdr_dt                             Nullable(Date)          COMMENT 'Ngày snapshot D — từ Calendar Date Dimension',
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_id                               Nullable(String)        COMMENT 'Business Id CTCK — từ Securities Company Dimension',
+    sc_code                             Nullable(String)        COMMENT 'Mã định danh CTCK — từ Securities Company Dimension',
+    sc_nm                               Nullable(String)        COMMENT 'Tên đầy đủ CTCK — từ Securities Company Dimension',
+    sc_short_nm                         Nullable(String)        COMMENT 'Tên viết tắt CTCK — từ Securities Company Dimension',
+    company_tp_code                     Nullable(String)        COMMENT 'Loại hình doanh nghiệp CTCK — từ Securities Company Dimension',
+    company_status_code                 Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — từ Securities Company Dimension',
+    is_listed_indicator                 Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
+    stock_exchange_nm                   Nullable(String)        COMMENT 'Sàn niêm yết — từ Securities Company Dimension',
+    securities_company_src_stm_code     Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension',
+
+    -- From: SECURITIES SERVICE CLASSIFICATION DIMENSION
+    cl_sc_firm_service_code             Nullable(String)        COMMENT 'Mã dịch vụ/nghiệp vụ — từ Securities Service Classification Dimension',
+    cl_sc_firm_service_nm               Nullable(String)        COMMENT 'Tên dịch vụ/nghiệp vụ — từ Securities Service Classification Dimension',
+    description                         Nullable(String)        COMMENT 'Mô tả chi tiết dịch vụ/nghiệp vụ — từ Securities Service Classification Dimension',
+    catalog_tp                          Nullable(String)        COMMENT 'Loại danh mục — từ Securities Service Classification Dimension',
+    catalog_code                        Nullable(String)        COMMENT 'Mã danh mục chi tiết — dùng lọc nhóm dịch vụ/nghiệp vụ trên báo cáo — từ Securities Service Classification Dimension',
+    application_tp_code                 Nullable(String)        COMMENT 'Loại nghiệp vụ: cơ sở/phái sinh — từ Securities Service Classification Dimension',
+    legal_capital_amt                   Nullable(Decimal(23,2)) COMMENT 'Vốn pháp định tối thiểu — từ Securities Service Classification Dimension',
+    securities_service_cl_src_stm_code  Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Service Classification Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, securities_service_cl_dim_id)
+COMMENT 'Flat table — Fact Securities Company Service Assignment Snapshot × Calendar Date × Securities Company Dimension × Securities Service Classification Dimension'
+;
+
+
+-- ============================================================
+-- 7. OPERATIONAL: qlkd_opr_securities_company_personnel_profile_flat
 --    Operational Securities Company Personnel Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster'
@@ -213,7 +265,7 @@ COMMENT 'Flat table — Operational Securities Company Personnel Profile'
 
 
 -- ============================================================
--- 7. OPERATIONAL: qlkd_opr_securities_company_organization_unit_profile_flat
+-- 8. OPERATIONAL: qlkd_opr_securities_company_organization_unit_profile_flat
 --    Operational Securities Company Organization Unit Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster'
@@ -237,7 +289,7 @@ COMMENT 'Flat table — Operational Securities Company Organization Unit Profile
 
 
 -- ============================================================
--- 8. OPERATIONAL: qlkd_opr_securities_company_compliance_hist_flat
+-- 9. OPERATIONAL: qlkd_opr_securities_company_compliance_hist_flat
 --    Operational Securities Company Compliance History
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster'
@@ -245,25 +297,26 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_compliance_hist_
     -- From: OPERATIONAL Securities Company Compliance History
     compliance_event_code           String                  COMMENT 'PK — mã sự kiện tuân thủ (Bảng Tác nghiệp), thống nhất cho cả 3 nhánh UNION (Admin Penalty/Inspection/Examination)',
     event_tp_code                   String                  COMMENT 'Loại sự kiện tuân thủ (ADMIN_PENALTY_DECISION/INSPECTION/EXAMINATION) — ETL hardcode theo bộ',
-    form_tp_code                    Nullable(String)        COMMENT 'Loại thanh tra/kiểm tra (PERIODIC/UNSCHEDULED) — JOIN qua Team Target text match. NULL cho bộ Admin Penalty Decision.',
-    insp_decision_dt                Nullable(Date)          COMMENT 'Ngày ban hành quyết định thanh tra/kiểm tra. NULL cho bộ Admin Penalty Decision.',
+    form_tp_code                    Nullable(String)        COMMENT 'Loại thanh tra/kiểm tra (PERIODIC/UNSCHEDULED). [SỬA 2026-09-19] Lấy trực tiếp từ Inspection/Examination Team (driving table) — không còn join ngược qua Penalty Decision Subject. NULL cho bộ Admin Penalty Decision.',
+    insp_decision_dt                Nullable(Date)          COMMENT 'Ngày ban hành quyết định thanh tra/kiểm tra — luôn có giá trị cho bộ Inspection/Examination (thuộc tính trực tiếp driving table). NULL cho bộ Admin Penalty Decision.',
     decision_nbr                    Nullable(String)        COMMENT 'Số quyết định xử phạt',
     issued_dt                       Nullable(Date)          COMMENT 'Ngày ban hành quyết định xử phạt',
     violation_behavior_nm           Nullable(String)        COMMENT 'Hành vi vi phạm. NULL cho bộ Admin Penalty Decision.',
     supplementary_penalty_nm        Nullable(String)        COMMENT 'Hình thức xử phạt bổ sung (nếu có). NULL cho bộ Admin Penalty Decision.',
     remedial_measure_nm             Nullable(String)        COMMENT 'Biện pháp khắc phục (nếu có). NULL cho bộ Admin Penalty Decision.',
-    sc_code                         Nullable(String)        COMMENT 'Mã CTCK. Bộ Admin Penalty Decision: direct. Bộ Inspection/Examination: GAP — text-match qua Team Target.target_reference_id, chưa có FK surrogate chính thức, có thể NULL.',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ'
+    sc_code                         Nullable(String)        COMMENT 'Mã CTCK. Bộ Admin Penalty Decision: direct. Bộ Inspection/Examination: GAP — text-match qua Team Target.target_reference_id, chưa có FK surrogate chính thức, có thể NULL. [SỬA 2026-09-19] JOIN securities_company nay là LEFT JOIN (xem O_QLKD_29) — không còn loại bỏ dòng khi không resolve được sc_code.',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ',
+    event_dt                        Date                    COMMENT '[MỚI 2026-09-19, review Nhóm 40, xem O_QLKD_29] Ngày sự kiện chuẩn hóa = COALESCE(issued_dt, insp_decision_dt) — dùng làm PARTITION BY/ORDER BY thay issued_dt (nullable, gây lỗi assumeNotNull khi đợt thanh tra/kiểm tra sạch không có ngày xử phạt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
-ORDER BY (assumeNotNull(issued_dt), compliance_event_code)
+PARTITION BY toYYYYMM(event_dt)
+ORDER BY (event_dt, compliance_event_code)
 COMMENT 'Flat table — Operational Securities Company Compliance History'
 ;
 
 
 -- ============================================================
--- 9. OPERATIONAL: qlkd_opr_individual_profile_flat
+-- 10. OPERATIONAL: qlkd_opr_individual_profile_flat
 --    Operational Individual Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_profile_flat ON CLUSTER 'my_cluster'
@@ -285,7 +338,7 @@ COMMENT 'Flat table — Operational Individual Profile'
 
 
 -- ============================================================
--- 10. OPERATIONAL: qlkd_opr_individual_related_party_network_flat
+-- 11. OPERATIONAL: qlkd_opr_individual_related_party_network_flat
 --    Operational Individual Related Party Network
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_related_party_network_flat ON CLUSTER 'my_cluster'
@@ -309,7 +362,7 @@ COMMENT 'Flat table — Operational Individual Related Party Network'
 
 
 -- ============================================================
--- 11. OPERATIONAL: qlkd_opr_individual_listed_company_role_flat
+-- 12. OPERATIONAL: qlkd_opr_individual_listed_company_role_flat
 --    Operational Individual Listed Company Role
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_listed_company_role_flat ON CLUSTER 'my_cluster'
@@ -330,7 +383,7 @@ COMMENT 'Flat table — Operational Individual Listed Company Role'
 
 
 -- ============================================================
--- 12. OPERATIONAL: qlkd_opr_individual_trading_account_flat
+-- 13. OPERATIONAL: qlkd_opr_individual_trading_account_flat
 --    Operational Individual Trading Account
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_trading_account_flat ON CLUSTER 'my_cluster'
@@ -350,7 +403,7 @@ COMMENT 'Flat table — Operational Individual Trading Account'
 
 
 -- ============================================================
--- 13. OPERATIONAL: qlkd_opr_individual_work_hist_flat
+-- 14. OPERATIONAL: qlkd_opr_individual_work_hist_flat
 --    Operational Individual Work History
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_work_hist_flat ON CLUSTER 'my_cluster'
@@ -372,7 +425,7 @@ COMMENT 'Flat table — Operational Individual Work History'
 
 
 -- ============================================================
--- 14. OPERATIONAL: qlkd_opr_individual_violation_hist_flat
+-- 15. OPERATIONAL: qlkd_opr_individual_violation_hist_flat
 --    Operational Individual Violation History
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON CLUSTER 'my_cluster'
@@ -393,3 +446,162 @@ ORDER BY (assumeNotNull(issued_dt), pd_code)
 COMMENT 'Flat table — Operational Individual Violation History'
 ;
 
+
+-- ============================================================
+-- 16. FACT: qlkd_fct_securities_company_financial_structure_snpst_flat
+--    Fact Securities Company Financial Structure Snapshot — cơ cấu tài chính định kỳ CTCK (EAV)
+--    Grain: 1 CTCK x 1 ky bao cao x 1 chi tieu
+--    Joins: Calendar Date Dimension, Securities Company Dimension, Report Indicator Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_SECURITIES_COMPANY_FINANCIAL_STRUCTURE_SNPST
+    snpst_dt_dim_id                              String                  COMMENT 'FK ngày snapshot — ngày cuối kỳ báo cáo hoặc ngày nộp báo cáo, lookup qua Calendar Date Dimension.',
+    securities_company_dim_id                    String                  COMMENT 'FK CTCK nộp báo cáo — lookup qua Securities Company Dimension.',
+    report_indicator_dim_id                      String                  COMMENT 'FK chỉ tiêu báo cáo — lookup qua Report Indicator Dimension theo cell_id.',
+    rpt_year                                     Int64                   COMMENT 'Năm báo cáo tài chính.',
+    rpt_period_tp_code                           String                  COMMENT 'Loại kỳ báo cáo: QUY, THANG, NAM.',
+    period_nbr                                   Int64                   COMMENT 'Số thứ tự kỳ báo cáo (1-4 cho Quý, 1-12 cho Tháng).',
+    indicator_val_amt                            Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ tiêu tài chính (chuyển đổi từ text item_val sang số).',
+    rpt_code                                     Nullable(String)        COMMENT 'Mã biểu mẫu báo cáo (BCTCHN, BCTCRL, BCTCRLCTCK, BCTHHDKD_TH).',
+    submission_dt                                Nullable(Date)          COMMENT 'Ngày CTCK nộp báo cáo.',
+    submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo: 1=Đã gửi/Đúng hạn, 2=Đã duyệt/Gửi muộn.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-09-05, partial — thêm từ GSTT, yêu cầu thiết kế trực tiếp từ user) Y nếu ngày lịch là ngày giao dịch — từ Calendar Date Dimension',
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_id                                        Nullable(String)        COMMENT 'Business Id CTCK (Atomic surrogate — dùng làm reference nghiệp vụ theo HLD). — từ Securities Company Dimension',
+    sc_code                                      Nullable(String)        COMMENT 'Mã định danh CTCK — Natural Key. — từ Securities Company Dimension',
+    sc_nm                                        Nullable(String)        COMMENT 'Tên đầy đủ CTCK bằng tiếng Việt. — từ Securities Company Dimension',
+    sc_short_nm                                  Nullable(String)        COMMENT 'Tên viết tắt CTCK (VD: SSI, VPS, MBS). — từ Securities Company Dimension',
+    company_tp_code                              Nullable(String)        COMMENT 'Loại hình doanh nghiệp CTCK. — từ Securities Company Dimension',
+    company_status_code                          Nullable(String)        COMMENT '7 nhóm trạng thái CTCK (Đã bị thu hồi/Hoạt động bình thường/Kiểm soát đặc biệt/Kiểm soát/Cảnh báo/Đình chỉ hoạ — từ Securities Company Dimension',
+    is_listed_indicator                          Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn. — từ Securities Company Dimension',
+    stock_exchange_nm                            Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM). — từ Securities Company Dimension',
+    sc_dim_src_stm_code                          Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu. — từ Securities Company Dimension',
+
+    -- From: REPORT INDICATOR DIMENSION
+    cell_id                                      Nullable(String)        COMMENT 'Mã ô dữ liệu (cell_id) trong cấu trúc eForm động (ví dụ: TS007, TS141, TS273...). — từ Report Indicator Dimension',
+    indicator_code                               Nullable(String)        COMMENT 'Mã chỉ tiêu tài chính hoặc nghiệp vụ chuẩn hóa. — từ Report Indicator Dimension',
+    indicator_nm                                 Nullable(String)        COMMENT 'Tên chỉ tiêu tài chính hoặc nghiệp vụ. — từ Report Indicator Dimension',
+    indicator_group_nm                           Nullable(String)        COMMENT 'Nhóm chỉ tiêu (Cơ cấu tài sản, Cơ cấu nguồn vốn, Vốn chủ sở hữu, Doanh thu & LNST, An toàn tài chính...). — từ Report Indicator Dimension',
+    statement_tp_code                            Nullable(String)        COMMENT 'Loại báo cáo tài chính (CDKT, KQKD, LCTT, ATTC). — từ Report Indicator Dimension',
+    unit_of_measure                              Nullable(String)        COMMENT 'Đơn vị tính (VND, TY_DONG, PERCENT, COUNT). — từ Report Indicator Dimension',
+    ri_dim_src_stm_code                          Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu. — từ Report Indicator Dimension',
+    row_is_current                               Nullable(String)        COMMENT 'Cờ hiệu lực hiện tại theo SCD4A. — từ Report Indicator Dimension',
+    row_start_dt                                 Nullable(Date)          COMMENT 'Ngày bắt đầu hiệu lực của bản ghi theo SCD4A. — từ Report Indicator Dimension',
+    row_end_dt                                   Nullable(Date)          COMMENT 'Ngày kết thúc hiệu lực của bản ghi theo SCD4A. — từ Report Indicator Dimension',
+    etl_process_tms                              Nullable(DateTime)      COMMENT 'Thời gian xử lý ETL. — từ Report Indicator Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), snpst_dt_dim_id)
+COMMENT 'Flat table — Fact Securities Company Financial Structure Snapshot — cơ cấu tài chính định kỳ CTCK (EAV)'
+;
+
+
+-- ============================================================
+-- 17. OPERATIONAL: qlkd_opr_securities_company_report_data_flat
+--    Securities Company Report Data — raw data 102 bieu mau bao cao dinh ky
+--    Grain: 1 o du lieu (cell) x 1 lan nop bao cao x 1 CTCK
+--    Joins: không JOIN dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_report_data_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_SECURITIES_COMPANY_REPORT_DATA
+    rpt_cell_val_id                              String                  COMMENT 'Khóa chính giá trị ô báo cáo tác nghiệp.',
+    sc_code                                      String                  COMMENT 'Mã CTCK.',
+    sc_nm                                        Nullable(String)        COMMENT 'Tên viết tắt hoặc tên đầy đủ của CTCK.',
+    rpt_code                                     String                  COMMENT 'Mã biểu mẫu báo cáo (ví dụ: BCTCHN, BCTCRL, THSLCBPHCP...).',
+    rpt_year                                     Int64                   COMMENT 'Năm báo cáo.',
+    rpt_period                                   String                  COMMENT 'Kỳ báo cáo (QUY, THANG, NAM, NGAY).',
+    period_nbr                                   Nullable(Int64)         COMMENT 'Số thứ tự kỳ (1-4 hoặc 1-12).',
+    sheet_id                                     Nullable(String)        COMMENT 'Định danh sheet trong biểu mẫu eForm.',
+    section_id                                   Nullable(String)        COMMENT 'Định danh section trong biểu mẫu eForm.',
+    cell_id                                      String                  COMMENT 'Mã ô dữ liệu trong biểu mẫu (tọa độ cell).',
+    row_nbr                                      Nullable(Int64)         COMMENT 'Số thứ tự dòng dữ liệu (đối với bảng động/lưới).',
+    item_val                                     Nullable(String)        COMMENT 'Giá trị ô dữ liệu nhập vào (dạng văn bản gốc).',
+    submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo.',
+    submission_deadline_dt                       Nullable(Date)          COMMENT 'Hạn nộp báo cáo định kỳ theo quy định.',
+    submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo định kỳ.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    etl_process_tms                              DateTime                COMMENT 'Thời gian xử lý ETL.'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (rpt_cell_val_id)
+COMMENT 'Flat table — Securities Company Report Data — raw data 102 bieu mau bao cao dinh ky'
+;
+
+
+-- ============================================================
+-- 18. OPERATIONAL: qlkd_opr_securities_company_financial_report_hist_flat
+--    Securities Company Financial Report History — lich su BCTC cua CTCK
+--    Grain: 1 CTCK x 1 ky bao cao tai chinh x 1 ma bieu mau (rpt_code)
+--    Joins: không JOIN dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_financial_report_hist_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_SECURITIES_COMPANY_FINANCIAL_REPORT_HIST
+    fin_rpt_hist_id                              String                  COMMENT 'Khóa chính lịch sử báo cáo tài chính.',
+    sc_code                                      String                  COMMENT 'Mã CTCK.',
+    sc_nm                                        Nullable(String)        COMMENT 'Tên CTCK.',
+    rpt_year                                     Int64                   COMMENT 'Năm báo cáo.',
+    rpt_period                                   String                  COMMENT 'Kỳ báo cáo (QUY, NAM, BAN_NIEN).',
+    rpt_code                                     String                  COMMENT '[MỚI 2026-09-18] Mã biểu mẫu báo cáo: BCTCHN=hợp nhất, BCTCRL=riêng lẻ, BCTCRLCTCK, BCTHHDKD_TH. Thuộc NK — cùng (CTCK, kỳ) có thể có cả hai bản.',
+    period_nbr                                   Nullable(Int64)         COMMENT 'Số thứ tự kỳ (1-4).',
+    revenue_amt                                  Nullable(Decimal(23,2)) COMMENT 'Doanh thu (tỷ VNĐ).',
+    profit_after_tax_amt                         Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế (tỷ VNĐ).',
+    roa_rate                                     Nullable(Decimal(23,2)) COMMENT 'Tỷ suất sinh lời trên tổng tài sản ROA (%).',
+    roe_rate                                     Nullable(Decimal(23,2)) COMMENT 'Tỷ suất sinh lời trên vốn chủ sở hữu ROE (%).',
+    submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo.',
+    submission_status_code                       Nullable(String)        COMMENT 'Trạng thái báo cáo: 1=Đã gửi/Đúng hạn, 2=Đã duyệt/Gửi muộn.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    etl_process_tms                              DateTime                COMMENT 'Thời gian xử lý ETL.'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (fin_rpt_hist_id)
+COMMENT 'Flat table — Securities Company Financial Report History — lich su BCTC cua CTCK (grain them rpt_code tu 2026-09-18)'
+;
+
+
+-- ============================================================
+-- 19. OPERATIONAL: qlkd_opr_securities_company_practitioner_profile_flat
+--    Securities Company Practitioner Profile — ho so nguoi hanh nghe theo CTCK
+--    Grain: 1 CTCK x 1 ky bao cao
+--    Joins: không JOIN dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_practitioner_profile_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_SECURITIES_COMPANY_PRACTITIONER_PROFILE
+    prac_profile_id                              String                  COMMENT 'Khóa chính hồ sơ người hành nghề chứng khoán theo CTCK.',
+    sc_code                                      String                  COMMENT 'Mã CTCK.',
+    sc_nm                                        Nullable(String)        COMMENT 'Tên CTCK.',
+    rpt_year                                     Int64                   COMMENT 'Năm báo cáo.',
+    period_nbr                                   Int64                   COMMENT 'Kỳ báo cáo.',
+    total_employee_cnt                           Nullable(Int64)         COMMENT 'Tổng số người lao động tại CTCK.',
+    licensed_practitioner_cnt                    Nullable(Int64)         COMMENT 'Số người có chứng chỉ hành nghề chứng khoán.',
+    unlicensed_practitioner_cnt                  Nullable(Int64)         COMMENT 'Số người chưa có chứng chỉ hành nghề chứng khoán.',
+    brokerage_practitioner_cnt                   Nullable(Int64)         COMMENT 'Số lượng người hành nghề môi giới chứng khoán.',
+    underwriting_practitioner_cnt                Nullable(Int64)         COMMENT 'Số lượng người hành nghề bảo lãnh phát hành chứng khoán.',
+    advisory_practitioner_cnt                    Nullable(Int64)         COMMENT 'Số lượng người hành nghề tư vấn đầu tư chứng khoán.',
+    proprietary_practitioner_cnt                 Nullable(Int64)         COMMENT 'Số lượng người hành nghề tự doanh chứng khoán.',
+    deriv_brokerage_practitioner_cnt             Nullable(Int64)         COMMENT 'Số lượng nhân sự liên quan CK phái sinh — nghiệp vụ môi giới.',
+    deriv_advisory_practitioner_cnt              Nullable(Int64)         COMMENT 'Số lượng nhân sự liên quan CK phái sinh — nghiệp vụ tư vấn.',
+    deriv_proprietary_practitioner_cnt           Nullable(Int64)         COMMENT 'Số lượng nhân sự liên quan CK phái sinh — nghiệp vụ tự doanh.',
+    submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    etl_process_tms                              DateTime                COMMENT 'Thời gian xử lý ETL.'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (prac_profile_id)
+COMMENT 'Flat table — Securities Company Practitioner Profile — ho so nguoi hanh nghe theo CTCK'
+;

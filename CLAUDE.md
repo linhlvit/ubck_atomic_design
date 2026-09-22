@@ -17,15 +17,101 @@ Bạn là chuyên gia Data Modeling cho kiến trúc Medallion (Bronze/Atomic/Go
 
 Nếu user hỏi mentor Q&A đơn giản (không phải task thiết kế), trả lời trực tiếp từ kiến thức trong file này — không cần đọc skill.
 
+## QUY TẮC CỨNG — TRẦN NGỮ CẢNH 500K TOKEN, ĐỌC QUA LÁT CẮT
+
+**KHÔNG bao giờ Read trực tiếp 4 nhóm file này.** Một mình `BA_analyst_QLKD.csv` là 998K token và
+`DTM_QLKD_Detail_Mapping.csv` là 552K — mỗi file đã vượt trần 500K. Đơn vị công việc là **một Nhóm KPI**,
+Nhóm nặng nhất toàn repo chỉ ~66K token.
+
+| File | Thay bằng |
+|---|---|
+| `BRD/BA/BA_analyst_*.csv` | `ba_slice.py --module {M} --index` rồi `--nhom {N} --print` (thêm `--with-sql` cho LLD Phase 2) |
+| `Datamart/hld/DTM_*_HLD.md` | `ctx_slice.py --module {M} --sections` + `--nhom {N}` |
+| `Datamart/lld/DTM_*_Detail_Mapping.csv` | `ctx_slice.py --module {M} --nhom {N}`; kiểm tra toàn module bằng `lld_selfcheck.py` |
+| `Datamart/lld/datamart_attributes.csv` | `grep`, hoặc file per-table trong `Datamart/lld/{M}/` |
+
+Ghi ngược vào HLD/Detail Mapping bằng `apply_patch.py --dry-run` rồi mới ghi thật — **không Edit tay
+file lớn, không append mù** (append chỉ đúng khi viết mới; sửa lại một Nhóm đã có sẽ sinh Nhóm trùng
+và phá thứ tự nhóm tăng dần của TC6). Sau khi `--dry-run` đã được duyệt trong CÙNG lượt, lần ghi thật
+thêm `--quiet` — không cần in lại nguyên văn diff lần thứ 2 (etl_logic có thể dài hàng nghìn ký tự).
+
+**Thêm 1 KPI/cột mới vào 1 Nhóm ĐÃ CÓ sẵn dòng khác** (không phải soạn nguyên khối Nhóm mới): dùng
+`apply_kpi_patch.py -m {M} --nhom {N} --json spec.json --dry-run` — 1 lệnh JSON patch cả 3 tầng
+(HLD 1 dòng bảng KPI + Detail Mapping 1 dòng + Attributes CSV 0..n dòng cột vật lý), không phải gõ
+lại cùng 1 công thức etl_logic 3 lần qua 3 lệnh `apply_patch.py` riêng và không có rủi ro làm mất
+các dòng khác của Nhóm (khác `apply_patch.py --target dm` vốn thay THẾ NGUYÊN bộ dòng của cả Nhóm).
+Soạn nguyên khối Nhóm mới hoặc sửa nhiều dòng cùng lúc vẫn dùng `apply_patch.py`.
+
+Mọi script ở `.claude/skills/datamart-review/scripts/`. Lát cắt sinh ra nằm trong `Datamart/context/`
+— **artifact gốc trong `BRD/BA/`, `Datamart/hld/`, `Datamart/lld/`, `Datamart/flat-table/` không bị sửa**.
+
+Delimiter / dòng header / cột STT của cả 11 phân hệ đã khai và kiểm chứng trong
+`system/rules/ba_column_profile.yaml` — **không dò động nữa**. Ba phân hệ dùng `;` (FMS, TT, VP),
+VP đặt tên cột số thứ tự là `TT`, và cả 11 file đều có dòng legend ở index 2 phải bỏ.
+
+Kiểm ngân sách trước bước nặng: `python .claude/skills/datamart-review/scripts/ctx_budget.py --module {M} --all-steps`
+
+**Lý do quy tắc này nằm ở CLAUDE.md:** nó phải có hiệu lực cả khi thao tác trực tiếp bằng Read/Edit
+giữa hội thoại, không qua Skill tool — giống hệt lý do của quy tắc Bước 5B bên dưới.
+
+## QUY TẮC CỨNG — NGƯỠNG NGỮ CẢNH CẤP PHIÊN (700K), KHÁC TRẦN 500K/BƯỚC Ở TRÊN
+
+Trần 500K ở mục trên đo **1 bước nặng nhất** (`ctx_budget.py`) — không đo **tích lũy cộng dồn qua
+nhiều bước trong cùng 1 phiên hội thoại**. Phân tích phiên PTTT 2026-09-21 (14 Nhóm liên tục 1 phiên)
+cho thấy trần 500K/bước vẫn PASS ở từng bước nhưng phiên vẫn phình nặng vì lặp lại nhiều lần:
+
+1. `apply_patch.py` in nguyên diff 2 lần cho mỗi patch (dry-run + apply thật) — **đã sửa**: dùng
+   `--quiet` ở lần ghi thật (xem mục trên).
+2. Các Gate script (`check_references.py`, `check_orphan.py`, `check_parity.py`) in lại **toàn bộ**
+   danh sách issue y hệt mỗi lần chạy, dù phần lớn là pre-existing không đổi — **đã sửa**: cả 3 script
+   hỗ trợ `--save-baseline` (lưu snapshot 1 lần đầu phiên) rồi `--baseline` (chỉ in DELTA mới/đã hết)
+   cho các lần chạy lặp lại sau đó trong cùng phiên. (`run_quality_gates.py` vốn đã chỉ in PASS/FAIL/SKIP
+   ngắn gọn mỗi Gate — không cần baseline.)
+3. Cùng 1 công thức etl_logic dài xuất hiện lặp ở nhiều tầng (Attributes CSV, Detail Mapping diff,
+   HLD KPI table diff) × 2 (dry-run/apply) — giảm nhờ mục 1, và giảm tiếp khi thêm 1 KPI vào Nhóm
+   đã có sẵn nhờ `apply_kpi_patch.py` (gõ etl_logic 1 lần, patch cả 3 tầng — xem mục trên).
+
+**Quy tắc bắt buộc:** Khi làm việc nhiều Nhóm liên tục trong 1 phiên (thiết kế mới, không phải fix
+nhãn nhỏ):
+- Dùng `--save-baseline` ở lần chạy Gate 0/Gate 1 ĐẦU phiên cho `check_references.py`/`check_orphan.py`/
+  `check_parity.py`, `--baseline` cho mọi lần chạy SAU đó trong cùng phiên. Snapshot lưu ở
+  `Datamart/context/.gate_baseline/` (đã gitignore — không commit, không đại diện trạng thái thật,
+  chỉ để so sánh trong phiên).
+- Dùng `--quiet` cho mọi lần `apply_patch.py` ghi thật sau khi đã `--dry-run` duyệt trong cùng lượt.
+- **Theo dõi số Nhóm đã xử lý có phát sinh thiết kế mới (không tính fix nhãn 1 dòng) trong phiên
+  hiện tại.** Tới Nhóm thứ **6** trở đi, chủ động dừng lại sau khi hoàn tất Nhóm đang làm, tóm tắt
+  tiến độ, và hỏi user có muốn tiếp tục ngay hay mở phiên mới — **không tự ý phán đoán "còn ngữ cảnh"
+  rồi đi tiếp**. Lý do dùng được ngưỡng cứng theo SỐ NHÓM (không phải ước lượng token mơ hồ): mọi
+  quyết định thiết kế đã ghi ra HLD/LLD/Detail Mapping trên đĩa — phiên mới đọc lại đúng Nhóm cần
+  qua `ctx_slice.py`/`ba_slice.py` là đủ để tiếp tục, KHÔNG cần giữ lịch sử hội thoại cũ. Dừng sớm
+  không mất gì, đi tiếp mù thì rủi ro attention dilution ở vùng 50–70% cửa sổ ngữ cảnh (xem
+  `context_window_analysis`, mục 4).
+
 ## QUY TẮC CỨNG — SELF-CHECK BƯỚC 5B SAU MỌI CHỈNH SỬA HLD DATAMART
 
-**Áp dụng bất kể có gọi Skill tool `datamart-hld-design` hay không** — kể cả khi sửa `Datamart/hld/DTM_{MODULE}_HLD.md` trực tiếp qua Edit giữa hội thoại (không đi qua flow Phase 1 đầy đủ từ đầu), vẫn bắt buộc chạy lại checklist Bước 5B (**13 mục, đánh số #0–#12**, xem `.claude/skills/datamart-hld-design/SKILL.md`) **ngay sau Edit, trước khi báo kết quả cho user**.
+**Áp dụng bất kể có gọi Skill tool `datamart-hld-design` hay không** — kể cả khi sửa `Datamart/hld/DTM_{MODULE}_HLD.md` trực tiếp qua Edit giữa hội thoại (không đi qua flow Phase 1 đầy đủ từ đầu), vẫn bắt buộc chạy lại Bước 5B (**14 mục, đánh số #0–#13**) **ngay sau Edit, trước khi báo kết quả cho user** bằng script, không đọc mắt:
+
+```bash
+python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
+```
+
+Runner này chạy Gate 0 (Reference Integrity) → Gate 5 (Bước 5B). Dán nguyên output vào báo cáo.
 
 > Khi bổ sung mục mới vào Bước 5B, cập nhật con số ở CẢ 2 nơi (SKILL.md + dòng này). Con số lệch nhau đã từng khiến self-check chạy thiếu mục mà vẫn báo "đã chạy đủ".
 
 **Lý do:** Đã xảy ra thực tế (module TT, 2026-07-21) — một chuỗi Edit liên tiếp trên HLD (tách Dimension, sửa FK, đổi cấu trúc measure) chỉ chạy self-check thủ công một phần theo yêu cầu tức thời của user tại từng thời điểm, không tự động kích hoạt Bước 5B đầy đủ — dẫn tới bỏ sót 2 lỗi thật (Fact-to-Fact reference sai lý thuyết Kimball, thiếu `Source_System_Code` trên Dimension mới) tồn tại qua nhiều lượt sửa cho tới khi user tự phát hiện.
 
 **Không đủ nếu chỉ ghi trong SKILL.md** — vì SKILL.md chỉ được đọc khi Skill tool được gọi tường minh; khi thao tác trực tiếp bằng Edit/Read theo yêu cầu hội thoại (không gọi lại Skill), rule trong đó không tự kích hoạt. Đây là lý do quy tắc này phải nằm ở CLAUDE.md — được nạp vào mọi phiên làm việc, không phụ thuộc có gọi skill hay không.
+
+**Thêm bắt buộc — đối chiếu SỐ LƯỢNG BA ↔ HLD cho đúng (các) Nhóm vừa sửa** (`run_quality_gates.py` KHÔNG bao gồm bước này, phải chạy riêng):
+
+```bash
+python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}
+```
+
+Tìm đúng dòng của (các) Nhóm vừa sửa trong bảng delta (`| Nhóm N | ... | BA | HLD | LLD | Δ | ... |`), xác nhận `Δ = 0` hoặc lệch đã giải trình rõ trong Ghi chú HLD. **TUYỆT ĐỐI KHÔNG được xem output qua `| tail -N` / `| head -N` rồi kết luận "sạch"** — bảng delta nằm ở vị trí cố định giữa output đầy đủ (không phải cuối); nếu cần lọc, dùng `grep "Nhóm {N} "` đích danh thay vì cắt bớt.
+
+**Lý do:** Đã xảy ra thực tế (module GSTT, 2026-09-22) — sau khi sửa Nhóm 28/29 theo yêu cầu user và chạy `run_quality_gates.py --strict` (PASS 7/8, chỉ fail Gate 0 vì 5 warning không liên quan), agent báo đã xong. Thực ra Nhóm 28 vẫn thiếu 2 KPI reuse có sẵn dòng BA rõ ràng (`Đánh giá: Trùng`) — "Giá mở cửa" (→ K_GSTT_27) và "Thay đổi" (→ K_GSTT_11) — bị bỏ sót từ một ghi chú lịch sử cũ khẳng định sai "Nhóm 3 không có Giá mở cửa". `datamart_progress_analyzer.py` **đã in đúng** `🔴 Lệch số lượng` cho Nhóm 28 ngay từ lần chạy trước đó, nhưng agent chỉ xem qua `| tail -30` nên bỏ lỡ đúng đoạn bảng delta — chỉ phát hiện khi user tự đọc lại BA và hỏi lại. `run_quality_gates.py` không tự phát hiện được lỗi này vì `datamart_progress_analyzer.py` không nằm trong danh sách Gate của nó (xem ghi chú trong chính script này).
 
 ## NGÔN NGỮ
 

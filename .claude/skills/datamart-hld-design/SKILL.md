@@ -52,6 +52,106 @@ description: |
 
 ---
 
+## QUY TẮC NGỮ CẢNH — TRẦN 500K TOKEN (BẮT BUỘC, ĐỌC TRƯỚC MỌI BƯỚC)
+
+**KHÔNG bao giờ Read trực tiếp 4 nhóm file này** — luôn đi qua lát cắt:
+
+| File | Vì sao | Thay bằng |
+|---|---|---|
+| `BRD/BA/BA_analyst_*.csv` | QLKD 998K token, GSĐC 443K | `ba_slice.py --index` rồi `--nhom N` |
+| `Datamart/hld/DTM_*_HLD.md` | TKNB 163K; bị yêu cầu đọc lại 2 lần/module | `ctx_slice.py --sections` + `--nhom N` |
+| `Datamart/lld/DTM_*_Detail_Mapping.csv` | QLKD 552K; TC4–TC7 cũ nạp lại 4 lần | `ctx_slice.py --nhom N`; kiểm tra bằng `lld_selfcheck.py` |
+| `Datamart/lld/datamart_attributes.csv` | master registry 800KB | `grep`, hoặc file per-table trong `Datamart/lld/{MODULE}/` |
+
+Ghi ngược lại file gốc bằng `apply_patch.py` — **không** Edit tay file lớn, **không** append mù
+(append chỉ đúng khi viết mới, sai khi sửa lại một Nhóm đã có: sinh Nhóm trùng và phá thứ tự TC6).
+Sau khi `apply_patch.py` báo ghi thành công, **không Read lại file lớn vừa ghi để "kiểm tra"** — diff
+đã in ra (hoặc `--quiet` xác nhận số dòng thêm/bớt) là bằng chứng đủ; đọc lại cả file chỉ tốn ngân
+sách 500K mà không phát hiện thêm gì so với diff đã thấy.
+
+Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước khi chạy bước nặng:
+
+```bash
+python .claude/skills/datamart-review/scripts/ctx_budget.py --module {MODULE} --all-steps
+```
+
+Ngân sách thực đo (Nhóm nặng nhất của phân hệ nặng nhất, trần 500.000):
+
+| Bước | p50 | Xấu nhất | Phân hệ xấu nhất |
+|---|---:|---:|---|
+| hld-phase1 | ~89K | 174K | TKNB |
+| hld-phase2 | ~56K | 64K | QLKD |
+| lld-phase1 | ~77K | 131K | GSĐC |
+| lld-phase2 | ~92K | **235K** | GSĐC |
+| lld-phase3 | ~68K | 120K | GSĐC |
+| review | ~88K | 88K | — |
+
+Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay bỏ bớt thông tin nghiệp vụ.
+
+---
+
+## QUY TẮC CHỐNG TÁI DIỄN (ANTI-REGRESSION) — ĐỌC TRƯỚC KHI SỬA HLD
+
+> Rút ra từ sự cố PTTT/QLKD ngày 2026-09-18. Cả 5 quy tắc đều là lỗi **thật đã lọt lưới**,
+> không phải rủi ro giả định. Mã lỗi tương ứng nằm trong Gate 0 (`check_references.py`) và
+> Gate 5 (`check_hld_5b.py`).
+
+### H1 — Một HLD là MỘT nguồn sự thật: sửa Section 1 phải sửa cả Section 3/4/5
+
+Section 1 (Lineage), Section 3 (Mô hình), Section 4 (Reuse), Section 5 (Open Issue) mô tả cùng một
+tập bảng. Sửa lẻ một Section tạo ra HLD tự mâu thuẫn.
+
+Thực tế đã sai: Section 1 và Section 5 tuyên bố `O_PTTT_13` đã giải quyết và thay Fact mới, nhưng
+Section 3 vẫn giữ node `fct_mbr_sfty_per_mbr_snpst` + entity giả `Member Report Indicator Value`
+và ghi "PENDING"; Section 3 còn để tên vật lý cũ `fct_mcr_ind_snpst` trong khi Entities/LLD đã đổi.
+
+**Checklist khi thay/bãi bỏ một bảng:** Section 1 flowchart → Section 3.1 graph TB → bảng 3.2/3.3/3.4
+→ Section 4 reuse_status → Section 5 issue → Entities.csv/.md. Đủ 6 nơi, không thiếu nơi nào.
+
+### H2 — Đóng Open Issue mặc định là "Resolved một phần" `[partial-resolution]`
+
+Nguồn Atomic mới xuất hiện **không** đồng nghĩa mọi KPI trong danh sách issue đều READY được.
+Bắt buộc tách theo grain / theo nhánh nguồn:
+
+1. Liệt kê KPI chuyển READY **kèm grain đạt được**.
+2. KPI chưa đạt → mở Open Issue mới (`O_{MODULE}_{N+1}`) ghi rõ còn thiếu gì.
+3. Issue gốc để trạng thái `Resolved một phần`, không phải `Resolved`.
+
+Thực tế đã sai: O_PTTT_11 và O_PTTT_13 bị đóng toàn phần → 9 KPI grain ngày bị đánh READY trong khi
+nguồn chỉ có grain kỳ báo cáo tháng/quý.
+
+### H3 — Reuse Fact xuyên module: grain là hợp đồng bất biến `[L1-GRAIN-MISMATCH]`
+
+Trước khi ghi `reuse` vào Section 4:
+1. Mở Entities.csv của **module chủ sở hữu**, copy nguyên văn chuỗi grain.
+2. Đối chiếu với Presentation Grain của mockup module mình (Thang 6 bậc hạt ở Bước 4B).
+3. Grain Fact **kỳ báo cáo** không phục vụ được chỉ tiêu rolling theo **phiên giao dịch** — trường hợp này
+   phải giữ PENDING và mở Open Issue, không được reuse rồi viết công thức như thể có dữ liệu ngày.
+4. Cột "Nguồn Atomic" trong Section 3 và `source_table` trong Entities.csv ghi **entity Atomic**,
+   tuyệt đối không ghi tên bảng Datamart (`fct_*`).
+
+### H4 — Trạng thái KPI phải đồng bộ 2 chiều với Detail Mapping `[L0-HLD-LLD-STATUS-DESYNC]`
+
+Bảng KPI trong HLD và Detail Mapping là hai bản ghi của cùng một trạng thái. Sau khi sửa cột
+`Trạng thái` trong HLD, chạy ngay:
+
+```bash
+python .claude/skills/datamart-review/scripts/check_references.py --module {MODULE}
+```
+
+Nhóm chuyển từ 100% PENDING sang có KPI READY còn phải bổ sung đủ: `**Source:**`, `**Star Schema:**`,
+`**Lineage Mart → Báo cáo:**`, `**Bảng grain:**` — và gỡ bảng "Bảng mapping nguồn (Atomic Placeholder)"
+nếu nhóm đã hết PENDING.
+
+### H5 — Mọi tên cột Atomic viết vào HLD phải grep được `[L0-ATOMIC-COLUMN-NOT-FOUND]`
+
+Áp dụng cho công thức KPI, ghi chú nguồn và erDiagram. Không suy tên từ nghĩa nghiệp vụ:
+`cl_risk_indicator` có `ind_nm` chứ không phải `cl_risk_ind_name`; `security_trading_snapshot` có
+`symbol` chứ không phải `security_symbol_code`. Xem bảng đối chiếu đầy đủ ở mục **A1** của
+`datamart-lld-design/SKILL.md`.
+
+---
+
 ## QUY TRÌNH (BẮT BUỘC)
 
 ```
@@ -76,114 +176,29 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 
 1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract toàn bộ dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}` (TUYỆT ĐỐI LOẠI BỎ các dòng có `Trạng thái mapping` là `Delete`/`DELETED`/`Xóa`, không đưa vào thiết kế):
 
-   > ⚠️ **Đọc CSV chuẩn đa định dạng động (Dynamic Delimiter, Encoding & Header Engine):**
-   > File BA chứa cell multi-line (câu lệnh SQL, mô tả dài), sử dụng các chuẩn delimiter khác nhau (`,` hoặc `;`), encoding đa dạng (UTF-8 BOM, UTF-8, CP1258), và dòng header có thể nằm ở dòng index 0, 1 hoặc 2 (sau dòng banner tiêu đề / phân nhóm).
-   > **Quy tắc nhận diện động bắt buộc (tương thích engine `datamart_common.csv_utils`):**
-   > 1. **Mã hóa (Encoding):** Thử giải mã `utf-8-sig` (xử lý triệt để BOM `\ufeff`), nếu gặp lỗi `UnicodeDecodeError` thì fallback sang `cp1258` hoặc `latin-1`.
-   > 2. **Dấu phân cách (Delimiter Sniffer):** Không gán cứng theo tên module! Chạy thử nghiệm cả `,` và `;` trên 15 dòng đầu tiên, tính Mode Column Length (độ dài số cột phổ biến nhất) và Consistency (tỷ lệ dòng khớp Mode). Ưu tiên dấu phân cách cho Mode Length $\ge 15$ cột (đặc thù cấu trúc BA 15–18 cột) và độ nhất quán cao nhất.
-   > 3. **Dòng Header (Keyword Scoring Heuristics):** Quét qua 10 dòng đầu tiên, chấm điểm theo từ khóa đặc trưng (`stt`/`tt`: +6, `thông tin`/`chỉ tiêu`: +6, `phân loại`: +5, `trạng thái`: +5, `bảng nguồn`/`nguồn`: +5, `loại dữ liệu`/`dashboard`: +3). **Chống False Positive:** Nếu dòng chỉ có $\le 2$ ô có dữ liệu (dòng banner tiêu đề), trừ ngay 20 điểm (`score -= 20`). Dòng có điểm cao nhất là Header Row.
+   > ⚠️ **KHÔNG Read thẳng file BA.** `BA_analyst_QLKD.csv` là 998K token — một mình đã vượt
+   > trần ngữ cảnh 500K. Đơn vị công việc là MỘT Nhóm, và Nhóm nặng nhất toàn repo chỉ ~66K token.
    >
-   > ```python
-   > import csv, io, re
-   > from pathlib import Path
-   > from collections import Counter
-   > 
-   > raw_bytes = Path(f'BRD/BA/BA_analyst_{MODULE}.csv').read_bytes()
-   > try:
-   >     raw_text = raw_bytes.decode('utf-8-sig')
-   > except UnicodeDecodeError:
-   >     raw_text = raw_bytes.decode('cp1258', errors='replace')
-   > 
-   > # 1. Dynamic Delimiter Sniffer (Phân tích Mode & Consistency)
-   > def sniffer_delimiter(text: str) -> str:
-   >     lines = [l for l in text.splitlines() if l.strip()][:15]
-   >     best_delim, best_score = ',', -1
-   >     for d in [',', ';']:
-   >         try:
-   >             r = list(csv.reader(lines, delimiter=d))
-   >             lengths = [len(row) for row in r if row]
-   >             if not lengths:
-   >                 continue
-   >             mode_len, count = Counter(lengths).most_common(1)[0]
-   >             consistency = count / len(lengths)
-   >             # Ưu tiên cấu trúc BA đầy đủ (>= 15 cột) và độ nhất quán cao
-   >             score = (mode_len if mode_len >= 15 else mode_len * 0.5) * (consistency ** 2)
-   >             if score > best_score:
-   >                 best_score, best_delim = score, d
-   >         except Exception:
-   >             pass
-   >     return best_delim
-   > 
-   > delim = sniffer_delimiter(raw_text)
-   > reader = csv.reader(io.StringIO(raw_text), delimiter=delim)
-   > all_rows = [row for row in reader if any(c.strip() for c in row)]
-   > 
-   > # 2. Heuristic Header Detection (Chấm điểm từ khóa có phạt banner)
-   > KEYWORD_SCORES = {
-   >     'stt': 6, 'tt': 6, 'thông tin': 6, 'chỉ tiêu': 6, 'tên chỉ tiêu': 6,
-   >     'phân loại': 5, 'trạng thái': 5, 'trạng thái mapping': 5, 'bảng nguồn': 5, 'nguồn': 5,
-   >     'loại dữ liệu': 3, 'dashboard': 3, 'điều kiện': 3, 'mô tả': 3, 'sql': 3, 'ghi chú': 3
-   > }
-   > 
-   > hdr_idx, max_score = 0, -100
-   > for idx in range(min(10, len(all_rows))):
-   >     row = all_rows[idx]
-   >     non_empty = sum(1 for c in row if c.strip())
-   >     score = 0
-   >     if non_empty <= 2:
-   >         score -= 20  # Phạt nặng dòng banner tiêu đề
-   >     r_str = " ".join(c.lower() for c in row)
-   >     for kw, weight in KEYWORD_SCORES.items():
-   >         if kw in r_str:
-   >             score += weight
-   >     if score > max_score:
-   >         max_score, hdr_idx = score, idx
-   > 
-   > header = [c.strip() for c in all_rows[hdr_idx]]
-   > col_map = {name.lower(): i for i, name in enumerate(header) if name}
-   > 
-   > def get_val(row, aliases):
-   >     for a in aliases:
-   >         if a.lower() in col_map and len(row) > col_map[a.lower()]:
-   >             return row[col_map[a.lower()]].strip()
-   >     return ""
-   > 
-   > # 3. Trích xuất dòng KPI hợp lệ và nhận diện Nhóm linh hoạt:
-   > valid_kpis = []
-   > for row in all_rows[hdr_idx + 1:]:
-   >     name = get_val(row, ["Thông tin", "Thông tin (chỉ tiêu)", "Tên chỉ tiêu", "Chỉ tiêu"])
-   >     stt_raw = get_val(row, ["STT", "TT"])
-   >     ma_raw = get_val(row, ["Mã", "Group", "Nhóm"])
-   >     status = get_val(row, ["Trạng thái mapping", "Trạng thái"])
-   >     pl = get_val(row, ["Phân loại"])
-   >     src_tbl = get_val(row, ["Bảng nguồn", "Nguồn", "Khai thác nguồn", "Nguồn dữ liệu"])
-   >     dash = get_val(row, ["Dashboard/báo cáo", "Dashboard >> báo cáo", "Dashboard/BC"])
-   >     
-   >     # Bỏ qua dòng template/instruction/banner:
-   >     if not name or not dash:
-   >         continue
-   >     if "tên chiều/chỉ tiêu" in name.lower() or "chiều/chỉ tiêu cơ sở" in pl.lower():
-   >         continue
-   >     if not pl and not status and not src_tbl:
-   >         continue
-   >     # BỎ QUA 100% dòng có Trạng thái mapping là Delete / Xóa (L1-DELETE-VIOLATION):
-   >     if any(w in status.lower() for w in ["delete", "deleted", "xóa", "xoá", "bãi bỏ"]):
-   >         continue
-   >     
-   >     # Nhận diện STT nhóm nghiệp vụ (Group STT):
-   >     group_stt = stt_raw
-   >     clean_ma = re.sub(r'^(?:nhóm|group)\s*', '', ma_raw, flags=re.IGNORECASE).strip()
-   >     if clean_ma.isdigit() and (not stt_raw or '.' in stt_raw or not stt_raw.isdigit()):
-   >         group_stt = clean_ma
-   >     elif not stt_raw and ma_raw:
-   >         group_stt = ma_raw
-   >     
-   >     valid_kpis.append({
-   >         "group": group_stt, "name": name, "status": status, 
-   >         "classification": pl, "data_type": get_val(row, ["Loại dữ liệu"]),
-   >         "source_table": src_tbl, "dashboard": dash
-   >     })
+   > **Bước 1a — nạp bản đồ Nhóm (một lần mỗi phiên, ~0,3–7K token):**
+   > ```bash
+   > python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --index
    > ```
+   > Sinh `Datamart/context/ba/BA_index_{MODULE}.csv`: mỗi Nhóm một dòng — số chỉ tiêu,
+   > đếm Done/Doing/Pending, đếm Chiều/Cơ sở/Phái sinh, token ước tính. Dùng nó để chọn Nhóm
+   > và lập todo list, KHÔNG dùng để thiết kế.
+   >
+   > **Bước 1b — nạp lát cắt Nhóm đang làm:**
+   > ```bash
+   > python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --print
+   > ```
+   > Lát cắt giữ **nguyên văn mọi ô nghiệp vụ** của Nhóm đó (đã kiểm chứng trên cả 11 phân hệ:
+   > không mất dòng, không mất ô). Chỉ bỏ cột theo dõi dự án và cột SQL; thêm `--with-sql` khi
+   > cần SQL (Phase 2 LLD). File gốc trong `BRD/BA/` KHÔNG bị sửa.
+   >
+   > Delimiter / dòng header / cột STT của từng phân hệ khai trong `system/rules/ba_column_profile.yaml`
+   > — **đã kiểm chứng, không dò động nữa**. Ba phân hệ dùng `;` (FMS, TT, VP), VP đặt tên cột số
+   > thứ tự là `TT` chứ không phải `STT`, và cả 11 file đều có dòng legend ở index 2 phải bỏ.
+   > File BA lệch với profile → script dừng và báo lỗi, KHÔNG đoán tiếp.
    > *(Mẹo: Designer có thể chạy trực tiếp CLI audit `python .claude/skills/datamart-review/scripts/check_ba_mapping.py --module {MODULE} --strict` để kiểm tra chéo tự động cấu trúc BA).*
    - `Phân loại = Chiều` → slicer/filter dimension — **phải có KPI_ID**, không được bỏ qua
    - `Phân loại = Cơ sở` + `Phái sinh` → KPI chỉ tiêu
@@ -230,8 +245,10 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
   - Sau khi lấy code từ BA → cross-check với `DataModel/working/Atomic/lld/classification_schemes.yaml` để xác nhận scheme tồn tại.
   - Chỉ tạo Open Issue khi BA **thực sự không cung cấp** giá trị code. Nếu BA đã ghi rõ → dùng thẳng, không tạo issue thừa.
   - Ví dụ thực tế (VP module): BA ghi `Buy/Sell Client House Classification Code = '30'` → Tự doanh; `Foreign Investor Type Code <> '00'` → NĐTNN (negative filter). Sai nếu dùng `'PROP'` hay `= 'FI'` mà không đọc BA.
-- [ ] **Đọc full SQL/công thức tham khảo của MỌI dòng BA trước khi kết luận nguồn Atomic** — không suy diễn tên bảng/cột nguồn chỉ từ tên KPI hoặc khái niệm nghiệp vụ. Bắt buộc mở nguyên văn ô Công thức/Mô tả (thường chứa SQL tham khảo) và trích đúng: tên bảng JOIN, tên cột, điều kiện filter/LIKE — rồi mới tra sang Atomic. KHÔNG được giả định "chắc dùng entity X" vì nhóm trước cùng module đã dùng X cho khái niệm nghiệp vụ tương tự.
+- [ ] **Đọc full SQL/công thức tham khảo của MỌI dòng BA trong Nhóm đang xét trước khi kết luận nguồn Atomic** — lấy bằng `ba_slice.py --module {MODULE} --nhom {N} --with-sql --print` (phạm vi là Nhóm đang xét, KHÔNG phải cả phân hệ — cả phân hệ thì vượt trần ngữ cảnh). Không suy diễn tên bảng/cột nguồn chỉ từ tên KPI hoặc khái niệm nghiệp vụ. Bắt buộc mở nguyên văn ô Công thức/Mô tả (thường chứa SQL tham khảo) và trích đúng: tên bảng JOIN, tên cột, điều kiện filter/LIKE — rồi mới tra sang Atomic. KHÔNG được giả định "chắc dùng entity X" vì nhóm trước cùng module đã dùng X cho khái niệm nghiệp vụ tương tự.
 - [ ] **Không copy pattern nguồn từ Nhóm trước khi chưa tự đọc SQL của chính dòng BA đang xét** — kể cả khi Nhóm N-1 đã xác nhận Atomic entity Y là nguồn đúng cho 1 khái niệm (VD: "Dư nợ margin"), Nhóm N nhắc lại đúng khái niệm đó KHÔNG được mặc định dùng lại Y. Phải tự đọc SQL riêng của Nhóm N — nếu BA đổi bảng/report code/sheet khác thì đó là nguồn khác, không reuse. Đây là nguyên nhân đã gây sai lặp lại nhiều lần trong thực tế (QLKD: hàng loạt Nhóm giả định dùng chung 1 entity EAV suy diễn theo tên, trong khi BA SQL thực tế của từng Nhóm chỉ ra các report_code/sheet_name/cột LIKE khác nhau hoàn toàn — phải re-verify từng Nhóm riêng lẻ mới phát hiện ra).
+- [ ] **Ghi chú "Reuse từ Nhóm X" / "BA STT Y thêm dòng '...'" PHẢI trích nguyên văn tên dòng BA** (copy đúng string cột tên chỉ tiêu trong lát cắt `ba_slice.py --nhom {N} --with-sql --print`), **KHÔNG diễn giải/tóm tắt lại theo trí nhớ** — đặc biệt khi tóm tắt nội dung 1 Nhóm để chuyển giao (viết prompt cho Skill/subagent khác, hoặc thuật lại sau khi đã đọc BA ở lượt trước trong hội thoại). Bản tóm tắt dễ đánh mất chi tiết phân biệt khi tên đích nghe giống 1 KPI đã có sẵn ở Nhóm khác. Sự cố thực tế (GSTT Nhóm 28/29, 2026-09-22): 3 dòng BA **"Giá trị mua/bán/ròng theo phân loại nhà đầu tư LOẠI KHỚP LỆNH"** (dòng 412–414/424–426) bị tóm tắt nhầm thành **"Giá trị mua RÒNG/bán RÒNG theo phân loại nhà đầu tư"** khi đối chiếu với 2 KPI đã có tên gần giống (K_GSTT_93/94 — dùng cho khái niệm tách dấu dương/âm hoàn toàn khác, vốn cũng chưa từng có dòng BA nào làm căn cứ) — gán reuse sai thay vì khai 3 KPI mới, tồn tại qua nhiều lượt sửa cho tới khi user tự đọc lại BA và phát hiện. Quy tắc khắc phục: mọi câu "khớp 1-1 công thức với dòng BA '...'" trong Ghi chú bắt buộc là nguyên văn copy-paste, không gõ lại theo trí nhớ hay theo tên KPI đích.
+- [ ] **Khi CHỈNH SỬA một Nhóm đã tồn tại (không phải thiết kế mới), KHÔNG tin ghi chú "Ghi chú tái sử dụng"/lịch sử SỬA cũ là đúng — luôn tự đếm lại từ BA hiện tại.** Một ghi chú cũ khẳng định "không có dòng X" hoặc "đã đủ N dòng" có thể sai hoặc lỗi thời (BA cập nhật thêm dòng, hoặc bản thân ghi chú đó vốn đã sai từ đầu). Trước khi coi 1 Nhóm là "đã đủ", chạy lại `ba_slice.py --nhom {N} --with-sql --print` và liệt kê thủ công từng dòng ↔ từng KPI ID, không suy diễn từ prose cũ.
 
 ---
 
@@ -619,7 +636,25 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file.
 
 > **Áp dụng cả khi CHỈNH SỬA/ĐIỀU CHỈNH một phần của HLD đã tồn tại** (không chỉ khi thiết kế mới từ đầu) — kể cả khi phạm vi yêu cầu chỉ là "sửa lại Nhóm N". Vì các mục kiểm tra dưới đây quét **toàn file**, một thay đổi cục bộ (thêm/sửa 1 Nhóm) vẫn có thể làm lộ ra hoặc để sót lỗi cấu trúc đã tồn tại từ trước ở phần không đụng tới — bỏ qua Bước 5B chỉ vì "task chỉ yêu cầu sửa 1 Nhóm" đã gây sót lỗi thực tế (TT — sửa lại Nhóm 1 theo Atomic schema mới nhưng không chạy mục #0 nên bỏ sót toàn bộ file thiếu Section 4 — Reuse Analysis, heading Cụm sai cấp, bảng KPI thiếu cột Ghi chú, vốn có từ bản gốc 20260427 và không liên quan gì đến thay đổi đang làm).
 
-Chạy **đủ 14 mục (#0–#13)** dưới đây (bằng Python/grep hoặc bộ CLI audit) trên toàn file `DTM_{MODULE}_HLD.md` vừa xuất/vừa sửa. Toàn bộ các tiêu chí này khớp 1-1 với tiêu chuẩn kiểm định **Lớp 1b của `datamart-review`**. Khi báo kết quả, liệt kê đủ 14 dòng PASS/FAIL kèm mã lỗi chuẩn — không gộp, không bỏ mục nào:
+### Cách chạy: DÙNG SCRIPT, KHÔNG ĐỌC MẮT
+
+14 mục dưới đây đã được tự động hoá. **Bắt buộc chạy lệnh này**, không tự viết lại checker
+và không tự đánh giá bằng mắt:
+
+```bash
+python .claude/skills/datamart-review/scripts/check_hld_5b.py --module {MODULE}
+```
+
+Script in đủ 14 dòng `#0`–`#13` kèm mã lỗi. Mục `MANUAL` (#9, #10, #12) chuyển sang
+`check_references.py` và `datamart_progress_analyzer.py` — vẫn phải chạy, không được bỏ.
+Dán nguyên output vào báo cáo cho human.
+
+> **Vì sao bắt buộc dùng script:** trước khi có `check_hld_5b.py`, 14 mục này chỉ là checklist chữ.
+> Thực tế agent bỏ qua hoặc tự đánh giá "đã xong" mà không phát hiện: 18 khối erDiagram thiếu
+> `Source_System_Code`, 36 Fact dùng `Snapshot_Date_Id` thay vì `Snapshot_Date_Dimension_Id`,
+> 17 heading `### Cụm` sai cấp, Section 3 còn giữ Fact đã bãi bỏ trong khi Section 1 & 5 đã ghi Resolved.
+
+Diễn giải chi tiết từng mục (khớp 1-1 với tiêu chuẩn **Lớp 1b của `datamart-review`**):
 
 0. **Cấu trúc Section & Bảng KPI 7 Cột (`[L1-SECTION-STRUCTURE]`):**
    - Đếm số Section (`## Section N`) — **phải đúng 5**, theo thứ tự cố định: `Data Lineage` / `Tổng quan báo cáo` / `Mô hình tổng thể` / `Reuse Analysis` / `Vấn đề mở`. Không còn biến thể 4 Section. Thiếu bất kỳ Section nào, hoặc "Vấn đề mở" không nằm ở vị trí Section 5 $\implies$ Báo lỗi cấu trúc. Module đầu tiên (`datamart_model.yaml` rỗng) vẫn phải có Section 4 với toàn bộ bảng `reuse_status = new`.
@@ -669,16 +704,30 @@ Chạy **đủ 14 mục (#0–#13)** dưới đây (bằng Python/grep hoặc b�
 
 ### Tích Hợp Bộ Công Cụ Kiểm Định CLI Tự Động Vào Bước 5B
 
-Trước khi mở GATE Phase 1, Designer **bắt buộc phải chạy bộ 3 lệnh CLI audit tự động** từ thư mục gốc của repository:
+Trước khi mở GATE Phase 1, Designer **bắt buộc chạy bộ lệnh audit** từ thư mục gốc của repository.
+Cách nhanh nhất là chạy runner hợp nhất (bao trùm Gate 0 → Gate 5):
 
-```powershell
-# 1. Kiểm tra chéo BA, phân loại 5 nhóm PENDING và lint quy chuẩn Detail Mapping (Exit 0 = PASS):
+```bash
+python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
+```
+
+Hoặc chạy lẻ khi cần xem chi tiết:
+
+```bash
+# 0. Reference Integrity — cột Atomic/Mart có tồn tại thật không, CSV có vỡ cột không,
+#    trạng thái KPI giữa HLD và Detail Mapping có lệch nhau không (Exit 0 = PASS):
+python .claude/skills/datamart-review/scripts/check_references.py --module {MODULE} --strict
+
+# 1. Cấu trúc HLD — Bước 5B, 14 mục #0–#13 (Exit 0 = PASS):
+python .claude/skills/datamart-review/scripts/check_hld_5b.py --module {MODULE}
+
+# 2. Kiểm tra chéo BA, phân loại 5 nhóm PENDING và lint quy chuẩn Detail Mapping (Exit 0 = PASS):
 python .claude/skills/datamart-review/scripts/check_ba_mapping.py --module {MODULE} --strict
 
-# 2. Kiểm tra chuẩn Role-Playing Date FK trên toàn bộ Fact tables (Exit 0 = PASS):
+# 3. Kiểm tra chuẩn Role-Playing Date FK trên toàn bộ Fact tables (Exit 0 = PASS):
 python .claude/skills/datamart-review/scripts/check_date_fk.py --module {MODULE} --strict
 
-# 3. Phân tích tiến độ 3 chiều BA ↔ HLD ↔ LLD và quét các chỉ tiêu bị xóa Delete:
+# 4. Phân tích tiến độ 3 chiều BA ↔ HLD ↔ LLD và quét các chỉ tiêu bị xóa Delete:
 python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}
 ```
 
@@ -800,6 +849,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
   - Đếm `HLD_Base = COUNT(KPI Base/1-1 của Nhóm, loại trừ KPI Derived _YOY/_GROWTH/tỷ lệ nội bộ và sub-component a/b đã giải trình)`
   - Xác nhận `BA_Valid == HLD_Base` khớp chính xác 1-1. Nếu lệch: đối chiếu từng dòng BA để phát hiện dòng bị gộp nhầm hoặc bỏ sót (đặc biệt là các chiều slicer phụ). Mọi KPI dôi dư phải được giải trình rõ trong cột Ghi chú.
   - Ví dụ lỗi thực tế (QLCB Nhóm 4): 2 dòng BA độc lập "Thông tin doanh nghiệp" (nguồn `COMPANY_NAME_VN`) và "Mã chứng khoán" (nguồn `equity_ticker`) bị viết gộp thành 1 dòng KPI "Thông tin doanh nghiệp (Mã CK, Tên DN)" — BA 12 dòng nhưng HLD chỉ có 11 KPI, không bị rule cũ nào bắt được vì dòng KPI đó "vẫn có ID, vẫn có dòng BA tương ứng".
+  - **Bắt buộc xác nhận lại bằng script, không chỉ tự đếm bằng mắt:** chạy `python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}`, tìm đúng dòng của (các) Nhóm vừa viết/sửa trong bảng delta (dạng `| Nhóm N | ... | BA | HLD | LLD | Δ | ... | 🔴/✅ |`), xác nhận `Δ = 0` hoặc lệch đã giải trình rõ. **TUYỆT ĐỐI KHÔNG được xem output qua `| tail -N` / `| head -N` rồi kết luận "sạch"** — bảng delta nằm ở vị trí cố định giữa output đầy đủ (không phải cuối), cắt bớt output rất dễ bỏ lỡ đúng dòng Nhóm cần xem; nếu cần giới hạn dung lượng, dùng `grep` đích danh `"Nhóm {N} "` thay vì `tail`/`head`. Sự cố thực tế (GSTT Nhóm 28, 2026-09-22): script đã in đúng `🔴 Lệch số lượng` cho Nhóm 28 (thiếu 2 KPI reuse: "Giá mở cửa" → K_GSTT_27, "Thay đổi" → K_GSTT_11 — cả 2 đều có dòng BA rõ ràng, cột Đánh giá = "Trùng") nhưng bị bỏ sót vì agent chỉ xem qua `| tail -30`, cắt mất đúng đoạn bảng delta — chỉ phát hiện ra khi user tự đọc lại BA và hỏi lại.
 - [ ] **Gating theo "Loại dữ liệu":** Với mọi dòng BA (mọi Nhóm yêu cầu), kiểm tra cột `Loại dữ liệu` — `Dữ liệu động` → dòng KPI đó đánh Trạng thái PENDING dù Atomic đã READY/Trạng thái mapping = Done (lý do ghi trong Ghi chú: "chưa thống nhất quy tắc khai thác"); `Dữ liệu tĩnh` → theo gating Atomic bình thường. KHÔNG suy đoán tĩnh/động theo `Phân loại` (Chiều/Cơ sở/Phái sinh) — đọc đúng giá trị cột này
 - [ ] **Nhóm có cả tĩnh lẫn động:** Cả 2 loại dòng KPI nằm CHUNG 1 bảng KPI duy nhất, chỉ khác cột Trạng thái (READY cho dòng tĩnh, PENDING cho dòng động) — không tách 2 block/2 bảng riêng
 - [ ] **Kiểm soát Cấp Độ Hạt (Iso-Grain Rule):** Presentation Grain của Mockup ở Section 2 phải $\le$ Fact Storage Grain ở Section 3. Tuân thủ Thang 6 bậc hạt. Không copy công thức aggregate khi nhóm reuse có cấp hạt khác nhóm gốc (Case K_GSTT_61).

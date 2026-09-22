@@ -2,7 +2,7 @@
 -- NDTNN Flat Tables — CREATE
 -- Module: Nhà Đầu Tư Nước Ngoài — NDTNN
 -- Generated: Phase 3 LLD Datamart
--- 5 bảng: 3 fact + 2 operational
+-- 6 bảng: 4 fact + 2 operational
 -- (Fact Market Index Snapshot dùng chung QLKD — flat table đã có ở QLKD, không CREATE lại)
 -- ============================================================
 
@@ -159,4 +159,39 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_investor_compliance_hist_flat ON C
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (investor_compliance_hist_code)
 COMMENT 'Flat table — Operational Investor Compliance History'
+;
+
+
+-- ============================================================
+-- 6. FACT: ndtnn_fct_public_company_foreign_ownership_snpst_flat
+--    Fact Public Company Foreign Ownership Snapshot
+--    Joins: Calendar Date × Public Company Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_public_company_foreign_ownership_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Public Company Foreign Ownership Snapshot
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot',
+    public_company_dim_id           Nullable(String)        COMMENT 'FK công ty đại chúng — nullable, không phải mọi mã CK đều là công ty đại chúng',
+    ticker_symbol                   String                  COMMENT 'Mã chứng khoán',
+    total_issued_share_quantity     Nullable(Int64)         COMMENT 'Tổng số cổ phiếu đã phát hành',
+    max_foreign_ownership_ratio     Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu tối đa NĐTNN được phép (room tối đa, %)',
+    max_foreign_holding_quantity    Nullable(Int64)         COMMENT 'Số lượng CP tối đa NĐTNN được phép nắm giữ',
+    current_foreign_holding_quantity Nullable(Int64)        COMMENT 'Số lượng CP NĐTNN đang nắm giữ hiện tại',
+    remaining_foreign_holding_quantity Nullable(Int64)      COMMENT 'Số lượng CP còn lại NĐTNN có thể mua thêm (room còn lại)',
+    src_stm_code                     String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                    Nullable(Date)           COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: PUBLIC COMPANY DIMENSION
+    public_company_code             Nullable(String)         COMMENT 'Mã công ty đại chúng — từ Public Company Dimension',
+    equity_ticker_symbol            Nullable(String)         COMMENT 'Mã cổ phiếu — từ Public Company Dimension',
+    public_company_nm               Nullable(String)         COMMENT 'Tên công ty — từ Public Company Dimension',
+    equity_listing_exchange_code    Nullable(String)         COMMENT 'Sàn niêm yết — từ Public Company Dimension',
+    classification_business_line_nm Nullable(String)         COMMENT 'Tên ngành (đệm sẵn) — từ Public Company Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), ticker_symbol)
+COMMENT 'Flat table — Fact Public Company Foreign Ownership Snapshot × Calendar Date × Public Company Dimension'
 ;

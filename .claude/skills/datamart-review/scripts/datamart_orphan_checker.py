@@ -103,6 +103,49 @@ def print_console_summary(result: OrphanCheckResult, verbose: bool = False) -> N
     print(f"{'='*70}\n")
 
 
+DEFAULT_BASELINE_DIR = "Datamart/context/.gate_baseline"
+
+
+def _default_baseline_path(root: Path, module: str) -> Path:
+    return root / DEFAULT_BASELINE_DIR / f"orphan_{module}.json"
+
+
+def orphan_issue_key(o: OrphanItem) -> str:
+    """Khóa ổn định để so sánh giữa 2 lần chạy — dùng cho --baseline."""
+    return f"{o.table_name}|{o.orphan_type}|{o.branch}"
+
+
+def print_console_delta(result: OrphanCheckResult, baseline_keys: set) -> None:
+    """In DELTA so với baseline thay vì lặp lại toàn bộ danh sách orphan mỗi lần."""
+    current = {orphan_issue_key(o): o for o in result.orphans}
+    cur_keys = set(current)
+    new_keys = sorted(cur_keys - baseline_keys)
+    resolved_keys = sorted(baseline_keys - cur_keys)
+    unchanged = len(cur_keys & baseline_keys)
+
+    status_color = "[PASS]" if result.status == "PASS" else "[FAIL]"
+    print(f"\n{'='*70}")
+    print(f" Datamart 3-Way Orphan Entity Audit: {result.module} {status_color} (DELTA vs baseline)")
+    print(f"{'='*70}")
+    print(f"  Không đổi so với baseline: {unchanged}   Mới phát sinh: {len(new_keys)}   Đã hết: {len(resolved_keys)}")
+
+    if new_keys:
+        print(f"\n  Orphan MỚI phát sinh ({len(new_keys)}):")
+        for idx, k in enumerate(new_keys, 1):
+            o = current[k]
+            branch_tag = "[BRANCH A - COMPLETE]" if o.branch == ResolutionBranch.BRANCH_A_COMPLETE_MISSING else "[BRANCH B - CLEANUP]"
+            print(f"  {idx}. {branch_tag} {o.entity_name} ({o.table_name}) — {o.reason}")
+
+    if resolved_keys:
+        print(f"\n  Orphan ĐÃ HẾT so với baseline ({len(resolved_keys)}):")
+        for idx, k in enumerate(resolved_keys, 1):
+            print(f"  {idx}. {k}")
+
+    if not new_keys and not resolved_keys:
+        print("\n  ⓘ Không có thay đổi nào so với baseline.")
+    print(f"{'='*70}\n")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Datamart 3-Way Orphan Entity Checker (LLD ↔ HLD Entities ↔ Flat Table SQL)",
@@ -151,6 +194,18 @@ def main() -> None:
         action="store_true",
         help="Verbose console logging",
     )
+    parser.add_argument(
+        "--baseline", nargs="?", const="__default__", default=None,
+        help="So sánh với snapshot lần chạy trước, chỉ in DELTA (mới/đã hết) thay vì lặp lại "
+             "toàn bộ danh sách orphan — dùng cho các lần chạy LẶP LẠI trong cùng 1 phiên marathon "
+             "nhiều Nhóm. Bỏ trống giá trị để dùng đường dẫn mặc định theo module. Không áp dụng "
+             "khi --module all hoặc --json.",
+    )
+    parser.add_argument(
+        "--save-baseline", nargs="?", const="__default__", default=None,
+        help="Ghi snapshot orphan hiện tại làm baseline cho lần sau. Thường dùng 1 lần đầu phiên: "
+             "--save-baseline, các lần sau: --baseline.",
+    )
 
     args = parser.parse_args()
 
@@ -190,7 +245,26 @@ def main() -> None:
         else:
             print(json_output)
     else:
-        print_console_summary(result, verbose=args.verbose)
+        baseline_path = None
+        if args.baseline is not None and result.module.lower() != "all":
+            baseline_path = (Path(args.baseline) if args.baseline != "__default__"
+                              else _default_baseline_path(root, result.module))
+        if baseline_path is not None and baseline_path.is_file():
+            baseline_keys = set(json.loads(baseline_path.read_text(encoding="utf-8")))
+            print_console_delta(result, baseline_keys)
+        else:
+            if baseline_path is not None:
+                print(f"ⓘ Không thấy baseline tại {baseline_path} — in đầy đủ lần này, "
+                      f"dùng --save-baseline để tạo snapshot cho lần sau.\n")
+            print_console_summary(result, verbose=args.verbose)
+
+        if args.save_baseline is not None and result.module.lower() != "all":
+            save_path = (Path(args.save_baseline) if args.save_baseline != "__default__"
+                          else _default_baseline_path(root, result.module))
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            save_path.write_text(json.dumps(sorted({orphan_issue_key(o) for o in result.orphans}),
+                                             ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"💾 Đã lưu baseline: {save_path} ({len(result.orphans)} orphan)\n")
 
         if args.output:
             md_report = generate_orphan_markdown_report(result)

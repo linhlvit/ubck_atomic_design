@@ -671,6 +671,80 @@ def check_common_dimensions(root: Path) -> List[FlatTableIssue]:
 # Core Module Auditor
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Criterion 6: Source Column Existence Check (DML -> LLD)
+# ---------------------------------------------------------------------------
+_RE_FROM_JOIN = re.compile(
+    r"\b(?:FROM|JOIN)\s+datamart\.(\w+)\s+(?:AS\s+)?(\w+)", re.IGNORECASE)
+_RE_QUALIFIED = re.compile(r"\b([a-zA-Z_]\w*)\.([a-z_][a-z0-9_]*)\b")
+_SQL_NOISE = {"on", "and", "or", "where", "select", "from", "join", "left", "inner",
+              "as", "by", "group", "order", "not", "in", "is", "null", "case", "when",
+              "then", "else", "end", "toyyyymm", "assumenotnull"}
+
+
+def _load_registry_columns(root: Path) -> Dict[str, Set[str]]:
+    """{ten bang vat ly: tap cot} lay tu master registry — phu moi module.
+
+    Dung registry toan cuc (khong chi module dang xet) de kiem duoc ca cot lay tu
+    Dimension cua module khac qua JOIN.
+    """
+    out: Dict[str, Set[str]] = {}
+    reg = root / "Datamart" / "lld" / "datamart_attributes.csv"
+    if not reg.is_file():
+        return out
+    for r in _read_csv_rows(reg):
+        t = (r.get("datamart_table") or "").strip().lower()
+        c = (r.get("datamart_column") or "").strip().lower()
+        if t and c:
+            out.setdefault(t, set()).add(c)
+    return out
+
+
+def _check_source_columns(root: Path, dml_text: str) -> List[FlatTableIssue]:
+    """Moi tham chieu `<alias>.<cot>` trong DML phai ton tai o bang nguon tuong ung."""
+    issues: List[FlatTableIssue] = []
+    reg = _load_registry_columns(root)
+    if not reg:
+        return issues
+
+    blocks = list(_RE_INSERT_INTO.finditer(dml_text))
+    for idx, m in enumerate(blocks):
+        flat_tbl = m.group(1).strip()
+        start = m.end()
+        end = blocks[idx + 1].start() if idx + 1 < len(blocks) else len(dml_text)
+        block = dml_text[start:end]
+        # bo comment de khong bat nham token trong chu thich
+        clean = re.sub(r"--[^\n]*", " ", block)
+        clean = re.sub(r"/\*.*?\*/", " ", clean, flags=re.DOTALL)
+
+        alias_of = {a.lower(): t.lower() for t, a in
+                    (mm.groups() for mm in _RE_FROM_JOIN.finditer(clean))}
+        if not alias_of:
+            continue
+        seen: Set[Tuple[str, str]] = set()
+        for mm in _RE_QUALIFIED.finditer(clean):
+            alias, col = mm.group(1).lower(), mm.group(2).lower()
+            if alias in _SQL_NOISE or col in _SQL_NOISE:
+                continue
+            src = alias_of.get(alias)
+            if not src or src not in reg:
+                continue          # bang ngoai registry -> khong ket luan
+            if col in reg[src]:
+                continue
+            if (src, col) in seen:
+                continue
+            seen.add((src, col))
+            issues.append(FlatTableIssue(
+                error_code="L4-FLAT-TABLE-COLUMN-NOT-IN-LLD",
+                severity="CRITICAL",
+                table_name=flat_tbl,
+                message=(f"DML tham chiếu `{alias}.{col}` nhưng bảng nguồn `{src}` "
+                         f"không có cột `{col}` trong LLD — script sẽ lỗi "
+                         f"Unknown identifier khi chạy"),
+            ))
+    return issues
+
+
 def audit_module_flat_table(
     root: Path,
     module: str,
@@ -765,6 +839,10 @@ def audit_module_flat_table(
     # 5. Criterion 5: Common Dimensions Sync
     common_issues = check_common_dimensions(root)
     result.issues.extend(common_issues)
+
+    # 6. Criterion 6: Source Column Existence (DML -> LLD)
+    src_issues = _check_source_columns(root, dml_text)
+    result.issues.extend(src_issues)
 
     # Status evaluation
     result.status = "FAIL" if result.critical_count > 0 else "PASS"

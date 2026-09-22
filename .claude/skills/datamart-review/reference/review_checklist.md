@@ -298,11 +298,19 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
   → TUYỆT ĐỐI CẤM đánh tráo chỉ tiêu bãi bỏ thành nhãn PENDING ("Pending - [Nhóm 1-5]") làm phình to blocker giả tạo.
   → Vi phạm đánh tráo DEPRECATED thành PENDING → 🔴 Critical (`L3-DEPRECATED-AS-PENDING`)
 
-□ Trace BA → Detail Mapping (bắt buộc mọi KPI Done):
-  → Aggregation: BA ghi SUM → logic phải SUM (không được COUNT)
-  → Filter: Phải đọc cả cột Điều kiện, Câu lệnh tham khảo VÀ Note trong BA
-  → Phân tầng filter: Filter xác định Grain nằm ở Attributes etl_logic; Filter phân biệt KPI nằm ở Detail Mapping logic
-  → Thiếu/sai filter → Critical/Warning tuỳ mức độ
+□ Bám sát Câu lệnh tham khảo (Reference SQL) & Điều kiện chung trong BA (Quy tắc L17 — Mã lỗi L3-REFERENCE-SQL-MISALIGNMENT):
+  → Bắt buộc đọc trọn vẹn 5 cột kỹ thuật trong BA: `Câu lệnh tham khảo` (SQL mẫu), `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note`.
+  → Đối chiếu 4 thành phần cấu trúc SQL tham khảo:
+      • SELECT (Measure Alignment):
+        - Phân biệt rạch ròi Khớp lệnh vs Thỏa thuận: Khớp lệnh (`Board Type NOT IN ('T1'..'R1')`) BẮT BUỘC map `Total Matched Volume/Value` (`total_matched_vol/val`), TUYỆT ĐỐI KHÔNG map `Total Volume/Value` (`total_vol/val` gộp cả thỏa thuận). Thỏa thuận map `Total Negotiated Volume/Value` (`total_negotiated_vol/val`).
+        - Phân biệt Mua vs Bán vs Ròng: Khớp đúng biểu thức `SUM(mua) - SUM(ban)` ➔ `foreign_net_vol`.
+      • WHERE (Static Filter & Scope Alignment):
+        - Mọi điều kiện lọc tĩnh trong WHERE (sàn `FloorCode`, loại CK `StockType`, loại bảng lệnh `Board Type`, cờ hiệu lực `active_flg`, loại NĐT) PHẢI được sinh thành các dòng `column_role = FILTER` tương ứng trong nhóm HOẶC ghi rõ trong `ghi_chu`: `"Đã lọc sẵn tại ETL Fact theo SQL tham khảo BA: <điều kiện>"`.
+      • FROM/JOIN (Dimension & Linkage Coverage):
+        - Đảm bảo đủ các Dimension liên kết và FK cần thiết để thỏa mãn điều kiện lọc và cắt lát.
+      • GROUP BY & Window Function:
+        - Đối chiếu đúng grain hiển thị và công thức cửa sổ rolling/moving average (VD: KLGDTB 5 ngày `5 PRECEDING`, TTM 4 quý BCTC).
+  → Vi phạm (lệch số đo, thiếu dòng FILTER, hoặc sai logic WHERE/SELECT) → 🔴 Critical (`L3-REFERENCE-SQL-MISALIGNMENT`)
 
 □ Logic DERIVED — không tham chiếu KPI_ID khác:
   → Logic của DERIVED KHÔNG ĐƯỢC viết dạng (K_XXX_N - K_XXX_M) / NULLIF(...)

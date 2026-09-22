@@ -3,7 +3,7 @@ name: datamart-review
 description: |
   Master Quality Gatekeeper: Review cross-check BA analyst ↔ Datamart (HLD + LLD ↔ Flat Table).
   Hỗ trợ Macro-Review (tiến độ toàn phân hệ), Micro-Review (chi tiết 4 lớp từng nhóm),
-  và Issue Trace 5 tầng (Kịch bản E). Đảm bảo chuẩn Kimball, SCD4A, 4 Control Gates và tính toàn vẹn DWH.
+  và Issue Trace 5 tầng (Kịch bản E). Đảm bảo chuẩn Kimball, SCD4A, 8 Control Gates và tính toàn vẹn DWH.
 triggers:
   - /datamart-review [MODULE]
   - /datamart-review [MODULE] [nhóm N]
@@ -16,12 +16,51 @@ triggers:
 1. **Vai Trò Độc Lập:** Claude đóng vai trò Data Model Reviewer độc lập (Read-Only Explorer). Human là người quyết định và phê duyệt tối cao.
 2. **CẤM TUYỆT ĐỐI Tự Sửa File Trực Tiếp:** Claude **TUYỆT ĐỐI KHÔNG** tự Edit trực tiếp vào file HLD (`.md`), LLD (`Attributes.csv`, `Detail_Mapping.csv`), Model Registry (`datamart_model.yaml`, `datamart_attributes.csv`), hay Flat Table SQL (`01_create_*.sql`, `02_populate_*.sql`). Mọi sửa đổi phải lập Action Proposal, xin phê duyệt và ủy quyền cho skill con (`datamart-hld-design`, `datamart-lld-design`) thực hiện.
 3. **READ-ONLY Trên Thư Mục Atomic:** Tuyệt đối không tạo, sửa, xóa file trong `DataModel/Atomic/` và `DataModel/working/Atomic/`.
-4. **Tuân Thủ Tuyệt Đối 4 CỔNG KIỂM SOÁT (4 CONTROL GATES):**
+4. **Tuân Thủ Tuyệt Đối 8 CỔNG KIỂM SOÁT (8 CONTROL GATES):**
+   - **GATE 0 (Reference Integrity):** chặn cứng khi có tham chiếu tới thứ không tồn tại — cột Atomic sai tên (`L0-ATOMIC-COLUMN-NOT-FOUND`), cột mart không có trong Attributes (`L0-MART-COLUMN-NOT-FOUND`), file CSV vỡ cột (`L0-CSV-STRUCTURE-BROKEN`), hoặc trạng thái KPI lệch giữa HLD và Detail Mapping (`L0-HLD-LLD-STATUS-DESYNC`). Chạy `check_references.py`.
    - **GATE 1 (Sanity Stop):** Dừng bắt buộc sau Bước 0b/0c Macro-Audit; chặn cứng nếu phát hiện Orphan 3 chiều, Parity mismatch, Role Date FK violation, Delete sót, hoặc Grain Mismatch kiến trúc (`L1-GRAIN-MISMATCH`) / Window Storage trên Dimension (`L2-WINDOW-STORAGE-INVALID`).
-   - **GATE 2 (Group Checkpoint):** Dừng kiểm tra sau mỗi nhóm Micro-Review có lỗi Critical 🔴 hoặc Warning 🟡; chỉ tự động đi tiếp khi 4 Lớp đều PASS (OK).
+   - **GATE 2 (Group Checkpoint):** Dừng kiểm tra sau mỗi nhóm Micro-Review có lỗi Critical 🔴 hoặc Warning 🟡; chỉ tự động đi tiếp khi 4 Lớp đều PASS (OK). **Kèm bộ đếm phiên:** tới Nhóm thứ 6 có thiết kế mới liên tiếp trong cùng phiên (không tính Nhóm chỉ OK/không sửa gì) → DỪNG dù 4 Lớp đều PASS, tóm tắt tiến độ, hỏi human tiếp tục ngay hay mở phiên mới (xem CLAUDE.md — "QUY TẮC CỨNG — NGƯỠNG NGỮ CẢNH CẤP PHIÊN").
    - **GATE 3 (HLD/LLD Parity Gate — Handover Blocking Gate):** Cổng chặn cứng kiểm định tính đồng nhất giữa HLD và LLD trước khi chuyển giao hoặc sinh mã Flat Table: bắt buộc 0 parity mismatch (`check_parity.py --strict`), 0 orphan (`check_orphan.py --strict`), 0 linter violation (Detail Mapping Rule L4, L15, L16), và 0 Date FK violation.
-   - **GATE 4 (Flat Table Delivery Gate):** Cổng kiểm định chất lượng phân phối Flat Table ClickHouse với 5 tiêu chí cốt lõi: Coverage, 1-1 Projection Alignment, Column Drift, Parameter Consistency (`:etl_date`), Common Dimensions Sync (`datamart.cdr_dt_flat`).
+   - **GATE 4 (Flat Table Delivery Gate):** Cổng kiểm định chất lượng phân phối Flat Table ClickHouse với 6 tiêu chí cốt lõi: Coverage, 1-1 Projection Alignment, Column Drift, Parameter Consistency (`:etl_date`), Common Dimensions Sync (`datamart.cdr_dt_flat`).
+   - **GATE 5 (HLD Structure — Bước 5B, 14 mục):** Cổng kiểm cấu trúc HLD sau mọi chỉnh sửa. Chạy `check_hld_5b.py`.
+   - **GATE 6 (Context Budget — trần 500K token/bước):** Chặn khi một bước thiết kế được dự báo vượt trần ngữ cảnh. Chạy `ctx_budget.py --module [M] --all-steps --strict`. Đây là gate **duy nhất đọc tới file BA**.
+   - **GATE 7 (LLD Self-Check module-level — TC4–TC7):** Bốn kiểm tra toàn module trước đây bắt agent nạp cả Detail Mapping (QLKD 552K token × 4 lần). Chạy `lld_selfcheck.py --module [M]`.
    - **LỆNH CẤM:** Nghiêm cấm mọi hành vi tự ý vượt Gate hoặc tuyên bố hoàn thành (Claim Done) khi chưa có lệnh xác nhận từ Human và chưa PASS 100% các công cụ kiểm tra tự động.
+
+---
+
+## QUY TẮC NGỮ CẢNH — TRẦN 500K TOKEN (BẮT BUỘC, ĐỌC TRƯỚC MỌI BƯỚC)
+
+**KHÔNG bao giờ Read trực tiếp 4 nhóm file này** — luôn đi qua lát cắt:
+
+| File | Vì sao | Thay bằng |
+|---|---|---|
+| `BRD/BA/BA_analyst_*.csv` | QLKD 998K token, GSĐC 443K | `ba_slice.py --index` rồi `--nhom N` |
+| `Datamart/hld/DTM_*_HLD.md` | TKNB 163K; bị yêu cầu đọc lại 2 lần/module | `ctx_slice.py --sections` + `--nhom N` |
+| `Datamart/lld/DTM_*_Detail_Mapping.csv` | QLKD 552K; TC4–TC7 cũ nạp lại 4 lần | `ctx_slice.py --nhom N`; kiểm tra bằng `lld_selfcheck.py` |
+| `Datamart/lld/datamart_attributes.csv` | master registry 800KB | `grep`, hoặc file per-table trong `Datamart/lld/{MODULE}/` |
+
+Ghi ngược lại file gốc bằng `apply_patch.py` — **không** Edit tay file lớn, **không** append mù
+(append chỉ đúng khi viết mới, sai khi sửa lại một Nhóm đã có: sinh Nhóm trùng và phá thứ tự TC6).
+
+Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước khi chạy bước nặng:
+
+```bash
+python .claude/skills/datamart-review/scripts/ctx_budget.py --module {MODULE} --all-steps
+```
+
+Ngân sách thực đo (Nhóm nặng nhất của phân hệ nặng nhất, trần 500.000):
+
+| Bước | p50 | Xấu nhất | Phân hệ xấu nhất |
+|---|---:|---:|---|
+| hld-phase1 | ~89K | 174K | TKNB |
+| hld-phase2 | ~56K | 64K | QLKD |
+| lld-phase1 | ~77K | 131K | GSĐC |
+| lld-phase2 | ~92K | **235K** | GSĐC |
+| lld-phase3 | ~68K | 120K | GSĐC |
+| review | ~88K | 88K | — |
+
+Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay bỏ bớt thông tin nghiệp vụ.
 
 ---
 
@@ -29,15 +68,21 @@ triggers:
 
 | Phân Hệ / Tác Vụ Review | Tài Liệu Reference Bắt Buộc | Công Cụ CLI Tự Động Hóa |
 |---|---|---|
-| **Cấu trúc File BA & Dò Delimiter** | `reference/ba_source_profile.md` | `python scripts/datamart_progress_analyzer.py` |
+| **Cấu trúc File BA (đã khai, không dò)** | `system/rules/ba_column_profile.yaml` + `reference/ba_source_profile.md` | `scripts/ba_slice.py --module [M] --index` |
+| **Lát cắt HLD / Detail Mapping theo Nhóm** | mục 1 — QUY TẮC NGỮ CẢNH | `scripts/ctx_slice.py --module [M] --nhom [N]` |
+| **Ngân sách ngữ cảnh 500K** | mục 1 — QUY TẮC NGỮ CẢNH | `scripts/ctx_budget.py --module [M] --all-steps` |
 | **Phân Loại Lỗi & Cây 5 Nhóm PENDING** | `reference/issue_classification.md` | `scripts/datamart_progress_analyzer.py` / `scripts/check_ba_mapping.py` |
 | **Đối Soát Số Lượng KPI 2 Chế Độ** | `reference/kpi_reconciliation_rules.md` | `scripts/datamart_progress_analyzer.py --module [M]` |
 | **Quy Chuẩn Role-Playing Date FK** | `reference/role_playing_date_fk_guide.md` | `python scripts/check_date_fk.py --module [M]` |
 | **Orphan Check 3 Chiều (Nhánh A & B)** | `reference/technical_review_rules.md` (Mục 8) | `python scripts/check_orphan.py --module [M] --strict` |
 | **Bảo Vệ Master Registry & Parity etl_logic** | `reference/technical_review_rules.md` (Mục 9) | `python scripts/check_parity.py --module [M] --strict` |
 | **Quy Tắc Kỹ Thuật Sâu Lớp 1–4 & Gate 4 SQL** | `reference/technical_review_rules.md` | `python scripts/check_flat_table.py --module [M] --strict` |
-| **Bộ Điều Phối Chất Lượng 4 Gate Hợp Nhất** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict]` |
-| **Checklist Đánh Giá Nhanh 4 Lớp & 4 Gates** | `reference/review_checklist.md` | — |
+| **Linter Detail Mapping (L4, L15, L16, L17)** | `reference/technical_review_rules.md` (Mục 8B) | `python scripts/datamart_ba_cross_checker.py --module [M]` |
+| **Bộ Điều Phối Chất Lượng 8 Gate Hợp Nhất** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict]` |
+| **Reference Integrity (Gate 0)** | mục A1–A4 trong `datamart-lld-design/SKILL.md` | `python scripts/check_references.py --module [M] --strict` |
+| **Cấu trúc HLD Bước 5B (Gate 5)** | Bước 5B trong `datamart-hld-design/SKILL.md` | `python scripts/check_hld_5b.py --module [M]` |
+| **LLD Self-Check TC4–TC7 (Gate 7)** | TC4/TC5/TC6/TC7 trong `datamart-lld-design/SKILL.md` | `python scripts/lld_selfcheck.py --module [M]` |
+| **Checklist Đánh Giá Nhanh 4 Lớp & 8 Gates** | `reference/review_checklist.md` | — |
 
 ---
 
@@ -57,7 +102,7 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
 
 ---
 
-## 4. QUY TRÌNH ĐIỀU PHỐI TỔNG THỂ & GATE CONTROL (3 GIAI ĐOẠN — 4 GATES)
+## 4. QUY TRÌNH ĐIỀU PHỐI TỔNG THỂ & GATE CONTROL (3 GIAI ĐOẠN — 8 GATES)
 
 ```
 [Giai đoạn 1: MACRO-AUDIT (Toàn Module)]
@@ -67,13 +112,15 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
            - Quét Date FK: python scripts/check_date_fk.py --module [M]
            - Quét Orphan 3 Chiều: python scripts/check_orphan.py --module [M] --strict
            - Quét etl_logic Parity: python scripts/check_parity.py --module [M] --strict
-           + 13 mục HLD + 10 TC LLD + Quét Delete/Retired + Quét Grain Kiến trúc (L1) & Window Storage (L2)
+           - Bước 5B cấu trúc HLD 14 mục: python scripts/check_hld_5b.py --module [M]
+           - Reference Integrity: python scripts/check_references.py --module [M] --strict
+           + 14 mục HLD + 10 TC LLD + Quét Delete/Retired + Quét Grain Kiến trúc (L1) & Window Storage (L2)
   └── ⛔ GATE 1 (SANITY STOP): DỪNG, xuất báo cáo tổng thể, CHẶN CỨNG nếu có Orphan, Parity Mismatch, Date FK,
         Delete sót, Grain Mismatch kiến trúc (L1), hoặc Window Storage sai trên SCD4A (L2), chờ Human phê duyệt kế hoạch.
         ↓ (Human duyệt thông qua)
 [Giai đoạn 2: MICRO-REVIEW (Tuần Tự Từng Nhóm)]
   Vòng lặp Nhóm 1 → N:
-    Bước 1: Đọc BA nhóm N theo reference/ba_source_profile.md (dò delimiter động, đọc dòng header index 1)
+    Bước 1: Đọc BA nhóm N qua lát cắt — scripts/ba_slice.py --module [M] --nhom [N] --print
     Bước 2: Review 4 Lớp Kỹ Thuật Chuẩn:
       - Lớp 1: HLD Alignment (Coverage 2 chiều, Iso-Grain Rule L1-GRAIN-MISMATCH, Bảng 7 cột, Temporal SQL)
       - Lớp 2: Attributes Verification (Atomic YAML thật, SCD4A, Flatten, Role-Playing Date FK, Parity Master Sync,
@@ -86,6 +133,8 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
           * OK ➔ Tự động in "✅ Nhóm N — OK" và sang Nhóm N+1.
           * Info 🔵 ➔ Ghi nhận vào Backlog, tiếp tục sang Nhóm N+1.
           * Critical 🔴 / Warning 🟡 ➔ DỪNG hỏi human: (a) Sửa ngay qua skill con, (b) Ghi nhận, (c) Dừng.
+          * Đã xử lý ≥6 Nhóm có thiết kế mới liên tiếp trong phiên hiện tại ➔ DỪNG dù PASS, báo tiến độ,
+            hỏi human tiếp tục ngay hay mở phiên mới.
         ↓ (Hoàn tất toàn bộ nhóm)
 [Giai đoạn 3: TỔNG HỢP & BÀN GIAO]
   Bước 3: Xuất Bảng Tổng hợp Scorecard & Action Items theo Kịch bản A-E.
@@ -185,9 +234,12 @@ Khi người dùng yêu cầu điều tra một lỗi cụ thể (sai số liệ
 ## 7. GIAI ĐOẠN 2: BƯỚC 1 & 2 — MICRO-REVIEW CHI TIẾT TỪNG NHÓM (4 LỚP CHUẨN)
 
 ### Bước 1: Đọc BA Nhóm N
-- **TUYỆT ĐỐI KHÔNG gán cứng delimiter=';' hay delimiter=','** khi đọc file BA. Bắt buộc dùng hàm dò delimiter động `detect_delimiter_and_header()`.
-- Header nằm ở **dòng 1 với TOÀN BỘ 11 file hiện hành** (0-indexed: index 1). Dòng 0 là tiêu đề merge Excel.
-- Đọc file BA theo quy chuẩn `reference/ba_source_profile.md`. Lọc bỏ các chỉ tiêu Delete.
+- **KHÔNG Read thẳng file BA và KHÔNG dò delimiter nữa.** Dùng `python .claude/skills/datamart-review/scripts/ba_slice.py --module [M] --nhom [N] --print`.
+- Delimiter / dòng header / cột STT của cả 11 phân hệ đã khai và kiểm chứng trong
+  `system/rules/ba_column_profile.yaml`: header ở **index 1** với toàn bộ 11 file (dòng 0 là banner merge Excel),
+  **dòng legend ở index 2 phải bỏ**, ba phân hệ dùng `;` (FMS, TT, VP), và VP đặt tên cột số thứ tự là `TT`.
+  File BA lệch với profile → script dừng và báo lỗi, KHÔNG đoán tiếp.
+- Lát cắt đã lọc sẵn chỉ tiêu Delete.
 
 ### Bước 2: Kiểm Định Chi Tiết 4 Lớp Kỹ Thuật Chuẩn
 
@@ -208,18 +260,19 @@ Khi người dùng yêu cầu điều tra một lỗi cụ thể (sai số liệ
   8. *Kiểm định Lưu trữ Chuỗi Thời Gian (`L2-WINDOW-STORAGE-INVALID`):* Mọi trường dữ liệu đo lường phục vụ Window Function lịch sử (giá đóng cửa `close_price`, khối lượng...) bắt buộc phải được lưu trữ trên Fact Periodic Snapshot (`fct_*_snpst`) theo từng ngày giao dịch. CẤM TUYỆT ĐỐI trỏ Window Function vào Dimension SCD4A current-state (như `security_trading_snpst_dim` chỉ có 1 bản ghi hiện tại).
 
 #### 🔹 Lớp 3: Detail Mapping Verification (Datamart ➔ Báo Cáo)
-- 📌 **Deterministic Trigger:** Trước khi đánh giá Lớp 3, BẮT BUỘC dùng tool `view_file` đọc `reference/technical_review_rules.md` (đặc biệt Mục 10, 11, 12).
+- 📌 **Deterministic Trigger:** Trước khi đánh giá Lớp 3, BẮT BUỘC dùng tool `view_file` đọc `reference/technical_review_rules.md` (đặc biệt Mục 8B, 10, 11, 12).
 - ⚓ **Anchor Summaries (Quy tắc sống còn):**
-  1. *Trace logic BA:* Đọc full câu lệnh SQL và ghi chú của BA để chuyển hóa trọn vẹn vào `logic`.
+  1. *Trace logic BA:* Đọc full câu lệnh SQL, điều kiện chung và ghi chú của BA để chuyển hóa trọn vẹn vào `logic`.
   2. *Quy tắc L4 đối với dòng PENDING (`L3-PENDING-RULE-L4-VIOLATION`):* Mọi dòng PENDING (cả nhóm PENDING lẫn KPI PENDING đơn lẻ) bắt buộc để trống tuyệt đối cả 4 cột: `mart_table`, `mart_column`, `column_role`, `logic`. Blocker ghi tại `ghi_chu` theo cú pháp `Pending - [Nhóm 1-5]: ...`.
   3. *Quy tắc L15 đối với dòng REUSE (`L3-REUSE-INVALID`):* Phân biệt dứt khoát: Case 1 (Measure vật lý có sẵn) $\implies$ điền đủ `mart_table` và `mart_column`; Case 2 (Chỉ tiêu BI phái sinh) $\implies$ để trống `mart_table`/`mart_column`, `column_role = 'DERIVED'`.
   4. *Quy tắc L16 phân định DEPRECATED vs PENDING (`L3-DEPRECATED-AS-PENDING`):* Chỉ tiêu đã thống nhất bãi bỏ với BA bắt buộc đặt `column_role = 'DEPRECATED'`, để trống 2 cột mart, `logic = 'Đã loại bỏ — không tạo cột/slicer'`, ghi rõ căn cứ tại `ghi_chu`. Cấm đánh tráo thành PENDING.
-  5. *Inline DERIVED:* Cột phái sinh bắt buộc inline toàn bộ công thức tính toán từ Atomic/Mart, **cấm tham chiếu mã KPI_ID khác** (như `K_01 + K_02`).
-  6. *Trace cột LLD:* Cột `mart_table` và `mart_column` phải tồn tại thực tế và khớp 1-1 với Attributes.
-  7. *Cú pháp JOIN Date FK:* Truy vấn Detail Mapping kết nối sang Dimension ngày theo khóa surrogate key: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = <fact>.<role>_dt_dim_id`.
-  8. *Formula Grain & Group By Verification (`L3-GRAIN-MISMATCH`):* Đọc mockup "1 dòng kết quả = 1 đối tượng gì"; đối chiếu danh sách cột trong mệnh đề `GROUP BY` / `PARTITION BY` trong `logic` bắt buộc khớp đúng khóa định danh đối tượng đó. Cấm tuyệt đối copy công thức từ nhóm khác lệch grain (điển hình case `K_GSTT_61` copy vốn hóa Index `idx_market_cap` sang Top-N mã CK).
-  9. *Chuẩn hóa Window Functions & Time Horizon (`L3-FORMULA-WINDOW-MISMATCH`):* Đếm số phiên giao dịch chuẩn (52W = 260 phiên `ROWS BETWEEN 259 PRECEDING AND CURRENT ROW`, 6M = 130 phiên, 3M = 65 phiên, 1M = 20 phiên); CẤM dùng `INTERVAL` ngày lịch; Phân định chuẩn `close_price` (báo cáo định giá/BM021_MSS) vs `high_price`/`low_price` (intraday nến kỹ thuật); Bắt buộc đủ `PARTITION BY <entity_id>` và `ORDER BY <date_col> ASC` (tránh lẫn chuỗi giá nhiều mã).
-  10. *Nhất quán Chu kỳ Tỷ số Tài chính (`L3-FINANCIAL-PERIOD-INCONSISTENT`):* Tử số và mẫu số cùng một hệ quy chiếu thời gian (TTM 4 quý vs 1 quý quy năm cho P/E, P/B, EPS, BVPS, ROE, ROA); CẤM TUYỆT ĐỐI `SUM(owner_equity)` hoặc `SUM(total_assets)` qua 4 quý trong mẫu số; bắt buộc trả về `NULL` khi thiếu bất kỳ quý BCTC nào của chuỗi TTM.
+  5. *Quy tắc L17 Bám sát Câu lệnh tham khảo & Điều kiện chung BA (`L3-REFERENCE-SQL-MISALIGNMENT`):* Bắt buộc bóc tách 4 thành phần SQL tham khảo của BA: (a) SELECT: khớp đúng số đo (khớp lệnh thuần `total_matched_vol/val` vs thỏa thuận `total_negotiated_vol/val` vs gộp tổng `total_vol/val`; mua vs bán vs ròng `foreign_net_vol`); (b) WHERE: toàn bộ điều kiện lọc tĩnh (sàn `FloorCode`, loại CK `StockType`, loại bảng lệnh `Board Type`, cờ hiệu lực, loại NĐT) phải sinh thành dòng `column_role = FILTER` tương ứng HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact; (c) FROM/JOIN: đủ Dimension và FK liên kết; (d) GROUP BY/Window: đúng grain hiển thị và công thức cửa sổ rolling.
+  6. *Inline DERIVED:* Cột phái sinh bắt buộc inline toàn bộ công thức tính toán từ Atomic/Mart, **cấm tham chiếu mã KPI_ID khác** (như `K_01 + K_02`).
+  7. *Trace cột LLD:* Cột `mart_table` và `mart_column` phải tồn tại thực tế và khớp 1-1 với Attributes.
+  8. *Cú pháp JOIN Date FK:* Truy vấn Detail Mapping kết nối sang Dimension ngày theo khóa surrogate key: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = <fact>.<role>_dt_dim_id`.
+  9. *Formula Grain & Group By Verification (`L3-GRAIN-MISMATCH`):* Đọc mockup "1 dòng kết quả = 1 đối tượng gì"; đối chiếu danh sách cột trong mệnh đề `GROUP BY` / `PARTITION BY` trong `logic` bắt buộc khớp đúng khóa định danh đối tượng đó. Cấm tuyệt đối copy công thức từ nhóm khác lệch grain (điển hình case `K_GSTT_61` copy vốn hóa Index `idx_market_cap` sang Top-N mã CK).
+  10. *Chuẩn hóa Window Functions & Time Horizon (`L3-FORMULA-WINDOW-MISMATCH`):* Đếm số phiên giao dịch chuẩn (52W = 260 phiên `ROWS BETWEEN 259 PRECEDING AND CURRENT ROW`, 6M = 130 phiên, 3M = 65 phiên, 1M = 20 phiên); CẤM dùng `INTERVAL` ngày lịch; Phân định chuẩn `close_price` (báo cáo định giá/BM021_MSS) vs `high_price`/`low_price` (intraday nến kỹ thuật); Bắt buộc đủ `PARTITION BY <entity_id>` và `ORDER BY <date_col> ASC` (tránh lẫn chuỗi giá nhiều mã).
+  11. *Nhất quán Chu kỳ Tỷ số Tài chính (`L3-FINANCIAL-PERIOD-INCONSISTENT`):* Tử số và mẫu số cùng một hệ quy chiếu thời gian (TTM 4 quý vs 1 quý quy năm cho P/E, P/B, EPS, BVPS, ROE, ROA); CẤM TUYỆT ĐỐI `SUM(owner_equity)` hoặc `SUM(total_assets)` qua 4 quý trong mẫu số; bắt buộc trả về `NULL` khi thiếu bất kỳ quý BCTC nào của chuỗi TTM.
 
 #### 🔹 Lớp 4: Model Registry (datamart_model.yaml), Master Registry & Flat Tables
 - ⚓ **Anchor Summaries (Quy tắc sống còn):**
@@ -234,7 +287,7 @@ Khi người dùng yêu cầu điều tra một lỗi cụ thể (sai số liệ
 > ⛔ **GATE 2 (GROUP CHECKPOINT):**  
 > - 4 Lớp = OK ➔ In "✅ Nhóm N — OK", tự động chuyển sang Nhóm N+1.  
 > - Lỗi Info 🔵 ➔ Ghi vào Backlog tạm, không dừng, tiếp tục Nhóm N+1.  
-> - Lỗi Critical 🔴 / Warning 🟡 ➔ DỪNG hỏi human: (a) Sửa ngay qua skill con, (b) Ghi nhận vào Backlog và đi tiếp, (c) Dừng review. (Bao gồm các vi phạm Critical: `L1/L3-GRAIN-MISMATCH`, `L2-WINDOW-STORAGE-INVALID`, `L3-FORMULA-WINDOW-MISMATCH`, `L3-FINANCIAL-PERIOD-INCONSISTENT`, `L3-PENDING-RULE-L4-VIOLATION`, `L3-REUSE-INVALID`, `L3-DEPRECATED-AS-PENDING`).
+> - Lỗi Critical 🔴 / Warning 🟡 ➔ DỪNG hỏi human: (a) Sửa ngay qua skill con, (b) Ghi nhận vào Backlog và đi tiếp, (c) Dừng review. (Bao gồm các vi phạm Critical: `L1/L3-GRAIN-MISMATCH`, `L2-WINDOW-STORAGE-INVALID`, `L3-FORMULA-WINDOW-MISMATCH`, `L3-FINANCIAL-PERIOD-INCONSISTENT`, `L3-PENDING-RULE-L4-VIOLATION`, `L3-REUSE-INVALID`, `L3-DEPRECATED-AS-PENDING`, `L3-REFERENCE-SQL-MISALIGNMENT`).
 
 ---
 
@@ -269,7 +322,10 @@ Bất kể Kịch bản C được thực hiện qua lời gọi `datamart-lld-d
    - **Nhánh A (Bảng còn giá trị / có ≥1 KPI READY):** Hoàn tất Phase 2 Entities và Phase 3 Flat Table SQL DDL/DML, **TUYỆT ĐỐI KHÔNG ĐƯỢC XÓA**.
    - **Nhánh B (Bảng đã bị hủy / 0 KPI READY):** Kích hoạt All-Tier Cleanup Protocol 5 bước dọn dẹp sạch cả 5 tầng.
 3. **Detail Mapping Linter Check:**
-   Xác nhận 0 vi phạm Quy tắc L4 (PENDING để trống 4 cột kỹ thuật), Quy tắc L15 (REUSE Case 1 vs Case 2), và Quy tắc L16 (DEPRECATED phân định rõ ràng).
+   Xác nhận 0 vi phạm Quy tắc L4 (PENDING để trống 4 cột kỹ thuật), Quy tắc L15 (REUSE Case 1 vs Case 2), Quy tắc L16 (DEPRECATED phân định rõ ràng), và Quy tắc L17 (Reference SQL alignment — không lệch số đo, không thiếu FILTER). Chạy CLI:
+   ```bash
+   python scripts/datamart_ba_cross_checker.py --module [MODULE]
+   ```
 4. **Role-Playing Date FK Verification:**
    ```bash
    python scripts/check_date_fk.py --module [MODULE]
@@ -300,11 +356,12 @@ Hoặc chạy runner hợp nhất:
 python scripts/run_quality_gates.py --module [MODULE] --strict
 ```
 
-#### 5 Tiêu Chí Nghiệm Thu Gate 4:
+#### 6 Tiêu Chí Nghiệm Thu Gate 4:
 1. **Flat Table Column Coverage Check (`L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING`):** 100% cột Fact/Operational và thuộc tính nghiệp vụ của Dim joined có mặt trong DDL `01_create_*.sql`.
 2. **1-1 Projection Alignment Check (`L4-FLAT-TABLE-PROJECTION-MISALIGNMENT`):** Khớp 1-1 chính xác tuyệt đối số lượng, thứ tự 3 khối cột (Fact ➔ Date ➔ Dim) và alias giữa `CREATE TABLE` trong file `01` và `SELECT` trong file `02`.
 3. **Column Drift Check (`L4-FLAT-TABLE-COLUMN-DRIFT`):** 0 cột thừa trong Flat Table SQL; không bỏ sót cột Fact có KPI khai thác trong Detail Mapping; 100% cột Fact có trong master `datamart_attributes.csv`.
 4. **Parameter Consistency Check (`L4-FLAT-TABLE-PARAMETER-INCONSISTENT`):** 100% mệnh đề lọc ngày chạy ETL trong `02_populate_*.sql` dùng biến tham số chuẩn duy nhất `:etl_date`.
 5. **Common Dimensions ClickHouse Sync Check (`L4-COMMON-DIM-CLICKHOUSE-MISSING`):** Kiểm tra sự hiện diện và tính đầy đủ của bảng phẳng chiều dùng chung `datamart.cdr_dt_flat` (nguồn `datamart.cdr_dt_dim`) tại `Datamart/flat-table/Common/` với đầy đủ 9 trường thuộc tính kể cả cờ `is_trading_date` phục vụ lọc ngày giao dịch và đếm phiên lookback trên ClickHouse.
+6. **Source Column Existence Check (`L4-FLAT-TABLE-COLUMN-NOT-IN-LLD`):** Mọi tham chiếu `<alias>.<cột>` trong `02_populate_*.sql` phải tồn tại ở bảng nguồn tương ứng (phân giải alias qua `FROM`/`JOIN`, đối chiếu master registry). **[MỚI 2026-09-18]** Bổ sung sau ca NDTNN: `SELECT f.account_holder_nm` từ `foreign_investor_trading_detail_rpt` trong khi bảng đó không có cột này — Gate 4 vẫn PASS vì tiêu chí 1 chỉ soi chiều LLD → DDL, còn cột bịa trong DDL/DML thì không ai kiểm; script chỉ vỡ khi chạy thật. Cố ý KHÔNG kiểm "mọi cột DDL phải có trong LLD bảng gốc" — DDL hợp lệ có cột lấy từ Dimension qua JOIN.
 
-> 🚫 **LỆNH CẤM:** Nghiêm cấm mọi hành vi bỏ qua Gate 4 hoặc phê duyệt bàn giao khi Flat Table SQL chưa được đồng bộ đạt 100% cả 5 tiêu chí trên!
+> 🚫 **LỆNH CẤM:** Nghiêm cấm mọi hành vi bỏ qua Gate 4 hoặc phê duyệt bàn giao khi Flat Table SQL chưa được đồng bộ đạt 100% cả 6 tiêu chí trên!

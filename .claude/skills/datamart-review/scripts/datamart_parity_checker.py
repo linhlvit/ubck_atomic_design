@@ -127,6 +127,55 @@ def print_console_summary(result: ParityCheckResult, generate_fix: bool = False,
     print(f"{'='*70}\n")
 
 
+DEFAULT_BASELINE_DIR = "Datamart/context/.gate_baseline"
+
+
+def _default_baseline_path(root: Path, module: str) -> Path:
+    return root / DEFAULT_BASELINE_DIR / f"parity_{module}.json"
+
+
+def _parity_issue_keys(result: ParityCheckResult) -> set:
+    """Khóa ổn định để so sánh giữa 2 lần chạy — dùng cho --baseline."""
+    keys = set()
+    for m in result.missing_in_master:
+        keys.add(f"missing_master|{m['table_name']}.{m['column_name']}")
+    for m in result.missing_in_module:
+        keys.add(f"missing_module|{m['table_name']}.{m['column_name']}")
+    for m in result.logic_mismatches:
+        keys.add(f"logic_mismatch|{m['table_name']}.{m['column_name']}")
+    for m in result.extended_mismatches:
+        keys.add(f"extended_mismatch|{m['table_name']}.{m['column_name']}|{m.get('field', '')}")
+    return keys
+
+
+def print_console_delta(result: ParityCheckResult, baseline_keys: set) -> None:
+    """In DELTA so với baseline thay vì lặp lại toàn bộ danh sách discrepancy mỗi lần."""
+    cur_keys = _parity_issue_keys(result)
+    new_keys = sorted(cur_keys - baseline_keys)
+    resolved_keys = sorted(baseline_keys - cur_keys)
+    unchanged = len(cur_keys & baseline_keys)
+
+    status_color = "[PASS]" if result.status == "PASS" else "[FAIL]"
+    print(f"\n{'='*70}")
+    print(f" Datamart ETL Logic & Attribute Parity Audit: {result.module} {status_color} (DELTA vs baseline)")
+    print(f"{'='*70}")
+    print(f"  Không đổi so với baseline: {unchanged}   Mới phát sinh: {len(new_keys)}   Đã hết: {len(resolved_keys)}")
+
+    if new_keys:
+        print(f"\n  Discrepancy MỚI phát sinh ({len(new_keys)}):")
+        for idx, k in enumerate(new_keys, 1):
+            print(f"  {idx}. {k}")
+
+    if resolved_keys:
+        print(f"\n  Discrepancy ĐÃ HẾT so với baseline ({len(resolved_keys)}):")
+        for idx, k in enumerate(resolved_keys, 1):
+            print(f"  {idx}. {k}")
+
+    if not new_keys and not resolved_keys:
+        print("\n  ⓘ Không có thay đổi nào so với baseline.")
+    print(f"{'='*70}\n")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Datamart Attribute & ETL Logic Parity Checker (Module Attributes ↔ Master Registry)",
@@ -193,6 +242,18 @@ def main() -> None:
         action="store_true",
         help="Verbose diagnostic logging with full expressions",
     )
+    parser.add_argument(
+        "--baseline", nargs="?", const="__default__", default=None,
+        help="So sánh với snapshot lần chạy trước, chỉ in DELTA (mới/đã hết) thay vì lặp lại "
+             "toàn bộ danh sách discrepancy — dùng cho các lần chạy LẶP LẠI trong cùng 1 phiên "
+             "marathon nhiều Nhóm. Bỏ trống giá trị để dùng đường dẫn mặc định theo module. "
+             "Không áp dụng khi --module all hoặc --json.",
+    )
+    parser.add_argument(
+        "--save-baseline", nargs="?", const="__default__", default=None,
+        help="Ghi snapshot discrepancy hiện tại làm baseline cho lần sau. Thường dùng 1 lần đầu "
+             "phiên: --save-baseline, các lần sau: --baseline.",
+    )
 
     args = parser.parse_args()
 
@@ -237,7 +298,26 @@ def main() -> None:
         else:
             print(json_output)
     else:
-        print_console_summary(result, generate_fix=args.generate_fix, verbose=args.verbose)
+        baseline_path = None
+        if args.baseline is not None and result.module.lower() != "all":
+            baseline_path = (Path(args.baseline) if args.baseline != "__default__"
+                              else _default_baseline_path(root, result.module))
+        if baseline_path is not None and baseline_path.is_file():
+            baseline_keys = set(json.loads(baseline_path.read_text(encoding="utf-8")))
+            print_console_delta(result, baseline_keys)
+        else:
+            if baseline_path is not None:
+                print(f"ⓘ Không thấy baseline tại {baseline_path} — in đầy đủ lần này, "
+                      f"dùng --save-baseline để tạo snapshot cho lần sau.\n")
+            print_console_summary(result, generate_fix=args.generate_fix, verbose=args.verbose)
+
+        if args.save_baseline is not None and result.module.lower() != "all":
+            save_path = (Path(args.save_baseline) if args.save_baseline != "__default__"
+                          else _default_baseline_path(root, result.module))
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            save_path.write_text(json.dumps(sorted(_parity_issue_keys(result)),
+                                             ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"💾 Đã lưu baseline: {save_path} ({len(_parity_issue_keys(result))} discrepancy)\n")
 
         if args.output:
             md_report = generate_parity_markdown_report(result)

@@ -65,6 +65,16 @@ SELECT
     f.net_flow_foreign_average_30_days,
     f.net_flow_proprietary_average_30_days,
     f.net_flow_correlation_foreign_proprietary,
+    f.total_margin_limit_amt,
+    f.margin_balance_delta,
+    f.margin_stress,
+    f.margin_stress_status,
+    f.corr_index_interbank_rate,
+    f.corr_index_dxy,
+    f.total_market_cap_vsdc,
+    f.total_market_cap_vsdc_average_n_days,
+    f.turnover_velocity_index,
+    f.turnover_velocity_status,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt
 FROM datamart.fct_market_risk_snpst f
@@ -107,6 +117,13 @@ SELECT
     f.snpst_dt_dim_id,
     f.industry_dim_id,
     f.total_val_sector,
+    f.total_market_cap_sector,
+    f.stress_score_sector,
+    f.sector_liquid_score,
+    f.stress_score_sector_previous_day,
+    f.sector_stress_delta,
+    f.sector_rating,
+    f.sector_debt_score,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt,
 
@@ -117,6 +134,24 @@ JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.industry_dim sd
     ON sd.industry_dim_id = f.industry_dim_id
+;
+
+
+-- ============================================================
+-- 3b. FACT: pttt_fct_cap_grp_snpst_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.pttt_fct_cap_grp_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.pttt_fct_cap_grp_snpst_flat
+SELECT
+    f.snpst_dt_dim_id,
+    f.cap_group_code,
+    f.total_trading_val,
+    f.liquidity_share_ratio,
+
+    snpst_cal.cdr_dt AS snpst_cdr_dt
+FROM datamart.fct_cap_grp_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 ;
 
 
@@ -335,6 +370,50 @@ SELECT
     o.outstanding_vol,
     o.audit_opinion_text,
     o.ranking_code,
-    o.risk_rating_text
+    o.risk_rating_text,
+    o.total_liabilities_amt,
+    o.owner_equity_ending_amt,
+    o.owner_equity_beginning_amt,
+    o.owner_equity_average_amt,
+    o.net_profit_after_tax_amt,
+    o.debt_to_equity_ratio,
+    o.roe_pct
 FROM datamart.opr_corporate_bond_issuer_credit_monitor o
+;
+
+
+-- ============================================================
+-- 14. FACT: pttt_fct_macro_indicator_snpst_flat
+-- ============================================================
+DELETE FROM datamart.pttt_fct_macro_indicator_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.pttt_fct_macro_indicator_snpst_flat
+SELECT
+    -- From: FCT_MACRO_INDICATOR_SNPST
+    f.snpst_dt_dim_id,
+    f.macro_indicator_code,
+    f.macro_indicator_name,
+    f.period_tp_code,
+    f.period_label,
+    f.indicator_val,
+    f.prev_period_val,
+    f.pct_change,
+    f.yoy_pct_change,
+    f.ma_n_val,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_macro_indicator_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+WHERE cal.cdr_dt = :etl_date
 ;

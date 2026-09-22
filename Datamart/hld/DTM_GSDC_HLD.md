@@ -3114,6 +3114,7 @@ erDiagram
         int Remaining_Foreign_Holding_Quantity
         int State_Owned_Share_Quantity
         float State_Ownership_Ratio_Percentage
+        float Foreign_Holding_Value
     }
     Public_Company_Dimension {
         int Public_Company_Dimension_Id PK
@@ -3134,6 +3135,7 @@ erDiagram
 ```
 
 > **Ghi chú:** `Public_Company_Dimension`/`Calendar_Date_Dimension` reuse — chỉ liệt kê field liên quan Nhóm này (Dimension đầy đủ vẽ ở Cụm 1/6). `State_Owned_Share_Quantity`/`State_Ownership_Ratio_Percentage` (K_GSDC_1389/1390) — nguồn `pc_state_capital`, join bridge qua `Public Company` (`equity_ticker_symbol` → `pc_code`), không vẽ riêng trong erDiagram vì `Public Company State Capital` không phải Dimension/Fact reuse trực tiếp mà chỉ là nguồn `join_atomic` — xem chi tiết ETL logic tại Attributes LLD.
+> **[MỚI 2026-09-18, cross-module reuse]** `Foreign_Holding_Value` — bổ sung theo yêu cầu module **NDTNN** (K_NDTNN_51, Nhóm 8 "Phân ngành của NĐTNN") — `Current Foreign Holding Quantity × giá đóng cửa gần nhất ≤ ngày snapshot` (JOIN thêm `security_trading_snapshot`, MDDS). Không đổi grain/measure hiện có của GSDC — xem `Datamart/lld/GSDC/DTM_GSDC_fct_public_company_listing_info_snpst.csv`.
 
 **Lineage Mart → Báo cáo:**
 
@@ -3718,7 +3720,7 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | Fact Public Company Issuance Score Snapshot | fct_public_company_issuance_score_snpst | new | Fact mới cho Nhóm 3 (MH1 Tab Phát hành) — nguồn Atomic draft |
 | Fact Public Company Financial Score Snapshot | fct_public_company_financial_score_snpst | new | Fact mới cho Nhóm 4 (MH1 Tab Tài chính) — nguồn Atomic draft |
 | Fact Public Company Non-Financial Score Snapshot | fct_public_company_nonfinancial_score_snpst | new | Fact mới cho Nhóm 5 (MH1 Tab Phi TC & M-Score) — nguồn Atomic draft |
-| Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | new | **[SỬA 2026-09-07]** READY (10/10 KPI) — nguồn `listed_security_info_snapshot`/`foreign_ownership_info_snapshot` (VSDC, mới bổ sung Atomic) cho K_GSDC_1381-1388, Kịch bản A PENDING→READY. K_GSDC_1389/1390 (`pc_state_capital`) chuyển READY sau khi bổ sung field `ds_snpst_dt` (Kịch bản D — gap-note trước đó sai, xem Cụm 15). Xem Cụm 15 (Section 1), Nhóm 31 (Section 2) |
+| Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | new | **[SỬA 2026-09-07]** READY (10/10 KPI) — nguồn `listed_security_info_snapshot`/`foreign_ownership_info_snapshot` (VSDC, mới bổ sung Atomic) cho K_GSDC_1381-1388, Kịch bản A PENDING→READY. K_GSDC_1389/1390 (`pc_state_capital`) chuyển READY sau khi bổ sung field `ds_snpst_dt` (Kịch bản D — gap-note trước đó sai, xem Cụm 15). Xem Cụm 15 (Section 1), Nhóm 31 (Section 2). **[SỬA 2026-09-18, cross-module reuse NDTNN]** Bổ sung cột `Foreign Holding Value` (join thêm `security_trading_snapshot`) phục vụ K_NDTNN_51 (module NDTNN, Nhóm 8) — `modules_using` nay gồm cả GSDC và NDTNN. Không đổi grain/measure hiện có |
 | Public Company Dimension | public_company_dim | reuse | Dùng chung toàn bộ Nhóm 1–37 (MH1/MH2/MH3) — 1 Dimension duy nhất cho toàn module (không dùng cho Nhóm 38-41 nữa — xem 4 dòng Fact-report bên dưới) |
 | Calendar Date Dimension | cdr_dt_dim | reuse | Dimension Conformed dùng chung toàn hệ thống Lakehouse, không chỉ riêng GSDC |
 | Fact Violation Report Snapshot | fct_violation_rpt_snpst | new | Mới 2026-08-06, sửa table_type Operational → Fact + đổi tên thêm hậu tố Snapshot 2026-08-07 (grain 1 row/công ty/kỳ/ngày ETL snapshot, FK Calendar Date Dimension) — nguồn `violation_report`/IDS.VIOLATION_REPORT (draft), phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16). Sửa 2026-08-15: bỏ cột `Profitable_Indicator` (K_GSDC_49 chuyển sang dùng `Fact Public Company Financial Report Value`, xem dòng trên) — lý do: kỳ join `fr_value` trước đó bắc cầu sai qua `violation_report.period_year`, 2 bảng nguồn độc lập không đảm bảo khớp kỳ. |
