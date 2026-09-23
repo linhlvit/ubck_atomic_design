@@ -256,6 +256,43 @@ Ghi lại bằng `yaml.dump()` xoá sạch comment và reformat 100% file (diff 
   và kiểm `grep -c '^#'` vẫn còn đủ dòng comment.
 - `source_atomic_table`/`source_atomic_column` là **chuỗi**, không phải list — `"['x']"` là lỗi serialize.
 
+### A10 — Ghi chú "đã lọc sẵn tại ETL" phải trích được `etl_logic` thật `[L3-REFERENCE-SQL-MISALIGNMENT]`
+
+Quy tắc L17 cho phép thay dòng FILTER bằng ghi chú *"đã lọc sẵn tại ETL Fact"*, nhưng chỉ khi điều
+kiện đó **thực sự có trong `etl_logic`** của Fact. Trước khi viết ghi chú này, grep đúng điều kiện
+trong file Attributes:
+
+```bash
+grep -n "stock_tp_code\|floor_code" Datamart/lld/{MODULE}/DTM_{MODULE}_{fact}.csv
+```
+
+Nếu không grep thấy, phải đưa điều kiện vào `logic` của dòng SLICER/MEASURE, hoặc tạo dòng FILTER.
+Thực tế đã sai: GSTT Nhóm 29 ghi `FloorCode IN ('10','02','04')`, `StockType NOT IN ('B','1','BO','D')`
+là "đã lọc sẵn tại ETL `fct_investor_category_trading_snpst`", nhưng ETL của Fact đó chỉ lọc
+`market_id_code`.
+
+Cùng tinh thần H7 bên skill HLD: khóa JOIN giữa 2 entity nguồn (VD `market_code = index_code`) trong
+`etl_logic` phải có bằng chứng từ SQL tham khảo BA hoặc tài liệu cột nguồn. Không chép từ ghi chú
+"đã xác nhận" của lượt trước.
+
+### A11 — Kiểm toàn vẹn Detail Mapping TRƯỚC khi sửa `[L0-DM-FILE-INTEGRITY]`
+
+Detail Mapping là file lớn, nhiều người cùng sửa. Thực tế đã xảy ra 2 lần trong 1 ngày:
+1. Commit của module khác (`1b7b7011`, TKNB) cắt `DTM_GSTT_Detail_Mapping.csv` từ 577 xuống 101 dòng.
+2. File bị xóa khỏi working copy giữa phiên.
+
+Đầu mỗi phiên sửa LLD, và ngay trước mỗi `apply_patch.py --target dm`, chạy:
+
+```bash
+python .claude/skills/datamart-review/scripts/ba_hld_sync_check.py --module {MODULE} --nhom {N}
+```
+
+Mục S1 dừng hẳn nếu file không tồn tại, nếu working copy ít hơn 80% số dòng của HEAD, hoặc nếu HEAD
+ít hơn 80% số dòng của HEAD~1. Cách khôi phục:
+- Lấy bản mới nhất trong `Datamart/context/.backup/` hoặc từ `git show HEAD~1:...`.
+- Áp lại các patch đã ghi sau bản sao lưu đó, rồi mới làm tiếp.
+- Nếu file bị xóa mà không rõ lý do, **hỏi human trước khi khôi phục**, vì có thể họ xóa có chủ ý.
+
 ---
 
 ## QUY TRÌNH (BẮT BUỘC)
@@ -1204,6 +1241,7 @@ BƯỚC 0 — TODO LIST TOÀN MODULE (bắt buộc, chạy 1 lần trước khi 
   bảng này để xác định "Nhóm cuối" thay vì suy đoán theo Plan Phase 0
 
 PRE-CHECK (trước khi sinh — bắt buộc, chỉ cho KPI của nhóm đang xử lý):
+□ Chạy `ba_hld_sync_check.py --module {MODULE} --nhom {N}` (A11 + H6–H9): S1 file nguyên vẹn, S2/S3 số Nhóm khớp STT BA và không có STT dùng chung, S4 từng dòng BA có KPI, S5 loại measure GT/KL khớp Trường nguồn
 □ Cross-check BA ↔ HLD: mọi dòng Done/Doing/Pending (kể cả Chiều) của nhóm N đều có KPI_ID trong HLD
 □ Lọc bỏ 100% dòng BA có Trạng thái mapping là Delete / DELETED / Xóa — KHÔNG map, KHÔNG sinh dòng Detail Mapping
 □ Nếu dòng BA nào (hợp lệ, không phải Delete) chưa có KPI_ID → DỪNG, báo cáo danh sách gap → ❌ KHÔNG sinh block khi chưa có xác nhận của human về cách xử lý gap

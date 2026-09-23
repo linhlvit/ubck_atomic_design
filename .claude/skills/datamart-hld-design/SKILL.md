@@ -150,6 +150,74 @@ nếu nhóm đã hết PENDING.
 `symbol` chứ không phải `security_symbol_code`. Xem bảng đối chiếu đầy đủ ở mục **A1** của
 `datamart-lld-design/SKILL.md`.
 
+> Các quy tắc H6–H9 dưới đây rút ra từ sự cố GSTT ngày 2026-09-23: BA tách Nhóm 28/29 thành 28–31
+> rồi sau đó thành 37 Nhóm. Cả 4 quy tắc là lỗi **thật đã lọt lưới**, và cả 4 đều **không** bị
+> `run_quality_gates.py` hay `datamart_progress_analyzer.py` bắt được. Script bắt được chúng là
+> `ba_hld_sync_check.py` (mã S1–S5).
+
+### H6 — BA tách/gộp/dồn số Nhóm: đánh số lại TRƯỚC, thiết kế SAU `[L1-GROUP-NUMBER-DRIFT]` `[L1-BA-STT-COLLISION]`
+
+Số Nhóm trong HLD và Detail Mapping PHẢI bằng STT của BA. Khi BA tách một Nhóm, các Nhóm phía sau bị
+dồn số. Lúc đó `datamart_progress_analyzer.py` so số lượng theo **số** Nhóm, nên sẽ:
+- báo 🔴 hàng loạt ở các Nhóm không liên quan, hoặc tệ hơn,
+- báo **🟢 Khớp giả**. Thực tế đã xảy ra: HLD Nhóm 30 cũ (PTKT, 14 KPI) "khớp" với BA Nhóm 30 mới
+  (bản đồ nhiệt, 14 dòng) chỉ vì trùng số lượng.
+
+**Trình tự bắt buộc khi file BA vừa đổi:**
+1. Chạy `ba_hld_sync_check.py --module {M}` **trước khi đọc bất kỳ Nhóm nào**. S3 liệt kê Nhóm lệch
+   số hoặc lệch tên màn hình. S2 liệt kê STT bị BA dùng chung cho 2 màn hình, hoặc dòng bị gán nhầm
+   STT (so theo cột Dashboard/báo cáo).
+2. Lập bảng ánh xạ `số cũ → số mới` từ **cột Dashboard/báo cáo** (tên màn hình), không từ số lượng.
+3. Đánh số lại **toàn bộ tham chiếu**: HLD (heading, bảng KPI, Section 1/3/4/5, changelog), Detail
+   Mapping (cột `nhom`), Entities.md, comment Flat SQL, `description` trong Attributes/master/model
+   (chỉ dòng của module mình). Ánh xạ phải áp **một lượt đồng thời** (VD 35→36 và 34→35 cùng lúc),
+   không áp tuần tự từng số, vì áp tuần tự sẽ đẩy số lên 2 lần. Nhớ đổi cả số nằm trong danh sách
+   `Nhóm 5/6/32/33`, không chỉ số đứng ngay sau chữ "Nhóm".
+4. Sau đó mới thiết kế các Nhóm có nội dung đổi.
+
+**BA gộp 2 màn hình chung 1 STT (S2):** mặc định gộp vào 1 Nhóm HLD theo quy tắc "1 STT = 1 Nhóm",
+dùng mockup (a)/(b) và **mở Open Issue để BA tách STT**. Khi BA tách xong, tách lại HLD ngay; không để
+Δ âm dai dẳng.
+
+**Dòng BA gán nhầm STT (S2, 1–2 dòng mà Dashboard là của Nhóm khác):** thiết kế theo **Dashboard**,
+ghi Open Issue. Không tự sửa file BA.
+
+### H7 — Khóa JOIN giữa 2 bảng nguồn phải có BẰNG CHỨNG, không chép từ ghi chú cũ `[L1-JOIN-KEY-UNVERIFIED]`
+
+Ghi chú trong HLD kiểu *"khóa X = Y đã xác nhận"* **không phải bằng chứng**. Trước khi dùng một khóa
+JOIN giữa 2 entity khác hệ định danh, bắt buộc có ít nhất 1 trong 3 nguồn sau, và ghi rõ nguồn vào
+Ghi chú:
+1. SQL tham khảo của BA nối đúng 2 cột đó. Grep toàn file BA qua `ba_slice.py --with-sql`, **không
+   chỉ Nhóm đang làm**.
+2. Mô tả cột trong `Source/{SOURCE}_Columns.csv` hoặc tài liệu API nguồn (VD bảng getIndexCode/getIndexName
+   của jadapter).
+3. Data Modeler xác nhận trực tiếp **trong phiên hiện tại**, kèm ví dụ giá trị.
+
+Thực tế đã sai: ghi chú ngày 2026-09-22 dùng khóa `Market Index Snapshot.Index Name = Index Constituent
+Snapshot.Index Code`, và khóa này bị chép sang Fact mới cùng 4 KPI khác. Nhưng SQL BA STT 5 nối
+`marketcode = indexcode`, và `INDEXNAME` chỉ là tên hiển thị (`VNINDEX`, `VN30`), còn mã là `HOSE`,
+`30`. Hậu quả: khóa không bao giờ khớp và toàn bộ điểm chỉ số ra NULL. Dấu hiệu nhận biết sớm: khi thấy
+một cột **tên** (`_nm`, `Name`) được đặt bằng một cột **mã** (`_code`), dừng lại kiểm tra.
+
+### H8 — Loại measure (Giá trị vs Khối lượng) phải khớp Trường nguồn BA `[L3-MEASURE-TYPE-MISMATCH]`
+
+Khi dùng lại KPI có sẵn cho một dòng BA, phải đối chiếu **Trường nguồn** của dòng đó (VD
+`foreignBuyVal` là giá trị, `foreignBuyVol` là khối lượng), không chỉ nhìn tên màn hình hay tên Nhóm.
+Thực tế đã sai: Nhóm 26 có BA ghi "GTNN mua/bán/ròng" (`foreignBuyVal`/`foreignSellVal`), nhưng HLD
+dùng lại KLNN (K_GSTT_70/71/19, khối lượng), và tên Nhóm cũng bị ghi thành "bản đồ nhiệt KLNN".
+S5 của `ba_hld_sync_check.py` bắt được lỗi này.
+
+### H9 — Đối soát NỘI DUNG từng dòng BA, không chỉ số lượng `[L3-BA-ROW-UNMAPPED]`
+
+`Δ = 0` không có nghĩa là không thiếu gì. Một dòng BA bị bỏ sót vẫn có thể bị che bởi một KPI tách
+thêm ở chỗ khác. Thực tế đã sai: Nhóm 7 thiếu "Thay đổi giá (+/-)" nhưng lại dư Từ ngày/Đến ngày, nên
+tổng số lượng lệch rất ít. Nhóm 11/13/15/17/19 cùng thiếu dòng này.
+
+Sau khi viết xong bảng KPI của một Nhóm, chạy `ba_hld_sync_check.py --module {M} --nhom {N}` và xử lý
+**từng** cảnh báo S4:
+- bổ sung KPI còn thiếu, hoặc
+- ghi giải trình vào Ghi chú HLD (VD dòng BA trùng nghĩa với dòng khác, dòng BA bị BA gán nhầm STT).
+
 ---
 
 ## QUY TRÌNH (BẮT BUỘC)
@@ -729,7 +797,15 @@ python .claude/skills/datamart-review/scripts/check_date_fk.py --module {MODULE}
 
 # 4. Phân tích tiến độ 3 chiều BA ↔ HLD ↔ LLD và quét các chỉ tiêu bị xóa Delete:
 python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}
+
+# 5. Đối soát CẤU TRÚC + NỘI DUNG BA ↔ HLD ↔ Detail Mapping (H6–H9): file bị cắt/xóa, STT BA dùng
+#    chung/gán nhầm, lệch số Nhóm, dòng BA không có KPI, lệch loại measure GT/KL:
+python .claude/skills/datamart-review/scripts/ba_hld_sync_check.py --module {MODULE} --nhom {N...}
 ```
+
+> `ba_hld_sync_check.py`: lỗi ❌ (S1/S2/S3/S5) phải xử lý hoặc có Open Issue trước khi mở GATE.
+> Cảnh báo 🟡 S4 phải xử lý **từng dòng**: bổ sung KPI hoặc ghi giải trình vào Ghi chú. Không được
+> bỏ qua vì "so tên mờ hay báo nhầm".
 
 #### Bảng Tra Cứu Exit Code & Xử Lý Vi Phạm:
 
@@ -849,6 +925,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
   - Đếm `HLD_Base = COUNT(KPI Base/1-1 của Nhóm, loại trừ KPI Derived _YOY/_GROWTH/tỷ lệ nội bộ và sub-component a/b đã giải trình)`
   - Xác nhận `BA_Valid == HLD_Base` khớp chính xác 1-1. Nếu lệch: đối chiếu từng dòng BA để phát hiện dòng bị gộp nhầm hoặc bỏ sót (đặc biệt là các chiều slicer phụ). Mọi KPI dôi dư phải được giải trình rõ trong cột Ghi chú.
   - Ví dụ lỗi thực tế (QLCB Nhóm 4): 2 dòng BA độc lập "Thông tin doanh nghiệp" (nguồn `COMPANY_NAME_VN`) và "Mã chứng khoán" (nguồn `equity_ticker`) bị viết gộp thành 1 dòng KPI "Thông tin doanh nghiệp (Mã CK, Tên DN)" — BA 12 dòng nhưng HLD chỉ có 11 KPI, không bị rule cũ nào bắt được vì dòng KPI đó "vẫn có ID, vẫn có dòng BA tương ứng".
+  - **Số lượng khớp chưa đủ, phải khớp cả nội dung (H9):** chạy thêm `ba_hld_sync_check.py --module {MODULE} --nhom {N}` và xử lý từng cảnh báo S4/S5.
   - **Bắt buộc xác nhận lại bằng script, không chỉ tự đếm bằng mắt:** chạy `python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}`, tìm đúng dòng của (các) Nhóm vừa viết/sửa trong bảng delta (dạng `| Nhóm N | ... | BA | HLD | LLD | Δ | ... | 🔴/✅ |`), xác nhận `Δ = 0` hoặc lệch đã giải trình rõ. **TUYỆT ĐỐI KHÔNG được xem output qua `| tail -N` / `| head -N` rồi kết luận "sạch"** — bảng delta nằm ở vị trí cố định giữa output đầy đủ (không phải cuối), cắt bớt output rất dễ bỏ lỡ đúng dòng Nhóm cần xem; nếu cần giới hạn dung lượng, dùng `grep` đích danh `"Nhóm {N} "` thay vì `tail`/`head`. Sự cố thực tế (GSTT Nhóm 28, 2026-09-22): script đã in đúng `🔴 Lệch số lượng` cho Nhóm 28 (thiếu 2 KPI reuse: "Giá mở cửa" → K_GSTT_27, "Thay đổi" → K_GSTT_11 — cả 2 đều có dòng BA rõ ràng, cột Đánh giá = "Trùng") nhưng bị bỏ sót vì agent chỉ xem qua `| tail -30`, cắt mất đúng đoạn bảng delta — chỉ phát hiện ra khi user tự đọc lại BA và hỏi lại.
 - [ ] **Gating theo "Loại dữ liệu":** Với mọi dòng BA (mọi Nhóm yêu cầu), kiểm tra cột `Loại dữ liệu` — `Dữ liệu động` → dòng KPI đó đánh Trạng thái PENDING dù Atomic đã READY/Trạng thái mapping = Done (lý do ghi trong Ghi chú: "chưa thống nhất quy tắc khai thác"); `Dữ liệu tĩnh` → theo gating Atomic bình thường. KHÔNG suy đoán tĩnh/động theo `Phân loại` (Chiều/Cơ sở/Phái sinh) — đọc đúng giá trị cột này
 - [ ] **Nhóm có cả tĩnh lẫn động:** Cả 2 loại dòng KPI nằm CHUNG 1 bảng KPI duy nhất, chỉ khác cột Trạng thái (READY cho dòng tĩnh, PENDING cho dòng động) — không tách 2 block/2 bảng riêng

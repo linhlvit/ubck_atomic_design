@@ -113,6 +113,27 @@ Tìm đúng dòng của (các) Nhóm vừa sửa trong bảng delta (`| Nhóm N 
 
 **Lý do:** Đã xảy ra thực tế (module GSTT, 2026-09-22) — sau khi sửa Nhóm 28/29 theo yêu cầu user và chạy `run_quality_gates.py --strict` (PASS 7/8, chỉ fail Gate 0 vì 5 warning không liên quan), agent báo đã xong. Thực ra Nhóm 28 vẫn thiếu 2 KPI reuse có sẵn dòng BA rõ ràng (`Đánh giá: Trùng`) — "Giá mở cửa" (→ K_GSTT_27) và "Thay đổi" (→ K_GSTT_11) — bị bỏ sót từ một ghi chú lịch sử cũ khẳng định sai "Nhóm 3 không có Giá mở cửa". `datamart_progress_analyzer.py` **đã in đúng** `🔴 Lệch số lượng` cho Nhóm 28 ngay từ lần chạy trước đó, nhưng agent chỉ xem qua `| tail -30` nên bỏ lỡ đúng đoạn bảng delta — chỉ phát hiện khi user tự đọc lại BA và hỏi lại. `run_quality_gates.py` không tự phát hiện được lỗi này vì `datamart_progress_analyzer.py` không nằm trong danh sách Gate của nó (xem ghi chú trong chính script này).
 
+**Thêm bắt buộc — đối chiếu CẤU TRÚC + NỘI DUNG BA ↔ HLD ↔ Detail Mapping.** Chạy lệnh dưới đây ở 2 thời điểm: **đầu phiên** (trước khi đọc hay sửa bất kỳ Nhóm nào) và **sau khi sửa** (cho các Nhóm vừa sửa). Cả `run_quality_gates.py` lẫn progress analyzer đều không bao gồm bước này.
+
+```bash
+python .claude/skills/datamart-review/scripts/ba_hld_sync_check.py --module {MODULE} [--nhom N ...]
+```
+
+- **S1:** Detail Mapping hoặc HLD bị xóa hay bị cắt so với HEAD / HEAD~1 → DỪNG. Hỏi human rồi mới khôi phục.
+- **S2/S3:** BA đổi số hoặc tách Nhóm, hoặc 1 STT BA bị dùng chung cho 2 màn hình. Khi đó phải đánh số lại TRƯỚC (xem H6 của `datamart-hld-design`). Kết quả "🟢 Khớp" của progress analyzer lúc này không đáng tin.
+- **S4/S5:** dòng BA không có KPI, hoặc KPI đo sai loại (GT/KL). Xử lý hoặc giải trình **từng dòng**. Δ = 0 không miễn trừ.
+- **Khóa JOIN giữa 2 bảng nguồn và ghi chú "đã lọc sẵn tại ETL" không được chép từ ghi chú cũ.** Phải trích được SQL tham khảo BA, tài liệu cột nguồn, hoặc `etl_logic` thật (xem H7 và A10).
+
+**Lý do:** Đã xảy ra thực tế (module GSTT, 2026-09-23), trong 1 phiên:
+- BA tách Nhóm 28/29 và dồn số các Nhóm sau, trong khi HLD vẫn giữ số cũ. Analyzer báo Nhóm 30 "Khớp" chỉ vì trùng số lượng.
+- BA dùng chung STT 31 cho 2 màn hình.
+- Khóa `index_nm = index_code` được chép từ ghi chú "đã xác nhận" và sai hoàn toàn: SQL BA nối `marketcode = indexcode`.
+- Nhóm 26 dùng KLNN thay cho GTNN.
+- Nhóm 7/11/13/15/17/19/25 thiếu KPI cho các dòng "Thay đổi giá (+/-)" hoặc "% thay đổi".
+- 1 commit của module khác cắt Detail Mapping từ 577 xuống 101 dòng, sau đó file bị xóa giữa phiên.
+
+Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
+
 ## NGÔN NGỮ
 
 - Viết bằng tiếng Việt. Giữ nguyên thuật ngữ kỹ thuật tiếng Anh.

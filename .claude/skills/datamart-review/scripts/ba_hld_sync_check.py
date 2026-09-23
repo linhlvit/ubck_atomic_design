@@ -72,6 +72,7 @@ def norm(s: str) -> str:
     for a, b in (("giá trị giao dịch", "gtgd"), ("khối lượng giao dịch", "klgd"), ("giá trị", "gt"),
                  ("khối lượng", "kl"), ("nước ngoài", "nn"), ("nđtnn", "nn")):
         s = s.replace(a, b)
+    s = re.sub(r"\bklgd\b", "kl", re.sub(r"\bgtgd\b", "gt", s))
     return s
 
 
@@ -97,8 +98,10 @@ def screen_key(dash: str) -> str:
 
 def kind(text: str) -> str:
     t = " " + norm(text) + " "
-    is_val = any(f" {w} " in t or w in t for w in ("gtnn", "gtgd", "giá trị", "_val")) or re.search(r"(^| )gt( |$)", t)
+    is_val = any(w in t for w in ("gtnn", "gtgd", "giá trị", "_val", "vốn hóa", "vốn hoá", "market cap")) or re.search(r"(^| )gt( |$)", t)
     is_vol = any(w in t for w in ("klnn", "klgd", "khối lượng", "_vol")) or re.search(r"(^| )kl( |$)", t)
+    if is_vol and re.search(r"giá|price", t) and re.search(r"[*×x]", t):  # KL × giá = GIÁ TRỊ
+        return "VAL"
     if is_val and not is_vol:
         return "VAL"
     if is_vol and not is_val:
@@ -156,9 +159,12 @@ def main() -> int:
                for g, its in groups.items()}
     hld_titles = {}
     for line in hld.read_text(encoding="utf-8-sig").splitlines():
-        m = re.match(r"^#### Nhóm (\d+)\s*-\s*(.*)", line)
+        m = re.match(r"^#### Nhóm (\d+)(?:-(\d+))?\s*[-–—]\s*(.*)", line)
         if m:
-            hld_titles[m.group(1)] = m.group(2)
+            # hỗ trợ tiêu đề dải "Nhóm 42-145 - ..." (QLKD gộp Data Explorer)
+            lo, hi = int(m.group(1)), int(m.group(2) or m.group(1))
+            for n in range(lo, hi + 1):
+                hld_titles[str(n)] = m.group(3)
     dm_rows = collections.defaultdict(list)
     for r in csv.DictReader(open(dm, encoding="utf-8-sig")):
         m = RE_NHOM.match(r["nhom"])
@@ -170,6 +176,9 @@ def main() -> int:
     # ---------- S2
     print("S2 [L1-BA-STT-COLLISION / L1-BA-ROW-MISPLACED]")
     majority = {}
+    # dashboard cha = đoạn trước ">>" đầu tiên — tab con cùng cha (VD QLKD STT 41) chỉ cảnh báo
+    parent_of = {g: {screen_key(x.dashboard): norm(re.split(r">>", x.dashboard)[0]) for x in its if x.dashboard}
+                 for g, its in groups.items()}
     for g, its in groups.items():
         c = collections.Counter(screen_key(x.dashboard) for x in its if x.dashboard)
         if c:
@@ -184,7 +193,11 @@ def main() -> int:
                 continue
             lines = [x.line_num for x in its if screen_key(x.dashboard) == scr]
             owner = [h for h, s in majority.items() if s == scr and h != g]
-            if cnt >= 3:
+            same_parent = (parent_of[g].get(scr) == parent_of[g].get(majority[g])
+                           or difflib.SequenceMatcher(None, scr, majority[g]).ratio() >= 0.6)
+            if cnt >= 3 and same_parent:
+                warns.append(f"S2 STT {g}: {cnt} dòng (dòng {lines[0]}–{lines[-1]}) là tab con / biến thể cùng dashboard cha \"{scr[:70]}\" — kiểm BA có muốn tách STT không")
+            elif cnt >= 3:
                 errors.append(f"S2 STT {g}: {cnt} dòng (dòng {lines[0]}–{lines[-1]}) Dashboard khác khối chính — BA gộp 2 màn hình chung 1 STT: \"{scr[:70]}\"")
             elif owner:
                 errors.append(f"S2 STT {g}: dòng {lines} có Dashboard của Nhóm {owner[0]} — BA gán nhầm STT (thiết kế theo Dashboard, ghi Open Issue)")
@@ -230,7 +243,7 @@ def main() -> int:
         pairs = []
         for i, x in enumerate(ba_live[g]):
             bname = x.name.split(chr(10))[0]
-            bk = kind(x.name + " " + x.source_column)
+            bk = kind(x.name) or kind(x.source_column)
             for j, (k, rs) in enumerate(cand):
                 s = name_score(bname, rs[0]["kpi_name"])
                 dk = kind(rs[0]["kpi_name"])
@@ -252,9 +265,15 @@ def main() -> int:
                 warns.append(f"S4 Nhóm {g} dòng BA {x.line_num} \"{x.name.split(chr(10))[0][:60]}\" [{x.classification}] — không ghép được KPI (best {bs:.2f}){hint}")
                 continue
             k, rs = cand[match[i][0]]
-            ba_kind = kind(x.name + " " + x.source_column)
+            ba_kind = kind(x.name) or kind(x.source_column)  # ưu tiên tên dòng BA
             dm_text = " ".join(r["mart_column"] + " " + r["logic"] for r in rs)
-            dm_kind = "VAL" if "_val" in dm_text and "_vol" not in dm_text else ("VOL" if "_vol" in dm_text and "_val" not in dm_text else "")
+            # bỏ cột giá trị chung của Fact EAV / eForm (item_val, data_val, cell_val, indicator_val...)
+            dm_text = re.sub(r"\b\w*(item|data|cell|indicator)_val\w*", " ", dm_text)
+            has_val = re.search(r"_val\b", dm_text) is not None
+            has_vol = re.search(r"_vol\b", dm_text) is not None
+            if re.search(r"price\s*\*|\*\s*\w*price", dm_text):  # giá × khối lượng = GIÁ TRỊ
+                has_val, has_vol = True, False
+            dm_kind = "VAL" if has_val and not has_vol else ("VOL" if has_vol and not has_val else "")
             if ba_kind and dm_kind and ba_kind != dm_kind:
                 errors.append(f"S5 Nhóm {g} dòng BA {x.line_num} \"{x.name[:50]}\" đo {ba_kind} nhưng {k} \"{rs[0]['kpi_name']}\" đọc cột {dm_kind}")
         if len(ba_live[g]) > len(kpis):

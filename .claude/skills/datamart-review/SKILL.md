@@ -73,6 +73,7 @@ Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay b
 | **Ngân sách ngữ cảnh 500K** | mục 1 — QUY TẮC NGỮ CẢNH | `scripts/ctx_budget.py --module [M] --all-steps` |
 | **Phân Loại Lỗi & Cây 5 Nhóm PENDING** | `reference/issue_classification.md` | `scripts/datamart_progress_analyzer.py` / `scripts/check_ba_mapping.py` |
 | **Đối Soát Số Lượng KPI 2 Chế Độ** | `reference/kpi_reconciliation_rules.md` | `scripts/datamart_progress_analyzer.py --module [M]` |
+| **Đối Soát Cấu Trúc + Nội Dung BA ↔ HLD ↔ DM (S1–S5)** | H6–H9 `datamart-hld-design/SKILL.md`, A10–A11 `datamart-lld-design/SKILL.md` | `scripts/ba_hld_sync_check.py --module [M] [--nhom N...]` |
 | **Quy Chuẩn Role-Playing Date FK** | `reference/role_playing_date_fk_guide.md` | `python scripts/check_date_fk.py --module [M]` |
 | **Orphan Check 3 Chiều (Nhánh A & B)** | `reference/technical_review_rules.md` (Mục 8) | `python scripts/check_orphan.py --module [M] --strict` |
 | **Bảo Vệ Master Registry & Parity etl_logic** | `reference/technical_review_rules.md` (Mục 9) | `python scripts/check_parity.py --module [M] --strict` |
@@ -161,6 +162,21 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
 
 ### Bước 0: File Resolution Động & Phân Tích Tiến Độ
 1. Nhận diện module, resolve file: hỗ trợ cả file thường và file gộp (như `BA_analyst_GSĐC.csv`).
+1b. **[MỚI 2026-09-23] Chạy TRƯỚC progress analyzer:** script đối chiếu cấu trúc và nội dung.
+   ```bash
+   python scripts/ba_hld_sync_check.py --module [MODULE]
+   ```
+   Script kiểm 5 mục:
+   - **S1:** Detail Mapping và HLD còn nguyên, không bị xóa hay cắt so với HEAD / HEAD~1.
+   - **S2:** STT BA bị dùng chung cho 2 màn hình, hoặc dòng bị gán nhầm STT (đối chiếu cột Dashboard).
+   - **S3:** số Nhóm HLD / Detail Mapping lệch STT BA, hoặc tên Nhóm lệch tên màn hình.
+   - **S4:** dòng BA không ghép được KPI.
+   - **S5:** lệch loại measure GT/KL.
+
+   Có ❌ ở S1, S2 hoặc S3 thì **KHÔNG đọc bảng delta của progress analyzer**: số liệu ở đó đang so sai
+   Nhóm (lệch số) và có thể báo 🟢 Khớp giả. Sửa đánh số trước theo H6 của `datamart-hld-design`.
+   Sự cố thực tế GSTT 2026-09-23: BA tách Nhóm, analyzer báo Nhóm 30 "Khớp" vì 2 màn hình khác nhau
+   tình cờ có cùng 14 dòng.
 2. Chạy script phân tích tiến độ tự động:
    ```bash
    python scripts/datamart_progress_analyzer.py --module [MODULE]
