@@ -271,7 +271,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.TARGET_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCH. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -381,15 +382,16 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Administrative Procedure Code"
-  physical_name: "administrative_procedure_code"
+  physical_name: "ap_code"
   description: "Thủ tục hành chính."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.ADMINISTRATIVE_PROC_CD"
-  comment: null
+  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_PROCEDURE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -464,10 +466,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.COMPANY_TENDER_OFFER.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -490,10 +493,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -558,7 +562,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.ADMINISTRATIVE_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
+  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

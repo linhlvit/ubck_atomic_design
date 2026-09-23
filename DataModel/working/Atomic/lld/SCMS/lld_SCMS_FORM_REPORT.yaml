@@ -304,21 +304,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Legacy Report Type Code"
-  physical_name: "legacy_rpt_tp_code"
-  description: "Mã loại báo cáo hệ thống cũ (để tìm kiếm theo liên thông với hệ thống\
-    \ 334)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.FORM_REPORT.LEGACY_REPORT_TYPE"
-  comment: "Mã tham chiếu hệ thống cũ (334) — giữ dạng Text, không có Classification\
-    \ Value quản lý trên Atomic."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Excel Template Path"
   physical_name: "excel_template_path"
   description: "Đường dẫn file template Excel (mô tả gốc BRD trống)."
@@ -474,21 +459,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Primary Source Api Id"
-  physical_name: "primary_src_api_id"
-  description: "ID kỹ thuật của API dùng làm nguồn dữ liệu chính cho biểu mẫu (mô\
-    \ tả gốc BRD trống)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.FORM_REPORT.PRIMARY_SOURCE_API_ID"
-  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-09-15) — không thiết kế cặp Id+Code/FK\
-    \ vì bảng đích (API_MAPPINGS hoặc SYS_FUNCTION_DETAIL) thuộc nhóm Operational/System\
-    \ ngoài phạm vi Atomic, cùng lý do với SYS_FUNCTION_ID. Giữ nguyên giá trị ID\
-    \ kỹ thuật gốc dạng denormalized text — không resolve/hash. Nguồn lưu dạng số\
-    \ (NUMBER(19,0)) — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"

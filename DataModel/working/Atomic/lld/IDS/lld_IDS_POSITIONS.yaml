@@ -121,9 +121,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.POSITIONS.POSITION_CD"
-  comment: "Scheme: IDS_POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP = POSITION).\
-    \ Dùng chung scheme với Public Company Penalty/Public Company Legal Representative."
-  classification_context: "IDS_POSITION"
+  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Appointment Date"
@@ -152,29 +151,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Active Indicator"
-  physical_name: "active_ind"
-  description: "Có trạng thái chức vụ hiện tại (0-Không, 1-Có)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.POSITIONS.ACTIVE_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.POSITIONS.DELETE_FLG"
-  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

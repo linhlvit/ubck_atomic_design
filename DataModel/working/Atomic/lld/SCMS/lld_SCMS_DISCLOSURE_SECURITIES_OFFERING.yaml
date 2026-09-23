@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Communication"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -22,10 +22,16 @@ metadata:
     \ giá/7=Riêng lẻ/8=Khác/9=CP hoán đổi/10=CB cổ đông lớn. Nhiều cột CW chỉ populate\
     \ khi SECURITIES_TYPE=CW; nhiều cột bond chỉ populate khi SECURITIES_TYPE=TP.\
     \ JSON fields excluded: RESULT_JSON, PLAN_JSON, CAPITAL_USE_PLAN, CAPITAL_USE_RESULT_JSON.\
-    \ Legacy: NGAY_SUA/NGUOI_SUA_ID → legacy audit duplicates; LEGACY_FILEDATA (BLOB)\
-    \ excluded. Audit canonical: CREATED_BY/AT + LAST_MODIFIED_BY/AT. Hạ về draft\
-    \ (2026-07-27) để sửa lỗi hash-mismatch FK Securities Company Id — trước đây hash\
-    \ trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích."
+    \ LEGACY_FILEDATA (BLOB) excluded. Audit block loại trừ hoàn toàn khỏi Atomic\
+    \ (quyết định 2026-07): CREATED_AT/CREATED_BY (không đổi tên), LAST_MODIFIED_AT_LEGACY/LAST_MODIFIED_BY_LEGACY\
+    \ (tên cũ trước 2026-09-18: LAST_MODIFIED_AT/LAST_MODIFIED_BY), và LAST_MODIFIED_AT/LAST_MODIFIED_BY\
+    \ hiện tại (tên cũ trước 2026-09-18: NGAY_SUA/NGUOI_SUA_ID — trước đây map thành\
+    \ Legacy Updated Date/Legacy Updated By Id, đã xóa khỏi LLD theo quyết định Data\
+    \ Modeler 2026-09-18 khi DDL UAT đổi tên 2 cột này thành LAST_MODIFIED_AT/LAST_MODIFIED_BY canonical).\
+    \ SU_VU (DDL cũ) đổi tên thành MATTER trong DDL UAT mới — cùng cột, đã cập nhật\
+    \ source_columns 2026-09-18. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
+    \ FK Securities Company Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì\
+    \ CODE của bảng đích."
 attributes:
 - attribute_name: "Securities Company Disclosure Securities Offering Id"
   physical_name: "sc_disclosure_securities_offering_id"
@@ -139,57 +145,40 @@ attributes:
   data_type: "string"
 - attribute_name: "Offering Type Code"
   physical_name: "offering_tp_code"
-  description: "Loại chào bán: 1=Công chúng; 2=CP thường; 3=Trả cổ tức CP; 4=CTLC>100\
-    \ NLĐ; 5=CTLC<100 NLĐ; 6=Đấu giá; 7=Riêng lẻ; 8=Khác; 9=CP hoán đổi; 10=CB cổ\
-    \ đông lớn."
-  data_domain: "Classification Value"
+  description: "Loại chào bán."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_TYPE"
-  comment: "Scheme: SCMS_OFFERING_TYPE. NUMBER(10) với values 1-10."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Securities Type Code"
   physical_name: "securities_tp_code"
-  description: "Loại chứng khoán: CP_THUONG=Cổ phiếu phổ thông; CP_UU_DAI=Cổ phiếu\
-    \ ưu đãi; TP=Trái phiếu; CW=Chứng quyền có bảo đảm."
-  data_domain: "Classification Value"
+  description: "Loại chứng khoán."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.SECURITIES_TYPE"
-  comment: "Scheme: SCMS_SECURITIES_TYPE. VARCHAR2(50)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi chào bán: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng\
-    \ hoạt động/hết hiệu lực."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS"
-  comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Data Source Code"
   physical_name: "data_src_code"
-  description: "Nguồn gốc dữ liệu: Đồng bộ tự động/Nhập tay/Cổng báo cáo."
-  data_domain: "Classification Value"
+  description: "Nguồn gốc dữ liệu."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.DATA_SOURCE"
-  comment: "Scheme: SCMS_DATA_SOURCE. VARCHAR2(50)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -199,7 +188,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.ASSESSMENT"
   comment: "NVARCHAR2(50), mô tả gốc BRD trống. Cần xác nhận values."
@@ -212,27 +201,26 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.ITEM_CATEGORY"
   comment: "NVARCHAR2(10), mô tả gốc BRD trống. Cần xác nhận scheme."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "SU VU"
-  physical_name: "su_vu"
+- attribute_name: "MATTER"
+  physical_name: "matter"
   description: "Tên sự vụ áp dụng (VD: Chào bán riêng lẻ; Chào bán ra công chúng)."
-  data_domain: "Text"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.SU_VU"
-  comment: "NUMBER — lưu dạng số nhưng mô tả cho thấy đây là ID sự vụ. Pending — cần\
-    \ xác nhận FK target."
+  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.MATTER"
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Document Number"
   physical_name: "document_nbr"
   description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
@@ -482,8 +470,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Valid Date"
-  physical_name: "valid_dt"
+- attribute_name: "Valid Timestamp"
+  physical_name: "valid_tms"
   description: "Ngày có hiệu lực."
   data_domain: "Timestamp"
   nullable: true
@@ -495,8 +483,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-- attribute_name: "Offering Date"
-  physical_name: "offering_dt"
+- attribute_name: "Offering Timestamp"
+  physical_name: "offering_tms"
   description: "Ngày chào bán."
   data_domain: "Timestamp"
   nullable: true
@@ -638,8 +626,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Disclosure Date"
-  physical_name: "disclosure_dt"
+- attribute_name: "Disclosure Timestamp"
+  physical_name: "disclosure_tms"
   description: "Ngày công bố thông tin chào bán."
   data_domain: "Timestamp"
   nullable: true
@@ -692,15 +680,14 @@ attributes:
   data_type: "int"
 - attribute_name: "Bond Type Code"
   physical_name: "bond_tp_code"
-  description: "Loại trái phiếu: CO_BAO_DAM=Có bảo đảm; KHONG_BAO_DAM=Không bảo đảm;\
-    \ CHUYEN_DOI=Chuyển đổi."
-  data_domain: "Classification Value"
+  description: "Loại trái phiếu."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_TYPE"
-  comment: "Scheme: SCMS_BOND_TYPE. NVARCHAR2(80). Chỉ populate khi SECURITIES_TYPE=TP."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -784,15 +771,14 @@ attributes:
   data_type: "date"
 - attribute_name: "Covered Warrant Type Code"
   physical_name: "covered_warrant_tp_code"
-  description: "Loại chứng quyền có bảo đảm: CW_MUA=Chứng quyền mua; CW_BAN=Chứng\
-    \ quyền bán."
-  data_domain: "Classification Value"
+  description: "Loại chứng quyền có bảo đảm."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.COVERED_WARRANT_TYPE"
-  comment: "Scheme: SCMS_COVERED_WARRANT_TYPE. NVARCHAR2(30). Chỉ populate khi SECURITIES_TYPE=CW."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -1079,60 +1065,6 @@ attributes:
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.ERROR_DESCRIPTION"
   comment: "NVARCHAR2(1000). Mô tả gốc BRD trống."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Legacy Filename"
-  physical_name: "legacy_filename"
-  description: "Tên file đính kèm từ hệ thống cũ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.LEGACY_FILENAME"
-  comment: "VARCHAR2(1000 BYTE). LEGACY_FILEDATA (BLOB) excluded. LEGACY_ROWTEXT (VARCHAR2\
-    \ 40) — reference legacy."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Legacy Row Text"
-  physical_name: "legacy_row_text"
-  description: "Chuỗi tham chiếu bản ghi từ hệ thống cũ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.LEGACY_ROWTEXT"
-  comment: "VARCHAR2(40 BYTE). Mô tả gốc BRD trống."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Legacy Updated Date"
-  physical_name: "legacy_updated_dt"
-  description: "Ngày cập nhật từ hệ thống cũ (NGAY_SUA)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.NGAY_SUA"
-  comment: "TIMESTAMP(6). Legacy audit duplicate của LAST_MODIFIED_AT. ETL dùng LAST_MODIFIED_AT\
-    \ làm canonical."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Legacy Updated By Id"
-  physical_name: "legacy_updated_by_id"
-  description: "ID người cập nhật từ hệ thống cũ (NGUOI_SUA_ID)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.NGUOI_SUA_ID"
-  comment: "NUMBER(10) — ETL convert sang string. Legacy audit duplicate của LAST_MODIFIED_BY."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -117,16 +117,14 @@ attributes:
   data_type: "string"
 - attribute_name: "Alert Indicator Type Code"
   physical_name: "alert_ind_tp_code"
-  description: "Loại chỉ tiêu cảnh báo: AN_TOAN_TAI_CHINH=An toàn tài chính; TUAN_THU=Tuân\
-    \ thủ pháp lý; RUI_RO=Rủi ro hoạt động."
+  description: "Loại chỉ tiêu cảnh báo: 0-Tính theo công thức BC; 1-NHNCK (legacy LOAI_CHI_TIEU_CB)."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE"
-  comment: "Scheme: SCMS_ALERT_INDICATOR_TYPE. Nguồn lưu NUMBER(1) — ETL map số →\
-    \ text code. Cần profile values thực tế."
+  comment: "SCHEMA_CODE=SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -205,17 +203,16 @@ attributes:
 - attribute_name: "Severity Code"
   physical_name: "severity_code"
   description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.ALERT_INDICATOR.SEVERITY"
-  comment: "Scheme: SCMS_ALERT_INDICATOR_SEVERITY. NUMBER(10). BRD có cả SEVERITY\
-    \ và SEVERITY_LEVEL — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2."
-  classification_context: "SCMS_ALERT_INDICATOR_SEVERITY"
+  comment: null
+  classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Lower Threshold"
   physical_name: "lower_threshold"
   description: "Ngưỡng cảnh báo dưới."
@@ -296,45 +293,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Formula Text"
-  physical_name: "formula_text"
-  description: "Mô tả công thức dạng văn bản để hiển thị cho người dùng."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR.FORMULA_TEXT"
-  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Formula"
-  physical_name: "formula"
-  description: "Công thức tính toán giá trị ô."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR.FORMULA"
-  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Sum Formula"
-  physical_name: "sum_formula"
-  description: "Công thức tổng hợp của ô (tính tổng nhiều ô)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR.SUM_FORMULA"
-  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Weight"
   physical_name: "weight"
   description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)."
@@ -348,30 +306,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
-- attribute_name: "Sort Order"
-  physical_name: "sort_order"
-  description: "Thứ tự sắp xếp hiển thị."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR.SORT_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái chỉ tiêu cảnh báo: 0=Không sử dụng; 1=Đang sử dụng."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR.RECORD_STATUS"
-  comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang\
-    \ string."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"

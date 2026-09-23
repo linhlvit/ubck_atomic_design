@@ -351,15 +351,14 @@ attributes:
   data_type: "string"
 - attribute_name: "Report Submission Status Code"
   physical_name: "rpt_submission_status_code"
-  description: "Trạng thái nộp báo cáo đột xuất: 0=Chưa gửi; 1=Gửi đúng hạn; 2=Gửi\
-    \ muộn; 3=Bị hủy."
+  description: "Trạng thái nộp báo cáo đột xuất: 0-Chưa gửi; 1-Gửi đúng hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo cáo."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
-  comment: "SCHEMA_CODE=SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
+  comment: "SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

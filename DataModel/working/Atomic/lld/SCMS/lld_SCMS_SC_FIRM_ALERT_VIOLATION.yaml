@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Business Activity"
   table_type: "Relative"
   group: "T2"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -104,9 +104,7 @@ attributes:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -136,10 +134,7 @@ attributes:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
   comment: "FK target: sc_alert_indicator.sc_alert_ind_id. Cần ETL crosswalk sang\
     \ SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID\
-    \ để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE)\
-    \ | Đổi hash key sang INDICATOR_CODE theo yêu cầu Data Modeler (2026-09-18, xem\
-    \ lld_SCMS_ALERT_INDICATOR.yaml) — trước đó dùng ALERT_CODE (đã sửa sang crosswalk\
-    \ 2026-07-27)."
+    \ để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -222,45 +217,41 @@ attributes:
   data_type: "string"
 - attribute_name: "Violation Severity Code"
   physical_name: "violation_severity_code"
-  description: "Mức độ nghiêm trọng của vi phạm: 1=Nhẹ; 2=Trung bình; 3=Nghiêm trọng."
-  data_domain: "Classification Value"
+  description: "Mức độ nghiêm trọng của vi phạm."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_SEVERITY"
-  comment: "Scheme: SCMS_VIOLATION_SEVERITY. NUMBER(1) — ETL convert sang string."
-  classification_context: "SCMS_VIOLATION_SEVERITY"
+  comment: null
+  classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Severity Level"
   physical_name: "severity_level"
-  description: "Nhãn mức độ nghiêm trọng dạng văn bản (tương ứng VIOLATION_SEVERITY\
-    \ nhưng dạng text)."
-  data_domain: "Text"
+  description: "Cấp độ cảnh báo (theo TC-CB-74, TC-VP-73) - ánh xạ cùng mức độ vi phạm."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL"
-  comment: "NVARCHAR2(50). Có thể trùng ý nghĩa với VIOLATION_SEVERITY — cần xác nhận\
-    \ có thể bỏ sau khi profile dữ liệu."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Alert Entity Type Code"
   physical_name: "alert_entity_tp_code"
-  description: "Loại đối tượng cảnh báo: CTCK=Công ty chứng khoán; CN_NUOC_NGOAI=Chi\
-    \ nhánh nước ngoài; VPDD_NUOC_NGOAI=Văn phòng đại diện nước ngoài."
-  data_domain: "Classification Value"
+  description: "Loại đối tượng cảnh báo: CTCK | NGAN_HANG | CN_CTCK_NN | VPDD_CTCK_NN."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE"
-  comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(64). Xác định ENTITY_ID trỏ\
-    \ về entity nào (polymorphic)."
-  classification_context: "SCMS_ALERT_ENTITY_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Alert Entity Code"
@@ -378,29 +369,29 @@ attributes:
 - attribute_name: "Report Period Code"
   physical_name: "rpt_period_code"
   description: "Kỳ báo cáo của cảnh báo."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD"
-  comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(200)."
-  classification_context: "SCMS_REPORT_PERIOD"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Period Value"
   physical_name: "rpt_period_val"
   description: "Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng 1-12)."
-  data_domain: "Small Counter"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD_VALUE"
-  comment: "NUMBER (integer). Số thứ tự kỳ trong năm."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
 - attribute_name: "Period"
   physical_name: "period"
   description: "Giai đoạn/kỳ của cảnh báo dạng chuỗi ký hiệu."
@@ -467,8 +458,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Processing Date"
-  physical_name: "processing_dt"
+- attribute_name: "Processing Timestamp"
+  physical_name: "processing_tms"
   description: "Thời điểm xử lý vi phạm cảnh báo."
   data_domain: "Timestamp"
   nullable: true
@@ -486,13 +477,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_ID) | Cross-source FK (SCMS → IAM). Pending\
-    \ — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận\
-    \ cơ chế crosswalk/join key giữa 2 hệ thống."
+    \ Hash: hash_id('IAM_USERS', PROCESSOR_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -502,7 +491,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
@@ -513,17 +502,14 @@ attributes:
 - attribute_name: "Alert Period Type Code"
   physical_name: "alert_period_tp_code"
   description: "Loại kỳ của cảnh báo (mã số)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_TYPE"
-  comment: "Scheme: SCMS_ALERT_PERIOD_TYPE. NUMBER(2) — ETL convert sang string. Cột\
-    \ mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data Modeler xác nhận\
-    \ danh sách giá trị và đối chiếu có trùng ý nghĩa với Report Period Code (REPORT_PERIOD)\
-    \ hay không trước go-live."
-  classification_context: "SCMS_ALERT_PERIOD_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Alert Period Value"
@@ -556,18 +542,15 @@ attributes:
   data_type: "date"
 - attribute_name: "Severity Level Alt Code"
   physical_name: "severity_level_alt_code"
-  description: "Mức độ nghiêm trọng của vi phạm (mã số thay thế)."
+  description: "Mức độ nghiêm trọng của vi phạm. 1-warning, 2-violation."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT"
-  comment: "Scheme: SCMS_ALERT_SEVERITY_LEVEL_ALT. NUMBER(1) — ETL convert sang string.\
-    \ Cột mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data Modeler xác\
-    \ nhận danh sách giá trị và đối chiếu có trùng ý nghĩa với Severity Level (SEVERITY_LEVEL)\
-    \ và/hoặc Violation Severity Code (VIOLATION_SEVERITY) hay không trước go-live."
-  classification_context: "SCMS_ALERT_SEVERITY_LEVEL_ALT"
+  comment: "SCHEMA_CODE=SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "String Result Value"

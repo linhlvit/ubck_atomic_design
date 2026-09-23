@@ -95,8 +95,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.STOCK_LISTING_HISTORY.ACTION_TYPE_CD"
-  comment: "Scheme: IDS_STOCK_LISTING_ACTION_TYPE. Values lấy trực tiếp từ cột nguồn."
-  classification_context: "IDS_STOCK_LISTING_ACTION_TYPE"
+  comment: "SCHEMA_CODE=IDS.STOCK_LISTING_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PUB_COM_LISTING_ACTION_TYPE')."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Sequence Number"
@@ -121,7 +121,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.STOCK_LISTING_HISTORY.EXCHANGE_CD"
-  comment: "Dùng chung scheme với Public Company.Equity Listing Exchange Code."
+  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
