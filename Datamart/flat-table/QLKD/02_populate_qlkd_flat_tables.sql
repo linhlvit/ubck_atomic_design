@@ -178,6 +178,7 @@ SELECT
     -- From: FACT Market Index Snapshot
     f.snpst_dt_dim_id,
     f.market_index_dim_id,
+    f.index_constituent_dim_id,
     f.market_index_val,
     f.open_index,
     f.high_index,

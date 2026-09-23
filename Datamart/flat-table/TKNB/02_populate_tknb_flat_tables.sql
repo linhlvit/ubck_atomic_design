@@ -451,7 +451,7 @@ SELECT
     mi.market_code,
 
     -- From: INDEX CONSTITUENT DIMENSION
-    idx_dim.index_constituent_dim_id,
+    f.index_constituent_dim_id,
     idx_dim.index_code,
     idx_dim.index_nm
 
@@ -461,7 +461,7 @@ JOIN datamart.cdr_dt_dim trade_cal
 JOIN datamart.market_index_dim mi
     ON mi.market_index_dim_id = f.market_index_dim_id
 JOIN datamart.index_constituent_dim idx_dim
-    ON idx_dim.index_code = mi.market_code
+    ON idx_dim.index_constituent_dim_id = f.index_constituent_dim_id
 WHERE trade_cal.cdr_dt = :etl_date
   AND idx_dim.index_code IN ('HOSE','HNX','UPCOM','30','HNX30','100')
 ;

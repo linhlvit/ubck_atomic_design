@@ -538,7 +538,7 @@ COMMENT 'Flat table — Derivatives Security Detail Report (BM043)'
 --    [MỚI 2026-09-23] Nhóm 18 BM030a_MSS — K_TKNB_1013 (Loại chỉ số) / K_TKNB_1014 (Giá trị chỉ số).
 --    Grain: 1 chỉ số (market_code) × 1 ngày giao dịch. KHÔNG dùng qlkd_fct_market_index_snpst_flat
 --    vì flat QLKD chỉ giữ ngày cuối tháng, báo cáo TKNB theo ngày.
---    Khóa nối chỉ số: market_index_dim.market_code = index_constituent_dim.index_code
+--    JOIN Index Constituent Dimension qua FK fct_market_index_snpst.index_constituent_dim_id (lookup market_code = index_code)
 --    (KHÔNG dùng index_nm = index_code). Lọc 6 mã theo BA dòng 1131: ('HOSE','HNX','UPCOM','30','HNX30','100').
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_fct_market_index_snpst_flat ON CLUSTER 'my_cluster'
@@ -555,7 +555,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_market_index_snpst_flat ON CLUSTER 
     market_code                 Nullable(String)        COMMENT 'Mã chỉ số MARKETCODE (HOSE/HNX/UPCOM/30/HNX30/100) — từ Market Index Dimension',
 
     -- From: INDEX CONSTITUENT DIMENSION
-    index_constituent_dim_id    Nullable(String)        COMMENT 'FK tới Index Constituent Dimension (nối market_code = index_code)',
+    index_constituent_dim_id    Nullable(String)        COMMENT 'FK tới Index Constituent Dimension — cột FK trên Fact (lookup market_code = index_code)',
     index_code                  Nullable(String)        COMMENT 'Loại chỉ số — Chiều K_TKNB_1013 — từ Index Constituent Dimension',
     index_nm                    Nullable(String)        COMMENT 'Tên hiển thị chỉ số (VN-Index/HNX-Index/UPCoM-Index/VN30/HNX30/VN100) — từ Index Constituent Dimension'
 )

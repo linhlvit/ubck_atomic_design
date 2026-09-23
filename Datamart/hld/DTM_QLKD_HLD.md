@@ -1787,9 +1787,12 @@ erDiagram
     Fact_Market_Index_Snapshot {
         string Snapshot_Date_Dimension_Id FK
         string Market_Index_Dimension_Id FK
+        string Index_Constituent_Dimension_Id FK
         decimal Market_Index_Val
     }
 ```
+
+> **[MỚI 2026-09-23 — delta partial từ TKNB Nhóm 18]** Bổ sung FK `index_constituent_dim_id` (nullable) tới `Index Constituent Dimension` (sở hữu GSTT) — lookup `index_constituent_dim.index_code = market_index_snapshot.market_code`, phục vụ Chiều "Loại chỉ số" K_TKNB_1013. QLKD (K_QLKD_88–91) không dùng cột này; không đổi grain.
 
 **Bảng grain (K_QLKD_88–91):**
 
