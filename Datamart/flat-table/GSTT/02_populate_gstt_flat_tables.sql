@@ -3,6 +3,8 @@
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
 -- 6 bảng: 5 fact + 1 operational
+-- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 28/31 —
+-- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
 -- Sửa 2026-09-14: bổ sung Fact 1b (Index Constituent Snapshot, Bridge Factless) —
 --   tách khỏi Fact 1 để hết fan-out theo rổ chỉ số (xem HLD v4.13)
 -- ETL daily:
@@ -181,6 +183,7 @@ SELECT
     f.idx_foreign_net_val,
     f.idx_total_negotiated_vol,
     f.idx_total_negotiated_val,
+    f.idx_market_index_val,
     f.idx_market_cap,
     f.idx_free_float_market_cap,
     f.idx_pe,
@@ -362,6 +365,47 @@ JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.security_trading_snpst_dim scr_dim
     ON scr_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 5b. FACT: gstt_fct_investor_category_index_trading_snpst_flat
+--    [MỚI 2026-09-23] DELETE-scoped theo cdr_dt = :etl_date (4 dòng/chỉ số/ngày,
+--    1 dòng/Phân loại NĐT)
+-- ============================================================
+DELETE FROM datamart.gstt_fct_investor_category_index_trading_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_investor_category_index_trading_snpst_flat
+SELECT
+    -- From: FACT Investor Category Index Trading Snapshot
+    f.index_constituent_dim_id,
+    f.snpst_dt_dim_id,
+    f.investor_category_code,
+    f.buy_val,
+    f.sell_val,
+    f.matched_buy_val,
+    f.matched_sell_val,
+    f.negotiated_buy_val,
+    f.negotiated_sell_val,
+    f.market_index_val,
+    f.index_change,
+    f.index_percent_change,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt                          AS cdr_dt,
+    cal.is_trading_date                 AS is_trading_date,
+
+    -- From: INDEX CONSTITUENT DIMENSION
+    idx_cons_dim.index_code             AS index_code,
+    idx_cons_dim.index_id               AS index_id,
+    idx_cons_dim.index_nm               AS index_nm
+
+FROM datamart.fct_investor_category_index_trading_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.index_constituent_dim idx_cons_dim
+    ON idx_cons_dim.index_constituent_dim_id = f.index_constituent_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;
 

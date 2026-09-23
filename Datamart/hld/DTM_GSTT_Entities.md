@@ -3,6 +3,7 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.6 (2026-09-23):** Bổ sung `Fact Investor Category Index Trading Snapshot` (mới, Nhóm 28/31 — grain Chỉ số); `Fact Investor Category Trading Snapshot` nay phục vụ Nhóm 29/30. Đánh số lại Nhóm 30→31 … 35→36 theo BA 2026-09-23 (HLD v4.23).
 **Thay đổi v2.5 (2026-09-21):** Bổ sung `Fact Investor Category Trading Snapshot` (mới) — tách phân loại NĐT khỏi `Fact Stock Portfolio Snapshot`, phục vụ Nhóm 28/29 (K_GSTT_85–94).
 **Thay đổi v2.4 (2026-09-16):** Đổi nguồn `Outstanding Share Quantity` (trên `Fact Stock Portfolio Snapshot`) và `Index Market Cap` (trên `Fact Index Constituent Snapshot`) từ `pc_share_statistics_hstr` (IDS) sang `listed_share_info` (VSDC `outstanding_shares`, `src_stm_code = 'VSDC_OUTSTANDING_SHARES'`). Đồng bộ hoàn toàn nguồn dữ liệu số lượng cổ phiếu lưu hành & tự do chuyển nhượng về VSDC, khắc phục dứt điểm tình trạng rỗng dữ liệu trên sàn HNX/UPCOM.
 **Thay đổi v2.3:** Đổi tên `Index Total Volume`/`Index Total Value` → `Index Total Matched Volume`/`Index Total Matched Value` — review sheet Tổng hợp công thức xác nhận KLGD/GTGD của chỉ số (K_GSTT_47/48) phải loại trừ thỏa thuận, khác BA_analyst_GSTT.csv STT5.
@@ -126,9 +127,9 @@ erDiagram
 
 ---
 
-## Fact Investor Category Trading Snapshot (phục vụ Nhóm 28, 29)
+## Fact Investor Category Trading Snapshot (phục vụ Nhóm 29, 30)
 
-**[MỚI 2026-09-21, theo yêu cầu Data Modeler]** Tách khỏi `Fact Stock Portfolio Snapshot` để có cột vật lý `Investor Category Code` thay vì 4 cụm cột cố định (`Individual_*`/`Domestic_Institution_*`/`Proprietary_*`/`Foreign_*`) + CASE WHEN switch tại tầng BI. Nguồn `Securities Trade.Buy/Sell Investor Type Code` (Cá nhân/Tổ chức trong nước, phân nhánh HOSE/HNX) + `Buy/Sell Client House Classification Code='30'` (Tự doanh) + `Buy/Sell Foreign Investor Type Code IN ('10','20')` (Nước ngoài). Không đổi grain/cột của `Fact Stock Portfolio Snapshot` — Nhóm 21/25/27/33 tiếp tục dùng nguyên các cột đã có, không bị ảnh hưởng.
+**[MỚI 2026-09-21, theo yêu cầu Data Modeler]** Tách khỏi `Fact Stock Portfolio Snapshot` để có cột vật lý `Investor Category Code` thay vì 4 cụm cột cố định (`Individual_*`/`Domestic_Institution_*`/`Proprietary_*`/`Foreign_*`) + CASE WHEN switch tại tầng BI. Nguồn `Securities Trade.Buy/Sell Investor Type Code` (Cá nhân/Tổ chức trong nước, phân nhánh HOSE/HNX) + `Buy/Sell Client House Classification Code='30'` (Tự doanh) + `Buy/Sell Foreign Investor Type Code IN ('10','20')` (Nước ngoài). Không đổi grain/cột của `Fact Stock Portfolio Snapshot` — Nhóm 21/25/27/35 tiếp tục dùng nguyên các cột đã có, không bị ảnh hưởng.
 
 ```mermaid
 erDiagram
@@ -138,13 +139,31 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Investor Category Trading Snapshot | Fact Snapshot | new | Giá trị mua/bán theo Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách riêng khớp lệnh/thỏa thuận | 1 row / mã CK / ngày giao dịch / Phân loại NĐT | K_GSTT_85–94 |
+| Fact Investor Category Trading Snapshot | Fact Snapshot | new | Giá trị mua/bán theo Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách riêng khớp lệnh/thỏa thuận | 1 row / mã CK / ngày giao dịch / Phân loại NĐT | K_GSTT_85, 90–92, 153–158 (86–89/93/94/152 DEPRECATED) |
 | Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
 ---
 
-## Legal Entity Position Dimension + Operational Public Company Shareholding (phục vụ Nhóm 31, Nhóm 34 reuse)
+## Fact Investor Category Index Trading Snapshot (phục vụ Nhóm 28, 31)
+
+**[MỚI 2026-09-23, Data Modeler duyệt]** Giao dịch theo phân loại NĐT ở cấp **Chỉ số** — tách riêng khỏi `Fact Investor Category Trading Snapshot` (cấp Mã CK) để không SUM runtime lệch hạt. Chứa 6 measure GT (Tổng/Khớp lệnh/Thỏa thuận × Mua/Bán) và 3 measure giá chỉ số (broadcast trên 4 dòng Phân loại NĐT — truy vấn dùng MAX). Xem HLD Cụm 1d.
+
+```mermaid
+erDiagram
+    Index_Constituent_Dimension ||--o{ Fact_Investor_Category_Index_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Category_Index_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Investor Category Index Trading Snapshot | Fact Snapshot | new | GT mua/bán theo Phân loại NĐT theo rổ chỉ số + điểm/thay đổi/% thay đổi chỉ số | 1 row / Index Code / ngày giao dịch / Phân loại NĐT | K_GSTT_85, 35, 38, 39, 161–169 |
+| Index Constituent Dimension | Dimension | reuse | Mô tả rổ chỉ số — đã thiết kế ở Nhóm 1 | 1 row / Index Code (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---
+
+## Legal Entity Position Dimension + Operational Public Company Shareholding (phục vụ Nhóm 33, Nhóm 36 reuse)
 
 **[THIẾT KẾ LẠI 2026-09-12, đảo ngược O_GSTT_9 theo xác nhận trực tiếp Data Modeler]** `Operational Public Company Shareholding` khôi phục lại (trước đó bị loại khỏi Star Schema 2026-08-03 vì 0 KPI READY) — nay đủ nguồn Atomic cho toàn bộ 8/8 KPI: `pc_shareholding` (IDS.COMPANY_SHAREHOLDING, Nguồn 1 draft), `legal_entity` (IDS.LEGAL_ENTITIES, Nguồn 2 draft), `foreign_ownership_info` (VSDC, theo mapping `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` — chưa có LDM YAML/manifest chính thức, chấp nhận ngoại lệ theo xác nhận trực tiếp). `Legal Entity Position Dimension` giữ nguyên như cũ, dùng độc lập song song.
 
