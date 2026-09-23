@@ -10092,15 +10092,6 @@ entities:
         description: "Tổng vốn hóa thị trường MCAPt"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.close_price"
-      - logical_name: "Margin To Market Cap Ratio"
-        physical_name: "margin_to_market_cap_ratio"
-        data_domain: "Percentage"
-        data_type: "decimal(5,2)"
-        nullable: true
-        key: "DD"
-        description: "Tỷ lệ Dư nợ Margin / Tổng vốn hóa Mt"
-        source_atomic_table: null
-        source_atomic_column: null
       - logical_name: "Beta Volatility"
         physical_name: "beta_volatility"
         data_domain: "Percentage"
@@ -10200,15 +10191,6 @@ entities:
         description: "Huy động vốn cổ phần thị trường tại ngày t — tổng 3 nguồn UNION ALL"
         source_atomic_table: "pc_securities_offering_result / pc_securities_offering_plan / pc_securities_offering / sc_disclosure_securities_offering / fmc_securities_offering"
         source_atomic_column: "pc_securities_offering_result / pc_securities_offering_plan / pc_securities_offering / sc_disclosure_securities_offering / fmc_securities_offering.total_collected_amt"
-      - logical_name: "Z Score Margin Balance Current"
-        physical_name: "z_score_margin_balance_current"
-        data_domain: "Percentage"
-        data_type: "decimal(5,2)"
-        nullable: true
-        key: "DD"
-        description: "Z-score Dư nợ Margin — giá trị chuẩn hóa ngày t"
-        source_atomic_table: null
-        source_atomic_column: null
       - logical_name: "Margin To Cap Ratio Stddev"
         physical_name: "margin_to_cap_ratio_stddev"
         data_domain: "Percentage"
@@ -10236,6 +10218,15 @@ entities:
         description: "Tỷ lệ Dư nợ Margin / Tổng vốn hóa trung bình"
         source_atomic_table: null
         source_atomic_column: null
+      - logical_name: "Total Margin Balance"
+        physical_name: "total_margin_balance"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: ""
+        description: "Tổng dư nợ cho vay giao dịch ký quỹ toàn hệ thống CTCK (MDₜ) của kỳ báo cáo tháng chứa ngày thống kê — giữ nguyên giá trị cho mọi ngày trong tháng."
+        source_atomic_table: "sc_report_input_value"
+        source_atomic_column: "sc_report_input_value.item_val"
       - logical_name: "Index Log Return"
         physical_name: "index_log_return"
         data_domain: "Percentage"
@@ -10852,6 +10843,42 @@ entities:
         description: "He so no/von chu so huu toan nganh = Sigma No phai tra nganh / Sigma VCSH nganh (BA dong 195) - BA ghi them can 'quy doi ra diem so 0-100' nhung chua cho nguong cu the, giu nguyen ty le tho, xem ghi chu"
         source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
         source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+      - logical_name: "Total Trading Value Matched Sector"
+        physical_name: "total_trading_val_matched_sector"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Tổng giá trị giao dịch khớp lệnh của các cổ phiếu thuộc ngành trong ngày t (GTGD theo ngành — PTTT Nhóm 33)."
+        source_atomic_table: "securities_trade / public_company"
+        source_atomic_column: "securities_trade.execution_val"
+      - logical_name: "Foreign Net Value Sector"
+        physical_name: "foreign_net_val_sector"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Giá trị mua ròng của nhà đầu tư nước ngoài theo ngành ngày t = GT mua NĐTNN − GT bán NĐTNN (Dòng tiền ròng NĐTNN theo ngành — PTTT Nhóm 33)."
+        source_atomic_table: "securities_trade / public_company"
+        source_atomic_column: "securities_trade.execution_val"
+      - logical_name: "Proprietary Net Value Sector"
+        physical_name: "proprietary_net_val_sector"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Giá trị mua ròng của tự doanh CTCK theo ngành ngày t = GT mua tự doanh − GT bán tự doanh (Dòng tiền ròng tự doanh theo ngành — PTTT Nhóm 33)."
+        source_atomic_table: "securities_trade / public_company"
+        source_atomic_column: "securities_trade.execution_val"
+      - logical_name: "Total Outstanding Share Quantity Sector"
+        physical_name: "total_outstanding_share_quantity_sector"
+        data_domain: "Large Counter"
+        data_type: "bigint"
+        nullable: true
+        key: "DD"
+        description: "Tổng khối lượng cổ phiếu đang lưu hành của các mã thuộc ngành tại ngày t (VSDC TT138.2025 Mẫu 01 — PTTT Nhóm 33)."
+        source_atomic_table: "listed_share_info / public_company"
+        source_atomic_column: "listed_share_info.outstanding_share_quantity"
 
   - id: "DTM-fct_order_size_snpst"
     logical_name: "Fact Order Size Snapshot"
@@ -11573,6 +11600,15 @@ entities:
         description: "Tỷ lệ đột biến thanh khoản HĐTL"
         source_atomic_table: "fct_futures_intraday_snpst"
         source_atomic_column: "fct_futures_intraday_snpst.total_trading_vol_matched"
+      - logical_name: "Open Interest Quantity"
+        physical_name: "open_interest_quantity"
+        data_domain: "Large Counter"
+        data_type: "bigint"
+        nullable: true
+        key: "DD"
+        description: "Khối lượng hợp đồng mở (OI) cuối ngày của mã HĐTL (VSDC — BM 2 Báo cáo về khối lượng mở cuối ngày; PTTT Nhóm 26)."
+        source_atomic_table: "end_of_day_open_interest / security_trading_snapshot"
+        source_atomic_column: "end_of_day_open_interest.open_interest_quantity"
 
   - id: "DTM-fct_futures_investor_flow_snpst"
     logical_name: "Fact Futures Investor Flow Snapshot"
@@ -11758,6 +11794,15 @@ entities:
         description: "GTGD trung bình 50 phiên (MA50)"
         source_atomic_table: "fct_market_statistics_snpst"
         source_atomic_column: "fct_market_statistics_snpst.total_trading_val_matched"
+      - logical_name: "Total Outstanding Share Quantity"
+        physical_name: "total_outstanding_share_quantity"
+        data_domain: "Large Counter"
+        data_type: "bigint"
+        nullable: true
+        key: "DD"
+        description: "Tổng khối lượng cổ phiếu đang lưu hành của các mã thuộc rổ chỉ số tại ngày t (VSDC TT138.2025 Mẫu 01 — PTTT Nhóm 32)."
+        source_atomic_table: "listed_share_info / index_constituent_snapshot / market_index_snapshot"
+        source_atomic_column: "listed_share_info.outstanding_share_quantity"
 
   - id: "DTM-inspection_team_violation_behavior_dim"
     logical_name: "Inspection Team Violation Behavior Dimension"

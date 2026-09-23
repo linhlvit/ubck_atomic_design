@@ -21,7 +21,6 @@ SELECT
     f.z_score_interbank_rate,
     f.z_score_foreign_net_flow,
     f.total_market_cap,
-    f.margin_to_market_cap_ratio,
     f.beta_volatility,
     f.beta_liquidity,
     f.beta_margin_balance,
@@ -33,10 +32,10 @@ SELECT
     f.risk_index,
     f.z_score_equity_capital_raising,
     f.equity_capital_raising_amt,
-    f.z_score_margin_balance_current,
     f.margin_to_cap_ratio_stddev,
     f.margin_to_cap_ratio_current,
     f.margin_to_cap_ratio_avg,
+    f.total_margin_balance,
     f.index_log_return,
     f.illiquidity_ratio,
     f.foreign_net_flow,
@@ -124,6 +123,10 @@ SELECT
     f.sector_stress_delta,
     f.sector_rating,
     f.sector_debt_score,
+    f.total_trading_val_matched_sector,
+    f.foreign_net_val_sector,
+    f.proprietary_net_val_sector,
+    f.total_outstanding_share_quantity_sector,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt,
 
@@ -303,6 +306,7 @@ SELECT
     f.total_trading_vol_matched,
     f.total_trading_vol_matched_average_50_days,
     f.liquidity_spike_ratio,
+    f.open_interest_quantity,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt
 FROM datamart.fct_futures_intraday_snpst f
@@ -348,6 +352,7 @@ SELECT
     f.price_change_percentage,
     f.total_trading_val_matched,
     f.total_trading_val_matched_average_50_days,
+    f.total_outstanding_share_quantity,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt
 FROM datamart.fct_market_statistics_snpst f

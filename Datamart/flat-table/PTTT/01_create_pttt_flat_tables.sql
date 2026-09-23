@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_market_risk_snpst_flat ON CLUSTER '
     z_score_interbank_rate                      Nullable(Decimal(5,2))  COMMENT 'Z-score Lãi suất liên ngân hàng',
     z_score_foreign_net_flow                    Nullable(Decimal(5,2))  COMMENT 'Z-score Dòng tiền ròng NĐTNN',
     total_market_cap                            Nullable(Decimal(23,2)) COMMENT 'Tổng vốn hóa thị trường MCAPt',
-    margin_to_market_cap_ratio                  Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ Dư nợ Margin / Tổng vốn hóa Mt',
     beta_volatility                             Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Biến động chỉ số VN-Index',
     beta_liquidity                              Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Thanh khoản',
     beta_margin_balance                         Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Dư nợ Margin',
@@ -35,10 +34,10 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_market_risk_snpst_flat ON CLUSTER '
     risk_index                                  Nullable(Decimal(5,2))  COMMENT 'Risk Index — Chỉ số rủi ro hệ thống tổng hợp',
     z_score_equity_capital_raising              Nullable(Decimal(5,2))  COMMENT 'Z-score Huy động vốn cổ phần',
     equity_capital_raising_amt                  Nullable(Decimal(23,2)) COMMENT 'Huy động vốn cổ phần thị trường tại ngày t',
-    z_score_margin_balance_current              Nullable(Decimal(5,2))  COMMENT 'Z-score Dư nợ Margin — giá trị chuẩn hóa ngày t',
     margin_to_cap_ratio_stddev                  Nullable(Decimal(5,2))  COMMENT 'Độ lệch chuẩn chuỗi tỷ lệ Dư nợ Margin/MCAP',
     margin_to_cap_ratio_current                 Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ Dư nợ Margin / Tổng vốn hóa tại ngày t',
     margin_to_cap_ratio_avg                     Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ Dư nợ Margin / Tổng vốn hóa trung bình',
+    total_margin_balance                        Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-23] Tổng dư nợ margin toàn hệ thống CTCK (MDₜ) kỳ tháng chứa ngày t — SCMS BCTHHD_CTCK cell TS024',
     index_log_return                            Nullable(Decimal(5,2))  COMMENT 'Log return chỉ số VN-Index ngày t',
     illiquidity_ratio                           Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ thanh khoản ILLIQ ngày t',
     foreign_net_flow                            Nullable(Decimal(23,2)) COMMENT 'Dòng tiền ròng NĐTNN ngày t',
@@ -137,6 +136,10 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_sector_risk_snpst_flat ON CLUSTER '
     sector_stress_delta                Nullable(Decimal(5,2))  COMMENT 'Biến động áp lực ngành = Stress Score Sector kỳ này trừ kỳ trước',
     sector_rating                       Nullable(String)        COMMENT 'Xếp hạng mức độ căng thẳng ngành',
     sector_debt_score                    Nullable(Decimal(8,4))  COMMENT 'Hệ số nợ/vốn chủ sở hữu toàn ngành (Sector Debt Score)',
+    total_trading_val_matched_sector     Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-23] Tổng GTGD khớp lệnh theo ngành ngày t (PTTT Nhóm 33)',
+    foreign_net_val_sector               Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-23] Giá trị mua ròng NĐTNN theo ngành ngày t (PTTT Nhóm 33)',
+    proprietary_net_val_sector           Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-23] Giá trị mua ròng tự doanh theo ngành ngày t (PTTT Nhóm 33)',
+    total_outstanding_share_quantity_sector  Nullable(Int64)         COMMENT '[MỚI 2026-09-23] Tổng KL CP lưu hành theo ngành ngày t (PTTT Nhóm 33)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt        Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -361,6 +364,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_futures_intraday_snpst_flat ON CLUS
     total_trading_vol_matched                    Nullable(Decimal(23,2)) COMMENT 'KLGD HĐTL ngày t',
     total_trading_vol_matched_average_50_days    Nullable(Decimal(23,2)) COMMENT 'KLGD HĐTL trung bình 50 phiên',
     liquidity_spike_ratio                        Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ đột biến thanh khoản HĐTL',
+    open_interest_quantity                   Nullable(Int64)         COMMENT '[MỚI 2026-09-23] Khối lượng HĐ mở (OI) cuối ngày — VSDC BM2 (PTTT Nhóm 26)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                                 Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'
@@ -418,6 +422,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_market_statistics_snpst_flat ON CLU
     price_change_percentage                     Nullable(Decimal(5,2))  COMMENT '% thay đổi giá',
     total_trading_val_matched                   Nullable(Decimal(23,2)) COMMENT 'GTGD phiên tại ngày t',
     total_trading_val_matched_average_50_days   Nullable(Decimal(23,2)) COMMENT 'GTGD trung bình 50 phiên (MA50)',
+    total_outstanding_share_quantity         Nullable(Int64)         COMMENT '[MỚI 2026-09-23] Tổng KL CP lưu hành của rổ chỉ số ngày t (PTTT Nhóm 32)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                                Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'

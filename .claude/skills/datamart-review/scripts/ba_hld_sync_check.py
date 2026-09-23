@@ -98,7 +98,7 @@ def screen_key(dash: str) -> str:
 
 def kind(text: str) -> str:
     t = " " + norm(text) + " "
-    is_val = any(w in t for w in ("gtnn", "gtgd", "giá trị", "_val", "vốn hóa", "vốn hoá", "market cap")) or re.search(r"(^| )gt( |$)", t)
+    is_val = any(w in t for w in ("gtnn", "gtgd", "giá trị", "_val", "vốn hóa", "vốn hoá", "market cap", "marketcap", "dòng tiền", "giá trị giao dịch")) or re.search(r"(^| )gt( |$)", t)
     is_vol = any(w in t for w in ("klnn", "klgd", "khối lượng", "_vol")) or re.search(r"(^| )kl( |$)", t)
     if is_vol and re.search(r"giá|price", t) and re.search(r"[*×x]", t):  # KL × giá = GIÁ TRỊ
         return "VAL"
