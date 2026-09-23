@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — POPULATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 23 bảng — operational: KHÔNG JOIN, KHÔNG lọc ngày; FACT (#13/#16/#23): JOIN dim, lọc :etl_date
+-- 22 bảng — operational: KHÔNG JOIN, KHÔNG lọc ngày; FACT (#13/#16): JOIN dim, lọc :etl_date
 -- ============================================================
 
 -- ============================================================
@@ -222,6 +222,7 @@ INSERT INTO datamart.tknb_fct_market_trading_snpst_flat
 SELECT
     -- From: FACT Fact Market Trading Snapshot
     f.snpst_dt_dim_id,
+    f.index_constituent_dim_id,
     f.total_trading_val,
     f.total_trading_vol,
     f.matched_trading_val,
@@ -230,14 +231,21 @@ SELECT
     f.negotiated_trading_vol,
     f.odd_lot_trading_val,
     f.odd_lot_trading_vol,
+    f.market_index_val,
     f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
-    trade_cal.cdr_dt                   AS trade_cdr_dt
+    trade_cal.cdr_dt                   AS trade_cdr_dt,
+
+    -- From: INDEX CONSTITUENT DIMENSION
+    idx_dim.index_code,
+    idx_dim.index_nm
 
 FROM datamart.fct_market_trading_snpst f
 JOIN datamart.cdr_dt_dim trade_cal
     ON trade_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.index_constituent_dim idx_dim
+    ON idx_dim.index_constituent_dim_id = f.index_constituent_dim_id
 WHERE trade_cal.cdr_dt = :etl_date
 ;
 
@@ -431,37 +439,4 @@ SELECT
     o.item_value,
     o.src_stm_code
 FROM datamart.bm043mss_derivatives_security_detail_rpt o
-;
-
--- ============================================================
--- 23. FACT: fct_market_index_snpst (reuse — sở hữu QLKD) — [MỚI 2026-09-23] Nhóm 18 K_TKNB_1013/1014
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_fct_market_index_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_fct_market_index_snpst_flat
-SELECT
-    -- From: FACT Market Index Snapshot
-    f.snpst_dt_dim_id,
-    f.market_index_dim_id,
-    f.market_index_val,
-
-    -- From: CALENDAR DATE DIMENSION
-    trade_cal.cdr_dt                    AS trade_cdr_dt,
-
-    -- From: MARKET INDEX DIMENSION
-    mi.market_code,
-
-    -- From: INDEX CONSTITUENT DIMENSION
-    f.index_constituent_dim_id,
-    idx_dim.index_code,
-    idx_dim.index_nm
-
-FROM datamart.fct_market_index_snpst f
-JOIN datamart.cdr_dt_dim trade_cal
-    ON trade_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-JOIN datamart.market_index_dim mi
-    ON mi.market_index_dim_id = f.market_index_dim_id
-JOIN datamart.index_constituent_dim idx_dim
-    ON idx_dim.index_constituent_dim_id = f.index_constituent_dim_id
-WHERE trade_cal.cdr_dt = :etl_date
-  AND idx_dim.index_code IN ('HOSE','HNX','UPCOM','30','HNX30','100')
 ;

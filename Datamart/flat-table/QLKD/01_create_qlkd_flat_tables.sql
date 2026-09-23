@@ -154,7 +154,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 
     -- From: FACT Market Index Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày (populate lấy đúng ngày cuối tháng)',
     market_index_dim_id             String                  COMMENT 'FK Market Index Dimension',
-    index_constituent_dim_id        Nullable(String)        COMMENT '[MỚI 2026-09-23] FK Index Constituent Dimension (market_code = index_code) — delta TKNB',
     market_index_val                Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ số (bản ghi cuối phiên, ngày cuối tháng)',
     open_index                      Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Index mở cửa tại bản ghi cuối phiên',
     high_index                      Nullable(Decimal(23,2)) COMMENT '[GSTT delta] Index cao nhất tại bản ghi cuối phiên',

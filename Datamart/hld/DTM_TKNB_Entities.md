@@ -83,15 +83,13 @@ erDiagram
     Index_Constituent_Dimension ||--o{ Fact_Foreign_Proprietary_Trading_Index_Snapshot : "Index_Constituent_Dimension_Id"
 ```
 
-## Bảng entity tóm tắt (25 bảng: 5 Star Schema mới/reuse + 20 Operational — 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED và xóa khỏi bảng này, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
+## Bảng entity tóm tắt (23 bảng: 3 Star Schema mới/reuse + 20 Operational — 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED và xóa khỏi bảng này, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
 | — | Calendar Date Dimension | Dimension | reuse | Lịch ngày dùng chung | 1 dòng/1 ngày | — |
-| — | Market Index Dimension | Dimension | reuse (QLKD) | Danh mục chỉ số thị trường | 1 dòng/combo Market Id+Market Code | — |
-| — | Index Constituent Dimension | Dimension | reuse (GSTT) | Danh mục rổ chỉ số | 1 dòng/Index Code | — |
-| — | Fact Market Index Snapshot | Fact | reuse (QLKD) | Snapshot chỉ số thị trường | 1 dòng/market_code/ngày | K_TKNB_1014 (Nhóm 18) |
-| — | Fact Market Trading Snapshot | Fact | new | GTGD/KLGD toàn thị trường cổ phiếu theo ngày | 1 dòng/Trade Date | K_TKNB_1015–1022 (Nhóm 18) |
+| — | Index Constituent Dimension | Dimension | reuse (GSTT) | Danh mục rổ chỉ số | 1 dòng/Index Code | K_TKNB_1013 (Nhóm 18), K_TKNB_1069 (Nhóm 23) |
+| — | Fact Market Trading Snapshot | Fact | new | GTGD/KLGD toàn thị trường cổ phiếu + giá trị chỉ số theo ngày [SỬA 2026-09-23] | 1 dòng/Trade Date × Index Code | K_TKNB_1013–1022 (Nhóm 18) |
 | — | Fact Foreign Proprietary Trading Index Snapshot | Fact | new | GD NĐTNN/tự doanh theo chỉ số | 1 dòng/Trade Date × Index Code | K_TKNB_1070–1093 (Nhóm 23) |
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
@@ -122,10 +120,8 @@ erDiagram
 | Datamart Entity | source_table (Atomic physical_name) |
 |---|---|
 | Calendar Date Dimension | cdr_dt_dim (conformed, không có Atomic source riêng) |
-| Market Index Dimension | market_index_snapshot |
 | Index Constituent Dimension | index_constituent_snapshot |
-| Fact Market Index Snapshot | market_index_snapshot |
-| Fact Market Trading Snapshot | securities_trade |
+| Fact Market Trading Snapshot | securities_trade / market_index_snapshot |
 | Fact Foreign Proprietary Trading Index Snapshot | securities_trade / index_constituent_snapshot |
 | Stock Trading Report (HNX01) | market_index_snapshot / security_trading_snapshot / securities_trade |
 | Gov Bond OTC Trading Report (HNX02) | bond_order_book |
