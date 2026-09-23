@@ -1,0 +1,77 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: OUTPUT_REPORT_TEMPLATE_COMBO_USED
+brd_ref: BRD-SRC-ISS-OUTPUT_REPORT_TEMPLATE_COMBO_USED
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: INPUT_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo đầu vào trong tổ hợp"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_TEMPLATE.ID"
+
+  - name: OUTPUT_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo đầu ra trong tổ hợp"
+    key: FK
+    fk_note: "FK → OUTPUT_REPORT_TEMPLATE.ID"
+
+  - name: COMBO_CODE
+    data_type: "VARCHAR2(255)"
+    description: "Mã tổ hợp"
+    key: null
+    fk_note: null
+
+  - name: IS_VALID
+    data_type: "NUMBER(1,0)"
+    description: "Cờ tổ hợp còn hiệu lực (1: Có, 0: Không)"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null

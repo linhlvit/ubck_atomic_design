@@ -1,0 +1,83 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: REPORT_PERMISSION_GROUP
+brd_ref: BRD-SRC-ISS-REPORT_PERMISSION_GROUP
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: PERMISSION_CODE
+    data_type: "VARCHAR2(1020)"
+    description: "Mã nhóm quyền"
+    key: null
+    fk_note: null
+
+  - name: PERMISSION_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên nhóm quyền"
+    key: null
+    fk_note: null
+
+  - name: STATUS
+    data_type: "VARCHAR2(20)"
+    description: "Trạng thái nhóm quyền"
+    key: null
+    fk_note: null
+
+  - name: INPUT_REPORT_CODES
+    data_type: "CLOB"
+    description: "Danh sách mã báo cáo đầu vào được cấp quyền"
+    key: null
+    fk_note: null
+
+  - name: OUTPUT_REPORT_CODES
+    data_type: "CLOB"
+    description: "Danh sách mã báo cáo đầu ra được cấp quyền"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null

@@ -1,0 +1,113 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: INPUT_REPORT_SUBMISSION
+brd_ref: BRD-SRC-ISS-INPUT_REPORT_SUBMISSION
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: INPUT_REPORT_ID
+    data_type: "VARCHAR2(36)"
+    description: "Yêu cầu báo cáo đầu vào tương ứng"
+    key: FK
+    fk_note: "FK → INPUT_REPORT.ID"
+
+  - name: SUBMIT_SOURCE
+    data_type: "VARCHAR2(50)"
+    description: "Nguồn nộp báo cáo (kênh nộp)"
+    key: null
+    fk_note: null
+
+  - name: FILE_INFO_ID
+    data_type: "VARCHAR2(36)"
+    description: "File báo cáo đã nộp"
+    key: FK
+    fk_note: "FK → FILE_INFO.ID"
+
+  - name: SUBMIT_STATUS
+    data_type: "VARCHAR2(20)"
+    description: "Trạng thái nộp báo cáo"
+    key: null
+    fk_note: null
+
+  - name: NOTE
+    data_type: "CLOB"
+    description: "Ghi chú"
+    key: null
+    fk_note: null
+
+  - name: DESCRIPTION
+    data_type: "CLOB"
+    description: "Mô tả"
+    key: null
+    fk_note: null
+
+  - name: COMPARE_RESULT_FILE_INFO_ID
+    data_type: "VARCHAR2(36)"
+    description: "File kết quả so khớp dữ liệu"
+    key: FK
+    fk_note: "FK → FILE_INFO.ID"
+
+  - name: COMPARE_STATUS
+    data_type: "VARCHAR2(20)"
+    description: "Trạng thái so khớp dữ liệu"
+    key: null
+    fk_note: null
+
+  - name: SUBMITTED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm nộp báo cáo"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null
+
+  - name: RESUBMIT_REASON
+    data_type: "CLOB"
+    description: "Lý do nộp lại"
+    key: null
+    fk_note: null

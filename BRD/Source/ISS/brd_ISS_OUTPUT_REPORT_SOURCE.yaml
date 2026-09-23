@@ -1,0 +1,17 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: OUTPUT_REPORT_SOURCE
+brd_ref: BRD-SRC-ISS-OUTPUT_REPORT_SOURCE
+columns:
+  - name: INPUT_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo đầu vào là nguồn dữ liệu"
+    key: PK
+    fk_note: "FK → INPUT_REPORT_TEMPLATE.ID"
+
+  - name: OUTPUT_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo đầu ra sử dụng nguồn dữ liệu"
+    key: PK
+    fk_note: "FK → OUTPUT_REPORT_TEMPLATE.ID"

@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: OUTPUT_REPORT_GENERATE_JOB
+brd_ref: BRD-SRC-ISS-OUTPUT_REPORT_GENERATE_JOB
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: STATUS
+    data_type: "VARCHAR2(20)"
+    description: "Trạng thái job"
+    key: null
+    fk_note: null
+
+  - name: OWNER_NODE
+    data_type: "VARCHAR2(50)"
+    description: "Node xử lý job (trong cluster)"
+    key: null
+    fk_note: null
+
+  - name: ERROR_MESSAGE
+    data_type: "CLOB"
+    description: "Thông báo lỗi job"
+    key: null
+    fk_note: null
+
+  - name: ATTEMPTS
+    data_type: "NUMBER(5,0)"
+    description: "Số lần đã thử chạy"
+    key: null
+    fk_note: null
+
+  - name: MAX_ATTEMPTS
+    data_type: "NUMBER(5,0)"
+    description: "Số lần thử tối đa"
+    key: null
+    fk_note: null
+
+  - name: SCHEDULED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm lên lịch chạy job"
+    key: null
+    fk_note: null
+
+  - name: STARTED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm bắt đầu chạy"
+    key: null
+    fk_note: null
+
+  - name: COMPLETED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm hoàn thành"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null

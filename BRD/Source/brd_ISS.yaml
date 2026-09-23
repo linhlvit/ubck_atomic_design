@@ -1,0 +1,537 @@
+schema_type: brd_source
+schema_version: '1.0'
+source: ISS
+description: "Hệ thống quản lý báo cáo định kỳ (Input/Output Statistical Reporting System) — quản lý mẫu báo cáo đầu vào/đầu ra, lịch nộp/hạn phát sinh, quá trình nộp báo cáo của tổ chức, sinh báo cáo đầu ra tự động và phân quyền truy cập báo cáo. Lưu ý: file DDL nguồn (UAT_ISS_schema.txt) không có comment Oracle ở cấp bảng lẫn cấp cột — toàn bộ table_meaning và mô tả cột trong BRD này được suy luận từ tên bảng/tên trường (không suy luận nghiệp vụ cụ thể ngoài tên trường), cần đội phát triển ISS xác nhận lại."
+brd_entries:
+
+  - brd_id: BRD-SRC-ISS-AUDIT_LOG
+    brd_name: "Design Atomic từ nguồn ISS bảng AUDIT_LOG"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký thay đổi dữ liệu (audit trail) theo entity — lưu giá trị cũ/mới dạng JSON"
+      functional_group: "Nhật ký & tiện ích dùng chung"
+      scope_status: pending
+      scope_reason: null
+      table: AUDIT_LOG
+      related_tables: null
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. ENTITY_TYPE/ENTITY_ID là tham chiếu polymorphic (không phải FK khai báo) tới entity bất kỳ trong hệ thống."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-FACT_REPORT_DATA
+    brd_name: "Design Atomic từ nguồn ISS bảng FACT_REPORT_DATA"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Dữ liệu chi tiết (fact) trích xuất từ báo cáo đầu vào đã nộp, theo từng sheet và kỳ báo cáo"
+      functional_group: "Quản lý báo cáo đầu vào (Input Report)"
+      scope_status: pending
+      scope_reason: null
+      table: FACT_REPORT_DATA
+      related_tables:
+        - table: INPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu vào tương ứng"
+        - table: INPUT_REPORT_SUBMISSION
+          relation: "FK cha — Lần nộp báo cáo tương ứng"
+        - table: INPUT_REPORT_TEMPLATE_SHEET
+          relation: "FK cha — Sheet tương ứng trong mẫu báo cáo"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. JSON_DATA lưu dữ liệu chi tiết dạng JSON theo cấu trúc sheet."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-FILE_INFO
+    brd_name: "Design Atomic từ nguồn ISS bảng FILE_INFO"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin file đính kèm dùng chung trong hệ thống (tên file, dung lượng, đường dẫn lưu trữ)"
+      functional_group: "Nhật ký & tiện ích dùng chung"
+      scope_status: pending
+      scope_reason: null
+      table: FILE_INFO
+      related_tables:
+        - table: INPUT_REPORT_SUBMISSION
+          relation: "1-N — File báo cáo đã nộp / file kết quả so khớp"
+        - table: INPUT_REPORT_TEMPLATE
+          relation: "1-N — File mẫu (template) báo cáo đầu vào"
+        - table: OUTPUT_REPORT
+          relation: "1-N — File báo cáo đầu ra được sinh"
+        - table: OUTPUT_REPORT_TEMPLATE
+          relation: "1-N — File mẫu (template) báo cáo đầu ra"
+        - table: REPORT_SEND_LOG
+          relation: "1-N — File báo cáo / file dữ liệu được gửi"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Bảng dùng chung, được nhiều bảng khác tham chiếu qua FILE_INFO_ID."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-INPUT_REPORT
+    brd_name: "Design Atomic từ nguồn ISS bảng INPUT_REPORT"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Yêu cầu nộp báo cáo đầu vào theo tổ chức và kỳ báo cáo, sinh từ mẫu báo cáo"
+      functional_group: "Quản lý báo cáo đầu vào (Input Report)"
+      scope_status: pending
+      scope_reason: null
+      table: INPUT_REPORT
+      related_tables:
+        - table: INPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu vào áp dụng"
+        - table: INPUT_REPORT_DEADLINE
+          relation: "FK cha — Cấu hình hạn nộp áp dụng"
+        - table: INPUT_REPORT_SUBMISSION
+          relation: "1-N — Các lần nộp báo cáo cho yêu cầu này"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. ORGANIZATION_ID tham chiếu tổ chức ở hệ thống ngoài (không có bảng ORGANIZATION trong schema ISS)."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-INPUT_REPORT_DEADLINE
+    brd_name: "Design Atomic từ nguồn ISS bảng INPUT_REPORT_DEADLINE"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình hạn nộp và nhắc nhở cho báo cáo đầu vào theo mẫu báo cáo"
+      functional_group: "Quản lý báo cáo đầu vào (Input Report)"
+      scope_status: pending
+      scope_reason: null
+      table: INPUT_REPORT_DEADLINE
+      related_tables:
+        - table: INPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu vào áp dụng"
+        - table: INPUT_REPORT
+          relation: "1-N — Các yêu cầu báo cáo sinh theo cấu hình hạn này"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-INPUT_REPORT_METRIC
+    brd_name: "Design Atomic từ nguồn ISS bảng INPUT_REPORT_METRIC"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cây chỉ tiêu (metric) trong sheet của mẫu báo cáo đầu vào"
+      functional_group: "Quản lý báo cáo đầu vào (Input Report)"
+      scope_status: pending
+      scope_reason: null
+      table: INPUT_REPORT_METRIC
+      related_tables:
+        - table: INPUT_REPORT_TEMPLATE_SHEET
+          relation: "FK cha — Sheet chứa chỉ tiêu"
+        - table: INPUT_REPORT_METRIC
+          relation: "FK tự tham chiếu — PARENT_ID trỏ về chính bảng (cấu trúc cây chỉ tiêu)"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Self-referencing FK trên PARENT_ID."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-INPUT_REPORT_SUBMISSION
+    brd_name: "Design Atomic từ nguồn ISS bảng INPUT_REPORT_SUBMISSION"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bản ghi nộp báo cáo đầu vào thực tế — file nộp, trạng thái nộp, kết quả so khớp"
+      functional_group: "Quản lý báo cáo đầu vào (Input Report)"
+      scope_status: pending
+      scope_reason: null
+      table: INPUT_REPORT_SUBMISSION
+      related_tables:
+        - table: INPUT_REPORT
+          relation: "FK cha — Yêu cầu báo cáo đầu vào tương ứng"
+        - table: FILE_INFO
+          relation: "FK cha — File báo cáo đã nộp / file kết quả so khớp"
+        - table: FACT_REPORT_DATA
+          relation: "1-N — Dữ liệu chi tiết trích xuất từ lần nộp này"
+        - table: REPORT_SEND_LOG
+          relation: "1-N — Nhật ký gửi liên quan đến lần nộp này"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. FILE_INFO_ID và COMPARE_RESULT_FILE_INFO_ID đều FK cùng tới FILE_INFO (2 vai trò khác nhau: file nộp vs file kết quả so khớp)."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-INPUT_REPORT_TEMPLATE
+    brd_name: "Design Atomic từ nguồn ISS bảng INPUT_REPORT_TEMPLATE"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Mẫu báo cáo đầu vào — mã báo cáo, căn cứ pháp lý, cấu hình layout"
+      functional_group: "Quản lý báo cáo đầu vào (Input Report)"
+      scope_status: pending
+      scope_reason: null
+      table: INPUT_REPORT_TEMPLATE
+      related_tables:
+        - table: FILE_INFO
+          relation: "FK cha — File mẫu (template) báo cáo"
+        - table: INPUT_REPORT_TEMPLATE
+          relation: "FK tự tham chiếu — COPY_REPORT_TEMPLATE_ID trỏ về mẫu báo cáo gốc được sao chép"
+        - table: FACT_REPORT_DATA
+          relation: "1-N — Dữ liệu fact sinh theo mẫu báo cáo này"
+        - table: INPUT_REPORT
+          relation: "1-N — Các yêu cầu báo cáo sinh theo mẫu này"
+        - table: INPUT_REPORT_DEADLINE
+          relation: "1-N — Cấu hình hạn nộp theo mẫu này"
+        - table: INPUT_REPORT_TEMPLATE_SHEET
+          relation: "1-N — Các sheet thuộc mẫu báo cáo này"
+        - table: OUTPUT_REPORT_SOURCE
+          relation: "N-N — Là nguồn dữ liệu cho các mẫu báo cáo đầu ra"
+        - table: OUTPUT_REPORT_TEMPLATE_COMBO_USED
+          relation: "1-N — Tổ hợp hợp lệ với các mẫu báo cáo đầu ra"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Entity trung tâm của nhóm Input Report."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-INPUT_REPORT_TEMPLATE_SHEET
+    brd_name: "Design Atomic từ nguồn ISS bảng INPUT_REPORT_TEMPLATE_SHEET"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Sheet (trang tính) trong mẫu báo cáo đầu vào"
+      functional_group: "Quản lý báo cáo đầu vào (Input Report)"
+      scope_status: pending
+      scope_reason: null
+      table: INPUT_REPORT_TEMPLATE_SHEET
+      related_tables:
+        - table: INPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo chứa sheet"
+        - table: FACT_REPORT_DATA
+          relation: "1-N — Dữ liệu fact trích xuất theo sheet này"
+        - table: INPUT_REPORT_METRIC
+          relation: "1-N — Cây chỉ tiêu thuộc sheet này"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-LOG_DATA_CHANGE
+    brd_name: "Design Atomic từ nguồn ISS bảng LOG_DATA_CHANGE"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký thao tác của người dùng trên hệ thống (action, IP, user agent)"
+      functional_group: "Nhật ký & tiện ích dùng chung"
+      scope_status: pending
+      scope_reason: null
+      table: LOG_DATA_CHANGE
+      related_tables: null
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Không có FK khai báo; USER_ID là tham chiếu người dùng ở hệ thống ngoài (IAM)."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-OUTPUT_REPORT
+    brd_name: "Design Atomic từ nguồn ISS bảng OUTPUT_REPORT"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bản ghi báo cáo đầu ra được sinh theo kỳ báo cáo"
+      functional_group: "Quản lý báo cáo đầu ra (Output Report)"
+      scope_status: pending
+      scope_reason: null
+      table: OUTPUT_REPORT
+      related_tables:
+        - table: OUTPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu ra áp dụng"
+        - table: FILE_INFO
+          relation: "FK cha — File báo cáo đầu ra được sinh"
+        - table: OUTPUT_REPORT_GENERATE_JOB_ITEM
+          relation: "1-N — Chi tiết job đã sinh báo cáo này"
+        - table: REPORT_SEND_LOG
+          relation: "1-N — Nhật ký gửi báo cáo này"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-OUTPUT_REPORT_DEADLINE
+    brd_name: "Design Atomic từ nguồn ISS bảng OUTPUT_REPORT_DEADLINE"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình hạn phát sinh báo cáo đầu ra theo mẫu báo cáo"
+      functional_group: "Quản lý báo cáo đầu ra (Output Report)"
+      scope_status: pending
+      scope_reason: null
+      table: OUTPUT_REPORT_DEADLINE
+      related_tables:
+        - table: OUTPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu ra áp dụng"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-OUTPUT_REPORT_GENERATE_JOB
+    brd_name: "Design Atomic từ nguồn ISS bảng OUTPUT_REPORT_GENERATE_JOB"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Job (tác vụ nền) sinh báo cáo đầu ra tự động"
+      functional_group: "Quản lý báo cáo đầu ra (Output Report)"
+      scope_status: pending
+      scope_reason: null
+      table: OUTPUT_REPORT_GENERATE_JOB
+      related_tables:
+        - table: OUTPUT_REPORT_GENERATE_JOB_ITEM
+          relation: "1-N — Các báo cáo đầu ra được sinh trong job này"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-OUTPUT_REPORT_GENERATE_JOB_ITEM
+    brd_name: "Design Atomic từ nguồn ISS bảng OUTPUT_REPORT_GENERATE_JOB_ITEM"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chi tiết báo cáo đầu ra được sinh ra trong một job"
+      functional_group: "Quản lý báo cáo đầu ra (Output Report)"
+      scope_status: pending
+      scope_reason: null
+      table: OUTPUT_REPORT_GENERATE_JOB_ITEM
+      related_tables:
+        - table: OUTPUT_REPORT_GENERATE_JOB
+          relation: "FK cha — Job sinh báo cáo tương ứng"
+        - table: OUTPUT_REPORT
+          relation: "FK cha — Báo cáo đầu ra được sinh"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Bảng liên kết N-N giữa job và báo cáo đầu ra."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-OUTPUT_REPORT_METRIC
+    brd_name: "Design Atomic từ nguồn ISS bảng OUTPUT_REPORT_METRIC"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cây chỉ tiêu (metric) trong mẫu báo cáo đầu ra"
+      functional_group: "Quản lý báo cáo đầu ra (Output Report)"
+      scope_status: pending
+      scope_reason: null
+      table: OUTPUT_REPORT_METRIC
+      related_tables:
+        - table: OUTPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu ra chứa chỉ tiêu"
+        - table: OUTPUT_REPORT_METRIC
+          relation: "FK tự tham chiếu — PARENT_ID trỏ về chính bảng (cấu trúc cây chỉ tiêu)"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Self-referencing FK trên PARENT_ID."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-OUTPUT_REPORT_SOURCE
+    brd_name: "Design Atomic từ nguồn ISS bảng OUTPUT_REPORT_SOURCE"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng liên kết N-N: mẫu báo cáo đầu vào là nguồn dữ liệu cho mẫu báo cáo đầu ra"
+      functional_group: "Quản lý báo cáo đầu ra (Output Report)"
+      scope_status: pending
+      scope_reason: null
+      table: OUTPUT_REPORT_SOURCE
+      related_tables:
+        - table: INPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu vào là nguồn dữ liệu"
+        - table: OUTPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu ra sử dụng nguồn dữ liệu"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. Bảng junction thuần túy, PK composite = 2 FK, không có surrogate ID riêng."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-OUTPUT_REPORT_TEMPLATE
+    brd_name: "Design Atomic từ nguồn ISS bảng OUTPUT_REPORT_TEMPLATE"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Mẫu báo cáo đầu ra — mã báo cáo, căn cứ pháp lý, cấu hình truy vấn dữ liệu"
+      functional_group: "Quản lý báo cáo đầu ra (Output Report)"
+      scope_status: pending
+      scope_reason: null
+      table: OUTPUT_REPORT_TEMPLATE
+      related_tables:
+        - table: FILE_INFO
+          relation: "FK cha — File mẫu (template) báo cáo"
+        - table: OUTPUT_REPORT_TEMPLATE
+          relation: "FK tự tham chiếu — COPY_REPORT_TEMPLATE_ID trỏ về mẫu báo cáo gốc được sao chép"
+        - table: OUTPUT_REPORT
+          relation: "1-N — Các báo cáo đầu ra sinh theo mẫu này"
+        - table: OUTPUT_REPORT_DEADLINE
+          relation: "1-N — Cấu hình hạn phát sinh theo mẫu này"
+        - table: OUTPUT_REPORT_METRIC
+          relation: "1-N — Cây chỉ tiêu thuộc mẫu báo cáo này"
+        - table: OUTPUT_REPORT_SOURCE
+          relation: "N-N — Sử dụng các mẫu báo cáo đầu vào làm nguồn dữ liệu"
+        - table: OUTPUT_REPORT_TEMPLATE_COMBO_USED
+          relation: "1-N — Tổ hợp hợp lệ với các mẫu báo cáo đầu vào"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. QUERY_COMMAND lưu câu lệnh truy vấn sinh dữ liệu — cần rà soát kỹ khi thiết kế Atomic vì có thể chứa logic nghiệp vụ phức tạp."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-OUTPUT_REPORT_TEMPLATE_COMBO_USED
+    brd_name: "Design Atomic từ nguồn ISS bảng OUTPUT_REPORT_TEMPLATE_COMBO_USED"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tổ hợp (combo) hợp lệ giữa mẫu báo cáo đầu vào và mẫu báo cáo đầu ra"
+      functional_group: "Quản lý báo cáo đầu ra (Output Report)"
+      scope_status: pending
+      scope_reason: null
+      table: OUTPUT_REPORT_TEMPLATE_COMBO_USED
+      related_tables:
+        - table: INPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu vào trong tổ hợp"
+        - table: OUTPUT_REPORT_TEMPLATE
+          relation: "FK cha — Mẫu báo cáo đầu ra trong tổ hợp"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-REPORT_PERMISSION_GROUP
+    brd_name: "Design Atomic từ nguồn ISS bảng REPORT_PERMISSION_GROUP"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhóm quyền truy cập báo cáo — danh sách mã báo cáo đầu vào/đầu ra được phép"
+      functional_group: "Phân quyền báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_PERMISSION_GROUP
+      related_tables:
+        - table: USER_PERMISSION_GROUP
+          relation: "1-N — Người dùng được gán vào nhóm quyền này"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. INPUT_REPORT_CODES/OUTPUT_REPORT_CODES lưu danh sách mã báo cáo dạng chuỗi (không phải FK chuẩn hóa)."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-REPORT_SEND_LOG
+    brd_name: "Design Atomic từ nguồn ISS bảng REPORT_SEND_LOG"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký gửi/phát báo cáo (đầu vào hoặc đầu ra) đến nơi nhận"
+      functional_group: "Phân quyền báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_SEND_LOG
+      related_tables:
+        - table: INPUT_REPORT_SUBMISSION
+          relation: "FK cha — Lần nộp báo cáo đầu vào liên quan (khi gửi báo cáo đầu vào)"
+        - table: OUTPUT_REPORT
+          relation: "FK cha — Báo cáo đầu ra liên quan (khi gửi báo cáo đầu ra)"
+        - table: FILE_INFO
+          relation: "FK cha — File báo cáo / file dữ liệu được gửi"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. REPORT_TYPE phân biệt gửi báo cáo đầu vào hay đầu ra; chỉ 1 trong 2 FK (INPUT_REPORT_SUBMISSION_ID/OUTPUT_REPORT_ID) có giá trị tùy theo loại."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ISS-USER_PERMISSION_GROUP
+    brd_name: "Design Atomic từ nguồn ISS bảng USER_PERMISSION_GROUP"
+    type: Theo Source
+    ba_email: null
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Gán người dùng vào nhóm quyền báo cáo"
+      functional_group: "Phân quyền báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: USER_PERMISSION_GROUP
+      related_tables:
+        - table: REPORT_PERMISSION_GROUP
+          relation: "FK cha — Nhóm quyền báo cáo được gán"
+      notes: "Không có Oracle comment trên bảng/cột nguồn — mô tả suy luận từ tên trường. USER_ID tham chiếu người dùng ở hệ thống ngoài (IAM), không phải FK nội bộ ISS."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null

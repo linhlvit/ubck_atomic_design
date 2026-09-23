@@ -1,0 +1,65 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: OUTPUT_REPORT_GENERATE_JOB_ITEM
+brd_ref: BRD-SRC-ISS-OUTPUT_REPORT_GENERATE_JOB_ITEM
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: OUTPUT_REPORT_GENERATE_JOB_ID
+    data_type: "VARCHAR2(36)"
+    description: "Job sinh báo cáo tương ứng"
+    key: FK
+    fk_note: "FK → OUTPUT_REPORT_GENERATE_JOB.ID"
+
+  - name: OUTPUT_REPORT_ID
+    data_type: "VARCHAR2(36)"
+    description: "Báo cáo đầu ra được sinh"
+    key: FK
+    fk_note: "FK → OUTPUT_REPORT.ID"
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null

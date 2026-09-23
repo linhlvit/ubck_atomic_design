@@ -1,0 +1,125 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: INPUT_REPORT_METRIC
+brd_ref: BRD-SRC-ISS-INPUT_REPORT_METRIC
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: SHEET_ID
+    data_type: "VARCHAR2(36)"
+    description: "Sheet chứa chỉ tiêu"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_TEMPLATE_SHEET.ID"
+
+  - name: PARENT_ID
+    data_type: "VARCHAR2(36)"
+    description: "Chỉ tiêu cha (cấu trúc cây)"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_METRIC.ID (tự tham chiếu)"
+
+  - name: ORDER_IN_LEVEL
+    data_type: "NUMBER(3,0)"
+    description: "Thứ tự hiển thị trong cùng cấp"
+    key: null
+    fk_note: null
+
+  - name: NODE_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên chỉ tiêu"
+    key: null
+    fk_note: null
+
+  - name: METRIC_CODE
+    data_type: "VARCHAR2(255)"
+    description: "Mã chỉ tiêu"
+    key: null
+    fk_note: null
+
+  - name: IS_DIMENSION
+    data_type: "NUMBER(1,0)"
+    description: "Cờ chỉ tiêu là chiều phân tích (1: Có, 0: Không)"
+    key: null
+    fk_note: null
+
+  - name: IS_HAVE_DATA
+    data_type: "NUMBER(1,0)"
+    description: "Cờ chỉ tiêu có chứa dữ liệu nhập (1: Có, 0: Không)"
+    key: null
+    fk_note: null
+
+  - name: POSITION
+    data_type: "VARCHAR2(20)"
+    description: "Vị trí (ô/cột) trên sheet"
+    key: null
+    fk_note: null
+
+  - name: UNIT
+    data_type: "VARCHAR2(100)"
+    description: "Đơn vị tính của chỉ tiêu"
+    key: null
+    fk_note: null
+
+  - name: DESCRIPTION
+    data_type: "CLOB"
+    description: "Mô tả chỉ tiêu"
+    key: null
+    fk_note: null
+
+  - name: DATA_TYPE
+    data_type: "VARCHAR2(20)"
+    description: "Kiểu dữ liệu của chỉ tiêu"
+    key: null
+    fk_note: null
+
+  - name: METRIC_TYPE
+    data_type: "VARCHAR2(10)"
+    description: "Loại chỉ tiêu"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null

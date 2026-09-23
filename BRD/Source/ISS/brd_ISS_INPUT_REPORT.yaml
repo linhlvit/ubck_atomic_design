@@ -1,0 +1,107 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: INPUT_REPORT
+brd_ref: BRD-SRC-ISS-INPUT_REPORT
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: INPUT_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo đầu vào áp dụng"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_TEMPLATE.ID"
+
+  - name: INPUT_REPORT_DEADLINE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Cấu hình hạn nộp áp dụng"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_DEADLINE.ID"
+
+  - name: ORGANIZATION_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID tổ chức phải nộp báo cáo"
+    key: null
+    fk_note: null
+
+  - name: PERIOD_TYPE
+    data_type: "VARCHAR2(20)"
+    description: "Loại kỳ báo cáo (tháng/quý/năm...)"
+    key: null
+    fk_note: null
+
+  - name: REPORT_OBLIGATION_TYPE
+    data_type: "VARCHAR2(20)"
+    description: "Loại nghĩa vụ báo cáo"
+    key: null
+    fk_note: null
+
+  - name: PERIOD_VALUE
+    data_type: "VARCHAR2(50)"
+    description: "Giá trị kỳ báo cáo"
+    key: null
+    fk_note: null
+
+  - name: PERIOD_DATE
+    data_type: "DATE"
+    description: "Ngày của kỳ báo cáo"
+    key: null
+    fk_note: null
+
+  - name: REPORT_YEAR
+    data_type: "NUMBER(4,0)"
+    description: "Năm báo cáo"
+    key: null
+    fk_note: null
+
+  - name: REPORT_DUE_TIME
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời hạn phải nộp báo cáo"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null

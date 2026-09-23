@@ -1,0 +1,131 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: LOG_DATA_CHANGE
+brd_ref: BRD-SRC-ISS-LOG_DATA_CHANGE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: APPLICATION
+    data_type: "VARCHAR2(100)"
+    description: "Tên ứng dụng/module phát sinh thao tác"
+    key: null
+    fk_note: null
+
+  - name: CLASS_NAME
+    data_type: "VARCHAR2(200)"
+    description: "Tên class/entity bị tác động"
+    key: null
+    fk_note: null
+
+  - name: ACTION_REAL
+    data_type: "VARCHAR2(50)"
+    description: "Hành động thực tế (HTTP method/action)"
+    key: null
+    fk_note: null
+
+  - name: ACTION_CUSTOM
+    data_type: "VARCHAR2(200)"
+    description: "Hành động nghiệp vụ tùy biến"
+    key: null
+    fk_note: null
+
+  - name: FILTER_CUSTOM
+    data_type: "VARCHAR2(1000)"
+    description: "Điều kiện lọc/tham số của thao tác"
+    key: null
+    fk_note: null
+
+  - name: DATA_CHANGE
+    data_type: "CLOB"
+    description: "Nội dung dữ liệu thay đổi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_ENTITY_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm entity liên quan được tạo"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_ENTITY_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm entity liên quan được cập nhật"
+    key: null
+    fk_note: null
+
+  - name: USER_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người dùng thực hiện thao tác"
+    key: null
+    fk_note: null
+
+  - name: USER_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên đăng nhập người thực hiện"
+    key: null
+    fk_note: null
+
+  - name: FULL_NAME
+    data_type: "VARCHAR2(500)"
+    description: "Họ tên người thực hiện"
+    key: null
+    fk_note: null
+
+  - name: IP_CLIENT
+    data_type: "VARCHAR2(100)"
+    description: "Địa chỉ IP client"
+    key: null
+    fk_note: null
+
+  - name: URL
+    data_type: "VARCHAR2(1000)"
+    description: "URL/API được gọi"
+    key: null
+    fk_note: null
+
+  - name: USER_AGENT
+    data_type: "VARCHAR2(500)"
+    description: "User agent trình duyệt/client"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null

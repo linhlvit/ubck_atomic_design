@@ -1,0 +1,83 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: OUTPUT_REPORT_DEADLINE
+brd_ref: BRD-SRC-ISS-OUTPUT_REPORT_DEADLINE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: OUTPUT_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo đầu ra áp dụng"
+    key: FK
+    fk_note: "FK → OUTPUT_REPORT_TEMPLATE.ID"
+
+  - name: REPORTING_PERIOD
+    data_type: "VARCHAR2(20)"
+    description: "Kỳ báo cáo áp dụng"
+    key: null
+    fk_note: null
+
+  - name: DUE_DATE
+    data_type: "NUMBER(5,0)"
+    description: "Số đơn vị thời gian tính thời điểm phát sinh"
+    key: null
+    fk_note: null
+
+  - name: PERIOD_INDICES
+    data_type: "VARCHAR2(255)"
+    description: "Danh sách chỉ số kỳ áp dụng"
+    key: null
+    fk_note: null
+
+  - name: DUE_DATE_UNIT
+    data_type: "VARCHAR2(20)"
+    description: "Đơn vị tính thời điểm phát sinh"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null

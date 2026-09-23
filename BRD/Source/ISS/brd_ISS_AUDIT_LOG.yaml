@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: AUDIT_LOG
+brd_ref: BRD-SRC-ISS-AUDIT_LOG
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: ENTITY_TYPE
+    data_type: "VARCHAR2(50)"
+    description: "Loại entity được audit (tên bảng/nghiệp vụ)"
+    key: null
+    fk_note: null
+
+  - name: ENTITY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID bản ghi entity được audit"
+    key: null
+    fk_note: null
+
+  - name: ENTITY_CODE
+    data_type: "VARCHAR2(255)"
+    description: "Mã nghiệp vụ của entity được audit"
+    key: null
+    fk_note: null
+
+  - name: ACTION
+    data_type: "VARCHAR2(50)"
+    description: "Hành động (CREATE/UPDATE/DELETE...)"
+    key: null
+    fk_note: null
+
+  - name: JSON_OLD
+    data_type: "CLOB"
+    description: "Giá trị dữ liệu trước khi thay đổi (JSON)"
+    key: null
+    fk_note: null
+
+  - name: JSON_NEW
+    data_type: "CLOB"
+    description: "Giá trị dữ liệu sau khi thay đổi (JSON)"
+    key: null
+    fk_note: null
+
+  - name: MODIFIED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời điểm phát sinh thay đổi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null
+
+  - name: TRANSACTION_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mã giao dịch (transaction) gộp nhiều thay đổi"
+    key: null
+    fk_note: null

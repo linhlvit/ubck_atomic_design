@@ -1,0 +1,125 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: INPUT_REPORT_DEADLINE
+brd_ref: BRD-SRC-ISS-INPUT_REPORT_DEADLINE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: INPUT_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo đầu vào áp dụng"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_TEMPLATE.ID"
+
+  - name: REPORTING_PERIOD
+    data_type: "VARCHAR2(20)"
+    description: "Kỳ báo cáo áp dụng (tháng/quý/năm...)"
+    key: null
+    fk_note: null
+
+  - name: DUE_DATE
+    data_type: "NUMBER(5,0)"
+    description: "Số đơn vị thời gian tính hạn nộp"
+    key: null
+    fk_note: null
+
+  - name: DUE_DATE_UNIT
+    data_type: "VARCHAR2(20)"
+    description: "Đơn vị tính hạn nộp (ngày/giờ...)"
+    key: null
+    fk_note: null
+
+  - name: REMINDER_BEFORE
+    data_type: "NUMBER(10,0)"
+    description: "Số đơn vị thời gian nhắc nhở trước hạn"
+    key: null
+    fk_note: null
+
+  - name: REMINDER_PERIOD
+    data_type: "VARCHAR2(20)"
+    description: "Đơn vị tính khoảng nhắc nhở"
+    key: null
+    fk_note: null
+
+  - name: PERIOD_INDICES
+    data_type: "VARCHAR2(255)"
+    description: "Danh sách chỉ số kỳ áp dụng (VD: tháng 1,4,7,10)"
+    key: null
+    fk_note: null
+
+  - name: EXCLUDE_HOLIDAY
+    data_type: "NUMBER(1,0)"
+    description: "Cờ loại trừ ngày nghỉ lễ khi tính hạn (1: Có, 0: Không)"
+    key: null
+    fk_note: null
+
+  - name: LAST_GENERATE_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Lần sinh báo cáo gần nhất"
+    key: null
+    fk_note: null
+
+  - name: NEXT_GENERATE_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Lần sinh báo cáo kế tiếp"
+    key: null
+    fk_note: null
+
+  - name: ERROR_COUNT
+    data_type: "NUMBER(5,0)"
+    description: "Số lần sinh báo cáo lỗi"
+    key: null
+    fk_note: null
+
+  - name: LAST_ERROR_MESSAGE
+    data_type: "VARCHAR2(1000)"
+    description: "Thông báo lỗi lần sinh gần nhất"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null

@@ -1,0 +1,125 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: FACT_REPORT_DATA
+brd_ref: BRD-SRC-ISS-FACT_REPORT_DATA
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: INPUT_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo đầu vào tương ứng"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_TEMPLATE.ID"
+
+  - name: INPUT_REPORT_SUBMISSION_ID
+    data_type: "VARCHAR2(36)"
+    description: "Lần nộp báo cáo tương ứng"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_SUBMISSION.ID"
+
+  - name: SHEET_ID
+    data_type: "VARCHAR2(36)"
+    description: "Sheet tương ứng trong mẫu báo cáo"
+    key: FK
+    fk_note: "FK → INPUT_REPORT_TEMPLATE_SHEET.ID"
+
+  - name: DATE_TYPE
+    data_type: "VARCHAR2(20)"
+    description: "Loại kỳ dữ liệu (ngày/tháng/quý/năm...)"
+    key: null
+    fk_note: null
+
+  - name: ORIGIN_DATE_VALUE
+    data_type: "VARCHAR2(100)"
+    description: "Giá trị kỳ dữ liệu gốc trên báo cáo"
+    key: null
+    fk_note: null
+
+  - name: DAY
+    data_type: "NUMBER(2,0)"
+    description: "Ngày của kỳ dữ liệu"
+    key: null
+    fk_note: null
+
+  - name: MONTH
+    data_type: "NUMBER(2,0)"
+    description: "Tháng của kỳ dữ liệu"
+    key: null
+    fk_note: null
+
+  - name: QUARTER
+    data_type: "NUMBER(1,0)"
+    description: "Quý của kỳ dữ liệu"
+    key: null
+    fk_note: null
+
+  - name: HALF_YEAR
+    data_type: "NUMBER(1,0)"
+    description: "Nửa năm của kỳ dữ liệu"
+    key: null
+    fk_note: null
+
+  - name: YEAR
+    data_type: "NUMBER(4,0)"
+    description: "Năm của kỳ dữ liệu"
+    key: null
+    fk_note: null
+
+  - name: JSON_DATA
+    data_type: "CLOB"
+    description: "Dữ liệu chi tiết trích xuất từ báo cáo (JSON)"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null
+
+  - name: DATA_INDEX
+    data_type: "NUMBER(10,0)"
+    description: "Số thứ tự dòng dữ liệu"
+    key: null
+    fk_note: null

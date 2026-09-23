@@ -1,0 +1,149 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ISS
+table: OUTPUT_REPORT_TEMPLATE
+brd_ref: BRD-SRC-ISS-OUTPUT_REPORT_TEMPLATE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính (UUID)"
+    key: PK
+    fk_note: null
+
+  - name: REPORT_CODE
+    data_type: "VARCHAR2(255)"
+    description: "Mã báo cáo"
+    key: null
+    fk_note: null
+
+  - name: REPORT_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên báo cáo"
+    key: null
+    fk_note: null
+
+  - name: LEGAL_BASIS
+    data_type: "VARCHAR2(1020)"
+    description: "Căn cứ pháp lý ban hành báo cáo"
+    key: null
+    fk_note: null
+
+  - name: EFFECTIVE_FROM
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Ngày hiệu lực áp dụng mẫu báo cáo"
+    key: null
+    fk_note: null
+
+  - name: AUTO_SEND_TO_BTC
+    data_type: "NUMBER(1,0)"
+    description: "Cờ tự động gửi báo cáo đến Bộ Tài chính (1: Có, 0: Không)"
+    key: null
+    fk_note: null
+
+  - name: DESCRIPTION
+    data_type: "CLOB"
+    description: "Mô tả mẫu báo cáo"
+    key: null
+    fk_note: null
+
+  - name: VERSION
+    data_type: "NUMBER"
+    description: "Số phiên bản mẫu báo cáo"
+    key: null
+    fk_note: null
+
+  - name: STATUS
+    data_type: "VARCHAR2(20)"
+    description: "Trạng thái mẫu báo cáo"
+    key: null
+    fk_note: null
+
+  - name: REPORT_LAYOUT_TYPE
+    data_type: "VARCHAR2(20)"
+    description: "Loại layout báo cáo"
+    key: null
+    fk_note: null
+
+  - name: COPY_REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mẫu báo cáo được sao chép làm gốc"
+    key: FK
+    fk_note: "FK → OUTPUT_REPORT_TEMPLATE.ID (tự tham chiếu)"
+
+  - name: DATA_START_ROW
+    data_type: "VARCHAR2(20)"
+    description: "Vị trí dòng bắt đầu dữ liệu"
+    key: null
+    fk_note: null
+
+  - name: DATA_START_COLUMN
+    data_type: "VARCHAR2(20)"
+    description: "Vị trí cột bắt đầu dữ liệu"
+    key: null
+    fk_note: null
+
+  - name: TEMPLATE_FILE_INFO_ID
+    data_type: "VARCHAR2(36)"
+    description: "File mẫu (template) báo cáo"
+    key: FK
+    fk_note: "FK → FILE_INFO.ID"
+
+  - name: REPORT_CONFIG
+    data_type: "CLOB"
+    description: "Cấu hình bố cục/tham số báo cáo"
+    key: null
+    fk_note: null
+
+  - name: QUERY_COMMAND
+    data_type: "CLOB"
+    description: "Câu lệnh truy vấn sinh dữ liệu báo cáo"
+    key: null
+    fk_note: null
+
+  - name: IS_DATA_GENERATION
+    data_type: "NUMBER(1,0)"
+    description: "Cờ cho phép sinh dữ liệu tự động (1: Có, 0: Không)"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null
