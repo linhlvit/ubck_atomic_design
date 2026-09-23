@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — CREATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 22 bảng: 0 fact + 22 operational (EAV báo cáo phẳng, 1 báo cáo = 1 bảng phẳng)
+-- 23 bảng (bảng #13/#16/#23 là FACT, còn lại operational EAV báo cáo phẳng — 1 báo cáo = 1 bảng phẳng)
 -- Toàn bộ bảng operational — KHÔNG JOIN Calendar Date, KHÔNG JOIN dim nào khác
 -- ============================================================
 
@@ -532,4 +532,35 @@ ORDER BY (report_code, report_period_dt, item_code, security_symbol_code)
 COMMENT 'Flat table — Derivatives Security Detail Report (BM043)'
 ;
 
+-- ============================================================
+-- 23. FACT: fct_market_index_snpst (reuse — sở hữu QLKD)
+--    Fact Market Index Snapshot × Calendar Date × Market Index Dimension × Index Constituent Dimension
+--    [MỚI 2026-09-23] Nhóm 18 BM030a_MSS — K_TKNB_1013 (Loại chỉ số) / K_TKNB_1014 (Giá trị chỉ số).
+--    Grain: 1 chỉ số (market_code) × 1 ngày giao dịch. KHÔNG dùng qlkd_fct_market_index_snpst_flat
+--    vì flat QLKD chỉ giữ ngày cuối tháng, báo cáo TKNB theo ngày.
+--    Khóa nối chỉ số: market_index_dim.market_code = index_constituent_dim.index_code
+--    (KHÔNG dùng index_nm = index_code). Lọc 6 mã theo BA dòng 1131: ('HOSE','HNX','UPCOM','30','HNX30','100').
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_market_index_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Market Index Snapshot
+    snpst_dt_dim_id             String                  COMMENT 'FK tới Calendar Date Dimension theo ngày giao dịch',
+    market_index_dim_id         String                  COMMENT 'FK tới Market Index Dimension',
+    market_index_val            Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ số — bản ghi cuối cùng trong ngày (K_TKNB_1014)',
 
+    -- From: CALENDAR DATE DIMENSION
+    trade_cdr_dt                Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+
+    -- From: MARKET INDEX DIMENSION
+    market_code                 Nullable(String)        COMMENT 'Mã chỉ số MARKETCODE (HOSE/HNX/UPCOM/30/HNX30/100) — từ Market Index Dimension',
+
+    -- From: INDEX CONSTITUENT DIMENSION
+    index_constituent_dim_id    Nullable(String)        COMMENT 'FK tới Index Constituent Dimension (nối market_code = index_code)',
+    index_code                  Nullable(String)        COMMENT 'Loại chỉ số — Chiều K_TKNB_1013 — từ Index Constituent Dimension',
+    index_nm                    Nullable(String)        COMMENT 'Tên hiển thị chỉ số (VN-Index/HNX-Index/UPCoM-Index/VN30/HNX30/VN100) — từ Index Constituent Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))
+ORDER BY (assumeNotNull(trade_cdr_dt), market_index_dim_id)
+COMMENT 'Flat table — Fact Market Index Snapshot × Calendar Date × Market Index Dimension × Index Constituent Dimension (TKNB BM030a_MSS)'
+;

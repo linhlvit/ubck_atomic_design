@@ -25,20 +25,32 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","--STT1
-with
-stockinfor as 
+WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-                , js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+        SELECT
+                symbol
+                , symbolisin 
+                , tradingdate 
+                , stocktype 
+                , ds_etl_pcs_tms 
+        FROM (
+                SELECT
+                        js.symbol
+                        , js.symbolisin 
+                        , js.tradingdate 
+                        , js.stocktype 
+                        , js.ds_etl_pcs_tms
+                        , ROW_NUMBER() OVER (
+                                PARTITION BY js.symbol, js.tradingdate 
+                                ORDER BY js.tradingtime DESC
+                        ) AS rn
+                FROM uat_mdds_stg.jad_stockinfor js 
+                WHERE 1=1
+                        AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+                        AND js.stocktype IN (1, 2, 3)
+        ) t
+        WHERE t.rn = 1
 )
 ,cte as 
 (
@@ -191,20 +203,32 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+			AND js.stocktype IN (1, 2, 3)
+	) t
+	WHERE t.rn = 1
 )
 ,raw_trades AS (
     -- 1. Sàn HOSE
@@ -352,26 +376,39 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","--top ngành mua/bán ròng
+WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+			AND js.stocktype IN (1, 2, 3)
+	) t
+	WHERE t.rn = 1
 ),
 raw_trades AS (
 -- 1. Sàn HOSE
     SELECT 
         'HOSE'                                                   AS exchange,
-            to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
+    	to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
         tb.symbol                                                    AS symbol,
         tb.execution_value                          AS execution_value,
         CASE WHEN tb.buy_foreigner_investor_type IN ('10', '20') 
@@ -380,9 +417,9 @@ raw_trades AS (
              THEN tb.execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
---    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
+--    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+    and ds_snpst_dt = to_date('20260907','yyyyMMdd')
     UNION ALL
     -- 2. Sàn HNX
     SELECT 
@@ -395,31 +432,33 @@ raw_trades AS (
         CASE WHEN tb.sell_foreign_investor_type_code IN ('10', '20') 
              THEN tb.trade_price * tb.trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
-    join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
-    and tb.ds_snpst_dt = to_date('20260908','yyyyMMdd')
+    join stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
+    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+    and tb.ds_snpst_dt = to_date('20260907','yyyyMMdd')
 ),
 stock_agg AS (
     SELECT 
         coalesce(c.industry_name, 'Chưa phân ngành')             AS industry_name,
         sum(t.gtri_ndtnn_mua)                                    AS gtri_mua_nganh,
-        sum(t.gtri_ndtnn_ban)                                    AS gtri_ban_nganh
+        sum(t.gtri_ndtnn_ban)                                    AS gtri_ban_nganh,
+        sum(t.gtri_ndtnn_mua) - sum(t.gtri_ndtnn_ban)            as mua_ban_rong
     FROM raw_trades t
     LEFT JOIN uat_ids_stg.company_profiles cp 
            ON t.symbol = cp.equity_ticker 
           AND cp.ds_snpst_dt = to_date('2026-09-02')
     LEFT JOIN uat_ids_stg.categories c 
            ON cp.category_l1_id = c.id
-    GROUP BY t.symbol, coalesce(c.industry_name, 'Chưa phân ngành')
+           AND c.ds_snpst_dt = to_date('2026-09-02')
+    GROUP BY coalesce(c.industry_name, 'Chưa phân ngành')
 )
---top ngành bán ròng
 SELECT 
-    industry_name                              AS nganh,
-    gtri_ban_nganh           AS tong_gtri_ban_nganh
+    industry_name              		AS nganh,
+	sum(mua_ban_rong)				as mua_ban_rong
 FROM stock_agg
-ORDER BY gtri_ban_nganh DESC
-LIMIT 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
+group by industry_name
+having mua_ban_rong < 0
+ORDER BY mua_ban_rong asc
+limit 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
 2,14,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top ngành mua ròng,"Top 5 ngành có giá trị mua ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK, gom nhóm mã CK theo ngành để lấy top",Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Tháng","CSDLTT, IDS, MDDS",,X,X,Done,,"IDS.CATEGORIES
  
@@ -448,26 +487,39 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","--top ngành mua/bán ròng
+WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+			AND js.stocktype IN (1, 2, 3)
+	) t
+	WHERE t.rn = 1
 ),
 raw_trades AS (
 -- 1. Sàn HOSE
     SELECT 
         'HOSE'                                                   AS exchange,
-            to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
+    	to_date(tb.trade_date, 'yyyy-MM-dd')                        AS trade_date,
         tb.symbol                                                    AS symbol,
         tb.execution_value                          AS execution_value,
         CASE WHEN tb.buy_foreigner_investor_type IN ('10', '20') 
@@ -476,9 +528,9 @@ raw_trades AS (
              THEN tb.execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
---    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
+--    		and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+    and ds_snpst_dt = to_date('20260907','yyyyMMdd')
     UNION ALL
     -- 2. Sàn HNX
     SELECT 
@@ -491,33 +543,35 @@ raw_trades AS (
         CASE WHEN tb.sell_foreign_investor_type_code IN ('10', '20') 
              THEN tb.trade_price * tb.trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
-    join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
-    WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
-    and tb.ds_snpst_dt = to_date('20260908','yyyyMMdd')
+    join stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
+    WHERE 	tb.trade_date BETWEEN :pdat1 AND :pdat2
+    and tb.ds_snpst_dt = to_date('20260907','yyyyMMdd')
 ),
 stock_agg AS (
     SELECT 
         coalesce(c.industry_name, 'Chưa phân ngành')             AS industry_name,
         sum(t.gtri_ndtnn_mua)                                    AS gtri_mua_nganh,
-        sum(t.gtri_ndtnn_ban)                                    AS gtri_ban_nganh
+        sum(t.gtri_ndtnn_ban)                                    AS gtri_ban_nganh,
+        sum(t.gtri_ndtnn_mua) - sum(t.gtri_ndtnn_ban)            as mua_ban_rong
     FROM raw_trades t
     LEFT JOIN uat_ids_stg.company_profiles cp 
            ON t.symbol = cp.equity_ticker 
           AND cp.ds_snpst_dt = to_date('2026-09-02')
     LEFT JOIN uat_ids_stg.categories c 
            ON cp.category_l1_id = c.id
-    GROUP BY t.symbol, coalesce(c.industry_name, 'Chưa phân ngành')
+           AND c.ds_snpst_dt = to_date('2026-09-02')
+    GROUP BY coalesce(c.industry_name, 'Chưa phân ngành')
 )
---top ngành mua ròng
 SELECT 
-    industry_name                              AS nganh,
-    gtri_mua_nganh                           AS tong_gtri_mua_nganh
+    industry_name              		AS nganh,
+	sum(mua_ban_rong)				as mua_ban_rong
 FROM stock_agg
-ORDER BY gtri_mua_nganh desc
-LIMIT 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
+group by industry_name
+having mua_ban_rong > 0
+ORDER BY mua_ban_rong desc
+limit 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
 2,15,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã bán ròng,"Top 5 mã cổ phiếu có giá trị bán ròng lớn nhất.
-Gom nhóm giá trị mua/bán ròng theo mã CK",Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
+Gom nhóm giá trị mua/bán ròng theo mã CK",Dashboard,Chỉ tiêu,Trùng,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -541,20 +595,33 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","--top mã
+WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+        SELECT
+                symbol
+                , symbolisin 
+                , tradingdate 
+                , stocktype 
+                , ds_etl_pcs_tms 
+        FROM (
+                SELECT
+                        js.symbol
+                        , js.symbolisin 
+                        , js.tradingdate 
+                        , js.stocktype 
+                        , js.ds_etl_pcs_tms
+                        , ROW_NUMBER() OVER (
+                                PARTITION BY js.symbol, js.tradingdate 
+                                ORDER BY js.tradingtime DESC
+                        ) AS rn
+                FROM uat_mdds_stg.jad_stockinfor js 
+                WHERE 1=1
+                        AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+                        AND js.stocktype IN (1, 2, 3)
+        ) t
+        WHERE t.rn = 1
 ),
 raw_trades AS (
 -- 1. Sàn HOSE
@@ -569,9 +636,8 @@ raw_trades AS (
              THEN tb.execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
     WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
---    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
+    and ds_snpst_dt = to_date('20260907','yyyyMMdd')
     UNION ALL
     -- 2. Sàn HNX
     SELECT 
@@ -584,31 +650,27 @@ raw_trades AS (
         CASE WHEN tb.sell_foreign_investor_type_code IN ('10', '20') 
              THEN tb.trade_price * tb.trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
-    join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    join stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
     WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
-    and tb.ds_snpst_dt = to_date('20260908','yyyyMMdd')
+    and tb.ds_snpst_dt = to_date('20260907','yyyyMMdd')
 ),
 stock_agg AS (
     SELECT 
         t.symbol,
         sum(t.gtri_ndtnn_mua)                                    AS gtri_mua_ma,
-        sum(t.gtri_ndtnn_ban)                                    AS gtri_ban_ma
+        sum(t.gtri_ndtnn_ban)                                    AS gtri_ban_ma,
+        sum(t.gtri_ndtnn_mua) - sum(t.gtri_ndtnn_ban)            as mua_ban_rong
     FROM raw_trades t
-    LEFT JOIN uat_ids_stg.company_profiles cp 
-           ON t.symbol = cp.equity_ticker 
-          AND cp.ds_snpst_dt = to_date('2026-09-02')
-    LEFT JOIN uat_ids_stg.categories c 
-           ON cp.category_l1_id = c.id
     GROUP BY t.symbol
 )
---top mã bán ròng
 SELECT 
-    symbol                              AS ma_ck,
-    gtri_ban_ma           AS tong_gtri_ban_ma
+    symbol                               AS ma,
+        sum(mua_ban_rong)                        as mua_ban_rong
 FROM stock_agg
-ORDER BY gtri_ban_ma DESC
-LIMIT 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
+group by symbol
+having mua_ban_rong < 0
+ORDER BY mua_ban_rong asc
+limit 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
 2,16,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã mua ròng,"Top 5 mã cổ phiếu có giá trị mua ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK",Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
@@ -634,20 +696,33 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","--top mã
+WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+        SELECT
+                symbol
+                , symbolisin 
+                , tradingdate 
+                , stocktype 
+                , ds_etl_pcs_tms 
+        FROM (
+                SELECT
+                        js.symbol
+                        , js.symbolisin 
+                        , js.tradingdate 
+                        , js.stocktype 
+                        , js.ds_etl_pcs_tms
+                        , ROW_NUMBER() OVER (
+                                PARTITION BY js.symbol, js.tradingdate 
+                                ORDER BY js.tradingtime DESC
+                        ) AS rn
+                FROM uat_mdds_stg.jad_stockinfor js 
+                WHERE 1=1
+                        AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+                        AND js.stocktype IN (1, 2, 3)
+        ) t
+        WHERE t.rn = 1
 ),
 raw_trades AS (
 -- 1. Sàn HOSE
@@ -662,9 +737,8 @@ raw_trades AS (
              THEN tb.execution_value ELSE 0.0 END   AS gtri_ndtnn_ban
     FROM uat_hose_stg.trade_book tb
     join stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
---                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
     WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
---    and ds_snpst_dt = to_date('20260908','yyyyMMdd')
+    and ds_snpst_dt = to_date('20260907','yyyyMMdd')
     UNION ALL
     -- 2. Sàn HNX
     SELECT 
@@ -677,31 +751,27 @@ raw_trades AS (
         CASE WHEN tb.sell_foreign_investor_type_code IN ('10', '20') 
              THEN tb.trade_price * tb.trade_quantity ELSE 0.0 END AS gtri_ndtnn_ban
     FROM uat_hnx_stg.trade_book tb
-    join stockinfor js on tb.issue_code = js.symbol and tb.trade_date = js.tradingdate 
---                    and to_date(js.ds_etl_pcs_tms) =  to_date('20260908','yyyyMMdd') 
+    join stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
     WHERE         tb.trade_date BETWEEN :pdat1 AND :pdat2
-    and tb.ds_snpst_dt = to_date('20260908','yyyyMMdd')
+    and tb.ds_snpst_dt = to_date('20260907','yyyyMMdd')
 ),
 stock_agg AS (
     SELECT 
         t.symbol,
         sum(t.gtri_ndtnn_mua)                                    AS gtri_mua_ma,
-        sum(t.gtri_ndtnn_ban)                                    AS gtri_ban_ma
+        sum(t.gtri_ndtnn_ban)                                    AS gtri_ban_ma,
+        sum(t.gtri_ndtnn_mua) - sum(t.gtri_ndtnn_ban)            as mua_ban_rong
     FROM raw_trades t
-    LEFT JOIN uat_ids_stg.company_profiles cp 
-           ON t.symbol = cp.equity_ticker 
-          AND cp.ds_snpst_dt = to_date('2026-09-02')
-    LEFT JOIN uat_ids_stg.categories c 
-           ON cp.category_l1_id = c.id
     GROUP BY t.symbol
 )
---top mã mua ròng
---SELECT 
---    symbol                              AS ma_ck,
---    gtri_mua_ma                           AS tong_gtri_mua_ma
---FROM stock_agg
---ORDER BY gtri_mua_ma desc
---LIMIT 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
+SELECT 
+    symbol                               AS ma,
+        sum(mua_ban_rong)                        as mua_ban_rong
+FROM stock_agg
+group by symbol
+having mua_ban_rong > 0
+ORDER BY mua_ban_rong desc
+limit 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,,,,,,
 2,,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tỷ trọng giao dịch theo ngày,Tỷ trọng = (Tổng giá trị mua + Tổng giá trị bán) *100 /Tổng giá trị giao dịch toàn thị trường *2,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -722,20 +792,32 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+        SELECT
+                symbol
+                , symbolisin 
+                , tradingdate 
+                , stocktype 
+                , ds_etl_pcs_tms 
+        FROM (
+                SELECT
+                        js.symbol
+                        , js.symbolisin 
+                        , js.tradingdate 
+                        , js.stocktype 
+                        , js.ds_etl_pcs_tms
+                        , ROW_NUMBER() OVER (
+                                PARTITION BY js.symbol, js.tradingdate 
+                                ORDER BY js.tradingtime DESC
+                        ) AS rn
+                FROM uat_mdds_stg.jad_stockinfor js 
+                WHERE 1=1
+                        AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+                        AND js.stocktype IN (1, 2, 3)
+        ) t
+        WHERE t.rn = 1
 ),
 raw_trades AS (
     SELECT 
@@ -889,20 +971,32 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+			AND js.stocktype IN (1, 2, 3)
+	) t
+	WHERE t.rn = 1
 ),
 raw_trades AS (
     SELECT 
@@ -981,20 +1075,32 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+			AND js.stocktype IN (1, 2, 3)
+	) t
+	WHERE t.rn = 1
 ),
 raw_trades AS (
     SELECT 
@@ -1071,20 +1177,32 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH 
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
-        and js.stocktype in(1,2,3)
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+			AND js.stocktype IN (1, 2, 3)
+	) t
+	WHERE t.rn = 1
 ),
 raw_trades AS (
     SELECT 
@@ -1536,20 +1654,32 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-                , js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
-        and to_date(js.ds_etl_pcs_tms) = to_date('2026-09-18','yyyy-MM-dd')
-        and js.stocktype in(1,2,3)
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+			AND js.stocktype IN (1, 2, 3)
+	) t
+	WHERE t.rn = 1
 )
 ,cte as 
 (
@@ -2009,43 +2139,43 @@ pvt_data AS (
         b.row_path,
         b.row_order,
         b.entity_code,
-		c_tin_phieu.tin_phieu,
-		c_trai_phieu.trai_phieu,
-		c_CCQ.ccq,
-		c_upcom.upcom,
-		c_gtri_von_gop.gtri_von_gop,
-		c_tien.tien,
+                c_tin_phieu.tin_phieu,
+                c_trai_phieu.trai_phieu,
+                c_CCQ.ccq,
+                c_upcom.upcom,
+                c_gtri_von_gop.gtri_von_gop,
+                c_tien.tien,
         c_gtri_danh_muc.tong_gtri_danh_muc
     FROM base_rows b
     LEFT JOIN c_tin_phieu ON b.report_log_id = c_tin_phieu.report_log_id
-    	AND b.section_id = c_tin_phieu.section_id        
-    	AND b.row_order = c_tin_phieu.row_order
+            AND b.section_id = c_tin_phieu.section_id        
+            AND b.row_order = c_tin_phieu.row_order
     LEFT JOIN c_trai_phieu ON b.report_log_id = c_trai_phieu.report_log_id
-    	AND b.section_id = c_trai_phieu.section_id    
-    	AND b.row_order = c_trai_phieu.row_order
+            AND b.section_id = c_trai_phieu.section_id    
+            AND b.row_order = c_trai_phieu.row_order
     LEFT JOIN c_CCQ ON b.report_log_id = c_CCQ.report_log_id
-    	AND b.section_id = c_CCQ.section_id    
-    	AND b.row_order = c_CCQ.row_order
+            AND b.section_id = c_CCQ.section_id    
+            AND b.row_order = c_CCQ.row_order
     LEFT JOIN c_upcom ON b.report_log_id = c_upcom.report_log_id
-    	AND b.section_id = c_upcom.section_id    
-    	AND b.row_order = c_upcom.row_order
+            AND b.section_id = c_upcom.section_id    
+            AND b.row_order = c_upcom.row_order
     LEFT JOIN c_gtri_von_gop ON b.report_log_id = c_gtri_von_gop.report_log_id
-    	AND b.section_id = c_gtri_von_gop.section_id    
-    	AND b.row_order = c_gtri_von_gop.row_order
+            AND b.section_id = c_gtri_von_gop.section_id    
+            AND b.row_order = c_gtri_von_gop.row_order
     LEFT JOIN c_tien ON b.report_log_id = c_tien.report_log_id
-    	AND b.section_id = c_tien.section_id    
-    	AND b.row_order = c_tien.row_order
+            AND b.section_id = c_tien.section_id    
+            AND b.row_order = c_tien.row_order
     LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id 
-    	AND b.section_id = c_gtri_danh_muc.section_id 
-    	AND b.row_order = c_gtri_danh_muc.row_order
+            AND b.section_id = c_gtri_danh_muc.section_id 
+            AND b.row_order = c_gtri_danh_muc.row_order
 )
 SELECT
-	sum(tin_phieu)*100/sum(tong_gtri_danh_muc) as tin_phieu,
-	sum(trai_phieu)*100/sum(tong_gtri_danh_muc) as trai_phieu,
-	sum(ccq)*100/sum(tong_gtri_danh_muc) as ccq,
-	sum(upcom)*100/sum(tong_gtri_danh_muc) as upcom,
-	sum(gtri_von_gop)*100/sum(tong_gtri_danh_muc) as gtri_von_gop,
-	sum(tien)*100/sum(tong_gtri_danh_muc) as tien
+        sum(tin_phieu)*100/sum(tong_gtri_danh_muc) as tin_phieu,
+        sum(trai_phieu)*100/sum(tong_gtri_danh_muc) as trai_phieu,
+        sum(ccq)*100/sum(tong_gtri_danh_muc) as ccq,
+        sum(upcom)*100/sum(tong_gtri_danh_muc) as upcom,
+        sum(gtri_von_gop)*100/sum(tong_gtri_danh_muc) as gtri_von_gop,
+        sum(tien)*100/sum(tong_gtri_danh_muc) as tien
 FROM pvt_data;",,,,,Done,Dữ liệu động,,,,,,
 7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Loại tài sản,,Dashboard,Chiều,TB,,FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
@@ -2082,9 +2212,9 @@ FROM pvt_data;",,,,,Done,Dữ liệu động,,,,,,
 COMPANY_PROFILES
 categories","IDS:
 COMPANY_PROFILES.CATEGORY_L1_ID
-CATEGORIES.INDUSTRY_NAME",,"select 	
-	nvl(c.industry_name, 'Chưa phân ngành') as nganh,
-	sum(fii.current_shares_foreign_hold)*100/sum(total_issued_shares) as ty_trong
+CATEGORIES.INDUSTRY_NAME",,"select         
+        nvl(c.industry_name, 'Chưa phân ngành') as nganh,
+        sum(fii.current_shares_foreign_hold)*100/sum(total_issued_shares) as ty_trong
 from uat_vsdc_stg.foreign_investor_info fii
 LEFT JOIN uat_ids_stg.company_profiles cp 
        ON fii.ticker_symbol = cp.equity_ticker 
@@ -2271,19 +2401,31 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+	) t
+	WHERE t.rn = 1
 )
 ,cte as 
 (
@@ -2375,19 +2517,31 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-                , js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+	) t
+	WHERE t.rn = 1
 )
 ,cte as 
 (
@@ -2477,19 +2631,31 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-		, js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+	) t
+	WHERE t.rn = 1
 )
 ,cte as 
 (
@@ -2578,19 +2744,31 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-                , js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+	) t
+	WHERE t.rn = 1
 ),
 cte as 
 (
@@ -2669,19 +2847,31 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","with
-stockinfor as 
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+stockinfor AS 
 (
-        select
-                js.symbol
-                , js.symbolisin 
-                , js.tradingdate 
-                , js.stocktype 
-                , js.ds_etl_pcs_tms 
-        from uat_mdds_stg.jad_stockinfor js 
-        where 1=1
-        and js.tradingtime in (select max(tradingtime) from uat_mdds_stg.jad_stockinfor group by stocktype)
---        and to_date(js.ds_etl_pcs_tms) = to_date('20260908','yyyyMMdd')
+	SELECT
+		symbol
+		, symbolisin 
+		, tradingdate 
+		, stocktype 
+		, ds_etl_pcs_tms 
+	FROM (
+		SELECT
+			js.symbol
+			, js.symbolisin 
+			, js.tradingdate 
+			, js.stocktype 
+			, js.ds_etl_pcs_tms
+			, ROW_NUMBER() OVER (
+				PARTITION BY js.symbol, js.tradingdate 
+				ORDER BY js.tradingtime DESC
+			) AS rn
+		FROM uat_mdds_stg.jad_stockinfor js 
+		WHERE 1=1
+			AND TO_DATE(js.ds_etl_pcs_tms) = TO_DATE('2026-09-18', 'yyyy-MM-dd')
+	) t
+	WHERE t.rn = 1
 ),
 cte as 
 (

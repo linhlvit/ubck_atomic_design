@@ -577,8 +577,19 @@ def audit_module_orphans(
                 result.branch_b_orphans.append(item)
 
     # Step C: Evaluate Flat Tables (Tier C)
+    # Flat riêng của module cho 1 bảng reuse (Entities.csv reuse_status = reuse/partial/conformed,
+    # LLD thuộc module sở hữu) là hợp lệ — VD TKNB tknb_fct_market_index_snpst_flat reuse Fact của QLKD
+    # (grain ngày, trong khi flat QLKD chỉ giữ ngày cuối tháng). Map tên logical → physical qua
+    # datamart_model.yaml (khối entity: logical_name rồi datamart_table ngay sau).
+    conformed_physical: Set[str] = set()
+    model_path = root / "Datamart" / "datamart_model.yaml"
+    if result.conformed_reused_tables and model_path.is_file():
+        model_text = read_file_safe(model_path)
+        for m in re.finditer(r'^    logical_name:\s*"([^"]+)"\s*\r?\n    datamart_table:\s*"([^"]+)"', model_text, re.MULTILINE):
+            if m.group(1).strip() in result.conformed_reused_tables:
+                conformed_physical.add(m.group(2).strip().lower())
     for ft_base, raw_flat in tier_c_flat_map.items():
-        if ft_base in tier_a_tables:
+        if ft_base in tier_a_tables or ft_base in conformed_physical:
             continue
         already_reported = any(o.table_name.lower() == ft_base for o in result.orphans)
         if already_reported:

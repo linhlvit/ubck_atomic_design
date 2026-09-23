@@ -2028,15 +2028,15 @@ flowchart LR
 
 **Mockup:** Báo cáo BM030a_MSS — user cung cấp template thật, 11 cột khớp đúng BA (Ngày GD, Loại chỉ số, Giá trị chỉ số, Tổng GTGD, Tổng KLGD, KLGD/GTGD khớp lệnh, KLGD/GTGD thỏa thuận, KLGD/GTGD lô lẻ). Trình bày dạng long/EAV trên báo cáo (mỗi Ngày GD có 4 dòng hiển thị/loại chỉ số) nhưng lưu trữ vật lý theo 2 grain tách biệt — presentation layer JOIN 2 Fact theo Trade Date khi build báo cáo.
 
-**Source:** `Fact Market Index Snapshot` (reuse — sở hữu QLKD, xem Cụm 18a) + `Fact Market Trading Snapshot` (mới, xem Cụm 18b) → `Calendar Date Dimension`, `Market Index Dimension` (reuse — sở hữu QLKD)
+**Source:** `Fact Market Index Snapshot` (reuse — sở hữu QLKD, xem Cụm 18a) + `Fact Market Trading Snapshot` (mới, xem Cụm 18b) → `Calendar Date Dimension`, `Market Index Dimension` (reuse — sở hữu QLKD), `Index Constituent Dimension` (reuse — sở hữu GSTT, Chiều Loại chỉ số)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_TKNB_1012 | Ngày GD | - | Chiều | `cdr_dt_dim.cdr_dt` | [STT=1, item_code=`dim_trade_date_mss030a`] Chiều thời gian chung cho toàn báo cáo — FK `Snapshot Date Dimension Id` trên cả 2 Fact. | READY |
-| K_TKNB_1013 | Loại chỉ số | - | Chiều | `market_index_dim.market_code` — `IN ('HOSE','HNX','UPCOM')` → tên hiển thị VN-Index/HNX-Index/UPCoM-Index | [STT=2, item_code=`dim_index_type_mss030a`] BA yêu cầu 4 giá trị: HNXIndex, VNIndex, HNX30, VN30. Chỉ xác nhận Atomic cho 3/4 (VNIndex/HNXIndex/UPCoM qua `market_code`); HNX30/VN30 không có SQL/điều kiện lọc từ BA, scheme `index_tp_code` (MDDS_INDEX_TYPE) chưa sync values — không đủ chứng cứ. Theo rule "domain chưa đầy đủ → PENDING toàn KPI", đánh PENDING cả dòng chờ bổ sung nguồn HNX30/VN30. Xem Section 5 — Vấn đề mở, mục 18. Atomic cần bổ sung: xác nhận index_tp_code cho HNX30/VN30 hoặc nguồn khác. | PENDING |
-| K_TKNB_1014 | Giá trị chỉ số CP toàn thị trường | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` ON `market_index_dim_id` WHERE `market_index_dim.market_code` khớp Loại chỉ số JOIN `cdr_dt_dim` ON `snpst_dt_dim_id` | [STT=3, item_code=`market_index_value`] Đánh giá="Trùng" — đã tính ở Nhóm 1 (K_TKNB_2xx dạng khác), nhưng BA yêu cầu lặp lại cho báo cáo này với grain riêng. Phụ thuộc trực tiếp Chiều K_TKNB_1013 (PENDING do thiếu 2/4 giá trị) — kéo theo PENDING. **[SỬA 2026-09-22]** Reuse `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD) thay vì lưu trong bảng phẳng riêng — xem Cụm 18a. Atomic cần bổ sung: như K_TKNB_1013. | PENDING |
+| K_TKNB_1013 | Loại chỉ số | - | Chiều | `index_constituent_dim.index_code` WHERE `index_code IN ('HOSE','HNX','UPCOM','30','HNX30','100')` → hiển thị `index_constituent_dim.index_nm` | [STT=2, item_code=`dim_index_type_mss030a`] [SỬA 2026-09-23 — Data Modeler: nguồn chính index_constituent_dim.index_code] Nâng READY — BA dòng 1131 khai đủ 6 MARKETCODE: VNIndex `'HOSE'`, HNX Index `'HNX'`, UPCOM Index `'UPCOM'`, VN30 `'30'`, HNX30 `'HNX30'`, VN100 `'100'` (lý do PENDING cũ 'thiếu HNX30/VN30' không còn). Chiều dùng chung `Index Constituent Dimension` (sở hữu GSTT). Nối điểm chỉ số: `market_index_dim.market_code = index_constituent_dim.index_code` | READY |
+| K_TKNB_1014 | Giá trị chỉ số CP toàn thị trường | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` ON `market_index_dim_id` JOIN `index_constituent_dim` ON `index_constituent_dim.index_code = market_index_dim.market_code` WHERE `index_code IN ('HOSE','HNX','UPCOM')` JOIN `cdr_dt_dim` ON `snpst_dt_dim_id` | [STT=3, item_code=`market_index_value`] [SỬA 2026-09-23 — Data Modeler: nguồn chính index_constituent_dim.index_code] Nâng READY — BA dòng 1132 chỉ lấy `MARKETCODE IN ('HOSE','HNX','UPCOM')`, bản ghi cuối ngày. Sửa khóa sai cũ `Index Name = Index Code` → `market_code = index_code` | READY |
 | K_TKNB_1015 | Tổng giá trị giao dịch CP toàn thị trường | Tỷ đồng | Cơ sở | `SUM(fct_market_trading_snpst.total_trading_val)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt` | [STT=4, item_code=`total_trading_value_mss030a`] Không phụ thuộc Loại chỉ số — giá trị lặp lại trên 4 dòng cùng Ngày GD ở tầng trình diễn. Atomic READY. **[SỬA 2026-09-22]** Lưu vật lý trên `Fact Market Trading Snapshot` (mới) — xem Cụm 18b. | READY |
 | K_TKNB_1016 | Tổng khối lượng giao dịch CP toàn thị trường | CP | Cơ sở | `SUM(fct_market_trading_snpst.total_trading_vol)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` GROUP BY `trade_dt` | [STT=5, item_code=`total_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
 | K_TKNB_1017 | KLGD khớp lệnh CP toàn thị trường | CP | Cơ sở | `SUM(fct_market_trading_snpst.matched_trading_vol)` WHERE `securities_trade.market_id_code IN ('STO','STX','UPX')` AND `securities_trade.board_tp_code IN ('G1','G2','G3','G4','G7','G8')` GROUP BY `trade_dt` | [STT=6, item_code=`matched_trading_volume_mss030a`] Không phụ thuộc Loại chỉ số. Atomic READY. | READY |
@@ -2087,7 +2087,7 @@ erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Trading_Snapshot : "Snapshot_Date_Dimension_Id"
 ```
 
-> **Ghi chú:** `Fact Market Index Snapshot` (`fct_market_index_snpst`) và `Market Index Dimension` (`market_index_dim`) sở hữu bởi QLKD, TKNB reuse — không tạo lại. `Fact Market Trading Snapshot` (`fct_market_trading_snpst`) là Fact mới, sở hữu TKNB, không có FK Dimension nào ngoài Calendar Date (8 đo lường không breakdown theo chiều nào khác ngoài Ngày GD).
+> **Ghi chú:** `Fact Market Index Snapshot` (`fct_market_index_snpst`) và `Market Index Dimension` (`market_index_dim`) sở hữu bởi QLKD, TKNB reuse — không tạo lại. `Fact Market Trading Snapshot` (`fct_market_trading_snpst`) là Fact mới, sở hữu TKNB, không có FK Dimension nào ngoài Calendar Date (8 đo lường không breakdown theo chiều nào khác ngoài Ngày GD). **[MỚI 2026-09-23]** Flat cho K_TKNB_1013/1014: `tknb_fct_market_index_snpst_flat` (bảng #23) — Fact Market Index Snapshot × Calendar Date × Market Index Dimension × Index Constituent Dimension (nối `market_code = index_code`, lọc 6 mã), grain chỉ số × ngày; không dùng `qlkd_fct_market_index_snpst_flat` vì bảng đó chỉ giữ ngày cuối tháng.
 
 **Lineage Mart → Báo cáo:**
 
@@ -2098,14 +2098,16 @@ flowchart LR
         G2["Market Index Dimension"]
         G3["Fact Market Trading Snapshot"]
         G4["Calendar Date Dimension"]
+        G5["Index Constituent Dimension"]
     end
     subgraph RPT["Báo cáo"]
-        R1["K_TKNB_1012,1015-1022: Thong ke giao dich toan thi truong co phieu (BM030a_MSS)"]
+        R1["K_TKNB_1012-1022: Thong ke giao dich toan thi truong co phieu (BM030a_MSS)"]
     end
     G1 --> R1
     G2 --> R1
     G3 --> R1
     G4 --> R1
+    G5 --> R1
 ```
 
 **Bảng grain:**
@@ -2115,14 +2117,8 @@ flowchart LR
 | Fact Market Index Snapshot (`fct_market_index_snpst`, reuse — sở hữu QLKD) | 1 row = 1 chỉ số (market_code) × 1 ngày |
 | Market Index Dimension (`market_index_dim`, reuse — sở hữu QLKD) | 1 row = 1 combo Market_Id + Market_Code (SCD4A current-state) |
 | Fact Market Trading Snapshot (`fct_market_trading_snpst`, mới — sở hữu TKNB) | 1 row = 1 Trade Date (cộng gộp cả 3 sàn HOSE/HNX/UPCoM) |
+| Index Constituent Dimension (`index_constituent_dim`, reuse — sở hữu GSTT) | 1 row = 1 Index Code (SCD4A current-state) |
 | Calendar Date Dimension | 1 row = 1 ngày |
-
-**Bảng mapping nguồn (Atomic Placeholder — cho dòng PENDING):**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| Loại chỉ số (HNX30/VN30) | MDDS.JAD_MARKETINFOR (scheme `index_tp_code`/MDDS_INDEX_TYPE chưa sync values) | Market Index Snapshot (mở rộng scheme) | market_index_snapshot |
-| Giá trị chỉ số CP toàn thị trường (phụ thuộc Loại chỉ số) | MDDS.JAD_MARKETINFOR (cùng gap HNX30/VN30) | Market Index Snapshot (mở rộng scheme) | market_index_snapshot |
 
 #### Nhóm 19 - Thống kê giao dịch toàn thị trường trái phiếu Chính phủ (BM030b_MSS)
 
@@ -3046,7 +3042,7 @@ erDiagram
 16. **Nhóm 16 — định nghĩa đếm "Số lượng tài khoản NĐT" (K_TKNB_879) và "Số TK giao dịch phái sinh" (K_TKNB_901) chưa rõ**: BA note "Hỏi Phương" cho K_TKNB_879; SQL tham khảo dùng JOIN với `TRADE_BOOK` để đếm TK — nghĩa là chỉ đếm TK có giao dịch phát sinh trong kỳ (gần với "TK hoạt động"), không phải tổng số TK đã mở tại VSDC (toàn bộ, kể cả TK không giao dịch). Cần chốt lại định nghĩa trước khi thiết kế Atomic entity "Investor Trading Account" — ảnh hưởng trực tiếp business rule.
 17. **Nhóm 4 (HNX04) — 77 KPI (K_TKNB_395–471, mục 1 "Chỉ số" và mục 4-11 "KL/GT CK niêm yết-ĐKGD, mới, bổ sung, hủy niêm yết") được bổ sung ngoài phạm vi BA gốc**: BA file (STT=4) ban đầu hoàn toàn thiếu các mục này — đã đối chiếu với biểu mẫu Excel chuẩn `HNX04 Bao cao tong hop ve quy mo TTCK.xlsx` (user cung cấp 2026-08-10) để xác định đúng vị trí/tên chỉ tiêu theo layout gốc và khai sinh đủ KPI ID. [CẬP NHẬT 2026-09-10] BA đã bổ sung nguồn thật cho mục 6-11 (54/77 KPI, xem mục Atomic đầu Nhóm 4) — nay READY. BA cũng đã có sẵn nguồn thật cho mục 1 HNX-Index/HNXUpcom-Index (K_TKNB_396, K_TKNB_398 — nguồn `MDDS.jad_marketinfor`, Atomic `Market Index Snapshot` đã READY, dùng chung entity với Nhóm 1/5/18) — review 2026-09-10 phát hiện Nhóm 4 trước đó đánh giá sai "BA chưa cung cấp" cho các dòng này, đã sửa lại. Chỉ còn PENDING thật: header mục 1 (K_TKNB_395, phụ thuộc dây chuyền), HNXFFIndex/HNXFFUpcomIndex (K_TKNB_397/399 — BA xác nhận `Nguồn=N/A`), và mục 4-5 (K_TKNB_400-417, Atomic entity dự kiến để TBD — cần BA xác nhận nguồn thật).
 28. **[MỞ 2026-09-10] Nhóm 4 (HNX04) — thiếu ~31 KPI mới cho "Trong kỳ - Tăng/giảm so với kỳ trước (%)" của mục 6-11**: đối chiếu số lượng BA↔HLD cho thấy BA_Valid (213 dòng, `Mã dashboard/BC = HNX04`) > HLD_Base hiện tại (182 KPI, K_TKNB_290-471) — lệch +31. Nguyên nhân: mapping BA mới (2026-09-10) bổ sung dòng "% Tăng/giảm so với kỳ trước" (Chỉ tiêu phái sinh, Đánh giá="Trùng") cho từng mục 6/7/8/9/10/11 × breakdown Loại CK (CP,CCQ) và Loại CK (TPDN) — các dòng BA này CHƯA được cấp KPI_ID mới trong đợt cập nhật vừa rồi (chỉ cập nhật 54 KPI giá trị gốc K_TKNB_418-471 đã tồn tại sẵn). Cần cấp KPI_ID mới tiếp theo K_TKNB_1255 (ID lớn nhất hiện tại của module) cho các dòng "% Tăng/giảm" này ở lượt thiết kế tiếp theo, công thức dạng `= (item_value_kỳ_này / item_value_kỳ_trước - 1) * 100` reuse trực tiếp `item_value` của KPI gốc tương ứng (không SUM lại từ Atomic).
-18. **Nhóm 18 (BM030a_MSS) — Chiều "Loại chỉ số" thiếu bằng chứng Atomic cho HNX30/VN30 (K_TKNB_1013, K_TKNB_1014)**: BA chỉ ghi điều kiện lọc `market_code IN ('HOSE','HNX','UPCOM')` (khớp 3/4 giá trị: VNIndex/HNX-Index/UPCoM-Index), không cung cấp SQL/điều kiện riêng cho 2 sub-index HNX30 và VN30. Scheme `MDDS_INDEX_TYPE` (`index_tp_code`) tồn tại trong `classification_schemes.yaml` nhưng `values: []` — chưa sync để xác nhận HNX30/VN30 có nằm trong entity `Market Index Snapshot` (cùng bảng `JAD_MARKETINFOR`, phân biệt bằng `index_tp_code`) hay cần nguồn khác hoàn toàn. Áp dụng rule "domain Chiều chưa đầy đủ giá trị → PENDING toàn KPI" — đánh PENDING cả K_TKNB_1013/1014 dù 3/4 giá trị đã có Atomic, tránh thiết kế Chiều thiếu domain. Cần BA/team quản trị Atomic xác nhận nguồn HNX30/VN30 và sync `values` cho scheme `MDDS_INDEX_TYPE` trước khi build ETL.
+18. **[RESOLVED 2026-09-23]** ~~**Nhóm 18 (BM030a_MSS) — Chiều "Loại chỉ số" thiếu bằng chứng Atomic cho HNX30/VN30 (K_TKNB_1013, K_TKNB_1014)**: BA chỉ ghi điều kiện lọc `market_code IN ('HOSE','HNX','UPCOM')` (khớp 3/4 giá trị: VNIndex/HNX-Index/UPCoM-Index), không cung cấp SQL/điều kiện riêng cho 2 sub-index HNX30 và VN30. Scheme `MDDS_INDEX_TYPE` (`index_tp_code`) tồn tại trong `classification_schemes.yaml` nhưng `values: []` — chưa sync để xác nhận HNX30/VN30 có nằm trong entity `Market Index Snapshot` (cùng bảng `JAD_MARKETINFOR`, phân biệt bằng `index_tp_code`) hay cần nguồn khác hoàn toàn. Áp dụng rule "domain Chiều chưa đầy đủ giá trị → PENDING toàn KPI" — đánh PENDING cả K_TKNB_1013/1014 dù 3/4 giá trị đã có Atomic, tránh thiết kế Chiều thiếu domain. Cần BA/team quản trị Atomic xác nhận nguồn HNX30/VN30 và sync `values` cho scheme `MDDS_INDEX_TYPE` trước khi build ETL.~~ → BA dòng 1131 khai đủ 6 MARKETCODE (HOSE/HNX/UPCOM/30/HNX30/100); Data Modeler chỉ định nguồn chính `index_constituent_dim.index_code` → K_TKNB_1013 SLICER READY, K_TKNB_1014 READY (khóa `market_index_dim.market_code = index_constituent_dim.index_code`, lọc HOSE/HNX/UPCOM theo BA dòng 1132). Rủi ro còn lại: `index_constituent_snapshot` (JAD_CSIDXINFOR) phải có bản ghi cho mã 'HNX'/'UPCOM' (chỉ số sàn) — cần profile dữ liệu.
 19. **Nhóm 16 — "Số lượng DN được cổ phần hóa" (K_TKNB_913, K_TKNB_914) thiếu khóa liên kết**: BA tự ghi chú nguồn `HNX.BM7`/`HOSE.BM9` "không có cột mã công ty hoặc mã CK để liên kết" — rủi ro data quality nghiêm trọng khi thiết kế Atomic entity mới (không match được DN cổ phần hóa với entity Involved Party/Issuer hiện có). Cần khảo sát thêm nguồn trước khi lên HLD Atomic cho entity "Equitization Auction Result".
 20. **Nhóm 16 — "Doanh thu CTCK/CTQLQ" (K_TKNB_916, K_TKNB_917) phụ thuộc pattern EAV báo cáo định kỳ chưa chuẩn hóa, gap xuyên nhiều Nhóm module TKNB**: cả 2 dựa trên cấu trúc "form/cell value" (SCMS report hoặc BCTC CTQLQ "chưa passing dữ liệu nguồn") — cùng loại gap đã ghi nhận ở `project_financial_report_value_eav_deprecated` (không dùng cấu trúc nguồn EAV cũ làm nền Fact). Đề xuất: cần 1 thiết kế Atomic entity chuẩn hóa dùng chung cho mọi báo cáo tài chính định kỳ CTCK/CTQLQ, không nên thiết kế riêng lẻ theo từng Nhóm khi Atomic được bổ sung.
 21. **Nhóm 16 — chiều "Quý..." (K_TKNB_875) PENDING nhưng là chiều slicer chính của toàn báo cáo**: BA ghi "Chưa có CSDL - Map biểu mẫu" không kèm mô tả nguồn cụ thể. Cần xác nhận liệu `period_marker`/`report_period_dt` trong thiết kế bảng phẳng đã tự đủ đáp ứng chiều hiển thị này hay còn thiếu thông tin khác (label hiển thị "Quý I/2026" so với ngày chốt kỳ thực tế).
