@@ -2,8 +2,8 @@
 -- NDTNN Flat Tables — CREATE
 -- Module: Nhà Đầu Tư Nước Ngoài — NDTNN
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 4 fact + 2 operational
--- (Fact Market Index Snapshot dùng chung QLKD — flat table đã có ở QLKD, không CREATE lại)
+-- 7 bảng: 5 fact + 2 operational
+-- (Nhóm 5 dùng Fact riêng fct_foreign_net_flow_market_index_snpst từ 2026-09-24 — không còn reuse Fact Market Index Snapshot của QLKD)
 -- ============================================================
 
 -- ============================================================
@@ -195,4 +195,35 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), ticker_symbol)
 COMMENT 'Flat table — Fact Public Company Foreign Ownership Snapshot × Calendar Date × Public Company Dimension'
+;
+
+
+-- ============================================================
+-- 7. FACT: ndtnn_fct_foreign_net_flow_market_index_snpst_flat
+--    Fact Foreign Net Flow Market Index Snapshot (Nhóm 5 — Tương quan Net Flow & VN-Index)
+--    Joins: Calendar Date × Market Index Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_net_flow_market_index_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Foreign Net Flow Market Index Snapshot
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày giao dịch',
+    market_index_dim_id             String                  COMMENT 'FK chỉ số tham chiếu (VN-Index)',
+    foreign_buy_val                 Decimal(23,2)           COMMENT 'GT mua NĐTNN toàn thị trường (HOSE+HNX, VND)',
+    foreign_sell_val                Decimal(23,2)           COMMENT 'GT bán NĐTNN toàn thị trường (HOSE+HNX, VND)',
+    foreign_net_trading_val         Decimal(23,2)           COMMENT 'GT mua/bán ròng NĐTNN (VND) — K_NDTNN_33',
+    market_index_close_val          Nullable(Decimal(23,2)) COMMENT 'Điểm đóng cửa VN-Index — K_NDTNN_34',
+    foreign_net_capital_flow_mtd_amt Nullable(Decimal(23,2)) COMMENT 'Dòng tiền ròng lũy kế tháng (USD) — K_NDTNN_35, PENDING Atomic (NULL)',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                    Nullable(Date)           COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+
+    -- From: MARKET INDEX DIMENSION
+    market_id                       Nullable(String)         COMMENT 'Mã thị trường — từ Market Index Dimension',
+    market_code                     Nullable(String)         COMMENT 'Mã chỉ số — từ Market Index Dimension',
+    index_nm                        Nullable(String)         COMMENT 'Tên chỉ số — từ Market Index Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), market_index_dim_id)
+COMMENT 'Flat table — Fact Foreign Net Flow Market Index Snapshot × Calendar Date × Market Index Dimension'
 ;

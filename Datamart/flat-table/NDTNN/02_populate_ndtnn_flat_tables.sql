@@ -2,7 +2,7 @@
 -- NDTNN Flat Tables — POPULATE
 -- Module: Nhà Đầu Tư Nước Ngoài — NDTNN
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 4 fact + 2 operational
+-- 7 bảng: 5 fact + 2 operational
 -- ETL daily: fact có FK Calendar Date lọc theo WHERE cal.cdr_dt = :etl_date
 --            fact report không có FK Calendar Date, lọc trực tiếp theo WHERE f.report_dt = :etl_date
 -- 2 fact report (statistics_rpt, detail_rpt) là ETL append-only theo Report
@@ -199,5 +199,41 @@ JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim
     ON pc_dim.public_company_dim_id = f.public_company_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 7. FACT: ndtnn_fct_foreign_net_flow_market_index_snpst_flat
+--    snpst_cal: JOIN + WHERE cdr_dt = :etl_date
+--    Chuỗi thời gian cho line chart Nhóm 5 — KHÔNG TRUNCATE, chỉ DELETE đúng
+--    ngày :etl_date (idempotent re-run) rồi INSERT lại, giữ lịch sử các ngày khác.
+-- ============================================================
+DELETE FROM datamart.ndtnn_fct_foreign_net_flow_market_index_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.ndtnn_fct_foreign_net_flow_market_index_snpst_flat
+SELECT
+    -- From: FACT Fact Foreign Net Flow Market Index Snapshot
+    f.snpst_dt_dim_id,
+    f.market_index_dim_id,
+    f.foreign_buy_val,
+    f.foreign_sell_val,
+    f.foreign_net_trading_val,
+    f.market_index_close_val,
+    f.foreign_net_capital_flow_mtd_amt,
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                       AS snpst_cdr_dt,
+
+    -- From: MARKET INDEX DIMENSION
+    mi_dim.market_id                       AS market_id,
+    mi_dim.market_code                     AS market_code,
+    mi_dim.index_nm                        AS index_nm
+
+FROM datamart.fct_foreign_net_flow_market_index_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.market_index_dim mi_dim
+    ON mi_dim.market_index_dim_id = f.market_index_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;

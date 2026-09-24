@@ -48,18 +48,16 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
-    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Net_Flow_Market_Index_Snapshot : " "
+    Market_Index_Dimension ||--o{ Fact_Foreign_Net_Flow_Market_Index_Snapshot : " "
 ```
 
 #### Bảng entity
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Giá trị mua/bán ròng (reuse Nhóm 2) | 1 row = 1 mã CK × 1 ngày | K_NDTNN_33 |
-| Fact Market Index Snapshot | Fact Snapshot | new | Điểm đóng cửa chỉ số VN-Index | 1 row = 1 chỉ số × 1 ngày | K_NDTNN_34 |
-| Market Index Dimension | Dimension | new | Danh mục chỉ số thị trường | 1 row / combo Market_Id+Market_Code (SCD4A) | — |
+| Fact Foreign Net Flow Market Index Snapshot | Fact Snapshot | new | [2026-09-24] Fact riêng Nhóm 5 — GT mua/bán/ròng NĐTNN toàn thị trường, điểm đóng cửa VN-Index, dòng tiền ròng lũy kế tháng (PENDING Atomic) | 1 row = 1 ngày × 1 chỉ số tham chiếu | K_NDTNN_33-35 |
+| Market Index Dimension | Dimension | reuse (QLKD) | Danh mục chỉ số thị trường | 1 row / combo Market_Id+Market_Code (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 
 ---

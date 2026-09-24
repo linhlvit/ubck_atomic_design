@@ -251,32 +251,40 @@ flowchart LR
 
 ---
 
-##### Cụm 5c: Chỉ số thị trường (Fact Market Index Snapshot)
+##### Cụm 5c: Tương quan Net Flow & VN-Index (Fact Foreign Net Flow Market Index Snapshot)
 
-Phục vụ Tab GIÁM SÁT DÒNG VỐN Nhóm 5 — Điểm đóng cửa VN-Index (K_NDTNN_34). `Market Index Dimension` (grain 1 combo Market_Id+Market_Code, SCD4A) thay thế lưu `Market_Id`/`Market_Code` dạng text trực tiếp trên Fact trước đây — xem O_NDTNN_29. **Sửa 24/07/2026:** Fact (`fct_market_index_snpst`) và Dimension (`market_index_dim`) sở hữu bởi QLKD, NDTNN reuse — xem Cụm 6b `DTM_QLKD_HLD.md`. Fact join `Calendar Date Dimension` (qua `snpst_dt_dim_id`) và `Market Index Dimension` (qua `market_index_dim_id`). **Sửa 24/07/2026 (datamart-review):** Grain vật lý Fact thống nhất **1 chỉ số × 1 ngày** cho cả QLKD lẫn NDTNN (trước đây Fact populate grain 1 tháng — QLKD lấy bản ghi cuối tháng, khiến K_NDTNN_34 filter `WHERE cdr_dt = :pdate` theo ngày bất kỳ trả về rỗng cho mọi ngày không phải cuối tháng). QLKD nay tự filter/JOIN đúng ngày cuối tháng trên Fact grain-ngày này — xem `DTM_QLKD_HLD.md` Cụm 6b.
+Phục vụ Tab GIÁM SÁT DÒNG VỐN Nhóm 5 — K_NDTNN_33 (Giá trị mua/bán ròng), K_NDTNN_34 (Điểm đóng cửa VN-Index), K_NDTNN_35 (Dòng tiền ròng lũy kế — PENDING). **[THIẾT KẾ LẠI 2026-09-24, theo yêu cầu Data Modeler]:** Thay reuse `Fact Market Index Snapshot` (QLKD) + `Fact Securities Foreign Trading Snapshot` (Nhóm 2) bằng 1 Fact riêng `Fact Foreign Net Flow Market Index Snapshot` (`fct_foreign_net_flow_market_index_snpst`), grain 1 ngày giao dịch × 1 chỉ số tham chiếu — đọc thẳng Atomic `Securities Trade` + `Security Trading Snapshot` + `Market Index Snapshot`. Chỉ còn reuse Dimension `Market Index Dimension` (`market_index_dim`, sở hữu QLKD — xem O_NDTNN_29) và `Calendar Date Dimension`. `Fact Market Index Snapshot` vẫn thuộc QLKD, NDTNN không còn dùng. Nguồn dòng tiền ròng (FIMS.RPTVALUES → Atomic `Report Import Value`) chưa có LLD Atomic — xem O_NDTNN_33.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
         S1["MDDS.JAD_MARKETINFOR"]
+        S2["ORDERTRADE.TRADE_BOOK_HOSE / TRADE_BOOK_HNX"]
+        S3["MDDS.JAD_STOCKINFOR"]
         ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Market Index Snapshot"]
+        SV2["Securities Trade"]
+        SV3["Security Trading Snapshot"]
         Calendar_Date["Calendar Date"]
     end
 
     subgraph Datamart["Datamart"]
-        G1["Fact Market Index Snapshot"]
+        G1["Fact Foreign Net Flow Market Index Snapshot"]
         G2["Market Index Dimension"]
         G3["Calendar Date Dimension"]
     end
 
     S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
     SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
     SV1 --> G2
     Calendar_Date --> G3
 
@@ -341,7 +349,7 @@ flowchart LR
 > Atomic (Box 1): `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE / ORDERTRADE.TRADE_BOOK_HNX — **READY**
 > Atomic (Box 2-4): xem dòng PENDING trong bảng KPI dưới đây
 > Loại dữ liệu: Dữ liệu tĩnh (Box 1, BA đã chốt logic mapping + SQL tham khảo đầy đủ) / Dữ liệu động (Box 2-4)
-> **[SỬA 2026-09-22]** K_NDTNN_1/2/3 (Foreign Buy/Sell Value, Total Market Value) — bổ sung lọc `Securities Dimension.Stock Type Code IN ('1','2','3')` bị thiếu trước đây, đúng phạm vi CTE `stockinfor` trong SQL tham khảo BA STT 1. Chi tiết xem Nhóm 2 (nơi khai sinh Fact).
+> **[SỬA 2026-09-24]** K_NDTNN_1/2/3 (Foreign Buy/Sell Value, Total Market Value) — phạm vi mã CK lấy từ Atomic `Security Trading Snapshot` theo Symbol × Trading Date với `Stock Type Code IN ('1','2','3')` (thay JOIN `Securities Dimension` current-state, sửa 2026-09-22), HNX giá trị = Execution Price × Execution Volume, lọc NĐTNN `IN ('10','20')` — đúng CTE `stockinfor` và câu lệnh BA; chi tiết xem Nhóm 2 STT 1. Chi tiết xem Nhóm 2 (nơi khai sinh Fact).
 
 **Source:** `Fact Securities Foreign Trading Snapshot` → `Calendar Date Dimension`
 
@@ -449,7 +457,7 @@ flowchart LR
 > Atomic (Mã CK → Ngành): `Public Company` ← IDS.COMPANY_PROFILES — **READY (draft, working)** — join qua `Equity Ticker Symbol` = `Securities_Dimension.Symbol`, và `Business Line Level 1/2 Code` → `Classification Business Line Code`
 > Atomic (Danh mục mã CK): `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR — **READY (draft, working)** — xem Cụm 1a (Section 1). Dimension `Securities Dimension` (grain 1 mã CK, SCD4A) thay thế join text-match trực tiếp trước đây.
 > Loại dữ liệu: Dữ liệu tĩnh
-> **[SỬA 2026-09-22, rà soát theo yêu cầu Data Modeler — đối chiếu lại câu lệnh tham khảo BA STT 1]** Đối chiếu nguyên văn SQL tham khảo của BA (STT 1, dòng "Tỷ lệ tham gia") phát hiện thiết kế trước đây **thiếu hoàn toàn** điều kiện lọc phạm vi mã CK — BA dùng CTE `stockinfor` (`js.stocktype in (1,2,3)`, tức Trái phiếu/Cổ phiếu/Chứng chỉ quỹ) **INNER JOIN** vào `trade_book` trước khi SUM, loại hẳn phái sinh/chứng quyền/các loại CK khác khỏi cả 3 measure (GT mua NĐTNN, GT bán NĐTNN, Tổng GTGD toàn thị trường) — thiết kế cũ SUM thẳng trên toàn bộ `securities_trade` không lọc, làm phồng số liệu do lẫn cả GD phái sinh/CW. Đã bổ sung `INNER JOIN securities_dim ... AND securities_dim.stock_tp_code IN ('1','2','3')` vào ETL logic của `Foreign Buy Value`/`Foreign Sell Value`/`Total Market Value` (không cần cột/Fact mới — `Securities Dimension.Stock Type Code` đã có sẵn). Phần `MAX(tradingtime) GROUP BY stocktype` trong SQL BA chỉ là cách lấy "ngày hiện tại" cho câu lệnh ad-hoc không tham số hóa (BA không có `:etl_date`) — ở tầng Datamart, ETL batch đã chạy theo đúng `:etl_date` nên KHÔNG cần replicate logic MAX(tradingtime), chỉ cần lọc đúng phạm vi loại chứng khoán như trên.
+> **[SỬA 2026-09-24, đối chiếu lại câu lệnh tham khảo BA STT 2 theo yêu cầu Data Modeler — thay ghi chú 2026-09-22]** ETL `Fact Securities Foreign Trading Snapshot` (dùng chung Nhóm 1/2): (1) HNX tính giá trị = `execution_price × execution_vol` (Atomic HNX không có `execution_val` — thiết kế cũ SUM `execution_val` cho cả 2 sàn làm phần HNX ra NULL/0), HOSE dùng `execution_val`, rẽ nhánh theo `src_stm_code`; (2) phạm vi mã CK lấy trực tiếp từ Atomic `Security Trading Snapshot` theo **Symbol × Trading Date** (bản ghi `trading_time` mới nhất trong ngày, `stock_tp_code IN ('1','2','3')`) đúng CTE `stockinfor` của BA — bỏ JOIN `Securities Dimension` current-state + điều kiện `Trading Time = MAX` theo Stock Type Code (câu lệnh BA hiện hành không có; Dimension current-state làm rơi mã khi chạy lại lịch sử). HOSE nối `symbol`, HNX nối `isin_code` = `issue_code`; (3) lọc NĐTNN `IN ('10','20')` cho cả 2 sàn (đúng BA STT 2; tương đương `<> '00'` của BA STT 1 trên domain 00/10/20). Tầng KPI: Top ngành/Top mã/Tỷ trọng ngành/Top mã tỷ trọng lọc **khoảng ngày** `BETWEEN :pdate AND :pdate1` (BA `trade_date BETWEEN :pdat1 AND :pdat2`), điều kiện HAVING ròng > 0 và top 5 nằm trong logic, ngành COALESCE 'Chưa phân ngành'. Điểm chờ BA chốt: khóa nối HNX ↔ stockinfor (BA dùng lẫn `symbolisin` và `symbol`), INNER JOIN `company_profiles` ở dòng BA 11, công thức Tỷ trọng TB phiên — xem O_NDTNN_34.
 
 **Source:** `Fact Securities Foreign Trading Snapshot` → `Calendar Date Dimension`, `Securities Dimension`, `Public Company Dimension` (join `Classification Business Line` cho Top ngành)
 
@@ -457,22 +465,22 @@ flowchart LR
 
 | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_NDTNN_8 | Ngành | — | Chiều | `Public_Company_Dimension.Classification_Business_Line_Name` (đã đệm sẵn từ join `Public_Company_Dimension.Business_Line_Level1_Code` = `Classification_Business_Line.cl_business_line_code` lúc ETL populate Dimension) | Dùng GROUP BY cho Top ngành (K_NDTNN_12/13/16) | READY |
+| K_NDTNN_8 | Ngành | — | Chiều | COALESCE(`Public_Company_Dimension.Classification_Business_Line_Name`, 'Chưa phân ngành') (tên ngành đã đệm sẵn từ join `Public_Company_Dimension.Business_Line_Level1_Code` = `Classification_Business_Line.cl_business_line_code` lúc ETL populate Dimension) | Dùng GROUP BY cho Top ngành (K_NDTNN_12/13/16). **[2026-09-24]** Thêm COALESCE theo BA — mã không có ngành/không phải công ty đại chúng gom vào 'Chưa phân ngành' | READY |
 | K_NDTNN_9 | Mã CK | — | Chiều | `Securities_Dimension.Symbol` | Dùng GROUP BY cho Top mã (K_NDTNN_14/15). Đổi nguồn từ `Fact.Security_Symbol_Code` (text lặp) sang FK `Securities_Dimension_Id` — xem Cụm 1a (Section 1) | READY |
 | K_NDTNN_10 | Giá trị mua/bán ròng | Tỷ đồng | Phái sinh | `Foreign_Buy_Value − Foreign_Sell_Value` per mã CK × ngày; nếu group theo Tháng: `SUM(Foreign_Buy_Value − Foreign_Sell_Value)` GROUP BY Tháng | Bar chart trục X = Tháng | READY |
 | K_NDTNN_11 | Lũy kế mua/bán ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Buy_Value) − SUM(Foreign_Sell_Value)` WHERE `Snapshot_Date_Dimension_Id` BETWEEN `:pdate` AND `:pdate1` (SUM xuyên suốt mọi mã CK trong khoảng ngày) | — | READY |
-| K_NDTNN_12 | Top 5 ngành bán ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Sell_Value)` WHERE `Trade_Date = :pdate` GROUP BY `Public_Company_Dimension.Classification_Business_Line_Name` ORDER BY SUM DESC FETCH FIRST 5 ROWS ONLY | Join `Fact` → `Public_Company_Dimension` | READY |
-| K_NDTNN_13 | Top 5 ngành mua ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Buy_Value)` WHERE `Trade_Date = :pdate` GROUP BY `Public_Company_Dimension.Classification_Business_Line_Name` ORDER BY SUM DESC FETCH FIRST 5 ROWS ONLY | Join như trên | READY |
-| K_NDTNN_14 | Top 5 mã bán ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Sell_Value) − SUM(Foreign_Buy_Value)` WHERE `Trade_Date` BETWEEN `:pdate` AND `:pdate1` GROUP BY `Securities_Dimension.Symbol` ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY | — | READY |
-| K_NDTNN_15 | Top 5 mã mua ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Buy_Value) − SUM(Foreign_Sell_Value)` WHERE `Trade_Date` BETWEEN `:pdate` AND `:pdate1` GROUP BY `Securities_Dimension.Symbol` ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY | — | READY |
-| K_NDTNN_16 | Tỷ trọng theo ngành | % | Phái sinh | `ROUND(SUM(Foreign_Buy_Value + Foreign_Sell_Value) / NULLIF(SUM(Total_Market_Value)*2, 0) * 100, 2)` WHERE `Trade_Date = :pdate` GROUP BY `Public_Company_Dimension.Classification_Business_Line_Name` — mẫu số SUM theo TOÀN NGÀNH (mọi mã CK cùng ngành) | Khác K_NDTNN_17 — mẫu số theo ngành, không phải theo mã | READY |
-| K_NDTNN_17 | Top mã tỷ trọng cao | % | Phái sinh | `ROUND(SUM(Foreign_Buy_Value + Foreign_Sell_Value) / NULLIF(SUM(Total_Market_Value)*2, 0) * 100, 2)` WHERE `Trade_Date = :pdate` GROUP BY `Securities_Dimension.Symbol` ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY | Mẫu số SUM theo TỪNG MÃ CK (1 mã × 1 ngày, không cần GROUP thêm vì Fact đã ở đúng grain này). BA Mã=22 (STT=2) — đổi từ K_NDTNN_33 vì ID đó đã dùng cho "Giá trị mua/bán ròng" ở Nhóm 5 (STT=5) | READY |
+| K_NDTNN_12 | Top 5 ngành bán ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Sell_Value) − SUM(Foreign_Buy_Value)` WHERE `Calendar_Date` BETWEEN `:pdate` AND `:pdate1` GROUP BY COALESCE(`Public_Company_Dimension.Classification_Business_Line_Name`, 'Chưa phân ngành') HAVING kết quả > 0 ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY | LEFT JOIN `Fact` → `Public_Company_Dimension`. **[SỬA 2026-09-24]** Đổi lọc 1 ngày `:pdate` → khoảng ngày; công thức bán ròng (trước ghi `SUM(Foreign_Sell_Value)`, lệch Detail Mapping) — BA `HAVING mua_ban_rong < 0 ORDER BY ASC LIMIT 5` | READY |
+| K_NDTNN_13 | Top 5 ngành mua ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Buy_Value) − SUM(Foreign_Sell_Value)` WHERE `Calendar_Date` BETWEEN `:pdate` AND `:pdate1` GROUP BY COALESCE(`Public_Company_Dimension.Classification_Business_Line_Name`, 'Chưa phân ngành') HAVING kết quả > 0 ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY | Join như trên. **[SỬA 2026-09-24]** Khoảng ngày + mua ròng (trước ghi `SUM(Foreign_Buy_Value)`) | READY |
+| K_NDTNN_14 | Top 5 mã bán ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Sell_Value) − SUM(Foreign_Buy_Value)` WHERE `Calendar_Date` BETWEEN `:pdate` AND `:pdate1` GROUP BY `Securities_Dimension.Symbol` HAVING kết quả > 0 ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY | **[2026-09-24]** HAVING đưa vào logic (BA `HAVING < 0`) | READY |
+| K_NDTNN_15 | Top 5 mã mua ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Buy_Value) − SUM(Foreign_Sell_Value)` WHERE `Calendar_Date` BETWEEN `:pdate` AND `:pdate1` GROUP BY `Securities_Dimension.Symbol` HAVING kết quả > 0 ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY | **[2026-09-24]** HAVING đưa vào logic (BA `HAVING > 0`) | READY |
+| K_NDTNN_16 | Tỷ trọng theo ngành | % | Phái sinh | `ROUND(SUM(Foreign_Buy_Value + Foreign_Sell_Value) / NULLIF(SUM(Total_Market_Value)*2, 0) * 100, 2)` WHERE `Calendar_Date` BETWEEN `:pdate` AND `:pdate1` GROUP BY COALESCE(`Public_Company_Dimension.Classification_Business_Line_Name`, 'Chưa phân ngành') ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY — mẫu số SUM theo TOÀN NGÀNH (mọi mã CK cùng ngành) | Khác K_NDTNN_17 — mẫu số theo ngành. **[SỬA 2026-09-24]** Khoảng ngày + top 5 (BA "Tỷ trọng theo ngành (top ngành)" `ORDER BY DESC LIMIT 5`) | READY |
+| K_NDTNN_17 | Top mã tỷ trọng cao | % | Phái sinh | `ROUND(SUM(Foreign_Buy_Value + Foreign_Sell_Value) / NULLIF(SUM(Total_Market_Value)*2, 0) * 100, 2)` WHERE `Calendar_Date` BETWEEN `:pdate` AND `:pdate1` GROUP BY `Securities_Dimension.Symbol` ORDER BY kết quả DESC FETCH FIRST 5 ROWS ONLY | Mẫu số SUM theo TỪNG MÃ CK qua các ngày trong khoảng. **[SỬA 2026-09-24]** Đổi lọc 1 ngày → khoảng ngày (BA `trade_date BETWEEN`). BA Mã=22 (STT=2) — đổi từ K_NDTNN_33 vì ID đó đã dùng cho "Giá trị mua/bán ròng" ở Nhóm 5 (STT=5) | READY |
 | K_NDTNN_1 | Tổng giá trị mua của NĐTNN | Tỷ đồng | Cơ sở | `SUM(Foreign_Buy_Value)` GROUP BY `Snapshot_Date_Dimension_Id` WHERE `Trade_Date = :pdate` | Reuse từ Nhóm 1 | READY |
 | K_NDTNN_2 | Tổng giá trị bán của NĐTNN | Tỷ đồng | Cơ sở | `SUM(Foreign_Sell_Value)` GROUP BY `Snapshot_Date_Dimension_Id` WHERE `Trade_Date = :pdate` | Reuse từ Nhóm 1 | READY |
 | K_NDTNN_3 | Tổng giá trị giao dịch toàn thị trường | Tỷ đồng | Cơ sở | `SUM(Total_Market_Value)` GROUP BY `Snapshot_Date_Dimension_Id` WHERE `Trade_Date = :pdate` | Reuse từ Nhóm 1 | READY |
-| K_NDTNN_4 | Tỷ trọng giao dịch theo ngày | % | Phái sinh | `(K_NDTNN_1 + K_NDTNN_2) × 100 / (K_NDTNN_3 × 2)` | Reuse từ Nhóm 1 — tên hiển thị khác ("Tỷ trọng GD theo ngày" thay vì "Tỷ lệ tham gia") nhưng cùng công thức | READY |
+| K_NDTNN_4 | Tỷ trọng giao dịch theo ngày | % | Phái sinh | `(K_NDTNN_1 + K_NDTNN_2) × 100 / (K_NDTNN_3 × 2)` GROUP BY `Calendar_Date` WHERE `Calendar_Date` BETWEEN `:pdate` AND `:pdate1` (chuỗi theo ngày) | Reuse từ Nhóm 1 — tên hiển thị khác ("Tỷ trọng GD theo ngày" thay vì "Tỷ lệ tham gia") nhưng cùng công thức. **[2026-09-24]** Bổ sung GROUP BY ngày theo BA (`GROUP BY trade_date`) | READY |
 | K_NDTNN_18 | Tổng giá trị giao dịch NĐTNN | Tỷ đồng | Phái sinh | `K_NDTNN_1 + K_NDTNN_2` cùng ngày | BA STT=2, Đánh giá "Trùng" (logic tái sử dụng K_NDTNN_1/2, xem note BA "Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước") nhưng là dòng BA độc lập, khái niệm khác K_NDTNN_3 (Tổng GT toàn thị trường)/K_NDTNN_4 (Tỷ lệ tham gia) — cấp KPI_ID riêng theo đúng vị trí vật lý trong bảng (giữa K_NDTNN_4 và K_NDTNN_18 cũ, nay dịch thành K_NDTNN_19) | READY |
-| K_NDTNN_19 | Tỷ trọng TB phiên | % | Phái sinh | `AVG(ty_trong_ngay)` WHERE `Trade_Date` BETWEEN `:pdate` AND `:pdate1`, trong đó `ty_trong_ngay = (Foreign_Buy_Value + Foreign_Sell_Value) / (Total_Market_Value × 2) × 100` tính theo từng ngày (SUM xuyên mọi mã CK trong ngày đó trước khi tính tỷ trọng ngày, rồi AVG qua các ngày) | BA note "Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước" (= công thức K_NDTNN_4, nhưng là KPI độc lập — không note "Trùng" nên cấp ID riêng theo đúng dải liên tục tiếp theo, không chèn giữa dải 1-157). Cần xác nhận `Trade_Date` là ngày GD thực tế hay ngày khớp lệnh — BA tự ghi chú nghi vấn này | READY |
+| K_NDTNN_19 | Tỷ trọng TB phiên | % | Phái sinh | `AVG(ty_trong_ngay)` WHERE `Trade_Date` BETWEEN `:pdate` AND `:pdate1`, trong đó `ty_trong_ngay = (Foreign_Buy_Value + Foreign_Sell_Value) / (Total_Market_Value × 2) × 100` tính theo từng ngày (SUM xuyên mọi mã CK trong ngày đó trước khi tính tỷ trọng ngày, rồi AVG qua các ngày) | BA note "Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước" (= công thức K_NDTNN_4, nhưng là KPI độc lập — không note "Trùng" nên cấp ID riêng theo đúng dải liên tục tiếp theo, không chèn giữa dải 1-157). Cần xác nhận `Trade_Date` là ngày GD thực tế hay ngày khớp lệnh — BA tự ghi chú nghi vấn này. **[2026-09-24]** Mô tả BA (trung bình tỷ trọng các ngày) mâu thuẫn câu lệnh BA (tỷ trọng gộp cả kỳ / số ngày GD) — thiết kế giữ theo mô tả, chờ BA chốt (O_NDTNN_34) | READY |
 
 **Star Schema:**
 
@@ -544,7 +552,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Foreign Trading Snapshot | 1 row = 1 mã CK × 1 ngày giao dịch (ETL pre-aggregate SUM Execution Value từ Securities Trade theo mã CK, tách theo Buy/Sell Foreign Investor Type Code). **[SỬA 2026-09-22]** Chỉ tính mã CK có `Securities Dimension.Stock Type Code IN ('1','2','3')` (Trái phiếu/Cổ phiếu/Chứng chỉ quỹ) — đúng phạm vi CTE `stockinfor` của BA, loại phái sinh/chứng quyền |
+| Fact Securities Foreign Trading Snapshot | 1 row = 1 mã CK × 1 ngày giao dịch (ETL pre-aggregate SUM Execution Value từ Securities Trade theo mã CK, tách theo Buy/Sell Foreign Investor Type Code IN ('10','20')). **[SỬA 2026-09-24]** Chỉ tính mã CK có trong `Security Trading Snapshot` cùng ngày giao dịch với `Stock Type Code IN ('1','2','3')` (Trái phiếu/Cổ phiếu/Chứng chỉ quỹ) — đúng CTE `stockinfor` của BA; HNX giá trị = Execution Price × Execution Volume |
 | Public Company Dimension | 1 row = 1 công ty đại chúng (SCD4A current-state) — bao gồm Classification Business Line Name đệm sẵn; `Equity_Ticker_Symbol` là snapshot hiện tại (current-state), không phủ lịch sử đổi mã/nhiều loại CK — xem O_NDTNN_28 |
 | Securities Dimension | 1 row = 1 mã chứng khoán (SCD4A current-state) — ETL derive từ `Security Trading Snapshot` (Fact Snapshot), lấy bản ghi mới nhất theo Symbol |
 | Calendar Date Dimension | 1 row = 1 ngày giao dịch |
@@ -623,28 +631,28 @@ flowchart LR
 | Series | Nguồn | Trục Y |
 |:---|:---|:---|
 | MUA/BÁN RÒNG (đỏ) | Securities Trade (ORDERTRADE) | Trái (Tỉ đồng) |
-| DÒNG TIỀN RÒNG (xanh lá) | Báo cáo PLIV-TT51 (Ngân hàng lưu ký) | Trái (Tỉ đồng) |
+| DÒNG TIỀN RÒNG (xanh lá) | Báo cáo PLIV-TT51 (Ngân hàng lưu ký) | Trái (Tỉ đồng — nguồn USD, xem K_NDTNN_35) |
 | VN-INDEX (tím) | MDDS (JAD_MARKETINFOR) | Phải (Điểm) |
 
-> **Ghi chú thiết kế:** 3 series từ 3 fact riêng biệt — presentation layer chịu trách nhiệm query độc lập và align theo trục ngày/tháng.
+> **Ghi chú thiết kế — [THIẾT KẾ LẠI 2026-09-24, theo yêu cầu Data Modeler]:** Thay thiết kế cũ (3 series từ 3 Fact riêng — reuse `Fact Securities Foreign Trading Snapshot` Nhóm 2 + `Fact Market Index Snapshot` QLKD, presentation tự align theo ngày) bằng **1 Fact riêng cho Nhóm 5** `Fact Foreign Net Flow Market Index Snapshot` — cả 3 series nằm cùng 1 dòng/ngày, presentation chỉ SELECT theo khoảng ngày. Lý do: (1) biểu đồ tương quan cần 3 series khớp đúng cùng trục ngày — gom tại ETL tránh lệch ngày giữa 3 query độc lập; (2) Fact Nhóm 2 grain 1 mã CK × 1 ngày, dùng cho Nhóm 5 phải SUM lại toàn thị trường mỗi lần query; (3) Fact Market Index Snapshot sở hữu QLKD, mọi thay đổi grain/cột phía QLKD ảnh hưởng ngược NDTNN (đã xảy ra 24/07/2026). Fact mới đọc thẳng Atomic, không phụ thuộc Fact nào khác.
 
 ---
 
 > Phân loại: **Phân tích**
-> Atomic (Giá trị mua/bán ròng): `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE/HNX — **READY** (dùng chung Nhóm 1/2)
-> Atomic (VN-Index): `Market Index Snapshot` ← MDDS.JAD_MARKETINFOR — **READY** (LLD draft `DataModel/working/Atomic/lld/MDDS/lld_MDDS_JAD_MARKETINFOR.yaml`, chưa có entry `dm_manifest.yaml` — coi như READY nhất quán với QLKD, xem Cụm 6b `DTM_QLKD_HLD.md`)
-> Atomic (Dòng tiền ròng lũy kế): xem cột Ghi chú trong bảng KPI dưới đây
-> Loại dữ liệu: Dữ liệu tĩnh (Giá trị mua/bán ròng, VN-Index) / Dữ liệu động (Dòng tiền ròng lũy kế — reuse K_NDTNN_22 Nhóm 3)
+> Atomic (Giá trị mua/bán ròng): `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE/HNX + `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR — **READY**
+> Atomic (VN-Index): `Market Index Snapshot` ← MDDS.JAD_MARKETINFOR — **READY** (LLD draft `DataModel/working/Atomic/lld/MDDS/lld_MDDS_JAD_MARKETINFOR.yaml`, nhất quán với QLKD Cụm 6b)
+> Atomic (Dòng tiền ròng lũy kế): `Report Import Value` ← FIMS.RPTVALUES — **CHƯA SẴN** (mới có ở `FIMS_HLD_Overview.md`, chưa có LLD/`dm_manifest.yaml`) — xem O_NDTNN_33
+> Loại dữ liệu: Dữ liệu tĩnh (Giá trị mua/bán ròng, VN-Index) / Dữ liệu động (Dòng tiền ròng)
 
-**Source:** `Fact Securities Foreign Trading Snapshot` (reuse Nhóm 2) + `Fact Market Index Snapshot` (reuse — sở hữu QLKD, xem Cụm 6b `DTM_QLKD_HLD.md`) → `Calendar Date Dimension`, `Market Index Dimension` (reuse — sở hữu QLKD)
+**Source:** `Fact Foreign Net Flow Market Index Snapshot` (new, riêng Nhóm 5) → `Calendar Date Dimension`, `Market Index Dimension` (reuse Dimension — sở hữu QLKD)
 
 **Bảng KPI:**
 
 | KPI ID | Tên | Đơn vị | Tính chất | Công thức / Mô tả | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_NDTNN_33 | Giá trị mua/bán ròng | Tỷ đồng | Phái sinh | `SUM(Foreign_Buy_Value) − SUM(Foreign_Sell_Value)` GROUP BY `Snapshot_Date_Dimension_Id` (SUM xuyên suốt mọi mã CK trong ngày) | Cùng công thức K_NDTNN_10 (Nhóm 2) — BA độ chi tiết Ngày, không phải tháng như thiết kế cũ. Reuse `Fact Securities Foreign Trading Snapshot`, không cần bản pre-aggregate mới | READY |
-| K_NDTNN_34 | Điểm đóng cửa chỉ số (VN-Index) | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_id = '10'` AND `market_index_dim.market_code = 'HOSE'` JOIN `cdr_dt_dim` ON `snpst_dt_dim_id` WHERE `cdr_dt_dim.cdr_dt = :pdate` | Atomic `Market Index Snapshot` grain = 1 lần chụp/chỉ số — ETL lấy bản ghi có `Index_Time` lớn nhất trong ngày khi populate Fact (`fct_market_index_snpst`, reuse từ QLKD — xem Cụm 6b `DTM_QLKD_HLD.md`). **Sửa 24/07/2026 (datamart-review):** Fact nay populate grain **1 chỉ số × 1 ngày** thống nhất cho cả QLKD lẫn NDTNN (trước đây populate grain 1 tháng khiến filter `:pdate` theo ngày bất kỳ trả về rỗng — QLKD nay tự filter đúng ngày cuối tháng trên Fact grain-ngày này). Filter qua FK `market_index_dim_id` (thay `Market_Id`/`Market_Code` text trực tiếp) — xem O_NDTNN_29 (Closed) | READY |
-| K_NDTNN_35 | Dòng tiền ròng lũy kế (tháng) (reuse công thức từ K_NDTNN_22 — Nhóm 3) | — | Phái sinh | TBD — chờ Atomic | **Lý do pending:** Reuse K_NDTNN_22 (Nhóm 3), giờ K_NDTNN_22 PENDING (Dữ liệu động — xem Nhóm 3) nên K_NDTNN_35 PENDING theo. **Atomic cần bổ sung:** xem Nhóm 3. **Mart dự kiến:** `Fact Foreign Investor Capital Flow Report` (tên tạm, xem Nhóm 3) — grain 1 tháng | PENDING |
+| K_NDTNN_33 | Giá trị mua/bán ròng | Tỷ đồng | Phái sinh | `fct_foreign_net_flow_market_index_snpst.foreign_net_trading_val` (= `foreign_buy_val − foreign_sell_val`, SUM xuyên mọi mã CK loại 1/2/3 cả HOSE lẫn HNX trong ngày) JOIN `cdr_dt_dim` ON `snpst_dt_dim_id` WHERE `cdr_dt BETWEEN :tu_ngay AND :den_ngay` | **[2026-09-24]** Lưu vật lý tại Fact mới. ETL rẽ nhánh theo `src_stm_code` đúng câu lệnh BA dòng 41: HOSE dùng `execution_val`, HNX dùng `execution_price × execution_vol` (Atomic HNX không có `execution_val`); NĐTNN = `IN ('10','20')` cho cả 2 sàn (BA dòng 41 ghi HOSE `<> '00'` — tương đương trên domain 00/10/20, thống nhất với Fact Nhóm 1/2). JOIN `security_trading_snapshot` bản ghi `trading_time` mới nhất theo mã × ngày (HOSE nối `symbol`, HNX nối `isin_code` = issue_code). Lưu VND, quy đổi Tỷ đồng ở presentation | READY |
+| K_NDTNN_34 | Điểm đóng cửa chỉ số (VN-Index) | Điểm | Cơ sở | `fct_foreign_net_flow_market_index_snpst.market_index_close_val` JOIN `market_index_dim` ON `market_index_dim_id` WHERE `market_id = '10'` AND `market_code = 'HOSE'` | **[2026-09-24]** ETL lấy bản ghi `index_time` lớn nhất trong ngày từ Atomic `Market Index Snapshot` (câu lệnh BA dòng 42) — không còn đi qua `fct_market_index_snpst` (QLKD). Giữ FK `market_index_dim_id` thay vì hard-code để mở rộng chỉ số khác sau này mà không đổi grain | READY |
+| K_NDTNN_35 | Dòng tiền ròng lũy kế (tháng) | USD | Phái sinh | `fct_foreign_net_flow_market_index_snpst.foreign_net_capital_flow_mtd_amt` — dự kiến: SUM `value_num` báo cáo IBOU9 (`column_path` = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)', `row_path` = 'Tổng= (1) + (2)') với `ngay_nop` từ đầu tháng tới ngày snapshot | **Lý do pending:** BA dòng 40 đã Done (nguồn `uat_fims_ods.fact_report_cell`), nhưng Atomic `Report Import Value` (FIMS.RPTVALUES) chưa có LLD/`dm_manifest.yaml`. Cột vật lý đã có sẵn trên Fact (nullable, NULL tới khi Atomic READY). Semi-additive — KHÔNG SUM theo ngày, điểm tháng = giá trị ngày cuối tháng. **Cần BA chốt:** (1) đơn vị USD khác 2 series còn lại; (2) quy tắc "ưu tiên kỳ nửa tháng" khi trùng bản ngày — xem O_NDTNN_33 | PENDING |
 
 **Star Schema:**
 
@@ -664,33 +672,35 @@ erDiagram
         string market_status_code
         string Source_System_Code
     }
-    Fact_Market_Index_Snapshot {
-        string snpst_dt_dim_id FK
-        string market_index_dim_id FK
-        decimal market_index_val
+    Fact_Foreign_Net_Flow_Market_Index_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Market_Index_Dimension_Id FK
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+        decimal Foreign_Net_Trading_Value
+        decimal Market_Index_Close_Value
+        decimal Foreign_Net_Capital_Flow_MTD_Amount
     }
 
-    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : "snpst_dt_dim_id"
-    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : "market_index_dim_id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Net_Flow_Market_Index_Snapshot : "Snapshot_Date_Dimension_Id"
+    Market_Index_Dimension ||--o{ Fact_Foreign_Net_Flow_Market_Index_Snapshot : "Market_Index_Dimension_Id"
 ```
 
-> **Ghi chú:** K_NDTNN_33 reuse trực tiếp `Fact Securities Foreign Trading Snapshot` (xem Star Schema Nhóm 2) — không cần erDiagram riêng. K_NDTNN_34 reuse `Fact Market Index Snapshot` (`fct_market_index_snpst`) sở hữu bởi QLKD (Cụm 6b, `DTM_QLKD_HLD.md`) — không tạo Fact riêng. **Sửa 24/07/2026 (datamart-review):** Grain vật lý Fact nay thống nhất **1 chỉ số × 1 ngày** cho cả QLKD lẫn NDTNN (trước đây ghi "grain gốc QLKD 1 tháng, NDTNN filter query-time xuống grain 1 ngày" — sai, vì Fact grain-tháng không có dữ liệu cho ngày giữa tháng; QLKD nay tự filter đúng ngày cuối tháng trên Fact grain-ngày này). `Market Index Dimension` (`market_index_dim`, grain 1 combo Market_Id+Market_Code, SCD4A) cũng sở hữu QLKD, NDTNN reuse — xem O_NDTNN_29 (Closed).
+> **Ghi chú:** Fact mới không reuse `Fact Securities Foreign Trading Snapshot` (Nhóm 2) lẫn `Fact Market Index Snapshot` (QLKD) — cả 2 Fact đó giữ nguyên, không thay đổi. Chỉ reuse Dimension: `Calendar Date Dimension` (conformed) và `Market Index Dimension` (`market_index_dim`, sở hữu QLKD). LLD: `Datamart/lld/NDTNN/DTM_NDTNN_fct_foreign_net_flow_market_index_snpst.csv`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Fact Securities Foreign Trading Snapshot"]
-        G2["Fact Market Index Snapshot"]
+        G1["Fact Foreign Net Flow Market Index Snapshot"]
         G3["Calendar Date Dimension"]
         G4["Market Index Dimension"]
     end
     subgraph RPT["Báo cáo"]
-        R1["K_NDTNN_33-34: Tab GIAM SAT DONG VON - Nhom 5 - Tuong quan Net Flow VN-Index"]
+        R1["K_NDTNN_33-35: Tab GIAM SAT DONG VON - Nhom 5 - Tuong quan Net Flow VN-Index"]
     end
     G1 --> R1
-    G2 --> R1
     G3 --> R1
     G4 --> R1
 ```
@@ -699,10 +709,9 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Foreign Trading Snapshot | 1 row = 1 mã CK × 1 ngày giao dịch (reuse từ Nhóm 2) |
-| Fact Market Index Snapshot (`fct_market_index_snpst`, reuse — sở hữu QLKD) | 1 row = 1 chỉ số (market_code) × 1 ngày (lấy bản ghi Index Time lớn nhất trong ngày) — grain vật lý thống nhất cho cả QLKD lẫn NDTNN (sửa 24/07/2026, datamart-review). QLKD (cần số liệu cuối tháng) tự filter/JOIN đúng ngày cuối tháng trên Fact grain-ngày này |
+| Fact Foreign Net Flow Market Index Snapshot (`fct_foreign_net_flow_market_index_snpst`, new) | 1 row = 1 ngày giao dịch × 1 chỉ số tham chiếu (hiện chỉ VN-Index HOSE) |
 | Calendar Date Dimension | 1 row = 1 ngày |
-| Market Index Dimension (`market_index_dim`, reuse — sở hữu QLKD) | 1 row = 1 combo Market_Id + Market_Code (SCD4A current-state) — ETL derive từ `Market Index Snapshot`, giữ 5 thuộc tính tĩnh (Market Id, Market Code, Index Type Code, TSC Product Group Id, Market Status Code) |
+| Market Index Dimension (`market_index_dim`, reuse — sở hữu QLKD) | 1 row = 1 combo Market_Id + Market_Code (SCD4A current-state) |
 
 ---
 
@@ -2016,7 +2025,7 @@ graph TB
     DIM_MKTIDX["Market Index Dimension"]:::dim
 
     FACT_TRADE["Fact Securities Foreign Trading Snapshot"]:::fact
-    FACT_MKTIDX["Fact Market Index Snapshot"]:::fact
+    FACT_NETFLOW["Fact Foreign Net Flow Market Index Snapshot"]:::fact
     FACT_TRADESTAT["Foreign Investor Trading Statistics Report"]:::fact
     FACT_TRADEDETAIL["Foreign Investor Trading Detail Report"]:::fact
     FACT_LISTINGINFO["Fact Public Company Listing Info Snapshot"]:::fact
@@ -2028,8 +2037,8 @@ graph TB
     DIM_PUBCO --> FACT_TRADE
     DIM_SECURITIES --> FACT_TRADE
 
-    DIM_DATE --> FACT_MKTIDX
-    DIM_MKTIDX --> FACT_MKTIDX
+    DIM_DATE --> FACT_NETFLOW
+    DIM_MKTIDX --> FACT_NETFLOW
 
     DIM_DATE --> FACT_LISTINGINFO
     DIM_PUBCO --> FACT_LISTINGINFO
@@ -2042,7 +2051,7 @@ graph TB
 | Tên bảng Datamart | Mô tả | Fact Pattern | Grain | Nguồn Atomic chính |
 |---|---|---|---|---|
 | Fact Securities Foreign Trading Snapshot | Snapshot giá trị mua/bán của NĐTNN theo mã CK và toàn thị trường theo ngày | Fact Snapshot | 1 mã CK × 1 ngày giao dịch | Securities Trade (ORDERTRADE) |
-| Fact Market Index Snapshot | Snapshot chỉ số thị trường (VN-Index/HNX-Index/UPCOM-Index) cuối phiên theo ngày (đã thêm FK Market Index Dimension, xem O_NDTNN_29) | Fact Snapshot | 1 chỉ số × 1 ngày (ETL lấy bản ghi cuối phiên) | Market Index Snapshot (MDDS.JAD_MARKETINFOR) |
+| Fact Foreign Net Flow Market Index Snapshot | [MỚI 2026-09-24] Fact riêng Nhóm 5 — GT mua/bán/ròng NĐTNN toàn thị trường (HOSE+HNX), điểm đóng cửa VN-Index, dòng tiền ròng lũy kế tháng (PENDING — O_NDTNN_33). Thay reuse Fact Market Index Snapshot (QLKD) | Fact Snapshot | 1 ngày giao dịch × 1 chỉ số tham chiếu | Securities Trade (ORDERTRADE) + Security Trading Snapshot + Market Index Snapshot (MDDS) |
 | Foreign Investor Trading Statistics Report | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo 4 nhóm loại CK (biểu tổng hợp Nhóm 14) — xem O_NDTNN_24 | Fact Report (append, denormalize) | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND/FUND_CERT/TOTAL) | Securities Trade (ORDERTRADE) + Securities Dimension (chỉ dòng FUND_CERT) |
 | Foreign Investor Trading Detail Report | Báo cáo chi tiết giao dịch NĐTNN theo tài khoản (biểu chi tiết Nhóm 15) — xem O_NDTNN_30 | Fact Report (append, denormalize) | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) | Securities Trade (ORDERTRADE) |
 | Fact Public Company Listing Info Snapshot | Cơ cấu khối lượng CP niêm yết + sở hữu nước ngoài theo mã CK — reuse partial từ GSDC, phục vụ Nhóm 8 — xem O_NDTNN_12 | Fact Snapshot | 1 mã CK × 1 tháng | Listed Security Info Snapshot / Foreign Ownership Info Snapshot (VSDC) |
@@ -2078,7 +2087,7 @@ graph TB
 |---|---|---|---|
 | Fact Securities Foreign Trading Snapshot | fct_scr_forgn_trd_snpst | reuse | Đã có từ Nhóm 2 — dùng chung Nhóm 1/2/5. **[Cập nhật 2026-07-24]** Nhóm 14 KHÔNG còn dùng bảng này — đã tách sang bảng tác nghiệp riêng `Foreign Investor Trading Statistics Report` (xem O_NDTNN_24) |
 | Fact Securities Foreign Investor Trade Detail | fct_scr_forgn_invtr_trd_dtl | new | **[Cập nhật 2026-07-24]** Nhóm 15 KHÔNG còn dùng bảng này — đã tách sang bảng tác nghiệp riêng `Foreign Investor Trading Detail Report` (xem O_NDTNN_30) |
-| Fact Market Index Snapshot | fct_market_index_snpst | reuse | **Sửa 24/07/2026 (đóng O_NDTNN_29):** Reuse Fact sở hữu bởi QLKD (`fct_market_index_snpst`, Cụm 6b) — QLKD đã nâng schema thêm FK `Market_Index_Dimension_Id` để dùng chung. NDTNN filter grain 1 ngày (QLKD grain 1 tháng) trên cùng 1 Fact logic. Nguồn Market Index Snapshot (MDDS.JAD_MARKETINFOR), phục vụ Nhóm 5 (K_NDTNN_34) |
+| Fact Foreign Net Flow Market Index Snapshot | fct_foreign_net_flow_market_index_snpst | new | **[MỚI 2026-09-24]** Fact riêng Nhóm 5, thay reuse `fct_market_index_snpst` (QLKD) cho K_NDTNN_34 và `fct_securities_foreign_trading_snpst` cho K_NDTNN_33 — NDTNN không còn dùng `Fact Market Index Snapshot` (Fact vẫn thuộc QLKD, không đổi). Nguồn Securities Trade + Security Trading Snapshot + Market Index Snapshot |
 | Operational Foreign Investor 360 Profile | opr_foreign_investor_360_profile | new | Chưa có trong master |
 | Operational Investor Compliance History | opr_investor_compliance_hist | new | Chưa có trong master |
 | Foreign Investor Trading Statistics Report | foreign_investor_trading_statistics_rpt | new | Chưa có trong master — nguồn Securities Trade (ORDERTRADE) + Securities Dimension (chỉ dòng FUND_CERT), phục vụ Nhóm 14. **[Cập nhật 2026-07-24, Kịch bản D]** Thay thế thiết kế trước dùng chung `Fact Securities Foreign Trading Snapshot` (Star Schema) — chuyển sang bảng tác nghiệp riêng vì grain "1 ngày × 1 Loại CK" cần 3 bộ điều kiện lọc độc lập (đặc biệt CCQ dùng attribute Investor_Type_Code khác hẳn Foreign_Investor_Type_Code, không thể filter query-time trên measure đã pre-aggregate của Fact chung) — xem O_NDTNN_24 |
@@ -2131,3 +2140,5 @@ graph TB
 | O_NDTNN_32 | **[Phát hiện 2026-09-16, qua audit bắt buộc Bước 5B] `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2/5) dùng sai tên FK ngày — `Trade_Date_Dimension_Id` thay vì `Snapshot_Date_Dimension_Id`:** `check_date_fk.py --module NDTNN --strict` phát hiện `fct_securities_foreign_trading_snpst.trade_dt_dim_id` vi phạm chuẩn Role-Playing Date FK — Fact có hậu tố `_Snapshot`/`_snpst` (grain 1 mã CK × 1 ngày, không phải Fact Event) bắt buộc dùng `Snapshot_Date_Dimension_Id`/`snpst_dt_dim_id`, không được dùng tên vai trò khác. Cùng đợt phát hiện: script `check_ba_mapping.py`/`datamart_ba_cross_checker.py`/`module_resolver.py` tìm sai tên file BA (`BA_analyst_NDTNN.csv` ASCII thay vì `BA_analyst_NĐTNN.csv` có dấu Đ) khiến audit BA↔HLD không đối soát được gì. | Đổi `trade_dt_dim_id`/`Trade_Date_Dimension_Id`/`Trade Date Dimension Id` → `snpst_dt_dim_id`/`Snapshot_Date_Dimension_Id`/`Snapshot Date Dimension Id` xuyên suốt `DTM_NDTNN_HLD.md`, `DTM_NDTNN_Detail_Mapping.csv`, `DTM_NDTNN_fct_securities_foreign_trading_snpst.csv`, `01_create_ndtnn_flat_tables.sql`, `02_populate_ndtnn_flat_tables.sql`, `datamart_model.yaml`. Bổ sung alias `"NDTNN": "NĐTNN"` / `"NĐTNN": "NĐTNN"` vào `MODULE_ALIASES` của `datamart_ba_cross_checker.py` và `scripts/datamart_common/module_resolver.py` (cùng pattern đã áp dụng cho GSĐC) — `check_ba_mapping.py` nay PASS, đối soát đúng 260 dòng BA. | K_NDTNN_1-19, 33-34 (Nhóm 1/2/5) | Closed — đã đổi tên cột + sửa script resolver |
 | O_NDTNN_31b | **[Cập nhật 2026-07-24] `Foreign Investor Trading Statistics Report` và `Foreign Investor Trading Detail Report` (Nhóm 14/15) — đăng ký sai `table_type: operational`, đúng phải là `fact`:** Cả 2 bảng là ETL append-only theo Report Date (mỗi lần chạy ETL thêm dòng mới cho ngày báo cáo mới, không update/replace lịch sử của cùng 1 khóa) — đúng bản chất Fact, không phải Operational (Operational dùng SCD4A — giữ current-state, ETL update/replace theo latest). Ban đầu đăng ký `table_type: operational` vì gọi là "bảng Tác nghiệp" (denormalize, không Star Schema) — nhưng "denormalize" và "table_type" là 2 tiêu chí độc lập: 1 bảng có thể denormalize hoàn toàn (không FK Dimension) mà vẫn là Fact nếu ETL append theo thời gian. | Đổi `table_type` cả 2 bảng từ `operational` sang `fact` trong `datamart_model.yaml`. Đổi tên vật lý: bỏ tiền tố `opr_` (không thêm `fct_`) — nhóm Fact dạng report/đóng gói theo kỳ chỉ cần hậu tố `_rpt` làm dấu hiệu nhận diện, theo quy ước riêng đã bổ sung vào `SKILL.md` (`datamart-lld-design`, TC8 — ngoại lệ Fact-report không bắt buộc tiền tố `fct_`). Đổi `logical_name` từ "Operational..." sang "Fact...". Xóa `key: PK` trên các cột grain (Report Date, Security Type Group / Account Number / Symbol / Trade Direction Code), đổi thành `key: DD` — theo TC2b, Fact không được có `key = PK`. Đồng bộ `datamart_attributes.csv`, file Attributes detail 2 bảng, `DTM_NDTNN_Detail_Mapping.csv`. | K_NDTNN_72-89 (Nhóm 14/15) | Closed — đã đổi table_type, tên vật lý, và key theo đúng quy ước Fact |
 | O_NDTNN_31 | **[Phát hiện tại Phase 1 LLD, 2026-07-24] `Public Company Dimension` reuse_status ghi sai `new` trong Entities.csv — đã tồn tại từ module GSDC/QLCB (`datamart_model.yaml`, 9 cột: PK, BK `Public_Company_Code`, `Equity_Ticker_Symbol`, `Public_Company_Name`, `Equity_Listing_Exchange_Code`, `Business_Line_Level_1_Code`, `Ids_Registration_Date`, `Public_Company_Status_Code`, `Source_System_Code`), cùng nguồn Atomic `public_company`, cùng grain 1 công ty đại chúng:** Khi merge Attributes CSV của NDTNN vào `datamart_attributes.csv` master, phát hiện trùng key `(public_company_dim, public_company_dim_id)` và `(public_company_dim, src_stm_code)` với dữ liệu đã có sẵn từ GSDC/QLCB — đúng Lớp 3 (Source Match) của Bước 3 Check Reuse mà Phase 0 Plan đã bỏ sót (Plan ghi `new` dựa theo Entities.csv cũ, không tự grep lại `datamart_model.yaml` cho riêng bảng này). NDTNN chỉ thực sự cần thêm 1 cột mới: `Classification Business Line Name` (đệm tên ngành qua join `cl_business_line`, phục vụ K_NDTNN_8 Nhóm 2). Đã rollback merge sai (xóa 63 dòng nhiễm), xác nhận với Data Modeler phương án xử lý. | Đổi `reuse_status` từ `new` → `partial` trong `DTM_NDTNN_Entities.csv`. Chỉ thêm 1 dòng delta (`Classification Business Line Name`/`classification_business_line_nm`, `join_atomic` từ `cl_business_line`) vào `datamart_attributes.csv` — dùng lại nguyên 8 cột GSDC/QLCB hiện có, không tạo cột trùng lặp ý nghĩa (`equity_ticker_symbol` thay vì tự đặt `security_symbol_code`). Sửa `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2) dùng join key `public_company_dim.equity_ticker_symbol` (không phải cột tự đặt). Cập nhật `datamart_model.yaml`: thêm `"NDTNN"` vào `modules_using` của `DTM-public_company_dim`, thêm 1 cột delta. | K_NDTNN_8 (Nhóm 2) | Closed — đã xử lý partial, merge lại thành công không còn trùng key |
+| O_NDTNN_33 | **[2026-09-24] Nhóm 5 K_NDTNN_35 (Dòng tiền ròng lũy kế) — BA đã Done nhưng Atomic chưa sẵn:** BA dòng 40 dùng `uat_fims_ods.fact_report_cell` (báo cáo IBOU9 — PLIV-TT51, Ngân hàng lưu ký gửi kỳ nửa tháng, `column_path` = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)', `row_path` = 'Tổng= (1) + (2)'). Atomic tương ứng `Report Import Value` (FIMS.RPTVALUES) mới có ở `FIMS_HLD_Overview.md`, chưa có LLD/`dm_manifest.yaml`. Ngoài ra cần BA chốt: (1) đơn vị USD khác 2 series còn lại (VND/Tỷ đồng) trên cùng trục trái; (2) quy tắc "ưu tiên kỳ nửa tháng" khi cùng kỳ có cả bản ngày. | Cột vật lý `foreign_net_capital_flow_mtd_amt` đã dự phòng trên `fct_foreign_net_flow_market_index_snpst` (nullable, USD, semi-additive — lũy kế từ đầu tháng tới ngày snapshot), để NULL tới khi Atomic READY | K_NDTNN_35 | Open — chờ Atomic Report Import Value + BA chốt đơn vị |
+| O_NDTNN_34 | **[2026-09-24] Nhóm 1/2 — 3 điểm mâu thuẫn trong câu lệnh tham khảo BA STT 2, cần BA chốt (phát hiện khi đối chiếu lại BA theo yêu cầu Data Modeler):** (1) **Khóa nối HNX ↔ stockinfor:** dòng BA 15–18 (và STT 1) dùng `js.symbolisin = tb.issue_code`, dòng 11/19/24/25/26 dùng `tb.issue_code = js.symbol`. (2) **Dòng BA 11 (K_NDTNN_10)** INNER JOIN `company_profiles` — loại mọi mã không phải công ty đại chúng (trái phiếu/CCQ), các dòng khác LEFT JOIN; ngoài ra BA nối `company_profiles` bằng `t.symbol` mà với HNX `t.symbol` = `issue_code` (ISIN) nên không bao giờ khớp `equity_ticker`. (3) **K_NDTNN_19 Tỷ trọng TB phiên:** mô tả = tổng tỷ trọng các ngày / số ngày GD, câu lệnh = (ΣGT mua + ΣGT bán) / (ΣGT toàn TT × 2) / số ngày (tỷ trọng gộp chia số ngày — sai bản chất). | (1) Nối HNX qua `isin_code` (khớp STT 1 + Top ngành/mã, đúng bản chất issue_code = ISIN). (2) Không lọc theo công ty đại chúng ở K_NDTNN_10 (FK `public_company_dim_id` nullable); nối công ty đại chúng qua `securities_dim.symbol` đã resolve đúng HOSE/HNX. (3) Giữ theo mô tả — AVG tỷ trọng ngày | K_NDTNN_1-4, K_NDTNN_10, K_NDTNN_12-17, K_NDTNN_19 | Open — chờ BA xác nhận 3 điểm |
