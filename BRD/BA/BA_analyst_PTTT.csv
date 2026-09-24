@@ -599,7 +599,7 @@ vold_daily AS (
         WHERE ""Market ID"" IN ('STX','UPX')
           AND trade_date <= :input_date
     ) t
-    WHERE t.board_type IN ('G1','G2','G3','G4','G5','G6','G7')
+    WHERE t.board_type IN ('G1','G2','G3','G4','G7','G8')
     GROUP BY trade_date
 ),
 illiq_daily AS (
@@ -1447,7 +1447,7 @@ uat_hnx_stg.TRADE_BOOK","lấy từ sổ lệnh:
         SELECT t.Symbol AS symbol, t.Trade_Date AS ngay_gd, t.Execution_Value AS gt_gd
         FROM uat_hose_stg.TRADE_BOOK t
         WHERE t.Market_ID = 'STK'
-          AND t.Buy_Foreigner_InveSTKr_type IN ('10','20')
+          AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
         UNION ALL
         SELECT
             t.Issue_Code,
@@ -1455,13 +1455,13 @@ uat_hnx_stg.TRADE_BOOK","lấy từ sổ lệnh:
             CAST(t.Trade_price AS NUMERIC) * CAST(t.Trade_quantity AS NUMERIC)
         FROM uat_hnx_stg.TRADE_BOOK t
         WHERE t.Market_ID IN ('STX','UPX')
-          AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10','20')
+          AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
     ) m(symbol, ngay_gd, gt_gd)
     JOIN (
         SELECT t.Symbol AS symbol, t.Trade_Date AS ngay_gd, t.Execution_Value AS gt_gd
         FROM uat_hose_stg.TRADE_BOOK t
         WHERE t.Market_ID = 'STK'
-          AND t.Sell_Foreigner_InveSTKr_type IN ('10','20')
+          AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
         UNION ALL
         SELECT
             t.Issue_Code,
@@ -1469,7 +1469,7 @@ uat_hnx_stg.TRADE_BOOK","lấy từ sổ lệnh:
             CAST(t.Trade_price AS NUMERIC) * CAST(t.Trade_quantity AS NUMERIC)
         FROM uat_hnx_stg.TRADE_BOOK t
         WHERE t.Market_ID IN ('STX','UPX')
-          AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10','20')
+          AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
     ) b(symbol, ngay_gd, gt_gd)
         ON b.symbol = m.symbol AND b.ngay_gd = m.ngay_gd
     JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
@@ -1522,25 +1522,25 @@ uat_hnx_stg.TRADE_BOOK","lấy từ sổ lệnh:
         SELECT t.Symbol AS symbol, t.Trade_Date AS ngay_gd, t.Execution_Value AS gt_gd
         FROM uat_hose_stg.TRADE_BOOK t
         WHERE t.Market_ID='STK' 
-                AND t.Buy_Foreigner_InveSTKr_type IN ('10','20')
+                AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
         UNION ALL
         SELECT t.Issue_Code, t.Trade_date,
                CAST(t.Trade_price AS NUMERIC)*CAST(t.Trade_quantity AS NUMERIC)
         FROM uat_hnx_stg.TRADE_BOOK t
         WHERE t.Market_ID IN ('STX','UPX') 
-                AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10','20')
+                AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
     ) m(symbol, ngay_gd, gt_gd)
     JOIN (
         SELECT t.Symbol AS symbol, t.Trade_Date AS ngay_gd, t.Execution_Value AS gt_gd
         FROM uat_hose_stg.TRADE_BOOK t
         WHERE t.Market_ID='STK' 
-                AND t.Sell_Foreigner_InveSTKr_type IN ('10','20')
+                AND t.Sell_Foreigner_Investor_Type_CodeIN ('10','20')
         UNION ALL
         SELECT t.Issue_Code, t.Trade_date,
                CAST(t.Trade_price AS NUMERIC)*CAST(t.Trade_quantity AS NUMERIC)
         FROM uat_hnx_stg.TRADE_BOOK t
         WHERE t.Market_ID IN ('STX','UPX') 
-                AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10','20')
+                AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
     ) b(symbol, ngay_gd, gt_gd)
         ON b.symbol=m.symbol AND b.ngay_gd=m.ngay_gd
     JOIN uat_mdds_stg.JAD_CSIDXINFOR idx ON idx.symbol=m.symbol AND idx.tradingdate=m.ngay_gd
@@ -1583,7 +1583,7 @@ gtgd_mua AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID   = 'STK'
-      AND t.Buy_Foreigner_InveSTKr_type IN ('10','20')
+      AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
     UNION ALL
     SELECT
         idx.indexCode,
@@ -1598,7 +1598,7 @@ gtgd_mua AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID IN ('STX','UPX')
-      AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10','20')
+      AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
 ),
 gtgd_ban AS (
     SELECT
@@ -1613,7 +1613,7 @@ gtgd_ban AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID   = 'STK'
-      AND t.Sell_Foreigner_InveSTKr_type IN ('10','20')
+      AND t.Sell_Foreigner_Investor_Type_CodeIN ('10','20')
     UNION ALL
     SELECT
         idx.indexCode,
@@ -1628,7 +1628,7 @@ gtgd_ban AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID IN ('STX','UPX')
-      AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10','20')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
 ),
 tong_mua AS (
     SELECT indexCode, ngay_gd,
@@ -1683,7 +1683,7 @@ FROM (
         AND idx.indexCode   = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID     = 'STK' 
-          AND t.Buy_Foreigner_InveSTKr_type IN ('10', '20')
+          AND t.Buy_Foreigner_Investor_Type_Code IN ('10', '20')
 
       --AND t.Board_Type LIKE '%G%'          
 
@@ -1704,7 +1704,7 @@ FROM (
       AND t.Market_ID IN ('STX', 'UPX')     -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
                                               -- UPCOM, loại BDX/HCX/DVX
                                                                                           
-      AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10', '20')  
+      AND t.Buy_Foreigner_Investor_Type_Code IN ('10', '20')  
         --AND t.Board_ID LIKE '%G%'  
 ) sub
 GROUP BY sub.indexCode, sub.ngay_gd;
@@ -1734,7 +1734,7 @@ FROM (
         AND idx.indexCode   = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID     = 'STK' 
-          AND t.Sell_Foreigner_InveSTKr_type IN ('10', '20')
+          AND t.Sell_Foreigner_Investor_Type_CodeIN ('10', '20')
 
       --AND t.Board_Type LIKE '%G%'          
 
@@ -1755,7 +1755,7 @@ FROM (
       AND t.Market_ID IN ('STX', 'UPX')     -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
                                               -- UPCOM, loại BDX/HCX/DVX
                                                                                           
-      AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10', '20')  
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')  
         --AND t.Board_ID LIKE '%G%'  
 ) sub
 GROUP BY sub.indexCode, sub.ngay_gd;","SELECT
@@ -1824,7 +1824,7 @@ gtgd_mua AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE t.Trade_Date  BETWEEN :tu_ngay AND :den_ngay
       AND t.Market_ID   = 'STK'
-      AND t.Buy_Foreigner_InveSTKr_type IN ('10','20')
+      AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
     UNION ALL
     SELECT
         idx.indexCode,
@@ -1839,7 +1839,7 @@ gtgd_mua AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE t.Trade_date  BETWEEN :tu_ngay AND :den_ngay
       AND t.Market_ID IN ('STX','UPX')
-      AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10','20')
+      AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
 ),
 gtgd_ban AS (
     SELECT
@@ -1854,7 +1854,7 @@ gtgd_ban AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE t.Trade_Date  BETWEEN :tu_ngay AND :den_ngay
       AND t.Market_ID   = 'STK'
-      AND t.Sell_Foreigner_InveSTKr_type IN ('10','20')
+      AND t.Sell_Foreigner_Investor_Type_CodeIN ('10','20')
     UNION ALL
     SELECT
         idx.indexCode,
@@ -1869,7 +1869,7 @@ gtgd_ban AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE t.Trade_date  BETWEEN :tu_ngay AND :den_ngay
       AND t.Market_ID IN ('STX','UPX')
-      AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10','20')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
 ),
 tong_mua AS (
     SELECT indexCode, ngay_gd,
@@ -2387,18 +2387,18 @@ uat_hnx_stg.TRADE_BOOK","uat_hose_stg.TRADE_BOOK: Buy/Sell_Foreigner_Investor_ty
 uat_hnx_stg.TRADE_BOOK: Buy/Sell_Foreign_Investor_Type_Code, Trade_price × Trade_quantity","Trade_Date = :ngay_gd
 Foreigner IN ('10','20')
 Market_ID IN ('STO','STX','UPX')","SELECT Trade_Date,
-  SUM(CASE WHEN Buy_Foreigner_InveSTKr_type IN ('10','20')
+  SUM(CASE WHEN Buy_Foreigner_Investor_Type_Code IN ('10','20')
     THEN Execution_Value ELSE 0 END)
-  - SUM(CASE WHEN Sell_Foreigner_InveSTKr_type IN ('10','20')
+  - SUM(CASE WHEN Sell_Foreigner_Investor_Type_CodeIN ('10','20')
     THEN Execution_Value ELSE 0 END) AS net_flow
 FROM uat_hose_stg.TRADE_BOOK
 WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd AND Market_ID ='STK'
 GROUP BY Trade_Date
 UNION ALL
 SELECT Trade_date,
-  SUM(CASE WHEN Buy_Foreign_InveSTKr_Type_Code IN ('10','20')
+  SUM(CASE WHEN Buy_Foreigner_Investor_Type_Code IN ('10','20')
     THEN Trade_price*Trade_quantity ELSE 0 END)
-  - SUM(CASE WHEN Sell_Foreign_InveSTKr_Type_Code IN ('10','20')
+  - SUM(CASE WHEN Sell_Foreigner_Investor_Type_Code IN ('10','20')
     THEN Trade_price*Trade_quantity ELSE 0 END)
 FROM uat_hnx_stg.TRADE_BOOK
 WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd AND Market_ID IN ('STX','UPX')
@@ -3573,7 +3573,7 @@ uat_hnx_stg.TRADE_BOOK","lấy từ sổ lệnh:
         SELECT t.Symbol AS symbol, t.Trade_Date AS ngay_gd, t.Execution_Value AS gt_gd
         FROM uat_hose_stg.TRADE_BOOK t
         WHERE t.Market_ID = 'STK'
-          AND t.Buy_Foreigner_InveSTKr_type IN ('10','20')
+          AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
         UNION ALL
         SELECT
             t.Issue_Code,
@@ -3581,13 +3581,13 @@ uat_hnx_stg.TRADE_BOOK","lấy từ sổ lệnh:
             CAST(t.Trade_price AS NUMERIC) * CAST(t.Trade_quantity AS NUMERIC)
         FROM uat_hnx_stg.TRADE_BOOK t
         WHERE t.Market_ID IN ('STX','UPX')
-          AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10','20')
+          AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
     ) m(symbol, ngay_gd, gt_gd)
     JOIN (
         SELECT t.Symbol AS symbol, t.Trade_Date AS ngay_gd, t.Execution_Value AS gt_gd
         FROM uat_hose_stg.TRADE_BOOK t
         WHERE t.Market_ID = 'STK'
-          AND t.Sell_Foreigner_InveSTKr_type IN ('10','20')
+          AND t.Sell_Foreigner_Investor_Type_CodeIN ('10','20')
         UNION ALL
         SELECT
             t.Issue_Code,
@@ -3595,7 +3595,7 @@ uat_hnx_stg.TRADE_BOOK","lấy từ sổ lệnh:
             CAST(t.Trade_price AS NUMERIC) * CAST(t.Trade_quantity AS NUMERIC)
         FROM uat_hnx_stg.TRADE_BOOK t
         WHERE t.Market_ID IN ('STX','UPX')
-          AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10','20')
+          AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
     ) b(symbol, ngay_gd, gt_gd)
         ON b.symbol = m.symbol AND b.ngay_gd = m.ngay_gd
     JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
@@ -3649,25 +3649,25 @@ uat_hnx_stg.TRADE_BOOK","lấy từ sổ lệnh:
         SELECT t.Symbol AS symbol, t.Trade_Date AS ngay_gd, t.Execution_Value AS gt_gd
         FROM uat_hose_stg.TRADE_BOOK t
         WHERE t.Market_ID='STK' 
-                AND t.Buy_Foreigner_InveSTKr_type IN ('10','20')
+                AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
         UNION ALL
         SELECT t.Issue_Code, t.Trade_date,
                CAST(t.Trade_price AS NUMERIC)*CAST(t.Trade_quantity AS NUMERIC)
         FROM uat_hnx_stg.TRADE_BOOK t
         WHERE t.Market_ID IN ('STX','UPX') 
-                AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10','20')
+                AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
     ) m(symbol, ngay_gd, gt_gd)
     JOIN (
         SELECT t.Symbol AS symbol, t.Trade_Date AS ngay_gd, t.Execution_Value AS gt_gd
         FROM uat_hose_stg.TRADE_BOOK t
         WHERE t.Market_ID='STK' 
-                AND t.Sell_Foreigner_InveSTKr_type IN ('10','20')
+                AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
         UNION ALL
         SELECT t.Issue_Code, t.Trade_date,
                CAST(t.Trade_price AS NUMERIC)*CAST(t.Trade_quantity AS NUMERIC)
         FROM uat_hnx_stg.TRADE_BOOK t
         WHERE t.Market_ID IN ('STX','UPX') 
-                AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10','20')
+                AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
     ) b(symbol, ngay_gd, gt_gd)
         ON b.symbol=m.symbol AND b.ngay_gd=m.ngay_gd
     JOIN uat_mdds_stg.JAD_CSIDXINFOR idx ON idx.symbol=m.symbol AND idx.tradingdate=m.ngay_gd
@@ -3708,7 +3708,7 @@ gtgd_mua AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID   = 'STK'
-      AND t.Buy_Foreigner_InveSTKr_type IN ('10','20')
+      AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
     UNION ALL
     SELECT
         idx.indexCode,
@@ -3723,7 +3723,7 @@ gtgd_mua AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID IN ('STX','UPX')
-      AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10','20')
+      AND t.Buy_Foreigner_Investor_Type_Code IN ('10','20')
 ),
 gtgd_ban AS (
     SELECT
@@ -3738,7 +3738,7 @@ gtgd_ban AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID   = 'STK'
-      AND t.Sell_Foreigner_InveSTKr_type IN ('10','20')
+      AND t.Sell_Foreigner_Investor_Type_CodeIN ('10','20')
     UNION ALL
     SELECT
         idx.indexCode,
@@ -3753,7 +3753,7 @@ gtgd_ban AS (
         AND idx.indexCode  = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID IN ('STX','UPX')
-      AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10','20')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10','20')
 ),
 tong_mua AS (
     SELECT indexCode, ngay_gd,
@@ -3803,7 +3803,7 @@ FROM (
         AND idx.indexCode   = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID     = 'STK' 
-          AND t.Buy_Foreigner_InveSTKr_type IN ('10', '20')
+          AND t.Buy_Foreigner_Investor_Type_Code IN ('10', '20')
 
       --AND t.Board_Type LIKE '%G%'          
 
@@ -3824,7 +3824,7 @@ FROM (
       AND t.Market_ID IN ('STX', 'UPX')     -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
                                               -- UPCOM, loại BDX/HCX/DVX
                                                                                           
-      AND t.Buy_Foreign_InveSTKr_Type_Code IN ('10', '20')  
+      AND t.Buy_Foreigner_Investor_Type_Code IN ('10', '20')  
         --AND t.Board_ID LIKE '%G%'  
 ) sub
 GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
@@ -3850,7 +3850,7 @@ FROM (
         AND idx.indexCode   = :ma_chi_so
     WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
       AND t.Market_ID     = 'STK' 
-          AND t.Sell_Foreigner_InveSTKr_type IN ('10', '20')
+          AND t.Sell_Foreigner_Investor_Type_CodeIN ('10', '20')
 
       --AND t.Board_Type LIKE '%G%'          
 
@@ -3871,7 +3871,7 @@ FROM (
       AND t.Market_ID IN ('STX', 'UPX')     -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
                                               -- UPCOM, loại BDX/HCX/DVX
                                                                                           
-      AND t.Sell_Foreign_InveSTKr_Type_Code IN ('10', '20')  
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')  
         --AND t.Board_ID LIKE '%G%'  
 ) sub
 GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
@@ -6305,10 +6305,26 @@ WHERE i.indicator_code = 'INTERBANK_IR'
   AND v.trading_date >= TRUNC(:input_date, 'MM')
   AND v.trading_date <  TRUNC(ADD_MONTHS(:input_date, 1), 'MM')
 GROUP BY TRUNC(v.trading_date, 'MM');",,,,,,,Dữ liệu tĩnh,
-6,,Dashboard Sức khỏe thị trường và vĩ mô/. Tương quan chỉ số và lãi suất thực tế,Chỉ số Index tại ngày t,Chỉ số VN-Index tại ngày,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MDDS,x,x,,Done,Thông tin thị trường,JAD_MARKETINFOR," tradingDate,
- marketCode,
- marketIndex","marketCode  = 'HOSE'
-tradingDate = :input_date","SELECT
+6,,Dashboard Sức khỏe thị trường và vĩ mô/. Tương quan chỉ số và lãi suất thực tế,Chỉ số Index tại ngày t,Chỉ số VN-Index tại ngày,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MDDS,x,x,,Done,Thông tin thị trường,uat_mdds_stg.JAD_MARKETINFOR,"tradingDate,
+marketCode,
+marketIndex","SELECT
+  tradingDate,
+  marketCode,
+  marketIndex
+ FROM (
+  SELECT
+  tradingDate,
+  marketCode,
+  marketIndex,
+  ROW_NUMBER() OVER (
+  PARTITION BY tradingDate, marketCode
+  ORDER BY indexTime DESC
+  ) AS rn
+  FROM uat_mdds_stg.JAD_MARKETINFOR
+  WHERE marketCode = 'HOSE'
+  AND tradingDate = :input_date
+ )
+ WHERE rn = 1;","SELECT
     tradingDate,
     marketCode,
     marketIndex
@@ -6321,7 +6337,7 @@ FROM (
             PARTITION BY tradingDate, marketCode
             ORDER BY indexTime DESC
         ) AS rn
-    FROM JAD_MARKETINFOR
+    FROM uat_mdds_stg.JAD_MARKETINFOR
     WHERE marketCode  = 'HOSE'
       AND tradingDate = :input_date
 )
@@ -6349,75 +6365,17 @@ where active_flg = 1",IDS.categories (c),"c.industry_cd, c.industry_name AS ten_
  -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)",,,,,,Dữ liệu tĩnh,
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Thời gian ,Ngày thống kê ,Dashboard,Chiều,Dễ,,"MDDS, MSS",x,x,,Done,,,:input_date (YYYY-MM-DD),Tham số đầu vào của dashboard; người dùng chọn ngày,,,,,,,,Dữ liệu tĩnh,
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Sector Stress Score – Chỉ số mức độ căng thẳng ngành,"StressScoreSector = Σ ( StressScorei x wi) 
-với i=1 --> n",Dashboard,Chỉ tiêu phái sinh,Khó,"Thời gian, Ngành ","MDDS, MSS",x,x,,Pending,"Thông tin thị trường
-Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ",,,,"Tính phái sinh từ StressScore 
+với i=1 --> n",Dashboard,Chỉ tiêu phái sinh,Khó,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"Thông tin thị trường
+Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","outstanding_shares
+
+JAD_STOCKINFOR s","outstanding_shares
+
+s.closePrice  ",,"Tính phái sinh từ StressScore 
 Wi - Trọng số vốn hóa của mã i trong ngành",,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
-7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Wi - Trọng số vốn hóa của mã i trong ngành,wi = MarketCapi / ΣMarketCap toàn ngành,Dashboard,Chỉ tiêu phái sinh,TB,"Thời gian, Ngành ","MDDS, MSS",x,x,,Pending,"Thông tin thị trường
-Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ""","Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
+7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Wi - Trọng số vốn hóa của mã i trong ngành,wi = MarketCapi / ΣMarketCap toàn ngành,Dashboard,Chỉ tiêu phái sinh,TB,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"Thông tin thị trường
+Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ""","outstanding_shares
 
-JAD_STOCKINFOR s","BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
-
-s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"WITH
-gdc AS (
-    SELECT
-        s.symbol,
-        s.tradingdate,
-        s.closePrice AS gia_dong_cua,
-        s.FloorCode
-    FROM JAD_STKCKINFOR s
-    WHERE s.tradingdate=:ngay_gd
-      AND s.STKckType NOT IN ('B','1','BO','D')
-),
-scplh AS (
-    SELECT
-        b.MCK,
-        SUM(b.KLLH) AS kl_luu_hanh
-    FROM BM1_BCKLLH b
-    WHERE b.loai_ck=N'Cổ phiếu'
-      AND b.ngay_bc=:ngay_gd
-    GROUP BY b.MCK
-),
-von_hoa_ma AS (
-    SELECT
-        g.symbol,
-        g.FloorCode,
-        g.gia_dong_cua,
-        s.kl_luu_hanh,
-        g.gia_dong_cua*s.kl_luu_hanh AS market_cap
-    FROM gdc g
-    JOIN scplh s ON s.MCK=g.symbol
-),
-von_hoa_nganh AS (
-    SELECT
-        v.symbol,
-        v.FloorCode,
-        v.gia_dong_cua,
-        v.kl_luu_hanh,
-        v.market_cap,
-        ci.industry_cd,
-        c.industry_name,
-        SUM(v.market_cap) OVER (PARTITION BY ci.industry_cd) AS tong_von_hoa_nganh
-    FROM von_hoa_ma v
-    JOIN IDS.company_info ci ON ci.symbol=v.symbol
-    JOIN IDS.categories c ON c.industry_cd=ci.industry_cd
-                          AND c.active_flg=1
-)
-SELECT
-    :ngay_gd AS ngay_gd,
-    industry_cd AS ma_nganh,
-    industry_name AS ten_nganh,
-    symbol AS ma_ck,
-    gia_dong_cua,
-    kl_luu_hanh,
-    market_cap,
-    tong_von_hoa_nganh,
-    ROUND(market_cap/NULLIF(tong_von_hoa_nganh,0),6) AS wi
-FROM von_hoa_nganh
-ORDER BY industry_cd,wi DESC;",,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
-7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Tổng Vốn hóa (MarketCapi), ΣMarketCap toàn ngành,Dashboard,Chỉ tiêu phái sinh,Khó,"Thời gian, Ngành ","MDDS, MSS",x,x,,Pending,"Thông tin thị trường
-Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
-
-JAD_STOCKINFOR s","BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+JAD_STOCKINFOR s","outstanding_shares
 
 s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"WITH
 gdc AS (
@@ -6426,18 +6384,30 @@ gdc AS (
         s.tradingdate,
         s.closePrice AS gia_dong_cua,
         s.FloorCode
-    FROM JAD_STKCKINFOR s
-    WHERE s.tradingdate = :ngay_gd
-      AND s.STKckType NOT IN ('B','1','BO','D')
+    FROM uat_mdds_stg.JAD_STKCKINFOR s
+    WHERE DATE_FORMAT(
+              TO_DATE(s.tradingdate, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND s.FloorCode IN ('02', '04', '10')
 ),
 scplh AS (
     SELECT
-        b.MCK,
-        SUM(b.KLLH) AS kl_luu_hanh
-    FROM BM1_BCKLLH b
-    WHERE b.loai_ck = N'Cổ phiếu'
-      AND b.ngay_bc = :ngay_gd
-    GROUP BY b.MCK
+        MCK,
+        kl_luu_hanh
+    FROM (
+        SELECT
+            t.ticker_symbol AS MCK,
+            t.outstanding_shares AS kl_luu_hanh,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') DESC
+            ) AS rn
+        FROM uat_vsdc_ods.outstanding_shares t
+        WHERE TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd')
+              <= TO_DATE(:ngay_gd, 'yyyyMMdd')
+    ) x
+    WHERE rn = 1
 ),
 von_hoa_ma AS (
     SELECT
@@ -6449,44 +6419,145 @@ von_hoa_ma AS (
     FROM gdc g
     JOIN scplh s ON s.MCK = g.symbol
 ),
+von_hoa_nganh AS (
+    SELECT
+        v.symbol,
+        v.FloorCode,
+        v.gia_dong_cua,
+        v.kl_luu_hanh,
+        v.market_cap,
+        ci.industry_cd,
+        c.industry_name,
+        SUM(v.market_cap) OVER (
+            PARTITION BY ci.industry_cd
+        ) AS tong_von_hoa_nganh
+    FROM von_hoa_ma v
+    JOIN IDS.company_info ci ON ci.symbol = v.symbol
+    JOIN IDS.categories c ON c.industry_cd = ci.industry_cd
+                         AND c.active_flg = 1
+)
+SELECT
+    :ngay_gd AS ngay_gd,
+    industry_cd AS ma_nganh,
+    industry_name AS ten_nganh,
+    symbol AS ma_ck,
+    gia_dong_cua,
+    kl_luu_hanh,
+    market_cap,
+    tong_von_hoa_nganh,
+    ROUND(
+        market_cap / NULLIF(tong_von_hoa_nganh, 0),
+        6
+    ) AS wi
+FROM von_hoa_nganh
+ORDER BY industry_cd, wi DESC;",,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
+7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Tổng Vốn hóa (MarketCapi), ΣMarketCap toàn ngành,Dashboard,Chỉ tiêu phái sinh,Khó,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"Thông tin thị trường
+Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","outstanding_shares
+
+JAD_STOCKINFOR s","outstanding_shares
+
+s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"WITH
+gdc AS (
+    SELECT
+        s.symbol,
+        s.closePrice AS gia_dong_cua,
+        s.FloorCode
+    FROM uat_mdds_stg.JAD_STKCKINFOR s
+    WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+          = TO_DATE(:ngay_gd, 'yyyyMMdd')
+      AND s.FloorCode IN ('02', '04', '10')
+),
+scplh AS (
+    SELECT
+        symbol,
+        kllh
+    FROM (
+        SELECT
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS kllh,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') DESC
+            ) AS rn
+        FROM uat_vsdc_ods.outstanding_shares t
+        WHERE TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd')
+              <= TO_DATE(:ngay_gd, 'yyyyMMdd')
+    ) x
+    WHERE rn = 1
+),
+von_hoa_ma AS (
+    SELECT
+        g.symbol,
+        g.gia_dong_cua * s.kllh AS market_cap
+    FROM gdc g
+    JOIN scplh s ON s.symbol = g.symbol
+),
 nganh AS (
-    SELECT c.industry_cd, c.industry_name
+    SELECT
+        c.industry_cd,
+        c.industry_name
     FROM IDS.categories c
     WHERE c.active_flg = 1
 )
 SELECT
-    :ngay_gd                        AS ngay_gd,
-    n.industry_cd                   AS ma_nganh,
-    n.industry_name                 AS ten_nganh,
-    SUM(v.market_cap)               AS tong_von_hoa_nganh
+    TO_DATE(:ngay_gd, 'yyyyMMdd') AS ngay_gd,
+    n.industry_cd AS ma_nganh,
+    n.industry_name AS ten_nganh,
+    SUM(v.market_cap) AS tong_von_hoa_nganh
 FROM von_hoa_ma v
 JOIN IDS.company_info ci ON ci.symbol = v.symbol
 JOIN nganh n ON n.industry_cd = ci.industry_cd
-GROUP BY n.industry_cd, n.industry_name
+GROUP BY
+    n.industry_cd,
+    n.industry_name
 ORDER BY tong_von_hoa_nganh DESC;",,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
-7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Vốn hóa (MarketCapi),MarketCapi = Giá đóng cửa * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,"Thời gian, Ngành ","MDDS, MSS",x,x,,Pending,"- Giá đóng cửa: thông tin thị trường 
-- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
+7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Vốn hóa (MarketCapi),MarketCapi = Giá đóng cửa * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,TB,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"- Giá đóng cửa: thông tin thị trường 
+- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","outstanding_shares
 
-JAD_STOCKINFOR ","BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+JAD_STOCKINFOR s","outstanding_shares
 
-s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"With GĐC AS
-(
-SELECT
-    s.symbol,
-    s.tradingdate,
-    s.closePrice        AS gia_dong_cua,
-    s.FloorCode
-FROM JAD_STKCKINFOR s
-WHERE s.tradingdate = :ngay_gd
-  AND s.STKckType NOT IN ('B', '1', 'BO', 'D')    -- Loại bỏ trái phiếu
+s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"WITH gdongcua AS (
+    SELECT
+        s.symbol,
+        s.tradingdate,
+        s.closePrice AS gia_dong_cua,
+        s.FloorCode
+    FROM uat_mdds_stg.JAD_STKCKINFOR s
+    WHERE date_format(to_date(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
+      AND s.FloorCode IN ('02','04','10')
+),
+scplh AS (
+    -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
+    SELECT
+        symbol,
+        so_luong_cp_luu_hanh AS kllh
+    FROM (
+        SELECT
+            t.ticker_symbol      AS symbol,
+            t.outstanding_shares AS so_luong_cp_luu_hanh,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.ds_snpst_dt, 'YYYY-MM-DD') DESC
+            ) AS rn
+        FROM uat_vsdc_ods.outstanding_shares t
+        WHERE TO_DATE(t.ds_snpst_dt, 'YYYY-MM-DD') <= TO_DATE(:ngay_gd, 'YYYY-MM-DD')
+    )
+    WHERE rn = 1
+),
+mcap AS (
+    SELECT
+        SUM(g.gia_dong_cua * s.kllh) AS tong_von_hoa
+    FROM gdongcua g
+    JOIN scplh s ON s.symbol = g.symbol
 )
-, SCPLH AS 
-(
-select  Mã chứng khoán  MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
-from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
-where Mã chứng khoán = 'Cổ phiếu'
-)",,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
-7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Giá đóng cửa,Giá đóng cửa,Dashboard,Chỉ tiêu cơ sở,Dễ,"Thời gian, Ngành ",MDDS,x,x,,Done,Thông tin thị trường,JAD_STOCKINFOR ,"symbol, closePrice, tradingdate","tradingdate = :input_date; FloorCode IN ('02','04','10')","SELECT symbol, closePrice, tradingdate
+SELECT
+    TO_DATE(:ngay_gd, 'YYYY-MM-DD') AS ngay_gd,
+    tong_von_hoa
+FROM mcap;",,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
+7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Giá đóng cửa,Giá đóng cửa,Dashboard,Chỉ tiêu cơ sở,Dễ,"Thời gian, Ngành ",MDDS,x,x,,Done,Thông tin thị trường,uat_mdds_stg.JAD_STOCKINFOR,"symbol, closePrice, tradingdate","SELECT symbol, closePrice, tradingdate
+ FROM uat_mdds_stg.JAD_STOCKINFOR
+ WHERE tradingdate = :input_date
+  AND FloorCode IN ('02','04','10');","SELECT symbol, closePrice, tradingdate
 FROM JAD_STKCKINFOR
 WHERE tradingdate = :input_date
   AND FloorCode IN ('02','04','10');
@@ -6777,59 +6848,57 @@ Execution - Volume
 - HNX: 
 Trade quantity
 --> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')","SELECT
-    sub.indexCode           AS ma_chi_so,
+    sub.indexCode AS ma_chi_so,
     sub.ngay_gd,
-    SUM(sub.kl_gd)          AS tong_kl_gd,
-    SUM(sub.gt_gd)          AS tong_gt_gd
+    SUM(sub.kl_gd) AS tong_kl_gd,
+    SUM(sub.gt_gd) AS tong_gt_gd
 FROM (
+    -- HOSE
     SELECT
         idx.indexCode,
-        t.[Trade Date]                          AS ngay_gd,
-        t.[Execution - Volume]                  AS kl_gd,
-        t.[Execution - Value]                   AS gt_gd
-    FROM TRADE_BOOK_HOSE t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.Symbol        = idx.symbol
-        AND t.[Trade Date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade Date]    = :ngay_gd
-      AND t.[Market ID]     = 'STK'             
+        TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Execution_Volume AS kl_gd,
+        t.Execution_Value AS gt_gd
+    FROM uat_hose_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Symbol = idx.symbol
+       AND TO_DATE(t.Trade_Date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_Date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID = 'STK'
+      AND t.Sell_Foreigner_Investor_Type_CodeIN ('10', '20')
+      -- AND t.Board_Type LIKE '%G%'
 
     UNION ALL
 
+    -- HNX và UPCOM
     SELECT
         idx.indexCode,
-        t.[Trade date]                          AS ngay_gd,
-        t.[Trade quantity]                      AS kl_gd,
-        CAST(t.[Trade price]  AS NUMERIC)
-      * CAST(t.[Trade quantity] AS NUMERIC)     AS gt_gd
-    FROM Trade_HNX t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.[Issue Code]  = idx.symbol
-        AND t.[Trade date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade date]    = :ngay_gd
-      AND t.[Market ID]     = 'STX'             -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
-
-    UNION ALL
-
-    -- UPCOM: UpcomIndex
-    SELECT
-        idx.indexCode,
-        t.[Trade date]                          AS ngay_gd,
-        t.[Trade quantity]                      AS kl_gd,
-        CAST(t.[Trade price]  AS NUMERIC)
-      * CAST(t.[Trade quantity] AS NUMERIC)     AS gt_gd
-    FROM Trade_HNX t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.[Issue Code]  = idx.symbol
-        AND t.[Trade date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade date]    = :ngay_gd
-      AND t.[Market ID]     = 'UPX'             -- UPCOM, loại BDX/HCX/DVX
-
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Trade_quantity AS kl_gd,
+        CAST(t.Trade_price AS NUMERIC)
+            * CAST(t.Trade_quantity AS NUMERIC) AS gt_gd
+    FROM uat_hnx_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Issue_Code = idx.symbol
+       AND TO_DATE(t.Trade_date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID IN ('STX', 'UPX')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')
+      -- AND t.Board_ID LIKE '%G%'
 ) sub
-GROUP BY sub.indexCode, sub.ngay_gd;",KL giao dịch N phiên ,,,,,,Dữ liệu tĩnh,
+GROUP BY
+    sub.indexCode,
+    sub.ngay_gd;",KL giao dịch N phiên ,,,,,,Dữ liệu tĩnh,
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,"Sector Liquid Score – Chỉ số dòng tiền của ngành
 ",LiquidScore_Sector = TotalValue_Sector / TotalCap_Sector,Dashboard,Chỉ tiêu phái sinh,Khó,"Thời gian, Mã chứng khoán ","MSS, MDDS",x,x,,Done,Thông tin thị trường ,"JAD_STOCKINFOR (PriceBoardAPI)
 IDS.company_profile","JAD_STOCKINFOR.totalTradingValue (GTGD ngày)
@@ -6976,46 +7045,61 @@ Execution - Volume
 - HNX: 
 Trade quantity
 --> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')","SELECT
-    sub.indexCode           AS ma_chi_so,
+    sub.indexCode AS ma_chi_so,
     sub.ngay_gd,
-    SUM(sub.kl_gd)          AS tong_kl_gd,
-    SUM(sub.gt_gd)          AS tong_gt_gd
+    SUM(sub.kl_gd) AS tong_kl_gd,
+    SUM(sub.gt_gd) AS tong_gt_gd
 FROM (
+    -- HOSE
     SELECT
         idx.indexCode,
-        t.[Trade Date]                          AS ngay_gd,
-        t.[Execution - Volume]                  AS kl_gd,
-        t.[Execution - Value]                   AS gt_gd
-    FROM TRADE_BOOK_HOSE t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.Symbol        = idx.symbol
-        AND t.[Trade Date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade Date]    = :ngay_gd
-      AND t.[Market ID]     = 'STK'           
+        TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Execution_Volume AS kl_gd,
+        t.Execution_Value AS gt_gd
+    FROM uat_hose_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Symbol = idx.symbol
+       AND TO_DATE(t.Trade_Date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_Date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID = 'STK'
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')
+      -- AND t.Board_Type LIKE '%G%'
 
     UNION ALL
 
+    -- HNX và UPCOM
     SELECT
         idx.indexCode,
-        t.[Trade date]                          AS ngay_gd,
-        t.[Trade quantity]                      AS kl_gd,
-        CAST(t.[Trade price]  AS NUMERIC)
-      * CAST(t.[Trade quantity] AS NUMERIC)     AS gt_gd
-    FROM Trade_HNX t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.[Issue Code]  = idx.symbol
-        AND t.[Trade date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade date]    = :ngay_gd
-      AND t.[Market ID] IN ('STX', 'UPX')     -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
-                                                                                          -- UPCOM, loại BDX/HCX/DVX
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Trade_quantity AS kl_gd,
+        CAST(t.Trade_price AS NUMERIC)
+            * CAST(t.Trade_quantity AS NUMERIC) AS gt_gd
+    FROM uat_hnx_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Issue_Code = idx.symbol
+       AND TO_DATE(t.Trade_date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID IN ('STX', 'UPX')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')
+      -- AND t.Board_ID LIKE '%G%'
 ) sub
-GROUP BY sub.indexCode, sub.ngay_gd;",Trùng,,,,,,Dữ liệu tĩnh,
-7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Tổng Vốn hóa (TotalCap_Sector),TotalCap_Sector = ∑MarketCap_i,Dashboard,Chỉ tiêu phái sinh,Trùng,"Thời gian, Ngành ","MDDS, MSS",x,x,,Pending,"- Giá đóng cửa: thông tin thị trường 
-- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
+GROUP BY
+    sub.indexCode,
+    sub.ngay_gd;",Trùng,,,,,,Dữ liệu tĩnh,
+7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Tổng Vốn hóa (TotalCap_Sector),TotalCap_Sector = ∑MarketCap_i,Dashboard,Chỉ tiêu phái sinh,Trùng,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"- Giá đóng cửa: thông tin thị trường 
+- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","outstanding_shares
 
-JAD_STOCKINFOR s","BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+JAD_STOCKINFOR s","outstanding_shares
 
 s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"WITH
 gdc AS (
@@ -7024,18 +7108,31 @@ gdc AS (
         s.tradingdate,
         s.closePrice AS gia_dong_cua,
         s.FloorCode
-    FROM JAD_STKCKINFOR s
-    WHERE s.tradingdate = :ngay_gd
-      AND s.STKckType NOT IN ('B','1','BO','D')
+    FROM uat_mdds_stg.JAD_STKCKINFOR s
+    WHERE DATE_FORMAT(
+              TO_DATE(s.tradingdate, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND s.FloorCode IN ('02', '04', '10')
 ),
 scplh AS (
+    -- Lấy bản ghi mới nhất của từng mã không vượt quá ngày giao dịch.
     SELECT
-        b.MCK,
-        SUM(b.KLLH) AS kl_luu_hanh
-    FROM BM1_BCKLLH b
-    WHERE b.loai_ck = N'Cổ phiếu'
-      AND b.ngay_bc = :ngay_gd
-    GROUP BY b.MCK
+        symbol,
+        kl_luu_hanh
+    FROM (
+        SELECT
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS kl_luu_hanh,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') DESC
+            ) AS rn
+        FROM uat_vsdc_ods.outstanding_shares t
+        WHERE TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd')
+              <= TO_DATE(:ngay_gd, 'yyyyMMdd')
+    ) x
+    WHERE rn = 1
 ),
 von_hoa_ma AS (
     SELECT
@@ -7045,45 +7142,70 @@ von_hoa_ma AS (
         s.kl_luu_hanh,
         g.gia_dong_cua * s.kl_luu_hanh AS market_cap
     FROM gdc g
-    JOIN scplh s ON s.MCK = g.symbol
+    JOIN scplh s ON s.symbol = g.symbol
 ),
 nganh AS (
-    SELECT c.industry_cd, c.industry_name
+    SELECT
+        c.industry_cd,
+        c.industry_name
     FROM IDS.categories c
     WHERE c.active_flg = 1
 )
 SELECT
-    :ngay_gd                        AS ngay_gd,
-    n.industry_cd                   AS ma_nganh,
-    n.industry_name                 AS ten_nganh,
-    SUM(v.market_cap)               AS tong_von_hoa_nganh
+    TO_DATE(:ngay_gd, 'yyyyMMdd') AS ngay_gd,
+    n.industry_cd AS ma_nganh,
+    n.industry_name AS ten_nganh,
+    SUM(v.market_cap) AS tong_von_hoa_nganh
 FROM von_hoa_ma v
 JOIN IDS.company_info ci ON ci.symbol = v.symbol
 JOIN nganh n ON n.industry_cd = ci.industry_cd
-GROUP BY n.industry_cd, n.industry_name
+GROUP BY
+    n.industry_cd,
+    n.industry_name
 ORDER BY tong_von_hoa_nganh DESC;",Trùng,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
-7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,MarketCap_i,MarketCap_i = Giá cổ phiếu * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,"Thời gian, Ngành ","MDDS, MSS",x,x,,Pending,"- Giá đóng cửa: thông tin thị trường 
-- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) 
+7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,MarketCap_i,MarketCap_i = Giá cổ phiếu * Khối lượng cổ phiếu lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"- Giá đóng cửa: thông tin thị trường 
+- Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","outstanding_shares
 
-JAD_STOCKINFOR s","BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+JAD_STOCKINFOR s","outstanding_shares
 
-s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"With GĐC AS
-(
-SELECT
-    s.symbol,
-    s.tradingdate,
-    s.closePrice        AS gia_dong_cua,
-    s.FloorCode
-FROM JAD_STKCKINFOR s
-WHERE s.tradingdate = :ngay_gd
-  AND s.STKckType NOT IN ('B', '1', 'BO', 'D')    -- Loại bỏ trái phiếu
+s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"WITH gdongcua AS (
+    SELECT
+        s.symbol,
+        s.tradingdate,
+        s.closePrice AS gia_dong_cua,
+        s.FloorCode
+    FROM uat_mdds_stg.JAD_STKCKINFOR s
+    WHERE date_format(to_date(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
+      AND s.FloorCode IN ('02','04','10')
+),
+scplh AS (
+    -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
+    SELECT
+        symbol,
+        so_luong_cp_luu_hanh AS kllh
+    FROM (
+        SELECT
+            t.ticker_symbol      AS symbol,
+            t.outstanding_shares AS so_luong_cp_luu_hanh,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.ds_snpst_dt, 'YYYY-MM-DD') DESC
+            ) AS rn
+        FROM uat_vsdc_ods.outstanding_shares t
+        WHERE TO_DATE(t.ds_snpst_dt, 'YYYY-MM-DD') <= TO_DATE(:ngay_gd, 'YYYY-MM-DD')
+    )
+    WHERE rn = 1
+),
+mcap AS (
+    SELECT
+        SUM(g.gia_dong_cua * s.kllh) AS tong_von_hoa
+    FROM gdongcua g
+    JOIN scplh s ON s.symbol = g.symbol
 )
-, SCPLH AS 
-(
-select  Mã chứng khoán  MCK , sum (Khối lượng chứng khoán đang lưu hành) KLLH
-from BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
-where Mã chứng khoán = 'Cổ phiếu'
-)",Trùng,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
+SELECT
+    TO_DATE(:ngay_gd, 'YYYY-MM-DD') AS ngay_gd,
+    tong_von_hoa
+FROM mcap;",Trùng,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Giá cổ phiếu ,Giá đóng cửa,Dashboard,Chỉ tiêu cơ sở,Trùng,"Thời gian, Ngành ",MDDS,x,x,,Done,Thông tin thị trường,JAD_STOCKINFOR (PriceBoardAPI),"symbol, closePrice, tradingdate","tradingdate = :input_date; FloorCode IN ('02','04','10')","SELECT symbol, closePrice, tradingdate
 FROM JAD_STKCKINFOR
 WHERE tradingdate = :input_date
@@ -7147,10 +7269,10 @@ IDS.company_data (cd)",SUM(d.data_value) AS vcsh,"rc2.col_desc = '1'
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Biến động áp lực (Stress Score ),Điểm áp lực kỳ này - Điểm áp lực kỳ trước,Dashboard,Chỉ tiêu phái sinh,Khó,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ",,,,Chỉ tiêu phái sinh: Tính từ chỉ tiêu 2 (Sector Stress Score),Cần có bảng mart lưu kết quả Sector Stress Score theo ngày trong DWH,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Sector Stress Score kỳ hiện tại – Chỉ số mức độ căng thẳng ngành,"StressScoreSector = Σ ( StressScorei x wi) 
-với i=1 --> n",Dashboard,Chỉ tiêu phái sinh,Trùng,"Thời gian, Ngành ","MDDS, MSS",x,x,,Pending,"Thông tin thị trường
+với i=1 --> n",Dashboard,Chỉ tiêu phái sinh,Trùng,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ",,,,,Trùng dòng 169,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Sector Stress Score kỳ trước – Chỉ số mức độ căng thẳng ngành,"StressScoreSector = Σ ( StressScorei x wi) 
-với i=1 --> n",Dashboard,Chỉ tiêu phái sinh,Trùng,"Thời gian, Ngành ","MDDS, MSS",x,x,,Pending,"Thông tin thị trường
+với i=1 --> n",Dashboard,Chỉ tiêu phái sinh,Trùng,"Thời gian, Ngành ","MDDS, MSS",x,x,,Done,"Thông tin thị trường
 Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ",,,,,Trùng dòng 169,,,,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Xếp hạng,"Cấu hình quy định thang điểm stress score thành trạng thái: 
 ▪        Thấp: EXCELLENT
@@ -7168,104 +7290,90 @@ WHERE tradingdate = :input_date
 Tổng giá trị giao dịch toàn thị trường trong khoảng từ ngày đến ngày","
 Σ GTGD trong khoảng ngày
 
-",Dashboard,Chỉ tiêu phái sinh,Khó,Ngày ,MSS,x,x,,Pending,Sổ lệnh ,"TRADE_BOOK_HOSE
-TRADE_BOOK_HNX","TRADE_BOOK_HOSE: 
-""Execution - Value"", 
-""Trade Date"",
-""Board Type""
-
-Trade_HNX: 
-trade_price, 
-trade_quantity, 
-""Trade date"", 
-""Board ID""","TRADE_BOOK_HOSE: ""Market ID"" = 'STO'; ""Board Type"" IN ('G1','G2','G3')
-Trade_HNX: ""Market ID"" IN ('STX','UPX'); ""Board ID"" IN ('G1','G2','G3')
- ""Trade date"" BETWEEN :from_date AND :to_date","SELECT SUM(exec_value) AS gtgd_tong_ky
+",Dashboard,Chỉ tiêu phái sinh,Khó,Ngày ,MSS,x,x,,Done,Sổ lệnh ,"uat_hose_stg.TRADE_BOOK
+ uat_hnx_stg.TRADE_BOOK","uat_hose_stg.TRADE_BOOK.Execution_Value, Board_Type
+uat_hnx_stg.TRADE_BOOK.Trade_price × Trade_quantity, Board_ID","Trade_Date = :ngay_gd
+Market_ID IN ('STO','STX','UPX')
+Board_Type IN ('G1','G2','G3')","SELECT :ngay_gd AS trade_date, SUM(val) AS total_vold
 FROM (
-  SELECT ""Execution - Value"" AS exec_value
-  FROM trade_hose
-  WHERE ""Market ID"" = 'STK'
-    AND ""Board Type"" IN ('G1','G2','G3')
-    AND ""Trade Date"" BETWEEN :from_date AND :to_date
-
+  SELECT Execution_Value AS val
+  FROM uat_hose_stg.TRADE_BOOK
+  WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd AND Market_ID='STK'
+    AND Board_Type IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') 
   UNION ALL
-
-  SELECT trade_price * trade_quantity AS exec_value
-  FROM trade_hnx
-  WHERE ""Market ID"" IN ('STX','UPX')
-    AND ""Board ID"" IN ('G1','G2','G3')
-    AND ""Trade date"" BETWEEN :from_date AND :to_date
-) t;",,,,,,,Dữ liệu tĩnh,
-8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,GTGDₜ ,GTGDₜ ,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Pending,Sổ lệnh ,"TRADE_BOOK_HOSE
-TRADE_BOOK_HNX","TRADE_BOOK_HOSE: 
-""Execution - Value"", 
-""Trade Date"",
-""Board Type""
-
-Trade_HNX: 
-trade_price, 
-trade_quantity, 
-""Trade date"", 
-""Board ID""","""Market ID"" IN ('STO','STX','UPX'); 
+  SELECT Trade_price*Trade_quantity
+  FROM uat_hnx_stg.TRADE_BOOK
+  WHERE date_format(to_date(trade_date, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd AND Market_ID IN ('STX','UPX')
+    AND Board_ID IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') 
+) t",,,,,,,Dữ liệu tĩnh,
+8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,GTGDₜ ,GTGDₜ ,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Done,Sổ lệnh ,"uat_hose_stg.TRADE_BOOK
+ uat_hnx_stg.TRADE_BOOK","uat_hose_stg.TRADE_BOOK.Execution_Value, Board_Type
+uat_hnx_stg.TRADE_BOOK.Trade_price × Trade_quantity, Board_ID","""Market ID"" IN ('STO','STX','UPX'); 
 ""Board Type""/""Board ID"" IN ('G1','G2','G3')
-trade_date = :input_date","SELECT SUM(exec_value) AS gtgd_t
+trade_date = :input_date","SELECT
+    :ngay_gd AS trade_date,
+    SUM(t.exec_value) AS gtgd_t
 FROM (
-  SELECT ""Execution - Value"" AS exec_value
-  FROM trade_hose
-  WHERE ""Market ID"" = 'STK'
-    AND ""Board Type"" IN ('G1','G2','G3')
-    AND ""Trade Date"" = :input_date
-  UNION ALL
-  SELECT trade_price * trade_quantity AS exec_value
-  FROM trade_hnx
-  WHERE ""Market ID"" IN ('STX','UPX')
-    AND ""Board ID"" IN ('G1','G2','G3')
-    AND ""Trade date"" = :input_date
-) t;",,,,,,,Dữ liệu tĩnh,
-8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,GTGDt-1,GTGDt-1,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Pending,Sổ lệnh ,"TRADE_BOOK_HOSE
-TRADE_BOOK_HNX","TRADE_BOOK_HOSE: 
-""Execution - Value"", 
-""Trade Date"",
-""Board Type""
+    -- HOSE
+    SELECT
+        Execution_Value AS exec_value
+    FROM uat_hose_stg.TRADE_BOOK
+    WHERE DATE_FORMAT(
+              TO_DATE(Trade_Date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND Market_ID = 'STK'
+      AND Board_Type IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8')
 
-Trade_HNX: 
-trade_price, 
-trade_quantity, 
-""Trade date"", 
-""Board ID""","""Market ID"" IN ('STO','STX','UPX'); 
+    UNION ALL
+
+    -- HNX và UPCOM
+    SELECT
+        Trade_price * Trade_quantity AS exec_value
+    FROM uat_hnx_stg.TRADE_BOOK
+    WHERE DATE_FORMAT(
+              TO_DATE(Trade_date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND Market_ID IN ('STX', 'UPX')
+      AND Board_ID IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8')
+) t;",,,,,,,Dữ liệu tĩnh,
+8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,GTGDt-1,GTGDt-1,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Done,Sổ lệnh ,"uat_hose_stg.TRADE_BOOK
+ uat_hnx_stg.TRADE_BOOK","uat_hose_stg.TRADE_BOOK.Execution_Value, Board_Type
+uat_hnx_stg.TRADE_BOOK.Trade_price × Trade_quantity, Board_ID","""Market ID"" IN ('STO','STX','UPX'); 
 
 ""Board Type""/""Board ID"" IN ('G1','G2','G3')
 
-trade_date = ngày giao dịch trước","WITH prev_date AS (
-  SELECT MAX(""Trade Date"") AS prev_td
-  FROM trade_hose
-  WHERE ""Trade Date"" < :input_date AND ""Market ID"" = 'STK'
-)
-SELECT SUM(exec_value) AS gtgd_t1
+trade_date = ngày giao dịch trước","SELECT
+    DATE_FORMAT(
+        DATE_SUB(TO_DATE(:ngay_gd, 'yyyyMMdd'), 1),
+        'yyyyMMdd'
+    ) AS trade_date,
+    SUM(t.exec_value) AS gtgd_t_1
 FROM (
-  SELECT ""Execution - Value"" AS exec_value
-  FROM trade_hose
-  WHERE ""Market ID"" = 'STK'
-    AND ""Board Type"" IN ('G1','G2','G3')
-    AND ""Trade Date"" = (SELECT prev_td FROM prev_date)
-  UNION ALL
-  SELECT trade_price * trade_quantity AS exec_value
-  FROM trade_hnx
-  WHERE ""Market ID"" IN ('STX','UPX')
-    AND ""Board ID"" IN ('G1','G2','G3')
-    AND ""Trade date"" = (SELECT prev_td FROM prev_date)
-) t;",,,,,,,Dữ liệu tĩnh,
-8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,% thay đổi ,% thay đổi = (GTGDₜ − GTGDt-1) / GTGDt-1,Dashboard,Chỉ tiêu phái sinh,Khó,Ngày ,MSS,x,x,,Pending,Sổ lệnh ,"TRADE_BOOK_HOSE
-TRADE_BOOK_HNX","TRADE_BOOK_HOSE: 
-""Execution - Value"", 
-""Trade Date"",
-""Board Type""
+    -- HOSE
+    SELECT
+        Execution_Value AS exec_value
+    FROM uat_hose_stg.TRADE_BOOK
+    WHERE TO_DATE(Trade_Date, 'yyyy-MM-dd')
+          = DATE_SUB(TO_DATE(:ngay_gd, 'yyyyMMdd'), 1)
+      AND Market_ID = 'STK'
+      AND Board_Type IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8')
 
-Trade_HNX: 
-trade_price, 
-trade_quantity, 
-""Trade date"", 
-""Board ID""","Tính từ GTGDₜ và GTGDt-1; 
+    UNION ALL
+
+    -- HNX và UPCOM
+    SELECT
+        Trade_price * Trade_quantity AS exec_value
+    FROM uat_hnx_stg.TRADE_BOOK
+    WHERE TO_DATE(Trade_date, 'yyyy-MM-dd')
+          = DATE_SUB(TO_DATE(:ngay_gd, 'yyyyMMdd'), 1)
+      AND Market_ID IN ('STX', 'UPX')
+      AND Board_ID IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8')
+) t;",,,,,,,Dữ liệu tĩnh,
+8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,% thay đổi ,% thay đổi = (GTGDₜ − GTGDt-1) / GTGDt-1,Dashboard,Chỉ tiêu phái sinh,Khó,Ngày ,MSS,x,x,,Pending,Sổ lệnh ,"uat_hose_stg.TRADE_BOOK
+ uat_hnx_stg.TRADE_BOOK","uat_hose_stg.TRADE_BOOK.Execution_Value, Board_Type
+uat_hnx_stg.TRADE_BOOK.Trade_price × Trade_quantity, Board_ID","Tính từ GTGDₜ và GTGDt-1; 
 ""Board Type""/""Board ID"" IN ('G1','G2','G3')
 trade_date IN (:input_date, ngày trước :input_date)","WITH daily_val AS (
   SELECT trade_date, SUM(exec_value) AS gtgd
@@ -7434,7 +7542,7 @@ Execution - Value: Giá trị giao dịch
 Trade_HNX:
 Trade price * Trade quantity
 ****Cần thêm Trade Date = :P_date",,,,,,Dữ liệu tĩnh,
-8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,Khối lượng giao dịch khớp lệnh tại ngày,KLGD khớp lệnh tại ngày,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Pending,Sổ lệnh ,"TRADE_BOOK_HOSE
+8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,Khối lượng giao dịch khớp lệnh tại ngày,KLGD khớp lệnh tại ngày,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Done,Sổ lệnh ,"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX
 JAD_CSIDXINFOR ","lấy từ sổ lệnh: 
 - Hose: 
@@ -7442,44 +7550,57 @@ Execution - Volume
 - HNX: 
 Trade quantity
 --> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')","SELECT
-    sub.indexCode           AS ma_chi_so,
+    sub.indexCode AS ma_chi_so,
     sub.ngay_gd,
-    SUM(sub.kl_gd)          AS tong_kl_gd,
-    SUM(sub.gt_gd)          AS tong_gt_gd
+    SUM(sub.kl_gd) AS tong_kl_gd,
+    SUM(sub.gt_gd) AS tong_gt_gd
 FROM (
+    -- HOSE
     SELECT
         idx.indexCode,
-        t.[Trade Date]                          AS ngay_gd,
-        t.[Execution - Volume]                  AS kl_gd,
-        t.[Execution - Value]                   AS gt_gd
-    FROM TRADE_BOOK_HOSE t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.Symbol        = idx.symbol
-        AND t.[Trade Date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade Date]    = :ngay_gd
-      AND t.[Market ID]     = 'STK' 
-      AND t.[Board Type] LIKE '%G%'          
+        TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Execution_Volume AS kl_gd,
+        t.Execution_Value AS gt_gd
+    FROM uat_hose_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Symbol = idx.symbol
+       AND TO_DATE(t.Trade_Date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_Date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID = 'STK'
+      AND t.Sell_Foreigner_Investor_Type_CodeIN ('10', '20')
+      -- AND t.Board_Type LIKE '%G%'
 
     UNION ALL
 
+    -- HNX và UPCOM
     SELECT
         idx.indexCode,
-        t.[Trade date]                          AS ngay_gd,
-        t.[Trade quantity]                      AS kl_gd,
-        CAST(t.[Trade price]  AS NUMERIC)
-      * CAST(t.[Trade quantity] AS NUMERIC)     AS gt_gd
-    FROM Trade_HNX t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.[Issue Code]  = idx.symbol
-        AND t.[Trade date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade date]    = :ngay_gd
-      AND t.[Market ID] IN ('STX', 'UPX')     -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
-                                                                                          -- UPCOM, loại BDX/HCX/DVX
-          AND t.[Board ID] LIKE '%G%'        
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Trade_quantity AS kl_gd,
+        CAST(t.Trade_price AS NUMERIC)
+            * CAST(t.Trade_quantity AS NUMERIC) AS gt_gd
+    FROM uat_hnx_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Issue_Code = idx.symbol
+       AND TO_DATE(t.Trade_date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID IN ('STX', 'UPX')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')
+      -- AND t.Board_ID LIKE '%G%'
 ) sub
-GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
+GROUP BY
+    sub.indexCode,
+    sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
 8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,Tốc độ vòng quay,TVIMarket = [Σ Total Trading Valuei / Σ Average Market Capi] × 252,Dashboard,Chỉ tiêu phái sinh,Khó,Ngày ,"MDDS, MSS",x,x,,Pending,"Sổ lệnh 
 Thông tin thị trường",,,,Chỉ tiêu phái sinh từ Σ Total Trading Valuei và Σ Average Market Capi,,,,,,,Dữ liệu tĩnh,
 8,,Dashboard Thanh khoản và đòn bẩy/ Chỉ số chung ,Phân loại,"A - Mức thấp (Cold Market): TVI < 0.5
@@ -7752,44 +7873,57 @@ Execution - Volume
 - HNX: 
 Trade quantity
 --> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')","SELECT
-    sub.indexCode           AS ma_chi_so,
+    sub.indexCode AS ma_chi_so,
     sub.ngay_gd,
-    SUM(sub.kl_gd)          AS tong_kl_gd,
-    SUM(sub.gt_gd)          AS tong_gt_gd
+    SUM(sub.kl_gd) AS tong_kl_gd,
+    SUM(sub.gt_gd) AS tong_gt_gd
 FROM (
+    -- HOSE
     SELECT
         idx.indexCode,
-        t.[Trade Date]                          AS ngay_gd,
-        t.[Execution - Volume]                  AS kl_gd,
-        t.[Execution - Value]                   AS gt_gd
-    FROM TRADE_BOOK_HOSE t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.Symbol        = idx.symbol
-        AND t.[Trade Date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade Date]    = :ngay_gd
-      AND t.[Market ID]     = 'STK' 
-      AND t.[Board Type] LIKE '%G%'          
+        TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Execution_Volume AS kl_gd,
+        t.Execution_Value AS gt_gd
+    FROM uat_hose_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Symbol = idx.symbol
+       AND TO_DATE(t.Trade_Date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_Date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID = 'STK'
+      AND t.Sell_Foreigner_Investor_Type_CodeIN ('10', '20')
+      -- AND t.Board_Type LIKE '%G%'
 
     UNION ALL
 
+    -- HNX và UPCOM
     SELECT
         idx.indexCode,
-        t.[Trade date]                          AS ngay_gd,
-        t.[Trade quantity]                      AS kl_gd,
-        CAST(t.[Trade price]  AS NUMERIC)
-      * CAST(t.[Trade quantity] AS NUMERIC)     AS gt_gd
-    FROM Trade_HNX t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.[Issue Code]  = idx.symbol
-        AND t.[Trade date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade date]    = :ngay_gd
-      AND t.[Market ID] IN ('STX', 'UPX')     -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
-                                                                                          -- UPCOM, loại BDX/HCX/DVX
-          AND t.[Board ID] LIKE '%G%'        
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Trade_quantity AS kl_gd,
+        CAST(t.Trade_price AS NUMERIC)
+            * CAST(t.Trade_quantity AS NUMERIC) AS gt_gd
+    FROM uat_hnx_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Issue_Code = idx.symbol
+       AND TO_DATE(t.Trade_date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID IN ('STX', 'UPX')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')
+      -- AND t.Board_ID LIKE '%G%'
 ) sub
-GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
+GROUP BY
+    sub.indexCode,
+    sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
 9,,Dashboard Thanh khoản và đòn bẩy/ Xu hướng thanh khoản thị trường,Giá khớp ,Giá khớp tại ngày,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Done,Sổ lệnh,"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX","lấy từ sổ lệnh: 
 - Hose: 
@@ -8130,7 +8264,7 @@ FROM (
     GROUP BY idx.indexCode, t.[Trade date]
 ) sub
 GROUP BY sub.indexCode;",,,,,,,Dữ liệu tĩnh,
-10,,Dashboard Thanh khoản và đòn bẩy/  Áp lực đòn bẩy hệ thống (Margin Stress),GTGD tại ngày t ,GTGD tại ngày t ,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Pending,Sổ lệnh,"TRADE_BOOK_HOSE
+10,,Dashboard Thanh khoản và đòn bẩy/  Áp lực đòn bẩy hệ thống (Margin Stress),GTGD tại ngày t ,GTGD tại ngày t ,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Done,Sổ lệnh,"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX"," lấy từ sổ lệnh: 
 - Hose: 
 Execution - Value
@@ -8139,38 +8273,57 @@ Trade quantity * Trade price
 --> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","  Trade Date -- Ngày giao dịch
   Execution - Value -- Giá trị từng lệnh khớp
   Market ID  -- Lọc thị trường","SELECT
+    sub.indexCode AS ma_chi_so,
     sub.ngay_gd,
-    SUM(sub.kl_gd)          AS tong_kl_gd,
-    SUM(sub.gt_gd)          AS tong_gt_gd
+    SUM(sub.kl_gd) AS tong_kl_gd,
+    SUM(sub.gt_gd) AS tong_gt_gd
 FROM (
+    -- HOSE
     SELECT
-        t.[Trade Date]                          AS ngay_gd,
-        t.[Execution - Volume]                  AS kl_gd,
-        t.[Execution - Value]                   AS gt_gd
-    FROM TRADE_BOOK_HOSE t
-    WHERE t.[Trade Date]    = :ngay_gd
-      AND t.[Market ID]     = 'STK'
+        idx.indexCode,
+        TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Execution_Volume AS kl_gd,
+        t.Execution_Value AS gt_gd
+    FROM uat_hose_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Symbol = idx.symbol
+       AND TO_DATE(t.Trade_Date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_Date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID = 'STK'
+      AND t.Sell_Foreigner_Investor_Type_CodeIN ('10', '20')
+      -- AND t.Board_Type LIKE '%G%'
+
     UNION ALL
+
+    -- HNX và UPCOM
     SELECT
-        t.[Trade date]                          AS ngay_gd,
-        t.[Trade quantity]                      AS kl_gd,
-        CAST(t.[Trade price]  AS NUMERIC)
-      * CAST(t.[Trade quantity] AS NUMERIC)     AS gt_gd
-    FROM Trade_HNX t
-    WHERE t.[Trade date]    = :ngay_gd
-      AND t.[Market ID]     = 'STX'             -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
-    UNION ALL
-    -- UPCOM
-    SELECT
-        t.[Trade date]                          AS ngay_gd,
-        t.[Trade quantity]                      AS kl_gd,
-        CAST(t.[Trade price]  AS NUMERIC)
-      * CAST(t.[Trade quantity] AS NUMERIC)     AS gt_gd
-    FROM Trade_HNX t
-    WHERE t.[Trade date]    = :ngay_gd
-      AND t.[Market ID]     = 'UPX'             -- UPCOM, loại BDX/HCX/DVX
+        idx.indexCode,
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Trade_quantity AS kl_gd,
+        CAST(t.Trade_price AS NUMERIC)
+            * CAST(t.Trade_quantity AS NUMERIC) AS gt_gd
+    FROM uat_hnx_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Issue_Code = idx.symbol
+       AND TO_DATE(t.Trade_date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID IN ('STX', 'UPX')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')
+      -- AND t.Board_ID LIKE '%G%'
 ) sub
-GROUP BY sub.ngay_gd;",Đối với bảng IDXInfor thiếu giao dịch lô lẻ nhờ CK xem bổ sung thêm,,,,,,Dữ liệu tĩnh,
+GROUP BY
+    sub.indexCode,
+    sub.ngay_gd;",Đối với bảng IDXInfor thiếu giao dịch lô lẻ nhờ CK xem bổ sung thêm,,,,,,Dữ liệu tĩnh,
 10,,Dashboard Thanh khoản và đòn bẩy/  Áp lực đòn bẩy hệ thống (Margin Stress),Trạng thái,"Quy đổi trạng thái theo margin stress.
 < 60%: An toàn
 60–75%: Theo dõi
@@ -8275,44 +8428,57 @@ Execution - Volume
 - HNX: 
 Trade quantity
 --> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')","SELECT
-    sub.indexCode           AS ma_chi_so,
+    sub.indexCode AS ma_chi_so,
     sub.ngay_gd,
-    SUM(sub.kl_gd)          AS tong_kl_gd,
-    SUM(sub.gt_gd)          AS tong_gt_gd
+    SUM(sub.kl_gd) AS tong_kl_gd,
+    SUM(sub.gt_gd) AS tong_gt_gd
 FROM (
+    -- HOSE
     SELECT
         idx.indexCode,
-        t.[Trade Date]                          AS ngay_gd,
-        t.[Execution - Volume]                  AS kl_gd,
-        t.[Execution - Value]                   AS gt_gd
-    FROM TRADE_BOOK_HOSE t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.Symbol        = idx.symbol
-        AND t.[Trade Date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade Date]    = :ngay_gd
-      AND t.[Market ID]     = 'STK' 
-      AND t.[Board Type] LIKE '%G%'          
+        TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Execution_Volume AS kl_gd,
+        t.Execution_Value AS gt_gd
+    FROM uat_hose_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Symbol = idx.symbol
+       AND TO_DATE(t.Trade_Date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_Date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID = 'STK'
+      AND t.Sell_Foreigner_Investor_Type_CodeIN ('10', '20')
+      -- AND t.Board_Type LIKE '%G%'
 
     UNION ALL
 
+    -- HNX và UPCOM
     SELECT
         idx.indexCode,
-        t.[Trade date]                          AS ngay_gd,
-        t.[Trade quantity]                      AS kl_gd,
-        CAST(t.[Trade price]  AS NUMERIC)
-      * CAST(t.[Trade quantity] AS NUMERIC)     AS gt_gd
-    FROM Trade_HNX t
-    JOIN JAD_CSIDXINFOR idx
-        ON  t.[Issue Code]  = idx.symbol
-        AND t.[Trade date]  = idx.tradingdate
-        AND idx.indexCode   = :ma_chi_so
-    WHERE t.[Trade date]    = :ngay_gd
-      AND t.[Market ID] IN ('STX', 'UPX')     -- Cổ phiếu HNX niêm yết, loại BDX/HCX/DVX
-                                                                                          -- UPCOM, loại BDX/HCX/DVX
-          AND t.[Board ID] LIKE '%G%'        
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Trade_quantity AS kl_gd,
+        CAST(t.Trade_price AS NUMERIC)
+            * CAST(t.Trade_quantity AS NUMERIC) AS gt_gd
+    FROM uat_hnx_stg.TRADE_BOOK t
+    JOIN uat_mdds_stg.JAD_CSIDXINFOR idx
+        ON t.Issue_Code = idx.symbol
+       AND TO_DATE(t.Trade_date, 'yyyy-MM-dd')
+           = TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+       AND idx.indexCode = :ma_chi_so
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID IN ('STX', 'UPX')
+      AND t.Sell_Foreigner_Investor_Type_Code IN ('10', '20')
+      -- AND t.Board_ID LIKE '%G%'
 ) sub
-GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
+GROUP BY
+    sub.indexCode,
+    sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
 11,,Dashboard Thanh khoản và đòn bẩy/Cấu trúc quy mô lệnh,Giá khớp ,Giá khớp ,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Done,Sổ lệnh,"TRADE_BOOK_HOSE
 TRADE_BOOK_HNX","lấy từ sổ lệnh: 
 - Hose: 

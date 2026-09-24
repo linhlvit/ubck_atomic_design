@@ -113,7 +113,7 @@ flowchart LR
 
 > Nguồn biểu mẫu (HNX.BM24/BM32/BM23/BM34/BM25, VSDC.BM1) chưa có Atomic — không vẽ trong Cụm 4 (chỉ vẽ nguồn Atomic thật đã READY, theo `flowchart_rules.md`).
 
-> Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 8 (HNX11), Nhóm 9 (HNX12) và Nhóm 13 (TTLK01) 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
+> Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 8 (HNX11) và Nhóm 13 (TTLK01) 100% PENDING (Nhóm 9 HNX12 đã READY 2026-09-24 — Star Schema riêng, xem Nhóm 9) — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
 
 ### Cụm 6: TK-HNX07 — Báo cáo về giao dịch trên thị trường TPDN niêm yết
 
@@ -1318,42 +1318,107 @@ flowchart LR
 
 #### Nhóm 9 - Báo cáo danh sách phát hành Trái phiếu doanh nghiệp ra thị trường quốc tế (HNX12)
 
-**Phân loại:** Báo cáo danh sách (list-detail) — mỗi dòng STT = 1 mã TPDNRL phát hành ra thị trường quốc tế trong kỳ, gồm 18 cột thuộc tính (tương tự Nhóm 8/HNX11 nhưng bổ sung "Thị trường phát hành"/"Đồng tiền phát hành" — đặc thù phát hành quốc tế, khác thị trường trong nước).
+**Phân loại:** Báo cáo danh sách (list-detail) — mỗi dòng = 1 mã TPDNRL × 1 thị trường phát hành quốc tế trong kỳ, 18 cột thuộc tính.
 
-**Atomic:** Không áp dụng — toàn bộ 18/18 dòng BA có nguồn duy nhất từ biểu mẫu `HNX.BM 33_Tình hình chào bán TPDNRL ra thị trường quốc tế` (`Loại dữ liệu = "Map biểu mẫu"`). Grep `DataModel/Atomic/` và `DataModel/working/Atomic/` không tìm thấy entity nào cho phát hành TPDN ra thị trường quốc tế.
+> **[THIẾT KẾ MỚI 2026-09-24, theo yêu cầu Data Modeler — dạng Dim/Fact]** BA cập nhật Bảng nguồn `uat_hnx_stg.private_corp_bond_offering` cho cả 18/18 dòng (trước là "Map biểu mẫu" HNX.BM 33, không có CSDL) → chuyển toàn bộ PENDING → READY. Khác quy ước "mỗi báo cáo 1 bảng phẳng Operational" của module, Nhóm 9 thiết kế **Star Schema**: thuộc tính tĩnh của trái phiếu tách vào `Private Corporate Bond Dimension`, số liệu theo kỳ nằm ở `Fact Private Corporate Bond International Offering Snapshot` — Dimension trái phiếu riêng lẻ có thể dùng lại cho HNX11 (Nhóm 8, cùng họ nguồn `private_corp_bond_*`).
 
-**Mockup:** Báo cáo HNX12 — user cung cấp template thật (2 khối bảng: "Doanh nghiệp phát hành + Thị trường/Đồng tiền/Khối lượng + Kỳ phát hành", "Lãi suất phát hành + đặc điểm trái phiếu"), khớp cấu trúc với BA — riêng cột "Lãi suất thực tế" (STT=12) không thấy trong template, khớp với BA tự ghi "Không thấy trường này" ở Trường nguồn.
+**Atomic:** `Private Corporate Bond Offering` (`private_corp_bond_offering`) ← `uat_hnx_stg.private_corp_bond_offering` (HNX BM 33) — **READY (mapping md)** theo `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` Bảng 15 (BK `bond_code + market_type + posting_date`, snapshot `ds_snpst_dt`). Chưa có YAML LLD/`dm_manifest.yaml` — Gate 0 báo WARNING "không tìm thấy bảng Atomic" (cùng loại ngoại lệ mapping md), xem Section 5 mục 32.
 
-**Kết luận: PENDING TOÀN BỘ báo cáo** — 100% KPI (18/18) không có nguồn CSDL sẵn sàng. Không thiết kế bảng vật lý/erDiagram/Star Schema/Bảng grain ở giai đoạn này (theo checklist Nhóm 100% PENDING).
+**Mockup:** Báo cáo HNX12 — template thật (2 khối bảng: "Doanh nghiệp phát hành + Thị trường/Đồng tiền/Khối lượng + Kỳ phát hành", "Lãi suất phát hành + đặc điểm trái phiếu").
+
+**Source:** `Fact Private Corporate Bond International Offering Snapshot` → `Calendar Date Dimension`, `Private Corporate Bond Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_553 | Kỳ báo cáo: Quý | - | Chiều | TBD — chờ Atomic | [STT=1] Chiều slicer — Map biểu mẫu HNX.BM 33, trường nguồn NGÀY | PENDING |
-| K_TKNB_554 | Tên Doanh nghiệp phát hành TPDN ra TT quốc tế | - | Cơ sở | TBD — chờ Atomic | [STT=2] Nguồn HNX.BM 33 — Tên DN; Map biểu mẫu | PENDING |
-| K_TKNB_555 | Loại hình doanh nghiệp | - | Cơ sở | TBD — chờ Atomic | [STT=3] Nguồn HNX.BM 33 — Loại hình doanh nghiệp; Map biểu mẫu | PENDING |
-| K_TKNB_556 | Lĩnh vực hoạt động | - | Cơ sở | TBD — chờ Atomic | [STT=4] Nguồn HNX.BM 33 — Lĩnh vực hoạt động; Map biểu mẫu | PENDING |
-| K_TKNB_557 | Mã trái phiếu | - | Cơ sở | TBD — chờ Atomic | [STT=5] Nguồn HNX.BM 33 — Mã trái phiếu; Map biểu mẫu | PENDING |
-| K_TKNB_558 | Thị trường phát hành | - | Cơ sở | TBD — chờ Atomic | [STT=6] Nguồn HNX.BM 33 — Thị trường phát hành; Map biểu mẫu | PENDING |
-| K_TKNB_559 | Đồng tiền phát hành | - | Cơ sở | TBD — chờ Atomic | [STT=7] Nguồn HNX.BM 33 — Tiền tệ; Map biểu mẫu | PENDING |
-| K_TKNB_560 | Khối lượng phát hành | - | Phái sinh | TBD — chờ Atomic | [STT=8] Nguồn HNX.BM 33 — Khối lượng chào bán; Map biểu mẫu | PENDING |
-| K_TKNB_561 | Đơn vị kỳ hạn | - | Chiều | TBD — chờ Atomic | [STT=9] Nguồn HNX.BM 33 — Đơn vị kỳ hạn; Map biểu mẫu | PENDING |
-| K_TKNB_562 | Kỳ hạn | - | Cơ sở | TBD — chờ Atomic | [STT=10] Nguồn HNX.BM 33 — Kỳ hạn; Map biểu mẫu | PENDING |
-| K_TKNB_563 | Loại lãi suất | - | Chiều | TBD — chờ Atomic | [STT=11] Nguồn HNX.BM 33 — Loại lãi suất; Map biểu mẫu | PENDING |
-| K_TKNB_564 | Lãi suất thực tế | % | Cơ sở | TBD — chờ Atomic | [STT=12] BA tự ghi "Không thấy trường này" tại HNX.BM 33 — biểu mẫu quốc tế không có cột này, cần xác nhận lại có giữ chỉ tiêu hay bỏ. Xem Vấn đề mở | PENDING |
-| K_TKNB_565 | Ngày phát hành | Ngày | Cơ sở | TBD — chờ Atomic | [STT=13] Nguồn HNX.BM 33 — Ngày phát hành; Map biểu mẫu | PENDING |
-| K_TKNB_566 | Ngày đáo hạn | Ngày | Cơ sở | TBD — chờ Atomic | [STT=14] Nguồn HNX.BM 33 — Ngày đáo hạn; Map biểu mẫu | PENDING |
-| K_TKNB_567 | Thanh toán lãi | - | Cơ sở | TBD — chờ Atomic | [STT=15] Nguồn HNX.BM 33 — Phương thức thanh toán lãi; Map biểu mẫu | PENDING |
-| K_TKNB_568 | Trái phiếu chuyển đổi | - | Phái sinh | TBD — chờ Atomic | [STT=16] Nguồn HNX.BM 33 — TP chuyển đổi (Có/Không); Map biểu mẫu | PENDING |
-| K_TKNB_569 | Trái phiếu kèm chứng quyền | - | Phái sinh | TBD — chờ Atomic | [STT=17] Nguồn HNX.BM 33 — TP kèm chứng quyền (Có/Không); Map biểu mẫu | PENDING |
-| K_TKNB_570 | Trái phiếu có bảo đảm | - | Phái sinh | TBD — chờ Atomic | [STT=18] Nguồn HNX.BM 33 — TP bảo đảm (Có/Không); Map biểu mẫu | PENDING |
+| K_TKNB_553 | Kỳ báo cáo: Quý | - | Chiều | `CASE RIGHT(fct_private_corporate_bond_international_offering_snpst.rpt_month,2) WHEN '03' THEN 'Quý I' WHEN '06' THEN 'Quý II' WHEN '09' THEN 'Quý III' WHEN '12' THEN 'Quý IV' END` WHERE `RIGHT(rpt_month,2) IN ('03','06','09','12')` | [STT=1] Slicer — biểu mẫu tháng lũy kế từ đầu năm; kỳ Quý = tháng cuối quý (CASE theo câu lệnh BA). Định dạng `report_month` (MM hay YYYYMM) chờ xác nhận — Section 5 mục 32 | READY |
+| K_TKNB_554 | Tên Doanh nghiệp phát hành TPDN ra TT quốc tế | - | Cơ sở | `private_corporate_bond_dim.issuer_nm` | [STT=2] `private_corp_bond_offering.issuer_name` | READY |
+| K_TKNB_555 | Loại hình doanh nghiệp | - | Cơ sở | `private_corporate_bond_dim.enterprise_tp` | [STT=3] `enterprise_type` | READY |
+| K_TKNB_556 | Lĩnh vực hoạt động | - | Cơ sở | `private_corporate_bond_dim.business_sector` | [STT=4] `business_sector` | READY |
+| K_TKNB_557 | Mã trái phiếu | - | Cơ sở | `private_corporate_bond_dim.bond_code` | [STT=5] BK Dimension | READY |
+| K_TKNB_558 | Thị trường phát hành | - | Cơ sở | `fct_private_corporate_bond_international_offering_snpst.market_tp` | [STT=6] Grain key Fact — 1 mã TP có thể chào bán ở nhiều thị trường | READY |
+| K_TKNB_559 | Đồng tiền phát hành | - | Cơ sở | `fct_private_corporate_bond_international_offering_snpst.currency_code` | [STT=7] Gắn với đợt chào bán tại thị trường, không cố định theo mã TP | READY |
+| K_TKNB_560 | Khối lượng phát hành | TP | Phái sinh | `fct_private_corporate_bond_international_offering_snpst.offering_bond_quantity` | [STT=8] `offering_volume` — số lũy kế tại tháng báo cáo, KHÔNG SUM qua tháng | READY |
+| K_TKNB_561 | Đơn vị kỳ hạn | - | Chiều | `private_corporate_bond_dim.bond_term_unit` | [STT=9] `term_unit` | READY |
+| K_TKNB_562 | Kỳ hạn | - | Cơ sở | `private_corporate_bond_dim.bond_term` | [STT=10] `term` | READY |
+| K_TKNB_563 | Loại lãi suất | - | Chiều | `private_corporate_bond_dim.interest_rate_tp` | [STT=11] `interest_rate_type` | READY |
+| K_TKNB_564 | Lãi suất thực tế | % | Cơ sở | `private_corporate_bond_dim.issue_interest_rate` | [STT=12] **[SỬA 2026-09-24]** BA dòng 678 nay map `issue_interest_rate` (trước ghi 'Không thấy trường này') — đóng Section 5 mục 5 | READY |
+| K_TKNB_565 | Ngày phát hành | Ngày | Cơ sở | `private_corporate_bond_dim.issue_dt` | [STT=13] `issue_date` | READY |
+| K_TKNB_566 | Ngày đáo hạn | Ngày | Cơ sở | `private_corporate_bond_dim.maturity_dt` | [STT=14] `maturity_date` | READY |
+| K_TKNB_567 | Thanh toán lãi | - | Cơ sở | `private_corporate_bond_dim.interest_payment_method` | [STT=15] `interest_payment_method` | READY |
+| K_TKNB_568 | Trái phiếu chuyển đổi | - | Phái sinh | `private_corporate_bond_dim.convertible_bond_ind` | [STT=16] Atomic chuẩn hóa `convertible_bond` → cờ boolean | READY |
+| K_TKNB_569 | Trái phiếu kèm chứng quyền | - | Phái sinh | `private_corporate_bond_dim.warrant_linked_bond_ind` | [STT=17] Cờ boolean | READY |
+| K_TKNB_570 | Trái phiếu có bảo đảm | - | Phái sinh | `private_corporate_bond_dim.secured_bond_ind` | [STT=18] Cờ boolean | READY |
 
-**Bảng mapping nguồn (Atomic Placeholder — cho dòng PENDING):**
+**Star Schema:**
 
-| Bảng nguồn BA | Atomic entity dự kiến | Atomic table dự kiến | KPI liên quan |
-|---|---|---|---|
-| HNX.BM 33 (Tình hình chào bán TPDNRL ra thị trường quốc tế) | TBD — chưa có thiết kế Atomic | TBD | K_TKNB_553–570 (toàn bộ Nhóm 9) |
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Private_Corporate_Bond_Dimension {
+        string Private_Corporate_Bond_Dimension_Id PK
+        string Bond_Code
+        string Issuer_Name
+        string Enterprise_Type
+        string Business_Sector
+        string Bond_Term_Unit
+        int Bond_Term
+        string Interest_Rate_Type
+        decimal Issue_Interest_Rate
+        date Issue_Date
+        date Maturity_Date
+        string Interest_Payment_Method
+        boolean Convertible_Bond_Indicator
+        boolean Warrant_Linked_Bond_Indicator
+        boolean Secured_Bond_Indicator
+        string Source_System_Code
+    }
+    Fact_Private_Corporate_Bond_International_Offering_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Private_Corporate_Bond_Dimension_Id FK
+        string Report_Month
+        string Market_Type
+        string Currency_Code
+        bigint Offering_Bond_Quantity
+        date Posting_Date
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_International_Offering_Snapshot : "Snapshot_Date_Dimension_Id"
+    Private_Corporate_Bond_Dimension ||--o{ Fact_Private_Corporate_Bond_International_Offering_Snapshot : "Private_Corporate_Bond_Dimension_Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Private Corporate Bond International Offering Snapshot"]
+        G2["Private Corporate Bond Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["HNX12 - Nhom 9: K_TKNB_553-570"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Private Corporate Bond International Offering Snapshot | 1 row = 1 mã TP × 1 thị trường phát hành × 1 tháng báo cáo (bản ghi `posting_date` mới nhất) — số lũy kế từ đầu năm |
+| Private Corporate Bond Dimension | 1 row = 1 mã trái phiếu (SCD4A current-state, bản ghi `posting_date` mới nhất) |
+| Calendar Date Dimension | 1 row = 1 ngày |
+
+---
 
 #### Nhóm 10 - Báo cáo về giao dịch trên thị trường Cổ phiếu HOSE (TK-HSX01)
 
@@ -2665,7 +2730,7 @@ graph TB
     DimIdxConst --> FactFrgnPropIdx
 ```
 
-> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 8 (HNX11), Nhóm 9 (HNX12), Nhóm 13 (TTLK01), Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ.
+> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 8 (HNX11), Nhóm 13 (TTLK01), Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ.
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 
@@ -2990,6 +3055,8 @@ erDiagram
 | Thống kê thông tin giao dịch của từng mã chứng khoán (BM035_MSS) | bm035mss_security_trading_detail_rpt | new | Bảng phẳng EAV theo mã CK — grain khác hẳn mọi bảng khác trong module (thêm `security_symbol_code` vào composite key), không reuse bảng nào dù cùng dùng entity nguồn `Securities Trade`/`Security Trading Snapshot`, vì đây là báo cáo chi tiết cấp mã CK (không phải tổng hợp thị trường). 51/53 KPI READY; 2/53 KPI (Tỷ lệ sở hữu NĐTNN) PENDING do nguồn biểu mẫu VSDC.BM64 — đã grep xác nhận entity `Public Company Foreign Ownership Limit` (IDS.FOREIGN_OWNER_LIMIT) là nguồn khác, không dùng để lấp gap. |
 | Thị trường chứng khoán phái sinh - chi tiết từng mã (BM043_MSS) | bm043mss_derivatives_security_detail_rpt | new | Bảng phẳng EAV theo mã CK, cùng grain `bm035mss_security_trading_detail_rpt` (Nhóm 28) nhưng không reuse — đối tượng khác (CKPS, `market_id_code='DVX'`, chỉ HNX) so với cổ phiếu toàn thị trường của Nhóm 28. Cũng không reuse `bm031fmss_derivatives_foreign_proprietary_trading_rpt` (Nhóm 27, cùng đối tượng CKPS) vì Nhóm 27 là tổng hợp thị trường (EAV item_code thường), còn Nhóm 29 chi tiết theo từng mã hợp đồng (thêm `security_symbol_code`). 15/16 KPI READY; 1/16 KPI (KL hợp đồng đang lưu hành) PENDING — cùng gap VSDC.BM1 đã ghi ở Nhóm 27. |
 
+| Private Corporate Bond Dimension (Nhóm 9) | private_corporate_bond_dim | new | **[MỚI 2026-09-24]** Dimension mới, sở hữu TKNB — 1 dòng/1 mã TPDN riêng lẻ (SCD4A current-state), nguồn Atomic `private_corp_bond_offering` (HNX BM 33, mapping md). Chưa có Dimension trái phiếu doanh nghiệp riêng lẻ ở module nào (`datamart_model.yaml`) — có thể reuse cho HNX11 (Nhóm 8) |
+| Fact Private Corporate Bond International Offering Snapshot (Nhóm 9) | fct_private_corporate_bond_international_offering_snpst | new | **[MỚI 2026-09-24]** Fact mới, sở hữu TKNB — ngoại lệ thứ 3 của quy ước 'mỗi báo cáo 1 bảng phẳng' theo yêu cầu Data Modeler thiết kế dạng Dim/Fact. Grain 1 mã TP × 1 thị trường × 1 tháng báo cáo |
 ---
 
 ## Section 5 — Vấn đề mở
@@ -3001,7 +3068,7 @@ erDiagram
    - Bài học: đã có lần đầu tự suy diễn "mọi dòng mục lớn I/II/III.../header đều là derived-sum có giá trị" chỉ dựa vào cấu trúc phân cấp tên hiển thị — sai với 13 dòng BA đã xác nhận N/A. Phải đọc đúng giá trị cột Bảng nguồn/Trường nguồn của từng dòng BA, không suy diễn theo mẫu tên/cấp số.
 3. **Nhóm 3 (TK-HNX03) — 3 dòng BA KHÔNG map thành KPI/item_code**: `Loại CK` (BA idx 0), `Sàn` (BA idx 1), `Ngày đáo hạn` (BA idx 2) — theo template ảnh mẫu báo cáo chính thức (user cung cấp 2026-08-10), báo cáo TK-HNX03 chỉ có 13 dòng chỉ tiêu (STT 1–5, kể cả sub-item "Trong đó"/"Khối lượng-Giá trị mua-bán" của NĐTNN), không có dòng/cột nào cho `Loại CK`/`Sàn`/`Ngày đáo hạn`. Đây là điều kiện lọc CỐ ĐỊNH của báo cáo (luôn = CKPS, sàn HNX) chứ không phải chỉ tiêu hiển thị độc lập — nên BA có 16 dòng nhưng HLD chỉ khai 13 KPI (K_TKNB_274–286), KHÔNG vi phạm rule đối chiếu số lượng BA↔KPI (đây là loại-scope theo xác nhận template thật, không phải bỏ sót).
 4. **Nhóm 6 (TK-HNX07) — mâu thuẫn tập Board ID "Giao dịch thỏa thuận" giữa các dòng BA**: dòng mô tả tổng quát (Thông tin="Loại CK", "Giao dịch Nhà đầu tư nước ngoài...") ghi `Board ID: T1, T2, T3, T4, TR là thỏa thuận`, nhưng các dòng chi tiết có SQL tham khảo cụ thể (Thông tin="Thỏa thuận", "Khối lượng mua/bán", "Giá trị mua/bán"...) đều ghi điều kiện `board_id IN ('T1','T2','T3','T4','T6','R1')`. HLD dùng bộ chi tiết hơn (`T1,T2,T3,T4,T6,R1`) cho toàn bộ K_TKNB_501/504/514–519 vì đây là điều kiện filter thực tế dùng trong SQL, còn dòng mô tả tổng chỉ là văn xuôi tóm tắt (có thể viết tắt `TR` cho cả `T6`+`R1`). Cần BA xác nhận lại 2 tập này có tương đương hay không trước khi build ETL chính thức.
-5. **Nhóm 9 (HNX12) — "Lãi suất thực tế" (K_TKNB_564) không có cột nguồn tương ứng ở biểu mẫu quốc tế**: BA tự ghi tại Trường nguồn "Không thấy trường này" khi map vào `HNX.BM 33_Tình hình chào bán TPDNRL ra thị trường quốc tế` — khác với Nhóm 8 (HNX11, biểu mẫu trong nước `BM 27`) có đủ cả "Loại lãi suất" và "Lãi suất thực tế". Giữ nguyên KPI này trong bảng theo đúng tên chỉ tiêu hiển thị trên template (đã xác nhận qua ảnh user gửi 2026-08-10, khối "Lãi suất phát hành" không có ô riêng ghi %), đánh PENDING vì chưa có nguồn — cần hỏi lại HNX/BA liệu chỉ tiêu này có thực sự áp dụng cho phát hành quốc tế hay chỉ là copy nhầm từ mẫu HNX11.
+5. **Nhóm 9 (HNX12) — "Lãi suất thực tế" (K_TKNB_564) không có cột nguồn tương ứng ở biểu mẫu quốc tế**: BA tự ghi tại Trường nguồn "Không thấy trường này" khi map vào `HNX.BM 33_Tình hình chào bán TPDNRL ra thị trường quốc tế` — khác với Nhóm 8 (HNX11, biểu mẫu trong nước `BM 27`) có đủ cả "Loại lãi suất" và "Lãi suất thực tế". Giữ nguyên KPI này trong bảng theo đúng tên chỉ tiêu hiển thị trên template (đã xác nhận qua ảnh user gửi 2026-08-10, khối "Lãi suất phát hành" không có ô riêng ghi %), đánh PENDING vì chưa có nguồn — cần hỏi lại HNX/BA liệu chỉ tiêu này có thực sự áp dụng cho phát hành quốc tế hay chỉ là copy nhầm từ mẫu HNX11. **[ĐÓNG 2026-09-24]** BA dòng 678 đã map `issue_interest_rate` của `uat_hnx_stg.private_corp_bond_offering` → K_TKNB_564 READY.
 6. **Nhóm 10 (TK-HSX01) — VSDC.BM1 (KL CK lưu hành) và phân ngành GICS chưa có Atomic entity**: **[SỬA 2026-09-16, commit b8868c9e]** K_TKNB_588/589 (dòng header + "6.1 Cổ phiếu niêm yết") đã chuyển READY — nguồn VSDC.BM1 hóa ra đã có sẵn ở Atomic dưới tên `listed_share_info`. 11 dòng con còn lại (K_TKNB_590–600, breakdown theo ngành GICS) **vẫn PENDING** — gap còn lại chỉ còn (b) bảng phân loại ngành GICS, chưa có Atomic entity (khác "Ngành cấp 1" IDS.categories đã dùng cho HNX01 Nhóm 4 — 2 chuẩn phân ngành riêng biệt). BA cũng đang treo câu hỏi tương tự ("chưa có nguồn phân loại theo ngành GICS, hỏi lại c phương").
 7. **Nhóm 10 (TK-HSX01) — VSDC.MB1 (Giao dịch cổ phiếu quỹ) không có dữ liệu thực tế**: K_TKNB_627–629 — báo cáo VSDC.MB1 chỉ lưu KL chứng khoán mua lại (biểu mẫu lưu hành), không có KLGD/GTGD giao dịch cổ phiếu quỹ thực tế theo xác nhận của BA. Gap ở nguồn VSDC, không phải gap thiết kế Atomic/Datamart.
 8. **Nhóm 10 (TK-HSX01) — mâu thuẫn nội bộ trong câu lệnh SQL mẫu (`cau_lenh`) của BA, không ảnh hưởng thiết kế**: một số dòng mẫu SQL tham khảo ghi sai bảng nguồn (`TRADE_BOOK_HNX` dù đang mô tả HOSE) hoặc sai mã Board (`GT1` — không tồn tại trong Board Type Code). HLD đã ưu tiên đọc cột `dieu_kien` (điều kiện lọc mô tả rõ ràng, nhất quán) thay vì `cau_lenh` (SQL mẫu, nhiều lỗi copy-paste) khi 2 cột mâu thuẫn — theo đúng cách đã xử lý mâu thuẫn Board ID ở Nhóm 6. Cần BA soát lại các dòng `cau_lenh` mẫu này khi build ETL chính thức để tránh nhầm lẫn cho người đọc sau.
@@ -3028,3 +3095,4 @@ erDiagram
 30. **[MỚI 2026-09-16] Sửa 14 KPI vốn hóa thị trường cổ phiếu (K_TKNB_20/21/22, 313/314/315, 588/589, 876/877, 923/924/925/926) từ PENDING sang READY — nguồn `listed_share_info` chưa có entry manifest chính thức**: Cùng gốc rễ với O_GSTT_22 (module GSTT) — Số CP lưu hành/Vốn hóa thị trường trên GSTT từng NULL 100% trên UAT vì trỏ nhầm nguồn IDS (`pc_share_statistics_hstr`) thay vì VSDC. Nguồn đúng là Atomic entity `listed_share_info` (VSDC `outstanding_shares`) — đã có tài liệu mapping Bronze→Atomic chi tiết (`DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md`) và đã verify hoạt động thực tế trên UAT, nhưng **CHƯA có entry chính thức** trong `DataModel/Atomic/dm_manifest.yaml` lẫn `DataModel/working/Atomic/lld/manifest.yaml`, cũng chưa có file LLD YAML entity riêng. Quyết định (xác nhận trực tiếp từ user, 2026-09-16): vẫn dùng làm nguồn cho cả GSTT và TKNB vì đã verify UAT, nhưng cần Atomic team đăng ký bổ sung `listed_share_info` vào manifest + tạo LLD YAML chuẩn sớm để tránh nợ kỹ thuật tích lũy. **Kiến trúc:** mỗi báo cáo TKNB (HNX01/HNX04/HSX01/TK-04.BTC/TK_NienGiam) tự tính `SUM(security_trading_snapshot.close_price × listed_share_info.outstanding_share_quantity)` filter theo `floor_code` riêng của báo cáo đó, populate trực tiếp cột `Item Value` của chính bảng Tác nghiệp đó (KHÔNG qua Fact dùng chung — giữ đúng quy ước TKNB "mỗi báo cáo 1 bảng riêng", xem Section 3.2). K_TKNB_876 thu hẹp phạm vi còn `= K_TKNB_877` (bỏ K_TKNB_878/trái phiếu khỏi tổng) — cần BA xác nhận lại phạm vi đúng. K_TKNB_21/22/314/315/589/924/925/926 (breakdown theo sàn) đều READY; K_TKNB_590–600 (breakdown theo ngành GICS, Nhóm 10) và K_TKNB_878 (trái phiếu) vẫn PENDING — khác gap, ngoài phạm vi sửa lần này.
 29. **[MỞ 2026-09-10] Nhóm 4 (HNX04) mục 6-11 — filter `stock_tp_code` trên `Security Trading Snapshot` dùng code suy đoán từ mô tả scheme, chưa profile dữ liệu thật**: khi thiết kế Phase 2 Detail Mapping cho 54 KPI (K_TKNB_418-471), Công thức cần lọc CPNY/CPDKGD/CCQETF/TPDN theo `stock_tp_code` — nhưng scheme `MDDS_STOCK_TYPE` trong `classification_schemes.yaml` mới chỉ có `name: "Loại chứng khoán MDDS — ST/BO/MF/FU/OP/EF/CW theo sàn"`, chưa có `values` cụ thể (list rỗng, chưa profile dữ liệu thật `MDDS.StockInfor`). Đã tạm dùng `stock_tp_code='ST'` (cổ phiếu), `'BO'` (trái phiếu), `'EF'` (ETF) suy trực tiếp từ mô tả tên scheme (không phải suy đoán tùy tiện, cũng không phải giá trị BA cung cấp). Cần team quản trị Atomic profile dữ liệu `MDDS.StockInfor` để sync đủ `values` cho `MDDS_STOCK_TYPE` và xác nhận lại 3 code này trước khi build ETL chính thức — rủi ro nếu sai: đếm nhầm loại chứng khoán giữa CP/TP/CCQ ở toàn bộ 24 sub-item (mục 6.1/6.2/6.6/6.8 và tương ứng ở mục 7-11) dùng chung filter này. (Ghi chú liên quan: cột `floor_code` dùng đúng theo scheme `MDDS_FLOOR_CODE` đã có values xác nhận — không có rủi ro tương tự.)
 31. **[MỚI 2026-09-22, datamart-review — Kịch bản D] Nhóm 18 (BM030a_MSS) và Nhóm 23 (BM031a_MSS) là 2 ngoại lệ duy nhất trong module thoát khỏi quy ước "mỗi báo cáo 1 bảng phẳng riêng, không tách Dimension"**: Qua `datamart-review` phát hiện bảng EAV `bm030amss_market_trading_rpt` gộp sai 2 grain khác nhau vào cùng 1 bảng phẳng (Nhóm 18 — "Loại chỉ số"/"Giá trị chỉ số" grain 1 Trade Date × Market Code, và 8 đo lường GTGD/KLGD grain 1 Trade Date), đồng thời phát hiện 2 bug LLD cấp thấp trên chính bảng này và `bm031amss_foreign_proprietary_trading_rpt` (mart_table trỏ sai Atomic entity, board_tp_code dùng code `'TR'` không tồn tại trong domain — đã fix tạm trước khi đánh giá lại kiến trúc). User xác nhận trực tiếp (2026-09-22): thiết kế lại 2 Nhóm này sang Fact/Dim chuẩn — reuse `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD) và `Index Constituent Dimension` (sở hữu GSTT), tạo mới `Fact Market Trading Snapshot` và `Fact Foreign Proprietary Trading Index Snapshot` (sở hữu TKNB) — thay 2 bảng EAV cũ (nay DEPRECATED, xem Section 4). **Đây là ngoại lệ có chủ đích, KHÔNG áp dụng ngược lại cho 19 bảng còn lại của module** — lý do ngoại lệ là lỗi grain mismatch kiến trúc thật + cơ hội reuse cross-module đã tồn tại sẵn trong `datamart_model.yaml`, không phải thay đổi sở thích phong cách lưu trữ. Nếu phát sinh Nhóm khác nghi ngờ có cùng vấn đề grain mismatch, xử lý case-by-case tương tự (không tự động áp dụng hàng loạt).
+32. **[MỞ 2026-09-24] Nhóm 9 (HNX12) — 2 điểm cần xác nhận khi dựng Dim/Fact từ `private_corp_bond_offering`:** (1) **Định dạng `report_month`:** câu lệnh BA so sánh trực tiếp `'03'/'06'/'09'/'12'`, nhưng dòng comment cùng câu lệnh dùng `SUBSTR(thang_BC, 5, 2)` (gợi ý dạng `YYYYMM`) — thiết kế dùng `RIGHT(rpt_month, 2)` để chạy được cả 2 dạng; nếu là `MM` thì Fact chưa có năm báo cáo (đang dựa `snpst_dt_dim_id` = `ds_snpst_dt`). Cần profile dữ liệu thật. (2) **Atomic chỉ có mapping md** (`mapping_vsdc_ods_atm.md` Bảng 15), chưa có YAML LLD/`dm_manifest.yaml` — Gate 0 WARNING `L0-ATOMIC-COLUMN-NOT-FOUND` cho 24 cột; tên cột Atomic lấy theo cột 'Trường atomic' của file md (`currency_code`, `bond_term_unit`, `bond_term`, `offering_bond_quantity`, `*_bond_ind`).

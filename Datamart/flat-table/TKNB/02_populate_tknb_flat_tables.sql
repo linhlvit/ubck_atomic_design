@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — POPULATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 22 bảng — operational: KHÔNG JOIN, KHÔNG lọc ngày; FACT (#13/#16): JOIN dim, lọc :etl_date
+-- 23 bảng — operational: KHÔNG JOIN, KHÔNG lọc ngày; FACT (#13/#16/#23): JOIN dim, lọc :etl_date
 -- ============================================================
 
 -- ============================================================
@@ -439,4 +439,51 @@ SELECT
     o.item_value,
     o.src_stm_code
 FROM datamart.bm043mss_derivatives_security_detail_rpt o
+;
+
+
+-- ============================================================
+-- 23. FACT: fct_private_corporate_bond_international_offering_snpst
+--    snpst_cal: JOIN + lọc cdr_dt theo ngày chạy ETL; chuỗi kỳ báo cáo — DELETE đúng ngày rồi INSERT (giữ lịch sử)
+-- ============================================================
+DELETE FROM datamart.tknb_fct_private_corporate_bond_international_offering_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.tknb_fct_private_corporate_bond_international_offering_snpst_flat
+SELECT
+    -- From: FACT Fact Private Corporate Bond International Offering Snapshot
+    f.snpst_dt_dim_id,
+    f.private_corporate_bond_dim_id,
+    f.rpt_month,
+    f.market_tp,
+    f.currency_code,
+    f.offering_bond_quantity,
+    f.posting_dt,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                   AS snpst_cdr_dt,
+
+    -- From: PRIVATE CORPORATE BOND DIMENSION
+    bd.bond_code                       AS bond_code,
+    bd.issuer_nm                       AS issuer_nm,
+    bd.enterprise_tp                   AS enterprise_tp,
+    bd.business_sector                 AS business_sector,
+    bd.bond_term_unit                  AS bond_term_unit,
+    bd.bond_term                       AS bond_term,
+    bd.interest_rate_tp                AS interest_rate_tp,
+    bd.issue_interest_rate             AS issue_interest_rate,
+    bd.issue_dt                        AS issue_dt,
+    bd.maturity_dt                     AS maturity_dt,
+    bd.interest_payment_method         AS interest_payment_method,
+    bd.convertible_bond_ind            AS convertible_bond_ind,
+    bd.warrant_linked_bond_ind         AS warrant_linked_bond_ind,
+    bd.secured_bond_ind                AS secured_bond_ind,
+    bd.src_stm_code                    AS bond_src_stm_code
+
+FROM datamart.fct_private_corporate_bond_international_offering_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.private_corporate_bond_dim bd
+    ON bd.private_corporate_bond_dim_id = f.private_corporate_bond_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
 ;

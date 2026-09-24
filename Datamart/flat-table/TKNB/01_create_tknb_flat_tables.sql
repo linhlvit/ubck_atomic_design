@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — CREATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 22 bảng (bảng #13/#16 là FACT, còn lại operational EAV báo cáo phẳng — 1 báo cáo = 1 bảng phẳng)
+-- 23 bảng (bảng #13/#16/#23 là FACT, còn lại operational EAV báo cáo phẳng — 1 báo cáo = 1 bảng phẳng)
 -- Toàn bộ bảng operational — KHÔNG JOIN Calendar Date, KHÔNG JOIN dim nào khác
 -- ============================================================
 
@@ -536,4 +536,48 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(report_period_dt)
 ORDER BY (report_code, report_period_dt, item_code, security_symbol_code)
 COMMENT 'Flat table — Derivatives Security Detail Report (BM043)'
+;
+
+
+-- ============================================================
+-- 23. FACT: fct_private_corporate_bond_international_offering_snpst
+--    Fact Private Corporate Bond International Offering Snapshot (HNX12 — Nhóm 9)
+--    Joins: Calendar Date × Private Corporate Bond Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_international_offering_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Private Corporate Bond International Offering Snapshot
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày chụp dữ liệu biểu mẫu',
+    private_corporate_bond_dim_id   String                  COMMENT 'FK mã trái phiếu',
+    rpt_month                       String                  COMMENT 'Tháng báo cáo (số lũy kế từ đầu năm) — Quý = 03/06/09/12',
+    market_tp                       String                  COMMENT 'Thị trường phát hành quốc tế',
+    currency_code                   Nullable(String)        COMMENT 'Đồng tiền phát hành',
+    offering_bond_quantity          Nullable(Int64)         COMMENT 'Khối lượng phát hành (lũy kế tại tháng báo cáo)',
+    posting_dt                      Nullable(Date)          COMMENT 'Ngày ghi nhận bản ghi biểu mẫu',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: PRIVATE CORPORATE BOND DIMENSION
+    bond_code                       Nullable(String)        COMMENT 'Mã trái phiếu',
+    issuer_nm                       Nullable(String)        COMMENT 'Tên DN phát hành',
+    enterprise_tp                   Nullable(String)        COMMENT 'Loại hình doanh nghiệp',
+    business_sector                 Nullable(String)        COMMENT 'Lĩnh vực hoạt động',
+    bond_term_unit                  Nullable(String)        COMMENT 'Đơn vị kỳ hạn',
+    bond_term                       Nullable(Int32)         COMMENT 'Kỳ hạn',
+    interest_rate_tp                Nullable(String)        COMMENT 'Loại lãi suất',
+    issue_interest_rate             Nullable(Decimal(8,5))  COMMENT 'Lãi suất phát hành',
+    issue_dt                        Nullable(Date)          COMMENT 'Ngày phát hành',
+    maturity_dt                     Nullable(Date)          COMMENT 'Ngày đáo hạn',
+    interest_payment_method         Nullable(String)        COMMENT 'Phương thức thanh toán lãi',
+    convertible_bond_ind            Nullable(Bool)          COMMENT 'Trái phiếu chuyển đổi',
+    warrant_linked_bond_ind         Nullable(Bool)          COMMENT 'Trái phiếu kèm chứng quyền',
+    secured_bond_ind                Nullable(Bool)          COMMENT 'Trái phiếu có bảo đảm',
+    bond_src_stm_code               Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Private Corporate Bond Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, market_tp, rpt_month)
+COMMENT 'Flat table — Fact Private Corporate Bond International Offering Snapshot × Calendar Date × Private Corporate Bond Dimension'
 ;

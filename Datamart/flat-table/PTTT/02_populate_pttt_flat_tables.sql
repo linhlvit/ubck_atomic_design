@@ -127,6 +127,8 @@ SELECT
     f.foreign_net_val_sector,
     f.proprietary_net_val_sector,
     f.total_outstanding_share_quantity_sector,
+    f.net_profit_after_tax_amt_sector,
+    f.sector_pe,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt,
 
@@ -353,6 +355,9 @@ SELECT
     f.total_trading_val_matched,
     f.total_trading_val_matched_average_50_days,
     f.total_outstanding_share_quantity,
+    f.net_profit_after_tax_amt,
+    f.idx_eps,
+    f.idx_pe,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt
 FROM datamart.fct_market_statistics_snpst f

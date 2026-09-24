@@ -140,6 +140,8 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_sector_risk_snpst_flat ON CLUSTER '
     foreign_net_val_sector               Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-23] Giá trị mua ròng NĐTNN theo ngành ngày t (PTTT Nhóm 33)',
     proprietary_net_val_sector           Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-23] Giá trị mua ròng tự doanh theo ngành ngày t (PTTT Nhóm 33)',
     total_outstanding_share_quantity_sector  Nullable(Int64)         COMMENT '[MỚI 2026-09-23] Tổng KL CP lưu hành theo ngành ngày t (PTTT Nhóm 33)',
+    net_profit_after_tax_amt_sector          Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-24] Tổng LNST quý gần nhất theo ngành (PTTT Nhóm 33 — K_PTTT_275)',
+    sector_pe                                Nullable(Decimal(10,2)) COMMENT '[MỚI 2026-09-24] P/E theo ngành (K_PTTT_244)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt        Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -423,6 +425,9 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_market_statistics_snpst_flat ON CLU
     total_trading_val_matched                   Nullable(Decimal(23,2)) COMMENT 'GTGD phiên tại ngày t',
     total_trading_val_matched_average_50_days   Nullable(Decimal(23,2)) COMMENT 'GTGD trung bình 50 phiên (MA50)',
     total_outstanding_share_quantity         Nullable(Int64)         COMMENT '[MỚI 2026-09-23] Tổng KL CP lưu hành của rổ chỉ số ngày t (PTTT Nhóm 32)',
+    net_profit_after_tax_amt                 Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-24] Tổng LNST quý gần nhất của rổ chỉ số (PTTT Nhóm 32 — K_PTTT_234)',
+    idx_eps                                  Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-24] EPS của rổ chỉ số (K_PTTT_233)',
+    idx_pe                                   Nullable(Decimal(10,2)) COMMENT '[MỚI 2026-09-24] P/E của rổ chỉ số (K_PTTT_235)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                                Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'

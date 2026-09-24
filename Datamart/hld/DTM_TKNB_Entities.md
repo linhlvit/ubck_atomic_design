@@ -81,6 +81,36 @@ erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Market_Trading_Snapshot : "Snapshot_Date_Dimension_Id"
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Proprietary_Trading_Index_Snapshot : "Snapshot_Date_Dimension_Id"
     Index_Constituent_Dimension ||--o{ Fact_Foreign_Proprietary_Trading_Index_Snapshot : "Index_Constituent_Dimension_Id"
+    Private_Corporate_Bond_Dimension {
+        string Private_Corporate_Bond_Dimension_Id PK
+        string Bond_Code
+        string Issuer_Name
+        string Enterprise_Type
+        string Business_Sector
+        string Bond_Term_Unit
+        int Bond_Term
+        string Interest_Rate_Type
+        decimal Issue_Interest_Rate
+        date Issue_Date
+        date Maturity_Date
+        string Interest_Payment_Method
+        boolean Convertible_Bond_Indicator
+        boolean Warrant_Linked_Bond_Indicator
+        boolean Secured_Bond_Indicator
+        string Source_System_Code
+    }
+    Fact_Private_Corporate_Bond_International_Offering_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Private_Corporate_Bond_Dimension_Id FK
+        string Report_Month
+        string Market_Type
+        string Currency_Code
+        bigint Offering_Bond_Quantity
+        date Posting_Date
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_International_Offering_Snapshot : "Snapshot_Date_Dimension_Id"
+    Private_Corporate_Bond_Dimension ||--o{ Fact_Private_Corporate_Bond_International_Offering_Snapshot : "Private_Corporate_Bond_Dimension_Id"
 ```
 
 ## Bảng entity tóm tắt (23 bảng: 3 Star Schema mới/reuse + 20 Operational — 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED và xóa khỏi bảng này, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
@@ -91,6 +121,8 @@ erDiagram
 | — | Index Constituent Dimension | Dimension | reuse (GSTT) | Danh mục rổ chỉ số | 1 dòng/Index Code | K_TKNB_1013 (Nhóm 18), K_TKNB_1069 (Nhóm 23) |
 | — | Fact Market Trading Snapshot | Fact | new | GTGD/KLGD toàn thị trường cổ phiếu + giá trị chỉ số theo ngày [SỬA 2026-09-23] | 1 dòng/Trade Date × Index Code | K_TKNB_1013–1022 (Nhóm 18) |
 | — | Fact Foreign Proprietary Trading Index Snapshot | Fact | new | GD NĐTNN/tự doanh theo chỉ số | 1 dòng/Trade Date × Index Code | K_TKNB_1070–1093 (Nhóm 23) |
+| — | Private Corporate Bond Dimension | Dimension | new | [MỚI 2026-09-24] Danh mục TPDN riêng lẻ phát hành ra thị trường quốc tế | 1 dòng/1 mã TP (SCD4A) | K_TKNB_554–557, 561–570 (Nhóm 9) |
+| — | Fact Private Corporate Bond International Offering Snapshot | Fact | new | [MỚI 2026-09-24] Tình hình chào bán TPDN riêng lẻ ra thị trường quốc tế (HNX12) | 1 dòng/1 mã TP × 1 thị trường × 1 tháng báo cáo | K_TKNB_553, 558–560 (Nhóm 9) |
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
@@ -123,6 +155,8 @@ erDiagram
 | Index Constituent Dimension | index_constituent_snapshot |
 | Fact Market Trading Snapshot | securities_trade / market_index_snapshot |
 | Fact Foreign Proprietary Trading Index Snapshot | securities_trade / index_constituent_snapshot |
+| Private Corporate Bond Dimension | private_corp_bond_offering |
+| Fact Private Corporate Bond International Offering Snapshot | private_corp_bond_offering |
 | Stock Trading Report (HNX01) | market_index_snapshot / security_trading_snapshot / securities_trade |
 | Gov Bond OTC Trading Report (HNX02) | bond_order_book |
 | Derivative Trading Report (HNX03) | security_trading_snapshot / securities_trade |
