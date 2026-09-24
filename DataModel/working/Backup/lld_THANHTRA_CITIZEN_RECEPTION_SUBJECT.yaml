@@ -17,14 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Bảng mới (DDL UAT cập nhật 2026-09) — thay thế cột SUBJECT_NAME (nay DEPRECATED,\
-    \ giữ lại trên CITIZEN_RECEPTION chỉ để tương thích ngược) — xem THANHTRA_HLD_Tier2.md\
-    \ mục T2-05. Không có mã nghiệp vụ riêng trong nguồn — Code lấy trực tiếp từ ID,\
-    \ cùng pattern PENALTY_DECISION_SUBJECT_BEHAVIOR. Không tách IP Postal Address\
-    \ dù có ADDRESS — đây là snapshot tại thời điểm tiếp, không phải hồ sơ Involved\
-    \ Party độc lập có thể tái sử dụng (xem HLD Tier2 mục 6a). Audit block loại trừ\
-    \ khỏi Atomic — mirror quyết định đã áp dụng cho toàn bộ phân hệ THANHTRA (xem\
-    \ pending_design.yaml)."
+  notes: "Bảng mới (DDL UAT cập nhật 2026-09) — thay thế cột SUBJECT_NAME (nay DEPRECATED, giữ lại trên CITIZEN_RECEPTION chỉ để tương thích ngược) — xem THANHTRA_HLD_Tier2.md mục T2-05. Không có mã nghiệp vụ riêng trong nguồn — Code lấy trực tiếp từ ID, cùng pattern PENALTY_DECISION_SUBJECT_BEHAVIOR. Không tách IP Postal Address dù có ADDRESS — đây là snapshot tại thời điểm tiếp, không phải hồ sơ Involved Party độc lập có thể tái sử dụng (xem HLD Tier2 mục 6a). Audit block loại trừ khỏi Atomic — mirror quyết định đã áp dụng cho toàn bộ phân hệ THANHTRA (xem pending_design.yaml)."
 attributes:
 - attribute_name: "Citizen Reception Subject Id"
   physical_name: "citizen_reception_subject_id"
@@ -34,8 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Business Activity] Business Review — chi tiết đối\
-    \ tượng được tiếp."
+  comment: "PK surrogate. BCV: [Business Activity] Business Review — chi tiết đối tượng được tiếp."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -73,12 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION_SUBJECT.CITIZEN_RECEPTION_ID"
-  comment: "FK target: citizen_reception.citizen_reception_id. Cần ETL crosswalk sang\
-    \ THANHTRA.CITIZEN_RECEPTION: CITIZEN_RECEPTION_SUBJECT.CITIZEN_RECEPTION_ID =\
-    \ CITIZEN_RECEPTION.ID để xác nhận CODE sau đó hash_id('THANHTRA_CITIZEN_RECEPTION',\
-    \ CODE) | CITIZEN_RECEPTION.Code hiện hash trực tiếp từ ID kỹ thuật nên crosswalk\
-    \ ở đây thực chất join ID=ID — giữ chuẩn crosswalk để nhất quán pattern chung\
-    \ của dự án."
+  comment: "FK target: citizen_reception.citizen_reception_id. Cần ETL crosswalk sang THANHTRA.CITIZEN_RECEPTION: CITIZEN_RECEPTION_SUBJECT.CITIZEN_RECEPTION_ID = CITIZEN_RECEPTION.ID để xác nhận CODE sau đó hash_id('THANHTRA_CITIZEN_RECEPTION', CODE) | CITIZEN_RECEPTION.Code hiện hash trực tiếp từ ID kỹ thuật nên crosswalk ở đây thực chất join ID=ID — giữ chuẩn crosswalk để nhất quán pattern chung của dự án."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -91,15 +78,13 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.ID"
-  comment: "Lookup pair: citizen_reception.citizen_reception_code. Pair with Citizen\
-    \ Reception Id."
+  comment: "Lookup pair: citizen_reception.citizen_reception_code. Pair with Citizen Reception Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Full Name"
   physical_name: "full_nm"
-  description: "Họ tên cá nhân / thành viên đại diện đoàn / người đại diện theo PL-người\
-    \ được ủy quyền của tổ chức."
+  description: "Họ tên cá nhân / thành viên đại diện đoàn / người đại diện theo PL-người được ủy quyền của tổ chức."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
@@ -132,8 +117,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION_SUBJECT.ADDRESS"
-  comment: "Denormalized snapshot — không tách IP Postal Address (xem HLD Tier2 mục\
-    \ 6a)."
+  comment: "Denormalized snapshot — không tách IP Postal Address (xem HLD Tier2 mục 6a)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -176,16 +160,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Sort Order"
-  physical_name: "sort_order"
-  description: "Thứ tự hiển thị."
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.CITIZEN_RECEPTION_SUBJECT.SORT_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

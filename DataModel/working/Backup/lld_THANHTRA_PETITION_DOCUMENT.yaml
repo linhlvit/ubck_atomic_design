@@ -17,10 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "DOCUMENT_TEMPLATE_ID (FK→DOCUMENT_TEMPLATE, out_of_scope) không map. FIELD_HTML_JSON\
-    \ (CLOB form data) không map. Hạ về draft (2026-08-07) để formalize 2 loại trừ\
-    \ này vào pending_design.yaml — post_check_source_coverage.py trước đó báo unmapped\
-    \ vì quyết định chỉ ghi trong notes, chưa có entry pending_design.yaml."
+  notes: "DOCUMENT_TEMPLATE_ID (FK→DOCUMENT_TEMPLATE, out_of_scope) không map. FIELD_HTML_JSON (CLOB form data) không map. Hạ về draft (2026-08-07) để formalize 2 loại trừ này vào pending_design.yaml — post_check_source_coverage.py trước đó báo unmapped vì quyết định chỉ ghi trong notes, chưa có entry pending_design.yaml. Hạ về draft (2026-09) để sửa Prepared By Officer Code: source_columns/comment cũ lặp lại chính cột PREPARED_BY (ID kỹ thuật) thay vì crosswalk sang IAM.USERS.USERNAME — đã sửa."
 attributes:
 - attribute_name: "Petition Document Id"
   physical_name: "petition_document_id"
@@ -81,17 +78,13 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION.CODE"
-  comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy\
-    \ từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition\
-    \ Id."
+  comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Document Type Code"
   physical_name: "document_tp_code"
-  description: "Loại văn bản xử lý đơn thư (8 loại): CLASSIFICATION_REPORT, MULTI_CONTENT_GUIDE,\
-    \ ACCEPTANCE_NOTICE, FEEDBACK_PROPOSAL, ACCEPTANCE_PROPOSAL, FEEDBACK_TRANSFER,\
-    \ DENUNCIATION_TRANSFER, INVESTOR_RESPONSE."
+  description: "Loại văn bản xử lý đơn thư (8 loại): CLASSIFICATION_REPORT, MULTI_CONTENT_GUIDE, ACCEPTANCE_NOTICE, FEEDBACK_PROPOSAL, ACCEPTANCE_PROPOSAL, FEEDBACK_TRANSFER, DENUNCIATION_TRANSFER, INVESTOR_RESPONSE."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -128,23 +121,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Content"
-  physical_name: "content"
-  description: "Nội dung văn bản xử lý đơn thư."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PETITION_DOCUMENT.CONTENT"
-  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Classification Result Code"
   physical_name: "cl_result_code"
-  description: "Kết quả phân loại đơn thư: WITHIN_JURISDICTION (Thuộc thẩm quyền),\
-    \ NOT_WITHIN_JURISDICTION (Không thuộc thẩm quyền), MULTI_CONTENT (Nhiều nội dung)."
+  description: "Kết quả phân loại đơn thư: WITHIN_JURISDICTION (Thuộc thẩm quyền), NOT_WITHIN_JURISDICTION (Không thuộc thẩm quyền), MULTI_CONTENT (Nhiều nội dung)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -152,19 +131,6 @@ attributes:
   source_columns:
   - "THANHTRA.PETITION_DOCUMENT.CLASSIFICATION_RESULT"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Proposed Action"
-  physical_name: "proposed_action"
-  description: "Đề xuất hướng xử lý đơn thư."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PETITION_DOCUMENT.PROPOSED_ACTION"
-  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -216,21 +182,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION_DOCUMENT.ACCEPTANCE_PROPOSAL_TYPE"
-  comment: "Lưu text tự do — chưa có scheme chuẩn phù hợp. Cần profile giá trị thực\
-    \ tế từ nguồn trước khi thêm scheme."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Rejection Reason"
-  physical_name: "rejection_reason"
-  description: "Lý do từ chối thụ lý đơn thư (khi acceptance_proposal_type=REJECT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PETITION_DOCUMENT.REJECTION_REASON"
-  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  comment: "Lưu text tự do — chưa có scheme chuẩn phù hợp. Cần profile giá trị thực tế từ nguồn trước khi thêm scheme."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -243,21 +195,19 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION_DOCUMENT.PREPARED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', PREPARED_BY) | Chưa xác nhận join key THANHTRA.PETITION_DOCUMENT.PREPARED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: PETITION_DOCUMENT.PREPARED_BY = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Prepared By Officer Code"
   physical_name: "prepared_by_officer_code"
-  description: "Mã cán bộ chuẩn bị văn bản (denormalized lookup)."
+  description: "Username cán bộ chuẩn bị văn bản."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.PETITION_DOCUMENT.PREPARED_BY"
+  - "IAM.USERS.USERNAME"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Prepared By Officer Id."
   classification_context: null
   etl_derived_value: null
@@ -284,8 +234,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION_DOCUMENT.DOCUMENT_TEMPLATE_NAME"
-  comment: "Snapshot text. DOCUMENT_TEMPLATE_ID (FK→DOCUMENT_TEMPLATE out_of_scope)\
-    \ không map."
+  comment: "Snapshot text. DOCUMENT_TEMPLATE_ID (FK→DOCUMENT_TEMPLATE out_of_scope) không map."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

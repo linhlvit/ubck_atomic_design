@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Review"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,11 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Danh sách thành viên đoàn kiểm tra. Cấu trúc đồng nhất với INSPECTION_TEAM_MEMBER.\
-    \ Hạ về draft (2026-08-07) để bổ sung DEPARTMENT_ID — phát hiện qua post_check_source_coverage.py.\
-    \ Thêm cặp Member Department Id/Code (FK crosswalk sang NHNCK.DEPARTMENTS qua\
-    \ Regulatory Authority Organization Unit); Member Department Name giữ nguyên làm\
-    \ snapshot tên đi kèm."
+  notes: "Danh sách thành viên đoàn kiểm tra. Cấu trúc đồng nhất với INSPECTION_TEAM_MEMBER. Hạ về draft (2026-08-07) để bổ sung DEPARTMENT_ID — phát hiện qua post_check_source_coverage.py. Thêm cặp Member Department Id/Code (FK crosswalk sang NHNCK.DEPARTMENTS qua Regulatory Authority Organization Unit); Member Department Name giữ nguyên làm snapshot tên đi kèm. Hạ về draft (2026-09) để sửa Member Officer Id/Code: Id trước đây hash sai theo USER_ID (kỹ thuật) — đã sửa hash theo USER_ACCOUNT (đúng business key, cùng dòng). Code trước đây ghi comment sai entity target 'Regulatory Authority Officer' (Title Case) — đã sửa đúng identity_and_access_management_user."
 attributes:
 - attribute_name: "Examination Team Member Id"
   physical_name: "examination_team_member_id"
@@ -82,9 +78,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM.CODE"
-  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination\
-    \ Team Id. Giá trị lấy từ THANHTRA.EXAMINATION_TEAM.CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Examination Team Id."
+  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination Team Id. Giá trị lấy từ THANHTRA.EXAMINATION_TEAM.CODE sau ETL crosswalk — chi tiết xem comment Examination Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -96,10 +90,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.EXAMINATION_TEAM_MEMBER.USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', USER_ID) | Chưa xác nhận join key THANHTRA.EXAMINATION_TEAM_MEMBER.USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  - "THANHTRA.EXAMINATION_TEAM_MEMBER.USER_ACCOUNT"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', USER_ACCOUNT) — dùng USER_ACCOUNT (cùng dòng, không cần crosswalk join) làm business key thay vì USER_ID kỹ thuật, nhất quán với Member Officer Code. Sửa 2026-09: trước đây hash sai theo USER_ID."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -112,14 +104,13 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_MEMBER.USER_ACCOUNT"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Member Officer Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Member Officer Id. Sửa 2026-09: comment cũ ghi sai entity 'Regulatory Authority Officer' (Title Case, sai target) — đã sửa đúng."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Member Full Name"
   physical_name: "member_full_nm"
-  description: "Họ tên đầy đủ thành viên đoàn kiểm tra (snapshot)."
+  description: "Họ tên đầy đủ thành viên đoàn kiểm tra."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -139,12 +130,7 @@ attributes:
   status: "pending"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'DEPARTMENT').\
-    \ Cần ETL crosswalk sang NHNCK.DEPARTMENTS: EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID\
-    \ = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK.DEPARTMENTS',\
-    \ DEPARTMENT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận\
-    \ DEPARTMENT_ID nguồn khớp NHNCK.DEPARTMENTS.ID, cần Data Modeler xác nhận trước\
-    \ go-live."
+  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'DEPARTMENT'). Cần ETL crosswalk sang NHNCK.DEPARTMENTS: EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận DEPARTMENT_ID nguồn khớp NHNCK.DEPARTMENTS.ID, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -157,9 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Member Department\
-    \ Id. Giá trị lấy từ NHNCK.DEPARTMENTS.DEPARTMENT_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Member Department Id."
+  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Member Department Id. Giá trị lấy từ NHNCK.DEPARTMENTS.DEPARTMENT_CODE sau ETL crosswalk — chi tiết xem comment Member Department Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

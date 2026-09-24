@@ -17,9 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "BCV Notification (sub-type của Event) — thông báo chủ động phát đi từ thanh\
-    \ tra, không gắn với hồ sơ cụ thể. Hạ về draft (2026-08-07) để bổ sung ATTACHMENT_IDS_JSON\
-    \ — phát hiện qua post_check_source_coverage.py."
+  notes: "BCV Notification (sub-type của Event) — thông báo chủ động phát đi từ thanh tra, không gắn với hồ sơ cụ thể. Hạ về draft (2026-08-07) để bổ sung ATTACHMENT_IDS_JSON — phát hiện qua post_check_source_coverage.py. Sửa lỗi FK identity_and_access_management_user (2026-09): Sender Officer Code trước đây map nhầm giá trị Name (SENDER_NAME) — đã tách đúng thành Sender Officer Name riêng + thêm Code thật qua crosswalk IAM.USERS.USERNAME."
 attributes:
 - attribute_name: "Proactive Notice Id"
   physical_name: "proactive_notice_id"
@@ -71,24 +69,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Content"
-  physical_name: "content"
-  description: "Nội dung thông báo chủ động."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PROACTIVE_NOTICE.CONTENT"
-  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Notice Type Code"
   physical_name: "notice_tp_code"
-  description: "Loại thông báo: PENALTY_DECISION (Quyết định xử phạt VPHC), MARKET_SECURITY_MEASURE\
-    \ (Quyết định BPBĐ an ninh thị trường), GUIDANCE_DOCUMENT (Công văn hướng dẫn),\
-    \ OTHER (Thông báo khác)."
+  description: "Loại thông báo: PENALTY_DECISION (Quyết định xử phạt VPHC), MARKET_SECURITY_MEASURE (Quyết định BPBĐ an ninh thị trường), GUIDANCE_DOCUMENT (Công văn hướng dẫn), OTHER (Thông báo khác)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -121,14 +104,25 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PROACTIVE_NOTICE.SENDER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', SENDER_ID) | Chưa xác nhận join key THANHTRA.PROACTIVE_NOTICE.SENDER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: PROACTIVE_NOTICE.SENDER_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Sender Officer Code"
   physical_name: "sender_officer_code"
+  description: "Username cán bộ Thanh tra gửi thông báo (business key, lấy qua ETL crosswalk sang IAM.USERS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sender Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Sender Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sender Officer Name"
+  physical_name: "sender_officer_nm"
   description: "Tên cán bộ Thanh tra gửi thông báo (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -136,7 +130,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PROACTIVE_NOTICE.SENDER_NAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sender Officer Id."
+  comment: "Denormalized snapshot tên cán bộ gửi thông báo, không phải Code nghiệp vụ — nguồn lưu SENDER_NAME (text), không dùng pattern Lookup pair Code. Pair with Sender Officer Id. Sửa 2026-09: trước đây map nhầm vào attribute 'Sender Officer Code' — đã tách đúng Name/Code."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -155,8 +149,7 @@ attributes:
   data_type: "timestamp"
 - attribute_name: "Life Cycle Status Code"
   physical_name: "life_cycle_status_code"
-  description: "Trạng thái: DRAFT (Nháp), SENT (Đã gửi) — sau khi SENT không thể sửa\
-    \ hoặc thu hồi."
+  description: "Trạng thái: DRAFT (Nháp), SENT (Đã gửi) — sau khi SENT không thể sửa hoặc thu hồi."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
@@ -167,17 +160,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Attachment File Ids"
-  physical_name: "attachment_file_ids"
-  description: "Danh sách ID file đính kèm thông báo."
-  data_domain: "Array<Text>"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.PROACTIVE_NOTICE.ATTACHMENT_IDS_JSON"
-  comment: "Nguồn lưu dạng JSON array (CLOB) — ETL parse thành mảng string. Không\
-    \ có FK formal đến bảng file đính kèm (out of scope)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "array<string>"

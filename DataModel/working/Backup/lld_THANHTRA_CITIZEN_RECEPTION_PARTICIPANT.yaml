@@ -17,13 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Bảng mới (DDL UAT cập nhật 2026-09) — thay thế cột RECEIVER_ID/RECEIVER_NAME\
-    \ (nay DEPRECATED, giữ lại trên CITIZEN_RECEPTION chỉ để tương thích ngược) —\
-    \ xem THANHTRA_HLD_Tier2.md mục T2-05. Không có mã nghiệp vụ riêng trong nguồn\
-    \ (chỉ có ID kỹ thuật) — Code lấy trực tiếp từ ID, cùng pattern đã áp dụng cho\
-    \ PENALTY_DECISION_SUBJECT_BEHAVIOR. Audit block (CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY/VERSION/DELETED)\
-    \ loại trừ khỏi Atomic — mirror quyết định đã áp dụng cho toàn bộ phân hệ THANHTRA\
-    \ (xem pending_design.yaml)."
+  notes: "Bảng mới (DDL UAT cập nhật 2026-09) — thay thế cột RECEIVER_ID/RECEIVER_NAME (nay DEPRECATED, giữ lại trên CITIZEN_RECEPTION chỉ để tương thích ngược) — xem THANHTRA_HLD_Tier2.md mục T2-05. Không có mã nghiệp vụ riêng trong nguồn (chỉ có ID kỹ thuật) — Code lấy trực tiếp từ ID, cùng pattern đã áp dụng cho PENALTY_DECISION_SUBJECT_BEHAVIOR. Audit block (CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY/VERSION/DELETED) loại trừ khỏi Atomic — mirror quyết định đã áp dụng cho toàn bộ phân hệ THANHTRA (xem pending_design.yaml)."
 attributes:
 - attribute_name: "Citizen Reception Participant Id"
   physical_name: "citizen_reception_participant_id"
@@ -33,8 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Business Activity] Business Review — chi tiết người\
-    \ tham gia buổi tiếp công dân."
+  comment: "PK surrogate. BCV: [Business Activity] Business Review — chi tiết người tham gia buổi tiếp công dân."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -72,12 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION_PARTICIPANT.CITIZEN_RECEPTION_ID"
-  comment: "FK target: citizen_reception.citizen_reception_id. Cần ETL crosswalk sang\
-    \ THANHTRA.CITIZEN_RECEPTION: CITIZEN_RECEPTION_PARTICIPANT.CITIZEN_RECEPTION_ID\
-    \ = CITIZEN_RECEPTION.ID để xác nhận CODE sau đó hash_id('THANHTRA_CITIZEN_RECEPTION',\
-    \ CODE) | CITIZEN_RECEPTION.Code hiện hash trực tiếp từ ID kỹ thuật (không có\
-    \ mã nghiệp vụ riêng) nên crosswalk ở đây thực chất join ID=ID — giữ chuẩn crosswalk\
-    \ để nhất quán pattern chung của dự án."
+  comment: "FK target: citizen_reception.citizen_reception_id. Cần ETL crosswalk sang THANHTRA.CITIZEN_RECEPTION: CITIZEN_RECEPTION_PARTICIPANT.CITIZEN_RECEPTION_ID = CITIZEN_RECEPTION.ID để xác nhận CODE sau đó hash_id('THANHTRA_CITIZEN_RECEPTION', CODE) | CITIZEN_RECEPTION.Code hiện hash trực tiếp từ ID kỹ thuật (không có mã nghiệp vụ riêng) nên crosswalk ở đây thực chất join ID=ID — giữ chuẩn crosswalk để nhất quán pattern chung của dự án."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -90,15 +78,13 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.ID"
-  comment: "Lookup pair: citizen_reception.citizen_reception_code. Pair with Citizen\
-    \ Reception Id."
+  comment: "Lookup pair: citizen_reception.citizen_reception_code. Pair with Citizen Reception Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Participant Type Code"
   physical_name: "participant_tp_code"
-  description: "RECEIVER (Người tiếp, tối thiểu 2 người) | COORDINATOR (Đơn vị phối\
-    \ hợp, không bắt buộc)."
+  description: "RECEIVER (Người tiếp, tối thiểu 2 người) | COORDINATOR (Đơn vị phối hợp, không bắt buộc)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
@@ -111,18 +97,14 @@ attributes:
   data_type: "string"
 - attribute_name: "User Id"
   physical_name: "user_id"
-  description: "Mã tài khoản SSO. NULL khi là nhân sự ngoài UBCKNN tham gia phối hợp\
-    \ (nhập tên thủ công) — chỉ áp dụng cho COORDINATOR."
+  description: "Mã tài khoản SSO. NULL khi là nhân sự ngoài UBCKNN tham gia phối hợp (nhập tên thủ công) — chỉ áp dụng cho COORDINATOR."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION_PARTICIPANT.USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', USER_ID) | Chưa xác nhận join key THANHTRA.CITIZEN_RECEPTION_PARTICIPANT.USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live — cùng caveat đã áp dụng\
-    \ cho CITIZEN_RECEPTION.RECEIVER_ID."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', USER_ID) | Chưa xác nhận join key THANHTRA.CITIZEN_RECEPTION_PARTICIPANT.USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live — cùng caveat đã áp dụng cho CITIZEN_RECEPTION.RECEIVER_ID."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -161,10 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION_PARTICIPANT.DEPARTMENT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS/NHNCK.DEPARTMENTS:\
-    \ CITIZEN_RECEPTION_PARTICIPANT.DEPARTMENT_ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS',\
-    \ UNIT_CODE) | Chưa xác nhận DEPARTMENT_ID có cùng miền giá trị với NHNCK.UNITS/DEPARTMENTS\
-    \ hay chỉ là mã nội bộ THANHTRA — cần profile dữ liệu trước go-live."
+  comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS/NHNCK.DEPARTMENTS: CITIZEN_RECEPTION_PARTICIPANT.DEPARTMENT_ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS', UNIT_CODE) | Chưa xác nhận DEPARTMENT_ID có cùng miền giá trị với NHNCK.UNITS/DEPARTMENTS hay chỉ là mã nội bộ THANHTRA — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -181,16 +160,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Sort Order"
-  physical_name: "sort_order"
-  description: "Thứ tự hiển thị."
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.CITIZEN_RECEPTION_PARTICIPANT.SORT_ORDER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"

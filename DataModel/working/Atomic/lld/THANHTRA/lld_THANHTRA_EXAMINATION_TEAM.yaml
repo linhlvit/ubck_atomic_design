@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Business Review"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -72,7 +72,8 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM.EXAMINATION_ANNUAL_PLAN_ID"
-  comment: "FK target: examination_annual_plan.examination_annual_plan_id. Hash: hash_id('THANHTRA.EXAMINATION_ANNUAL_PLAN', EXAMINATION_ANNUAL_PLAN_ID)."
+  comment: "FK target: examination_annual_plan.examination_annual_plan_id. Hash: hash_id('THANHTRA.EXAMINATION_ANNUAL_PLAN',\
+    \ EXAMINATION_ANNUAL_PLAN_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -253,19 +254,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Content"
-  physical_name: "content"
-  description: "Nội dung kiểm tra tổng quát."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.EXAMINATION_TEAM.CONTENT"
-  comment: "Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Examination Period From Date"
   physical_name: "examination_period_from_dt"
   description: "Thời kỳ kiểm tra - Từ ngày."
@@ -316,19 +304,6 @@ attributes:
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM.ABNORMAL_TRANSACTION_CHECK"
   comment: "Nguồn NUMBER(1,0) — map sang indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Note"
-  physical_name: "note"
-  description: "Ghi chú bổ sung."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.EXAMINATION_TEAM.NOTE"
-  comment: "Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

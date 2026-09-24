@@ -17,10 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Theo dõi thực hiện kiến nghị sau thanh tra. FK→Inspection Conclusion (T3).\
-    \ Ghi nhận T4-03: tên entity là 'Inspection Post Processing' (không có 'Conclusion'\
-    \ trong tên — xem xét đổi thành 'Inspection Conclusion Post Processing' sau khi\
-    \ xác nhận)."
+  notes: "Theo dõi thực hiện kiến nghị sau thanh tra. FK→Inspection Conclusion (T3). Ghi nhận T4-03: tên entity là 'Inspection Post Processing' (không có 'Conclusion' trong tên — xem xét đổi thành 'Inspection Conclusion Post Processing' sau khi xác nhận). Hạ về draft (2026-09) để sửa Monitoring Officer Code: source_columns cũ lặp lại chính cột MONITORING_OFFICER_ID (ID kỹ thuật) thay vì crosswalk sang IAM.USERS.USERNAME — đã sửa."
 attributes:
 - attribute_name: "Inspection Post Processing Id"
   physical_name: "inspection_post_processing_id"
@@ -30,8 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Business Activity] Business Review — Status Review\
-    \ sub-type."
+  comment: "PK surrogate. BCV: [Business Activity] Business Review — Status Review sub-type."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -138,45 +134,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Requirement Summary"
-  physical_name: "requirement_summary"
-  description: "Tóm tắt yêu cầu/kiến nghị cần thực hiện từ kết luận thanh tra."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.POST_INSPECTION_PROCESSING.REQUIREMENT_SUMMARY"
-  comment: "Nguồn CLOB — ETL truncate."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Implementation Notes"
-  physical_name: "implementation_notes"
-  description: "Ghi chú về tiến trình thực hiện kiến nghị."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.POST_INSPECTION_PROCESSING.IMPLEMENTATION_NOTES"
-  comment: "Nguồn CLOB — ETL truncate."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Result Summary"
-  physical_name: "result_summary"
-  description: "Tóm tắt kết quả thực hiện kiến nghị."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.POST_INSPECTION_PROCESSING.RESULT_SUMMARY"
-  comment: "Nguồn CLOB — ETL truncate."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Last Updated Date"
   physical_name: "last_updated_dt"
   description: "Ngày cập nhật tình hình thực hiện gần nhất."
@@ -199,22 +156,33 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', MONITORING_OFFICER_ID) | Chưa xác nhận join key THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Monitoring Officer Code"
   physical_name: "monitoring_officer_code"
-  description: "Tên cán bộ theo dõi thực hiện kiến nghị (snapshot)."
+  description: "Username cán bộ theo dõi thực hiện kiến nghị (business key, lấy qua ETL crosswalk sang IAM.USERS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Monitoring Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Monitoring Officer Id. Sửa 2026-09: source_columns cũ lặp lại chính cột MONITORING_OFFICER_ID (ID kỹ thuật) thay vì crosswalk — đã sửa."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Monitoring Officer Name"
+  physical_name: "monitoring_officer_nm"
+  description: "Tên cán bộ theo dõi thực hiện kiến nghị."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_NAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Monitoring Officer Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

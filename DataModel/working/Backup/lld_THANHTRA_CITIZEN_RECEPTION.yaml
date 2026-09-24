@@ -71,8 +71,7 @@ attributes:
   data_type: "date"
 - attribute_name: "Receiver Officer Id"
   physical_name: "receiver_officer_id"
-  description: "FK đến Regulatory Authority Officer (cán bộ UBCKNN thực hiện tiếp\
-    \ công dân)."
+  description: "FK đến Regulatory Authority Officer (cán bộ UBCKNN thực hiện tiếp công dân)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
@@ -135,19 +134,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Summary"
-  physical_name: "summary"
-  description: "Tóm tắt nội dung buổi tiếp công dân."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.CITIZEN_RECEPTION.SUMMARY"
-  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Petition Attached Indicator"
   physical_name: "petition_attached_ind"
   description: "Cờ cho biết có đơn thư kèm theo hay không (0=Không, 1=Có)."
@@ -163,8 +149,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Petition Category Code"
   physical_name: "petition_category_code"
-  description: "Loại đơn thư kèm theo (chỉ có giá trị khi petition_attached=1): FEEDBACK_SUGGESTION,\
-    \ COMPLAINT, DENUNCIATION."
+  description: "Loại đơn thư kèm theo (chỉ có giá trị khi petition_attached=1): FEEDBACK_SUGGESTION, COMPLAINT, DENUNCIATION."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -190,8 +175,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Petition Id"
   physical_name: "petition_id"
-  description: "FK đến Petition (đơn thư liên kết với buổi tiếp công dân này, nếu\
-    \ có)."
+  description: "FK đến Petition (đơn thư liên kết với buổi tiếp công dân này, nếu có)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
@@ -211,22 +195,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PETITION.CODE"
-  comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy\
-    \ từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition\
-    \ Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Note"
-  physical_name: "note"
-  description: "Ghi chú bổ sung về buổi tiếp công dân."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.CITIZEN_RECEPTION.NOTE"
-  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  comment: "Lookup pair: petition.petition_code. Pair with Petition Id. Giá trị lấy từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Petition Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

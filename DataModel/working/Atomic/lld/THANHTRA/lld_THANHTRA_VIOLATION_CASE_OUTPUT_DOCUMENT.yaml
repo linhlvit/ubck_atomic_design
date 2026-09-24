@@ -78,17 +78,13 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.CODE"
-  comment: "Lookup pair: violation_case.violation_case_code. Pair with Violation Case\
-    \ Id. Giá trị lấy từ THANHTRA.VIOLATION_CASE.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Violation Case Id."
+  comment: "Lookup pair: violation_case.violation_case_code. Pair with Violation Case Id. Giá trị lấy từ THANHTRA.VIOLATION_CASE.CODE sau ETL crosswalk — chi tiết xem comment Violation Case Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Document Type Code"
   physical_name: "document_tp_code"
-  description: "Loại văn bản đầu ra VPHC: PRE_VIOLATION_NOTICE_1, REMINDER, PRE_VIOLATION_NOTICE_N,\
-    \ INFO_REQUEST, PRE_DECISION_NOTICE, PAYMENT_GUIDE, PAYMENT_REMINDER, REMEDIAL_REMINDER,\
-    \ PENALTY_DECISION."
+  description: "Loại văn bản đầu ra VPHC: PRE_VIOLATION_NOTICE_1, REMINDER, PRE_VIOLATION_NOTICE_N, INFO_REQUEST, PRE_DECISION_NOTICE, PAYMENT_GUIDE, PAYMENT_REMINDER, REMEDIAL_REMINDER, PENALTY_DECISION."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -153,7 +149,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Penalty Decision Code"
   physical_name: "pd_code"
-  description: "Mã quyết định xử phạt liên kết (snapshot)."
+  description: "Mã quyết định xử phạt liên kết."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -161,19 +157,6 @@ attributes:
   source_columns:
   - "THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.PENALTY_DECISION_ID"
   comment: "Lookup pair: penalty_decision.penalty_decision_code. Pair with Penalty Decision Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Note"
-  physical_name: "note"
-  description: "Ghi chú bổ sung về văn bản."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT.NOTE"
-  comment: "Nguồn CLOB — ETL truncate."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

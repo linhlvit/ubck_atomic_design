@@ -17,12 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Biên bản vi phạm hành chính (VPHC). FK đến INSPECTION_TEAM và EXAMINATION_TEAM\
-    \ là suy luận (không formal FK trong BRD) — cả 2 nullable. Grain: 1 dòng = 1 biên\
-    \ bản VPHC. BK nullable khi status=DRAFT. Hạ về draft (2026-08-07) để bổ sung\
-    \ RECORD_NUMBER/RECORDER_UNIT_ID/RECEIPT_STATUS/VIEWED_AT/DOWNLOADED_AT/UPLOADED_SIGNED_AT/ASSIGNED_SIGNER_NAME/ASSIGNED_SIGNER_ID/ASSIGNED_LEADER_SIGNER_ID/ASSIGNED_LEADER_SIGNER_NAME/CREATED_BY_BAN_ROLE/SIGNING_FLOW\
-    \ — phát hiện qua post_check_source_coverage.py. RECORDER_UNIT_ID mô tả nguồn\
-    \ ghi \"(eCAT)\" — TBD, cần Data Modeler/BA xác nhận ý nghĩa (tương tự NHNCK.DEPARTMENTS.ECATALOG_ID)."
+  notes: "Biên bản vi phạm hành chính (VPHC). FK đến INSPECTION_TEAM và EXAMINATION_TEAM là suy luận (không formal FK trong BRD) — cả 2 nullable. Grain: 1 dòng = 1 biên bản VPHC. BK nullable khi status=DRAFT. Hạ về draft (2026-08-07) để bổ sung RECORD_NUMBER/RECORDER_UNIT_ID/RECEIPT_STATUS/VIEWED_AT/DOWNLOADED_AT/UPLOADED_SIGNED_AT/ASSIGNED_SIGNER_NAME/ASSIGNED_SIGNER_ID/ASSIGNED_LEADER_SIGNER_ID/ASSIGNED_LEADER_SIGNER_NAME/CREATED_BY_BAN_ROLE/SIGNING_FLOW — phát hiện qua post_check_source_coverage.py. RECORDER_UNIT_ID mô tả nguồn ghi \"(eCAT)\" — TBD, cần Data Modeler/BA xác nhận ý nghĩa (tương tự NHNCK.DEPARTMENTS.ECATALOG_ID). Bổ sung cột mới từ DDL UAT (2026-09): Email Sent Timestamp/SMS Sent Timestamp (EMAIL_SENT_AT/SMS_SENT_AT) — cùng pattern per-channel notification timestamp đã dùng ở lld_THANHTRA_PENALTY_DECISION_SUBJECT.yaml, khác với Sent Timestamp (SENT_AT) hiện có là mốc gửi biên bản chung. Sửa lỗi FK identity_and_access_management_user (2026-09): Signed By/First Signed By/Forwarded By Officer Code trước đây source_columns lặp lại chính cột ID kỹ thuật (SIGNED_BY/FIRST_SIGNED_BY/FORWARDED_BY) — đã sửa sang crosswalk IAM.USERS.USERNAME đúng chuẩn. Assigned Signer/Assigned Leader Signer Officer Code trước đây map nhầm giá trị Name (ASSIGNED_SIGNER_NAME/ASSIGNED_LEADER_SIGNER_NAME) vào field đặt tên Code — đã tách đúng thành attribute Name riêng + thêm Code thật qua crosswalk USERNAME."
 attributes:
 - attribute_name: "Violation Record Id"
   physical_name: "violation_record_id"
@@ -83,9 +78,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_TEAM.CODE"
-  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection\
-    \ Team Id. Giá trị lấy từ THANHTRA.INSPECTION_TEAM.CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Inspection Team Id."
+  comment: "Lookup pair: inspection_team.inspection_team_code. Pair with Inspection Team Id. Giá trị lấy từ THANHTRA.INSPECTION_TEAM.CODE sau ETL crosswalk — chi tiết xem comment Inspection Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -111,9 +104,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM.CODE"
-  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination\
-    \ Team Id. Giá trị lấy từ THANHTRA.EXAMINATION_TEAM.CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Examination Team Id."
+  comment: "Lookup pair: examination_team.examination_team_code. Pair with Examination Team Id. Giá trị lấy từ THANHTRA.EXAMINATION_TEAM.CODE sau ETL crosswalk — chi tiết xem comment Examination Team Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -126,9 +117,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.RECORD_NUMBER"
-  comment: "Số văn bản chính thức, chỉ có sau khi cấp số từ VBĐH (null khi status=DRAFT).\
-    \ Không dùng làm BK — BK entity vẫn là Violation Record Code (PK UUID nguồn, luôn\
-    \ có giá trị kể cả khi DRAFT)."
+  comment: "Số văn bản chính thức, chỉ có sau khi cấp số từ VBĐH (null khi status=DRAFT). Không dùng làm BK — BK entity vẫn là Violation Record Code (PK UUID nguồn, luôn có giá trị kể cả khi DRAFT)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -184,19 +173,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Source Info"
-  physical_name: "src_info"
-  description: "Thông tin nguồn tiếp nhận hành vi vi phạm."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.VIOLATION_RECORD.SOURCE_INFO"
-  comment: "Nguồn CLOB — ETL truncate."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Recorder Name"
   physical_name: "recorder_nm"
   description: "Họ tên người lập biên bản VPHC."
@@ -245,11 +221,7 @@ attributes:
   status: "pending"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.RECORDER_UNIT_ID"
-  comment: "Mô tả nguồn: \"ID đơn vị (eCAT); recorder_unit giữ tên hiển thị\" — ý\
-    \ nghĩa \"eCAT\" chưa rõ ràng (không phải NHNCK.UNITS nội bộ theo mô tả nguồn),\
-    \ tương tự trường hợp NHNCK.DEPARTMENTS.ECATALOG_ID còn TBD. Cần Data Modeler/BA\
-    \ xác nhận ý nghĩa nghiệp vụ chính xác trước khi hoàn thiện thiết kế (đổi domain/FK\
-    \ nếu cần)."
+  comment: "Mô tả nguồn: \"ID đơn vị (eCAT); recorder_unit giữ tên hiển thị\" — ý nghĩa \"eCAT\" chưa rõ ràng (không phải NHNCK.UNITS nội bộ theo mô tả nguồn), tương tự trường hợp NHNCK.DEPARTMENTS.ECATALOG_ID còn TBD. Cần Data Modeler/BA xác nhận ý nghĩa nghiệp vụ chính xác trước khi hoàn thiện thiết kế (đổi domain/FK nếu cần)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -405,22 +377,20 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.SIGNED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', SIGNED_BY) | Chưa xác nhận join key THANHTRA.VIOLATION_RECORD.SIGNED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: VIOLATION_RECORD.SIGNED_BY = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Signed By Officer Code"
   physical_name: "signed_by_officer_code"
-  description: "Mã cán bộ ký số cuối biên bản VPHC."
+  description: "Username cán bộ ký số cuối biên bản VPHC (business key, lấy qua ETL crosswalk sang IAM.USERS)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.VIOLATION_RECORD.SIGNED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Signed By Officer Id."
+  - "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Signed By Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Signed By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -446,22 +416,20 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.FIRST_SIGNED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', FIRST_SIGNED_BY) | Chưa xác nhận join key THANHTRA.VIOLATION_RECORD.FIRST_SIGNED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: VIOLATION_RECORD.FIRST_SIGNED_BY = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "First Signed By Officer Code"
   physical_name: "first_signed_by_officer_code"
-  description: "Mã cán bộ ký nháy biên bản VPHC."
+  description: "Username cán bộ ký nháy biên bản VPHC (business key, lấy qua ETL crosswalk sang IAM.USERS)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.VIOLATION_RECORD.FIRST_SIGNED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with First Signed By Officer Id."
+  - "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with First Signed By Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment First Signed By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -500,6 +468,32 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.SENT_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Email Sent Timestamp"
+  physical_name: "email_sent_tms"
+  description: "Thời điểm gửi thông báo Email tới đối tượng (null = chưa gửi kênh này)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.EMAIL_SENT_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "SMS Sent Timestamp"
+  physical_name: "sms_sent_tms"
+  description: "Thời điểm gửi thông báo SMS tới đối tượng (null = chưa gửi kênh này)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_RECORD.SMS_SENT_AT"
   comment: "Nguồn TIMESTAMP(6)."
   classification_context: null
   etl_derived_value: null
@@ -552,22 +546,20 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.FORWARDED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', FORWARDED_BY) | Chưa xác nhận join key THANHTRA.VIOLATION_RECORD.FORWARDED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: VIOLATION_RECORD.FORWARDED_BY = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Forwarded By Officer Code"
   physical_name: "forwarded_by_officer_code"
-  description: "Mã cán bộ thực hiện chuyển biên bản."
+  description: "Username cán bộ thực hiện chuyển biên bản (business key, lấy qua ETL crosswalk sang IAM.USERS)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "THANHTRA.VIOLATION_RECORD.FORWARDED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Forwarded By Officer Id."
+  - "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Forwarded By Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Forwarded By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -612,8 +604,7 @@ attributes:
   data_type: "timestamp"
 - attribute_name: "Uploaded Signed Timestamp"
   physical_name: "uploaded_signed_tms"
-  description: "Thời điểm người vi phạm/đại diện tổ chức upload file biên bản đã ký\
-    \ (Bước 7.1 QT 7)."
+  description: "Thời điểm người vi phạm/đại diện tổ chức upload file biên bản đã ký (Bước 7.1 QT 7)."
   data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
@@ -685,14 +676,25 @@ attributes:
   status: "pending"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.ASSIGNED_SIGNER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNED_SIGNER_ID) | Chưa xác nhận join key THANHTRA.VIOLATION_RECORD.ASSIGNED_SIGNER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: VIOLATION_RECORD.ASSIGNED_SIGNER_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Assigned Signer Officer Code"
   physical_name: "assigned_signer_officer_code"
+  description: "Username cán bộ được phân công ký số (business key, lấy qua ETL crosswalk sang IAM.USERS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Assigned Signer Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Assigned Signer Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Assigned Signer Officer Name"
+  physical_name: "assigned_signer_officer_nm"
   description: "Tên cán bộ được phân công ký số (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -700,8 +702,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.ASSIGNED_SIGNER_NAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Assigned Signer Officer Id. Nguồn lưu ASSIGNED_SIGNER_NAME (text snapshot)."
+  comment: "Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải Code nghiệp vụ — nguồn lưu ASSIGNED_SIGNER_NAME (text), không dùng pattern Lookup pair Code. Pair with Assigned Signer Officer Id. Sửa 2026-09: trước đây map nhầm vào attribute 'Assigned Signer Officer Code' — đã tách đúng Name/Code."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -714,15 +715,25 @@ attributes:
   status: "pending"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.ASSIGNED_LEADER_SIGNER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNED_LEADER_SIGNER_ID) | Chưa xác nhận join key\
-    \ THANHTRA.VIOLATION_RECORD.ASSIGNED_LEADER_SIGNER_ID ↔ IAM.USERS, cần Data Modeler\
-    \ xác nhận trước go-live."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: VIOLATION_RECORD.ASSIGNED_LEADER_SIGNER_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Assigned Leader Signer Officer Code"
   physical_name: "assigned_leader_signer_officer_code"
+  description: "Username lãnh đạo được phân công ký duyệt (business key, lấy qua ETL crosswalk sang IAM.USERS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Assigned Leader Signer Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Assigned Leader Signer Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Assigned Leader Signer Officer Name"
+  physical_name: "assigned_leader_signer_officer_nm"
   description: "Tên lãnh đạo được phân công ký duyệt (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -730,9 +741,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.ASSIGNED_LEADER_SIGNER_NAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Assigned Leader Signer Officer Id. Nguồn lưu ASSIGNED_LEADER_SIGNER_NAME\
-    \ (text snapshot)."
+  comment: "Denormalized snapshot tên lãnh đạo tại thời điểm phân công, không phải Code nghiệp vụ — nguồn lưu ASSIGNED_LEADER_SIGNER_NAME (text), không dùng pattern Lookup pair Code. Pair with Assigned Leader Signer Officer Id. Sửa 2026-09: trước đây map nhầm vào attribute 'Assigned Leader Signer Officer Code' — đã tách đúng Name/Code."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -745,24 +754,20 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.SIGNING_FLOW"
-  comment: "Nguồn không có mô tả trong BRD/DDL — lưu Text tự do đồng dạng Signature\
-    \ Type Code/Record Type Code (chưa có scheme chuẩn)."
+  comment: "Nguồn không có mô tả trong BRD/DDL — lưu Text tự do đồng dạng Signature Type Code/Record Type Code (chưa có scheme chuẩn)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Ban Role Code"
   physical_name: "created_by_ban_role_code"
   description: "Vai trò/Ban của người tạo bản ghi tại thời điểm tạo (snapshot)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.CREATED_BY_BAN_ROLE"
-  comment: "Mô tả nguồn không có trong BRD/DDL (VARCHAR2(50), không kèm mô tả) — tên\
-    \ cột gợi ý vai trò/Ban nội bộ của người tạo bản ghi tại thời điểm tạo, đồng dạng\
-    \ THANHTRA.EXAMINATION_TEAM.CREATED_BY_BAN_ROLE. Cần Data Modeler/BA xác nhận\
-    \ ý nghĩa nghiệp vụ chính xác và Scheme Code trước khi hoàn thiện classification_context."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
