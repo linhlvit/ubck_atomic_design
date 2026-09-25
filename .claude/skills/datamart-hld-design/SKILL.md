@@ -218,6 +218,41 @@ Sau khi viết xong bảng KPI của một Nhóm, chạy `ba_hld_sync_check.py -
 - bổ sung KPI còn thiếu, hoặc
 - ghi giải trình vào Ghi chú HLD (VD dòng BA trùng nghĩa với dòng khác, dòng BA bị BA gán nhầm STT).
 
+> Các quy tắc H10–H13 dưới đây rút ra từ phiên 2026-09-24/25 (NDTNN/PTTT/TKNB/GSTT). Mỗi quy tắc
+> tương ứng 1 lỗi thật đã phải hoàn tác hoặc sửa lại.
+
+### H10 — Thứ tự ưu tiên khi đọc 1 dòng BA: Điều kiện chung/Mô tả > Câu lệnh tham khảo có Note "cần check" `[L3-REFERENCE-SQL-MISALIGNMENT]`
+
+Câu lệnh tham khảo có thể là bản cũ. Ví dụ GSTT Nhóm 35 dòng 515: SQL còn bảng mã phân loại NĐT theo
+từng sàn, nhưng Note ghi "Cần check lại điều kiện" và Điều kiện chung chỉ ghi "phân loại theo Invest
+Type / Client-House / Foreigner type" — tức là dùng chung quy tắc của Nhóm 28–31. Đã từng thiết kế
+theo SQL cũ và phải làm lại.
+- Khi SQL và Điều kiện chung / Mô tả mâu thuẫn: theo Điều kiện chung / Mô tả, ghi mâu thuẫn vào Open Issue.
+- Khi dòng BA có Note kiểu "cần check lại": **không** coi SQL là quy tắc chốt; hỏi Data Modeler.
+
+### H11 — Cột/công thức dùng chung nhiều Nhóm: đọc BA của MỌI Nhóm tiêu thụ trước khi đổi `[L3-SHARED-RULE-DRIFT]`
+
+Trước khi sửa `etl_logic` của một cột, grep Detail Mapping xem những KPI/Nhóm nào đang dùng cột đó
+(`logic` chứa `{table}.{column}`), rồi đọc BA của **từng** Nhóm đó. Ví dụ đã sai:
+- 8 cột Cá nhân/Tổ chức trên `fct_stock_portfolio_snpst` chỉ phục vụ Nhóm 35, nhưng được sửa theo BA Nhóm 28 mà chưa đọc Nhóm 35 (khác nhau ở bộ lọc bảng lệnh).
+- Khi BA đơn giản hóa quy tắc phân loại (2026-09-22), chỉ 2 Fact mới được cập nhật, còn 8 cột cũ cùng khái niệm giữ quy tắc cũ.
+
+Khi BA đổi một quy tắc nghiệp vụ, grep toàn module mọi `etl_logic` hiện thực cùng quy tắc (VD `client_house_cl_code`, `investor_tp_code`) và sửa **đồng loạt** hoặc ghi rõ lý do giữ khác.
+
+### H12 — BA chuyển Nhóm sang nguồn/bảng mới: kiểm bảng cũ còn KPI nào dùng không `[L2-TABLE-ZERO-USAGE]`
+
+Khi Nhóm chuyển sang Fact mới, bảng cũ có thể còn đủ 3 tầng LLD/Entities/Flat nên Gate 3 vẫn PASS,
+dù 0 KPI dùng (VD `opr_public_company_shareholding`, `legal_entity_position_dim` — GSTT 2026-09-25).
+Chạy Gate 8 (`check_design_lint.py`), cảnh báo `L2-TABLE-ZERO-USAGE` nghĩa là phải:
+- All-Tier Cleanup (xóa LLD per-table, dòng master, entity trong `datamart_model.yaml`, Entities.csv/.md, flat SQL), **và**
+- giữ lịch sử ở Section 4 HLD với `reuse_status = DEPRECATED`.
+
+### H13 — Sửa bảng Markdown trong HLD: mỗi dòng KPI đúng 7 ô; giải trình ánh xạ phải tra lại KPI thật `[L1-HLD-KPI-ROW-CELLS]`
+
+- Thêm ghi chú vào dòng KPI thì **gộp vào ô Ghi chú**, không chèn `| ... |` thành ô mới (đã sinh dòng 8 ô ở PTTT K_PTTT_44). Gate 8 bắt lỗi này.
+- Khi viết giải trình "dòng BA N → K_xxx", lấy K_xxx từ bảng KPI của chính Nhóm đó (grep tên KPI), **không** suy theo tên gần giống (đã ghi nhầm dòng 188 TradingValue_i → K_PTTT_96 thay vì K_PTTT_270).
+- Khối entity trong erDiagram của một bảng đã xuất hiện ở Nhóm khác phải chép **nguyên văn** khối đang có (Gate 5 #11 `L1-INCONSISTENT-ENTITY-BLOCKS`).
+
 ---
 
 ## QUY TRÌNH (BẮT BUỘC)

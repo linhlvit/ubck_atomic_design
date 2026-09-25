@@ -123,7 +123,7 @@ Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay b
 python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
 ```
 
-Chạy đủ Gate 0 → Gate 5. **Không được tuyên bố hoàn thành khi chưa dán output của lệnh này.**
+Chạy đủ Gate 0 → Gate 8. **Không được tuyên bố hoàn thành khi chưa dán output của lệnh này.**
 Nếu chỉ sửa 1 file, vẫn chạy toàn bộ — các lỗi dưới đây là lỗi *liên file*, sửa cục bộ không thấy.
 
 ### Artifact sinh tự động — KHÔNG sửa tay (RFC Đ3/Đ4/Đ7)
@@ -292,6 +292,45 @@ Mục S1 dừng hẳn nếu file không tồn tại, nếu working copy ít hơn
 - Lấy bản mới nhất trong `Datamart/context/.backup/` hoặc từ `git show HEAD~1:...`.
 - Áp lại các patch đã ghi sau bản sao lưu đó, rồi mới làm tiếp.
 - Nếu file bị xóa mà không rõ lý do, **hỏi human trước khi khôi phục**, vì có thể họ xóa có chủ ý.
+
+> A12–A15 rút ra từ phiên 2026-09-24/25. Xem thêm H10–H13 trong `datamart-hld-design/SKILL.md`
+> (thứ tự ưu tiên đọc BA, quy tắc dùng chung nhiều Nhóm, bảng 0 KPI, bảng Markdown).
+
+### A12 — Không kết luận cột Atomic thiếu/rỗng chỉ từ YAML LLD `[L0-ATOMIC-PHYSICAL-UNVERIFIED]`
+
+YAML LLD Atomic có thể không khai báo cột mà bảng vật lý vẫn có. Ví dụ: `lld_ORDERTRADE_TRADE_BOOK_HNX.yaml`
+không có `execution_val`, nhưng `uat_atm.securities_trade` dòng HNX vẫn có giá trị (= Trade price × Trade
+quantity). Đã sửa sai 37 cột GSTT/NDTNN sang `execution_price × execution_vol` và phải hoàn tác.
+Trước khi sửa hàng loạt vì "cột không tồn tại/rỗng":
+1. Đối chiếu `BRD/Source/{SRC}/brd_*.yaml` của **cả hai** nguồn (HOSE và HNX…) và file mapping md.
+2. Hỏi Data Modeler xác nhận bằng dữ liệu vật lý (1 dòng mẫu đã ẩn danh là đủ).
+3. Nếu YAML thiếu mà bảng vật lý có → ghi đề xuất cho Atomic Team, **không** đổi `etl_logic` Datamart.
+
+### A13 — Câu trả lời 1 chữ cho câu hỏi kép: xác nhận lại nghĩa trước khi sửa `[process]`
+
+"có"/"không"/"ok" cho câu hỏi dạng "kiểm tra xem X có … không" là mơ hồ (có dữ liệu? hay có lỗi?).
+Đã hiểu "4 có" thành "HNX bị rỗng" trong khi ý là "có giá trị". Trước khi thực hiện thay đổi lớn
+(≥ 5 cột hoặc nhiều module), nhắc lại cách hiểu bằng 1 câu và chờ xác nhận.
+
+### A14 — PII không lên Datamart; grain key dùng surrogate Atomic `[L2-PII-IN-MART]`
+
+Số giấy tờ định danh (CMND/CCCD/hộ chiếu — `identification_nbr`), số tài khoản thô… chỉ được dùng trong
+`etl_logic` để JOIN, **không** tạo cột Datamart/flat table (NĐ 13/2023). Khi cần phân biệt từng chủ thể,
+dùng surrogate của Atomic (VD `major_shareholder_ownership_id`). Ghi rõ lý do trong `description`.
+
+### A15 — Comment trong flat SQL không viết `:etl_date` dính dấu câu `[L4-FLAT-COMMENT-PARAM]`
+
+`check_flat_table.py` quét cả dòng comment; `-- ... = :etl_date. Chuỗi …` bị hiểu là tham số lạ →
+Gate 4 FAIL giả. Trong comment viết "ngày chạy ETL" thay cho `:etl_date`. Gate 8 bắt lỗi này.
+
+### Lệnh bổ sung — Gate 8 Design Lint
+
+```bash
+python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MODULE} --strict
+```
+
+Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: dòng bảng KPI HLD sai số ô (H13), bảng Datamart
+0 KPI dùng (H12), comment flat SQL dính `:etl_date` (A15).
 
 ---
 

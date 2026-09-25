@@ -2,7 +2,7 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 5 fact + 1 operational
+-- 6 bảng: 6 fact (bảng operational opr_public_company_shareholding bãi bỏ 2026-09-25)
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 28/31 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
 -- Sửa 2026-09-14: bổ sung bảng #1b (Fact Index Constituent Snapshot, Bridge Factless) —
@@ -412,41 +412,35 @@ COMMENT 'Flat table — Fact Investor Category Index Trading Snapshot × Calenda
 
 
 -- ============================================================
--- 6. OPERATIONAL: gstt_opr_public_company_shareholding_flat
---    [SỬA 2026-09-12, đảo ngược O_GSTT_9] Sở hữu cổ đông + chức vụ người nội bộ
---    + sở hữu NN/trong nước — 1 row / (Public Company × Legal Entity/cổ đông).
---    Gộp 3 nguồn Atomic: pc_shareholding (IDS.COMPANY_SHAREHOLDING), legal_entity
---    (IDS.LEGAL_ENTITIES), foreign_ownership_info (VSDC, mapping doc). Đồng thời
---    denormalize Position Code từ Legal Entity Position (K_GSTT_104 vẫn dùng
---    `legal_entity_position_dim` độc lập, không đổi). Phục vụ Nhóm 33 (8/8 KPI
---    READY) và Nhóm 36 (Data Explorer, reuse 6/8 KPI). Không FK Star Schema —
---    Operational denormalized hoàn toàn.
---    [SỬA 2026-09-19, review K_GSTT_100] Trước đây K_GSTT_100 (Mã cổ phiếu) dùng
---    riêng `public_company_dim` qua JOIN runtime — bản thân cách đó cũng SAI (lấy
---    nhầm Public Company Code, khóa nội bộ, thay vì Equity Ticker Symbol). Đã bỏ
---    JOIN runtime, denormalize thẳng `equity_ticker_symbol` lên bảng này, tái dùng
---    chính JOIN `public_company` đã có sẵn cho `current_foreign_holding_ratio`.
+-- 6. FACT: gstt_fct_major_shareholder_ownership_snpst_flat
+--    Fact Major Shareholder Ownership Snapshot (Nhóm 33 — Sở hữu và giao dịch nội bộ)
+--    Joins: Calendar Date × Public Company Dimension
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.gstt_opr_public_company_shareholding_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_major_shareholder_ownership_snpst_flat ON CLUSTER 'my_cluster'
 (
-    -- From: OPERATIONAL Public Company Shareholding
-    public_company_shareholding_code    String                  COMMENT 'PK — mã sở hữu cổ đông (Bảng Tác nghiệp)',
-    public_company_code                 String                  COMMENT 'Mã công ty đại chúng (khóa nghiệp vụ nội bộ — dùng để JOIN, KHÔNG phải mã cổ phiếu hiển thị, xem equity_ticker_symbol)',
-    equity_ticker_symbol                Nullable(String)        COMMENT '[MỚI 2026-09-19] Mã cổ phiếu (K_GSTT_100) — denormalize trực tiếp, thay cho JOIN runtime sang public_company_dim trước đây (vốn cũng sai cột)',
-    legal_entity_code                   String                  COMMENT 'Mã cổ đông',
-    legal_entity_nm                     Nullable(String)        COMMENT 'Tên cổ đông hoặc người nội bộ hoặc người liên quan (K_GSTT_101)',
-    ownership_quantity                  Nullable(Int64)         COMMENT 'Số lượng cổ phiếu nắm giữ (K_GSTT_102)',
-    ownership_ratio_percentage          Nullable(Decimal(5,2))  COMMENT 'Phần trăm nắm giữ (K_GSTT_103, K_GSTT_103b filter Insider)',
-    ownership_dt                        Nullable(Date)          COMMENT 'Ngày đạt tỷ lệ sở hữu',
-    major_shareholder_ind               String                  COMMENT 'Là cổ đông lớn — Y/N',
-    insider_shareholder_ind             String                  COMMENT 'Là cổ đông nội bộ — Y/N (dùng filter K_GSTT_103b)',
-    shareholder_tp_code                 Array(String)           COMMENT 'Loại cổ đông (có thể nhiều loại cùng lúc) — scheme IDS_SHAREHOLDER_TYPE',
-    position_code                       Array(String)           COMMENT '[SỬA 2026-09-16] Chức vụ người nội bộ (có thể nhiều chức vụ ACTIVE cùng lúc) — denormalize từ Legal Entity Position (K_GSTT_104), populate bằng groupUniqArray(). Đổi từ Nullable(String) sang Array(String) — 1 legal_entity có thể giữ nhiều chức vụ tại cùng công ty, tránh nhân dòng bảng cổ phần. Khai thác: loc theo 1 chuc vu dung has(position_code, X) KHONG dung = X; hien thi dung arrayStringConcat(position_code, , ). Da bo appointment_dt/dismissal_dt — khong luu chuc vu theo thoi gian tren bang current-state nay, can lay tu Legal Entity Position Dimension neu can',
-    current_foreign_holding_ratio       Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu NĐT nước ngoài (K_GSTT_120) — cấp công ty, lặp lại theo mọi dòng cổ đông cùng công ty',
-    src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn — IDS_COMPANY_SHAREHOLDING'
+    -- From: FACT Fact Major Shareholder Ownership Snapshot
+    snpst_dt_dim_id                     String                  COMMENT 'FK ngày tham số báo cáo',
+    public_company_dim_id               Nullable(String)        COMMENT 'FK công ty đại chúng (nullable)',
+    ticker_symbol                       String                  COMMENT 'Mã cổ phiếu (K_GSTT_100)',
+    major_shareholder_ownership_id      String                  COMMENT 'Định danh cổ đông lớn (không chứa số giấy tờ — PII)',
+    major_shareholder_nm                Nullable(String)        COMMENT 'Tên cổ đông (K_GSTT_101)',
+    ownership_share_quantity            Nullable(Int64)         COMMENT 'Số CP sở hữu tại ngày tham số (K_GSTT_102)',
+    ownership_ratio                     Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu (K_GSTT_103)',
+    closing_ownership_ratio             Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu cuối kỳ (K_GSTT_178, Nhóm 36)',
+    ownership_update_dt                 Nullable(Date)          COMMENT 'Ngày cập nhật (K_GSTT_177)',
+    position_code                       Array(String)           COMMENT 'Chức vụ người nội bộ (K_GSTT_104) — groupUniqArray; lọc has(), hiển thị arrayStringConcat()',
+    current_foreign_holding_quantity    Nullable(Int64)         COMMENT 'CP NĐTNN nắm giữ — cấp công ty, lặp theo cổ đông, KHÔNG SUM (K_GSTT_120)',
+    domestic_holding_quantity           Nullable(Int64)         COMMENT 'CP trong nước nắm giữ — cấp công ty, KHÔNG SUM (K_GSTT_121)',
+    src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                        Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: PUBLIC COMPANY DIMENSION
+    public_company_nm                   Nullable(String)        COMMENT 'Tên công ty — từ Public Company Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(ownership_dt))
-ORDER BY (assumeNotNull(ownership_dt), public_company_shareholding_code)
-COMMENT 'Flat table — Operational Public Company Shareholding (latest state per cổ đông × công ty)'
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), ticker_symbol, major_shareholder_ownership_id)
+COMMENT 'Flat table — Fact Major Shareholder Ownership Snapshot × Calendar Date × Public Company Dimension'
 ;

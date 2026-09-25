@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-run_quality_gates.py — Unified Datamart Quality Gate Runner (Gate 0 → Gate 5)
+run_quality_gates.py — Unified Datamart Quality Gate Runner (Gate 0 → Gate 8)
 
 Runs all quality gate checks sequentially and aggregates results.
 
@@ -11,6 +11,9 @@ Gates:
   Gate 3 (Orphan Check):       check_orphan.py --strict
   Gate 4 (Flat Table):         check_flat_table.py --strict
   Gate 5 (HLD Structure 5B):   check_hld_5b.py --strict
+  Gate 6 (Context Budget):     ctx_budget.py --all-steps --strict
+  Gate 7 (LLD Self-Check):     lld_selfcheck.py
+  Gate 8 (Design Lint):        check_design_lint.py --strict  [MỚI 2026-09-25]
 
 Exit Code:
   0 on PASS (all gates pass or skip)
@@ -107,6 +110,13 @@ GATE_SPECS = [
         "script": "lld_selfcheck.py",
         "supports_strict": True,
         "supports_json": True,
+    },
+    {
+        "gate": "Gate 8",
+        "name": "Design Lint (KPI row cells, zero-usage table, flat comment param)",
+        "script": "check_design_lint.py",
+        "supports_strict": True,
+        "supports_json": False,
     },
 ]
 

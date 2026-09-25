@@ -163,19 +163,33 @@ erDiagram
 
 ---
 
-## Legal Entity Position Dimension + Operational Public Company Shareholding (phục vụ Nhóm 33, Nhóm 36 reuse)
+## Fact Major Shareholder Ownership Snapshot (phục vụ Nhóm 33)
 
-**[THIẾT KẾ LẠI 2026-09-12, đảo ngược O_GSTT_9 theo xác nhận trực tiếp Data Modeler]** `Operational Public Company Shareholding` khôi phục lại (trước đó bị loại khỏi Star Schema 2026-08-03 vì 0 KPI READY) — nay đủ nguồn Atomic cho toàn bộ 8/8 KPI: `pc_shareholding` (IDS.COMPANY_SHAREHOLDING, Nguồn 1 draft), `legal_entity` (IDS.LEGAL_ENTITIES, Nguồn 2 draft), `foreign_ownership_info` (VSDC, theo mapping `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` — chưa có LDM YAML/manifest chính thức, chấp nhận ngoại lệ theo xác nhận trực tiếp). `Legal Entity Position Dimension` giữ nguyên như cũ, dùng độc lập song song.
+**[MỚI 2026-09-25, GSTT Nhóm 33 — BA cập nhật nguồn VSDC major_shareholder]** Thay nguồn IDS `Public Company Shareholding` cho Nhóm 33 bằng VSDC `major_shareholder` (Atomic `major_shareholder_ownership`, mapping md) — số liệu theo kỳ đầu/cuối, chọn kỳ theo ngày tham số. `Operational Public Company Shareholding` giữ nguyên cho Nhóm 36.
 
 ```mermaid
 erDiagram
-    Operational_Public_Company_Shareholding
-    Legal_Entity_Position_Dimension
+    Fact_Major_Shareholder_Ownership_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Public_Company_Dimension_Id FK
+        string Ticker_Symbol
+        string Major_Shareholder_Ownership_Id
+        string Major_Shareholder_Name
+        bigint Ownership_Share_Quantity
+        decimal Ownership_Ratio
+        date Ownership_Update_Date
+        string Position_Code
+        bigint Current_Foreign_Holding_Quantity
+        bigint Domestic_Holding_Quantity
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Major_Shareholder_Ownership_Snapshot : "Snapshot_Date_Dimension_Id"
+    Public_Company_Dimension ||--o{ Fact_Major_Shareholder_Ownership_Snapshot : "Public_Company_Dimension_Id"
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Public Company Shareholding | Operational | new | Sở hữu cổ đông + tên cổ đông + chức vụ (denormalize) + sở hữu NN/trong nước | 1 row / (Public Company × Legal Entity/cổ đông) | K_GSTT_100–103, 103b, 120–121 |
-| Legal Entity Position Dimension | Dimension | new | Chức vụ người nội bộ (Position Code) — dùng độc lập làm Chiều | 1 row / (cổ đông, chức vụ) (SCD4A) | K_GSTT_104 |
+| Fact Major Shareholder Ownership Snapshot | Fact Snapshot | new | Sở hữu cổ đông lớn + chức vụ nội bộ + sở hữu NN/trong nước theo ngày tham số | 1 row / mã CK × cổ đông lớn × ngày | K_GSTT_100–104, 103b, 120, 121, 177 |
 
 ---
+

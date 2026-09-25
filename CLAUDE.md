@@ -95,7 +95,7 @@ nhãn nhỏ):
 python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
 ```
 
-Runner này chạy Gate 0 (Reference Integrity) → Gate 5 (Bước 5B). Dán nguyên output vào báo cáo.
+Runner này chạy Gate 0 (Reference Integrity) → Gate 8 (Design Lint). Dán nguyên output vào báo cáo.
 
 > Khi bổ sung mục mới vào Bước 5B, cập nhật con số ở CẢ 2 nơi (SKILL.md + dòng này). Con số lệch nhau đã từng khiến self-check chạy thiếu mục mà vẫn báo "đã chạy đủ".
 
@@ -133,6 +133,17 @@ python .claude/skills/datamart-review/scripts/ba_hld_sync_check.py --module {MOD
 - 1 commit của module khác cắt Detail Mapping từ 577 xuống 101 dòng, sau đó file bị xóa giữa phiên.
 
 Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
+
+## QUY TẮC CỨNG — TRƯỚC KHI SỬA HÀNG LOẠT / ĐỔI QUY TẮC DÙNG CHUNG (bài học 2026-09-25)
+
+Áp dụng cả khi không gọi Skill. Chi tiết: H10–H13 (`datamart-hld-design`), A12–A15 (`datamart-lld-design`).
+
+1. **Không kết luận cột Atomic thiếu/rỗng từ YAML LLD.** Đối chiếu `BRD/Source/` của mọi nguồn + hỏi xác nhận dữ liệu vật lý trước khi đổi `etl_logic` hàng loạt (VD `securities_trade.execution_val` HNX có thật dù YAML không khai báo).
+2. **Câu trả lời 1 chữ cho câu hỏi kép** ("có", "ok"): nhắc lại cách hiểu 1 câu trước khi sửa ≥ 5 cột hoặc nhiều module.
+3. **Cột/công thức dùng chung nhiều Nhóm:** grep Detail Mapping tìm mọi KPI tiêu thụ và đọc BA của TỪNG Nhóm đó trước khi đổi; BA đổi quy tắc nghiệp vụ → grep và sửa đồng loạt mọi `etl_logic` hiện thực cùng quy tắc.
+4. **Đọc dòng BA:** Điều kiện chung/Mô tả ưu tiên hơn Câu lệnh tham khảo khi dòng có Note "cần check lại".
+5. **PII** (số giấy tờ định danh, số tài khoản thô) chỉ dùng trong `etl_logic` để JOIN, không thành cột Datamart.
+6. **Gate 8 (`check_design_lint.py`) nằm trong `run_quality_gates.py`**: bắt dòng bảng KPI sai số ô, bảng 0 KPI dùng (→ All-Tier Cleanup), comment flat SQL dính `:etl_date`.
 
 ## NGÔN NGỮ
 

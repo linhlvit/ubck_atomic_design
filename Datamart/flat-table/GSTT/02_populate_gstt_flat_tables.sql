@@ -411,28 +411,38 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 6. OPERATIONAL: gstt_opr_public_company_shareholding_flat
---    [SỬA 2026-09-12, đảo ngược O_GSTT_9] Current-state — TRUNCATE + INSERT toàn
---    bộ, không lọc theo :etl_date (khác Fact Snapshot/Event).
+-- 6. FACT: gstt_fct_major_shareholder_ownership_snpst_flat
+--    snpst_cal: JOIN + lọc cdr_dt theo ngày chạy ETL; DELETE đúng ngày rồi INSERT (giữ lịch sử)
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.gstt_opr_public_company_shareholding_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gstt_opr_public_company_shareholding_flat
+DELETE FROM datamart.gstt_fct_major_shareholder_ownership_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_major_shareholder_ownership_snpst_flat
 SELECT
-    -- From: OPERATIONAL Public Company Shareholding
-    o.public_company_shareholding_code,
-    o.public_company_code,
-    o.equity_ticker_symbol,
-    o.legal_entity_code,
-    o.legal_entity_nm,
-    o.ownership_quantity,
-    o.ownership_ratio_percentage,
-    o.ownership_dt,
-    o.major_shareholder_ind,
-    o.insider_shareholder_ind,
-    o.shareholder_tp_code,
-    o.position_code,
-    o.current_foreign_holding_ratio,
-    o.src_stm_code
+    -- From: FACT Fact Major Shareholder Ownership Snapshot
+    f.snpst_dt_dim_id,
+    f.public_company_dim_id,
+    f.ticker_symbol,
+    f.major_shareholder_ownership_id,
+    f.major_shareholder_nm,
+    f.ownership_share_quantity,
+    f.ownership_ratio,
+    f.closing_ownership_ratio,
+    f.ownership_update_dt,
+    f.position_code,
+    f.current_foreign_holding_quantity,
+    f.domestic_holding_quantity,
+    f.src_stm_code,
 
-FROM datamart.opr_public_company_shareholding o
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                   AS snpst_cdr_dt,
+
+    -- From: PUBLIC COMPANY DIMENSION
+    pc_dim.public_company_nm           AS public_company_nm
+
+FROM datamart.fct_major_shareholder_ownership_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.public_company_dim pc_dim
+    ON pc_dim.public_company_dim_id = f.public_company_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
 ;
