@@ -247,6 +247,10 @@ Chạy Gate 8 (`check_design_lint.py`), cảnh báo `L2-TABLE-ZERO-USAGE` nghĩa
 - All-Tier Cleanup (xóa LLD per-table, dòng master, entity trong `datamart_model.yaml`, Entities.csv/.md, flat SQL), **và**
 - giữ lịch sử ở Section 4 HLD với `reuse_status = DEPRECATED`.
 
+### H12b — Trước khi kết luận "thiếu", đọc quyết định đã duyệt của đúng KPI `[process]`
+
+Đọc `ghi_chu` Detail Mapping và Ghi chú HLD của KPI trước khi đề xuất bổ sung/đổi cách khai thác. Đã đề xuất nhầm "Nhóm 28 thiếu chế độ Khớp lệnh" trong khi ghi chú 2026-09-23 ghi rõ BI swap sang KPI khớp lệnh riêng (Data Modeler duyệt, không CASE tham số).
+
 ### H13 — Sửa bảng Markdown trong HLD: mỗi dòng KPI đúng 7 ô; giải trình ánh xạ phải tra lại KPI thật `[L1-HLD-KPI-ROW-CELLS]`
 
 - Thêm ghi chú vào dòng KPI thì **gộp vào ô Ghi chú**, không chèn `| ... |` thành ô mới (đã sinh dòng 8 ô ở PTTT K_PTTT_44). Gate 8 bắt lỗi này.

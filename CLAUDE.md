@@ -143,7 +143,8 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 3. **Cột/công thức dùng chung nhiều Nhóm:** grep Detail Mapping tìm mọi KPI tiêu thụ và đọc BA của TỪNG Nhóm đó trước khi đổi; BA đổi quy tắc nghiệp vụ → grep và sửa đồng loạt mọi `etl_logic` hiện thực cùng quy tắc.
 4. **Đọc dòng BA:** Điều kiện chung/Mô tả ưu tiên hơn Câu lệnh tham khảo khi dòng có Note "cần check lại".
 5. **PII** (số giấy tờ định danh, số tài khoản thô) chỉ dùng trong `etl_logic` để JOIN, không thành cột Datamart.
-6. **Gate 8 (`check_design_lint.py`) nằm trong `run_quality_gates.py`**: bắt dòng bảng KPI sai số ô, bảng 0 KPI dùng (→ All-Tier Cleanup), comment flat SQL dính `:etl_date`.
+6. **Trước khi báo "thiết kế thiếu X" hoặc đề xuất đổi cách khai thác:** đọc `ghi_chu` Detail Mapping + Ghi chú HLD của đúng KPI đó — có thể đã có quyết định Data Modeler duyệt (VD toggle Khớp lệnh GSTT Nhóm 28/29 = swap KPI sang 153–155/164–166, không dùng CASE tham số).
+7. **Gate 8 (`check_design_lint.py`) nằm trong `run_quality_gates.py`**: bắt dòng bảng KPI sai số ô, bảng 0 KPI dùng (→ All-Tier Cleanup), comment flat SQL dính `:etl_date`.
 
 ## NGÔN NGỮ
 
