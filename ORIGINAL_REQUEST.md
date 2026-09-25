@@ -140,4 +140,88 @@ Bổ sung vào skill quy trình và checklist kiểm tra đồng bộ:
 - [ ] Cung cấp script Python kiểm tra chéo (audit tool) hoàn chỉnh, chạy thành công và xuất báo cáo không có lỗi trên tất cả các phân hệ hiện có trong thư mục `Datamart/lld/`.
 - [ ] Script kiểm tra phát hiện được chính xác các dòng vi phạm quy tắc để trống `mart_table`/`mart_column` (ví dụ: dòng REUSE nhưng để trống bảng, hoặc dòng PENDING nhưng vẫn điền cột logic).
 
+## 2026-09-24T11:46:58Z
+
+# Teamwork Project Prompt — Draft
+
+> Status: Launched
+> Goal: Craft prompt → get user approval → delegate to teamwork_preview
+> Requested team: Mỗi 1 agent là 1 nhóm chuyên trách theo 5 cụm nghiệp vụ QLKD (Tổng quan, Giám sát, Hồ sơ CTCK 360, Tra cứu Cá nhân, Data Explorer & ClickHouse Flat Tables)
+
+Rà soát, đánh giá chuyên sâu và đối soát tính toàn vẹn đa tầng (Multi-Layer Integrity Audit) cho phân hệ Datamart Quản lý Kinh doanh (QLKD — Hoạt động CTCK). Phân chia mỗi nhóm là 1 agent chuyên trách độc lập để rà soát chéo giữa yêu cầu BA, thiết kế kiến trúc HLD, ánh xạ chi tiết LLD Detail Mapping, 26 file bảng vật lý LLD, 14 bảng ClickHouse Flat Tables và Datamart Model YAML. Tổng hợp báo cáo kiểm toán toàn diện kèm mã nguồn test script tự động.
+
+Working directory: C:\Workspace\Design_DW\ubck_atomic_design
+Integrity mode: development
+
+## Requirements
+
+### R1. Agent Nhóm 1 — Rà soát Chuyên sâu Tab TỔNG QUAN (Cụm 1, 2b, 3)
+Kiểm tra toàn diện 3 bảng Fact/Dim:
+- `fct_securities_company_status_snpst` (Thống kê tổng hợp CTCK, cấp phép, 7 nhóm trạng thái derive)
+- `fct_securities_company_service_assignment_snpst` (Nghiệp vụ Môi giới, Tự doanh, Bảo lãnh, Tư vấn & Dịch vụ phái sinh)
+- `fct_securities_company_license_condition_snpst` (Duy trì điều kiện cấp phép, vốn pháp định)
+- Các chiều liên quan: `securities_company_dim`, `securities_service_cl_dim`, `calendar_date_dim`.
+Đối soát: Đầy đủ các chỉ tiêu Nhóm 1, 2, 3, 4; kiểm tra logic lọc `BUSINESS_LICENSE_DATE <= snpst_date`; phân tích chi tiết nguyên nhân PENDING của 2 chỉ tiêu: `K_QLKD_12` (Số TK phát sinh giao dịch) và `K_QLKD_13` (Số dư tiền gửi của NĐT).
+
+### R2. Agent Nhóm 2 — Rà soát Chuyên sâu Tab GIÁM SÁT (Cụm 4, 5, 5b, 6, 6b, 7)
+Kiểm tra toàn diện các bảng Fact:
+- `fct_securities_company_financial_structure_snpst` (Cơ cấu tài chính, tài sản, vốn chủ, nợ, margin, doanh thu, lợi nhuận)
+- `fct_securities_company_capital_raising_event` (Nguồn vốn tăng thêm từ chào bán, tăng vốn điều lệ)
+- `fct_market_index_snpst` (Tương quan Margin vs VN-Index)
+- `fct_securities_company_compliance_report_snpst` (Giám sát tuân thủ nộp báo cáo đúng hạn, chậm hạn)
+Đối soát: Tính nhất quán của việc ánh xạ nguồn từ `sc_report_input_value` / `REPORT_INPUT_CELL_VALUE` từ SCMS; công thức tính Tỷ lệ an toàn tài chính (K_QLKD_49); quan hệ liên kết với `offering_form_dim` và `market_index_dim`.
+
+### R3. Agent Nhóm 3 — Rà soát Chuyên sâu Tab HỒ SƠ CTCK 360 (Cụm 8, 9a, 9b, 10, 11)
+Kiểm tra toàn diện các bảng Operational:
+- `opr_securities_company_personnel_profile` (Nhân sự & HĐQT/Ban kiểm soát/Tổng giám đốc)
+- `opr_securities_company_organization_unit_profile` (Mạng lưới Chi nhánh, PGD, VPĐD của CTCK)
+- `opr_securities_company_practitioner_profile` (Người hành nghề chứng khoán làm việc tại CTCK)
+- `opr_securities_company_financial_report_hist` (Lịch sử các kỳ báo cáo tài chính đã nộp)
+- `opr_securities_company_compliance_hist` (Lịch sử thanh tra, kiểm tra và xử phạt vi phạm hành chính CTCK)
+Đối soát: Làm rõ nguyên nhân gốc rễ và đề xuất giải pháp cho **12 chỉ tiêu PENDING** tại Nhóm 33, 34, 35, 37 (liên quan đến số lượng CN/PGD/VPĐD theo từng nghiệp vụ/dịch vụ kinh doanh và dịch vụ phái sinh) do vướng CSDL hoặc biểu mẫu giấy.
+
+### R4. Agent Nhóm 4 — Rà soát Chuyên sâu Tab TRA CỨU CÁ NHÂN (Cụm 12a, 12b, 13a, 13b, 14a, 14b)
+Kiểm tra toàn diện các bảng Operational phục vụ tra cứu cá nhân:
+- `opr_individual_profile` (Hồ sơ cá nhân hợp nhất từ 2 nguồn NHNCK_PROFESSIONALS và SCMS_SC_FIRM_SENIOR_PERSONNEL)
+- `opr_individual_related_party_network` (Mạng lưới người nội bộ và người có liên quan)
+- `opr_individual_listed_company_role` (Vai trò, chức danh cá nhân tại các công ty niêm yết)
+- `opr_individual_trading_account` (Tài khoản giao dịch chứng khoán của cá nhân tại CTCK)
+- `opr_individual_work_history` (Quá trình công tác, bổ nhiệm, miễn nhiệm)
+- `opr_individual_violation_hist` (Lịch sử vi phạm và quyết định xử phạt cá nhân từ THANHTRA)
+Đối soát: Tính toàn vẹn của mã định danh cá nhân (CCCD, CMND, Hộ chiếu); nguy cơ duplicate dữ liệu khi join đa nguồn giữa NHNCK (hệ thống cấp chứng chỉ) và SCMS (hệ thống báo cáo CTCK); kiểm tra xử lý Nullable và SCD4A.
+
+### R5. Agent Nhóm 5 — Rà soát Tab DATA EXPLORER & Kiến trúc ClickHouse Flat Tables (Cụm 15 + Hạ tầng)
+Kiểm tra toàn diện:
+- Mô hình Data Explorer: `opr_securities_company_report_data` và `report_indicator_dim`.
+- **Mã nguồn Flat Tables**: `Datamart/flat-table/QLKD/01_create_qlkd_flat_tables.sql` và `02_populate_qlkd_flat_tables.sql` cho toàn bộ 14 bảng phẳng QLKD.
+- Đánh giá kiến trúc ClickHouse: Cơ chế `ReplicatedReplacingMergeTree`, khóa `ORDER BY`, phân vùng `PARTITION BY toYYYYMM`, rủi ro lệnh TRUNCATE vs DELETE theo ngày, và kiểm tra điều kiện lọc bản ghi hiệu lực SCD4A (`ds_rcrd_st = 'ACTIVE'` và `deleted = 0`).
+- **Gate 4 Verification**: Đối soát 1-1 giữa danh sách cột trong DDL CREATE TABLE với danh sách cột trong câu lệnh INSERT SELECT (đảm bảo 0 column drift).
+
+### R6. Tổng hợp Báo cáo Kiểm toán Đa tầng & Bộ Script Kiểm thử Tự động
+1. Tổng hợp kết quả thẩm định từ 5 nhóm thành văn bản báo cáo chính thức lưu tại: `docs/output/datamart/QLKD/QLKD_MultiAgent_Review_Report.md`.
+   Cấu trúc báo cáo gồm 5 phần chuẩn mực:
+   - Phần 1: Executive Summary & Scorecard tổng hợp.
+   - Phần 2: Báo cáo chi tiết theo 5 cụm tab nghiệp vụ (Điểm mạnh, Bất thường, Ma trận đối soát).
+   - Phần 3: Bảng phân loại 15 chỉ tiêu PENDING và giải trình nguyên nhân gốc rễ.
+   - Phần 4: Danh mục khiếm khuyết kỹ thuật phân cấp (P1 Critical, P2 Major, P3 Minor).
+   - Phần 5: Kế hoạch hành động và khuyến nghị khắc phục.
+2. Xây dựng bộ script kiểm thử tự động độc lập `tests/test_qlkd_integrity_oracles.py` bằng Python/Pytest để kiểm chứng tự động các con số thống kê và điều kiện kỹ thuật.
+
+## Acceptance Criteria
+
+### Coverage & Traceability
+- [ ] 100% 337 chỉ tiêu khai thác trong `Datamart/lld/DTM_QLKD_Detail_Mapping.csv` được kiểm tra và ghi nhận trạng thái đối soát rõ ràng trong báo cáo.
+- [ ] 100% 26 bảng LLD con tại `Datamart/lld/QLKD/` được đối chiếu 1-1 với `datamart_attributes.csv` và `datamart_model.yaml`.
+
+### Technical Integrity & Quality Gate
+- [ ] Đối soát parity 1-1 giữa DDL (`01_create_qlkd_flat_tables.sql`) và DML (`02_populate_qlkd_flat_tables.sql`) cho toàn bộ 14 bảng Flat Table QLKD (0 drift).
+- [ ] Kiểm tra và xác nhận tính hợp lệ của tất cả các khóa chính (PK/Surrogate Key) và grain của từng bảng Fact và Operational.
+- [ ] Kiểm tra 100% điều kiện lọc SCD4A (`ds_rcrd_st = 'ACTIVE'` và `deleted = 0`) trong các câu lệnh JOIN dimension.
+- [ ] Kiểm tra 100% việc tuân thủ Rule L4 cho 15 chỉ tiêu PENDING (để trống 4 trường kỹ thuật, ghi rõ blocker).
+
+### Deliverables
+- [ ] Báo cáo `docs/output/datamart/QLKD/QLKD_MultiAgent_Review_Report.md` được tạo thành công, tuân thủ đúng cấu trúc 5 phần và có bảng số liệu tổng hợp đầy đủ.
+- [ ] File kiểm thử `tests/test_qlkd_integrity_oracles.py` được tạo và thực thi thành công với exit code 0.
+
+
 
