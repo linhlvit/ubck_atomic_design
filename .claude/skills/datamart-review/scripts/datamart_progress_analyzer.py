@@ -732,11 +732,12 @@ class DatamartProgressAnalyzer:
             self.whitelist_rules = []
 
     def find_module_files(self, module: str) -> Tuple[Optional[Path], Optional[Path], Optional[Path]]:
+        ba = hld = dm = None
         if resolve_module_path is not None:
             ba = resolve_module_path(self.root_dir, module, "ba")
             hld = resolve_module_path(self.root_dir, module, "hld")
             dm = resolve_module_path(self.root_dir, module, "detail_mapping")
-            if any((ba, hld, dm)):
+            if ba and hld and dm:
                 return ba, hld, dm
 
         mod_upper = module.upper().strip()
@@ -764,7 +765,7 @@ class DatamartProgressAnalyzer:
         dm_candidates = [self.lld_dir / f"DTM_{n}_Detail_Mapping.csv" for n in dm_names]
         dm_path = next((p for p in dm_candidates if p.exists()), None)
 
-        return ba_path, hld_path, dm_path
+        return ba or ba_path, hld or hld_path, dm or dm_path
 
     @staticmethod
     def extract_reuse_group(text: str) -> Optional[str]:
@@ -875,13 +876,24 @@ class DatamartProgressAnalyzer:
         deleted_violations: List[Dict[str, Any]] = []
 
         # Group reconciliation
-        group_stats = defaultdict(lambda: {"ba_total": 0, "ba_done_doing": 0, "hld_kpis": 0, "dm_rows": 0, "name": ""})
+        # "ba_done_doing": đếm nguyên văn số dòng BA Done/Doing (kể cả dòng Đánh giá = "Trùng").
+        # "ba_done_doing_excl_trung": cùng điều kiện Done/Doing nhưng LOẠI dòng "Trùng" — dòng này
+        # tự nhận là trùng công thức với 1 dòng khác cùng Nhóm nên HLD chỉ cần dùng lại đúng 1 KPI_ID
+        # đã khai sinh (không cấp ID mới) → không nên tính là 1 KPI kỳ vọng riêng khi so BA↔HLD.
+        # Dùng "_excl_trung" cho cột "Lệch BA ↔ HLD" của Bước 4 để tránh báo lệch giả (VD PTTT Nhóm 19:
+        # 10 dòng Done trong đó 4 dòng Trùng dùng lại KPI đã có ở dòng khác → HLD đúng 6 KPI, không phải 10).
+        group_stats = defaultdict(lambda: {"ba_total": 0, "ba_done_doing": 0, "ba_done_doing_excl_trung": 0,
+                                            "ba_trung_excluded": 0, "hld_kpis": 0, "dm_rows": 0, "name": ""})
 
         for b in ba_items:
             if b.stt:
                 group_stats[b.stt]["ba_total"] += 1
                 if b.mapping_status.strip() in ("Done", "Doing", "Hoàn thành"):
                     group_stats[b.stt]["ba_done_doing"] += 1
+                    if b.evaluation.strip().lower() == "trùng":
+                        group_stats[b.stt]["ba_trung_excluded"] += 1
+                    else:
+                        group_stats[b.stt]["ba_done_doing_excl_trung"] += 1
                 if b.dashboard and not group_stats[b.stt]["name"]:
                     group_stats[b.stt]["name"] = b.dashboard
 
@@ -903,7 +915,7 @@ class DatamartProgressAnalyzer:
         for grp_key, st in group_stats.items():
             if grp_key in ("0", ""):
                 continue
-            ba_cnt = st["ba_done_doing"]
+            ba_cnt = st["ba_done_doing_excl_trung"]
             hld_cnt = st["hld_kpis"]
             dm_cnt = st["dm_rows"]
 
@@ -1357,13 +1369,14 @@ class DatamartProgressAnalyzer:
         # 4. Group Count Reconciliation
         md.append("## 4. Ma trận Đối soát Số lượng Chỉ tiêu theo Nhóm (BA ↔ HLD ↔ Detail Mapping)")
         md.append("")
-        md.append("| Nhóm | Tên Nhóm | BA (Done/Doing) | HLD (KPI Count) | Detail Mapping | Lệch BA ↔ HLD | Lệch HLD ↔ DM | Cảnh báo |")
-        md.append("|---|---|---|---|---|---|---|---|")
+        md.append("| Nhóm | Tên Nhóm | BA (Done/Doing, loại Trùng) | Trùng đã loại | HLD (KPI Count) | Detail Mapping | Lệch BA ↔ HLD | Lệch HLD ↔ DM | Cảnh báo |")
+        md.append("|---|---|---|---|---|---|---|---|---|")
 
         for grp_key, st in group_stats.items():
             if grp_key in ("0", ""):
                 continue
-            ba_cnt = st["ba_done_doing"]
+            ba_cnt = st["ba_done_doing_excl_trung"]
+            trung_cnt = st["ba_trung_excluded"]
             hld_cnt = st["hld_kpis"]
             dm_cnt = st["dm_rows"]
             diff_ba_hld = hld_cnt - ba_cnt
@@ -1396,7 +1409,7 @@ class DatamartProgressAnalyzer:
             diff_ba_str = f"{'+' if diff_ba_hld > 0 else ''}{diff_ba_hld}"
 
             md.append(
-                f"| Nhóm {grp_key} | {grp_name} | {ba_cnt} | {hld_cnt} | {dm_cnt_str} | "
+                f"| Nhóm {grp_key} | {grp_name} | {ba_cnt} | {trung_cnt} | {hld_cnt} | {dm_cnt_str} | "
                 f"{diff_ba_str} | {diff_dm_str} | {status_tag} |"
             )
 

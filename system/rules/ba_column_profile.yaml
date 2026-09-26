@@ -85,12 +85,17 @@ drop_rules:
 modules:
 
   FMS:
-    delimiter: ";"
-    expect_columns: 31
+    delimiter: ","
+    expect_columns: 29
     dashboard_column: "Dashboard >> báo cáo"
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["STT", "Mã", "Dashboard >> báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
-    note: "Trùng tên cột 'Note' ở index 20 và 30 -> parser phải dùng index, không dùng dict tên cột."
+    note: >-
+      [CẬP NHẬT 2026-09-26, xác minh trực tiếp qua header sống — BA cập nhật đầy đủ mapping]
+      File đổi delimiter từ ';' sang ',' (31 → 29 cột): bỏ 3 cột theo dõi dự án cũ 'Kết quả Test'/'Model'/'DMT'
+      (giữa 'Note' idx20 và 'Hoàn thành DEV' cũ), thêm cột 'Kết quả SIT' cuối file. Vẫn còn trùng tên cột 'Note'
+      ở index 20 và 27 (trước là 20 và 30) -> parser phải dùng index, không dùng dict tên cột. Bản ghi cũ
+      (delimiter ';', 31 cột) không còn đúng — không dùng lại nếu thấy trong lịch sử.
 
   GSTT:
     expect_columns: 27

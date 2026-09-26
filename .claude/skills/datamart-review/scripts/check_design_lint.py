@@ -11,7 +11,18 @@ Bổ sung 2026-09-25 sau phiên NDTNN/PTTT/TKNB/GSTT:
   D3 [L4-FLAT-COMMENT-PARAM]  Dòng comment flat SQL có ':etl_date' dính ký tự khác khoảng trắng/xuống dòng
                               (VD ':etl_date.') — check_flat_table hiểu nhầm là tham số lạ → Gate 4 FAIL giả.
 
-Mức độ: D1, D3 = ERROR; D2 = WARNING (dimension có thể được dùng qua JOIN của module khác — xác nhận tay).
+Bổ sung 2026-09-26 (review Cluster 4 GSTT — K_GSTT_92/119/75/76/124/125 lọt lưới nhiều tháng):
+  D4 [L3-DERIVED-NON-INLINE] Cột `logic` của dòng `column_role=DERIVED` tham chiếu thẳng mã KPI khác
+                              (`K_{MODULE}_N`) thay vì inline công thức vật lý — vi phạm quy tắc đã ghi ở
+                              `datamart-lld-design/reference/phase2_detail_mapping.md` và
+                              `datamart-review/reference/review_checklist.md`, nhưng chưa Gate nào tự động
+                              kiểm tới nay. Chỉ soi phần TRƯỚC dấu `[` đầu tiên (ghi chú/annotation trong
+                              ngoặc vuông được phép nhắc tên KPI khác để tra lịch sử, không tính là phụ
+                              thuộc công thức). Ngoại lệ YoY (theo tài liệu): nếu logic/ghi_chú có nhắc
+                              "YoY"/"yoy" → hạ xuống WARNING thay vì ERROR, vẫn in ra để xác nhận tay.
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY) = ERROR; D2, D4 (ngoại lệ YoY) = WARNING (dimension có thể
+được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
 
 Usage:
@@ -39,6 +50,7 @@ from datamart_common import find_project_root, get_available_modules  # noqa: E4
 from datamart_common.module_resolver import resolve_module_path  # noqa: E402
 
 KPI_HEADER = re.compile(r"^\|\s*KPI ID\s*\|.*\|\s*Trạng thái\s*\|\s*$")
+KPI_REF = re.compile(r"K_[A-Z0-9]+_\d+")
 
 
 def cells(line: str) -> int:
@@ -105,6 +117,32 @@ def check_usage(root: Path, module: str):
     return out
 
 
+def check_derived_inline(root: Path, module: str):
+    out = []
+    dm = resolve_module_path(root, module, "detail_mapping")
+    if not dm or not Path(dm).exists():
+        return out
+    with open(dm, encoding="utf-8-sig", newline="") as fh:
+        rows = list(csv.DictReader(fh))
+    for i, r in enumerate(rows, 2):
+        if (r.get("column_role") or "").strip() != "DERIVED":
+            continue
+        logic = r.get("logic") or ""
+        kpi_id = (r.get("kpi_id") or "").strip()
+        formula_part = logic.split("[", 1)[0]  # bỏ phần ghi chú trong ngoặc vuông, chỉ soi công thức thật
+        refs = sorted({m for m in KPI_REF.findall(formula_part) if m != kpi_id})
+        if not refs:
+            continue
+        ghi_chu = r.get("ghi_chu") or ""
+        is_yoy = "yoy" in (logic + ghi_chu).lower()
+        level = "WARNING" if is_yoy else "ERROR"
+        note = " (có nhắc YoY — xác nhận tay đây là ngoại lệ hợp lệ, không phải lười inline)" if is_yoy else ""
+        out.append((level, "L3-DERIVED-NON-INLINE",
+                    f"{Path(dm).name}:{i} {kpi_id} (Nhóm: {(r.get('nhom') or '')[:30]}) — logic tham chiếu "
+                    f"{', '.join(refs)} thay vì inline công thức vật lý xuống physical_table.physical_column{note}"))
+    return out
+
+
 def check_flat(root: Path, module: str):
     out = []
     d = root / "Datamart" / "flat-table" / module
@@ -123,6 +161,7 @@ def run(root: Path, module: str):
     if hld and Path(hld).exists():
         issues += check_hld(Path(hld))
     issues += check_usage(root, module)
+    issues += check_derived_inline(root, module)
     issues += check_flat(root, module)
     return issues
 
