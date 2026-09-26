@@ -24462,7 +24462,7 @@ Nếu CL mua và bán < 0 -> GT tự doanh bán ròng",,,đã bổ sung thêm th
 Tự doanh 
 Cá nhân 
 Tổ chức trong nước 
-Nước ngoài ","1. HOSE/HNX:
+Nước ngoài ","""1. HOSE/HNX:
         *Tổng GTGD:
 Tự doanh: 
         buy_client_house_classification_(code) = '30'
@@ -24488,9 +24488,9 @@ NĐTNN:
 Cá nhân trong nước:
         buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
         sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
-Tổ chức trong nước:
-        buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
-        sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'",Dashboard,Chiều,TB,Chỉ số,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"1. HOSE/HNX:
+Tổ chức trong nước: ( GT Tổ chức trong nước mua - GT Tổ chức trong nước bán ) - ( GT tự doanh mua - GT tự doanh bán) 
+        buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+         sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'""",Dashboard,Chiều,TB,Chỉ số,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"1. HOSE/HNX:
         *Tổng GTGD:
 Tự doanh: 
         buy_client_house_classification_(code) = '30'
@@ -24574,7 +24574,7 @@ Nước ngoài ",GTGD ròng =  GTGD mua - GTGD bán theo từng phân loại nh�
 Tự doanh 
 Cá nhân 
 Tổ chức trong nước 
-Nước ngoài ","1. HOSE/HNX:
+Nước ngoài ","""1. HOSE/HNX:
         *Tổng GTGD:
 Tự doanh: 
         buy_client_house_classification_(code) = '30'
@@ -24600,9 +24600,9 @@ NĐTNN:
 Cá nhân trong nước:
         buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
         sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
-Tổ chức trong nước:
-        buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
-        sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'",Dashboard,Chiều,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"1. HOSE/HNX:
+Tổ chức trong nước: ( GT Tổ chức trong nước mua - GT Tổ chức trong nước bán ) - ( GT tự doanh mua - GT tự doanh bán) 
+        buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+         sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'""",Dashboard,Chiều,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"1. HOSE/HNX:
         *Tổng GTGD:
 Tự doanh: 
         buy_client_house_classification_(code) = '30'
@@ -24920,14 +24920,21 @@ GROUP BY v.ngay_gd, g.symbol, v.gia_dong_cua
 ORDER BY v.ngay_gd, g.symbol;",,,,Done,Dữ liệu tĩnh,F
 30,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng>> Mã chứng khoán","Phân loại nhà đầu tư :
 Tự doanh 
-Nước ngoài","1. HOSE/HNX:
+Nước ngoài","""1. HOSE/HNX:
         *Tổng GTGD:
 Tự doanh: 
         buy_client_house_classification_(code) = '30'
         sell_client_house_classification_(code) = '30'
 NĐTNN:
         buy_foreigner_investor_type_(code) <> '00'
-        sell_foreigner_investor_type_(code) <> '00'        
+        sell_foreigner_investor_type_(code) <> '00'
+Cá nhân trong nước:
+        buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+        sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước:
+        buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+        sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+        
 + Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
         *Tổng GTGD:
 Tự doanh: 
@@ -24936,14 +24943,12 @@ Tự doanh:
 NĐTNN:
         buy_foreigner_investor_type_(code) <> '00'
         sell_foreigner_investor_type_(code) <> '00'
-+ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
-        *Tổng GTGD:
-Tự doanh: 
-        buy_client_house_classification_(code) = '30'
-        sell_client_house_classification_(code) = '30'
-NĐTNN:
-        buy_foreigner_investor_type_(code) <> '00'
-        sell_foreigner_investor_type_(code) <> '00'",Dashboard,Chiều,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
+Cá nhân trong nước:
+        buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+        sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước: ( GT Tổ chức trong nước mua - GT Tổ chức trong nước bán ) - ( GT tự doanh mua - GT tự doanh bán) 
+        buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+         sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'""",Dashboard,Chiều,TB,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
 Buy_Acct No
 Sell_Acct No
 Trade_HNX:
@@ -25439,14 +25444,21 @@ GROUP BY v.ngay_gd, g.symbol, v.gia_dong_cua
 ORDER BY v.ngay_gd, g.symbol;",,,,Done,Dữ liệu tĩnh,F
 31,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng>> chỉ số","Phân loại nhà đầu tư :
 Tự doanh 
-Nước ngoài","1. HOSE/HNX:
+Nước ngoài","""1. HOSE/HNX:
         *Tổng GTGD:
 Tự doanh: 
         buy_client_house_classification_(code) = '30'
         sell_client_house_classification_(code) = '30'
 NĐTNN:
         buy_foreigner_investor_type_(code) <> '00'
-        sell_foreigner_investor_type_(code) <> '00'        
+        sell_foreigner_investor_type_(code) <> '00'
+Cá nhân trong nước:
+        buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+        sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước:
+        buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+        sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+        
 + Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
         *Tổng GTGD:
 Tự doanh: 
@@ -25455,14 +25467,12 @@ Tự doanh:
 NĐTNN:
         buy_foreigner_investor_type_(code) <> '00'
         sell_foreigner_investor_type_(code) <> '00'
-+ Thỏa thuânh: thêm điều kiện: BOARD_TYPE/BOARD_ID  IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
-        *Tổng GTGD:
-Tự doanh: 
-        buy_client_house_classification_(code) = '30'
-        sell_client_house_classification_(code) = '30'
-NĐTNN:
-        buy_foreigner_investor_type_(code) <> '00'
-        sell_foreigner_investor_type_(code) <> '00'",Dashboard,Chiều,TB,Chỉ số,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
+Cá nhân trong nước:
+        buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+        sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
+Tổ chức trong nước: ( GT Tổ chức trong nước mua - GT Tổ chức trong nước bán ) - ( GT tự doanh mua - GT tự doanh bán) 
+        buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+         sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'""",Dashboard,Chiều,TB,Chỉ số,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"TRADE_BOOK_HOSE:
 Buy_Acct No
 Sell_Acct No
 Trade_HNX:
@@ -28822,8 +28832,8 @@ and date_format( le.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
 AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
 36,,Giao dịch & thanh khoản >> số cổ phiếu sở hữu,Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo,Tổng tỷ lệ sở hữu của các cổ đông lớn,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,end_period_ratio,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
 37,,Giao dịch & thanh khoản >> chỉ số,Chỉ số,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,,,,,,,,Lý do khác,Dữ liệu tĩnh,PE
-37,,Giao dịch & thanh khoản >> chỉ số,Giá trị chỉ số,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,marketIndex,,,,,,,,Lý do khác,Dữ liệu tĩnh,PE
-37,,Giao dịch & thanh khoản >> chỉ số,thay đổi,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,MDDS,,X,X,Done,Sổ lệnh và thông tin thị trường,JAD_MARKETINFOR,marketIndex,,"SELECT
+37,,Giao dịch & thanh khoản >> chỉ số,Giá Đóng cửa,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,marketIndex,,,,,,,,Lý do khác,Dữ liệu tĩnh,PE
+37,,Giao dịch & thanh khoản >> chỉ số,Giá mở cửa,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,MDDS,,X,X,Done,Sổ lệnh và thông tin thị trường,JAD_MARKETINFOR,open,,"SELECT
  ""tradingdate"",
  ""marketCode"",
  closeIndex,
@@ -28850,12 +28860,7 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
  WHERE rn = 1
  --AND ""marketId"" = '10'
  ORDER BY ""tradingdate"";",,,,,,Lý do khác,Dữ liệu tĩnh,PE
-37,,Giao dịch & thanh khoản >> chỉ số,KLGD,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,X,X,Done,Sổ lệnh và thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"lấy từ sổ lệnh: 
- - Hose: 
- Execution - Volume
- - HNX: 
- Trade quantity
- --> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số","Market ID in ( 'STK', 'STX', 'UPX')","SELECT
+37,,Giao dịch & thanh khoản >> chỉ số,Giá thấp nhất,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,X,X,Done,Sổ lệnh và thông tin thị trường,JAD_MARKETINFOR,Low,"Market ID in ( 'STK', 'STX', 'UPX')","SELECT
  sub.indexCode AS ma_chi_so,
  sub.ngay_gd,
  SUM(sub.kl_gd) AS tong_kl_gd,
@@ -28909,12 +28914,7 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
  
  ) sub
  GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,Lý do khác,Dữ liệu tĩnh,PE
-37,,Giao dịch & thanh khoản >> chỉ số,GTGD,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường/ Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"lấy từ sổ lệnh: 
- - Hose: 
- Execution - Value
- - HNX: 
- Trade quantity * Trade price
- --> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số",,"SELECT
+37,,Giao dịch & thanh khoản >> chỉ số,Giá cao nhất,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường/ Sổ lệnh,JAD_MARKETINFOR,high,,"SELECT
  sub.indexCode AS ma_chi_so,
  sub.ngay_gd,
  SUM(sub.kl_gd) AS tong_kl_gd,
@@ -28968,17 +28968,7 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
  
  ) sub
  GROUP BY sub.indexCode, sub.ngay_gd;",,,,,,,,PE
-37,,Giao dịch & thanh khoản >> chỉ số,KLNN ròng,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,sổ lệnh,JAD_CSIDXINFOR/ TRADE_BOOK_HOSE/TRADE_BOOK_HNX,"HNX/UPCOM:
- Buy Foreign Investor Type Code
- Trade quantity
- Sell Foreign Investor Type Code
- HOSE:
- Buy - Foreigner Investor
- Execution - Volume
- Sell - Foreigner Investor
- JAD_CSIDXINFOR:
- indexCode
- symbol","Market ID in ( 'STK', 'STX', 'UPX')","-- Bước 1: Lấy danh sách mã thuộc rổ chỉ số từ JAD_CSIDXINFOR 
+37,,Giao dịch & thanh khoản >> chỉ số,Tăng,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,sổ lệnh,JAD_MARKETINFOR,advances,"Market ID in ( 'STK', 'STX', 'UPX')","-- Bước 1: Lấy danh sách mã thuộc rổ chỉ số từ JAD_CSIDXINFOR 
  -- Bước 2: Tính KLNN ròng từ TRADE_BOOK_HOSE/Trade_HNX, lọc theo mã thuộc rổ 
  with HNX as 
  ( 
@@ -29026,17 +29016,7 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
  kl_nn_ban, 
  (kl_nn_mua - kl_nn_ban) AS kl_nn_rong 
  FROM (SELECT * FROM HNX UNION ALL SELECT * FROM HOSE)",,,,,,,,PE
-37,,Giao dịch & thanh khoản >> chỉ số,GT NN ròng,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,sổ lệnh,JAD_CSIDXINFOR/ TRADE_BOOK_HOSE/TRADE_BOOK_HNX,"HNX/UPCOM:
- Buy Foreign Investor Type Code
- Trade quantity * Trade price
- Sell Foreign Investor Type Code
- HOSE:
- Buy - Foreigner Investor
- Execution - Value
- Sell - Foreigner Investor
- JAD_CSIDXINFOR:
- indexCode
- symbol","Market ID in ( 'STK', 'STX', 'UPX')","-- Bước 1: Lấy danh sách mã thuộc rổ chỉ số từ JAD_CSIDXINFOR
+37,,Giao dịch & thanh khoản >> chỉ số,Giảm,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,sổ lệnh,JAD_MARKETINFOR,declines,"Market ID in ( 'STK', 'STX', 'UPX')","-- Bước 1: Lấy danh sách mã thuộc rổ chỉ số từ JAD_CSIDXINFOR
  -- Bước 2: Tính KLNN ròng từ TRADE_BOOK_HOSE/Trade_HNX, lọc theo mã thuộc rổ
  with HNX as 
  (
@@ -29084,7 +29064,7 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
  gt_nn_ban,
  (gt_nn_mua - gt_nn_ban) AS kl_nn_rong
  FROM (SELECT * FROM HNX UNION ALL SELECT * FROM HOSE)",,,,,,,,PE
-37,,Giao dịch & thanh khoản >> chỉ số,KLGD thỏa thuận,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,PT_TOTAL_TRADE,,"-- Lấy marketIndex tại thời điểm cuối ngày
+37,,Giao dịch & thanh khoản >> chỉ số,Đứng giá,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,noChange,,"-- Lấy marketIndex tại thời điểm cuối ngày
  SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low,totalVolume,totalValue,PT_TOTAL_TRADE,PT_TOTAL_VALUE 
  FROM (
  SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low,totalVolume,totalValue,PT_TOTAL_TRADE,PT_TOTAL_VALUE 
@@ -29095,7 +29075,7 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
  FROM JAD_MARKETINFOR
  WHERE tradingdate = :ngay_gd
  ) WHERE rn = 1",,,,,,,,PE
-37,,Giao dịch & thanh khoản >> chỉ số,GTGD thỏa thuận,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,PT_TOTAL_VALUE,,"-- Lấy marketIndex tại thời điểm cuối ngày
+37,,Giao dịch & thanh khoản >> chỉ số,Tăng trần,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,numberOfCe,,"-- Lấy marketIndex tại thời điểm cuối ngày
  SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low,totalVolume,totalValue,PT_TOTAL_TRADE,PT_TOTAL_VALUE 
  FROM (
  SELECT marketCode, tradingdate, marketIndex AS diem_dong_cua,high,low,totalVolume,totalValue,PT_TOTAL_TRADE,PT_TOTAL_VALUE 
@@ -29106,3 +29086,548 @@ AND lv.LOOKUP_GROUP = 'POSITION'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
  FROM JAD_MARKETINFOR
  WHERE tradingdate = :ngay_gd
  ) WHERE rn = 1",,,,,,,,PE
+37,,Giao dịch & thanh khoản >> chỉ số,Giảm sàn,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,numberOfFl,,,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,Thay đổi,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexchange,,,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,% Thay đổi,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexpercentchange,,,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,KLGD,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"lấy từ sổ lệnh: 
+- Hose: 
+Execution - Volume
+- HNX: 
+Trade quantity
+--> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID in ( 'STO', 'STX', 'UPX')
+Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')",,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,GTGD,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX," lấy từ sổ lệnh: 
+- Hose: 
+Execution - Value
+- HNX: 
+Trade quantity * Trade price
+--> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')",,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,KLNN ròng,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_CSIDXINFOR/ TRADE_BOOK_HOSE/TRADE_BOOK_HNX,"HNX/UPCOM:
+Buy Foreign Investor Type Code
+Trade quantity
+Sell Foreign Investor Type Code
+HOSE:
+Buy - Foreigner Investor
+Execution - Volume
+Sell - Foreigner Investor
+JAD_CSIDXINFOR:
+indexCode
+symbol","Market ID in ( 'STK', 'STX', 'UPX')",,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,GTNN ròng,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_CSIDXINFOR/ TRADE_BOOK_HOSE/TRADE_BOOK_HNX,"HNX/UPCOM:
+Buy Foreign Investor Type Code
+Trade quantity * Trade price
+Sell Foreign Investor Type Code
+HOSE:
+Buy - Foreigner Investor
+Execution - Value
+Sell - Foreigner Investor
+JAD_CSIDXINFOR:
+indexCode
+symbol","Market ID in ( 'STK', 'STX', 'UPX')",,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,KLGD thỏa thuận,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"lấy từ sổ lệnh: 
+- Hose: 
+Execution - Volume
+- HNX: 
+Trade quantity
+--> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')",,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,GTGD thỏa thuận,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX," lấy từ sổ lệnh: 
+- Hose: 
+Execution - Value
+- HNX: 
+Trade quantity * Trade price
+--> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","- TRADE_BOOK_HOSE: 
+Board Type in ('T1','T2','T3','T4','T6,'R1')
+- Trade_HNX: 
+Board ID in ('T1','T2','T3','T4','T6, 'R1')",,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,Vốn hóa,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,"1. Giá đóng cửa: 
+JAD_STOCKINFOR
+2. Khối lượng cổ phiếu lưu hành: 
+outstanding_shares","Giá đóng cửa: 
+JAD_STOCKINFOR.closePrice
+Khối lượng cổ phiếu lưu hành:
+outstanding_shares",,,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,P/e,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,"1. Giá đóng cửa: 
+JAD_STOCKINFOR
+2. Khối lượng cổ phiếu lưu hành: 
+outstanding_shares
+3. LNST:
+IDS.data (d),
+ IDS.report_catalog (rc),
+ IDS.company_data (cd)","Giá đóng cửa: 
+JAD_STOCKINFOR.closePrice
+Khối lượng cổ phiếu lưu hành:
+outstanding_shares
+LNST:
+SUM(d.data_value)",,,,,,,,,,
+37,,Giao dịch & thanh khoản >> chỉ số,P/b,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,"1. Giá đóng cửa: 
+JAD_STOCKINFOR
+2. Khối lượng cổ phiếu lưu hành: 
+outstanding_shares
+3.VCSH
+IDS.data (d),
+ IDS.report_catalog (rc),
+ IDS.company_data (cd)","Giá đóng cửa: 
+JAD_STOCKINFOR.closePrice
+Khối lượng cổ phiếu lưu hành:
+outstanding_shares
+VCSH:
+SUM(d.data_value)",,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Sàn ,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,marketId,,"SELECT DISTINCT    i.FloorCode,    CASE i.FloorCode        WHEN '10' THEN 'HOSE'        WHEN '02' THEN 'HNX'        WHEN '04' THEN 'UPCOM'    END                 AS ten_sanFROM JAD_MARKETINFORiWHERE i.TradingDate = :ngay_gd;","IDXInfor.FloorCode: 10=HOSE, 02=HNX, 04=UPCOM; JAD_MARKETINFOR.marketId tương đương",,,,,,,
+38,,Điểm đóng góp chỉ số,Mã chỉ số,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Mã chứng khoán,Mã chứng khoán của rổ chỉ số đã lọc,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Giá chỉ số,Giá đóng cửa của chỉ số tại 1 ngày lọc,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Vốn hóa theo mã của ngày t-1,"Điểm đóng góp: Phục vụ cho điểm đóng góp
+* Khung 1 ngày:
+  - Vốn hóa ngày t-1 = Khối lượng lưu hành t-1 * Giá đóng cửa ngày t-1
+* Khung n ngày:
+  - Vốn hóa ngày t-n = Khối lượng lưu hành * Giá đóng cửa ngày t-n
+ ",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,"- GIá đóng cửa: JAD_Stockinfor
+- Khối lượng lưu hành: outstanding_shares","- GIá đóng cửa: Closeprice
+Khối lượng lưu hành: outstanding_shares",,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Tổng Vốn hóa theo từng chỉ số của ngày t-1 = Sum ( vốn hóa) của tất cả các mã thuộc rổ chỉ số ,"Điểm đóng góp: Phục vụ cho điểm đóng góp
+* Khung 1 ngày:
+  - Sum (Vốn hóa ngày t-1) của tất cả các mã thuộc rổ chỉ số  = Khối lượng lưu hành t-1 * Giá đóng cửa ngày t-1
+* Khung n ngày:
+  - Sum (Vốn hóa ngày t-n ) của tất cả các mã thuộc rổ chỉ số = Khối lượng lưu hành * Giá đóng cửa ngày t-n
+ ",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,"- GIá đóng cửa: JAD_Stockinfor
+- Khối lượng lưu hành: outstanding_shares
+- Join Jad_csidxinfor qua mã chứng khoán ","- GIá đóng cửa: Closeprice
+Khối lượng lưu hành: outstanding_shares
+>> Sum (Vốn hóa) over (partion by indexcode) ",,,,,,,,,,
+38,,Điểm đóng góp chỉ số,W_i = Tỷ trọng trong chỉ số (%) ngày t-1 ,"* Khung ngày 1:
+W_i = Vốn hóa theo mã của ngày t-1/ Tổng Vốn hóa theo từng chỉ số của ngày t-1
+* Khung ngày n: 
+Trọng số theo vốn hóa: w_i = Vốn hóa mã i  t-n/ Tổng vốn hóa tại ngày t-n",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,,,,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Giá đóng cửa,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Giá tham chiếu,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_STOCKINFOR,reference,,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Return_i  = % Biến động giá ,"Điểm đóng góp: contribution = w_i * Return_i * Index_{t-n}
+* Khung 1 ngày:
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t) - 1
+* Khung n ngày:
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t-n) - 1",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_STOCKINFOR,"Ngày t: 
+(change / giá_tham_chiếu) × 100
+Ngày t-n:
+(Giá đóng cửa t - giá tham chiếu t-n)/ Giá tham chiếu t-n",,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Giá của chỉ số Index  t-n,"Điểm đóng góp: contribution = w_i * Return_i * Index_{t-n}
+* Khung 1 ngày:
+  - Index {t-1}: Điểm đóng cửa chỉ số Index ngày t-1
+* Khung n ngày:
+  - Index {t-n}: Điểm đóng cửa chỉ số Index ngày t-n
+",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,JAD_MARKETINFOR,"Ngày t: 
+Marketindex t-1
+Ngày t-n:
+Marketindex t-n",,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Điểm đóng góp theo vốn hóa của cổ phiếu đang lưu hành,"Điểm đóng góp: contribution = w_i * Return_i * Index_{t-n}
+* Khung 1 ngày:
+  - Trọng số theo vốn hóa: w_i = Vốn hóa mã i / Tổng vốn hóa tại ngày t-1
+  - Vốn hóa ngày t-1 = Khối lượng lưu hành t-1 * Giá đóng cửa ngày t-1
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t) - 1
+  - Index {t-1}: Điểm đóng cửa chỉ số Index ngày t-1
+* Khung n ngày:
+  - Trọng số theo vốn hóa: w_i = Vốn hóa mã i / Tổng vốn hóa tại ngày t-n
+  - Vốn hóa ngày t-n = Khối lượng lưu hành * Giá đóng cửa ngày t-n
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t-n) - 1
+  - Index {t-n}: Điểm đóng cửa chỉ số Index ngày t-n
+",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,"""Điểm đóng góp: 
+ Contributioni = wi x Returni x Indext-1
+ wi:- GIá đóng cửa: JAD_MARKETINFOR
+        - Khối lượng lưu hành: BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+ Returni: MARKETINDEX
+ Indext-1: MARKETINDEX (giá đóng cửa) """," ""Điểm đóng góp: 
+ Contributioni = wi x Returni x Indext-1
+ wi:- GIá đóng cửa: MARKETINDEX
+        - Khối lượng lưu hành:  khối lượng cổ phiếu lưu hành
+ Returni: MARKETINDEX
+ Indext-1: MARKETINDEX (giá đóng cửa) ",," WITH Chi_so AS (
+    SELECT
+    MARKETID,
+    MARKETCODE, 
+    MARKETINDEX         AS Gia_dong_cua,
+    INDEXTIME,
+    prev_index          AS MARKETINDEX1,
+    MARKETINDEX - prev_index AS closeIndexChange,
+           ROUND(
+        (MARKETINDEX - prev_index) / NULLIF(prev_index, 0) * 100,
+        2
+    )                   AS closeIndexChangePrent
+FROM
+(
+    SELECT
+        jm.MARKETID,
+        jm.MARKETINDEX,
+        jm.INDEXTIME,
+        jm.tradingdate,
+        jm.MARKETCODE,
+        LAG(MARKETINDEX) OVER (
+            PARTITION BY marketCode
+            ORDER BY tradingdate
+        ) AS prev_index,
+        ROW_NUMBER() OVER (
+            PARTITION BY tradingdate, marketCode
+            ORDER BY indexTime DESC
+        ) AS rn
+    FROM JAD_JAD_MARKETINFOR jm
+)
+WHERE 1=1 
+AND MARKETID = '10'
+AND TO_CHAR(TO_DATE(tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd
+-- AND rn = 1
+ORDER BY indexTime DESC
+)
+-- Lấy marketIndex tại thời điểm cuối ngày
+
+,SCPLH AS (
+    SELECT cs.IndexCode, SUM(a.Khối lượng chứng khoán đang lưu hành) AS KLLH
+    FROM BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành  a
+    JOIN JAD_CSIDXINFOR cs ON a.MCK = cs.Symbol
+    WHERE a.Loai_CK = 'Co phieu'
+    GROUP BY cs.IndexCode
+),
+Von_hoa AS (
+    SELECT
+        c.marketCode,
+        c.tradingdate,
+        c.Gia_dong_cua,
+        s.KLLH,
+        c.Gia_dong_cua * s.KLLH AS von_hoa
+    FROM Chi_so c
+    JOIN SCPLH s ON c.marketCode = s.IndexCode
+),
+Tong_von_hoa AS (
+    SELECT
+        marketCode,
+        SUM(von_hoa) OVER (PARTITION BY marketCode) AS tong_von_hoa_ro
+    FROM Von_hoa
+)
+SELECT
+    v.MARKETCODE,
+    c.Gia_dong_cua,
+    c.closeIndexChange,
+    c.closeIndexChangePrent,
+    v.KLLH,
+    v.von_hoa,
+    t.tong_von_hoa_ro,
+    ROUND(v.von_hoa / NULLIF(t.tong_von_hoa_ro, 0) * 100, 4) AS Ty_trong_von_hoa,
+    ROUND(
+        (v.von_hoa / NULLIF(t.tong_von_hoa_ro, 0) * 100)
+        * c.closeIndexChangePrent
+        * c.Gia_dong_cua
+    , 4) AS diem_dong_gop
+FROM Von_hoa v
+CROSS JOIN Tong_von_hoa t
+JOIN Chi_so c ON v.MARKETCODE = c.MARKETCODE
+ORDER BY v.MARKETCODE;",,,,,,,,
+38,,Điểm đóng góp chỉ số,Điểm đóng góp theo vốn hóa của cổ phiếu đang lưu hành điểm đóng góp tương đối,"Điểm đóng góp tương đối: contribution =( w_i * Return_i) * 100
+W_i = Tỷ trọng trong chỉ số (%) ngày t-1 
+""* Khung ngày 1:
+W_i = Vốn hóa theo mã của ngày t-1/ Tổng Vốn hóa theo từng chỉ số của ngày t-1
+* Khung ngày n: 
+Trọng số theo vốn hóa: w_i = Vốn hóa mã i  t-n/ Tổng vốn hóa tại ngày t-n""
+Return_i  = % Biến động giá 
+Điểm đóng góp: contribution = w_i * Return_i * Index_{t-n}
+* Khung 1 ngày:
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t) - 1
+* Khung n ngày:
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t-n) - 1
+",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,"ROUND((vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)) * m.return_i * 100, 4)",,,,đã bổ sung thêm,,,,,,,
+38,,Điểm đóng góp chỉ số,Vốn hóa theo mã của ngày t-1 chuyển nhượng,"Điểm đóng góp: Phục vụ cho điểm đóng góp
+* Khung 1 ngày:
+  - Vốn hóa ngày t-1 = Khối lượng chuyển nhương  t-1 * Giá đóng cửa ngày t-1
+* Khung n ngày:
+  - Vốn hóa ngày t-n = Khối lượng chuyển nhương  * Giá đóng cửa ngày t-n
+ ",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,"- GIá đóng cửa: JAD_Stockinfor
+- Khối lượng chuyển nhượng  outstanding_shares","- GIá đóng cửa: Closeprice
+Khối lượng chuyển nhượng: FRee_FLoat_Share",,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Tổng Vốn hóa theo từng chỉ số của ngày t-1 = Sum ( vốn hóa) của tất cả các mã thuộc rổ chỉ số chuyển nhượng,"Điểm đóng góp: Phục vụ cho điểm đóng góp
+* Khung 1 ngày:
+  - Sum (Vốn hóa ngày t-1) của tất cả các mã thuộc rổ chỉ số  = Khối lượng lưu hành t-1 * Giá đóng cửa ngày t-1
+* Khung n ngày:
+  - Sum (Vốn hóa ngày t-n ) của tất cả các mã thuộc rổ chỉ số = Khối lượng lưu hành * Giá đóng cửa ngày t-n
+ ",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,"- GIá đóng cửa: JAD_Stockinfor
+- Khối lượng chuyển nhượng: outstanding_shares
+- Join Jad_csidxinfor qua mã chứng khoán ","- GIá đóng cửa: Closeprice
+Khối lượng lưu hành: FRee_FLoat_Share
+>> Sum (Vốn hóa) over (partion by indexcode) ",,,,,,,,,,
+38,,Điểm đóng góp chỉ số,W_i = Tỷ trọng trong chỉ số (%) ngày t-1 ,"* Khung ngày 1:
+W_i = Vốn hóa theo mã của ngày t-1/ Tổng Vốn hóa theo từng chỉ số của ngày t-1
+* Khung ngày n: 
+Trọng số theo vốn hóa: w_i = Vốn hóa mã i  t-n/ Tổng vốn hóa tại ngày t-n",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,,,,,,,,,,,,
+38,,Điểm đóng góp chỉ số,Điểm đóng góp theo vốn hóa của cổ phiếu tự do chuyển nhượng,"Điểm đóng góp: contribution = w_i * Return_i * Index_{t-n}
+* Khung 1 ngày:
+  - Trọng số theo vốn hóa: w_i = Vốn hóa mã i / Tổng vốn hóa tại ngày t-1
+  - Vốn hóa ngày t-1 = Khối lượng chuyển nhượng  t-1 * Giá đóng cửa ngày t-1
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t) - 1
+  - Index {t-1}: Điểm đóng cửa chỉ số Index ngày t-1
+* Khung n ngày:
+  - Trọng số theo vốn hóa: w_i = Vốn hóa mã i / Tổng vốn hóa tại ngày t-n
+  - Vốn hóa ngày t-n = Khối lượng chuyển nhượng  * Giá đóng cửa ngày t-n
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t-n) - 1
+  - Index {t-n}: Điểm đóng cửa chỉ số Index ngày t-n
+",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,"""Điểm đóng góp: 
+ Contributioni = wi x Returni x Indext-1
+ wi:- GIá đóng cửa: JAD_MARKETINFOR
+        - Khối lượng lưu hành: BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành
+ Returni: MARKETINDEX
+ Indext-1: MARKETINDEX (giá đóng cửa) """," ""Điểm đóng góp: 
+ Contributioni = wi x Returni x Indext-1
+ wi:- GIá đóng cửa: MARKETINDEX
+        - Khối lượng lưu hành:  khối lượng cổ phiếu lưu hành
+ Returni: MARKETINDEX
+ Indext-1: MARKETINDEX (giá đóng cửa) ",," WITH Chi_so AS (
+    SELECT
+    MARKETID,
+    MARKETCODE, 
+    MARKETINDEX         AS Gia_dong_cua,
+    INDEXTIME,
+    prev_index          AS MARKETINDEX1,
+    MARKETINDEX - prev_index AS closeIndexChange,
+           ROUND(
+        (MARKETINDEX - prev_index) / NULLIF(prev_index, 0) * 100,
+        2
+    )                   AS closeIndexChangePrent
+FROM
+(
+    SELECT
+        jm.MARKETID,
+        jm.MARKETINDEX,
+        jm.INDEXTIME,
+        jm.tradingdate,
+        jm.MARKETCODE,
+        LAG(MARKETINDEX) OVER (
+            PARTITION BY marketCode
+            ORDER BY tradingdate
+        ) AS prev_index,
+        ROW_NUMBER() OVER (
+            PARTITION BY tradingdate, marketCode
+            ORDER BY indexTime DESC
+        ) AS rn
+    FROM JAD_JAD_MARKETINFOR jm
+)
+WHERE 1=1 
+AND MARKETID = '10'
+AND TO_CHAR(TO_DATE(tradingdate, 'DD/MM/YYYY'), 'YYYYMMDD') = :ngay_gd
+-- AND rn = 1
+ORDER BY indexTime DESC
+)
+-- Lấy marketIndex tại thời điểm cuối ngày
+
+,SCPLH AS (
+    SELECT cs.IndexCode, SUM(a.Khối lượng chứng khoán đang lưu hành) AS KLLH
+    FROM BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành  a
+    JOIN JAD_CSIDXINFOR cs ON a.MCK = cs.Symbol
+    WHERE a.Loai_CK = 'Co phieu'
+    GROUP BY cs.IndexCode
+),
+Von_hoa AS (
+    SELECT
+        c.marketCode,
+        c.tradingdate,
+        c.Gia_dong_cua,
+        s.KLLH,
+        c.Gia_dong_cua * s.KLLH AS von_hoa
+    FROM Chi_so c
+    JOIN SCPLH s ON c.marketCode = s.IndexCode
+),
+Tong_von_hoa AS (
+    SELECT
+        marketCode,
+        SUM(von_hoa) OVER (PARTITION BY marketCode) AS tong_von_hoa_ro
+    FROM Von_hoa
+)
+SELECT
+    v.MARKETCODE,
+    c.Gia_dong_cua,
+    c.closeIndexChange,
+    c.closeIndexChangePrent,
+    v.KLLH,
+    v.von_hoa,
+    t.tong_von_hoa_ro,
+    ROUND(v.von_hoa / NULLIF(t.tong_von_hoa_ro, 0) * 100, 4) AS Ty_trong_von_hoa,
+    ROUND(
+        (v.von_hoa / NULLIF(t.tong_von_hoa_ro, 0) * 100)
+        * c.closeIndexChangePrent
+        * c.Gia_dong_cua
+    , 4) AS diem_dong_gop
+FROM Von_hoa v
+CROSS JOIN Tong_von_hoa t
+JOIN Chi_so c ON v.MARKETCODE = c.MARKETCODE
+ORDER BY v.MARKETCODE;",,,,,,,,
+38,,Điểm đóng góp chỉ số,Điểm đóng góp theo vốn hóa của cổ phiếu tự do chuyển nhượng tương đối,"Điểm đóng góp tương đối: contribution =( w_i * Return_i) * 100
+W_i = Tỷ trọng trong chỉ số (%) ngày t-1 
+""* Khung ngày 1:
+W_i = Vốn hóa theo mã của ngày t-1/ Tổng Vốn hóa theo từng chỉ số của ngày t-1
+* Khung ngày n: 
+Trọng số theo vốn hóa: w_i = Vốn hóa mã i  t-n/ Tổng vốn hóa tại ngày t-n""
+Return_i  = % Biến động giá 
+Điểm đóng góp: contribution = w_i * Return_i * Index_{t-n}
+* Khung 1 ngày:
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t) - 1
+* Khung n ngày:
+  - Biến động giá return_i: (Giá đóng cửa ngày t / Giá tham chiếu ngày t-n) - 1
+",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Sổ lệnh và thông tin thị trường,"ROUND((vc.von_hoa_luu_hanh / NULLIF(vc.tong_von_hoa_luu_hanh, 0)) * m.return_i * 100, 4)",,,,đã bổ sung thêm,,,,,,,
+38,,Điểm đóng góp chỉ số, ,Tính từ sổ lệnh khớp. Là KLGD khớp lệnh.,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Volume: Khối lượng khớp lệnh
+Trade_HNX:
+Trade quantity: Khối lượng giao dịch"," Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","-- HOSE
+SELECT
+    SUM(t.[Execution - Volume])     AS tong_kl_khop
+FROM TRADE_BOOK_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+UNION ALL
+-- HNX / UPCOM
+SELECT
+    SUM(t.[Trade quantity])         AS tong_kl_khop
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+",,,,,,,,
+38,,Điểm đóng góp chỉ số,Giá trị giao dịch khớp lệnh,∑ (Giá GD * KLGD) khớp lệnh,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+Execution - Value: 
+Trade_HNX:
+Trade quantity * trade price: "," Khớp lệnh 
+   + MARKET_ID IN ('STK','STX','UPX')
+   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","""-- HOSE
+SELECT
+    SUM(t.[Execution - Value])     AS tong_kl_khop
+FROM TRADE_BOOK_HOSE t
+WHERE t.[Trade Date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+UNION ALL
+-- HNX / UPCOM
+SELECT
+    SUM(t.[Trade quantity] * trade price )         AS tong_kl_khop
+FROM Trade_HNX t
+WHERE t.[Trade date] = :ngay_gd
+and Market ID in (UPX,STX,STO)
+
+""","(TRADE_BOOK_HOSE):
+Execution - Volume: Khối lượng khớp lệnh
+Trade_HNX:
+Trade quantity: Khối lượng giao dịch",,,,,,,
+39,,Giao dịch trái phiếu,Mã trái phiếu,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,Ngành,Phân ngành cấp 1 của doanh nghiệp. Thông tin theo dữ liệu của phần mềm IDS (Giám sát công ty đại chúng).,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,Giá tham chiếu,Giá tham chiếu tại ngày,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,Giá đóng cửa,Giá đóng cửa tại ngày cuối kỳ báo cáo (tại ngày),Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,Thay đổi giá,Giá đóng cửa - Giá tham chiếu,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,% Thay đổi giá,(Giá đóng cửa / Giá tham chiếu - 1) * 100,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,Ngày đáo hạn,Ngày đáo hạn của trái phiếu,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,Khối lượng,"Tổng KLGD trong ngày: Tính từ sổ lệnh khớp.Là KLGD khớp lệnh.
+ Khớp lệnh 
+ + MARKET_ID IN ('STK','STX','UPX')
+ + AND BOARD_TYPE/BOARD_ID <> ('T1','T2','T3','T4','T6','R1')",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,Giá trị,"Tổng GTGD trong ngày: Tính từ sổ lệnh khớp. Là GTGD khớp lệnh.
+ Khớp lệnh 
+ + MARKET_ID IN ('STK','STX','UPX')
+ + AND BOARD_TYPE/BOARD_ID <> ('T1','T2','T3','T4','T6','R1')",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,YTM BQ,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+39,,Giao dịch trái phiếu,Lãi suất của mã trái phiếu,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,Mã chứng khoán,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,Ngày đáo hạn,"* Khi tích chọn phái sinh: thì có ngày đáo hạn
+ Ngày đáo hạn của phái sinh",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,Giá tham chiếu,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,Giá đóng cửa,Giá đóng cửa tại ngày cuối kỳ báo cáo (tại ngày),Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,Thay đổi giá,Giá đóng cửa - Giá tham chiếu,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,% Thay đổi giá,(Giá đóng cửa / Giá tham chiếu - 1) * 100,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,Khối lượng,"Tổng KLGD trong ngày: Tính từ sổ lệnh khớp. Là KLGD khớp lệnh.
+ Khớp lệnh 
+ + MARKET_ID IN ('STK','STX','UPX')
+ + AND BOARD_TYPE/BOARD_ID <> ('T1','T2','T3','T4','T6','R1')",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,Giá trị,"Tổng GTGD trong ngày: Tính từ sổ lệnh khớp.Là GTGD khớp lệnh.
+ Khớp lệnh 
+ + MARKET_ID IN ('STK','STX','UPX')
+ + AND BOARD_TYPE/BOARD_ID <> ('T1','T2','T3','T4','T6','R1')",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+40,,Giao dịch phái sinh,KLNN Ròng,"KLNN Ròng = KLGD mua - bán của NĐTNN
+ + KLNN mua: Buy - Foreigner Investor type (Code) IN ('10','20'))
+ + KLNN bán: Sell - Foreigner Investor type (Code) IN ('10','20'))",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,"MDDS, CSDLTT",,,,Done,,,,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,trade_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,trade_date,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,market_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,market_id,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,symbol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,symbol,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,currency,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,currency,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,board_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,board_type,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,trade_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,trade_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,time,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,session,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,session,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,execution_exec_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_exec_price,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,execution_exec_price_ltp,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_exec_price_ltp,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,execution_volume,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_volume,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,execution_value,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_value,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,execution_ltp,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_ltp,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,execution_new_high_low_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_new_high_low_price,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_order_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_date,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_order_time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_time,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_order_accept_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_accept_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_brk_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_brk_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_brk,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_brk,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_pin,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_pin,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_acct_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_acct_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_name,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_client_house_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_client_house_classification_code,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_invest_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_invest_type,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_foreigner_investor_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_foreigner_investor_type,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_price,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_order_vol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_vol,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_trader_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_trader_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_trader_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_trader_name,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,buy_reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_reference_sequence_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_order_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_date,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_order_time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_time,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_order_accept_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_accept_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_brk_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_brk_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_brk,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_brk,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_pin,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_pin,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_acct_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_acct_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_name,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_client_house_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_client_house_classification_code,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_invest_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_invest_type,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_foreigner_investor_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_foreigner_investor_type,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_price,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_order_vol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_vol,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_trader_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_trader_no,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_trader_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_trader_name,,,,,,,,,,
+41,,Kết xuất sổ lệnh >> HOSE,sell_reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_reference_sequence_no,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,trade_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_date,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,market_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,market_id,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,board_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,board_id,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,issue_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,issue_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,trade_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_number,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,trade_time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_time,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,trade_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_price,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,trade_quantity,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_quantity,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,session_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,session_id,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_replace_cancel_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_replace_cancel_classification_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_member_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_member_number,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_account_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_account_number,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_order_type_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_type_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_order_condition_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_condition_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_client_house_classification,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_client_house_classification,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_investor_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_investor_classification_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_order_quantity,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_quantity,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_price,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_member_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_member_number,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_replace_cancel_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_replace_cancel_classification_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_account_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_account_number,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_order_type_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_type_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_order_condition_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_condition_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_client_house_classification,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_client_house_classification,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_investor_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_investor_classification_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_order_quantity,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_quantity,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_price,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,message_sequence,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,message_sequence,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_order_reception_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_reception_number,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_order_reception_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_reception_number,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_quote_request_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_quote_request_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_quote_request_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_quote_request_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,execution_price_of_spread_first,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,execution_price_of_spread_first,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,execution_price_of_spread_second,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,execution_price_of_spread_second,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,sell_foreign_investor_type_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_foreign_investor_type_code,,,,,,,,,,
+42,,Kết xuất sổ lệnh >> HNX,buy_foreign_investor_type_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_foreign_investor_type_code,,,,,,,,,,

@@ -2,7 +2,8 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 6 fact (bảng operational opr_public_company_shareholding bãi bỏ 2026-09-25)
+-- 8 bảng: 8 fact (bảng operational opr_public_company_shareholding bãi bỏ 2026-09-25)
+-- Sửa 2026-09-26: bổ sung bảng #7/#8 (Fact HOSE/HNX Securities Trade — Nhóm 41/42 Data Explorer kết xuất sổ lệnh, có cột PII — O_GSTT_36)
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 28/31 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
 -- Sửa 2026-09-14: bổ sung bảng #1b (Fact Index Constituent Snapshot, Bridge Factless) —
@@ -444,3 +445,130 @@ PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), ticker_symbol, major_shareholder_ownership_id)
 COMMENT 'Flat table — Fact Major Shareholder Ownership Snapshot × Calendar Date × Public Company Dimension'
 ;
+
+
+-- ============================================================
+-- 7. FACT: gstt_fct_hose_securities_trade_flat
+--    [MỚI 2026-09-26] Nhóm 41 Data Explorer — kết xuất sổ lệnh khớp HOSE.
+--    Fact Event, grain 1 row / giao dịch khớp (Securities Trade Code) / Trade Date.
+--    Có cột PII (số tài khoản, tên chủ TK, PIN, tên trader) — bắt buộc phân quyền/masking BI (O_GSTT_36).
+--    Joins: Calendar Date (trade_dt_dim_id JOIN) — không JOIN Dimension khác.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_hose_securities_trade_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact HOSE Securities Trade
+    trade_dt_dim_id                         String                  COMMENT 'FK → Calendar Date Dimension (ngày giao dịch)',
+    market_id_code                          Nullable(String)        COMMENT 'Mã thị trường chứng khoán.',
+    security_symbol_code                    Nullable(String)        COMMENT 'Mã chứng khoán.',
+    currency_code                           Nullable(String)        COMMENT 'Đơn vị tiền tệ.',
+    board_tp_code                           Nullable(String)        COMMENT 'Loại bảng giao dịch.',
+    securities_trade_code                   String                  COMMENT 'Mã giao dịch khớp — định danh grain 1 dòng/giao dịch. Số thứ tự giao dịch khớp lệnh được ghi nhận trên hệ thống Sàn trong ngày, theo từng mã chứng khoán (Trade ID / BK). BK.',
+    trade_time                              Nullable(String)        COMMENT 'Thời gian diễn ra giao dịch khớp lệnh.',
+    session_code                            Nullable(String)        COMMENT 'Phiên giao dịch.',
+    execution_price                         Nullable(Decimal(23,2)) COMMENT 'Giá khớp lệnh thực tế của giao dịch.',
+    execution_price_versus_ltp              Nullable(Decimal(23,2)) COMMENT 'Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán.',
+    execution_vol                           Nullable(Int64)         COMMENT 'Khối lượng khớp lệnh.',
+    execution_val                           Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch của lệnh khớp.',
+    execution_last_traded_price             Nullable(Decimal(23,2)) COMMENT 'Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price).',
+    execution_new_high_low_price_indicator  Nullable(String)        COMMENT 'Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày.',
+    buy_order_dt                            Nullable(Date)          COMMENT 'Ngày đặt lệnh mua.',
+    buy_order_time                          Nullable(String)        COMMENT 'Thời gian đặt lệnh mua.',
+    buy_securities_order_code               Nullable(String)        COMMENT 'FK-BK đến Securities Order của lệnh mua (Order Accept Number — BK phụ HOSE).',
+    buy_broker_id                           Nullable(String)        COMMENT 'Mã/số công ty chứng khoán thực hiện giao dịch mua.',
+    buy_broker_nm                           Nullable(String)        COMMENT 'Tên công ty chứng khoán thực hiện giao dịch mua.',
+    buy_account_pin_code                    Nullable(String)        COMMENT '[PII] Mã PIN của tài khoản mua. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    buy_account_nbr                         Nullable(String)        COMMENT '[PII] Mã/Số tài khoản giao dịch mua của nhà đầu tư. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    buy_account_holder_nm                   Nullable(String)        COMMENT '[PII] Tên tài khoản giao dịch mua của nhà đầu tư. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    buy_client_house_cl_code                Nullable(String)        COMMENT 'Phân loại lệnh khách hàng/công ty tự doanh của lệnh mua.',
+    buy_investor_tp_code                    Nullable(String)        COMMENT 'Phân loại nhà đầu tư của lệnh mua (raw từ HOSE).',
+    buy_foreign_investor_tp_code            Nullable(String)        COMMENT 'Phân loại đầu tư nước ngoài của lệnh mua.',
+    buy_order_price                         Nullable(Decimal(23,2)) COMMENT 'Giá đặt mua.',
+    buy_order_vol                           Nullable(Int64)         COMMENT 'Khối lượng đặt mua.',
+    buy_trader_nbr                          Nullable(String)        COMMENT 'Mã/số định danh người thực hiện đặt mua.',
+    buy_trader_nm                           Nullable(String)        COMMENT '[PII] Tên người thực hiện đặt mua. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    buy_reference_sequence_nbr              Nullable(String)        COMMENT 'Số tham chiếu theo thứ tự đặt mua trong ngày.',
+    sell_order_dt                           Nullable(Date)          COMMENT 'Ngày đặt lệnh bán.',
+    sell_order_time                         Nullable(String)        COMMENT 'Thời gian đặt lệnh bán.',
+    sell_securities_order_code              Nullable(String)        COMMENT 'FK-BK đến Securities Order của lệnh bán (Order Accept Number — BK phụ HOSE).',
+    sell_broker_id                          Nullable(String)        COMMENT 'Mã/số công ty chứng khoán thực hiện giao dịch bán.',
+    sell_broker_nm                          Nullable(String)        COMMENT 'Tên công ty chứng khoán thực hiện giao dịch bán.',
+    sell_account_pin_code                   Nullable(String)        COMMENT '[PII] Mã PIN của tài khoản bán. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    sell_account_nbr                        Nullable(String)        COMMENT '[PII] Mã/Số tài khoản giao dịch bán của nhà đầu tư. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    sell_account_holder_nm                  Nullable(String)        COMMENT '[PII] Tên tài khoản giao dịch bán của nhà đầu tư. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    sell_client_house_cl_code               Nullable(String)        COMMENT 'Phân loại lệnh khách hàng/công ty tự doanh của lệnh bán.',
+    sell_investor_tp_code                   Nullable(String)        COMMENT 'Phân loại nhà đầu tư của lệnh bán (raw từ HOSE).',
+    sell_foreign_investor_tp_code           Nullable(String)        COMMENT 'Phân loại đầu tư nước ngoài của lệnh bán.',
+    sell_order_price                        Nullable(Decimal(23,2)) COMMENT 'Giá đặt bán.',
+    sell_order_vol                          Nullable(Int64)         COMMENT 'Khối lượng đặt bán.',
+    sell_trader_nbr                         Nullable(String)        COMMENT 'Mã/số định danh người thực hiện đặt bán.',
+    sell_trader_nm                          Nullable(String)        COMMENT '[PII] Tên người thực hiện đặt bán. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    sell_reference_sequence_nbr             Nullable(String)        COMMENT 'Số tham chiếu theo thứ tự đặt bán trong ngày.',
+
+    -- From: CALENDAR DATE DIMENSION
+    trade_cdr_dt                            Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                         Nullable(String)        COMMENT 'Cờ Y/N ngày thị trường mở cửa giao dịch — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))
+ORDER BY (assumeNotNull(trade_cdr_dt), securities_trade_code)
+COMMENT 'Flat table — Fact HOSE Securities Trade × Calendar Date Dimension'
+;
+
+
+-- ============================================================
+-- 8. FACT: gstt_fct_hnx_securities_trade_flat
+--    [MỚI 2026-09-26] Nhóm 42 Data Explorer — kết xuất sổ lệnh khớp HNX.
+--    Fact Event, grain 1 row / giao dịch khớp (Securities Trade Code) / Trade Date.
+--    Có cột PII (số tài khoản, tên chủ TK) — bắt buộc phân quyền/masking BI (O_GSTT_36).
+--    Joins: Calendar Date (trade_dt_dim_id JOIN) — không JOIN Dimension khác.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_hnx_securities_trade_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact HNX Securities Trade
+    trade_dt_dim_id                         String                  COMMENT 'FK → Calendar Date Dimension (ngày giao dịch)',
+    market_id_code                          Nullable(String)        COMMENT 'Mã thị trường chứng khoán.',
+    board_tp_code                           Nullable(String)        COMMENT 'Loại bảng giao dịch.',
+    security_symbol_code                    Nullable(String)        COMMENT 'Mã định danh của loại chứng khoán đang được giao dịch (unique).',
+    securities_trade_code                   String                  COMMENT 'Mã giao dịch khớp — định danh grain 1 dòng/giao dịch. ID của giao dịch — dùng làm unique key, audit, tracking trade (BK). BK.',
+    trade_time                              Nullable(String)        COMMENT 'Thời điểm giao dịch xảy ra.',
+    execution_price                         Nullable(Decimal(23,2)) COMMENT 'Giá khớp của giao dịch.',
+    execution_vol                           Nullable(Int64)         COMMENT 'Khối lượng giao dịch.',
+    session_code                            Nullable(String)        COMMENT 'Mã phiên giao dịch.',
+    sell_order_action_tp_code               Nullable(String)        COMMENT 'Loại hành động sửa/hủy của lệnh bên bán.',
+    sell_broker_id                          Nullable(String)        COMMENT 'Mã định danh công ty chứng khoán thực hiện lệnh bán.',
+    sell_account_nbr                        Nullable(String)        COMMENT '[PII] Số tài khoản giao dịch của khách hàng thực hiện lệnh bán. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    sell_order_tp_code                      Nullable(String)        COMMENT 'Loại lệnh của phía bán.',
+    sell_order_condition_code               Nullable(String)        COMMENT 'Điều kiện hiệu lực và cách xử lý của lệnh bán.',
+    sell_client_house_cl_code               Nullable(String)        COMMENT 'Lệnh bán của khách hàng hay tự doanh.',
+    sell_investor_tp_code                   Nullable(String)        COMMENT 'Phân loại nhà đầu tư bán theo loại hình tổ chức/cá nhân (raw từ HNX).',
+    sell_order_vol                          Nullable(Int64)         COMMENT 'Khối lượng đặt bán.',
+    sell_order_price                        Nullable(Decimal(23,2)) COMMENT 'Giá đặt bán.',
+    buy_broker_id                           Nullable(String)        COMMENT 'Mã/số công ty chứng khoán thực hiện giao dịch mua.',
+    buy_order_action_tp_code                Nullable(String)        COMMENT 'Loại hành động sửa/hủy của lệnh bên mua.',
+    buy_account_nbr                         Nullable(String)        COMMENT '[PII] Mã tài khoản thực hiện giao dịch mua. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI',
+    buy_order_tp_code                       Nullable(String)        COMMENT 'Loại lệnh mua.',
+    buy_order_condition_code                Nullable(String)        COMMENT 'Điều kiện thực hiện lệnh mua.',
+    buy_client_house_cl_code                Nullable(String)        COMMENT 'Lệnh mua của khách hàng hay tự doanh.',
+    buy_investor_tp_code                    Nullable(String)        COMMENT 'Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân (raw từ HNX).',
+    buy_order_vol                           Nullable(Int64)         COMMENT 'Khối lượng đặt mua.',
+    buy_order_price                         Nullable(Decimal(23,2)) COMMENT 'Giá đặt mua.',
+    message_sequence_nbr                    Nullable(Int64)         COMMENT 'Số thứ tự message trong luồng dữ liệu (tăng dần từ 1).',
+    sell_securities_order_code              Nullable(String)        COMMENT 'FK-BK đến Securities Order của lệnh bán (Order Reception Number — BK phụ HNX).',
+    buy_securities_order_code               Nullable(String)        COMMENT 'FK-BK đến Securities Order của lệnh mua (Order Reception Number — BK phụ HNX).',
+    sell_quote_request_tp_code              Nullable(String)        COMMENT 'Mã loại yêu cầu báo giá của bên bán (HNX RFQ).',
+    buy_quote_request_tp_code               Nullable(String)        COMMENT 'Mã loại yêu cầu báo giá của bên mua (HNX RFQ).',
+    execution_price_spread_first            Nullable(Decimal(23,2)) COMMENT 'Giá khớp của leg thứ nhất trong spread trade (HNX-only: phái sinh/repo 2 vế).',
+    execution_price_spread_second           Nullable(Decimal(23,2)) COMMENT 'Giá khớp của leg thứ hai trong spread trade (HNX-only: phái sinh/repo 2 vế).',
+    sell_foreign_investor_tp_code           Nullable(String)        COMMENT 'Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán.',
+    buy_foreign_investor_tp_code            Nullable(String)        COMMENT 'Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua.',
+
+    -- From: CALENDAR DATE DIMENSION
+    trade_cdr_dt                            Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                         Nullable(String)        COMMENT 'Cờ Y/N ngày thị trường mở cửa giao dịch — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))
+ORDER BY (assumeNotNull(trade_cdr_dt), securities_trade_code)
+COMMENT 'Flat table — Fact HNX Securities Trade × Calendar Date Dimension'
+;
+

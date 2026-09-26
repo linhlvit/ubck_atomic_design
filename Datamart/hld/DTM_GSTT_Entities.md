@@ -3,6 +3,7 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.7 (2026-09-26):** Bổ sung `Fact HOSE Securities Trade` và `Fact HNX Securities Trade` (mới, Fact Event grain giao dịch khớp — Data Explorer kết xuất sổ lệnh Nhóm 41/42). Nhóm 37–40 (Data Explorer) 100% reuse bảng có sẵn, không thêm entity.
 **Thay đổi v2.6 (2026-09-23):** Bổ sung `Fact Investor Category Index Trading Snapshot` (mới, Nhóm 28/31 — grain Chỉ số); `Fact Investor Category Trading Snapshot` nay phục vụ Nhóm 29/30. Đánh số lại Nhóm 30→31 … 35→36 theo BA 2026-09-23 (HLD v4.23).
 **Thay đổi v2.5 (2026-09-21):** Bổ sung `Fact Investor Category Trading Snapshot` (mới) — tách phân loại NĐT khỏi `Fact Stock Portfolio Snapshot`, phục vụ Nhóm 28/29 (K_GSTT_85–94).
 **Thay đổi v2.4 (2026-09-16):** Đổi nguồn `Outstanding Share Quantity` (trên `Fact Stock Portfolio Snapshot`) và `Index Market Cap` (trên `Fact Index Constituent Snapshot`) từ `pc_share_statistics_hstr` (IDS) sang `listed_share_info` (VSDC `outstanding_shares`, `src_stm_code = 'VSDC_OUTSTANDING_SHARES'`). Đồng bộ hoàn toàn nguồn dữ liệu số lượng cổ phiếu lưu hành & tự do chuyển nhượng về VSDC, khắc phục dứt điểm tình trạng rỗng dữ liệu trên sàn HNX/UPCOM.
@@ -193,3 +194,34 @@ erDiagram
 
 ---
 
+## Fact HOSE Securities Trade (phục vụ Nhóm 41)
+
+**[MỚI 2026-09-26, GSTT Nhóm 41]** Kết xuất nguyên văn sổ lệnh khớp HOSE cho Data Explorer — nguồn Atomic `securities_trade` (nhánh `ORDERTRADE.TRADE_BOOK_HOSE`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột PII — xem O_GSTT_36 (HLD Section 5).
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_HOSE_Securities_Trade : "Trade_Date_Dimension_Id"
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact HOSE Securities Trade | Fact Event | new | Sổ lệnh khớp HOSE — pass-through toàn bộ cột BA yêu cầu (giá/KL/GT khớp, thông tin lệnh mua/bán, CTCK, tài khoản, loại NĐT) | 1 row / giao dịch khớp (Securities Trade Code) / Trade Date | K_GSTT_181–226 |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---
+
+## Fact HNX Securities Trade (phục vụ Nhóm 42)
+
+**[MỚI 2026-09-26, GSTT Nhóm 42]** Kết xuất nguyên văn sổ lệnh khớp HNX cho Data Explorer — nguồn Atomic `securities_trade` (nhánh `ORDERTRADE.TRADE_BOOK_HNX`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột PII — xem O_GSTT_36 (HLD Section 5).
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_HNX_Securities_Trade : "Trade_Date_Dimension_Id"
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact HNX Securities Trade | Fact Event | new | Sổ lệnh khớp HNX — pass-through toàn bộ cột BA yêu cầu (giá/KL/GT khớp, thông tin lệnh mua/bán, CTCK, tài khoản, loại NĐT) | 1 row / giao dịch khớp (Securities Trade Code) / Trade Date | K_GSTT_227–262 |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---

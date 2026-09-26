@@ -446,3 +446,128 @@ LEFT JOIN datamart.public_company_dim pc_dim
     ON pc_dim.public_company_dim_id = f.public_company_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
+
+
+-- ============================================================
+-- 7. FACT: gstt_fct_hose_securities_trade_flat
+--    [MỚI 2026-09-26] Nhóm 41 — DELETE-scoped theo ngày giao dịch (nhiều dòng/ngày)
+-- ============================================================
+DELETE FROM datamart.gstt_fct_hose_securities_trade_flat ON CLUSTER 'my_cluster'
+WHERE trade_cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_hose_securities_trade_flat
+SELECT
+    -- From: FACT Fact HOSE Securities Trade
+    f.trade_dt_dim_id,
+    f.market_id_code,
+    f.security_symbol_code,
+    f.currency_code,
+    f.board_tp_code,
+    f.securities_trade_code,
+    f.trade_time,
+    f.session_code,
+    f.execution_price,
+    f.execution_price_versus_ltp,
+    f.execution_vol,
+    f.execution_val,
+    f.execution_last_traded_price,
+    f.execution_new_high_low_price_indicator,
+    f.buy_order_dt,
+    f.buy_order_time,
+    f.buy_securities_order_code,
+    f.buy_broker_id,
+    f.buy_broker_nm,
+    f.buy_account_pin_code,
+    f.buy_account_nbr,
+    f.buy_account_holder_nm,
+    f.buy_client_house_cl_code,
+    f.buy_investor_tp_code,
+    f.buy_foreign_investor_tp_code,
+    f.buy_order_price,
+    f.buy_order_vol,
+    f.buy_trader_nbr,
+    f.buy_trader_nm,
+    f.buy_reference_sequence_nbr,
+    f.sell_order_dt,
+    f.sell_order_time,
+    f.sell_securities_order_code,
+    f.sell_broker_id,
+    f.sell_broker_nm,
+    f.sell_account_pin_code,
+    f.sell_account_nbr,
+    f.sell_account_holder_nm,
+    f.sell_client_house_cl_code,
+    f.sell_investor_tp_code,
+    f.sell_foreign_investor_tp_code,
+    f.sell_order_price,
+    f.sell_order_vol,
+    f.sell_trader_nbr,
+    f.sell_trader_nm,
+    f.sell_reference_sequence_nbr,
+
+    -- From: CALENDAR DATE DIMENSION
+    trade_cal.cdr_dt                    AS trade_cdr_dt,
+    trade_cal.is_trading_date           AS is_trading_date
+
+FROM datamart.fct_hose_securities_trade f
+JOIN datamart.cdr_dt_dim trade_cal
+    ON trade_cal.cdr_dt_dim_id = f.trade_dt_dim_id
+WHERE trade_cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 8. FACT: gstt_fct_hnx_securities_trade_flat
+--    [MỚI 2026-09-26] Nhóm 42 — DELETE-scoped theo ngày giao dịch (nhiều dòng/ngày)
+-- ============================================================
+DELETE FROM datamart.gstt_fct_hnx_securities_trade_flat ON CLUSTER 'my_cluster'
+WHERE trade_cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_hnx_securities_trade_flat
+SELECT
+    -- From: FACT Fact HNX Securities Trade
+    f.trade_dt_dim_id,
+    f.market_id_code,
+    f.board_tp_code,
+    f.security_symbol_code,
+    f.securities_trade_code,
+    f.trade_time,
+    f.execution_price,
+    f.execution_vol,
+    f.session_code,
+    f.sell_order_action_tp_code,
+    f.sell_broker_id,
+    f.sell_account_nbr,
+    f.sell_order_tp_code,
+    f.sell_order_condition_code,
+    f.sell_client_house_cl_code,
+    f.sell_investor_tp_code,
+    f.sell_order_vol,
+    f.sell_order_price,
+    f.buy_broker_id,
+    f.buy_order_action_tp_code,
+    f.buy_account_nbr,
+    f.buy_order_tp_code,
+    f.buy_order_condition_code,
+    f.buy_client_house_cl_code,
+    f.buy_investor_tp_code,
+    f.buy_order_vol,
+    f.buy_order_price,
+    f.message_sequence_nbr,
+    f.sell_securities_order_code,
+    f.buy_securities_order_code,
+    f.sell_quote_request_tp_code,
+    f.buy_quote_request_tp_code,
+    f.execution_price_spread_first,
+    f.execution_price_spread_second,
+    f.sell_foreign_investor_tp_code,
+    f.buy_foreign_investor_tp_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    trade_cal.cdr_dt                    AS trade_cdr_dt,
+    trade_cal.is_trading_date           AS is_trading_date
+
+FROM datamart.fct_hnx_securities_trade f
+JOIN datamart.cdr_dt_dim trade_cal
+    ON trade_cal.cdr_dt_dim_id = f.trade_dt_dim_id
+WHERE trade_cal.cdr_dt = :etl_date
+;
+

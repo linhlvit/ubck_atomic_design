@@ -265,6 +265,56 @@ flowchart LR
 
 > **[THIẾT KẾ LẠI 2026-09-25]** Phục vụ Nhóm 33 và Nhóm 36 — BA chuyển nguồn cổ đông lớn sang VSDC `major_shareholder` (số liệu theo kỳ đầu/cuối, chọn theo ngày tham số). Thay `Operational Public Company Shareholding` (IDS `COMPANY_SHAREHOLDING`, đã bãi bỏ). Nối chức vụ IDS qua Số giấy tờ (chỉ trong ETL — không đưa PII lên Datamart).
 
+##### Cụm 4a: Kết xuất sổ lệnh HOSE (`Fact HOSE Securities Trade`)
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S4aA["ORDERTRADE.TRADE_BOOK_HOSE"]
+        S4aB["ECAT.ECAT_29_HolidayInfo"]
+    end
+    subgraph SIL["Atomic"]
+        A4aA["Securities Trade"]
+        A4aB["Calendar Date"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_hose_securities_trade["Fact HOSE Securities Trade"]
+        cdr_dt_dim_4a["Calendar Date Dimension"]
+    end
+    S4aA --> A4aA
+    S4aB --> A4aB
+    A4aA --> fct_hose_securities_trade
+    A4aB --> cdr_dt_dim_4a
+    cdr_dt_dim_4a --> fct_hose_securities_trade
+```
+
+> **[MỚI 2026-09-26]** Phục vụ Nhóm 41 (Data Explorer — kết xuất sổ lệnh HOSE). Fact Event grain 1 row / giao dịch khớp, lọc `Securities Trade.Source System Code` theo nhánh ORDERTRADE.TRADE_BOOK_HOSE; pass-through nguyên văn các cột BA yêu cầu (gồm cột PII — xem O_GSTT_36).
+
+##### Cụm 4b: Kết xuất sổ lệnh HNX (`Fact HNX Securities Trade`)
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S4bA["ORDERTRADE.TRADE_BOOK_HNX"]
+        S4bB["ECAT.ECAT_29_HolidayInfo"]
+    end
+    subgraph SIL["Atomic"]
+        A4bA["Securities Trade"]
+        A4bB["Calendar Date"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_hnx_securities_trade["Fact HNX Securities Trade"]
+        cdr_dt_dim_4b["Calendar Date Dimension"]
+    end
+    S4bA --> A4bA
+    S4bB --> A4bB
+    A4bA --> fct_hnx_securities_trade
+    A4bB --> cdr_dt_dim_4b
+    cdr_dt_dim_4b --> fct_hnx_securities_trade
+```
+
+> **[MỚI 2026-09-26]** Phục vụ Nhóm 42 (Data Explorer — kết xuất sổ lệnh HNX). Fact Event grain 1 row / giao dịch khớp, lọc `Securities Trade.Source System Code` theo nhánh ORDERTRADE.TRADE_BOOK_HNX; pass-through nguyên văn các cột BA yêu cầu (gồm cột PII — xem O_GSTT_36).
+
 ---
 
 ## Section 2 — Tổng quan báo cáo
@@ -2759,58 +2809,520 @@ flowchart LR
 
 #### Nhóm 37 - Data Explorer: Giao dịch & thanh khoản — Chỉ số
 
-> **Phân loại:** Data Explorer
-> **Atomic:** 100% reuse Nhóm 1/5 (`Market Index Snapshot`, `Index Constituent Snapshot`, `Securities Trade`) — không có nguồn mới.
+> **Phân loại:** Data Explorer (Phân tích)
+> **Atomic:** 100% reuse Nhóm 5/6 — `Market Index Snapshot` ← MDDS.JAD_MARKETINFOR, `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR, `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE/HNX — **READY** (Nguồn 1, approved). Không có nguồn mới.
 >
-> **Ghi chú tái sử dụng:** BA liệt kê 9 dòng con — toàn bộ đã có KPI ID sẵn từ Nhóm 5 (Diễn biến chỉ số thị trường): Chỉ số (K_GSTT_4), Giá trị chỉ số (K_GSTT_35), % thay đổi (K_GSTT_39), KLGD của chỉ số (K_GSTT_47), GTGD của chỉ số (K_GSTT_48), KLNN ròng theo chỉ số (K_GSTT_49), GTNN ròng theo chỉ số (K_GSTT_50), KLGD thỏa thuận theo chỉ số (K_GSTT_51), GTGD thỏa thuận theo chỉ số (K_GSTT_52) — reuse cùng cột nguồn với Nhóm 5, không khai sinh KPI mới, không tạo/sửa Fact hay Dimension nào.
-> **[SỬA 2026-09-19, review Nhóm 37 — xem O_GSTT_28, kết luận CUỐI CÙNG]** Sau 2 lượt sửa qua lại trong ngày (xem O_GSTT_26 và O_GSTT_27 — cả hai đều SUPERSEDED), người dùng xác nhận trực tiếp và dứt khoát 2 lần: **Nhóm 37 tính THEO MÃ CK, Nhóm 5 tính THEO RỔ CHỈ SỐ** — khớp đúng cột "Độ chi tiết" của chính BA (Nhóm 5 ghi "Danh mục chỉ số - theo giờ"; Nhóm 37, STT 36, ghi **"Mã ck"** cho toàn bộ 9 dòng — cùng quy ước "Mã ck" = mã chứng khoán dùng xuyên suốt toàn bộ BA_analyst_GSTT.csv, không phải trường hợp ngoại lệ). **Nhóm 5** = 1 dòng/chỉ số/ngày (dashboard diễn biến thị trường). **Nhóm 37** = 1 dòng/mã CK/ngày (Data Explorer dạng lưới) — giá trị của chỉ số mà mã đó thuộc rổ LẶP LẠI trên mọi mã cùng rổ (denormalize có chủ đích, cùng cơ chế `idx_market_cap`/`idx_pe` ở Nhóm 6). Thiết kế: `K_GSTT_4` dùng biến thể `Index Constituent Dimension` (Nhóm 1, đúng cho hiển thị theo mã — cùng cơ chế Nhóm 6/24/29), KHÔNG dùng biến thể `Market Index Dimension` của Nhóm 5; `K_GSTT_35` (Giá trị chỉ số) giữ nguồn `Fact Market Index Snapshot` nhưng JOIN qua Bridge theo mã CK (cùng cơ chế K_GSTT_75, Nhóm 24); `K_GSTT_47/48/49/50/51/52` lấy thẳng cột tính sẵn trên Bridge (`fct_index_constituent_snpst`, đã đúng grain Symbol×Index×Date, KHÔNG cần `MAX(...)/GROUP BY Index Code` — đúng cho Nhóm 5, sai cho Nhóm 37). Bổ sung `K_GSTT_1` (Mã CK) — dimension bắt buộc để đúng grain, BA không liệt kê riêng vì xem là nền tảng ngầm định.
-> **SỬA THẬT thêm — theo sheet "Tổng hợp công thức" người dùng cung cấp trực tiếp 2026-09-19:** dòng thứ 3 của Nhóm 37 là **"% thay đổi giá" = (Giá đóng cửa/Giá tham chiếu − 1)×100** — tức PHẦN TRĂM, không phải "thay đổi" tuyệt đối (điểm) mà thiết kế trước đây dùng (`K_GSTT_38`, `Index Change`, theo BA_analyst_GSTT.csv dòng 508 — SQL BA dùng `closeIndex - LAG(closeIndex)`, tuyệt đối). Đổi sang `K_GSTT_39` ("% thay đổi", `Index Percent Change` — đã có sẵn từ Nhóm 5, BA dòng 78, cùng cặp Thay đổi/% Thay đổi như mọi chỉ tiêu giá khác trong GSTT), JOIN qua Bridge theo mã CK giống K_GSTT_35. Đối chiếu 8 dòng còn lại của sheet với thiết kế — khớp đúng, không phát hiện sai lệch thêm; "KLGD/GTGD thỏa thuận" ghi "tính từ sổ lệnh khớp" — xác nhận lại đúng quyết định O_GSTT_12 (dùng `TRADE_BOOK` + Board Type, không dùng `JAD_MARKETINFOR.PT_TOTAL_TRADE`).
-> **Sửa nguồn (2026-08-20, đồng bộ theo Nhóm 5):** K_GSTT_51/52 đổi nguồn từ `Fact Market Index Snapshot.PT Total Volume/Value` sang aggregate từ `Fact Stock Portfolio Snapshot`/Bridge (cùng Fact với K_GSTT_47/48) — xem ghi chú Nhóm 5 (O_GSTT_12). Không đổi bởi các lần sửa grain 2026-09-19 — chỉ đổi CÁCH TRÌNH BÀY, không đổi công thức tính giá trị.
-> **Sửa nốt lỗi độc lập (không liên quan grain):** `mart_table`/`mart_column` của K_GSTT_47/48/49/51/52 trước đây trỏ nhầm `Fact Stock Portfolio Snapshot` dù `logic` đã đúng dùng cột Bridge — nay khớp lại đúng `Fact Index Constituent Snapshot` (lỗi tồn tại y hệt ở Nhóm 5 gốc, chưa sửa, ngoài phạm vi lần này).
-> **[SỬA 2026-09-22, datamart-review]** K_GSTT_35 — thay hàm giả `mapping(Index Code)` (chưa phải SQL thật) bằng khóa JOIN đã xác nhận `Market Index Dimension.Market Code = Index Constituent Dimension.Index Code` (nguồn `MDDS.JAD_MARKETINFOR.INDEXNAME`) — xem chi tiết tại dòng K_GSTT_35 trong bảng KPI và O_GSTT_3 (Section 5). K_GSTT_39 ("% thay đổi") vẫn dùng `mapping(Index Code)` — CHƯA sửa trong lượt này (ngoài phạm vi yêu cầu), dù cùng pattern và có thể áp dụng cùng khóa join này khi rà soát riêng.
+> **[THIẾT KẾ LẠI 2026-09-26, theo BA cập nhật — supersede O_GSTT_28]** BA viết lại Nhóm 37 từ 9 dòng thành 21 dòng (dòng 530–550), toàn bộ `Đánh giá = Trùng`, nguồn `JAD_MARKETINFOR` (`indexName`, `marketIndex`, `open`, `Low`, `high`, `advances`, `declines`, `noChange`, `numberOfCe`, `numberOfFl`, `indexchange`, `indexpercentchange`) — tức toàn chỉ tiêu cấp **CHỈ SỐ**. Data Modeler xác nhận 2026-09-26: **grain hiển thị = 1 dòng / chỉ số / ngày** (giống Nhóm 5), dù cột "Độ chi tiết" BA vẫn ghi "Mã ck" (xem O_GSTT_33). Hệ quả:
+> - Bỏ `K_GSTT_1` (Mã CK) khỏi Nhóm 37 — BA mới không có dòng Mã CK, và grain không còn theo mã.
+> - `K_GSTT_4` quay về biến thể `Market Index Dimension.Index Name` (Nhóm 5).
+> - `K_GSTT_35/36/37/38/39/40–44` lấy thẳng từ `Fact Market Index Snapshot` (grain chỉ số × ngày, không cần JOIN qua Bridge nữa).
+> - `K_GSTT_47–52`, `K_GSTT_54`, `K_GSTT_149/150` dùng công thức cấp chỉ số (`MAX(...) GROUP BY Index Code, Trade Date` trên Bridge), cùng Nhóm 5/6. Khóa nối `Market Index Dimension.Market Code = Index Constituent Dimension.Index Code` — bằng chứng: SQL BA STT 5 nối `marketcode = indexcode` (xem H7, O_GSTT_3).
+> - "Giá mở cửa" của chỉ số (dòng 532, `open`) chưa có KPI → khai mới `K_GSTT_179`, dùng cột **đã có sẵn** `Fact Market Index Snapshot.Open Index` (`open_index`, GSTT delta Nhóm 5 — chưa KPI nào dùng). Không mở rộng Fact.
+> - "Vốn hóa" (dòng 548) dùng `K_GSTT_54` (vốn hóa rổ chỉ số, Nhóm 5), "P/e"/"P/b" (dòng 549/550) dùng `K_GSTT_149`/`K_GSTT_150` (P/E, P/B thị trường, Nhóm 6) — biến thể cấp chỉ số, KHÔNG dùng K_GSTT_58/59 (từng mã) để tránh Grain Mismatch (K_GSTT_61).
+>
+> **Ghi chú điều kiện KLGD/GTGD (dòng 542/543):** BA ghi `Market ID in ('STO','STX','UPX')` + khớp lệnh `BOARD_TYPE NOT IN ('T1','T2','T3','T4','T6','R1')` — khớp định nghĩa đang tính sẵn của `Index Total Matched Volume/Value` trên Bridge (K_GSTT_47/48, Nhóm 5). KLGD/GTGD thỏa thuận (dòng 546/547) = `Board Type IN (...)` — khớp `Index Total Negotiated Volume/Value` (K_GSTT_51/52, O_GSTT_12).
 
 **Mockup:**
 
-> Mỗi dòng = 1 mã CK. Giá trị Chỉ số/Giá trị chỉ số/% thay đổi/KLGD/GTGD/... LẶP LẠI giống nhau trên mọi mã cùng thuộc 1 rổ chỉ số + cùng ngày (denormalize có chủ đích, không phải lỗi trùng dữ liệu).
+> Mỗi dòng = 1 chỉ số × 1 ngày (Level 2 — Rổ chỉ số).
 
-| Mã CK | Chỉ số | Giá trị chỉ số | % thay đổi | KLGD | GTGD | KLNN ròng | GT NN ròng | KLGD thỏa thuận | GTGD thỏa thuận |
-|---|---|---|---|---|---|---|---|---|---|
-| VCB | VN30 | 1,245.32 | +0.42% | 850 Tr | 18.5 Tỷ | +80 Tỷ | +120 Tỷ | 45 Tr | 1.2 Tỷ |
-| ACB | VN30 | 1,245.32 | +0.42% | 850 Tr | 18.5 Tỷ | +80 Tỷ | +120 Tỷ | 45 Tr | 1.2 Tỷ |
+| Chỉ số | Giá đóng cửa | Giá mở cửa | Thấp nhất | Cao nhất | Tăng | Giảm | Đứng | Trần | Sàn | Thay đổi | % TĐ | KLGD | GTGD | KLNN ròng | GTNN ròng | KLGD TT | GTGD TT | Vốn hóa | P/E | P/B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| VN30 | 1,245.32 | 1,240.10 | 1,236.50 | 1,249.80 | 18 | 9 | 3 | 1 | 0 | +5.22 | +0.42% | 185 Tr | 5.6 N.Tỷ | +2.1 Tr | +80 Tỷ | 12 Tr | 0.4 N.Tỷ | 3.2 Tr.Tỷ | 13.5 | 1.9 |
 
-**Source:** `Index Constituent Dimension` (K_GSTT_1/4), `Fact Market Index Snapshot` JOIN qua Bridge (K_GSTT_35/39), `Fact Index Constituent Snapshot` — Bridge, cột tính sẵn (K_GSTT_47/48/49/50/51/52).
+**Source:** `Fact Market Index Snapshot` → `Market Index Dimension`, `Calendar Date Dimension`; `Fact Index Constituent Snapshot` (Bridge — K_GSTT_47–52/54/149/150) → `Index Constituent Dimension`.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSTT_1 | Mã CK | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | BA không liệt kê riêng — dimension nền tảng bắt buộc để đúng grain "1 dòng/mã CK". Reuse từ Nhóm 1 | READY |
-| K_GSTT_4 | Chỉ số | — | Chiều | `Index Constituent Dimension.Index Name` | Đổi từ biến thể `Market Index Dimension` (Nhóm 5, cấp chỉ số) sang biến thể `Index Constituent Dimension` (Nhóm 1, cấp mã CK) — đúng grain Nhóm 37 | READY |
-| K_GSTT_35 | Giá trị chỉ số | Điểm | Cơ sở | `LOOKUP Fact Index Constituent Snapshot ON Fact Index Constituent Snapshot.Index Constituent Dimension Id = Index Constituent Dimension.Index Constituent Dimension Id AND <mã CK đang xét> → Index Constituent Dimension.Index Code → LOOKUP Market Index Dimension ON Market Index Dimension.Market Code = Index Constituent Dimension.Index Code → LOOKUP Fact Market Index Snapshot ON Fact Market Index Snapshot.Market Index Dimension Id = Market Index Dimension.Market Index Dimension Id AND cùng Snapshot Date → Fact Market Index Snapshot.Market Index Value` | **[SỬA 2026-09-22, datamart-review]** Thay hàm giả `mapping(Index Code)` (chưa phải SQL thật) bằng khóa JOIN đã xác nhận `Market Index Dimension.Market Code = Index Constituent Dimension.Index Code` (nguồn `MDDS.JAD_MARKETINFOR.INDEXNAME`, xác nhận 2026-09-22 — cùng khóa vừa áp dụng cho K_GSTT_35 Nhóm 6, xem O_GSTT_3 Section 5). Vẫn giữ nguyên cơ chế JOIN qua Bridge (`Fact Index Constituent Snapshot`) theo mã CK đang xét (cùng cơ chế K_GSTT_75, Nhóm 24) để lấy đúng Index Code của mã đó trước khi bridge sang Fact Market Index Snapshot — giá trị lặp lại trên mọi mã cùng rổ | READY |
-| K_GSTT_39 | % thay đổi | % | Phái sinh | `Fact Market Index Snapshot.Index Percent Change WHERE Market Code = mapping(Index Code) AND cùng ngày, JOIN qua Bridge theo mã CK` | Đổi từ `K_GSTT_38` (thay đổi tuyệt đối) sang `K_GSTT_39` (% thay đổi) — theo sheet Tổng hợp công thức, dòng 3 của Nhóm 37 là `(Giá đóng cửa/Giá tham chiếu − 1)×100`. **Ghi chú 2026-09-22:** vẫn dùng hàm giả `mapping(Index Code)` — chưa sửa trong lượt này, ngoài phạm vi yêu cầu (xem ghi chú đầu Nhóm) | READY |
-| K_GSTT_47 | KLGD | Cổ phiếu | Phái sinh | `Fact Index Constituent Snapshot.Index Total Matched Volume` (cột tính sẵn trên Bridge, KHÔNG cần MAX/GROUP BY — Bridge đã đúng grain Symbol×Index×Date) | Reuse từ Nhóm 5 (K_GSTT_47 = KLGD của chỉ số), bỏ MAX/GROUP BY vì Nhóm 37 hiển thị theo mã CK | READY |
-| K_GSTT_48 | GTGD | VNĐ | Phái sinh | `Fact Index Constituent Snapshot.Index Total Matched Value` (cột tính sẵn, không GROUP BY) | Cùng lý do K_GSTT_47 | READY |
-| K_GSTT_49 | KLNN ròng | Cổ phiếu | Phái sinh | `Fact Index Constituent Snapshot.Index Foreign Net Volume` (cột tính sẵn, gộp Mua ròng-Bán ròng, không GROUP BY) | Cùng lý do K_GSTT_47 | READY |
-| K_GSTT_50 | GT NN ròng | VNĐ | Phái sinh | `Fact Index Constituent Snapshot.Index Foreign Net Value` (cột tính sẵn, gộp Mua ròng-Bán ròng, không GROUP BY) | Cùng lý do K_GSTT_47 | READY |
-| K_GSTT_51 | KLGD thỏa thuận | Cổ phiếu | Phái sinh | `Fact Index Constituent Snapshot.Index Total Negotiated Volume` (cột tính sẵn, không GROUP BY) | Cùng lý do K_GSTT_47. Quyết định nguồn (2026-08-20, O_GSTT_12) không đổi | READY |
-| K_GSTT_52 | GTGD thỏa thuận | VNĐ | Phái sinh | `Fact Index Constituent Snapshot.Index Total Negotiated Value` (cột tính sẵn, không GROUP BY) | Cùng lý do K_GSTT_47. Quyết định nguồn (2026-08-20, O_GSTT_12) không đổi | READY |
+| K_GSTT_4 | Chỉ số | — | Chiều | `Market Index Dimension.Index Name` | Reuse từ Nhóm 5 (K_GSTT_4, biến thể Market Index Dimension) — BA dòng 530 `indexName`. Đổi lại từ biến thể `Index Constituent Dimension` do grain chuyển về chỉ số (2026-09-26) | READY |
+| K_GSTT_35 | Giá đóng cửa (điểm chỉ số) | Điểm | Cơ sở | `Fact Market Index Snapshot.Market Index Value` | Reuse từ Nhóm 5 (K_GSTT_35) — BA dòng 531 `marketIndex`, bản ghi cuối phiên `rn=1`. Case 1 | READY |
+| K_GSTT_179 | Giá mở cửa (điểm chỉ số) | Điểm | Cơ sở | `Fact Market Index Snapshot.Open Index` | **[MỚI 2026-09-26]** BA dòng 532 `open`. Cột `open_index` đã có sẵn trên Fact (GSTT delta, Atomic `market_index_snapshot.open_index`) — chưa KPI nào dùng, không mở rộng Fact | READY |
+| K_GSTT_37 | Giá thấp nhất | Điểm | Cơ sở | `Fact Market Index Snapshot.Low Index` | Reuse từ Nhóm 5 (K_GSTT_37) — BA dòng 533 `Low`. Case 1 | READY |
+| K_GSTT_36 | Giá cao nhất | Điểm | Cơ sở | `Fact Market Index Snapshot.High Index` | Reuse từ Nhóm 5 (K_GSTT_36) — BA dòng 534 `high`. Case 1 | READY |
+| K_GSTT_40 | Tăng | Mã | Cơ sở | `Fact Market Index Snapshot.Advances Count` | Reuse từ Nhóm 5 (K_GSTT_40) — BA dòng 535 `advances`. SQL tham khảo dòng 535 là SQL KLNN (chép nhầm từ dòng khác) — theo Trường nguồn `advances` (H10) | READY |
+| K_GSTT_41 | Giảm | Mã | Cơ sở | `Fact Market Index Snapshot.Declines Count` | Reuse từ Nhóm 5 (K_GSTT_41) — BA dòng 536 `declines`. SQL tham khảo dòng 536 là SQL GTNN (chép nhầm) — theo Trường nguồn (H10) | READY |
+| K_GSTT_42 | Đứng giá | Mã | Cơ sở | `Fact Market Index Snapshot.No Change Count` | Reuse từ Nhóm 5 (K_GSTT_42) — BA dòng 537 `noChange`. Case 1 | READY |
+| K_GSTT_43 | Tăng trần | Mã | Cơ sở | `Fact Market Index Snapshot.Ceiling Count` | Reuse từ Nhóm 5 (K_GSTT_43) — BA dòng 538 `numberOfCe`. Case 1 | READY |
+| K_GSTT_44 | Giảm sàn | Mã | Cơ sở | `Fact Market Index Snapshot.Floor Count` | Reuse từ Nhóm 5 (K_GSTT_44) — BA dòng 539 `numberOfFl`. Case 1 | READY |
+| K_GSTT_38 | Thay đổi | Điểm | Cơ sở | `Fact Market Index Snapshot.Index Change` | Reuse từ Nhóm 5 (K_GSTT_38) — BA dòng 540 `indexchange`. Case 1 | READY |
+| K_GSTT_39 | % Thay đổi | % | Phái sinh | `Fact Market Index Snapshot.Index Percent Change` | Reuse từ Nhóm 5 (K_GSTT_39) — BA dòng 541 `indexpercentchange`. Bỏ hàm giả `mapping(Index Code)` của bản trước — grain chỉ số không cần JOIN qua Bridge | READY |
+| K_GSTT_47 | KLGD | Cổ phiếu | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Total Matched Volume) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 5 (K_GSTT_47) — BA dòng 542, khớp lệnh (Board Type NOT IN T1–T6/R1). Case 1 | READY |
+| K_GSTT_48 | GTGD | VNĐ | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Total Matched Value) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 5 (K_GSTT_48) — BA dòng 543. Case 1 | READY |
+| K_GSTT_49 | KLNN ròng | Cổ phiếu | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Foreign Net Volume) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 5 (K_GSTT_49) — BA dòng 544 (Trường nguồn Execution Volume/Trade quantity — khối lượng, khớp H8). Case 1 | READY |
+| K_GSTT_50 | GTNN ròng | VNĐ | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Foreign Net Value) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 5 (K_GSTT_50) — BA dòng 545 (Trường nguồn Execution Value — giá trị, khớp H8). Case 1 | READY |
+| K_GSTT_51 | KLGD thỏa thuận | Cổ phiếu | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Total Negotiated Volume) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 5 (K_GSTT_51) — BA dòng 546 (Board Type IN T1–T6/R1). Case 1 | READY |
+| K_GSTT_52 | GTGD thỏa thuận | VNĐ | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Total Negotiated Value) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 5 (K_GSTT_52) — BA dòng 547. Case 1 | READY |
+| K_GSTT_54 | Vốn hóa | VNĐ | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Market Cap) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 5 (K_GSTT_54) — BA dòng 548 (Giá đóng cửa × Số CP lưu hành, gộp toàn rổ). Biến thể cấp chỉ số, không dùng vốn hóa từng mã | READY |
+| K_GSTT_149 | P/e | Lần | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index PE) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 6 (K_GSTT_149, P/E thị trường) — BA dòng 549. Không dùng K_GSTT_58 (P/E từng mã) | READY |
+| K_GSTT_150 | P/b | Lần | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index PB) WHERE Index Constituent Dimension.Index Code = Market Index Dimension.Market Code GROUP BY Index Code, Trade Date` | Reuse từ Nhóm 6 (K_GSTT_150, P/B thị trường) — BA dòng 550. Không dùng K_GSTT_59 (P/B từng mã) | READY |
 
-**Star Schema:** Không có bảng mới — 100% reuse `Fact Market Index Snapshot`, `Market Index Dimension`, `Index Constituent Dimension`, `Fact Index Constituent Snapshot` (Bridge), `Security Trading Snapshot Dimension` đã vẽ ở Nhóm 1/5/6.
+**Star Schema:** Không có bảng mới — 100% reuse `Fact Market Index Snapshot`, `Market Index Dimension`, `Calendar Date Dimension` (vẽ ở Nhóm 5) và `Fact Index Constituent Snapshot`, `Index Constituent Dimension` (vẽ ở Nhóm 1/6). `K_GSTT_179` dùng cột `Open_Index` đã có trong khối `Fact_Market_Index_Snapshot` ở Nhóm 5.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    F1["Fact Market Index Snapshot"] --> RPT49["Data Explorer: Giao dịch & thanh khoản — Chỉ số"]
-    F2["Fact Index Constituent Snapshot"] --> RPT49
-    D1["Index Constituent Dimension"] --> RPT49
-    D2["Security Trading Snapshot Dimension"] --> RPT49
-    D3["Market Index Dimension"] --> RPT49
+    F1["Fact Market Index Snapshot"] --> RPT37["K_GSTT_4,35-44,47-52,54,149,150,179: Data Explorer Giao dịch & thanh khoản — Chỉ số"]
+    F2["Fact Index Constituent Snapshot"] --> RPT37
+    D1["Market Index Dimension"] --> RPT37
+    D2["Index Constituent Dimension"] --> RPT37
+    D3["Calendar Date Dimension"] --> RPT37
 ```
 
-**Bảng grain:** Không có bảng mới — cùng grain `Fact Index Constituent Snapshot` (Bridge, Symbol × Index × Date) đã có ở Nhóm 1. Grain hiển thị Nhóm 37 = 1 dòng/mã CK (khác Nhóm 5 = 1 dòng/chỉ số) dù cùng nguồn dữ liệu. **[SỬA 2026-09-22]** K_GSTT_35 lookup thêm từ `Fact Market Index Snapshot` (`fct_market_index_snpst`, reuse — sở hữu QLKD) qua khóa Market Code = Index Code, không làm thay đổi grain hiển thị của Nhóm 37.
+**Bảng grain:** Không có bảng mới — `Fact Market Index Snapshot` (1 row / chỉ số / ngày) + `Fact Index Constituent Snapshot` (1 row / mã CK / rổ chỉ số / ngày; measure cấp chỉ số lặp trên mọi mã cùng rổ nên lấy `MAX ... GROUP BY Index Code, Trade Date`). Presentation Grain Nhóm 37 = Level 2 (chỉ số × ngày) ≤ Storage Grain của cả 2 Fact.
 
-> **Coverage rule:** Không áp dụng — Nhóm này không tạo/mở rộng Fact hay Dimension nào, thuần túy reuse từ Nhóm 1/5.
+> **Coverage rule:** Không áp dụng — Nhóm này không tạo/mở rộng Fact hay Dimension nào.
+
+---
+
+#### Nhóm 38 - Data Explorer: Điểm đóng góp chỉ số
+
+> **Phân loại:** Data Explorer (Phân tích)
+> **Atomic:** 100% reuse Nhóm 24 — `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR, `Index Constituent Snapshot` ← MDDS.JAD_CSIDXINFOR, `Market Index Snapshot` ← MDDS.JAD_MARKETINFOR, `Listed Share Info` ← VSDC.outstanding_shares, `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE/HNX — **READY**. Không có nguồn mới.
+>
+> **[MỚI 2026-09-26]** BA thêm Nhóm 38 (dòng 551–570, 19 dòng hợp lệ), toàn bộ `Đánh giá = Trùng` — bản Data Explorer của **Nhóm 24** (Xu hướng dòng tiền — Tỷ trọng dòng tiền): cùng công thức `Contribution_i = w_i × Return_i × Index(t-1)`, cùng 2 biến thể vốn hóa lưu hành / tự do chuyển nhượng. Grain hiển thị = **1 dòng / mã CK / rổ chỉ số / ngày** (Level 4, "Mã chứng khoán của rổ chỉ số đã lọc" — dòng 553), cùng grain Nhóm 24.
+> - 17/19 dòng reuse nguyên KPI của Nhóm 24 (dẫn chiếu từng dòng ở cột Ghi chú).
+> - "Giá chỉ số" (dòng 554, "Giá đóng cửa của chỉ số tại 1 ngày lọc") → `K_GSTT_35`, biến thể LOOKUP theo mã CK qua Bridge của Nhóm 6.
+> - "Giá của chỉ số Index t-n" (dòng 561) chưa có KPI hiển thị riêng (ở Nhóm 24 chỉ là thành phần trong công thức K_GSTT_75/76) → khai mới `K_GSTT_180`, cột **đã có sẵn** `Fact Market Index Snapshot.Prior Index`. Không mở rộng Fact.
+> - **Khung n ngày** (BA mô tả cả khung 1 ngày và khung n ngày ở dòng 555–568): kế thừa giới hạn đang mở của Nhóm 24 — thiết kế chỉ hiện thực khung 1 ngày (t-1, cột LAG 1 phiên lưu sẵn). Khung n ngày chưa thiết kế (xem O_GSTT_34).
+> - Dòng 562/567 SQL tham khảo lấy `BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành` cho khối lượng lưu hành — thiết kế dùng `Listed Share Info` (VSDC `outstanding_shares`), cùng quyết định O_GSTT_22 của Nhóm 6/24.
+
+**Mockup:**
+
+> Mỗi dòng = 1 mã CK trong rổ chỉ số đã lọc × 1 ngày. Giá chỉ số / Index t-1 lặp lại trên mọi mã cùng rổ.
+
+| Sàn | Mã chỉ số | Mã CK | Giá chỉ số | Vốn hóa t-1 | Tổng vốn hóa rổ t-1 | W_i (%) | Giá ĐC | Giá TC | Return_i (%) | Index t-1 | Điểm đóng góp | Đóng góp tương đối | VH TDCN t-1 | Tổng VH TDCN t-1 | W_ff (%) | Điểm đóng góp TDCN | Đóng góp TDCN tương đối | GTGD khớp |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| HOSE | VN30 | VCB | 1,245.32 | 450 N.Tỷ | 3.2 Tr.Tỷ | 14.06 | 92,500 | 91,800 | +0.76 | 1,240.10 | +1.33 | +0.11 | 45 N.Tỷ | 0.9 Tr.Tỷ | 5.00 | +0.47 | +0.04 | 320 Tỷ |
+
+**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Calendar Date Dimension`; `Fact Index Constituent Snapshot` (Bridge) → `Index Constituent Dimension`; `Fact Market Index Snapshot` → `Market Index Dimension` (lookup Giá chỉ số / Index t-1 qua `Market Code = Index Code`).
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_GSTT_3 | Sàn | — | Chiều | `Security Trading Snapshot Dimension.Floor Code` | Reuse từ Nhóm 24 (K_GSTT_3) — BA dòng 551. Case 1 | READY |
+| K_GSTT_4 | Mã chỉ số | — | Chiều | `Index Constituent Dimension.Index Code` | Reuse từ Nhóm 24 (K_GSTT_4, biến thể Index Constituent Dimension) — BA dòng 552. Case 1 | READY |
+| K_GSTT_1 | Mã chứng khoán | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 24 (K_GSTT_1) — BA dòng 553 "Mã chứng khoán của rổ chỉ số đã lọc" (lọc qua Bridge theo K_GSTT_4). Case 1 | READY |
+| K_GSTT_35 | Giá chỉ số | Điểm | Cơ sở | `LOOKUP Fact Market Index Snapshot ON Fact Market Index Snapshot.Market Index Dimension Id = Market Index Dimension.Market Index Dimension Id AND Market Index Dimension.Market Code = Index Constituent Dimension.Index Code AND Fact Market Index Snapshot.Snapshot Date Dimension Id = Calendar Date Dimension.Calendar Date Dimension Id → Fact Market Index Snapshot.Market Index Value` | Reuse từ Nhóm 6 (K_GSTT_35, biến thể LOOKUP theo mã CK) — BA dòng 554. Giá trị lặp trên mọi mã cùng rổ. Case 1 | READY |
+| K_GSTT_170 | Vốn hóa theo mã của ngày t-1 | VNĐ | Phái sinh | `Fact Stock Portfolio Snapshot.Prior Market Cap` | Reuse từ Nhóm 24 (K_GSTT_170) — BA dòng 555. Case 1 | READY |
+| K_GSTT_171 | Tổng vốn hóa theo từng chỉ số của ngày t-1 | VNĐ | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Prior Market Cap) GROUP BY Index Code, Snapshot Date` | Reuse từ Nhóm 24 (K_GSTT_171) — BA dòng 556. Case 1 | READY |
+| K_GSTT_74 | W_i = Tỷ trọng trong chỉ số (%) ngày t-1 | % | Phái sinh | `Fact Stock Portfolio Snapshot.Prior Market Cap / Fact Index Constituent Snapshot.Index Prior Market Cap × 100` | Reuse từ Nhóm 24 (K_GSTT_74) — BA dòng 557 (biến thể lưu hành). Case 2 | READY |
+| K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 24 (K_GSTT_10) — BA dòng 558 `closePrice`. Case 1 | READY |
+| K_GSTT_9 | Giá tham chiếu | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Reference Price` | Reuse từ Nhóm 24 (K_GSTT_9) — BA dòng 559 `reference`. Case 1 | READY |
+| K_GSTT_12 | Return_i = % Biến động giá | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 24 (K_GSTT_12) — BA dòng 560, khung 1 ngày. Case 2 | READY |
+| K_GSTT_180 | Giá của chỉ số Index t-1 | Điểm | Cơ sở | `LOOKUP Fact Market Index Snapshot ON Fact Market Index Snapshot.Market Index Dimension Id = Market Index Dimension.Market Index Dimension Id AND Market Index Dimension.Market Code = Index Constituent Dimension.Index Code AND Fact Market Index Snapshot.Snapshot Date Dimension Id = Calendar Date Dimension.Calendar Date Dimension Id → Fact Market Index Snapshot.Prior Index` | **[MỚI 2026-09-26]** BA dòng 561 "Giá của chỉ số Index t-n" (khung 1 ngày: `Marketindex t-1`). Cột `Prior Index` đã có sẵn trên Fact (Nhóm 5), trước đây chỉ dùng trong công thức K_GSTT_75/76. Khung n ngày chưa thiết kế — O_GSTT_34 | READY |
+| K_GSTT_75 | Điểm đóng góp theo vốn hóa của cổ phiếu đang lưu hành | Điểm | Phái sinh | `(K_GSTT_74 / 100) × K_GSTT_12 × Fact Market Index Snapshot.Prior Index` | Reuse từ Nhóm 24 (K_GSTT_75) — BA dòng 562. Case 2 | READY |
+| K_GSTT_124 | Điểm đóng góp theo vốn hóa của cổ phiếu đang lưu hành điểm đóng góp tương đối | % | Phái sinh | `K_GSTT_75 / Fact Market Index Snapshot.Prior Index × 100` | Reuse từ Nhóm 24 (K_GSTT_124) — BA dòng 563 `(w_i × Return_i) × 100`. Case 2 | READY |
+| K_GSTT_172 | Vốn hóa theo mã của ngày t-1 chuyển nhượng | VNĐ | Phái sinh | `Fact Stock Portfolio Snapshot.Prior Free Float Market Cap` | Reuse từ Nhóm 24 (K_GSTT_172) — BA dòng 564 (`FRee_FLoat_Share`). Case 1 | READY |
+| K_GSTT_173 | Tổng vốn hóa theo từng chỉ số của ngày t-1 chuyển nhượng | VNĐ | Phái sinh | `MAX(Fact Index Constituent Snapshot.Index Prior Free Float Market Cap) GROUP BY Index Code, Snapshot Date` | Reuse từ Nhóm 24 (K_GSTT_173) — BA dòng 565. Case 1 | READY |
+| K_GSTT_174 | W_i = Tỷ trọng trong chỉ số (%) ngày t-1 (tự do chuyển nhượng) | % | Phái sinh | `Fact Stock Portfolio Snapshot.Prior Free Float Market Cap / Fact Index Constituent Snapshot.Index Prior Free Float Market Cap × 100` | Reuse từ Nhóm 24 (K_GSTT_174) — BA dòng 566 (tên dòng trùng dòng 557; phân biệt theo vị trí trong khối "chuyển nhượng"). Case 2 | READY |
+| K_GSTT_76 | Điểm đóng góp theo vốn hóa của cổ phiếu tự do chuyển nhượng | Điểm | Phái sinh | `w_ff_i × K_GSTT_12 × Fact Market Index Snapshot.Prior Index`, `w_ff_i = Fact Stock Portfolio Snapshot.Prior Free Float Market Cap / Fact Index Constituent Snapshot.Index Prior Free Float Market Cap` | Reuse từ Nhóm 24 (K_GSTT_76) — BA dòng 567. Case 2 | READY |
+| K_GSTT_125 | Điểm đóng góp theo vốn hóa của cổ phiếu tự do chuyển nhượng tương đối | % | Phái sinh | `K_GSTT_76 / Fact Market Index Snapshot.Prior Index × 100` | Reuse từ Nhóm 24 (K_GSTT_125) — BA dòng 568. Case 2 | READY |
+| K_GSTT_14 | Giá trị giao dịch khớp lệnh | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Market Id Code IN ('UPX','STX','STK') AND Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 24 (K_GSTT_14) — BA dòng 570 (khớp lệnh, Board Type NOT IN T1–T6/R1). Case 1 | READY |
+
+**Star Schema:** Không có bảng mới — 100% reuse `Fact Stock Portfolio Snapshot`, `Fact Index Constituent Snapshot`, `Security Trading Snapshot Dimension`, `Index Constituent Dimension`, `Calendar Date Dimension` (vẽ ở Nhóm 1/24) và `Fact Market Index Snapshot`, `Market Index Dimension` (vẽ ở Nhóm 5).
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    F1["Fact Stock Portfolio Snapshot"] --> RPT38["K_GSTT_1,3,4,9,10,12,14,35,74-76,124,125,170-174,180: Data Explorer Điểm đóng góp chỉ số"]
+    F2["Fact Index Constituent Snapshot"] --> RPT38
+    F3["Fact Market Index Snapshot"] --> RPT38
+    D1["Security Trading Snapshot Dimension"] --> RPT38
+    D2["Index Constituent Dimension"] --> RPT38
+    D3["Market Index Dimension"] --> RPT38
+    D4["Calendar Date Dimension"] --> RPT38
+```
+
+**Bảng grain:** Không có bảng mới — cùng grain Nhóm 24: `Fact Stock Portfolio Snapshot` (1 row / mã CK / ngày), `Fact Index Constituent Snapshot` (1 row / mã CK / rổ chỉ số / ngày), `Fact Market Index Snapshot` (1 row / chỉ số / ngày — chỉ lookup, lặp trên mọi mã cùng rổ). Presentation Grain Nhóm 38 = Level 4 (mã CK trong rổ × ngày) ≤ Storage Grain Bridge.
+
+> **Coverage rule:** Không áp dụng — Nhóm này không tạo/mở rộng Fact hay Dimension nào.
+
+---
+
+#### Nhóm 39 - Data Explorer: Giao dịch trái phiếu
+
+> **Phân loại:** Data Explorer (Phân tích)
+> **Atomic:** 100% reuse Nhóm 2 — `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR (filter trái phiếu `Stock Type Code = '1'`), `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE/HNX — **READY**. Không có nguồn mới.
+>
+> **[MỚI 2026-09-26]** BA thêm Nhóm 39 (dòng 571–581, 11 dòng), toàn bộ `Đánh giá = Trùng`, BA không ghi Bảng nguồn/Trường nguồn — bản Data Explorer của **Nhóm 2** (Bảng số liệu của trái phiếu). Grain = 1 dòng / mã trái phiếu / ngày (Level 4).
+> - **Điều kiện KLGD/GTGD (dòng 578/579):** BA ghi `MARKET_ID IN ('STK','STX','UPX')` — đây là mã thị trường cổ phiếu, áp nguyên văn sẽ ra 0 cho trái phiếu (khả năng BA chép từ nhóm cổ phiếu). Data Modeler quyết định 2026-09-26: dùng mã đúng loại CK → reuse `K_GSTT_23/24` (`Market Id Code IN ('BDO','HCX')`, khớp lệnh) của Nhóm 2. Ghi O_GSTT_35 để BA sửa mô tả.
+> - **Ngành (dòng 572):** BA mô tả "Phân ngành cấp 1 của doanh nghiệp theo IDS" — `K_GSTT_2` nối `Public Company Dimension` qua mã CK, mà mã trái phiếu (VD `TCH2226`) không phải mã cổ phiếu của tổ chức phát hành → không có khóa nối. PENDING, xem O_GSTT_35.
+> - "Giá mở cửa" (K_GSTT_21) có trên Nhóm 2 nhưng BA Nhóm 39 không có dòng này — không đưa vào.
+
+**Mockup:**
+
+| Mã TP | Ngành | Giá TC | Giá ĐC | Thay đổi | % TĐ | Ngày đáo hạn | KLGD | GTGD | YTM BQ | Lãi suất |
+|---|---|---|---|---|---|---|---|---|---|---|
+| TCH2226 | Bất động sản | 102.5 | 103.0 | +0.5 | +0.49% | 15/03/2028 | 1.200 | 12.4 Tỷ | 6.8% | 7.2% |
+
+**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Calendar Date Dimension` (giống Nhóm 2).
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_GSTT_20 | Mã trái phiếu | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 2 (K_GSTT_20) — BA dòng 571. Filter: `Stock Type Code = '1' AND Floor Code IN ('04','10','03','02')`. Case 1 | READY |
+| K_GSTT_2 | Ngành | — | Chiều | TBD — chờ khóa nối mã TP → tổ chức phát hành | **Lý do pending:** [Nhóm 5 - Datamart chưa thiết kế Fact/Dim]: BA dòng 572 cần ngành cấp 1 của doanh nghiệp phát hành; `K_GSTT_2` (Nhóm 1) nối `Public Company Dimension` qua mã cổ phiếu, mã trái phiếu không khớp — cần xác định khóa nối Mã TP → Tổ chức phát hành → Công ty đại chúng, xem O_GSTT_35. **Atomic cần bổ sung:** TBD (khóa tổ chức phát hành trên `Security Trading Snapshot` hoặc bảng TP riêng). **Mart dự kiến:** Public Company Dimension — grain: 1 row / công ty đại chúng | PENDING |
+| K_GSTT_9 | Giá tham chiếu | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Reference Price` | Reuse từ Nhóm 2 (K_GSTT_9) — BA dòng 573. Case 1 | READY |
+| K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 2 (K_GSTT_10) — BA dòng 574. Case 1 | READY |
+| K_GSTT_11 | Thay đổi giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Price Change` | Reuse từ Nhóm 2 (K_GSTT_11) — BA dòng 575 "Giá đóng cửa − Giá tham chiếu". Case 1 | READY |
+| K_GSTT_12 | % Thay đổi giá | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 (K_GSTT_12) — BA dòng 576 "(Giá đóng cửa / Giá tham chiếu − 1) × 100". Case 2 | READY |
+| K_GSTT_22 | Ngày đáo hạn | Ngày | Cơ sở | `Security Trading Snapshot Dimension.Maturity Date` | Reuse từ Nhóm 2 (K_GSTT_22) — BA dòng 577. Case 1 | READY |
+| K_GSTT_23 | Khối lượng | Trái phiếu | Phái sinh | `SUM(Securities Trade.Execution Volume WHERE Market Id Code IN ('BDO','HCX') AND Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 2 (K_GSTT_23) — BA dòng 578 (khớp lệnh). Dùng mã thị trường trái phiếu thay cho `'STK','STX','UPX'` BA ghi (O_GSTT_35). Case 1 | READY |
+| K_GSTT_24 | Giá trị | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Market Id Code IN ('BDO','HCX') AND Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')) GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 2 (K_GSTT_24) — BA dòng 579 (khớp lệnh). Cùng ghi chú K_GSTT_23. Case 1 | READY |
+| K_GSTT_25 | YTM BQ | % | Cơ sở | `Security Trading Snapshot Dimension.Yield` | Reuse từ Nhóm 2 (K_GSTT_25) — BA dòng 580. Case 1 | READY |
+| K_GSTT_26 | Lãi suất của mã trái phiếu | % | Cơ sở | `Security Trading Snapshot Dimension.Coupon Rate` | Reuse từ Nhóm 2 (K_GSTT_26) — BA dòng 581. Case 1 | READY |
+
+**Star Schema:** Không có bảng mới — giống Nhóm 2 (`Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Calendar Date Dimension`).
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    F1["Fact Stock Portfolio Snapshot"] --> RPT39["K_GSTT_9-12,20,22-26: Data Explorer Giao dịch trái phiếu"]
+    D1["Security Trading Snapshot Dimension"] --> RPT39
+    D2["Calendar Date Dimension"] --> RPT39
+```
+
+**Bảng grain:** Không có bảng mới — giống Nhóm 2 (1 row / mã trái phiếu / ngày).
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| Ngành (trái phiếu) | (BA không ghi) — IDS phân ngành cấp 1 | Public Company + khóa nối tổ chức phát hành TP | TBD |
+
+---
+
+#### Nhóm 40 - Data Explorer: Giao dịch phái sinh
+
+> **Phân loại:** Data Explorer (Phân tích)
+> **Atomic:** 100% reuse Nhóm 1 — `Security Trading Snapshot` ← MDDS.JAD_STOCKINFOR (phái sinh `Floor Code = '03'`), `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HNX (`Market Id Code = 'DVX'`) — **READY**. Không có nguồn mới.
+>
+> **[MỚI 2026-09-26]** BA thêm Nhóm 40 (dòng 582–590, 9 dòng), toàn bộ `Đánh giá = Trùng`, BA không ghi Bảng nguồn/Trường nguồn — bản Data Explorer của phần phái sinh trong **Nhóm 1** (K_GSTT_8/15/16/148). Grain = 1 dòng / mã HĐTL / ngày (Level 4).
+> - **Điều kiện Khối lượng/Giá trị/KLNN ròng (dòng 588–590):** BA ghi `MARKET_ID IN ('STK','STX','UPX')` — mã thị trường cổ phiếu, áp nguyên văn sẽ ra 0 cho phái sinh. Data Modeler quyết định 2026-09-26: dùng mã đúng loại CK → reuse `K_GSTT_15/16/148` (`Market Id Code = 'DVX'`). Ghi O_GSTT_35 để BA sửa mô tả.
+
+**Mockup:**
+
+| Mã HĐ | Ngày đáo hạn | Giá TC | Giá ĐC | Thay đổi | % TĐ | Khối lượng | Giá trị | KLNN ròng |
+|---|---|---|---|---|---|---|---|---|
+| VN30F2610 | 15/10/2026 | 1,244.0 | 1,248.5 | +4.5 | +0.36% | 210,000 HĐ | 52 N.Tỷ | +1,250 HĐ |
+
+**Source:** `Fact Stock Portfolio Snapshot` → `Security Trading Snapshot Dimension`, `Calendar Date Dimension` (giống Nhóm 1).
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_GSTT_1 | Mã chứng khoán | — | Chiều | `Security Trading Snapshot Dimension.Symbol` | Reuse từ Nhóm 1 (K_GSTT_1) — BA dòng 582. Filter phái sinh: `Floor Code = '03'`. Case 1 | READY |
+| K_GSTT_8 | Ngày đáo hạn | Ngày | Cơ sở | `Security Trading Snapshot Dimension.Maturity Date` | Reuse từ Nhóm 1 (K_GSTT_8, Ngày đáo hạn phái sinh) — BA dòng 583. Case 1 | READY |
+| K_GSTT_9 | Giá tham chiếu | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Reference Price` | Reuse từ Nhóm 1 (K_GSTT_9) — BA dòng 584. Case 1 | READY |
+| K_GSTT_10 | Giá đóng cửa | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Close Price` | Reuse từ Nhóm 1 (K_GSTT_10) — BA dòng 585. Case 1 | READY |
+| K_GSTT_11 | Thay đổi giá | VNĐ | Cơ sở | `Security Trading Snapshot Dimension.Price Change` | Reuse từ Nhóm 1 (K_GSTT_11) — BA dòng 586. Case 1 | READY |
+| K_GSTT_12 | % Thay đổi giá | % | Phái sinh | `Price Change / Reference Price × 100` | Reuse từ Nhóm 1 (K_GSTT_12) — BA dòng 587. Case 2 | READY |
+| K_GSTT_15 | Khối lượng | Hợp đồng | Phái sinh | `SUM(Securities Trade.Execution Volume WHERE Market Id Code = 'DVX') GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_15) — BA dòng 588 (khớp lệnh). Dùng `'DVX'` thay cho `'STK','STX','UPX'` BA ghi (O_GSTT_35). Case 1 | READY |
+| K_GSTT_16 | Giá trị | VNĐ | Phái sinh | `SUM(Securities Trade.Execution Value WHERE Market Id Code = 'DVX') GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_16) — BA dòng 589. Cùng ghi chú K_GSTT_15. Case 1 | READY |
+| K_GSTT_148 | KLNN Ròng | Hợp đồng | Phái sinh | `SUM(Buy Foreign Investor Type Code IN ('10','20') → Execution Volume WHERE Market Id Code = 'DVX') − SUM(Sell Foreign Investor Type Code IN ('10','20') → Execution Volume WHERE Market Id Code = 'DVX') GROUP BY Symbol, Trade Date` | Reuse từ Nhóm 1 (K_GSTT_148) — BA dòng 590 (khối lượng, NĐTNN `IN ('10','20')`, khớp H8). Case 1 | READY |
+
+**Star Schema:** Không có bảng mới — giống Nhóm 1 (`Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`, `Calendar Date Dimension`).
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    F1["Fact Stock Portfolio Snapshot"] --> RPT40["K_GSTT_1,8-12,15,16,148: Data Explorer Giao dịch phái sinh"]
+    D1["Security Trading Snapshot Dimension"] --> RPT40
+    D2["Calendar Date Dimension"] --> RPT40
+```
+
+**Bảng grain:** Không có bảng mới — giống Nhóm 1 (1 row / mã CK / ngày).
+
+---
+
+#### Nhóm 41 - Data Explorer: Kết xuất sổ lệnh — HOSE
+
+> **Phân loại:** Data Explorer (Phân tích — Fact Event, grain giao dịch khớp)
+> **Atomic:** `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HOSE (`src_stm_code` nhánh HOSE) — **READY** (Nguồn 1, `DataModel/Atomic/Transaction/dm_atm_securities_trade-ORDERTRADE.TRADE_BOOK_HOSE.yaml`). BA ghi bảng staging `UAT_Hose_stg.trade_book`.
+>
+> **[MỚI 2026-09-26]** BA thêm Nhóm 41 (dòng 591–636, 46 dòng) — kết xuất nguyên văn sổ lệnh khớp của sàn HOSE, mỗi dòng BA = 1 cột sổ lệnh. Toàn bộ 46 cột có attribute tương ứng trên Atomic `Securities Trade` (đối chiếu 1-1 theo cột nguồn, cột Ghi chú).
+> - **Bảng mới `Fact HOSE Securities Trade`** (Fact Event, append theo ngày giao dịch): Data Modeler chọn 2026-09-26 **2 bảng riêng theo sàn** (HOSE / HNX) thay vì 1 bảng union — khớp 1-1 màn hình BA, không có cột NULL theo sàn. Là Fact (append theo thời gian) chứ không phải Operational (SCD4A current-state) theo tiêu chí `naming_conventions.md`. Không tái sử dụng được bảng có sẵn: các Fact khác trên `securities_trade` (`fct_stock_portfolio_snpst`, `fct_investor_category_trading_snpst`, `foreign_investor_trading_detail_rpt`…) đều đã aggregate — không giữ grain giao dịch.
+> - **Grain:** 1 row / giao dịch khớp (`Securities Trade Code`) — Level 6. FK duy nhất `Trade Date Dimension Id` → `Calendar Date Dimension` (lọc theo ngày giao dịch); mọi cột còn lại là degenerate attribute (Data Explorer hiển thị nguyên văn).
+> - **Dữ liệu nhạy cảm (PII):** BA yêu cầu hiển thị số tài khoản, tên chủ tài khoản, PIN, tên trader. Data Modeler quyết định 2026-09-26 **giữ các cột này trên Datamart** (nghiệp vụ giám sát giao dịch cần tra cứu theo tài khoản) — ngoại lệ có chủ đích với quy tắc "PII chỉ dùng để JOIN"; bắt buộc phân quyền + masking ở tầng BI, xem O_GSTT_36. KPI PII đánh dấu `[PII]` ở cột Ghi chú.
+> - **Khối lượng dữ liệu:** grain giao dịch — mỗi ngày nhiều triệu dòng; bảng phải partition theo `Trade Date`, chính sách lưu trữ lịch sử chờ xác nhận (O_GSTT_36).
+
+**Mockup:**
+
+> Lưới kết xuất: mỗi dòng = 1 giao dịch khớp, 46 cột theo đúng thứ tự BA; lọc theo Ngày giao dịch (+ Mã CK / Bảng giao dịch tùy chọn).
+
+| trade_date | market_id | symbol | currency | board_type | trade_no | time | session | … |
+|---|---|---|---|---|---|---|---|---|
+| 26/09/2026 | STO | VCB | VND | G1 | 1024587 | 09:15:02 | 2 | … |
+
+**Source:** `Fact HOSE Securities Trade` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_GSTT_181 | trade_date | Ngày | Chiều | `Calendar Date Dimension.Calendar Date` (qua `Fact HOSE Securities Trade.Trade Date Dimension Id`) | BA dòng 591 `trade_date` ← Atomic `Securities Trade.Trade Date` (TRADE_DATE) | READY |
+| K_GSTT_182 | market_id | — | Chiều | `Fact HOSE Securities Trade.Market Id Code` | BA dòng 592 `market_id` ← Atomic `Securities Trade.Market Id Code` (MARKET_ID) | READY |
+| K_GSTT_183 | symbol | — | Chiều | `Fact HOSE Securities Trade.Security Symbol Code` | BA dòng 593 `symbol` ← Atomic `Securities Trade.Security Symbol Code` (SYMBOL) | READY |
+| K_GSTT_184 | currency | — | Cơ sở | `Fact HOSE Securities Trade.Currency Code` | BA dòng 594 `currency` ← Atomic `Securities Trade.Currency Code` (CURRENCY) | READY |
+| K_GSTT_185 | board_type | — | Chiều | `Fact HOSE Securities Trade.Board Type Code` | BA dòng 595 `board_type` ← Atomic `Securities Trade.Board Type Code` (BOARD_TYPE) | READY |
+| K_GSTT_186 | trade_no | — | Cơ sở | `Fact HOSE Securities Trade.Securities Trade Code` | BA dòng 596 `trade_no` ← Atomic `Securities Trade.Securities Trade Code` (TRADE_ID). Tên cột BA (staging) khác tên cột nguồn Atomic — đối chiếu theo nghĩa, xác nhận ở LLD | READY |
+| K_GSTT_187 | time | — | Cơ sở | `Fact HOSE Securities Trade.Trade Time` | BA dòng 597 `time` ← Atomic `Securities Trade.Trade Time` (TIME) | READY |
+| K_GSTT_188 | session | — | Chiều | `Fact HOSE Securities Trade.Session Code` | BA dòng 598 `session` ← Atomic `Securities Trade.Session Code` (SESSION) | READY |
+| K_GSTT_189 | execution_exec_price | VNĐ | Cơ sở | `Fact HOSE Securities Trade.Execution Price` | BA dòng 599 `execution_exec_price` ← Atomic `Securities Trade.Execution Price` (EXECUTION_EXEC_PRICE) | READY |
+| K_GSTT_190 | execution_exec_price_ltp | VNĐ | Cơ sở | `Fact HOSE Securities Trade.Execution Price Versus LTP` | BA dòng 600 `execution_exec_price_ltp` ← Atomic `Securities Trade.Execution Price Versus LTP` (EXECUTION_EXEC_PRICE_LTP) | READY |
+| K_GSTT_191 | execution_volume | Cổ phiếu | Cơ sở | `Fact HOSE Securities Trade.Execution Volume` | BA dòng 601 `execution_volume` ← Atomic `Securities Trade.Execution Volume` (EXECUTION_VOLUME) | READY |
+| K_GSTT_192 | execution_value | VNĐ | Cơ sở | `Fact HOSE Securities Trade.Execution Value` | BA dòng 602 `execution_value` ← Atomic `Securities Trade.Execution Value` (EXECUTION_VALUE) | READY |
+| K_GSTT_193 | execution_ltp | VNĐ | Cơ sở | `Fact HOSE Securities Trade.Execution Last Traded Price` | BA dòng 603 `execution_ltp` ← Atomic `Securities Trade.Execution Last Traded Price` (EXECUTION_LTP) | READY |
+| K_GSTT_194 | execution_new_high_low_price | — | Cơ sở | `Fact HOSE Securities Trade.Execution New High Low Price Indicator` | BA dòng 604 `execution_new_high_low_price` ← Atomic `Securities Trade.Execution New High Low Price Indicator` (EXECUTION_NEW_HIGH_LOW_PRICE) | READY |
+| K_GSTT_195 | buy_order_date | Ngày | Cơ sở | `Fact HOSE Securities Trade.Buy Order Date` | BA dòng 605 `buy_order_date` ← Atomic `Securities Trade.Buy Order Date` (BUY_ORDER_DATE) | READY |
+| K_GSTT_196 | buy_order_time | — | Cơ sở | `Fact HOSE Securities Trade.Buy Order Time` | BA dòng 606 `buy_order_time` ← Atomic `Securities Trade.Buy Order Time` (BUY_ORDER_TIME) | READY |
+| K_GSTT_197 | buy_order_accept_no | — | Cơ sở | `Fact HOSE Securities Trade.Buy Securities Order Code` | BA dòng 607 `buy_order_accept_no` ← Atomic `Securities Trade.Buy Securities Order Code` (BUY_ORDER_ACCEPT_ID). Tên cột BA (staging) khác tên cột nguồn Atomic — đối chiếu theo nghĩa, xác nhận ở LLD | READY |
+| K_GSTT_198 | buy_brk_no | — | Cơ sở | `Fact HOSE Securities Trade.Buy Broker Id` | BA dòng 608 `buy_brk_no` ← Atomic `Securities Trade.Buy Broker Id` (BUY_BRK_ID). Tên cột BA (staging) khác tên cột nguồn Atomic — đối chiếu theo nghĩa, xác nhận ở LLD | READY |
+| K_GSTT_199 | buy_brk | — | Cơ sở | `Fact HOSE Securities Trade.Buy Broker Name` | BA dòng 609 `buy_brk` ← Atomic `Securities Trade.Buy Broker Name` (BUY_BRK) | READY |
+| K_GSTT_200 | buy_pin | — | Cơ sở | `Fact HOSE Securities Trade.Buy Account Pin Code` | BA dòng 610 `buy_pin` ← Atomic `Securities Trade.Buy Account Pin Code` (BUY_PIN). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_201 | buy_acct_no | — | Cơ sở | `Fact HOSE Securities Trade.Buy Account Number` | BA dòng 611 `buy_acct_no` ← Atomic `Securities Trade.Buy Account Number` (BUY_ACCT_NO). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_202 | buy_name | — | Cơ sở | `Fact HOSE Securities Trade.Buy Account Holder Name` | BA dòng 612 `buy_name` ← Atomic `Securities Trade.Buy Account Holder Name` (BUY_NAME). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_203 | buy_client_house_classification_code | — | Cơ sở | `Fact HOSE Securities Trade.Buy Client House Classification Code` | BA dòng 613 `buy_client_house_classification_code` ← Atomic `Securities Trade.Buy Client House Classification Code` (BUY_CLIENT_HOUSE_CLASSIFICATION_CODE) | READY |
+| K_GSTT_204 | buy_invest_type | — | Cơ sở | `Fact HOSE Securities Trade.Buy Investor Type Code` | BA dòng 614 `buy_invest_type` ← Atomic `Securities Trade.Buy Investor Type Code` (BUY_INVEST_TYPE) | READY |
+| K_GSTT_205 | buy_foreigner_investor_type | — | Cơ sở | `Fact HOSE Securities Trade.Buy Foreign Investor Type Code` | BA dòng 615 `buy_foreigner_investor_type` ← Atomic `Securities Trade.Buy Foreign Investor Type Code` (BUY_FOREIGNER_INVESTOR_TYPE) | READY |
+| K_GSTT_206 | buy_order_price | VNĐ | Cơ sở | `Fact HOSE Securities Trade.Buy Order Price` | BA dòng 616 `buy_order_price` ← Atomic `Securities Trade.Buy Order Price` (BUY_ORDER_PRICE) | READY |
+| K_GSTT_207 | buy_order_vol | Cổ phiếu | Cơ sở | `Fact HOSE Securities Trade.Buy Order Volume` | BA dòng 617 `buy_order_vol` ← Atomic `Securities Trade.Buy Order Volume` (BUY_ORDER_VOL) | READY |
+| K_GSTT_208 | buy_trader_no | — | Cơ sở | `Fact HOSE Securities Trade.Buy Trader Number` | BA dòng 618 `buy_trader_no` ← Atomic `Securities Trade.Buy Trader Number` (BUY_TRADER_NO) | READY |
+| K_GSTT_209 | buy_trader_name | — | Cơ sở | `Fact HOSE Securities Trade.Buy Trader Name` | BA dòng 619 `buy_trader_name` ← Atomic `Securities Trade.Buy Trader Name` (BUY_TRADER_NAME). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_210 | buy_reference_sequence_no | — | Cơ sở | `Fact HOSE Securities Trade.Buy Reference Sequence Number` | BA dòng 620 `buy_reference_sequence_no` ← Atomic `Securities Trade.Buy Reference Sequence Number` (BUY_REFERENCE_SEQUENCE_NO) | READY |
+| K_GSTT_211 | sell_order_date | Ngày | Cơ sở | `Fact HOSE Securities Trade.Sell Order Date` | BA dòng 621 `sell_order_date` ← Atomic `Securities Trade.Sell Order Date` (SELL_ORDER_DATE) | READY |
+| K_GSTT_212 | sell_order_time | — | Cơ sở | `Fact HOSE Securities Trade.Sell Order Time` | BA dòng 622 `sell_order_time` ← Atomic `Securities Trade.Sell Order Time` (SELL_ORDER_TIME) | READY |
+| K_GSTT_213 | sell_order_accept_no | — | Cơ sở | `Fact HOSE Securities Trade.Sell Securities Order Code` | BA dòng 623 `sell_order_accept_no` ← Atomic `Securities Trade.Sell Securities Order Code` (SELL_ORDER_ACCEPT_ID). Tên cột BA (staging) khác tên cột nguồn Atomic — đối chiếu theo nghĩa, xác nhận ở LLD | READY |
+| K_GSTT_214 | sell_brk_no | — | Cơ sở | `Fact HOSE Securities Trade.Sell Broker Id` | BA dòng 624 `sell_brk_no` ← Atomic `Securities Trade.Sell Broker Id` (SELL_BRK_ID). Tên cột BA (staging) khác tên cột nguồn Atomic — đối chiếu theo nghĩa, xác nhận ở LLD | READY |
+| K_GSTT_215 | sell_brk | — | Cơ sở | `Fact HOSE Securities Trade.Sell Broker Name` | BA dòng 625 `sell_brk` ← Atomic `Securities Trade.Sell Broker Name` (SELL_BRK) | READY |
+| K_GSTT_216 | sell_pin | — | Cơ sở | `Fact HOSE Securities Trade.Sell Account Pin Code` | BA dòng 626 `sell_pin` ← Atomic `Securities Trade.Sell Account Pin Code` (SELL_PIN). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_217 | sell_acct_no | — | Cơ sở | `Fact HOSE Securities Trade.Sell Account Number` | BA dòng 627 `sell_acct_no` ← Atomic `Securities Trade.Sell Account Number` (SELL_ACCT_NO). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_218 | sell_name | — | Cơ sở | `Fact HOSE Securities Trade.Sell Account Holder Name` | BA dòng 628 `sell_name` ← Atomic `Securities Trade.Sell Account Holder Name` (SELL_NAME). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_219 | sell_client_house_classification_code | — | Cơ sở | `Fact HOSE Securities Trade.Sell Client House Classification Code` | BA dòng 629 `sell_client_house_classification_code` ← Atomic `Securities Trade.Sell Client House Classification Code` (SELL_CLIENT_HOUSE_CLASSIFICATION_CODE) | READY |
+| K_GSTT_220 | sell_invest_type | — | Cơ sở | `Fact HOSE Securities Trade.Sell Investor Type Code` | BA dòng 630 `sell_invest_type` ← Atomic `Securities Trade.Sell Investor Type Code` (SELL_INVEST_TYPE) | READY |
+| K_GSTT_221 | sell_foreigner_investor_type | — | Cơ sở | `Fact HOSE Securities Trade.Sell Foreign Investor Type Code` | BA dòng 631 `sell_foreigner_investor_type` ← Atomic `Securities Trade.Sell Foreign Investor Type Code` (SELL_FOREIGNER_INVESTOR_TYPE) | READY |
+| K_GSTT_222 | sell_order_price | VNĐ | Cơ sở | `Fact HOSE Securities Trade.Sell Order Price` | BA dòng 632 `sell_order_price` ← Atomic `Securities Trade.Sell Order Price` (SELL_ORDER_PRICE) | READY |
+| K_GSTT_223 | sell_order_vol | Cổ phiếu | Cơ sở | `Fact HOSE Securities Trade.Sell Order Volume` | BA dòng 633 `sell_order_vol` ← Atomic `Securities Trade.Sell Order Volume` (SELL_ORDER_VOL) | READY |
+| K_GSTT_224 | sell_trader_no | — | Cơ sở | `Fact HOSE Securities Trade.Sell Trader Number` | BA dòng 634 `sell_trader_no` ← Atomic `Securities Trade.Sell Trader Number` (SELL_TRADER_NO) | READY |
+| K_GSTT_225 | sell_trader_name | — | Cơ sở | `Fact HOSE Securities Trade.Sell Trader Name` | BA dòng 635 `sell_trader_name` ← Atomic `Securities Trade.Sell Trader Name` (SELL_TRADER_NAME). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_226 | sell_reference_sequence_no | — | Cơ sở | `Fact HOSE Securities Trade.Sell Reference Sequence Number` | BA dòng 636 `sell_reference_sequence_no` ← Atomic `Securities Trade.Sell Reference Sequence Number` (SELL_REFERENCE_SEQUENCE_NO) | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Fact_HOSE_Securities_Trade {
+        string Trade_Date_Dimension_Id FK
+        string Market_Id_Code
+        string Security_Symbol_Code
+        string Currency_Code
+        string Board_Type_Code
+        string Securities_Trade_Code
+        string Trade_Time
+        string Session_Code
+        decimal Execution_Price
+        decimal Execution_Price_Versus_LTP
+        int Execution_Volume
+        decimal Execution_Value
+        decimal Execution_Last_Traded_Price
+        string Execution_New_High_Low_Price_Indicator
+        date Buy_Order_Date
+        string Buy_Order_Time
+        string Buy_Securities_Order_Code
+        string Buy_Broker_Id
+        string Buy_Broker_Name
+        string Buy_Account_Pin_Code
+        string Buy_Account_Number
+        string Buy_Account_Holder_Name
+        string Buy_Client_House_Classification_Code
+        string Buy_Investor_Type_Code
+        string Buy_Foreign_Investor_Type_Code
+        decimal Buy_Order_Price
+        int Buy_Order_Volume
+        string Buy_Trader_Number
+        string Buy_Trader_Name
+        string Buy_Reference_Sequence_Number
+        date Sell_Order_Date
+        string Sell_Order_Time
+        string Sell_Securities_Order_Code
+        string Sell_Broker_Id
+        string Sell_Broker_Name
+        string Sell_Account_Pin_Code
+        string Sell_Account_Number
+        string Sell_Account_Holder_Name
+        string Sell_Client_House_Classification_Code
+        string Sell_Investor_Type_Code
+        string Sell_Foreign_Investor_Type_Code
+        decimal Sell_Order_Price
+        int Sell_Order_Volume
+        string Sell_Trader_Number
+        string Sell_Trader_Name
+        string Sell_Reference_Sequence_Number
+    }
+    Calendar_Date_Dimension ||--o{ Fact_HOSE_Securities_Trade : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    F1["Fact HOSE Securities Trade"] --> RPT41["K_GSTT_181-226: Data Explorer Kết xuất sổ lệnh — HOSE"]
+    D1["Calendar Date Dimension"] --> RPT41
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact HOSE Securities Trade | 1 row / giao dịch khớp (HOSE) — Securities Trade Code × Trade Date |
+| Calendar Date Dimension | 1 row / ngày |
+
+> **Coverage rule:** Fact chỉ chứa đúng 45 cột degenerate + 1 FK ngày tương ứng 46 dòng BA — không kéo thêm attribute Atomic nào khác.
+
+---
+
+#### Nhóm 42 - Data Explorer: Kết xuất sổ lệnh — HNX
+
+> **Phân loại:** Data Explorer (Phân tích — Fact Event, grain giao dịch khớp)
+> **Atomic:** `Securities Trade` ← ORDERTRADE.TRADE_BOOK_HNX (`src_stm_code` nhánh HNX) — **READY** (Nguồn 1, `DataModel/Atomic/Transaction/dm_atm_securities_trade-ORDERTRADE.TRADE_BOOK_HNX.yaml`). BA ghi bảng staging `UAT_Hnx_stg.trade_book`.
+>
+> **[MỚI 2026-09-26]** BA thêm Nhóm 42 (dòng 637–672, 36 dòng) — kết xuất nguyên văn sổ lệnh khớp của sàn HNX, mỗi dòng BA = 1 cột sổ lệnh. Toàn bộ 36 cột có attribute tương ứng trên Atomic `Securities Trade` (đối chiếu 1-1 theo cột nguồn, cột Ghi chú).
+> - **Bảng mới `Fact HNX Securities Trade`** (Fact Event, append theo ngày giao dịch): Data Modeler chọn 2026-09-26 **2 bảng riêng theo sàn** (HOSE / HNX) thay vì 1 bảng union — khớp 1-1 màn hình BA, không có cột NULL theo sàn. Là Fact (append theo thời gian) chứ không phải Operational (SCD4A current-state) theo tiêu chí `naming_conventions.md`. Không tái sử dụng được bảng có sẵn: các Fact khác trên `securities_trade` (`fct_stock_portfolio_snpst`, `fct_investor_category_trading_snpst`, `foreign_investor_trading_detail_rpt`…) đều đã aggregate — không giữ grain giao dịch.
+> - **Grain:** 1 row / giao dịch khớp (`Securities Trade Code`) — Level 6. FK duy nhất `Trade Date Dimension Id` → `Calendar Date Dimension` (lọc theo ngày giao dịch); mọi cột còn lại là degenerate attribute (Data Explorer hiển thị nguyên văn).
+> - **Dữ liệu nhạy cảm (PII):** BA yêu cầu hiển thị số tài khoản, tên chủ tài khoản. Data Modeler quyết định 2026-09-26 **giữ các cột này trên Datamart** (nghiệp vụ giám sát giao dịch cần tra cứu theo tài khoản) — ngoại lệ có chủ đích với quy tắc "PII chỉ dùng để JOIN"; bắt buộc phân quyền + masking ở tầng BI, xem O_GSTT_36. KPI PII đánh dấu `[PII]` ở cột Ghi chú.
+> - **Khối lượng dữ liệu:** grain giao dịch — mỗi ngày nhiều triệu dòng; bảng phải partition theo `Trade Date`, chính sách lưu trữ lịch sử chờ xác nhận (O_GSTT_36).
+
+**Mockup:**
+
+> Lưới kết xuất: mỗi dòng = 1 giao dịch khớp, 36 cột theo đúng thứ tự BA; lọc theo Ngày giao dịch (+ Mã CK / Bảng giao dịch tùy chọn).
+
+| trade_date | market_id | board_id | issue_code | trade_number | trade_time | trade_price | trade_quantity | … |
+|---|---|---|---|---|---|---|---|---|
+| 26/09/2026 | STX | G1 | SHS | 88421 | 09:00:05 | 16,500 | 1,000 | … |
+
+**Source:** `Fact HNX Securities Trade` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_GSTT_227 | trade_date | Ngày | Chiều | `Calendar Date Dimension.Calendar Date` (qua `Fact HNX Securities Trade.Trade Date Dimension Id`) | BA dòng 637 `trade_date` ← Atomic `Securities Trade.Trade Date` (TRADE_DATE) | READY |
+| K_GSTT_228 | market_id | — | Chiều | `Fact HNX Securities Trade.Market Id Code` | BA dòng 638 `market_id` ← Atomic `Securities Trade.Market Id Code` (MARKET_ID) | READY |
+| K_GSTT_229 | board_id | — | Chiều | `Fact HNX Securities Trade.Board Type Code` | BA dòng 639 `board_id` ← Atomic `Securities Trade.Board Type Code` (BOARD_ID) | READY |
+| K_GSTT_230 | issue_code | — | Chiều | `Fact HNX Securities Trade.Security Symbol Code` | BA dòng 640 `issue_code` ← Atomic `Securities Trade.Security Symbol Code` (ISSUE_CODE) | READY |
+| K_GSTT_231 | trade_number | — | Cơ sở | `Fact HNX Securities Trade.Securities Trade Code` | BA dòng 641 `trade_number` ← Atomic `Securities Trade.Securities Trade Code` (TRADE_NUMBER) | READY |
+| K_GSTT_232 | trade_time | — | Cơ sở | `Fact HNX Securities Trade.Trade Time` | BA dòng 642 `trade_time` ← Atomic `Securities Trade.Trade Time` (TRADE_TIME) | READY |
+| K_GSTT_233 | trade_price | VNĐ | Cơ sở | `Fact HNX Securities Trade.Execution Price` | BA dòng 643 `trade_price` ← Atomic `Securities Trade.Execution Price` (TRADE_PRICE) | READY |
+| K_GSTT_234 | trade_quantity | Cổ phiếu | Cơ sở | `Fact HNX Securities Trade.Execution Volume` | BA dòng 644 `trade_quantity` ← Atomic `Securities Trade.Execution Volume` (TRADE_QUANTITY) | READY |
+| K_GSTT_235 | session_id | — | Chiều | `Fact HNX Securities Trade.Session Code` | BA dòng 645 `session_id` ← Atomic `Securities Trade.Session Code` (SESSION_ID) | READY |
+| K_GSTT_236 | sell_replace_cancel_classification_code | — | Cơ sở | `Fact HNX Securities Trade.Sell Order Action Type Code` | BA dòng 646 `sell_replace_cancel_classification_code` ← Atomic `Securities Trade.Sell Order Action Type Code` (SELL_REPLACE_CANCEL_CLASSIFICATION_CODE) | READY |
+| K_GSTT_237 | sell_member_number | — | Cơ sở | `Fact HNX Securities Trade.Sell Broker Id` | BA dòng 647 `sell_member_number` ← Atomic `Securities Trade.Sell Broker Id` (SELL_MEMBER_NUMBER) | READY |
+| K_GSTT_238 | sell_account_number | — | Cơ sở | `Fact HNX Securities Trade.Sell Account Number` | BA dòng 648 `sell_account_number` ← Atomic `Securities Trade.Sell Account Number` (SELL_ACCOUNT_NUMBER). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_239 | sell_order_type_code | — | Cơ sở | `Fact HNX Securities Trade.Sell Order Type Code` | BA dòng 649 `sell_order_type_code` ← Atomic `Securities Trade.Sell Order Type Code` (SELL_ORDER_TYPE_CODE) | READY |
+| K_GSTT_240 | sell_order_condition_code | — | Cơ sở | `Fact HNX Securities Trade.Sell Order Condition Code` | BA dòng 650 `sell_order_condition_code` ← Atomic `Securities Trade.Sell Order Condition Code` (SELL_ORDER_CONDITION_CODE) | READY |
+| K_GSTT_241 | sell_client_house_classification | — | Cơ sở | `Fact HNX Securities Trade.Sell Client House Classification Code` | BA dòng 651 `sell_client_house_classification` ← Atomic `Securities Trade.Sell Client House Classification Code` (SELL_CLIENT_HOUSE_CLASSIFICATION) | READY |
+| K_GSTT_242 | sell_investor_classification_code | — | Cơ sở | `Fact HNX Securities Trade.Sell Investor Type Code` | BA dòng 652 `sell_investor_classification_code` ← Atomic `Securities Trade.Sell Investor Type Code` (SELL_INVESTOR_CLASSIFICATION_CODE) | READY |
+| K_GSTT_243 | sell_order_quantity | Cổ phiếu | Cơ sở | `Fact HNX Securities Trade.Sell Order Volume` | BA dòng 653 `sell_order_quantity` ← Atomic `Securities Trade.Sell Order Volume` (SELL_ORDER_QUANTITY) | READY |
+| K_GSTT_244 | sell_order_price | VNĐ | Cơ sở | `Fact HNX Securities Trade.Sell Order Price` | BA dòng 654 `sell_order_price` ← Atomic `Securities Trade.Sell Order Price` (SELL_ORDER_PRICE) | READY |
+| K_GSTT_245 | buy_member_number | — | Cơ sở | `Fact HNX Securities Trade.Buy Broker Id` | BA dòng 655 `buy_member_number` ← Atomic `Securities Trade.Buy Broker Id` (BUY_MEMBER_NUMBER) | READY |
+| K_GSTT_246 | buy_replace_cancel_classification_code | — | Cơ sở | `Fact HNX Securities Trade.Buy Order Action Type Code` | BA dòng 656 `buy_replace_cancel_classification_code` ← Atomic `Securities Trade.Buy Order Action Type Code` (BUY_REPLACE_CANCEL_CLASSIFICATION_CODE) | READY |
+| K_GSTT_247 | buy_account_number | — | Cơ sở | `Fact HNX Securities Trade.Buy Account Number` | BA dòng 657 `buy_account_number` ← Atomic `Securities Trade.Buy Account Number` (BUY_ACCOUNT_NUMBER). **[PII]** — phân quyền/masking BI, O_GSTT_36 | READY |
+| K_GSTT_248 | buy_order_type_code | — | Cơ sở | `Fact HNX Securities Trade.Buy Order Type Code` | BA dòng 658 `buy_order_type_code` ← Atomic `Securities Trade.Buy Order Type Code` (BUY_ORDER_TYPE_CODE) | READY |
+| K_GSTT_249 | buy_order_condition_code | — | Cơ sở | `Fact HNX Securities Trade.Buy Order Condition Code` | BA dòng 659 `buy_order_condition_code` ← Atomic `Securities Trade.Buy Order Condition Code` (BUY_ORDER_CONDITION_CODE) | READY |
+| K_GSTT_250 | buy_client_house_classification | — | Cơ sở | `Fact HNX Securities Trade.Buy Client House Classification Code` | BA dòng 660 `buy_client_house_classification` ← Atomic `Securities Trade.Buy Client House Classification Code` (BUY_CLIENT_HOUSE_CLASSIFICATION) | READY |
+| K_GSTT_251 | buy_investor_classification_code | — | Cơ sở | `Fact HNX Securities Trade.Buy Investor Type Code` | BA dòng 661 `buy_investor_classification_code` ← Atomic `Securities Trade.Buy Investor Type Code` (BUY_INVESTOR_CLASSIFICATION_CODE) | READY |
+| K_GSTT_252 | buy_order_quantity | Cổ phiếu | Cơ sở | `Fact HNX Securities Trade.Buy Order Volume` | BA dòng 662 `buy_order_quantity` ← Atomic `Securities Trade.Buy Order Volume` (BUY_ORDER_QUANTITY) | READY |
+| K_GSTT_253 | buy_order_price | VNĐ | Cơ sở | `Fact HNX Securities Trade.Buy Order Price` | BA dòng 663 `buy_order_price` ← Atomic `Securities Trade.Buy Order Price` (BUY_ORDER_PRICE) | READY |
+| K_GSTT_254 | message_sequence | — | Cơ sở | `Fact HNX Securities Trade.Message Sequence Number` | BA dòng 664 `message_sequence` ← Atomic `Securities Trade.Message Sequence Number` (MESSAGE_SEQUENCE) | READY |
+| K_GSTT_255 | sell_order_reception_number | — | Cơ sở | `Fact HNX Securities Trade.Sell Securities Order Code` | BA dòng 665 `sell_order_reception_number` ← Atomic `Securities Trade.Sell Securities Order Code` (SELL_ORDER_RECEPTION_NUMBER) | READY |
+| K_GSTT_256 | buy_order_reception_number | — | Cơ sở | `Fact HNX Securities Trade.Buy Securities Order Code` | BA dòng 666 `buy_order_reception_number` ← Atomic `Securities Trade.Buy Securities Order Code` (BUY_ORDER_RECEPTION_NUMBER) | READY |
+| K_GSTT_257 | sell_quote_request_code | — | Cơ sở | `Fact HNX Securities Trade.Sell Quote Request Type Code` | BA dòng 667 `sell_quote_request_code` ← Atomic `Securities Trade.Sell Quote Request Type Code` (SELL_QUOTE_REQUEST_CODE) | READY |
+| K_GSTT_258 | buy_quote_request_code | — | Cơ sở | `Fact HNX Securities Trade.Buy Quote Request Type Code` | BA dòng 668 `buy_quote_request_code` ← Atomic `Securities Trade.Buy Quote Request Type Code` (BUY_QUOTE_REQUEST_CODE) | READY |
+| K_GSTT_259 | execution_price_of_spread_first | VNĐ | Cơ sở | `Fact HNX Securities Trade.Execution Price Spread First` | BA dòng 669 `execution_price_of_spread_first` ← Atomic `Securities Trade.Execution Price Spread First` (EXECUTION_PRICE_OF_SPREAD_FIRST) | READY |
+| K_GSTT_260 | execution_price_of_spread_second | VNĐ | Cơ sở | `Fact HNX Securities Trade.Execution Price Spread Second` | BA dòng 670 `execution_price_of_spread_second` ← Atomic `Securities Trade.Execution Price Spread Second` (EXECUTION_PRICE_OF_SPREAD_SECOND) | READY |
+| K_GSTT_261 | sell_foreign_investor_type_code | — | Cơ sở | `Fact HNX Securities Trade.Sell Foreign Investor Type Code` | BA dòng 671 `sell_foreign_investor_type_code` ← Atomic `Securities Trade.Sell Foreign Investor Type Code` (SELL_FOREIGN_INVESTOR_TYPE_CODE) | READY |
+| K_GSTT_262 | buy_foreign_investor_type_code | — | Cơ sở | `Fact HNX Securities Trade.Buy Foreign Investor Type Code` | BA dòng 672 `buy_foreign_investor_type_code` ← Atomic `Securities Trade.Buy Foreign Investor Type Code` (BUY_FOREIGN_INVESTOR_TYPE_CODE) | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Fact_HNX_Securities_Trade {
+        string Trade_Date_Dimension_Id FK
+        string Market_Id_Code
+        string Board_Type_Code
+        string Security_Symbol_Code
+        string Securities_Trade_Code
+        string Trade_Time
+        decimal Execution_Price
+        int Execution_Volume
+        string Session_Code
+        string Sell_Order_Action_Type_Code
+        string Sell_Broker_Id
+        string Sell_Account_Number
+        string Sell_Order_Type_Code
+        string Sell_Order_Condition_Code
+        string Sell_Client_House_Classification_Code
+        string Sell_Investor_Type_Code
+        int Sell_Order_Volume
+        decimal Sell_Order_Price
+        string Buy_Broker_Id
+        string Buy_Order_Action_Type_Code
+        string Buy_Account_Number
+        string Buy_Order_Type_Code
+        string Buy_Order_Condition_Code
+        string Buy_Client_House_Classification_Code
+        string Buy_Investor_Type_Code
+        int Buy_Order_Volume
+        decimal Buy_Order_Price
+        int Message_Sequence_Number
+        string Sell_Securities_Order_Code
+        string Buy_Securities_Order_Code
+        string Sell_Quote_Request_Type_Code
+        string Buy_Quote_Request_Type_Code
+        decimal Execution_Price_Spread_First
+        decimal Execution_Price_Spread_Second
+        string Sell_Foreign_Investor_Type_Code
+        string Buy_Foreign_Investor_Type_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_HNX_Securities_Trade : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    F1["Fact HNX Securities Trade"] --> RPT42["K_GSTT_227-262: Data Explorer Kết xuất sổ lệnh — HNX"]
+    D1["Calendar Date Dimension"] --> RPT42
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact HNX Securities Trade | 1 row / giao dịch khớp (HNX) — Securities Trade Code × Trade Date |
+| Calendar Date Dimension | 1 row / ngày |
+
+> **Coverage rule:** Fact chỉ chứa đúng 35 cột degenerate + 1 FK ngày tương ứng 36 dòng BA — không kéo thêm attribute Atomic nào khác (VD `Sell/Buy Reference Sequence Number`, `Execution Value` của nhánh HNX không có trong BA).
 
 ---
 
@@ -2835,6 +3347,8 @@ graph TB
     FctScrTdgIntraday["Fact Security Trading Intraday"]:::fact
     FctInvestorCategoryTradingSnpst["Fact Investor Category Trading Snapshot"]:::fact
     FctInvestorCategoryIndexTradingSnpst["Fact Investor Category Index Trading Snapshot"]:::fact
+    FctHoseSecuritiesTrade["Fact HOSE Securities Trade"]:::fact
+    FctHnxSecuritiesTrade["Fact HNX Securities Trade"]:::fact
 
     ScrTdgSnpstDim --> FctStockPortfolioSnpst
     PblcCoDim --> FctStockPortfolioSnpst
@@ -2849,6 +3363,8 @@ graph TB
     CdrDtDim --> FctInvestorCategoryTradingSnpst
     IndexConstituentDim --> FctInvestorCategoryIndexTradingSnpst
     CdrDtDim --> FctInvestorCategoryIndexTradingSnpst
+    CdrDtDim --> FctHoseSecuritiesTrade
+    CdrDtDim --> FctHnxSecuritiesTrade
 ```
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
@@ -2857,12 +3373,14 @@ graph TB
 |---|---|---|---|---|
 | Fact Stock Portfolio Snapshot | Periodic Snapshot | 1 row / mã CK / ngày giao dịch (không còn FK rổ chỉ số — xem `Fact Index Constituent Snapshot`, sửa 2026-09-14) | K_GSTT_1–19 (Nhóm 1), K_GSTT_20–26 (Nhóm 2, reuse Nhóm 1), K_GSTT_27–29 (Nhóm 3, mới), K_GSTT_30 (Nhóm 3, Kỳ báo cáo — computed BI-tier), K_GSTT_31–32 (Nhóm 3, Resolved 2026-08-26 rule GSĐC: Doanh thu/LNST), Nhóm 4 (100% reuse Nhóm 2/3), K_GSTT_55–61 (Nhóm 6, toàn bộ Resolved 2026-08-26 — Số CP lưu hành qua `pc_share_statistics_hstr` (O_GSTT_2), LNST/VCSH qua rule GSĐC (O_GSTT_1), P/E/P/B/EPS/Vốn hóa theo đó cũng READY), Nhóm 7 (100% reuse Nhóm 1/6, Top-N theo KLGD), Nhóm 8 (100% reuse Nhóm 1/3, Top-N theo KLGD dạng biểu đồ), K_GSTT_62–63 (Nhóm 7, mới: Bộ chỉ số thị trường/theo ngành — cùng cột vật lý K_GSTT_4 nhưng 2 chỉ tiêu nghiệp vụ độc lập, reuse ở 13 Nhóm khác), Nhóm 8 (100% reuse Nhóm 1/3/7, Top-N theo KLGD dạng biểu đồ), K_GSTT_64–69 (Nhóm 9, rolling window KLGDTB/tỷ lệ đột phá 5/10/20 ngày, không cần cột mới), Nhóm 10 (100% reuse Nhóm 1/3/9, Top-N theo tỷ lệ đột phá dạng biểu đồ), Nhóm 9 (100% reuse Nhóm 1/6/7/9, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số), Nhóm 10 (100% reuse Nhóm 1/3/7/9, Top-N theo tỷ lệ đột phá theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 11 (100% reuse Nhóm 1/6/7, Top-N theo GTGD), Nhóm 12 (100% reuse Nhóm 1/3/7, Top-N theo GTGD dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất), Nhóm 14 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất dạng biểu đồ), Nhóm 13 (100% reuse Nhóm 1/6, Top-N theo % thay đổi giảm mạnh nhất theo sàn), Nhóm 14 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất theo sàn dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh"), Nhóm 16 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" dạng biểu đồ), Nhóm 15 (100% reuse Nhóm 1/3/6/7, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số), Nhóm 16 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi tăng mạnh nhất "vượt đỉnh" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/3/6, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy"), Nhóm 18 (100% reuse Nhóm 1/3, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" dạng biểu đồ), Nhóm 17 (100% reuse Nhóm 1/3/6/7, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số), Nhóm 18 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi giảm mạnh nhất "thủng đáy" theo sàn/bộ chỉ số dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6, Top-N theo % thay đổi tăng mạnh nhất "tăng giá"), Nhóm 20 (100% reuse Nhóm 1/3, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" dạng biểu đồ), Nhóm 19 (100% reuse Nhóm 1/6/7, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số), Nhóm 20 (100% reuse Nhóm 1/3/7, Top-N theo % thay đổi tăng mạnh nhất "tăng giá" theo sàn/bộ chỉ số dạng biểu đồ), K_GSTT_70–73 (Nhóm 21, mới: KL/GT mua-bán ròng NĐTNN, mở rộng Fact — reuse Nhóm 21), Nhóm 22 (100% reuse, biến thể biểu đồ không lặp measure NĐTNN), Nhóm 23 (100% reuse Nhóm 1/6/21, bản đồ nhiệt), K_GSTT_74–76/124–125 (Nhóm 24, Resolved 2026-09-07/O_GSTT_7, sửa nguồn Free Float 2026-09-14: Tỷ trọng/Điểm đóng góp qua `listed_share_info` + Bridge), K_GSTT_77 (Nhóm 25, GTNN ròng — derive từ K_GSTT_72/73), Nhóm 26 (100% reuse Nhóm 1/21, bản đồ nhiệt KLNN), K_GSTT_81–84 (Nhóm 27, mới: Phân loại + GT tự doanh mua/bán/ròng, mở rộng Fact), K_GSTT_105 (Nhóm 34, mới: Ngày GD đầu tiên/Khối lượng niêm yết — đã có sẵn theo coverage rule Nhóm 1, mới khai KPI), K_GSTT_106–107 (Nhóm 34, Resolved 2026-09-04: Giá cao/thấp 52 tuần dựa trên Giá đóng cửa, bổ sung cột Close Price theo ngày, mở rộng Fact — cũng reuse cho "Đỉnh cũ"/"Đáy cũ" Nhóm 15/17/17, xem O_GSTT_6), K_GSTT_109 (Nhóm 34, Resolved 2026-09-04: KL lưu hành bình quân qua `pc_share_statistics_hstr`), K_GSTT_110–113 (Nhóm 34, Resolved 2026-09-04: EPS/Book Value quý + bình quân 4 quý, tổ hợp lại từ K_GSTT_56/57/109 đã có, không cần Atomic mới), K_GSTT_114–119 (Nhóm 35, mới: KL mua/bán/ròng tự doanh + theo phân loại NĐT, mở rộng Fact + filter động) | READY |
 | Fact Index Constituent Snapshot | Snapshot Fact (Bridge + measure tính sẵn) | 1 row / mã CK / rổ chỉ số / ngày giao dịch (8 measure SUM theo Index+Date, lặp lại trên mọi dòng Symbol cùng rổ) | K_GSTT_4 (Nhóm 1, chọn 1 Chỉ số), K_GSTT_62–63 (Nhóm 7, Bộ chỉ số thị trường/theo ngành), K_GSTT_47–52/54/61 (Nhóm 5/6/7/9/11/13/17/19/34/35, đọc trực tiếp measure tính sẵn), K_GSTT_74/76 (Nhóm 24, mẫu số Market Cap/Free Float Market Cap) — mới 2026-09-14, tách khỏi Fact Stock Portfolio Snapshot để hết fan-out; sửa 2026-09-14 bổ sung 8 measure theo yêu cầu Design | READY |
-| Fact Market Index Snapshot | Periodic Snapshot | 1 row / chỉ số thị trường (market_code) / ngày (bản ghi cuối phiên) | K_GSTT_35–43, K_GSTT_47–51 (Nhóm 5, reuse + mở rộng Fact QLKD), Nhóm 37 (100% reuse Nhóm 5, Data Explorer) | READY |
+| Fact Market Index Snapshot | Periodic Snapshot | 1 row / chỉ số thị trường (market_code) / ngày (bản ghi cuối phiên) | K_GSTT_35–43, K_GSTT_47–51 (Nhóm 5, reuse + mở rộng Fact QLKD), Nhóm 37 (reuse Nhóm 5, grain chỉ số × ngày; K_GSTT_179 dùng cột `Open Index` có sẵn — 2026-09-26), Nhóm 38 (lookup Market Index Value / Prior Index qua Bridge — K_GSTT_35, K_GSTT_180) | READY |
 | Fact Market Index Intraday | Transaction/Tick Snapshot | 1 row / chỉ số thị trường (market_code) / Index Time — FK `Calendar Date Dimension` qua `Trading Date` | K_GSTT_34, K_GSTT_45–46 (Nhóm 5, mới) | READY |
 | Fact Security Trading Intraday | Transaction/Tick Snapshot | 1 row / mã CK (Symbol) / Trading Timestamp (`trading_tms`) — FK `Calendar Date Dimension` qua `Trading Date` | K_GSTT_95–99 (Nhóm 32, mới) | READY |
 | Fact Foreign Trading Minute Snapshot | Transaction/Minute Snapshot | 1 row / mã CK (Symbol) / Trade Minute (`trade_tms` truncate phút) — FK `Calendar Date Dimension` qua `Trade Date` | K_GSTT_78–80 (Nhóm 25, Resolved 2026-09-04, O_GSTT_8) | READY |
 | Fact Investor Category Trading Snapshot | Periodic Snapshot | 1 row / mã CK / ngày giao dịch / Phân loại NĐT (Cá nhân, Tổ chức trong nước, Tự doanh, Nước ngoài) | K_GSTT_85, 90–92 (Nhóm 29), K_GSTT_85, 90–92, 153–158 (Nhóm 30) — **[SỬA 2026-09-23]** grain Mã CK; K_GSTT_86–89/93/94/152 DEPRECATED. Tách khỏi `Fact Stock Portfolio Snapshot` từ 2026-09-21, xem Cụm 1c | READY |
 | Fact Investor Category Index Trading Snapshot | Periodic Snapshot | 1 row / Index Code / ngày giao dịch / Phân loại NĐT (Cá nhân, Tổ chức trong nước, Tự doanh, Nước ngoài) — 6 measure GT + 3 measure giá chỉ số (broadcast) | K_GSTT_85, 35, 38, 39, 161–163 (Nhóm 28, mới), K_GSTT_164–169 (Nhóm 31 (a), mới) — **[MỚI 2026-09-23]** xem Cụm 1d | READY |
+| Fact HOSE Securities Trade | Event | 1 row / giao dịch khớp HOSE (Securities Trade Code) — FK `Calendar Date Dimension` qua `Trade Date Dimension Id` | K_GSTT_181–226 (Nhóm 41) | READY (mới 2026-09-26) |
+| Fact HNX Securities Trade | Event | 1 row / giao dịch khớp HNX (Securities Trade Code) — FK `Calendar Date Dimension` qua `Trade Date Dimension Id` | K_GSTT_227–262 (Nhóm 42) | READY (mới 2026-09-26) |
 
 ### 3.3 Bảng Tác nghiệp
 
@@ -2904,6 +3422,8 @@ graph TB
 | Legal Entity Position Dimension | legal_entity_position_dim | **DEPRECATED** | **[BÃI BỎ 2026-09-25 — All-Tier Cleanup, Gate 8 L2-TABLE-ZERO-USAGE]** 0 KPI ở mọi module — chức vụ người nội bộ (K_GSTT_104) lấy thẳng `legal_entity_position` (Atomic) vào `fct_major_shareholder_ownership_snpst.position_code`. Đã xóa khỏi LLD/master/`datamart_model.yaml`/Entities. Ghi chú cũ: Chưa có trong master. Driving entity `Legal Entity Position` ← IDS.POSITIONS (Nguồn 1, draft) — phục vụ K_GSTT_104 (Chiều "Chức vụ người nội bộ", READY). Dùng độc lập như danh mục Chiều, đồng thời denormalize thêm Position Code lên `Operational Public Company Shareholding` (xem dòng dưới) |
 | Fact Major Shareholder Ownership Snapshot | fct_major_shareholder_ownership_snpst | new | **[MỚI 2026-09-25]** Fact mới cho Nhóm 33 theo BA cập nhật nguồn VSDC `major_shareholder` — thay `opr_public_company_shareholding` (IDS) cho Nhóm 33; bảng Operational giữ nguyên cho Nhóm 36 |
 | Operational Public Company Shareholding | opr_public_company_shareholding | **DEPRECATED** | **[BÃI BỎ 2026-09-25 — All-Tier Cleanup]** 0 KPI sau khi Nhóm 33/36 chuyển sang `Fact Major Shareholder Ownership Snapshot` (BA đổi nguồn sang VSDC `major_shareholder`); đã xóa khỏi LLD/master/`datamart_model.yaml`/Entities/flat table. Ghi chú cũ: **[MỚI 2026-09-12, đảo ngược O_GSTT_9]** Chưa có trong master. Gộp 3 nguồn: `pc_shareholding` ← IDS.COMPANY_SHAREHOLDING (Nguồn 1, draft — Ownership Quantity/Ratio, các cờ Shareholder), `legal_entity` ← IDS.LEGAL_ENTITIES (Nguồn 2, draft — Legal Entity Name), `foreign_ownership_info` ← VSDC `foreign_investor_info` (theo `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` — chưa có LDM YAML/manifest chính thức, chấp nhận theo xác nhận trực tiếp của Data Modeler). Grain: 1 row/(Public Company × Legal Entity/cổ đông). Phục vụ Nhóm 33, Nhóm 36 (reuse) — 8/6 KPI tương ứng đều READY |
+| Fact HOSE Securities Trade | fct_hose_securities_trade | new | **[MỚI 2026-09-26]** Chưa có trong master — Fact nào khác trên `securities_trade` đều đã aggregate, không giữ grain giao dịch. Data Modeler chọn 2 bảng riêng theo sàn (Nhóm 41 HOSE / Nhóm 42 HNX). Fact Event, FK `Trade Date Dimension Id` |
+| Fact HNX Securities Trade | fct_hnx_securities_trade | new | **[MỚI 2026-09-26]** Như `Fact HOSE Securities Trade`, nhánh `ORDERTRADE.TRADE_BOOK_HNX` (Nhóm 42) |
 
 ---
 
@@ -2934,7 +3454,7 @@ graph TB
 | O_GSTT_22 | Nhóm 6/Nhóm 1/toàn bộ Reuse `K_GSTT_55` | **[Critical Bug, phát hiện 2026-09-16 qua review thực tế UAT]** `Outstanding Share Quantity` (`K_GSTT_53`/`K_GSTT_55`) trên `Fact Stock Portfolio Snapshot` và `Index Market Cap` (`idx_market_cap`) trên `Fact Index Constituent Snapshot` đang lấy nguồn `pc_share_statistics_hstr` (IDS — hệ thống Công ty đại chúng, chỉ cập nhật theo quý/năm, không đồng bộ hàng ngày cho HNX/UPCOM trên UAT) trong khi cột song song `Free Float Share Quantity` trên cùng Fact đã đúng nguồn VSDC (`listed_share_info`). Hậu quả: `outstanding_share_quantity` NULL 100% trên UAT → `Vốn hóa thị trường` (K_GSTT_54/55/61), P/E, P/B đều NULL/0. Nguồn BA gốc (`BA_analyst_GSTT.csv:27085`) đã chỉ định rõ VSDC `outstanding_shares` — thiết kế trước đó (Resolved 2026-08-26, xem O_GSTT_2) chọn nhầm bảng IDS thay vì bảng VSDC đã nạp sẵn ở Atomic (`listed_share_info`). | Đổi nguồn `outstanding_share_quantity` (Fact Stock Portfolio Snapshot) và `idx_market_cap` (Fact Index Constituent Snapshot, tử số nhân với close_price) sang `listed_share_info.outstanding_share_quantity` (`src_stm_code='VSDC_OUTSTANDING_SHARES'`), đồng bộ hoàn toàn với `Free Float Share Quantity`/`Index Free Float Market Cap` đã đúng sẵn. Đã đồng bộ: LLD (`DTM_GSTT_fct_stock_portfolio_snpst.csv`, `DTM_GSTT_fct_index_constituent_snpst.csv`), master registry (`datamart_attributes.csv`), flat table DDL comment (`01_create_gstt_flat_tables.sql`), HLD (K_GSTT_53/55 và Atomic header Nhóm 6). Còn 1 số citation phụ ở narrative lịch sử/Atomic header của vài Nhóm reuse khác vẫn nhắc tên bảng cũ `pc_share_statistics_hstr` — không ảnh hưởng tính đúng đắn (LLD/flat table là nguồn sự thật cho ETL), sẽ dọn nốt khi có dịp sửa các Nhóm đó. | K_GSTT_53, K_GSTT_54, K_GSTT_55, K_GSTT_58, K_GSTT_59, K_GSTT_60, K_GSTT_61 và toàn bộ Nhóm reuse (7/9/11/13/17/19/23/32/33...) | Resolved 2026-09-16 |
 | O_GSTT_23 | Nhóm 6 (K_GSTT_56/57/58/59/60), reuse toàn bộ Nhóm dùng Revenue/LNST/LNST TTM/VCSH | **[Phát hiện qua dev report SIT 2026-09-19, item 2]** `fr_value`, `fr_catalog`, `fr_row_template`, `fr_column_template`, `pc_report_submission` được join bằng bảng HIỆN HÀNH (current-state) — không có cơ chế snapshot/lịch sử nào trong Atomic (đã kiểm chứng: không cột nào tương đương `listed_share_info.ds_snpst_dt`). Hậu quả nghiệp vụ: tra cứu ngày quá khứ có thể trả về số liệu ĐÃ BỊ SỬA sau đó (báo cáo tài chính điều chỉnh/đính chính), không phản ánh đúng "những gì hệ thống biết tại ngày tra cứu"; và dữ liệu biến mất hoàn toàn nếu job nạp lỗi giữa chừng. **CHƯA SỬA** — đây là quyết định kiến trúc tầng Atomic (có cần bổ sung cột/bảng snapshot cho 5 entity trên theo đúng `etl_pattern: SCD4A` đã khai hay chấp nhận hạn chế này ở MVP), không thể tự quyết ở tầng Datamart. | Bổ sung cơ chế point-in-time ở tầng Atomic cho 5 entity trên (tương tự `listed_share_info.ds_snpst_dt` đã làm cho Outstanding Share Quantity) trước khi Datamart có thể tham chiếu đúng theo thiết kế SCD4A đã khai. | K_GSTT_31, K_GSTT_32, K_GSTT_56, K_GSTT_57, K_GSTT_58, K_GSTT_59, K_GSTT_60 và toàn bộ Nhóm reuse | Open |
 | O_GSTT_24 | Nhóm 6 (K_GSTT_151 — EPS của chỉ số) | **[Phát hiện 2026-09-19, review Nhóm 6]** SQL tham khảo BA cho "EPS thị trường" (STT 6, dòng 98) là bản sao nguyên văn SQL của "P/E thị trường" (dòng 96) — không có cột `eps_chi_so` riêng trong SELECT cuối. Mô tả BA ("Tổng LNST/Tổng Khối lượng CP lưu hành") không nói rõ mẫu số (Tổng Số CP lưu hành) có cần loại trừ các mã KHÔNG có LNST TTM hay không — khác P/E/P/B, nơi SQL tham khảo minh thị lọc `SUM(CASE WHEN lnst_ttm IS NOT NULL THEN von_hoa END)`. Đã tạm implement `idx_eps` = SUM(LNST TTM)/SUM(Số CP lưu hành) KHÔNG lọc, theo đúng nghĩa đen Mô tả — nếu BA muốn nhất quán lọc như P/E/P/B thì mẫu số sẽ hụt bớt các mã thiếu LNST TTM. | Xác nhận lại với BA: mẫu số EPS chỉ số có cần lọc theo cùng điều kiện "mã có LNST TTM" như tử số P/E/P/B hay không. | K_GSTT_151 | Open |
-| O_GSTT_28 | **Nhóm 37 — KẾT LUẬN CUỐI CÙNG (sau O_GSTT_26 và O_GSTT_27, cả hai đều SUPERSEDED): Nhóm 37 tính theo MÃ CK — grain KHÔNG đổi so với O_GSTT_26, chỉ có công thức "% thay đổi" là sai thật:** Sau khi O_GSTT_27 đảo ngược O_GSTT_26 về lại "theo chỉ số" (dựa trên cách đọc sai chữ "Mã chỉ số" trong sheet Tổng hợp công thức là tên grain), người dùng bác bỏ trực tiếp và dứt khoát 2 lần liên tiếp: **"nhóm 35 theo mã ck, nhóm 5 theo rổ chỉ số"**, đề nghị đọc lại `BA_analyst_GSTT.csv`. Xác nhận lại: BA Nhóm 5 ghi Độ chi tiết = "Danh mục chỉ số - theo giờ"; BA Nhóm 37 (STT 36) ghi Độ chi tiết = **"Mã ck"** cho toàn bộ 9 dòng — đúng quy ước "Mã ck" = mã chứng khoán dùng xuyên suốt BA_analyst_GSTT.csv (không phải "mã chỉ số" như suy diễn sai ở O_GSTT_27; dòng "Mã chỉ số" trong sheet Tổng hợp công thức chỉ liệt kê GIÁ TRỊ của cột Chỉ số — VNIndex/HNXIndex/UPCoM — không phải tên grain của báo cáo). **Resolved 2026-09-19 (lần cuối)** — khôi phục lại đúng thiết kế theo mã CK của O_GSTT_26 (K_GSTT_4 dùng `Index Constituent Dimension`, K_GSTT_35 JOIN qua Bridge theo mã CK, K_GSTT_47/48/49/50/51/52 bỏ MAX/GROUP BY, bổ sung K_GSTT_1), ĐỒNG THỜI giữ lại phần sửa thật của O_GSTT_27 (đổi K_GSTT_38 → K_GSTT_39, JOIN theo cùng cơ chế mã CK) và phần sửa mart_table/mart_column độc lập. | Khôi phục thiết kế theo mã CK (O_GSTT_26) + giữ lại fix K_GSTT_38→39 (O_GSTT_27) — xem ghi chú Nhóm 37 | K_GSTT_1, 4, 35, 39, 47, 48, 49, 50, 51, 52 | **Resolved 2026-09-19 (lần cuối)** |
+| O_GSTT_28 | **Nhóm 37 — KẾT LUẬN CUỐI CÙNG (sau O_GSTT_26 và O_GSTT_27, cả hai đều SUPERSEDED): Nhóm 37 tính theo MÃ CK — grain KHÔNG đổi so với O_GSTT_26, chỉ có công thức "% thay đổi" là sai thật:** Sau khi O_GSTT_27 đảo ngược O_GSTT_26 về lại "theo chỉ số" (dựa trên cách đọc sai chữ "Mã chỉ số" trong sheet Tổng hợp công thức là tên grain), người dùng bác bỏ trực tiếp và dứt khoát 2 lần liên tiếp: **"nhóm 35 theo mã ck, nhóm 5 theo rổ chỉ số"**, đề nghị đọc lại `BA_analyst_GSTT.csv`. Xác nhận lại: BA Nhóm 5 ghi Độ chi tiết = "Danh mục chỉ số - theo giờ"; BA Nhóm 37 (STT 36) ghi Độ chi tiết = **"Mã ck"** cho toàn bộ 9 dòng — đúng quy ước "Mã ck" = mã chứng khoán dùng xuyên suốt BA_analyst_GSTT.csv (không phải "mã chỉ số" như suy diễn sai ở O_GSTT_27; dòng "Mã chỉ số" trong sheet Tổng hợp công thức chỉ liệt kê GIÁ TRỊ của cột Chỉ số — VNIndex/HNXIndex/UPCoM — không phải tên grain của báo cáo). **Resolved 2026-09-19 (lần cuối)** — khôi phục lại đúng thiết kế theo mã CK của O_GSTT_26 (K_GSTT_4 dùng `Index Constituent Dimension`, K_GSTT_35 JOIN qua Bridge theo mã CK, K_GSTT_47/48/49/50/51/52 bỏ MAX/GROUP BY, bổ sung K_GSTT_1), ĐỒNG THỜI giữ lại phần sửa thật của O_GSTT_27 (đổi K_GSTT_38 → K_GSTT_39, JOIN theo cùng cơ chế mã CK) và phần sửa mart_table/mart_column độc lập. | Khôi phục thiết kế theo mã CK (O_GSTT_26) + giữ lại fix K_GSTT_38→39 (O_GSTT_27) — xem ghi chú Nhóm 37 | K_GSTT_1, 4, 35, 39, 47, 48, 49, 50, 51, 52 | **SUPERSEDED 2026-09-26** — BA viết lại Nhóm 37 (21 dòng, toàn chỉ tiêu cấp chỉ số); Data Modeler chuyển grain về chỉ số × ngày, xem O_GSTT_33 |
 | O_GSTT_27 | ⚠️ **SUPERSEDED 2026-09-19 (xem O_GSTT_28) — Nhóm 37 SỬA ĐÚNG (kế thừa từ O_GSTT_26 đã đảo ngược, xem bên dưới): sai KPI "thay đổi", không phải sai grain:** Người dùng phản hồi trực tiếp 2026-09-19 bác bỏ kết luận grain của O_GSTT_26 ("Nhóm 37 tính theo mã CK") — khẳng định lại Nhóm 37 tính theo CHỈ SỐ giống hệt Nhóm 5, đồng thời cung cấp trực tiếp sheet "Tổng hợp công thức" (9 dòng, khớp đúng 9 dòng BA STT 36) để đối chiếu lại. Đối chiếu cho thấy vấn đề THẬT không phải grain mà là: dòng thứ 3 sheet ghi "% thay đổi giá = (Giá đóng cửa/Giá tham chiếu − 1)×100" — PHẦN TRĂM — trong khi thiết kế dùng `K_GSTT_38` (Index Change, tuyệt đối, theo BA_analyst_GSTT.csv Nhóm 37 dòng 508 dùng LAG). Nhóm 5 vốn đã có sẵn cặp riêng biệt Thay đổi (K_GSTT_38, BA dòng 77)/% Thay đổi (K_GSTT_39, BA dòng 78) — Nhóm 37 lẽ ra phải reuse K_GSTT_39, không phải K_GSTT_38. ⚠️ **KẾT LUẬN GRAIN Ở ĐÂY SAI** — đã bị người dùng bác bỏ trực tiếp 2 lần ngay sau đó (xem O_GSTT_28): Nhóm 37 THỰC SỰ tính theo mã CK như O_GSTT_26 kết luận ban đầu, "Mã chỉ số" trong sheet Tổng hợp công thức chỉ là giá trị của cột Chỉ số, không phải tên grain. Riêng phần sửa K_GSTT_38→K_GSTT_39 vẫn ĐÚNG và được giữ lại trong O_GSTT_28. Giữ nguyên nội dung lịch sử này không xóa, theo đúng tiền lệ O_GSTT_6/O_GSTT_10/O_GSTT_22/O_GSTT_26. ~~**Resolved 2026-09-19** — đổi K_GSTT_38 → K_GSTT_39 cho Nhóm 37; đã ĐẢO NGƯỢC toàn bộ thay đổi grain sai của O_GSTT_26 (K_GSTT_4 về lại `Market Index Dimension`, K_GSTT_35 về lại lấy trực tiếp theo chỉ số, K_GSTT_47/48/49/50/51/52 khôi phục `MAX(...) GROUP BY Index Code`, bỏ K_GSTT_1 mới thêm nhầm).~~ | ~~Đổi K_GSTT_38 → K_GSTT_39; đảo ngược grain về theo chỉ số (giống Nhóm 5); giữ lại phần sửa mart_table/mart_column~~ | K_GSTT_4, 35, 38, 39, 47, 48, 49, 50, 51, 52 | **SUPERSEDED — xem O_GSTT_28** |
 | O_GSTT_26 | ⚠️ **SUPERSEDED 2026-09-19 (xem O_GSTT_27) — Nhóm 37 sai grain: copy nguyên công thức cấp CHỈ SỐ từ Nhóm 5, trong khi BA yêu cầu cấp MÃ CK:** Phát hiện 2026-09-19 khi review lần lượt các Nhóm reuse (34, 35). Thiết kế trước đây coi Nhóm 37 là "biến thể trình bày" thuần túy của Nhóm 5 (Data Explorer lưới dữ liệu thô của cùng bộ chỉ tiêu, GHI RÕ trong ghi chú cũ "ở cấp độ chỉ số thị trường, không phải cấp mã CK") — nhưng đối chiếu lại BA cho thấy: Nhóm 5 (Diễn biến chỉ số thị trường) ghi Độ chi tiết = "Danh mục chỉ số - theo giờ" (đúng cấp chỉ số), còn Nhóm 37 (Data Explorer, STT 36 riêng) ghi Độ chi tiết = **"Mã ck"** cho toàn bộ 9 dòng — 2 Nhóm dùng CHUNG nguồn dữ liệu/công thức tính giá trị nhưng khác grain hiển thị. Thiết kế cũ vô tình đảo ngược: coi grain của Nhóm 37 giống Nhóm 5, dẫn tới dùng `MAX(...) GROUP BY Index Code` (đúng cho Nhóm 5) và biến thể `Market Index Dimension` cho K_GSTT_4 (đúng cho Nhóm 5) — cả 2 đều sai cho Nhóm 37. ⚠️ **KẾT LUẬN NÀY SAI** — đã bị người dùng bác bỏ trực tiếp ngay sau đó (xem O_GSTT_27): "Mã ck" trong BA ở đây không có nghĩa là "mã chứng khoán riêng lẻ"; Nhóm 37 thực chất tính theo CHỈ SỐ giống Nhóm 5. Toàn bộ thay đổi grain mô tả bên dưới đã bị ĐẢO NGƯỢC. Giữ nguyên nội dung lịch sử này không xóa, theo đúng tiền lệ O_GSTT_6/O_GSTT_10/O_GSTT_22. ~~**Resolved 2026-09-19** — sửa lại 9 KPI theo đúng grain "1 dòng/mã CK" (bỏ GROUP BY collapse, đổi K_GSTT_4 sang biến thể Index Constituent Dimension, đổi JOIN của K_GSTT_35/38 qua Bridge theo mã CK), bổ sung K_GSTT_1 (Mã CK) làm dimension nền tảng. Nhân tiện sửa luôn lỗi độc lập: `mart_table`/`mart_column` của K_GSTT_47/48/49/51/52 trước đó trỏ nhầm `Fact Stock Portfolio Snapshot` dù `logic` đã đúng dùng cột Bridge `fct_index_constituent_snpst` — không liên quan đến bug grain nhưng phát hiện cùng lúc khi rà lại 2 cột này.~~ | ~~Đã sửa 9 KPI + bổ sung K_GSTT_1 — xem ghi chú Nhóm 37~~ | K_GSTT_1, 4, 35, 38, 47, 48, 49, 50, 51, 52 | **SUPERSEDED — xem O_GSTT_27** |
 | O_GSTT_25 | Nhóm 24 (K_GSTT_74/75/76/124/125) | **[Critical Bug, phát hiện 2026-09-19 qua review thiết kế]** Trọng số vốn hóa `w_i`/`w_ff_i` (K_GSTT_74/76) trước đây tính bằng `close_price × outstanding_share_quantity`/`idx_market_cap` **CỦA CHÍNH NGÀY T** (cùng dòng, cùng `snpst_dt_dim_id` với Return_i) — trong khi BA (dòng 356/357/358 STT 24) minh thị tên chính chỉ tiêu là "Vốn hóa theo mã **CỦA NGÀY T-1**"/"W_i = Tỷ trọng trong chỉ số (%) **NGÀY T-1**". Hậu quả: công thức `Contribution_i = w_i × Return_i × Index(t-1)` bị lệch 1 phiên giữa 3 thành phần — Return_i (K_GSTT_12, so Đóng cửa T với Tham chiếu T = Đóng cửa T-1) và Index(t-1) (đúng T-1) nhưng w_i lại lấy vốn hóa T (không phải T-1) — sai lý thuyết chuẩn "index point contribution" (trọng số phải cố định theo cơ cấu đầu kỳ, không đổi trong kỳ đo). **Resolved 2026-09-19** — xem ghi chú Nhóm 24. | Bổ sung `prior_market_cap`/`prior_free_float_market_cap` (`fct_stock_portfolio_snpst`, LAG 1 phiên theo Symbol) và `idx_prior_market_cap`/`idx_prior_free_float_market_cap` (`fct_index_constituent_snpst`, LAG 1 phiên theo Index Code) — cùng pattern `fct_market_index_snpst.prior_index` (giá trị T-1 lưu sẵn trên dòng T). K_GSTT_74/76 nay dùng các cột LAG này làm trọng số thay vì giá trị cùng ngày. **Chưa implement "Khung n ngày"** (BA dòng 356-364 có 2 khung: 1 ngày và n ngày tùy chọn khoảng thời gian — HLD hiện chỉ có khung 1 ngày, giống các Nhóm dùng `3_THANG/6_THANG/1_NAM` ở Nhóm 6) — cần xác nhận BA có yêu cầu khung n ngày cho Nhóm 24 hay chỉ cần 1 ngày. | K_GSTT_74, K_GSTT_75, K_GSTT_76, K_GSTT_124, K_GSTT_125 | Resolved 2026-09-19 (khung 1 ngày); khung n ngày — Open |
@@ -2943,3 +3463,7 @@ graph TB
 | O_GSTT_30 | Nhóm 28, Nhóm 31 | **[MỚI 2026-09-23, rà soát → Resolved cùng ngày]** 2 rủi ro đã nêu: (1) Độ phủ chỉ số — SQL BA STT 18 lọc `JAD_CSIDXINFOR.INDEXCODE IN ('HOSE','HNX','UPCOM')` chứng tỏ CSIDXINFOR có thành viên cho cả chỉ số sàn (VNINDEX ↔ `HOSE`), không chỉ rổ VN30/MID/SML. (2) Khóa tên chỉ số không đồng nhất — đã thống nhất `Market Code = Index Code` cho mọi lookup (xem O_GSTT_3), `Index Constituent Dimension.Index Name` vốn đã đúng khóa này. | Resolved |
 | O_GSTT_31 | Nhóm 33 | **[MỞ 2026-09-25]** (1) BA dòng 468 'Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo' dùng cùng công thức số CP dòng 462 mà không nêu điều kiện 'người nội bộ' — thiết kế lọc `notEmpty(position_code)` (có chức vụ IDS còn hiệu lực); BA note còn cân nhắc lấy IDS hay VSDC. (2) Cầu nối chức vụ dựa trên khớp Số giấy tờ VSDC `id_number` = IDS `identity_no` — rủi ro lệch định dạng/loại giấy tờ (SQL BA có JOIN `identity_type_cd = '4'` nhưng chỉ ở LEFT JOIN lookup, không lọc). (3) Atomic `major_shareholder_ownership` mới có mapping md, chưa có YAML/manifest. | Mở — chờ BA xác nhận (1)(2), Atomic chính thức hóa (3) |
 | O_GSTT_32 | Nhóm 28–31, 35 | **[MỞ 2026-09-25]** Data Modeler đổi công thức Tổ chức trong nước = (TC mua − TC bán) − (tự doanh mua − tự doanh bán), TC: `foreign_investor_type = '00' AND invest_type <> '8000'` — nhưng `BA_analyst_GSTT.csv` dòng 402 (và các dòng lặp lại cùng khối) vẫn ghi quy tắc cũ `client_house = '10' AND foreigner = '00' AND invest_type <> '8000'`; phía Bán vẫn chép nhầm `buy_invest_type`. Lưu ý hệ quả: GT Tổ chức trong nước mỗi phía có thể ÂM nếu có giao dịch tự doanh không thỏa `foreign = '00' AND invest_type <> '8000'` (VD tự doanh có mã NĐTNN). | Mở — chờ BA cập nhật file BA theo công thức mới |
+| O_GSTT_33 | Nhóm 37 | **[MỚI 2026-09-26]** BA viết lại Nhóm 37 từ 9 lên 21 dòng (dòng 530–550), toàn chỉ tiêu cấp CHỈ SỐ từ `JAD_MARKETINFOR` (Giá mở/cao/thấp, Tăng/Giảm/Đứng giá/Trần/Sàn, Thay đổi, % thay đổi) + KLGD/GTGD/NN/thỏa thuận/Vốn hóa/P/E/P/B, nhưng cột "Độ chi tiết" vẫn ghi "Mã ck". Data Modeler quyết định **grain = 1 dòng / chỉ số / ngày** (thay O_GSTT_28): bỏ K_GSTT_1, K_GSTT_4 dùng biến thể `Market Index Dimension`, K_GSTT_35/39 lấy thẳng Fact Market Index Snapshot, Vốn hóa/P/E/P/B dùng biến thể cấp chỉ số (K_GSTT_54/149/150); khai mới K_GSTT_179 (Giá mở cửa chỉ số, cột `Open Index` có sẵn). Còn: SQL tham khảo dòng 535/536 (Tăng/Giảm) là SQL KLNN/GTNN chép nhầm — thiết kế theo Trường nguồn (H10). | Resolved (quyết định Data Modeler) — đề nghị BA sửa "Độ chi tiết" Nhóm 37 thành cấp chỉ số và SQL dòng 535/536 |
+| O_GSTT_34 | Nhóm 24, Nhóm 38 | **[MỚI 2026-09-26]** [Nhóm 5 - Datamart chưa thiết kế Fact/Dim] BA mô tả điểm đóng góp theo **2 khung**: 1 ngày (t-1) và n ngày (t-n, theo khoảng ngày chọn). Thiết kế hiện chỉ hiện thực khung 1 ngày (cột LAG 1 phiên `Prior Market Cap`/`Prior Free Float Market Cap`/`Prior Index`). Khung n ngày cần vốn hóa/giá tham chiếu/điểm chỉ số tại ngày t-n động theo tham số → tính tại tầng BI trên chuỗi `Fact Stock Portfolio Snapshot`/`Fact Market Index Snapshot` hoặc bổ sung Fact. KPI ảnh hưởng: K_GSTT_12, 74–76, 124, 125, 170–174, 180. Đơn vị: Datamart Modeling Team. | Mở |
+| O_GSTT_35 | Nhóm 39, Nhóm 40 | **[MỚI 2026-09-26]** (1) BA ghi điều kiện KLGD/GTGD/KLNN ròng của trái phiếu (dòng 578/579) và phái sinh (dòng 588–590) là `MARKET_ID IN ('STK','STX','UPX')` — mã thị trường cổ phiếu, áp nguyên văn cho kết quả 0. Data Modeler quyết định dùng mã đúng loại CK: TP `('BDO','HCX')` (K_GSTT_23/24), phái sinh `'DVX'` (K_GSTT_15/16/148). Đơn vị: BA sửa mô tả. (2) [Nhóm 5 - Datamart chưa thiết kế Fact/Dim] "Ngành" của trái phiếu (dòng 572, K_GSTT_2 — PENDING): chưa có khóa nối Mã TP → tổ chức phát hành → `Public Company Dimension` (hiện chỉ có `Issuer Name` dạng text trên `Security Trading Snapshot Dimension`). Đơn vị: BA xác nhận nguồn + Datamart Modeling Team. | Mở |
+| O_GSTT_36 | Nhóm 41, Nhóm 42 | **[MỚI 2026-09-26]** Kết xuất sổ lệnh (`Fact HOSE Securities Trade`, `Fact HNX Securities Trade`): (1) **PII** — BA yêu cầu số tài khoản, tên chủ tài khoản, PIN, tên trader (HOSE) / số tài khoản (HNX). Data Modeler quyết định giữ trên Datamart (nghiệp vụ giám sát giao dịch), ngoại lệ với quy tắc "PII chỉ dùng để JOIN" — cần BA/ATTT xác nhận ma trận phân quyền và masking ở tầng BI theo NĐ 13/2023 trước khi phát hành. (2) Khối lượng dữ liệu grain giao dịch (nhiều triệu dòng/ngày) — cần chốt thời gian lưu lịch sử trên Datamart + partition theo Trade Date. (3) Tên cột BA (staging `UAT_*_stg.trade_book`: `trade_no`, `buy/sell_order_accept_no`, `buy/sell_brk_no`) khác tên cột nguồn Atomic (`TRADE_ID`, `*_ORDER_ACCEPT_ID`, `*_BRK_ID`) — đã đối chiếu theo nghĩa, xác nhận lại ở LLD. KPI: K_GSTT_181–262. Đơn vị: BA + ATTT + Datamart Modeling Team. | Mở |
