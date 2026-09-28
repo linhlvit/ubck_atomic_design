@@ -117,7 +117,12 @@ def audit_hld_5b(hld_path: Path, module: str) -> Hld5bResult:
     add(7, "L1-UNBALANCED-CODE-FENCE", nf % 2 == 0, f"{nf} fence")
 
     # ---- #8 KPI_ID: cấm trùng khai sinh; dải rời rạc chỉ cảnh báo nếu chưa giải trình ----
-    ids = sorted({int(x) for x in re.findall(rf"K_{re.escape(module)}_(\d+)", T)})
+    # module có thể đã bị normalize sang tên có dấu (VD "NDTNN" -> "NĐTNN") nhưng ID KPI
+    # trong file luôn viết ASCII thuần ("K_NDTNN_72") — khớp cả 2 biến thể để tránh regex
+    # không bao giờ match (đã xảy ra thật: max=0 cho NĐTNN/GSĐC dù file có hàng trăm KPI ID).
+    _module_ascii = (module.replace("Đ", "D").replace("đ", "d"))
+    _module_pat = re.escape(module) if _module_ascii == module else f"(?:{re.escape(module)}|{re.escape(_module_ascii)})"
+    ids = sorted({int(x) for x in re.findall(rf"K_{_module_pat}_(\d+)", T)})
     gaps = [i for i in range(1, max(ids) + 1) if i not in ids] if ids else []
     documented = bool(re.search(r"(quy ước|đánh số|numbering).{0,120}(số dòng BA|BA row)", T, re.I | re.S))
     add(8, "L1-DUPLICATE-KPI-ID", (not gaps) or documented,

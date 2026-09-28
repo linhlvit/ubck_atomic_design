@@ -8230,6 +8230,15 @@ entities:
         description: "src_stm_code — Driving: foreign_investor"
         source_atomic_table: "foreign_investor"
         source_atomic_column: "foreign_investor.src_stm_code"
+      - logical_name: "Investor Status Code"
+        physical_name: "investor_status_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Trạng thái hoạt động của NĐTNN (hiển thị ở thẻ Đại diện giao dịch theo mockup BA STT 11 dòng 72) — Scheme FIMS_ACTIVITY_STATUS chưa enumerate values, dùng nguyên mã code"
+        source_atomic_table: "foreign_investor"
+        source_atomic_column: "foreign_investor.activity_status_code"
 
   - id: "DTM-opr_investor_compliance_hist"
     logical_name: "Operational Investor Compliance History"
@@ -8321,6 +8330,7 @@ entities:
     description: "Báo cáo thống kê GT mua/bán NĐTNN theo 4 nhóm loại CK — grain 1 row = 1 ngày × 1 Security Type Group (STOCK/BOND/FUND_CERT/TOTAL). Fact append dạng report — hậu tố _rpt, không có tiền tố fct_ (xem naming rule Fact báo cáo trong SKILL.md datamart-lld-design)."
     source_atomic:
       - "securities_trade"
+      - "security_trading_snapshot"
     modules_using:
       - "NDTNN"
     columns:
@@ -8348,18 +8358,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: false
         key: "DD"
-        description: "SUM Execution Value phía mua theo từng Security Type Group (xem điều kiện filter riêng từng branch trong Ghi chú thiết kế HLD Nhóm 14)"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val / market_id_code / buy_foreign_investor_tp_code / buy_investor_tp_code"
+        description: "SUM Execution Value phía mua theo từng Security Type Group — [SỬA 2026-09-28] đổi cơ chế phân loại STOCK/BOND/FUND_CERT từ Market_Id_Code sang JOIN MDDS security_trading_snapshot.stock_tp_code, đồng bộ BA hiện hành, xem O_NDTNN_35"
+        source_atomic_table: "securities_trade / security_trading_snapshot"
+        source_atomic_column: "securities_trade.execution_val / buy_foreign_investor_tp_code / security_symbol_code / security_trading_snapshot.symbol / isin_code / trading_dt / trading_time / stock_tp_code"
       - logical_name: "Sell Value"
         physical_name: "sell_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: false
         key: "DD"
-        description: "SUM Execution Value phía bán theo từng Security Type Group (cùng pattern filter với Buy Value, đổi buy_*→sell_*)"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val / market_id_code / sell_foreign_investor_tp_code / sell_investor_tp_code"
+        description: "SUM Execution Value phía bán theo từng Security Type Group (cùng pattern filter với Buy Value, đổi buy_*→sell_*) — [SỬA 2026-09-28] đổi cơ chế phân loại, xem O_NDTNN_35"
+        source_atomic_table: "securities_trade / security_trading_snapshot"
+        source_atomic_column: "securities_trade.execution_val / sell_foreign_investor_tp_code / security_symbol_code / security_trading_snapshot.symbol / isin_code / trading_dt / trading_time / stock_tp_code"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"

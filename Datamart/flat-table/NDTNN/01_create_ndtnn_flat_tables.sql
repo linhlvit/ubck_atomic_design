@@ -133,7 +133,8 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_360_profile_flat 
     investor_tp_code                Nullable(String)        COMMENT 'Loại hình NĐT',
     director_nm                     Nullable(String)        COMMENT 'Đại diện giao dịch',
     custodian_bank_nm               Nullable(String)        COMMENT 'Tên ngân hàng lưu ký (denormalize)',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
+    investor_status_code            Nullable(String)        COMMENT 'Trạng thái hoạt động NĐTNN (proxy hiển thị ở thẻ Đại diện giao dịch)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (investor_code)

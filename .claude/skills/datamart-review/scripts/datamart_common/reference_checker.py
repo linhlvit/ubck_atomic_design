@@ -33,9 +33,9 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 try:
-    from .module_resolver import find_project_root, normalize_module_name, resolve_module_path
+    from .module_resolver import find_project_root, normalize_module_name, resolve_module_path, strip_accents
 except ImportError:  # chạy trực tiếp
-    from module_resolver import find_project_root, normalize_module_name, resolve_module_path  # type: ignore
+    from module_resolver import find_project_root, normalize_module_name, resolve_module_path, strip_accents  # type: ignore
 
 
 # --------------------------------------------------------------------------
@@ -144,6 +144,13 @@ def check_module_lld(root: Path, module: str, atomic: Dict[str, Set[str]],
     """
     mart_tables = mart_tables or set()
     lld_dir = root / "Datamart" / "lld" / module
+    if not lld_dir.is_dir():
+        # module đã normalize sang tên có dấu (VD "NDTNN" -> "NĐTNN") nhưng thư mục
+        # thật trên đĩa vẫn ASCII thuần — thử lại qua resolve_module_path (đã xử lý
+        # cả 2 biến thể dấu/không dấu) trước khi kết luận module không có LLD nào.
+        resolved = resolve_module_path(root, module, "attributes")
+        if resolved is not None and resolved.is_dir():
+            lld_dir = resolved
     logical_map: Dict[str, str] = {}
     if not lld_dir.is_dir():
         return logical_map

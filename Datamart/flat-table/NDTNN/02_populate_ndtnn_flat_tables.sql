@@ -140,7 +140,8 @@ SELECT
     o.investor_tp_code,
     o.director_nm,
     o.custodian_bank_nm,
-    o.src_stm_code
+    o.src_stm_code,
+    o.investor_status_code
 
 FROM datamart.opr_foreign_investor_360_profile o
 ;

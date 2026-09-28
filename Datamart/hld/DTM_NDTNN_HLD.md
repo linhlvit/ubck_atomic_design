@@ -948,6 +948,7 @@ erDiagram
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Foreign Investor` (FIMS.INVESTOR) + `Custodian Bank` (FMS.BANK_MONI) — **READY**. **Sửa 2026-07-30:** Nguồn `Custodian Bank` đúng là FMS.BANK_MONI (không phải FIMS.BANKMONI — không tồn tại). FK `Foreign_Investor.Custodian_Bank_Id` (FIMS.INVESTOR.BankAddId) đã được xác nhận trỏ đúng entity qua hash `hash_id('FMS.BANK_MONI', BankAddId)`.
+> **[SỬA 2026-09-28]** BA STT 11 dòng 72 (Đại diện giao dịch — Trạng thái) chưa từng có KPI: đối soát `datamart_progress_analyzer.py` phát hiện HLD chỉ có 6/7 dòng BA. Trường nguồn dòng 72 là `INVESTOR.StatusId` + `STATUS.Name`, khớp thẳng attribute có sẵn `foreign_investor.activity_status_code` (Atomic FIMS.INVESTOR.StatusId, Scheme `FIMS_ACTIVITY_STATUS`, chưa enumerate values — dùng nguyên mã code). Atomic chỉ có Activity Status ở cấp Investor, không tách riêng theo Director — BA hiển thị ở thẻ "Đại diện giao dịch" (mockup "Status: Verified") nên dùng attribute này làm proxy, ghi rõ trong Ghi chú KPI. Bổ sung K_NDTNN_255.
 
 **Mockup:**
 
@@ -955,7 +956,7 @@ erDiagram
 |---|---|---|
 | QUỐC TỊCH | UK/VN | NGUYỄN VĂN A |
 | MÃ SỐ GIAO DỊCH (MSGD) | FII001 | CCCD: 0123xxxx5678 |
-| NGÂN HÀNG LƯU KÝ | Ngân hàng A | Status: Verified |
+| NGÂN HÀNG LƯU KÝ | Ngân hàng A | Status: Verified (K_NDTNN_255) |
 | LOẠI HÌNH NĐT | Institutional | |
 
 **Source:** `Operational Foreign Investor 360 Profile` — lookup 1 NĐT theo Mã FII.
@@ -970,6 +971,7 @@ erDiagram
 | K_NDTNN_61 | Ngân hàng lưu ký | — | Attribute | `opr_foreign_investor_360_profile.custodian_bank_nm` — denorm từ `custodian_bank.custodian_bank_full_nm` (FMS.BANK_MONI) qua FK `Foreign_Investor.custodian_bank_id` (INVESTOR.BankAddId) | Sửa 2026-07-30 — nguồn cũ ghi FIMS.BANKMONI (không tồn tại) | READY |
 | K_NDTNN_62 | Loại hình NĐT | — | Attribute | `opr_foreign_investor_360_profile.investor_tp_code` — FIMS.INVESTOR.InvestorTypeId | — | READY |
 | K_NDTNN_63 | Đại diện giao dịch | — | Attribute | `opr_foreign_investor_360_profile.director_nm` — FIMS.INVESTOR.Director | — | READY |
+| K_NDTNN_255 | Trạng thái xác thực đại diện giao dịch | — | Attribute | `opr_foreign_investor_360_profile.investor_status_code` — FIMS.INVESTOR.StatusId (`foreign_investor.activity_status_code`) | [SỬA 2026-09-28] BA STT 11 dòng 72 — proxy cấp Investor (Atomic không có status riêng theo Director). Scheme FIMS_ACTIVITY_STATUS chưa enumerate values | READY |
 
 **Schema bảng tác nghiệp:**
 
@@ -985,6 +987,7 @@ erDiagram
         varchar Nationality_Code
         string Custodian_Bank_Name
         string Director_Name
+        varchar Investor_Status_Code
     }
 
 ```
@@ -997,7 +1000,7 @@ flowchart LR
         G1["Operational Foreign Investor 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
-        R1["K_NDTNN_58-63: NDTNN 360 - Nhom 11 Ho so dinh danh"]
+        R1["K_NDTNN_58-63,255: NDTNN 360 - Nhom 11 Ho so dinh danh"]
     end
     G1 --> R1
 ```
@@ -1136,35 +1139,39 @@ flowchart LR
 #### Nhóm 14 - Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán (STT=14)
 
 > Phân loại: **Tác nghiệp** (12/12 KPI READY)
-> Atomic: `Securities Trade` (ORDERTRADE.TRADE_BOOK_HOSE/HNX) — **READY**, cùng entity đã dùng Nhóm 1/2/15. `Securities Dimension` (Cụm 1a, reuse) — chỉ dùng cho dòng CCQ.
+> Atomic: `Securities Trade` (ORDERTRADE.TRADE_BOOK_HOSE/HNX) — **READY**, cùng entity đã dùng Nhóm 1/2/15. `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR, Atomic Nguồn 1) — **[MỚI 2026-09-28]** dùng để phân loại STOCK/BOND/FUND_CERT, xem O_NDTNN_35.
 > **Sửa lỗi lệch STT (cùng gốc O_NDTNN_17/18):** Nội dung "Nhóm 10" trước đây (header "Báo cáo thống kê tình hình giao dịch NĐTNN") thực chất là BA STT=14, bị đặt sai số — xem O_NDTNN_23.
 > **Sửa Kịch bản D (2026-07-24) — đổi kiến trúc từ Phân tích (Star Schema) sang Tác nghiệp:** xem chi tiết O_NDTNN_24.
+> **[SỬA 2026-09-28] Đổi cơ chế phân loại STOCK/BOND/FUND_CERT — xem O_NDTNN_35:** Câu lệnh tham khảo BA (từ commit BA cập nhật 2026-09-17, chưa đổi tiếp tới nay) không còn dùng `Market_Id_Code` để phân biệt Cổ phiếu/Trái phiếu/CCQ như thiết kế Kịch bản D (2026-07-24) từng giả định — thay vào đó JOIN `trade_book` với `MDDS.jad_stockinfor` (Atomic: `Security Trading Snapshot`) qua Symbol (HOSE)/ISIN (HNX) + Ngày giao dịch, lấy dòng có Trading Time mới nhất trong ngày (dedupe — BA dùng `ROW_NUMBER() OVER (PARTITION BY symbol, tradingdate ORDER BY tradingtime DESC)`), rồi phân loại theo `stocktype = 1` (Cổ phiếu) / `= 2` (Trái phiếu) / `IN (3,6)` (CCQ). Đợt sửa 2026-09-17 trước đây chỉ bắt được phần đổi filter ngày (`report_dt = :pdate` → `BETWEEN`), bỏ sót hoàn toàn phần đổi cơ chế phân loại này — đã tồn tại sai lệch giữa thiết kế và BA hơn 1 tuần cho tới khi phát hiện lại hôm nay. **Thiết kế lại dùng nguyên pattern đã duyệt ở `Fact Securities Foreign Trading Snapshot`** (Nhóm 1/2, sửa 2026-09-25 — cùng CTE `ROW_NUMBER` trên `Security Trading Snapshot`, cùng khóa nối Symbol/ISIN) — xem Cụm 1a.
 
 **Ghi chú thiết kế:** BA cột "Chiều dữ liệu" ghi rõ grain báo cáo = **"Ngày, Loại CK"** (1 ngày × 1 trong 4 nhóm loại CK cố định: Cổ phiếu/Trái phiếu/CCQ/Tổng) cho cả 12/12 dòng — đây là báo cáo tổng hợp đã "đóng gói" sẵn theo đúng công thức riêng cho từng nhóm, không phải use-case Star Schema cần drill-down tự do theo Symbol (khác Nhóm 1/2). Bảng tác nghiệp mới `Foreign Investor Trading Statistics Report` — grain **1 ngày × 1 Security_Type_Group** (4 giá trị cố định: STOCK/BOND/FUND_CERT/TOTAL) — ETL populate 1 dòng/ngày theo `:etl_date` (không đổi). ETL tính riêng `Buy_Value`/`Sell_Value` cho mỗi group theo đúng điều kiện BA:
 
 **[SỬA 2026-09-17, đồng bộ BA mới] Filter tại tầng BI (Detail Mapping) đổi từ 1 ngày sang khoảng ngày:** Câu lệnh tham khảo SQL mới nhất của BA dùng `trade_date BETWEEN :pdat1 AND :pdat2` (Từ ngày/Đến ngày) cho cả HOSE và HNX — điều kiện `to_date(ds_snpst_dt) = :pdate` (1 ngày) đã bị comment out trong SQL, xác nhận báo cáo này tính TỔNG theo khoảng kỳ báo cáo do người dùng chọn, không phải 1 ngày cố định. Đã đổi filter Report Date của 8 KPI cơ sở (K_NDTNN_72/73/75/76/78/79/81/82) từ `report_dt = :pdate` → `report_dt BETWEEN :pdat1 AND :pdat2`; 4 KPI derived (K_NDTNN_74/77/80/83) tự động kế thừa vì tính từ 2 KPI cơ sở tương ứng đã SUM theo khoảng. Grain lưu trữ trên `Foreign Investor Trading Statistics Report` không đổi (vẫn 1 ngày × 1 Security_Type_Group) — Datamart lưu daily, BI tự SUM khi user chọn khoảng ngày.
-- **STOCK** (Cổ phiếu): HOSE `Market_Id_Code='STO'` (`Foreign_Investor_Type_Code<>'00'`) UNION HNX `Market_Id_Code IN ('STX','UPX')` (`Foreign_Investor_Type_Code IN ('10','20')`)
-- **BOND** (Trái phiếu): HOSE `Market_Id_Code='BDO'` UNION HNX `Market_Id_Code IN ('BDX','HCX')` — cùng điều kiện Foreign_Investor_Type như STOCK
-- **FUND_CERT** (CCQ) — sửa O_NDTNN_24: `Market_Id_Code='STO'` AND `Investor_Type_Code='7000'` (KHÔNG phải `Foreign_Investor_Type_Code` — đây là attribute khác hẳn, `buy/sell_investor_tp_code` scheme `ORDERTRADE_INVESTOR_TYPE`, so với `buy/sell_foreign_investor_tp_code` scheme `ORDERTRADE_FOREIGN_INVESTOR_TYPE` dùng ở STOCK/BOND/TOTAL — 2 attribute độc lập trên `Securities Trade`) AND join `Securities_Dimension.Stock_Type_Code='3'` (giá trị nguyên văn BA — scheme `MDDS_STOCK_TYPE` chưa profile, không diễn giải sang 'MF'/Mutual Fund)
-- **TOTAL** (Tổng): không filter Market_Id_Code, chỉ filter Foreign_Investor_Type_Code (như STOCK/BOND) — SUM toàn bộ Securities Trade
 
-**Lý do tách bảng riêng (không dùng chung `Fact Securities Foreign Trading Snapshot` với Nhóm 1/2):** `Foreign_Buy_Value`/`Foreign_Sell_Value` trên Fact đó đã pre-aggregate SUM cố định theo `Foreign_Investor_Type_Code` — không filter theo `Investor_Type_Code`. CCQ cần 1 con số hoàn toàn khác (SUM theo điều kiện `Investor_Type_Code='7000'`), không thể filter thêm ở query-time trên measure đã collapse. Đã đánh giá và loại bỏ 3 phương án khác — xem O_NDTNN_24.
+**[SỬA 2026-09-28] Điều kiện phân loại theo Câu lệnh tham khảo BA hiện hành, thiết kế lại theo pattern đã duyệt ở Fact Securities Foreign Trading Snapshot Nhóm 1/2 (thay thế toàn bộ mô tả Market_Id_Code cũ — xem O_NDTNN_35):**
+- **Điều kiện NĐTNN mua/bán** (chung cho cả 4 group): `Foreign_Investor_Type_Code IN ('10','20')` — dùng THỐNG NHẤT cho cả HOSE lẫn HNX ở tầng Atomic (khác biệt với `<> '00'` riêng HOSE trong SQL thô của BA — SQL thô của BA chạy trực tiếp trên staging trước khi Atomic hoà hợp 2 nguồn; ở tầng Atomic `Securities Trade` đã hoà hợp về cùng 1 scheme `('10','20')` cho cả 2 sàn, đã xác nhận qua Fact Nhóm 1/2 đang chạy đúng với pattern này). Không còn cần phân biệt theo `Market_Id_Code` hay `Source_System_Code` cho điều kiện này.
+- **STOCK** (Cổ phiếu): JOIN `Security Trading Snapshot` (khóa nối: HOSE theo Symbol, HNX theo ISIN Code; cùng Ngày giao dịch; lấy dòng Trading Time mới nhất trong ngày qua CTE `ROW_NUMBER`) `WHERE Stock_Type_Code = '1'`.
+- **BOND** (Trái phiếu): cùng JOIN, `WHERE Stock_Type_Code = '2'`.
+- **FUND_CERT** (CCQ): cùng JOIN, `WHERE Stock_Type_Code IN ('3','6')` — giá trị `'3'` đã xác nhận gián tiếp qua Fact Nhóm 1/2 (dùng `IN ('1','2','3')`); riêng `'6'` (theo Câu lệnh tham khảo BA `stocktype IN (3,6)`) **CHƯA có xác nhận độc lập nào khác** — scheme `MDDS_STOCK_TYPE` chưa được Atomic team profile đầy đủ giá trị (hiện `values: []`), xem O_NDTNN_35.
+- **TOTAL** (Tổng): không JOIN `Security Trading Snapshot` — chỉ áp điều kiện NĐTNN mua/bán ở trên, SUM toàn bộ Securities Trade, khớp Câu lệnh tham khảo BA (không lọc theo loại CK).
+
+**Lý do tách bảng riêng (không dùng chung `Fact Securities Foreign Trading Snapshot` với Nhóm 1/2):** `Foreign_Buy_Value`/`Foreign_Sell_Value` trên Fact đó đã pre-aggregate SUM cố định không phân biệt loại chứng khoán (Stock/Bond/Fund Cert) — Nhóm 14 cần 4 con số tách riêng theo group mà không thể filter thêm ở query-time trên measure đã collapse. Đã đánh giá và loại bỏ 3 phương án khác — xem O_NDTNN_24 (lý do tách bảng vẫn đúng, chỉ đổi cơ chế phân loại nội bộ và điều kiện NĐTNN mua/bán — xem O_NDTNN_35).
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_NDTNN_72 | Cổ phiếu - GT NĐTNN mua chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Buy_Value) WHERE Security_Type_Group='STOCK' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-17]** Filter đổi từ `Report_Date = :pdate` sang khoảng ngày, theo BA mới | READY |
-| K_NDTNN_73 | Cổ phiếu - GT NĐTNN bán chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Sell_Value) WHERE Security_Type_Group='STOCK' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-17]** Cùng lý do K_NDTNN_72 | READY |
+| K_NDTNN_72 | Cổ phiếu - GT NĐTNN mua chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Buy_Value) WHERE Security_Type_Group='STOCK' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-28]** Phân loại STOCK đổi từ Market_Id_Code sang JOIN Security Trading Snapshot (Stock_Type_Code='1'), pattern đã duyệt ở Nhóm 1/2, xem O_NDTNN_35 | READY |
+| K_NDTNN_73 | Cổ phiếu - GT NĐTNN bán chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Sell_Value) WHERE Security_Type_Group='STOCK' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-28]** Cùng lý do K_NDTNN_72 | READY |
 | K_NDTNN_74 | Cổ phiếu - GT NĐTNN mua/bán ròng chứng khoán | Triệu VNĐ | Derived | `K_NDTNN_72 - K_NDTNN_73` | — | READY |
-| K_NDTNN_75 | Trái phiếu - GT NĐTNN mua chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Buy_Value) WHERE Security_Type_Group='BOND' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-17]** Cùng lý do K_NDTNN_72 | READY |
-| K_NDTNN_76 | Trái phiếu - GT NĐTNN bán chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Sell_Value) WHERE Security_Type_Group='BOND' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-17]** Cùng lý do K_NDTNN_72 | READY |
+| K_NDTNN_75 | Trái phiếu - GT NĐTNN mua chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Buy_Value) WHERE Security_Type_Group='BOND' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-28]** Phân loại BOND đổi sang JOIN Security Trading Snapshot (Stock_Type_Code='2'), xem O_NDTNN_35 | READY |
+| K_NDTNN_76 | Trái phiếu - GT NĐTNN bán chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Sell_Value) WHERE Security_Type_Group='BOND' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-28]** Cùng lý do K_NDTNN_75 | READY |
 | K_NDTNN_77 | Trái phiếu - GT NĐTNN mua/bán ròng chứng khoán | Triệu VNĐ | Derived | `K_NDTNN_75 - K_NDTNN_76` | — | READY |
-| K_NDTNN_78 | CCQ - GT NĐTNN mua chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Buy_Value) WHERE Security_Type_Group='FUND_CERT' AND Report_Date BETWEEN :pdat1 AND :pdat2` | Sửa O_NDTNN_24 — ETL filter `Investor_Type_Code='7000'` (khác Foreign_Investor_Type_Code) + `Market_Id_Code='STO'` + join `Securities_Dimension.Stock_Type_Code='3'` (nguyên văn BA, chưa xác nhận tên gọi chuẩn hoá). **[SỬA 2026-09-17]** Filter Report_Date đổi sang khoảng ngày | READY |
-| K_NDTNN_79 | CCQ - GT NĐTNN bán chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Sell_Value) WHERE Security_Type_Group='FUND_CERT' AND Report_Date BETWEEN :pdat1 AND :pdat2` | Sửa O_NDTNN_24 — cùng điều kiện ETL như K_NDTNN_78. **[SỬA 2026-09-17]** Filter Report_Date đổi sang khoảng ngày | READY |
-| K_NDTNN_80 | CCQ - GT NĐTNN mua/bán ròng chứng khoán | Triệu VNĐ | Derived | `K_NDTNN_78 - K_NDTNN_79` | Sửa O_NDTNN_24 | READY |
-| K_NDTNN_81 | Tổng - GT NĐTNN mua chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Buy_Value) WHERE Security_Type_Group='TOTAL' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-17]** Cùng lý do K_NDTNN_72 | READY |
-| K_NDTNN_82 | Tổng - GT NĐTNN bán chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Sell_Value) WHERE Security_Type_Group='TOTAL' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-17]** Cùng lý do K_NDTNN_72 | READY |
+| K_NDTNN_78 | CCQ - GT NĐTNN mua chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Buy_Value) WHERE Security_Type_Group='FUND_CERT' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-28 — thay thế O_NDTNN_24]** Phân loại FUND_CERT đổi từ `Market_Id_Code='STO' AND Investor_Type_Code='7000' AND Securities_Dimension.Stock_Type_Code='3'` sang JOIN Security Trading Snapshot (`Stock_Type_Code IN ('3','6')`) — đồng bộ Câu lệnh tham khảo BA hiện hành; giá trị `'6'` chưa xác nhận độc lập, xem O_NDTNN_35 | READY |
+| K_NDTNN_79 | CCQ - GT NĐTNN bán chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Sell_Value) WHERE Security_Type_Group='FUND_CERT' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-28]** Cùng lý do K_NDTNN_78 | READY |
+| K_NDTNN_80 | CCQ - GT NĐTNN mua/bán ròng chứng khoán | Triệu VNĐ | Derived | `K_NDTNN_78 - K_NDTNN_79` | — | READY |
+| K_NDTNN_81 | Tổng - GT NĐTNN mua chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Buy_Value) WHERE Security_Type_Group='TOTAL' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-28]** Điều kiện NĐTNN mua/bán chuẩn hoá thành `IN ('10','20')` thống nhất HOSE/HNX ở tầng Atomic (bỏ branching theo Market_Id_Code cũ), không đổi kết quả logic — xem O_NDTNN_35 | READY |
+| K_NDTNN_82 | Tổng - GT NĐTNN bán chứng khoán | Triệu VNĐ | Cơ sở | `SUM(Sell_Value) WHERE Security_Type_Group='TOTAL' AND Report_Date BETWEEN :pdat1 AND :pdat2` | **[SỬA 2026-09-28]** Cùng lý do K_NDTNN_81 | READY |
 | K_NDTNN_83 | Tổng - GT NĐTNN mua/bán ròng chứng khoán | Triệu VNĐ | Derived | `K_NDTNN_81 - K_NDTNN_82` | — | READY |
 
 **Schema bảng tác nghiệp:**
@@ -1199,7 +1206,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Foreign Investor Trading Statistics Report | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND/FUND_CERT/TOTAL) — ETL SUM(Execution_Value) từ Securities Trade theo đúng điều kiện filter riêng của từng group (xem Ghi chú thiết kế) |
+| Foreign Investor Trading Statistics Report | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND/FUND_CERT/TOTAL) — ETL SUM(Execution_Value) từ Securities Trade theo đúng điều kiện filter riêng của từng group, JOIN Security Trading Snapshot để phân loại STOCK/BOND/FUND_CERT (xem Ghi chú thiết kế, O_NDTNN_35) |
 
 ---
 
@@ -2142,3 +2149,4 @@ graph TB
 | O_NDTNN_31 | **[Phát hiện tại Phase 1 LLD, 2026-07-24] `Public Company Dimension` reuse_status ghi sai `new` trong Entities.csv — đã tồn tại từ module GSDC/QLCB (`datamart_model.yaml`, 9 cột: PK, BK `Public_Company_Code`, `Equity_Ticker_Symbol`, `Public_Company_Name`, `Equity_Listing_Exchange_Code`, `Business_Line_Level_1_Code`, `Ids_Registration_Date`, `Public_Company_Status_Code`, `Source_System_Code`), cùng nguồn Atomic `public_company`, cùng grain 1 công ty đại chúng:** Khi merge Attributes CSV của NDTNN vào `datamart_attributes.csv` master, phát hiện trùng key `(public_company_dim, public_company_dim_id)` và `(public_company_dim, src_stm_code)` với dữ liệu đã có sẵn từ GSDC/QLCB — đúng Lớp 3 (Source Match) của Bước 3 Check Reuse mà Phase 0 Plan đã bỏ sót (Plan ghi `new` dựa theo Entities.csv cũ, không tự grep lại `datamart_model.yaml` cho riêng bảng này). NDTNN chỉ thực sự cần thêm 1 cột mới: `Classification Business Line Name` (đệm tên ngành qua join `cl_business_line`, phục vụ K_NDTNN_8 Nhóm 2). Đã rollback merge sai (xóa 63 dòng nhiễm), xác nhận với Data Modeler phương án xử lý. | Đổi `reuse_status` từ `new` → `partial` trong `DTM_NDTNN_Entities.csv`. Chỉ thêm 1 dòng delta (`Classification Business Line Name`/`classification_business_line_nm`, `join_atomic` từ `cl_business_line`) vào `datamart_attributes.csv` — dùng lại nguyên 8 cột GSDC/QLCB hiện có, không tạo cột trùng lặp ý nghĩa (`equity_ticker_symbol` thay vì tự đặt `security_symbol_code`). Sửa `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2) dùng join key `public_company_dim.equity_ticker_symbol` (không phải cột tự đặt). Cập nhật `datamart_model.yaml`: thêm `"NDTNN"` vào `modules_using` của `DTM-public_company_dim`, thêm 1 cột delta. | K_NDTNN_8 (Nhóm 2) | Closed — đã xử lý partial, merge lại thành công không còn trùng key |
 | O_NDTNN_33 | **[2026-09-24] Nhóm 5 K_NDTNN_35 (Dòng tiền ròng lũy kế) — BA đã Done nhưng Atomic chưa sẵn:** BA dòng 40 dùng `uat_fims_ods.fact_report_cell` (báo cáo IBOU9 — PLIV-TT51, Ngân hàng lưu ký gửi kỳ nửa tháng, `column_path` = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)', `row_path` = 'Tổng= (1) + (2)'). Atomic tương ứng `Report Import Value` (FIMS.RPTVALUES) mới có ở `FIMS_HLD_Overview.md`, chưa có LLD/`dm_manifest.yaml`. Ngoài ra cần BA chốt: (1) đơn vị USD khác 2 series còn lại (VND/Tỷ đồng) trên cùng trục trái; (2) quy tắc "ưu tiên kỳ nửa tháng" khi cùng kỳ có cả bản ngày. | Cột vật lý `foreign_net_capital_flow_mtd_amt` đã dự phòng trên `fct_foreign_net_flow_market_index_snpst` (nullable, USD, semi-additive — lũy kế từ đầu tháng tới ngày snapshot), để NULL tới khi Atomic READY | K_NDTNN_35 | Open — chờ Atomic Report Import Value + BA chốt đơn vị |
 | O_NDTNN_34 | **[2026-09-24] Nhóm 1/2 — 3 điểm mâu thuẫn trong câu lệnh tham khảo BA STT 2, cần BA chốt (phát hiện khi đối chiếu lại BA theo yêu cầu Data Modeler):** (1) **Khóa nối HNX ↔ stockinfor:** dòng BA 15–18 (và STT 1) dùng `js.symbolisin = tb.issue_code`, dòng 11/19/24/25/26 dùng `tb.issue_code = js.symbol`. (2) **Dòng BA 11 (K_NDTNN_10)** INNER JOIN `company_profiles` — loại mọi mã không phải công ty đại chúng (trái phiếu/CCQ), các dòng khác LEFT JOIN; ngoài ra BA nối `company_profiles` bằng `t.symbol` mà với HNX `t.symbol` = `issue_code` (ISIN) nên không bao giờ khớp `equity_ticker`. (3) **K_NDTNN_19 Tỷ trọng TB phiên:** mô tả = tổng tỷ trọng các ngày / số ngày GD, câu lệnh = (ΣGT mua + ΣGT bán) / (ΣGT toàn TT × 2) / số ngày (tỷ trọng gộp chia số ngày — sai bản chất). | (1) Nối HNX qua `isin_code` (khớp STT 1 + Top ngành/mã, đúng bản chất issue_code = ISIN). (2) Không lọc theo công ty đại chúng ở K_NDTNN_10 (FK `public_company_dim_id` nullable); nối công ty đại chúng qua `securities_dim.symbol` đã resolve đúng HOSE/HNX. (3) Giữ theo mô tả — AVG tỷ trọng ngày | K_NDTNN_1-4, K_NDTNN_10, K_NDTNN_12-17, K_NDTNN_19 | Open — chờ BA xác nhận 3 điểm |
+| O_NDTNN_35 | **[2026-09-28] Nhóm 14 — thiết kế cũ (Kịch bản D, 2026-07-24) phân loại STOCK/BOND/FUND_CERT bằng `Market_Id_Code` (+ `Investor_Type_Code='7000'` và JOIN `Securities_Dimension.Stock_Type_Code='3'` riêng cho FUND_CERT) không còn khớp Câu lệnh tham khảo BA — xác minh qua `git log` (BA đổi cơ chế phân loại tại commit cập nhật thiết kế "v2.8" ngày 2026-09-17, cùng lúc với đợt sửa filter ngày, nhưng đợt sửa đó chỉ bắt được phần filter ngày, bỏ sót phần phân loại; BA không đổi tiếp tới commit gần nhất 2026-09-23). Câu lệnh tham khảo BA hiện hành JOIN `trade_book` với `MDDS.jad_stockinfor` (Atomic: `Security Trading Snapshot`) qua Symbol(HOSE)/ISIN(HNX) + Ngày giao dịch, lấy dòng `trading_time` mới nhất trong ngày, phân loại theo `stock_tp_code = '1'` (Cổ phiếu) / `'2'` (Trái phiếu) / `IN ('3','6')` (CCQ). | Thiết kế lại theo đúng Câu lệnh tham khảo BA — dùng lại nguyên pattern CTE `ROW_NUMBER() OVER (PARTITION BY symbol, trading_dt ORDER BY trading_time DESC)` đã duyệt ở `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2, sửa 2026-09-25, xem ghi chú Cụm 1a) — đồng thời xác nhận lại điều kiện NĐTNN mua/bán dùng `IN ('10','20')` thống nhất cho cả HOSE/HNX ở tầng Atomic (khác `<>'00'` riêng HOSE trong SQL thô của BA — SQL thô chạy trên staging trước khi Atomic harmonize, không phải quy tắc cần giữ nguyên ở Datamart). **Còn mở:** giá trị `stock_tp_code IN ('1','2','3')` đã được xác nhận gián tiếp qua Fact Nhóm 1/2 đang chạy, nhưng riêng giá trị `'6'` (nhánh CCQ mở rộng theo Câu lệnh tham khảo BA `stocktype IN (3,6)`) chưa có xác nhận độc lập nào khác — cần Atomic team profile đầy đủ scheme `MDDS_STOCK_TYPE` (hiện `values: []`, chưa enum hoá) trước khi khẳng định chắc chắn. | K_NDTNN_72–83 (Nhóm 14) | Open một phần — đã thiết kế lại, chờ Atomic team xác nhận giá trị `stock_tp_code = '6'` |
