@@ -38,7 +38,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
-from .module_resolver import find_project_root, normalize_module_name, resolve_module_path, strip_accents
+from .module_resolver import MODULE_ALIASES, find_project_root, normalize_module_name, resolve_module_path, strip_accents
 
 csv.field_size_limit(10_000_000)
 
@@ -302,12 +302,19 @@ def resolve_ba_path(root: Optional[Path], module: str) -> Optional[Path]:
 
     Thử tên thô trước module_resolver: `MODULE_ALIASES["FMS"] = "QLQ"` (tên phân hệ trong
     Datamart) nhưng file BA vẫn tên `BA_analyst_FMS.csv`, nên đi qua normalize sẽ không thấy.
+    `MODULE_ALIASES` chỉ khai chiều FMS->QLQ (không có QLQ->FMS ngược lại) nên khi gọi bằng
+    tên module Datamart (`QLQ`), cả bước thô lẫn `resolve_module_path` đều không khớp — phải
+    dò ngược: tìm alias key nào trỏ tới `module` rồi thử tên key đó làm tên file BA.
     """
     root = Path(root) if root else find_project_root()
     d = root / "BRD" / "BA"
     want = strip_accents(module.strip()).upper()
+    candidates = {want}
+    for alias_key, alias_val in MODULE_ALIASES.items():
+        if strip_accents(alias_val).upper() == want:
+            candidates.add(strip_accents(alias_key).upper())
     for f in sorted(d.glob("BA_analyst_*.csv")) if d.is_dir() else []:
-        if strip_accents(f.stem[len("BA_analyst_"):]).upper() == want:
+        if strip_accents(f.stem[len("BA_analyst_"):]).upper() in candidates:
             return f
     p = resolve_module_path(root, module, "ba")
     return Path(p) if p else None

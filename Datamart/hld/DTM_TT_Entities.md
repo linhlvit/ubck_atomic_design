@@ -1,6 +1,8 @@
 # DTM_TT_Entities — Data Mart: Phân hệ Thanh Tra (TT)
 
-**Phạm vi:** 20 Datamart entities — 7 Fact (2 new + 5 partial, tách khỏi 3 Fact gốc để tránh fanout) + 9 Dimension (2 Conformed reuse + 7 mới) + 4 Tác nghiệp
+**Phạm vi:** 24 Datamart entities — 9 Fact (4 new + 5 partial, tách khỏi 3 Fact gốc để tránh fanout) + 11 Dimension (2 Conformed reuse + 9 mới) + 4 Tác nghiệp
+
+> **[SỬA 2026-09-28]** Bổ sung 4 entity bị bỏ sót khỏi Phase 2 HLD từ khi thiết kế lại theo O_TT_11 (2026-08-07) — `Fact/Dimension Inspection Team Violation Behavior` (Cụm 1) và `Fact/Dimension Examination Team Violation Behavior` (Cụm 1b). Cả 4 đã có đủ LLD Attributes + Detail Mapping từ trước, 2 Fact đã có Flat Table SQL — chỉ thiếu đăng ký ở tầng này (phát hiện qua Gate 3 `check_orphan.py`).
 
 ---
 
@@ -10,13 +12,18 @@
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Inspection_Team_Activity : " "
     Inspection_Team_Dimension ||--o{ Fact_Inspection_Team_Activity : " "
+    Calendar_Date_Dimension ||--o{ Fact_Inspection_Team_Violation_Behavior : " "
+    Inspection_Team_Dimension ||--o{ Fact_Inspection_Team_Violation_Behavior : " "
+    Inspection_Team_Violation_Behavior_Dimension ||--o{ Fact_Inspection_Team_Violation_Behavior : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Inspection Team Activity | Fact — Event | new | 1 đoàn thanh tra | 1 row per `INSPECTION_TEAM` | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2), K_TT_11–17 (Nhóm 3) |
+| Fact Inspection Team Activity | Fact — Event | new | 1 đoàn thanh tra | 1 row per `INSPECTION_TEAM` | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2) |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 | Inspection Team Dimension | Dimension | new | Thuộc tính mô tả đoàn thanh tra | 1 row / đoàn thanh tra | — |
+| Fact Inspection Team Violation Behavior | Fact — Event | new | **[MỚI 2026-09-28, bỏ sót từ O_TT_11]** Số vi phạm theo loại hành vi — multi-source UNION 2 nhánh (qua Violation Case / qua Violation Record) | 1 row per đoàn thanh tra × biên bản × hành vi (`VIOLATION_RECORD_BEHAVIOR`) | K_TT_11–12 (Nhóm 3) |
+| Inspection Team Violation Behavior Dimension | Dimension | new | **[MỚI 2026-09-28]** Tên hành vi vi phạm chuẩn hoá | 1 row / `VIOLATION_RECORD_BEHAVIOR` | — |
 
 ---
 
@@ -26,13 +33,18 @@ erDiagram
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Examination_Team_Activity : " "
     Examination_Team_Dimension ||--o{ Fact_Examination_Team_Activity : " "
+    Calendar_Date_Dimension ||--o{ Fact_Examination_Team_Violation_Behavior : " "
+    Examination_Team_Dimension ||--o{ Fact_Examination_Team_Violation_Behavior : " "
+    Examination_Team_Violation_Behavior_Dimension ||--o{ Fact_Examination_Team_Violation_Behavior : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Examination Team Activity | Fact — Event | new | 1 vụ việc kiểm tra | 1 row per `EXAMINATION_TEAM` | K_TT_32–38 (Nhóm 6), K_TT_39–41 (Nhóm 7), K_TT_42–64 (Nhóm 8) |
+| Fact Examination Team Activity | Fact — Event | new | 1 vụ việc kiểm tra | 1 row per `EXAMINATION_TEAM` | K_TT_20–26 (Nhóm 6), K_TT_27–29 (Nhóm 7) |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 | Examination Team Dimension | Dimension | new | Thuộc tính mô tả vụ việc kiểm tra | 1 row / vụ việc kiểm tra | — |
+| Fact Examination Team Violation Behavior | Fact — Event | new | **[MỚI 2026-09-28, bỏ sót từ O_TT_11]** Số vi phạm theo loại hành vi (KT) — multi-source UNION 2 nhánh (qua Violation Case / qua Violation Record) | 1 row per vụ việc kiểm tra × biên bản × hành vi (`VIOLATION_RECORD_BEHAVIOR`) | K_TT_30–31 (Nhóm 8) |
+| Examination Team Violation Behavior Dimension | Dimension | new | **[MỚI 2026-09-28]** Tên hành vi vi phạm chuẩn hoá | 1 row / `VIOLATION_RECORD_BEHAVIOR` | — |
 
 ---
 

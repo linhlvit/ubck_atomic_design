@@ -85,17 +85,24 @@ drop_rules:
 modules:
 
   FMS:
-    delimiter: ","
-    expect_columns: 29
+    delimiter: ";"
+    expect_columns: 31
     dashboard_column: "Dashboard >> báo cáo"
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["STT", "Mã", "Dashboard >> báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
     note: >-
-      [CẬP NHẬT 2026-09-26, xác minh trực tiếp qua header sống — BA cập nhật đầy đủ mapping]
-      File đổi delimiter từ ';' sang ',' (31 → 29 cột): bỏ 3 cột theo dõi dự án cũ 'Kết quả Test'/'Model'/'DMT'
-      (giữa 'Note' idx20 và 'Hoàn thành DEV' cũ), thêm cột 'Kết quả SIT' cuối file. Vẫn còn trùng tên cột 'Note'
-      ở index 20 và 27 (trước là 20 và 30) -> parser phải dùng index, không dùng dict tên cột. Bản ghi cũ
-      (delimiter ';', 31 cột) không còn đúng — không dùng lại nếu thấy trong lịch sử.
+      [SỬA 2026-09-28 — đảo ngược bản ghi 2026-09-26, xác minh trực tiếp qua header sống lần này]
+      Bản ghi ngày 2026-09-26 (delimiter ',', 29 cột) đã SAI hoặc dựa trên một bản working copy tạm thời
+      không khớp với `BRD/BA/BA_analyst_FMS.csv` đã commit — file thật trong repo (git-clean, HEAD =
+      f955fb39, không đổi từ 2026-09-03) vẫn là delimiter ';', 31 cột, KHÔNG phải bản ',' 29 cột như ghi
+      trước đó. Đã xác nhận với Data Modeler (2026-09-28) trước khi sửa lại. Header thật (1-indexed):
+      1 STT, 2 Mã, 3 Dashboard >> báo cáo, 4 Thông tin, 5 Mô tả, 6 Nhóm yêu cầu, 7 Phân loại, 8 Đánh giá,
+      9 Độ chi tiết, 10 Nguồn, 11 Cần phân tích?, 12 Cần test?, 13 DL lịch sử?, 14 Trạng thái mapping,
+      15 Nguồn chi tiết, 16 Mapping báo cáo đầu vào, 17 Bảng nguồn, 18 Trường nguồn, 19 Điều kiện,
+      20 Câu lệnh tham khảo, 21 Note, 22 Kết quả Test, 23 Model, 24 DMT, 25 Hoàn thành DEV, 26 Loại dữ liệu,
+      27 Báo cáo, 28 Mục/Sheet, 29 Dòng, 30 Cột, 31 Note. Trùng tên cột 'Note' ở index 21 và 31 -> parser
+      phải dùng index, không dùng dict tên cột. Nếu lần sau lại thấy file đổi sang ',' 29 cột, KHÔNG tự
+      sửa lại profile — dừng và hỏi Data Modeler trước (giống lần 2026-09-26 gây lệch).
 
   GSTT:
     expect_columns: 27
@@ -175,10 +182,21 @@ modules:
       Dòng legend index 2 của file này gần như rỗng nhưng vẫn phải bỏ.
 
   TT:
-    delimiter: ";"
-    expect_columns: 26
+    delimiter: ","
+    expect_columns: 25
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
+    note: >-
+      [SỬA 2026-09-28] File đã đổi cấu trúc: delimiter ';' → ',' (khớp defaults), 26 → 25 cột
+      (mất 1 cột so với bản trước — xác minh trực tiếp qua header sống, không dùng giá trị cũ
+      trong bản ghi này). Header thật (0-indexed): 0 STT, 1 Mã, 2 Dashboard/báo cáo, 3 Thông tin,
+      4 Mô tả, 5 Nhóm yêu cầu, 6 Phân loại, 7 Đánh giá, 8 Độ chi tiết, 9 Nguồn, 10 Cần phân tích?,
+      11 Cần test?, 12 DL lịch sử?, 13 Trạng thái mapping, 14 Mapping (nghiệp vụ), 15 Bảng nguồn,
+      16 Trường nguồn, 17 Điều kiện chung , 18 Câu lệnh tham khảo, 19 Note, 20 Hoàn thành DEV,
+      21 Loại dữ liệu, 22 Kết quả SIT (Round 1), 23 Kết quả SIT (Round 2), 24 Trạng thái bổ sung.
+      Trước khi tin lại bản ghi này ở phiên sau: đối chiếu `git log -- BRD/BA/BA_analyst_TT.csv`
+      xem file có đổi tiếp không, đừng giả định "đã xác minh" mãi mãi (xem
+      feedback_verify_ba_column_profile_live).
 
   VP:
     delimiter: ";"

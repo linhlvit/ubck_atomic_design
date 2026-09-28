@@ -8,6 +8,10 @@
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_activity_flat ON CLUSTER 'my_cluster'
 (
+    -- From: FACT Fact Inspection Team Activity
+    decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định thanh tra — Calendar Date Dimension',
+    inspection_team_dim_id                       String              COMMENT 'FK đoàn thanh tra — driving table',
+
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)      COMMENT 'Ngày quyết định thanh tra — từ Calendar Date Dimension',
 
@@ -32,6 +36,10 @@ COMMENT 'Flat table — Fact Inspection Team Activity × Calendar Date Dimension
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_activity_flat ON CLUSTER 'my_cluster'
 (
+    -- From: FACT Fact Examination Team Activity
+    decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định kiểm tra — Calendar Date Dimension',
+    examination_team_dim_id                      String              COMMENT 'FK vụ việc kiểm tra — driving table',
+
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)      COMMENT 'Ngày quyết định kiểm tra — từ Calendar Date Dimension',
 
@@ -39,7 +47,6 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_activity_flat ON CLU
     examination_team_code               String              COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
     start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
-    content                             Nullable(String)    COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
     examination_team_src_stm_code       Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
 
     -- Technical field
@@ -56,6 +63,11 @@ COMMENT 'Flat table — Fact Examination Team Activity × Calendar Date Dimensio
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_target_activity_flat ON CLUSTER 'my_cluster'
 (
+    -- From: FACT Fact Inspection Team Target Activity
+    decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định thanh tra — Calendar Date Dimension',
+    inspection_team_target_dim_id                String              COMMENT 'FK đối tượng bị thanh tra — driving table',
+    inspection_team_dim_id                       String              COMMENT 'FK đoàn thanh tra',
+
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                   Nullable(Date)  COMMENT 'Ngày quyết định thanh tra (join qua Inspection Team) — từ Calendar Date Dimension',
 
@@ -85,6 +97,11 @@ COMMENT 'Flat table — Fact Inspection Team Target Activity × Calendar Date Di
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_target_activity_flat ON CLUSTER 'my_cluster'
 (
+    -- From: FACT Fact Examination Team Target Activity
+    decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định kiểm tra — Calendar Date Dimension',
+    examination_team_target_dim_id               String              COMMENT 'FK đối tượng bị kiểm tra — driving table',
+    examination_team_dim_id                      String              COMMENT 'FK vụ việc kiểm tra',
+
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                    Nullable(Date)  COMMENT 'Ngày quyết định kiểm tra (join qua Examination Team) — từ Calendar Date Dimension',
 
@@ -97,7 +114,6 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_target_activity_flat
     examination_team_code                    String           COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
     start_dt                                 Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                                     Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
-    content                                  Nullable(String) COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
     examination_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
 
     -- Technical field
@@ -115,7 +131,10 @@ COMMENT 'Flat table — Fact Examination Team Target Activity × Calendar Date D
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT PENALTY DECISION
+    issued_dt_dim_id                  String                      COMMENT 'FK ngày ban hành quyết định — Calendar Date Dimension',
+    penalty_decision_dim_id             String                      COMMENT 'FK quyết định xử phạt — driving table',
     total_fine_amt                      Nullable(Decimal(23,2))     COMMENT 'Tổng mức phạt tiền — measure',
+    paid_fine_amt                       Nullable(Decimal(23,2))     COMMENT 'Tổng số tiền đã nộp phạt — measure, SUM từ Penalty Decision Subject theo quyết định',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)              COMMENT 'Ngày ban hành quyết định xử phạt — từ Calendar Date Dimension',
@@ -139,6 +158,10 @@ COMMENT 'Flat table — Fact Penalty Decision × Calendar Date Dimension × Pena
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT PENALTY DECISION SUBJECT BEHAVIOR
+    issued_dt_dim_id                         String                  COMMENT 'FK ngày ban hành quyết định — Calendar Date Dimension',
+    penalty_decision_subject_behavior_dim_id   Nullable(String)        COMMENT 'FK hành vi vi phạm áp dụng — driving table. NULL khi QĐ không có Penalty Decision Subject Behavior (xem O_TT_16)',
+    penalty_decision_dim_id                    String                  COMMENT 'FK quyết định xử phạt',
+    penalty_decision_subject_dim_id            Nullable(String)        COMMENT 'FK đối tượng bị xử phạt. NULL khi QĐ không có Penalty Decision Subject (xem O_TT_16)',
     applied_fine_amt                           Nullable(Decimal(23,2)) COMMENT 'Mức phạt tiền áp dụng thực tế cho hành vi này — đúng grain Fact — measure',
 
     -- From: CALENDAR DATE DIMENSION
@@ -172,6 +195,11 @@ COMMENT 'Flat table — Fact Penalty Decision Subject Behavior × Calendar Date 
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_flat ON CLUSTER 'my_cluster'
 (
+    -- From: FACT Fact Penalty Decision Subject
+    issued_dt_dim_id                           String              COMMENT 'FK ngày ban hành quyết định — Calendar Date Dimension',
+    penalty_decision_subject_dim_id              String              COMMENT 'FK đối tượng bị xử phạt — driving table',
+    penalty_decision_dim_id                      String              COMMENT 'FK quyết định xử phạt',
+
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                Nullable(Date)    COMMENT 'Ngày ban hành quyết định xử phạt (join qua Penalty Decision) — từ Calendar Date Dimension',
 
@@ -285,6 +313,11 @@ COMMENT 'Flat table — Operational Petition List'
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_violation_behavior_flat ON CLUSTER 'my_cluster'
 (
+    -- From: FACT Fact Inspection Team Violation Behavior
+    decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định thanh tra — Calendar Date Dimension',
+    inspection_team_dim_id                       String              COMMENT 'FK đoàn thanh tra',
+    inspection_team_violation_behavior_dim_id    String              COMMENT 'FK hành vi vi phạm — driving table',
+
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                          Nullable(Date)   COMMENT 'Ngày quyết định thanh tra (join qua Inspection Team) — từ Calendar Date Dimension',
 
@@ -314,6 +347,11 @@ COMMENT 'Flat table — Fact Inspection Team Violation Behavior × Calendar Date
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_violation_behavior_flat ON CLUSTER 'my_cluster'
 (
+    -- From: FACT Fact Examination Team Violation Behavior
+    decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định kiểm tra — Calendar Date Dimension',
+    examination_team_dim_id                      String              COMMENT 'FK vụ việc kiểm tra',
+    examination_team_violation_behavior_dim_id   String              COMMENT 'FK hành vi vi phạm — driving table',
+
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                          Nullable(Date)   COMMENT 'Ngày quyết định kiểm tra (join qua Examination Team) — từ Calendar Date Dimension',
 
@@ -326,7 +364,6 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_violation_behavior_f
     examination_team_code                           String           COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
     start_dt                                        Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                                          Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
-    content                                         Nullable(String) COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension',
     examination_team_src_stm_code                   Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
 
     -- Technical field

@@ -1418,12 +1418,13 @@ flowchart LR
 > - `Total_Fine_Amount` ← `PENALTY_DECISION.TOTAL_FINE_AMOUNT` — measure tiền phạt, đã có sẵn trên `PENALTY_DECISION`.
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`).
 > - SSCK (%) so sánh cùng kỳ năm trước bằng `LEFT JOIN cte b ON a.Year = b.Year + 1`.
+> - **[SỬA 2026-09-28]** BA bổ sung 2 chỉ tiêu sau UAT lần 1 (K_TT_85/86): `Paid_Amount` ← `PENALTY_DECISION_SUBJECT.PAID_AMOUNT` (Atomic Nguồn 1: `pd_subject`, `dm_atm_pd_subject-THANHTRA.PENALTY_DECISION_SUBJECT.yaml`) — 1 quyết định xử phạt có thể có nhiều đối tượng bị xử phạt (`PENALTY_DECISION_SUBJECT`, LEFT JOIN theo `PENALTY_DECISION_ID`), nên đo bằng `SUM` toàn bộ đối tượng của quyết định trước khi cộng dồn theo năm. Cột mới `paid_fine_amt` thêm vào `Fact Penalty Decision` (giữ nguyên grain 1 quyết định/dòng — không phải bảng/Fact mới).
 
 **Mockup:**
 
-| TỔNG SỐ QUYẾT ĐỊNH XỬ PHẠT ▲ 12% | TỔNG TIỀN XỬ PHẠT ▲ 18% |
-|---|---|
-| 5 Số quyết định | 1075 tỷ VNĐ |
+| TỔNG SỐ QUYẾT ĐỊNH XỬ PHẠT ▲ 12% | TỔNG TIỀN XỬ PHẠT ▲ 18% | TIỀN PHẠT ĐÃ NỘP ▲ x% |
+|---|---|---|
+| 5 Số quyết định | 1075 tỷ VNĐ | — tỷ VNĐ |
 
 **Source:** `Fact Penalty Decision` → `Calendar Date Dimension`
 
@@ -1431,11 +1432,13 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_39 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Issued_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_40-43 |
+| K_TT_39 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Issued_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_40-43, 85-86 |
 | K_TT_40 | Tổng số quyết định xử phạt | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year | |
 | K_TT_41 | Tổng số QĐXP SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_40[Y] − K_TT_40[Y−1]) / NULLIF(K_TT_40[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD (đầu năm đến hôm nay, cùng mốc ngày/tháng cho cả 2 năm); nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
 | K_TT_42 | Tổng tiền xử phạt | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year | |
 | K_TT_43 | Tổng tiền xử phạt SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_42[Y] − K_TT_42[Y−1]) / NULLIF(K_TT_42[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
+| K_TT_85 | Tiền phạt đã nộp | Tỷ VNĐ | Base | SUM(Paid_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year | **[MỚI 2026-09-28]** Chỉ tiêu bổ sung sau UAT lần 1 (theo BA). Nguồn `PENALTY_DECISION_SUBJECT.PAID_AMOUNT` — 1 quyết định có nhiều đối tượng bị xử phạt (LEFT JOIN), SUM toàn bộ đối tượng theo từng quyết định rồi cộng dồn theo năm |
+| K_TT_86 | Tiền phạt đã nộp SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_85[Y] − K_TT_85[Y−1]) / NULLIF(K_TT_85[Y−1],0) × 100 END | **[MỚI 2026-09-28]** Chỉ tiêu bổ sung sau UAT lần 1. Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
 
 **Star Schema:**
 
@@ -1447,6 +1450,7 @@ erDiagram
         string Issued_Date_Dimension_Id FK
         string Penalty_Decision_Dimension_Id FK
         float Total_Fine_Amount
+        float Paid_Fine_Amount
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1466,9 +1470,9 @@ erDiagram
     }
 ```
 
-> `Penalty Decision Dimension` chứa `Penalty_Decision_Code` — dùng để Nhóm 13/14 join tới định danh QĐ. Fact Penalty Decision giữ `Total_Fine_Amount` (measure đúng grain 1:1).
+> `Penalty Decision Dimension` chứa `Penalty_Decision_Code` — dùng để Nhóm 13/14 join tới định danh QĐ. Fact Penalty Decision giữ `Total_Fine_Amount` (measure đúng grain 1:1), và `Paid_Fine_Amount` (measure — **[MỚI 2026-09-28]** SUM từ Penalty Decision Subject theo quyết định, giữ nguyên grain 1:1 của Fact).
 >
-> Field mapping Atomic source: `Penalty_Decision_Code` ← `Penalty Decision.Penalty Decision Code` (`PENALTY_DECISION.ID`, BK, PK của Dimension); `Total_Fine_Amount` ← `Penalty Decision.Total Fine Amount` (`PENALTY_DECISION.TOTAL_FINE_AMOUNT`, measure, grain 1:1). `Issued_Date` ← `Penalty Decision.Issued Date` (`PENALTY_DECISION.ISSUED_DATE`). KPI COUNT() dùng `COUNT(DISTINCT Penalty_Decision_Dimension_Id)`.
+> Field mapping Atomic source: `Penalty_Decision_Code` ← `Penalty Decision.Penalty Decision Code` (`PENALTY_DECISION.ID`, BK, PK của Dimension); `Total_Fine_Amount` ← `Penalty Decision.Total Fine Amount` (`PENALTY_DECISION.TOTAL_FINE_AMOUNT`, measure, grain 1:1). `Issued_Date` ← `Penalty Decision.Issued Date` (`PENALTY_DECISION.ISSUED_DATE`). KPI COUNT() dùng `COUNT(DISTINCT Penalty_Decision_Dimension_Id)`. **[MỚI 2026-09-28]** `Paid_Fine_Amount` ← `Penalty Decision Subject.Paid Amount` (`PENALTY_DECISION_SUBJECT.PAID_AMOUNT`, Atomic `pd_subject`) — SUM theo `pd_subject.pd_id = penalty_decision.pd_id` (1 quyết định có N đối tượng).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1480,7 +1484,7 @@ flowchart LR
         G3["Penalty Decision Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 11"]
-        R1["K_TT_40-43: KPI cards Thống kê chung"]
+        R1["K_TT_40-43, 85-86: KPI cards Thống kê chung"]
     end
     G2 --> G1
     G3 --> G1
@@ -2267,3 +2271,4 @@ graph TB
 | O_TT_15 | Nhóm 15 — cột "Trạng thái" thiết kế cũ lấy nguyên code `Penalty Decision.Life Cycle Status Code` (`PENALTY_DECISION.STATUS`, scheme 7 giá trị), không khớp SQL BA cập nhật 2026-08-11 — SQL dùng `c.STATUS` với `c` = alias `VIOLATION_CASE`, và **không lấy nguyên code** mà `CASE WHEN c.STATUS = 'NEW' THEN 'Mới tiếp nhận' WHEN 'PROCESSING' THEN 'Đang xử lý' WHEN 'DECISION_ISSUED' THEN 'Đã ban hành quyết định' WHEN 'ENFORCED' THEN 'Đang cưỡng chế' WHEN 'CLOSED' THEN 'Đã kết thúc' ELSE 'Khác' END` — map thành nhãn tiếng Việt cố định trong ETL. Dòng metadata BA_analyst_TT.csv STT 15 "Trạng thái" vẫn ghi nguồn `PENALTY_DECISION;STATUS` — sai/lỗi thời so với SQL tham khảo mới, chưa đồng bộ. | Đổi nguồn sang `Violation Case.Life Cycle Status Code` (`VIOLATION_CASE.STATUS`, Atomic READY tại `working/Atomic/lld/THANHTRA/lld_THANHTRA_VIOLATION_CASE.yaml`), ETL-derived qua `CASE WHEN` map 5 giá trị code → nhãn tiếng Việt (không còn dùng scheme Classification Value `PENALTY_DECISION_STATUS` cũ). Join thêm `→ Violation Case` qua `Penalty_Decision.Violation_Case_Id` (đã có sẵn, dùng chung JOIN với "Mã vụ việc"/"Loại hình"). | K_TT_54 (Nhóm 15) | **Closed** |
 | O_TT_16 | Nhóm 13 — SQL BA có 2 nhánh xác định `Violation_Behavior_Name`: nhánh chính `PENALTY_DECISION → PENALTY_DECISION_SUBJECT → PENALTY_DECISION_SUBJECT_BEHAVIOR → VIOLATION_BEHAVIOR`, và nhánh fallback `PENALTY_DECISION → PENALTY_DECISION_VIOLATION_RECORD → VIOLATION_RECORD → VIOLATION_RECORD_BEHAVIOR → VIOLATION_BEHAVIOR` (`CASE WHEN`, dùng khi nhánh chính không xác định được tên hành vi — kể cả khi QĐ không có `PENALTY_DECISION_SUBJECT_BEHAVIOR` nào, vì nhánh phụ join thẳng từ `PENALTY_DECISION`, độc lập nhánh chính). Thiết kế trước đó chỉ dùng nhánh chính, bỏ qua nhánh fallback — đồng thời Fact dùng INNER JOIN nên QĐ không có Subject Behavior bị loại hoàn toàn khỏi Fact (không chỉ sai phân loại 'Khác' như mô tả ban đầu, mà mất khỏi COUNT). | **(Đóng 2026-08-15)** Atomic entity `Penalty Decision X Violation Record` đã thiết kế (`DataModel/Atomic/Event/dm_atm_penalty_decision_x_violation_record-THANHTRA.PENALTY_DECISION_VIOLATION_RECORD.yaml`). Thiết kế lại: (1) `Violation_Behavior_Name` chuyển sang tính tại `Penalty Decision Dimension` (grain 1 QĐ) bằng CASE WHEN 2 nhánh + ELSE 'Khác'; (2) `Fact Penalty Decision Subject Behavior` đổi 2 FK (`Penalty_Decision_Subject_Dimension_Id`, `Penalty_Decision_Subject_Behavior_Dimension_Id`) từ INNER sang LEFT JOIN (nullable) và FK `Penalty_Decision_Dimension_Id` lookup trực tiếp từ `Penalty Decision` — mọi QĐ đều có mặt trên Fact; (3) K_TT_46 đổi COUNT sang `Penalty_Decision_Dimension_Id`. Nhóm 20 không đổi (không có nhánh fallback theo đúng SQL BA STT 20). | K_TT_46–47 (Nhóm 13) | **Closed** |
 | O_TT_17 | Nhóm 15 — SQL BA (phát hiện qua `/datamart-review` 2026-08-14) dùng `ROW_NUMBER() OVER (PARTITION BY Year, Violation_Case.Code, Subject_Name ORDER BY [priority theo Penalty_Decision.Life_Cycle_Status_Code])`, chỉ giữ `ord = 1` — dedupe khi 1 vụ việc + đối tượng có nhiều `Penalty_Decision` (đã verify `Penalty_Decision.Violation_Case_Id` là FK N:1, không ràng buộc unique — 1 hồ sơ có thể phát sinh nhiều QĐ theo tiến trình xử lý DRAFT→...→ENFORCED). Thiết kế trước đó (Operational Penalty Decision List) không có logic dedupe này. | Bổ sung ETL dedupe: nhóm theo (Năm, Violation_Case_Code, Subject_Name), giữ 1 dòng có `Penalty_Decision.Life_Cycle_Status_Code` ưu tiên cao nhất theo thứ tự `ENFORCED > SENT_TO_SUBJECT > ISSUED > APPROVED > REJECTED > PENDING_APPROVAL > DRAFT > khác`. Không đổi PK/grain (`Penalty_Decision_Subject_Code`), chỉ thêm bước lọc trước khi ETL insert. | K_TT_50 (Nhóm 15) | **Closed** |
+| O_TT_18 | **[MỚI 2026-09-28, phát hiện qua Gate 0 `check_references.py`]** `Examination Team Dimension.Content` (`examination_team_dim.content`) trỏ tới cột Atomic `examination_team.content` — cột này KHÔNG tồn tại trên Atomic entity `examination_team` (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_EXAMINATION_TEAM.yaml`, Nguồn 2, draft), khác với entity song song `inspection_team` (Nguồn 1, `DataModel/Atomic/Business_Activity/dm_atm_inspection_team-...yaml`) — entity này CÓ cột `content` thật. Không rõ đây là giới hạn dữ liệu nguồn thật (quy trình Kiểm tra không có trường Nội dung như Thanh tra) hay Atomic team chưa capture đủ. 0 KPI/Detail Mapping nào tham chiếu cột này (K_TT_11/K_TT_30 đã chuyển hẳn sang `Violation Behavior` chuẩn hoá từ 2026-08-07, xem O_TT_11) — không phải regression, cột này chưa từng được dùng. | Xóa cột `content` khỏi `examination_team_dim` ở cả 3 tầng (Attributes/master/model.yaml) — không suy đoán/tạo cột Atomic. Nếu sau này BA cần "Nội dung kiểm tra tổng quát" cho Tab KIỂM TRA, hỏi Atomic team xác nhận `EXAMINATION_TEAM` có trường tương ứng `INSPECTION_TEAM.CONTENT` hay không trước khi thiết kế lại. | — | Open (chờ Atomic team xác nhận nếu cần trong tương lai) |

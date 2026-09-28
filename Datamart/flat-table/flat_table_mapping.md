@@ -7,13 +7,13 @@ Tài liệu mô tả từng bảng flat: nguồn fact/dim, quan hệ FK → PK, 
 ## Mục lục phân hệ
 
 - [Common Dimensions](#common-dimensions)
-- [FMS](#fms)
 - [GSDC](#gsdc)
 - [GSTT](#gstt)
 - [NDTNN](#ndtnn)
 - [NHNCK](#nhnck)
 - [QLCB](#qlcb)
 - [QLKD](#qlkd)
+- [QLQ](#qlq)
 - [TT](#tt)
 
 ---
@@ -53,287 +53,6 @@ Tài liệu mô tả từng bảng flat: nguồn fact/dim, quan hệ FK → PK, 
 
 ---
 
-
-## FMS
-
-**11 bảng flat** · **966 KPI unique**
-
----
-
-### `datamart.fms_fact_fund_management_company_snapshot_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `fact` |
-| **Entity nguồn** | Fact Fund Management Company Snapshot |
-| **Bảng fact/operational** | `datamart.fms_fact_fund_management_company_snapshot` |
-| **PK** | `—` |
-| **Số dim join** | 1 |
-
-**Joins (FK → PK)**
-
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
-|-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.fms_calendar_date_dimension` | `snapshot_date_dimension_id` | `calendar_date_dimension_id` | ✗ |
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 1 — Thống kê chung | 9 |
-| Nhóm 2 — Số liệu hợp đồng ủy thác danh mục | 4 |
-| Nhóm 3 — Danh sách các Công ty quản lý quỹ | 1 |
-| Nhóm 4 — Biểu đồ Tổng NAV Quỹ và Tỷ lệ NAV/GDP | 3 |
-| Nhóm 5 — Biểu đồ Phân bổ tài sản của Quỹ đầu tư | 6 |
-| Nhóm 6 — Sự biến động về NAV của các Quỹ ĐTCK | 2 |
-| Nhóm 9 — Tỷ lệ tăng trưởng NAV/CCQ so với VN-Index và Lãi suất LNH | 4 |
-| Nhóm 11 — Báo cáo giao dịch nhân viên CTQLQ | 5 |
-| Nhóm — Thống kê chung | 7 |
-| Nhóm — Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ | 3 |
-| Nhóm — Số tài khoản nắm giữ chứng chỉ chỉ quỹ | 3 |
-| Nhóm — Giá trị chứng chỉ quỹ | 3 |
-| Nhóm — Giao dịch thông qua Đại lý phân phối | 2 |
-| Nhóm — Danh sách Đại lý phân phối | 22 |
-| Nhóm — Số liệu hợp đồng uỷ thác danh mục | 6 |
-| Nhóm — Danh sách các Chi nhánh CTQLQ nước ngoài tại Việt Nam | 10 |
-| Nhóm — BCTC-Bảng cân đối kế toán | 110 |
-| Nhóm — BCTC-Báo cáo kết quả hoạt động kinh doanh | 17 |
-| Nhóm — BCTC-BCLCTT_TrucTiep | 30 |
-| Nhóm — BCTC-BCLCTT_GianTiep | 40 |
-| Nhóm — BCTC-BCTinhHinhBienDongVCSH | 11 |
-| Nhóm — Báo cáo về tình hình quản lý danh mục đầu tư | 436 |
-| Nhóm — Báo cáo tỷ lệ an toàn tài chính | 156 |
-
----
-
-### `datamart.fms_fact_discretionary_investment_contract_snapshot_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `fact` |
-| **Entity nguồn** | Fact Discretionary Investment Contract Snapshot |
-| **Bảng fact/operational** | `datamart.fms_fact_discretionary_investment_contract_snapshot` |
-| **PK** | `—` |
-| **Số dim join** | 2 |
-
-**Joins (FK → PK)**
-
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
-|-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.fms_calendar_date_dimension` | `report_date_dimension_id` | `calendar_date_dimension_id` | ✗ |
-| Fund Management Company Dimension | `datamart.fms_fund_management_company_dimension` | `fund_management_company_dimension_id` | `fund_management_company_dimension_id` | ✗ |
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 2 — Số liệu hợp đồng ủy thác danh mục | 6 |
-| Nhóm 14 — DataExplorer Báo cáo QLĐMDT | 2 |
-
----
-
-### `datamart.fms_fact_investment_fund_nav_snapshot_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `fact` |
-| **Entity nguồn** | Fact Investment Fund NAV Snapshot |
-| **Bảng fact/operational** | `datamart.fms_fact_investment_fund_nav_snapshot` |
-| **PK** | `—` |
-| **Số dim join** | 3 |
-
-**Joins (FK → PK)**
-
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
-|-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.fms_calendar_date_dimension` | `report_date_dimension_id` | `calendar_date_dimension_id` | ✗ |
-| Investment Fund Dimension | `datamart.fms_investment_fund_dimension` | `investment_fund_dimension_id` | `investment_fund_dimension_id` | ✗ |
-| Fund Management Company Dimension | `datamart.fms_fund_management_company_dimension` | `fund_management_company_dimension_id` | `fund_management_company_dimension_id` | ✗ |
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 4 — Biểu đồ Tổng NAV Quỹ và Tỷ lệ NAV/GDP | 3 |
-| Nhóm 5 — Biểu đồ Phân bổ tài sản của Quỹ đầu tư | 8 |
-| Nhóm 6 — Sự biến động về NAV của các Quỹ ĐTCK | 1 |
-| Nhóm 9 — Tỷ lệ tăng trưởng NAV/CCQ so với VN-Index và Lãi suất LNH | 2 |
-
----
-
-### `datamart.fms_fact_investment_fund_count_snapshot_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `fact` |
-| **Entity nguồn** | Fact Investment Fund Count Snapshot |
-| **Bảng fact/operational** | `datamart.fms_fact_investment_fund_count_snapshot` |
-| **PK** | `—` |
-| **Số dim join** | 1 |
-
-**Joins (FK → PK)**
-
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
-|-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.fms_calendar_date_dimension` | `snapshot_date_dimension_id` | `calendar_date_dimension_id` | ✗ |
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 7 — Số lượng quỹ đầu tư chứng khoán | 7 |
-
----
-
-### `datamart.fms_fact_investment_fund_ccq_snapshot_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `fact` |
-| **Entity nguồn** | Fact Investment Fund CCQ Snapshot |
-| **Bảng fact/operational** | `datamart.fms_fact_investment_fund_ccq_snapshot` |
-| **PK** | `—` |
-| **Số dim join** | 2 |
-
-**Joins (FK → PK)**
-
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
-|-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.fms_calendar_date_dimension` | `report_date_dimension_id` | `calendar_date_dimension_id` | ✗ |
-| Investment Fund Dimension | `datamart.fms_investment_fund_dimension` | `investment_fund_dimension_id` | `investment_fund_dimension_id` | ✗ |
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 8 — Tăng trưởng số lượng CCQ lưu hành | 10 |
-| Nhóm 10 — Danh sách các quỹ đầu tư | 1 |
-
----
-
-### `datamart.fms_fund_management_company_profile_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Fund Management Company Profile |
-| **Bảng fact/operational** | `datamart.fms_fund_management_company_profile` |
-| **PK** | `fund_management_company_id` |
-| **Số dim join** | 0 |
-
-_Không có dim join (operational / self-contained table)._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 3 — Danh sách các Công ty quản lý quỹ | 10 |
-
----
-
-### `datamart.fms_fund_management_company_fund_list_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Fund Management Company Fund List |
-| **Bảng fact/operational** | `datamart.fms_fund_management_company_fund_list` |
-| **PK** | `fund_management_company_id, investment_fund_id` |
-| **Số dim join** | 0 |
-
-_Không có dim join (operational / self-contained table)._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 3 — Danh sách các Công ty quản lý quỹ | 2 |
-
----
-
-### `datamart.fms_fund_management_company_contract_list_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Fund Management Company Contract List |
-| **Bảng fact/operational** | `datamart.fms_fund_management_company_contract_list` |
-| **PK** | `discretionary_investment_account_id` |
-| **Số dim join** | 0 |
-
-_Không có dim join (operational / self-contained table)._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 3 — Danh sách các Công ty quản lý quỹ | 2 |
-
----
-
-### `datamart.fms_investment_fund_profile_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Investment Fund Profile |
-| **Bảng fact/operational** | `datamart.fms_investment_fund_profile` |
-| **PK** | `investment_fund_id` |
-| **Số dim join** | 0 |
-
-_Không có dim join (operational / self-contained table)._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 10 — Danh sách các quỹ đầu tư | 5 |
-
----
-
-### `datamart.fms_report_passthrough_view_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Report Pass-through View |
-| **Bảng fact/operational** | `datamart.fms_report_passthrough_view` |
-| **PK** | `fund_management_company_id, investment_fund_id, report_template_code, reporting_period_code, row_code` |
-| **Số dim join** | 0 |
-
-_Không có dim join (operational / self-contained table)._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 12 — DataExplorer BCTC | 5 |
-| Nhóm 13 — DataExplorer Báo cáo tỷ lệ ATTC | 2 |
-| Nhóm 14 — DataExplorer Báo cáo QLĐMDT | 1 |
-| Nhóm 15 — DataExplorer Báo cáo định kỳ CTQLQ | 1 |
-| Nhóm 16 — DataExplorer Báo cáo theo loại quỹ và đơn vị đặc thù | 3 |
-
----
-
-### `datamart.fms_fund_management_company_staff_trade_report_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Fund Management Company Staff Trade Report |
-| **Bảng fact/operational** | `datamart.fms_fund_management_company_staff_trade_report` |
-| **PK** | `fund_management_company_id, fund_management_company_key_person_id` |
-| **Số dim join** | 0 |
-
-_Không có dim join (operational / self-contained table)._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 11 — Báo cáo giao dịch nhân viên CTQLQ | 5 |
-
----
 
 ## GSDC
 
@@ -1793,6 +1512,354 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm DE-1 — STT 138 — Báo cáo tỷ lệ an toàn tài chính - Chi nh | 2 |
 | Nhóm DE-1 — STT 139 — Báo cáo tỷ lệ an toàn tài chính - Chi nh | 3 |
 | Nhóm DE-1 — STT 140 — Báo cáo tình hình hoạt động quý/năm - VP | 52 |
+
+---
+
+## QLQ
+
+**15 bảng flat** (6 fact + 9 operational) · **78 KPI unique** (module sở hữu; ngoài ra reuse thêm 4 KPI qua `Fact Macro Indicator Snapshot`/`Fact Market Index Snapshot` — xem GSTT/PTTT)
+
+> **[SỬA 2026-09-28]** Thay thế toàn bộ nội dung "## FMS" cũ (11 bảng tưởng tượng, tên vật lý `fms_*`, không khớp thiết kế thật) — bản nháp đó không phản ánh HLD/LLD đã duyệt. QLQ dùng nguồn FMS nhưng tên module Datamart chính thức là **QLQ**.
+
+---
+
+### `datamart.qlq_fct_fund_management_company_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Fund Management Company Snapshot |
+| **Bảng fact/operational** | `datamart.fct_fund_management_company_snpst` |
+| **PK** | `—` (No Driving Table — market-level snapshot) |
+| **Số dim join** | 1 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 1 — Thống kê chung | 8 |
+| Nhóm 6 — Thống kê chung của QĐT | 2 |
+| Nhóm 12 — Tỉ lệ tăng trưởng NAV/CCQ một năm theo loại hình quỹ so với VN-Index và Lãi suất liên ngân hàng qua đêm | 3 |
+
+---
+
+### `datamart.qlq_fct_investment_fund_count_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Investment Fund Count Snapshot |
+| **Bảng fact/operational** | `datamart.fct_investment_fund_count_snpst` |
+| **PK** | `—` |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Classification Dimension (scheme FMS_FUND_TYPE) | `datamart.cl_dim` | `fund_tp_cl_dim_id` | `cl_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 6 — Thống kê chung của QĐT | 3 |
+| Nhóm 10 — Số lượng quỹ đầu tư chứng khoán | 9 |
+
+---
+
+### `datamart.qlq_fct_investment_fund_ccq_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Investment Fund CCQ Snapshot |
+| **Bảng fact/operational** | `datamart.fct_investment_fund_ccq_snpst` |
+| **PK** | `—` |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Classification Dimension (scheme FMS_FUND_TYPE) | `datamart.cl_dim` | `fund_tp_cl_dim_id` | `cl_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 11 — Tăng trưởng số lượng CCQ lưu hành của các quỹ đầu tư | 9 |
+
+---
+
+### `datamart.qlq_fct_investment_fund_nav_per_ccq_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Investment Fund NAV per CCQ Snapshot |
+| **Bảng fact/operational** | `datamart.fct_investment_fund_nav_per_ccq_snpst` |
+| **PK** | `—` |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Classification Dimension (scheme FMS_FUND_TYPE, loại hình chi tiết) | `datamart.cl_dim` | `fund_tp_cl_dim_id` | `cl_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 12 — Tỉ lệ tăng trưởng NAV/CCQ một năm theo loại hình quỹ so với VN-Index và Lãi suất liên ngân hàng qua đêm | 10 |
+
+---
+
+### `datamart.qlq_fct_fund_distribution_agent_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Fund Distribution Agent Snapshot |
+| **Bảng fact/operational** | `datamart.fct_fund_distribution_agent_snpst` |
+| **PK** | `—` (No Driving Table — market-level snapshot) |
+| **Số dim join** | 1 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 17 — Thống kê chung | 2 |
+
+---
+
+### `datamart.qlq_fct_foreign_fund_management_organization_unit_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Foreign Fund Management Organization Unit Snapshot |
+| **Bảng fact/operational** | `datamart.fct_foreign_fund_management_organization_unit_snpst` |
+| **PK** | `—` (No Driving Table — market-level snapshot) |
+| **Số dim join** | 1 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 24 — Thống kê chung | 2 |
+
+---
+
+### `datamart.qlq_opr_fund_management_company_profile_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Fund Management Company Profile |
+| **Bảng fact/operational** | `datamart.opr_fund_management_company_profile` |
+| **PK** | `fmc_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 3 — Danh sách các Công ty quản lý quỹ | 6 |
+
+---
+
+### `datamart.qlq_opr_fund_management_company_fund_list_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Fund Management Company Fund List |
+| **Bảng fact/operational** | `datamart.opr_fund_management_company_fund_list` |
+| **PK** | `investment_fund_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table, drill-down con của Fund Management Company Profile)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 4 — Chi tiết Quỹ của một CTQLQ | 3 |
+
+---
+
+### `datamart.qlq_opr_fund_management_company_contract_list_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Fund Management Company Contract List |
+| **Bảng fact/operational** | `datamart.opr_fund_management_company_contract_list` |
+| **PK** | `discretionary_investment_account_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table, drill-down con của Fund Management Company Profile — popup Nhóm 5)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 5 — Chi tiết các hợp đồng UTDM của CTQLQ | 3 |
+
+---
+
+### `datamart.qlq_opr_investment_fund_profile_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Investment Fund Profile |
+| **Bảng fact/operational** | `datamart.opr_investment_fund_profile` |
+| **PK** | `investment_fund_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 13 — Danh sách các quỹ đầu tư | 8 |
+
+---
+
+### `datamart.qlq_opr_investment_fund_representative_board_member_list_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Investment Fund Representative Board Member List |
+| **Bảng fact/operational** | `datamart.opr_investment_fund_representative_board_member_list` |
+| **PK** | `investment_fund_representative_board_member_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table, drill-down con của Investment Fund Profile)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 15 — Danh sách thành viên ban đại diện | 1 |
+
+---
+
+### `datamart.qlq_opr_investment_fund_manager_list_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Investment Fund Manager List |
+| **Bảng fact/operational** | `datamart.opr_investment_fund_manager_list` |
+| **PK** | `investment_fund_code, fmc_employee_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table, drill-down con của Investment Fund Profile)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 16 — Danh sách người điều hành quỹ | 1 |
+
+---
+
+### `datamart.qlq_opr_fund_distribution_agent_profile_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Fund Distribution Agent Profile |
+| **Bảng fact/operational** | `datamart.opr_fund_distribution_agent_profile` |
+| **PK** | `securities_distribution_agent_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 22 — Danh sách Đại lý phân phối | 5 |
+
+---
+
+### `datamart.qlq_opr_fund_distribution_agent_fund_list_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Fund Distribution Agent Fund List |
+| **Bảng fact/operational** | `datamart.opr_fund_distribution_agent_fund_list` |
+| **PK** | `fund_distribution_agent_code, investment_fund_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table, drill-down con của Fund Distribution Agent Profile)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 23 — Danh sách các Quỹ đang phân phối | 1 |
+
+---
+
+### `datamart.qlq_opr_foreign_fund_management_organization_unit_profile_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Foreign Fund Management Organization Unit Profile |
+| **Bảng fact/operational** | `datamart.opr_foreign_fund_management_organization_unit_profile` |
+| **PK** | `foreign_fund_management_organization_unit_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 26 — Danh sách các Chi nhánh CTQLQ nước ngoài tại Việt Nam | 2 |
+
+---
+
+**Reuse xuyên module (không có flat table riêng trong QLQ — xem GSTT/PTTT):**
+
+| Entity nguồn | Module sở hữu | Nhóm KPI QLQ dùng | Số KPI |
+|---|---|---|---|
+| Fact Macro Indicator Snapshot | PTTT | Nhóm 7 (GDP, Thời gian), Nhóm 12 (Lãi suất liên NH qua đêm) | 3 |
+| Fact Market Index Snapshot | GSTT | Nhóm 12 (VN-Index) | 1 |
+
 
 ---
 
