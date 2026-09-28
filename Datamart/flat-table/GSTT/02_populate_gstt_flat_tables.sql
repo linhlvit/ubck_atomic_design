@@ -38,6 +38,7 @@ SELECT
     -- From: FACT Stock Portfolio Snapshot
     f.security_trading_snpst_dim_id,
     f.public_company_dim_id,
+    f.securities_company_dim_id,
     f.snpst_dt_dim_id,
     f.fr_period_end_dt_dim_id,
     f.total_vol,
@@ -131,7 +132,7 @@ SELECT
     pc_dim.business_line_level_1_code              AS business_line_level_1_code,
     pc_dim.ids_registration_dt                     AS ids_registration_dt,
     pc_dim.public_company_status_code              AS public_company_status_code,
-    pc_dim.classification_business_line_nm         AS classification_business_line_nm,
+    COALESCE(pc_dim.classification_business_line_nm, CASE WHEN sc_dim.securities_company_dim_id IS NOT NULL THEN 'Tài chính - Ngân hàng' END) AS classification_business_line_nm,
     pc_dim.public_company_english_nm               AS public_company_english_nm,
     pc_dim.enterprise_tp_code                      AS enterprise_tp_code,
     pc_dim.public_company_tp_code                  AS public_company_tp_code,
@@ -161,6 +162,8 @@ LEFT JOIN datamart.security_trading_snpst_dim sec_dim
     ON sec_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim
     ON pc_dim.public_company_dim_id = f.public_company_dim_id
+LEFT JOIN datamart.securities_company_dim sc_dim
+    ON sc_dim.securities_company_dim_id = f.securities_company_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;
 
