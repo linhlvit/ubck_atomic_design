@@ -308,6 +308,8 @@ SELECT
     o.decision_dt,
     o.director_nm,
     o.cl_firm_status_code,
+    o.record_status_code,
+    o.business_line_nm_list,
     o.src_stm_code
 
 FROM datamart.opr_securities_company_organization_unit_profile o
@@ -600,4 +602,24 @@ SELECT
     f.etl_process_tms
 
 FROM datamart.opr_securities_company_practitioner_profile f
+;
+
+
+-- ==========================================================
+-- 20. OPERATIONAL: qlkd_opr_securities_company_organization_unit_service_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_organization_unit_service_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_securities_company_organization_unit_service_flat
+SELECT
+    -- From: OPR_SECURITIES_COMPANY_ORGANIZATION_UNIT_SERVICE
+    f.organization_unit_service_id,
+    f.sc_ou_code,
+    f.cl_sc_firm_service_code,
+    f.sc_code,
+    f.ou_tp_code,
+    f.catalog_code,
+    f.decision_dt,
+    f.src_stm_code
+
+FROM datamart.opr_securities_company_organization_unit_service f
 ;

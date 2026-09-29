@@ -279,6 +279,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_uni
     decision_dt                     Nullable(Date)          COMMENT 'Ngày thành lập',
     director_nm                     Nullable(String)        COMMENT 'Giám đốc/Trưởng đơn vị — BRANCH dùng Director Name, TRANSACTION_OFFICE/REP_OFFICE dùng Representative Name',
     cl_firm_status_code             Nullable(String)        COMMENT 'Trạng thái pháp lý đơn vị',
+    record_status_code              Nullable(String)        COMMENT 'Trạng thái bản ghi của đơn vị: 1=Đang hoạt động; 0=Ngừng hoạt động.',
+    business_line_nm_list           Nullable(String)        COMMENT 'Danh sách tên nghiệp vụ kinh doanh chứng khoán được cấp phép cho đơn vị, nối bằng dấu phẩy (VPĐD = NULL)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -604,4 +606,27 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_practitioner_pro
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (prac_profile_id)
 COMMENT 'Flat table — Securities Company Practitioner Profile — ho so nguoi hanh nghe theo CTCK'
+;
+
+
+-- ==========================================================
+-- 20. OPERATIONAL: qlkd_opr_securities_company_organization_unit_service_flat
+--    opr_securities_company_organization_unit_service — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_unit_service_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_SECURITIES_COMPANY_ORGANIZATION_UNIT_SERVICE
+    organization_unit_service_id                 String                  COMMENT 'PK — Driving: sc_ou_x_cl_sc_firm_service_relationship (bộ Phòng giao dịch, mỗi dòng = 1 PGD × 1 dịch vụ được cấp phép). Surrogate sinh từ toàn bộ BK và src_stm_code.',
+    sc_ou_code                                   String                  COMMENT 'Mã đơn vị (ID nguồn) — BK 1/3. ID chỉ duy nhất trong từng loại đơn vị, không duy nhất giữa Chi nhánh và Phòng giao dịch nên BK phải kèm loại đơn vị.',
+    cl_sc_firm_service_code                      String                  COMMENT 'Mã dịch vụ/nghiệp vụ được cấp phép cho PGD — BK 3/3.',
+    sc_code                                      String                  COMMENT 'Mã CTCK sở hữu đơn vị.',
+    ou_tp_code                                   String                  COMMENT 'Loại đơn vị: BRANCH=Chi nhánh; TRANSACTION_OFFICE=Phòng giao dịch — BK 2/3, phân biệt các đơn vị trùng ID giữa hai loại.',
+    catalog_code                                 Nullable(String)        COMMENT 'Mã danh mục của dịch vụ (phân loại nghiệp vụ cơ sở, dịch vụ tài chính, phái sinh).',
+    decision_dt                                  Nullable(Date)          COMMENT 'Ngày thành lập của đơn vị (ngày ban hành quyết định) — mốc xác định đơn vị đã tồn tại tại một ngày báo cáo.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (organization_unit_service_id)
+COMMENT 'Flat table — opr_securities_company_organization_unit_service — sinh tự động từ master registry + Entities.csv'
 ;
