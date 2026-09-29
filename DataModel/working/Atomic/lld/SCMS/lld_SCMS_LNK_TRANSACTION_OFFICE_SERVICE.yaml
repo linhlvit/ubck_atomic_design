@@ -1,0 +1,85 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "LNK_TRANSACTION_OFFICE_SERVICE"
+  atomic_entity: "Securities Company Organization Unit X Classification Securities Company Firm Service Relationship"
+  entity_physical_name: "sc_ou_x_cl_sc_firm_service_relationship"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Branch"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Securities Company Organization Unit Id"
+  physical_name: "sc_ou_id"
+  description: "FK -> sc_firm_transaction_office: Phòng giao dịch liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_TRANSACTION_OFFICE_SERVICE.SC_FIRM_TRANSACTION_OFFICE_ID"
+  comment: "FK target: sc_organization_unit.sc_ou_id. Hash: hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE', SC_FIRM_TRANSACTION_OFFICE_ID). | Composite PK cùng Classification Securities Company Firm Service Id — entity không có Id/Code riêng, business key = cặp (SC_FIRM_TRANSACTION_OFFICE_ID, SERVICE_ID) theo pattern _x_ (xem lld_SCMS_LNK_SC_FIRM_SERVICE.yaml)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Organization Unit Code"
+  physical_name: "sc_ou_code"
+  description: "Mã phòng giao dịch."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_TRANSACTION_OFFICE_SERVICE.SC_FIRM_TRANSACTION_OFFICE_ID"
+  comment: "Lookup pair: sc_organization_unit.sc_ou_code. Pair with Securities Company Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Firm Service Id"
+  physical_name: "cl_sc_firm_service_id"
+  description: "FK -> cat_service_legal_capital: Dịch vụ chứng khoán được cấp phép."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_TRANSACTION_OFFICE_SERVICE.SERVICE_ID"
+  comment: "FK target: cl_securities_company_firm_service.cl_sc_firm_service_id. Hash: hash_id('SCMS_CAT_SERVICE_LEGAL_CAPITAL', SERVICE_ID). | Composite PK cùng Securities Company Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Firm Service Code"
+  physical_name: "cl_sc_firm_service_code"
+  description: "Mã dịch vụ chứng khoán được cấp phép."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_TRANSACTION_OFFICE_SERVICE.SERVICE_ID"
+  comment: "Lookup pair: cl_securities_company_firm_service.cl_sc_firm_service_code. Pair with Classification Securities Company Firm Service Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_LNK_TRANSACTION_OFFICE_SERVICE"
+  etl_derived_value: "SCMS_LNK_TRANSACTION_OFFICE_SERVICE"
+  data_type: "string"

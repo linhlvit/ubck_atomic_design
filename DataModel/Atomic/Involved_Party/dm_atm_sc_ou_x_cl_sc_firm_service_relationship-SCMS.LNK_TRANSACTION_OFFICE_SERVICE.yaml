@@ -1,0 +1,93 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_ou_x_cl_sc_firm_service_relationship-SCMS.LNK_TRANSACTION_OFFICE_SERVICE
+  logical_name: Securities Company Organization Unit X Classification Securities Company Firm Service Relationship
+  physical_name: sc_ou_x_cl_sc_firm_service_relationship
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Branch"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  description: |
+    Danh mục dịch vụ chứng khoán được cấp phép cho từng phòng giao dịch CTCK (FK Securities Company Organization Unit + Classification Securities Company Firm Service). Đảo ngược quyết định denormalize ARRAY trước đây (7d cũ) theo chỉ đạo Data Modeler (2026-09-23) — tách entity `_x_` riêng, mirror pattern #58 `Securities Company X Classification Securities Company Firm Service Relationship` (LNK_SC_FIRM_SERVICE), chỉ khác entity cha. PK composite (Securities Company Organization Unit Id + Classification Securities Company Firm Service Id) — không tạo Id/Code riêng cho entity. Bảng nguồn chỉ có 2 FK + RECORD_STATUS + CREATED_AT — không có business attribute riêng; khác #58 nên ID/CREATED_AT/RECORD_STATUS không map, nhất quán với lld_SCMS_LNK_SC_FIRM_SERVICE.yaml (không khai báo ds_* field).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-LNK_TRANSACTION_OFFICE_SERVICE
+
+attributes:
+  - name: Securities Company Organization Unit Id
+    physical_name: sc_ou_id
+    business_meaning: "FK -> sc_firm_transaction_office: Phòng giao dịch liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: LNK_TRANSACTION_OFFICE_SERVICE
+    source_column: SCMS.LNK_TRANSACTION_OFFICE_SERVICE.SC_FIRM_TRANSACTION_OFFICE_ID
+    comment: "FK target: sc_organization_unit.sc_ou_id. Hash: hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE', SC_FIRM_TRANSACTION_OFFICE_ID). | Composite PK cùng Classification Securities Company Firm Service Id — entity không có Id/Code riêng, business key = cặp (SC_FIRM_TRANSACTION_OFFICE_ID, SERVICE_ID) theo pattern _x_ (xem lld_SCMS_LNK_SC_FIRM_SERVICE.yaml)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Organization Unit Code
+    physical_name: sc_ou_code
+    business_meaning: Mã phòng giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_TRANSACTION_OFFICE_SERVICE
+    source_column: SCMS.LNK_TRANSACTION_OFFICE_SERVICE.SC_FIRM_TRANSACTION_OFFICE_ID
+    comment: "Lookup pair: sc_organization_unit.sc_ou_code. Pair with Securities Company Organization Unit Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Id
+    physical_name: cl_sc_firm_service_id
+    business_meaning: "FK -> cat_service_legal_capital: Dịch vụ chứng khoán được cấp phép."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: LNK_TRANSACTION_OFFICE_SERVICE
+    source_column: SCMS.LNK_TRANSACTION_OFFICE_SERVICE.SERVICE_ID
+    comment: "FK target: cl_securities_company_firm_service.cl_sc_firm_service_id. Hash: hash_id('SCMS_CAT_SERVICE_LEGAL_CAPITAL', SERVICE_ID). | Composite PK cùng Securities Company Organization Unit Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Code
+    physical_name: cl_sc_firm_service_code
+    business_meaning: Mã dịch vụ chứng khoán được cấp phép.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_TRANSACTION_OFFICE_SERVICE
+    source_column: SCMS.LNK_TRANSACTION_OFFICE_SERVICE.SERVICE_ID
+    comment: "Lookup pair: cl_securities_company_firm_service.cl_sc_firm_service_code. Pair with Classification Securities Company Firm Service Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: LNK_TRANSACTION_OFFICE_SERVICE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_LNK_TRANSACTION_OFFICE_SERVICE'"
+    etl_derived_value: SCMS_LNK_TRANSACTION_OFFICE_SERVICE
