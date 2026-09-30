@@ -225,3 +225,49 @@ Kiểm tra toàn diện:
 
 
 
+
+
+## 2026-09-30T10:03:39Z
+
+Requested team: Full team đa đặc nhiệm (phân luồng theo Quality Gates 0-8, cụm nghiệp vụ và đối soát chéo độc lập)
+
+Thẩm định độc lập và toàn diện tính toàn vẹn đa tầng (Multi-layer Integrity Audit) cho phân hệ Datamart PTTT (Phát triển Thị trường) của UBCKNN, tập trung rà soát các cập nhật thiết kế mới nhất (nâng cấp READY Nhóm 12, 13, 14, 18, bổ sung Fact Corporate Bond Market Snapshot, câu hỏi mở O_PTTT_26) và đồng bộ bộ kiểm thử Integrity Oracles.
+
+Working directory: C:\Workspace\Design_DW\ubck_atomic_design
+Integrity mode: development
+
+## Verification Resources
+- Test suite: `tests/test_pttt_integrity_oracles.py`
+- Progress analyzer script: `scripts/review_pttt_dashboard.py`
+- Reference report: `docs/output/datamart/PTTT/PTTT_MultiAgent_Review_Report.md`
+- Master metadata: `Datamart/datamart_model.yaml`, `Datamart/lld/DTM_PTTT_Detail_Mapping.csv`, `Datamart/hld/DTM_PTTT_HLD.md`, `Datamart/flat-table/PTTT/`
+
+## Requirements
+
+### R1. Thẩm định tính nhất quán 5 tầng dữ liệu cho thiết kế mới PTTT
+Đối soát và kiểm tra chéo tính toàn vẹn và đồng bộ giữa 5 tầng tài liệu/mã nguồn: Yêu cầu BA (`BRD/BA/BA_analyst_PTTT.csv`), Kiến trúc HLD (`Datamart/hld/DTM_PTTT_HLD.md`), Thiết kế LLD (`Datamart/lld/DTM_PTTT_Detail_Mapping.csv` và các file CSV chi tiết theo bảng), Mô hình dữ liệu (`Datamart/datamart_model.yaml`) và Kịch bản DDL/DML Flat-table (`Datamart/flat-table/PTTT/`). Trọng tâm đánh giá tính hợp lệ của các chỉ tiêu mới được nâng cấp từ PENDING sang READY tại Nhóm 12 (Vốn hóa), Nhóm 13 (Dòng tiền NĐT), Nhóm 14 (Tương quan rủi ro), và Nhóm 18 (Trái phiếu doanh nghiệp).
+
+### R2. Đánh giá 9 Quality Gates và thẩm tra rủi ro kỹ thuật câu hỏi mở
+Kiểm tra mức độ tuân thủ 9 Quality Gates (Gate 0 đến Gate 8 theo chuẩn Datamart UBCKNN). Phân tích chi tiết rủi ro kỹ thuật và tính khả thi của câu hỏi mở O_PTTT_26 (phạm vi mã thị trường trái phiếu HOSE `BDO` vs HNX `HCX`/`BDX`, khóa nối YTM theo `symbol`, logic lọc sàn giao dịch `floor_code = '06'`).
+
+### R3. Khắc phục và đồng bộ bộ kiểm thử Integrity Oracles
+Phân tích nguyên nhân gốc rễ dẫn tới việc gãy 2 bài kiểm thử (Test 3 và Test 6 trong `tests/test_pttt_integrity_oracles.py`) do sự thay đổi số lượng chỉ tiêu READY (tăng từ 231 lên 267) và True Pending (giảm từ 91 xuống 35). Cập nhật các ngưỡng kiểm thử và logic forensic trong test suite để phản ánh chính xác trạng thái thiết kế sau khi nâng cấp, đảm bảo bộ test đóng vai trò chốt chặn chất lượng khách quan.
+
+### R4. Cập nhật Báo cáo Thẩm định Đa tầng Toàn diện PTTT
+Cập nhật và hoàn thiện Báo cáo Thẩm định Đa tầng Toàn diện (`docs/output/datamart/PTTT/PTTT_MultiAgent_Review_Report.md`) phiên bản v2.0, bao gồm: Executive Summary, Bảng Scorecard 9 Gates cập nhật, Ma trận trạng thái 34 nhóm chỉ tiêu, Phân loại nguyên nhân PENDING còn lại, Danh mục khiếm khuyết phân cấp (P1/P2/P3), và Kế hoạch hành động cụ thể.
+
+## Acceptance Criteria
+
+### Test Suite Execution
+- [ ] Lệnh `python -m pytest tests/test_pttt_integrity_oracles.py` chạy thành công 100% (8/8 tests passed).
+- [ ] Không có bất kỳ cảnh báo ngoại lệ hoặc lỗi assertion nào chưa được giải quyết trong test oracles.
+
+### Data Consistency & Coverage
+- [ ] 100% 421 chỉ tiêu PTTT (388 Dashboard + 33 Data Explorer) được kiểm chứng chéo nhất quán giữa HLD, LLD, Model YAML và Flat-table SQL.
+- [ ] Toàn bộ các chỉ tiêu READY mới của Nhóm 12, 13, 14, 18 có đầy đủ bảng đích (mart_table), cột đích (mart_column), công thức logic và vai trò cột hợp lệ.
+- [ ] Cú pháp và cấu trúc trong `Datamart/datamart_model.yaml`, `01_create_pttt_flat_tables.sql` và `02_populate_pttt_flat_tables.sql` hợp lệ, không có lỗi định dạng YAML/SQL.
+
+### Audit Report Deliverable
+- [ ] Tài liệu `docs/output/datamart/PTTT/PTTT_MultiAgent_Review_Report.md` được cập nhật đầy đủ số liệu thống kê mới (267 READY, 121 PENDING trên Dashboard scope).
+- [ ] Có mục đánh giá riêng và kiến nghị xử lý cho câu hỏi mở O_PTTT_26 (nguồn TPDN HNX/HOSE và liên kết YTM).
+- [ ] Danh mục Action Items (Remediation Roadmap) nêu rõ hành động, mức ưu tiên và bộ phận chịu trách nhiệm.

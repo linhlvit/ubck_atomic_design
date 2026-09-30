@@ -272,6 +272,8 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_corporate_bond_market_snpst_flat ON
     maturity_pressure_12_months             Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng',
     maturity_pressure_12_months_previous    Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng tại kỳ liền trước',
     maturity_pressure_growth_percentage     Nullable(Decimal(5,2))  COMMENT 'Tăng trưởng áp lực đáo hạn',
+    bond_trading_val                        Nullable(Decimal(23,2)) COMMENT 'GTGD trái phiếu khớp lệnh toàn thị trường ngày t (Market ID BDO)',
+    bond_yield_weighted_average             Nullable(Decimal(8,5))  COMMENT 'Lợi suất TP bình quân gia quyền theo GTGD = Σ(YTMi × GTGDi) / ΣGTGDi',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                            Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'

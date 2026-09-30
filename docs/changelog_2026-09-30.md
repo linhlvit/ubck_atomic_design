@@ -127,3 +127,71 @@ Chèn thêm **Nhóm 28 mới** (Bản đồ nhiệt GTNN theo chỉ số) → đ
 |---|---|
 | **O_GSTT_50** | Sở hữu NN/trong nước (cấp công ty) — chuyển sang REUSE `Fact Public Company Foreign Ownership Snapshot` (NDTNN), bỏ khỏi `Fact Major Shareholder Ownership Snapshot` để tránh lặp theo cổ đông |
 | **O_GSTT_51** | Biểu đồ kỹ thuật cổ phiếu — tách Fact mới `fct_security_trading_daily` cho nến ngày (từ 1 tháng trở lên), giữ nguyên `Security Trading Snapshot Dimension` cho ngày đơn lẻ và `Fact Security Trading Intraday` cho intraday |
+
+---
+
+## 7. Cập nhật thiết kế PTTT — Nhóm 18 TPDN & Z-score ILLIQ (2026-09-30 chiều)
+
+### 7.1. Nâng READY Nhóm 18 — K_PTTT_171 (GTGD TP) & K_PTTT_173 (Lợi suất bình quân)
+
+| KPI | Trạng thái cũ | Trạng thái mới | Nguồn Atomic |
+|---|---|---|---|
+| K_PTTT_171 — GTGD trái phiếu tại ngày | PENDING | **READY** | `securities_trade.execution_val` WHERE `market_id_code = 'BDO'` |
+| K_PTTT_172 — YTMi (Lợi suất thực tế TP i) | PENDING | **READY** | `security_trading_snapshot.yield` WHERE `floor_code = '06'` |
+| K_PTTT_173 — Lợi suất TP bình quân AVG | PENDING | **READY** | `Σ(YTMi × GTGDi) / ΣGTGDi` — join `securities_trade` ↔ `security_trading_snapshot` theo `symbol` |
+
+- **Bảng đích:** `Fact Corporate Bond Market Snapshot` (`fct_corporate_bond_market_snpst`)
+- **Cột mới:** `bond_trading_val` (decimal(23,2)), `bond_yield_weighted_average` (decimal(8,5))
+- **Nguồn Atomic bổ sung:** `securities_trade` (Market ID `BDO` = HoSE Bond)
+- **Câu hỏi mở:** O_PTTT_26 — BA lọc `Market ID = 'BDO'` cho cả HOSE và HNX, nhưng mã thị trường trái phiếu HNX là `HCX`/`BDX`
+- **Quyết định:** Thiết kế theo đúng BA (`BDO`), đánh dấu cần BA xác nhận nếu thiếu HNX
+
+### 7.2. Sửa logic Z-score Thanh khoản ILLIQ (K_PTTT_6)
+
+- **Trước:** Z-score dùng ILLIQ ngày (sai)
+- **Sau:** Z-score dùng ILLIQ30 (trung bình 30 phiên của ILLIQ ngày) theo đúng BA dòng 12
+- **Công thức:** `(ILLIQ30_t − μ) / σ` với μ/σ lấy trên chuỗi ILLIQ30 lịch sử
+- **Ảnh hưởng:** `datamart_model.yaml`, `DTM_PTTT_Detail_Mapping.csv`, `DTM_PTTT_fct_market_risk_snpst.csv`
+
+### 7.3. Tiến độ PTTT cập nhật
+
+| Phạm vi | READY | PENDING | Tỷ lệ READY |
+|---|---|---|---|
+| Dashboard (388 KPI) | 267 (+36) | 121 (−36) | **68.81%** (↑ từ 59.54%) |
+| Data Explorer (33 KPI) | 0 | 33 | 0% |
+| **Tổng (421 KPI)** | **267** | **154** | **63.42%** |
+
+---
+
+## 8. Cập nhật Test Suite & Dọn dẹp
+
+### 8.1. Đồng bộ test `test_pttt_integrity_oracles.py`
+
+- **Test 3:** Cập nhật ngưỡng READY 231→267, PENDING 157→121, tỷ lệ 59.54%→68.81%
+- **Test 6:** Cập nhật true pending 91→35, false positives 66→86; bổ sung bóc tách pháp y sử dụng `DatamartProgressAnalyzer`
+- **File mới:** `tests/test_pttt_mutation_challenger.py` (mutation testing cho PTTT)
+
+### 8.2. File thay đổi
+
+| File | Thêm/Xóa | Mô tả |
+|---|---|---|
+| `Datamart/datamart_model.yaml` | +23/−2 | Sửa mô tả Z-score ILLIQ, thêm 2 cột TPDN, bổ sung nguồn `securities_trade` |
+| `Datamart/hld/DTM_PTTT_HLD.md` | +13/−6 | Nâng READY K_PTTT_171/173, cập nhật star schema, ghi chú, O_PTTT_26 |
+| `Datamart/index/kpi_index.csv` | +3/−3 | Cập nhật trạng thái PENDING→READY + bảng/cột đích |
+| `Datamart/lld/DTM_PTTT_Detail_Mapping.csv` | +4/−4 | Cập nhật mapping K_PTTT_171/173 |
+| `Datamart/lld/PTTT/DTM_PTTT_fct_corporate_bond_market_snpst.csv` | +10/−8 | Thêm 2 dòng mapping cột mới |
+| `Datamart/lld/PTTT/DTM_PTTT_fct_market_risk_snpst.csv` | +1/−1 | Sửa logic Z-score ILLIQ |
+| `Datamart/lld/datamart_attributes.csv` | +2/−2 | Đồng bộ attributes |
+| `Datamart/flat-table/PTTT/01_create_pttt_flat_tables.sql` | +2 | DDL 2 cột mới |
+| `Datamart/flat-table/PTTT/02_populate_pttt_flat_tables.sql` | +2 | DML SELECT 2 cột mới |
+| `tests/test_pttt_integrity_oracles.py` | +27/−18 | Cập nhật ngưỡng Test 3/6 |
+| `tests/test_pttt_mutation_challenger.py` | **MỚI** | Mutation testing PTTT |
+| `ORIGINAL_REQUEST.md` | +46 | Ghi nhận yêu cầu thẩm định PTTT |
+
+### 8.3. Xóa file rác
+
+| Loại | Số lượng | Ghi chú |
+|---|---|---|
+| `.DS_Store` | 26 file | macOS metadata — đã có trong `.gitignore` |
+| `tests/__pycache__/` | 39 file .pyc | Python bytecode cache |
+| `_review_checkpoints/` | 8 file .md | Checkpoint nội bộ của teamwork review — xóa khỏi git tracking và thêm vào `.gitignore` |

@@ -10233,7 +10233,7 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Z-score Thanh khoản ILLIQ"
+        description: "Z-score Thanh khoản ILLIQ — (ILLIQ30 hiện tại − μ) / σ, μ/σ lấy trên chuỗi ILLIQ30 (trung bình 30 phiên của ILLIQ ngày) lịch sử [SỬA 2026-09-30 theo BA dòng 12: trước đó dùng ILLIQ ngày thay vì ILLIQ30]"
         source_atomic_table: "fct_market_risk_snpst"
         source_atomic_column: "fct_market_risk_snpst.illiquidity_ratio"
       - logical_name: "Z Score Margin Balance"
@@ -11262,9 +11262,10 @@ entities:
     module: "PTTT"
     status: "draft"
     reuse_status: "new"
-    description: "Quy mô thị trường TPDN tổng hợp toàn thị trường theo ngày — mệnh giá, dư nợ, áp lực đáo hạn. Grain: 1 row/ngày. Trading Value/YTM Avg vẫn PENDING (gap Atomic Corporate Bond Match Log — xem O_PTTT_7)."
+    description: "Quy mô thị trường TPDN tổng hợp toàn thị trường theo ngày — mệnh giá, dư nợ, áp lực đáo hạn. Grain: 1 row/ngày. Trading Value/YTM Avg READY từ 2026-09-30 (securities_trade Market ID BDO + security_trading_snapshot.yield floor 06)."
     source_atomic:
       - "security_trading_snapshot"
+      - "securities_trade"
     modules_using:
       - "PTTT"
     columns:
@@ -11331,6 +11332,24 @@ entities:
         description: "Tăng trưởng áp lực đáo hạn so với kỳ trước"
         source_atomic_table: "fct_corporate_bond_market_snpst"
         source_atomic_column: "fct_corporate_bond_market_snpst.maturity_pressure_12_months"
+      - logical_name: "Bond Trading Value"
+        physical_name: "bond_trading_val"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "GTGD trái phiếu khớp lệnh toàn thị trường ngày t (BA Nhóm 18 dòng 306)"
+        source_atomic_table: "securities_trade"
+        source_atomic_column: "securities_trade.execution_val"
+      - logical_name: "Bond Yield Weighted Average"
+        physical_name: "bond_yield_weighted_average"
+        data_domain: "Interest Rate"
+        data_type: "decimal(8,5)"
+        nullable: true
+        key: "DD"
+        description: "Lợi suất TP bình quân gia quyền theo GTGD = Σ(YTMi × GTGDi) / ΣGTGDi (BA Nhóm 18 dòng 304)"
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.yield"
 
   - id: "DTM-fct_corporate_bond_maturity_wall"
     logical_name: "Fact Corporate Bond Maturity Wall"

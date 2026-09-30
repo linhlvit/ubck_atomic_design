@@ -7,10 +7,10 @@ Independent Adversarial Empirical Test Oracles for PTTT Datamart Multi-Tier Inte
 Authentic verification test suite evaluating multi-tier integrity:
 - Test 1: Full 34-group coverage across BRD/BA (454 items, 34 groups).
 - Test 2: Complete HLD KPI coverage across 34 groups (421 HLD KPIs).
-- Test 3: Detail Mapping scope reconciliation (421 total = 388 Dashboard + 33 Data Explorer; 231 READY [59.54%], 157 PENDING [40.46%]).
+- Test 3: Detail Mapping scope reconciliation (421 total = 388 Dashboard + 33 Data Explorer; 267 READY [68.81%], 121 PENDING [31.19%]).
 - Test 4: Empirical reproduction of 4 S5 errors (Measure Type Mismatch) in Group 28 (rows 399, 400) and Group 31 (rows 421, 422).
 - Test 5: ClickHouse Flat Tables 1:1 Parity (15 DDL tables, 15 DML tables, 0 column drift).
-- Test 6: Empirical Rule L4 compliance audit (100% of 91 true PENDING rows blank; forensic separation of 66 false positives).
+- Test 6: Empirical Rule L4 compliance audit (100% of 35 true PENDING rows blank; forensic separation of 86 false positives).
 - Test 7: Group 21 empirical grain mismatch verification (opr_corporate_bond_issuer_credit_monitor: symbol vs pc_id).
 - Test 8: Group 19 empirical schema emptiness verification (fct_corporate_bond_maturity_wall: 3 columns, missing maturity_dt).
 """
@@ -109,7 +109,7 @@ def test_oracle_02_hld_kpi_coverage_and_structure():
 
 
 # ==============================================================================
-# TEST 3: Kiểm chứng đối soát phạm vi Detail Mapping (388 Dashboard, 231 READY, 157 PENDING)
+# TEST 3: Kiểm chứng đối soát phạm vi Detail Mapping (388 Dashboard, 267 READY, 121 PENDING)
 # ==============================================================================
 def test_oracle_03_detail_mapping_scope_and_status():
     """
@@ -117,8 +117,8 @@ def test_oracle_03_detail_mapping_scope_and_status():
     - Tổng cộng 421 dòng = 388 dòng Dashboard + 33 dòng Data Explorer (Nhóm 32–34).
     - Bộ phân tích tiến độ chuẩn (DatamartProgressAnalyzer):
       + Đánh giá phạm vi Dashboard: 388 dòng.
-      + READY: đúng 231 dòng (59.54%).
-      + PENDING: đúng 157 dòng (40.46%).
+      + READY: đúng 267 dòng (68.81%).
+      + PENDING: đúng 121 dòng (31.19%).
     """
     assert DETAIL_MAPPING_PATH.is_file(), f"Tệp Detail Mapping không tồn tại: {DETAIL_MAPPING_PATH}"
 
@@ -140,10 +140,10 @@ def test_oracle_03_detail_mapping_scope_and_status():
     res = analyzer.analyze_module("PTTT")
 
     assert res["total_dm_rows"] == 388, f"Scope Dashboard phải là 388, thực tế: {res['total_dm_rows']}"
-    assert res["ready_count"] == 231, f"READY count phải là 231, thực tế: {res['ready_count']}"
-    assert res["pending_count"] == 157, f"PENDING count phải là 157, thực tế: {res['pending_count']}"
-    assert abs(res["ready_pct"] - 59.54) < 0.1, f"READY % lệch: {res['ready_pct']}"
-    assert abs(res["pending_pct"] - 40.46) < 0.1, f"PENDING % lệch: {res['pending_pct']}"
+    assert res["ready_count"] == 267, f"READY count phải là 267, thực tế: {res['ready_count']}"
+    assert res["pending_count"] == 121, f"PENDING count phải là 121, thực tế: {res['pending_count']}"
+    assert abs(res["ready_pct"] - 68.81) < 0.1, f"READY % lệch: {res['ready_pct']}"
+    assert abs(res["pending_pct"] - 31.19) < 0.1, f"PENDING % lệch: {res['pending_pct']}"
 
 
 # ==============================================================================
@@ -196,24 +196,27 @@ def test_oracle_05_clickhouse_flat_tables_ddl_dml_parity():
 
 
 # ==============================================================================
-# TEST 6: Kiểm chứng thực nghiệm Rule L4 và bóc tách 66 False Positives
+# TEST 6: Kiểm chứng thực nghiệm Rule L4 và bóc tách 86 False Positives
 # ==============================================================================
 def test_oracle_06_rule_l4_compliance_and_false_positive_forensic():
     """
     Test 6: Đánh giá pháp y Rule L4 trên các chỉ tiêu PENDING:
-    - Toàn bộ 91 chỉ tiêu thực sự PENDING (tinh_chat=PENDING hoặc ghi_chu bắt đầu bằng 'Pending')
+    - Toàn bộ 35 chỉ tiêu thực sự PENDING (tinh_chat=PENDING hoặc ghi_chu bắt đầu bằng 'Pending')
       phải để trống 100% cả 4 trường kỹ thuật (mart_table, mart_column, logic, column_role).
     - 30/30 chỉ tiêu Cụm 4 (Nhóm 22-25) tuân thủ 100% Rule L4.
-    - Bóc tách chính xác 66 chỉ tiêu trong tập 157 của analyzer có trường kỹ thuật được điền
-      (chứng minh đây là False Positives do bẫy chuỗi changelog hoặc biến DERIVED).
+    - Bóc tách chính xác 86 chỉ tiêu trong tập 121 của analyzer có trường kỹ thuật được điền
+      (chứng minh đây là False Positives do bẫy chuỗi changelog hoặc biến DERIVED: 121 - 35 = 86).
     """
     sys.path.insert(0, str(REPO_ROOT / ".claude" / "skills" / "datamart-review" / "scripts"))
-    from datamart_progress_analyzer import DetailMappingParser
+    from datamart_progress_analyzer import DetailMappingParser, DatamartProgressAnalyzer
     dm_items = DetailMappingParser.parse_file(DETAIL_MAPPING_PATH)
     active_dm = [dm for dm in dm_items if dm.tab.upper() != "DATA EXPLORER"]
 
     # 1. 30 chỉ tiêu Cụm 4
-    c4_items = [dm for dm in active_dm if any(g in dm.nhom for g in ["Nhóm 22", "Nhóm 23", "Nhóm 24", "Nhóm 25"])]
+    c4_items = [
+        dm for dm in active_dm
+        if dm.group_num in (22, 23, 24, 25) or any(g in dm.nhom for g in ["Nhóm 22", "Nhóm 23", "Nhóm 24", "Nhóm 25"])
+    ]
     assert len(c4_items) == 30, f"Cụm 4 phải có 30 chỉ tiêu, thực tế: {len(c4_items)}"
     for dm in c4_items:
         assert not dm.mart_table, f"{dm.kpi_id} vi phạm Rule L4: mart_table populated"
@@ -221,17 +224,25 @@ def test_oracle_06_rule_l4_compliance_and_false_positive_forensic():
         assert not dm.logic, f"{dm.kpi_id} vi phạm Rule L4: logic populated"
         assert dm.column_role.upper() in ("", "PENDING"), f"{dm.kpi_id} role invalid: {dm.column_role}"
 
-    # 2. 91 chỉ tiêu true pending
+    # 2. 35 chỉ tiêu true pending
     true_pending = [
         dm for dm in active_dm
         if dm.tinh_chat.strip().lower() == "pending" or dm.ghi_chu.strip().lower().startswith("pending")
     ]
-    assert len(true_pending) == 91, f"Số chỉ tiêu true pending phải là 91, thực tế: {len(true_pending)}"
+    assert len(true_pending) == 35, f"Số chỉ tiêu true pending phải là 35, thực tế: {len(true_pending)}"
     for dm in true_pending:
         assert not dm.mart_table, f"{dm.kpi_id} vi phạm Rule L4: mart_table={dm.mart_table}"
         assert not dm.mart_column, f"{dm.kpi_id} vi phạm Rule L4: mart_column={dm.mart_column}"
         assert not dm.logic, f"{dm.kpi_id} vi phạm Rule L4: logic={dm.logic}"
         assert dm.column_role.upper() in ("", "PENDING"), f"{dm.kpi_id} role invalid: {dm.column_role}"
+
+    # 3. Bóc tách pháp y 86 chỉ tiêu False Positives trong tập 121 của analyzer
+    analyzer = DatamartProgressAnalyzer()
+    res = analyzer.analyze_module("PTTT")
+    analyzer_pending_items = [it for cat in res["classified_pending"].values() for it in cat]
+    assert len(analyzer_pending_items) == 121, f"Analyzer pending phải là 121, thực tế: {len(analyzer_pending_items)}"
+    false_positives = len(analyzer_pending_items) - len(true_pending)
+    assert false_positives == 86, f"Số lượng False Positives phải là 86, thực tế: {false_positives}"
 
 
 # ==============================================================================
