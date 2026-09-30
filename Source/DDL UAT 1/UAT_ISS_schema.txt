@@ -1,0 +1,523 @@
+DATA DICTIONARY - SCHEMA: UAT_ISS
+Tong so bang: 23 | Materialized View: 0
+==============================================================================================================
+
+BANG: AUDIT_LOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+ENTITY_TYPE                   VARCHAR2(50)        NO                                       
+ENTITY_ID                     VARCHAR2(36)        NO                                       
+ENTITY_CODE                   VARCHAR2(255)       NO                                       
+ACTION                        VARCHAR2(50)        NO                                       
+JSON_OLD                      CLOB                YES                                      
+JSON_NEW                      CLOB                YES                                      
+MODIFIED_AT                   TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+TRANSACTION_ID                VARCHAR2(36)        YES                                      
+
+
+BANG: DATABASECHANGELOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(255)       NO                                       
+AUTHOR                        VARCHAR2(255)       NO                                       
+FILENAME                      VARCHAR2(255)       NO                                       
+DATEEXECUTED                  TIMESTAMP(6)        NO                                       
+ORDEREXECUTED                 NUMBER              NO                                       
+EXECTYPE                      VARCHAR2(10)        NO                                       
+MD5SUM                        VARCHAR2(35)        YES                                      
+DESCRIPTION                   VARCHAR2(255)       YES                                      
+COMMENTS                      VARCHAR2(255)       YES                                      
+TAG                           VARCHAR2(255)       YES                                      
+LIQUIBASE                     VARCHAR2(20)        YES                                      
+CONTEXTS                      VARCHAR2(255)       YES                                      
+LABELS                        VARCHAR2(255)       YES                                      
+DEPLOYMENT_ID                 VARCHAR2(10)        YES                                      
+
+
+BANG: DATABASECHANGELOGLOCK
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER              NO      PK                               
+LOCKED                        NUMBER(1,0)         NO                                       
+LOCKGRANTED                   TIMESTAMP(6)        YES                                      
+LOCKEDBY                      VARCHAR2(255)       YES                                      
+
+
+BANG: FACT_REPORT_DATA
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INPUT_REPORT_TEMPLATE_ID      VARCHAR2(36)        NO      FK     INPUT_REPORT_TEMPLATE.ID  
+INPUT_REPORT_SUBMISSION_ID    VARCHAR2(36)        NO      FK     INPUT_REPORT_SUBMISSION.ID
+SHEET_ID                      VARCHAR2(36)        NO      FK     INPUT_REPORT_TEMPLATE_SHEET.ID
+DATE_TYPE                     VARCHAR2(20)        NO                                       
+ORIGIN_DATE_VALUE             VARCHAR2(100)       YES                                      
+DAY                           NUMBER(2,0)         YES                                      
+MONTH                         NUMBER(2,0)         YES                                      
+QUARTER                       NUMBER(1,0)         YES                                      
+HALF_YEAR                     NUMBER(1,0)         YES                                      
+YEAR                          NUMBER(4,0)         YES                                      
+JSON_DATA                     CLOB                YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+DATA_INDEX                    NUMBER(10,0)        YES                                      
+
+
+BANG: FILE_INFO
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+FILE_NAME                     VARCHAR2(1020)      NO                                       
+FILE_EXTENSION                VARCHAR2(20)        NO                                       
+OBJECT_KEY                    CLOB                NO                                       
+FILE_SIZE                     NUMBER(19,0)        YES                                      
+DISPLAY_NAME                  VARCHAR2(1020)      YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: INPUT_REPORT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INPUT_REPORT_TEMPLATE_ID      VARCHAR2(36)        NO      FK     INPUT_REPORT_TEMPLATE.ID  
+INPUT_REPORT_DEADLINE_ID      VARCHAR2(36)        YES     FK     INPUT_REPORT_DEADLINE.ID  
+ORGANIZATION_ID               VARCHAR2(36)        NO                                       
+PERIOD_TYPE                   VARCHAR2(20)        NO                                       
+REPORT_OBLIGATION_TYPE        VARCHAR2(20)        NO                                       
+PERIOD_VALUE                  VARCHAR2(50)        YES                                      
+PERIOD_DATE                   DATE                YES                                      
+REPORT_YEAR                   NUMBER(4,0)         YES                                      
+REPORT_DUE_TIME               TIMESTAMP(6) WITH TIME ZONEYES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: INPUT_REPORT_DEADLINE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INPUT_REPORT_TEMPLATE_ID      VARCHAR2(36)        NO      FK     INPUT_REPORT_TEMPLATE.ID  
+REPORTING_PERIOD              VARCHAR2(20)        NO                                       
+DUE_DATE                      NUMBER(5,0)         YES                                      
+DUE_DATE_UNIT                 VARCHAR2(20)        YES                                      
+REMINDER_BEFORE               NUMBER(10,0)        YES                                      
+REMINDER_PERIOD               VARCHAR2(20)        YES                                      
+PERIOD_INDICES                VARCHAR2(255)       YES                                      
+EXCLUDE_HOLIDAY               NUMBER(1,0)         YES                                      
+LAST_GENERATE_AT              TIMESTAMP(6) WITH TIME ZONEYES                                      
+NEXT_GENERATE_AT              TIMESTAMP(6) WITH TIME ZONENO                                       
+ERROR_COUNT                   NUMBER(5,0)         YES                                      
+LAST_ERROR_MESSAGE            VARCHAR2(1000)      YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: INPUT_REPORT_METRIC
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+SHEET_ID                      VARCHAR2(36)        NO      FK     INPUT_REPORT_TEMPLATE_SHEET.ID
+PARENT_ID                     VARCHAR2(36)        YES     FK     INPUT_REPORT_METRIC.ID    
+ORDER_IN_LEVEL                NUMBER(3,0)         NO                                       
+NODE_NAME                     VARCHAR2(1020)      NO                                       
+METRIC_CODE                   VARCHAR2(255)       YES                                      
+IS_DIMENSION                  NUMBER(1,0)         YES                                      
+IS_HAVE_DATA                  NUMBER(1,0)         YES                                      
+POSITION                      VARCHAR2(20)        NO                                       
+UNIT                          VARCHAR2(100)       YES                                      
+DESCRIPTION                   CLOB                YES                                      
+DATA_TYPE                     VARCHAR2(20)        YES                                      
+METRIC_TYPE                   VARCHAR2(10)        YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: INPUT_REPORT_SUBMISSION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INPUT_REPORT_ID               VARCHAR2(36)        NO      FK     INPUT_REPORT.ID           
+SUBMIT_SOURCE                 VARCHAR2(50)        NO                                       
+FILE_INFO_ID                  VARCHAR2(36)        YES     FK     FILE_INFO.ID              
+SUBMIT_STATUS                 VARCHAR2(20)        NO                                       
+NOTE                          CLOB                YES                                      
+DESCRIPTION                   CLOB                YES                                      
+COMPARE_RESULT_FILE_INFO_ID   VARCHAR2(36)        YES     FK     FILE_INFO.ID              
+COMPARE_STATUS                VARCHAR2(20)        YES                                      
+SUBMITTED_AT                  TIMESTAMP(6) WITH TIME ZONEYES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+RESUBMIT_REASON               CLOB                YES                                      
+
+
+BANG: INPUT_REPORT_TEMPLATE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+REPORT_CODE                   VARCHAR2(255)       NO                                       
+REPORT_NAME                   VARCHAR2(1020)      NO                                       
+LEGAL_BASIS                   VARCHAR2(1020)      NO                                       
+ORGANIZATION_ID               VARCHAR2(36)        NO                                       
+EFFECTIVE_FROM                TIMESTAMP(6) WITH TIME ZONENO                                       
+AUTO_SEND_TO_BTC              NUMBER(1,0)         YES                                      
+DESCRIPTION                   CLOB                YES                                      
+VERSION                       NUMBER              NO                                       
+STATUS                        VARCHAR2(20)        NO                                       
+REPORT_LAYOUT_TYPE            VARCHAR2(20)        NO                                       
+COPY_REPORT_TEMPLATE_ID       VARCHAR2(36)        YES     FK     INPUT_REPORT_TEMPLATE.ID  
+SUBMIT_SOURCE_FROM_ICP        NUMBER(1,0)         YES                                      
+SUBMIT_SOURCE_FROM_CDW        NUMBER(1,0)         YES                                      
+SUBMIT_SOURCE_FROM_KDL        NUMBER(1,0)         YES                                      
+TEMPLATE_FILE_INFO_ID         VARCHAR2(36)        YES     FK     FILE_INFO.ID              
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: INPUT_REPORT_TEMPLATE_SHEET
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INPUT_REPORT_TEMPLATE_ID      VARCHAR2(36)        NO      FK     INPUT_REPORT_TEMPLATE.ID  
+SHEET_NAME                    VARCHAR2(1020)      NO                                       
+SHEET_ORDER                   NUMBER(3,0)         NO                                       
+ROW_START_POSITION            VARCHAR2(20)        NO                                       
+COLUMN_START_POSITION         VARCHAR2(20)        NO                                       
+TITLE_POSITION                VARCHAR2(20)        YES                                      
+TIME_TYPE                     VARCHAR2(20)        YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: LOG_DATA_CHANGE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+APPLICATION                   VARCHAR2(100)       YES                                      
+CLASS_NAME                    VARCHAR2(200)       YES                                      
+ACTION_REAL                   VARCHAR2(50)        YES                                      
+ACTION_CUSTOM                 VARCHAR2(200)       YES                                      
+FILTER_CUSTOM                 VARCHAR2(1000)      YES                                      
+DATA_CHANGE                   CLOB                YES                                      
+CREATED_ENTITY_AT             TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_ENTITY_AT             TIMESTAMP(6) WITH TIME ZONEYES                                      
+USER_ID                       VARCHAR2(36)        YES                                      
+USER_NAME                     VARCHAR2(250)       YES                                      
+FULL_NAME                     VARCHAR2(500)       YES                                      
+IP_CLIENT                     VARCHAR2(100)       YES                                      
+URL                           VARCHAR2(1000)      YES                                      
+USER_AGENT                    VARCHAR2(500)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+
+
+BANG: OUTPUT_REPORT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+OUTPUT_REPORT_TEMPLATE_ID     VARCHAR2(36)        NO      FK     OUTPUT_REPORT_TEMPLATE.ID 
+PERIOD_TYPE                   VARCHAR2(20)        NO                                       
+PERIOD_VALUE                  VARCHAR2(50)        NO                                       
+PERIOD_DATE                   DATE                YES                                      
+PERIOD_END_DATE               DATE                YES                                      
+STATUS                        VARCHAR2(20)        NO                                       
+NOTE                          CLOB                YES                                      
+FILE_INFO_ID                  VARCHAR2(36)        YES     FK     FILE_INFO.ID              
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: OUTPUT_REPORT_DEADLINE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+OUTPUT_REPORT_TEMPLATE_ID     VARCHAR2(36)        NO      FK     OUTPUT_REPORT_TEMPLATE.ID 
+REPORTING_PERIOD              VARCHAR2(20)        NO                                       
+DUE_DATE                      NUMBER(5,0)         YES                                      
+PERIOD_INDICES                VARCHAR2(255)       YES                                      
+DUE_DATE_UNIT                 VARCHAR2(20)        YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: OUTPUT_REPORT_GENERATE_JOB
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+STATUS                        VARCHAR2(20)        NO                                       
+OWNER_NODE                    VARCHAR2(50)        YES                                      
+ERROR_MESSAGE                 CLOB                YES                                      
+ATTEMPTS                      NUMBER(5,0)         NO                                       
+MAX_ATTEMPTS                  NUMBER(5,0)         NO                                       
+SCHEDULED_AT                  TIMESTAMP(6) WITH TIME ZONENO                                       
+STARTED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+COMPLETED_AT                  TIMESTAMP(6) WITH TIME ZONEYES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: OUTPUT_REPORT_GENERATE_JOB_ITEM
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+OUTPUT_REPORT_GENERATE_JOB_ID VARCHAR2(36)        NO      FK     OUTPUT_REPORT_GENERATE_JOB.ID
+OUTPUT_REPORT_ID              VARCHAR2(36)        NO      FK     OUTPUT_REPORT.ID          
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: OUTPUT_REPORT_METRIC
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+OUTPUT_REPORT_TEMPLATE_ID     VARCHAR2(36)        NO      FK     OUTPUT_REPORT_TEMPLATE.ID 
+PARENT_ID                     VARCHAR2(36)        YES     FK     OUTPUT_REPORT_METRIC.ID   
+ORDER_IN_LEVEL                NUMBER(3,0)         NO                                       
+NODE_NAME                     VARCHAR2(255)       NO                                       
+POSITION                      VARCHAR2(20)        YES                                      
+IS_DATA_GENERATION            NUMBER(1,0)         YES                                      
+FORMAT                        VARCHAR2(20)        YES                                      
+DATE_TYPE                     VARCHAR2(30)        YES                                      
+METRIC_CODE                   VARCHAR2(255)       YES                                      
+DESCRIPTION                   CLOB                YES                                      
+METRIC_TYPE                   VARCHAR2(10)        NO                                       
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: OUTPUT_REPORT_SOURCE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+INPUT_REPORT_TEMPLATE_ID      VARCHAR2(36)        NO      PK     INPUT_REPORT_TEMPLATE.ID  
+OUTPUT_REPORT_TEMPLATE_ID     VARCHAR2(36)        NO      PK     OUTPUT_REPORT_TEMPLATE.ID 
+
+
+BANG: OUTPUT_REPORT_TEMPLATE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+REPORT_CODE                   VARCHAR2(255)       NO                                       
+REPORT_NAME                   VARCHAR2(1020)      NO                                       
+LEGAL_BASIS                   VARCHAR2(1020)      NO                                       
+EFFECTIVE_FROM                TIMESTAMP(6) WITH TIME ZONENO                                       
+AUTO_SEND_TO_BTC              NUMBER(1,0)         YES                                      
+DESCRIPTION                   CLOB                YES                                      
+VERSION                       NUMBER              NO                                       
+STATUS                        VARCHAR2(20)        NO                                       
+REPORT_LAYOUT_TYPE            VARCHAR2(20)        NO                                       
+COPY_REPORT_TEMPLATE_ID       VARCHAR2(36)        YES     FK     OUTPUT_REPORT_TEMPLATE.ID 
+DATA_START_ROW                VARCHAR2(20)        NO                                       
+DATA_START_COLUMN             VARCHAR2(20)        NO                                       
+TEMPLATE_FILE_INFO_ID         VARCHAR2(36)        YES     FK     FILE_INFO.ID              
+REPORT_CONFIG                 CLOB                YES                                      
+QUERY_COMMAND                 CLOB                YES                                      
+IS_DATA_GENERATION            NUMBER(1,0)         YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: OUTPUT_REPORT_TEMPLATE_COMBO_USED
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INPUT_REPORT_TEMPLATE_ID      VARCHAR2(36)        NO      FK     INPUT_REPORT_TEMPLATE.ID  
+OUTPUT_REPORT_TEMPLATE_ID     VARCHAR2(36)        NO      FK     OUTPUT_REPORT_TEMPLATE.ID 
+COMBO_CODE                    VARCHAR2(255)       NO                                       
+IS_VALID                      NUMBER(1,0)         YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: REPORT_PERMISSION_GROUP
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+PERMISSION_CODE               VARCHAR2(1020)      NO                                       
+PERMISSION_NAME               VARCHAR2(1020)      NO                                       
+STATUS                        VARCHAR2(20)        NO                                       
+INPUT_REPORT_CODES            CLOB                YES                                      
+OUTPUT_REPORT_CODES           CLOB                YES                                      
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+
+BANG: REPORT_SEND_LOG
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INPUT_REPORT_SUBMISSION_ID    VARCHAR2(36)        YES     FK     INPUT_REPORT_SUBMISSION.ID
+OUTPUT_REPORT_ID              VARCHAR2(36)        YES     FK     OUTPUT_REPORT.ID          
+REPORT_TYPE                   VARCHAR2(20)        NO                                       
+FILE_INFO_ID                  VARCHAR2(36)        YES     FK     FILE_INFO.ID              
+REPORT_CODE                   VARCHAR2(255)       NO                                       
+REPORT_NAME                   VARCHAR2(1020)      NO                                       
+PERIOD_TYPE                   VARCHAR2(20)        NO                                       
+PERIOD_VALUE                  VARCHAR2(50)        NO                                       
+SEND_AT                       TIMESTAMP(6) WITH TIME ZONEYES                                      
+STATUS                        VARCHAR2(30)        NO                                       
+NOTE                          CLOB                YES                                      
+DATA_FILE_INFO_ID             VARCHAR2(36)        YES     FK     FILE_INFO.ID              
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+SUBMIT_STATUS                 VARCHAR2(20)        YES                                      
+RESUBMIT_REASON               CLOB                YES                                      
+
+
+BANG: USER_PERMISSION_GROUP
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+USER_ID                       VARCHAR2(36)        NO                                       
+REPORT_PERMISSION_GROUP_ID    VARCHAR2(36)        NO      FK     REPORT_PERMISSION_GROUP.ID
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+
+

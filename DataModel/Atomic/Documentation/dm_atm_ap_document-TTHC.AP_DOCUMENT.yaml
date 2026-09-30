@@ -14,7 +14,7 @@ ldm:
   etl_pattern: SCD4A
   source: TTHC
   description: |
-    Business Activity Case — hồ sơ thủ tục hành chính UBCKNN, entity trung tâm chứa metadata phân loại, thời gian xử lý, lệ phí, snapshot thành phần hồ sơ và eform. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType = 'HoSoTTHC'.
+    Documentation — hồ sơ thủ tục hành chính nộp UBCKNN trên hệ thống TTHC, lấy từ ODS parse nội dung JSON hồ sơ: phân loại, trạng thái và cơ quan xử lý, các mốc thời gian, lệ phí, thành phần hồ sơ và eform, gắn với đối tượng nộp. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType = 'HoSoTTHC'.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -288,10 +288,10 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Fee Paid Indicator
-    physical_name: fee_paid_ind
+  - name: Fee Paid
+    physical_name: fee_paid
     business_meaning: Người nộp đã thanh toán lệ phí hay chưa.
-    data_domain: Indicator
+    data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false

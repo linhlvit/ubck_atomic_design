@@ -13,7 +13,7 @@ brd_entries:
       table_meaning: "Hồ sơ đăng ký chào bán / phát hành chứng khoán và kết quả xét duyệt (GCN / văn bản từ chối) — toàn bộ lưu trong cùng bảng ContentItemIndex, phân biệt bởi ContentType (Latest=1, Published=1)"
       functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
       scope_status: in_scope
-      scope_reason: null
+      scope_reason: "Qua ODS TTHC (STG → parse → ODS → ATM) — nguồn của ODS CLASSIFICATION_VALUE, AP_DOCUMENT_APPLICANT, AP_DOCUMENT (2026-09-30)"
       table: ContentItemIndex
       related_tables:
         - table: Document
@@ -42,7 +42,7 @@ brd_entries:
           relation: "1-N — field dạng user picker của hồ sơ Eform"
         - table: WorkflowIndex
           relation: "1-N — workflow instance xét duyệt gắn với hồ sơ (qua CorrelationId)"
-      notes: "2026-08-21: Atomic entity chính thức = 'Administrative Procedure Content Item Index' (Documentation/Fact Append, Tier 2 TTHC HLD, toàn bộ ContentType — không lọc riêng hồ sơ chào bán). Định hướng cũ trong ghi chú này (map trực tiếp vào 'Securities Offering Application', lọc content_type_code 11 loại hồ sơ chào bán, filter Published=1 AND Latest=1) đã bị THAY THẾ (superseded) — không còn áp dụng. Scheme CONTENTTYPE đăng ký generic là `TTHC_CONTENT_TYPE`."
+      notes: "2026-09-30: Bảng staging trung tâm của luồng ODS TTHC (ODS_TTHC_DESCRIPTION.md) — cung cấp dữ liệu cho cả 3 bảng ODS: CLASSIFICATION_VALUE (UNION ALL theo ContentType danh mục → Classification Value), AP_DOCUMENT_APPLICANT (ContentItemId/DisplayText đối tượng nộp → Administrative Procedure Document Applicant), AP_DOCUMENT (ContentType = 'HoSoTTHC' → Administrative Procedure Document). Entity 'Administrative Procedure Content Item Index' (thiết kế 2026-08-21) đã bị loại bỏ; scheme generic TTHC_CONTENT_TYPE không còn dùng. Xem TTHC_HLD_Overview.md D-07."
       data_volume_hint: null
       refresh_frequency: daily
       ingestion:
@@ -331,12 +331,12 @@ brd_entries:
       table_meaning: "Raw JSON gốc của toàn bộ ContentItem — cột Content chứa JSON serialize toàn bộ nội dung chi tiết"
       functional_group: "UID-01 Hồ sơ chào bán chứng khoán"
       scope_status: in_scope
-      scope_reason: null
+      scope_reason: "Qua ODS TTHC (STG → parse → ODS → ATM) — nguồn của ODS AP_DOCUMENT_APPLICANT, AP_DOCUMENT (2026-09-30)"
       table: Document
       related_tables:
         - table: ContentItemIndex
           relation: "1-N — Document được ContentItemIndex trỏ tới qua DocumentId"
-      notes: "Đưa vào scope 2026-08-21 theo yêu cầu thiết kế Atomic entity 'Administrative Procedure Document' (Documentation/Fundamental, Tier 1 TTHC HLD). Quyết định trước đó (out_of_scope, lý do 'ETL không đọc Document.Content') đã thay đổi — cần BA/steward xác nhận lại use case đọc CONTENT JSON thô (xem T1-03, TTHC_HLD_Tier1.md)."
+      notes: "2026-09-30: Nguồn JSON (Content) được parse tại ODS TTHC (ODS_TTHC_DESCRIPTION.md) — ghép với ContentItemIndex để dựng AP_DOCUMENT (→ Administrative Procedure Document, parse HoSoTTHC) và AP_DOCUMENT_APPLICANT (→ Administrative Procedure Document Applicant, parse DoiTuongNopHoSo). Atomic không đọc Content JSON thô trực tiếp. Xem TTHC_HLD_Overview.md D-07."
       data_volume_hint: null
       refresh_frequency: daily
       ingestion:
