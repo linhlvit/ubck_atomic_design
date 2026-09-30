@@ -1,0 +1,154 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "CL_FOREIGN_INVESTOR_REPORTING_ENTITY"
+  atomic_entity: "Classification Foreign Investor Reporting Entity"
+  entity_physical_name: "cl_foreign_investor_reporting_entity"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Classification"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-09-30"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Luồng báo cáo động FIMS: STG 9 bảng danh mục (FUNDCOMPANY, SECURITIESCOMPANY,\
+    \ BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, INFODISCREPRES, BRANCHS, INVESTOR,\
+    \ TRADINGREPRESENTATIVE) → UNION gắn object_type → ODS CL_FOREIGN_INVESTOR_REPORTING_ENTITY\
+    \ (tên ODS cũ DIM_OBJECT, ghi đè toàn bộ mỗi lần chạy) → ATM SCD2. Không thiết\
+    \ kế technical fields ds_* và cột kỹ thuật ODS (_source_system, _loaded_at) theo\
+    \ quyết định Data Modeler 2026-09-30 (ngoại lệ so với reference/technical_fields.md)\
+    \ — xem 7e-16 HLD Overview."
+attributes:
+- attribute_name: "Classification Foreign Investor Reporting Entity Id"
+  physical_name: "cl_foreign_investor_reporting_entity_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Common] Classification\" — bảng danh mục tra cứu\
+    \ (quyết định Data Modeler 2026-09-30). Hash: hash_id('FIMS_CL_FOREIGN_INVESTOR_REPORTING_ENTITY',\
+    \ OBJECT_ID || OBJECT_TYPE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Foreign Investor Reporting Entity Code"
+  physical_name: "cl_foreign_investor_reporting_entity_code"
+  description: "Mã nghiệp vụ duy nhất của đối tượng nộp báo cáo = OBJECT_ID || OBJECT_TYPE.\
+    \ BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_ID"
+  - "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE"
+  comment: "ETL-derived: concat(OBJECT_ID, OBJECT_TYPE) từ ODS CL_FOREIGN_INVESTOR_REPORTING_ENTITY\
+    \ — BK composite OBJECT_ID || OBJECT_TYPE — OBJECT_ID KHÔNG duy nhất giữa các\
+    \ loại đối tượng (2 loại dùng chung 1 bảng danh mục nguồn có thể trùng OBJECT_ID).\
+    \ Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FIMS_CL_FOREIGN_INVESTOR_REPORTING_ENTITY"
+  etl_derived_value: "FIMS_CL_FOREIGN_INVESTOR_REPORTING_ENTITY"
+  data_type: "string"
+- attribute_name: "Reporting Entity Code"
+  physical_name: "reporting_entity_code"
+  description: "Mã định danh đối tượng nộp báo cáo trong hệ thống nguồn (OBJECT_ID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_ID"
+  comment: "BCV: không có term riêng. Đi kèm Reporting Entity Type Code mới xác định\
+    \ duy nhất 1 đối tượng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reporting Entity Type Code"
+  physical_name: "reporting_entity_tp_code"
+  description: "Loại đối tượng nộp báo cáo: quỹ, công ty chứng khoán, ngân hàng lưu\
+    \ ký, VSDC, Sở GDCK, đại diện CBTT, CN QLQ nước ngoài, NĐT nước ngoài, đại diện\
+    \ giao dịch (OBJECT_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reporting Entity Type Name"
+  physical_name: "reporting_entity_tp_nm"
+  description: "Tên loại đối tượng nộp báo cáo (OBJECT_TYPE_NAME)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE_NAME"
+  comment: "Denormalized — giữ theo bản map Data Modeler."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Entity Reference Number"
+  physical_name: "entity_reference_nbr"
+  description: "Mã tra cứu đối tượng (OBJECT_CODE): regno/taxcode/certno/transactioncode\
+    \ tùy loại; riêng \"Đại diện giao dịch\" dùng idno."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_CODE"
+  comment: "Loại \"Đại diện giao dịch\" = idno đã được nguồn mã hóa CMND/CCCD trước\
+    \ khi tới staging (xác nhận BA 24/09/2026) — không phải số giấy tờ gốc."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reporting Entity Name"
+  physical_name: "reporting_entity_nm"
+  description: "Tên đầy đủ đối tượng nộp báo cáo (OBJECT_NAME)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reporting Entity Short Name"
+  physical_name: "reporting_entity_short_nm"
+  description: "Tên viết tắt đối tượng nộp báo cáo (OBJECT_SHORT_NAME)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_SHORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

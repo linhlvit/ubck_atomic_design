@@ -1,0 +1,468 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "FIR_VALUE"
+  atomic_entity: "Foreign Investor Report Value"
+  entity_physical_name: "fir_value"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Information"
+  table_type: "Classification"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-09-30"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Luồng báo cáo động FIMS: STG RPTMEMBER ⋈ RPTVALUES (RPTVALUES.MebId = RPTMEMBER.Id,\
+    \ trạng thái đã nộp 2/3/5) + tra TgtId → indicator_uid và FK đối tượng → object_type/object_id\
+    \ → ODS FIR_VALUE (tên ODS cũ FACT_REPORT_CELL, partition ngay_nop) → ATM Upsert\
+    \ theo BK (table_type Classification — quyết định Data Modeler 2026-09-30). Grain\
+    \ = 1 ô × 1 lần nộp × 1 dòng động. Thay entity cũ Report Import Value. Không thiết\
+    \ kế technical fields ds_* và cột kỹ thuật ODS (_source_system, _loaded_at) theo\
+    \ quyết định Data Modeler 2026-09-30 (ngoại lệ so với reference/technical_fields.md)\
+    \ — xem 7e-16 HLD Overview."
+attributes:
+- attribute_name: "Foreign Investor Report Value Id"
+  physical_name: "fir_val_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash: hash_id('FIMS_FIR_VALUE',\
+    \ REPORT_LOG_ID || SHEET_ID || INDICATOR_UID || ROW_ORDER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Report Value Code"
+  physical_name: "fir_val_code"
+  description: "Mã nghiệp vụ ô giá trị = REPORT_LOG_ID || SHEET_ID || INDICATOR_UID\
+    \ || ROW_ORDER. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.REPORT_LOG_ID"
+  - "FIMS.FIR_VALUE.SHEET_ID"
+  - "FIMS.FIR_VALUE.INDICATOR_UID"
+  - "FIMS.FIR_VALUE.ROW_ORDER"
+  comment: "ETL-derived: concat(REPORT_LOG_ID, SHEET_ID, INDICATOR_UID, ROW_ORDER)\
+    \ từ ODS FIR_VALUE — BK composite. Cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FIMS_FIR_VALUE"
+  etl_derived_value: "FIMS_FIR_VALUE"
+  data_type: "string"
+- attribute_name: "Foreign Investor Report Structure Id"
+  physical_name: "fir_structure_id"
+  description: "FK → Foreign Investor Report Structure: ô chỉ tiêu template tương\
+    \ ứng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.SHEET_ID"
+  - "FIMS.FIR_VALUE.INDICATOR_UID"
+  comment: "FK target: fir_structure.fir_structure_id. Hash: hash_id('FIMS_FIR_STRUCTURE',\
+    \ SHEET_ID || INDICATOR_UID). Join bắt buộc đủ sheet_id + indicator_uid — INDICATOR_UID\
+    \ chỉ duy nhất trong 1 sheet."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Report Structure Code"
+  physical_name: "fir_structure_code"
+  description: "Mã ô chỉ tiêu = SHEET_ID || INDICATOR_UID."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.SHEET_ID"
+  - "FIMS.FIR_VALUE.INDICATOR_UID"
+  comment: "Lookup pair: fir_structure.fir_structure_code. Pair with Foreign Investor\
+    \ Report Structure Id. ETL-derived: concat(SHEET_ID, INDICATOR_UID) — khớp BK composite\
+    \ của fir_structure."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Structure Code"
+  physical_name: "structure_code"
+  description: "Mã định danh ô template (INDICATOR_UID)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.INDICATOR_UID"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Log Id"
+  physical_name: "rpt_log_id"
+  description: "Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.Id) — dùng để lọc toàn\
+    \ bộ số liệu của 1 lần nộp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.REPORT_LOG_ID"
+  comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic. Chồng lấn Member Periodic\
+    \ Report — xem 7e-13 HLD Overview."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Id"
+  physical_name: "rpt_id"
+  description: "Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.RPT_ID"
+  comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Report Id"
+  physical_name: "fir_id"
+  description: "FK → Foreign Investor Report: sheet chứa ô chỉ tiêu."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.SHEET_ID"
+  comment: "FK target: foreign_investor_report.fir_id. Hash: hash_id('FIMS_FOREIGN_INVESTOR_REPORT',\
+    \ SHEET_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Report Code"
+  physical_name: "fir_code"
+  description: "Mã sheet (SHEET_ID)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.SHEET_ID"
+  comment: "Lookup pair: foreign_investor_report.fir_code. Pair with Foreign Investor\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reporting Entity Type Code"
+  physical_name: "reporting_entity_tp_code"
+  description: "Loại đối tượng đã nộp báo cáo (OBJECT_TYPE)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.OBJECT_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Reporting Entity Code"
+  physical_name: "reporting_entity_code"
+  description: "Mã định danh đối tượng đã nộp báo cáo (OBJECT_ID)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.OBJECT_ID"
+  comment: "Theo bản map Data Modeler không có cặp Id. Tra cl_foreign_investor_reporting_entity.reporting_entity_code\
+    \ + reporting_entity_tp_code (OBJECT_ID không duy nhất giữa các loại) — xem 7e-14\
+    \ HLD Overview."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Period Type Code"
+  physical_name: "period_tp_code"
+  description: "Loại kỳ báo cáo (THANG, QUY, NAM...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.PERIOD_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Period Value"
+  physical_name: "period_val"
+  description: "Giá trị kỳ báo cáo (VD T09/2026)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm của kỳ báo cáo (YEAR_VALUE)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.YEAR_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo (DAY_REPORT)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.DAY_REPORT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Submission Deadline Timestamp"
+  physical_name: "submission_deadline_tms"
+  description: "Hạn nộp báo cáo (HAN_NOP)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.HAN_NOP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Submission Status Code"
+  physical_name: "submission_status_code"
+  description: "Nhãn trạng thái nộp đúng hạn/trễ hạn (LATE_STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.LATE_STATUS"
+  comment: "Giá trị text nhãn đi kèm Submission Status Type Code — giữ theo bản map\
+    \ Data Modeler."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Status Type Code"
+  physical_name: "submission_status_tp_code"
+  description: "Mã trạng thái nộp đúng hạn/trễ hạn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.LATE_STATUS_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Late Duration"
+  physical_name: "late_duration"
+  description: "Thời gian nộp trễ so với hạn nộp."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.LATE_DURATION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Total Row Indicator"
+  physical_name: "total_row_ind"
+  description: "1 = ô thuộc dòng TỔNG."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.IS_TOTAL_ROW"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Ordinal Column Indicator"
+  physical_name: "ordinal_column_ind"
+  description: "1 = ô thuộc cột số thứ tự (STT)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.IS_ORDINAL_COL"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Section Echo Indicator"
+  physical_name: "section_echo_ind"
+  description: "1 = dòng nhãn của một mục bị nguồn ghi lẫn vào như dòng dữ liệu —\
+    \ không lên Data Explorer."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.IS_SECTION_ECHO"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Band Overflow Indicator"
+  physical_name: "band_overflow_ind"
+  description: "1 = band động bị tràn (nguồn cắt sai ranh giới) — không lên Data Explorer."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.IS_BAND_OVERFLOW"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Static Copy Indicator"
+  physical_name: "static_copy_ind"
+  description: "1 = ô tĩnh của band không phải cuối nhóm, giá trị là bản sao nhầm\
+    \ từ band cuối — không lên Data Explorer."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.IS_STATIC_COPY"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Marker Indicator"
+  physical_name: "rpt_marker_ind"
+  description: "1 = ô mang giá trị \"...\" — chỗ đánh dấu của template, không phải\
+    \ dữ liệu thật."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.IS_TEMPLATE_MARKER"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Dynamic Indicator"
+  physical_name: "dynamic_ind"
+  description: "1 = ô thuộc dòng động (IS_DYNAMIC)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.IS_DYNAMIC"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Dynamic Row Order"
+  physical_name: "dynamic_row_order"
+  description: "Thứ tự dòng trong band động (ROW_ORDER) — 0 = ô TĨNH của band."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.ROW_ORDER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Value Raw"
+  physical_name: "val_raw"
+  description: "Giá trị gốc nguồn nộp (VALUE_RAW)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.VALUE_RAW"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Value Number"
+  physical_name: "val_nbr"
+  description: "Giá trị đã ép kiểu số (VALUE_NUM)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.VALUE_NUM"
+  comment: "[PROPOSE NEW DOMAIN] Numeric Value decimal(38,10) — nguồn DOUBLE, ô có\
+    \ thể là tiền/tỷ lệ/số lượng; decimal(23,2) có thể mất độ chính xác của tỷ lệ.\
+    \ Xem 7e-16 HLD Overview."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Value String"
+  physical_name: "val_string"
+  description: "Giá trị dạng chữ (VALUE_TEXT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.VALUE_TEXT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày THỰC TẾ nộp (NGAY_NOP) — khác kỳ báo cáo; partition ODS."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.FIR_VALUE.NGAY_NOP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

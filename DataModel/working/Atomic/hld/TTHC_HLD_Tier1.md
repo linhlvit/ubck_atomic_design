@@ -1,9 +1,11 @@
 # TTHC HLD — Tier 1
 
-**Source system:** TTHC (Thủ tục hành chính — Hệ thống tiếp nhận/xử lý hồ sơ trên nền Orchard Core CMS, SQLite/Oracle)
-**Tier 1:** Entity độc lập, không FK đến bảng nghiệp vụ khác — nền tảng lưu trữ nội dung gốc (raw) của mọi content item trong hệ thống. Table Type = `Fundamental` (Data Change Mode = `Update`, theo quyết định 2026-08-21 — xem D-06 ở Overview).
+**Source system:** TTHC (Thủ tục hành chính — Hệ thống tiếp nhận/xử lý hồ sơ trên nền Orchard Core CMS)
+**Tier 1:** Entity độc lập, không FK đến entity nghiệp vụ khác. Gồm 2 entity: `Classification Value` (shared — danh mục dùng chung TTHC) và `Administrative Procedure Document Applicant` (đối tượng nộp hồ sơ).
 
-**Domain Prefix đã chọn cho nhóm entity Tier 1–2 của bộ 2 bảng này: `Administrative Procedure`** (phản ánh nghiệp vụ TTHC — hệ thống quản lý thủ tục hành chính; entity con ở Tier 2 phải chứa cụm này theo rule #7).
+> **Cập nhật 2026-09-30 — luồng STG → parse → ODS → ATM** (nguồn: `ODS_TTHC_DESCRIPTION.md`): toàn bộ entity TTHC **không map 1:1 từ staging** mà đi qua 3 bảng ODS dựng từ 2 bảng staging `DOCUMENT` + `CONTENTITEMINDEX`. Cột "Source Table" ghi bảng staging gốc (để truy vết và đánh scope) kèm bảng ODS mà LLD thực sự map `source_columns`. Thiết kế cũ (2026-08-21: `Administrative Procedure Document` generic mọi ContentType ở Tier 1 + `Administrative Procedure Content Item Index` ở Tier 2) **bị thay thế** — xem D-07 Overview.
+
+**Domain Prefix:** `Administrative Procedure` (abbr `ap`) cho nhóm hồ sơ TTHC; `Classification Value` là shared entity dùng chung dự án (Domain Prefix rỗng, physical `cl_value`).
 
 ---
 
@@ -11,7 +13,9 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Documentation | [Documentation] Documentation | Documentation | DOCUMENT | Update | Raw JSON gốc của toàn bộ ContentItem — cột Content chứa JSON serialize toàn bộ nội dung chi tiết của 1 phiên bản content item (Orchard Core Document store) | Administrative Procedure Document | Fundamental | (1) Term candidate: **Documentation** (id 9446, category Documentation) — "Identifies an item or a set of Documentation... is generally not capable of being pledged... for example a web page or economic report." Mô tả đúng bản chất 1 "item" nội dung số hoá, ví dụ trang web/tài liệu. (2) Cấu trúc trường nguồn: TYPE (discriminator serialize), CONTENT (CLOB — nội dung thực), VERSION (optimistic lock), CREATEDAT/UPDATEDAT, các cờ HAS*PART (Orchard Part đính kèm), FRIENDLYURL (slug), CRITICVERDICTJSON — toàn bộ đều mô tả **nội dung/định dạng của chính item**, không có thuộc tính quản lý phiên bản/xuất bản (đó là vai trò của CONTENTITEMINDEX ở Tier 2). (3) Lý do chọn: khớp với định nghĩa "Documentation" ở mức base — đại diện cho chính khối nội dung, không phải bản ghi quản lý (management record). Không dùng "Documentation Item" (9504) cho bảng này vì term đó nhấn vào "management of the item rather than its content" — đúng hơn cho CONTENTITEMINDEX ở Tier 2. |
+| Common | [Classification] Common | Classification | CONTENTITEMINDEX (qua ODS `CLASSIFICATION_VALUE` / `ods_tthc_classification_value`) | Update (qua ODS — cơ chế nạp ODS chưa xác nhận, xem T1-03) | Danh mục phân loại dùng chung TTHC — mỗi content item Orchard thuộc ContentType danh mục (TrangThaiHoSo, LoaiHoSo, LinhVucTTHC, MucDoTTHC, KenhTiepNhan, CoQuanXuLy, LoaiDoiTuongNop, DichVuChuyenPhat, TinhThanh, QuanHuyen) là 1 giá trị | Classification Value | Relative | (1) Term candidate: shared entity `Classification Value` (`cl_value`) đã có trong dự án (MRMS, NHNCK...) — bảng danh mục Code + Name theo scheme. (2) ODS `CLASSIFICATION_VALUE` = `UNION ALL` nhiều nhánh, mỗi nhánh lọc 1 `CONTENTTYPE` từ `CONTENTITEMINDEX`, **không parse JSON**: `ContentItemId` → `cl_code` (BK), `ContentType` → `schema_code`, `DisplayText` → `cl_nm`. Chỉ có mã + tên + nhóm, không có instance data. (3) Đúng bản chất reference data set → không tạo entity TTHC riêng; bổ sung `TTHC.CLASSIFICATION_VALUE` vào `source_table` của shared entity. BK = `schema_code ‖ cl_code`. |
+| Involved Party | [Involved Party] Involved Party | Involved Party | DOCUMENT (qua ODS `AP_DOCUMENT_APPLICANT` / `ods_tthc_ap_document_applicant`) | Update (qua ODS — lấy thông tin mới nhất của người nộp) | Nội dung JSON gốc của content item — nguồn parse thông tin đối tượng nộp hồ sơ (`Content->'DoiTuongNopHoSo'`) | Administrative Procedure Document Applicant | Fundamental | (1) Term candidate: **Involved Party** (id 10817) — "all participants that may have contact with the Financial Institution or that are of interest to the Financial Institution". (2) ODS `AP_DOCUMENT_APPLICANT` = `DOCUMENT ⋈ CONTENTITEMINDEX`, trích đối tượng nộp từ JSON, lookup lại `CONTENTITEMINDEX` lấy tên hiển thị, **giữ bản ghi mới nhất** mỗi đối tượng: ap_document_applicant_code (= ContentItemId, ContentType `DoiTuongNopHoSo`), display_nm, phone_nbr, email. Người nộp có thể là cá nhân hoặc tổ chức. (3) Không tách Individual/Organization vì nguồn không phân biệt ổn định (loại đối tượng nằm ở scheme `LoaiDoiTuongNop`) → dùng base term `Involved Party`. Grain = 1 đối tượng nộp (BK `ContentItemId`). Hai phiên bản schema JSON (ranh giới 07/02/2025–30/05/2025): cũ = bag nhúng đầy đủ tại root; mới = chỉ còn `ContentItemIds` tham chiếu — xem LLD notes. |
+| Involved Party | [Involved Party] Involved Party | Involved Party | CONTENTITEMINDEX (qua ODS `AP_DOCUMENT_APPLICANT`) | Update | Index/metadata content item — cung cấp ContentItemId + DisplayText của đối tượng nộp (ContentType `DoiTuongNopHoSo`) | Administrative Procedure Document Applicant | Fundamental | Cùng entity với DOCUMENT — `CONTENTITEMINDEX` cung cấp định danh (`ContentItemId` = BK) và tên hiển thị (`DisplayText`). |
 
 ---
 
@@ -22,20 +26,30 @@ erDiagram
     DOCUMENT {
         number ID PK
         string TYPE
-        clob CONTENT
+        clob CONTENT "JSON: HoSoTTHC, DoiTuongNopHoSo, ThanhPhanHoSo, Eform..."
         number VERSION
-        string SITECONTENTITEMID
         timestamp CREATEDAT
         timestamp UPDATEDAT
-        char HASAUTOROUTEPART
-        char HASALIASPART
-        char HASCONTAINEDPART
-        string FRIENDLYURL
-        string CRITICVERDICTJSON
     }
+
+    CONTENTITEMINDEX {
+        number ID PK
+        number DOCUMENTID FK
+        string CONTENTITEMID
+        string CONTENTITEMVERSIONID
+        number LATEST
+        number PUBLISHED
+        string CONTENTTYPE
+        string MODIFIEDUTC
+        string OWNER
+        string AUTHOR
+        string DISPLAYTEXT
+    }
+
+    DOCUMENT ||--o{ CONTENTITEMINDEX : "DOCUMENTID"
 ```
 
-> DOCUMENT không FK đến bảng nghiệp vụ nào trong scope Tier 1 — đây là bảng gốc (leaf/root) được các bảng khác (CONTENTITEMINDEX ở Tier 2, và các `*_Document` khác như Audit_Document, Notification_Document — ngoài scope) trỏ tới.
+> **Ghi chú 6b — luồng ODS (2026-09-30):** entity Tier 1 không map trực tiếp từ 2 bảng staging trên mà qua ODS: `CONTENTITEMINDEX` (lọc ContentType danh mục, UNION ALL) → ODS `CLASSIFICATION_VALUE`; `DOCUMENT ⋈ CONTENTITEMINDEX` + parse `Content->'DoiTuongNopHoSo'` → ODS `AP_DOCUMENT_APPLICANT`. Chi tiết: ghi chú cuối mục 7a của `TTHC_HLD_Overview.md`.
 
 ---
 
@@ -43,32 +57,43 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Administrative_Procedure_Document {
-        bigint ds_document_id PK
-        string type_code
-        string content_json
-        bigint version_no
-        timestamp created_at
-        timestamp updated_at
-        boolean has_autoroute_part_ind
-        boolean has_alias_part_ind
-        boolean has_contained_part_ind
-        string friendly_url
-        string critic_verdict_json
+    Classification_Value {
+        string cl_code PK "ContentItemId"
+        string schema_code PK "ContentType"
+        string schema_nm
+        string src_stm_code
+        string cl_nm
+        string cl_nm_english
+        string cl_description
+    }
+
+    Administrative_Procedure_Document_Applicant {
+        string ap_document_applicant_id PK
+        string ap_document_applicant_code "ContentItemId"
+        string src_stm_code
+        string display_nm
+        string phone_nbr
+        string email
     }
 ```
 
-> Entity đứng độc lập ở Tier 1 — chưa có entity Tier trước để tham chiếu.
+> 2 entity đứng độc lập ở Tier 1. `Classification Value` được `Administrative Procedure Document` (Tier 2) tham chiếu qua các cột `*_code` (Classification Value — không vẽ quan hệ theo quy ước).
 
 ---
 
 ## 6d. Mục Danh mục & Tham chiếu (Reference Data)
 
+Giá trị các scheme do chính ODS `CLASSIFICATION_VALUE` cung cấp (`schema_code` = ContentType Orchard). Scheme Code Atomic dùng đúng mã đã khai trong LLD `lld_TTHC_AP_DOCUMENT.yaml`.
+
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| DOCUMENT.TYPE | Discriminator kiểu serialize .NET của Orchard Document store (VD: `ContentItemRecord`) | *(không đăng ký scheme)* | — | Trường kỹ thuật hệ thống (CLR type name), không phải phân loại nghiệp vụ — xem T1-02 |
-
-*(Không có Classification Value nghiệp vụ nào phát sinh từ bảng DOCUMENT — các cờ HAS*PART là Boolean/Indicator, không phải Classification.)*
+| CONTENTITEMINDEX (ContentType `TrangThaiHoSo`) | Trạng thái xử lý hồ sơ | `TTHC.PROCESSING_STATUS` | source_table | Dùng tại `ap_document.processing_status_code` |
+| CONTENTITEMINDEX (ContentType `CoQuanXuLy`) | Cơ quan xử lý hồ sơ | `TTHC.PROCESSING_AUTHORITY` | source_table | Dùng tại `ap_document.processing_authority_code` |
+| CONTENTITEMINDEX (ContentType `LoaiHoSo`) | Loại hồ sơ TTHC | `TTHC.DOCUMENT_TYPE` | source_table | Dùng tại `ap_document.document_tp_code` |
+| CONTENTITEMINDEX (ContentType `LinhVucTTHC`) | Lĩnh vực thủ tục hành chính | `TTHC.DOMAIN` | source_table | Dùng tại `ap_document.domain_code` |
+| CONTENTITEMINDEX (ContentType `MucDoTTHC`) | Mức độ dịch vụ công | `TTHC.PRIORITY_LEVEL` | source_table | Dùng tại `ap_document.priority_level_code` |
+| CONTENTITEMINDEX (ContentType `KenhTiepNhan`) | Kênh tiếp nhận hồ sơ | `TTHC.RECEPTION_CHANNEL` | source_table | Dùng tại `ap_document.reception_channel_code` |
+| CONTENTITEMINDEX (ContentType `LoaiDoiTuongNop`, `DichVuChuyenPhat`, `TinhThanh`, `QuanHuyen`) | 4 nhóm danh mục còn lại có trong ODS | *(chưa đăng ký)* | — | Chưa có cột Atomic nào tiêu thụ sau khi bỏ `ap_document_postal_receipt` — xem T1-04 |
 
 ---
 
@@ -82,7 +107,8 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T1-01 | `VERSION` (optimistic lock) + `UPDATEDAT` gợi ý bản ghi có thể bị **update tại chỗ** trong lúc soạn thảo trước khi publish. | **Đã giải quyết (2026-08-21):** Đổi Table Type `Fact Append → Fundamental`, Data Change Mode `Append → Update` theo quyết định người thiết kế — khớp đúng với ngữ nghĩa `VERSION`/`UPDATEDAT` (bản ghi update tại chỗ, không phải append-only theo phiên bản). ETL áp dụng pattern SCD4A tiêu chuẩn cho Fundamental. |
-| T1-02 | `CRITICVERDICTJSON` (VARCHAR2(1000), không có description nguồn) — ý nghĩa nghiệp vụ là gì? (Nghi vấn: kết quả kiểm duyệt/soát xét tự động nội dung — "critic verdict".) | Chưa xác nhận — cần BA/steward xác nhận trước khi thiết kế attribute-level ở LLD. |
-| T1-03 | Bảng `DOCUMENT` trước đây (`brd_TTHC.yaml`) có `scope_status: out_of_scope` với lý do "ETL không đọc Document.Content — dùng *FieldIndex thay thế". | **Đã giải quyết (2026-08-21):** Chưa có entity Atomic nào approved từ `DOCUMENT` trước đây — quyết định `out_of_scope` cũ chỉ là ghi chú định hướng, không phải thiết kế đã chốt. Không có xung đột thật; `scope_status` đã cập nhật `→ in_scope`, entity chính thức = `Administrative Procedure Document` (Fundamental). Việc đọc `CONTENT` JSON thô trên Atomic vẫn còn hữu ích cho lineage/audit song song với `*FieldIndex` đã parse. |
-| T1-04 | `DOCUMENT.SITECONTENTITEMID` — hệ thống TTHC có phục vụ nhiều site/tenant cùng CSDL không? Nếu có, cần xác nhận UBCK chỉ khai thác 1 site hay nhiều site. | Chưa xác nhận. |
+| T1-01 | ODS `CLASSIFICATION_VALUE`: `ODS_TTHC_DESCRIPTION.md` ghi "không cần parse JSON — chỉ map trực tiếp từ `contentitemindex`", nhưng LLD `lld_TTHC_CLASSIFICATION_VALUE.yaml` ghi ODS JOIN `DOCUMENT` và lấy `cl_description` từ `Document.Content->{ContentType}->'MoTa'->'Text'`. | Chưa xác nhận. Nếu đúng theo tài liệu ODS → `cl_description` sẽ luôn NULL, cần sửa comment LLD. HLD ghi nhận source staging = `CONTENTITEMINDEX` theo tài liệu ODS. |
+| T1-02 | `Administrative Procedure Document Applicant` có grain = 1 Involved Party và có `phone_nbr`, `email` (schema cũ còn địa chỉ trong bag nhúng) — theo Bước 5 thuộc diện **bắt buộc tách** IP Electronic Address (và IP Postal Address nếu ODS có địa chỉ). LLD đã duyệt đang giữ denormalize. | Chờ Data Modeler chốt: tách shared entity hay chấp nhận ngoại lệ (ODS chỉ giữ bản mới nhất, dữ liệu liên lạc lấy từ hồ sơ chứ không phải hồ sơ Involved Party chuẩn). |
+| T1-03 | Cơ chế nạp 3 bảng ODS TTHC (ghi đè toàn bộ hay incremental theo `MODIFIEDUTC`) chưa có trong `ODS_TTHC_DESCRIPTION.md`. | Tạm ghi `Update`. Ảnh hưởng ETL pattern SCD4A/Upsert trên Atomic. |
+| T1-04 | ODS `CLASSIFICATION_VALUE` còn 4 scheme `LoaiDoiTuongNop`, `DichVuChuyenPhat`, `TinhThanh`, `QuanHuyen` — trước đây phục vụ `ap_document_postal_receipt` (đã bỏ khỏi ODS). `TinhThanh`/`QuanHuyen` là danh mục địa lý → theo quy tắc ngoại lệ Geographic Area phải là [Location] Geographic Area (đã chuẩn hóa tại ECAT), không phải Classification Value. | Chưa xác nhận: giữ 4 scheme trong ODS hay loại bỏ; nếu cần địa lý → map sang Geographic Area ECAT. |
+| T1-05 | Người nộp là cá nhân hay tổ chức — ODS không có cột loại đối tượng (`LoaiDoiTuongNop`). | Nếu cần phân tích theo loại → bổ sung `applicant_tp_code` (scheme `LoaiDoiTuongNop`) ở LLD. |

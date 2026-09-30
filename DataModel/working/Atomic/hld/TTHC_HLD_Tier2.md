@@ -1,9 +1,11 @@
 # TTHC HLD — Tier 2
 
-**Source system:** TTHC (Thủ tục hành chính — Hệ thống tiếp nhận/xử lý hồ sơ trên nền Orchard Core CMS, SQLite/Oracle)
-**Tier 2:** Entity phụ thuộc Tier 1 — `CONTENTITEMINDEX` FK đến `DOCUMENT` (qua `DOCUMENTID`), đóng vai trò index/metadata quản lý phiên bản + trạng thái xuất bản của mỗi content item. Table Type = `Fundamental` (Data Change Mode = `Update`, theo quyết định 2026-08-21 — xem D-06 ở Overview và T2-05).
+**Source system:** TTHC (Thủ tục hành chính — Hệ thống tiếp nhận/xử lý hồ sơ trên nền Orchard Core CMS)
+**Tier 2:** Entity phụ thuộc Tier 1 — `Administrative Procedure Document` (hồ sơ TTHC) FK đến `Administrative Procedure Document Applicant` (đối tượng nộp) và tham chiếu các scheme của `Classification Value`.
 
-**Domain Prefix: `Administrative Procedure`** (tiếp nối Tier 1 — cùng nhóm nghiệp vụ TTHC).
+> **Cập nhật 2026-09-30 — luồng STG → parse → ODS → ATM** (nguồn: `ODS_TTHC_DESCRIPTION.md`): entity map từ ODS `AP_DOCUMENT` (`ods_tthc_ap_document`), dựng bằng `DOCUMENT ⋈ CONTENTITEMINDEX` (ContentType = `HoSoTTHC`) + parse JSON `DOCUMENT.CONTENT`. Entity `Administrative Procedure Content Item Index` (thiết kế 2026-08-21) **bị loại bỏ** — `CONTENTITEMINDEX` không còn lên Atomic thành entity riêng mà chỉ là nguồn ghép tại ODS (xem D-07 Overview).
+
+**Domain Prefix:** `Administrative Procedure` (tiếp nối Tier 1).
 
 ---
 
@@ -11,7 +13,8 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Documentation | [Documentation] Documentation Item | Documentation | CONTENTITEMINDEX | Update | Index/metadata quản lý mọi content item Orchard (loại nội dung, phiên bản, trạng thái xuất bản, người tạo/sửa, tiêu đề hiển thị) — dùng để truy vấn nhanh thay vì đọc JSON thô trong DOCUMENT | Administrative Procedure Content Item Index | Fundamental | (1) Term candidate: **Documentation Item** (id 9504, category Documentation) — "Identifies Documentation that denotes a representation of information in a specified medium... A Documentation Item is concerned with **the management of the item rather than its content**." (2) Cấu trúc trường nguồn: `LATEST`, `PUBLISHED`, `CONTENTTYPE`, `MODIFIEDUTC`, `PUBLISHEDUTC`, `CREATEDUTC`, `OWNER`, `AUTHOR`, `DISPLAYTEXT` — toàn bộ là thuộc tính **quản lý phiên bản/xuất bản/quyền sở hữu** của item, không chứa nội dung thực (nội dung nằm ở `DOCUMENT.CONTENT` qua `DOCUMENTID`). Khớp chính xác với phần in đậm của định nghĩa BCV. (3) Lý do chọn: dùng "Documentation Item" (không dùng base term "Documentation" đã dùng cho Tier 1) để phân biệt rõ 2 khái niệm — bảng này quản lý (management), bảng DOCUMENT ở Tier 1 chứa nội dung (content). |
+| Documentation | [Documentation] Documentation | Documentation | DOCUMENT (qua ODS `AP_DOCUMENT` / `ods_tthc_ap_document`) | Update (qua ODS — cơ chế nạp ODS chưa xác nhận, xem T1-03) | Nội dung JSON gốc của content item — nguồn parse các trường nghiệp vụ hồ sơ (`Content->'HoSoTTHC'`, `ThanhPhanHoSo`, `Eform`) | Administrative Procedure Document | Fundamental | (1) Term candidate: **Documentation** (id 9446) — "Identifies an item or a set of Documentation... for example a web page or economic report". (2) ODS `AP_DOCUMENT` = `DOCUMENT ⋈ CONTENTITEMINDEX` (`Document.Id = ContentItemIndex.DocumentId`, ContentType = `HoSoTTHC`), parse JSON: mã chứng khoán, trạng thái/cơ quan xử lý, loại hồ sơ, lĩnh vực, mức độ, kênh tiếp nhận, hình thức trả kết quả, cán bộ xử lý, các mốc thời gian (gửi/tiếp nhận/hạn xử lý/trả kết quả), lệ phí; `ThanhPhanHoSo` và `Eform` giữ nguyên JSON. Grain = 1 hồ sơ TTHC (BK `ContentItemId`). (3) Giữ `[Documentation] Documentation` (đã khóa trong LLD approved): hồ sơ là bộ tài liệu nộp cho cơ quan quản lý kèm metadata xử lý. Term `[Business Activity] Case` từng được nhắc trong comment LLD (PK) nhưng không được chọn làm concept — xem T2-02. Khác thiết kế cũ: không còn generic mọi ContentType, chỉ `HoSoTTHC`. |
+| Documentation | [Documentation] Documentation | Documentation | CONTENTITEMINDEX (qua ODS `AP_DOCUMENT`) | Update | Index/metadata content item — cung cấp ContentItemId (BK) + DisplayText (tiêu đề hồ sơ), lọc ContentType `HoSoTTHC` | Administrative Procedure Document | Fundamental | Cùng entity với DOCUMENT — `CONTENTITEMINDEX` cung cấp định danh (`ContentItemId` → `ap_document_code`) và tiêu đề (`DisplayText` → `document_title`), đồng thời là điều kiện lọc loại nội dung. |
 
 ---
 
@@ -21,27 +24,21 @@
 erDiagram
     DOCUMENT {
         number ID PK
+        clob CONTENT "JSON HoSoTTHC / ThanhPhanHoSo / Eform"
     }
 
     CONTENTITEMINDEX {
         number ID PK
         number DOCUMENTID FK
         string CONTENTITEMID
-        string CONTENTITEMVERSIONID
-        number LATEST
-        number PUBLISHED
-        string CONTENTTYPE
-        string MODIFIEDUTC
-        string PUBLISHEDUTC
-        string CREATEDUTC
-        string OWNER
-        string AUTHOR
+        string CONTENTTYPE "HoSoTTHC"
         string DISPLAYTEXT
-        string SITECONTENTITEMID
     }
 
     DOCUMENT ||--o{ CONTENTITEMINDEX : "DOCUMENTID"
 ```
+
+> Quan hệ hồ sơ → đối tượng nộp không phải FK vật lý staging mà nằm trong JSON (`Content->'HoSoTTHC'->'DoiTuongNopHoSo'->ContentItemIds`), được ODS trích ra.
 
 ---
 
@@ -49,44 +46,56 @@ erDiagram
 
 ```mermaid
 erDiagram
+    Administrative_Procedure_Document_Applicant {
+        string ap_document_applicant_id PK
+    }
+
     Administrative_Procedure_Document {
-        bigint ds_document_id PK
+        string ap_document_id PK
+        string ap_document_code "ContentItemId"
+        string src_stm_code
+        string ap_document_applicant_id FK
+        string ap_document_applicant_code
+        string document_title
+        string securities_code
+        string processing_status_code
+        string processing_authority_code
+        string document_tp_code
+        string domain_code
+        string priority_level_code
+        string reception_channel_code
+        string return_method_code
+        string processing_officer_code
+        timestamp submission_tms
+        timestamp reception_tms
+        timestamp processing_deadline_tms
+        timestamp result_return_tms
+        string fee_paid_ind
+        decimal fee_amt
+        string document_component "JSON"
+        string eform_data "JSON"
     }
 
-    Administrative_Procedure_Content_Item_Index {
-        bigint ds_content_item_index_id PK
-        bigint ap_document_id FK
-        string content_item_code
-        string content_item_version_code
-        boolean latest_ind
-        boolean published_ind
-        string content_type_code
-        timestamp modified_at
-        timestamp published_at
-        timestamp created_at
-        string owner_username
-        string author_username
-        string display_text
-    }
-
-    Administrative_Procedure_Document ||--o{ Administrative_Procedure_Content_Item_Index : "ap_document_id"
+    Administrative_Procedure_Document_Applicant ||--o{ Administrative_Procedure_Document : "ap_document_applicant_id"
 ```
 
-> `Administrative_Procedure_Document` là entity Tier 1 — hiện dạng node tham chiếu (chỉ tên + PK).
+> `Administrative_Procedure_Document_Applicant` là entity Tier 1 — hiện dạng node tham chiếu (chỉ PK).
 
 ---
 
 ## 6d. Mục Danh mục & Tham chiếu (Reference Data)
 
+Các cột `*_code` Classification Value dùng scheme của ODS `CLASSIFICATION_VALUE` — đã liệt kê ở Tier 1 mục 6d (`TTHC.PROCESSING_STATUS`, `TTHC.PROCESSING_AUTHORITY`, `TTHC.DOCUMENT_TYPE`, `TTHC.DOMAIN`, `TTHC.PRIORITY_LEVEL`, `TTHC.RECEPTION_CHANNEL`).
+
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| CONTENTITEMINDEX.CONTENTTYPE | Tên loại nội dung Orchard — bao trùm mọi loại content trong CMS (LandingPage, Fragment, TTHC, BaoCao, TinTuc, ...), không riêng nghiệp vụ hành chính | `TTHC_CONTENT_TYPE` | source_table | Đăng ký scheme phạm vi rộng (generic, toàn bộ content type) — khác với ghi chú cũ trong `brd_TTHC.yaml` (BRD-SRC-TTHC-ContentItemIndex) chỉ nhắc tới 11 loại hồ sơ chào bán; cần profile lại toàn bộ distinct values thực tế. Xem T2-02. |
+| ODS `AP_DOCUMENT.RETURN_METHOD_CODE` (`HoSoTTHC.ThongTinHinhThucTraHoSo`) | Hình thức trả kết quả (0/1/2 — 2 = bưu chính) | *(chưa đăng ký)* | — | LLD để Data Domain `Text`, chưa gán scheme — xem T2-04 |
 
 ---
 
 ## 6e. Bảng chờ thiết kế
 
-*(Để trống — 11 bảng `*FieldIndex` và `WorkflowIndex` đã có đủ cấu trúc cột trong BRD, không thuộc diện "chưa có cấu trúc trường"; xem T2-03 để theo dõi là việc thiết kế Tier sau, không phải bảng chờ thiết kế do thiếu input.)*
+*(Để trống — không có)*
 
 ---
 
@@ -94,8 +103,8 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T2-01 | Rule #8 (entity con phải chứa tên entity cha làm substring liên tục): `Administrative Procedure Content Item Index` **không chứa** `Administrative Procedure Document` như substring liên tục, dù có FK `DOCUMENTID → DOCUMENT`. | Ghi nhận là **ngoại lệ có chủ đích** theo đúng tên entity người thiết kế đã chỉ định tường minh (tương tự ngoại lệ đã ghi nhận cho KNT Invoice Detail). Lý do chấp nhận: `Content Item Index` và `Document` là 2 khái niệm BCV khác nhau (management-of-item vs. content-itself) dùng chung 1 prefix domain, không phải quan hệ cha-con phân cấp thực thể theo nghĩa naming — đặt tên theo dạng "cha lồng trong con" ở đây sẽ làm tên dài & khó đọc hơn (`Administrative Procedure Document Content Item Index`). Cần Data Modeler lead xác nhận lại ngoại lệ này khi review. |
-| T2-02 | `CONTENTTYPE` gồm nhiều loại nội dung không phải hồ sơ hành chính (LandingPage, Fragment, TinTuc, BaoCao...). Entity `Administrative Procedure Content Item Index` có nên giữ **toàn bộ** content type (generic, làm nền tảng Tier 1-2 cho mọi Tier sau) hay chỉ giữ các `ContentType` liên quan nghiệp vụ hành chính (filter ETL ngay từ đầu)? | Tạm thiết kế generic (giữ toàn bộ) ở Tier 2 này theo đúng tên `Content Item Index` người thiết kế chỉ định — không filter theo ContentType tại tầng này. Filter theo nghiệp vụ cụ thể (nếu cần) sẽ đặt ở entity Tier sau hoặc tại Gold. Cần BA xác nhận hướng này. |
-| T2-03 | `brd_TTHC.yaml` (BRD-SRC-TTHC-ContentItemIndex) trước đây ghi nhận định hướng cũ: khi filter theo `ContentType` phù hợp, bảng này map trực tiếp thành entity nghiệp vụ cụ thể "Securities Offering Application", 11 bảng `*FieldIndex` gộp thành "Application Eform Field Value". | **Đã giải quyết (2026-08-21):** `Administrative Procedure Document` / `Administrative Procedure Content Item Index` là 2 entity thiết kế mới, không có entity cũ nào đã approved trên Atomic — không tồn tại xung đột thật. Định hướng "Securities Offering Application" trong `brd_TTHC.yaml` chỉ là ghi chú định hướng (chưa từng lên Atomic) và đã được đánh dấu **superseded/thay thế** bởi thiết kế generic này. Các Tier sau (`*FieldIndex`, `WorkflowIndex`) sẽ thiết kế là entity Relative FK vào `Administrative Procedure Content Item Index`, không tạo lại entity "Securities Offering Application" riêng trừ khi có yêu cầu mới. |
-| T2-04 | `CONTENTITEMINDEX.SITECONTENTITEMID` trùng ý nghĩa với `DOCUMENT.SITECONTENTITEMID` (T1-04) — xác nhận cùng 1 khái niệm site/tenant, không cần tách riêng theo bảng. | Giả định đúng (denormalize từ cùng nguồn) — chưa xác nhận với BA/DBA. |
-| T2-05 | Table Type `Fundamental` theo định nghĩa chuẩn (Bước 1b SKILL) là entity **không FK đến entity nghiệp vụ khác** — nhưng `Administrative Procedure Content Item Index` có FK `ap_document_id → Administrative Procedure Document`. | **Ghi nhận ngoại lệ có chủ đích (2026-08-21)** theo quyết định người thiết kế (đổi cả 2 bảng về Fundamental/Update). Không đổi lại thành `Relative` vì người thiết kế xác định cả 2 entity đều có lifecycle độc lập cần SCD4A (không phải SCD2 phụ thuộc). ETL vẫn giữ FK `ap_document_id` như FK constraint bình thường — chỉ khác ở nhóm ETL pattern áp dụng cho chính bảng `Content Item Index`. |
+| T2-01 | `AP_DOCUMENT` chỉ giữ **1** đối tượng nộp (`DoiTuongNopHoSo->ContentItemIds[0]`), trong khi LLD Applicant ghi "quan hệ 1-N với hồ sơ" và "PK ghép (AP_DOCUMENT_ID, AP_DOCUMENT_APPLICANT_ID)" — nhưng thuộc tính LLD Applicant không có `ap_document_id`, và ODS "lấy thông tin mới nhất của người nộp" (grain = 1 đối tượng). | Chưa xác nhận. HLD theo FK thực tế trong LLD: Document (T2) → Applicant (T1), 1 hồ sơ – 1 người nộp chính. Nếu 1 hồ sơ có nhiều người nộp → cần bảng quan hệ hoặc `ARRAY<Text>` mã người nộp trên Document. Cần sửa notes LLD Applicant cho khớp. |
+| T2-02 | Comment PK LLD Document ghi BCV `[Business Activity] Case` và description trong `atomic_entities.yaml` bắt đầu bằng "Business Activity Case", trong khi `bcv_concept` = `[Documentation] Documentation`. | HLD giữ `[Documentation] Documentation` (khớp metadata LLD approved); description `atomic_entities.yaml` đã chỉnh cho khớp. Comment PK trong LLD cần sửa ở lượt LLD. |
+| T2-03 | Bảng `AP_DOCUMENT_POSTAL_RECEIPT` (entity `Administrative Procedure Document Postal Receipt`) không có trong `ODS_TTHC_DESCRIPTION.md` (chỉ 3 bảng ODS); LLD đã được chuyển sang `DataModel/working/Backup/` nhưng `manifest.yaml` và `atomic_entities.yaml` vẫn còn dòng entity này. | Chờ Data Modeler xác nhận bỏ hẳn → dọn `manifest.yaml`, `atomic_entities.yaml`, `atomic_attributes.yaml`, `dm_manifest.yaml`, `DataModel/Atomic/Documentation/dm_atm_ap_document_postal_receipt-*.yaml` cùng lượt. Thông tin bưu chính (khi `return_method_code = 2`) hiện không còn lên Atomic. |
+| T2-04 | `return_method_code` là mã phân loại (0/1/2) nhưng LLD để Data Domain `Text`, không gán scheme. | Đề xuất đổi sang Classification Value, scheme `TTHC_RETURN_METHOD` (etl_derived) ở lượt LLD. |
+| T2-05 | `manifest.yaml` đang ghi `group: T1` cho `AP_DOCUMENT` và `T2` cho `AP_DOCUMENT_APPLICANT` — ngược với dependency (Document FK → Applicant). | HLD đánh Tier theo dependency (Applicant T1, Document T2). Cần đổi `group` trong manifest ở lượt LLD. |
