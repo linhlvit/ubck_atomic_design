@@ -3,9 +3,9 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
-**Thay đổi v2.7 (2026-09-26):** Bổ sung `Fact HOSE Securities Trade` và `Fact HNX Securities Trade` (mới, Fact Event grain giao dịch khớp — Data Explorer kết xuất sổ lệnh Nhóm 41/42). Nhóm 37–40 (Data Explorer) 100% reuse bảng có sẵn, không thêm entity.
-**Thay đổi v2.6 (2026-09-23):** Bổ sung `Fact Investor Category Index Trading Snapshot` (mới, Nhóm 28/31 — grain Chỉ số); `Fact Investor Category Trading Snapshot` nay phục vụ Nhóm 29/30. Đánh số lại Nhóm 30→31 … 35→36 theo BA 2026-09-23 (HLD v4.23).
-**Thay đổi v2.5 (2026-09-21):** Bổ sung `Fact Investor Category Trading Snapshot` (mới) — tách phân loại NĐT khỏi `Fact Stock Portfolio Snapshot`, phục vụ Nhóm 28/29 (K_GSTT_85–94).
+**Thay đổi v2.7 (2026-09-26):** Bổ sung `Fact HOSE Securities Trade` và `Fact HNX Securities Trade` (mới, Fact Event grain giao dịch khớp — Data Explorer kết xuất sổ lệnh Nhóm 42/43). Nhóm 38–41 (Data Explorer) 100% reuse bảng có sẵn, không thêm entity.
+**Thay đổi v2.6 (2026-09-23):** Bổ sung `Fact Investor Category Index Trading Snapshot` (mới, Nhóm 29/32 — grain Chỉ số); `Fact Investor Category Trading Snapshot` nay phục vụ Nhóm 30/31. Đánh số lại Nhóm 30→31 … 35→36 theo BA 2026-09-23 (HLD v4.23).
+**Thay đổi v2.5 (2026-09-21):** Bổ sung `Fact Investor Category Trading Snapshot` (mới) — tách phân loại NĐT khỏi `Fact Stock Portfolio Snapshot`, phục vụ Nhóm 29/30 (K_GSTT_85–94).
 **Thay đổi v2.4 (2026-09-16):** Đổi nguồn `Outstanding Share Quantity` (trên `Fact Stock Portfolio Snapshot`) và `Index Market Cap` (trên `Fact Index Constituent Snapshot`) từ `pc_share_statistics_hstr` (IDS) sang `listed_share_info` (VSDC `outstanding_shares`, `src_stm_code = 'VSDC_OUTSTANDING_SHARES'`). Đồng bộ hoàn toàn nguồn dữ liệu số lượng cổ phiếu lưu hành & tự do chuyển nhượng về VSDC, khắc phục dứt điểm tình trạng rỗng dữ liệu trên sàn HNX/UPCOM.
 **Thay đổi v2.3:** Đổi tên `Index Total Volume`/`Index Total Value` → `Index Total Matched Volume`/`Index Total Matched Value` — review sheet Tổng hợp công thức xác nhận KLGD/GTGD của chỉ số (K_GSTT_47/48) phải loại trừ thỏa thuận, khác BA_analyst_GSTT.csv STT5.
 **Thay đổi v2.2:** Bổ sung 8 measure tính sẵn theo rổ chỉ số lên `Fact Index Constituent Snapshot` (Index Total Matched Volume/Value, Index Foreign Net Volume/Value, Index Total Negotiated Volume/Value, Index Market Cap, Index Free Float Market Cap — theo yêu cầu Design, không chấp nhận Bridge thuần 3 FK). Sửa mô tả `Fact Stock Portfolio Snapshot` — nguồn Free Float đổi từ `listed_security_info_snapshot` (chưa tồn tại) sang `listed_share_info`.
@@ -90,7 +90,7 @@ erDiagram
 
 ---
 
-## Fact Security Trading Intraday (phục vụ Nhóm 33)
+## Fact Security Trading Intraday (phục vụ Nhóm 34)
 
 Biểu đồ phân tích kỹ thuật theo thời gian trong ngày — grain khác `Security Trading Snapshot Dimension` (theo Trading Timestamp thay vì 1 row/mã CK cuối ngày). `Trading Timestamp` (`trading_tms`) là cột mới bổ sung 2026-08-26 trên Atomic `Security Trading Snapshot` (nối chuỗi `trading_dt` + `' '` + `trading_time` tại tầng ODS) — `Trading Date`/`Trading Time` gốc giữ nguyên không đổi.
 
@@ -105,6 +105,23 @@ erDiagram
 | Fact Security Trading Intraday | Fact Snapshot | new | Giá mở/cao/thấp/đóng cửa + khối lượng lũy kế theo từng thời điểm trong ngày | 1 row / mã CK (Symbol) / Trading Timestamp (`trading_tms`) — FK Calendar Date Dimension qua Trading Date | K_GSTT_95–99 |
 | Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---
+
+## Fact Security Trading Daily (phục vụ Nhóm 3)
+
+**[MỚI 2026-09-30]** Biểu đồ kỹ thuật cổ phiếu ở khung thời gian từ 1 tháng trở lên đọc nến NGÀY (Atomic `market_price_snapshot`, nguồn MDDS.JAD_TRADINGVIEWHISTORY1DAY) thay vì `Security Trading Snapshot Dimension` (1 row/mã CK cuối ngày). Grain 1 row / mã CK (Symbol) / ngày giao dịch; khung trong ngày vẫn dùng `Fact Security Trading Intraday` (Nhóm 34). Xem O_GSTT_51.
+
+```mermaid
+erDiagram
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Trading_Daily : " "
+    Calendar_Date_Dimension ||--o{ Fact_Security_Trading_Daily : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Security Trading Daily | Fact Snapshot | new | Giá mở/cao/thấp/đóng cửa + khối lượng của nến ngày | 1 row / mã CK (Symbol) / ngày giao dịch — FK Calendar Date Dimension qua Trading Date | K_GSTT_349–353 (Nhóm 3); reuse Nhóm 34, 47, 48 |
+| Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
 
 ---
 
@@ -130,7 +147,7 @@ erDiagram
 
 ## Fact Investor Category Trading Snapshot (phục vụ Nhóm 23, 30–31, 36)
 
-**[MỚI 2026-09-21, theo yêu cầu Data Modeler]** Tách khỏi `Fact Stock Portfolio Snapshot` để có cột vật lý `Investor Category Code` thay vì 4 cụm cột cố định (`Individual_*`/`Domestic_Institution_*`/`Proprietary_*`/`Foreign_*`) + CASE WHEN switch tại tầng BI. Nguồn `Securities Trade.Buy/Sell Investor Type Code` (Cá nhân/Tổ chức trong nước, phân nhánh HOSE/HNX) + `Buy/Sell Client House Classification Code='30'` (Tự doanh) + `Buy/Sell Foreign Investor Type Code IN ('10','20')` (Nước ngoài). Không đổi grain/cột của `Fact Stock Portfolio Snapshot` — Nhóm 21/25/27/35 tiếp tục dùng nguyên các cột đã có, không bị ảnh hưởng.
+**[MỚI 2026-09-21, theo yêu cầu Data Modeler]** Tách khỏi `Fact Stock Portfolio Snapshot` để có cột vật lý `Investor Category Code` thay vì 4 cụm cột cố định (`Individual_*`/`Domestic_Institution_*`/`Proprietary_*`/`Foreign_*`) + CASE WHEN switch tại tầng BI. Nguồn `Securities Trade.Buy/Sell Investor Type Code` (Cá nhân/Tổ chức trong nước, phân nhánh HOSE/HNX) + `Buy/Sell Client House Classification Code='30'` (Tự doanh) + `Buy/Sell Foreign Investor Type Code IN ('10','20')` (Nước ngoài). Không đổi grain/cột của `Fact Stock Portfolio Snapshot` — Nhóm 21/25/27/36 tiếp tục dùng nguyên các cột đã có, không bị ảnh hưởng.
 
 ```mermaid
 erDiagram
@@ -146,7 +163,7 @@ erDiagram
 
 ---
 
-## Fact Investor Category Index Trading Snapshot (phục vụ Nhóm 29, 32)
+## Fact Investor Category Index Trading Snapshot (phục vụ Nhóm 30, 32)
 
 **[MỚI 2026-09-23, Data Modeler duyệt]** Giao dịch theo phân loại NĐT ở cấp **Chỉ số** — tách riêng khỏi `Fact Investor Category Trading Snapshot` (cấp Mã CK) để không SUM runtime lệch hạt. Chứa 6 measure GT (Tổng/Khớp lệnh/Thỏa thuận × Mua/Bán) và 3 measure giá chỉ số (broadcast trên 4 dòng Phân loại NĐT — truy vấn dùng MAX). Xem HLD Cụm 1d.
 
@@ -164,9 +181,9 @@ erDiagram
 
 ---
 
-## Fact Major Shareholder Ownership Snapshot (phục vụ Nhóm 34, 37)
+## Fact Major Shareholder Ownership Snapshot (phục vụ Nhóm 35, 37)
 
-**[MỚI 2026-09-25, GSTT Nhóm 33 — BA cập nhật nguồn VSDC major_shareholder]** Thay nguồn IDS `Public Company Shareholding` cho Nhóm 33 bằng VSDC `major_shareholder` (Atomic `major_shareholder_ownership`, mapping md) — số liệu theo kỳ đầu/cuối, chọn kỳ theo ngày tham số. `Operational Public Company Shareholding` giữ nguyên cho Nhóm 36.
+**[MỚI 2026-09-25, GSTT Nhóm 34 — BA cập nhật nguồn VSDC major_shareholder]** Thay nguồn IDS `Public Company Shareholding` cho Nhóm 34 bằng VSDC `major_shareholder` (Atomic `major_shareholder_ownership`, mapping md) — số liệu theo kỳ đầu/cuối, chọn kỳ theo ngày tham số. `Operational Public Company Shareholding` giữ nguyên cho Nhóm 37.
 
 ```mermaid
 erDiagram
@@ -180,8 +197,6 @@ erDiagram
         decimal Ownership_Ratio
         date Ownership_Update_Date
         string Position_Code
-        bigint Current_Foreign_Holding_Quantity
-        bigint Domestic_Holding_Quantity
         string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Major_Shareholder_Ownership_Snapshot : "Snapshot_Date_Dimension_Id"
@@ -190,13 +205,13 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Major Shareholder Ownership Snapshot | Fact Snapshot | new | Sở hữu cổ đông lớn + chức vụ nội bộ + sở hữu NN/trong nước theo ngày tham số | 1 row / mã CK × cổ đông lớn × ngày | K_GSTT_100–104, 103b, 120, 121, 177 |
+| Fact Major Shareholder Ownership Snapshot | Fact Snapshot | new | Sở hữu cổ đông lớn + chức vụ nội bộ theo ngày tham số (Sở hữu NN/trong nước đọc từ Fact Public Company Foreign Ownership Snapshot — NDTNN, O_GSTT_50) | 1 row / mã CK × cổ đông lớn × ngày | K_GSTT_100–104, 103b, 120, 121, 177 |
 
 ---
 
-## Fact HOSE Securities Trade (phục vụ Nhóm 42)
+## Fact HOSE Securities Trade (phục vụ Nhóm 43)
 
-**[MỚI 2026-09-26, GSTT Nhóm 41]** Kết xuất nguyên văn sổ lệnh khớp HOSE cho Data Explorer — nguồn Atomic `securities_trade` (nhánh `ORDERTRADE.TRADE_BOOK_HOSE`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột PII — xem O_GSTT_36 (HLD Section 5).
+**[MỚI 2026-09-26, GSTT Nhóm 42]** Kết xuất nguyên văn sổ lệnh khớp HOSE cho Data Explorer — nguồn Atomic `securities_trade` (nhánh `ORDERTRADE.TRADE_BOOK_HOSE`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột PII — xem O_GSTT_36 (HLD Section 5).
 
 ```mermaid
 erDiagram
@@ -210,9 +225,9 @@ erDiagram
 
 ---
 
-## Fact HNX Securities Trade (phục vụ Nhóm 43)
+## Fact HNX Securities Trade (phục vụ Nhóm 44)
 
-**[MỚI 2026-09-26, GSTT Nhóm 42]** Kết xuất nguyên văn sổ lệnh khớp HNX cho Data Explorer — nguồn Atomic `securities_trade` (nhánh `ORDERTRADE.TRADE_BOOK_HNX`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột PII — xem O_GSTT_36 (HLD Section 5).
+**[MỚI 2026-09-26, GSTT Nhóm 43]** Kết xuất nguyên văn sổ lệnh khớp HNX cho Data Explorer — nguồn Atomic `securities_trade` (nhánh `ORDERTRADE.TRADE_BOOK_HNX`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột PII — xem O_GSTT_36 (HLD Section 5).
 
 ```mermaid
 erDiagram
@@ -226,9 +241,9 @@ erDiagram
 
 ---
 
-## Fact HNX Securities Order (phục vụ Nhóm 44)
+## Fact HNX Securities Order (phục vụ Nhóm 45)
 
-**[MỚI 2026-09-29, GSTT Nhóm 44]** Kết xuất nguyên văn sổ lệnh order book HNX cho Data Explorer — nguồn Atomic `securities_order` (nhánh `ORDERTRADE.ORDER_BOOK_HNX`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột dữ liệu tài khoản (PII) — xem O_GSTT_36.
+**[MỚI 2026-09-29, GSTT Nhóm 45]** Kết xuất nguyên văn sổ lệnh order book HNX cho Data Explorer — nguồn Atomic `securities_order` (nhánh `ORDERTRADE.ORDER_BOOK_HNX`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột dữ liệu tài khoản (PII) — xem O_GSTT_36.
 
 ```mermaid
 erDiagram
@@ -242,9 +257,9 @@ erDiagram
 
 ---
 
-## Fact HOSE Securities Order (phục vụ Nhóm 45)
+## Fact HOSE Securities Order (phục vụ Nhóm 46)
 
-**[MỚI 2026-09-29, GSTT Nhóm 45]** Kết xuất nguyên văn sổ lệnh order book HOSE cho Data Explorer — nguồn Atomic `securities_order` (nhánh `ORDERTRADE.ORDER_BOOK_HOSE`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột dữ liệu tài khoản (PII) — xem O_GSTT_36.
+**[MỚI 2026-09-29, GSTT Nhóm 46]** Kết xuất nguyên văn sổ lệnh order book HOSE cho Data Explorer — nguồn Atomic `securities_order` (nhánh `ORDERTRADE.ORDER_BOOK_HOSE`). Fact Event, FK duy nhất là ngày giao dịch (role-playing `Trade Date Dimension Id`); các cột sổ lệnh là degenerate attribute. Có cột dữ liệu tài khoản (PII) — xem O_GSTT_36.
 
 ```mermaid
 erDiagram

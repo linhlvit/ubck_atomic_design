@@ -3,7 +3,7 @@
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
 -- 6 bảng: 5 fact + 1 operational
--- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 29/32 —
+-- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
 -- Sửa 2026-09-14: bổ sung Fact 1b (Index Constituent Snapshot, Bridge Factless) —
 --   tách khỏi Fact 1 để hết fan-out theo rổ chỉ số (xem HLD v4.13)
@@ -23,7 +23,7 @@
 --   Operational (Public Company Shareholding, bổ sung 2026-09-12, đảo ngược
 --     O_GSTT_9): TRUNCATE + INSERT toàn bộ current-state, không lọc ngày ETL —
 --     xem ghi chú chi tiết cuối file (thay thế hoàn toàn ghi chú "không có bảng
---     flat" cũ cho Nhóm 45/48)
+--     flat" cũ cho Nhóm 46/48)
 -- ============================================================
 
 
@@ -70,22 +70,12 @@ SELECT
     f.foreign_sell_val,
     f.proprietary_buy_val,
     f.proprietary_sell_val,
-    f.individual_net_val,
-    f.domestic_institution_net_val,
     f.proprietary_buy_vol,
     f.proprietary_sell_vol,
     f.bond_trading_vol,
     f.bond_negotiated_vol,
     f.bond_trading_val,
     f.bond_negotiated_val,
-    f.individual_buy_val,
-    f.individual_sell_val,
-    f.individual_buy_vol,
-    f.individual_sell_vol,
-    f.domestic_institution_buy_val,
-    f.domestic_institution_sell_val,
-    f.domestic_institution_buy_vol,
-    f.domestic_institution_sell_vol,
     f.close_price                                  AS fct_close_price,
     f.high_price                                   AS fct_high_price,
     f.low_price                                    AS fct_low_price,
@@ -303,6 +293,44 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
+-- 3b. FACT: gstt_fct_security_trading_daily_flat
+--    cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (1 nến ngày / mã CK / ngày)
+-- ============================================================
+DELETE FROM datamart.gstt_fct_security_trading_daily_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_security_trading_daily_flat
+SELECT
+    -- From: FACT Security Trading Daily
+    f.security_trading_snpst_dim_id,
+    f.trade_dt_dim_id,
+    f.daily_open_price,
+    f.daily_high_price,
+    f.daily_low_price,
+    f.daily_close_price,
+    f.daily_vol,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt                          AS cdr_dt,
+    cal.is_trading_date                 AS is_trading_date,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    scr_dim.symbol                      AS symbol,
+    scr_dim.security_full_nm            AS security_full_nm,
+    scr_dim.floor_code                  AS floor_code,
+    scr_dim.stock_tp_code               AS stock_tp_code,
+    scr_dim.stock_tp_nm                 AS stock_tp_nm,
+    scr_dim.src_stm_code                AS security_trading_src_stm_code
+
+FROM datamart.fct_security_trading_daily f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.trade_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim scr_dim
+    ON scr_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
 -- 4. FACT: gstt_fct_foreign_trading_min_snpst_flat
 --    [BỔ SUNG 2026-09-11] cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date
 --    (nhiều dòng/ngày theo Trade Minute)
@@ -442,8 +470,6 @@ SELECT
     f.closing_ownership_ratio,
     f.ownership_update_dt,
     f.position_code,
-    f.current_foreign_holding_quantity,
-    f.domestic_holding_quantity,
     f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
@@ -463,7 +489,7 @@ WHERE snpst_cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 7. FACT: gstt_fct_hose_securities_trade_flat
---    [MỚI 2026-09-26] Nhóm 42 — DELETE-scoped theo ngày giao dịch (nhiều dòng/ngày)
+--    [MỚI 2026-09-26] Nhóm 43 — DELETE-scoped theo ngày giao dịch (nhiều dòng/ngày)
 -- ============================================================
 DELETE FROM datamart.gstt_fct_hose_securities_trade_flat ON CLUSTER 'my_cluster'
 WHERE trade_cdr_dt = :etl_date;
@@ -530,7 +556,7 @@ WHERE trade_cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 8. FACT: gstt_fct_hnx_securities_trade_flat
---    [MỚI 2026-09-26] Nhóm 43 — DELETE-scoped theo ngày giao dịch (nhiều dòng/ngày)
+--    [MỚI 2026-09-26] Nhóm 44 — DELETE-scoped theo ngày giao dịch (nhiều dòng/ngày)
 -- ============================================================
 DELETE FROM datamart.gstt_fct_hnx_securities_trade_flat ON CLUSTER 'my_cluster'
 WHERE trade_cdr_dt = :etl_date;

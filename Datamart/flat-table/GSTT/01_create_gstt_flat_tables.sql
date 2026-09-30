@@ -3,20 +3,20 @@
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
 -- 8 bảng: 8 fact (bảng operational opr_public_company_shareholding bãi bỏ 2026-09-25)
--- Sửa 2026-09-26: bổ sung bảng #7/#8 (Fact HOSE/HNX Securities Trade — Nhóm 42/43 Data Explorer kết xuất sổ lệnh, có cột PII — O_GSTT_36)
--- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 29/32 —
+-- Sửa 2026-09-26: bổ sung bảng #7/#8 (Fact HOSE/HNX Securities Trade — Nhóm 43/44 Data Explorer kết xuất sổ lệnh, có cột PII — O_GSTT_36)
+-- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
 -- Sửa 2026-09-14: bổ sung bảng #1b (Fact Index Constituent Snapshot, Bridge Factless) —
 -- tách khỏi Fact Stock Portfolio Snapshot để hết fan-out theo rổ chỉ số (xem HLD v4.13)
 -- (Fact Market Index Snapshot dùng chung QLKD — flat table đã có ở QLKD, không CREATE lại)
 -- Sửa 2026-08-03: bảng cũ (Fact Public Company Shareholding) đã bị loại bỏ —
 -- xem ghi chú chi tiết cuối file
--- Sửa 2026-08-26: bổ sung bảng #3 (Fact Security Trading Intraday, Nhóm 44 —
+-- Sửa 2026-08-26: bổ sung bảng #3 (Fact Security Trading Intraday, Nhóm 45 —
 -- Biểu đồ phân tích kỹ thuật, K_GSTT_95-99 chuyển PENDING → READY)
 -- Sửa 2026-09-11: bổ sung bảng #4 (Fact Foreign Trading Minute Snapshot, Nhóm 25 —
 -- K_GSTT_78-80, Resolved 2026-09-04/O_GSTT_8 nhưng bị bỏ sót khỏi Phase 3 tới nay;
 -- phát hiện qua rà soát sau khi sửa join-key sổ lệnh↔MDDS/filter thỏa thuận)
--- Sửa 2026-09-12: bổ sung bảng #5 (Operational Public Company Shareholding, Nhóm 34/37 —
+-- Sửa 2026-09-12: bổ sung bảng #5 (Operational Public Company Shareholding, Nhóm 35/38 —
 -- đảo ngược O_GSTT_9, thay thế hoàn toàn ghi chú "không có bảng flat" cũ bên dưới)
 -- ============================================================
 
@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     securities_company_dim_id           String                  COMMENT '[MỚI 2026-09-28] FK → Securities Company Dimension (fallback Ngành cho CTCK đại chúng khi Public Company Dimension Id rỗng — xem O_GSTT_37)',
     snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
     fr_period_end_dt_dim_id             Nullable(String)        COMMENT 'FK → Calendar Date Dimension (Role-Playing: Financial Report Period End Date) — bổ sung 2026-09-08 theo rule GSĐC',
-    total_vol                           Nullable(Int64)         COMMENT '[SỬA COMMENT 2026-09-16, không đổi giá trị/ETL] Tổng khối lượng giao dịch cổ phiếu/CCQ 3 sàn — GỘP CẢ khớp lệnh VÀ thỏa thuận, loại trừ phái sinh và trái phiếu. Comment cũ ghi nhầm "khớp lệnh" — phục vụ K_GSTT_146 (Nhóm 36), không phải K_GSTT_13 (đã chuyển sang total_matched_vol)',
-    total_val                           Nullable(Decimal(23,2)) COMMENT '[SỬA COMMENT 2026-09-16, không đổi giá trị/ETL] Tổng giá trị giao dịch cổ phiếu/CCQ 3 sàn — GỘP CẢ khớp lệnh VÀ thỏa thuận, loại trừ phái sinh và trái phiếu. Comment cũ ghi nhầm "khớp lệnh" — phục vụ K_GSTT_147 (Nhóm 36), không phải K_GSTT_14 (đã chuyển sang total_matched_val)',
+    total_vol                           Nullable(Int64)         COMMENT '[SỬA COMMENT 2026-09-16, không đổi giá trị/ETL] Tổng khối lượng giao dịch cổ phiếu/CCQ 3 sàn — GỘP CẢ khớp lệnh VÀ thỏa thuận, loại trừ phái sinh và trái phiếu. Comment cũ ghi nhầm "khớp lệnh" — phục vụ K_GSTT_146 (Nhóm 37), không phải K_GSTT_13 (đã chuyển sang total_matched_vol)',
+    total_val                           Nullable(Decimal(23,2)) COMMENT '[SỬA COMMENT 2026-09-16, không đổi giá trị/ETL] Tổng giá trị giao dịch cổ phiếu/CCQ 3 sàn — GỘP CẢ khớp lệnh VÀ thỏa thuận, loại trừ phái sinh và trái phiếu. Comment cũ ghi nhầm "khớp lệnh" — phục vụ K_GSTT_147 (Nhóm 37), không phải K_GSTT_14 (đã chuyển sang total_matched_val)',
     total_matched_vol                   Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch khớp lệnh thuần (loại trừ thỏa thuận) cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu. [CẬP NHẬT 2026-09-16] Nay là nguồn của K_GSTT_13 (Nhóm 1 và các Nhóm reuse 3/9/10/23/24/29/30)',
     total_matched_val                   Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch khớp lệnh thuần (loại trừ thỏa thuận) cổ phiếu/CCQ 3 sàn, loại trừ phái sinh và trái phiếu. [CẬP NHẬT 2026-09-16] Nay là nguồn của K_GSTT_14 (Nhóm 1 và các Nhóm reuse 3/9/10/23/24/29/30)',
     total_derivative_vol                Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch phái sinh',
@@ -57,11 +57,11 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     net_profit_after_tax                Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',
     net_profit_after_tax_ttm            Nullable(Decimal(23,2)) COMMENT 'LNST TTM 4 quý gần nhất có ngay_ket_thuc <= ngày GD, NULL nếu không đủ 4 kỳ — dùng cho P/E, EPS (rule GSĐC, cập nhật 2026-09-08)',
     owner_equity                        Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu — quý gần nhất đã công bố có ngay_ket_thuc <= ngày GD (rule GSĐC, cập nhật 2026-09-08)',
-    weighted_average_outstanding_share_quantity Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 35] Số CP lưu hành bình quân gia quyền theo số ngày hiệu lực VSDC (WAOS), khung ngày của kỳ BCTC LNST gần nhất — dùng cho K_GSTT_109/110',
-    weighted_average_outstanding_share_quantity_ttm Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 35] WAOS khung MIN/MAX ngày của 4 kỳ LNST TTM — dùng cho K_GSTT_111/58',
-    owner_equity_weighted_average_outstanding_share_quantity Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 35] WAOS khung ngày của kỳ BCTC VCSH gần nhất (kỳ riêng, độc lập với kỳ LNST) — dùng cho K_GSTT_112',
-    owner_equity_weighted_average_outstanding_share_quantity_ttm Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 35] WAOS khung MIN/MAX ngày của 4 kỳ VCSH — dùng cho K_GSTT_113/59',
-    owner_equity_average_4_quarter      Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 35 — đảo ngược quyết định 2026-09-04] VCSH bình quân cộng của 4 kỳ BCTC gần nhất (trung bình 4 giá trị rời rạc theo từng quý), NULL nếu thiếu kỳ — dùng cho K_GSTT_113/59',
+    weighted_average_outstanding_share_quantity Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 36] Số CP lưu hành bình quân gia quyền theo số ngày hiệu lực VSDC (WAOS), khung ngày của kỳ BCTC LNST gần nhất — dùng cho K_GSTT_109/110',
+    weighted_average_outstanding_share_quantity_ttm Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 36] WAOS khung MIN/MAX ngày của 4 kỳ LNST TTM — dùng cho K_GSTT_111/58',
+    owner_equity_weighted_average_outstanding_share_quantity Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 36] WAOS khung ngày của kỳ BCTC VCSH gần nhất (kỳ riêng, độc lập với kỳ LNST) — dùng cho K_GSTT_112',
+    owner_equity_weighted_average_outstanding_share_quantity_ttm Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 36] WAOS khung MIN/MAX ngày của 4 kỳ VCSH — dùng cho K_GSTT_113/59',
+    owner_equity_average_4_quarter      Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 36 — đảo ngược quyết định 2026-09-04] VCSH bình quân cộng của 4 kỳ BCTC gần nhất (trung bình 4 giá trị rời rạc theo từng quý), NULL nếu thiếu kỳ — dùng cho K_GSTT_113/59',
     fr_period_end_dt                    Nullable(Date)          COMMENT 'Ngày kết thúc của kỳ báo cáo tài chính gần nhất — làm phẳng từ fr_period_end_dt_dim_id (bổ sung 2026-09-08, rule GSĐC)',
     foreign_buy_vol                     Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư nước ngoài',
     foreign_sell_vol                    Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư nước ngoài',
@@ -69,24 +69,14 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     foreign_sell_val                    Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư nước ngoài',
     proprietary_buy_val                 Nullable(Decimal(23,2)) COMMENT 'Giá trị mua tự doanh',
     proprietary_sell_val                Nullable(Decimal(23,2)) COMMENT 'Giá trị bán tự doanh',
-    individual_net_val                  Nullable(Decimal(23,2)) COMMENT 'Giá trị mua-bán ròng của nhà đầu tư cá nhân trong nước',
-    domestic_institution_net_val        Nullable(Decimal(23,2)) COMMENT 'Giá trị mua-bán ròng của tổ chức trong nước',
     proprietary_buy_vol                 Nullable(Int64)         COMMENT 'Khối lượng mua tự doanh',
     proprietary_sell_vol                Nullable(Int64)         COMMENT 'Khối lượng bán tự doanh',
     bond_trading_vol                    Nullable(Int64)         COMMENT 'Khối lượng giao dịch trái phiếu (loại trừ lô lẻ)',
     bond_negotiated_vol                 Nullable(Int64)         COMMENT 'Khối lượng giao dịch thỏa thuận trái phiếu (Market ID IN BDO/HCX, bảng thỏa thuận T1–T4/T6/R1).',
     bond_trading_val                    Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch trái phiếu (loại trừ lô lẻ)',
     bond_negotiated_val                 Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch thỏa thuận trái phiếu (Market ID IN BDO/HCX, bảng thỏa thuận T1–T4/T6/R1).',
-    individual_buy_val                  Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư cá nhân trong nước',
-    individual_sell_val                 Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư cá nhân trong nước',
-    individual_buy_vol                  Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư cá nhân trong nước',
-    individual_sell_vol                 Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư cá nhân trong nước',
-    domestic_institution_buy_val        Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của tổ chức trong nước',
-    domestic_institution_sell_val       Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của tổ chức trong nước',
-    domestic_institution_buy_vol        Nullable(Int64)         COMMENT 'Khối lượng mua của tổ chức trong nước',
-    domestic_institution_sell_vol       Nullable(Int64)         COMMENT 'Khối lượng bán của tổ chức trong nước',
     fct_close_price                     Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-07] Giá đóng cửa theo ngày lưu trên Fact (khác close_price ở Security Trading Snapshot Dimension — SCD4A current-state) — bổ sung 2026-09-04, thiếu sót trong flat table trước đây, nay bổ sung để phục vụ window function K_GSTT_106/107/140-143 (Đỉnh/Đáy cũ)',
-    fct_high_price                      Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-19, lần 4] Giá cao nhất theo ngày lưu trên Fact (khác high_price ở Security Trading Snapshot Dimension — SCD4A current-state) — phục vụ window function K_GSTT_106/140/141 (Đỉnh cũ/Giá cao nhất N tháng), đổi lại từ close_price sau khi đối chiếu lại BA (Nhóm 15/17/35)',
+    fct_high_price                      Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-19, lần 4] Giá cao nhất theo ngày lưu trên Fact (khác high_price ở Security Trading Snapshot Dimension — SCD4A current-state) — phục vụ window function K_GSTT_106/140/141 (Đỉnh cũ/Giá cao nhất N tháng), đổi lại từ close_price sau khi đối chiếu lại BA (Nhóm 15/17/36)',
     fct_low_price                       Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-19, lần 4] Giá thấp nhất theo ngày lưu trên Fact — phục vụ window function K_GSTT_107/142/143 (Đáy cũ/Giá thấp nhất N tháng)',
     fct_reference_price                 Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-14, đóng O_GSTT_21 — đơn giản hóa theo góp ý Data Modeler] Giá tham chiếu theo ngày lưu trên Fact — đã do sàn tính đúng theo quy tắc riêng từng sàn (HOSE/HNX = Close Price phiên trước, UPCOM = VWAP phiên trước). Phục vụ K_GSTT_145: lấy thẳng dòng tại Từ ngày, không cần self-join/CASE floor',
     prior_market_cap                    Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-19, review Nhóm 24, xem O_GSTT_25] Vốn hóa mã CK tại phiên LIỀN TRƯỚC (T-1) — LAG(Close Price × Outstanding Share Quantity), lưu sẵn trên dòng T. Phục vụ K_GSTT_74 (trọng số w_i đúng ngày T-1, sửa bug lấy nhầm vốn hóa ngày T)',
@@ -302,6 +292,44 @@ COMMENT 'Flat table — Fact Security Trading Intraday × Calendar Date Dimensio
 
 
 -- ============================================================
+-- 3b. FACT: gstt_fct_security_trading_daily_flat
+--    Biểu đồ kỹ thuật cổ phiếu (Nhóm 3) — khung thời gian từ 1 THÁNG trở lên: nến NGÀY
+--    thật MDDS.JAD_TRADINGVIEWHISTORY1DAY (filter src_stm_code='MDDS_JAD_TRADINGVIEWHISTORY1DAY'),
+--    cùng entity Atomic Market Price Snapshot với Fact Security Trading Intraday (nến phút).
+--    Grain: 1 row / Symbol / Trading Date. Khung trong ngày vẫn dùng Fact intraday (Nhóm 34).
+--    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension (LEFT)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_daily_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Security Trading Daily
+    security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
+    trade_dt_dim_id                     String                  COMMENT 'FK → Calendar Date Dimension',
+    daily_open_price                    Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa của nến ngày',
+    daily_high_price                    Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất của nến ngày',
+    daily_low_price                     Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất của nến ngày',
+    daily_close_price                   Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa của nến ngày',
+    daily_vol                           Nullable(Int32)         COMMENT 'Tổng khối lượng khớp trong ngày của nến ngày (nguồn nến TradingView)',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
+    is_trading_date                     Nullable(String)        COMMENT 'Cờ Y/N — ngày lịch có phải ngày thị trường thực sự mở cửa giao dịch hay không — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                              Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
+    security_full_nm                    Nullable(String)        COMMENT 'Tên chứng khoán — từ Security Trading Snapshot Dimension',
+    floor_code                          Nullable(String)        COMMENT 'Mã sàn — từ Security Trading Snapshot Dimension',
+    stock_tp_code                       Nullable(String)        COMMENT 'Loại chứng khoán — từ Security Trading Snapshot Dimension',
+    stock_tp_nm                         Nullable(String)        COMMENT 'Tên loại chứng khoán — từ Security Trading Snapshot Dimension',
+    security_trading_src_stm_code       Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Security Trading Snapshot Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), security_trading_snpst_dim_id)
+COMMENT 'Flat table — Fact Security Trading Daily × Calendar Date Dimension × Security Trading Snapshot Dimension'
+;
+
+
+-- ============================================================
 -- 4. FACT: gstt_fct_foreign_trading_min_snpst_flat
 --    [BỔ SUNG 2026-09-11] Thiết kế thật đã Resolved 2026-09-04 (O_GSTT_8, K_GSTT_78-80)
 --    nhưng bị bỏ sót khỏi Phase 3 — bổ sung lại cho khớp Attributes/Detail Mapping/HLD
@@ -345,8 +373,8 @@ COMMENT 'Flat table — Fact Foreign Trading Minute Snapshot × Calendar Date Di
 --    (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách khớp lệnh/thỏa thuận —
 --    1 row / mã CK / ngày giao dịch / Phân loại NĐT. Tách khỏi Fact Stock Portfolio
 --    Snapshot để có cột vật lý Investor Category Code thay vì 4 cụm cột cố định +
---    CASE WHEN. Phục vụ K_GSTT_85/90-92/153-158 (Nhóm 30/31, grain Mã CK — sửa 2026-09-23). Không đổi Fact Stock Portfolio
---    Snapshot — Nhóm 21/25/28/36 không bị ảnh hưởng.
+--    CASE WHEN. Phục vụ K_GSTT_85/90-92/153-158 (Nhóm 31/32, grain Mã CK — sửa 2026-09-23). Không đổi Fact Stock Portfolio
+--    Snapshot — Nhóm 21/25/29/37 không bị ảnh hưởng.
 --    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Security Trading Snapshot Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_investor_category_trading_snpst_flat ON CLUSTER 'my_cluster'
@@ -387,7 +415,7 @@ COMMENT 'Flat table — Fact Investor Category Trading Snapshot × Calendar Date
 -- 5b. FACT: gstt_fct_investor_category_index_trading_snpst_flat
 --    [MỚI 2026-09-23, Data Modeler duyệt] Giá trị mua/bán theo Phân loại NĐT ở cấp
 --    rổ chỉ số (Tổng/Khớp lệnh/Thỏa thuận) + điểm/thay đổi/% thay đổi chỉ số —
---    1 row / Index Code / ngày giao dịch / Phân loại NĐT. Phục vụ Nhóm 29/32
+--    1 row / Index Code / ngày giao dịch / Phân loại NĐT. Phục vụ Nhóm 30/33
 --    (K_GSTT_85, 35, 38, 39, 161-169). Giá chỉ số lặp lại trên 4 Phân loại NĐT → MAX.
 --    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Index Constituent Dimension
 -- ============================================================
@@ -425,7 +453,7 @@ COMMENT 'Flat table — Fact Investor Category Index Trading Snapshot × Calenda
 
 -- ============================================================
 -- 6. FACT: gstt_fct_major_shareholder_ownership_snpst_flat
---    Fact Major Shareholder Ownership Snapshot (Nhóm 34 — Sở hữu và giao dịch nội bộ)
+--    Fact Major Shareholder Ownership Snapshot (Nhóm 35 — Sở hữu và giao dịch nội bộ)
 --    Joins: Calendar Date × Public Company Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_major_shareholder_ownership_snpst_flat ON CLUSTER 'my_cluster'
@@ -438,11 +466,9 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_major_shareholder_ownership_snpst_f
     major_shareholder_nm                Nullable(String)        COMMENT 'Tên cổ đông (K_GSTT_101)',
     ownership_share_quantity            Nullable(Int64)         COMMENT 'Số CP sở hữu tại ngày tham số (K_GSTT_102)',
     ownership_ratio                     Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu (K_GSTT_103)',
-    closing_ownership_ratio             Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu cuối kỳ (K_GSTT_178, Nhóm 37)',
+    closing_ownership_ratio             Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu cuối kỳ (K_GSTT_178, Nhóm 38)',
     ownership_update_dt                 Nullable(Date)          COMMENT 'Ngày cập nhật (K_GSTT_177)',
     position_code                       Array(String)           COMMENT 'Chức vụ người nội bộ (K_GSTT_104) — groupUniqArray; lọc has(), hiển thị arrayStringConcat()',
-    current_foreign_holding_quantity    Nullable(Int64)         COMMENT 'CP NĐTNN nắm giữ — cấp công ty, lặp theo cổ đông, KHÔNG SUM (K_GSTT_120)',
-    domestic_holding_quantity           Nullable(Int64)         COMMENT 'CP trong nước nắm giữ — cấp công ty, KHÔNG SUM (K_GSTT_121)',
     src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn',
 
     -- From: CALENDAR DATE DIMENSION
@@ -460,7 +486,7 @@ COMMENT 'Flat table — Fact Major Shareholder Ownership Snapshot × Calendar Da
 
 -- ============================================================
 -- 7. FACT: gstt_fct_hose_securities_trade_flat
---    [MỚI 2026-09-26] Nhóm 42 Data Explorer — kết xuất sổ lệnh khớp HOSE.
+--    [MỚI 2026-09-26] Nhóm 43 Data Explorer — kết xuất sổ lệnh khớp HOSE.
 --    Fact Event, grain 1 row / giao dịch khớp (Securities Trade Code) / Trade Date.
 --    Có cột PII (số tài khoản, tên chủ TK, PIN, tên trader) — bắt buộc phân quyền/masking BI (O_GSTT_36).
 --    Joins: Calendar Date (trade_dt_dim_id JOIN) — không JOIN Dimension khác.
@@ -528,7 +554,7 @@ COMMENT 'Flat table — Fact HOSE Securities Trade × Calendar Date Dimension'
 
 -- ============================================================
 -- 8. FACT: gstt_fct_hnx_securities_trade_flat
---    [MỚI 2026-09-26] Nhóm 43 Data Explorer — kết xuất sổ lệnh khớp HNX.
+--    [MỚI 2026-09-26] Nhóm 44 Data Explorer — kết xuất sổ lệnh khớp HNX.
 --    Fact Event, grain 1 row / giao dịch khớp (Securities Trade Code) / Trade Date.
 --    Có cột PII (số tài khoản, tên chủ TK) — bắt buộc phân quyền/masking BI (O_GSTT_36).
 --    Joins: Calendar Date (trade_dt_dim_id JOIN) — không JOIN Dimension khác.
