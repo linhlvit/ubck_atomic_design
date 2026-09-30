@@ -283,30 +283,30 @@ attributes:
 - attribute_name: "Anti Money Laundering Indicator"
   physical_name: "anti_money_laundering_ind"
   description: "Có kiểm tra nội dung PCRT: 0=Không, 1=Có."
-  data_domain: "Indicator"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM.ANTI_MONEY_LAUNDERING"
-  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Abnormal Transaction Check Indicator"
   physical_name: "abnormal_transaction_check_ind"
   description: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có. Nếu=1 thì không tạo\
     \ thông báo kết quả."
-  data_domain: "Indicator"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM.ABNORMAL_TRANSACTION_CHECK"
-  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Created By Ban Role Code"
   physical_name: "created_by_ban_role_code"
   description: "Vai trò/Ban của người tạo bản ghi tại thời điểm tạo (snapshot)."

@@ -232,29 +232,29 @@ attributes:
 - attribute_name: "Anti Money Laundering Indicator"
   physical_name: "anti_money_laundering_ind"
   description: "Có thanh tra PCRT: 0=Không, 1=Có."
-  data_domain: "Indicator"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_TEAM.ANTI_MONEY_LAUNDERING"
-  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Abnormal Transaction Check Indicator"
   physical_name: "abnormal_transaction_check_ind"
   description: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có."
-  data_domain: "Indicator"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_TEAM.ABNORMAL_TRANSACTION_CHECK"
-  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Verification Minutes Sign Date"
   physical_name: "verification_minutes_sign_dt"
   description: "Ngày ký biên bản xác minh — mốc tính thời hạn lập kết luận thanh tra;\
@@ -272,7 +272,7 @@ attributes:
 - attribute_name: "Criminal Transfer Indicator"
   physical_name: "criminal_transfer_ind"
   description: "Có (1) / Không (0) chuyển hồ sơ sang Cơ quan điều tra (CQĐT)."
-  data_domain: "Indicator"
+  data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -281,7 +281,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Criminal Transfer Note"
   physical_name: "criminal_transfer_note"
   description: "Ghi chú tên Cơ quan điều tra được chuyển đến — chỉ có ý nghĩa khi\

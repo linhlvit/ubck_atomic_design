@@ -12,7 +12,7 @@
 | Event | [Event] Event | Penalty Decision | PENALTY_DECISION | Update | Quyết định xử phạt vi phạm hành chính: DECISION_NUMBER, FK→VIOLATION_CASE, TOTAL_FINE_AMOUNT, STATUS(7 trạng thái), COMPLAINT_EXISTS, LAWSUIT_EXISTS, thông tin người ký | Penalty Decision | Fundamental | (1) Event — BCV: "the Data Concept Event is used to identify a significant occurrence". Judicial Event — BCV: "a Judicial Event that deals with... violation of law". (2) Bảng có DECISION_NUMBER, ISSUED_DATE, FK→VIOLATION_CASE, TOTAL_FINE_AMOUNT, STATUS(DRAFT/SUBMITTED/APPROVED/REJECTED/SENT_TO_SUBJECT/APPEALED/CLOSED), COMPLAINT_EXISTS, LAWSUIT_EXISTS, SUBMITTED_BY_ID, APPROVER_ID — quyết định pháp lý chính thức có tác động tài chính và lifecycle phức tạp. (3) Judicial Event gần nhất về mặt pháp lý nhưng đây là quyết định hành chính (không phải tư pháp). Dùng parent [Event] để không đặt concept sai. Ghi nhận T4-01. Vì có số quyết định, ngày phát hành, tác động tài chính, lifecycle phức tạp → Fundamental (không phải Relative). |
 | Documentation | [Documentation] Form Document | VPHC Output Document | VIOLATION_CASE_OUTPUT_DOCUMENT | Update | Văn bản đầu ra của quy trình VPHC: DOCUMENT_TYPE(9 loại gồm tất cả loại công văn và cả PENALTY_DECISION), liên kết tài liệu phát sinh trong hồ sơ | Violation Case Output Document | Fundamental | (1) Form Document — BCV: "a Documentation Item in a standard template layout". (2) Bảng có FK→VIOLATION_CASE, DOCUMENT_TYPE(PRE_VIOLATION_NOTICE_1/REMINDER/PRE_VIOLATION_NOTICE_N/INFO_REQUEST/PRE_DECISION_NOTICE/PAYMENT_GUIDE/PAYMENT_REMINDER/REMEDIAL_REMINDER/PENALTY_DECISION) — danh sách văn bản đầu ra phát sinh trong hồ sơ VPHC. (3) Form Document phù hợp — mỗi văn bản đầu ra là một tài liệu chính thức. Relative của TT Violation Case → tên chứa "TT Violation Case" ✓. |
 | Documentation | [Documentation] Documentation Item | VPHC Received Document | VIOLATION_CASE_RECEIVED_DOCUMENT | Update | Văn bản tiếp nhận trong hồ sơ VPHC: số văn bản, ngày tiếp nhận, nội dung tóm tắt (kết quả giám sát, biên bản từ đơn vị khác) | Violation Case Received Document | Fundamental | (1) Documentation Item — BCV: "a Documentation Item identifies a piece of documentation". (2) Bảng có FK→VIOLATION_CASE, DOCUMENT_NUMBER, RECEIVED_DATE, SUMMARY — tài liệu nhận vào (inbound documents) liên quan đến hồ sơ VPHC. (3) Documentation Item (general) phù hợp hơn Form Document vì đây là tài liệu tiếp nhận từ bên ngoài, không phải form phát sinh. Relative của TT Violation Case → tên chứa "TT Violation Case" ✓. |
-| Business Activity | [Business Activity] Conduct Violation | Violation Record Behavior | VIOLATION_RECORD_BEHAVIOR | Update | Hành vi vi phạm ghi nhận trong biên bản: FK→VIOLATION_RECORD, FK→VIOLATION_BEHAVIOR, DESCRIPTION mô tả chi tiết, LEGAL_BASIS | Violation Record Behavior | Fundamental | (1) Conduct Violation — BCV: entity này là chi tiết hành vi vi phạm trong biên bản, đồng concept với parent. (2) Bảng có FK→VIOLATION_RECORD, FK→VIOLATION_BEHAVIOR, DESCRIPTION(CLOB), CREATED_BY, LEGAL_BASIS — liên kết biên bản với danh mục hành vi vi phạm, kèm mô tả chi tiết và căn cứ pháp lý. (3) Conduct Violation phù hợp — đây là từng hành vi vi phạm cụ thể được ghi nhận. Relative của TT Violation Record → tên chứa "TT Violation Record" ✓. |
+| Business Activity | [Business Activity] Conduct Violation | Violation Record X Violation Behavior Relationship | VIOLATION_RECORD_BEHAVIOR | Update | Liên kết biên bản VPHC với danh mục hành vi vi phạm: FK→VIOLATION_RECORD, FK→VIOLATION_BEHAVIOR | Violation Record X Violation Behavior Relationship | Relative | [SỬA 2026-09-22] Đổi từ Fundamental "Violation Record Behavior" (có Id/Code riêng, DESCRIPTION/LEGAL_BASIS) sang pure link/relationship "_x_" theo quyết định Data Modeler, đồng nhất pattern với NHNCK.APPLICATION_DECISIONS: DESCRIPTION/LEGAL_BASIS bỏ khỏi thiết kế (xem pending_design.yaml), bảng nguồn chỉ còn 2 FK — PK composite trên 2 FK Id (Violation Record Id + Violation Behavior Id), không có Id/Code riêng của entity. Domain Prefix rỗng — bắc cầu 2 domain khác nhau (Violation Record T3, Violation Behavior T2), giữ full words. Tên chứa cả "Violation Record" lẫn "Violation Behavior" ✓ (rule #8). |
 | Documentation | [Documentation] Form Document | Inspection Conclusion Remedial | INSPECTION_CONCLUSION_REMEDIAL | Update | Biện pháp khắc phục trong kết luận thanh tra: FK→INSPECTION_CONCLUSION, DESCRIPTION nội dung biện pháp — mỗi kết luận có nhiều biện pháp khắc phục | Inspection Conclusion Remedial | Fundamental | (1) Form Document — BCV: đây là nội dung chi tiết trong văn bản kết luận. (2) Bảng có FK→INSPECTION_CONCLUSION, DESCRIPTION(CLOB) — danh sách biện pháp khắc phục sau thanh tra, mỗi dòng là 1 biện pháp. (3) Form Document phù hợp — là phần nội dung của TT Inspection Conclusion. Relative → tên chứa "TT Inspection Conclusion" ✓. |
 | Documentation | [Documentation] Form Document | Examination Result Notice Remedial | EXAMINATION_RESULT_NOTICE_REMEDIAL | Update | Biện pháp khắc phục trong thông báo kết quả kiểm tra: FK→EXAMINATION_RESULT_NOTICE, DESCRIPTION — cấu trúc đồng nhất với INSPECTION_CONCLUSION_REMEDIAL | Examination Result Notice Remedial | Fundamental | (1) Form Document — BCV: cùng mô tả. (2) Cấu trúc đồng nhất với INSPECTION_CONCLUSION_REMEDIAL. (3) Relative → tên chứa "TT Examination Result Notice" ✓. |
 | Business Activity | [Business Activity] Business Review | Inspection Post Processing | POST_INSPECTION_PROCESSING | Update | Theo dõi thực hiện kiến nghị sau thanh tra: FK→INSPECTION_CONCLUSION, REQUIREMENT_TYPE, RESPONSIBLE_PARTY, DUE_DATE, STATUS lifecycle 5 trạng thái, IMPLEMENTATION_NOTES | Inspection Post Processing | Fundamental | (1) Business Review — BCV: "a Business Activity in which the status of an item is reviewed to determine if it is still valid" (Status Review sub-type). (2) Bảng có FK→INSPECTION_CONCLUSION, REQUIREMENT_TYPE, RESPONSIBLE_PARTY, DUE_DATE, STATUS(PENDING/IN_PROGRESS/PARTIALLY_DONE/COMPLETED/OVERDUE), IMPLEMENTATION_NOTES, RESULT_SUMMARY — theo dõi tiến độ thực hiện kiến nghị sau thanh tra. (3) Status Review là sub-type của Business Review phù hợp nhất — đây là activity xem xét trạng thái thực hiện kiến nghị. Relative của TT Inspection Conclusion → tên chứa "TT Inspection" ✓ (chú ý: không chứa đầy đủ "TT Inspection Conclusion" → cần đặt lại nếu muốn strict substring). |
@@ -58,7 +58,6 @@ erDiagram
         varchar ID PK
         varchar VIOLATION_RECORD_ID FK
         varchar VIOLATION_BEHAVIOR_ID FK
-        varchar LEGAL_BASIS
     }
     INSPECTION_CONCLUSION_REMEDIAL {
         varchar ID PK
@@ -129,11 +128,10 @@ erDiagram
         varchar violation_case_code
         varchar document_number
     }
-    Violation_Record_Behavior {
-        bigint ds_violation_record_behavior_id PK
-        bigint ds_violation_record_id FK
-        varchar violation_record_number
-        bigint ds_violation_behavior_id FK
+    Violation_Record_X_Violation_Behavior_Relationship {
+        bigint ds_violation_record_id PK, FK
+        varchar violation_record_code
+        bigint ds_violation_behavior_id PK, FK
         varchar violation_behavior_code
     }
     Inspection_Conclusion_Remedial {
@@ -157,8 +155,8 @@ erDiagram
     Violation_Case ||--o{ Penalty_Decision : ""
     Violation_Case ||--o{ Violation_Case_Output_Document : ""
     Violation_Case ||--o{ Violation_Case_Received_Document : ""
-    Violation_Record ||--o{ Violation_Record_Behavior : ""
-    Violation_Behavior ||--o{ Violation_Record_Behavior : ""
+    Violation_Record ||--o{ Violation_Record_X_Violation_Behavior_Relationship : ""
+    Violation_Behavior ||--o{ Violation_Record_X_Violation_Behavior_Relationship : ""
     Inspection_Conclusion ||--o{ Inspection_Conclusion_Remedial : ""
     Inspection_Conclusion ||--o{ Inspection_Post_Processing : ""
     Examination_Result_Notice ||--o{ Examination_Result_Notice_Remedial : ""

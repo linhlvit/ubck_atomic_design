@@ -111,7 +111,6 @@ graph TD
     APPGROUP -->|"Submitted By Officer FK"| OFFICER
     CERTGROUP -->|"Decision FK"| DECISION
     DECDOC -->|"Decision FK"| DECISION
-    DECDOC -->|"Signed By Officer FK"| OFFICER
     CERTDEPT -->|"Department Code (Classification Value)"| CLVALUEATOMIC
     CERTDEPT -->|"Certificate Type FK"| CERTTYPEATOMIC
     CERTSPEC -->|"Certificate Type FK"| CERTTYPEATOMIC
@@ -147,3 +146,4 @@ Không có bảng nào trong Tier 2 chưa đủ thông tin cột.
 | 7 | **[MỚI 2026-08-15]** `CERTIFICATE_SPECIALIZATIONS.DOCUMENT_TYPE` không có FK note trong BRD (giá trị số, không rõ bảng danh mục nguồn) — tạm đăng ký Classification Value `NHNCK_CERT_SPEC_DOCUMENT_TYPE` (`modeler_defined`, `values: []`). | Cần profile dữ liệu để xác nhận value set trước go-live — xem 6d. |
 | 8 | **[MỚI 2026-09-10]** DDL mới thêm `EXAM_SESSIONS.RESULT_UPDATER_ID` và `PROFESSIONALS.PREVIOUS_IDENTITY_ISSUE_DATE/PLACE`, `PASSPORT_NUMBER/ISSUE_DATE/ISSUE_PLACE`. | **Đã xử lý theo quyết định Data Modeler (2026-09-10):** `RESULT_UPDATER_ID` → FK IAM.USERS (cặp `Result Updater Officer Id/Code`, mirror pattern Assignee Officer). `PREVIOUS_IDENTITY_ISSUE_DATE/PLACE` thêm trên chính `lld_NHNCK_PROFESSIONALS.yaml` (đi cạnh Previous Identity Number). `PASSPORT_*` map sang `lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml` (nhóm attribute PASSPORT mới, mirror pattern IP Electronic Address multi-instance). |
 | 9 | **[MỚI 2026-09-11]** `DEPARTMENTS` (Tier 1, entity cha của `CERTIFICATE_DEPARTMENTS`) tách khỏi `Regulatory Authority Organization Unit`, nay map vào Classification Value theo yêu cầu Data Modeler. | **Đã xử lý:** `lld_NHNCK_CERTIFICATE_DEPARTMENTS.yaml` cập nhật FK — cặp `Regulatory Authority Organization Unit Id/Code` → 1 trường `Department Code` (Classification Value, `SCHEMA_CODE=NHNCK.DEPARTMENTS`), PK composite nay là `Department Code` + `Securities Practitioner License Certificate Type Id`. Xem Tier 1 6f #9. |
+| 10 | **[MỚI 2026-09-22]** `DECISION_DOCUMENTS.SIGNED_BY` khai báo `NVARCHAR2(255)` trong CSDL nguồn dù BRD ghi "FK -> USERS" — khác kiểu `NUMBER` thường thấy ở các FK Officer khác (VD `APPLICATIONS.ASSIGNEE_ID`), nên không có bảng danh mục kỹ thuật để crosswalk lấy ID surrogate thật. | **Đã xử lý:** bỏ cặp FK `Signed By Officer Id/Code` (giả định SIGNED_BY là USERNAME, không có cơ chế xác nhận) — thay bằng 1 trường denormalized `Signed By Officer Name` (Text, map thẳng từ `SIGNED_BY`). Diagram Atomic (6c) và Overview đã bỏ edge `DECDOC -->|Signed By Officer FK| OFFICER` tương ứng. |
