@@ -464,6 +464,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_major_shareholder_ownership_snpst_f
     ticker_symbol                       String                  COMMENT 'Mã cổ phiếu (K_GSTT_100)',
     major_shareholder_ownership_id      String                  COMMENT 'Định danh cổ đông lớn (không chứa số giấy tờ — PII)',
     major_shareholder_nm                Nullable(String)        COMMENT 'Tên cổ đông (K_GSTT_101)',
+    major_shareholder_identification_nbr Nullable(String)       COMMENT 'Khóa định danh cổ đông — số giấy tờ đã mã hóa tại nguồn, chỉ dùng lọc tooltip cổ đông → mã (K_GSTT_359)',
     ownership_share_quantity            Nullable(Int64)         COMMENT 'Số CP sở hữu tại ngày tham số (K_GSTT_102)',
     ownership_ratio                     Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu (K_GSTT_103)',
     closing_ownership_ratio             Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu cuối kỳ (K_GSTT_178, Nhóm 38)',

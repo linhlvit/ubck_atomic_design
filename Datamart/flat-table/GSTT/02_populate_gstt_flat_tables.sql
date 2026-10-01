@@ -465,6 +465,7 @@ SELECT
     f.ticker_symbol,
     f.major_shareholder_ownership_id,
     f.major_shareholder_nm,
+    f.major_shareholder_identification_nbr,
     f.ownership_share_quantity,
     f.ownership_ratio,
     f.closing_ownership_ratio,
