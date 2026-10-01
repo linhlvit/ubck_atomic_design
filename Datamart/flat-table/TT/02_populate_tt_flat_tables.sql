@@ -40,6 +40,8 @@ SELECT
     dim.inspection_team_code,
     dim.start_dt,
     dim.end_dt,
+    dim.effective_start_dt,
+    dim.effective_end_dt,
     dim.content,
     dim.src_stm_code                    AS inspection_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
@@ -64,6 +66,8 @@ SELECT
     dim.examination_team_code,
     dim.start_dt,
     dim.end_dt,
+    dim.effective_start_dt,
+    dim.effective_end_dt,
     dim.src_stm_code                    AS examination_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_examination_team_activity f
@@ -91,6 +95,8 @@ SELECT
     team_dim.inspection_team_code,
     team_dim.start_dt,
     team_dim.end_dt,
+    team_dim.effective_start_dt,
+    team_dim.effective_end_dt,
     team_dim.content,
     team_dim.src_stm_code               AS inspection_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
@@ -121,6 +127,8 @@ SELECT
     team_dim.examination_team_code,
     team_dim.start_dt,
     team_dim.end_dt,
+    team_dim.effective_start_dt,
+    team_dim.effective_end_dt,
     team_dim.src_stm_code               AS examination_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_examination_team_target_activity f
@@ -307,6 +315,8 @@ SELECT
     team_dim.inspection_team_code,
     team_dim.start_dt,
     team_dim.end_dt,
+    team_dim.effective_start_dt,
+    team_dim.effective_end_dt,
     team_dim.content,
     team_dim.src_stm_code               AS inspection_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
@@ -337,6 +347,8 @@ SELECT
     team_dim.examination_team_code,
     team_dim.start_dt,
     team_dim.end_dt,
+    team_dim.effective_start_dt,
+    team_dim.effective_end_dt,
     team_dim.src_stm_code               AS examination_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_examination_team_violation_behavior f

@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_activity_flat ON CLUS
     inspection_team_code                String              COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
     start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
     end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
+    effective_start_dt   Nullable(Date)   COMMENT 'Ngày bắt đầu hiệu lực đoàn thanh tra = COALESCE(start_dt, kỳ từ ngày) — từ Inspection Team Dimension',
+    effective_end_dt   Nullable(Date)   COMMENT 'Ngày kết thúc hiệu lực đoàn thanh tra = COALESCE(end_dt, kỳ đến ngày) — từ Inspection Team Dimension',
     content                             Nullable(String)    COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
     inspection_team_src_stm_code        Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension',
 
@@ -47,6 +49,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_activity_flat ON CLU
     examination_team_code               String              COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
     start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
+    effective_start_dt   Nullable(Date)   COMMENT 'Ngày bắt đầu hiệu lực đoàn kiểm tra = COALESCE(start_dt, kỳ từ ngày) — từ Examination Team Dimension',
+    effective_end_dt   Nullable(Date)   COMMENT 'Ngày kết thúc hiệu lực đoàn kiểm tra = COALESCE(end_dt, kỳ đến ngày) — từ Examination Team Dimension',
     examination_team_src_stm_code       Nullable(String)    COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
 
     -- Technical field
@@ -80,6 +84,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_target_activity_flat 
     inspection_team_code                    String           COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
     start_dt                                Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
     end_dt                                    Nullable(Date)   COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
+    effective_start_dt   Nullable(Date)   COMMENT 'Ngày bắt đầu hiệu lực đoàn thanh tra = COALESCE(start_dt, kỳ từ ngày) — từ Inspection Team Dimension',
+    effective_end_dt   Nullable(Date)   COMMENT 'Ngày kết thúc hiệu lực đoàn thanh tra = COALESCE(end_dt, kỳ đến ngày) — từ Inspection Team Dimension',
     content                                 Nullable(String) COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
     inspection_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension',
 
@@ -114,6 +120,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_target_activity_flat
     examination_team_code                    String           COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
     start_dt                                 Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                                     Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
+    effective_start_dt   Nullable(Date)   COMMENT 'Ngày bắt đầu hiệu lực đoàn kiểm tra = COALESCE(start_dt, kỳ từ ngày) — từ Examination Team Dimension',
+    effective_end_dt   Nullable(Date)   COMMENT 'Ngày kết thúc hiệu lực đoàn kiểm tra = COALESCE(end_dt, kỳ đến ngày) — từ Examination Team Dimension',
     examination_team_src_stm_code            Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
 
     -- Technical field
@@ -335,6 +343,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_violation_behavior_fl
     inspection_team_code                            String           COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
     start_dt                                        Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
     end_dt                                          Nullable(Date)   COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
+    effective_start_dt   Nullable(Date)   COMMENT 'Ngày bắt đầu hiệu lực đoàn thanh tra = COALESCE(start_dt, kỳ từ ngày) — từ Inspection Team Dimension',
+    effective_end_dt   Nullable(Date)   COMMENT 'Ngày kết thúc hiệu lực đoàn thanh tra = COALESCE(end_dt, kỳ đến ngày) — từ Inspection Team Dimension',
     content                                         Nullable(String) COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension',
     inspection_team_src_stm_code                    Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Dimension',
 
@@ -369,6 +379,8 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_violation_behavior_f
     examination_team_code                           String           COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
     start_dt                                        Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
     end_dt                                          Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
+    effective_start_dt   Nullable(Date)   COMMENT 'Ngày bắt đầu hiệu lực đoàn kiểm tra = COALESCE(start_dt, kỳ từ ngày) — từ Examination Team Dimension',
+    effective_end_dt   Nullable(Date)   COMMENT 'Ngày kết thúc hiệu lực đoàn kiểm tra = COALESCE(end_dt, kỳ đến ngày) — từ Examination Team Dimension',
     examination_team_src_stm_code                   Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Dimension',
 
     -- Technical field
