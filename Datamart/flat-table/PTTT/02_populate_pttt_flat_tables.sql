@@ -230,8 +230,6 @@ SELECT
     f.maturity_pressure_12_months,
     f.maturity_pressure_12_months_previous,
     f.maturity_pressure_growth_percentage,
-    f.bond_trading_val,
-    f.bond_yield_weighted_average,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt
 FROM datamart.fct_corporate_bond_market_snpst f
