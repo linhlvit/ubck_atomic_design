@@ -511,10 +511,10 @@ entities:
   table_type: "Fundamental"
   domain_prefix: "Administrative Procedure"
   entity_physical_name: "ap_document"
-  description: "Business Activity Case — hồ sơ thủ tục hành chính UBCKNN, entity trung\
-    \ tâm chứa metadata phân loại, thời gian xử lý, lệ phí, snapshot thành phần hồ\
-    \ sơ và eform. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType\
-    \ = 'HoSoTTHC'."
+  description: "Documentation — hồ sơ thủ tục hành chính nộp UBCKNN trên hệ thống TTHC,\
+    \ lấy từ ODS parse nội dung JSON hồ sơ: phân loại, trạng thái và cơ quan xử lý,\
+    \ các mốc thời gian, lệ phí, thành phần hồ sơ và eform, gắn với đối tượng nộp.\
+    \ Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType = 'HoSoTTHC'."
   source_table: "TTHC.AP_DOCUMENT"
   status: "draft"
 - bcv_core_object: "Documentation"
@@ -702,6 +702,38 @@ entities:
     \ Fundamental → Classification (2026-09-15, theo yêu cầu tường minh Data Modeler)\
     \ — xem IDS_HLD_Overview.md 7e."
   source_table: "IDS.DATA"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Foreign Investor Report"
+  table_type: "Relative"
+  domain_prefix: "Foreign Investor Report"
+  entity_physical_name: "foreign_investor_report"
+  description: "Mẫu báo cáo đầu vào FIMS ở mức sheet — 1 dòng = 1 sheet × 1 mẫu. BK\
+    \ = sheet_id. Nguồn ODS foreign_investor_report (RPTTEMP ⋈ SHEET). Thay Reporting\
+    \ Template (2026-09-30)."
+  source_table: "FIMS.FOREIGN_INVESTOR_REPORT"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Foreign Investor Report Structure"
+  table_type: "Relative"
+  domain_prefix: "Foreign Investor Report"
+  entity_physical_name: "fir_structure"
+  description: "Cây chỉ tiêu mẫu báo cáo — 1 dòng = 1 ô template trong 1 sheet. BK\
+    \ = sheet_id ‖ indicator_uid. Nguồn ODS fir_structure (parse JSON SHEET)."
+  source_table: "FIMS.FIR_STRUCTURE"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Information"
+  atomic_entity: "Foreign Investor Report Value"
+  table_type: "Classification"
+  domain_prefix: "Foreign Investor Report"
+  entity_physical_name: "fir_value"
+  description: "Giá trị đã nộp của từng ô chỉ tiêu — 1 dòng = 1 ô × 1 lần nộp × 1\
+    \ dòng động. BK = report_log_id ‖ sheet_id ‖ indicator_uid ‖ row_order. Nguồn\
+    \ ODS fir_value (RPTMEMBER ⋈ RPTVALUES). Thay Report Import Value (2026-09-30)."
+  source_table: "FIMS.FIR_VALUE"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -1149,10 +1181,9 @@ entities:
   table_type: "Fundamental"
   domain_prefix: "Administrative Procedure"
   entity_physical_name: "ap_document_applicant"
-  description: "Involved Party — đối tượng nộp hồ sơ (cá nhân hoặc tổ chức), quan\
-    \ hệ 1-N với hồ sơ. PK ghép (ho_so_id, doi_tuong_nop_ho_so_id); surrogate key\
-    \ hash từ composite. Trường applicant_role_code phân biệt nguồn dữ liệu (ID tham\
-    \ chiếu vs. bag nhúng)."
+  description: "Involved Party — đối tượng nộp hồ sơ thủ tục hành chính (cá nhân hoặc\
+    \ tổ chức) trên hệ thống TTHC, lấy từ ODS trích xuất người nộp trong nội dung JSON\
+    \ hồ sơ, giữ thông tin mới nhất (tên hiển thị, số điện thoại, email)."
   source_table: "TTHC.AP_DOCUMENT_APPLICANT"
   status: "draft"
 - bcv_core_object: "Involved Party"
@@ -1164,6 +1195,17 @@ entities:
   description: "Công ty kiểm toán được UBCKNN chấp thuận thực hiện kiểm toán báo cáo\
     \ tài chính của CTCK. Ghi nhận mã, tên, số GPĐKKD và trạng thái hoạt động."
   source_table: "SCMS.AUDIT_FIRM, IDS.AF_PROFILES"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Classification"
+  atomic_entity: "Classification Foreign Investor Reporting Entity"
+  table_type: "Relative"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_foreign_investor_reporting_entity"
+  description: "Danh mục tổ chức/cá nhân từng là bên nộp báo cáo động FIMS (9 loại\
+    \ đối tượng). BK = object_id ‖ object_type. Nguồn ODS cl_foreign_investor_reporting_entity\
+    \ (UNION 9 bảng danh mục)."
+  source_table: "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
@@ -1977,7 +2019,7 @@ entities:
 - bcv_core_object: "Common"
   bcv_concept: "[Classification] Common"
   atomic_entity: "Classification Value"
-  table_type: "Classification"
+  table_type: "Relative"
   domain_prefix: ""
   entity_physical_name: "cl_value"
   description: "Classification Common — danh mục dùng chung TTHC, tổng hợp toàn bộ\

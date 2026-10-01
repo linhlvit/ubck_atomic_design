@@ -552,15 +552,8 @@ schemes:
       - code: "ELIGIBILITY_CERTIFICATE"
         name: "Giấy chứng nhận đủ điều kiện kinh doanh — bổ sung khi thiết kế IDS.AF_PROFILES"
         source_table: null
-      - code: "CERTIFICATE"
-        name: "Số chứng nhận (generic — chưa xác định rõ loại chứng nhận cụ thể, cần\
-          \ profile lại nguồn SCMS.SC_FIRM_INFO.CERTIFICATE_NUMBER)"
-        source_table: null
       - code: "CITIZEN_ID"
         name: "CCCD"
-        source_table: null
-      - code: "CUSTODIAN_CERT"
-        name: "Chứng nhận lưu ký"
         source_table: null
       - code: "AUDITOR_CERTIFICATE"
         name: "Chứng chỉ kiểm toán viên (CPA) — bổ sung khi thiết kế IDS.AF_AUDITOR_PROFILES"
@@ -2942,6 +2935,40 @@ schemes:
         label: "Không yêu cầu chữ ký"
         source_value: "NONE"
 
+  - scheme_code: "SCMS_SC_FIRM_ADHOC_REPORT_SUBMISSION_STATUS"
+    name: "Trạng thái nộp báo cáo đột xuất: 0=Chưa gửi; 1=Gửi đúng hạn; 2=Gửi muộn; 3=Bị hủy"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Adhoc Report"
+    values:
+      - code: "0"
+        label: "Chưa gửi"
+        source_value: "0"
+      - code: "1"
+        label: "Gửi đúng hạn"
+        source_value: "1"
+      - code: "2"
+        label: "Gửi muộn"
+        source_value: "2"
+      - code: "3"
+        label: "Bị hủy"
+        source_value: "3"
+
+  - scheme_code: "SCMS_SC_FIRM_ADHOC_REPORT_BANK_SCOPE"
+    name: "Phân loại ngân hàng lúc tạo báo cáo: LUU_KY=Lưu ký; GIAM_SAT=Giám sát"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_SCOPE"
+    used_in_entities:
+      - "Securities Company Adhoc Report"
+    values:
+      - code: "LUU_KY"
+        label: "Lưu ký"
+        source_value: "LUU_KY"
+      - code: "GIAM_SAT"
+        label: "Giám sát"
+        source_value: "GIAM_SAT"
+
   - scheme_code: "SCMS_DISCLOSURE_NEWS_TYPE"
     name: "Loại tin công bố CBTT: 1=Định kỳ; 2=Bất thường; 3=Theo yêu cầu"
     source_type: "source_table"
@@ -4544,6 +4571,55 @@ schemes:
     source_type: "source_table"
     source_table: "FIMS.UNIT"
     used_in_entities: []
+    values: []
+
+  - scheme_code: "FIMS_REPORTING_ENTITY_TYPE"
+    name: "Loại đối tượng nộp báo cáo động FIMS (object_type ODS) — 9 loại theo bảng danh mục gốc: CTCK, QLQ, ngân hàng lưu ký, VSDC, Sở GDCK, đại diện CBTT, CN QLQ nước ngoài, NĐT nước ngoài, đại diện giao dịch. Cần profile mã số object_type."
+    source_type: "etl_derived"
+    source_table: "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE"
+    used_in_entities:
+      - "Classification Foreign Investor Reporting Entity"
+      - "Foreign Investor Report Value"
+    values: []
+
+  - scheme_code: "FIMS_REPORT_TEMPLATE_STATUS"
+    name: "Trạng thái mẫu báo cáo (RPTTEMP.Status; ODS chỉ nạp Status = 1 — đang dùng)."
+    source_type: "etl_derived"
+    source_table: "FIMS.FOREIGN_INVESTOR_REPORT.TEMPLATE_STATUS"
+    used_in_entities:
+      - "Foreign Investor Report"
+    values: []
+
+  - scheme_code: "FIMS_REPORT_SECTION_TYPE"
+    name: "Loại vùng dữ liệu của ô chỉ tiêu (DYNAMIC/FIXED) — parse từ SHEET.SectionsMeta."
+    source_type: "etl_derived"
+    source_table: "FIMS.FIR_STRUCTURE.SECTION_TYPE"
+    used_in_entities:
+      - "Foreign Investor Report Structure"
+    values: []
+
+  - scheme_code: "FIMS_REPORT_DATA_TYPE"
+    name: "Kiểu dữ liệu ô chỉ tiêu (numberic/percentage/string...) — parse từ SHEET.CellsMeta, giữ nguyên chính tả nguồn."
+    source_type: "etl_derived"
+    source_table: "FIMS.FIR_STRUCTURE.FORMAT_DATA_TYPE"
+    used_in_entities:
+      - "Foreign Investor Report Structure"
+    values: []
+
+  - scheme_code: "FIMS_REPORT_PERIOD_TYPE"
+    name: "Loại kỳ báo cáo của lần nộp (THANG/QUY/NAM...)."
+    source_type: "etl_derived"
+    source_table: "FIMS.FIR_VALUE.PERIOD_TYPE"
+    used_in_entities:
+      - "Foreign Investor Report Value"
+    values: []
+
+  - scheme_code: "FIMS_REPORT_LATE_STATUS"
+    name: "Trạng thái nộp đúng hạn/trễ hạn của lần nộp (late_status_code) — khác FIMS_REPORT_SUBMISSION_STATUS (RPTMEMBER.Status 1–5)."
+    source_type: "etl_derived"
+    source_table: "FIMS.FIR_VALUE.LATE_STATUS_CODE"
+    used_in_entities:
+      - "Foreign Investor Report Value"
     values: []
 
   - scheme_code: "FIMS_MARKET_PARTICIPANT_TYPE"
@@ -6673,3 +6749,50 @@ schemes:
         label: "Không sử dụng"
         source_value: "0"
 
+  - scheme_code: "TTHC.PROCESSING_STATUS"
+    name: "Trạng thái xử lý hồ sơ TTHC — values từ ODS CLASSIFICATION_VALUE (CONTENTITEMINDEX, ContentType = 'TrangThaiHoSo'), dùng tại ap_document.processing_status_code."
+    source_type: "source_table"
+    source_table: "TTHC.CLASSIFICATION_VALUE"
+    used_in_entities:
+      - "Administrative Procedure Document"
+    values: []
+
+  - scheme_code: "TTHC.PROCESSING_AUTHORITY"
+    name: "Cơ quan xử lý hồ sơ TTHC — values từ ODS CLASSIFICATION_VALUE (CONTENTITEMINDEX, ContentType = 'CoQuanXuLy'), dùng tại ap_document.processing_authority_code."
+    source_type: "source_table"
+    source_table: "TTHC.CLASSIFICATION_VALUE"
+    used_in_entities:
+      - "Administrative Procedure Document"
+    values: []
+
+  - scheme_code: "TTHC.DOCUMENT_TYPE"
+    name: "Loại hồ sơ thủ tục hành chính — values từ ODS CLASSIFICATION_VALUE (CONTENTITEMINDEX, ContentType = 'LoaiHoSo'), dùng tại ap_document.document_tp_code."
+    source_type: "source_table"
+    source_table: "TTHC.CLASSIFICATION_VALUE"
+    used_in_entities:
+      - "Administrative Procedure Document"
+    values: []
+
+  - scheme_code: "TTHC.DOMAIN"
+    name: "Lĩnh vực thủ tục hành chính — values từ ODS CLASSIFICATION_VALUE (CONTENTITEMINDEX, ContentType = 'LinhVucTTHC'), dùng tại ap_document.domain_code."
+    source_type: "source_table"
+    source_table: "TTHC.CLASSIFICATION_VALUE"
+    used_in_entities:
+      - "Administrative Procedure Document"
+    values: []
+
+  - scheme_code: "TTHC.PRIORITY_LEVEL"
+    name: "Mức độ dịch vụ công của thủ tục hành chính — values từ ODS CLASSIFICATION_VALUE (CONTENTITEMINDEX, ContentType = 'MucDoTTHC'), dùng tại ap_document.priority_level_code."
+    source_type: "source_table"
+    source_table: "TTHC.CLASSIFICATION_VALUE"
+    used_in_entities:
+      - "Administrative Procedure Document"
+    values: []
+
+  - scheme_code: "TTHC.RECEPTION_CHANNEL"
+    name: "Kênh tiếp nhận hồ sơ TTHC — values từ ODS CLASSIFICATION_VALUE (CONTENTITEMINDEX, ContentType = 'KenhTiepNhan'), dùng tại ap_document.reception_channel_code."
+    source_type: "source_table"
+    source_table: "TTHC.CLASSIFICATION_VALUE"
+    used_in_entities:
+      - "Administrative Procedure Document"
+    values: []
