@@ -109,11 +109,16 @@ flowchart LR
     subgraph SRC["Staging"]
         S1["FIMS.INVESTOR"]
         S2["FMS.BANK_MONI"]
+        S3["ECAT.COUNTRY"]
+        S4["FIMS.INVESTORTYPE / FIMS.STATUS"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Foreign Investor"]
         SV2["Custodian Bank"]
+        SV3["Geographic Area"]
+        SV4["Classification Value"]
+        SV5["IP Alternative Identification"]
     end
 
     subgraph Datamart["Datamart"]
@@ -122,9 +127,15 @@ flowchart LR
 
     S1 --> SV1
     S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+    S1 --> SV5
 
     SV1 --> G1
     SV2 --> G1
+    SV3 --> G1
+    SV4 --> G1
+    SV5 --> G1
 ```
 
 ---
@@ -315,20 +326,26 @@ flowchart LR
     subgraph SRC["Staging"]
         S1["ORDERTRADE.TRADE_BOOK_HOSE"]
         S2["ORDERTRADE.TRADE_BOOK_HNX"]
+        S3["MDDS.JAD_STOCKINFOR"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Securities Trade"]
+        SV2["Security Trading Snapshot"]
     end
 
     subgraph Datamart["Datamart"]
+        D1["Securities Dimension"]
         G1["Foreign Investor Trading Detail Report"]
     end
 
     S1 --> SV1
     S2 --> SV1
+    S3 --> SV2
 
+    SV2 --> D1
     SV1 --> G1
+    D1 --> G1
 ```
 
 ---
@@ -948,6 +965,8 @@ erDiagram
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Foreign Investor` (FIMS.INVESTOR) + `Custodian Bank` (FMS.BANK_MONI) — **READY**. **Sửa 2026-07-30:** Nguồn `Custodian Bank` đúng là FMS.BANK_MONI (không phải FIMS.BANKMONI — không tồn tại). FK `Foreign_Investor.Custodian_Bank_Id` (FIMS.INVESTOR.BankAddId) đã được xác nhận trỏ đúng entity qua hash `hash_id('FMS.BANK_MONI', BankAddId)`.
+> **[SỬA 2026-10-01 — khóa nối Nhóm 13]** Thêm `Identification_Number` (Atomic `IP Alternative Identification`, FIMS.INVESTOR.IdNo — giá trị ĐÃ MASKED, Data Modeler xác nhận) làm khóa nối kỹ thuật tới Lịch sử tuân thủ (`pd_subject.subject_id_nbr`), không hiển thị. Xem O_NDTNN_36.
+> **[SỬA 2026-10-01 — bảng Tác nghiệp thiếu cột tên]** BA STT 11 lấy `NATIONAL.Name`, `INVESTORTYPE.Name`, `STATUS.Name` (tên hiển thị) nhưng bảng chỉ lưu mã → bổ sung 3 cột `Nationality_Name` (Atomic `Geographic Area`, ECAT_COUNTRY), `Investor_Type_Name`, `Investor_Status_Name` (Atomic `Classification Value`, scheme FIMS_INVESTOR_TYPE / FIMS_ACTIVITY_STATUS). Các cột mã giữ nguyên làm khóa lọc. "Đại diện giao dịch" BA mô tả Tên/số CCCD/Trạng thái nhưng Trường nguồn chỉ `INVESTOR.Director` — số CCCD không đưa lên Datamart (PII). Xem O_NDTNN_36.
 > **[SỬA 2026-09-28]** BA STT 11 dòng 72 (Đại diện giao dịch — Trạng thái) chưa từng có KPI: đối soát `datamart_progress_analyzer.py` phát hiện HLD chỉ có 6/7 dòng BA. Trường nguồn dòng 72 là `INVESTOR.StatusId` + `STATUS.Name`, khớp thẳng attribute có sẵn `foreign_investor.activity_status_code` (Atomic FIMS.INVESTOR.StatusId, Scheme `FIMS_ACTIVITY_STATUS`, chưa enumerate values — dùng nguyên mã code). Atomic chỉ có Activity Status ở cấp Investor, không tách riêng theo Director — BA hiển thị ở thẻ "Đại diện giao dịch" (mockup "Status: Verified") nên dùng attribute này làm proxy, ghi rõ trong Ghi chú KPI. Bổ sung K_NDTNN_255.
 
 **Mockup:**
@@ -966,12 +985,12 @@ erDiagram
 | KPI ID | Tên | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_NDTNN_58 | Thông tin nhà đầu tư | — | Attribute | `opr_foreign_investor_360_profile.investor_nm` — FIMS.INVESTOR.Name | — | READY |
-| K_NDTNN_59 | Quốc tịch | — | Attribute | `opr_foreign_investor_360_profile.nationality_code` — từ FIMS.INVESTOR.NaId lookup | — | READY |
-| K_NDTNN_60 | Mã số giao dịch (MSGD) | — | Attribute | `opr_foreign_investor_360_profile.investor_code` = Transaction Code — FIMS.INVESTOR.TransactionCode | — | READY |
+| K_NDTNN_59 | Quốc tịch | — | Attribute | `opr_foreign_investor_360_profile.nationality_nm` — tên quốc tịch (ECAT.COUNTRY qua `nationality_id`) | **Sửa 2026-10-01:** BA dòng 67 `NATIONAL.Name` — trước đây chỉ có mã (`nationality_code`). Tên lấy từ `Geographic Area` (ECAT) sau crosswalk FIMS.NATIONAL.SName — O_NDTNN_36 | READY |
+| K_NDTNN_60 | Mã số giao dịch (MSGD) | — | Attribute | `opr_foreign_investor_360_profile.investor_code` = Transaction Code — FIMS.INVESTOR.TransactionCode | **Sửa 2026-10-01:** cột kỹ thuật `identification_nbr` (số giấy tờ đã masked) cùng bảng làm khóa nối sang Nhóm 13. | READY |
 | K_NDTNN_61 | Ngân hàng lưu ký | — | Attribute | `opr_foreign_investor_360_profile.custodian_bank_nm` — denorm từ `custodian_bank.custodian_bank_full_nm` (FMS.BANK_MONI) qua FK `Foreign_Investor.custodian_bank_id` (INVESTOR.BankAddId) | Sửa 2026-07-30 — nguồn cũ ghi FIMS.BANKMONI (không tồn tại) | READY |
-| K_NDTNN_62 | Loại hình NĐT | — | Attribute | `opr_foreign_investor_360_profile.investor_tp_code` — FIMS.INVESTOR.InvestorTypeId | — | READY |
+| K_NDTNN_62 | Loại hình NĐT | — | Attribute | `opr_foreign_investor_360_profile.investor_tp_nm` — tên loại hình (Classification Value `FIMS_INVESTOR_TYPE` ← FIMS.INVESTORTYPE.Name) | **Sửa 2026-10-01:** BA dòng 70 `INVESTORTYPE.Name` — trước đây chỉ có mã (`investor_tp_code`, giữ làm khóa lọc) | READY |
 | K_NDTNN_63 | Đại diện giao dịch | — | Attribute | `opr_foreign_investor_360_profile.director_nm` — FIMS.INVESTOR.Director | — | READY |
-| K_NDTNN_255 | Trạng thái xác thực đại diện giao dịch | — | Attribute | `opr_foreign_investor_360_profile.investor_status_code` — FIMS.INVESTOR.StatusId (`foreign_investor.activity_status_code`) | [SỬA 2026-09-28] BA STT 11 dòng 72 — proxy cấp Investor (Atomic không có status riêng theo Director). Scheme FIMS_ACTIVITY_STATUS chưa enumerate values | READY |
+| K_NDTNN_255 | Trạng thái xác thực đại diện giao dịch | — | Attribute | `opr_foreign_investor_360_profile.investor_status_nm` — tên trạng thái (Classification Value `FIMS_ACTIVITY_STATUS` ← FIMS.STATUS.Name) | [SỬA 2026-09-28] BA STT 11 dòng 72 — proxy cấp Investor (Atomic không có status riêng theo Director). Scheme FIMS_ACTIVITY_STATUS chưa enumerate values **Sửa 2026-10-01:** BA dòng 72 `STATUS.Name` — hiển thị tên thay vì mã (`investor_status_code` giữ làm khóa lọc). | READY |
 
 **Schema bảng tác nghiệp:**
 
@@ -984,10 +1003,14 @@ erDiagram
         varchar Investor_Code
         string Investor_Name
         varchar Investor_Type_Code
+        string Investor_Type_Name
         varchar Nationality_Code
+        string Nationality_Name
         string Custodian_Bank_Name
         string Director_Name
         varchar Investor_Status_Code
+        string Investor_Status_Name
+        string Identification_Number
     }
 
 ```
@@ -1080,6 +1103,8 @@ flowchart LR
 > Atomic: `Penalty Decision` (THANHTRA.PENALTY_DECISION, approved) + `Penalty Decision Subject` (approved) + `Penalty Decision Subject Behavior` (approved) + `Penalty Type` (approved) — **READY**
 > **Sửa Kịch bản D:** Header cũ dùng entity `Surveillance Enforcement Case`/`Surveillance Enforcement Decision` (TT.GS_HO_SO/GS_VAN_BAN_XU_LY) — BA STT=13 thực tế xác nhận nguồn hoàn toàn khác: `PENALTY_DECISION*`/`PENALTY_TYPE` (THANHTRA). Đã tra lại đúng entity approved — xem O_NDTNN_26.
 
+> **[SỬA 2026-10-01 — BA SQL STT 13]** Bảng chính của SQL là `PENALTY_DECISION_SUBJECT` (LEFT JOIN `PENALTY_DECISION`, `PENALTY_DECISION_SUBJECT_BEHAVIOR`, `PENALTY_TYPE`) nên Operational đổi driving sang `Penalty Decision Subject`, grain 1 đối tượng × 1 hành vi; đối tượng chưa có hành vi vẫn có 1 dòng (khóa = mã hành vi, thiếu thì mã đối tượng). `src_stm_code` = `THANHTRA_PENALTY_DECISION_SUBJECT`. Khóa liên kết NĐTNN ↔ đối tượng xử phạt: số giấy tờ ĐÃ MASKED (`Subject_Id_Number` ↔ `Identification_Number` của hồ sơ 360) — Data Modeler xác nhận 2026-10-01 (O_NDTNN_36).
+
 **Mockup:**
 
 | NGÀY QUYẾT ĐỊNH | PHÂN LOẠI | NỘI DUNG / TRÍCH YẾU | MỨC ĐỘ | TRẠNG THÁI |
@@ -1093,9 +1118,9 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_NDTNN_66 | Thông tin nhà đầu tư | — | Cơ sở | `Penalty_Decision_Subject.Subject_Name` | Đánh giá BA "Trùng" — tên/MSGD NĐTNN, dùng chung hồ sơ 360 | READY |
-| K_NDTNN_67 | Ngày quyết định | — | Cơ sở | `Penalty_Decision.Issued_Date` | — | READY |
-| K_NDTNN_68 | Phân loại | — | Cơ sở | `Penalty_Type.Penalty_Type_Name` — join qua `Penalty_Decision_Subject_Behavior.Penalty_Type_Id` | Phân loại hình thức xử lý (nhắc nhở/xử phạt hành chính...) | READY |
+| K_NDTNN_66 | Thông tin nhà đầu tư | — | Cơ sở | `Penalty_Decision_Subject.Subject_Name` | Đánh giá BA "Trùng" — tên/MSGD NĐTNN, dùng chung hồ sơ 360. **Sửa 2026-10-01:** FILTER NĐT đang chọn theo SỐ GIẤY TỜ ĐÃ MASKED: `subject_id_nbr` (pd_subject.SUBJECT_ID_NUMBER) = `identification_nbr` của hồ sơ 360 (Nhóm 11, FIMS.INVESTOR.IdNo) — Data Modeler xác nhận hai giá trị đã masked (không phải PII thô). BA SQL chỉ lọc `ISSUED_DATE`; FILTER cũ nhầm theo mã hành vi. Giả định cùng cơ chế masking ở FIMS và THANHTRA — O_NDTNN_36. | READY |
+| K_NDTNN_67 | Ngày quyết định | — | Cơ sở | `Penalty_Decision.Issued_Date` | **Sửa 2026-10-01:** lọc `Issued_Date BETWEEN :pdate1 AND :pdate2` theo BA (khoảng ngày, không chỉ 1 ngày) | READY |
+| K_NDTNN_68 | Phân loại | — | Cơ sở | `Penalty_Type.Penalty_Type_Name` — join qua `Penalty_Decision_Subject_Behavior.Penalty_Type_Id` | Phân loại hình thức xử lý (nhắc nhở/xử phạt hành chính...) **Sửa 2026-10-01:** LEFT JOIN `Penalty Decision Subject Behavior` → `Penalty Type` đúng SQL BA — hành vi chưa có loại xử lý vẫn giữ dòng (trước đây JOIN thường làm mất dòng). | READY |
 | K_NDTNN_69 | Nội dung/Trích yếu | — | Cơ sở | `Penalty_Decision_Subject_Behavior.Description` | — | READY |
 | K_NDTNN_70 | Mức độ | — | Cơ sở | — | **Out-of-scope** — BA tự ghi chú "không có trường thông tin xác định mức độ vi phạm" (giá trị NULL), đề xuất trao đổi với BA để loại bỏ trường này khỏi màn hình | Out-of-scope |
 | K_NDTNN_71 | Trạng thái | — | Cơ sở | `Penalty_Decision.Life_Cycle_Status_Code` | Trạng thái xử lý (đã khắc phục/đã nộp phạt...) | READY |
@@ -1107,6 +1132,7 @@ erDiagram
     Investor_Compliance_History {
         string Investor_Compliance_History_Id PK
         varchar Subject_Name
+        varchar Subject_Id_Number
         date Issued_Date
         varchar Penalty_Type_Name
         string Description
@@ -1213,22 +1239,27 @@ flowchart LR
 #### Nhóm 15 - Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết (STT=15)
 
 > Phân loại: **Tác nghiệp** (100% READY)
+> Atomic: `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR, Nguồn 1) — **READY**, nguồn của Dimension `Securities Dimension` (dùng lại, reuse Case 1) — map HNX Issue Code (ISIN) → mã CK trong nước và loại giao dịch không có trong stockinfor (BA SQL 2026-10-01).
 > Atomic: `Securities Trade` (ORDERTRADE.TRADE_BOOK_HOSE/HNX) — **READY**, field `Buy/Sell Account Number`, `Buy/Sell Account Holder Name`, `Security Symbol Code`, `Execution Volume`, `Execution Value`, `Buy/Sell Foreign Investor Type Code`, `Buy/Sell Investor Type Code`.
 > **Sửa lỗi lệch STT (cùng gốc O_NDTNN_17/18):** Nội dung "Nhóm 10b" trước đây thực chất là BA STT=15, bị đặt sai số — xem O_NDTNN_23.
 > **Sửa Kịch bản D (2026-07-24) — đổi kiến trúc từ Phân tích (Star Schema) sang Tác nghiệp:** xem chi tiết O_NDTNN_30.
 
+> **[SỬA 2026-10-01 — BA cập nhật SQL STT 15]** (1) HNX: `Issue Code` là ISIN nên mã CK lấy từ `JAD_STOCKINFOR.symbol` qua `symbolisin = issue_code`; HOSE `symbol = symbol`; stockinfor lấy dòng mới nhất theo (symbol, ngày giao dịch). (2) `LEFT JOIN` → `JOIN` stockinfor: loại giao dịch không có trong stockinfor. (3) Điều kiện NĐTNN đặt ở WHERE theo từng sàn: HOSE `<> '00'`, HNX `IN ('10','20')`. (4) Khoảng ngày `BETWEEN :pdat1 AND :pdat2` + lọc 1 tài khoản; KQ gộp theo (tài khoản, mã CK). (5) BA vẫn ghi ở Trường nguồn "Invest Type = '7000'" nhưng SQL không dùng — theo SQL, xem O_NDTNN_36.
+
 **Ghi chú thiết kế:** BA cột "Chiều dữ liệu" ghi tắt "Ngày, NĐT" nhưng câu lệnh tham khảo SQL xác nhận grain thật là **1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell)** — `GROUP BY Buy_Acct_No, Symbol` (HOSE) / `GROUP BY Buy_account_number, Issue_Code` (HNX). Bảng tác nghiệp mới `Foreign Investor Trading Detail Report` denormalize hoàn toàn (không qua Star Schema): `Symbol` lưu trực tiếp (text), `Account_Holder_Name` đệm sẵn từ `Securities Trade`. Điều kiện lọc dòng vào báo cáo dùng **2 attribute Investor Type độc lập** trên `Securities Trade` — `Foreign_Investor_Type_Code` (scheme `ORDERTRADE_FOREIGN_INVESTOR_TYPE`, dùng cho danh sách Account/Symbol) và `Investor_Type_Code` (scheme `ORDERTRADE_INVESTOR_TYPE`, dùng cho KL/GT mua-bán) — cả 2 là điều kiện ETL filter, KHÔNG lưu thành cột trên bảng kết quả. `Buy/Sell Client House Classification Code` không được KPI nào dùng — loại khỏi thiết kế.
+
+> **[SỬA 2026-10-01 — Mã CK qua Securities Dimension]** Yêu cầu Data Modeler: `Symbol` lấy bằng JOIN `Securities Dimension` (`securities_dim`) thay vì join trực tiếp `Security Trading Snapshot`: HOSE `securities_dim.symbol = security_symbol_code`, HNX `securities_dim.isin_code = security_symbol_code` → `securities_dim.symbol` (cùng pattern với `Fact Securities Foreign Trading Snapshot`). INNER JOIN giữ nguyên. Chỉ lấy giá trị text, KHÔNG lưu FK `securities_dim_id` trên bảng báo cáo.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_NDTNN_84 | Tài khoản giao dịch NĐTNN | — | Chiều | `Foreign_Investor_Trading_Detail_Report.Account_Number` | Từ Buy/Sell Account Number (HNX) hoặc Buy/Sell Acct No (HOSE) | READY |
-| K_NDTNN_85 | Mã CK | — | Chiều | `Foreign_Investor_Trading_Detail_Report.Symbol` | Từ Issue Code (HNX) hoặc Symbol (HOSE). Denormalize text trực tiếp — không qua FK Securities Dimension (bảng Tác nghiệp) | READY |
-| K_NDTNN_86 | KL mua chứng khoán | CP | Cơ sở | `Execution_Volume` WHERE `Trade_Direction_Code='BUY'` | ETL filter: `Buy_Foreign_Investor_Type_Code IN ('10','20')` OR `Buy_Investor_Type_Code='7000'` (2 attribute độc lập, sửa O_NDTNN_30) | READY |
-| K_NDTNN_87 | KL bán CK | CP | Cơ sở | `Execution_Volume` WHERE `Trade_Direction_Code='SELL'` | ETL filter: `Sell_Foreign_Investor_Type_Code IN ('10','20')` OR `Sell_Investor_Type_Code='7000'` (2 attribute độc lập, sửa O_NDTNN_30) | READY |
-| K_NDTNN_88 | GT mua chứng khoán | Triệu VNĐ | Cơ sở | `Execution_Value` (HNX: Trade_price×Trade_quantity) WHERE `Trade_Direction_Code='BUY'` | Cùng điều kiện ETL filter với K_NDTNN_86 | READY |
-| K_NDTNN_89 | GT bán chứng khoán | Triệu VNĐ | Cơ sở | `Execution_Value` (HNX: Trade_price×Trade_quantity) WHERE `Trade_Direction_Code='SELL'` | Cùng điều kiện ETL filter với K_NDTNN_87 | READY |
+| K_NDTNN_84 | Tài khoản giao dịch NĐTNN | — | Chiều | `Foreign_Investor_Trading_Detail_Report.Account_Number` | Từ Buy/Sell Account Number (HNX) hoặc Buy/Sell Acct No (HOSE) **Sửa 2026-10-01:** BA lọc 1 tài khoản NĐT đang chọn (khóa mã hóa PII) và khoảng ngày `trade_date BETWEEN :pdat1 AND :pdat2`; KQ gộp theo (tài khoản, mã CK) trên cả khoảng ngày — bảng giữ grain ngày để BI SUM theo khoảng | READY |
+| K_NDTNN_85 | Mã CK | — | Chiều | `Foreign_Investor_Trading_Detail_Report.Symbol` | HOSE `Symbol`; HNX `Issue Code` (ISIN) → symbol qua JOIN `Securities Dimension` (`isin_code` → `symbol`). **Sửa 2026-10-01:** INNER JOIN Securities Dimension (nguồn MDDS JAD_STOCKINFOR) như SQL BA — giao dịch không có trong dim bị loại. Denormalize text trực tiếp, không lưu FK Securities Dimension | READY |
+| K_NDTNN_86 | KL mua chứng khoán | CP | Cơ sở | `Execution_Volume` WHERE `Trade_Direction_Code='BUY'` | ETL filter theo SQL BA 2026-10-01: HOSE `Buy_Foreign_Investor_Type_Code <> '00'`; HNX `IN ('10','20')`. **Sửa 2026-10-01:** bỏ điều kiện `Investor_Type_Code = '7000'` (không có trong SQL BA hiện hành — O_NDTNN_36) | READY |
+| K_NDTNN_87 | KL bán CK | CP | Cơ sở | `Execution_Volume` WHERE `Trade_Direction_Code='SELL'` | ETL filter theo SQL BA 2026-10-01: HOSE `Sell_Foreign_Investor_Type_Code <> '00'`; HNX `IN ('10','20')`. **Sửa 2026-10-01:** bỏ điều kiện `Investor_Type_Code = '7000'` (không có trong SQL BA hiện hành — O_NDTNN_36) | READY |
+| K_NDTNN_88 | GT mua chứng khoán | Triệu VNĐ | Cơ sở | `Execution_Value` (HNX: Trade_price×Trade_quantity) WHERE `Trade_Direction_Code='BUY'` | ETL filter theo SQL BA 2026-10-01: HOSE `Buy_Foreign_Investor_Type_Code <> '00'`; HNX `IN ('10','20')`. **Sửa 2026-10-01:** bỏ điều kiện `Investor_Type_Code = '7000'` (không có trong SQL BA hiện hành — O_NDTNN_36) | READY |
+| K_NDTNN_89 | GT bán chứng khoán | Triệu VNĐ | Cơ sở | `Execution_Value` (HNX: Trade_price×Trade_quantity) WHERE `Trade_Direction_Code='SELL'` | ETL filter theo SQL BA 2026-10-01: HOSE `Sell_Foreign_Investor_Type_Code <> '00'`; HNX `IN ('10','20')`. **Sửa 2026-10-01:** bỏ điều kiện `Investor_Type_Code = '7000'` (không có trong SQL BA hiện hành — O_NDTNN_36) | READY |
 
 **Schema bảng tác nghiệp:**
 
@@ -1253,11 +1284,13 @@ erDiagram
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
+        D1["Securities Dimension"]
         G1["Foreign Investor Trading Detail Report"]
     end
     subgraph RPT["Báo cáo"]
         R1["K_NDTNN_84-89: Tab BAO CAO - Nhom 15 - Bao cao thong ke chi tiet"]
     end
+    D1 --> G1
     G1 --> R1
 ```
 
@@ -2081,7 +2114,7 @@ graph TB
 | Geographic Area Dimension | Thông tin quốc gia / quốc tịch | 1 row = 1 quốc gia (SCD4A current-state) | Geographic Area (FIMS) | Có |
 | Asset Category Dimension | Loại hình tài sản đầu tư (5 giá trị) | 1 row = 1 loại tài sản (SCD4A current-state) | Classification Value (FIMS_SECURITIES_TYPE) | Không |
 | Public Company Dimension | Công ty đại chúng — mã CK + nhóm ngành (đệm Classification Business Line Name qua join Business Line Level 1/2 Code) | 1 row = 1 công ty đại chúng (SCD4A current-state) | Public Company (IDS.COMPANY_PROFILES) + Classification Business Line (IDS.CATEGORIES) | Có |
-| Securities Dimension | Danh mục mã chứng khoán (mã, tên, loại CK, sàn, trạng thái) — dùng chung Nhóm 2 (Star Schema FK) + Nhóm 14 (ETL filter nội bộ, không FK) | 1 row = 1 mã chứng khoán (SCD4A) | Security Trading Snapshot (MDDS.JAD_STOCKINFOR) | Có |
+| Securities Dimension | Danh mục mã chứng khoán (mã, tên, loại CK, sàn, trạng thái) — dùng chung Nhóm 2 (Star Schema FK) + Nhóm 14 (ETL filter nội bộ, không FK) + Nhóm 15 (JOIN lấy mã CK text, không FK) | 1 row = 1 mã chứng khoán (SCD4A) | Security Trading Snapshot (MDDS.JAD_STOCKINFOR) | Có |
 | Market Index Dimension | Danh mục chỉ số thị trường (Market Id, Market Code, loại index, mã sản phẩm, trạng thái phiên hiện tại) — sở hữu QLKD, reuse Nhóm 5 NDTNN | 1 row = 1 combo Market_Id + Market_Code (SCD4A) | Market Index Snapshot (MDDS.JAD_MARKETINFOR) | Có |
 
 ---
@@ -2103,8 +2136,8 @@ graph TB
 | Geographic Area Dimension | dim_geo_area | new | Chưa có trong master |
 | Asset Category Dimension | dim_asst_ctg | new | Chưa có trong master |
 | Public Company Dimension | dim_pub_co | new | Chưa có trong master — nguồn Public Company (IDS.COMPANY_PROFILES) + Classification Business Line (IDS.CATEGORIES), dùng chung Nhóm 2, 8 và Nhóm 9 |
-| Securities Dimension | securities_dim | new | Chưa có trong master — nguồn Security Trading Snapshot (MDDS.JAD_STOCKINFOR, working/draft), grain 1 mã CK, dùng chung Nhóm 2/14. **Conformed Dimension (module: SHARED)** — module GSTT đã tự thiết kế cùng khái niệm (`scr_tdg_snpst_dim`) ở cấp HLD riêng nhưng chưa đăng ký `datamart_model.yaml`; NDTNN là module đầu tiên đăng ký chính thức, tên/physical_name theo đúng `rule_physical_name_exceptions_datamart.csv` — xem O_NDTNN_28 |
-| Foreign Investor Trading Detail Report | foreign_investor_trading_detail_rpt | new | Chưa có trong master — nguồn Securities Trade (ORDERTRADE), phục vụ Nhóm 15. **[Cập nhật 2026-07-24, Kịch bản D]** Thay thế thiết kế trước dùng `Fact Securities Foreign Investor Trade Detail` (Star Schema) — chuyển sang bảng tác nghiệp riêng, denormalize hoàn toàn (không FK Securities Dimension) vì Nhóm 15 thuộc Tab BÁO CÁO (đóng gói cố định) — xem O_NDTNN_30 |
+| Securities Dimension | securities_dim | new | Chưa có trong master — nguồn Security Trading Snapshot (MDDS.JAD_STOCKINFOR, working/draft), grain 1 mã CK, dùng chung Nhóm 2/14/15. **Conformed Dimension (module: SHARED)** — module GSTT đã tự thiết kế cùng khái niệm (`scr_tdg_snpst_dim`) ở cấp HLD riêng nhưng chưa đăng ký `datamart_model.yaml`; NDTNN là module đầu tiên đăng ký chính thức, tên/physical_name theo đúng `rule_physical_name_exceptions_datamart.csv` — xem O_NDTNN_28 |
+| Foreign Investor Trading Detail Report | foreign_investor_trading_detail_rpt | new | Chưa có trong master — nguồn Securities Trade (ORDERTRADE) + Securities Dimension (JOIN lấy `symbol`, 2026-10-01), phục vụ Nhóm 15. **[Cập nhật 2026-07-24, Kịch bản D]** Thay thế thiết kế trước dùng `Fact Securities Foreign Investor Trade Detail` (Star Schema) — chuyển sang bảng tác nghiệp riêng, denormalize hoàn toàn (không FK Securities Dimension) vì Nhóm 15 thuộc Tab BÁO CÁO (đóng gói cố định) — xem O_NDTNN_30 |
 | Market Index Dimension | market_index_dim | reuse | **Sửa 24/07/2026:** Chuyển sở hữu sang QLKD (cùng module với Fact `fct_market_index_snpst`) — NDTNN reuse. Grain 1 combo Market_Id+Market_Code (SCD4A current-state), dùng cho Nhóm 5. Nguồn Market Index Snapshot (MDDS.JAD_MARKETINFOR, working/draft) — xem O_NDTNN_29 (Closed) |
 | Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | partial | **[MỚI 2026-09-18, Resolved một phần O_NDTNN_12]** Reuse cross-module — sở hữu GSDC (10 cột sẵn có: Outstanding/Total Issued/Treasury/Free Float Share Quantity, Current Foreign Holding Quantity, Foreign/Max Foreign Ownership Ratio, Remaining Foreign Holding Quantity, State Owned Share Quantity/Ratio). NDTNN bổ sung 1 cột mới `Foreign Holding Value` (JOIN thêm `Security Trading Snapshot` lấy giá đóng cửa) — phục vụ K_NDTNN_51 (Nhóm 8). Grain giữ nguyên 1 mã CK/tháng, không đổi cột/measure hiện có của GSDC — xem `DTM_GSDC_HLD.md` |
 
@@ -2150,3 +2183,4 @@ graph TB
 | O_NDTNN_33 | **[2026-09-24] Nhóm 5 K_NDTNN_35 (Dòng tiền ròng lũy kế) — BA đã Done nhưng Atomic chưa sẵn:** BA dòng 40 dùng `uat_fims_ods.fact_report_cell` (báo cáo IBOU9 — PLIV-TT51, Ngân hàng lưu ký gửi kỳ nửa tháng, `column_path` = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)', `row_path` = 'Tổng= (1) + (2)'). Atomic tương ứng `Report Import Value` (FIMS.RPTVALUES) mới có ở `FIMS_HLD_Overview.md`, chưa có LLD/`dm_manifest.yaml`. Ngoài ra cần BA chốt: (1) đơn vị USD khác 2 series còn lại (VND/Tỷ đồng) trên cùng trục trái; (2) quy tắc "ưu tiên kỳ nửa tháng" khi cùng kỳ có cả bản ngày. | Cột vật lý `foreign_net_capital_flow_mtd_amt` đã dự phòng trên `fct_foreign_net_flow_market_index_snpst` (nullable, USD, semi-additive — lũy kế từ đầu tháng tới ngày snapshot), để NULL tới khi Atomic READY | K_NDTNN_35 | Open — chờ Atomic Report Import Value + BA chốt đơn vị |
 | O_NDTNN_34 | **[2026-09-24] Nhóm 1/2 — 3 điểm mâu thuẫn trong câu lệnh tham khảo BA STT 2, cần BA chốt (phát hiện khi đối chiếu lại BA theo yêu cầu Data Modeler):** (1) **Khóa nối HNX ↔ stockinfor:** dòng BA 15–18 (và STT 1) dùng `js.symbolisin = tb.issue_code`, dòng 11/19/24/25/26 dùng `tb.issue_code = js.symbol`. (2) **Dòng BA 11 (K_NDTNN_10)** INNER JOIN `company_profiles` — loại mọi mã không phải công ty đại chúng (trái phiếu/CCQ), các dòng khác LEFT JOIN; ngoài ra BA nối `company_profiles` bằng `t.symbol` mà với HNX `t.symbol` = `issue_code` (ISIN) nên không bao giờ khớp `equity_ticker`. (3) **K_NDTNN_19 Tỷ trọng TB phiên:** mô tả = tổng tỷ trọng các ngày / số ngày GD, câu lệnh = (ΣGT mua + ΣGT bán) / (ΣGT toàn TT × 2) / số ngày (tỷ trọng gộp chia số ngày — sai bản chất). | (1) Nối HNX qua `isin_code` (khớp STT 1 + Top ngành/mã, đúng bản chất issue_code = ISIN). (2) Không lọc theo công ty đại chúng ở K_NDTNN_10 (FK `public_company_dim_id` nullable); nối công ty đại chúng qua `securities_dim.symbol` đã resolve đúng HOSE/HNX. (3) Giữ theo mô tả — AVG tỷ trọng ngày | K_NDTNN_1-4, K_NDTNN_10, K_NDTNN_12-17, K_NDTNN_19 | Open — chờ BA xác nhận 3 điểm |
 | O_NDTNN_35 | **[2026-09-28] Nhóm 14 — thiết kế cũ (Kịch bản D, 2026-07-24) phân loại STOCK/BOND/FUND_CERT bằng `Market_Id_Code` (+ `Investor_Type_Code='7000'` và JOIN `Securities_Dimension.Stock_Type_Code='3'` riêng cho FUND_CERT) không còn khớp Câu lệnh tham khảo BA — xác minh qua `git log` (BA đổi cơ chế phân loại tại commit cập nhật thiết kế "v2.8" ngày 2026-09-17, cùng lúc với đợt sửa filter ngày, nhưng đợt sửa đó chỉ bắt được phần filter ngày, bỏ sót phần phân loại; BA không đổi tiếp tới commit gần nhất 2026-09-23). Câu lệnh tham khảo BA hiện hành JOIN `trade_book` với `MDDS.jad_stockinfor` (Atomic: `Security Trading Snapshot`) qua Symbol(HOSE)/ISIN(HNX) + Ngày giao dịch, lấy dòng `trading_time` mới nhất trong ngày, phân loại theo `stock_tp_code = '1'` (Cổ phiếu) / `'2'` (Trái phiếu) / `IN ('3','6')` (CCQ). | Thiết kế lại theo đúng Câu lệnh tham khảo BA — dùng lại nguyên pattern CTE `ROW_NUMBER() OVER (PARTITION BY symbol, trading_dt ORDER BY trading_time DESC)` đã duyệt ở `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2, sửa 2026-09-25, xem ghi chú Cụm 1a) — đồng thời xác nhận lại điều kiện NĐTNN mua/bán dùng `IN ('10','20')` thống nhất cho cả HOSE/HNX ở tầng Atomic (khác `<>'00'` riêng HOSE trong SQL thô của BA — SQL thô chạy trên staging trước khi Atomic harmonize, không phải quy tắc cần giữ nguyên ở Datamart). **Còn mở:** giá trị `stock_tp_code IN ('1','2','3')` đã được xác nhận gián tiếp qua Fact Nhóm 1/2 đang chạy, nhưng riêng giá trị `'6'` (nhánh CCQ mở rộng theo Câu lệnh tham khảo BA `stocktype IN (3,6)`) chưa có xác nhận độc lập nào khác — cần Atomic team profile đầy đủ scheme `MDDS_STOCK_TYPE` (hiện `values: []`, chưa enum hoá) trước khi khẳng định chắc chắn. | K_NDTNN_72–83 (Nhóm 14) | Open một phần — đã thiết kế lại, chờ Atomic team xác nhận giá trị `stock_tp_code = '6'` |
+| O_NDTNN_36 | **[MỚI 2026-10-01 — BA cập nhật mapping Nhóm 15 + rà soát Nhóm 11, 13]** (1) **Nhóm 11:** bảng Tác nghiệp chỉ lưu mã (`nationality_code`, `investor_tp_code`, `investor_status_code`) trong khi BA lấy tên (`NATIONAL.Name`, `INVESTORTYPE.Name`, `STATUS.Name`) → thêm `nationality_nm` (Atomic `geographic_area` ECAT_COUNTRY qua `nationality_id`), `investor_tp_nm`, `investor_status_nm` (Atomic `cl_value` scheme FIMS_INVESTOR_TYPE / FIMS_ACTIVITY_STATUS). Tên quốc tịch lấy từ ECAT (sau crosswalk SName) nên có thể khác chính tả `FIMS.NATIONAL.Name` — Atomic Team xác nhận crosswalk và việc `cl_value` đã nạp tên của 2 scheme FIMS. 'Đại diện giao dịch' BA mô tả Tên/CCCD/Trạng thái nhưng Trường nguồn chỉ `INVESTOR.Director` — CCCD không lên Datamart (PII). (2) **Nhóm 13:** SQL BA lấy `PENALTY_DECISION_SUBJECT` làm bảng chính (LEFT JOIN hành vi, loại xử lý) → Operational đổi driving sang `pd_subject` (đối tượng chưa có hành vi vẫn có dòng; PK = `COALESCE(mã hành vi, mã đối tượng)`; `src_stm_code` = THANHTRA_PENALTY_DECISION_SUBJECT; JOIN `penalty_type` đổi LEFT). **Khóa nối NĐTNN ↔ đối tượng xử phạt** (BA SQL chỉ lọc `ISSUED_DATE`): FILTER cũ `investor_compliance_hist_code = :selected_investor` là nhầm (mã hành vi). **Data Modeler xác nhận 2026-10-01: số giấy tờ ĐÃ MASKED** → thêm `subject_id_nbr` (Nhóm 13) và `identification_nbr` (Nhóm 11, Atomic `ip_alternative_identification`) làm khóa nối kỹ thuật, không hiển thị. Giả định cơ chế masking giống nhau ở FIMS và THANHTRA (cùng số giấy tờ → cùng giá trị masked) — Atomic Team xác nhận trước go-live. K_NDTNN_70 'Mức độ' vẫn Out-of-scope (BA tự ghi không có trường). (3) **Nhóm 15:** SQL BA mới — HNX `issue_code` là ISIN nên mã CK lấy qua `JAD_STOCKINFOR.symbolisin` (Atomic `security_trading_snapshot`), INNER JOIN stockinfor (loại giao dịch không có trong stockinfor), điều kiện NĐTNN theo sàn (HOSE `<> '00'`, HNX `IN ('10','20')`), lọc khoảng ngày + 1 tài khoản, gộp theo (tài khoản, mã CK). Bỏ điều kiện `Investor_Type_Code = '7000'` vì SQL không còn dùng — **Data Modeler xác nhận bỏ 2026-10-01**; BA nên sửa Trường nguồn dòng 95–98 cho khớp SQL. KPI: K_NDTNN_59, 62, 66–68, 84–89, 255 | Mở — Atomic Team xác nhận (1) và cơ chế masking (2); BA sửa Trường nguồn dòng 95–98 (3) |
