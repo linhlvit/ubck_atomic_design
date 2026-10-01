@@ -258,7 +258,7 @@ Ghi lại bằng `yaml.dump()` xoá sạch comment và reformat 100% file (diff 
 
 ### A10 — Ghi chú "đã lọc sẵn tại ETL" phải trích được `etl_logic` thật `[L3-REFERENCE-SQL-MISALIGNMENT]`
 
-Quy tắc L17 cho phép thay dòng FILTER bằng ghi chú *"đã lọc sẵn tại ETL Fact"*, nhưng chỉ khi điều
+Quy tắc L17 cho phép thay điều kiện trong `WHERE` của MEASURE (hoặc dòng FILTER) bằng ghi chú *"đã lọc sẵn tại ETL Fact"*, nhưng chỉ khi điều
 kiện đó **thực sự có trong `etl_logic`** của Fact. Trước khi viết ghi chú này, grep đúng điều kiện
 trong file Attributes:
 
@@ -266,7 +266,7 @@ trong file Attributes:
 grep -n "stock_tp_code\|floor_code" Datamart/lld/{MODULE}/DTM_{MODULE}_{fact}.csv
 ```
 
-Nếu không grep thấy, phải đưa điều kiện vào `logic` của dòng SLICER/MEASURE, hoặc tạo dòng FILTER.
+Nếu không grep thấy, phải đưa điều kiện vào `logic` của dòng SLICER/MEASURE (KPI không có MEASURE thì tạo dòng FILTER).
 Thực tế đã sai: GSTT Nhóm 29 ghi `FloorCode IN ('10','02','04')`, `StockType NOT IN ('B','1','BO','D')`
 là "đã lọc sẵn tại ETL `fct_investor_category_trading_snpst`", nhưng ETL của Fact đó chỉ lọc
 `market_id_code`.
@@ -1294,7 +1294,7 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ Không có KPI_ID trong block mà chưa được khai sinh trong HLD — báo danh sách nếu vi phạm
 □ KPI PENDING (Quy tắc L4): bắt buộc để trống cả 4 cột mart_table, mart_column, column_role, logic; ghi rõ lý do blocker theo 5 nhóm chuẩn hóa vào ghi_chu
 □ Bám sát Câu lệnh tham khảo (Quy tắc L17):
-  - Mọi điều kiện WHERE trong SQL tham khảo (sàn, loại CK, loại bảng lệnh, loại NĐT, cờ hiệu lực...) PHẢI được sinh thành dòng `column_role = FILTER` tương ứng HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact.
+  - Mọi điều kiện WHERE trong SQL tham khảo (sàn, loại CK, loại bảng lệnh, loại NĐT, cờ hiệu lực...) PHẢI nằm trong `WHERE` của `logic` dòng MEASURE (KPI không có MEASURE: sinh dòng `column_role = FILTER`) HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact.
   - Số đo trong `mart_column` và `logic` phải bám sát biểu thức `SELECT` trong SQL tham khảo: phân biệt rạch ròi Khớp lệnh (`total_matched_*`) vs Thỏa thuận (`total_negotiated_*`) vs Tổng (`total_*`); Mua vs Bán vs Ròng; Rolling window...
 □ Không bỏ qua dòng Phân loại = Chiều
 □ Không bỏ qua dòng Trạng thái = Doing
@@ -1306,7 +1306,7 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ REUSE Case 1 (Physical): bắt buộc điền đủ mart_table và mart_column khớp 1-1 với Attributes, role = MEASURE/SLICER
 □ REUSE Case 2 (Presentation/Derived): bắt buộc để trống mart_table và mart_column, column_role = DERIVED
 □ DEPRECATED: column_role = DEPRECATED, mart_table/mart_column để trống, logic = "Đã loại bỏ — không tạo cột/slicer", ghi rõ căn cứ bãi bỏ
-□ MEASURE: chỉ phép tính thuần (COUNT/SUM/AVG) — condition tách thành FILTER riêng
+□ MEASURE (Quy tắc L18): 1 KPI Base = 1 dòng; `logic` = `[JOIN] → AGG(...) WHERE ... GROUP BY ...` — KHÔNG tách dòng FILTER/GROUP_BY cho KPI có MEASURE (chiều dùng chung khai 1 lần bằng KPI SLICER)
 □ NaN/trống trong cột Trạng thái mapping → ghi chú, xác nhận với BA
 □ Append đúng THỨ TỰ SỐ NHÓM TĂNG DẦN — xem TC6; nếu file hiện tại đã append lệch thứ tự từ
   trước, KHÔNG tự ý append tiếp theo thứ tự sai đó, báo cho human trước
@@ -1322,7 +1322,8 @@ TC1 — Mô tả khớp chỉ tiêu:
 
 TC1b — Bám sát Câu lệnh tham khảo (Reference SQL Alignment Check — Quy tắc L17):
 □ Với mọi chỉ tiêu có `Câu lệnh tham khảo` hoặc `Điều kiện chung` trong BA:
-  - Kiểm tra các điều kiện lọc trong mệnh đề WHERE đã được ánh xạ thành dòng `column_role = FILTER` hoặc đã ghi nhận lọc sẵn trong ETL Fact chưa.
+  - Kiểm tra các điều kiện lọc trong mệnh đề WHERE đã nằm trong `logic` MEASURE (KPI không có MEASURE: dòng `column_role = FILTER`) hoặc đã ghi nhận lọc sẵn trong ETL Fact chưa.
+  - Quy tắc L18: mỗi `kpi_id` có dòng MEASURE chỉ được có đúng 1 dòng (đếm số dòng/kpi_id; có FILTER/GROUP_BY cùng kpi_id → FAIL).
   - Kiểm tra `mart_column` và biểu thức tổng hợp trong `logic` có phản ánh đúng mệnh đề SELECT (khớp lệnh vs thỏa thuận vs tổng; mua vs bán vs ròng; rolling/window...) không.
 □ Báo: ✅ TC1b PASS hoặc ❌ TC1b FAIL: [danh sách kpi_id bị lệch số đo hoặc thiếu filter so với SQL tham khảo]
 □ Nếu FAIL → sửa trước khi trình bày

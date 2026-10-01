@@ -299,14 +299,14 @@ Phân định dứt khoát 2 trường hợp tái sử dụng chỉ tiêu:
      - **Khớp lệnh vs Thỏa thuận:** Khớp lệnh thuần (SQL tham khảo loại trừ thỏa thuận: `Board Type NOT IN ('T1','T2','T3','T4','T6','R1')`) BẮT BUỘC ánh xạ vào `Total Matched Volume` / `total_matched_vol` và `Total Matched Value` / `total_matched_val`. **TUYỆT ĐỐI KHÔNG map nhầm sang `Total Volume` / `total_vol`** (vốn là số gộp cả thỏa thuận). Thỏa thuận phải map sang `Total Negotiated Volume` / `total_negotiated_vol`.
      - **Mua vs Bán vs Ròng:** Chỉ tiêu Mua / Bán / Ròng (NĐTNN, Tự doanh) phải đối chiếu đúng công thức trong SELECT của SQL tham khảo (ví dụ: `SUM(kl_nn_mua) - SUM(kl_nn_ban)` ➔ `foreign_net_vol`).
   2. **Mệnh đề `WHERE` (Static Filter & Scope Alignment):**
-     - Toàn bộ điều kiện lọc tĩnh trong WHERE của SQL tham khảo (lọc sàn `FloorCode IN ('10','02','04')`, loại trừ chứng khoán `StockType NOT IN (1,4)`, loại bảng lệnh `Board Type`, cờ hiệu lực `active_flg = 1`, phân loại NĐTNN) **PHẢI ĐƯỢC ÁNH XẠ THÀNH CÁC DÒNG `column_role = FILTER` TƯƠNG ỨNG TRONG NHÓM**, HOẶC nếu đã lọc ngầm tại ETL Fact thì cột `ghi_chu` phải ghi rõ: `"Đã lọc sẵn tại ETL Fact theo SQL tham khảo BA: <điều kiện>"`.
+     - Toàn bộ điều kiện lọc tĩnh trong WHERE của SQL tham khảo (lọc sàn `FloorCode IN ('10','02','04')`, loại trừ chứng khoán `StockType NOT IN (1,4)`, loại bảng lệnh `Board Type`, cờ hiệu lực `active_flg = 1`, phân loại NĐTNN) **PHẢI NẰM TRONG `WHERE` CỦA `logic` DÒNG MEASURE (KPI không có MEASURE: DÒNG `column_role = FILTER` TRONG NHÓM) — Quy tắc L18 cấm tách dòng FILTER/GROUP_BY riêng cho KPI có MEASURE**, HOẶC nếu đã lọc ngầm tại ETL Fact thì cột `ghi_chu` phải ghi rõ: `"Đã lọc sẵn tại ETL Fact theo SQL tham khảo BA: <điều kiện>"`.
   3. **Mệnh đề `FROM/JOIN` (Dimension & Linkage Coverage):**
      - Đảm bảo Fact/Operational có đủ Foreign Key liên kết sang các Dimension tương ứng để thực hiện được phép lọc và cắt lát theo yêu cầu BA.
   4. **Mệnh đề `GROUP BY` & Window Function:**
      - Xác định đúng grain hiển thị và công thức cửa sổ rolling/moving average (ví dụ: KLGDTB 5 ngày `5 PRECEDING`, TTM 4 quý BCTC).
 - **Cấm kỵ:**
   - ❌ BA SQL lọc khớp lệnh thuần nhưng Detail Mapping map vào `total_vol` / `total_val` (gộp thỏa thuận).
-  - ❌ BA SQL có điều kiện WHERE loại trừ trái phiếu/chứng quyền (`StockType NOT IN (1,4)`) nhưng Detail Mapping không có dòng FILTER và không có ghi chú ETL.
+  - ❌ BA SQL có điều kiện WHERE loại trừ trái phiếu/chứng quyền (`StockType NOT IN (1,4)`) nhưng `logic` MEASURE không có điều kiện đó (hoặc KPI danh sách không có dòng FILTER) và không có ghi chú ETL.
 - **Phân loại lỗi:** Vi phạm quy tắc L17 được gán mã lỗi **🔴 Critical (`L3-REFERENCE-SQL-MISALIGNMENT`)**, chặn mở Gate 2 và Gate 3.
 
 ---

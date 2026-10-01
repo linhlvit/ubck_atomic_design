@@ -305,12 +305,13 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
         - Phân biệt rạch ròi Khớp lệnh vs Thỏa thuận: Khớp lệnh (`Board Type NOT IN ('T1'..'R1')`) BẮT BUỘC map `Total Matched Volume/Value` (`total_matched_vol/val`), TUYỆT ĐỐI KHÔNG map `Total Volume/Value` (`total_vol/val` gộp cả thỏa thuận). Thỏa thuận map `Total Negotiated Volume/Value` (`total_negotiated_vol/val`).
         - Phân biệt Mua vs Bán vs Ròng: Khớp đúng biểu thức `SUM(mua) - SUM(ban)` ➔ `foreign_net_vol`.
       • WHERE (Static Filter & Scope Alignment):
-        - Mọi điều kiện lọc tĩnh trong WHERE (sàn `FloorCode`, loại CK `StockType`, loại bảng lệnh `Board Type`, cờ hiệu lực `active_flg`, loại NĐT) PHẢI được sinh thành các dòng `column_role = FILTER` tương ứng trong nhóm HOẶC ghi rõ trong `ghi_chu`: `"Đã lọc sẵn tại ETL Fact theo SQL tham khảo BA: <điều kiện>"`.
+        - Mọi điều kiện lọc tĩnh trong WHERE (sàn `FloorCode`, loại CK `StockType`, loại bảng lệnh `Board Type`, cờ hiệu lực `active_flg`, loại NĐT) PHẢI nằm trong `WHERE` của `logic` dòng MEASURE (KPI không có MEASURE: dòng `column_role = FILTER` trong nhóm) HOẶC ghi rõ trong `ghi_chu`: `"Đã lọc sẵn tại ETL Fact theo SQL tham khảo BA: <điều kiện>"`.
       • FROM/JOIN (Dimension & Linkage Coverage):
         - Đảm bảo đủ các Dimension liên kết và FK cần thiết để thỏa mãn điều kiện lọc và cắt lát.
       • GROUP BY & Window Function:
         - Đối chiếu đúng grain hiển thị và công thức cửa sổ rolling/moving average (VD: KLGDTB 5 ngày `5 PRECEDING`, TTM 4 quý BCTC).
-  → Vi phạm (lệch số đo, thiếu dòng FILTER, hoặc sai logic WHERE/SELECT) → 🔴 Critical (`L3-REFERENCE-SQL-MISALIGNMENT`)
+  → Vi phạm (lệch số đo, thiếu điều kiện WHERE trong logic MEASURE/dòng FILTER, hoặc sai logic WHERE/SELECT) → 🔴 Critical (`L3-REFERENCE-SQL-MISALIGNMENT`)
+  → Quy tắc L18: KPI có dòng MEASURE mà còn dòng FILTER/GROUP_BY cùng `kpi_id` (nhân dòng) → 🟡 Warning; đề xuất gộp vào `logic` MEASURE. Module bàn giao theo kiểu cũ (GSDC, GSTT...) không báo lỗi hồi tố.
 
 □ Logic DERIVED — không tham chiếu KPI_ID khác:
   → Logic của DERIVED KHÔNG ĐƯỢC viết dạng (K_XXX_N - K_XXX_M) / NULLIF(...)
