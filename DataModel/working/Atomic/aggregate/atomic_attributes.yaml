@@ -49243,8 +49243,8 @@ attributes:
   source_system: "MDDS"
   source_table: "JAD_TRANSLOG"
   source_column: "MDDS.JAD_TRANSLOG.SYMBOL"
-  comment: "Denormalized join key với Security Trading Snapshot — D-02 quyết định\
-    \ không tạo FK surrogate."
+  comment: "Denormalized join key với Security Trading — D-02 quyết định không tạo\
+    \ FK surrogate."
   classification_context: null
   etl_derived_value: null
   atomic_table: "security_match_log"
@@ -49261,7 +49261,7 @@ attributes:
   source_table: "JAD_TRANSLOG"
   source_column: "MDDS.JAD_TRANSLOG.TRADINGDATE"
   comment: "Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join key\
-    \ với Security Trading Snapshot."
+    \ với Security Trading."
   classification_context: null
   etl_derived_value: null
   atomic_table: "security_match_log"
@@ -55426,8 +55426,8 @@ attributes:
   atomic_column: "cl_description"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
-  atomic_attribute: "Corporate Bond Trading Snapshot Id"
+  atomic_entity: "Corporate Bond Trading"
+  atomic_attribute: "Corporate Bond Trading Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -55435,17 +55435,17 @@ attributes:
   source_system: "MDDS"
   source_table: "JAD_CORPBONDINFOR"
   source_column: null
-  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot TPDN\
-    \ tại 1 thời điểm."
+  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Bản ghi TPDN\
+    \ — Fact Append."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
-  atomic_column: "corporate_bond_trading_snpst_id"
+  atomic_table: "corporate_bond_trading"
+  atomic_column: "corporate_bond_trading_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
-  atomic_attribute: "Corporate Bond Trading Snapshot Code"
-  description: "ID mã do jadapter sinh. BK của Snapshot entity."
+  atomic_entity: "Corporate Bond Trading"
+  atomic_attribute: "Corporate Bond Trading Code"
+  description: "ID mã do jadapter sinh. BK."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -55456,11 +55456,11 @@ attributes:
     \ (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với nguồn."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
-  atomic_column: "corporate_bond_trading_snpst_code"
+  atomic_table: "corporate_bond_trading"
+  atomic_column: "corporate_bond_trading_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -55472,11 +55472,11 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'MDDS_JAD_CORPBONDINFOR'"
   etl_derived_value: "MDDS_JAD_CORPBONDINFOR"
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Symbol"
   description: "Mã chứng khoán trái phiếu."
   data_domain: "Text"
@@ -55488,11 +55488,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "symbol"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Trading Date"
   description: "Ngày giao dịch format dd/mm/yyyy."
   data_domain: "Date"
@@ -55504,11 +55504,11 @@ attributes:
   comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "trading_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Bond Full Name"
   description: "Tên đầy đủ của trái phiếu."
   data_domain: "Text"
@@ -55520,11 +55520,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "bond_full_nm"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Trading Time"
   description: "Thời gian giao dịch."
   data_domain: "Text"
@@ -55536,11 +55536,11 @@ attributes:
   comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "trading_time"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Floor Code"
   description: "Mã sàn: 06 (corp-bond HNX)."
   data_domain: "Classification Value"
@@ -55552,11 +55552,11 @@ attributes:
   comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
   classification_context: "MDDS_FLOOR_CODE"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "floor_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Stock Type Code"
   description: "Loại CK: 12 (trái phiếu DN)."
   data_domain: "Classification Value"
@@ -55569,11 +55569,11 @@ attributes:
     \ = 12 cho TPDN."
   classification_context: "MDDS_STOCK_TYPE"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "stock_tp_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Trading Session Status Code"
   description: "Trạng thái phiên giao dịch HNX."
   data_domain: "Classification Value"
@@ -55585,11 +55585,11 @@ attributes:
   comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
   classification_context: "MDDS_TRADING_SESSION_STATUS"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "trading_session_status_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Security Trading Status Code"
   description: "Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn chế)."
   data_domain: "Classification Value"
@@ -55601,11 +55601,11 @@ attributes:
   comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
   classification_context: "MDDS_SECURITY_TRADING_STATUS"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "security_trading_status_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Trading Session Status 2 Code"
   description: "Trạng thái phiên giao dịch (tradsesstatus — trường thứ 2)."
   data_domain: "Classification Value"
@@ -55618,11 +55618,11 @@ attributes:
     \ — cần profile sự khác biệt giữa 2 trường này."
   classification_context: "MDDS_TRADING_SESSION_STATUS"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "trading_session_status_2_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Period Unit Code"
   description: "Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm)."
   data_domain: "Classification Value"
@@ -55634,11 +55634,11 @@ attributes:
   comment: "Scheme: MDDS_PERIOD_UNIT."
   classification_context: "MDDS_PERIOD_UNIT"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "period_unit_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Interest Period Unit Code"
   description: "Đơn vị kỳ hạn trả lãi."
   data_domain: "Classification Value"
@@ -55650,11 +55650,11 @@ attributes:
   comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
   classification_context: "MDDS_PERIOD_UNIT"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "interest_period_unit_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Coupon Type Code"
   description: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon."
   data_domain: "Classification Value"
@@ -55666,11 +55666,11 @@ attributes:
   comment: "Scheme: MDDS_COUPON_TYPE."
   classification_context: "MDDS_COUPON_TYPE"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "coupon_tp_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Interest Rate Type Code"
   description: "Loại lãi suất: Cố định/Thả nổi/Khác."
   data_domain: "Classification Value"
@@ -55682,11 +55682,11 @@ attributes:
   comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
   classification_context: "MDDS_INTEREST_RATE_TYPE"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "interest_rate_tp_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Interest Type Code"
   description: "Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác)."
   data_domain: "Classification Value"
@@ -55699,11 +55699,11 @@ attributes:
     \ mục cố định của HNX."
   classification_context: "MDDS_INTEREST_TYPE"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "interest_tp_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Interest Payment Type Code"
   description: "Phương thức trả lãi."
   data_domain: "Classification Value"
@@ -55716,11 +55716,11 @@ attributes:
     \ — danh mục cố định của HNX."
   classification_context: "MDDS_INTEREST_PAYMENT_TYPE"
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "interest_payment_tp_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Ceiling Price"
   description: "Giá trần khớp lệnh."
   data_domain: "Currency Amount"
@@ -55732,11 +55732,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "ceiling_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Floor Price"
   description: "Giá sàn khớp lệnh."
   data_domain: "Currency Amount"
@@ -55748,11 +55748,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "floor_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Reference Price"
   description: "Giá tham chiếu."
   data_domain: "Currency Amount"
@@ -55764,11 +55764,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "reference_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Close Price"
   description: "Giá đóng cửa ngày."
   data_domain: "Currency Amount"
@@ -55780,11 +55780,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "close_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Close Volume"
   description: "Khối lượng đóng cửa."
   data_domain: "Small Counter"
@@ -55796,11 +55796,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "close_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Price Change"
   description: "Thay đổi giá khớp gần nhất so với giá tham chiếu."
   data_domain: "Currency Amount"
@@ -55812,11 +55812,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "price_change"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Open Price"
   description: "Giá mở cửa."
   data_domain: "Currency Amount"
@@ -55828,11 +55828,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "open_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "High Price"
   description: "Giá thực hiện cao nhất GD khớp lệnh."
   data_domain: "Currency Amount"
@@ -55844,11 +55844,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "high_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Low Price"
   description: "Giá thực hiện thấp nhất GD khớp lệnh."
   data_domain: "Currency Amount"
@@ -55860,11 +55860,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "low_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Average Price"
   description: "Giá trung bình."
   data_domain: "Currency Amount"
@@ -55876,11 +55876,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "average_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Total Trading Volume"
   description: "Tổng khối lượng giao dịch."
   data_domain: "Small Counter"
@@ -55892,11 +55892,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "total_trading_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Total Trading Value"
   description: "Tổng giá trị giao dịch."
   data_domain: "Currency Amount"
@@ -55908,11 +55908,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "total_trading_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Total Listing Volume"
   description: "Khối lượng niêm yết."
   data_domain: "Small Counter"
@@ -55924,11 +55924,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "total_listing_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Foreign Remain Volume"
   description: "Room NĐTNN còn lại."
   data_domain: "Small Counter"
@@ -55940,11 +55940,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "foreign_remain_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Match Volume"
   description: "Khối lượng thực hiện gần nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
@@ -55956,11 +55956,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_match_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Match Price"
   description: "Giá thực hiện gần nhất GD thỏa thuận Outright."
   data_domain: "Currency Amount"
@@ -55972,11 +55972,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_match_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Total Traded Volume"
   description: "Tổng khối lượng GD thỏa thuận Outright."
   data_domain: "Small Counter"
@@ -55988,11 +55988,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_total_traded_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Total Traded Value"
   description: "Tổng giá trị GD thỏa thuận Outright."
   data_domain: "Currency Amount"
@@ -56004,11 +56004,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_total_traded_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Best Bid Volume"
   description: "Tổng KL chào mua cao nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
@@ -56020,11 +56020,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_best_bid_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Best Bid Price"
   description: "Giá chào mua cao nhất GD thỏa thuận Outright."
   data_domain: "Currency Amount"
@@ -56036,11 +56036,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_best_bid_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Best Offer Volume"
   description: "Tổng KL chào bán thấp nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
@@ -56052,11 +56052,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_best_offer_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Best Offer Price"
   description: "Giá chào bán thấp nhất GD thỏa thuận Outright."
   data_domain: "Currency Amount"
@@ -56068,11 +56068,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_best_offer_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Total Bid Volume"
   description: "Tổng KL chào mua GD thỏa thuận Outright."
   data_domain: "Small Counter"
@@ -56084,11 +56084,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_total_bid_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Total Offer Volume"
   description: "Tổng KL chào bán GD thỏa thuận Outright."
   data_domain: "Small Counter"
@@ -56100,11 +56100,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_total_offer_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Max Volume"
   description: "KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
@@ -56116,11 +56116,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_max_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Max Price"
   description: "Giá thực hiện cao nhất GD thỏa thuận Outright."
   data_domain: "Currency Amount"
@@ -56132,11 +56132,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_max_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Min Volume"
   description: "KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
@@ -56148,11 +56148,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_min_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "PT Min Price"
   description: "Giá thực hiện thấp nhất GD thỏa thuận Outright."
   data_domain: "Currency Amount"
@@ -56164,11 +56164,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "pt_min_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Issuer Name"
   description: "Tên tổ chức phát hành."
   data_domain: "Text"
@@ -56180,11 +56180,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "issuer_nm"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Issue Date"
   description: "Ngày phát hành trái phiếu."
   data_domain: "Date"
@@ -56196,11 +56196,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "issue_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Maturity Date"
   description: "Ngày đáo hạn trái phiếu."
   data_domain: "Date"
@@ -56212,11 +56212,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "maturity_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Par Value"
   description: "Mệnh giá trái phiếu."
   data_domain: "Currency Amount"
@@ -56229,11 +56229,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "par_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Bond Period"
   description: "Kỳ hạn trái phiếu."
   data_domain: "Text"
@@ -56245,11 +56245,11 @@ attributes:
   comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "bond_period"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Period Remain Days"
   description: "Kỳ hạn còn lại tính bằng ngày."
   data_domain: "Small Counter"
@@ -56262,11 +56262,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "period_remain_days"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Interest Period"
   description: "Kỳ hạn trả lãi."
   data_domain: "Text"
@@ -56278,11 +56278,11 @@ attributes:
   comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "interest_period"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Interest Rate"
   description: "Lãi suất danh nghĩa."
   data_domain: "Interest Rate"
@@ -56295,11 +56295,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "interest_rate"
   data_type: "decimal(8,5)"
 - bcv_core_object: "Product"
-  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_entity: "Corporate Bond Trading"
   atomic_attribute: "Bond Characteristics"
   description: "Đặc điểm trái phiếu."
   data_domain: "Text"
@@ -56311,7 +56311,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "corporate_bond_trading_snapshot"
+  atomic_table: "corporate_bond_trading"
   atomic_column: "bond_characteristics"
   data_type: "string"
 - bcv_core_object: null
@@ -61770,8 +61770,8 @@ attributes:
   atomic_column: "violation_recovered_flag"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
-  atomic_attribute: "Index Constituent Snapshot Id"
+  atomic_entity: "Index Constituent"
+  atomic_attribute: "Index Constituent Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -61779,16 +61779,16 @@ attributes:
   source_system: "MDDS"
   source_table: "JAD_CSIDXINFOR"
   source_column: null
-  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot thành phần rổ chỉ số\
-    \ tại 1 ngày."
+  comment: "PK surrogate. BCV: [Group] Share Index. Bản ghi thành phần rổ chỉ số —\
+    \ Fact Append."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
-  atomic_column: "index_constituent_snpst_id"
+  atomic_table: "index_constituent"
+  atomic_column: "index_constituent_id"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
-  atomic_attribute: "Index Constituent Snapshot Code"
+  atomic_entity: "Index Constituent"
+  atomic_attribute: "Index Constituent Code"
   description: "GUID — PK của bảng nguồn. BK."
   data_domain: "Text"
   nullable: false
@@ -61799,11 +61799,11 @@ attributes:
   comment: "BK chính. PK nguồn id — GUID unique."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
-  atomic_column: "index_constituent_snpst_code"
+  atomic_table: "index_constituent"
+  atomic_column: "index_constituent_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
+  atomic_entity: "Index Constituent"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -61815,11 +61815,11 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'MDDS_JAD_CSIDXINFOR'"
   etl_derived_value: "MDDS_JAD_CSIDXINFOR"
-  atomic_table: "index_constituent_snapshot"
+  atomic_table: "index_constituent"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
+  atomic_entity: "Index Constituent"
   atomic_attribute: "Index Code"
   description: "Mã chỉ số (FK đến MarketInfor / IDXInfor)."
   data_domain: "Text"
@@ -61828,15 +61828,15 @@ attributes:
   source_system: "MDDS"
   source_table: "JAD_CSIDXINFOR"
   source_column: "MDDS.JAD_CSIDXINFOR.INDEXCODE"
-  comment: "Denormalized join key với Market Index Snapshot. D-02 pattern: không tạo\
-    \ FK surrogate ở Atomic — join tại Gold layer qua index_code."
+  comment: "Denormalized join key với Market Index. D-02 pattern: không tạo FK surrogate\
+    \ ở Atomic — join tại Gold layer qua index_code."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
+  atomic_table: "index_constituent"
   atomic_column: "index_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
+  atomic_entity: "Index Constituent"
   atomic_attribute: "Index Id"
   description: "ID nội bộ của chỉ số."
   data_domain: "Text"
@@ -61849,11 +61849,11 @@ attributes:
     \ nếu có."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
+  atomic_table: "index_constituent"
   atomic_column: "index_id"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
+  atomic_entity: "Index Constituent"
   atomic_attribute: "Symbol"
   description: "Mã chứng khoán trong rổ (FK đến StockInfor)."
   data_domain: "Text"
@@ -61862,15 +61862,15 @@ attributes:
   source_system: "MDDS"
   source_table: "JAD_CSIDXINFOR"
   source_column: "MDDS.JAD_CSIDXINFOR.SYMBOL"
-  comment: "Denormalized join key với Security Trading Snapshot. Join tại Gold layer\
-    \ qua (symbol, trading_date)."
+  comment: "Denormalized join key với Security Trading. Join tại Gold layer qua (symbol,\
+    \ trading_date)."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
+  atomic_table: "index_constituent"
   atomic_column: "symbol"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
+  atomic_entity: "Index Constituent"
   atomic_attribute: "Trading Date"
   description: "Ngày giao dịch dạng dd/MM/yyyy."
   data_domain: "Date"
@@ -61883,11 +61883,11 @@ attributes:
     \ mỗi ngày 1 snapshot."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
+  atomic_table: "index_constituent"
   atomic_column: "trading_dt"
   data_type: "date"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
+  atomic_entity: "Index Constituent"
   atomic_attribute: "Add Date"
   description: "Ngày thêm vào chỉ số."
   data_domain: "Date"
@@ -61899,11 +61899,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
+  atomic_table: "index_constituent"
   atomic_column: "add_dt"
   data_type: "date"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
+  atomic_entity: "Index Constituent"
   atomic_attribute: "Floor Code"
   description: "Mã sở giao dịch CK."
   data_domain: "Classification Value"
@@ -61915,11 +61915,11 @@ attributes:
   comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
   classification_context: "MDDS_FLOOR_CODE"
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
+  atomic_table: "index_constituent"
   atomic_column: "floor_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Index Constituent Snapshot"
+  atomic_entity: "Index Constituent"
   atomic_attribute: "Total Match Volume"
   description: "Tổng khối lượng khớp lệnh lô chẵn."
   data_domain: "Small Counter"
@@ -61933,7 +61933,7 @@ attributes:
     \ giữ nguyên theo nguyên tắc mapping 1-1."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "index_constituent_snapshot"
+  atomic_table: "index_constituent"
   atomic_column: "total_match_vol"
   data_type: "int"
 - bcv_core_object: "Business Direction"
@@ -64008,8 +64008,8 @@ attributes:
   atomic_column: "business_sector_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
-  atomic_attribute: "Market Index Snapshot Id"
+  atomic_entity: "Market Index"
+  atomic_attribute: "Market Index Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -64017,31 +64017,32 @@ attributes:
   source_system: "MDDS"
   source_table: "JAD_MARKETINFOR"
   source_column: null
-  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ số thị\
-    \ trường tại 1 thời điểm."
+  comment: "PK surrogate. BCV: [Group] Share Index. Bản ghi trạng thái chỉ số thị\
+    \ trường — Fact Append."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
-  atomic_column: "market_index_snpst_id"
+  atomic_table: "market_index"
+  atomic_column: "market_index_id"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
-  atomic_attribute: "Market Index Snapshot Code"
-  description: "ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot entity."
+  atomic_entity: "Market Index"
+  atomic_attribute: "Market Index Code"
+  description: "ID unique để lưu lịch sử — PK thực tế của bảng. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
   source_table: "JAD_MARKETINFOR"
   source_column: "MDDS.JAD_MARKETINFOR.HISTORYID"
-  comment: "BK chính. PK nguồn historyid — unique per lần chụp chỉ số."
+  comment: "BK chính. PK nguồn historyid — unique toàn cục kể cả khác ngày → Fact\
+    \ Append."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
-  atomic_column: "market_index_snpst_code"
+  atomic_table: "market_index"
+  atomic_column: "market_index_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -64053,11 +64054,11 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'MDDS_JAD_MARKETINFOR'"
   etl_derived_value: "MDDS_JAD_MARKETINFOR"
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Market Code"
   description: "Mã thị trường — FSS tự quy định."
   data_domain: "Text"
@@ -64069,11 +64070,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "market_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Market Id"
   description: "ID thị trường — FSS tự quy định."
   data_domain: "Text"
@@ -64085,11 +64086,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "market_id"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Jadapter Id"
   description: "ID jadapter sinh."
   data_domain: "Text"
@@ -64101,11 +64102,11 @@ attributes:
   comment: "Metadata kỹ thuật jadapter — giữ để traceability."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "jadapter_id"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Trading Date"
   description: "Ngày giao dịch."
   data_domain: "Date"
@@ -64117,11 +64118,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "trading_dt"
   data_type: "date"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Index Time"
   description: "Thời gian ghi nhận chỉ số."
   data_domain: "Text"
@@ -64134,11 +64135,11 @@ attributes:
     \ trước khi convert sang Timestamp."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "index_time"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Index Type Code"
   description: "Loại index — mã Sở quy định."
   data_domain: "Classification Value"
@@ -64150,11 +64151,11 @@ attributes:
   comment: "Scheme: MDDS_INDEX_TYPE."
   classification_context: "MDDS_INDEX_TYPE"
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "index_tp_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Market Status Code"
   description: "Trạng thái phiên giao dịch."
   data_domain: "Classification Value"
@@ -64166,11 +64167,11 @@ attributes:
   comment: "Scheme: MDDS_MARKET_STATUS."
   classification_context: "MDDS_MARKET_STATUS"
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "market_status_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Index Color Code"
   description: "Indicator index đang tăng/giảm."
   data_domain: "Classification Value"
@@ -64183,11 +64184,11 @@ attributes:
     \ — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
   classification_context: "MDDS_PRICE_CHANGE_COLOR"
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "index_color_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Halt Reason Code"
   description: "Lý do thị trường bị halt."
   data_domain: "Text"
@@ -64200,11 +64201,11 @@ attributes:
     \ profile."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "halt_reason_code"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Market Index Value"
   description: "Giá trị index tại thời điểm ghi nhận."
   data_domain: "Currency Amount"
@@ -64217,11 +64218,11 @@ attributes:
     \ — không mất dữ liệu."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "market_index_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Index Change"
   description: "Giá trị index thay đổi so với index cuối ngày hôm trước."
   data_domain: "Currency Amount"
@@ -64233,11 +64234,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "index_change"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Index Percent Change"
   description: "% index thay đổi so với index cuối ngày hôm trước."
   data_domain: "Percentage"
@@ -64249,11 +64250,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "index_percent_change"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Open Index"
   description: "Index mở cửa."
   data_domain: "Currency Amount"
@@ -64265,11 +64266,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "open_index"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "High Index"
   description: "Index cao nhất tính đến thời điểm hiện tại."
   data_domain: "Currency Amount"
@@ -64281,11 +64282,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "high_index"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Low Index"
   description: "Index thấp nhất tính đến thời điểm hiện tại."
   data_domain: "Currency Amount"
@@ -64297,11 +64298,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "low_index"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Prior Index"
   description: "Index cuối cùng của phiên trước đó."
   data_domain: "Currency Amount"
@@ -64313,11 +64314,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "prior_index"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Total Volume"
   description: "Tổng khối lượng đã khớp."
   data_domain: "Small Counter"
@@ -64330,11 +64331,11 @@ attributes:
     \ CK, cùng pattern với advancesvolumn/declinesvolumn."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "total_vol"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Total Value"
   description: "Tổng giá trị đã khớp."
   data_domain: "Currency Amount"
@@ -64346,11 +64347,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "total_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Advances Count"
   description: "Số lượng mã tăng."
   data_domain: "Small Counter"
@@ -64362,11 +64363,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "advances_count"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Declines Count"
   description: "Số lượng mã giảm."
   data_domain: "Small Counter"
@@ -64378,11 +64379,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "declines_count"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "No Change Count"
   description: "Số lượng mã không tăng/giảm."
   data_domain: "Small Counter"
@@ -64394,11 +64395,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "no_change_count"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Ceiling Count"
   description: "Số lượng mã đang trần."
   data_domain: "Small Counter"
@@ -64410,11 +64411,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "ceiling_count"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Floor Count"
   description: "Số lượng mã đang sàn."
   data_domain: "Small Counter"
@@ -64426,11 +64427,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "floor_count"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Advances Volume"
   description: "Tổng khối lượng đã khớp của các mã tăng."
   data_domain: "Small Counter"
@@ -64442,11 +64443,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "advances_vol"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Declines Volume"
   description: "Tổng khối lượng đã khớp của các mã giảm."
   data_domain: "Small Counter"
@@ -64458,11 +64459,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "declines_vol"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "No Change Volume"
   description: "Khối lượng khớp mã không tăng/giảm."
   data_domain: "Small Counter"
@@ -64474,11 +64475,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "no_change_vol"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Odd Lot Total Value"
   description: "Giá trị khớp lô lẻ."
   data_domain: "Currency Amount"
@@ -64490,11 +64491,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "odd_lot_total_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Odd Lot Total Volume"
   description: "Khối lượng khớp lô lẻ."
   data_domain: "Small Counter"
@@ -64506,11 +64507,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "odd_lot_total_vol"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "PT Total Volume"
   description: "Tổng khối lượng giao dịch thỏa thuận."
   data_domain: "Small Counter"
@@ -64522,11 +64523,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "pt_total_vol"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "PT Total Value"
   description: "Tổng giá trị giao dịch thỏa thuận."
   data_domain: "Currency Amount"
@@ -64538,11 +64539,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "pt_total_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "PT Total Trade Count"
   description: "Tổng số giao dịch thỏa thuận."
   data_domain: "Small Counter"
@@ -64554,11 +64555,11 @@ attributes:
   comment: "Nguồn double precision — widening, không mất dữ liệu."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "pt_total_trade_count"
   data_type: "int"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "TSC Product Group Id"
   description: "Mã sản phẩm giao dịch (hose/hnx/upcom)."
   data_domain: "Text"
@@ -64570,11 +64571,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "tsc_product_group_id"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Index Name"
   description: "Tên của index."
   data_domain: "Text"
@@ -64586,11 +64587,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "index_nm"
   data_type: "string"
 - bcv_core_object: "Group"
-  atomic_entity: "Market Index Snapshot"
+  atomic_entity: "Market Index"
   atomic_attribute: "Sequence"
   description: "Đánh thứ tự update của từng Index."
   data_domain: "Small Counter"
@@ -64603,355 +64604,354 @@ attributes:
     \ order các lần update trong ngày."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_index_snapshot"
+  atomic_table: "market_index"
   atomic_column: "sequence"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
-  atomic_attribute: "Market Price Snapshot Id"
+  atomic_entity: "Market Price"
+  atomic_attribute: "Market Price Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
+  source_table: "JAD_TVHISTORY1M"
   source_column: null
   comment: "PK surrogate. BCV: [Product] Financial Market Instrument (tái dùng — không\
     \ có BCV term riêng cho OHLCV/candlestick). Nến giá OHLCV của 1 mã tại 1 kỳ."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
-  atomic_column: "market_price_snpst_id"
+  atomic_table: "market_price"
+  atomic_column: "market_price_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
-  atomic_attribute: "Market Price Snapshot Code"
-  description: "Định danh. PK bảng nguồn. BK của Snapshot entity."
+  atomic_entity: "Market Price"
+  atomic_attribute: "Market Price Code"
+  description: "Định danh. PK bảng nguồn. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.ID"
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.ID"
   comment: "BK chính. PK nguồn id — unique per cây nến."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
-  atomic_column: "market_price_snpst_code"
+  atomic_table: "market_price"
+  atomic_column: "market_price_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
+  source_table: "JAD_TVHISTORY1M"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'MDDS_JAD_TRADINGVIEWHISTORY1MIN'"
-  etl_derived_value: "MDDS_JAD_TRADINGVIEWHISTORY1MIN"
-  atomic_table: "market_price_snapshot"
+  classification_context: "Source System Code = 'MDDS_JAD_TVHISTORY1M'"
+  etl_derived_value: "MDDS_JAD_TVHISTORY1M"
+  atomic_table: "market_price"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Symbol"
   description: "Mã (gồm cả chứng khoán và index)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.SYMBOL"
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.SYMBOL"
   comment: "Dùng chung cho mã chứng khoán và mã chỉ số — không có cột phân loại instrument,\
     \ không có FK constraint tường minh tới security_trading_snapshot/market_index_snapshot.\
     \ Xem HLD Tier 2 T2-04."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "symbol"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Trading Date"
   description: "Ngày tính toán (dd/MM/yyyy)."
   data_domain: "Date"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.TRADINGDATE"
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.TRADINGDATE"
   comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Cần validate\
     \ format nhất quán."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "trading_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Processing Time"
   description: "Giờ tính toán (HH:mm)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.MINUTE"
-  comment: "Chỉ có ở JAD_TRADINGVIEWHISTORY1MIN — JAD_TRADINGVIEWHISTORY1DAY không\
-    \ có cột này. Ở mức entity gộp Market Price Snapshot, trường này nullable (null\
-    \ ⇔ bản ghi từ nguồn 1DAY)."
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.MINUTE"
+  comment: "Chỉ có ở JAD_TVHISTORY1M — JAD_TVHISTORY1D không có cột này. Ở mức entity\
+    \ gộp Market Price, trường này nullable (null ⇔ bản ghi từ nguồn 1DAY)."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "processing_time"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Open Price"
   description: "Giá mở cửa trong phút."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.OPEN"
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.OPEN"
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "open_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "High Price"
   description: "Giá cao nhất trong phút."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.HIGH"
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.HIGH"
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "high_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Low Price"
   description: "Giá thấp nhất trong phút."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.LOW"
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.LOW"
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "low_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Close Price"
   description: "Giá đóng cửa trong phút."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.CLOSE"
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.CLOSE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "close_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Volume"
   description: "Tổng khối lượng khớp trong phút."
   data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.VOLUME"
+  source_table: "JAD_TVHISTORY1M"
+  source_column: "MDDS.JAD_TVHISTORY1M.VOLUME"
   comment: "Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất\
     \ dữ liệu."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
-  atomic_attribute: "Market Price Snapshot Id"
+  atomic_entity: "Market Price"
+  atomic_attribute: "Market Price Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
+  source_table: "JAD_TVHISTORY1D"
   source_column: null
   comment: "PK surrogate. BCV: [Product] Financial Market Instrument (tái dùng — không\
     \ có BCV term riêng cho OHLCV/candlestick). Nến giá OHLCV của 1 mã tại 1 kỳ."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
-  atomic_column: "market_price_snpst_id"
+  atomic_table: "market_price"
+  atomic_column: "market_price_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
-  atomic_attribute: "Market Price Snapshot Code"
-  description: "Định danh. PK bảng nguồn. BK của Snapshot entity."
+  atomic_entity: "Market Price"
+  atomic_attribute: "Market Price Code"
+  description: "Định danh. PK bảng nguồn. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.ID"
+  source_table: "JAD_TVHISTORY1D"
+  source_column: "MDDS.JAD_TVHISTORY1D.ID"
   comment: "BK chính. PK nguồn id — unique per cây nến."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
-  atomic_column: "market_price_snpst_code"
+  atomic_table: "market_price"
+  atomic_column: "market_price_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
+  source_table: "JAD_TVHISTORY1D"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'MDDS_JAD_TRADINGVIEWHISTORY1DAY'"
-  etl_derived_value: "MDDS_JAD_TRADINGVIEWHISTORY1DAY"
-  atomic_table: "market_price_snapshot"
+  classification_context: "Source System Code = 'MDDS_JAD_TVHISTORY1D'"
+  etl_derived_value: "MDDS_JAD_TVHISTORY1D"
+  atomic_table: "market_price"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Symbol"
   description: "Mã (gồm cả chứng khoán và index)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.SYMBOL"
+  source_table: "JAD_TVHISTORY1D"
+  source_column: "MDDS.JAD_TVHISTORY1D.SYMBOL"
   comment: "Dùng chung cho mã chứng khoán và mã chỉ số — không có cột phân loại instrument,\
     \ không có FK constraint tường minh tới security_trading_snapshot/market_index_snapshot.\
     \ Xem HLD Tier 2 T2-04."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "symbol"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Trading Date"
   description: "Ngày tính toán (dd/MM/yyyy)."
   data_domain: "Date"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.TRADINGDATE"
+  source_table: "JAD_TVHISTORY1D"
+  source_column: "MDDS.JAD_TVHISTORY1D.TRADINGDATE"
   comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Cần validate\
     \ format nhất quán."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "trading_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Open Price"
   description: "Giá mở cửa trong ngày."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.OPEN"
+  source_table: "JAD_TVHISTORY1D"
+  source_column: "MDDS.JAD_TVHISTORY1D.OPEN"
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "open_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "High Price"
   description: "Giá cao nhất trong ngày."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.HIGH"
+  source_table: "JAD_TVHISTORY1D"
+  source_column: "MDDS.JAD_TVHISTORY1D.HIGH"
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "high_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Low Price"
   description: "Giá thấp nhất trong ngày."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.LOW"
+  source_table: "JAD_TVHISTORY1D"
+  source_column: "MDDS.JAD_TVHISTORY1D.LOW"
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "low_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Close Price"
   description: "Giá đóng cửa trong ngày."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.CLOSE"
+  source_table: "JAD_TVHISTORY1D"
+  source_column: "MDDS.JAD_TVHISTORY1D.CLOSE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "close_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Market Price Snapshot"
+  atomic_entity: "Market Price"
   atomic_attribute: "Volume"
   description: "Tổng khối lượng khớp trong ngày."
   data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
-  source_column: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.VOLUME"
+  source_table: "JAD_TVHISTORY1D"
+  source_column: "MDDS.JAD_TVHISTORY1D.VOLUME"
   comment: "Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất\
     \ dữ liệu."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "market_price_snapshot"
+  atomic_table: "market_price"
   atomic_column: "vol"
   data_type: "int"
 - bcv_core_object: null
@@ -84358,8 +84358,8 @@ attributes:
   atomic_column: "status_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
-  atomic_attribute: "Security Trading Snapshot Id"
+  atomic_entity: "Security Trading"
+  atomic_attribute: "Security Trading Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -84367,31 +84367,32 @@ attributes:
   source_system: "MDDS"
   source_table: "JAD_STOCKINFOR"
   source_column: null
-  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot trạng\
-    \ thái giao dịch của 1 mã CK tại 1 thời điểm."
+  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Bản ghi trạng\
+    \ thái giao dịch của 1 mã CK tại 1 thời điểm — Fact Append."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
-  atomic_column: "security_trading_snpst_id"
+  atomic_table: "security_trading"
+  atomic_column: "security_trading_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
-  atomic_attribute: "Security Trading Snapshot Code"
-  description: "ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot entity."
+  atomic_entity: "Security Trading"
+  atomic_attribute: "Security Trading Code"
+  description: "ID unique cho từng bản ghi — PK bảng nguồn. BK của entity."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
   source_table: "JAD_STOCKINFOR"
   source_column: "MDDS.JAD_STOCKINFOR.HISTORYID"
-  comment: "BK chính. PK nguồn historyid — unique per lần chụp."
+  comment: "BK chính. PK nguồn historyid — unique toàn cục kể cả khác ngày → Fact\
+    \ Append."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
-  atomic_column: "security_trading_snpst_code"
+  atomic_table: "security_trading"
+  atomic_column: "security_trading_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -84403,11 +84404,11 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
   etl_derived_value: "MDDS_JAD_STOCKINFOR"
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Symbol"
   description: "Mã chứng khoán."
   data_domain: "Text"
@@ -84419,11 +84420,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "symbol"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Trading Date"
   description: "Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date."
   data_domain: "Date"
@@ -84436,11 +84437,11 @@ attributes:
     \ format nhất quán."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "trading_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Security Full Name"
   description: "Tên chứng khoán (tiếng Việt)."
   data_domain: "Text"
@@ -84452,11 +84453,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "security_full_nm"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Security Id"
   description: "ID của chứng khoán trong hệ thống Sở."
   data_domain: "Text"
@@ -84468,11 +84469,11 @@ attributes:
   comment: "Mã nội bộ Sở — giữ dạng text denormalized."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "security_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Jadapter Id"
   description: "ID của mã do jadapter tự sinh."
   data_domain: "Text"
@@ -84484,11 +84485,11 @@ attributes:
   comment: "Metadata kỹ thuật jadapter — giữ để traceability."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "jadapter_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Stock Type Code"
   description: "Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...)."
   data_domain: "Classification Value"
@@ -84500,11 +84501,11 @@ attributes:
   comment: "Scheme: MDDS_STOCK_TYPE."
   classification_context: "MDDS_STOCK_TYPE"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "stock_tp_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Floor Code"
   description: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond."
   data_domain: "Classification Value"
@@ -84516,11 +84517,11 @@ attributes:
   comment: "Scheme: MDDS_FLOOR_CODE."
   classification_context: "MDDS_FLOOR_CODE"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "floor_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Trading Session Status Code"
   description: "Trạng thái phiên tại thời điểm chụp."
   data_domain: "Classification Value"
@@ -84532,11 +84533,11 @@ attributes:
   comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
   classification_context: "MDDS_TRADING_SESSION_STATUS"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "trading_session_status_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Trade Direction Code"
   description: "Chiều mua/bán chủ động gần nhất."
   data_domain: "Classification Value"
@@ -84548,11 +84549,11 @@ attributes:
   comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
   classification_context: "MDDS_TRADE_DIRECTION"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "trade_direction_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Symbol Status Code"
   description: "Trạng thái mã CK."
   data_domain: "Classification Value"
@@ -84564,11 +84565,11 @@ attributes:
   comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị."
   classification_context: "MDDS_SYMBOL_STATUS"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "symbol_status_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Ceiling Price"
   description: "Giá trần."
   data_domain: "Currency Amount"
@@ -84580,11 +84581,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "ceiling_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Floor Price"
   description: "Giá sàn."
   data_domain: "Currency Amount"
@@ -84596,11 +84597,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "floor_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Reference Price"
   description: "Giá tham chiếu."
   data_domain: "Currency Amount"
@@ -84612,11 +84613,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "reference_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Close Price"
   description: "Giá khớp gần nhất."
   data_domain: "Currency Amount"
@@ -84628,11 +84629,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "close_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Close Volume"
   description: "Khối lượng khớp gần nhất."
   data_domain: "Small Counter"
@@ -84645,11 +84646,11 @@ attributes:
     \ dữ liệu."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "close_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Price Change"
   description: "Thay đổi giữa giá khớp gần nhất và giá tham chiếu."
   data_domain: "Currency Amount"
@@ -84661,11 +84662,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "price_change"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Open Price"
   description: "Giá mở cửa."
   data_domain: "Currency Amount"
@@ -84677,11 +84678,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "open_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "High Price"
   description: "Giá khớp cao nhất tính đến thời điểm."
   data_domain: "Currency Amount"
@@ -84693,11 +84694,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "high_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Low Price"
   description: "Giá khớp thấp nhất tính đến thời điểm."
   data_domain: "Currency Amount"
@@ -84709,11 +84710,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "low_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Average Price"
   description: "Giá khớp trung bình."
   data_domain: "Currency Amount"
@@ -84725,11 +84726,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "average_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Bid Price 1"
   description: "Giá mua top 1."
   data_domain: "Currency Amount"
@@ -84741,11 +84742,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "bid_price_1"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Bid Volume 1"
   description: "Khối lượng mua top 1."
   data_domain: "Small Counter"
@@ -84757,11 +84758,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "bid_vol_1"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Bid Price 2"
   description: "Giá mua top 2."
   data_domain: "Currency Amount"
@@ -84773,11 +84774,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "bid_price_2"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Bid Volume 2"
   description: "Khối lượng mua top 2."
   data_domain: "Small Counter"
@@ -84789,11 +84790,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "bid_vol_2"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Bid Price 3"
   description: "Giá mua top 3."
   data_domain: "Currency Amount"
@@ -84805,11 +84806,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "bid_price_3"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Bid Volume 3"
   description: "Khối lượng mua top 3."
   data_domain: "Small Counter"
@@ -84821,11 +84822,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "bid_vol_3"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Offer Price 1"
   description: "Giá bán top 1."
   data_domain: "Currency Amount"
@@ -84837,11 +84838,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "offer_price_1"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Offer Volume 1"
   description: "Khối lượng bán top 1."
   data_domain: "Small Counter"
@@ -84853,11 +84854,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "offer_vol_1"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Offer Price 2"
   description: "Giá bán top 2."
   data_domain: "Currency Amount"
@@ -84869,11 +84870,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "offer_price_2"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Offer Volume 2"
   description: "Khối lượng bán top 2."
   data_domain: "Small Counter"
@@ -84885,11 +84886,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "offer_vol_2"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Offer Price 3"
   description: "Giá bán top 3."
   data_domain: "Currency Amount"
@@ -84901,11 +84902,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "offer_price_3"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Offer Volume 3"
   description: "Khối lượng bán top 3."
   data_domain: "Small Counter"
@@ -84917,11 +84918,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "offer_vol_3"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Total Trading Volume"
   description: "Tổng khối lượng khớp từ đầu ngày."
   data_domain: "Small Counter"
@@ -84933,11 +84934,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "total_trading_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Total Trading Value"
   description: "Tổng giá trị khớp từ đầu ngày."
   data_domain: "Currency Amount"
@@ -84949,11 +84950,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "total_trading_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Total Offer Volume"
   description: "Tổng khối lượng dư bán."
   data_domain: "Small Counter"
@@ -84965,11 +84966,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "total_offer_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Total Bid Volume"
   description: "Tổng khối lượng dư mua."
   data_domain: "Small Counter"
@@ -84981,11 +84982,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "total_bid_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Foreign Buy Volume"
   description: "Khối lượng NĐTNN mua."
   data_domain: "Small Counter"
@@ -84997,11 +84998,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "foreign_buy_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Foreign Sell Volume"
   description: "Khối lượng NĐTNN bán."
   data_domain: "Small Counter"
@@ -85013,11 +85014,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "foreign_sell_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Foreign Remain Volume"
   description: "Room còn lại cho NĐTNN."
   data_domain: "Small Counter"
@@ -85029,11 +85030,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "foreign_remain_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Foreign Room Volume"
   description: "Tổng room NĐTNN."
   data_domain: "Small Counter"
@@ -85045,11 +85046,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "foreign_room_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "PT Match Volume"
   description: "Khối lượng khớp thỏa thuận gần nhất."
   data_domain: "Small Counter"
@@ -85061,11 +85062,11 @@ attributes:
   comment: "PT = Put-Through (giao dịch thỏa thuận)."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "pt_match_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "PT Match Price"
   description: "Giá khớp thỏa thuận gần nhất."
   data_domain: "Currency Amount"
@@ -85077,11 +85078,11 @@ attributes:
   comment: "Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "pt_match_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "PT Total Traded Volume"
   description: "Tổng khối lượng khớp thỏa thuận từ đầu ngày."
   data_domain: "Small Counter"
@@ -85093,11 +85094,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "pt_total_traded_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "PT Total Traded Value"
   description: "Tổng giá trị khớp thỏa thuận từ đầu ngày."
   data_domain: "Currency Amount"
@@ -85109,11 +85110,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "pt_total_traded_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Security Event Status Code"
   description: "Trạng thái sự kiện quyền của CK."
   data_domain: "Classification Value"
@@ -85126,11 +85127,11 @@ attributes:
     \ để xác định danh sách enum đầy đủ trước khi finalize scheme."
   classification_context: "MDDS_SECURITY_EVENT_STATUS"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "security_event_status_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "ISIN Code"
   description: "Mã ISIN của CK."
   data_domain: "Text"
@@ -85142,11 +85143,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "isin_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Listed Share Count"
   description: "Khối lượng CK niêm yết."
   data_domain: "Small Counter"
@@ -85159,11 +85160,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "listed_share_count"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Total Listing Volume"
   description: "Khối lượng CK niêm yết."
   data_domain: "Small Counter"
@@ -85176,11 +85177,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "total_listing_vol"
   data_type: "int"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Market Id"
   description: "Mã sàn theo Sở."
   data_domain: "Text"
@@ -85192,11 +85193,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "market_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Board Id"
   description: "Board của mã CK (mặc định G1)."
   data_domain: "Text"
@@ -85208,11 +85209,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "board_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Product Group Id"
   description: "Mã sản phẩm của CK theo Sở."
   data_domain: "Text"
@@ -85224,11 +85225,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "product_group_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Product Id"
   description: "Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào."
   data_domain: "Text"
@@ -85240,11 +85241,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "product_id"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Trading Time"
   description: "Thời gian ghi nhận snapshot."
   data_domain: "Text"
@@ -85257,11 +85258,11 @@ attributes:
     \ trước khi convert sang Timestamp."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "trading_time"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Fund Type Code"
   description: "Loại quỹ — FSS quy định."
   data_domain: "Text"
@@ -85274,11 +85275,11 @@ attributes:
     \ trị."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "fund_tp_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Open Interest"
   description: "Khối lượng mở OI — dành cho phái sinh."
   data_domain: "Text"
@@ -85291,11 +85292,11 @@ attributes:
     \ = FU/OP."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "open_interest"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "First Trading Date"
   description: "Ngày giao dịch đầu tiên — dành cho phái sinh/CW."
   data_domain: "Date"
@@ -85307,11 +85308,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "first_trading_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Last Trading Date"
   description: "Ngày giao dịch cuối cùng — dành cho phái sinh/CW."
   data_domain: "Date"
@@ -85323,11 +85324,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "last_trading_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Underlying Symbol"
   description: "Chứng khoán cơ sở — dành cho CW/phái sinh."
   data_domain: "Text"
@@ -85339,11 +85340,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "underlying_symbol"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Issuer Name"
   description: "Tổ chức phát hành."
   data_domain: "Text"
@@ -85355,11 +85356,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "issuer_nm"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Covered Warrant Type Code"
   description: "Kiểu chứng quyền."
   data_domain: "Classification Value"
@@ -85373,11 +85374,11 @@ attributes:
     \ scheme."
   classification_context: "MDDS_COVERED_WARRANT_TYPE"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "covered_warrant_tp_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Maturity Date"
   description: "Ngày đáo hạn."
   data_domain: "Date"
@@ -85389,11 +85390,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "maturity_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Exercise Price"
   description: "Giá thực hiện CW."
   data_domain: "Currency Amount"
@@ -85406,11 +85407,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "exercise_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Exercise Ratio"
   description: "Tỉ lệ thực hiện CW."
   data_domain: "Text"
@@ -85423,11 +85424,11 @@ attributes:
     \ decimal."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "exercise_ratio"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Settlement Price"
   description: "Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL."
   data_domain: "Currency Amount"
@@ -85440,11 +85441,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "settlement_price"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Maturity Month Year"
   description: "Năm tháng đáo hạn HĐTL."
   data_domain: "Text"
@@ -85457,11 +85458,11 @@ attributes:
     \ hóa format."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "maturity_month_year"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Listing Date"
   description: "Ngày niêm yết sản phẩm phái sinh."
   data_domain: "Date"
@@ -85473,11 +85474,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "listing_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Contract Multiplier"
   description: "Hệ số nhân HĐTL."
   data_domain: "Text"
@@ -85490,11 +85491,11 @@ attributes:
     \ = FU."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "contract_multiplier"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Put Or Call Code"
   description: "Loại quyền phái sinh: P/C."
   data_domain: "Classification Value"
@@ -85507,11 +85508,11 @@ attributes:
     \ khi stocktype = OP."
   classification_context: "MDDS_PUT_OR_CALL"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "put_or_call_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Exercise Style Code"
   description: "Kiểu thực hiện phái sinh: A/E/B/Z."
   data_domain: "Classification Value"
@@ -85524,11 +85525,11 @@ attributes:
     \ — chuẩn quốc tế, tập cố định."
   classification_context: "MDDS_EXERCISE_STYLE"
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "exercise_style_code"
   data_type: "string"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Coupon Rate"
   description: "Lãi suất trái phiếu."
   data_domain: "Interest Rate"
@@ -85541,11 +85542,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "coupon_rate"
   data_type: "decimal(8,5)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Yield"
   description: "YTM (Yield to Maturity)."
   data_domain: "Interest Rate"
@@ -85558,11 +85559,11 @@ attributes:
     \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "yield"
   data_type: "decimal(8,5)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Issue Date"
   description: "Ngày phát hành."
   data_domain: "Date"
@@ -85574,11 +85575,11 @@ attributes:
   comment: "Nguồn lưu dạng string — ETL cần parse sang date."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "issue_dt"
   data_type: "date"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Foreign Buy Value"
   description: "Giá trị NĐTNN mua."
   data_domain: "Currency Amount"
@@ -85590,11 +85591,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "foreign_buy_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Product"
-  atomic_entity: "Security Trading Snapshot"
+  atomic_entity: "Security Trading"
   atomic_attribute: "Foreign Sell Value"
   description: "Giá trị NĐTNN bán."
   data_domain: "Currency Amount"
@@ -85606,7 +85607,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "security_trading_snapshot"
+  atomic_table: "security_trading"
   atomic_column: "foreign_sell_val"
   data_type: "decimal(23,2)"
 - bcv_core_object: null
@@ -93318,198 +93319,6 @@ attributes:
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_nbr"
   data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Involved Party Id"
-  description: "FK đến Audit Firm Auditor (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.ID"
-  comment: "FK target: af_auditor.af_auditor_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('IDS_AF_AUDITOR_PROFILES', ID)."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'AUDITOR_CERTIFICATE'"
-  etl_derived_value: null
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "ip_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Involved Party Code"
-  description: "Mã Audit Firm Auditor."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.ID"
-  comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Involved Party Id."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'AUDITOR_CERTIFICATE'"
-  etl_derived_value: null
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "ip_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'AUDITOR_CERTIFICATE'"
-  etl_derived_value: "IDS_AF_AUDITOR_PROFILES"
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Identification Type Code"
-  description: "Loại giấy tờ — Chứng chỉ kiểm toán viên (CPA)."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: null
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode AUDITOR_CERTIFICATE — value mới, bổ sung\
-    \ vào classification_schemes.yaml cùng lượt thiết kế này."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'AUDITOR_CERTIFICATE'"
-  etl_derived_value: "AUDITOR_CERTIFICATE"
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "identification_tp_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Identification Number"
-  description: "Số chứng chỉ kiểm toán viên."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_NO"
-  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
-    \ Code."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'AUDITOR_CERTIFICATE'"
-  etl_derived_value: null
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "identification_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Identification Issue Date"
-  description: "Ngày cấp chứng chỉ kiểm toán viên."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_ISSUE_DATE"
-  comment: null
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'AUDITOR_CERTIFICATE'"
-  etl_derived_value: null
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "identification_issue_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Identification Type Code"
-  description: "Loại giấy tờ — CCCD."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: null
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CITIZEN_ID."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'CITIZEN_ID'"
-  etl_derived_value: "CITIZEN_ID"
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "identification_tp_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Identification Number"
-  description: "Số CCCD."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.IDENTITY_NO"
-  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
-    \ Code."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'CITIZEN_ID'"
-  etl_derived_value: null
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "identification_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Identification Type Code"
-  description: "Loại giấy tờ — Chứng chỉ hành nghề kiểm toán (CCHN)."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: null
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode PRACTITIONER_LICENSE."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'PRACTITIONER_LICENSE'"
-  etl_derived_value: "PRACTITIONER_LICENSE"
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "identification_tp_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Identification Number"
-  description: "Số GCN đăng ký hành nghề kiểm toán."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_NO"
-  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
-    \ Code."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'PRACTITIONER_LICENSE'"
-  etl_derived_value: null
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "identification_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Involved Party Alternative Identification"
-  atomic_attribute: "Identification Issue Date"
-  description: "Ngày cấp GCN đăng ký hành nghề kiểm toán."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_ISSUE_DATE"
-  comment: null
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
-    \ Type Code = 'PRACTITIONER_LICENSE'"
-  etl_derived_value: null
-  atomic_table: "ip_alternative_identification"
-  atomic_column: "identification_issue_dt"
-  data_type: "date"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Involved Party Id"

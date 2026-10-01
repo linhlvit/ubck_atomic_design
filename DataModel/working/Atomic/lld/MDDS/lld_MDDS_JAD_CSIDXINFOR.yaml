@@ -3,11 +3,11 @@ schema_version: "2.0"
 metadata:
   source_system: "MDDS"
   source_table: "JAD_CSIDXINFOR"
-  atomic_entity: "Index Constituent Snapshot"
-  entity_physical_name: "index_constituent_snapshot"
+  atomic_entity: "Index Constituent"
+  entity_physical_name: "index_constituent"
   bcv_core_object: "Group"
   bcv_concept: "[Group] Share Index"
-  table_type: "Fact Snapshot"
+  table_type: "Fact Append"
   group: "T2"
   design_status: "approved"
   version: "1.0"
@@ -17,27 +17,26 @@ metadata:
   reviewed_at: null
   approved_by: "Chien Nguyen"
   approved_at: "2026-07-03"
-  notes: "Snapshot thành phần rổ chỉ số theo ngày giao dịch. Grain = 1 cặp (index_code,\
-    \ symbol, trading_date). Tier 2: FK đến Security Trading Snapshot (symbol) và\
-    \ Market Index Snapshot (indexcode). Quyết định D-03: Fact Snapshot thay vì Relative\
-    \ — insert-only per ngày. TC-02 ngoại lệ multi-parent: 2 FK bình đẳng không bắt\
+  notes: "Thành phần rổ chỉ số theo ngày giao dịch — Fact Append. Grain = 1 cặp\
+    \ (index_code, symbol, trading_date). Tier 2: FK đến Security Trading (symbol) và\
+    \ Market Index (indexcode). TC-02 ngoại lệ multi-parent: 2 FK bình đẳng không bắt\
     \ buộc embed tên cha."
 attributes:
-- attribute_name: "Index Constituent Snapshot Id"
-  physical_name: "index_constituent_snpst_id"
+- attribute_name: "Index Constituent Id"
+  physical_name: "index_constituent_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot thành phần rổ chỉ số\
-    \ tại 1 ngày."
+  comment: "PK surrogate. BCV: [Group] Share Index. Bản ghi thành phần rổ chỉ số\
+    \ — Fact Append."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Index Constituent Snapshot Code"
-  physical_name: "index_constituent_snpst_code"
+- attribute_name: "Index Constituent Code"
+  physical_name: "index_constituent_code"
   description: "GUID — PK của bảng nguồn. BK."
   data_domain: "Text"
   nullable: false
@@ -70,7 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_CSIDXINFOR.INDEXCODE"
-  comment: "Denormalized join key với Market Index Snapshot. D-02 pattern: không tạo\
+  comment: "Denormalized join key với Market Index. D-02 pattern: không tạo\
     \ FK surrogate ở Atomic — join tại Gold layer qua index_code."
   classification_context: null
   etl_derived_value: null
@@ -98,7 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_CSIDXINFOR.SYMBOL"
-  comment: "Denormalized join key với Security Trading Snapshot. Join tại Gold layer\
+  comment: "Denormalized join key với Security Trading. Join tại Gold layer\
     \ qua (symbol, trading_date)."
   classification_context: null
   etl_derived_value: null
