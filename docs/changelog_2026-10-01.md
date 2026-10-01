@@ -137,3 +137,46 @@ Cập nhật 2 tệp script ClickHouse Flat Table:
 Open Issue mới: O_TT_19–22. Gate 0–4, 6, 7, 8 PASS; Gate 5 (4 mục) có sẵn từ HEAD.
 
 **Tạo lại flat (Data Modeler xác nhận):** `Datamart/flat-table/TT/00_recreate_tt_flat_tables_20261001.sql` — DROP 4 flat bị ảnh hưởng (target activity Thanh tra, penalty decision subject behavior, penalty decision subject, petition list); sau đó chạy lại CREATE/INSERT tương ứng trong 01/02. Script KHÔNG tự chạy.
+
+## Phần 4 — PTTT: Nhóm 22–25 + K_PTTT_239/240 nâng READY theo BA SQL + cell_id
+
+- BA STT 22–25 có SQL trên `SCMS_UAT.REPORT_INPUT_CELL_VALUE`: dư nợ margin `TS024` (BCTHHD_CTCK, kỳ THANG), VCSH `TS359` (BCTCHN) / `TS223`,`TS221` (BCTCRL), tỷ lệ vốn khả dụng `TS006` (BCTLAT).
+- Reuse Case 1 Fact `fct_securities_company_financial_structure_snpst` (QLKD); Detail Mapping dùng MEASURE + FILTER `cell_id`/`rpt_code`/`rpt_period_tp_code`/`submission_status_code` (mẫu K_QLKD_105), thay khóa `indicator_code` cũ.
+- READY: K_PTTT_254, 58, 197, 199, 201–208, 251–253 (Nhóm 22–25), K_PTTT_239/240 (Nhóm 32, reuse `fct_market_risk_snpst`, lặp theo chỉ số).
+- Giữ PENDING: K_PTTT_198, 200 (Tổng nợ phải trả, D/E) — BA dòng 357 Pending, SQL còn schema cũ SSC_SCMS.
+- Open issue mới O_PTTT_28 (cell_id trùng giữa sheet, LEGAL_BASIS, K_198/200, lặp theo chỉ số, rpt_code BCTHHD_CTCK/BCTLAT).
+- Không đổi LLD/master/model.yaml/flat. Gate PTTT: 1–8 PASS trừ Gate 0 (15 warning có sẵn ở `fct_market_risk_snpst`/`fct_sector_risk_snpst`).
+- Lưu ý: commit `4549dcb2` đã revert phần PTTT của `0b725a9d` → Nhóm 18 (K_171/173), Nhóm 19 (K_174–178), Nhóm 29 (K_214) đang PENDING; chưa thiết kế lại.
+
+## Phần 5 — PTTT Nhóm 18: K_PTTT_171/173 nâng READY
+
+- Thêm 2 cột vào `fct_corporate_bond_market_snpst`: `bond_trading_val` (SUM `securities_trade.execution_val`, `market_id_code = 'BDO'`, HOSE + HNX) và `bond_yield_weighted_average` (Σ(YTMi × GTGDi)/ΣGTGDi, YTMi = `security_trading_snapshot.yield`, floorcode '06', bản ghi cuối ngày, INNER JOIN như SQL BA dòng 305).
+- Không cần entity `Corporate Bond Match Log`. Đồng bộ LLD, master, `model.yaml`, flat 01/02, HLD Nhóm 18, Detail Mapping, Entities.csv. Open issue O_PTTT_29 (khóa nối mã TP HNX Issue_Code, execution_val HNX).
+- Gate PTTT: 1–8 PASS trừ Gate 0 (15 warning có sẵn). Analyzer Nhóm 18 Δ = 0.
+
+## Phần 6 — PTTT Nhóm 19: K_PTTT_174/175/176/178 nâng READY (2 luồng)
+
+- `fct_corporate_bond_maturity_wall` mở rộng 2 luồng bằng `bond_flow_code` (LISTED/PRIVATE) + `bond_code`; thêm `par_val`, `outstanding_vol`, `bond_outstanding_val`, `maturity_dt`; `securities_dim_id` nullable (chỉ LISTED). Ngày chốt quý: LISTED = ngày GD cuối quý, PRIVATE = cuối tháng của quý (BA dòng 322).
+- Luồng PRIVATE lấy từ `private_corp_bond_offering` (HNX BM29, VSDC mapping md Bảng 15). K_PTTT_178 = SUM(bond_outstanding_val) WHERE ranking_code IN (:nguong_xep_hang_thap) AND maturity_dt trong kỳ xét (FILTER trong Detail Mapping).
+- Đồng bộ LLD, master, model.yaml, flat 01/02 (ORDER BY đổi sang bond_flow_code, bond_code), HLD Nhóm 19 + Section 3/4/5, Detail Mapping, Entities.csv/.md. O_PTTT_7 đóng; mở O_PTTT_30 (nối DN ↔ xếp hạng, ngưỡng xếp hạng thấp, src_stm_code giả định, offering vs outstanding).
+- Gate PTTT 1–8 PASS; Gate 0 thêm 1 warning (`private_corp_bond_offering` chưa có YAML Atomic, chỉ có mapping md).
+
+## Phần 7 — PTTT: rà từng dòng các Nhóm lệch số lượng BA ↔ HLD
+
+- Đối chiếu từng dòng BA ↔ KPI HLD cho Nhóm 1, 2, 4, 5, 7, 8, 9, 10, 12, 14, 15, 20, 21, 27, 31, 34: không phát hiện KPI thiếu; các dòng "không ghép được" đều là dòng BA Trùng/cùng nghĩa với KPI đã có (reuse), HLD dư KPI là KPI trung gian (β hồi quy Nhóm 1, tử/mẫu của tỷ lệ).
+- Sửa ghi chú cũ: Nhóm 12/13/14 ghi "BA còn Pending" nhưng BA đã Done 100% (dòng 241–250 / 251–265 / 266–277); Nhóm 14 trích dẫn dòng BA lệch 1 (K_135/138/145/146/147); Nhóm 5/7/15/33 trích dẫn dòng đầu Nhóm lệch 1. Cập nhật O_PTTT_23/24/25.
+- Còn mở: Nhóm 31 BA ghi GTGD mua/bán NĐTNN, Tự doanh (dòng 418–421) nhưng KPI K_221/222/224/225 là KLGD (O_PTTT_18); Nhóm 28 tương tự (S5).
+
+## Phần 8 — PTTT Nhóm 29: K_PTTT_214 (OI VN100) nâng READY
+
+- Dùng lại cột `open_interest_quantity` của `Fact Futures Intraday Snapshot` (đã có từ Nhóm 26), `underlying_symbol = 'VN100'`; nguồn Atomic `end_of_day_open_interest` (VSDC mapping md Bảng 6). BA dòng 408 Done.
+- Open issue O_PTTT_31: BA Nhóm 29 lọc `StockType = '4'` còn Nhóm 26/27 dùng `'FU'`. Gate PTTT 1–8 PASS; analyzer Nhóm 29 Δ = 0.
+
+## Phần 9 — PTTT Nhóm 26–31: loại CK hợp đồng tương lai 'FU' → '4'
+
+- Data Modeler chốt dùng `stock_tp_code = '4'` thay `'FU'` (khớp BA Nhóm 29). Đổi đồng loạt vì `fct_futures_intraday_snpst` / `fct_futures_investor_flow_snpst` dùng chung Nhóm 26–31: LLD (4 chỗ), master (4 dòng), HLD (18 chỗ), Section 3. Không đổi `security_trading_snpst_dim` (GSTT). O_PTTT_31 đóng.
+
+## Phần 10 — PTTT Nhóm 22: K_PTTT_198/200 READY (hết KPI PENDING của PTTT)
+
+- Theo chỉ đạo dùng mapping BA dòng 339 Nhóm 21: Fact mới `fct_securities_company_balance_snpst` (grain 1 CTCK niêm yết × quý, IDS BCDKT row 300/400 nợ phải trả, 400/500 VCSH; nối `securities_company.securities_code = public_company.equity_ticker_symbol`). K_PTTT_198 = Σ nợ phải trả quý gần nhất; K_PTTT_200 = Σ nợ / Σ VCSH cùng tập CTCK (không dùng VCSH SCMS K_PTTT_197).
+- Đồng bộ LLD mới, master, model.yaml, flat 01/02 (mục 15), Entities.csv/.md, HLD Nhóm 22 + Section 3/4/5, Detail Mapping. O_PTTT_32 (chỉ phủ CTCK niêm yết, khớp mã, đơn vị VND). Gate PTTT 1–8 PASS.

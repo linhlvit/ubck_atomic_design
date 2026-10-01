@@ -230,6 +230,8 @@ SELECT
     f.maturity_pressure_12_months,
     f.maturity_pressure_12_months_previous,
     f.maturity_pressure_growth_percentage,
+    f.bond_trading_val,
+    f.bond_yield_weighted_average,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt
 FROM datamart.fct_corporate_bond_market_snpst f
@@ -247,6 +249,12 @@ SELECT
     f.snpst_dt_dim_id,
     f.securities_dim_id,
     f.ranking_code,
+    f.bond_flow_code,
+    f.bond_code,
+    f.par_val,
+    f.outstanding_vol,
+    f.bond_outstanding_val,
+    f.maturity_dt,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt,
 
@@ -426,4 +434,30 @@ FROM datamart.fct_macro_indicator_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 15. FACT: pttt_fct_securities_company_balance_snpst_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.pttt_fct_securities_company_balance_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.pttt_fct_securities_company_balance_snpst_flat
+SELECT
+    f.snpst_dt_dim_id,
+    f.securities_company_dim_id,
+    f.rpt_year,
+    f.rpt_quarter,
+    f.total_liabilities_amt,
+    f.owner_equity_amt,
+    f.src_stm_code,
+
+    snpst_cal.cdr_dt AS snpst_cdr_dt,
+
+    sc.sc_code,
+    sc.sc_nm
+FROM datamart.fct_securities_company_balance_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.securities_company_dim sc
+    ON sc.securities_company_dim_id = f.securities_company_dim_id
 ;
