@@ -181,7 +181,7 @@ erDiagram
 
 ---
 
-## Fact Major Shareholder Ownership Snapshot (phục vụ Nhóm 35, 37)
+## Fact Major Shareholder Ownership Snapshot (phục vụ Nhóm 35, 38)
 
 **[MỚI 2026-09-25, GSTT Nhóm 34 — BA cập nhật nguồn VSDC major_shareholder]** Thay nguồn IDS `Public Company Shareholding` cho Nhóm 34 bằng VSDC `major_shareholder` (Atomic `major_shareholder_ownership`, mapping md) — số liệu theo kỳ đầu/cuối, chọn kỳ theo ngày tham số. `Operational Public Company Shareholding` giữ nguyên cho Nhóm 37.
 
@@ -205,7 +205,34 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Major Shareholder Ownership Snapshot | Fact Snapshot | new | Sở hữu cổ đông lớn + chức vụ nội bộ theo ngày tham số (Sở hữu NN/trong nước đọc từ Fact Public Company Foreign Ownership Snapshot — NDTNN, O_GSTT_50) | 1 row / mã CK × cổ đông lớn × ngày | K_GSTT_100–104, 103b, 120, 121, 177 |
+| Fact Major Shareholder Ownership Snapshot | Fact Snapshot | new | Sở hữu cổ đông lớn theo ngày tham số — mốc as-of chọn theo từng mã [SỬA 2026-10-01] (Sở hữu NN/trong nước đọc từ Fact Public Company Foreign Ownership Snapshot — NDTNN, O_GSTT_50; `position_code` chỉ còn phục vụ Nhóm 38) | 1 row / mã CK × cổ đông lớn × ngày (mốc as-of của mã) | K_GSTT_100–103, 177 (Nhóm 35); K_GSTT_100–104, 177, 178 (Nhóm 38) |
+
+---
+
+## Operational Public Company Insider Ownership (phục vụ Nhóm 35)
+
+**[MỚI 2026-10-01, GSTT Nhóm 35 — BA mapping lại]** Danh sách người nội bộ của công ty đại chúng (vai trò `NNB` — IDS `company_entity_role`) kèm chức vụ (`positions`) và sở hữu (`company_shareholding`). Bảng Tác nghiệp current-state (BA không có tham số ngày; Atomic `pc_shareholding`/`legal_entity_position` là SCD4A) — Data Modeler duyệt 2026-10-01. Không có quan hệ FK Star Schema; lọc theo mã cổ phiếu qua `Equity Ticker Symbol`.
+
+```mermaid
+erDiagram
+    Operational_Public_Company_Insider_Ownership {
+        string Public_Company_Entity_Role_Code PK
+        string Public_Company_Code
+        string Equity_Ticker_Symbol
+        string Legal_Entity_Code
+        string Legal_Entity_Name
+        bigint Ownership_Quantity
+        decimal Ownership_Ratio_Percentage
+        date Ownership_Date
+        string Position_Code
+        string Position_Name
+        string Source_System_Code
+    }
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Operational Public Company Insider Ownership | Operational | new | Danh sách người nội bộ + chức vụ + sở hữu (nguồn IDS) | 1 row / (công ty đại chúng × người nội bộ NNB hiện hành) | K_GSTT_354–358 |
 
 ---
 
