@@ -21,7 +21,15 @@ Bổ sung 2026-09-26 (review Cluster 4 GSTT — K_GSTT_92/119/75/76/124/125 lọ
                               thuộc công thức). Ngoại lệ YoY (theo tài liệu): nếu logic/ghi_chú có nhắc
                               "YoY"/"yoy" → hạ xuống WARNING thay vì ERROR, vẫn in ra để xác nhận tay.
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY) = ERROR; D2, D4 (ngoại lệ YoY) = WARNING (dimension có thể
+Bổ sung 2026-10-01 (module TT — K_TT_62 từng chiếm 5 dòng Detail Mapping):
+  D5 [L3-KPI-ROW-MULTIPLIED] Quy tắc L18 — KPI có dòng `column_role=MEASURE` phải đúng 1 dòng; WHERE/GROUP BY
+                              nằm trong `logic` MEASURE, không sinh dòng FILTER/GROUP_BY/SLICER đi kèm cùng
+                              `kpi_id`. Chỉ ÁP DỤNG cho module trong L18_MODULES (đã chuyển sang kiểu 1 dòng/KPI);
+                              module khác (GSDC, GSTT...) giữ kiểu cũ nên bị bỏ qua, trừ khi thêm `--l18`
+                              (khi đó mức WARNING, chỉ để đo mức độ nhân dòng).
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES) = ERROR; D2, D4 (ngoại lệ YoY),
+D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
 
@@ -51,6 +59,10 @@ from datamart_common.module_resolver import resolve_module_path  # noqa: E402
 
 KPI_HEADER = re.compile(r"^\|\s*KPI ID\s*\|.*\|\s*Trạng thái\s*\|\s*$")
 KPI_REF = re.compile(r"K_[A-Z0-9]+_\d+")
+
+# Module đã chuyển sang Quy tắc L18 (1 KPI có MEASURE = 1 dòng Detail Mapping). Thêm module vào đây khi
+# chuyển đổi/thiết kế mới; GSDC/GSTT... chưa chuyển nên không có trong tập này.
+L18_MODULES = {"TT"}
 
 
 def cells(line: str) -> int:
@@ -143,6 +155,33 @@ def check_derived_inline(root: Path, module: str):
     return out
 
 
+def check_one_row_per_kpi(root: Path, module: str, force: bool = False):
+    """D5 — Quy tắc L18: KPI có MEASURE phải đúng 1 dòng Detail Mapping."""
+    out = []
+    if module.upper() not in L18_MODULES and not force:
+        return out
+    dm = resolve_module_path(root, module, "detail_mapping")
+    if not dm or not Path(dm).exists():
+        return out
+    with open(dm, encoding="utf-8-sig", newline="") as fh:
+        rows = list(csv.DictReader(fh))
+    by = {}
+    for i, r in enumerate(rows, 2):
+        by.setdefault((r.get("kpi_id") or "").strip(), []).append((i, r))
+    level = "ERROR" if module.upper() in L18_MODULES else "WARNING"
+    for kpi_id, lst in by.items():
+        if not any((r.get("column_role") or "").strip() == "MEASURE" for _, r in lst) or len(lst) == 1:
+            continue
+        roles = {}
+        for _, r in lst:
+            roles[(r.get("column_role") or "").strip()] = roles.get((r.get("column_role") or "").strip(), 0) + 1
+        detail = ", ".join(f"{k}×{v}" for k, v in roles.items())
+        out.append((level, "L3-KPI-ROW-MULTIPLIED",
+                    f"{Path(dm).name}:{lst[0][0]}-{lst[-1][0]} {kpi_id} có {len(lst)} dòng ({detail}) — KPI có MEASURE "
+                    f"phải đúng 1 dòng, gộp WHERE/GROUP BY vào logic MEASURE (Quy tắc L18)"))
+    return out
+
+
 def check_flat(root: Path, module: str):
     out = []
     d = root / "Datamart" / "flat-table" / module
@@ -155,13 +194,14 @@ def check_flat(root: Path, module: str):
     return out
 
 
-def run(root: Path, module: str):
+def run(root: Path, module: str, force_l18: bool = False):
     issues = []
     hld = resolve_module_path(root, module, "hld")
     if hld and Path(hld).exists():
         issues += check_hld(Path(hld))
     issues += check_usage(root, module)
     issues += check_derived_inline(root, module)
+    issues += check_one_row_per_kpi(root, module, force_l18)
     issues += check_flat(root, module)
     return issues
 
@@ -171,12 +211,14 @@ def main():
     ap.add_argument("-m", "--module", required=True)
     ap.add_argument("--strict", action="store_true")
     ap.add_argument("--root", default=None)
+    ap.add_argument("--l18", action="store_true",
+                    help="Ép kiểm Quy tắc L18 (D5) cả module chưa thuộc L18_MODULES — chỉ WARNING, để đo mức nhân dòng")
     a = ap.parse_args()
     root = Path(a.root) if a.root else find_project_root()
     mods = get_available_modules(root) if a.module.upper() == "ALL" else [a.module]
     err = warn = 0
     for m in mods:
-        iss = run(root, m)
+        iss = run(root, m, a.l18)
         e = sum(1 for x in iss if x[0] == "ERROR"); w = len(iss) - e
         err += e; warn += w
         print(f"== Design Lint {m}: {e} ERROR, {w} WARNING")

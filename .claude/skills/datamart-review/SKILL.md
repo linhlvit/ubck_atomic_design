@@ -25,7 +25,7 @@ triggers:
    - **GATE 5 (HLD Structure — Bước 5B, 14 mục):** Cổng kiểm cấu trúc HLD sau mọi chỉnh sửa. Chạy `check_hld_5b.py`.
    - **GATE 6 (Context Budget — trần 500K token/bước):** Chặn khi một bước thiết kế được dự báo vượt trần ngữ cảnh. Chạy `ctx_budget.py --module [M] --all-steps --strict`. Đây là gate **duy nhất đọc tới file BA**.
    - **GATE 7 (LLD Self-Check module-level — TC4–TC7):** Bốn kiểm tra toàn module trước đây bắt agent nạp cả Detail Mapping (QLKD 552K token × 4 lần). Chạy `lld_selfcheck.py --module [M]`.
-   - **GATE 8 (Design Lint — MỚI 2026-09-25):** bắt 3 lỗi không Gate nào khác bắt: dòng bảng KPI HLD sai số ô (`L1-HLD-KPI-ROW-CELLS`), bảng Datamart 0 KPI dùng dù còn đủ 3 tầng (`L2-TABLE-ZERO-USAGE` → All-Tier Cleanup), comment flat SQL dính `:etl_date` (`L4-FLAT-COMMENT-PARAM`). Chạy `check_design_lint.py --module [M] --strict`. Quy tắc gốc: H10–H13 (`datamart-hld-design`), A12–A15 (`datamart-lld-design`).
+   - **GATE 8 (Design Lint — MỚI 2026-09-25):** bắt 3 lỗi không Gate nào khác bắt: dòng bảng KPI HLD sai số ô (`L1-HLD-KPI-ROW-CELLS`), bảng Datamart 0 KPI dùng dù còn đủ 3 tầng (`L2-TABLE-ZERO-USAGE` → All-Tier Cleanup), comment flat SQL dính `:etl_date` (`L4-FLAT-COMMENT-PARAM`); từ 2026-10-01 thêm D5 `L3-KPI-ROW-MULTIPLIED` (Quy tắc L18 — KPI có MEASURE phải đúng 1 dòng Detail Mapping; chỉ ép với module trong `L18_MODULES` của script, hiện là TT; `--l18` để đo module khác ở mức WARNING). Chạy `check_design_lint.py --module [M] --strict`. Quy tắc gốc: H10–H13 (`datamart-hld-design`), A12–A15 (`datamart-lld-design`).
    - **LỆNH CẤM:** Nghiêm cấm mọi hành vi tự ý vượt Gate hoặc tuyên bố hoàn thành (Claim Done) khi chưa có lệnh xác nhận từ Human và chưa PASS 100% các công cụ kiểm tra tự động.
 
 ---

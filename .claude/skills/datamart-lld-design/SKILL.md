@@ -330,7 +330,8 @@ python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MOD
 ```
 
 Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: dòng bảng KPI HLD sai số ô (H13), bảng Datamart
-0 KPI dùng (H12), comment flat SQL dính `:etl_date` (A15).
+0 KPI dùng (H12), comment flat SQL dính `:etl_date` (A15), KPI có MEASURE bị nhân dòng (L18, D5 — chỉ ép với
+module trong `L18_MODULES` của `check_design_lint.py`; thiết kế module mới theo L18 thì thêm module vào tập đó).
 
 ---
 

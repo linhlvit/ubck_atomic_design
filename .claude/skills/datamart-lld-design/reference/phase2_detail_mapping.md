@@ -560,7 +560,7 @@ Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên c
 
 **Phạm vi áp dụng:** module mới và nhóm làm lại. Module đã bàn giao theo kiểu cũ (GSDC, GSTT...) không bắt buộc sửa hồi tố; không trộn 2 kiểu trong cùng 1 nhóm.
 
-**Kiểm tra:** với mỗi `kpi_id` có dòng MEASURE → số dòng của `kpi_id` đó phải = 1; không có dòng `FILTER`/`GROUP_BY` cùng `kpi_id`.
+**Kiểm tra:** với mỗi `kpi_id` có dòng MEASURE → số dòng của `kpi_id` đó phải = 1; không có dòng `FILTER`/`GROUP_BY` cùng `kpi_id`. Tự động bằng Gate 8 (`check_design_lint.py`, mã D5 `L3-KPI-ROW-MULTIPLIED`) — ERROR với module trong `L18_MODULES` (hiện: TT); module mới thiết kế theo L18 thì thêm vào tập này. `--l18` đo module khác ở mức WARNING.
 
 ❌ K_TT_62: MEASURE `COUNT(DISTINCT petition_id)` + FILTER `src_stm_code` + FILTER `petition_category_code = 'DENUNCIATION'` + FILTER `received_year = :Y` + GROUP_BY `MONTH(received_dt)` (5 dòng).
 ✅ K_TT_62: 1 dòng MEASURE `COUNT(DISTINCT opr_petition_list.petition_id) WHERE src_stm_code = 'THANHTRA_PETITION' AND opr_petition_list.petition_category_code = 'DENUNCIATION' AND opr_petition_list.received_year = :Y GROUP BY MONTH(opr_petition_list.received_dt)`.
