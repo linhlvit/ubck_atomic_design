@@ -3,11 +3,11 @@ schema_version: "2.0"
 metadata:
   source_system: "MDDS"
   source_table: "JAD_CORPBONDINFOR"
-  atomic_entity: "Corporate Bond Trading Snapshot"
-  entity_physical_name: "corporate_bond_trading_snapshot"
+  atomic_entity: "Corporate Bond Trading"
+  entity_physical_name: "corporate_bond_trading"
   bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"
-  table_type: "Fact Snapshot"
+  table_type: "Fact Append"
   group: "T1"
   design_status: "approved"
   version: "1.0"
@@ -17,26 +17,26 @@ metadata:
   reviewed_at: null
   approved_by: "Chien Nguyen"
   approved_at: "2026-07-03"
-  notes: "Snapshot bảng giá TPDN. Grain = 1 lần chụp của 1 mã trái phiếu. Quyết định\
-    \ D-01: tách entity riêng vì có ~20 trường bond-specific. kid là BK kỹ thuật;\
+  notes: "Bảng giá TPDN — Fact Append. Grain = 1 bản ghi của 1 mã trái phiếu. Quyết\
+    \ định D-01: tách entity riêng vì có ~20 trường bond-specific. kid là BK kỹ thuật;\
     \ (symbol, tradingdate) là business key nghiệp vụ — xác nhận T1-03 còn mở."
 attributes:
-- attribute_name: "Corporate Bond Trading Snapshot Id"
-  physical_name: "corporate_bond_trading_snpst_id"
+- attribute_name: "Corporate Bond Trading Id"
+  physical_name: "corporate_bond_trading_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot TPDN\
-    \ tại 1 thời điểm."
+  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Bản ghi TPDN\
+    \ — Fact Append."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Corporate Bond Trading Snapshot Code"
-  physical_name: "corporate_bond_trading_snpst_code"
-  description: "ID mã do jadapter sinh. BK của Snapshot entity."
+- attribute_name: "Corporate Bond Trading Code"
+  physical_name: "corporate_bond_trading_code"
+  description: "ID mã do jadapter sinh. BK."
   data_domain: "Text"
   nullable: true
   is_primary_key: false

@@ -3,11 +3,11 @@ schema_version: "2.0"
 metadata:
   source_system: "MDDS"
   source_table: "JAD_MARKETINFOR"
-  atomic_entity: "Market Index Snapshot"
-  entity_physical_name: "market_index_snapshot"
+  atomic_entity: "Market Index"
+  entity_physical_name: "market_index"
   bcv_core_object: "Group"
   bcv_concept: "[Group] Share Index"
-  table_type: "Fact Snapshot"
+  table_type: "Fact Append"
   group: "T1"
   design_status: "approved"
   version: "1.0"
@@ -17,30 +17,33 @@ metadata:
   reviewed_at: null
   approved_by: "Chien Nguyen"
   approved_at: "2026-07-03"
-  notes: "Snapshot trạng thái chỉ số thị trường (VNINDEX/HNX-Index/UPCOM-Index). Grain = 1 lần chụp của 1 chỉ số (historyid). Tier 1 độc lập."
+  notes: "Bản ghi trạng thái chỉ số thị trường (VNINDEX/HNX-Index/UPCOM-Index). Grain\
+    \ = 1 bản ghi của 1 chỉ số (historyid) — historyid unique toàn cục kể cả khác ngày,\
+    \ Fact Append. Tier 1 độc lập."
 attributes:
-- attribute_name: "Market Index Snapshot Id"
-  physical_name: "market_index_snpst_id"
+- attribute_name: "Market Index Id"
+  physical_name: "market_index_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ số thị trường tại 1 thời điểm."
+  comment: "PK surrogate. BCV: [Group] Share Index. Bản ghi trạng thái chỉ số thị\
+    \ trường — Fact Append."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Market Index Snapshot Code"
-  physical_name: "market_index_snpst_code"
-  description: "ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot entity."
+- attribute_name: "Market Index Code"
+  physical_name: "market_index_code"
+  description: "ID unique để lưu lịch sử — PK thực tế của bảng. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_MARKETINFOR.HISTORYID"
-  comment: "BK chính. PK nguồn historyid — unique per lần chụp chỉ số."
+  comment: "BK chính. PK nguồn historyid — unique toàn cục kể cả khác ngày → Fact Append."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
