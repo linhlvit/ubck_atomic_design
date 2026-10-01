@@ -19,7 +19,7 @@ metadata:
   approved_at: "2026-07-03"
   notes: "Log tick-by-tick từng lần khớp lệnh cổ phiếu. Grain = 1 lần khớp lệnh (1\
     \ tick). BRD Append — insert-only. Quyết định D-02: không tạo FK surrogate sang\
-    \ Security Trading. Join với snapshot tại Gold layer qua (symbol, trading_date)."
+    \ Security Trading Snapshot. Join với snapshot tại Gold layer qua (symbol, trading_date)."
 attributes:
 - attribute_name: "Security Match Log Id"
   physical_name: "security_match_log_id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_TRANSLOG.SYMBOL"
-  comment: "Denormalized join key với Security Trading — D-02 quyết định\
+  comment: "Denormalized join key với Security Trading Snapshot — D-02 quyết định\
     \ không tạo FK surrogate."
   classification_context: null
   etl_derived_value: null
@@ -83,7 +83,7 @@ attributes:
   source_columns:
   - "MDDS.JAD_TRANSLOG.TRADINGDATE"
   comment: "Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join key\
-    \ với Security Trading."
+    \ với Security Trading Snapshot."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
