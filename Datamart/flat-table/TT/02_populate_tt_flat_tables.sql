@@ -97,7 +97,7 @@ SELECT
 FROM datamart.fct_inspection_team_target_activity f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.decision_dt_dim_id
-JOIN datamart.inspection_team_target_dim target_dim
+LEFT JOIN datamart.inspection_team_target_dim target_dim
     ON target_dim.inspection_team_target_dim_id = f.inspection_team_target_dim_id
 JOIN datamart.inspection_team_dim team_dim
     ON team_dim.inspection_team_dim_id = f.inspection_team_dim_id
@@ -177,15 +177,16 @@ SELECT
     subject_dim.penalty_decision_subject_code,
     subject_dim.subject_tp_code,
     subject_dim.src_stm_code            AS penalty_decision_subject_src_stm_code,
-    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
+    TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt,
+    f.violation_behavior_group_nm       -- [MỚI 2026-10-01, yêu cầu dev] cột cuối, khớp ALTER TABLE ADD COLUMN
 FROM datamart.fct_penalty_decision_subject_behavior f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.issued_dt_dim_id
-JOIN datamart.penalty_decision_subject_behavior_dim behavior_dim
+LEFT JOIN datamart.penalty_decision_subject_behavior_dim behavior_dim
     ON behavior_dim.penalty_decision_subject_behavior_dim_id = f.penalty_decision_subject_behavior_dim_id
 JOIN datamart.penalty_decision_dim decision_dim
     ON decision_dim.penalty_decision_dim_id = f.penalty_decision_dim_id
-JOIN datamart.penalty_decision_subject_dim subject_dim
+LEFT JOIN datamart.penalty_decision_subject_dim subject_dim
     ON subject_dim.penalty_decision_subject_dim_id = f.penalty_decision_subject_dim_id
 WHERE f.data_dt = TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD')
 ;
@@ -210,7 +211,7 @@ SELECT
 FROM datamart.fct_penalty_decision_subject f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.issued_dt_dim_id
-JOIN datamart.penalty_decision_subject_dim subject_dim
+LEFT JOIN datamart.penalty_decision_subject_dim subject_dim
     ON subject_dim.penalty_decision_subject_dim_id = f.penalty_decision_subject_dim_id
 JOIN datamart.penalty_decision_dim decision_dim
     ON decision_dim.penalty_decision_dim_id = f.penalty_decision_dim_id
@@ -277,9 +278,11 @@ FROM datamart.opr_penalty_decision_list o
 -- ------------------------------------------------------------
 INSERT INTO datamart.tt_opr_petition_list_flat
 SELECT
+    o.petition_id,
     o.petition_code,
     o.petition_category_code,
     o.content,
+    o.target_nm,
     o.life_cycle_status_code,
     o.received_dt,
     o.received_year,

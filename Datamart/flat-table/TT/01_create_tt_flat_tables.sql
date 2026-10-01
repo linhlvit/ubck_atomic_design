@@ -65,14 +65,14 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_target_activity_flat 
 (
     -- From: FACT Fact Inspection Team Target Activity
     decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định thanh tra — Calendar Date Dimension',
-    inspection_team_target_dim_id                String              COMMENT 'FK đối tượng bị thanh tra — driving table',
+    inspection_team_target_dim_id                Nullable(String)    COMMENT 'FK đối tượng bị thanh tra (nullable — đoàn chưa có đối tượng, LEFT JOIN theo BA 2026-10-01)',
     inspection_team_dim_id                       String              COMMENT 'FK đoàn thanh tra',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                   Nullable(Date)  COMMENT 'Ngày quyết định thanh tra (join qua Inspection Team) — từ Calendar Date Dimension',
 
     -- From: INSPECTION TEAM TARGET DIMENSION
-    inspection_team_target_code             String           COMMENT 'BK per-row unique — từ Inspection Team Target Dimension',
+    inspection_team_target_code             Nullable(String) COMMENT 'BK per-row unique — từ Inspection Team Target Dimension (NULL khi đoàn chưa có đối tượng)',
     target_tp_code                          Nullable(String) COMMENT 'Loại đối tượng — từ Inspection Team Target Dimension',
     inspection_team_target_src_stm_code     Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Target Dimension',
 
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_target_activity_flat 
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), inspection_team_target_code)
+ORDER BY (assumeNotNull(cdr_dt), inspection_team_code, assumeNotNull(inspection_team_target_code))
 COMMENT 'Flat table — Fact Inspection Team Target Activity × Calendar Date Dimension × Inspection Team Target Dimension × Inspection Team Dimension'
 ;
 
@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_fla
     cdr_dt                                     Nullable(Date)   COMMENT 'Ngày ban hành quyết định xử phạt (join qua Penalty Decision Subject → Penalty Decision) — từ Calendar Date Dimension',
 
     -- From: PENALTY DECISION SUBJECT BEHAVIOR DIMENSION
-    penalty_decision_subject_behavior_code    String           COMMENT 'BK per-row unique — từ Penalty Decision Subject Behavior Dimension',
+    penalty_decision_subject_behavior_code    Nullable(String) COMMENT 'BK per-row unique — từ Penalty Decision Subject Behavior Dimension (NULL khi QĐ không có Subject Behavior)',
     violation_behavior_nm                     Nullable(String) COMMENT 'Tên hành vi vi phạm — từ Penalty Decision Subject Behavior Dimension',
     penalty_decision_subject_behavior_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Behavior Dimension',
 
@@ -177,16 +177,19 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_fla
     penalty_decision_src_stm_code             Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Dimension',
 
     -- From: PENALTY DECISION SUBJECT DIMENSION
-    penalty_decision_subject_code             String           COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension',
+    penalty_decision_subject_code             Nullable(String) COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension (NULL khi QĐ không có Subject)',
     subject_tp_code                           Nullable(String) COMMENT 'Loại đối tượng — từ Penalty Decision Subject Dimension',
     penalty_decision_subject_src_stm_code     Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Dimension',
 
     -- Technical field
-    data_dt                                   String           COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table'
+    data_dt                                   String           COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table',
+
+    -- [MỚI 2026-10-01, yêu cầu dev] đặt CUỐI để khớp ALTER TABLE ADD COLUMN đã chạy trên ClickHouse
+    violation_behavior_group_nm               String           COMMENT 'Tên nhóm hành vi theo TỪNG dòng hành vi (fallback tên đại diện QĐ/Khác) — K_TT_46/47; 1 QĐ nhiều hành vi được đếm ở nhiều nhóm'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), penalty_decision_subject_behavior_code)
+ORDER BY (assumeNotNull(cdr_dt), penalty_decision_code, assumeNotNull(penalty_decision_subject_behavior_code), assumeNotNull(penalty_decision_subject_code))
 COMMENT 'Flat table — Fact Penalty Decision Subject Behavior × Calendar Date Dimension × Penalty Decision Subject Behavior Dimension × Penalty Decision Dimension × Penalty Decision Subject Dimension'
 ;
 
@@ -197,14 +200,14 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_flat ON CLUS
 (
     -- From: FACT Fact Penalty Decision Subject
     issued_dt_dim_id                           String              COMMENT 'FK ngày ban hành quyết định — Calendar Date Dimension',
-    penalty_decision_subject_dim_id              String              COMMENT 'FK đối tượng bị xử phạt — driving table',
+    penalty_decision_subject_dim_id              Nullable(String)    COMMENT 'FK đối tượng bị xử phạt (nullable — QĐ chưa có đối tượng, LEFT JOIN theo BA 2026-10-01)',
     penalty_decision_dim_id                      String              COMMENT 'FK quyết định xử phạt',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                Nullable(Date)    COMMENT 'Ngày ban hành quyết định xử phạt (join qua Penalty Decision) — từ Calendar Date Dimension',
 
     -- From: PENALTY DECISION SUBJECT DIMENSION
-    penalty_decision_subject_code        String            COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension',
+    penalty_decision_subject_code        Nullable(String)  COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension (NULL khi QĐ chưa có đối tượng)',
     subject_tp_code                      Nullable(String)  COMMENT 'Loại đối tượng — từ Penalty Decision Subject Dimension',
     penalty_decision_subject_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Dimension',
 
@@ -217,7 +220,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_flat ON CLUS
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), penalty_decision_subject_code)
+ORDER BY (assumeNotNull(cdr_dt), penalty_decision_code, assumeNotNull(penalty_decision_subject_code))
 COMMENT 'Flat table — Fact Penalty Decision Subject × Calendar Date Dimension × Penalty Decision Subject Dimension × Penalty Decision Dimension'
 ;
 
@@ -294,9 +297,11 @@ COMMENT 'Flat table — Operational Penalty Decision List'
 CREATE TABLE IF NOT EXISTS datamart.tt_opr_petition_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL PETITION LIST
-    petition_code            String              COMMENT 'BK — mã đơn thư tự sinh UNIQUE',
+    petition_id              String              COMMENT 'PK — khoá duy nhất của đơn thư (BA COUNT(DISTINCT ID))',
+    petition_code            Nullable(String)    COMMENT 'Mã đơn thư — thuộc tính hiển thị, NULL ở đơn cũ',
     petition_category_code   Nullable(String)    COMMENT 'Loại đơn — 3 giá trị FEEDBACK_SUGGESTION/COMPLAINT/DENUNCIATION',
     content                  Nullable(String)    COMMENT 'Nội dung tóm tắt đơn thư',
+    target_nm                Nullable(String)    COMMENT 'Tên đối tượng của đơn (cấp đơn) — dùng TẠM cho cột Đối tượng (K_TT_68), O_TT_22',
     life_cycle_status_code   Nullable(String)    COMMENT 'Trạng thái — 2 giá trị RECEIVED/PROCESSED',
     received_dt              Nullable(Date)      COMMENT 'Ngày tiếp nhận đơn thư',
     received_year            Nullable(Int64)     COMMENT 'Năm tiếp nhận — slicer',
@@ -304,7 +309,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_opr_petition_list_flat ON CLUSTER 'my_clu
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(received_dt))
-ORDER BY (assumeNotNull(received_dt), petition_code)
+ORDER BY (assumeNotNull(received_dt), petition_id)
 COMMENT 'Flat table — Operational Petition List'
 ;
 

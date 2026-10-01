@@ -116,3 +116,24 @@ Cập nhật 2 tệp script ClickHouse Flat Table:
 | **O_GSTT_54** | Logic As-of theo mã áp dụng cho cả Nhóm 38 (`K_GSTT_178`). Cần BA đối soát lại lỗi gõ trong SQL tham khảo. | Tạm thời lấy mã đối chiếu theo tên trong lúc chờ BA chuẩn hóa tệp nguồn. |
 | **O_GSTT_55** | Nguồn Atomic Nguồn 2 draft: bảng `pc_entity_role` thiếu cờ `DELETE/ACTIVE`; cần nối chức vụ thêm `pc_id`. | Đã đưa vào danh mục theo dõi đồng bộ Atomic Data Model đợt kế tiếp. |
 | **O_GSTT_31** | Nhóm 35 và cấu trúc sở hữu cổ đông lớn/người nội bộ. | Đã **Resolved** phần lớn thông qua việc tách thực thể `opr_public_company_insider_ownership`. |
+
+---
+
+# Phần 2 — Module TT: BA cập nhật mapping + 2 yêu cầu dev (2026-10-01)
+
+**Phạm vi:** Nhóm 1–19 (Nhóm 20 không đổi). Chưa commit.
+
+| Nhóm | Thay đổi chính |
+|---|---|
+| 1, 2, 6, 7, 11, 12, 16, 17 | `COUNT(ID)` → `COUNT(DISTINCT ID)`; thêm KPI Chiều "Thời gian": K_TT_87 (STT 2), K_TT_88 (STT 7), K_TT_89 (STT 12), K_TT_90 (STT 17), K_TT_91 (STT 18) |
+| 3, 8 | Bỏ nhãn 'Khác' — loại dòng tên hành vi NULL (`violation_behavior_nm` nullable ở 2 Dimension, KPI lọc `IS NOT NULL`) |
+| 4 | Nhãn đối tượng 6 giá trị; `Fact Inspection Team Target Activity` driving `inspection_team` + LEFT JOIN đối tượng (FK nullable); flat LEFT JOIN |
+| 5, 9, 10 | Nhãn hiển thị đối tượng (Thanh tra 6 nhãn, Kiểm tra 8 nhãn HOA); STT 9/10 vẫn INNER JOIN |
+| 13 (dev #1) | Cột mới `violation_behavior_group_nm` trên `Fact Penalty Decision Subject Behavior` — QĐ nhiều hành vi đếm ở nhiều nhóm; flat cột cuối + LEFT JOIN |
+| 14 | `COUNT(DISTINCT QĐ)`, `Fact Penalty Decision Subject` driving `penalty_decision` + FK đối tượng nullable, nhãn Tổ chức/Cá nhân/Khác |
+| 16–18 (dev #2) | `COUNT(DISTINCT petition_id)`; `Operational Petition List` PK `petition_code` → `petition_id`; mẫu số % STT 18 = mọi loại đơn; thêm `MULTI_CONTENT` |
+| 19 | Nhãn loại đơn/trạng thái; K_TT_68 'Đối tượng' **dùng TẠM** `petition.target_nm` (Data Modeler duyệt; BA chỉ định `PETITION_TARGET.TARGET_NAME` nhưng Atomic chưa có Petition Target) — cột mới `target_nm` |
+
+Open Issue mới: O_TT_19–22. Gate 0–4, 6, 7, 8 PASS; Gate 5 (4 mục) có sẵn từ HEAD.
+
+**Tạo lại flat (Data Modeler xác nhận):** `Datamart/flat-table/TT/00_recreate_tt_flat_tables_20261001.sql` — DROP 4 flat bị ảnh hưởng (target activity Thanh tra, penalty decision subject behavior, penalty decision subject, petition list); sau đó chạy lại CREATE/INSERT tương ứng trong 01/02. Script KHÔNG tự chạy.

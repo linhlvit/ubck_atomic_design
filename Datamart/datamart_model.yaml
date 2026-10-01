@@ -6781,9 +6781,9 @@ entities:
         physical_name: "inspection_team_target_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: "FK"
-        description: "FK → Inspection Team Target Dimension"
+        description: "FK → Inspection Team Target Dimension (nullable — đoàn chưa có đối tượng vẫn có 1 dòng, BA 2026-10-01 LEFT JOIN INSPECTION_TEAM_TARGET)"
         source_atomic_table: "inspection_team_target_dim"
         source_atomic_column: "inspection_team_target_dim.inspection_team_target_dim_id"
       - logical_name: "Inspection Team Dimension Id"
@@ -7475,6 +7475,15 @@ entities:
         description: "(Thêm 2026-08-08) Mức phạt tiền áp dụng thực tế cho hành vi này — đúng grain Fact"
         source_atomic_table: "pd_subject_behavior"
         source_atomic_column: "pd_subject_behavior.applied_fine_amt"
+      - logical_name: "Violation Behavior Group Name"
+        physical_name: "violation_behavior_group_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Tên nhóm hành vi theo từng dòng hành vi của QĐ — ưu tiên tên hành vi của dòng, fallback tên đại diện của QĐ (nhánh phụ/'Khác') khi dòng không có hành vi nhánh chính; QĐ có N hành vi được đếm ở N nhóm"
+        source_atomic_table: "penalty_decision_subject_behavior_dim"
+        source_atomic_column: "penalty_decision_subject_behavior_dim.violation_behavior_nm"
       - logical_name: "Data Dt"
         physical_name: "data_dt"
         data_domain: "Text"
@@ -7512,9 +7521,9 @@ entities:
         physical_name: "penalty_decision_subject_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: "FK"
-        description: "FK → Penalty Decision Subject Dimension (reuse Nhóm 13)"
+        description: "FK → Penalty Decision Subject Dimension (nullable — QĐ chưa có đối tượng vẫn có 1 dòng, BA 2026-10-01 LEFT JOIN PENALTY_DECISION_SUBJECT)"
         source_atomic_table: "penalty_decision_subject_dim"
         source_atomic_column: "penalty_decision_subject_dim.penalty_decision_subject_dim_id"
       - logical_name: "Penalty Decision Dimension Id"
@@ -7657,13 +7666,22 @@ entities:
     modules_using:
       - "TT"
     columns:
+      - logical_name: "Petition Id"
+        physical_name: "petition_id"
+        data_domain: "Surrogate Key"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — Driving: petition. Khoá duy nhất của đơn thư (BA COUNT(DISTINCT ID)); thay Petition Code vì mã đơn có thể NULL ở đơn cũ"
+        source_atomic_table: "petition"
+        source_atomic_column: "petition.petition_id"
       - logical_name: "Petition Code"
         physical_name: "petition_code"
         data_domain: "Text"
         data_type: "string"
-        nullable: false
-        key: "PK"
-        description: "BK — mã đơn thư tự sinh UNIQUE, dùng làm PK theo quy tắc Operational 1-BK. ETL hàng ngày: chỉ quét đơn thư tiếp nhận đúng ngày etl_date, không full load"
+        nullable: true
+        key: ""
+        description: "Mã đơn thư — thuộc tính hiển thị, có thể NULL ở đơn cũ (161 đơn); không còn là khoá (khoá = petition_id)"
         source_atomic_table: "petition"
         source_atomic_column: "petition.petition_code"
       - logical_name: "Petition Category Code"
@@ -7681,9 +7699,18 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Nội dung tóm tắt đơn thư — dùng hiển thị cột Đối tượng (xác nhận nghiệp vụ, không phải Sender_Name)"
+        description: "Nội dung tóm tắt đơn thư — chưa KPI nào dùng (K_TT_68 Đối tượng chuyển sang PETITION_TARGET, PENDING O_TT_22)"
         source_atomic_table: "petition"
         source_atomic_column: "petition.content"
+      - logical_name: "Target Name"
+        physical_name: "target_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Tên đối tượng của đơn thư (cấp đơn) — dùng TẠM cho cột Đối tượng thay PETITION_TARGET.TARGET_NAME (Atomic Petition Target chưa có LLD, O_TT_22)"
+        source_atomic_table: "petition"
+        source_atomic_column: "petition.target_nm"
       - logical_name: "Life Cycle Status Code"
         physical_name: "life_cycle_status_code"
         data_domain: "Classification Value"
@@ -12065,7 +12092,7 @@ entities:
         physical_name: "violation_behavior_nm"
         data_domain: "Text"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: ""
         description: "(Sửa 2026-08-11) Tên hành vi vi phạm — đổi INNER JOIN → LEFT JOIN + COALESCE 'Khác', khớp ý định HLD (\"ELSE 'Khác', không loại bỏ\"). Filter Life_Cycle_Status_Code='ACTIVE' giữ trong ON clause của LEFT JOIN (chỉ lookup tên khi Violation Behavior đang ACTIVE) để không loại hẳn dòng không match/INACTIVE khỏi Dimension/Fact — trước đây INNER JOIN làm mất hẳn các dòng này thay vì gộp 'Khác'"
         source_atomic_table: "violation_behavior"
@@ -12170,7 +12197,7 @@ entities:
         physical_name: "violation_behavior_nm"
         data_domain: "Text"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: ""
         description: "(Sửa 2026-08-11) Tên hành vi vi phạm — đổi INNER JOIN → LEFT JOIN + COALESCE 'Khác', khớp SQL BA (LEFT JOIN Violation Behavior, CASE WHEN NAME IS NOT NULL THEN NAME ELSE 'Khác' END). INNER JOIN trước đây làm mất hẳn bản ghi không match Violation Behavior khỏi Dimension/Fact thay vì gộp 'Khác'"
         source_atomic_table: "violation_behavior"
