@@ -4300,8 +4300,8 @@ entities:
     reuse_status: "new"
     description: "Cơ cấu khối lượng CP niêm yết, sở hữu nước ngoài & sở hữu nhà nước — 1 row / mã CK (CTDC) / tháng. [MỚI 2026-09-07] 8/10 KPI READY (K_GSDC_1381-1388, Nhóm 31) — nguồn VSDC mới bổ sung Atomic. [SỬA 2026-09-07 lần 2] K_GSDC_1389/1390 (sở hữu nhà nước) chuyển READY — pc_state_capital bổ sung field ds_snpst_dt, 10/10 KPI READY."
     source_atomic:
-      - "listed_security_info_snapshot"
-      - "foreign_ownership_info_snapshot"
+      - "listed_share_info"
+      - "foreign_ownership_info"
       - "pc_state_capital"
     modules_using:
       - "GSDC"
@@ -4313,8 +4313,8 @@ entities:
         nullable: false
         key: "FK"
         description: "FK tới Public Company Dimension"
-        source_atomic_table: "listed_security_info_snapshot"
-        source_atomic_column: "listed_security_info_snapshot.ticker_symbol"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.ticker_symbol"
       - logical_name: "Snapshot Date Dimension Id"
         physical_name: "snpst_dt_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -4322,8 +4322,8 @@ entities:
         nullable: false
         key: "FK"
         description: "FK tới Calendar Date Dimension theo ngày snapshot"
-        source_atomic_table: "listed_security_info_snapshot"
-        source_atomic_column: "listed_security_info_snapshot.ds_snpst_dt"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.ds_snpst_dt"
       - logical_name: "Outstanding Share Quantity"
         physical_name: "outstanding_share_quantity"
         data_domain: "Small Counter"
@@ -4331,8 +4331,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Khối lượng cổ phiếu đang lưu hành (K_GSDC_1381)"
-        source_atomic_table: "listed_security_info_snapshot"
-        source_atomic_column: "listed_security_info_snapshot.outstanding_share_quantity"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.outstanding_share_quantity"
       - logical_name: "Total Issued Share Quantity"
         physical_name: "total_issued_share_quantity"
         data_domain: "Small Counter"
@@ -4340,8 +4340,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Khối lượng cổ phiếu niêm yết (K_GSDC_1382)"
-        source_atomic_table: "listed_security_info_snapshot"
-        source_atomic_column: "listed_security_info_snapshot.total_issued_share_quantity"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.total_issued_share_quantity"
       - logical_name: "Treasury Share Quantity"
         physical_name: "treasury_share_quantity"
         data_domain: "Small Counter"
@@ -4349,8 +4349,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Khối lượng cổ phiếu quỹ (K_GSDC_1383)"
-        source_atomic_table: "listed_security_info_snapshot"
-        source_atomic_column: "listed_security_info_snapshot.treasury_share_quantity"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.treasury_share_quantity"
       - logical_name: "Free Float Share Quantity"
         physical_name: "free_float_share_quantity"
         data_domain: "Small Counter"
@@ -4358,8 +4358,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Khối lượng cổ phiếu tự do chuyển nhượng (K_GSDC_1384)"
-        source_atomic_table: "listed_security_info_snapshot"
-        source_atomic_column: "listed_security_info_snapshot.free_float_share_quantity"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.free_float_share_quantity"
       - logical_name: "Current Foreign Holding Quantity"
         physical_name: "current_foreign_holding_quantity"
         data_domain: "Small Counter"
@@ -4367,8 +4367,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Khối lượng cổ phiếu khối ngoại sở hữu (K_GSDC_1385)"
-        source_atomic_table: "foreign_ownership_info_snapshot"
-        source_atomic_column: "foreign_ownership_info_snapshot.current_foreign_holding_quantity"
+        source_atomic_table: "foreign_ownership_info"
+        source_atomic_column: "foreign_ownership_info.current_foreign_holding_quantity"
       - logical_name: "Foreign Ownership Ratio"
         physical_name: "foreign_ownership_ratio"
         data_domain: "Percentage"
@@ -4376,8 +4376,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Tỷ lệ sở hữu nước ngoài hiện tại (K_GSDC_1386)"
-        source_atomic_table: "foreign_ownership_info_snapshot"
-        source_atomic_column: "foreign_ownership_info_snapshot.current_foreign_holding_quantity / total_issued_share_quantity"
+        source_atomic_table: "foreign_ownership_info"
+        source_atomic_column: "foreign_ownership_info.current_foreign_holding_quantity / total_issued_share_quantity"
       - logical_name: "Max Foreign Ownership Ratio"
         physical_name: "max_foreign_ownership_ratio"
         data_domain: "Percentage"
@@ -4385,8 +4385,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Tỷ lệ sở hữu nước ngoài tối đa — FOL (K_GSDC_1387)"
-        source_atomic_table: "foreign_ownership_info_snapshot"
-        source_atomic_column: "foreign_ownership_info_snapshot.max_foreign_ownership_ratio"
+        source_atomic_table: "foreign_ownership_info"
+        source_atomic_column: "foreign_ownership_info.max_foreign_ownership_ratio"
       - logical_name: "Remaining Foreign Holding Quantity"
         physical_name: "remaining_foreign_holding_quantity"
         data_domain: "Small Counter"
@@ -4394,8 +4394,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Room ngoại còn lại (K_GSDC_1388)"
-        source_atomic_table: "foreign_ownership_info_snapshot"
-        source_atomic_column: "foreign_ownership_info_snapshot.remaining_foreign_holding_quantity"
+        source_atomic_table: "foreign_ownership_info"
+        source_atomic_column: "foreign_ownership_info.remaining_foreign_holding_quantity"
       - logical_name: "State Owned Share Quantity"
         physical_name: "state_owned_share_quantity"
         data_domain: "Small Counter"
@@ -4421,8 +4421,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Gia tri co phieu khoi ngoai dang so huu = Current Foreign Holding Quantity x gia dong cua gan nhat <= ngay snapshot (K_NDTNN_51, module NDTNN, xem O_NDTNN_21/O_NDTNN_12 Resolved mot phan 2026-09-18)"
-        source_atomic_table: "foreign_ownership_info_snapshot / security_trading_snapshot"
-        source_atomic_column: "foreign_ownership_info_snapshot / security_trading_snapshot.current_foreign_holding_quantity / close_price"
+        source_atomic_table: "foreign_ownership_info / security_trading_snapshot"
+        source_atomic_column: "foreign_ownership_info / security_trading_snapshot.current_foreign_holding_quantity / close_price"
 
   - id: "DTM-financial_rpt_catalog_dim"
     logical_name: "Financial Report Catalog Dimension"
@@ -9591,7 +9591,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-14, theo note Design/Implementation — atomic listed_security_info_snapshot chưa tồn tại trong hệ thống] Khối lượng cổ phiếu tự do chuyển nhượng — đổi nguồn về đúng implementation thực tế: VSDC outstanding_shares (Atomic listed_share_info, đã có sẵn field free_float_shares), lấy bản ghi gần nhất <= ngày giao dịch. Phục vụ K_GSTT_76/125 (Nhóm 24, điểm đóng góp theo vốn hóa free float — xem O_GSTT_7 Resolved)"
+        description: "[SỬA 2026-09-14, theo note Design/Implementation — atomic listed_share_info chưa tồn tại trong hệ thống] Khối lượng cổ phiếu tự do chuyển nhượng — đổi nguồn về đúng implementation thực tế: VSDC outstanding_shares (Atomic listed_share_info, đã có sẵn field free_float_shares), lấy bản ghi gần nhất <= ngày giao dịch. Phục vụ K_GSTT_76/125 (Nhóm 24, điểm đóng góp theo vốn hóa free float — xem O_GSTT_7 Resolved)"
         source_atomic_table: "listed_share_info"
         source_atomic_column: "listed_share_info.free_float_share_quantity"
       - logical_name: "Prior Market Cap"

@@ -641,7 +641,7 @@ COMMENT 'Flat table — Fact Public Company Financial Summary Snapshot × Calend
 -- ---------------------------------------------------------------------
 -- 14. Fact Public Company Listing Info Snapshot
 --     [MỚI 2026-09-07] Cơ cấu KL CP niêm yết, sở hữu nước ngoài & sở hữu nhà nước — 1 row/mã CK/tháng.
---     Nguồn VSDC listed_security_info_snapshot + foreign_ownership_info_snapshot (mới bổ sung Atomic).
+--     Nguồn VSDC listed_share_info + foreign_ownership_info (mới bổ sung Atomic).
 --     [SỬA 2026-09-07 lần 2] + IDS pc_state_capital (K_GSDC_1389/1390, sở hữu nhà nước).
 --     10/10 KPI READY (Nhóm 31, K_GSDC_1381-1390).
 --     [MỚI 2026-09-18, cross-module reuse NDTNN] + foreign_holding_value phục vụ K_NDTNN_51

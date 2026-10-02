@@ -614,7 +614,7 @@ WHERE snpst_cal.cdr_dt = :etl_date
 
 -- ---------------------------------------------------------------------
 -- 14. Fact Public Company Listing Info Snapshot (Nhóm 31, K_GSDC_1381-1390)
---     [MỚI 2026-09-07] Nguồn VSDC listed_security_info_snapshot + foreign_ownership_info_snapshot
+--     [MỚI 2026-09-07] Nguồn VSDC listed_share_info + foreign_ownership_info
 --     [SỬA 2026-09-07 lần 2] + IDS pc_state_capital (K_GSDC_1389/1390, sở hữu nhà nước)
 --     [MỚI 2026-09-18, cross-module reuse NDTNN] + foreign_holding_value (K_NDTNN_51)
 -- ---------------------------------------------------------------------
