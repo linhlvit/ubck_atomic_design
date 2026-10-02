@@ -3135,7 +3135,7 @@ erDiagram
 ```
 
 > **Ghi chú:** `Public_Company_Dimension`/`Calendar_Date_Dimension` reuse — chỉ liệt kê field liên quan Nhóm này (Dimension đầy đủ vẽ ở Cụm 1/6). `State_Owned_Share_Quantity`/`State_Ownership_Ratio_Percentage` (K_GSDC_1389/1390) — nguồn `pc_state_capital`, join bridge qua `Public Company` (`equity_ticker_symbol` → `pc_code`), không vẽ riêng trong erDiagram vì `Public Company State Capital` không phải Dimension/Fact reuse trực tiếp mà chỉ là nguồn `join_atomic` — xem chi tiết ETL logic tại Attributes LLD.
-> **[MỚI 2026-09-18, cross-module reuse]** `Foreign_Holding_Value` — bổ sung theo yêu cầu module **NDTNN** (K_NDTNN_51, Nhóm 8 "Phân ngành của NĐTNN") — `Current Foreign Holding Quantity × giá đóng cửa gần nhất ≤ ngày snapshot` (JOIN thêm `security_trading_snapshot`, MDDS; lấy bản ghi cuối phiên mỗi `symbol` theo `trading_time`). **[SỬA 2026-10-02]** Đồng bộ tên entity nguồn: `listed_share_info` / `foreign_ownership_info` (trước đây ghi nhầm `_snapshot`) — xem O_NDTNN_30. Không đổi grain/measure hiện có của GSDC — xem `Datamart/lld/GSDC/DTM_GSDC_fct_public_company_listing_info_snpst.csv`.
+> **[MỚI 2026-09-18, cross-module reuse]** `Foreign_Holding_Value` — bổ sung theo yêu cầu module **NDTNN** (K_NDTNN_51, Nhóm 8 "Phân ngành của NĐTNN") — `Current Foreign Holding Quantity × giá đóng cửa gần nhất ≤ ngày snapshot` (JOIN thêm `security_trading_snapshot`, MDDS; lấy bản ghi cuối phiên mỗi `symbol` theo `trading_time`). **[SỬA 2026-10-02]** Đồng bộ tên entity nguồn: `listed_share_info` / `foreign_ownership_info` (trước đây ghi nhầm `_snapshot`) — xem O_NDTNN_37. Không đổi grain/measure hiện có của GSDC — xem `Datamart/lld/GSDC/DTM_GSDC_fct_public_company_listing_info_snpst.csv`.
 
 **Lineage Mart → Báo cáo:**
 
