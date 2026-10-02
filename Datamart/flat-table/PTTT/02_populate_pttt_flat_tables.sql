@@ -461,3 +461,31 @@ JOIN datamart.cdr_dt_dim snpst_cal
 LEFT JOIN datamart.securities_company_dim sc
     ON sc.securities_company_dim_id = f.securities_company_dim_id
 ;
+
+
+-- ============================================================
+-- 16. FACT: pttt_fct_securities_company_safety_snpst_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.pttt_fct_securities_company_safety_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.pttt_fct_securities_company_safety_snpst_flat
+SELECT
+    f.snpst_dt_dim_id,
+    f.securities_company_dim_id,
+    f.rpt_year,
+    f.period_nbr,
+    f.margin_debt_amt,
+    f.owner_equity_amt,
+    f.margin_to_equity_ratio,
+    f.capital_adequacy_ratio,
+    f.src_stm_code,
+
+    snpst_cal.cdr_dt AS snpst_cdr_dt,
+
+    sc.sc_code,
+    sc.sc_nm
+FROM datamart.fct_securities_company_safety_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.securities_company_dim sc
+    ON sc.securities_company_dim_id = f.securities_company_dim_id
+;
