@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Branch"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -19,13 +19,14 @@ metadata:
   approved_at: null
   notes: "SC_FIRM_TRANSACTION_OFFICE → Securities Company Organization Unit. Organization\
     \ Unit Type Code hardcode: TRANSACTION_OFFICE. FULL_NAME + TRANSACTION_OFFICE_NAME\
-    \ là 2 tên cần xác nhận. SO_QUYET_DINH/NGAY_QUYET_DINH là tên cột cũ (Vietnamese)\
-    \ cho quyết định; DECISION_NUMBER/DECISION_DATE là tên mới. SC_FIRM_TRANSACTION_ID\
-    \ (mô tả rỗng) — có thể là self-ref nhưng không chắc. FORM_DATA_JSON loại khỏi\
-    \ scope. NGAY_SUA/NGUOI_SUA_ID là legacy duplicate audit. ADDRESS/PHONE/FAX →\
-    \ IP Postal + IP Electronic. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
-    \ FK Securities Company Id — trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID\
-    \ kỹ thuật) thay vì CODE của bảng đích."
+    \ là 2 tên cần xác nhận. SC_FIRM_TRANSACTION_ID (mô tả rỗng) — có thể là self-ref\
+    \ nhưng không chắc. FORM_DATA_JSON loại khỏi scope. ADDRESS/PHONE/FAX → IP Postal\
+    \ + IP Electronic. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities\
+    \ Company Id — trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) thay\
+    \ vì CODE của bảng đích. DDL UAT mới (2026-09-18): SO_QUYET_DINH/NGAY_QUYET_DINH\
+    \ (tên cũ Vietnamese) đổi tên thành DECISION_NUMBER_ALT/DECISION_DATE_ALT — cùng\
+    \ cột, đã cập nhật source_columns; DECISION_NUMBER/DECISION_DATE (tên mới, không\
+    \ đổi) vẫn là 2 trường riêng cần xác nhận trùng nội dung hay không."
 attributes:
 - attribute_name: "Securities Company Organization Unit Id"
   physical_name: "sc_ou_id"
@@ -200,19 +201,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi kỹ thuật: 1=Còn hiệu lực; 0=Hết hiệu lực."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.RECORD_STATUS"
-  comment: "Scheme: SCMS_USAGE_STATUS."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Provisional Indicator"
   physical_name: "provisional_ind"
   description: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
@@ -254,22 +242,24 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Decision Number"
-  physical_name: "decision_nbr"
+- attribute_name: "Decision Number Alt"
+  physical_name: "decision_nbr_alt"
   description: "Số quyết định cấp phép/chấp thuận phòng giao dịch."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.SO_QUYET_DINH"
-  comment: "SO_QUYET_DINH là tên cột cũ. DECISION_NUMBER là tên mới — cùng semantic,\
-    \ cần xác nhận có trùng nội dung không."
+  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.DECISION_NUMBER_ALT"
+  comment: "Cột nguồn đổi tên từ SO_QUYET_DINH sang DECISION_NUMBER_ALT trong DDL\
+    \ UAT mới (2026-09-18) — cùng cột, giữ nguyên ý nghĩa. DECISION_NUMBER là trường\
+    \ khác (Decision Number Secondary) — cùng semantic, cần xác nhận có trùng nội\
+    \ dung không."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Decision Number Secondary"
-  physical_name: "decision_nbr_secondary"
+- attribute_name: "Decision Number"
+  physical_name: "decision_nbr"
   description: "Số quyết định (trường mới DECISION_NUMBER — có thể trùng SO_QUYET_DINH)."
   data_domain: "Text"
   nullable: true
@@ -281,22 +271,24 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Decision Date"
-  physical_name: "decision_dt"
+- attribute_name: "Decision Date Alt"
+  physical_name: "decision_dt_alt"
   description: "Ngày ban hành quyết định."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.NGAY_QUYET_DINH"
-  comment: "NGAY_QUYET_DINH là tên cột cũ (TIMESTAMP — ETL truncate ngày). DECISION_DATE\
-    \ là tên mới."
+  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.DECISION_DATE_ALT"
+  comment: "Cột nguồn đổi tên từ NGAY_QUYET_DINH sang DECISION_DATE_ALT trong DDL\
+    \ UAT mới (2026-09-18) — cùng cột, giữ nguyên ý nghĩa. Nguồn nay lưu DATE (trước\
+    \ đây TIMESTAMP, không còn cần truncate). DECISION_DATE là trường khác (Decision\
+    \ Date Secondary) — cùng semantic, cần xác nhận có trùng nội dung không."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Decision Date Secondary"
-  physical_name: "decision_dt_secondary"
+- attribute_name: "Decision Date"
+  physical_name: "decision_dt"
   description: "Ngày quyết định (trường mới DECISION_DATE — có thể trùng NGAY_QUYET_DINH)."
   data_domain: "Date"
   nullable: true

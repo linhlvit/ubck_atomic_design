@@ -17,9 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Alt Identification của Securities Company Insider Related Person. 1 row\
-    \ per người nội bộ liên quan — NATIONAL_ID → type NATIONAL_ID (CCCD/CMND/Hộ chiếu).\
-    \ Format đồng bộ theo chuẩn NHNCK."
+  notes: "IP Alt Identification của Securities Company Insider Related Person."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -64,15 +62,15 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu."
+  description: "Loại giấy tờ tùy thân: CITIZEN_ID=CCCD/CMND/Hộ chiếu."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột NATIONAL_ID."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode CITIZEN_ID."
+  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
+  etl_derived_value: "CITIZEN_ID"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -84,6 +82,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_INSIDER_RELATION.NATIONAL_ID"
   comment: "VARCHAR2 — cần xác nhận length."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
   etl_derived_value: null
   data_type: "string"

@@ -157,19 +157,6 @@ attributes:
   classification_context: "IP_ADDR_TYPE=BRANCH"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "District Name"
-  physical_name: "district_nm"
-  description: "Tên Quận/Huyện (denormalized text, không có FK riêng)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_BRANCH.DISTRICT_NAME"
-  comment: "Text gốc từ bảng nguồn (không phải ETL lookup). Dùng khi District Id NULL."
-  classification_context: "IP_ADDR_TYPE=BRANCH"
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area cấp Phường/Xã."
@@ -199,19 +186,6 @@ attributes:
   comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau\
     \ ETL crosswalk — chi tiết xem comment Ward Id."
-  classification_context: "IP_ADDR_TYPE=BRANCH"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Ward Name"
-  physical_name: "ward_nm"
-  description: "Tên Phường/Xã (denormalized text)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_BRANCH.WARD_NAME"
-  comment: "Text gốc từ bảng nguồn (không phải ETL lookup). Dùng khi Ward Id NULL."
   classification_context: "IP_ADDR_TYPE=BRANCH"
   etl_derived_value: null
   data_type: "string"

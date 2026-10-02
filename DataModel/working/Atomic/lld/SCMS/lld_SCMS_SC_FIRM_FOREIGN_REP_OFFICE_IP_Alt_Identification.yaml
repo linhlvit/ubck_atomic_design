@@ -19,7 +19,7 @@ metadata:
   approved_at: null
   notes: "IP Alt Identification của Securities Company Foreign Representative Office\
     \ (VPDD nước ngoài tại VN). ETL tạo tối đa 3 rows per VPDD (skip nếu number NULL):\
-    \ Row 1 OPERATION_LICENSE (LICENSE_NUMBER + LICENSE_DATE); Row 2 ENTERPRISE_CODE\
+    \ Row 1 ESTABLISHMENT_OPERATION_LICENSE (LICENSE_NUMBER + LICENSE_DATE); Row 2 ENTERPRISE_CODE\
     \ (ENTERPRISE_CODE — không có ngày/nơi); Row 3 TAX_ID (TAX_CODE — không có ngày/nơi).\
     \ Mỗi loại là 1 block riêng — KHÔNG dùng pivot gộp chung 1 attribute (sửa 2026-07-24).\
     \ Lưu ý: PARENT_COMPANY_LICENSE và PARENT_LICENSE_DATE là giấy phép của công ty\
@@ -73,9 +73,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATION_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
-  etl_derived_value: "OPERATION_LICENSE"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
+  etl_derived_value: "ESTABLISHMENT_OPERATION_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -87,7 +87,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.LICENSE_NUMBER"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -100,7 +100,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.LICENSE_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Type Code"

@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Senior Officer"
   table_type: "Relative"
   group: "T2"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -22,13 +22,16 @@ metadata:
     \ thể thêm BRANCH/TRANSACTION_OFFICE/REP_OFFICE. Có trường cá nhân (CCCD/CMND\
     \ → IP Alt Identification; ADDRESS → IP Postal; PHONE/FAX/EMAIL/DISCLOSURE_EMAIL\
     \ → IP Electronic). Notes: (1) NATIONALITY_ID là canonical; DM_QUOC_TICH_ID là\
-    \ legacy — cùng FK CAT_NATIONALITY; (2) PRACTICE_CERTIFICATE là legacy của SECURITIES_LICENSE\
+    \ legacy — không map; (2) PRACTICE_CERTIFICATE là legacy của SECURITIES_LICENSE\
     \ — cùng nghĩa; (3) STATUTORY_REPRESENTATIVE có thể trùng LEGAL_REPRESENTATIVE;\
     \ (4) START_DATE/END_DATE có thể trùng WORK_START_DATE/DISMISSAL_DATE — cần xác\
     \ nhận team; (5) POSITION_ID dạng NVARCHAR2 — có thể là code thay vì ID; (6) POSITION_IDS\
     \ (CLOB) — có thể là JSON array nhiều chức vụ. Hạ về draft (2026-07-27) để sửa\
     \ lỗi hash-mismatch FK Securities Company Id — trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) thay vì CODE của bảng đích."
+    \ (ID kỹ thuật) thay vì CODE của bảng đích. Hạ về draft lần 2 (2026-09-18): đổi\
+    \ FK target NATIONALITY_ID từ cl_nationality sang geographic_area (type=COUNTRY),\
+    \ crosswalk qua SCMS.CAT_NATIONALITY để lấy NATIONALITY_CODE trước khi hash_id('ECAT_COUNTRY',\
+    \ ...) — nhất quán với pattern Nationality dùng ở NHNCK/FMS/GSGD."
 attributes:
 - attribute_name: "Securities Company Senior Personnel Id"
   physical_name: "sc_senior_personnel_id"
@@ -199,14 +202,14 @@ attributes:
   data_type: "string"
 - attribute_name: "Entity Type Code"
   physical_name: "entity_tp_code"
-  description: "Loại đối tượng: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức."
-  data_domain: "Classification Value"
+  description: "Loại đối tượng: CN, HOI_SO, PGD."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ENTITY_TYPE"
-  comment: "Scheme: SCMS_ENTITY_TYPE. Values: CA_NHAN/TO_CHUC."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -219,7 +222,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.GENDER"
-  comment: "Scheme: SCMS_GENDER. Nguồn NUMBER(1): 1=Nam; 2=Nữ."
+  comment: "SCHEMA_CODE=GENDER"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -249,75 +252,63 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Nationality Id"
-  physical_name: "cl_nationality_id"
-  description: "Quốc tịch (FK đến CAT_NATIONALITY)."
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK đến Geographic Area (quốc tịch)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONALITY_ID"
-  comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS_CAT_NATIONALITY',\
-    \ NATIONALITY_ID)."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_SENIOR_PERSONNEL.NATIONALITY_ID\
+    \ = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT_COUNTRY',\
+    \ NATIONALITY_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Nationality Code"
-  physical_name: "cl_nationality_code"
-  description: "Quốc tịch (FK đến CAT_NATIONALITY)."
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc tịch (denormalized)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONALITY_ID"
-  comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with Classification\
-    \ Nationality Id."
+  - "SCMS.CAT_NATIONALITY.NATIONALITY_CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair\
+    \ with Nationality Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau\
+    \ ETL crosswalk — chi tiết xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Personnel Status Code"
   physical_name: "personnel_status_code"
-  description: "Trạng thái nhân sự cấp cao: DUONG_NHIEM=Đương nhiệm; MIEN_NHIEM=Miễn\
-    \ nhiệm; NGHI_VIEC=Nghỉ việc."
-  data_domain: "Classification Value"
+  description: "Trạng thái nhân sự cấp cao."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.PERSONNEL_STATUS"
-  comment: "Scheme: SCMS_PERSONNEL_STATUS. Nguồn NUMBER(1): 1=Đương nhiệm; 0=Miễn\
-    \ nhiệm; 2=Nghỉ việc."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi kỹ thuật: 1=Đang hoạt động; 0=Ngừng hoạt động."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SENIOR_PERSONNEL.RECORD_STATUS"
-  comment: "Scheme: SCMS_USAGE_STATUS."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Provisional Status Code"
-  physical_name: "provisional_status_code"
+- attribute_name: "Provisional Indicator"
+  physical_name: "provisional_ind"
   description: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.PROVISIONAL"
-  comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
-  classification_context: "SCMS_PROVISIONAL_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Legal Representative Indicator"
   physical_name: "legal_representative_ind"
   description: "Là người đại diện theo pháp luật: 1=Có; 0=Không."
@@ -402,10 +393,10 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Position Code"
-  physical_name: "position_code"
+- attribute_name: "Position Id"
+  physical_name: "position_id"
   description: "Mã chức vụ trong danh mục (FK → CAT_POSITION)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -426,20 +417,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION"
   comment: "VARCHAR2(500). Bổ sung cho Position Code khi danh mục không đủ."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Position Ids"
-  physical_name: "position_ids"
-  description: "Danh sách ID chức vụ kiêm nhiệm (CLOB — có thể là JSON array)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION_IDS"
-  comment: "Nguồn CLOB — lưu nguyên dạng text. Nếu là JSON array các position ID cần\
-    \ xác nhận format trước khi denormalize thành Array<Text>."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -539,15 +516,14 @@ attributes:
   data_type: "date"
 - attribute_name: "Shareholder Type Code"
   physical_name: "shareholder_tp_code"
-  description: "Loại cổ đông: CO_DONG_LON=Cổ đông lớn (≥5%); CO_DONG_SANG_LAP=Cổ đông\
-    \ sáng lập; CO_DONG_PHO_THONG=Cổ đông phổ thông."
-  data_domain: "Classification Value"
+  description: "Loại cổ đông."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.SHAREHOLDER_TYPE"
-  comment: "Scheme: SCMS_SHAREHOLDER_TYPE. NVARCHAR2(100) lưu code trực tiếp."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -577,19 +553,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Legacy Practitioner Id"
-  physical_name: "legacy_practitioner_id"
-  description: "ID nhân sự từ hệ thống cũ (TLID)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SENIOR_PERSONNEL.PRACTITIONER_LEGACY_ID"
-  comment: "NUMBER(5) từ hệ thống cũ — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Business Division Id"
   physical_name: "business_division_id"
   description: "ID phân khu kinh doanh (FK → không xác định, pending)."
@@ -631,19 +594,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SENIOR_PERSONNEL.DELETED"
-  comment: "NUMBER(1). Soft delete flag — ETL filter DELETED=0 trước khi load Atomic."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Attachment Path"
   physical_name: "attachment_path"
   description: "Đường dẫn file đính kèm."

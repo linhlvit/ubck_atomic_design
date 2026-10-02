@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,7 +18,7 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Alt Identification của Securities Company Branch (Organization Unit).\
-    \ 1 row per chi nhánh — LICENSE_NUMBER → type OPERATION_LICENSE (Giấy phép hoạt\
+    \ 1 row per chi nhánh — LICENSE_NUMBER → type ESTABLISHMENT_OPERATION_LICENSE (Giấy phép hoạt\
     \ động chi nhánh). LICENSE_DATE → issue_dt. Không có cột issuer trong nguồn."
 attributes:
 - attribute_name: "Involved Party Id"
@@ -63,16 +63,16 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép hoạt động chi\
+  description: "Loại giấy tờ định danh: ESTABLISHMENT_OPERATION_LICENSE=Giấy phép hoạt động chi\
     \ nhánh."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode OPERATION_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
-  etl_derived_value: "OPERATION_LICENSE"
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode ESTABLISHMENT_OPERATION_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
+  etl_derived_value: "ESTABLISHMENT_OPERATION_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"

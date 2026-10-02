@@ -32,7 +32,10 @@ metadata:
     \ Service Codes\" — KHÔNG thiết kế cặp Id/Code theo quyết định tường minh Data\
     \ Modeler (xem SCMS_HLD_Tier1.md 6f T1-11, 2026-09-12). CAT_BUSINESS_LINE (và\
     \ CAT_SERVICE) đã deprecated/gỡ bỏ LLD (2026-09-17) — gộp vào Classification Securities\
-    \ Company Firm Service (CAT_SERVICE_LEGAL_CAPITAL)."
+    \ Company Firm Service (CAT_SERVICE_LEGAL_CAPITAL). NATIONALITY_ID (2026-09-18):\
+    \ đổi FK target từ cl_nationality sang geographic_area (type=COUNTRY), crosswalk\
+    \ qua SCMS.CAT_NATIONALITY để lấy NATIONALITY_CODE trước khi hash_id('ECAT_COUNTRY',\
+    \ ...) — nhất quán với pattern Nationality dùng ở NHNCK/FMS/GSGD."
 attributes:
 - attribute_name: "Securities Company Practitioner Id"
   physical_name: "sc_practitioner_id"
@@ -217,31 +220,35 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Nationality Id"
-  physical_name: "cl_nationality_id"
-  description: "FK đến quốc tịch của người hành nghề."
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK đến Geographic Area (quốc tịch) của người hành nghề."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID"
-  comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS_CAT_NATIONALITY',\
-    \ NATIONALITY_ID)."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID\
+    \ = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT_COUNTRY',\
+    \ NATIONALITY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile\
+    \ dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Nationality Code"
-  physical_name: "cl_nationality_code"
-  description: "Mã quốc tịch của người hành nghề."
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc tịch của người hành nghề (denormalized)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID"
-  comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with Classification\
-    \ Nationality Id."
+  - "SCMS.CAT_NATIONALITY.NATIONALITY_CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair\
+    \ with Nationality Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau\
+    \ ETL crosswalk — chi tiết xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -581,19 +588,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CONTENT"
   comment: "VARCHAR2(1000). Mô tả gốc: Nội dung thông báo/tin nhắn/văn bản."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Attachment Path"
-  physical_name: "attachment_path"
-  description: "Đường dẫn file đính kèm."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ATTACHMENT_PATH"
-  comment: "Nguồn CLOB."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

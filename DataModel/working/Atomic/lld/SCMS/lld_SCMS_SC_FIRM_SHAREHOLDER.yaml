@@ -24,10 +24,13 @@ metadata:
     \ Senior Personnel (nullable — cổ đông có thể không phải nhân sự cao cấp). PRACTITIONER_LEGACY_ID:\
     \ ID tham chiếu hệ thống cũ (legacy), lưu dạng Text. CONTROLLING_SHAREHOLDER:\
     \ NVARCHAR2(40) — tên/mã cổ đông kiểm soát, lưu dạng Text. SHAREHOLDER_ENTITY_TYPE:\
-    \ phân loại cổ đông chi tiết hơn INDIVIDUAL. NATIONALITY_ID → pending. Audit:\
-    \ CREATED_BY/AT + LAST_MODIFIED_BY/AT (canonical, TIMESTAMP(6)). Hạ về draft (2026-07-27)\
-    \ để sửa lỗi hash-mismatch FK Securities Company Id — trước đây hash trực tiếp\
-    \ theo SC_FIRM_INFO_ID (ID kỹ thuật) thay vì CODE của bảng đích."
+    \ phân loại cổ đông chi tiết hơn INDIVIDUAL. Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT\
+    \ (canonical, TIMESTAMP(6)). Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
+    \ FK Securities Company Id — trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID\
+    \ kỹ thuật) thay vì CODE của bảng đích. Hạ về draft lần 2 (2026-09-18): đổi FK\
+    \ target NATIONALITY_ID từ cl_nationality sang geographic_area (type=COUNTRY),\
+    \ crosswalk qua SCMS.CAT_NATIONALITY để lấy NATIONALITY_CODE trước khi hash_id('ECAT_COUNTRY',\
+    \ ...) — nhất quán với pattern Nationality dùng ở NHNCK/FMS/GSGD."
 attributes:
 - attribute_name: "Securities Company Shareholder Id"
   physical_name: "sc_shareholder_id"
@@ -128,72 +131,59 @@ attributes:
   data_type: "string"
 - attribute_name: "Shareholder Type Code"
   physical_name: "shareholder_tp_code"
-  description: "Loại cổ đông: CO_DONG_LON=Cổ đông lớn (≥5%); CO_DONG_SANG_LAP=Cổ đông\
-    \ sáng lập; CO_DONG_PHO_THONG=Cổ đông phổ thông."
-  data_domain: "Classification Value"
+  description: "Loại cổ đông."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.SHAREHOLDER_TYPE"
-  comment: "Scheme: SCMS_SHAREHOLDER_TYPE. NVARCHAR2(100)."
-  classification_context: "SCMS_SHAREHOLDER_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Shareholder Entity Type Code"
   physical_name: "shareholder_entity_tp_code"
-  description: "Loại hình cổ đông: CA_NHAN=Cá nhân; TO_CHUC_TRONG_NUOC=Tổ chức trong\
-    \ nước; TO_CHUC_NUOC_NGOAI=Tổ chức nước ngoài."
-  data_domain: "Classification Value"
+  description: "Loại hình cổ đông."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.SHAREHOLDER_ENTITY_TYPE"
-  comment: "Scheme: SCMS_SHAREHOLDER_ENTITY_TYPE. VARCHAR2(100). Chi tiết hơn INDIVIDUAL\
-    \ (chỉ CA_NHAN/TO_CHUC)."
-  classification_context: "SCMS_SHAREHOLDER_ENTITY_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi cổ đông: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng\
-    \ hoạt động/hết hiệu lực."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SHAREHOLDER.RECORD_STATUS"
-  comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-  classification_context: "SCMS_USAGE_STATUS"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Classification Nationality Id"
-  physical_name: "cl_nationality_id"
-  description: "FK đến quốc tịch của cổ đông."
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK đến Geographic Area (quốc tịch) của cổ đông."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID"
-  comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS_CAT_NATIONALITY',\
-    \ NATIONALITY_ID)."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_SHAREHOLDER.NATIONALITY_ID\
+    \ = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT_COUNTRY',\
+    \ NATIONALITY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile\
+    \ dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Nationality Code"
-  physical_name: "cl_nationality_code"
-  description: "Mã quốc tịch của cổ đông."
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc tịch của cổ đông (denormalized)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID"
-  comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with Classification\
-    \ Nationality Id."
+  - "SCMS.CAT_NATIONALITY.NATIONALITY_CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair\
+    \ with Nationality Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau\
+    \ ETL crosswalk — chi tiết xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -408,7 +398,7 @@ attributes:
 - attribute_name: "Freely Tradable Shares"
   physical_name: "freely_tradable_shares"
   description: "Số cổ phần tự do giao dịch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -417,11 +407,11 @@ attributes:
   comment: "NUMBER(19). Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Pledged Shares"
   physical_name: "pledged_shares"
   description: "Số cổ phần đang cầm cố/thế chấp."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -430,11 +420,11 @@ attributes:
   comment: "NUMBER(19). Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Restricted Shares"
   physical_name: "restricted_shares"
   description: "Số cổ phần bị hạn chế chuyển nhượng."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -443,7 +433,7 @@ attributes:
   comment: "NUMBER(19). Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Ownership Ratio"
   physical_name: "ownership_ratio"
   description: "Tỷ lệ sở hữu vốn (%)."
@@ -456,7 +446,7 @@ attributes:
   comment: "NUMBER(10,4). Lưu dạng thập phân (VD: 15.25 = 15.25%)."
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(7,4)"
 - attribute_name: "Contributed Capital"
   physical_name: "contributed_capital"
   description: "Vốn góp (đơn vị: đồng)."
@@ -575,20 +565,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Practitioner Legacy Id"
-  physical_name: "practitioner_legacy_id"
-  description: "Mã tham chiếu người hành nghề từ hệ thống cũ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SHAREHOLDER.PRACTITIONER_LEGACY_ID"
-  comment: "NUMBER(5) — ETL convert sang string. ID tham chiếu hệ thống legacy, không\
-    \ phải FK constraint."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Note"
   physical_name: "note"
   description: "Ghi chú bổ sung, không bắt buộc."

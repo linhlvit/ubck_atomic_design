@@ -49,9 +49,11 @@ erDiagram
     FORM_SHEET_ROW ||--o{ FORM_SHEET_CELL : "FORM_SHEET_ROW_ID"
     FORM_SHEET_COLUMN ||--o{ FORM_SHEET_CELL : "FORM_SHEET_COLUMN_ID"
     FORM_INDICATOR_INPUT ||--o{ FORM_SHEET_CELL : "FORM_SHEET_CELL_INPUT_ID"
+    FORM_INDICATOR_INPUT ||--o{ FORM_SHEET_CELL : "INDICATOR_ID"
+    FORM_REPORT ||--o{ FORM_SHEET_CELL : "TEMPLATE_FORM_REPORT_ID"
 ```
 
-> `FORM_REPORT_ID` trên FORM_SHEET_CELL là FK dư thừa (denormalize) từ FORM_SHEET — không vẽ cạnh riêng, đã có đường đi qua FORM_SHEET. `TEMPLATE_FORM_REPORT_ID` (FK điều kiện, chỉ có ý nghĩa khi định dạng ký tự là ngày gửi báo cáo) không vẽ cạnh — xem 6f T4-02.
+> `FORM_REPORT_ID` trên FORM_SHEET_CELL là FK dư thừa (denormalize) từ FORM_SHEET — không vẽ cạnh riêng, đã có đường đi qua FORM_SHEET (xem T4-03). `INDICATOR_ID` (Legacy Securities Company Report Indicator Id/Code) và `TEMPLATE_FORM_REPORT_ID` (Template Securities Company Report Id/Code, FK điều kiện — chỉ có ý nghĩa khi định dạng ký tự là ngày gửi báo cáo) nay model FK theo quyết định Data Modeler (2026-09-17) — xem 6f T4-01/T4-02.
 
 ---
 
@@ -116,6 +118,6 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T4-01 | `FORM_SHEET_CELL` có 2 cột khả nghi cùng trỏ tới chỉ tiêu: `INDICATOR_ID` (mô tả nguồn trống, không tagged FK) và `FORM_SHEET_CELL_INPUT_ID` (mô tả nguồn trống, không tagged FK). Cả 2 đều không có `key`/`fk_note` trong BRD. Đâu là FK thật đến `FORM_INDICATOR_INPUT`, và 2 cột này có phải dư thừa/trùng lặp không? | **Chưa resolve — quyết định tạm thời.** Model `FORM_SHEET_CELL_INPUT_ID` là FK chính đến `Securities Company Report Indicator` (tên cột khớp trực tiếp "CELL_INPUT" ~ FORM_INDICATOR_INPUT). `INDICATOR_ID` giữ tạm dạng attribute số (không FK) — cần Data Modeler xác nhận khi thiết kế LLD hoặc profile dữ liệu thực tế (có thể là cột legacy trước khi tách FORM_INDICATOR_INPUT ra bảng riêng). |
-| T4-02 | `FORM_SHEET_CELL.TEMPLATE_FORM_REPORT_ID` — mô tả nguồn: "biểu mẫu báo cáo ID đối với các định dạng ký tự là ngày gửi báo cáo" — FK điều kiện, chỉ có giá trị khi ô hiển thị ngày gửi báo cáo. Có nên model FK thật đến `Securities Company Report` không? | **Tạm giữ plain attribute (soft pointer), không model FK cứng** — cùng cách xử lý với các FK điều kiện/có điều kiện áp dụng khác trong SCMS (VD `REPORT_INPUT_SUBMISSION.REF_ID`, xem Tier2 T2-14). Cần Data Modeler xác nhận khi có thêm dữ liệu thực tế. |
+| T4-01 | `FORM_SHEET_CELL` có 2 cột khả nghi cùng trỏ tới chỉ tiêu: `INDICATOR_ID` (mô tả nguồn trống, không tagged FK) và `FORM_SHEET_CELL_INPUT_ID` (mô tả nguồn trống, không tagged FK). Cả 2 đều không có `key`/`fk_note` trong BRD. Đâu là FK thật đến `FORM_INDICATOR_INPUT`, và 2 cột này có phải dư thừa/trùng lặp không? | **Resolved (Data Modeler, 2026-09-17).** Cả 2 đều model FK đến `Securities Company Report Indicator`: `FORM_SHEET_CELL_INPUT_ID` (tên cột khớp trực tiếp "CELL_INPUT") và `INDICATOR_ID` (`Legacy Securities Company Report Indicator Id/Code` — có thể là cột legacy trước khi tách `FORM_INDICATOR_INPUT` ra bảng riêng, cần crosswalk sang `FORM_INDICATOR_INPUT` để lấy `CODE`). |
+| T4-02 | `FORM_SHEET_CELL.TEMPLATE_FORM_REPORT_ID` — mô tả nguồn: "biểu mẫu báo cáo ID đối với các định dạng ký tự là ngày gửi báo cáo" — FK điều kiện, chỉ có giá trị khi ô hiển thị ngày gửi báo cáo. Có nên model FK thật đến `Securities Company Report` không? | **Resolved (Data Modeler, 2026-09-17).** Model FK cứng đến `Securities Company Report` (`Template Securities Company Report Id/Code`, hash trực tiếp — cùng convention Code=ID của `FORM_REPORT`). Vẫn là FK có điều kiện về mặt dữ liệu (chỉ có giá trị khi ô hiển thị ngày gửi báo cáo) nhưng KHÔNG cùng cách xử lý với `REPORT_INPUT_SUBMISSION.REF_ID` (Tier2 T2-14) — REF_ID là polymorphic theo `REF_TYPE` nên giữ soft pointer không FK cứng, còn `TEMPLATE_FORM_REPORT_ID` trỏ cố định 1 entity duy nhất (`FORM_REPORT`) nên model FK cứng được. |
 | T4-03 | `FORM_SHEET_CELL.FORM_REPORT_ID` — dư thừa với đường FK gián tiếp qua `FORM_SHEET_ID` → `FORM_SHEET.FORM_REPORT_ID`. Có nên giữ cả 2 không? | Denormalize — không model thành FK riêng trên Atomic entity (join được qua `Securities Company Report Sheet`). Giữ nguyên trên nguồn (Bronze) nhưng không cần cặp Id+Code riêng ở Atomic. |

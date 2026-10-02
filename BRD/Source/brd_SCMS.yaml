@@ -270,8 +270,8 @@ brd_entries:
     content:
       table_meaning: "Danh mục ngành nghề kinh doanh"
       functional_group: "Danh mục dùng chung"
-      scope_status: pending
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Deprecated — thay thế bởi CAT_SERVICE_LEGAL_CAPITAL (Classification Securities Company Firm Service). Quyết định Data Modeler (2026-09-12, xem SCMS_HLD_Tier1.md 6f T1-11); LLD bị gỡ 2026-09-17 theo yêu cầu Data Modeler (nghiệp vụ không cần nữa)."
       table: CAT_BUSINESS_LINE
       related_tables:
         - table: SC_FIRM_LICENSED_PRACTITIONER
@@ -643,8 +643,8 @@ brd_entries:
     content:
       table_meaning: "Danh mục dịch vụ chứng khoán"
       functional_group: "Danh mục dùng chung"
-      scope_status: in_scope
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Deprecated — thay thế bởi CAT_SERVICE_LEGAL_CAPITAL (Classification Securities Company Firm Service). Quyết định Data Modeler (2026-09-12, xem SCMS_HLD_Tier1.md 6f T1-11); LLD bị gỡ 2026-09-17 theo yêu cầu Data Modeler (nghiệp vụ không cần nữa)."
       table: CAT_SERVICE
       related_tables:
         - table: CAT_SERVICE_LEGAL_CAPITAL
@@ -1488,8 +1488,8 @@ brd_entries:
     content:
       table_meaning: "Liên kết người hành nghề và ngành nghề"
       functional_group: "Liên kết"
-      scope_status: pending
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Business Line không còn là entity riêng (deprecated cùng CAT_BUSINESS_LINE, xem SCMS_HLD_Tier1.md 6f T1-11) — quan hệ nay biểu diễn qua Array<Text> trên Securities Company Practitioner (BUSINESS_LINE_ID), không cần junction entity riêng. Quyết định Data Modeler 2026-09-17."
       table: LNK_PRACTITIONER_BUSINESS_LINE
       related_tables: null
       notes: null
@@ -1508,8 +1508,8 @@ brd_entries:
     content:
       table_meaning: "Liên kết CTCK và ngành nghề kinh doanh"
       functional_group: "Liên kết"
-      scope_status: pending
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Business Line không còn là entity riêng (deprecated cùng CAT_BUSINESS_LINE, xem SCMS_HLD_Tier1.md 6f T1-11) — quan hệ nay biểu diễn qua Array<Text> trên Securities Company Practitioner (BUSINESS_LINE_ID), không cần junction entity riêng. Quyết định Data Modeler 2026-09-17."
       table: LNK_SC_FIRM_BUSINESS_LINE
       related_tables:
         - table: SC_FIRM_INFO
@@ -1652,12 +1652,14 @@ brd_entries:
     content:
       table_meaning: "Liên kết phòng giao dịch và dịch vụ"
       functional_group: "Liên kết"
-      scope_status: pending
+      scope_status: in_scope
       scope_reason: null
       table: LNK_TRANSACTION_OFFICE_SERVICE
       related_tables:
-        - table: CAT_SERVICE
-          relation: "FK cha — Danh mục dịch vụ chứng khoán"
+        - table: SC_FIRM_TRANSACTION_OFFICE
+          relation: "FK cha — Phòng giao dịch công ty chứng khoán"
+        - table: CAT_SERVICE_LEGAL_CAPITAL
+          relation: "FK cha — Danh mục dịch vụ chứng khoán (CAT_SERVICE deprecated, xem SCMS_HLD_Tier1.md 6f T1-11)"
       notes: null
       data_volume_hint: null
       refresh_frequency: null

@@ -19,7 +19,7 @@ metadata:
   approved_at: null
   notes: "IP Postal Address của Securities Company Shareholder. ETL tạo 2 rows per\
     \ cổ đông: Row 1 — CURRENT_ADDRESS → type CURRENT (địa chỉ hiện tại); Row 2 —\
-    \ HOUSEHOLD_REGISTRATION → type HOUSEHOLD_REGISTRY (địa chỉ hộ khẩu). Không có\
+    \ HOUSEHOLD_REGISTRATION → type PERMANENT (địa chỉ hộ khẩu). Không có\
     \ Province/District/Ward FK. Format đồng bộ theo chuẩn NHNCK."
 attributes:
 - attribute_name: "Involved Party Id"
@@ -89,15 +89,15 @@ attributes:
   data_type: "string"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
-  description: "Loại địa chỉ: HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu."
+  description: "Loại địa chỉ: PERMANENT=Địa chỉ hộ khẩu."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
   comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ HOUSEHOLD_REGISTRATION."
-  classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
-  etl_derived_value: "HOUSEHOLD_REGISTRY"
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: "PERMANENT"
   data_type: "string"
 - attribute_name: "Address Value"
   physical_name: "adr_val"
@@ -109,6 +109,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.HOUSEHOLD_REGISTRATION"
   comment: "NVARCHAR2(500). Không có Province/District/Ward FK."
-  classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"

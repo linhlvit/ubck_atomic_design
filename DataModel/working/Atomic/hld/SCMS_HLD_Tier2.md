@@ -51,6 +51,7 @@
 | Documentation | [Documentation] Form Document | Documentation | FORM_REPORT_INPUT_SOURCE | Ánh xạ biểu mẫu báo cáo gộp (canonical) sang nguồn đọc dữ liệu khai thác/cảnh báo, kèm phạm vi kỳ và độ ưu tiên | Securities Company Report Input Source | Relative | (1) Tái dùng term `Form Document` — quan hệ giữa 2 Form Document (biểu mẫu canonical và biểu mẫu nguồn), khác `Regulatory Report` (REPORT_INPUT_SUBMISSION) vì đây không phải 1 lần nộp báo cáo cụ thể mà là quan hệ cấu hình giữa 2 template. (2) Cấu trúc bảng: CANONICAL_FORM_REPORT_ID (FK), SOURCE_FORM_REPORT_ID (FK) — cả 2 cùng trỏ `Securities Company Report`; PERIOD_SCOPE (ALL hoặc CSV: QUY/BAN_NIEN/NAM), PRIORITY (nhỏ = ưu tiên cao khi trùng CTCK+kỳ), ACTIVE, NOTE — có attribute nghiệp vụ thật. (3) Chọn Documentation, Relative. Bảng chưa được khảo sát BRD trước đây — cấu trúc trích từ DDL UAT (Source/DDL UAT 1/SCMS_UAT_schema.txt), bổ sung BRD 2026-09-16. Đặt tên `Securities Company Report Input Source` theo chỉ đạo Data Modeler. |
 | Condition | [Condition] Format Condition | Condition | OUTPUT_REPORT_FILTER | Cấu hình bộ lọc khả dụng khi khai thác 1 biểu mẫu báo cáo đầu ra (cho phép chọn, giá trị mặc định, thứ tự) | Securities Company Report Output Filter | Relative | (1) Term `Format Condition` (id 9090, category Condition) — "Identifies a Condition that specifies how information should be organized and presented", cha của nhóm term "Report Format..." trong BCV liên quan trình bày báo cáo. (2) Cấu trúc bảng: FORM_REPORT_ID (FK), FILTER_CATALOG_ID (FK→CAT_FILTER — bảng Code+Name thuần, reference data set theo Rule #11 CLAUDE.md, không thiết kế Atomic entity riêng), ALLOW_SELECT, DEFAULT_VALUE, SORT_ORDER — quy định bộ lọc khả dụng, có attribute nghiệp vụ (mặc định, cho phép chọn). (3) Chọn Condition, Relative — phụ thuộc `Securities Company Report` (Tier 1). FILTER_CATALOG_ID model thành Classification Value thật (`Filter Catalog Code`, scheme `SCMS_CAT_FILTER`) — crosswalk sang CAT_FILTER.CODE; giá trị CAT_FILTER đã được Data Modeler insert trực tiếp vào `cl_value`, xem 6f T2-16. Bảng chưa được khảo sát BRD trước đây — cấu trúc trích từ DDL UAT, bổ sung BRD 2026-09-16. |
 | Involved Party | [Involved Party] Broker Dealer | Involved Party | LNK_SC_FIRM_SERVICE | Danh mục số giấy phép dịch vụ chứng khoán hiện hành theo CTCK × dịch vụ (LICENSE_NUMBER, LICENSE_DATE, START_DATE, END_DATE) | Securities Company X Classification Securities Company Firm Service Relationship | Relative | (1) Term candidate ban đầu `[Event] Party Registration` (cùng pattern SC_FIRM_SERVICE/LNK_SC_FIRM_BUSINESS_LINE) — **bị loại theo chỉ đạo tường minh của Data Modeler (2026-09-15)**: entity này mô tả năng lực/thuộc tính hiện hành của chính Involved Party Securities Company (dịch vụ nào CTCK đang được cấp phép), không phải sự kiện đăng ký — tái dùng đúng BCV Concept `[Involved Party] Broker Dealer` của entity cha `Securities Company`. (2) Cấu trúc bảng: SC_FIRM_INFO_ID (FK → Securities Company), SERVICE_ID (FK → `Classification Securities Company Firm Service`, retarget theo T1-11 — nguồn `fk_note` còn ghi `cat_service` deprecated), LICENSE_NUMBER/LICENSE_DATE/START_DATE/END_DATE — có attribute nghiệp vụ riêng nên không denormalize ARRAY, nhưng theo quyết định Data Modeler **business key vẫn là composite (SC_FIRM_INFO_ID, SERVICE_ID)** như các bảng link khác trong dự án — không tạo Id/Code riêng cho entity, không map cột `ID` kỹ thuật nguồn (xem pending_design.yaml), không thiết kế `CREATED_AT`/`RECORD_STATUS` (dư thừa với ds_rcrd_eff_dt/ds_rcrd_end_dt của SCD2). (3) Đặt tên theo pattern `_x_` (nêu rõ cả 2 entity liên kết) vì PK là composite 2 FK Id, mirror `lld_NHNCK_APPLICATION_DECISIONS.yaml` và entity `Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship` (NHNCK). Table Type = Relative (SCD2) — khác Fundamental của SC_FIRM_SERVICE vì đây là danh mục hiện hành (state), không phải sự kiện đăng ký/thu hồi. Trả lời dứt điểm mục 6e cũ (7e-04/T2-05). |
+| Involved Party | [Involved Party] Branch | Involved Party | LNK_TRANSACTION_OFFICE_SERVICE | Liên kết phòng giao dịch CTCK với dịch vụ chứng khoán được cấp phép (SC_FIRM_TRANSACTION_OFFICE_ID + SERVICE_ID + RECORD_STATUS) | Securities Company Organization Unit X Classification Securities Company Firm Service Relationship | Relative | (1) **Đảo ngược quyết định denormalize ARRAY trước đây (Overview 7d cũ) theo chỉ đạo tường minh của Data Modeler (2026-09-23)** — mirror chính xác dòng trên (`Securities Company X Classification Securities Company Firm Service Relationship`, LNK_SC_FIRM_SERVICE): tái dùng BCV Concept `[Involved Party] Branch` của entity cha `Securities Company Organization Unit` (thay vì `Party Registration`). (2) Cấu trúc bảng: SC_FIRM_TRANSACTION_OFFICE_ID (FK → Securities Company Organization Unit), SERVICE_ID (FK → `Classification Securities Company Firm Service`), CREATED_AT, RECORD_STATUS — chỉ 2 FK, không có business attribute riêng (khác dòng trên vốn có LICENSE_NUMBER/START_DATE/END_DATE). PK vẫn composite (SC_FIRM_TRANSACTION_OFFICE_ID, SERVICE_ID) — không tạo Id/Code riêng cho entity, không map `ID`/`CREATED_AT`/`RECORD_STATUS` kỹ thuật nguồn (xem pending_design.yaml), nhất quán với `lld_SCMS_LNK_SC_FIRM_SERVICE.yaml` (không khai báo `ds_*` field). (3) Đặt tên theo pattern `_x_`. Table Type = Relative. |
 
 ---
 
@@ -234,6 +235,12 @@ erDiagram
         date START_DATE
         date END_DATE
     }
+    LNK_TRANSACTION_OFFICE_SERVICE {
+        int ID PK
+        int SC_FIRM_TRANSACTION_OFFICE_ID FK
+        int SERVICE_ID FK
+        int RECORD_STATUS
+    }
     FORM_REPORT {
         int ID PK
     }
@@ -317,6 +324,8 @@ erDiagram
     CAT_SERVICE_LEGAL_CAPITAL ||--o{ LNK_SC_FIRM_BUSINESS_LINE : "BUSINESS_LINE_ID"
     SC_FIRM_INFO ||--o{ LNK_SC_FIRM_SERVICE : "SC_FIRM_INFO_ID"
     CAT_SERVICE_LEGAL_CAPITAL ||--o{ LNK_SC_FIRM_SERVICE : "SERVICE_ID"
+    SC_FIRM_TRANSACTION_OFFICE ||--o{ LNK_TRANSACTION_OFFICE_SERVICE : "SC_FIRM_TRANSACTION_OFFICE_ID"
+    CAT_SERVICE_LEGAL_CAPITAL ||--o{ LNK_TRANSACTION_OFFICE_SERVICE : "SERVICE_ID"
     FORM_REPORT ||--o{ REPORT_INPUT_SUBMISSION : "FORM_REPORT_ID"
     FORM_REPORT ||--o{ FORM_SHEET : "FORM_REPORT_ID"
     CAT_EVENT_TYPE ||--o{ LNK_EVENT_TYPE_FORM : "EVENT_TYPE_ID"
@@ -515,6 +524,12 @@ erDiagram
         date start_date
         date end_date
     }
+    Securities_Company_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship {
+        bigint sc_ou_id PK
+        string sc_ou_code
+        bigint cl_sc_firm_service_id PK
+        string cl_sc_firm_service_code
+    }
     Securities_Company_Report_Input_Submission {
         bigint ds_id PK
         bigint sc_report_id FK
@@ -573,6 +588,8 @@ erDiagram
     Classification_Securities_Company_Firm_Service ||--o{ Securities_Company_Business_Transaction_Relationship : "cl_sc_firm_service_id"
     Securities_Company ||--o{ Securities_Company_X_Classification_Securities_Company_Firm_Service_Relationship : "sc_id"
     Classification_Securities_Company_Firm_Service ||--o{ Securities_Company_X_Classification_Securities_Company_Firm_Service_Relationship : "cl_sc_firm_service_id"
+    Securities_Company_Organization_Unit ||--o{ Securities_Company_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship : "sc_ou_id"
+    Classification_Securities_Company_Firm_Service ||--o{ Securities_Company_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship : "cl_sc_firm_service_id"
     Securities_Company_Report ||--o{ Securities_Company_Report_Input_Submission : "sc_report_id"
     Securities_Company_Report ||--o{ Securities_Company_Report_Sheet : "sc_report_id"
     Classification_Securities_Company_Event_Type ||--o{ Classification_Securities_Company_Event_Type_X_Securities_Company_Report_Relationship : "cl_sc_event_tp_id"

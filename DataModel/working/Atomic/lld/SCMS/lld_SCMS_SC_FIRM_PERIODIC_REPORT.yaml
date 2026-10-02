@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Transaction"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -257,15 +257,14 @@ attributes:
   data_type: "timestamp"
 - attribute_name: "Report Submission Status Code"
   physical_name: "rpt_submission_status_code"
-  description: "Trạng thái nộp báo cáo định kỳ: 0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt;\
-    \ -1=Từ chối; 3=Bị hủy."
+  description: "Trạng thái nộp báo cáo định kỳ: 0-Chưa gửi; 1-Gửi đúng hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo cáo."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_PERIODIC_REPORT.RECORD_STATUS"
-  comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10) với giá trị 0/1/2/-1/3."
+  comment: "SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -359,8 +358,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVED_BY) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Hash: hash_id('IAM_USERS', APPROVED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -388,8 +386,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', SENDER_ID) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Hash: hash_id('IAM_USERS', SENDER_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -417,8 +414,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', CANCELLED_BY) | Chưa xác nhận join key SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -476,19 +472,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Summary"
-  physical_name: "summary"
-  description: "Tóm tắt nội dung trích yếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PERIODIC_REPORT.SUMMARY"
-  comment: "NCLOB."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Import File Path"
   physical_name: "import_file_path"
   description: "Đường dẫn file Excel import dữ liệu."
@@ -499,58 +482,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_PERIODIC_REPORT.IMPORT_FILE_PATH"
   comment: "VARCHAR2(2000)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Attachment Path"
-  physical_name: "attachment_path"
-  description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PERIODIC_REPORT.ATTACHMENT_PATH"
-  comment: "NCLOB."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Note"
-  physical_name: "note"
-  description: "Ghi chú bổ sung, không bắt buộc."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PERIODIC_REPORT.NOTE"
-  comment: "NCLOB."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Cancellation Reason"
-  physical_name: "cancellation_reason"
-  description: "Lý do hủy báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLATION_REASON"
-  comment: "NCLOB."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Rejection Reason"
-  physical_name: "rejection_reason"
-  description: "Lý do từ chối báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PERIODIC_REPORT.REJECTION_REASON"
-  comment: "NCLOB."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

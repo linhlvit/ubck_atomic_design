@@ -18,7 +18,7 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Alt Identification của Securities Company Foreign Branch. ETL tạo tối\
-    \ đa 4 rows per chi nhánh nước ngoài (skip nếu number NULL): Row 1 OPERATION_LICENSE\
+    \ đa 4 rows per chi nhánh nước ngoài (skip nếu number NULL): Row 1 ESTABLISHMENT_OPERATION_LICENSE\
     \ (LICENSE_NUMBER + LICENSE_DATE); Row 2 ENTERPRISE_CODE (ENTERPRISE_CODE — không\
     \ có ngày/nơi); Row 3 TAX_ID (TAX_CODE — không có ngày/nơi); Row 4 BUSINESS_LICENSE\
     \ (BUSINESS_REG_CERT + BUSINESS_REG_CERT_DATE). Mỗi loại là 1 block riêng — KHÔNG\
@@ -73,9 +73,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATION_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
-  etl_derived_value: "OPERATION_LICENSE"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
+  etl_derived_value: "ESTABLISHMENT_OPERATION_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -87,7 +87,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_NUMBER"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -100,7 +100,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Type Code"

@@ -1,0 +1,174 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "AF_AUDITOR_PROFILES"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "3 loại giấy tờ/chứng chỉ của kiểm toán viên (Involved Party Individual),\
+    \ theo yêu cầu Data Modeler (2026-09-05, phát hiện AF_AUDITOR_PROFILES là bảng\
+    \ IP nhưng thiếu thiết kế shared entity — trước đây giữ denormalized tại lld_IDS_AF_AUDITOR_PROFILES.yaml):\
+    \ CITIZEN_ID (Số CCCD, từ IDENTITY_NO — nguồn mô tả rõ là CCCD nên KHÔNG dùng\
+    \ default NATIONAL_ID như AF_LEGAL_REPRESENTATIVE), PRACTITIONER_LICENSE (Số GCN\
+    \ đăng ký hành nghề kiểm toán, từ PRACTICE_CERT_NO/PRACTICE_CERT_ISSUE_DATE),\
+    \ AUDITOR_CERTIFICATE (Số chứng chỉ kiểm toán viên, từ AUDIT_CERT_NO/AUDIT_CERT_ISSUE_DATE\
+    \ — value mới bổ sung vào classification_schemes.yaml scheme IP_ALT_ID_TYPE).\
+    \ Header (Involved Party Id/Code/Source System Code) chỉ xuất hiện 1 lần — đúng\
+    \ chuẩn shared entity dùng chung dự án (xem lld_SCMS_SC_FIRM_INFO_IP_Alt_Identification.yaml)."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Audit Firm Auditor (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.ID"
+  comment: "FK target: af_auditor.af_auditor_id. Shared entity — không có PK surrogate\
+    \ riêng. Hash: hash_id('IDS_AF_AUDITOR_PROFILES', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã Audit Firm Auditor."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.ID"
+  comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS_AF_AUDITOR_PROFILES"
+  etl_derived_value: "IDS_AF_AUDITOR_PROFILES"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ — CCCD."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CITIZEN_ID."
+  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
+  etl_derived_value: "CITIZEN_ID"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số CCCD."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.IDENTITY_NO"
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
+  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ — Chứng chỉ hành nghề kiểm toán (CCHN)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode PRACTITIONER_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: "PRACTITIONER_LICENSE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số GCN đăng ký hành nghề kiểm toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_NO"
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp GCN đăng ký hành nghề kiểm toán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_ISSUE_DATE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ — Chứng chỉ kiểm toán viên (CPA)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode AUDITOR_CERTIFICATE — value mới, bổ sung\
+    \ vào classification_schemes.yaml cùng lượt thiết kế này."
+  classification_context: "IP_ALT_ID_TYPE=AUDITOR_CERTIFICATE"
+  etl_derived_value: "AUDITOR_CERTIFICATE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số chứng chỉ kiểm toán viên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_NO"
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
+  classification_context: "IP_ALT_ID_TYPE=AUDITOR_CERTIFICATE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp chứng chỉ kiểm toán viên."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_ISSUE_DATE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=AUDITOR_CERTIFICATE"
+  etl_derived_value: null
+  data_type: "date"

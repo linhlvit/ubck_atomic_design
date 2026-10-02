@@ -18,7 +18,7 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Postal Address của Securities Company Senior Personnel. 1 row per nhân\
-    \ sự cấp cao (ADDRESS text), addr_type_code hardcode HOME — địa chỉ cá nhân. SC_FIRM_SENIOR_PERSONNEL\
+    \ sự cấp cao (ADDRESS text), addr_type_code hardcode PERMANENT — địa chỉ cá nhân. SC_FIRM_SENIOR_PERSONNEL\
     \ không có PROVINCE_ID/DISTRICT_ID/WARD_ID. Format đồng bộ theo chuẩn NHNCK."
 attributes:
 - attribute_name: "Involved Party Id"
@@ -64,16 +64,16 @@ attributes:
   data_type: "string"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
-  description: "Loại địa chỉ: HOME=Địa chỉ cá nhân nhân sự cấp cao."
+  description: "Loại địa chỉ: PERMANENT."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ADDR_TYPE. ETL hardcode HOME — SC_FIRM_SENIOR_PERSONNEL có\
+  comment: "Scheme: IP_ADDR_TYPE. ETL hardcode PERMANENT — SC_FIRM_SENIOR_PERSONNEL có\
     \ 1 cột ADDRESS là địa chỉ cá nhân."
-  classification_context: "IP_ADDR_TYPE=HOME"
-  etl_derived_value: "HOME"
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: "PERMANENT"
   data_type: "string"
 - attribute_name: "Address Value"
   physical_name: "adr_val"
@@ -85,6 +85,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ADDRESS"
   comment: "Không có Province/District/Ward FK."
-  classification_context: "IP_ADDR_TYPE=HOME"
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
