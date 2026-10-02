@@ -535,6 +535,9 @@ schemes:
       - code: "TRANSACTION_OFFICE"
         name: "Địa chỉ phòng giao dịch"
         source_table: null
+      - code: "DISTRIBUTION_AGENT"
+        name: "Đại lý phân phối"
+        source_table: null
 
   - scheme_code: "IP_ALT_ID_TYPE"
     name: null
@@ -543,8 +546,8 @@ schemes:
     used_in_entities:
       - "IP Alt Identification"
     values:
-      - code: "ENTERPRISE_REGISTRATION_CERTIFICATE"
-        name: "Giấy phép đăng ký kinh doanh"
+      - code: "ESTABLISHMENT_OPERATION_LICENSE"
+        name: "Giấy phép thành lập và hoạt động do UBCKNN cấp"
         source_table: null
       - code: "BUSINESS_LICENSE"
         name: "Giấy phép kinh doanh"
@@ -572,12 +575,6 @@ schemes:
         source_table: null
       - code: "NATIONAL_ID"
         name: "CMND"
-        source_table: null
-      - code: "OPERATING_LICENSE"
-        name: "Giấy phép đăng ký/hoạt động (GPDC/GPHĐ)"
-        source_table: null
-      - code: "OPERATION_LICENSE"
-        name: "Giấy phép thành lập và hoạt động do UBCKNN cấp"
         source_table: null
       - code: "PASSPORT"
         name: "Hộ chiếu"
@@ -995,6 +992,8 @@ schemes:
       - "Foreign Fund Management Organization Unit"
       - "Pension Fund"
     values: []
+    deprecated: true
+    deprecated_reason: "FMS.STATUS đã nâng cấp thành Atomic entity thật 'Classification FMS Status' (table_type Relative, HLD FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities #48) — không còn dùng scheme này (2026-10-02). Entity tiêu thụ (Fund Management Company, Investment Fund, Custodian Bank, Foreign Fund Management Organization Unit, Pension Fund) đổi STATUS_ID sang cặp FK Classification FMS Status Id + Code."
 
   - scheme_code: "FMS_ORG_TERRITORY_TYPE"
     name: "Loại tổ chức theo địa giới (trong nước / nước ngoài)"
@@ -1409,6 +1408,7 @@ schemes:
     used_in_entities:
       - "Member Warning Parameter"
       - "Fund Management Conduct Violation"
+      - "Classification FMS Status"
     values:
       - code: "FUND_MANAGEMENT_COMPANY"
         name: "Công ty quản lý quỹ"
