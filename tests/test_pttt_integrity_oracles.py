@@ -242,7 +242,8 @@ def test_oracle_07_group_21_grain_mismatch_empirical():
     Test 7: Kiểm tra trực tiếp bảng opr_corporate_bond_issuer_credit_monitor.csv:
     - issuer_symbol_code lấy security_trading_snapshot.symbol (mã trái phiếu, không phải TCPH pc_code).
     - bond_outstanding_val tính per mã trái phiếu (thiếu SUM GROUP BY pc_id).
-    - Các trường BCTC (total_liabilities_amt, roe_pct, debt_to_equity_ratio) join theo :p_company_id,
+    - Các trường BCTC (total_liabilities_amt, roe_pct, debt_to_equity_ratio) join theo public_company.pc_id
+      (từ 2026-10-02 suy ra từ mã TP qua equity_ticker_symbol = symbol, trước đó là tham số :p_company_id),
       chứng minh rủi ro nhân bản dòng khi 1 TCPH phát hành nhiều mã trái phiếu.
     """
     assert OPR_GRP21_PATH.is_file(), f"Tệp Nhóm 21 không tồn tại: {OPR_GRP21_PATH}"
@@ -257,7 +258,8 @@ def test_oracle_07_group_21_grain_mismatch_empirical():
 
     # Empirical assertions on grain bug
     pk_row = rows["issuer_symbol_code"]
-    assert "security_trading_snapshot.symbol" in pk_row["etl_logic"]
+    assert "bond_snpst.symbol" in pk_row["etl_logic"]  # alias của security_trading_snapshot (dòng trái phiếu)
+    assert "FROM security_trading_snapshot bond_snpst" in pk_row["etl_logic"]
     assert "Symbol" in pk_row["source_attribute"]
 
     val_row = rows["bond_outstanding_val"]
@@ -265,7 +267,9 @@ def test_oracle_07_group_21_grain_mismatch_empirical():
     assert "SUM" not in val_row["etl_logic"].upper()
 
     bctc_row = rows["total_liabilities_amt"]
-    assert "pc_report_submission.pc_id = :p_company_id" in bctc_row["etl_logic"]
+    assert "pc_report_submission.pc_id = public_company.pc_id" in bctc_row["etl_logic"]
+    assert ":p_company_id" not in bctc_row["etl_logic"]
+    assert "public_company.equity_ticker_symbol = bond_snpst.symbol" in bctc_row["etl_logic"]
 
 
 # ==============================================================================

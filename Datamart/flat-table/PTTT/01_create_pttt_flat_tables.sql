@@ -450,13 +450,13 @@ COMMENT 'Flat table — Fact Market Statistics Snapshot × Calendar Date Dimensi
 -- ============================================================
 -- 13. OPERATIONAL: pttt_opr_corporate_bond_issuer_credit_monitor_flat
 --    Danh sách TCPH TPDN kèm chỉ tiêu tín dụng để giám sát rủi ro
---    Grain: 1 row / TCPH / ngày
+--    Grain: 1 row / mã TP / ngày (TCPH xác định qua public_company.equity_ticker_symbol = symbol)
 --    Không JOIN Calendar Date, không JOIN dim nào
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.pttt_opr_corporate_bond_issuer_credit_monitor_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Corporate Bond Issuer Credit Monitor
-    issuer_symbol_code    String                  COMMENT 'PK — mã TCPH (định danh qua mã TP)',
+    issuer_symbol_code    String                  COMMENT 'PK — mã trái phiếu (symbol); TCPH xác định qua public_company.equity_ticker_symbol = symbol',
     snpst_dt               Date                    COMMENT 'PK — ngày thống kê',
     bond_outstanding_val   Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu per TCPH tại ngày t',
     par_val                 Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
