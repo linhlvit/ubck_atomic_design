@@ -465,6 +465,7 @@ SELECT
     f.ticker_symbol,
     f.major_shareholder_ownership_id,
     f.major_shareholder_nm,
+    f.major_shareholder_identification_nbr,
     f.ownership_share_quantity,
     f.ownership_ratio,
     f.closing_ownership_ratio,
@@ -484,6 +485,32 @@ JOIN datamart.cdr_dt_dim snpst_cal
 LEFT JOIN datamart.public_company_dim pc_dim
     ON pc_dim.public_company_dim_id = f.public_company_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 6b. OPERATIONAL: gstt_opr_public_company_insider_ownership_flat
+--    [MỚI 2026-10-01] Current-state — TRUNCATE + INSERT toàn bộ, không lọc theo ngày chạy ETL
+--    (khác Fact Snapshot/Event). Bảng nguồn datamart.opr_public_company_insider_ownership đã lọc
+--    hiệu lực tại ngày chạy ETL.
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.gstt_opr_public_company_insider_ownership_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gstt_opr_public_company_insider_ownership_flat
+SELECT
+    -- From: OPERATIONAL Public Company Insider Ownership
+    o.public_company_entity_role_code,
+    o.public_company_code,
+    o.equity_ticker_symbol,
+    o.legal_entity_code,
+    o.legal_entity_nm,
+    o.ownership_quantity,
+    o.ownership_ratio_percentage,
+    o.ownership_dt,
+    o.position_code,
+    o.position_nm,
+    o.src_stm_code
+
+FROM datamart.opr_public_company_insider_ownership o
 ;
 
 

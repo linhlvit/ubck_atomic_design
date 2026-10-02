@@ -2,7 +2,7 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 8 bảng: 8 fact (bảng operational opr_public_company_shareholding bãi bỏ 2026-09-25)
+-- 9 bảng: 8 fact + 1 operational (opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
 -- Sửa 2026-09-26: bổ sung bảng #7/#8 (Fact HOSE/HNX Securities Trade — Nhóm 43/44 Data Explorer kết xuất sổ lệnh, có cột PII — O_GSTT_36)
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
@@ -464,6 +464,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_major_shareholder_ownership_snpst_f
     ticker_symbol                       String                  COMMENT 'Mã cổ phiếu (K_GSTT_100)',
     major_shareholder_ownership_id      String                  COMMENT 'Định danh cổ đông lớn (không chứa số giấy tờ — PII)',
     major_shareholder_nm                Nullable(String)        COMMENT 'Tên cổ đông (K_GSTT_101)',
+    major_shareholder_identification_nbr Nullable(String)       COMMENT 'Khóa định danh cổ đông — số giấy tờ đã mã hóa tại nguồn, chỉ dùng lọc tooltip cổ đông → mã (K_GSTT_359)',
     ownership_share_quantity            Nullable(Int64)         COMMENT 'Số CP sở hữu tại ngày tham số (K_GSTT_102)',
     ownership_ratio                     Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu (K_GSTT_103)',
     closing_ownership_ratio             Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ sở hữu cuối kỳ (K_GSTT_178, Nhóm 38)',
@@ -481,6 +482,35 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), ticker_symbol, major_shareholder_ownership_id)
 COMMENT 'Flat table — Fact Major Shareholder Ownership Snapshot × Calendar Date × Public Company Dimension'
+;
+
+
+-- ============================================================
+-- 6b. OPERATIONAL: gstt_opr_public_company_insider_ownership_flat
+--    [MỚI 2026-10-01] Nhóm 35 — danh sách người nội bộ (vai trò NNB) của công ty đại chúng
+--    kèm chức vụ + sở hữu (K_GSTT_354–358). 1 row / (công ty × người nội bộ), current-state.
+--    Nguồn Atomic: pc_entity_role (driving) + legal_entity + pc_shareholding + legal_entity_position
+--    + public_company. Không FK Star Schema — Operational denormalized, lọc theo equity_ticker_symbol.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_opr_public_company_insider_ownership_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Public Company Insider Ownership
+    public_company_entity_role_code     String                  COMMENT 'PK — mã vai trò người nội bộ tại công ty (Bảng Tác nghiệp)',
+    public_company_code                 String                  COMMENT 'Mã công ty đại chúng (khóa nghiệp vụ nội bộ)',
+    equity_ticker_symbol                Nullable(String)        COMMENT 'Mã cổ phiếu — khóa lọc danh sách người nội bộ theo mã (K_GSTT_354)',
+    legal_entity_code                   String                  COMMENT 'Mã người nội bộ — tooltip lọc theo mã này',
+    legal_entity_nm                     Nullable(String)        COMMENT 'Tên người nội bộ (K_GSTT_354)',
+    ownership_quantity                  Nullable(Int64)         COMMENT 'Số cổ phiếu người nội bộ nắm giữ (K_GSTT_356) — NULL nếu chưa có dòng sở hữu',
+    ownership_ratio_percentage          Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu của người nội bộ % (K_GSTT_357)',
+    ownership_dt                        Nullable(Date)          COMMENT 'Ngày cập nhật sở hữu của người nội bộ (K_GSTT_358)',
+    position_code                       Array(String)           COMMENT 'Mã chức vụ người nội bộ (K_GSTT_355) — groupUniqArray; lọc has()',
+    position_nm                         Array(String)           COMMENT 'Tên chức vụ người nội bộ (K_GSTT_355, LOOKUP_VALUE_VN) — hiển thị arrayStringConcat()',
+    src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn — IDS_COMPANY_ENTITY_ROLE'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (public_company_entity_role_code)
+COMMENT 'Flat table — Operational Public Company Insider Ownership (current-state, 1 row / công ty × người nội bộ)'
 ;
 
 

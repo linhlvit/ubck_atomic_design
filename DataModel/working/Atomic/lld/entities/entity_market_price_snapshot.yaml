@@ -1,27 +1,27 @@
 schema_type: "entity_consolidation"
 schema_version: "1.0"
 entity:
-  entity_name: "Market Price"
-  physical_name: "market_price"
+  entity_name: "Market Price Snapshot"
+  physical_name: "market_price_snapshot"
   bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"
-  table_type: "Fact Append"
-  etl_pattern: "Fact Append"
+  table_type: "Fact Snapshot"
+  etl_pattern: "Fact Snapshot"
   consolidation_status: "pending"
   consolidated_by: null
   consolidated_at: null
 sources:
 - source_system: "MDDS"
-  source_table: "JAD_TVHISTORY1M"
-  lld_file: "MDDS/lld_MDDS_JAD_TVHISTORY1M.yaml"
+  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
+  lld_file: "MDDS/lld_MDDS_JAD_TRADINGVIEWHISTORY1MIN.yaml"
 - source_system: "MDDS"
-  source_table: "JAD_TVHISTORY1D"
-  lld_file: "MDDS/lld_MDDS_JAD_TVHISTORY1D.yaml"
+  source_table: "JAD_TRADINGVIEWHISTORY1DAY"
+  lld_file: "MDDS/lld_MDDS_JAD_TRADINGVIEWHISTORY1DAY.yaml"
 consolidation_notes:
-- "⚠️ MDDS.JAD_TVHISTORY1D: thiếu attribute 'Processing Time' — đặt nullable=true"
+- "⚠️ MDDS.JAD_TRADINGVIEWHISTORY1DAY: thiếu attribute 'Processing Time' — đặt nullable=true"
 attributes:
-- attribute_name: "Market Price Id"
-  physical_name: "market_price_id"
+- attribute_name: "Market Price Snapshot Id"
+  physical_name: "market_price_snpst_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -31,11 +31,11 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: null
-    MDDS.JAD_TVHISTORY1D: null
-- attribute_name: "Market Price Code"
-  physical_name: "market_price_code"
-  description: "Định danh. PK bảng nguồn. BK."
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: null
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: null
+- attribute_name: "Market Price Snapshot Code"
+  physical_name: "market_price_snpst_code"
+  description: "Định danh. PK bảng nguồn. BK của Snapshot entity."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
@@ -43,8 +43,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.ID"
-    MDDS.JAD_TVHISTORY1D: "MDDS.JAD_TVHISTORY1D.ID"
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.ID"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -53,10 +53,10 @@ attributes:
   is_primary_key: false
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=..."
-  etl_derived_value: "MDDS_JAD_TVHISTORY1M"
+  etl_derived_value: "MDDS_JAD_TRADINGVIEWHISTORY1MIN"
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: null
-    MDDS.JAD_TVHISTORY1D: null
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: null
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: null
 - attribute_name: "Symbol"
   physical_name: "symbol"
   description: "Mã (gồm cả chứng khoán và index)."
@@ -69,8 +69,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.SYMBOL"
-    MDDS.JAD_TVHISTORY1D: "MDDS.JAD_TVHISTORY1D.SYMBOL"
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.SYMBOL"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.SYMBOL"
 - attribute_name: "Trading Date"
   physical_name: "trading_dt"
   description: "Ngày tính toán (dd/MM/yyyy)."
@@ -82,21 +82,22 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.TRADINGDATE"
-    MDDS.JAD_TVHISTORY1D: "MDDS.JAD_TVHISTORY1D.TRADINGDATE"
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.TRADINGDATE"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.TRADINGDATE"
 - attribute_name: "Processing Time"
   physical_name: "processing_time"
   description: "Giờ tính toán (HH:mm)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Chỉ có ở JAD_TVHISTORY1M — JAD_TVHISTORY1D không có cột này. Ở mức entity\
-    \ gộp Market Price, trường này nullable (null ⇔ bản ghi từ nguồn 1DAY)."
+  comment: "Chỉ có ở JAD_TRADINGVIEWHISTORY1MIN — JAD_TRADINGVIEWHISTORY1DAY không\
+    \ có cột này. Ở mức entity gộp Market Price Snapshot, trường này nullable (null\
+    \ ⇔ bản ghi từ nguồn 1DAY)."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.MINUTE"
-    MDDS.JAD_TVHISTORY1D: null
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.MINUTE"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: null
 - attribute_name: "Open Price"
   physical_name: "open_price"
   description: "Giá mở cửa trong phút."
@@ -107,8 +108,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.OPEN"
-    MDDS.JAD_TVHISTORY1D: "MDDS.JAD_TVHISTORY1D.OPEN"
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.OPEN"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.OPEN"
 - attribute_name: "High Price"
   physical_name: "high_price"
   description: "Giá cao nhất trong phút."
@@ -119,8 +120,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.HIGH"
-    MDDS.JAD_TVHISTORY1D: "MDDS.JAD_TVHISTORY1D.HIGH"
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.HIGH"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.HIGH"
 - attribute_name: "Low Price"
   physical_name: "low_price"
   description: "Giá thấp nhất trong phút."
@@ -131,8 +132,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.LOW"
-    MDDS.JAD_TVHISTORY1D: "MDDS.JAD_TVHISTORY1D.LOW"
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.LOW"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.LOW"
 - attribute_name: "Close Price"
   physical_name: "close_price"
   description: "Giá đóng cửa trong phút."
@@ -143,8 +144,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.CLOSE"
-    MDDS.JAD_TVHISTORY1D: "MDDS.JAD_TVHISTORY1D.CLOSE"
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.CLOSE"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.CLOSE"
 - attribute_name: "Volume"
   physical_name: "vol"
   description: "Tổng khối lượng khớp trong phút."
@@ -156,5 +157,5 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    MDDS.JAD_TVHISTORY1M: "MDDS.JAD_TVHISTORY1M.VOLUME"
-    MDDS.JAD_TVHISTORY1D: "MDDS.JAD_TVHISTORY1D.VOLUME"
+    MDDS.JAD_TRADINGVIEWHISTORY1MIN: "MDDS.JAD_TRADINGVIEWHISTORY1MIN.VOLUME"
+    MDDS.JAD_TRADINGVIEWHISTORY1DAY: "MDDS.JAD_TRADINGVIEWHISTORY1DAY.VOLUME"

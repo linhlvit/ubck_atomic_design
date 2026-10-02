@@ -1,7 +1,8 @@
-# DTM_GSTT_HLD — v4.23
+# DTM_GSTT_HLD — v4.24
 
-**Phiên bản:** 4.23
-**Ngày cập nhật:** 2026-09-23
+**Phiên bản:** 4.24
+**Ngày cập nhật:** 2026-10-01
+**Thay đổi v4.24 (thiết kế lại Nhóm 35 theo BA mapping lại 2026-10-01 — Data Modeler duyệt Operational + coi dòng 513 READY):** (1) K_GSTT_120/121 đổi lại sang **%** (BA đổi từ SỐ CP). (2) Quy tắc chọn kỳ cổ đông lớn K_GSTT_102/103/177 đổi sang as-of **theo từng mã** (SQL BA mới) — Fact dùng chung Nhóm 38. (3) Đổi tên K_GSTT_103 → "Tỷ lệ sở hữu của cổ đông lớn", K_GSTT_177 → "Ngày cập nhật của cổ đông lớn". (4) Khai sinh bảng Tác nghiệp mới `Operational Public Company Insider Ownership` (Section 1 Cụm 3b, Section 3.3, Section 4) + 5 KPI K_GSTT_354–358 (Tên/Chức vụ/Sở hữu/Tỷ lệ/Ngày cập nhật của người nội bộ, nguồn IDS). (5) Bỏ K_GSTT_103b (BA không còn dòng, thay bằng K_GSTT_356); K_GSTT_104 chuyển khai sinh sang Nhóm 38. (6) Sửa Section 3: `Fact Major Shareholder Ownership Snapshot` chuyển từ 3.3 (Tác nghiệp) sang 3.2 (Phân tích). (7) Rà soát cột E/S của BA: K_GSTT_355 hiển thị tên chức vụ (`LOOKUP_VALUE_VN`) → thêm cột `position_nm` (JOIN `cl_value` scheme `IDS_POSITION`). Open Issue mới O_GSTT_53–55, cập nhật O_GSTT_31.
 **Thay đổi v4.23 (thiết kế lại Nhóm 30/31 cũ thành Nhóm 30/31/32/33 theo BA 2026-09-23 — Data Modeler duyệt):** BA tách STT 28 cũ (GT ròng theo NĐT) thành STT 28 (theo **Chỉ số**) + STT 29 (theo **Mã CK**), STT 29 cũ (bản đồ nhiệt) thành STT 30 (theo Mã CK) + STT 31 (theo Chỉ số); khối "Biểu đồ phân tích kỹ thuật" (Nhóm 32 bản trước) bị BA gán chung STT 31 → theo quyết định Data Modeler **gộp vào Nhóm 33** (mockup (a)/(b)), mở O_GSTT_29 chờ BA tách STT. **Đánh số lại** cơ học toàn file: Nhóm/STT 30→31, 31→32, 32→33, 33→34, 34→35, 35→36 (kể cả ghi chú lịch sử và Section 3/4/5 — tham chiếu cũ trong các mục "Thay đổi v4.x" phía dưới đã được đổi theo số mới). **Fact mới** `Fact Investor Category Index Trading Snapshot` (Cụm 1d, grain Index Code × ngày × Phân loại NĐT, 6 measure GT + 3 measure giá chỉ số) cho Nhóm 30/33; Nhóm 31/32 reuse `Fact Investor Category Trading Snapshot`. Toggle "Khớp lệnh" = swap KPI (không CASE tham số). KPI mới K_GSTT_161–169; DEPRECATED K_GSTT_86/87/88/89/152 (BA không còn dòng); gỡ K_GSTT_27/28/29/83/77 khỏi Nhóm 30–33. LLD (Attributes + master + `datamart_model.yaml`), Detail Mapping Nhóm 30–33 và Flat Table (#5b) đã đồng bộ 2026-09-23. Kèm đồng bộ cột `idx_market_index_val` trên `Fact Index Constituent Snapshot` (xem Cụm 1b). **[BỔ SUNG 2026-09-23]** Đổi khóa lookup điểm chỉ số từ `Index Name = Index Code` (sai) sang `Market Code = Index Code` theo bảng mô tả jadapter do Data Modeler cung cấp — áp dụng K_GSTT_35 Nhóm 6/30/33/39, K_GSTT_38/39 Nhóm 30/33, `Fact Investor Category Index Trading Snapshot` (3 cột giá), `Fact Index Constituent Snapshot.idx_market_index_val`; O_GSTT_30 Resolved. **[BỔ SUNG 2026-09-23 — rà soát BA↔Detail Mapping toàn module]** Nhóm 27: sửa sai measure KLNN → GTNN (K_GSTT_72/73/77 thay 70/71/19). Bổ sung KPI bị bỏ sót: Nhóm 7 K_GSTT_11, Nhóm 25 K_GSTT_12, Nhóm 24 K_GSTT_9 + K_GSTT_170–174 (mới), Nhóm 36 K_GSTT_175/176 (mới, mốc 4 tuần). **[BỔ SUNG 2026-09-23 — BA 37 Nhóm]** BA tách PTKT sang STT 32 → HLD/Detail Mapping tách Nhóm 33 (bản đồ nhiệt theo chỉ số, 14 KPI) và Nhóm 34 (Biểu đồ phân tích kỹ thuật, 14 KPI, K_GSTT_4 có dòng riêng); đánh số lại Nhóm 32→33 … 36→37.
 **Thay đổi v4.22 (rà soát toàn diện mọi chỉ tiêu "khớp lệnh"/"thỏa thuận" trong module — phát hiện qua yêu cầu trực tiếp user "rà soát để case vừa rồi không lặp lại"):** Quét toàn bộ BA_analyst_GSTT.csv (24 dòng có "khớp lệnh"/"thỏa thuận" trong tên chỉ tiêu) đối chiếu Detail Mapping/HLD từng dòng. Phát hiện + sửa:
 1. **Tên hiển thị sót "khớp lệnh" (logic đã đúng từ trước, chỉ tên chưa đổi):** `K_GSTT_134` (Nhóm 11, "GTGD"→"GTGD khớp lệnh"), `K_GSTT_14` tại Nhóm 23 ("GTGD"→"GTGD khớp lệnh") và Nhóm 24 ("Giá trị giao dịch"→"Giá trị giao dịch khớp lệnh").
@@ -235,7 +236,7 @@ flowchart LR
 >
 > **[GHI CHÚ 2026-09-07] Nguồn mới `Market Price Snapshot` chưa dùng được cho Fact này:** MDDS đã bổ sung Atomic entity `market_price_snapshot` (MDDS.JAD_TRADINGVIEWHISTORY1MIN/1DAY — nến OHLCV thật theo phút/ngày, đã dùng để thiết kế lại `Fact Security Trading Intraday` ở Nhóm 34, xem O_GSTT_11) — về nguyên tắc phù hợp hơn nguồn `Market Index Snapshot` hiện tại (tránh phải dùng `LAG()` trừ giá trị lũy kế để suy ra `Total Value At Time`). Tuy nhiên **chưa áp dụng được**: `market_price_snapshot.symbol` (định danh dạng TradingView, VD dự đoán "VNINDEX") không có join key xác nhận với `Market Index Dimension` (định danh theo `Market Code`/`Market Id` — HOSE/HNX/UPCOM) — cùng gap đã ghi nhận ở dòng ~100 ("2 hệ định danh khác nhau... PENDING xác nhận nghiệp vụ"). `BRD/Source/MDDS/brd_MDDS_JAD_TRADINGVIEWHISTORY1MIN.yaml` không có sample giá trị `SYMBOL` nào để verify. Giữ nguyên thiết kế hiện tại cho tới khi nghiệp vụ xác nhận mapping `symbol`↔`Market Code`.
 
-##### Cụm 3: Sở hữu và giao dịch nội bộ (`Fact Major Shareholder Ownership Snapshot`)
+##### Cụm 3a: Cổ đông lớn (`Fact Major Shareholder Ownership Snapshot`)
 
 ```mermaid
 flowchart LR
@@ -261,6 +262,45 @@ flowchart LR
 ```
 
 > **[THIẾT KẾ LẠI 2026-09-25]** Phục vụ Nhóm 35 và Nhóm 38 — BA chuyển nguồn cổ đông lớn sang VSDC `major_shareholder` (số liệu theo kỳ đầu/cuối, chọn theo ngày tham số). Thay `Operational Public Company Shareholding` (IDS `COMPANY_SHAREHOLDING`, đã bãi bỏ). Nối chức vụ IDS qua Số giấy tờ (chỉ trong ETL — không đưa PII lên Datamart).
+
+##### Cụm 3b: Người nội bộ (`Operational Public Company Insider Ownership`)
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S3E["IDS.COMPANY_ENTITY_ROLE"]
+        S3F["IDS.LEGAL_ENTITIES"]
+        S3G["IDS.COMPANY_SHAREHOLDING"]
+        S3B["IDS.POSITIONS"]
+        S3H["IDS.COMPANY_PROFILES"]
+        S3I["IDS.LOOKUP_VALUES"]
+    end
+    subgraph SIL["Atomic"]
+        A3E["Public Company Entity Role"]
+        A3F["Legal Entity"]
+        A3G["Public Company Shareholding"]
+        A3B["Legal Entity Position"]
+        A3H["Public Company"]
+        A3I["Classification Value"]
+    end
+    subgraph GOLD["Datamart"]
+        opr_public_company_insider_ownership["Operational Public Company Insider Ownership"]
+    end
+    S3E --> A3E
+    S3F --> A3F
+    S3G --> A3G
+    S3B --> A3B
+    S3H --> A3H
+    S3I --> A3I
+    A3E --> opr_public_company_insider_ownership
+    A3F --> opr_public_company_insider_ownership
+    A3G --> opr_public_company_insider_ownership
+    A3B --> opr_public_company_insider_ownership
+    A3H --> opr_public_company_insider_ownership
+    A3I --> opr_public_company_insider_ownership
+```
+
+> **[MỚI 2026-10-01]** Phục vụ Nhóm 35 (danh sách người nội bộ). Driving = `Public Company Entity Role` (`role_tp_code = 'NNB'`), LEFT JOIN `Public Company Shareholding` theo (`pc_id`, `legal_entity_id`) và `Legal Entity Position` theo `legal_entity_id` (đúng SQL BA). Bảng Tác nghiệp current-state (Atomic `pc_shareholding`/`legal_entity_position` là SCD4A, BA không có tham số ngày) — Data Modeler duyệt 2026-10-01.
 
 ##### Cụm 4a: Kết xuất sổ lệnh HOSE (`Fact HOSE Securities Trade`)
 
@@ -2896,35 +2936,58 @@ flowchart LR
 #### Nhóm 35 - Sở hữu và giao dịch nội bộ
 
 > **Phân loại:** Dashboard
-> **[THIẾT KẾ LẠI 2026-09-25, theo BA cập nhật — thay thiết kế 2026-09-12 đã outdate]** BA chuyển nguồn cổ đông lớn từ IDS `COMPANY_SHAREHOLDING` sang **VSDC `major_shareholder`** (số liệu theo kỳ đầu/cuối, chọn kỳ theo ngày tham số), Sở hữu NN/trong nước đổi sang **số cổ phiếu**, bổ sung chỉ tiêu "Ngày cập nhật". Thiết kế mới: **`Fact Major Shareholder Ownership Snapshot`** (grain 1 mã CK × 1 cổ đông lớn × 1 ngày) — Fact theo ngày vì kết quả phụ thuộc ngày tham số (không dùng được bảng Operational current-state). `Operational Public Company Shareholding` (IDS) **giữ nguyên cho Nhóm 38**, Nhóm 35 không còn dùng.
+> **[THIẾT KẾ LẠI 2026-10-01, theo BA mapping lại Nhóm 35 — thay thiết kế 2026-09-25/30]** Màn hình gồm **2 danh sách**: (a) **cổ đông lớn** của mã (nguồn VSDC `major_shareholder`, có tooltip "xoay ngược" từ cổ đông ra các mã) và (b) **người nội bộ** của mã (nguồn IDS: `company_entity_role` vai trò `NNB` + `positions` + `company_shareholding`). BA 12 dòng (10 dòng STT 35 + 2 dòng 509/513 thiếu STT — xem O_GSTT_53) ↔ 12 KPI + 1 KPI kỹ thuật không có dòng BA (K_GSTT_359, khóa tooltip cổ đông → mã, thêm 2026-10-01). Thay đổi so với bản trước:
+> - **K_GSTT_120/121 đổi lại sang %** (BA dòng 503/504: `(current_shares_foreign_hold/total_issued_shares)*100`) — trước đây là SỐ CP.
+> - **Quy tắc chọn kỳ cổ đông lớn đổi** (BA dòng 505–508, SQL mới): mốc as-of tính **theo từng mã** (`MAX` các ngày `begin/end ≤ :todate`), chỉ giữ cổ đông có kỳ chạm mốc đó; trước đây chọn theo từng cổ đông. Fact dùng chung với Nhóm 38 nên áp dụng cho cả 2 — xem O_GSTT_54.
+> - **Phần người nội bộ chuyển hẳn sang IDS** (BA dòng 509–513): bảng Tác nghiệp mới **`Operational Public Company Insider Ownership`** (K_GSTT_354–358). K_GSTT_103b (VSDC, lọc có chức vụ) **bỏ** — BA không còn dòng này (thay bằng K_GSTT_356 nguồn IDS). Giữ gap theo quy tắc rút scope.
+> - **K_GSTT_104** (chức vụ của cổ đông lớn, nối VSDC `id_number` ↔ IDS `identity_no`) không còn dòng BA ở Nhóm 35 (BA bỏ mô tả nối `id_number`) — **chuyển khai sinh sang Nhóm 38** (Nhóm 38 vẫn dùng), cột `position_code` trên Fact cổ đông lớn giữ nguyên.
+> - Đổi tên theo BA: K_GSTT_103 → "Tỷ lệ sở hữu của cổ đông lớn", K_GSTT_177 → "Ngày cập nhật của cổ đông lớn" (Nhóm 38 reuse vẫn gọi tên cũ — cùng KPI).
+> - Tooltip cổ đông → mã và tooltip người nội bộ **không thêm bảng** (tooltip cổ đông chỉ thêm 1 cột khóa vào Fact hiện có): tooltip cổ đông lọc `major_shareholder_identification_nbr` (K_GSTT_359 — cột khóa mới 2026-10-01, số giấy tờ đã mã hóa tại nguồn) trên Fact hiện có; tooltip người nội bộ lọc `legal_entity_code` trên bảng Tác nghiệp (Case 2 — hiển thị BI).
 > Atomic:
 > - `Major Shareholder Ownership` (`major_shareholder_ownership`) ← VSDC `major_shareholder` — **READY (mapping md)** `mapping_vsdc_ods_atm.md` Bảng 5, BK `ticker_symbol + identification_nbr`; chưa có YAML/manifest (Gate 0 WARNING, ngoại lệ mapping md như `foreign_ownership_info`)
-> - `Foreign Ownership Info` ← VSDC `foreign_investor_info` — READY (mapping md) — dùng qua `Fact Public Company Foreign Ownership Snapshot` (NDTNN, reuse) cho K_GSTT_120/121; **KHÔNG còn JOIN vào Fact cổ đông lớn** (xem O_GSTT_50)
-> - `IP Alternative Identification` ← IDS.IDENTITY (`identification_nbr` = `IDENTITY_NO`) + `Legal Entity Position` ← IDS.POSITIONS + `Public Company` ← IDS.COMPANY_PROFILES — READY (draft) — cầu nối chức vụ
-> **PII:** Số giấy tờ định danh (`identification_nbr`) chỉ dùng trong ETL để nối sang IDS, **không** đưa lên Datamart/flat table (NĐ 13/2023) — grain key dùng `major_shareholder_ownership_id` của Atomic.
-> **[SỬA 2026-09-30 — O_GSTT_50, sửa lỗi nhân dòng]** K_GSTT_120/121 là số liệu cấp CÔNG TY (1 mã × 1 ngày) nên KHÔNG đặt trên Fact cổ đông lớn (grain mã × cổ đông × ngày) nữa — trước đây lặp trên mọi dòng cổ đông cùng mã. Nay đọc từ `Fact Public Company Foreign Ownership Snapshot` (NDTNN, reuse); BI ghép 2 Fact qua `Public Company Dimension` + `Calendar Date Dimension` (drill-across). Snapshot NDTNN keyed theo `ds_snpst_dt` VSDC — ngày tham số không có snapshot thì lấy snapshot mới nhất ≤ ngày (as-of) ở lớp BI.
+> - `Foreign Ownership Info` ← VSDC `foreign_investor_info` — READY (mapping md) — dùng qua `Fact Public Company Foreign Ownership Snapshot` (NDTNN, reuse) cho K_GSTT_120/121
+> - `Public Company Entity Role` (`pc_entity_role`) ← IDS.COMPANY_ENTITY_ROLE — **Nguồn 2, draft** (`lld_IDS_COMPANY_ENTITY_ROLE.yaml`, `role_tp_code`) — driving của danh sách người nội bộ (`role_tp_code = 'NNB'`)
+> - `Legal Entity` (`legal_entity`) ← IDS.LEGAL_ENTITIES — **Nguồn 2, draft** (`lld_IDS_LEGAL_ENTITIES.yaml`, `legal_entity_nm`) — Tên người nội bộ
+> - `Public Company Shareholding` (`pc_shareholding`) ← IDS.COMPANY_SHAREHOLDING — **Nguồn 1, draft** (`ownership_quantity`, `ownership_ratio_percentage`, `ownership_dt`, `deleted_ind`)
+> - `Legal Entity Position` (`legal_entity_position`) ← IDS.POSITIONS — **Nguồn 1, draft** (`position_code`, `deleted_ind`)
+> - `Public Company` (`public_company`) ← IDS.COMPANY_PROFILES — Nguồn 1 (mã cổ phiếu cho bảng Tác nghiệp)
+> - `Classification Value` (`cl_value`, scheme `IDS_POSITION` ← IDS.LOOKUP_VALUES nhóm `POSITION`) — Nguồn 1 — tên chức vụ (`LOOKUP_VALUE_VN`) cho K_GSTT_355
+> **PII:** Số giấy tờ định danh VSDC (`id_number` → `identification_nbr`) đã được **mã hóa từ nguồn** (Data Modeler xác nhận 2026-10-01) nên được phép đưa lên Fact dưới dạng đã mã hóa, duy nhất làm khóa tooltip cổ đông → mã (`major_shareholder_identification_nbr`, K_GSTT_359) — không hiển thị, không giải mã. Grain key Fact cổ đông lớn vẫn dùng `major_shareholder_ownership_id` của Atomic. Bảng Tác nghiệp người nội bộ không kéo `business_registration_nbr`/số giấy tờ.
+> **[SỬA 2026-09-30 — O_GSTT_50, sửa lỗi nhân dòng]** K_GSTT_120/121 là số liệu cấp CÔNG TY (1 mã × 1 ngày) nên KHÔNG đặt trên Fact cổ đông lớn (grain mã × cổ đông × ngày). Đọc từ `Fact Public Company Foreign Ownership Snapshot` (NDTNN, reuse); BI ghép 2 Fact qua `Public Company Dimension` + `Calendar Date Dimension` (drill-across). Snapshot NDTNN keyed theo `ds_snpst_dt` VSDC — ngày tham số không có snapshot thì lấy snapshot mới nhất ≤ ngày (as-of) ở lớp BI.
 
 **Mockup:**
 
-| Mã cổ phiếu | Tên cổ đông | Số cổ phiếu sở hữu | Sở hữu nước ngoài | Sở hữu trong nước | Tỷ lệ sở hữu | Ngày cập nhật | Chức vụ người nội bộ | Sở hữu cổ đông lớn của người nội bộ |
-|---|---|---|---|---|---|---|---|---|
-| VCB | Nguyễn Văn A | 1.500.000 | 1.250.000.000 | 4.330.000.000 | 1.85% | 20/08/2025 | Thành viên HĐQT | 1.500.000 |
+(a) Danh sách cổ đông lớn (tooltip: từ cổ đông ra danh sách mã)
 
-**Source:** `Fact Major Shareholder Ownership Snapshot` → `Calendar Date Dimension`, `Public Company Dimension`; `Fact Public Company Foreign Ownership Snapshot` (reuse NDTNN) → `Calendar Date Dimension`, `Public Company Dimension`
+| Mã cổ phiếu | Tên cổ đông | Số cổ phiếu sở hữu | Sở hữu nước ngoài | Sở hữu trong nước | Tỷ lệ sở hữu | Ngày cập nhật |
+|---|---|---|---|---|---|---|
+| VCB | Nguyễn Văn A | 1.500.000 | 22,5% | 77,5% | 1,85% | 20/08/2025 |
+
+(b) Danh sách người nội bộ (tooltip: chi tiết người nội bộ)
+
+| Tên người nội bộ | Chức vụ người nội bộ | Sở hữu của người nội bộ | Tỷ lệ sở hữu của người nội bộ | Ngày cập nhật |
+|---|---|---|---|---|
+| Trần Văn B | Thành viên HĐQT | 250.000 | 0,03% | 15/07/2025 |
+
+**Source:** `Fact Major Shareholder Ownership Snapshot` → `Calendar Date Dimension`, `Public Company Dimension`; `Fact Public Company Foreign Ownership Snapshot` (reuse NDTNN) → `Calendar Date Dimension`, `Public Company Dimension`; `Operational Public Company Insider Ownership` (bảng Tác nghiệp, không FK Dimension)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_GSTT_100 | Mã cổ phiếu | — | Chiều | `fct_major_shareholder_ownership_snpst.ticker_symbol` | BA dòng 460 `major_shareholder.ticker_symbol` | READY |
-| K_GSTT_101 | Tên cổ đông | — | Chiều | `fct_major_shareholder_ownership_snpst.major_shareholder_nm` | BA dòng 461 `shareholder_name` | READY |
-| K_GSTT_102 | Số cổ phiếu sở hữu | Cổ phiếu | Phái sinh | `CASE WHEN :p_date >= closing_balance_date THEN closing_share_quantity WHEN :p_date >= opening_balance_date THEN opening_share_quantity END` → `fct_major_shareholder_ownership_snpst.ownership_share_quantity` | BA dòng 462 — bảng VSDC lưu theo kỳ (đầu kỳ → cuối kỳ); tham số rơi vào kỳ nào lấy số của mốc đó. Tính sẵn tại ETL theo `:etl_date` | READY |
-| K_GSTT_120 | Sở hữu nước ngoài | Cổ phiếu | Phái sinh | `Fact Public Company Foreign Ownership Snapshot.Current Foreign Holding Quantity` (cấp công ty: 1 mã CK × 1 ngày) | **[SỬA 2026-09-30 — O_GSTT_50]** BA dòng 505 `foreign_investor_info.current_shares_foreign_hold` (SỐ CP). Reuse Fact NDTNN thay vì lưu trên Fact cổ đông lớn (tránh lặp theo cổ đông). Ghép với Fact cổ đông lớn qua `Public Company Dimension` + ngày (as-of); KHÔNG SUM theo công ty | READY |
-| K_GSTT_121 | Sở hữu trong nước | Cổ phiếu | Phái sinh | `Fact Public Company Foreign Ownership Snapshot.Total Issued Share Quantity − Fact Public Company Foreign Ownership Snapshot.Current Foreign Holding Quantity` (cấp công ty) | **[SỬA 2026-09-30 — O_GSTT_50]** BA dòng 506 `total_issued_shares − current_shares_foreign_hold` (SỐ CP). Tính từ Fact NDTNN, cùng ghi chú K_GSTT_120 | READY |
-| K_GSTT_103 | Tỷ lệ sở hữu | % | Phái sinh | `CASE … closing_ratio / opening_ratio END` → `fct_major_shareholder_ownership_snpst.ownership_ratio` | BA dòng 465 — cùng quy tắc chọn kỳ K_GSTT_102 | READY |
-| K_GSTT_177 | Ngày cập nhật | Ngày | Phái sinh | `CASE … closing_balance_date / opening_balance_date END` → `fct_major_shareholder_ownership_snpst.ownership_update_dt` | **[MỚI 2026-09-25]** BA dòng 466 — trước đây chưa có KPI (S4). Ngày của mốc kỳ được chọn | READY |
-| K_GSTT_104 | Chức vụ người nội bộ | — | Chiều | `arrayStringConcat(fct_major_shareholder_ownership_snpst.position_code, ', ')` | BA dòng 467 — nối VSDC `id_number` ↔ IDS `IDENTITY.identity_no` (`ip_alternative_identification.identification_nbr`) → `legal_entity_position` của công ty cùng mã, còn hiệu lực tại ngày tham số (`appointment_dt ≤ ngày < dismissal_dt`). Array — lọc `has()`, hiển thị `arrayStringConcat()` | READY |
-| K_GSTT_103b | Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo | Cổ phiếu | Cơ sở | `fct_major_shareholder_ownership_snpst.ownership_share_quantity` WHERE `notEmpty(fct_major_shareholder_ownership_snpst.position_code)` | **[SỬA 2026-09-25]** BA dòng 468 — cùng công thức số CP dòng 462 (đổi từ tỷ lệ sang SỐ CP); "người nội bộ" = có chức vụ IDS còn hiệu lực (nguồn VSDC không có cờ insider). BA note còn đánh giá IDS hay VSDC — xem O_GSTT_31 | READY |
+| K_GSTT_100 | Mã cổ phiếu | — | Chiều | `fct_major_shareholder_ownership_snpst.ticker_symbol` | BA dòng 502 `major_shareholder.ticker_symbol`. Cũng là khóa lọc danh sách người nội bộ qua cột `equity_ticker_symbol` của `opr_public_company_insider_ownership` (K_GSTT_354–358) | READY |
+| K_GSTT_120 | Sở hữu nước ngoài | % | Phái sinh | `Fact Public Company Foreign Ownership Snapshot.Current Foreign Holding Quantity / NULLIF(Fact Public Company Foreign Ownership Snapshot.Total Issued Share Quantity, 0) × 100` (cấp công ty: 1 mã CK × 1 ngày) | **[SỬA 2026-10-01 — BA đổi lại sang %]** BA dòng 503 `foreign_investor_info` `(current_shares_foreign_hold/total_issued_shares)*100`. Case 2 — tính tại BI từ 2 measure vật lý có sẵn của Fact NDTNN, không lưu cột %. Mẫu số 0/NULL → NULL. Ghép với Fact cổ đông lớn qua `Public Company Dimension` + ngày (as-of); KHÔNG SUM theo công ty | READY |
+| K_GSTT_121 | Sở hữu trong nước | % | Phái sinh | `(Fact Public Company Foreign Ownership Snapshot.Total Issued Share Quantity − Fact Public Company Foreign Ownership Snapshot.Current Foreign Holding Quantity) / NULLIF(Fact Public Company Foreign Ownership Snapshot.Total Issued Share Quantity, 0) × 100` (cấp công ty) | **[SỬA 2026-10-01 — BA đổi lại sang %]** BA dòng 504 `(total_issued_shares - current_shares_foreign_hold)/total_issued_shares*100`. Cùng ghi chú K_GSTT_120 | READY |
+| K_GSTT_101 | Tên cổ đông | — | Chiều | `fct_major_shareholder_ownership_snpst.major_shareholder_nm` | BA dòng 505 `shareholder_name`. Tooltip "xoay ngược từ cổ đông ra mã": BI lọc theo khóa `major_shareholder_identification_nbr` (K_GSTT_359) = cổ đông được chọn trên cùng ngày, liệt kê mọi mã kèm K_GSTT_100/102/103/177 (Fact đã chứa mọi mã); `major_shareholder_nm` chỉ để hiển thị — không đối chiếu theo tên vì trùng tên/khác cách viết — xem O_GSTT_54 | READY |
+| K_GSTT_102 | Số cổ phiếu sở hữu | Cổ phiếu | Phái sinh | `CASE WHEN asof_dt = closing_balance_date THEN closing_share_quantity ELSE opening_share_quantity END` → `fct_major_shareholder_ownership_snpst.ownership_share_quantity` | **[SỬA 2026-10-01]** BA dòng 506 (SQL mới). `asof_dt` = `MAX` các ngày `opening/closing_balance_date ≤ :p_date` **theo từng mã**; chỉ giữ cổ đông có `opening` hoặc `closing = asof_dt`; trùng ngày ưu tiên số cuối kỳ. SQL BA có lỗi gõ (`a.snapshot_date` không tồn tại trong CTE `asof`; `a.snapshot_date = ms.end_period_shares` so ngày với số CP) — thiết kế theo ý định (so `asof_dt` với `end_period_date`). Tính sẵn tại ETL theo `:etl_date` — xem O_GSTT_54 | READY |
+| K_GSTT_103 | Tỷ lệ sở hữu của cổ đông lớn | % | Phái sinh | `CASE WHEN asof_dt = closing_balance_date THEN closing_ratio ELSE opening_ratio END` → `fct_major_shareholder_ownership_snpst.ownership_ratio` | **[SỬA 2026-10-01]** BA dòng 507 — đổi tên từ "Tỷ lệ sở hữu"; cùng quy tắc chọn kỳ K_GSTT_102 | READY |
+| K_GSTT_177 | Ngày cập nhật của cổ đông lớn | Ngày | Phái sinh | `asof_dt` → `fct_major_shareholder_ownership_snpst.ownership_update_dt` | **[SỬA 2026-10-01]** BA dòng 508 — đổi tên từ "Ngày cập nhật"; = mốc as-of của mã (`updated_date` trong SQL BA) | READY |
+| K_GSTT_354 | Tên người nội bộ | — | Chiều | `opr_public_company_insider_ownership.legal_entity_nm` | **[MỚI 2026-10-01]** BA dòng 509 `legal_entities.ENTITY_NAME` (dòng thiếu STT/Phân loại — O_GSTT_53). Danh sách = người có vai trò `ROLE_TYPE_CD = 'NNB'` tại công ty (`pc_entity_role.role_tp_code = 'NNB'`), lọc theo mã qua `equity_ticker_symbol` (K_GSTT_100). Tooltip: lọc `legal_entity_code` trên cùng bảng | READY |
+| K_GSTT_355 | Chức vụ người nội bộ | — | Chiều | `arrayStringConcat(opr_public_company_insider_ownership.position_nm, ', ')` | **[MỚI 2026-10-01, SỬA sau rà soát cột E/S]** BA dòng 510 — Trường nguồn `LOOKUP_VALUE_VN` (Bảng nguồn `LOOKUP_VALUES` nhóm `POSITION`) → hiển thị **tên chức vụ**: `position_nm` = `cl_value.cl_nm` (scheme `IDS_POSITION`); `position_code` giữ làm khóa lọc `has()`. Nối theo `legal_entity_id`, `deleted_ind = 0` — **đúng SQL BA** (chỉ nối `le.id`, không lọc `ACTIVE_FLG`, không nối theo công ty; Data Modeler duyệt 2026-10-01, O_GSTT_55). Array. Khác K_GSTT_104 (chức vụ của cổ đông lớn VSDC, Nhóm 38) | READY |
+| K_GSTT_356 | Sở hữu của người nội bộ | Cổ phiếu | Cơ sở | `opr_public_company_insider_ownership.ownership_quantity` | **[MỚI 2026-10-01]** BA dòng 511 `company_shareholding.OWNERSHIP_QTY`, nối `pc_shareholding` cùng (`pc_id`, `legal_entity_id`) như BA (`csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID`), `deleted_ind = 0`. LEFT JOIN: người nội bộ chưa có dòng sở hữu → NULL (vẫn hiện trong danh sách). Thay K_GSTT_103b (VSDC) đã bỏ | READY |
+| K_GSTT_357 | Tỷ lệ sở hữu của người nội bộ | % | Cơ sở | `opr_public_company_insider_ownership.ownership_ratio_percentage` | **[MỚI 2026-10-01]** BA dòng 512 `company_shareholding.OWNERSHIP_RATIO`, cùng điều kiện nối K_GSTT_356 | READY |
+| K_GSTT_358 | Ngày cập nhật của người nội bộ | Ngày | Cơ sở | `opr_public_company_insider_ownership.ownership_dt` | **[MỚI 2026-10-01]** BA dòng 513 `company_shareholding.OWNERSHIP_DATE` — đúng Trường nguồn, lấy bản ghi sở hữu mới nhất (`ownership_dt` lớn nhất theo (công ty, người nội bộ)) (dòng thiếu STT/Phân loại và `Trạng thái mapping` trống — Data Modeler duyệt coi READY 2026-10-01, BA bổ sung sau — O_GSTT_53) | READY |
+| K_GSTT_359 | Khóa định danh cổ đông (tooltip) | — | Chiều | `fct_major_shareholder_ownership_snpst.major_shareholder_identification_nbr` | **[MỚI 2026-10-01]** Khóa kỹ thuật cho tooltip xoay ngược cổ đông → mã của K_GSTT_101: BI lọc `major_shareholder_identification_nbr` = cổ đông được chọn (cùng ngày tham số), liệt kê mọi mã kèm K_GSTT_100/102/103/177. Nguồn VSDC `major_shareholder.id_number` đã **mã hóa từ nguồn** (Data Modeler xác nhận 2026-10-01) nên không coi là PII thô; không hiển thị trên báo cáo, không giải mã. Không có dòng BA riêng — kỹ thuật phục vụ BA dòng 505 (SQL BA có chọn `id_number`). Thay đối chiếu theo tên (O_GSTT_54 mục 3). Yêu cầu: mã hóa xác định (cùng số giấy tờ → cùng chuỗi) trên mọi mã CK | READY |
 
 **Star Schema:**
 
@@ -2948,6 +3011,7 @@ erDiagram
         string Ticker_Symbol
         string Major_Shareholder_Ownership_Id
         string Major_Shareholder_Name
+        string Major_Shareholder_Identification_Nbr
         bigint Ownership_Share_Quantity
         decimal Ownership_Ratio
         date Ownership_Update_Date
@@ -2967,11 +3031,27 @@ erDiagram
         string Source_System_Code
     }
 
+    Operational_Public_Company_Insider_Ownership {
+        string Public_Company_Entity_Role_Code PK
+        string Public_Company_Code
+        string Equity_Ticker_Symbol
+        string Legal_Entity_Code
+        string Legal_Entity_Name
+        bigint Ownership_Quantity
+        decimal Ownership_Ratio_Percentage
+        date Ownership_Date
+        string Position_Code
+        string Position_Name
+        string Source_System_Code
+    }
+
     Calendar_Date_Dimension ||--o{ Fact_Major_Shareholder_Ownership_Snapshot : "Snapshot_Date_Dimension_Id"
     Public_Company_Dimension ||--o{ Fact_Major_Shareholder_Ownership_Snapshot : "Public_Company_Dimension_Id"
     Calendar_Date_Dimension ||--o{ Fact_Public_Company_Foreign_Ownership_Snapshot : "Snapshot_Date_Dimension_Id"
     Public_Company_Dimension ||--o{ Fact_Public_Company_Foreign_Ownership_Snapshot : "Public_Company_Dimension_Id"
 ```
+
+> **Ghi chú:** `Operational_Public_Company_Insider_Ownership` là bảng Tác nghiệp denormalized (1 dòng = 1 người nội bộ × 1 công ty, trạng thái hiện hành tại ngày ETL) — không vẽ quan hệ FK Star Schema, lọc theo `Equity_Ticker_Symbol` ở BI. `Position_Code` là Array (ClickHouse `groupUniqArray`). Cột `Ownership_*` NULL khi người nội bộ chưa có dòng sở hữu.
 
 **Lineage Mart → Báo cáo:**
 
@@ -2982,14 +3062,16 @@ flowchart LR
         G2["Public Company Dimension"]
         G3["Calendar Date Dimension"]
         G4["Fact Public Company Foreign Ownership Snapshot (reuse NDTNN)"]
+        G5["Operational Public Company Insider Ownership"]
     end
     subgraph RPT["Báo cáo"]
-        R1["So huu va giao dich noi bo (K_GSTT_100-104, 103b, 120, 121, 177)"]
+        R1["So huu va giao dich noi bo (K_GSTT_100-103, 120, 121, 177, 354-358)"]
     end
     G1 --> R1
     G2 --> R1
     G3 --> R1
     G4 --> R1
+    G5 --> R1
     G2 --> G4
     G3 --> G4
 ```
@@ -2998,8 +3080,9 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Major Shareholder Ownership Snapshot | 1 row / mã CK × cổ đông lớn × ngày tham số (bản ghi Atomic `ds_snpst_dt` mới nhất ≤ ngày, chỉ giữ cổ đông có `opening_balance_date` ≤ ngày) |
+| Fact Major Shareholder Ownership Snapshot | 1 row / mã CK × cổ đông lớn × ngày tham số (mốc as-of của mã = `MAX` ngày `opening/closing_balance_date ≤ ngày`; chỉ giữ cổ đông có kỳ chạm mốc đó) |
 | Fact Public Company Foreign Ownership Snapshot (reuse NDTNN) | 1 row = 1 mã CK × 1 ngày snapshot |
+| Operational Public Company Insider Ownership | 1 row / (công ty đại chúng × người nội bộ có vai trò `NNB`) |
 | Public Company Dimension | 1 row / công ty đại chúng |
 | Calendar Date Dimension | 1 row / ngày |
 
@@ -3174,7 +3257,7 @@ flowchart LR
 | K_GSTT_102 | Số cổ phiếu sở hữu | Cổ phiếu | Phái sinh | `fct_major_shareholder_ownership_snpst.ownership_share_quantity` | Reuse Nhóm 35 — chọn kỳ đầu/cuối theo ngày tham số. BA dòng 525 | READY |
 | K_GSTT_103 | Tỷ lệ sở hữu | % | Phái sinh | `fct_major_shareholder_ownership_snpst.ownership_ratio` | Reuse Nhóm 35. BA dòng 526 | READY |
 | K_GSTT_177 | Ngày cập nhật | Ngày | Phái sinh | `fct_major_shareholder_ownership_snpst.ownership_update_dt` | **[MỚI 2026-09-25]** Reuse KPI Nhóm 35 — BA dòng 527 (trước chưa có KPI, S4) | READY |
-| K_GSTT_104 | Chức vụ người nội bộ | — | Chiều | `arrayStringConcat(fct_major_shareholder_ownership_snpst.position_code, ', ')` | Reuse Nhóm 35. BA dòng 528 | READY |
+| K_GSTT_104 | Chức vụ người nội bộ | — | Chiều | `arrayStringConcat(fct_major_shareholder_ownership_snpst.position_code, ', ')` | **[KHAI SINH CHUYỂN TỪ NHÓM 35 — 2026-10-01]** BA dòng 528 — nối VSDC `id_number` ↔ IDS `IDENTITY.identity_no` (`ip_alternative_identification.identification_nbr`) → `legal_entity_position` của công ty cùng mã, còn hiệu lực tại ngày tham số (`appointment_dt ≤ ngày < dismissal_dt`) → cột `position_code` (Array) trên `Fact Major Shareholder Ownership Snapshot`. BA Nhóm 35 mới không còn dòng này (chức vụ người nội bộ của Nhóm 35 là K_GSTT_355 trên `Operational Public Company Insider Ownership`) | READY |
 | K_GSTT_178 | Tổng tỷ lệ sở hữu của các cổ đông lớn | % | Cơ sở | `SUM(fct_major_shareholder_ownership_snpst.closing_ownership_ratio)` GROUP BY `ticker_symbol` | **[MỚI 2026-09-25]** BA dòng 529 (tên hiển thị "Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo"): Mô tả "Tổng tỷ lệ sở hữu của các cổ đông lớn", Trường nguồn `end_period_ratio` (tỷ lệ CUỐI KỲ, không chọn kỳ) → KPI mới, khác K_GSTT_103b Nhóm 35 (số CP người nội bộ). Cột mới `closing_ownership_ratio`. Xem O_GSTT_31 | READY |
 
 **Star Schema:** Không có bảng mới — reuse `Fact Major Shareholder Ownership Snapshot` (xem Star Schema Nhóm 35), bổ sung 1 cột `Closing Ownership Ratio`.
@@ -4095,6 +4178,8 @@ graph TB
     FctInvestorCategoryIndexTradingSnpst["Fact Investor Category Index Trading Snapshot"]:::fact
     FctHoseSecuritiesTrade["Fact HOSE Securities Trade"]:::fact
     FctHnxSecuritiesTrade["Fact HNX Securities Trade"]:::fact
+    FctMajorShareholderOwnershipSnpst["Fact Major Shareholder Ownership Snapshot"]:::fact
+    OprPcInsiderOwnership["Operational Public Company Insider Ownership"]:::oper
 
     ScrTdgSnpstDim --> FctStockPortfolioSnpst
     PblcCoDim --> FctStockPortfolioSnpst
@@ -4113,6 +4198,8 @@ graph TB
     CdrDtDim --> FctInvestorCategoryIndexTradingSnpst
     CdrDtDim --> FctHoseSecuritiesTrade
     CdrDtDim --> FctHnxSecuritiesTrade
+    PblcCoDim --> FctMajorShareholderOwnershipSnpst
+    CdrDtDim --> FctMajorShareholderOwnershipSnpst
 ```
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
@@ -4132,12 +4219,13 @@ graph TB
 | Fact HNX Securities Trade | Event | 1 row / giao dịch khớp HNX (Securities Trade Code) — FK `Calendar Date Dimension` qua `Trade Date Dimension Id` | K_GSTT_227–262 (Nhóm 44) | READY (mới 2026-09-26) |
 | Fact HNX Securities Order | Event | 1 row / lệnh HNX (Securities Order Code) — FK `Calendar Date Dimension` qua `Trade Date Dimension Id` | K_GSTT_266–295 (Nhóm 45) | READY (mới 2026-09-29) |
 | Fact HOSE Securities Order | Event | 1 row / lệnh HOSE (Securities Order Code) — FK `Calendar Date Dimension` qua `Trade Date Dimension Id` | K_GSTT_296–340 (Nhóm 46) | READY (mới 2026-09-29) |
+| Fact Major Shareholder Ownership Snapshot | Periodic Snapshot | 1 row / mã CK × cổ đông lớn × ngày (mốc as-of của mã = `MAX` ngày `opening/closing_balance_date ≤ ngày`) — FK `Calendar Date Dimension` qua `Snapshot Date Dimension Id` | K_GSTT_100–103, 177 (Nhóm 35, mới 2026-09-25, sửa 2026-10-01); K_GSTT_100–104, 177, 178 (Nhóm 38) | READY |
 
 ### 3.3 Bảng Tác nghiệp
 
 | Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
-| Fact Major Shareholder Ownership Snapshot | 1 row / mã CK × cổ đông lớn × ngày | K_GSTT_100–104, 103b, 120, 121, 177 (Nhóm 35); K_GSTT_100–104, 177, 178 (Nhóm 38) | READY (mới 2026-09-25) |
+| Operational Public Company Insider Ownership | 1 row / (công ty đại chúng × người nội bộ có vai trò `NNB`) — trạng thái hiện hành tại ngày ETL | K_GSTT_354–358 (Nhóm 35) | READY (mới 2026-10-01) |
 
 ### 3.4 Bảng Dimension (chỉ liệt kê Dimension)
 
@@ -4173,7 +4261,8 @@ graph TB
 | Securities Company Dimension | securities_company_dim | reuse | **[MỚI 2026-09-28]** Đã có trong master, sở hữu **QLKD** (nguồn SCMS.SC_FIRM_INFO, Nguồn 2 draft). GSTT reuse nguyên trạng, không cần thêm cột — dùng làm fallback Ngành cho CTCK đại chúng trên `Fact Stock Portfolio Snapshot` (FK mới `Securities Company Dimension Id`, xem Nhóm 1 K_GSTT_2 và O_GSTT_37). Đã cập nhật `modules_using` (+GSTT) |
 | Calendar Date Dimension | cdr_dt_dim | reuse | Conformed Dimension — luôn reuse toàn hệ thống |
 | Legal Entity Position Dimension | legal_entity_position_dim | **DEPRECATED** | **[BÃI BỎ 2026-09-25 — All-Tier Cleanup, Gate 8 L2-TABLE-ZERO-USAGE]** 0 KPI ở mọi module — chức vụ người nội bộ (K_GSTT_104) lấy thẳng `legal_entity_position` (Atomic) vào `fct_major_shareholder_ownership_snpst.position_code`. Đã xóa khỏi LLD/master/`datamart_model.yaml`/Entities. Ghi chú cũ: Chưa có trong master. Driving entity `Legal Entity Position` ← IDS.POSITIONS (Nguồn 1, draft) — phục vụ K_GSTT_104 (Chiều "Chức vụ người nội bộ", READY). Dùng độc lập như danh mục Chiều, đồng thời denormalize thêm Position Code lên `Operational Public Company Shareholding` (xem dòng dưới) |
-| Fact Major Shareholder Ownership Snapshot | fct_major_shareholder_ownership_snpst | new | **[MỚI 2026-09-25]** Fact mới cho Nhóm 35 theo BA cập nhật nguồn VSDC `major_shareholder` — thay `opr_public_company_shareholding` (IDS) cho Nhóm 35; bảng Operational giữ nguyên cho Nhóm 38 |
+| Fact Major Shareholder Ownership Snapshot | fct_major_shareholder_ownership_snpst | new | **[MỚI 2026-09-25]** Fact mới cho Nhóm 35 theo BA cập nhật nguồn VSDC `major_shareholder` — thay `opr_public_company_shareholding` (IDS) cho Nhóm 35; bảng Operational giữ nguyên cho Nhóm 38 **[SỬA 2026-10-01]** BA mapping lại Nhóm 35: đổi quy tắc chọn kỳ sang as-of theo từng mã (K_GSTT_102/103/177); không đổi cột. Bỏ K_GSTT_103b; K_GSTT_104 chỉ còn phục vụ Nhóm 38; K_GSTT_120/121 (Nhóm 35) đọc từ Fact NDTNN. |
+| Operational Public Company Insider Ownership | opr_public_company_insider_ownership | new | **[MỚI 2026-10-01 — Data Modeler duyệt]** Chưa có trong master. Bảng Tác nghiệp cho danh sách người nội bộ Nhóm 35 (BA STT 35 dòng 509–513). Gộp `pc_entity_role` (driving, `role_tp_code = 'NNB'`) + `legal_entity` + `pc_shareholding` + `legal_entity_position` + `public_company` + `cl_value` (tên chức vụ). Không dùng lại `opr_public_company_shareholding` (DEPRECATED 2026-09-25, grain theo cổ đông nguồn `pc_shareholding`) vì driving/grain khác (người nội bộ theo vai trò). Grain: 1 row / (công ty × người nội bộ) |
 | Operational Public Company Shareholding | opr_public_company_shareholding | **DEPRECATED** | **[BÃI BỎ 2026-09-25 — All-Tier Cleanup]** 0 KPI sau khi Nhóm 35/38 chuyển sang `Fact Major Shareholder Ownership Snapshot` (BA đổi nguồn sang VSDC `major_shareholder`); đã xóa khỏi LLD/master/`datamart_model.yaml`/Entities/flat table. Ghi chú cũ: **[MỚI 2026-09-12, đảo ngược O_GSTT_9]** Chưa có trong master. Gộp 3 nguồn: `pc_shareholding` ← IDS.COMPANY_SHAREHOLDING (Nguồn 1, draft — Ownership Quantity/Ratio, các cờ Shareholder), `legal_entity` ← IDS.LEGAL_ENTITIES (Nguồn 2, draft — Legal Entity Name), `foreign_ownership_info` ← VSDC `foreign_investor_info` (theo `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` — chưa có LDM YAML/manifest chính thức, chấp nhận theo xác nhận trực tiếp của Data Modeler). Grain: 1 row/(Public Company × Legal Entity/cổ đông). Phục vụ Nhóm 35, Nhóm 38 (reuse) — 8/6 KPI tương ứng đều READY |
 | Fact HOSE Securities Trade | fct_hose_securities_trade | new | **[MỚI 2026-09-26]** Chưa có trong master — Fact nào khác trên `securities_trade` đều đã aggregate, không giữ grain giao dịch. Data Modeler chọn 2 bảng riêng theo sàn (Nhóm 43 HOSE / Nhóm 44 HNX). Fact Event, FK `Trade Date Dimension Id` |
 | Fact HNX Securities Trade | fct_hnx_securities_trade | new | **[MỚI 2026-09-26]** Như `Fact HOSE Securities Trade`, nhánh `ORDERTRADE.TRADE_BOOK_HNX` (Nhóm 44) |
@@ -4216,7 +4305,7 @@ graph TB
 | O_GSTT_21 | Nhóm 13/14/19/20 | Phát hiện 2026-09-14 khi khôi phục công thức `K_GSTT_145` ("% thay đổi", tiêu chí Top-N theo khoảng Từ ngày→Đến ngày): sheet Tổng hợp công thức quy định Giá tham chiếu tại 1 ngày t = Giá đóng cửa ngày t-1 cho HOSE/HNX, nhưng **= Giá bình quân (VWAP) ngày t-1 cho UPCOM** — khác hẳn HOSE/HNX. Rà ban đầu chỉ tra LLD GSTT hiện có (`Fact Stock Portfolio Snapshot`, `Security Trading Snapshot Dimension`) — không thấy VWAP, kết luận nhầm là gap. **[Resolved 2026-09-14, cùng ngày]** Data Modeler chỉ ra MDDS đã có sẵn VWAP — tra lại `DataModel/Atomic/Product/dm_atm_security_trading_snapshot-MDDS.JAD_STOCKINFOR.yaml` xác nhận field `Average Price`/`average_price` ("Giá khớp trung bình", MDDS.JAD_STOCKINFOR.AVERAGEPRICE) tồn tại — nhưng Data Modeler góp ý tiếp: **không cần dùng Average Price + CASE floor** — đơn giản hơn nhiều là lưu thẳng `Reference Price` (`security_trading_snapshot.reference_price`) theo từng ngày trên Fact (cùng pattern Close Price). Trường này do chính sàn công bố, đã tự đúng theo quy tắc riêng từng sàn (HOSE/HNX/UPCOM) — không cần Datamart tự tái tạo qua self-join hay CASE floor_code nữa. Đã bổ sung cột `reference_price` lên `Fact Stock Portfolio Snapshot` và sửa `K_GSTT_145` lấy thẳng `Reference Price` tại đúng dòng Từ ngày | **Resolved** |
 | O_GSTT_29 | Nhóm 33, Nhóm 35–39 | **[MỚI 2026-09-23]** BA gán chung STT 31 cho 2 khối khác nhau: "Xem bản đồ nhiệt GT mua ròng, GT bán ròng >> chỉ số" (14 dòng) và "Biểu đồ phân tích kỹ thuật" (14 dòng) — hậu quả của việc tách Nhóm 30/31 cũ nhưng chỉ dồn số +1 cho các STT phía sau. Tạm thời Data Modeler duyệt gộp cả 2 vào Nhóm 33 HLD (mockup (a)/(b), Δ = −1 do K_GSTT_4 dùng chung). **Trách nhiệm: BA Team** — đánh lại STT: PTKT = 32, dồn các STT phía sau +1 (Sở hữu 33, BM021 34, Data Explorer 35/36/37). Khi BA sửa, HLD/Detail Mapping tách Nhóm 33 (b) thành Nhóm 35 và đánh số lại tương ứng **[BỔ SUNG 2026-09-23]** Cùng loại lỗi STT: dòng 362 "Giá tham chiếu" ghi STT 26 nhưng Dashboard = "Theo dõi tỷ trọng dòng tiền" (Nhóm 24) — HLD xếp vào Nhóm 24. Nhóm 27: BA Mô tả có tùy chọn 1/5/20 ngày nhưng không có dòng Chiều Từ/Đến ngày — cần BA bổ sung. Nhóm 3 dòng "Thay đổi (%)": tên ghi % nhưng Trường nguồn `change` (tuyệt đối) — HLD giữ K_GSTT_11 theo Trường nguồn, cần BA xác nhận. **[CẬP NHẬT 2026-09-23 — BA 37 Nhóm]** BA đã tách "Biểu đồ phân tích kỹ thuật" sang STT 32 (Sở hữu 33, BM021 34, Data Explorer 35/36/37) — HLD/Detail Mapping đã tách Nhóm 33/34 và đánh số lại tương ứng → phần PTKT **Resolved**. Còn mở: (dòng 362/391 STT 26 → BA 2026-09-30 đã sửa thành STT 24: Resolved), Nhóm 27 tùy chọn 1/5/20 ngày, Nhóm 3 "Thay đổi (%)". | Resolved một phần |
 | O_GSTT_30 | Nhóm 30, Nhóm 33 | **[MỚI 2026-09-23, rà soát → Resolved cùng ngày]** 2 rủi ro đã nêu: (1) Độ phủ chỉ số — SQL BA STT 18 lọc `JAD_CSIDXINFOR.INDEXCODE IN ('HOSE','HNX','UPCOM')` chứng tỏ CSIDXINFOR có thành viên cho cả chỉ số sàn (VNINDEX ↔ `HOSE`), không chỉ rổ VN30/MID/SML. (2) Khóa tên chỉ số không đồng nhất — đã thống nhất `Market Code = Index Code` cho mọi lookup (xem O_GSTT_3), `Index Constituent Dimension.Index Name` vốn đã đúng khóa này. | Resolved |
-| O_GSTT_31 | Nhóm 35 | **[MỞ 2026-09-25]** (1) BA dòng 468 'Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo' dùng cùng công thức số CP dòng 462 mà không nêu điều kiện 'người nội bộ' — thiết kế lọc `notEmpty(position_code)` (có chức vụ IDS còn hiệu lực); BA note còn cân nhắc lấy IDS hay VSDC. (2) Cầu nối chức vụ dựa trên khớp Số giấy tờ VSDC `id_number` = IDS `identity_no` — rủi ro lệch định dạng/loại giấy tờ (SQL BA có JOIN `identity_type_cd = '4'` nhưng chỉ ở LEFT JOIN lookup, không lọc). (3) Atomic `major_shareholder_ownership` mới có mapping md, chưa có YAML/manifest. | Mở — chờ BA xác nhận (1)(2), Atomic chính thức hóa (3) |
+| O_GSTT_31 | Nhóm 35 | **[MỞ 2026-09-25 — CẬP NHẬT 2026-10-01]** (1) BA dòng 468 'Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo' — **đã được BA thay thế** (BA mapping lại 2026-10-01: 'Sở hữu của người nội bộ' nguồn IDS `company_shareholding`, K_GSTT_356); K_GSTT_103b bỏ. (2) Cầu nối chức vụ VSDC `id_number` = IDS `identity_no` nay chỉ còn phục vụ K_GSTT_104 (Nhóm 38) — rủi ro lệch định dạng/loại giấy tờ (SQL BA có JOIN `identity_type_cd = '4'` nhưng chỉ ở LEFT JOIN lookup, không lọc) vẫn còn. (3) Atomic `major_shareholder_ownership` mới có mapping md, chưa có YAML/manifest. | Resolved một phần — (1) đóng; còn mở (2) chờ BA xác nhận (Nhóm 38), (3) chờ Atomic chính thức hóa |
 | O_GSTT_32 | Nhóm 30–33, 35 | **[MỞ 2026-09-25]** Data Modeler đổi công thức Tổ chức trong nước = (TC mua − TC bán) − (tự doanh mua − tự doanh bán), TC: `foreign_investor_type = '00' AND invest_type <> '8000'` — nhưng `BA_analyst_GSTT.csv` dòng 402 (và các dòng lặp lại cùng khối) vẫn ghi quy tắc cũ `client_house = '10' AND foreigner = '00' AND invest_type <> '8000'`; phía Bán vẫn chép nhầm `buy_invest_type`. Lưu ý hệ quả: GT Tổ chức trong nước mỗi phía có thể ÂM nếu có giao dịch tự doanh không thỏa `foreign = '00' AND invest_type <> '8000'` (VD tự doanh có mã NĐTNN). **[XÁC NHẬN 2026-09-30]** Data Modeler giữ công thức trừ Tự doanh (xem O_GSTT_49); BA bản 14:07 vẫn ghi `client_house = 10`. | Mở — chờ BA cập nhật file BA theo công thức mới |
 | O_GSTT_33 | Nhóm 39 | **[MỚI 2026-09-26]** BA viết lại Nhóm 39 từ 9 lên 21 dòng (dòng 530–550), toàn chỉ tiêu cấp CHỈ SỐ từ `JAD_MARKETINFOR` (Giá mở/cao/thấp, Tăng/Giảm/Đứng giá/Trần/Sàn, Thay đổi, % thay đổi) + KLGD/GTGD/NN/thỏa thuận/Vốn hóa/P/E/P/B, nhưng cột "Độ chi tiết" vẫn ghi "Mã ck". Data Modeler quyết định **grain = 1 dòng / chỉ số / ngày** (thay O_GSTT_28): bỏ K_GSTT_1, K_GSTT_4 dùng biến thể `Market Index Dimension`, K_GSTT_35/39 lấy thẳng Fact Market Index Snapshot, Vốn hóa/P/E/P/B dùng biến thể cấp chỉ số (K_GSTT_54/149/150); khai mới K_GSTT_179 (Giá mở cửa chỉ số, cột `Open Index` có sẵn). Còn: SQL tham khảo dòng 535/536 (Tăng/Giảm) là SQL KLNN/GTNN chép nhầm — thiết kế theo Trường nguồn (H10). | Resolved (quyết định Data Modeler) — đề nghị BA sửa "Độ chi tiết" Nhóm 39 thành cấp chỉ số và SQL dòng 535/536 |
 | O_GSTT_34 | Nhóm 24, Nhóm 40 | **[MỚI 2026-09-26]** [Nhóm 5 - Datamart chưa thiết kế Fact/Dim] BA mô tả điểm đóng góp theo **2 khung**: 1 ngày (t-1) và n ngày (t-n, theo khoảng ngày chọn). Thiết kế hiện chỉ hiện thực khung 1 ngày (cột LAG 1 phiên `Prior Market Cap`/`Prior Free Float Market Cap`/`Prior Index`). Khung n ngày cần vốn hóa/giá tham chiếu/điểm chỉ số tại ngày t-n động theo tham số → tính tại tầng BI trên chuỗi `Fact Stock Portfolio Snapshot`/`Fact Market Index Snapshot` hoặc bổ sung Fact. KPI ảnh hưởng: K_GSTT_12, 74–76, 124, 125, 170–174, 180. Đơn vị: Datamart Modeling Team. | Mở |
@@ -4238,3 +4327,6 @@ graph TB
 | O_GSTT_50 | Nhóm 35 | **[MỚI 2026-09-30 — sửa lỗi nhân dòng]** `Fact Major Shareholder Ownership Snapshot` (grain mã CK × cổ đông × ngày) chứa 2 cột cấp CÔNG TY `current_foreign_holding_quantity`, `domestic_holding_quantity` (JOIN `foreign_ownership_info` theo `ticker_symbol`) → giá trị lặp trên mọi cổ đông cùng mã/ngày, SUM/đếm ở BI bị nhân. **Đã sửa:** gỡ 2 cột khỏi Fact cổ đông lớn (Attributes, master, yaml, flat SQL, ERD, Cụm 3); K_GSTT_120/121 đọc từ `Fact Public Company Foreign Ownership Snapshot` (NDTNN, grain 1 mã CK × 1 ngày; K_GSTT_121 = `total_issued_share_quantity − current_foreign_holding_quantity`). BI ghép 2 Fact qua `Public Company Dimension` + `Calendar Date Dimension` (drill-across). **Lưu ý:** Fact NDTNN keyed theo `ds_snpst_dt` của VSDC — nếu ngày tham số không có snapshot cần lấy snapshot mới nhất ≤ ngày (as-of) ở lớp BI. | Resolved |
 | O_GSTT_51 | Nhóm 3 | **[MỚI 2026-09-30 — Data Modeler yêu cầu]** Biểu đồ kỹ thuật cổ phiếu: khung thời gian lọc từ 1 THÁNG trở lên đọc nến ngày từ `Fact Security Trading Daily` (Atomic `market_price_snapshot` 1DAY) — K_GSTT_349–353 (mở/cao/thấp/đóng/KL nến ngày); khung trong ngày dùng `Fact Security Trading Intraday` (1MIN, Nhóm 34); ngày đơn lẻ giữ K_GSTT_27/28/29/10 trên `Security Trading Snapshot Dimension`. **Cần xác nhận:** (1) `market_price_snapshot.symbol` dùng chung mã CK và mã chỉ số, không có cột phân loại instrument — join tới `Security Trading Snapshot Dimension` theo `symbol` chỉ phủ mã chứng khoán, nến chỉ số (VNINDEX...) chưa map (cùng gap Cụm 2b); (2) nến ngày `vol` (TradingView) có thể khác K_GSTT_13 (sổ lệnh khớp lệnh) — BA dòng 55 chỉ định sổ lệnh; (3) ngưỡng "khung từ 1 tháng" do lớp BI quyết định; (4) HNX/UPCOM `symbol` nến có khớp `security_trading_snpst_dim.symbol` hay cần ISIN — chưa có mẫu dữ liệu. | Mở |
 | O_GSTT_52 | Nhóm 34, 47, 48 | **[MỚI 2026-09-30 — mở rộng O_GSTT_51]** Áp quy tắc "khung thời gian từ 1 tháng → nến ngày" cho các biểu đồ kỹ thuật khác: Nhóm 34 (dòng BA 495–498 "Lấy giá trị cuối ngày") reuse K_GSTT_349–352; Nhóm 47 phái sinh (dòng 795–798) reuse K_GSTT_349–352; Nhóm 48 trái phiếu (dòng 803) reuse K_GSTT_352. Khối lượng vẫn theo BA: Nhóm 34 K_GSTT_13, Nhóm 47 K_GSTT_15, Nhóm 48 K_GSTT_23 (sổ lệnh), không dùng K_GSTT_353. **Chưa xác nhận:** `market_price_snapshot` 1DAY (TradingView) có chứa mã hợp đồng tương lai và trái phiếu hay không — nếu không, các KPI nến ngày của Nhóm 47/48 sẽ rỗng và cần giữ nguồn `Security Trading Snapshot Dimension`. | Mở |
+| O_GSTT_53 | Nhóm 35 | **[MỚI 2026-10-01]** BA `BA_analyst_GSTT.csv` dòng 509 'Tên người nội bộ' và dòng 513 'Ngày cập nhật' (người nội bộ) **thiếu STT, Phân loại, Nhóm yêu cầu, Đánh giá, Độ chi tiết**; dòng 513 còn **thiếu `Trạng thái mapping`** (dòng 509 = Done). Theo H6, thiết kế theo cột Dashboard/báo cáo ('Sở hữu và giao dịch nội bộ') → gộp vào Nhóm 35 (K_GSTT_354 và K_GSTT_358). Theo quy tắc blank = Pending lẽ ra PENDING [Nhóm 1], nhưng **Data Modeler duyệt coi READY 2026-10-01** vì dòng 513 đã có đủ Bảng nguồn/Trường nguồn. Cần BA: gán STT = 35, điền Phân loại ('Chiều' cho dòng 509, 'Chỉ tiêu cơ sở' cho dòng 513) và `Trạng thái mapping` = Done. KPI: K_GSTT_354, K_GSTT_358. Trách nhiệm: BA Team | Mở — chờ BA bổ sung. `ba_hld_sync_check.py` S2 sẽ còn báo 2 dòng khóa '?' cho tới khi BA sửa |
+| O_GSTT_54 | Nhóm 35, Nhóm 38 | **[MỚI 2026-10-01]** (1) SQL BA mới (dòng 505–508) chọn kỳ cổ đông lớn **theo từng mã** (`asof` = `MAX` ngày `begin/end ≤ :todate` của mã; chỉ giữ cổ đông có kỳ chạm mốc) thay vì theo từng cổ đông — đã áp dụng cho K_GSTT_102/103/177. `Fact Major Shareholder Ownership Snapshot` dùng chung Nhóm 38 (K_GSTT_100–104, 177, 178) mà BA Nhóm 38 chỉ mô tả CASE theo từng dòng, không có as-of theo mã → **BA xác nhận Nhóm 38 theo cùng quy tắc** (ảnh hưởng K_GSTT_178 = `SUM(closing_ratio)` theo mã: cổ đông đã rút khỏi báo cáo mới không còn bị cộng). (2) SQL BA có lỗi gõ: CTE `asof` chỉ có `updated_date` nhưng truy vấn dùng `a.snapshot_date`; `a.snapshot_date = ms.end_period_shares` so ngày với số CP (đúng ra `end_period_date`) — thiết kế theo ý định, BA nên sửa SQL. (3) **[ĐÃ QUYẾT ĐỊNH 2026-10-01]** Tooltip 'xoay ngược cổ đông → mã' (K_GSTT_101) lọc theo khóa `major_shareholder_identification_nbr` (K_GSTT_359) thay vì tên — số giấy tờ `id_number` VSDC đã mã hóa từ nguồn (Data Modeler xác nhận) nên không coi là PII thô. **Điều kiện còn phải xác nhận với đội dữ liệu nguồn:** (a) mã hóa xác định (cùng số giấy tờ → cùng chuỗi, mọi mã CK, mọi lần nạp), nếu không thì không gộp được các mã của một cổ đông; (b) ETL `position_code` (K_GSTT_104, Nhóm 38) nối `identification_nbr` VSDC với `ip_alternative_identification.identification_nbr` của IDS — chỉ khớp nếu IDS dùng cùng cách mã hóa. KPI: K_GSTT_101, 102, 103, 177, 178, 359 | Mở — (1)(2) chờ BA xác nhận; (3a)(3b) chờ đội dữ liệu nguồn |
+| O_GSTT_55 | Nhóm 35 | **[MỚI 2026-10-01]** Danh sách người nội bộ (K_GSTT_354–358): (1) Nguồn Atomic `pc_entity_role` và `legal_entity` mới ở **Nguồn 2 (draft)** — chưa nằm trong `dm_manifest.yaml`. (2) Atomic `pc_entity_role` **không có cột `DELETE_FLG`/`ACTIVE_FLG`** (nguồn IDS có cả 2 — xem `IDS-ACTIVE-DELETE-FLAG-MAP.md`), trong khi SQL BA lọc `cer.DELETE_FLG = '0'`: giả định staging đã loại bản ghi xóa mềm; ETL **không** lọc ngày hiệu lực/`ACTIVE_FLG` (đúng SQL BA — Data Modeler duyệt 2026-10-01) nên người đã rời vai trò NNB vẫn hiện nếu bản ghi chưa xóa mềm. (3) SQL BA nối `positions` chỉ theo `le.id` — thiết kế **bám đúng SQL BA** (`deleted_ind = 0`, không lọc `active_ind`, không nối theo công ty; Data Modeler duyệt 2026-10-01): người có chức vụ ở nhiều công ty sẽ hiển thị gộp mọi chức vụ trên mọi dòng công ty — rủi ro do SQL BA, cần BA xác nhận. (3b) JOIN Atomic không có điều kiện `ds_rcrd_st = 'ACTIVE'` — cột kỹ thuật SCD4A không khai báo trong YAML Atomic (Gate 0 từ chối), theo thông lệ các Fact GSTT hiện có; ETL đọc bảng Atomic hiện hành. (4) `pc_shareholding.ownership_quantity` Atomic kiểu `int` (int32) — cổ đông nội bộ nắm > 2,147 tỷ CP sẽ tràn; Datamart dùng `bigint` nhưng giá trị gốc đã mất nếu Atomic tràn → Atomic Team đổi `Large Counter`. KPI: K_GSTT_354–358 | Mở — chờ BA xác nhận (2)(3), Atomic Team xử lý (1)(2)(4) |

@@ -1,29 +1,41 @@
 ,,,,,,,,,,,,,,,Khai thác nguồn,,,,,,,,,
-STT,Mã,Dashboard/báo cáo,Thông tin,Mô tả,Nhóm yêu cầu,Phân loại,Đánh giá,Độ chi tiết,Nguồn,Cần phân tích?,Cần test?,DL lịch sử?,Trạng thái mapping,Mapping (nghiệp vụ),Bảng nguồn,Trường nguồn,Điều kiện chung ,Câu lệnh tham khảo,Note,Hoàn thành DEV,Loại dữ liệu,Kết quả SIT (Round 1),Kết quả SIT (Round 2),Trạng thái bổ sung
+STT,Mã,Dashboard/báo cáo,Thông tin,Mô tả,Nhóm yêu cầu,Phân loại,Đánh giá,Độ chi tiết,Nguồn,Cần phân tích?,Cần test?,DL lịch sử?,Trạng thái mapping,Mapping (nghiệp vụ),Bảng nguồn,Trường nguồn,Điều kiện,Câu lệnh tham khảo,Note,Hoàn thành DEV,Loại dữ liệu,Kết quả SIT (Round 1),Kết quả SIT (Round 2),Trạng thái bổ sung
 ,,,Tên chiều/chỉ tiêu/thuộc tính,,Dashboard/báo cáo/Data Explorer,Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh,"Dễ: chỉ cần tính toán
 TB: cần phân tích nguồn lấy
 Khó: Có logic phức tạp và lấy nhiều mốc thời gian
 Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi",,,,,,,,,,,,,,,,,
 1,,Dashboard Hoạt động Thanh tra >> Thống kê chung,Thời gian,Ngày thống kê (năm),Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,INSPECTION_TEAM,DECISION_DATE,,"WITH cte AS 
 (SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Yearr"",
-COUNT(ID) ""Total"",
-SUM(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) ""Done"",
-SUM(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) ""Progress""
+COUNT(DISTINCT ID) ""Total"",
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(END_DATE,INSPECTION_PERIOD_TO) < sysdate
+THEN ID 
+ELSE NULL END) ""Done"",
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL THEN ID 
+     WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(END_DATE,INSPECTION_PERIOD_TO) >= sysdate THEN ID 
+ELSE NULL END) ""Progress""
 FROM THANHTRA_UAT.INSPECTION_TEAM  
 WHERE DELETED = 0 
 GROUP BY EXTRACT(YEAR FROM DECISION_DATE))
 , ty AS 
-(SELECT COUNT(ID) total,  
-SUM(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) done,
-SUM(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) progress
+(SELECT COUNT(DISTINCT ID) total,  
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(END_DATE,INSPECTION_PERIOD_TO) < sysdate
+THEN ID 
+ELSE NULL END) done,
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL THEN ID 
+     WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(END_DATE,INSPECTION_PERIOD_TO) >= sysdate THEN ID 
+ELSE NULL END) progress
 FROM THANHTRA_UAT.INSPECTION_TEAM  
 WHERE 1=1
 AND DELETED = 0
 AND DECISION_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE)
 , ly AS
-(SELECT COUNT(ID) total,  
-SUM(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) done,
-SUM(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) progress
+(SELECT COUNT(DISTINCT ID) total,  
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(END_DATE,INSPECTION_PERIOD_TO) < sysdate
+THEN ID 
+ELSE NULL END) done,
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL THEN ID 
+     WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(END_DATE,INSPECTION_PERIOD_TO) >= sysdate THEN ID 
+ELSE NULL END) progress
 FROM THANHTRA_UAT.INSPECTION_TEAM  
 WHERE 1=1
 AND DELETED = 0
@@ -31,13 +43,13 @@ AND DECISION_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'Y
 SELECT  a.""Yearr"" ""Năm"", 
 a.""Total"" ""Tổng số đoàn thanh tra"",
 CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.total-ly.total)*100/NULLIF(ly.total,0)
-ELSE a.""Total""*100/NULLIF(b.""Total"",0) END ""Tổng đoàn SSCK"",
+ELSE (a.""Total""-b.""Total"")*100/NULLIF(b.""Total"",0) END ""Tổng đoàn SSCK"",
 a.""Done"" ""Số đoàn hoàn thành"",
 CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.done-ly.done)*100/NULLIF(ly.done,0)
-ELSE a.""Done""*100/NULLIF(b.""Done"",0) END ""Đoàn hoàn thành SSCK"",
+ELSE (a.""Done""-b.""Done"")*100/NULLIF(b.""Done"",0) END ""Đoàn hoàn thành SSCK"",
 a.""Progress"" ""Số đoàn đang thực hiện"",
 CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.progress-ly.progress)*100/NULLIF(ly.progress,0)
-ELSE a.""Progress""*100/NULLIF(b.""Progress"",0) END ""Đoàn đang thực hiện SSCK""
+ELSE(a.""Progress""-b.""Progress"")*100/NULLIF(b.""Progress"",0) END ""Đoàn đang thực hiện SSCK""
 FROM cte a
 LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1
 LEFT JOIN ty ON 1=1
@@ -56,14 +68,19 @@ END_DATE",,,Done,Dữ liệu tĩnh,P,,
 END_DATE",,,Done,Dữ liệu tĩnh,P,,
 2,,Dashboard Hoạt động Thanh tra >> Biểu đồ thống kê,Thời gian,Ngày thống kê (tháng),Dashboard,Chiều,Dễ,,Thanh tra,,,,Done,,INSPECTION_TEAM,DECISION_DATE,,"SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Năm"",
 EXTRACT(MONTH FROM DECISION_DATE) ""Tháng"",
-COUNT(ID) ""Số vụ việc thanh tra"",
-COUNT(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN ID ELSE NULL END) ""Số đoàn hoàn thành"",
-COUNT(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN ID ELSE NULL END) ""Số đoàn đang thực hiện""
+COUNT(DISTINCT ID) ""Số vụ việc thanh tra"",
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(END_DATE,INSPECTION_PERIOD_TO) < sysdate
+THEN ID 
+ELSE NULL END) ""Số đoàn hoàn thành"",
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL THEN ID 
+     WHEN COALESCE(END_DATE,INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(END_DATE,INSPECTION_PERIOD_TO) >= sysdate THEN ID 
+ELSE NULL END) ""Số đoàn đang thực hiện""
 FROM THANHTRA_UAT.INSPECTION_TEAM 
-WHERE EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
+WHERE 1=1
+AND EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
 AND DELETED = 0 
 GROUP BY EXTRACT(YEAR FROM DECISION_DATE), EXTRACT(MONTH FROM DECISION_DATE)
-ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC, EXTRACT(MONTH FROM DECISION_DATE) DESC",,Done,Dữ liệu động,P,,
+ORDER BY EXTRACT(YEAR FROM DECISION_DATE), EXTRACT(MONTH FROM DECISION_DATE)",,Done,Dữ liệu động,P,,
 2,,Dashboard Hoạt động Thanh tra >> Biểu đồ thống kê,Số lượng vụ việc thanh tra,Thể hiện số lượng vụ việc theo tháng trong năm tra cứu,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng",Thanh tra,x,x,,Done,,INSPECTION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 2,,Dashboard Hoạt động Thanh tra >> Biểu đồ thống kê,Số vụ việc thanh tra đang thực hiện,Thể hiện số lượng vụ việc thanh tra đang thực hiện,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng",Thanh tra,x,x,,Done,,INSPECTION_TEAM,ID,"START_DATE
 END_DATE",,,Done,Dữ liệu tĩnh,P,,
@@ -89,21 +106,32 @@ LEFT JOIN THANHTRA_UAT.VIOLATION_RECORD_BEHAVIOR vrb ON vr.ID = vrb.VIOLATION_RE
 LEFT JOIN THANHTRA_UAT.VIOLATION_BEHAVIOR vb ON vrb.VIOLATION_BEHAVIOR_ID = vb.ID AND vb.DELETED = 0 AND vb.STATUS = 'ACTIVE'
 WHERE it.DELETED = 0
 )
+, rk AS 
+(SELECT DECISION_DATE, ID, NAME, 
+       dense_RANK() OVER (
+         PARTITION BY DECISION_DATE, ID
+         ORDER BY CASE WHEN NAME IS NOT NULL THEN 1 ELSE 2 END
+       ) AS ord
+FROM cte)
 SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Năm"",
 CASE WHEN NAME IS NOT NULL THEN NAME
      ELSE 'Khác' 
 END ""Phân loại hành vi"",
 COUNT(DISTINCT ID) ""Số lượng"",
 COUNT(DISTINCT ID)*100/(SUM(COUNT(DISTINCT ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM DECISION_DATE),0))) ""Tỷ lệ""
-FROM cte
+FROM rk
 WHERE 1=1
 AND EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
---AND NAME IS NOT NULL
+AND ord = 1
+AND NAME IS NOT NULL
 GROUP BY EXTRACT(YEAR FROM DECISION_DATE),
 CASE WHEN NAME IS NOT NULL THEN NAME
      ELSE 'Khác' 
 END
-ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
+ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC, 
+CASE WHEN NAME IS NOT NULL THEN NAME
+     ELSE 'Khác' 
+END",,Done,Dữ liệu tĩnh,P,,
 3,,Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi,Số lượng vi phạm hành vi Thao túng thị trường,Số lượng vi phạm theo hành vi Thao túng thị trường,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,INSPECTION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 3,,Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi,Tỷ lệ % số lượng vi phạm hành vi Thao túng thị trường (%),Tỷ lệ % số lượng vi phạm theo hành vi Thao túng thị trường,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, loại vi phạm",Thanh tra,,x,,Done,,INSPECTION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 3,,Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo hành vi,Số lượng vi phạm hành vi Cho mượn tài khoản,Số lượng vi phạm theo hành vi Cho mượn tài khoản,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,INSPECTION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
@@ -116,21 +144,21 @@ ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
 - CTCK
 - CTQLQ",Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,INSPECTION_TEAM_TARGET,TARGET_TYPE,,"SELECT EXTRACT(YEAR FROM a.DECISION_DATE) ""Năm"",
 CASE WHEN b.TARGET_TYPE = 'SECURITIES_COMPANY' THEN 'CTCK'
- WHEN b.TARGET_TYPE = 'FUND_MANAGEMENT_COMPANY' THEN 'CTQLQ'
- WHEN b.TARGET_TYPE = 'PUBLIC_COMPANY' THEN 'CTĐC'
- WHEN b.TARGET_TYPE = 'INDIVIDUAL' THEN 'CÁ NHÂN'
- WHEN b.TARGET_TYPE = 'BOND_ISSUER' THEN 'TỔ CHỨC PHTP'
- ELSE 'KHÁC'
+         WHEN b.TARGET_TYPE = 'FUND_MANAGEMENT_COMPANY' THEN 'CTQLQ'
+         WHEN b.TARGET_TYPE = 'PUBLIC_COMPANY' THEN 'CTĐC'
+         WHEN b.TARGET_TYPE = 'INDIVIDUAL' THEN 'Cá nhân'
+         WHEN b.TARGET_TYPE = 'ORGANIZATION' THEN 'Tổ chức'
+         ELSE 'KHÁC'
 END ""Phân loại đối tượng"",
 COUNT(DISTINCT a.ID) ""Số lượng"",
 COUNT(DISTINCT a.ID)*100/(SUM(COUNT(DISTINCT a.ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM a.DECISION_DATE),0))) ""Tỷ lệ""
 FROM THANHTRA_UAT.INSPECTION_TEAM a
-JOIN THANHTRA_UAT.INSPECTION_TEAM_TARGET b ON a.ID = b.INSPECTION_TEAM_ID
-WHERE EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
-AND a.DELETED = 0 AND b.DELETED = 0
+LEFT JOIN THANHTRA_UAT.INSPECTION_TEAM_TARGET b ON a.ID = b.INSPECTION_TEAM_ID AND b.DELETED = 0
+WHERE 1=1
+AND EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
+AND a.DELETED = 0 
 GROUP BY EXTRACT(YEAR FROM a.DECISION_DATE),
-b.TARGET_TYPE
-ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
+b.TARGET_TYPE",,Done,Dữ liệu tĩnh,P,,
 4,,Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng,Số lượng vi phạm đối tượng Cá nhân,Số lượng vi phạm theo đối tượng Cá nhân,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,INSPECTION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 4,,Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng vi phạm đối tượng Cá nhân (%),Tỷ lệ % số lượng vi phạm theo đối tượng Cá nhân,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, loại vi phạm",Thanh tra,,x,,Done,,INSPECTION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 4,,Dashboard Hoạt động Thanh tra >> Biểu đồ cơ cấu theo đối tượng,Số lượng vi phạm đối tượng CTĐC,Số lượng vi phạm theo đối tượng CTĐC,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,INSPECTION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
@@ -143,28 +171,28 @@ ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
 a.CODE ""Mã vụ việc"",
 b.TARGET_NAME ""Đối tượng"",
 CASE WHEN b.TARGET_TYPE = 'SECURITIES_COMPANY' THEN 'CTCK'
- WHEN b.TARGET_TYPE = 'FUND_MANAGEMENT_COMPANY' THEN 'CTQLQ'
- WHEN b.TARGET_TYPE = 'PUBLIC_COMPANY' THEN 'CTĐC'
- WHEN b.TARGET_TYPE = 'AUDIT_COMPANY' THEN 'CTKT'
-  WHEN b.TARGET_TYPE = 'CRYPTO_SERVICE_PROVIDER' THEN 'TỔ CHỨC MÃ HÓA'
-  WHEN b.TARGET_TYPE = 'INDIVIDUAL' THEN 'CÁ NHÂN'
-  WHEN b.TARGET_TYPE = 'ORGANIZATION' THEN 'TỔ CHỨC'
- ELSE 'KHÁC'
+         WHEN b.TARGET_TYPE = 'FUND_MANAGEMENT_COMPANY' THEN 'CTQLQ'
+         WHEN b.TARGET_TYPE = 'PUBLIC_COMPANY' THEN 'CTĐC'
+         WHEN b.TARGET_TYPE = 'INDIVIDUAL' THEN 'Cá nhân'
+         WHEN b.TARGET_TYPE = 'ORGANIZATION' THEN 'Tổ chức'
+         ELSE 'KHÁC'
 END ""Phân loại đối tượng"",
 CASE WHEN a.FORM_TYPE = 'UNSCHEDULED' THEN 'Đột xuất' 
- WHEN a.FORM_TYPE = 'PERIODIC' THEN 'Định kỳ' 
- ELSE NULL
+  WHEN a.FORM_TYPE = 'PERIODIC' THEN 'Định kỳ' 
+  ELSE 'Khác'
 END ""Loại hình"",
-CASE WHEN a.START_DATE IS NOT NULL AND a.END_DATE IS NULL THEN 'Đang thực hiện'
- WHEN a.START_DATE IS NOT NULL AND a.END_DATE IS NOT NULL THEN 'Đã hoàn thành'
- WHEN a.START_DATE IS NULL AND a.END_DATE IS NULL THEN 'Chưa thực hiện'
- ELSE NULL
+CASE WHEN COALESCE(a.START_DATE,a.INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(a.END_DATE,a.INSPECTION_PERIOD_TO) IS NULL THEN 'Đang thực hiện'
+  WHEN COALESCE(a.START_DATE,a.INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(a.END_DATE,a.INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(a.END_DATE,a.INSPECTION_PERIOD_TO) >= sysdate THEN 'Đang thực hiện'
+     WHEN COALESCE(a.START_DATE,a.INSPECTION_PERIOD_FROM) IS NOT NULL AND COALESCE(a.END_DATE,a.INSPECTION_PERIOD_TO) IS NOT NULL AND COALESCE(a.END_DATE,a.INSPECTION_PERIOD_TO) < sysdate THEN 'Đã hoàn thành'
+     WHEN COALESCE(a.START_DATE,a.INSPECTION_PERIOD_FROM) IS NULL AND COALESCE(a.END_DATE,a.INSPECTION_PERIOD_TO) IS NULL THEN 'Chưa thực hiện'
+     ELSE NULL
 END ""Trạng thái""
 FROM THANHTRA_UAT.INSPECTION_TEAM a
-JOIN THANHTRA_UAT.INSPECTION_TEAM_TARGET b ON a.ID = b.INSPECTION_TEAM_ID
-WHERE EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
-AND a.DELETED = 0 AND b.DELETED = 0
-ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
+JOIN THANHTRA_UAT.INSPECTION_TEAM_TARGET b ON a.ID = b.INSPECTION_TEAM_ID AND b.DELETED = 0
+WHERE 1=1
+AND EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
+AND a.DELETED = 0 
+ORDER BY a.CODE",,Done,Dữ liệu tĩnh,P,,
 5,,Dashboard Hoạt động Thanh tra >> Danh sách,Đối tượng,Tên đối tượng bị thanh tra/kiểm tra,Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,INSPECTION_TEAM_TARGET,TARGET_NAME,,,,Done,Dữ liệu tĩnh,P,,
 5,,Dashboard Hoạt động Thanh tra >> Danh sách,Phân loại đối tượng,Phân loại đối tượng,Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,INSPECTION_TEAM_TARGET,TARGET_TYPE,,,,Done,Dữ liệu tĩnh,P,,
 5,,Dashboard Hoạt động Thanh tra >> Danh sách,Loại hình,Loại hình thanh tra là định kỳ hoặc đột xuất,Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,INSPECTION_TEAM,FORM_TYPE,,,,Done,Dữ liệu tĩnh,P,,
@@ -172,24 +200,36 @@ ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
 END_DATE",,,,Done,Dữ liệu tĩnh,P,,
 6,,Dashboard Hoạt động Kiểm tra >> Thống kê chung,Thời gian,Ngày thống kê (năm),Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,EXAMINATION_TEAM,DECISION_DATE,,"WITH cte AS 
 (SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Yearr"",
-COUNT(ID) ""Total"",
-SUM(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) ""Done"",
-SUM(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) ""Progress""
+COUNT(DISTINCT ID) ""Total"",
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,EXAMINATION_PERIOD_FROM) IS NOT NULL 
+     AND COALESCE(END_DATE,EXAMINATION_PERIOD_TO) <= sysdate 
+THEN ID ELSE NULL END) ""Done"",
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NULL AND COALESCE(START_DATE,EXAMINATION_PERIOD_FROM) IS NOT NULL THEN ID 
+      WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(END_DATE,EXAMINATION_PERIOD_TO) > sysdate THEN ID  
+ELSE NULL END) ""Progress""
 FROM THANHTRA_UAT.EXAMINATION_TEAM 
 WHERE DELETED = 0 
 GROUP BY EXTRACT(YEAR FROM DECISION_DATE))
 , ty AS 
-(SELECT COUNT(ID) total,  
-SUM(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) done,
-SUM(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) progress
+(SELECT COUNT(DISTINCT ID) total,  
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,EXAMINATION_PERIOD_FROM) IS NOT NULL 
+     AND COALESCE(END_DATE,EXAMINATION_PERIOD_TO) <= sysdate 
+THEN ID ELSE NULL END) done,
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NULL AND COALESCE(START_DATE,EXAMINATION_PERIOD_FROM) IS NOT NULL THEN ID 
+     WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(END_DATE,EXAMINATION_PERIOD_TO) > sysdate THEN ID  
+ELSE NULL END) progress
 FROM THANHTRA_UAT.EXAMINATION_TEAM  
 WHERE 1=1
 AND DELETED = 0
 AND DECISION_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE)
 , ly AS
-(SELECT COUNT(ID) total,  
-SUM(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) done,
-SUM(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN 1 ELSE NULL END) progress
+(SELECT COUNT(DISTINCT ID) total,  
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,EXAMINATION_PERIOD_FROM) IS NOT NULL 
+     AND COALESCE(END_DATE,EXAMINATION_PERIOD_TO) <= sysdate 
+THEN ID ELSE NULL END) done,
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NULL AND COALESCE(START_DATE,EXAMINATION_PERIOD_FROM) IS NOT NULL THEN ID 
+     WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(END_DATE,EXAMINATION_PERIOD_TO) > sysdate THEN ID  
+ELSE NULL END) progress
 FROM THANHTRA_UAT.EXAMINATION_TEAM  
 WHERE 1=1
 AND DELETED = 0
@@ -197,13 +237,13 @@ AND DECISION_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'Y
 SELECT  a.""Yearr"" ""Năm"", 
 a.""Total"" ""Tổng số đoàn thanh tra"",
 CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.total-ly.total)*100/NULLIF(ly.total,0)
-ELSE a.""Total""*100/NULLIF(b.""Total"",0) END ""Tổng đoàn SSCK"",
+ELSE (a.""Total""-b.""Total"")*100/NULLIF(b.""Total"",0) END ""Tổng đoàn SSCK"",
 a.""Done"" ""Số đoàn hoàn thành"",
 CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.done-ly.done)*100/NULLIF(ly.done,0)
-ELSE a.""Done""*100/NULLIF(b.""Done"",0) END ""Đoàn hoàn thành SSCK"",
+ELSE (a.""Done""-b.""Done"")*100/NULLIF(b.""Done"",0) END ""Đoàn hoàn thành SSCK"",
 a.""Progress"" ""Số đoàn đang thực hiện"",
 CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.progress-ly.progress)*100/NULLIF(ly.progress,0)
-ELSE a.""Progress""*100/NULLIF(b.""Progress"",0) END ""Đoàn đang thực hiện SSCK""
+ELSE (a.""Progress""-b.""Progress"")*100/NULLIF(b.""Progress"",0) END ""Đoàn đang thực hiện SSCK""
 FROM cte a
 LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1
 LEFT JOIN ty ON 1=1
@@ -222,14 +262,20 @@ END_DATE",,,Done,Dữ liệu tĩnh,P,,
 END_DATE",,,Done,Dữ liệu tĩnh,P,,
 7,,Dashboard Hoạt động Kiểm tra >> Biểu đồ thống kê,Thời gian,Ngày thống kê (tháng),Dashboard,Chiều,Dễ,,Thanh tra,,,,Done,,EXAMINATION_TEAM,DECISION_DATE,,"SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Năm"",
 EXTRACT(MONTH FROM DECISION_DATE) ""Tháng"",
-COUNT(ID) ""Tổng số vụ việc kiểm tra"",
-COUNT(CASE WHEN END_DATE IS NOT NULL AND START_DATE IS NOT NULL THEN ID ELSE NULL END) ""Số vụ việc hoàn thành"",
-COUNT(CASE WHEN END_DATE IS NULL AND START_DATE IS NOT NULL THEN ID ELSE NULL END) ""Số vụ việc đang thực hiện""
+COUNT(DISTINCT ID) ""Tổng số vụ việc kiểm tra"",
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(START_DATE,EXAMINATION_PERIOD_FROM) IS NOT NULL 
+     AND COALESCE(END_DATE,EXAMINATION_PERIOD_TO) <= sysdate 
+THEN ID 
+ELSE NULL END) ""Số vụ việc hoàn thành"",
+COUNT(DISTINCT CASE WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NULL AND COALESCE(START_DATE,EXAMINATION_PERIOD_FROM) IS NOT NULL THEN ID 
+     WHEN COALESCE(END_DATE,EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(END_DATE,EXAMINATION_PERIOD_TO) > sysdate THEN ID 
+ELSE NULL END) ""Số vụ việc đang thực hiện""
 FROM THANHTRA_UAT.EXAMINATION_TEAM 
-WHERE EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
+WHERE 1=1
+AND EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
 AND DELETED = 0 
 GROUP BY EXTRACT(YEAR FROM DECISION_DATE), EXTRACT(MONTH FROM DECISION_DATE)
-ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC, EXTRACT(MONTH FROM DECISION_DATE) DESC",,Done,Dữ liệu động,P,,
+ORDER BY EXTRACT(YEAR FROM DECISION_DATE), EXTRACT(MONTH FROM DECISION_DATE)",,Done,Dữ liệu động,P,,
 7,,Dashboard Hoạt động Kiểm tra >> Biểu đồ thống kê,Số lượng vụ việc kiểm tra,Thể hiện số lượng vụ việc theo tháng trong năm tra cứu,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng",Thanh tra,x,x,,Done,,EXAMINATION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 7,,Dashboard Hoạt động Kiểm tra >> Biểu đồ thống kê,Số lượng đã hoàn thành,Thể hiện số lượng vụ việc kiểm tra đang thực hiện,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng",Thanh tra,x,x,,Done,,EXAMINATION_TEAM,ID,"START_DATE
 END_DATE",,,Done,Dữ liệu tĩnh,P,,
@@ -252,21 +298,31 @@ LEFT JOIN THANHTRA_UAT.VIOLATION_RECORD_BEHAVIOR vrb ON vr.ID = vrb.VIOLATION_RE
 LEFT JOIN THANHTRA_UAT.VIOLATION_BEHAVIOR vb ON vrb.VIOLATION_BEHAVIOR_ID = vb.ID AND vb.DELETED = 0 AND vb.STATUS = 'ACTIVE'
 WHERE et.DELETED = 0
 )
+, rk AS 
+(SELECT DECISION_DATE, ID, NAME, 
+       DENSE_RANK() OVER (
+         PARTITION BY DECISION_DATE, ID
+         ORDER BY CASE WHEN NAME IS NOT NULL THEN 1 ELSE 2 END
+       ) AS ord
+FROM cte)
 SELECT EXTRACT(YEAR FROM DECISION_DATE) ""Năm"",
 CASE WHEN NAME IS NOT NULL THEN NAME
      ELSE 'Khác' 
 END ""Phân loại hành vi"",
 COUNT(DISTINCT ID) ""Số lượng"",
 COUNT(DISTINCT ID)*100/(SUM(COUNT(DISTINCT ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM DECISION_DATE),0))) ""Tỷ lệ""
-FROM cte
+FROM rk
 WHERE 1=1
 AND EXTRACT(YEAR FROM DECISION_DATE) = :filter_year --Điều kiện lọc
---AND NAME IS NOT NULL
+AND NAME IS NOT NULL
+AND ord = 1
 GROUP BY EXTRACT(YEAR FROM DECISION_DATE),
 CASE WHEN NAME IS NOT NULL THEN NAME
      ELSE 'Khác' 
 END
-ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
+ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC, CASE WHEN NAME IS NOT NULL THEN NAME
+     ELSE 'Khác' 
+END",,Done,Dữ liệu tĩnh,P,,
 8,,Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi,Số lượng vi phạm hành vi CBTT,Tính số lượng theo hành vi CBTT,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,EXAMINATION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 8,,Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi,Tỷ lệ % số lượng vi phạm hành vi CBTT (%),Tỷ lệ % số lượng vi phạm theo hành vi CBTT,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, loại vi phạm",Thanh tra,,x,,Done,,EXAMINATION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 8,,Dashboard Hoạt động Kiểm tra >> Biều đồ cơ cấu theo hành vi,Số lượng vi phạm hành vi Hoạt động chào bán,Tính số lượng theo hành vi Hoạt động chào bán,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,EXAMINATION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
@@ -302,24 +358,35 @@ CASE WHEN b.TARGET_TYPE = 'SECURITIES_COMPANY' THEN 'CTCK'
          WHEN b.TARGET_TYPE = 'BOND_ISSUER' THEN 'TỔ CHỨC PHTP'
          WHEN b.TARGET_TYPE = 'ORGANIZATION' THEN 'TỔ CHỨC'
          WHEN b.TARGET_TYPE = 'AUDIT_COMPANY' THEN 'CTKT'
-         WHEN b.TARGET_TYPE = 'CRYPTO_SERVICE_PROVIDER' THEN 'TỔ CHỨC MÃ HÓA'
          ELSE 'KHÁC'
 END ""Phân loại đối tượng"",
 COUNT(DISTINCT a.ID) ""Số lượng"",
 COUNT(DISTINCT a.ID)*100/(SUM(COUNT(DISTINCT a.ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM a.DECISION_DATE),0))) ""Tỷ lệ""
 FROM THANHTRA_UAT.EXAMINATION_TEAM a
-JOIN THANHTRA_UAT.EXAMINATION_TEAM_TARGET b ON a.ID = b.EXAMINATION_TEAM_ID
-WHERE EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
-AND a.DELETED = 0 AND b.DELETED = 0
+JOIN THANHTRA_UAT.EXAMINATION_TEAM_TARGET b ON a.ID = b.EXAMINATION_TEAM_ID AND b.DELETED = 0
+WHERE 1=1
+AND EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
+AND a.DELETED = 0 
 GROUP BY EXTRACT(YEAR FROM a.DECISION_DATE),
 CASE WHEN b.TARGET_TYPE = 'SECURITIES_COMPANY' THEN 'CTCK'
          WHEN b.TARGET_TYPE = 'FUND_MANAGEMENT_COMPANY' THEN 'CTQLQ'
          WHEN b.TARGET_TYPE = 'PUBLIC_COMPANY' THEN 'CTĐC'
          WHEN b.TARGET_TYPE = 'INDIVIDUAL' THEN 'CÁ NHÂN'
          WHEN b.TARGET_TYPE = 'BOND_ISSUER' THEN 'TỔ CHỨC PHTP'
+         WHEN b.TARGET_TYPE = 'ORGANIZATION' THEN 'TỔ CHỨC'
+         WHEN b.TARGET_TYPE = 'AUDIT_COMPANY' THEN 'CTKT'
          ELSE 'KHÁC'
 END
-ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
+ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC, 
+CASE WHEN b.TARGET_TYPE = 'SECURITIES_COMPANY' THEN 'CTCK'
+         WHEN b.TARGET_TYPE = 'FUND_MANAGEMENT_COMPANY' THEN 'CTQLQ'
+         WHEN b.TARGET_TYPE = 'PUBLIC_COMPANY' THEN 'CTĐC'
+         WHEN b.TARGET_TYPE = 'INDIVIDUAL' THEN 'CÁ NHÂN'
+         WHEN b.TARGET_TYPE = 'BOND_ISSUER' THEN 'TỔ CHỨC PHTP'
+         WHEN b.TARGET_TYPE = 'ORGANIZATION' THEN 'TỔ CHỨC'
+         WHEN b.TARGET_TYPE = 'AUDIT_COMPANY' THEN 'CTKT'
+         ELSE 'KHÁC'
+END",,Done,Dữ liệu tĩnh,P,,
 9,,Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng,Số lượng vi phạm đối tượng CTCK,Tính số lượng theo đối tượng CTCK,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,EXAMINATION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 9,,Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng vi phạm đối tượng CTCK (%),Tỷ lệ % số lượng vi phạm theo đối tượng CTCK,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, loại vi phạm",Thanh tra,,x,,Done,,EXAMINATION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
 9,,Dashboard Hoạt động Kiểm tra >> Biểu đồ cơ cấu theo đối tượng,"Số lượng vi phạm đối tượng CTQLQ, Ngân hàng lưu ký","Tính số lượng theo đối tượng CTQLQ, Ngân hàng lưu ký",Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,EXAMINATION_TEAM,ID,,,,Done,Dữ liệu tĩnh,P,,
@@ -340,22 +407,23 @@ CASE WHEN b.TARGET_TYPE = 'SECURITIES_COMPANY' THEN 'CTCK'
          WHEN b.TARGET_TYPE = 'BOND_ISSUER' THEN 'TỔ CHỨC PHTP'
          WHEN b.TARGET_TYPE = 'ORGANIZATION' THEN 'TỔ CHỨC'
          WHEN b.TARGET_TYPE = 'AUDIT_COMPANY' THEN 'CTKT'
-         WHEN b.TARGET_TYPE = 'CRYPTO_SERVICE_PROVIDER' THEN 'TỔ CHỨC MÃ HÓA'
          ELSE 'KHÁC'
 END ""Phân loại đối tượng"",
 CASE WHEN a.FORM_TYPE = 'UNSCHEDULED' THEN 'Đột xuất' 
- WHEN a.FORM_TYPE = 'PERIODIC' THEN 'Định kỳ' 
+  WHEN a.FORM_TYPE = 'PERIODIC' THEN 'Định kỳ' 
 END ""Loại hình"",
-CASE WHEN a.START_DATE IS NOT NULL AND a.END_DATE IS NULL THEN 'Đang thực hiện'
- WHEN a.START_DATE IS NOT NULL AND a.END_DATE IS NOT NULL THEN 'Đã hoàn thành'
- WHEN a.START_DATE IS NULL AND a.END_DATE IS NULL THEN 'Chưa thực hiện'
- ELSE NULL
+CASE WHEN COALESCE(a.START_DATE,a.EXAMINATION_PERIOD_FROM) IS NOT NULL AND COALESCE(a.END_DATE,a.EXAMINATION_PERIOD_TO) IS NULL THEN 'Đang thực hiện'
+     WHEN COALESCE(a.START_DATE,a.EXAMINATION_PERIOD_FROM) IS NOT NULL AND COALESCE(a.END_DATE,a.EXAMINATION_PERIOD_TO) IS NOT NULL  AND COALESCE(a.END_DATE,a.EXAMINATION_PERIOD_TO) >= sysdate THEN 'Đang thực hiện'
+  WHEN COALESCE(a.START_DATE,a.EXAMINATION_PERIOD_FROM) IS NOT NULL AND COALESCE(a.END_DATE,a.EXAMINATION_PERIOD_TO) IS NOT NULL AND COALESCE(a.END_DATE,a.EXAMINATION_PERIOD_TO) < sysdate THEN 'Đã hoàn thành'
+     WHEN COALESCE(a.START_DATE,a.EXAMINATION_PERIOD_FROM) IS NULL AND COALESCE(a.END_DATE,a.EXAMINATION_PERIOD_TO) IS NULL THEN 'Chưa thực hiện'
+     ELSE NULL
 END ""Trạng thái""
 FROM THANHTRA_UAT.EXAMINATION_TEAM a
-JOIN THANHTRA_UAT.EXAMINATION_TEAM_TARGET b ON a.ID = b.EXAMINATION_TEAM_ID
-WHERE EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
-AND a.DELETED = 0 AND b.DELETED = 0
-ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
+JOIN THANHTRA_UAT.EXAMINATION_TEAM_TARGET b ON a.ID = b.EXAMINATION_TEAM_ID AND b.DELETED = 0
+WHERE 1=1
+AND EXTRACT(YEAR FROM a.DECISION_DATE) = :filter_year --Điều kiện lọc
+AND a.DELETED = 0 
+ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC, a.CODE",,Done,Dữ liệu tĩnh,P,,
 10,,Dashboard Hoạt động Kiểm tra >> Danh sách,Đối tượng,"Tên đối tượng bị thanh tra, kiểm tra",Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,EXAMINATION_TEAM_TARGET,TARGET_NAME,,,,Done,Dữ liệu tĩnh,P,,
 10,,Dashboard Hoạt động Kiểm tra >> Danh sách,Phân loại đối tượng,"Phân loại đối tượng: CTCK, QLQ,…",Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,EXAMINATION_TEAM_TARGET,TARGET_TYPE,,,,Done,Dữ liệu tĩnh,P,,
 10,,Dashboard Hoạt động Kiểm tra >> Danh sách,Loại hình,Loại hình thanh tra là định kỳ hoặc đột xuất,Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,EXAMINATION_TEAM,FORM_TYPE,,,,Done,Dữ liệu tĩnh,P,,
@@ -363,50 +431,50 @@ ORDER BY EXTRACT(YEAR FROM a.DECISION_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
 END_DATE",,,,Done,Dữ liệu tĩnh,P,,
 11,,Dashboard Hoạt động Xử phạt >> Thống kê chung,Thời gian,Ngày thống kê (năm),Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,PENALTY_DECISION,ISSUED_DATE,,"WITH cte AS 
 (SELECT EXTRACT(YEAR FROM pd.ISSUED_DATE) ""Yearr""
-, COUNT(pd.ID) ""Total""
+, COUNT(DISTINCT pd.ID) ""Total""
 , SUM(pd.TOTAL_FINE_AMOUNT) ""Money""
 , SUM(pds.PAID_AMOUNT) ""Paid""
 FROM THANHTRA_UAT.PENALTY_DECISION pd
 LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT pds ON pd.ID = pds.PENALTY_DECISION_ID  AND pds.DELETED = 0
 WHERE pd.DELETED = 0
-AND EXTRACT(YEAR FROM pd.ISSUED_DATE) = :filter_year
-GROUP BY EXTRACT(YEAR FROM pd.ISSUED_DATE))
+GROUP BY EXTRACT(YEAR FROM pd.ISSUED_DATE)
+)
+, ty AS (
+SELECT EXTRACT(YEAR FROM pd.ISSUED_DATE) ""Yearr""
+, COUNT(DISTINCT pd.ID) ""Total""
+, SUM(pd.TOTAL_FINE_AMOUNT) ""Money""
+, SUM(pds.PAID_AMOUNT) ""Paid""
+FROM THANHTRA_UAT.PENALTY_DECISION pd
+LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT pds ON pd.ID = pds.PENALTY_DECISION_ID  AND pds.DELETED = 0
+WHERE pd.DELETED = 0
+AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE
+GROUP BY EXTRACT(YEAR FROM pd.ISSUED_DATE)
+)
+, ly AS (
+SELECT EXTRACT(YEAR FROM pd.ISSUED_DATE) ""Yearr""
+, COUNT(DISTINCT pd.ID) ""Total""
+, SUM(pd.TOTAL_FINE_AMOUNT) ""Money""
+, SUM(pds.PAID_AMOUNT) ""Paid""
+FROM THANHTRA_UAT.PENALTY_DECISION pd
+LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT pds ON pd.ID = pds.PENALTY_DECISION_ID  AND pds.DELETED = 0
+WHERE pd.DELETED = 0
+AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY'),'DD/MM/YYYY') AND ADD_MONTHS(SYSDATE,-12)
+GROUP BY EXTRACT(YEAR FROM pd.ISSUED_DATE)
+)
 SELECT a.""Yearr"" ""Năm"",
 a.""Total"" ""Tổng QĐ xử phạt"",
-CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN 
-        (SELECT COUNT(ID) FROM THANHTRA_UAT.PENALTY_DECISION  
-                WHERE DELETED = 0
-                AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE
-        )/
-        NULLIF((SELECT COUNT(ID) FROM THANHTRA_UAT.PENALTY_DECISION  
-                WHERE DELETED = 0
-                AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY'),'DD/MM/YYYY') AND ADD_MONTHS(SYSDATE,-12))
-        ,0)
-ELSE a.""Total""/NULLIF(b.""Total"",0) END ""QĐ xử phạt SSCK"",
+CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.""Total""-ly.""Total"")*100/NULLIF(ly.""Total"",0)
+ELSE (a.""Total""-b.""Total"")*100/NULLIF(b.""Total"",0) END ""QĐ xử phạt SSCK"",
 a.""Money"" ""Tiền phạt"",
-CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN 
-        (SELECT SUM(TOTAL_FINE_AMOUNT) FROM THANHTRA_UAT.PENALTY_DECISION  
-                WHERE DELETED = 0
-                AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE
-        )/
-        NULLIF((SELECT SUM(TOTAL_FINE_AMOUNT) FROM THANHTRA_UAT.PENALTY_DECISION  
-                WHERE DELETED = 0
-                AND ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY'),'DD/MM/YYYY') AND ADD_MONTHS(SYSDATE,-12))
-        ,0)
-ELSE a.""Money""/NULLIF(b.""Money"",0) END ""Tiền phạt SSCK"",
+CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.""Money""-ly.""Money"")*100/NULLIF(ly.""Money"",0)
+ELSE (a.""Money""-b.""Money"")*100/NULLIF(b.""Money"",0) END ""Tiền phạt SSCK"",
 a.""Paid"" ""Tiền phạt đã nộp"",
-CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN 
-        (SELECT SUM(pds.PAID_AMOUNT) FROM THANHTRA_UAT.PENALTY_DECISION pd LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT pds ON pd.ID = pds.PENALTY_DECISION_ID  AND pds.DELETED = 0
-                WHERE pd.DELETED = 0
-                AND pd.ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE
-        )/
-        NULLIF((SELECT SUM(pds.PAID_AMOUNT) FROM THANHTRA_UAT.PENALTY_DECISION pd LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT pds ON pd.ID = pds.PENALTY_DECISION_ID  AND pds.DELETED = 0  
-                WHERE pd.DELETED = 0
-                AND pd.ISSUED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY'),'DD/MM/YYYY') AND ADD_MONTHS(SYSDATE,-12))
-        ,0)
-ELSE a.""Paid""/NULLIF(b.""Paid"",0) END ""Tiền phạt đã nộp SSCK""
+CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.""Paid""-ly.""Paid"")*100/NULLIF(ly.""Paid"",0)
+ELSE (a.""Paid""-b.""Paid"")*100/NULLIF(b.""Paid"",0) END ""Tiền phạt đã nộp SSCK""
 FROM cte a
 LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1
+LEFT JOIN ty ON 1=1
+LEFT JOIN ly ON 1=1
 WHERE a.""Yearr"" = :filter_year --Điều kiện lọc
 ORDER BY a.""Yearr"" DESC",,Done,Dữ liệu động,P,,
 11,,Dashboard Hoạt động Xử phạt >> Thống kê chung,Tổng quyết định xử phạt,Thể hiện số lượng quyết định xử phạt đã ban hành,Dashboard,Chỉ tiêu cơ sở,TB,Năm,Thanh tra,x,x,,Done,,PENALTY_DECISION,ID,,,,Done,Dữ liệu tĩnh,P,,
@@ -417,13 +485,14 @@ ORDER BY a.""Yearr"" DESC",,Done,Dữ liệu động,P,,
 11,,Dashboard Hoạt động Xử phạt >> Thống kê chung,Tiền phạt  đã nộp SSCK (%),So sánh cùng kỳ năm trước về tiền phạt đã nộp,Dashboard,Chỉ tiêu phái sinh,Dễ,Năm,Thanh tra,,x,,Done,,PENALTY_DECISION_SUBJECT,PAID_AMOUNT,,,Chỉ tiêu bổ sung sau khi UAT lần 1,,Dữ liệu tĩnh,,,UAT bổ sung
 12,,Dashboard Hoạt động Xử phạt >> Biểu đồ thống kê,Thời gian,Ngày thống kê (tháng),Dashboard,Chiều,Dễ,,Thanh tra,,,,Done,,PENALTY_DECISION,ISSUED_DATE,,"SELECT EXTRACT(YEAR FROM ISSUED_DATE) ""Năm"",
 EXTRACT(MONTH FROM ISSUED_DATE) ""Tháng"",
-COUNT(ID) ""Tổng QĐ xử phạt"",
+COUNT(DISTINCT ID) ""Tổng QĐ xử phạt"",
 SUM(TOTAL_FINE_AMOUNT) ""Tiền phạt""
 FROM THANHTRA_UAT.PENALTY_DECISION 
-WHERE EXTRACT(YEAR FROM ISSUED_DATE) = :filter_year --Điều kiện lọc
+WHERE 1=1
+AND EXTRACT(YEAR FROM ISSUED_DATE) = :filter_year --Điều kiện lọc
 AND DELETED = 0
 GROUP BY EXTRACT(YEAR FROM ISSUED_DATE), EXTRACT(MONTH FROM ISSUED_DATE)
-ORDER BY EXTRACT(YEAR FROM ISSUED_DATE) DESC, EXTRACT(MONTH FROM ISSUED_DATE) DESC",,Done,Dữ liệu động,P,,
+ORDER BY EXTRACT(YEAR FROM ISSUED_DATE) DESC, EXTRACT(MONTH FROM ISSUED_DATE) ",,Done,Dữ liệu động,P,,
 12,,Dashboard Hoạt động Xử phạt >> Biểu đồ thống kê,Số lượng QĐXP,Thể hiện số lượng quyết định xử phạt đã ban hành,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng",Thanh tra,x,x,,Done,,PENALTY_DECISION,ID,,,,Done,Dữ liệu tĩnh,P,,
 12,,Dashboard Hoạt động Xử phạt >> Biểu đồ thống kê,Tiền phạt (tỉ đồng),Tổng số tiền phạt tương ứng với quyết định xử phạt,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng",Thanh tra,x,x,,Done,,PENALTY_DECISION,TOTAL_FINE_AMOUNT,,,,Done,Dữ liệu tĩnh,P,,
 13,,Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo hành vi,Phân loại vi phạm,"Phân loại hành vi: CBTT, Vi phạm hoạt động chào bán, Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn, Giao dịch, Công ty đại chúng, Công ty chứng khoán, Tổ chức phát hành trái phiếu, Thao túng, Cho mượn, Tổ chức kiểm toán, Sở giao dịch, …",Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,VIOLATION_BEHAVIOR,NAME,,"WITH cte AS (
@@ -485,9 +554,10 @@ END ""Phân loại đối tượng"",
 COUNT(DISTINCT a.ID) ""Số lượng vi phạm"",
 COUNT(DISTINCT a.ID)*100/(SUM(COUNT(DISTINCT a.ID)) OVER (PARTITION BY COALESCE(EXTRACT(YEAR FROM a.ISSUED_DATE),0))) ""Tỷ lệ""
 FROM THANHTRA_UAT.PENALTY_DECISION a
-LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_ID 
-WHERE EXTRACT(YEAR FROM a.ISSUED_DATE) = :filter_year --Điều kiện lọc
-AND a.DELETED = 0 AND b.DELETED = 0
+LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_ID AND b.DELETED = 0
+WHERE 1=1
+AND EXTRACT(YEAR FROM a.ISSUED_DATE) = :filter_year --Điều kiện lọc
+AND a.DELETED = 0
 GROUP BY EXTRACT(YEAR FROM a.ISSUED_DATE),
 CASE WHEN b.SUBJECT_TYPE = 'ORGANIZATION' THEN 'Tổ chức' 
   WHEN b.SUBJECT_TYPE = 'INDIVIDUAL' THEN 'Cá nhân'
@@ -503,16 +573,7 @@ ORDER BY EXTRACT(YEAR FROM a.ISSUED_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
 14,,Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng,Số lượng vi phạm theo đối tượng Cá nhân,Số lượng vi phạm theo đối tượng Cá nhân,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, loại vi phạm",Thanh tra,x,x,,Done,,PENALTY_DECISION,ID,,,,Done,Dữ liệu tĩnh,P,,
 14,,Dashboard Hoạt động Xử phạt >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng vi phạm đối tượng Cá nhân (%),Tỷ lệ % số lượng vi phạm theo đối tượng Cá nhân,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, loại vi phạm",Thanh tra,,x,,Done,,PENALTY_DECISION,ID,,,,Done,Dữ liệu tĩnh,P,,
 15,,Dashboard Hoạt động Xử phạt >> Danh sách,Mã vụ việc,Mã hồ sơ vụ việc,Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,PENALTY_DECISION,ID,,"WITH rk AS (SELECT a.ISSUED_DATE, a.DECISION_NUMBER, b.SUBJECT_NAME, b.SUBJECT_ID_NUMBER, b.SUBJECT_TYPE,
-c.CODE, c.STATUS, d.ID AS itid, d.FORM_TYPE AS itft, e.ID AS etid, e.FORM_TYPE AS etft,
---ROW_NUMBER() OVER (PARTITION BY EXTRACT(YEAR FROM a.ISSUED_DATE), c.CODE, b.SUBJECT_NAME ORDER BY 
---     (CASE WHEN a.STATUS = 'ENFORCED' THEN 1
---        WHEN a.STATUS = 'SENT_TO_SUBJECT' THEN 2
---        WHEN a.STATUS = 'ISSUED' THEN 3
---        WHEN a.STATUS = 'APPROVED' THEN 4
---        WHEN a.STATUS = 'REJECTED' THEN 5
---        WHEN a.STATUS = 'PENDING_APPROVAL' THEN 6
---        WHEN a.STATUS = 'DRAFT' THEN 7
---        ELSE 8 END) ASC) AS ord
+c.CODE, c.STATUS, d.ID AS itid, d.FORM_TYPE AS itft, e.ID AS etid, e.FORM_TYPE AS etft
 FROM THANHTRA_UAT.PENALTY_DECISION a 
 LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT b ON a.ID = b.PENALTY_DECISION_ID  AND b.DELETED = 0
 LEFT JOIN THANHTRA_UAT.VIOLATION_CASE c ON a.VIOLATION_CASE_ID = c.ID AND c.DELETED = 0
@@ -549,7 +610,6 @@ END ""Trạng thái""
 FROM rk
 WHERE 1=1
 AND EXTRACT(YEAR FROM ISSUED_DATE) = :filter_year --Điều kiện lọc
---AND ord = 1
 ORDER BY EXTRACT(YEAR FROM ISSUED_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
 15,,Dashboard Hoạt động Xử phạt >> Danh sách,Đối tượng,Tên đối tượng bị thanh tra/kiểm tra,Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,PENALTY_DECISION_SUBJECT,SUBJECT_NAME,,,,Done,Dữ liệu tĩnh,P,,
 15,,Dashboard Hoạt động Xử phạt >> Danh sách,Phân loại đối tượng,Phân loại đối tượng,Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,PENALTY_DECISION_SUBJECT,SUBJECT_TYPE,,,,Done,Dữ liệu tĩnh,P,,
@@ -557,19 +617,19 @@ ORDER BY EXTRACT(YEAR FROM ISSUED_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
 EXAMINATION_TEAM",FORM_TYPE,,,,Done,Dữ liệu tĩnh,P,,
 15,,Dashboard Hoạt động Xử phạt >> Danh sách,Trạng thái,Thể hiện các trạng thái xử lý như đang tại hiện trường hay đang xử lý hồ sơ,Dashboard,Chiều,Dễ,"Năm, vụ việc",Thanh tra,,x,,Done,,VIOLATION_CASE ,STATUS,,,,Done,Dữ liệu tĩnh,P,,
 16,,Dashboard Tình hình Đơn thư >> Thống kê chung,Thời gian,Ngày thống kê (năm),Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,PETITION,RECEIVED_DATE,,"WITH cte AS 
-(SELECT EXTRACT(YEAR FROM RECEIVED_DATE)""Yearr"", COUNT(CODE) ""Total"" FROM THANHTRA_UAT.PETITION 
+(SELECT EXTRACT(YEAR FROM RECEIVED_DATE)""Yearr"", COUNT(DISTINCT ID) ""Total"" FROM THANHTRA_UAT.PETITION 
 WHERE 1=1
 AND STATUS = 'PROCESSED'
 AND DELETED = 0
 GROUP BY EXTRACT(YEAR FROM RECEIVED_DATE))
 , ty AS 
-(SELECT COUNT(CODE) sl FROM THANHTRA_UAT.PETITION 
+(SELECT COUNT(DISTINCT ID) sl FROM THANHTRA_UAT.PETITION 
 WHERE 1=1
 AND STATUS = 'PROCESSED'
 AND DELETED = 0
 AND RECEIVED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(SYSDATE,'YYYY'),'DD/MM/YYYY') AND SYSDATE)
 , ly AS
-(SELECT COUNT(CODE) sl FROM THANHTRA_UAT.PETITION 
+(SELECT COUNT(DISTINCT ID) sl FROM THANHTRA_UAT.PETITION 
 WHERE 1=1
 AND STATUS = 'PROCESSED'
 AND DELETED = 0
@@ -577,70 +637,74 @@ AND RECEIVED_DATE BETWEEN TO_DATE('01/01/' || TO_CHAR(ADD_MONTHS(SYSDATE,-12),'Y
 SELECT a.""Yearr"" ""Năm"",
 a.""Total"" ""Số đơn đã xử lý"",
 CASE WHEN a.""Yearr"" = EXTRACT(YEAR FROM SYSDATE) THEN (ty.sl-ly.sl)*100/NULLIF(ly.sl,0)
-  ELSE a.""Total""*100/NULLIF(b.""Total"",0) END ""Tổng đoàn SSCK""
+  ELSE (a.""Total""-b.""Total"")*100/NULLIF(b.""Total"",0) END ""Tổng đoàn SSCK""
 FROM cte a
 LEFT JOIN cte b ON a.""Yearr"" = b.""Yearr"" + 1
 LEFT JOIN ty ON 1=1
 LEFT JOIN ly ON 1=1
 WHERE 1=1
 AND a.""Yearr"" = :filter_year        --Điều kiện lọc
-ORDER BY a.""Yearr"" DESC
-",,Done,Dữ liệu động,P,,
-16,,Dashboard Tình hình Đơn thư >> Thống kê chung,Số đơn thư đã xử lý,Số đơn đã hoàn thành,Dashboard,Chỉ tiêu cơ sở,TB,Năm,Thanh tra,x,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
-16,,Dashboard Tình hình Đơn thư >> Thống kê chung,Số đơn thư đã xử lý SSCK (%),So sánh cùng kỳ năm trước số liệu về số đơn thư đã xử lý,Dashboard,Chỉ tiêu phái sinh,Dễ,Năm,Thanh tra,,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
+ORDER BY a.""Yearr"" DESC",,Done,Dữ liệu động,P,,
+16,,Dashboard Tình hình Đơn thư >> Thống kê chung,Số đơn thư đã xử lý,Số đơn đã hoàn thành,Dashboard,Chỉ tiêu cơ sở,TB,Năm,Thanh tra,x,x,,Done,,PETITION,ID,,,,Done,Dữ liệu tĩnh,P,,
+16,,Dashboard Tình hình Đơn thư >> Thống kê chung,Số đơn thư đã xử lý SSCK (%),So sánh cùng kỳ năm trước số liệu về số đơn thư đã xử lý,Dashboard,Chỉ tiêu phái sinh,Dễ,Năm,Thanh tra,,x,,Done,,PETITION,ID,,,,Done,Dữ liệu tĩnh,P,,
 17,,Dashboard Tình hình Đơn thư >> Biểu đồ thống kê,Thời gian,Ngày thống kê (tháng),Dashboard,Chiều,Dễ,,Thanh tra,,,,Done,,PETITION,RECEIVED_DATE,,"SELECT EXTRACT(YEAR FROM RECEIVED_DATE) ""Năm"",
 EXTRACT(MONTH FROM RECEIVED_DATE) ""Tháng"", 
-COUNT(CODE) ""Số đơn đã xử lý""
+COUNT(DISTINCT ID) ""Số đơn đã xử lý""
 FROM THANHTRA_UAT.PETITION 
 WHERE 1=1
 AND STATUS = 'PROCESSED'
 AND DELETED = 0
 AND EXTRACT(YEAR FROM RECEIVED_DATE) = :filter_year --Điều kiện lọc
 GROUP BY EXTRACT(YEAR FROM RECEIVED_DATE), EXTRACT(MONTH FROM RECEIVED_DATE)
-ORDER BY EXTRACT(YEAR FROM RECEIVED_DATE) DESC, EXTRACT(MONTH FROM RECEIVED_DATE) DESC",,Done,Dữ liệu động,P,,
+ORDER BY EXTRACT(YEAR FROM RECEIVED_DATE) DESC, EXTRACT(MONTH FROM RECEIVED_DATE)",,Done,Dữ liệu động,P,,
 17,,Dashboard Tình hình Đơn thư >> Biểu đồ thống kê,Số lượng đơn thư đã xử lý,Tính số lượng đơn thư đã xử lý đã chọn trên điều kiện tra cứu theo từng tháng.,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng",Thanh tra,x,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
 18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Thời gian,Ngày thống kê (tháng),Dashboard,Chiều,Dễ,,Thanh tra,,,,Done,,PETITION,RECEIVED_DATE,,"SELECT EXTRACT(YEAR FROM RECEIVED_DATE) ""Năm"",
 EXTRACT(MONTH FROM RECEIVED_DATE) ""Tháng"",
 CASE WHEN PETITION_CATEGORY = 'DENUNCIATION' THEN 'Tố cáo'
  WHEN PETITION_CATEGORY = 'COMPLAINT' THEN 'Khiếu nại'
  WHEN PETITION_CATEGORY = 'FEEDBACK_SUGGESTION' THEN 'Phản ánh kiến nghị'
+ WHEN PETITION_CATEGORY = 'MULTI_CONTENT' THEN 'Đơn có nhiều nội dung'
  ELSE 'Khác' 
 END ""Phân loại đối tượng"",
-COUNT(CODE) ""Số lượng"",
-COUNT(CODE)*100/(SUM(COUNT(CODE)) OVER (PARTITION BY COALESCE(EXTRACT(MONTH FROM RECEIVED_DATE),0), COALESCE(EXTRACT(YEAR FROM RECEIVED_DATE),0))) ""Tỷ lệ""
+COUNT(DISTINCT ID) ""Số lượng"",
+COUNT(DISTINCT ID)*100/NULLIF(SUM(COUNT(DISTINCT ID)) OVER (PARTITION BY COALESCE(EXTRACT(MONTH FROM RECEIVED_DATE),0), COALESCE(EXTRACT(YEAR FROM RECEIVED_DATE),0)),0) ""Tỷ lệ""
 FROM THANHTRA_UAT.PETITION 
-WHERE EXTRACT(YEAR FROM RECEIVED_DATE) = :filter_year --Điều kiện lọc
+WHERE 1=1
+AND EXTRACT(YEAR FROM RECEIVED_DATE) = :filter_year --Điều kiện lọc
 AND DELETED = 0
 GROUP BY PETITION_CATEGORY, EXTRACT(YEAR FROM RECEIVED_DATE), EXTRACT(MONTH FROM RECEIVED_DATE)
-ORDER BY EXTRACT(YEAR FROM RECEIVED_DATE) DESC, EXTRACT(MONTH FROM RECEIVED_DATE) DESC",,Done,Dữ liệu động,P,,
+ORDER BY EXTRACT(YEAR FROM RECEIVED_DATE) DESC, EXTRACT(MONTH FROM RECEIVED_DATE)",,Done,Dữ liệu động,P,,
 18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Phân loại vi phạm,"Phân loại theo loại đối tượng: 
 - Khiếu nại
 - Tố cáo 
 - Phản ánh kiến nghị",Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,PETITION,PETITION_CATEGORY,,,,Done,Dữ liệu tĩnh,P,,
-18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Số lượng đơn thư theo đối tượng Khiếu nại,Số lượng đơn thư theo đối tượng Khiếu nại,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng, loại vi phạm",Thanh tra,x,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
-18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng đơn thư đối tượng Khiếu nại (%),Tỷ lệ % số lượng đơn thư theo đối tượng Khiếu nại,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, tháng, loại vi phạm",Thanh tra,,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
-18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Số lượng đơn thư theo đối tượng Tố cáo,Số lượng đơn thư theo đối tượng Tố cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng, loại vi phạm",Thanh tra,x,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
-18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng đơn thư đối tượng Tố cáo (%),Tỷ lệ % số lượng đơn thư theo đối tượng Tố cáo,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, tháng, loại vi phạm",Thanh tra,,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
-18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Số lượng đơn thư theo đối tượng Phản ánh kiến nghị,Số lượng đơn thư theo đối tượng Phản ánh kiến nghị,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng, loại vi phạm",Thanh tra,x,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
-18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng đơn thư đối tượng Phản ánh kiến nghị,Tỷ lệ % số lượng đơn thư theo đối tượng Phản ánh kiến nghị,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, tháng, loại vi phạm",Thanh tra,,x,,Done,,PETITION,CODE,,,,Done,Dữ liệu tĩnh,P,,
-19,,Dashboard Tình hình Đơn thư >> Danh sách,Mã đơn,Mã đơn,Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,PETITION,CODE,,"SELECT EXTRACT(YEAR FROM RECEIVED_DATE) ""Năm"",
-CODE ""Mã đơn"",
-CASE WHEN PETITION_CATEGORY = 'DENUNCIATION' THEN 'Tố cáo'
-         WHEN PETITION_CATEGORY = 'COMPLAINT' THEN 'Khiếu nại'
-         WHEN PETITION_CATEGORY = 'FEEDBACK_SUGGESTION' THEN 'Phản ánh kiến nghị'
+18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Số lượng đơn thư theo đối tượng Khiếu nại,Số lượng đơn thư theo đối tượng Khiếu nại,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng, loại vi phạm",Thanh tra,x,x,,Done,,PETITION,ID,,,,Done,Dữ liệu tĩnh,P,,
+18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng đơn thư đối tượng Khiếu nại (%),Tỷ lệ % số lượng đơn thư theo đối tượng Khiếu nại,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, tháng, loại vi phạm",Thanh tra,,x,,Done,,PETITION,ID,,,,Done,Dữ liệu tĩnh,P,,
+18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Số lượng đơn thư theo đối tượng Tố cáo,Số lượng đơn thư theo đối tượng Tố cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng, loại vi phạm",Thanh tra,x,x,,Done,,PETITION,ID,,,,Done,Dữ liệu tĩnh,P,,
+18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng đơn thư đối tượng Tố cáo (%),Tỷ lệ % số lượng đơn thư theo đối tượng Tố cáo,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, tháng, loại vi phạm",Thanh tra,,x,,Done,,PETITION,ID,,,,Done,Dữ liệu tĩnh,P,,
+18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Số lượng đơn thư theo đối tượng Phản ánh kiến nghị,Số lượng đơn thư theo đối tượng Phản ánh kiến nghị,Dashboard,Chỉ tiêu cơ sở,TB,"Năm, tháng, loại vi phạm",Thanh tra,x,x,,Done,,PETITION,ID,,,,Done,Dữ liệu tĩnh,P,,
+18,,Dashboard Tình hình Đơn thư >> Biểu đồ cơ cấu theo đối tượng,Tỷ lệ % số lượng đơn thư đối tượng Phản ánh kiến nghị,Tỷ lệ % số lượng đơn thư theo đối tượng Phản ánh kiến nghị,Dashboard,Chỉ tiêu phái sinh,Dễ,"Năm, tháng, loại vi phạm",Thanh tra,,x,,Done,,PETITION,ID,,,,Done,Dữ liệu tĩnh,P,,
+19,,Dashboard Tình hình Đơn thư >> Danh sách,Mã đơn,Mã đơn,Dashboard,Chiều,Dễ,,Thanh tra,,x,,Done,,PETITION,CODE,,"SELECT  EXTRACT(YEAR FROM p.RECEIVED_DATE) ""Năm"",
+p.CODE ""Mã đơn"",
+CASE WHEN p.PETITION_CATEGORY = 'DENUNCIATION' THEN 'Tố cáo'
+         WHEN p.PETITION_CATEGORY = 'COMPLAINT' THEN 'Khiếu nại'
+         WHEN p.PETITION_CATEGORY = 'FEEDBACK_SUGGESTION' THEN 'Phản ánh kiến nghị'
+         WHEN p.PETITION_CATEGORY = 'MULTI_CONTENT' THEN 'Đơn có nhiều nội dung'
          ELSE 'Khác' 
 END ""Loại đơn"",
-CONTENT ""Đối tượng"",
-CASE WHEN STATUS = 'RECEIVED' THEN 'Đã tiếp nhận'
- WHEN STATUS = 'PROCESSED' THEN 'Đã xử lý xong'
- ELSE 'Khác'
+pt.TARGET_NAME ""Đối tượng"",
+CASE WHEN p.STATUS = 'RECEIVED' THEN 'Đã tiếp nhận'
+  WHEN p.STATUS = 'PROCESSED' THEN 'Đã xử lý'
+  ELSE 'Khác'
 END ""Trạng thái""
-FROM THANHTRA_UAT.PETITION 
-WHERE EXTRACT(YEAR FROM RECEIVED_DATE) = :filter_year --Điều kiện lọc
-AND DELETED = 0
-ORDER BY EXTRACT(YEAR FROM RECEIVED_DATE) DESC",,Done,Dữ liệu tĩnh,P,,
+FROM THANHTRA_UAT.PETITION p
+LEFT JOIN THANHTRA_UAT.PETITION_TARGET pt ON p.ID = pt.PETITION_ID AND pt.DELETED = 0
+WHERE 1=1
+AND EXTRACT(YEAR FROM p.RECEIVED_DATE) = :filter_year --Điều kiện lọc
+AND p.DELETED = 0
+ORDER BY CODE",,Done,Dữ liệu tĩnh,P,,
 19,,Dashboard Tình hình Đơn thư >> Danh sách,Loại đơn,Loại đơn,Dashboard,Chiều,Dễ,"Năm, mã đơn",Thanh tra,,x,,Done,,PETITION,PETITION_CATEGORY,,,,Done,Dữ liệu tĩnh,P,,
-19,,Dashboard Tình hình Đơn thư >> Danh sách,Đối tượng,Đối tượng,Dashboard,Chiều,Dễ,"Năm, mã đơn",Thanh tra,,x,,Done,,PETITION,CONTENT,,,dựa vào data test để mapp --> bên nguồn cf chưa có trường riêng cho chỉ tiêu này và trường đang mapp đã lấy đúng (nguồn cf có tên đối tượng trong trường CONTENT),Done,Dữ liệu tĩnh,P,,
+19,,Dashboard Tình hình Đơn thư >> Danh sách,Đối tượng,Đối tượng,Dashboard,Chiều,Dễ,"Năm, mã đơn",Thanh tra,,x,,Done,,PETITION_TARGET,TARGET_NAME,,,dựa vào data test để mapp --> bên nguồn cf chưa có trường riêng cho chỉ tiêu này và trường đang mapp đã lấy đúng (nguồn cf có tên đối tượng trong trường CONTENT),Done,Dữ liệu tĩnh,P,,
 19,,Dashboard Tình hình Đơn thư >> Danh sách,Trạng thái,Thể hiện các trạng thái xử lý như đang tại hiện trường hay đang xử lý hồ sơ,Dashboard,Chiều,Dễ,"Năm, mã đơn",Thanh tra,,x,,Done,,PETITION,STATUS,,,,Done,Dữ liệu tĩnh,P,,
 20,,Báo cáo hoạt động vi phạm trên TTCK,"Loại hình xử lý: Vi phạm của CTĐC, tổ chức CBCK","Phân loại theo: Vi phạm của CTĐC, tổ chức CBCK",Báo cáo,Chiều,Dễ,,Thanh tra,,x,,Done,,VIOLATION_BEHAVIOR,NAME,,"SELECT CASE WHEN (LOWER(d.NAME) LIKE '%công ty đại chúng%' OR LOWER(d.NAME) LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK'
  WHEN (LOWER(d.NAME) LIKE '%công ty chứng khoán%') THEN 'Vi phạm của CTCK'

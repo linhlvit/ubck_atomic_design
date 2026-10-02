@@ -137,11 +137,15 @@ SELECT
     o.investor_code,
     o.investor_nm,
     o.nationality_code,
+    o.nationality_nm,
     o.investor_tp_code,
+    o.investor_tp_nm,
     o.director_nm,
     o.custodian_bank_nm,
     o.src_stm_code,
-    o.investor_status_code
+    o.investor_status_code,
+    o.investor_status_nm,
+    o.identification_nbr
 
 FROM datamart.opr_foreign_investor_360_profile o
 ;
@@ -157,6 +161,7 @@ SELECT
     -- From: OPERATIONAL Operational Investor Compliance History
     o.investor_compliance_hist_code,
     o.subject_nm,
+    o.subject_id_nbr,
     o.issued_dt,
     o.penalty_tp_nm,
     o.description,

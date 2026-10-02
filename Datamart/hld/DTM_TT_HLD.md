@@ -13,9 +13,9 @@
 Phục vụ Tab TỔNG QUAN — Nhóm 1/2/3. Nguồn `INSPECTION_TEAM`. `Inspection Team Dimension` tách riêng khỏi Fact (Fact không có measure định lượng, mọi thuộc tính mô tả chuyển sang Dimension).
 
 - **Grain Fact: 1 row per `INSPECTION_TEAM`.** Đếm dùng `COUNT(Inspection_Team_Dimension_Id)` qua Dimension.
-- **Grain Dimension: 1 row per `INSPECTION_TEAM`** — `Inspection_Team_Code` (BK), `Start_Date`, `End_Date`, `Content`.
+- **Grain Dimension: 1 row per `INSPECTION_TEAM`** — `Inspection_Team_Code` (BK), `Start_Date`, `End_Date`, `Effective_Start_Date`, `Effective_End_Date` (mới 2026-10-01), `Content`.
 - Date key: `Decision_Date` (`INSPECTION_TEAM.DECISION_DATE`).
-- Trạng thái Hoàn thành/Đang thực hiện ETL-derived trên Dimension từ `Start_Date`/`End_Date`: `End_Date IS NOT NULL AND Start_Date IS NOT NULL` → Hoàn thành; `End_Date IS NULL AND Start_Date IS NOT NULL` → Đang thực hiện.
+- Trạng thái Hoàn thành/Đang thực hiện **[SỬA 2026-10-01, BA STT 1/2/5/6/7/10]**: Dimension có `Effective_Start_Date = COALESCE(Start_Date, kỳ thanh tra từ ngày)` và `Effective_End_Date = COALESCE(End_Date, kỳ thanh tra đến ngày)` (ETL); KPI so với ngày hiện tại lúc truy vấn: Hoàn thành = có cả 2 ngày và `Effective_End_Date <= CURRENT_DATE()`; Đang thực hiện = có `Effective_Start_Date` và (`Effective_End_Date IS NULL` hoặc `> CURRENT_DATE()`). Kiểm tra (Nhóm 6/7) giữ đúng SQL BA: nhánh `Effective_End_Date > CURRENT_DATE()` không đòi `Effective_Start_Date`.
 - Nhóm 3 reuse Fact + Dimension này, dùng `Content` để derive phân loại vi phạm bằng text-matching LIKE.
 
 ```mermaid
@@ -52,9 +52,9 @@ flowchart LR
 Phục vụ Tab KIỂM TRA — Nhóm 6/7. Nguồn Atomic riêng biệt với Cụm 1 — `EXAMINATION_TEAM`. Cùng kiến trúc Cụm 1 — tách `Examination Team Dimension` riêng.
 
 - **Grain Fact: 1 row per `EXAMINATION_TEAM`.** Đếm dùng `COUNT(Examination_Team_Dimension_Id)`.
-- **Grain Dimension: 1 row per `EXAMINATION_TEAM`** — `Examination_Team_Code` (BK), `Start_Date`, `End_Date`, `Content`.
+- **Grain Dimension: 1 row per `EXAMINATION_TEAM`** — `Examination_Team_Code` (BK), `Start_Date`, `End_Date`, `Effective_Start_Date`, `Effective_End_Date` (mới 2026-10-01), `Content`.
 - Date key: `Decision_Date` (`EXAMINATION_TEAM.DECISION_DATE`).
-- Trạng thái Hoàn thành/Đang thực hiện — cùng logic ETL-derived như Cụm 1.
+- Trạng thái Hoàn thành/Đang thực hiện — cùng cách dùng `Effective_Start_Date`/`Effective_End_Date` như Cụm 1 (kỳ kiểm tra `EXAMINATION_PERIOD_FROM/TO`).
 
 ```mermaid
 flowchart LR
@@ -524,13 +524,33 @@ Reuse `Fact Penalty Decision Subject Behavior` (Cụm 3b, Nhóm 13) — không p
 
 ```mermaid
 flowchart LR
-    subgraph Datamart["Datamart"]
-        G1["Fact Penalty Decision Subject Behavior"]
+    subgraph SRC["Staging"]
+        S1["INSPECT.PENALTY_DECISION"]
+        S2["INSPECT.PENALTY_DECISION_SUBJECT"]
+        S3["INSPECT.PENALTY_DECISION_SUBJECT_BEHAVIOR"]
+        S4["INSPECT.VIOLATION_BEHAVIOR"]
     end
-    subgraph RPT["Báo cáo — Nhóm 20"]
-        R1["Bảng 7 nhóm Loại hình xử lý vi phạm TTCK"]
+
+    subgraph SIL["Atomic"]
+        SV1["Penalty Decision"]
+        SV2["Penalty Decision Subject"]
+        SV3["Penalty Decision Subject Behavior"]
+        SV4["Violation Behavior"]
     end
-    G1 --> R1
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Penalty Decision Subject Behavior (reuse Cụm 3b)"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
+    SV4 --> G1
 ```
 
 ---
@@ -548,7 +568,8 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_inspection_team-THANHTRA.INSPECTION_TEAM.yaml`)
 > Ghi chú:
-> - `Case_Status` (Hoàn thành/Đang thực hiện) không tồn tại như field riêng trên Atomic — ETL-derived trên `Inspection Team Dimension` từ `Start_Date`/`End_Date`.
+> - **Sửa 2026-10-01 (BA cập nhật SQL tham khảo):** mọi phép đếm đổi `COUNT(ID)` → `COUNT(DISTINCT ID)` (K_TT_1/3/5 và các COUNT trong K_TT_2/4/6); công thức SSCK `(a−b)*100/b` (BA bỏ dạng `a*100/b`) — thiết kế đã dùng đúng dạng này từ trước, không đổi.
+> - `Case_Status` (Hoàn thành/Đang thực hiện) không tồn tại như field riêng trên Atomic — ETL-derived từ `Start_Date`/`End_Date` và kỳ thanh tra (COALESCE) theo ngày ETL — xem O_TT_23.
 > - Date key dùng `Decision_Date`. Fact join `Calendar Date Dimension` qua `Decision_Date`.
 
 **Mockup:**
@@ -561,15 +582,15 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_1 | Tổng số đoàn thanh tra | Đoàn | Base | COUNT(Fact_Inspection_Team_Activity JOIN Inspection Team Dimension) WHERE Year(Calendar Date Dimension.Decision_Date)=selected_year | |
-| K_TT_2 | Tổng số thanh tra SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_1 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − COUNT(K_TT_1 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(COUNT(K_TT_1 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_1[Y] − K_TT_1[Y−1]) / NULLIF(K_TT_1[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD (đầu năm đến hôm nay, cùng mốc ngày/tháng cho cả 2 năm); nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
-| K_TT_3 | Số đoàn đã hoàn thành | Đoàn | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Inspection Team Dimension.End_Date IS NOT NULL AND Inspection Team Dimension.Start_Date IS NOT NULL | |
-| K_TT_4 | Số đoàn hoàn thành SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_3 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND End_Date IS NOT NULL AND Start_Date IS NOT NULL) − COUNT(K_TT_3 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND End_Date IS NOT NULL AND Start_Date IS NOT NULL) ) / NULLIF(COUNT(K_TT_3 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND End_Date IS NOT NULL AND Start_Date IS NOT NULL),0) × 100 ELSE (K_TT_3[Y] − K_TT_3[Y−1]) / NULLIF(K_TT_3[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
-| K_TT_5 | Số đoàn đang thực hiện | Đoàn | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Inspection Team Dimension.End_Date IS NULL AND Inspection Team Dimension.Start_Date IS NOT NULL | |
-| K_TT_6 | Số đoàn đang thực hiện SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_5 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND End_Date IS NULL AND Start_Date IS NOT NULL) − COUNT(K_TT_5 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND End_Date IS NULL AND Start_Date IS NOT NULL) ) / NULLIF(COUNT(K_TT_5 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND End_Date IS NULL AND Start_Date IS NOT NULL),0) × 100 ELSE (K_TT_5[Y] − K_TT_5[Y−1]) / NULLIF(K_TT_5[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
-| K_TT_7 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Decision_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_1-6 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_1 | Tổng số đoàn thanh tra | Đoàn | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) trên Fact_Inspection_Team_Activity WHERE Year(Calendar Date Dimension.Decision_Date)=selected_year | **Sửa 2026-10-01 (BA cập nhật SQL):** BA đổi COUNT(ID) → COUNT(DISTINCT ID); đếm distinct mã đoàn. | READY |
+| K_TT_2 | Tổng số thanh tra SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_1 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − COUNT(K_TT_1 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(COUNT(K_TT_1 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_1[Y] − K_TT_1[Y−1]) / NULLIF(K_TT_1[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD (đầu năm đến hôm nay, cùng mốc ngày/tháng cho cả 2 năm); nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ. **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT trong công thức = COUNT(DISTINCT Inspection_Team_Code); công thức tăng trưởng (a−b)/b×100 khớp SQL BA. | READY |
+| K_TT_3 | Số đoàn đã hoàn thành | Đoàn | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) WHERE Year(Decision_Date)=selected_year AND Inspection Team Dimension.Effective_Start_Date IS NOT NULL AND Inspection Team Dimension.Effective_End_Date IS NOT NULL AND Inspection Team Dimension.Effective_End_Date <= CURRENT_DATE() | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 1):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ thanh tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_4 | Số đoàn hoàn thành SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_3 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND Effective_Start_Date IS NOT NULL AND Effective_End_Date IS NOT NULL AND Effective_End_Date <= CURRENT_DATE()) − COUNT(K_TT_3 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Effective_Start_Date IS NOT NULL AND Effective_End_Date IS NOT NULL AND Effective_End_Date <= CURRENT_DATE()) ) / NULLIF(COUNT(K_TT_3 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Effective_Start_Date IS NOT NULL AND Effective_End_Date IS NOT NULL AND Effective_End_Date <= CURRENT_DATE()),0) × 100 ELSE (K_TT_3[Y] − K_TT_3[Y−1]) / NULLIF(K_TT_3[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ. **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT trong công thức = COUNT(DISTINCT Inspection_Team_Code); công thức tăng trưởng (a−b)/b×100 khớp SQL BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 1):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ thanh tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_5 | Số đoàn đang thực hiện | Đoàn | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) WHERE Year(Decision_Date)=selected_year AND Inspection Team Dimension.Effective_Start_Date IS NOT NULL AND (Inspection Team Dimension.Effective_End_Date IS NULL OR Inspection Team Dimension.Effective_End_Date > CURRENT_DATE()) | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 1):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ thanh tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_6 | Số đoàn đang thực hiện SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_5 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND Effective_Start_Date IS NOT NULL AND (Effective_End_Date IS NULL OR Effective_End_Date > CURRENT_DATE())) − COUNT(K_TT_5 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Effective_Start_Date IS NOT NULL AND (Effective_End_Date IS NULL OR Effective_End_Date > CURRENT_DATE())) ) / NULLIF(COUNT(K_TT_5 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Effective_Start_Date IS NOT NULL AND (Effective_End_Date IS NULL OR Effective_End_Date > CURRENT_DATE())),0) × 100 ELSE (K_TT_5[Y] − K_TT_5[Y−1]) / NULLIF(K_TT_5[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ. **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT trong công thức = COUNT(DISTINCT Inspection_Team_Code); công thức tăng trưởng (a−b)/b×100 khớp SQL BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 1):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ thanh tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_7 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Decision_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_1-6 | READY |
 
 **Star Schema:**
 
@@ -590,12 +611,15 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Inspection_Team_Dimension {
         string Inspection_Team_Dimension_Id PK
         varchar Inspection_Team_Code
         date Start_Date
         date End_Date
+        date Effective_Start_Date
+        date Effective_End_Date
         string Content
         string Source_System_Code
     }
@@ -634,7 +658,7 @@ flowchart LR
 > Reuse 100% `Fact Inspection Team Activity` + `Inspection Team Dimension` đã thiết kế ở Nhóm 1.
 > Phân loại: **Phân tích**
 > Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (reuse Nhóm 1)
-> Ghi chú: GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer.
+> Ghi chú: GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer. **Sửa 2026-10-01:** đếm `COUNT(DISTINCT ID)` theo BA; bổ sung KPI Chiều K_TT_87 cho dòng BA 11 "Thời gian"; thứ tự hiển thị tháng tăng dần.
 
 **Mockup:**
 
@@ -648,11 +672,12 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_8 | Số vụ việc thanh tra theo tháng (tổng) | Vụ | Base | COUNT(Fact_Inspection_Team_Activity JOIN Inspection Team Dimension) WHERE Year(Decision_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | |
-| K_TT_9 | Số vụ đang thực hiện theo tháng | Vụ | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Inspection Team Dimension.End_Date IS NULL AND Inspection Team Dimension.Start_Date IS NOT NULL GROUP BY Month | |
-| K_TT_10 | Số vụ đã hoàn thành theo tháng | Vụ | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Inspection Team Dimension.End_Date IS NOT NULL AND Inspection Team Dimension.Start_Date IS NOT NULL GROUP BY Month | |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_8 | Số vụ việc thanh tra theo tháng (tổng) | Vụ | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) WHERE Year(Decision_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. | READY |
+| K_TT_9 | Số vụ đang thực hiện theo tháng | Vụ | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) WHERE Year(Decision_Date)=selected_year AND Inspection Team Dimension.Effective_Start_Date IS NOT NULL AND (Inspection Team Dimension.Effective_End_Date IS NULL OR Inspection Team Dimension.Effective_End_Date > CURRENT_DATE()) GROUP BY Month | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 2):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ thanh tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_10 | Số vụ đã hoàn thành theo tháng | Vụ | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) WHERE Year(Decision_Date)=selected_year AND Inspection Team Dimension.Effective_Start_Date IS NOT NULL AND Inspection Team Dimension.Effective_End_Date IS NOT NULL AND Inspection Team Dimension.Effective_End_Date <= CURRENT_DATE() GROUP BY Month | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 2):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ thanh tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_87 | Thời gian (tháng thống kê) | Tháng | Chiều | `Calendar_Date_Dimension.Month` — GROUP BY `EXTRACT(MONTH FROM DECISION_DATE)`, join qua `Decision_Date_Dimension_Id` của `Fact Inspection Team Activity` | **[MỚI 2026-10-01]** BA dòng 11 "Thời gian" (Chiều, `INSPECTION_TEAM.DECISION_DATE`, "Ngày thống kê (tháng)") — trước đây chỉ là GROUP_BY ẩn trong K_TT_8–10 chưa có KPI_ID. Chiều trục hoành dùng chung K_TT_8–10; BA đổi ORDER BY tháng tăng dần (T1→T12) | READY |
 
 **Star Schema:** giống Nhóm 1 (reuse 100%, không thêm FK/measure mới).
 
@@ -700,7 +725,7 @@ flowchart LR
 > - Grain khác Nhóm 1/2 — 1 biên bản vi phạm (`VIOLATION_RECORD`) có thể ghi nhận N hành vi qua `VIOLATION_RECORD_BEHAVIOR` (N:1 với `Violation Record`, N:1 với `Violation Behavior`). Tách Fact riêng **Fact Inspection Team Violation Behavior** (grain 1 đoàn × 1 biên bản × 1 hành vi) — không gắn vào `Fact Inspection Team Activity` (grain 1 đoàn) để tránh fanout.
 > - `Violation_Behavior_Name` denormalize trực tiếp vào Dimension mới (không tách `Violation Behavior Dimension` riêng) — theo đúng pattern đã dùng ở `Penalty Decision Subject Behavior Dimension` (Nhóm 13).
 > - `Inspection_Team_Dimension_Id` là FK trên Fact, trỏ thẳng `Inspection Team Dimension` (Nhóm 1) — reuse, không denormalize `Inspection_Team_Code` vào Dimension mới. Với Nguồn B, `Inspection_Team_Dimension_Id` lookup qua `Violation Case.Inspection_Team_Id` (không qua `Violation Record` vì `Violation Record` ở nhánh này không có `Inspection_Team_Id` trực tiếp).
-> - ELSE 'Khác' (không loại bỏ) khi `Violation_Behavior_Name` NULL — khác thiết kế cũ (ELSE NULL, loại khỏi thống kê).
+> - **Sửa 2026-10-01:** BA SQL mới thêm `AND NAME IS NOT NULL` (sau bước `dense_RANK` chọn tên không NULL) → dòng `Violation_Behavior_Name` NULL bị LOẠI khỏi thống kê (thay cho 'ELSE Khác' của thiết kế 2026-08-14). Cột `violation_behavior_nm` trên Dimension giữ nguyên giá trị gốc (nullable), lọc `IS NOT NULL` ở KPI.
 
 **Mockup:**
 
@@ -717,10 +742,10 @@ pie title Cơ cấu vi phạm theo loại hành vi
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_11 | Số vi phạm theo loại hành vi | Cuộc | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) trên Fact_Inspection_Team_Violation_Behavior WHERE Year(Decision_Date)=selected_year GROUP BY Violation_Behavior_Name | **Sửa 2026-08-22 (dev yêu cầu):** trước đây COUNT(Fact) / COUNT(DISTINCT Violation_Record_Behavior_Code) — cả hai đều sai so với BA. BA STT 3 cột "Khai thác nguồn" chỉ định đếm `INSPECTION_TEAM.ID`; `VIOLATION_BEHAVIOR` chỉ là chiều. Đơn vị đổi Vụ → Cuộc cho khớp thực thể được đếm. Cùng khuôn với K_TT_46 (Nhóm 13). GROUP BY động — số lát tùy `Violation_Behavior_Name` thực tế phát sinh; NULL → gộp 'Khác' (không loại bỏ). ⚠️ 1 đoàn thanh tra có nhiều hành vi được đếm ở nhiều lát → tổng các lát > tổng số cuộc thanh tra; tỷ lệ % tính ở tầng Báo cáo COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, KHÔNG lấy mẫu số từ KPI tổng số cuộc thanh tra |
-| K_TT_12 | Phân loại vi phạm | — | Chiều | `COALESCE(Violation_Behavior_Name, 'Khác')` — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_11 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_11 | Số vi phạm theo loại hành vi | Cuộc | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) trên Fact_Inspection_Team_Violation_Behavior WHERE Year(Decision_Date)=selected_year AND Violation_Behavior_Name IS NOT NULL GROUP BY Violation_Behavior_Name | **Sửa 2026-08-22 (dev yêu cầu):** trước đây COUNT(Fact) / COUNT(DISTINCT Violation_Record_Behavior_Code) — cả hai đều sai so với BA. BA STT 3 cột "Khai thác nguồn" chỉ định đếm `INSPECTION_TEAM.ID`; `VIOLATION_BEHAVIOR` chỉ là chiều. Đơn vị đổi Vụ → Cuộc cho khớp thực thể được đếm. Cùng khuôn với K_TT_46 (Nhóm 13). GROUP BY động — số lát tùy `Violation_Behavior_Name` thực tế phát sinh; **Sửa 2026-10-01 (BA cập nhật SQL):** BA SQL mới có `AND NAME IS NOT NULL` → LOẠI dòng `Violation_Behavior_Name` NULL, không còn gộp 'Khác' (đoàn chưa có hành vi ACTIVE không vào biểu đồ). Dòng BA 16–21 (Số lượng/Tỷ lệ % theo từng hành vi Thao túng thị trường, Cho mượn tài khoản, CBTT) là các lát của K_TT_11 theo giá trị K_TT_12 — không tách KPI riêng. ⚠️ 1 đoàn thanh tra có nhiều hành vi được đếm ở nhiều lát → tổng các lát > tổng số cuộc thanh tra; tỷ lệ % tính ở tầng Báo cáo COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, KHÔNG lấy mẫu số từ KPI tổng số cuộc thanh tra | READY |
+| K_TT_12 | Phân loại vi phạm | — | Chiều | `Violation_Behavior_Name` (NOT NULL) — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_11. **Sửa 2026-10-01 (BA cập nhật SQL):** bỏ COALESCE 'Khác' (BA NAME IS NOT NULL) | READY |
 
 **Star Schema:**
 
@@ -743,12 +768,15 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Inspection_Team_Dimension {
         string Inspection_Team_Dimension_Id PK
         varchar Inspection_Team_Code
         date Start_Date
         date End_Date
+        date Effective_Start_Date
+        date Effective_End_Date
         string Content
         string Source_System_Code
     }
@@ -804,8 +832,9 @@ flowchart LR
 > - Grain khác Nhóm 1/2/3 — `INSPECTION_TEAM_TARGET` quan hệ N:1 với `INSPECTION_TEAM`. Đếm theo số lượt đối tượng (không DISTINCT theo đoàn), tách riêng **Fact Inspection Team Target Activity** (grain 1 đoàn × 1 đối tượng — dữ liệu chi tiết từng lượt, chưa aggregate).
 > - `Target_Type_Code` (← `INSPECTION_TEAM_TARGET.TARGET_TYPE`) map 1:1 trực tiếp từ nguồn — KHÔNG phải Classification Value. Giá trị đã biết qua BA (không phải danh sách đóng — Atomic không hardcode enum): `SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION, BOND_ISSUER` (8 giá trị, cập nhật 2026-08-14 — BA bổ sung `BOND_ISSUER` so với bản trước).
 > - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Thiết kế cũ hardcode 4 cặp KPI Base/Derived cố định (Cá nhân/CTĐC/CTCK/CTQLQ) — bỏ sót 3 giá trị Atomic thật (`AUDIT_COMPANY`, `CRYPTO_SERVICE_PROVIDER`, `ORGANIZATION`) trong cả tử số lẫn mẫu số %, không khớp SQL BA tham khảo (`COUNT(a.ID)*100/SUM(COUNT(a.ID)) OVER (PARTITION BY Year)` — GROUP BY động theo toàn bộ `TARGET_TYPE` thực tế phát sinh, không giới hạn ở 4 loại BA liệt kê minh họa trong Mô tả). Thiết kế lại: 1 KPI Base tổng quát GROUP BY động (số dòng kết quả tùy dữ liệu) + 1 KPI Chiều — không cố định N cặp Base/Derived. Tỷ lệ % không còn là KPI Derived ở tầng Datamart; tính ở tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm cùng năm × 100%). Nhờ thiết kế GROUP BY động này, `BOND_ISSUER` (bổ sung 2026-08-14) tự động được phản ánh mà không cần sửa logic ETL — chỉ cập nhật ghi chú mapping hiển thị.
+> - **Sửa 2026-10-01 (BA `LEFT JOIN … b.DELETED = 0`):** Fact lấy `INSPECTION_TEAM` làm bảng chính và LEFT JOIN `INSPECTION_TEAM_TARGET` → đoàn chưa có đối tượng có 1 dòng với FK đối tượng NULL (đếm vào nhãn KHÁC).
 > - Date key: `Decision_Date` (← `INSPECTION_TEAM.DECISION_DATE`, qua join với Inspection Team).
-> - Mapping hiển thị tham khảo (label UI, không phải filter cố định — cập nhật 2026-08-14): `INDIVIDUAL`=Cá nhân, `PUBLIC_COMPANY`=CTĐC, `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `AUDIT_COMPANY`=CTKT, `CRYPTO_SERVICE_PROVIDER`=Tổ chức cung cấp dịch vụ tài sản mã hoá, `ORGANIZATION`=Tổ chức khác, `BOND_ISSUER`=Tổ chức phát hành trái phiếu.
+> - Mapping hiển thị (BA cập nhật 2026-10-01): `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `PUBLIC_COMPANY`=CTĐC, `INDIVIDUAL`=Cá nhân, `ORGANIZATION`=Tổ chức, mọi giá trị khác hoặc không có đối tượng=KHÁC. BA bỏ nhãn CTKT / Tổ chức mã hoá / Tổ chức PHTP khỏi Thanh tra (còn ở Kiểm tra — Nhóm 9).
 
 **Mockup:**
 
@@ -823,10 +852,10 @@ pie title Cơ cấu vi phạm theo đối tượng
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_13 | Số vi phạm theo đối tượng | Cuộc | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) trên Fact_Inspection_Team_Target_Activity WHERE Year(Decision_Date)=selected_year GROUP BY Target_Type_Code | GROUP BY động trên dữ liệu chi tiết từng lượt — số dòng kết quả tùy giá trị `Target_Type_Code` thực tế phát sinh (tối đa 7). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived **Sửa 2026-08-24:** COUNT(Inspection_Team_Target_Code) → COUNT(Inspection_Team_Code), join qua FK `inspection_team_dim_id` sẵn có trên Fact. Dùng COUNT(DISTINCT) — thống nhất với K_TT_32 (Nhóm 9) và K_TT_11/K_TT_30. |
-| K_TT_14 | Phân loại đối tượng | — | Chiều | `Target_Type_Code` — lấy trực tiếp toàn bộ giá trị thực tế trong data, GROUP BY động (không hardcode danh sách cố định) | Chiều lọc/nhóm dùng chung cho K_TT_13 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_13 | Số vi phạm theo đối tượng | Cuộc | Base | COUNT(DISTINCT Inspection_Team_Dimension.Inspection_Team_Code) trên Fact_Inspection_Team_Target_Activity WHERE Year(Decision_Date)=selected_year GROUP BY nhãn K_TT_14 | GROUP BY động trên dữ liệu chi tiết từng lượt — số dòng kết quả tùy giá trị `Target_Type_Code` thực tế phát sinh (tối đa 7). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived **Sửa 2026-08-24:** COUNT(Inspection_Team_Target_Code) → COUNT(Inspection_Team_Code), join qua FK `inspection_team_dim_id` sẵn có trên Fact. Dùng COUNT(DISTINCT) — thống nhất với K_TT_32 (Nhóm 9) và K_TT_11/K_TT_30.. **Sửa 2026-10-01 (BA cập nhật SQL):** BA SQL mới: `LEFT JOIN INSPECTION_TEAM_TARGET` → đoàn CHƯA có đối tượng vẫn được đếm (nhãn KHÁC); các `TARGET_TYPE` ngoài 5 loại (AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, BOND_ISSUER…) gộp KHÁC. Dòng BA 23–30 (Số lượng/Tỷ lệ % đối tượng Cá nhân/CTĐC/CTCK/CTQLQ) là các lát của K_TT_13 theo giá trị K_TT_14 — không tách KPI riêng. COUNT(DISTINCT ID) nên 1 đoàn có nhiều đối tượng cùng nhãn chỉ đếm 1. | READY |
+| K_TT_14 | Phân loại đối tượng | — | Chiều | `CASE Target_Type_Code: SECURITIES_COMPANY→'CTCK', FUND_MANAGEMENT_COMPANY→'CTQLQ', PUBLIC_COMPANY→'CTĐC', INDIVIDUAL→'Cá nhân', ORGANIZATION→'Tổ chức', ELSE (kể cả NULL)→'KHÁC'` | Chiều lọc/nhóm dùng chung cho K_TT_13. **Sửa 2026-10-01 (BA cập nhật SQL):** nhãn hiển thị theo BA (6 nhãn); GROUP BY nhãn (không GROUP BY mã gốc để các loại ngoài danh sách gộp 1 lát KHÁC — SQL BA group theo mã gốc nhưng cùng nhãn KHÁC, xem O_TT_19) | READY |
 
 **Star Schema:**
 
@@ -849,6 +878,7 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Inspection_Team_Target_Dimension {
         string Inspection_Team_Target_Dimension_Id PK
@@ -861,6 +891,8 @@ erDiagram
         varchar Inspection_Team_Code
         date Start_Date
         date End_Date
+        date Effective_Start_Date
+        date Effective_End_Date
         string Content
         string Source_System_Code
     }
@@ -893,7 +925,7 @@ flowchart LR
 
 | Tên bảng | Grain | Date key | Filter mặc định |
 |---|---|---|---|
-| Fact Inspection Team Target Activity | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Inspection Team Target Dimension, Inspection Team Dimension | `Decision_Date_Dimension_Id` ← join Inspection Team → Calendar Date Dimension | Year = selected_year (slicer NĂM 202X) |
+| Fact Inspection Team Target Activity | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` LEFT JOIN `INSPECTION_TEAM_TARGET`, N:1; đoàn chưa có đối tượng → 1 dòng FK đối tượng NULL) — 3 FK: Calendar Date Dimension, Inspection Team Target Dimension, Inspection Team Dimension | `Decision_Date_Dimension_Id` ← join Inspection Team → Calendar Date Dimension | Year = selected_year (slicer NĂM 202X) |
 
 ---
 
@@ -907,7 +939,7 @@ flowchart LR
 > - Grain giống Cụm 1c (Nhóm 4) — 1 đoàn thanh tra × 1 đối tượng. Không reuse trực tiếp Fact Inspection Team Target Activity vì khác `table_type` (`fact` vs `operational`).
 > - Cột **"Mã vụ việc"** ← `Inspection Team.Inspection Team Code` (`INSPECTION_TEAM.CODE`)
 > - Cột **"Đối tượng"** ← `Inspection Team Target.Target Name` (`INSPECTION_TEAM_TARGET.TARGET_NAME`)
-> - Cột **"Phân loại đối tượng"** ← `Inspection Team Target.Target Type Code` (`INSPECTION_TEAM_TARGET.TARGET_TYPE`)
+> - Cột **"Phân loại đối tượng"** ← `Inspection Team Target.Target Type Code` (`INSPECTION_TEAM_TARGET.TARGET_TYPE`) — nhãn hiển thị CTCK/CTQLQ/CTĐC/Cá nhân/Tổ chức/KHÁC (BA cập nhật 2026-10-01); danh sách dùng INNER JOIN đối tượng (khác biểu đồ Nhóm 4)
 > - Cột **"Loại hình"** ← `Inspection Team.Form Type Code` (`INSPECTION_TEAM.FORM_TYPE`) — scheme `TT_REVIEW_FORM_TYPE` (PERIODIC/UNSCHEDULED → Định kỳ/Đột xuất)
 > - Cột **"Trạng thái"** ← ETL-derived từ `Inspection Team.Start Date`/`End Date` — **3 giá trị**: `START_DATE IS NOT NULL AND END_DATE IS NULL` → Đang thực hiện; `START_DATE IS NOT NULL AND END_DATE IS NOT NULL` → Đã hoàn thành; `START_DATE IS NULL AND END_DATE IS NULL` → Chưa thực hiện.
 > - Date key: `Decision_Date` (← `INSPECTION_TEAM.DECISION_DATE`).
@@ -921,13 +953,13 @@ flowchart LR
 
 **Bảng KPI (Attribute hiển thị — Tác nghiệp):**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_15 | Mã vụ việc | — | Attribute | `Inspection Team Target.Inspection Team Code` | |
-| K_TT_16 | Đối tượng | — | Attribute | `Inspection Team Target.Target Name` | |
-| K_TT_17 | Phân loại đối tượng | — | Attribute | `Inspection Team Target.Target Type Code` | |
-| K_TT_18 | Loại hình | — | Attribute | `Inspection Team.Form Type Code` (join qua Inspection Team) | scheme TT_REVIEW_FORM_TYPE |
-| K_TT_19 | Trạng thái | — | Attribute | ETL-derived từ `Inspection Team.Start Date`/`End Date` (join qua Inspection Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_15 | Mã vụ việc | — | Attribute | `Inspection Team Target.Inspection Team Code` | | READY |
+| K_TT_16 | Đối tượng | — | Attribute | `Inspection Team Target.Target Name` | | READY |
+| K_TT_17 | Phân loại đối tượng | — | Attribute | `Inspection Team Target.Target Type Code` → nhãn: SECURITIES_COMPANY→CTCK, FUND_MANAGEMENT_COMPANY→CTQLQ, PUBLIC_COMPANY→CTĐC, INDIVIDUAL→Cá nhân, ORGANIZATION→Tổ chức, ELSE→KHÁC | **Sửa 2026-10-01 (BA cập nhật SQL):** BA hiển thị nhãn 6 giá trị (cùng bảng nhãn K_TT_14) | READY |
+| K_TT_18 | Loại hình | — | Attribute | `Inspection Team.Form Type Code` (join qua Inspection Team) | scheme TT_REVIEW_FORM_TYPE; **Sửa 2026-10-01 (BA cập nhật SQL):** UNSCHEDULED→'Đột xuất', PERIODIC→'Định kỳ', ELSE→'Khác' (trước đây ELSE NULL) | READY |
+| K_TT_19 | Trạng thái | — | Attribute | ETL-derived từ COALESCE(`Inspection Team.Start Date`, kỳ từ ngày) / COALESCE(`Inspection Team.End Date`, kỳ đến ngày) (join qua Inspection Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành **Sửa 2026-10-01 (BA cập nhật SQL STT 5):** Đang thực hiện = có start và (end NULL hoặc end > ngày ETL); Đã hoàn thành = có start và end ≤ ngày ETL; Chưa thực hiện = cả hai NULL. Phụ thuộc ngày ETL — xem O_TT_23. | READY |
 
 **Schema bảng tác nghiệp:**
 
@@ -979,7 +1011,8 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_examination_team-THANHTRA.EXAMINATION_TEAM.yaml`)
 > Ghi chú:
-> - `Case_Status` (Hoàn thành/Đang thực hiện) ETL-derived trên `Examination Team Dimension` từ `Start_Date`/`End_Date` — chỉ 2 giá trị (khác Nhóm 5 có 3 giá trị).
+> - **Sửa 2026-10-01 (BA cập nhật SQL tham khảo):** mọi phép đếm đổi `COUNT(ID)` → `COUNT(DISTINCT ID)`; công thức SSCK `(a−b)*100/b` đã đúng từ trước, không đổi.
+> - `Case_Status` (Hoàn thành/Đang thực hiện) ETL-derived từ `Start_Date`/`End_Date` và kỳ kiểm tra (COALESCE) theo ngày ETL (O_TT_23) — chỉ 2 giá trị (khác Nhóm 5 có 3 giá trị).
 > - Date key dùng `Decision_Date` (← `EXAMINATION_TEAM.DECISION_DATE`).
 
 **Mockup:**
@@ -992,15 +1025,15 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_20 | Tổng số cuộc kiểm tra | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Calendar Date Dimension.Decision_Date)=selected_year | |
-| K_TT_21 | Tổng số kiểm tra SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_20 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − COUNT(K_TT_20 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(COUNT(K_TT_20 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_20[Y] − K_TT_20[Y−1]) / NULLIF(K_TT_20[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD (đầu năm đến hôm nay, cùng mốc ngày/tháng cho cả 2 năm); nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
-| K_TT_22 | Số cuộc kiểm tra đã hoàn thành | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NOT NULL AND Examination Team Dimension.Start_Date IS NOT NULL | |
-| K_TT_23 | Số cuộc kiểm tra hoàn thành SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_22 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND End_Date IS NOT NULL AND Start_Date IS NOT NULL) − COUNT(K_TT_22 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND End_Date IS NOT NULL AND Start_Date IS NOT NULL) ) / NULLIF(COUNT(K_TT_22 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND End_Date IS NOT NULL AND Start_Date IS NOT NULL),0) × 100 ELSE (K_TT_22[Y] − K_TT_22[Y−1]) / NULLIF(K_TT_22[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
-| K_TT_24 | Số cuộc kiểm tra đang thực hiện | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NULL AND Examination Team Dimension.Start_Date IS NOT NULL | |
-| K_TT_25 | Số cuộc kiểm tra đang thực hiện SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_24 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND End_Date IS NULL AND Start_Date IS NOT NULL) − COUNT(K_TT_24 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND End_Date IS NULL AND Start_Date IS NOT NULL) ) / NULLIF(COUNT(K_TT_24 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND End_Date IS NULL AND Start_Date IS NOT NULL),0) × 100 ELSE (K_TT_24[Y] − K_TT_24[Y−1]) / NULLIF(K_TT_24[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
-| K_TT_26 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Decision_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_20-25 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_20 | Tổng số cuộc kiểm tra | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) trên Fact_Examination_Team_Activity WHERE Year(Calendar Date Dimension.Decision_Date)=selected_year | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. | READY |
+| K_TT_21 | Tổng số kiểm tra SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_20 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − COUNT(K_TT_20 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(COUNT(K_TT_20 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_20[Y] − K_TT_20[Y−1]) / NULLIF(K_TT_20[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD (đầu năm đến hôm nay, cùng mốc ngày/tháng cho cả 2 năm); nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ. **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT trong công thức = COUNT(DISTINCT Examination_Team_Code); công thức (a−b)/b×100 khớp SQL BA. | READY |
+| K_TT_22 | Số cuộc kiểm tra đã hoàn thành | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.Effective_Start_Date IS NOT NULL AND Examination Team Dimension.Effective_End_Date IS NOT NULL AND Examination Team Dimension.Effective_End_Date <= CURRENT_DATE() | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 6):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ kiểm tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_23 | Số cuộc kiểm tra hoàn thành SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_22 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND Effective_Start_Date IS NOT NULL AND Effective_End_Date IS NOT NULL AND Effective_End_Date <= CURRENT_DATE()) − COUNT(K_TT_22 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Effective_Start_Date IS NOT NULL AND Effective_End_Date IS NOT NULL AND Effective_End_Date <= CURRENT_DATE()) ) / NULLIF(COUNT(K_TT_22 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Effective_Start_Date IS NOT NULL AND Effective_End_Date IS NOT NULL AND Effective_End_Date <= CURRENT_DATE()),0) × 100 ELSE (K_TT_22[Y] − K_TT_22[Y−1]) / NULLIF(K_TT_22[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ. **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT trong công thức = COUNT(DISTINCT Examination_Team_Code); công thức (a−b)/b×100 khớp SQL BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 6):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ kiểm tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_24 | Số cuộc kiểm tra đang thực hiện | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) WHERE Year(Decision_Date)=selected_year AND ((Examination Team Dimension.Effective_End_Date IS NULL AND Examination Team Dimension.Effective_Start_Date IS NOT NULL) OR (Examination Team Dimension.Effective_End_Date IS NOT NULL AND Examination Team Dimension.Effective_End_Date > CURRENT_DATE())) | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 6):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ kiểm tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_25 | Số cuộc kiểm tra đang thực hiện SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_24 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND ((Effective_End_Date IS NULL AND Effective_Start_Date IS NOT NULL) OR (Effective_End_Date IS NOT NULL AND Effective_End_Date > CURRENT_DATE()))) − COUNT(K_TT_24 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND ((Effective_End_Date IS NULL AND Effective_Start_Date IS NOT NULL) OR (Effective_End_Date IS NOT NULL AND Effective_End_Date > CURRENT_DATE()))) ) / NULLIF(COUNT(K_TT_24 nguồn WHERE Decision_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND ((Effective_End_Date IS NULL AND Effective_Start_Date IS NOT NULL) OR (Effective_End_Date IS NOT NULL AND Effective_End_Date > CURRENT_DATE()))),0) × 100 ELSE (K_TT_24[Y] − K_TT_24[Y−1]) / NULLIF(K_TT_24[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ. **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT trong công thức = COUNT(DISTINCT Examination_Team_Code); công thức (a−b)/b×100 khớp SQL BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 6):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ kiểm tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_26 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Decision_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_20-25 | READY |
 
 **Star Schema:**
 
@@ -1021,12 +1054,15 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Examination_Team_Dimension {
         string Examination_Team_Dimension_Id PK
         varchar Examination_Team_Code
         date Start_Date
         date End_Date
+        date Effective_Start_Date
+        date Effective_End_Date
         string Content
         string Source_System_Code
     }
@@ -1065,7 +1101,7 @@ flowchart LR
 > Reuse 100% `Fact Examination Team Activity` + `Examination Team Dimension` đã tạo ở Nhóm 6.
 > Phân loại: **Phân tích**
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (reuse Nhóm 6)
-> Ghi chú: GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer.
+> Ghi chú: GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer. **Sửa 2026-10-01:** đếm `COUNT(DISTINCT ID)` theo BA; bổ sung KPI Chiều K_TT_88 cho dòng BA "Thời gian".
 
 **Mockup:**
 
@@ -1079,11 +1115,12 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_27 | Số lượng vụ việc kiểm tra theo tháng (tổng) | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Decision_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | |
-| K_TT_28 | Số vụ việc đã hoàn thành theo tháng | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NOT NULL AND Examination Team Dimension.Start_Date IS NOT NULL GROUP BY Month | |
-| K_TT_29 | Số vụ việc đang thực hiện theo tháng | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NULL AND Examination Team Dimension.Start_Date IS NOT NULL GROUP BY Month | |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_27 | Số lượng vụ việc kiểm tra theo tháng (tổng) | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) WHERE Year(Decision_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. | READY |
+| K_TT_28 | Số vụ việc đã hoàn thành theo tháng | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.Effective_Start_Date IS NOT NULL AND Examination Team Dimension.Effective_End_Date IS NOT NULL AND Examination Team Dimension.Effective_End_Date <= CURRENT_DATE() GROUP BY Month | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 7):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ kiểm tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_29 | Số vụ việc đang thực hiện theo tháng | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) WHERE Year(Decision_Date)=selected_year AND ((Examination Team Dimension.Effective_End_Date IS NULL AND Examination Team Dimension.Effective_Start_Date IS NOT NULL) OR (Examination Team Dimension.Effective_End_Date IS NOT NULL AND Examination Team Dimension.Effective_End_Date > CURRENT_DATE())) GROUP BY Month | **Sửa 2026-10-01 (BA cập nhật SQL):** COUNT(DISTINCT ID) theo BA. **Sửa 2026-10-01 (BA cập nhật SQL STT 7):** Hoàn thành/Đang thực hiện theo `Effective_Start_Date`/`Effective_End_Date` = COALESCE(`Start_Date`/`End_Date`, kỳ kiểm tra từ-đến) và so với ngày hiện tại (`sysdate` trong SQL BA) — xem O_TT_23. | READY |
+| K_TT_88 | Thời gian (tháng thống kê) | Tháng | Chiều | `Calendar_Date_Dimension.Month` — GROUP BY `EXTRACT(MONTH FROM DECISION_DATE)`, join qua `Decision_Date_Dimension_Id` của `Fact Examination Team Activity` | **[MỚI 2026-10-01]** BA dòng 43 "Thời gian" (Chiều, `EXAMINATION_TEAM.DECISION_DATE`) — trước đây chỉ là GROUP_BY ẩn trong K_TT_27–29 chưa có KPI_ID. Chiều trục hoành dùng chung K_TT_27–29; BA đổi ORDER BY tháng tăng dần | READY |
 
 **Star Schema:** giống Nhóm 6 (reuse 100%, không thêm FK/measure mới).
 
@@ -1129,7 +1166,7 @@ flowchart LR
 >   - ETL populate 1 Fact duy nhất (UNION + DEDUPE theo `Examination_Team_Violation_Behavior_Dimension_Id`) — Attributes LLD tách 2 file theo nguồn, cùng pattern Nhóm 3.
 > - Grain khác Nhóm 6/7 — 1 biên bản vi phạm có thể ghi nhận N hành vi. Tách Fact riêng **Fact Examination Team Violation Behavior** (grain 1 vụ kiểm tra × 1 biên bản × 1 hành vi), cùng kiến trúc Fact Inspection Team Violation Behavior (Nhóm 3).
 > - `Violation_Behavior_Name` denormalize vào Dimension mới, không tách `Violation Behavior Dimension` riêng — cùng pattern Nhóm 3.
-> - ELSE 'Khác' (không loại bỏ) khi `Violation_Behavior_Name` NULL.
+> - **Sửa 2026-10-01:** BA SQL mới thêm `AND NAME IS NOT NULL` → dòng `Violation_Behavior_Name` NULL bị LOẠI khỏi thống kê (thay cho 'ELSE Khác'). Cột `violation_behavior_nm` trên Dimension giữ giá trị gốc (nullable), lọc `IS NOT NULL` ở KPI.
 
 **Mockup:**
 
@@ -1147,10 +1184,10 @@ pie title Cơ cấu kiểm tra theo loại hành vi
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_30 | Số vi phạm theo loại hành vi (KT) | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) trên Fact_Examination_Team_Violation_Behavior WHERE Year(Decision_Date)=selected_year GROUP BY Violation_Behavior_Name | **Sửa 2026-08-22 (dev yêu cầu):** trước đây COUNT(Fact) / COUNT(DISTINCT Violation_Record_Behavior_Code) — cả hai đều sai so với BA. BA STT 8 cột "Khai thác nguồn" chỉ định đếm `EXAMINATION_TEAM.ID`; `VIOLATION_BEHAVIOR` chỉ là chiều. Cùng khuôn với K_TT_46 (Nhóm 13). GROUP BY động — NULL → gộp 'Khác'. ⚠️ 1 cuộc kiểm tra có nhiều hành vi được đếm ở nhiều lát → tổng các lát > tổng số cuộc kiểm tra; tỷ lệ % tính ở tầng Báo cáo COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100% |
-| K_TT_31 | Phân loại hành vi | — | Chiều | `COALESCE(Violation_Behavior_Name, 'Khác')` — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_30 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_30 | Số vi phạm theo loại hành vi (KT) | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) trên Fact_Examination_Team_Violation_Behavior WHERE Year(Decision_Date)=selected_year AND Violation_Behavior_Name IS NOT NULL GROUP BY Violation_Behavior_Name | **Sửa 2026-08-22 (dev yêu cầu):** trước đây COUNT(Fact) / COUNT(DISTINCT Violation_Record_Behavior_Code) — cả hai đều sai so với BA. BA STT 8 cột "Khai thác nguồn" chỉ định đếm `EXAMINATION_TEAM.ID`; `VIOLATION_BEHAVIOR` chỉ là chiều. Cùng khuôn với K_TT_46 (Nhóm 13). GROUP BY động — NULL → gộp 'Khác'. ⚠️ 1 cuộc kiểm tra có nhiều hành vi được đếm ở nhiều lát → tổng các lát > tổng số cuộc kiểm tra; tỷ lệ % tính ở tầng Báo cáo COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100% **Sửa 2026-10-01 (BA cập nhật SQL):** BA SQL mới có `AND NAME IS NOT NULL` → LOẠI dòng `Violation_Behavior_Name` NULL, không còn gộp 'Khác'. Dòng BA 48–69 (Số lượng/Tỷ lệ % theo từng hành vi CBTT, Hoạt động chào bán, Hoạt động của cổ đông nội bộ…, Giao dịch, CTĐC, CTCK, Tổ chức phát hành trái phiếu, Thao túng, Cho mượn, Tổ chức kiểm toán, Sở giao dịch) là các lát của K_TT_30 theo giá trị K_TT_31 — không tách KPI riêng. | READY |
+| K_TT_31 | Phân loại hành vi | — | Chiều | `Violation_Behavior_Name` (NOT NULL) — lấy trực tiếp giá trị thực tế, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_30. **Sửa 2026-10-01 (BA cập nhật SQL):** bỏ COALESCE 'Khác' (BA NAME IS NOT NULL) | READY |
 
 **Star Schema:**
 
@@ -1173,12 +1210,15 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Examination_Team_Dimension {
         string Examination_Team_Dimension_Id PK
         varchar Examination_Team_Code
         date Start_Date
         date End_Date
+        date Effective_Start_Date
+        date Effective_End_Date
         string Content
         string Source_System_Code
     }
@@ -1232,7 +1272,7 @@ flowchart LR
 > - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Thiết kế cũ hardcode 5 cặp KPI Base/Derived cố định (CTCK/CTKT/CTQLQ/CTĐC/Tổ chức khác-gộp) — bỏ sót 2 giá trị Atomic thật (`INDIVIDUAL`, `CRYPTO_SERVICE_PROVIDER`) hoàn toàn không xuất hiện ở bất kỳ KPI nào dù ghi chú cũ nói "Cá nhân=INDIVIDUAL". Mâu thuẫn với chính SQL BA (`GROUP BY b.TARGET_TYPE` động theo toàn bộ giá trị thực tế phát sinh, không giới hạn 5 loại BA liệt kê minh họa trong Mô tả). Thiết kế lại theo đúng bản chất GROUP BY động: 1 KPI Base tổng quát (số dòng kết quả tùy dữ liệu) + 1 KPI Chiều — không cố định N cặp Base/Derived, không gộp "Tổ chức khác". Tỷ lệ % không còn là KPI Derived ở tầng Datamart; tính ở tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm cùng năm × 100%). Nhờ GROUP BY động, `BOND_ISSUER` (2026-08-14) tự động phản ánh, không cần sửa ETL.
 > - **Sửa lại 2026-08-14 (phát hiện qua `/datamart-review`):** Bản ghi chú trước (2026-07-21) suy đoán "`ORGANIZATION`=Tổ chức khác (gồm NHLK/Tổ chức PHTP/Organization khác — Atomic không phân biệt riêng)" — suy đoán này SAI. SQL BA hiện hành (14/08) liệt kê `BOND_ISSUER` như 1 giá trị `TARGET_TYPE` riêng biệt trong CASE WHEN, và Atomic map `TARGET_TYPE` 1:1 không gộp nhóm — nếu source phát sinh `BOND_ISSUER`, Atomic column cũng lưu đúng `BOND_ISSUER`, không tự gộp vào `ORGANIZATION`.
 > - Date key: `Decision_Date` (← `EXAMINATION_TEAM.DECISION_DATE`, qua join với Examination Team).
-> - Mapping hiển thị tham khảo (label UI, không phải filter cố định — cập nhật 2026-08-14): `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `PUBLIC_COMPANY`=CTĐC, `AUDIT_COMPANY`=CTKT, `INDIVIDUAL`=Cá nhân, `CRYPTO_SERVICE_PROVIDER`=Tổ chức cung cấp dịch vụ tài sản mã hoá, `ORGANIZATION`=Tổ chức khác, `BOND_ISSUER`=Tổ chức phát hành trái phiếu (giá trị riêng, không gộp vào ORGANIZATION).
+> - Mapping hiển thị (BA cập nhật 2026-10-01): `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `PUBLIC_COMPANY`=CTĐC, `INDIVIDUAL`=CÁ NHÂN, `BOND_ISSUER`=TỔ CHỨC PHTP, `ORGANIZATION`=TỔ CHỨC, `AUDIT_COMPANY`=CTKT, còn lại (kể cả `CRYPTO_SERVICE_PROVIDER`)=KHÁC.
 
 **Mockup:**
 
@@ -1251,10 +1291,10 @@ pie title Cơ cấu kiểm tra theo đối tượng
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_32 | Số vi phạm theo đối tượng (KT) | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) trên Fact_Examination_Team_Target_Activity WHERE Year(Decision_Date)=selected_year GROUP BY Target_Type_Code | GROUP BY động trên dữ liệu chi tiết từng lượt — số dòng kết quả tùy giá trị `Target_Type_Code` thực tế phát sinh (tối đa 7). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived **Sửa 2026-08-22 (task Tuân):** COUNT(Examination_Team_Target_Code) → COUNT(Examination_Team_Code), join qua FK `examination_team_dim_id` sẵn có trên Fact. Dùng COUNT(DISTINCT) — thống nhất với K_TT_11/K_TT_30. |
-| K_TT_33 | Phân loại đối tượng (KT) | — | Chiều | `Target_Type_Code` — lấy trực tiếp toàn bộ giá trị thực tế trong data, GROUP BY động (không hardcode danh sách cố định) | Chiều lọc/nhóm dùng chung cho K_TT_32 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_32 | Số vi phạm theo đối tượng (KT) | Cuộc | Base | COUNT(DISTINCT Examination_Team_Dimension.Examination_Team_Code) trên Fact_Examination_Team_Target_Activity WHERE Year(Decision_Date)=selected_year GROUP BY nhãn K_TT_33 | GROUP BY động trên dữ liệu chi tiết từng lượt — số dòng kết quả tùy giá trị `Target_Type_Code` thực tế phát sinh (tối đa 7). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived **Sửa 2026-08-22 (task Tuân):** COUNT(Examination_Team_Target_Code) → COUNT(Examination_Team_Code), join qua FK `examination_team_dim_id` sẵn có trên Fact. Dùng COUNT(DISTINCT) — thống nhất với K_TT_11/K_TT_30. **Sửa 2026-10-01 (BA cập nhật SQL):** BA SQL nhóm theo NHÃN (CTCK/CTQLQ/CTĐC/CÁ NHÂN/TỔ CHỨC PHTP/TỔ CHỨC/CTKT/KHÁC), mọi `TARGET_TYPE` ngoài danh sách (kể cả CRYPTO_SERVICE_PROVIDER) gộp KHÁC; INNER JOIN đối tượng (khác Nhóm 4). Dòng BA 71–80 (Số lượng/Tỷ lệ % đối tượng CTCK, CTQLQ/Ngân hàng lưu ký, CTĐC, CTKT, Tổ chức PHTP…) là các lát của K_TT_32 theo giá trị K_TT_33 — không tách KPI riêng. | READY |
+| K_TT_33 | Phân loại đối tượng (KT) | — | Chiều | `CASE Target_Type_Code: SECURITIES_COMPANY→'CTCK', FUND_MANAGEMENT_COMPANY→'CTQLQ', PUBLIC_COMPANY→'CTĐC', INDIVIDUAL→'CÁ NHÂN', BOND_ISSUER→'TỔ CHỨC PHTP', ORGANIZATION→'TỔ CHỨC', AUDIT_COMPANY→'CTKT', ELSE→'KHÁC'` | Chiều lọc/nhóm dùng chung cho K_TT_32. **Sửa 2026-10-01 (BA cập nhật SQL):** nhãn hiển thị theo BA (8 nhãn, chữ HOA — khác Nhóm 4) | READY |
 
 **Star Schema:**
 
@@ -1277,6 +1317,7 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Examination_Team_Target_Dimension {
         string Examination_Team_Target_Dimension_Id PK
@@ -1289,6 +1330,8 @@ erDiagram
         varchar Examination_Team_Code
         date Start_Date
         date End_Date
+        date Effective_Start_Date
+        date Effective_End_Date
         string Content
         string Source_System_Code
     }
@@ -1335,7 +1378,7 @@ flowchart LR
 > - Grain giống Cụm 1d (Nhóm 9) — 1 vụ kiểm tra × 1 đối tượng. Không reuse Fact Examination Team Target Activity vì khác `table_type` (`fact` vs `operational`).
 > - Cột **"Mã vụ việc"** ← `Examination Team.Examination Team Code` (`EXAMINATION_TEAM.CODE`)
 > - Cột **"Đối tượng"** ← `Examination Team Target.Target Name` (`EXAMINATION_TEAM_TARGET.TARGET_NAME`)
-> - Cột **"Phân loại đối tượng"** ← `Examination Team Target.Target Type Code` (`EXAMINATION_TEAM_TARGET.TARGET_TYPE`), lấy nguyên giá trị thực tế trong data
+> - Cột **"Phân loại đối tượng"** ← `Examination Team Target.Target Type Code` (`EXAMINATION_TEAM_TARGET.TARGET_TYPE`) — nhãn hiển thị 8 giá trị như Nhóm 9 (BA cập nhật 2026-10-01); `Loại hình` không có ELSE (NULL nếu khác UNSCHEDULED/PERIODIC — BA STT 10 không có nhánh ELSE, khác STT 5)
 > - Cột **"Loại hình"** ← `Examination Team.Form Type Code` (`EXAMINATION_TEAM.FORM_TYPE`) — scheme `TT_REVIEW_FORM_TYPE` (PERIODIC/UNSCHEDULED → Định kỳ/Đột xuất)
 > - Cột **"Trạng thái"** ← ETL-derived từ `Examination Team.Start Date`/`End Date` — **3 giá trị**: `START_DATE IS NOT NULL AND END_DATE IS NULL` → Đang thực hiện; `START_DATE IS NOT NULL AND END_DATE IS NOT NULL` → Đã hoàn thành; `START_DATE IS NULL AND END_DATE IS NULL` → Chưa thực hiện.
 > - Date key: `Decision_Date` (← `EXAMINATION_TEAM.DECISION_DATE`).
@@ -1352,13 +1395,13 @@ flowchart LR
 
 **Bảng KPI (Attribute hiển thị — Tác nghiệp):**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_34 | Mã vụ việc | — | Attribute | `Examination Team.Examination Team Code` (join qua Examination Team) | Sửa 2026-08-11 — trước đây ghi nhầm `Examination Team Target.Examination Team Code`, mâu thuẫn với Ghi chú (đúng từ đầu). Khớp SQL BA: alias `a`=EXAMINATION_TEAM, `a.CODE` |
-| K_TT_35 | Đối tượng | — | Attribute | `Examination Team Target.Target Name` | |
-| K_TT_36 | Phân loại đối tượng | — | Attribute | `Examination Team Target.Target Type Code` | |
-| K_TT_37 | Loại hình | — | Attribute | `Examination Team.Form Type Code` (join qua Examination Team) | scheme TT_REVIEW_FORM_TYPE |
-| K_TT_38 | Trạng thái | — | Attribute | ETL-derived từ `Examination Team.Start Date`/`End Date` (join qua Examination Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_34 | Mã vụ việc | — | Attribute | `Examination Team.Examination Team Code` (join qua Examination Team) | Sửa 2026-08-11 — trước đây ghi nhầm `Examination Team Target.Examination Team Code`, mâu thuẫn với Ghi chú (đúng từ đầu). Khớp SQL BA: alias `a`=EXAMINATION_TEAM, `a.CODE` **Sửa 2026-10-01 (BA STT 10):** sắp xếp danh sách theo năm quyết định giảm dần rồi mã vụ việc (`ORDER BY EXTRACT(YEAR FROM DECISION_DATE) DESC, CODE`) — xử lý ở BI. | READY |
+| K_TT_35 | Đối tượng | — | Attribute | `Examination Team Target.Target Name` | | READY |
+| K_TT_36 | Phân loại đối tượng | — | Attribute | `Examination Team Target.Target Type Code` → nhãn: SECURITIES_COMPANY→'CTCK', FUND_MANAGEMENT_COMPANY→'CTQLQ', PUBLIC_COMPANY→'CTĐC', INDIVIDUAL→'CÁ NHÂN', BOND_ISSUER→'TỔ CHỨC PHTP', ORGANIZATION→'TỔ CHỨC', AUDIT_COMPANY→'CTKT', ELSE→'KHÁC' | **Sửa 2026-10-01 (BA cập nhật SQL):** BA hiển thị nhãn 8 giá trị (cùng bảng nhãn K_TT_33) | READY |
+| K_TT_37 | Loại hình | — | Attribute | `Examination Team.Form Type Code` (join qua Examination Team) | scheme TT_REVIEW_FORM_TYPE | READY |
+| K_TT_38 | Trạng thái | — | Attribute | ETL-derived từ COALESCE(`Examination Team.Start Date`, kỳ từ ngày) / COALESCE(`Examination Team.End Date`, kỳ đến ngày) (join qua Examination Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành **Sửa 2026-10-01 (BA cập nhật SQL STT 10):** Đang thực hiện = có start và (end NULL hoặc end > ngày ETL); Đã hoàn thành = có start và end ≤ ngày ETL; Chưa thực hiện = cả hai NULL. Phụ thuộc ngày ETL — xem O_TT_23. | READY |
 
 **Schema bảng tác nghiệp:**
 
@@ -1415,6 +1458,7 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION (`INSPECT.PENALTY_DECISION`) — **READY** (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_PENALTY_DECISION.yaml`, Nguồn 2 draft — sửa 2026-08-14, path cũ trỏ Nguồn 1 không tồn tại trên đĩa, phát hiện qua `/datamart-review`; Attributes đã tự dùng đúng physical_name thật `pd_id`/`pd_code` từ file này, chỉ path tham khảo trong text bị sai)
 > Ghi chú:
+> - **Sửa 2026-10-01 (BA cập nhật SQL STT 11):** `COUNT(DISTINCT pd.ID)` và công thức SSCK `(a−b)*100/b`, năm hiện tại so YTD (ty/ly: 01/01 → hôm nay so với cùng mốc năm trước) — thiết kế đã khớp từ trước, không đổi. **Lưu ý:** SQL BA tính `SUM(pd.TOTAL_FINE_AMOUNT)` SAU `LEFT JOIN PENALTY_DECISION_SUBJECT` nên một QĐ có N đối tượng bị nhân N lần; thiết kế lấy `Total_Fine_Amount` ở cấp QĐ (`Fact Penalty Decision`), mỗi QĐ tính 1 lần — xem O_TT_21.
 > - `Total_Fine_Amount` ← `PENALTY_DECISION.TOTAL_FINE_AMOUNT` — measure tiền phạt, đã có sẵn trên `PENALTY_DECISION`.
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`).
 > - SSCK (%) so sánh cùng kỳ năm trước bằng `LEFT JOIN cte b ON a.Year = b.Year + 1`.
@@ -1430,15 +1474,15 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_39 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Issued_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_40-43, 85-86 |
-| K_TT_40 | Tổng số quyết định xử phạt | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year | |
-| K_TT_41 | Tổng số QĐXP SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_40[Y] − K_TT_40[Y−1]) / NULLIF(K_TT_40[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD (đầu năm đến hôm nay, cùng mốc ngày/tháng cho cả 2 năm); nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
-| K_TT_42 | Tổng tiền xử phạt | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year | |
-| K_TT_43 | Tổng tiền xử phạt SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_42[Y] − K_TT_42[Y−1]) / NULLIF(K_TT_42[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
-| K_TT_85 | Tiền phạt đã nộp | Tỷ VNĐ | Base | SUM(Paid_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year | **[MỚI 2026-09-28]** Chỉ tiêu bổ sung sau UAT lần 1 (theo BA). Nguồn `PENALTY_DECISION_SUBJECT.PAID_AMOUNT` — 1 quyết định có nhiều đối tượng bị xử phạt (LEFT JOIN), SUM toàn bộ đối tượng theo từng quyết định rồi cộng dồn theo năm |
-| K_TT_86 | Tiền phạt đã nộp SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_85[Y] − K_TT_85[Y−1]) / NULLIF(K_TT_85[Y−1],0) × 100 END | **[MỚI 2026-09-28]** Chỉ tiêu bổ sung sau UAT lần 1. Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_39 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Issued_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_40-43, 85-86 | READY |
+| K_TT_40 | Tổng số quyết định xử phạt | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year | | READY |
+| K_TT_41 | Tổng số QĐXP SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(COUNT(K_TT_40 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_40[Y] − K_TT_40[Y−1]) / NULLIF(K_TT_40[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD (đầu năm đến hôm nay, cùng mốc ngày/tháng cho cả 2 năm); nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ | READY |
+| K_TT_42 | Tổng tiền xử phạt | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year | | READY |
+| K_TT_43 | Tổng tiền xử phạt SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(SUM(K_TT_42 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_42[Y] − K_TT_42[Y−1]) / NULLIF(K_TT_42[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ | READY |
+| K_TT_85 | Tiền phạt đã nộp | Tỷ VNĐ | Base | SUM(Paid_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year | **[MỚI 2026-09-28]** Chỉ tiêu bổ sung sau UAT lần 1 (theo BA). Nguồn `PENALTY_DECISION_SUBJECT.PAID_AMOUNT` — 1 quyết định có nhiều đối tượng bị xử phạt (LEFT JOIN), SUM toàn bộ đối tượng theo từng quyết định rồi cộng dồn theo năm | READY |
+| K_TT_86 | Tiền phạt đã nộp SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE()) − SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))) ) / NULLIF(SUM(K_TT_85 nguồn WHERE Issued_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE())))),0) × 100 ELSE (K_TT_85[Y] − K_TT_85[Y−1]) / NULLIF(K_TT_85[Y−1],0) × 100 END | **[MỚI 2026-09-28]** Chỉ tiêu bổ sung sau UAT lần 1. Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ | READY |
 
 **Star Schema:**
 
@@ -1461,6 +1505,7 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Penalty_Decision_Dimension {
         string Penalty_Decision_Dimension_Id PK
@@ -1504,7 +1549,7 @@ flowchart LR
 > Reuse 100% `Fact Penalty Decision` đã thiết kế ở Nhóm 11.
 > Phân loại: **Phân tích**
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION (`INSPECT.PENALTY_DECISION`) — **READY** (reuse Nhóm 11)
-> Ghi chú: Dual axis — bar = số QĐ, line = tổng tiền phạt. GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer.
+> Ghi chú: Dual axis — bar = số QĐ, line = tổng tiền phạt. GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer. **Sửa 2026-10-01:** bổ sung KPI Chiều K_TT_89 cho dòng BA "Thời gian"; `COUNT(DISTINCT ID)` đã khớp.
 
 **Mockup:**
 
@@ -1517,10 +1562,11 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_44 | Số QĐ xử phạt theo tháng | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | |
-| K_TT_45 | Tổng tiền xử phạt theo tháng | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year GROUP BY Month | |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_44 | Số QĐ xử phạt theo tháng | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | | READY |
+| K_TT_45 | Tổng tiền xử phạt theo tháng | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year GROUP BY Month | | READY |
+| K_TT_89 | Thời gian (tháng thống kê) | Tháng | Chiều | `Calendar_Date_Dimension.Month` — GROUP BY `EXTRACT(MONTH FROM ISSUED_DATE)`, join qua `Issued_Date_Dimension_Id` của `Fact Penalty Decision` | **[MỚI 2026-10-01]** BA dòng 93 "Thời gian" (Chiều, `PENALTY_DECISION.ISSUED_DATE`) — trước đây chỉ là GROUP_BY ẩn trong K_TT_44–45 chưa có KPI_ID. Chiều trục hoành dùng chung K_TT_44–45; BA đổi ORDER BY tháng tăng dần | READY |
 
 **Lineage Mart → Báo cáo:**
 
@@ -1557,6 +1603,7 @@ flowchart LR
 > - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đây là biểu đồ tròn GROUP BY theo 1 chiều phân loại — thiết kế lại 1 KPI Base tổng quát GROUP BY động + 1 KPI Chiều. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo.
 > - **Sửa 2026-08-07 (phát hiện qua `/datamart-review`, đối chiếu sâu SQL BA đầy đủ):** BA đã cập nhật SQL tham khảo — bỏ hẳn text-matching 11 pattern LIKE (`CASE WHEN LOWER(Name) LIKE '%...' THEN ... ELSE NULL END`), chuyển sang lấy trực tiếp `Violation_Behavior_Name` thật (`CASE WHEN Name IS NOT NULL THEN Name ELSE 'Khác' END`, GROUP BY động không giới hạn, ELSE 'Khác' — không loại bỏ dữ liệu không khớp). Xem O_TT_12.
 > - **Sửa 2026-08-15 (đóng O_TT_16 — Atomic entity `Penalty Decision X Violation Record` đã được thiết kế):** SQL BA STT 13 thực chất có 2 nhánh xác định `Violation_Behavior_Name` bằng `CASE WHEN`: nhánh chính `PENALTY_DECISION → PENALTY_DECISION_SUBJECT → PENALTY_DECISION_SUBJECT_BEHAVIOR → VIOLATION_BEHAVIOR` (driving từ `PENALTY_DECISION`, LEFT JOIN), và nhánh phụ song song (cũng LEFT JOIN thẳng từ `PENALTY_DECISION`, độc lập nhánh chính) `PENALTY_DECISION → PENALTY_DECISION_VIOLATION_RECORD → VIOLATION_RECORD → VIOLATION_RECORD_BEHAVIOR → VIOLATION_BEHAVIOR`, dùng khi nhánh chính không xác định được tên hành vi (kể cả khi QĐ không có `PENALTY_DECISION_SUBJECT_BEHAVIOR` nào). Vì đây là 1 giá trị/QĐ (không phải theo đối tượng), **chuyển field `Violation_Behavior_Name` sang tính tại `Penalty Decision Dimension`** (grain đúng 1 QĐ, không phải `Penalty Decision Subject Behavior Dimension`) bằng CASE WHEN 2 nhánh, ELSE 'Khác'. **Fact Penalty Decision Subject Behavior đổi 3 FK phụ thuộc Subject/Subject Behavior từ INNER sang LEFT JOIN** (`Penalty_Decision_Subject_Dimension_Id`, `Penalty_Decision_Subject_Behavior_Dimension_Id` — nay nullable) để QĐ không có Subject Behavior vẫn có mặt trên Fact — trước đây bị loại hoàn toàn khỏi Fact do INNER JOIN, không chỉ sai phân loại 'Khác' như mô tả ban đầu của O_TT_16. K_TT_46 đổi COUNT từ `Penalty_Decision_Subject_Behavior_Dimension_Id` sang `Penalty_Decision_Dimension_Id` để đếm đúng theo QĐ (khớp SQL BA `COUNT DISTINCT pd.ID`), không phụ thuộc QĐ có Subject Behavior hay không. **Không ảnh hưởng Nhóm 20** — Nhóm 20 (SQL BA STT 20, dòng driving `a = PENALTY_DECISION`) không có nhánh fallback qua Violation Record, tiếp tục dùng `Violation_Behavior_Name` trên `Penalty Decision Subject Behavior Dimension` (giữ nguyên, không đổi) cho công thức "Loại hình xử lý" và `Applied_Fine_Amount` (giữ nguyên grain, NULL tự nhiên khi QĐ không có Subject Behavior — đúng bản chất dữ liệu, SQL BA Nhóm 20 cũng chỉ SUM `APPLIED_FINE_AMOUNT` không có fallback).
+> - **Sửa 2026-10-01 (yêu cầu dev, BA xác nhận):** 1 QĐ có thể xử phạt NHIỀU hành vi — COUNT quyết định, GROUP BY hành vi → QĐ có N hành vi phải được đếm ở N nhóm (trước đây `MAX` 1 tên đại diện/QĐ nên chỉ vào 1 nhóm; ví dụ QĐ 67669c23… có 3 hành vi CBTT sai/Giao dịch ký quỹ/Hạn chế vay nợ — BA đếm cả 3 nhóm, LLD cũ chỉ 'Hạn chế vay nợ'; năm 2026: 10 QĐ → 14 cặp QĐ–hành vi). Nguồn nhóm đổi sang cột mới `Violation_Behavior_Group_Name` trên Fact (tên hành vi THEO TỪNG DÒNG hành vi — `Penalty Decision Subject Behavior Dimension`; dòng không có hành vi nhánh chính → fallback tên đại diện của QĐ `Penalty Decision Dimension.Violation_Behavior_Name` (nhánh phụ/'Khác')). K_TT_46 vẫn `COUNT(DISTINCT Penalty_Decision_Code)`; % = COUNT(nhóm)/SUM(COUNT các nhóm) nên tổng các lát > tổng số QĐ. `Penalty Decision Dimension.Violation_Behavior_Name` GIỮ NGUYÊN cho Nhóm 20 (K_TT_70–84). Câu hỏi mở BA: O_TT_21.
 
 **Mockup:**
 
@@ -1574,10 +1621,10 @@ pie title Cơ cấu xử phạt theo loại hành vi
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_46 | Số QĐ XP theo loại hành vi | Cuộc | Base | COUNT(DISTINCT Penalty_Decision_Dimension.Penalty_Decision_Code) WHERE Year(Issued_Date)=selected_year GROUP BY Penalty_Decision_Dimension.Violation_Behavior_Name | Sửa 2026-08-15 (đóng O_TT_16) — nguồn Violation_Behavior_Name chuyển sang Penalty Decision Dimension (đã CASE WHEN 2 nhánh + fallback 'Khác'); COUNT đổi sang Penalty_Decision_Dimension_Id để đếm đúng theo QĐ, không phụ thuộc QĐ có Penalty Decision Subject Behavior hay không. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived **Sửa 2026-08-22 (task Tuân):** đếm theo business key `Penalty_Decision_Code` thay vì surrogate `Penalty_Decision_Dimension_Id`. |
-| K_TT_47 | Phân loại hành vi | — | Chiều | `Penalty Decision Dimension.Violation_Behavior_Name` — đã CASE WHEN 2 nhánh (chính + fallback qua Penalty Decision Violation Record) + 'Khác', không cần COALESCE thêm ở tầng KPI | Chiều lọc/nhóm dùng chung cho K_TT_46. Sửa 2026-08-15 — xem ghi chú K_TT_46 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_46 | Số QĐ XP theo loại hành vi | Cuộc | Base | COUNT(DISTINCT Penalty_Decision_Dimension.Penalty_Decision_Code) WHERE Year(Issued_Date)=selected_year GROUP BY Fact_Penalty_Decision_Subject_Behavior.Violation_Behavior_Group_Name | Sửa 2026-08-15 (đóng O_TT_16) — nguồn Violation_Behavior_Name chuyển sang Penalty Decision Dimension (đã CASE WHEN 2 nhánh + fallback 'Khác'); COUNT đổi sang Penalty_Decision_Dimension_Id để đếm đúng theo QĐ, không phụ thuộc QĐ có Penalty Decision Subject Behavior hay không. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived **Sửa 2026-08-22 (task Tuân):** đếm theo business key `Penalty_Decision_Code` thay vì surrogate `Penalty_Decision_Dimension_Id`. **Sửa 2026-10-01 (yêu cầu dev, BA xác nhận):** 1 QĐ có thể xử phạt NHIỀU hành vi — COUNT quyết định, GROUP BY hành vi → QĐ có N hành vi phải được đếm ở N nhóm (trước đây `MAX` 1 tên đại diện/QĐ nên chỉ vào 1 nhóm; ví dụ QĐ 67669c23… có 3 hành vi CBTT sai/Giao dịch ký quỹ/Hạn chế vay nợ — BA đếm cả 3 nhóm, LLD cũ chỉ 'Hạn chế vay nợ'; năm 2026: 10 QĐ → 14 cặp QĐ–hành vi). Nguồn nhóm đổi sang cột mới `Violation_Behavior_Group_Name` trên Fact (tên hành vi THEO TỪNG DÒNG hành vi — `Penalty Decision Subject Behavior Dimension`; dòng không có hành vi nhánh chính → fallback tên đại diện của QĐ `Penalty Decision Dimension.Violation_Behavior_Name` (nhánh phụ/'Khác')). K_TT_46 vẫn `COUNT(DISTINCT Penalty_Decision_Code)`; % = COUNT(nhóm)/SUM(COUNT các nhóm) nên tổng các lát > tổng số QĐ. `Penalty Decision Dimension.Violation_Behavior_Name` GIỮ NGUYÊN cho Nhóm 20 (K_TT_70–84). Câu hỏi mở BA: O_TT_21. Dòng BA 97–118 (Số lượng/Tỷ lệ % theo từng hành vi CBTT, Hoạt động chào bán, Hoạt động của cổ đông nội bộ…, Giao dịch, CTĐC, CTCK, Tổ chức PHTP, Thao túng, Cho mượn, Tổ chức kiểm toán, Sở giao dịch) là các lát của K_TT_46 theo giá trị K_TT_47 — không tách KPI riêng. | READY |
+| K_TT_47 | Phân loại hành vi | — | Chiều | `Fact_Penalty_Decision_Subject_Behavior.Violation_Behavior_Group_Name` — tên hành vi theo từng dòng hành vi (fallback tên đại diện QĐ/'Khác'), GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_46. Sửa 2026-08-15 — xem ghi chú K_TT_46. **Sửa 2026-10-01 (BA cập nhật SQL):**— đổi nguồn từ `Penalty Decision Dimension.Violation_Behavior_Name` sang cột mới trên Fact (dev yêu cầu); xem K_TT_46 | READY |
 
 **Star Schema:**
 
@@ -1593,6 +1640,7 @@ erDiagram
         string Penalty_Decision_Dimension_Id FK
         string Penalty_Decision_Subject_Dimension_Id FK
         float Applied_Fine_Amount
+        varchar Violation_Behavior_Group_Name
     }
     Calendar_Date_Dimension {
         string Calendar_Date_Dimension_Id PK
@@ -1603,6 +1651,7 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Penalty_Decision_Subject_Behavior_Dimension {
         string Penalty_Decision_Subject_Behavior_Dimension_Id PK
@@ -1669,6 +1718,7 @@ flowchart LR
 > Ghi chú:
 > - Field nguồn: `Penalty Decision Subject.Subject Type Code` (← `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE`) — chỉ 2 giá trị thực tế trong Atomic: `INDIVIDUAL` (Cá nhân), `ORGANIZATION` (Tổ chức). BA STT 14 chỉ `GROUP BY b.SUBJECT_TYPE` (không filter cứng theo 4 nhóm minh họa "Tổ chức khác/CTKT/Giao dịch NĐT/Cá nhân") — lấy trực tiếp toàn bộ giá trị thực tế trong data.
 > - Grain khác Nhóm 13 — 2-way join `PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` (không có hành vi). Tách riêng **Fact Penalty Decision Subject**.
+> - **Sửa 2026-10-01 (BA `LEFT JOIN … b.DELETED = 0`):** Fact lấy `PENALTY_DECISION` làm bảng chính và LEFT JOIN `PENALTY_DECISION_SUBJECT` → QĐ chưa có đối tượng có 1 dòng với FK đối tượng NULL (đếm vào nhãn Khác); K_TT_48 đếm DISTINCT QĐ.
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`, qua join với Penalty Decision).
 > - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đồng bộ hoá format với Nhóm 3/4/8/9/13 (cùng là pie chart GROUP BY theo 1 chiều phân loại). Dù Atomic chỉ có đúng 2 giá trị (không thiếu sót dữ liệu như Nhóm 4/9 cũ), vẫn đổi sang 1 KPI Base tổng quát GROUP BY động + 1 KPI Chiều cho nhất quán style toàn module — không hardcode 2 cặp Base/Derived riêng biệt. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo.
 
@@ -1684,10 +1734,10 @@ pie title Cơ cấu xử phạt theo đối tượng
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_48 | Số QĐ XP theo đối tượng | QĐ | Base | COUNT(Fact_Penalty_Decision_Subject) WHERE Year(Issued_Date)=selected_year GROUP BY Subject_Type_Code | GROUP BY động — số dòng kết quả tùy giá trị `Subject_Type_Code` thực tế (INDIVIDUAL/ORGANIZATION — chỉ 2 giá trị trong Atomic hiện tại). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
-| K_TT_49 | Phân loại đối tượng | — | Chiều | `Subject_Type_Code` — lấy trực tiếp toàn bộ giá trị thực tế trong data (INDIVIDUAL/ORGANIZATION), GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_48 |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_48 | Số QĐ XP theo đối tượng | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension.Penalty_Decision_Code) trên Fact_Penalty_Decision_Subject WHERE Year(Issued_Date)=selected_year GROUP BY nhãn K_TT_49 | GROUP BY động — số dòng kết quả tùy giá trị `Subject_Type_Code` thực tế (INDIVIDUAL/ORGANIZATION — chỉ 2 giá trị trong Atomic hiện tại). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived **Sửa 2026-10-01 (BA cập nhật SQL):** BA đổi sang `COUNT(DISTINCT a.ID)` (đếm QĐ, không đếm lượt đối tượng) và `LEFT JOIN PENALTY_DECISION_SUBJECT` — QĐ chưa có đối tượng vẫn đếm (nhãn Khác). Dòng BA 120–127 (Số lượng/Tỷ lệ % đối tượng Tổ chức khác, CTKT, Giao dịch nhà đầu tư, Cá nhân…) là các lát của K_TT_48 theo giá trị K_TT_49 — không tách KPI riêng. | READY |
+| K_TT_49 | Phân loại đối tượng | — | Chiều | `CASE Subject_Type_Code: ORGANIZATION→'Tổ chức', INDIVIDUAL→'Cá nhân', ELSE (kể cả NULL)→'Khác'` | Chiều lọc/nhóm dùng chung cho K_TT_48. **Sửa 2026-10-01 (BA cập nhật SQL):** nhãn hiển thị theo BA | READY |
 
 **Star Schema:**
 
@@ -1710,6 +1760,7 @@ erDiagram
         int Day_Of_Week
         string Is_Weekend
         string Holiday_Flag
+        string Source_System_Code
     }
     Penalty_Decision_Subject_Dimension {
         string Penalty_Decision_Subject_Dimension_Id PK
@@ -1752,7 +1803,7 @@ flowchart LR
 
 | Tên bảng | Grain | Date key | Filter mặc định |
 |---|---|---|---|
-| Fact Penalty Decision Subject | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) — 3 FK: Calendar Date Dimension, Penalty Decision Subject Dimension, Penalty Decision Dimension | `Issued_Date_Dimension_Id` ← join Penalty Decision → Calendar Date Dimension | Year = selected_year (slicer NĂM 202X) |
+| Fact Penalty Decision Subject | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` LEFT JOIN `PENALTY_DECISION_SUBJECT`, N:1; QĐ chưa có đối tượng → FK đối tượng NULL, sửa 2026-10-01) — 3 FK: Calendar Date Dimension, Penalty Decision Subject Dimension (nullable), Penalty Decision Dimension | `Issued_Date_Dimension_Id` ← join Penalty Decision → Calendar Date Dimension | Year = selected_year (slicer NĂM 202X) |
 
 ---
 
@@ -1790,13 +1841,13 @@ flowchart LR
 
 **Bảng KPI (Attribute hiển thị — Tác nghiệp):**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_50 | Mã vụ việc | — | Attribute | `Violation Case.Violation Case Code` (join qua Penalty Decision) | Sửa 2026-08-07 — trước đây dùng `Penalty Decision Code`, đổi sang mã hồ sơ TT/KT gốc. Sửa 2026-08-14 — ETL dedupe theo (Năm, Mã vụ việc, Tên đối tượng), ưu tiên `Penalty Decision.Life Cycle Status Code` cao nhất khi 1 vụ việc+đối tượng có nhiều Penalty Decision. Xem O_TT_17 |
-| K_TT_51 | Đối tượng | — | Attribute | `Penalty Decision Subject.Subject Name` | |
-| K_TT_52 | Phân loại đối tượng | — | Attribute | `Penalty Decision Subject.Subject Type Code` | |
-| K_TT_53 | Loại hình | — | Attribute | ETL-derived qua `Violation Case` → `Inspection Team`/`Examination Team`, `CASE WHEN ... ELSE 'Khác' END` | (Sửa 2026-08-08) 'Khác' nếu hồ sơ không từ đoàn TT/KT — trước đây NULL |
-| K_TT_54 | Trạng thái | — | Attribute | ETL-derived qua `Violation Case` (join qua Penalty Decision), `CASE WHEN ... END` map code → nhãn tiếng Việt | Sửa 2026-08-11 — trước đây dùng nguyên code `Penalty Decision.Life Cycle Status Code` (7 giá trị), đổi sang `Violation Case` + CASE WHEN map 5 giá trị → nhãn (Mới tiếp nhận/Đang xử lý/Đã ban hành quyết định/Đang cưỡng chế/Đã kết thúc/Khác) |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_50 | Mã vụ việc | — | Attribute | `Violation Case.Violation Case Code` (join qua Penalty Decision) | Sửa 2026-08-07 — trước đây dùng `Penalty Decision Code`, đổi sang mã hồ sơ TT/KT gốc. Sửa 2026-08-14 — ETL dedupe theo (Năm, Mã vụ việc, Tên đối tượng), ưu tiên `Penalty Decision.Life Cycle Status Code` cao nhất khi 1 vụ việc+đối tượng có nhiều Penalty Decision. Xem O_TT_17 | READY |
+| K_TT_51 | Đối tượng | — | Attribute | `Penalty Decision Subject.Subject Name` | | READY |
+| K_TT_52 | Phân loại đối tượng | — | Attribute | `Penalty Decision Subject.Subject Type Code` | | READY |
+| K_TT_53 | Loại hình | — | Attribute | ETL-derived qua `Violation Case` → `Inspection Team`/`Examination Team`, `CASE WHEN ... ELSE 'Khác' END` | (Sửa 2026-08-08) 'Khác' nếu hồ sơ không từ đoàn TT/KT — trước đây NULL | READY |
+| K_TT_54 | Trạng thái | — | Attribute | ETL-derived qua `Violation Case` (join qua Penalty Decision), `CASE WHEN ... END` map code → nhãn tiếng Việt | Sửa 2026-08-11 — trước đây dùng nguyên code `Penalty Decision.Life Cycle Status Code` (7 giá trị), đổi sang `Violation Case` + CASE WHEN map 5 giá trị → nhãn (Mới tiếp nhận/Đang xử lý/Đã ban hành quyết định/Đang cưỡng chế/Đã kết thúc/Khác) | READY |
 
 **Schema bảng tác nghiệp:**
 
@@ -1850,6 +1901,7 @@ flowchart LR
 > Phân loại: **Tác nghiệp** (bảng tác nghiệp phục vụ cả KPI aggregate và danh sách)
 > Atomic: `Petition` ← THANHTRA.PETITION (`INSPECT.PETITION`) — **READY**
 > Ghi chú:
+> - **Sửa 2026-10-01:** khoá duy nhất của `Operational Petition List` là `Petition_Id` (Atomic `petition.petition_id`) thay cho `Petition_Code` (có thể NULL ở đơn cũ) — mọi phép đếm đơn dùng `COUNT(DISTINCT Petition_Id)` theo BA (yêu cầu dev). Xem O_TT_22.
 > - `Life_Cycle_Status_Code` ← `PETITION.STATUS` — 2 giá trị: `RECEIVED` (Đã tiếp nhận), `PROCESSED` (Đã xử lý xong).
 > - `Petition_Category_Code` ← `PETITION.PETITION_CATEGORY` — 3 giá trị: `FEEDBACK_SUGGESTION` (Phản ánh kiến nghị), `COMPLAINT` (Khiếu nại), `DENUNCIATION` (Tố cáo).
 > - Date key: `Received_Date` (← `PETITION.RECEIVED_DATE`).
@@ -1865,11 +1917,11 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_55 | Thời gian (năm thống kê) | Năm | Chiều | Year(Received_Date) — slicer chọn năm thống kê | Chiều lọc dùng chung cho K_TT_56-57 |
-| K_TT_56 | Tổng số đơn đã xử lý | Đơn | Base | COUNT(Operational_Petition_List) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year | |
-| K_TT_57 | Tổng đơn đã xử lý SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_56 nguồn WHERE Received_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND Life_Cycle_Status_Code='PROCESSED') − COUNT(K_TT_56 nguồn WHERE Received_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Life_Cycle_Status_Code='PROCESSED') ) / NULLIF(COUNT(K_TT_56 nguồn WHERE Received_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Life_Cycle_Status_Code='PROCESSED'),0) × 100 ELSE (K_TT_56[Y] − K_TT_56[Y−1]) / NULLIF(K_TT_56[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_55 | Thời gian (năm thống kê) | Năm | Chiều | Year(Received_Date) — slicer chọn năm thống kê | Chiều lọc dùng chung cho K_TT_56-57 | READY |
+| K_TT_56 | Tổng số đơn đã xử lý | Đơn | Base | COUNT(DISTINCT Operational_Petition_List.Petition_Id) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year | **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** BA đổi `COUNT(CODE)` → `COUNT(DISTINCT ID)` (Trường nguồn CODE → ID). Đếm theo khoá đơn `Petition_Id` (không theo `Petition_Code`: 161 đơn dữ liệu cũ có mã NULL bị COUNT(code) bỏ qua / gộp). | READY |
+| K_TT_57 | Tổng đơn đã xử lý SSCK (%) | % | Derived | CASE WHEN selected_year = YEAR(CURRENT_DATE()) THEN (COUNT(K_TT_56 nguồn WHERE Received_Date BETWEEN DATE(CONCAT(Y,'-01-01')) AND CURRENT_DATE() AND Life_Cycle_Status_Code='PROCESSED') − COUNT(K_TT_56 nguồn WHERE Received_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Life_Cycle_Status_Code='PROCESSED') ) / NULLIF(COUNT(K_TT_56 nguồn WHERE Received_Date BETWEEN DATE(CONCAT(Y-1,'-01-01')) AND DATE(CONCAT(Y-1,'-',MONTH(CURRENT_DATE()),'-',DAY(CURRENT_DATE()))) AND Life_Cycle_Status_Code='PROCESSED'),0) × 100 ELSE (K_TT_56[Y] − K_TT_56[Y−1]) / NULLIF(K_TT_56[Y−1],0) × 100 END | Nếu năm chọn = năm hiện tại → so YTD-to-YTD; nếu năm chọn là năm quá khứ → so cả năm với cả năm như cũ. **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** COUNT trong công thức = COUNT(DISTINCT Petition_Id); công thức (a−b)/b×100 và so YTD khớp SQL BA (ty/ly). | READY |
 
 **Lineage Mart → Báo cáo:**
 
@@ -1909,9 +1961,10 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_58 | Số đơn đã xử lý theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_58 | Số đơn đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Operational_Petition_List.Petition_Id) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** COUNT(DISTINCT ID) theo BA (Trường nguồn CODE → ID). | READY |
+| K_TT_90 | Thời gian (tháng thống kê) | Tháng | Chiều | `MONTH(Received_Date)` — GROUP BY `EXTRACT(MONTH FROM RECEIVED_DATE)` trên `Operational_Petition_List` | **[MỚI 2026-10-01]** BA dòng 136 "Thời gian" (Chiều, `PETITION.RECEIVED_DATE`, "Ngày thống kê (tháng)") — trước đây chỉ là GROUP_BY ẩn trong K_TT_58 chưa có KPI_ID. BA đổi ORDER BY tháng tăng dần | READY |
 
 **Lineage Mart → Báo cáo:**
 
@@ -1949,15 +2002,16 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_59 | Phân loại đơn thư | — | Chiều | `Petition_Category_Code` — `COMPLAINT`/`DENUNCIATION`/`FEEDBACK_SUGGESTION`, map hiển thị: Khiếu nại/Tố cáo/Phản ánh kiến nghị | Chiều lọc/nhóm dùng chung cho K_TT_60-65 |
-| K_TT_60 | Số đơn Khiếu nại theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`COMPLAINT` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
-| K_TT_61 | Tỷ lệ % Khiếu nại | % | Derived | K_TT_60[Month=M] / (K_TT_60+K_TT_62+K_TT_64)[Month=M] × 100% | Mẫu số = tổng 3 KPI Base cùng tháng |
-| K_TT_62 | Số đơn Tố cáo theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`DENUNCIATION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
-| K_TT_63 | Tỷ lệ % Tố cáo | % | Derived | K_TT_62[Month=M] / (K_TT_60+K_TT_62+K_TT_64)[Month=M] × 100% | |
-| K_TT_64 | Số đơn Phản ánh kiến nghị theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`FEEDBACK_SUGGESTION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
-| K_TT_65 | Tỷ lệ % Phản ánh kiến nghị | % | Derived | K_TT_64[Month=M] / (K_TT_60+K_TT_62+K_TT_64)[Month=M] × 100% | |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_59 | Phân loại đơn thư | — | Chiều | `CASE Petition_Category_Code: DENUNCIATION→'Tố cáo', COMPLAINT→'Khiếu nại', FEEDBACK_SUGGESTION→'Phản ánh kiến nghị', MULTI_CONTENT→'Đơn có nhiều nội dung', ELSE→'Khác'` | Chiều lọc/nhóm dùng chung cho K_TT_60-65. **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** BA thêm loại `MULTI_CONTENT` = 'Đơn có nhiều nội dung' và `ELSE 'Khác'`; đơn thuộc 2 loại này không có KPI Base riêng nhưng nằm trong mẫu số % (SQL BA). Dòng BA 139–145 (Số lượng/Tỷ lệ % theo Khiếu nại, Tố cáo, Phản ánh kiến nghị) = K_TT_60–65. | READY |
+| K_TT_60 | Số đơn Khiếu nại theo tháng | Đơn | Base | COUNT(DISTINCT Operational_Petition_List.Petition_Id) WHERE Petition_Category_Code=`COMPLAINT` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** COUNT(DISTINCT ID) theo BA; đếm theo `Petition_Id` (yêu cầu dev — 161 đơn mã NULL trước đây bị gộp/bỏ nên khai thác thấp hơn BA, VD T3/2019 BA 5 đơn Phản ánh kiến nghị, khai thác 1). | READY |
+| K_TT_61 | Tỷ lệ % Khiếu nại | % | Derived | K_TT_60[Month=M] / COUNT(DISTINCT Petition_Id)[Month=M, mọi loại đơn] × 100% | Sửa 2026-10-01: mẫu số = TỔNG đơn trong tháng ở mọi loại (kể cả MULTI_CONTENT/Khác) đúng SQL BA `SUM(COUNT(DISTINCT ID)) OVER (PARTITION BY tháng, năm)` — trước đây chỉ cộng 3 KPI Base | READY |
+| K_TT_62 | Số đơn Tố cáo theo tháng | Đơn | Base | COUNT(DISTINCT Operational_Petition_List.Petition_Id) WHERE Petition_Category_Code=`DENUNCIATION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** COUNT(DISTINCT ID) theo BA; đếm theo `Petition_Id` (yêu cầu dev — 161 đơn mã NULL trước đây bị gộp/bỏ nên khai thác thấp hơn BA, VD T3/2019 BA 5 đơn Phản ánh kiến nghị, khai thác 1). | READY |
+| K_TT_63 | Tỷ lệ % Tố cáo | % | Derived | K_TT_62[Month=M] / COUNT(DISTINCT Petition_Id)[Month=M, mọi loại đơn] × 100% | Sửa 2026-10-01: mẫu số = TỔNG đơn trong tháng ở mọi loại (kể cả MULTI_CONTENT/Khác) đúng SQL BA `SUM(COUNT(DISTINCT ID)) OVER (PARTITION BY tháng, năm)` — trước đây chỉ cộng 3 KPI Base | READY |
+| K_TT_64 | Số đơn Phản ánh kiến nghị theo tháng | Đơn | Base | COUNT(DISTINCT Operational_Petition_List.Petition_Id) WHERE Petition_Category_Code=`FEEDBACK_SUGGESTION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** COUNT(DISTINCT ID) theo BA; đếm theo `Petition_Id` (yêu cầu dev — 161 đơn mã NULL trước đây bị gộp/bỏ nên khai thác thấp hơn BA, VD T3/2019 BA 5 đơn Phản ánh kiến nghị, khai thác 1). | READY |
+| K_TT_65 | Tỷ lệ % Phản ánh kiến nghị | % | Derived | K_TT_64[Month=M] / COUNT(DISTINCT Petition_Id)[Month=M, mọi loại đơn] × 100% | Sửa 2026-10-01: mẫu số = TỔNG đơn trong tháng ở mọi loại (kể cả MULTI_CONTENT/Khác) đúng SQL BA `SUM(COUNT(DISTINCT ID)) OVER (PARTITION BY tháng, năm)` — trước đây chỉ cộng 3 KPI Base | READY |
+| K_TT_91 | Thời gian (tháng thống kê) | Tháng | Chiều | `MONTH(Received_Date)` — GROUP BY `EXTRACT(MONTH FROM RECEIVED_DATE)` trên `Operational_Petition_List` | **[MỚI 2026-10-01]** BA dòng 138 "Thời gian" (Chiều, `PETITION.RECEIVED_DATE`) — trước đây chỉ là GROUP_BY ẩn trong K_TT_60–65 chưa có KPI_ID; dùng chung K_TT_60–65 | READY |
 
 **Lineage Mart → Báo cáo:**
 
@@ -1983,7 +2037,7 @@ flowchart LR
 > Ghi chú:
 > - Cột **"Mã đơn"** ← `Petition.Petition Code` (`PETITION.CODE`)
 > - Cột **"Loại đơn"** ← `Petition.Petition Category Code` (`PETITION.PETITION_CATEGORY`)
-> - Cột **"Đối tượng"** ← `Petition.Content` (`PETITION.CONTENT`) — nguồn không có trường riêng cho tên đối tượng, `CONTENT` chứa luôn tên đối tượng.
+> - Cột **"Đối tượng"** ← **[DÙNG TẠM 2026-10-01]** `Petition.Target Name` (`PETITION.TARGET_NAME`, Atomic `petition.target_nm`). BA chỉ định `PETITION_TARGET.TARGET_NAME` (note BA: "dựa vào data test để mapp — bên nguồn chưa có trường riêng cho chỉ tiêu này") nhưng Atomic `Petition Target` chưa có LLD — xem O_TT_22. Trước đây: `Petition.Content`.
 > - Cột **"Trạng thái"** ← `Petition.Life Cycle Status Code` (`PETITION.STATUS`, 2 giá trị: `RECEIVED`/`PROCESSED`)
 
 **Mockup:**
@@ -1998,21 +2052,23 @@ flowchart LR
 
 **Bảng KPI (Attribute hiển thị — Tác nghiệp):**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_66 | Mã đơn | — | Attribute | `Petition.Petition Code` | |
-| K_TT_67 | Loại đơn | — | Attribute | `Petition.Petition Category Code` | |
-| K_TT_68 | Đối tượng | — | Attribute | `Petition.Content` | Content chứa tên đối tượng |
-| K_TT_69 | Trạng thái | — | Attribute | `Petition.Life Cycle Status Code` | 2 giá trị: RECEIVED/PROCESSED |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_66 | Mã đơn | — | Attribute | `Petition.Petition Code` | **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** Thuộc tính hiển thị, có thể NULL ở đơn cũ (161 đơn) — khoá đơn là `Petition_Id`. | READY |
+| K_TT_67 | Loại đơn | — | Attribute | `Petition.Petition Category Code` → nhãn: DENUNCIATION→'Tố cáo', COMPLAINT→'Khiếu nại', FEEDBACK_SUGGESTION→'Phản ánh kiến nghị', MULTI_CONTENT→'Đơn có nhiều nội dung', ELSE→'Khác' | **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** BA thêm MULTI_CONTENT và ELSE Khác | READY |
+| K_TT_68 | Đối tượng | — | Attribute | `Petition.Target Name` | **[SỬA 2026-10-01 — dùng TẠM, Data Modeler duyệt]** BA chỉ định `PETITION_TARGET.TARGET_NAME` (LEFT JOIN, 1 đơn nhiều đối tượng) nhưng Atomic `Petition Target` chưa có file LLD (O_TT_22). Tạm lấy `Petition.Target Name` (← `PETITION.TARGET_NAME`, tên đối tượng cấp đơn, Atomic `petition.target_nm`) — 1 đơn 1 giá trị, KHÁC bảng BA chỉ định. Khi Atomic có `Petition Target` và BA xác nhận phải đổi nguồn (grain danh sách thành 1 đơn × 1 đối tượng) | READY |
+| K_TT_69 | Trạng thái | — | Attribute | `Petition.Life Cycle Status Code` → nhãn: RECEIVED→'Đã tiếp nhận', PROCESSED→'Đã xử lý', ELSE→'Khác' | **Sửa 2026-10-01 (BA cập nhật SQL + yêu cầu dev):** BA đổi nhãn PROCESSED 'Đã xử lý xong' → 'Đã xử lý', thêm ELSE 'Khác' | READY |
 
 **Schema bảng tác nghiệp:**
 
 ```mermaid
 erDiagram
     Operational_Petition_List {
-        varchar Petition_Code PK
+        string Petition_Id PK
+        varchar Petition_Code
         varchar Petition_Category_Code
         varchar Content
+        varchar Target_Name
         varchar Life_Cycle_Status_Code
         date Received_Date
         int Received_Year
@@ -2071,23 +2127,23 @@ flowchart LR
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_TT_70 | Loại hình xử lý | — | Chiều | `CASE WHEN (LOWER(Violation_Behavior_Name) LIKE '%công ty đại chúng%' OR LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm của CTCK' WHEN LIKE '%công ty quản lý quỹ%' THEN 'Vi phạm của CTQLQ' WHEN LIKE '%cổ đông%' THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ' WHEN LIKE '%giao dịch%' THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ' WHEN LIKE '%chào bán chứng khoán%' THEN 'Vi phạm về CBCK' ELSE 'Vi phạm khác' END` | Chiều lọc/nhóm dùng chung cho K_TT_71-82. Khác K_TT_46 (Nhóm 13): dùng `ELSE 'Vi phạm khác'` thay vì `ELSE NULL` **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_71 | Số lượng vi phạm — CTĐC/tổ chức CBCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | (Sửa 2026-08-08) Đếm số QĐ duy nhất — DISTINCT theo Penalty_Decision_Dimension_Id, không phải số dòng Fact **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_72 | Số tiền xử phạt — CTĐC/tổ chức CBCK | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | (Sửa 2026-08-08) SUM trực tiếp trên Fact — Applied_Fine_Amount đúng grain, không fanout **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_73 | Số lượng vi phạm — CTCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTCK` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_74 | Số tiền xử phạt — CTCK | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm của CTCK` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_75 | Số lượng vi phạm — CTQLQ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTQLQ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_76 | Số tiền xử phạt — CTQLQ | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm của CTQLQ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_77 | Số lượng vi phạm — CĐ lớn/nội bộ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_78 | Số tiền xử phạt — CĐ lớn/nội bộ | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_79 | Số lượng vi phạm — Giao dịch thao túng/nội bộ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_80 | Số tiền xử phạt — Giao dịch thao túng/nội bộ | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_81 | Số lượng vi phạm — Về CBCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm về CBCK` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_82 | Số tiền xử phạt — Về CBCK | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm về CBCK` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_83 | Số lượng vi phạm — Khác | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm khác` | (Sửa 2026-08-08) Nhóm "Vi phạm khác" — nhánh `ELSE` **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
-| K_TT_84 | Số tiền xử phạt — Khác | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm khác` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_TT_70 | Loại hình xử lý | — | Chiều | `CASE WHEN (LOWER(Violation_Behavior_Name) LIKE '%công ty đại chúng%' OR LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm của CTCK' WHEN LIKE '%công ty quản lý quỹ%' THEN 'Vi phạm của CTQLQ' WHEN LIKE '%cổ đông%' THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ' WHEN LIKE '%giao dịch%' THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ' WHEN LIKE '%chào bán chứng khoán%' THEN 'Vi phạm về CBCK' ELSE 'Vi phạm khác' END` | Chiều lọc/nhóm dùng chung cho K_TT_71-82. Khác K_TT_46 (Nhóm 13): dùng `ELSE 'Vi phạm khác'` thay vì `ELSE NULL` **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_71 | Số lượng vi phạm — CTĐC/tổ chức CBCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | (Sửa 2026-08-08) Đếm số QĐ duy nhất — DISTINCT theo Penalty_Decision_Dimension_Id, không phải số dòng Fact **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_72 | Số tiền xử phạt — CTĐC/tổ chức CBCK | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | (Sửa 2026-08-08) SUM trực tiếp trên Fact — Applied_Fine_Amount đúng grain, không fanout **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_73 | Số lượng vi phạm — CTCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTCK` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_74 | Số tiền xử phạt — CTCK | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm của CTCK` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_75 | Số lượng vi phạm — CTQLQ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTQLQ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_76 | Số tiền xử phạt — CTQLQ | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm của CTQLQ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_77 | Số lượng vi phạm — CĐ lớn/nội bộ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_78 | Số tiền xử phạt — CĐ lớn/nội bộ | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_79 | Số lượng vi phạm — Giao dịch thao túng/nội bộ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_80 | Số tiền xử phạt — Giao dịch thao túng/nội bộ | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_81 | Số lượng vi phạm — Về CBCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm về CBCK` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_82 | Số tiền xử phạt — Về CBCK | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm về CBCK` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_83 | Số lượng vi phạm — Khác | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm khác` | (Sửa 2026-08-08) Nhóm "Vi phạm khác" — nhánh `ELSE` **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
+| K_TT_84 | Số tiền xử phạt — Khác | Triệu VNĐ | Base | SUM(Applied_Fine_Amount)/1_000_000, ROUND 2, filter Loại_hình_xử_lý=`Vi phạm khác` | (Sửa 2026-08-08) **Sửa 2026-08-22 (task Tuân #3):** nguồn `Violation_Behavior_Name` đổi sang `Penalty_Decision_Dimension` — đồng bộ flat table. | READY |
 
 > Field mapping Atomic source: giống hệt Nhóm 13 cho phần Chiều (Loại_hình_xử_lý). `Penalty_Decision_Dimension_Id` là FK có sẵn trên Fact (trỏ tới Penalty Decision Dimension — Nhóm 11), dùng COUNT(DISTINCT ...) để đếm đúng số QĐ khi Fact fanout theo N đối tượng × M hành vi. `Applied_Fine_Amount` ← `Penalty Decision Subject Behavior.Applied Fine Amount` (`PENALTY_DECISION_SUBJECT_BEHAVIOR.APPLIED_FINE_AMOUNT`) — đúng grain Fact (1 QĐ × 1 đối tượng × 1 hành vi), SUM trực tiếp không fanout.
 
@@ -2182,13 +2238,13 @@ graph TB
 |---|---|---|---|---|
 | Fact Inspection Team Activity | Event | 1 đoàn thanh tra (`INSPECTION_TEAM`) — 2 FK: Calendar Date Dimension, Inspection Team Dimension. Date key: Decision Date | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2) | READY — xem Cụm 1 |
 | Fact Examination Team Activity | Event | 1 vụ việc kiểm tra (`EXAMINATION_TEAM`) — 2 FK: Calendar Date Dimension, Examination Team Dimension. Date key: Decision Date | K_TT_20–26 (Nhóm 6), K_TT_27–29 (Nhóm 7) | READY — xem Cụm 1b |
-| Fact Inspection Team Target Activity | Event | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Inspection Team Target Dimension, Inspection Team Dimension. Date key: Decision Date (join qua Inspection Team) | K_TT_13–14 (Nhóm 4) | READY — xem Cụm 1c |
+| Fact Inspection Team Target Activity | Event | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` LEFT JOIN `INSPECTION_TEAM_TARGET`, N:1; đoàn chưa có đối tượng → FK đối tượng NULL, sửa 2026-10-01) — 3 FK: Calendar Date Dimension, Inspection Team Target Dimension, Inspection Team Dimension. Date key: Decision Date (join qua Inspection Team) | K_TT_13–14 (Nhóm 4) | READY — xem Cụm 1c |
 | Fact Examination Team Target Activity | Event | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Examination Team Target Dimension, Examination Team Dimension. Date key: Decision Date (join qua Examination Team) | K_TT_32–33 (Nhóm 9) | READY — xem Cụm 1d |
 | Fact Inspection Team Violation Behavior | Event | 1 đoàn thanh tra × 1 biên bản × 1 hành vi (`VIOLATION_RECORD` × `VIOLATION_RECORD_BEHAVIOR`, filter `INSPECTION_TEAM_ID IS NOT NULL`) — 3 FK: Calendar Date Dimension, Inspection Team Dimension, Inspection Team Violation Behavior Dimension. Date key: Decision Date (join qua Inspection Team) | K_TT_11–12 (Nhóm 3) | READY — xem Nhóm 3 |
 | Fact Examination Team Violation Behavior | Event | 1 vụ kiểm tra × 1 biên bản × 1 hành vi (`VIOLATION_RECORD` × `VIOLATION_RECORD_BEHAVIOR`, filter `EXAMINATION_TEAM_ID IS NOT NULL`) — 3 FK: Calendar Date Dimension, Examination Team Dimension, Examination Team Violation Behavior Dimension. Date key: Decision Date (join qua Examination Team) | K_TT_30–31 (Nhóm 8) | READY — xem Nhóm 8 |
 | Fact Penalty Decision | Event | 1 quyết định xử phạt (`PENALTY_DECISION`) — 2 FK: Calendar Date Dimension, Penalty Decision Dimension. Date key: Issued Date | K_TT_39–43 (Nhóm 11), K_TT_44–45 (Nhóm 12) | READY — xem Cụm 3 |
 | Fact Penalty Decision Subject Behavior | Event | Driving `PENALTY_DECISION`, LEFT JOIN xuống `PENALTY_DECISION_SUBJECT` → `PENALTY_DECISION_SUBJECT_BEHAVIOR` → `VIOLATION_BEHAVIOR` (Sửa 2026-08-15, xem O_TT_16) — 1 QĐ × 1 đối tượng × 1 hành vi khi có Subject Behavior, 1 dòng/QĐ (FK Subject/Subject Behavior NULL) khi không có — 4 FK: Calendar Date Dimension, Penalty Decision Subject Behavior Dimension (nullable), Penalty Decision Dimension, Penalty Decision Subject Dimension (nullable). Measure: `Applied_Fine_Amount` (Thêm 2026-08-08, đúng grain Fact, NULL khi không có Subject Behavior). Date key: Issued Date (từ Penalty Decision trực tiếp) | K_TT_46–47 (Nhóm 13), K_TT_70–84 (Nhóm 20 — reuse) | READY — xem Cụm 3b |
-| Fact Penalty Decision Subject | Event | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) — 3 FK: Calendar Date Dimension, Penalty Decision Subject Dimension, Penalty Decision Dimension. Date key: Issued Date (join qua Penalty Decision) | K_TT_48–49 (Nhóm 14) | READY — xem Cụm 3c |
+| Fact Penalty Decision Subject | Event | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` LEFT JOIN `PENALTY_DECISION_SUBJECT`, N:1; QĐ chưa có đối tượng → FK đối tượng NULL, sửa 2026-10-01) — 3 FK: Calendar Date Dimension, Penalty Decision Subject Dimension (nullable), Penalty Decision Dimension. Date key: Issued Date (join qua Penalty Decision) | K_TT_48–49 (Nhóm 14) | READY — xem Cụm 3c |
 
 **Bảng Tác nghiệp (Denormalized):**
 
@@ -2272,3 +2328,8 @@ graph TB
 | O_TT_16 | Nhóm 13 — SQL BA có 2 nhánh xác định `Violation_Behavior_Name`: nhánh chính `PENALTY_DECISION → PENALTY_DECISION_SUBJECT → PENALTY_DECISION_SUBJECT_BEHAVIOR → VIOLATION_BEHAVIOR`, và nhánh fallback `PENALTY_DECISION → PENALTY_DECISION_VIOLATION_RECORD → VIOLATION_RECORD → VIOLATION_RECORD_BEHAVIOR → VIOLATION_BEHAVIOR` (`CASE WHEN`, dùng khi nhánh chính không xác định được tên hành vi — kể cả khi QĐ không có `PENALTY_DECISION_SUBJECT_BEHAVIOR` nào, vì nhánh phụ join thẳng từ `PENALTY_DECISION`, độc lập nhánh chính). Thiết kế trước đó chỉ dùng nhánh chính, bỏ qua nhánh fallback — đồng thời Fact dùng INNER JOIN nên QĐ không có Subject Behavior bị loại hoàn toàn khỏi Fact (không chỉ sai phân loại 'Khác' như mô tả ban đầu, mà mất khỏi COUNT). | **(Đóng 2026-08-15)** Atomic entity `Penalty Decision X Violation Record` đã thiết kế (`DataModel/Atomic/Event/dm_atm_penalty_decision_x_violation_record-THANHTRA.PENALTY_DECISION_VIOLATION_RECORD.yaml`). Thiết kế lại: (1) `Violation_Behavior_Name` chuyển sang tính tại `Penalty Decision Dimension` (grain 1 QĐ) bằng CASE WHEN 2 nhánh + ELSE 'Khác'; (2) `Fact Penalty Decision Subject Behavior` đổi 2 FK (`Penalty_Decision_Subject_Dimension_Id`, `Penalty_Decision_Subject_Behavior_Dimension_Id`) từ INNER sang LEFT JOIN (nullable) và FK `Penalty_Decision_Dimension_Id` lookup trực tiếp từ `Penalty Decision` — mọi QĐ đều có mặt trên Fact; (3) K_TT_46 đổi COUNT sang `Penalty_Decision_Dimension_Id`. Nhóm 20 không đổi (không có nhánh fallback theo đúng SQL BA STT 20). | K_TT_46–47 (Nhóm 13) | **Closed** |
 | O_TT_17 | Nhóm 15 — SQL BA (phát hiện qua `/datamart-review` 2026-08-14) dùng `ROW_NUMBER() OVER (PARTITION BY Year, Violation_Case.Code, Subject_Name ORDER BY [priority theo Penalty_Decision.Life_Cycle_Status_Code])`, chỉ giữ `ord = 1` — dedupe khi 1 vụ việc + đối tượng có nhiều `Penalty_Decision` (đã verify `Penalty_Decision.Violation_Case_Id` là FK N:1, không ràng buộc unique — 1 hồ sơ có thể phát sinh nhiều QĐ theo tiến trình xử lý DRAFT→...→ENFORCED). Thiết kế trước đó (Operational Penalty Decision List) không có logic dedupe này. | Bổ sung ETL dedupe: nhóm theo (Năm, Violation_Case_Code, Subject_Name), giữ 1 dòng có `Penalty_Decision.Life_Cycle_Status_Code` ưu tiên cao nhất theo thứ tự `ENFORCED > SENT_TO_SUBJECT > ISSUED > APPROVED > REJECTED > PENDING_APPROVAL > DRAFT > khác`. Không đổi PK/grain (`Penalty_Decision_Subject_Code`), chỉ thêm bước lọc trước khi ETL insert. | K_TT_50 (Nhóm 15) | **Closed** |
 | O_TT_18 | **[MỚI 2026-09-28, phát hiện qua Gate 0 `check_references.py`]** `Examination Team Dimension.Content` (`examination_team_dim.content`) trỏ tới cột Atomic `examination_team.content` — cột này KHÔNG tồn tại trên Atomic entity `examination_team` (`DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_EXAMINATION_TEAM.yaml`, Nguồn 2, draft), khác với entity song song `inspection_team` (Nguồn 1, `DataModel/Atomic/Business_Activity/dm_atm_inspection_team-...yaml`) — entity này CÓ cột `content` thật. Không rõ đây là giới hạn dữ liệu nguồn thật (quy trình Kiểm tra không có trường Nội dung như Thanh tra) hay Atomic team chưa capture đủ. 0 KPI/Detail Mapping nào tham chiếu cột này (K_TT_11/K_TT_30 đã chuyển hẳn sang `Violation Behavior` chuẩn hoá từ 2026-08-07, xem O_TT_11) — không phải regression, cột này chưa từng được dùng. | Xóa cột `content` khỏi `examination_team_dim` ở cả 3 tầng (Attributes/master/model.yaml) — không suy đoán/tạo cột Atomic. Nếu sau này BA cần "Nội dung kiểm tra tổng quát" cho Tab KIỂM TRA, hỏi Atomic team xác nhận `EXAMINATION_TEAM` có trường tương ứng `INSPECTION_TEAM.CONTENT` hay không trước khi thiết kế lại. | — | Open (chờ Atomic team xác nhận nếu cần trong tương lai) |
+| O_TT_19 | **[MỚI 2026-10-01 — BA cập nhật mapping TT]** (1) STT 4: SQL BA `GROUP BY b.TARGET_TYPE` (mã gốc) nhưng chọn nhãn `ELSE 'KHÁC'` → nhiều mã ngoài danh sách cùng nhãn KHÁC sẽ ra nhiều dòng KHÁC; thiết kế GROUP BY nhãn (1 lát KHÁC) — BA xác nhận. (2) STT 4 đổi `JOIN` → `LEFT JOIN INSPECTION_TEAM_TARGET` (đoàn chưa có đối tượng đếm vào KHÁC), STT 5 vẫn INNER JOIN — Fact Inspection Team Target Activity đổi sang driving `inspection_team` + FK đối tượng nullable. (3) STT 3 thêm `AND NAME IS NOT NULL` → bỏ nhãn 'Khác' của thiết kế cũ (K_TT_11/12). (4) STT 2/7/12/17/18 có dòng 'Thời gian' (Chiều) chưa từng có KPI_ID → K_TT_87+ . KPI: K_TT_11–14, K_TT_87 | Mở — chờ BA xác nhận (1)(2) |
+| O_TT_20 | **[MỚI 2026-10-01 — BA cập nhật mapping TT, Kiểm tra]** (1) STT 8: thêm `AND NAME IS NOT NULL` → bỏ nhãn 'Khác' (như STT 3). (2) STT 9: nhãn đối tượng 8 giá trị viết HOA (CÁ NHÂN/TỔ CHỨC PHTP/TỔ CHỨC/CTKT…), GROUP BY theo nhãn, INNER JOIN đối tượng — khác STT 4 (nhãn 'Cá nhân'/'Tổ chức', LEFT JOIN, không có CTKT/PHTP); BA xác nhận hai bộ nhãn khác nhau là chủ ý. (3) STT 10: 'Loại hình' không có `ELSE` (NULL) khác STT 5 (`ELSE 'Khác'`). (4) STT 7 có dòng 'Thời gian' (Chiều) chưa có KPI_ID → K_TT_88. KPI: K_TT_30–33, K_TT_36, K_TT_88 | Mở — chờ BA xác nhận (2)(3) |
+| O_TT_21 | **[MỚI 2026-10-01 — yêu cầu dev + BA cập nhật mapping TT, Xử phạt]** (1) K_TT_46/47 (Nhóm 13): 1 QĐ có N hành vi đếm ở N nhóm — đã thêm cột `violation_behavior_group_nm` trên `Fact Penalty Decision Subject Behavior` (flat `tt_fct_penalty_decision_subject_behavior_flat`, cột đặt cuối khớp ALTER của dev; flat đổi JOIN → LEFT JOIN cho FK nullable). Câu hỏi mở BA: (a) QĐ KHÔNG có hành vi nhánh chính nhưng nhánh phụ (qua biên bản vi phạm) có NHIỀU hành vi — có đếm ở nhiều nhóm không? hiện tên đại diện QĐ (`Penalty Decision Dimension.Violation_Behavior_Name`) chỉ giữ 1 tên; (b) Nhóm 20 (K_TT_70–84) giữ 1 lần/QĐ hay đổi theo hành vi? hiện giữ nguyên. Lưu ý BA: SQL test thiếu `pd.ds_snpst_dt = '<ngày>'` ở bảng `PENALTY_DECISION` → đếm thừa 26 QĐ cũ vào 'Khác'. (2) STT 11: SQL BA `SUM(pd.TOTAL_FINE_AMOUNT)` sau `LEFT JOIN PENALTY_DECISION_SUBJECT` nhân tiền phạt theo số đối tượng của QĐ; thiết kế SUM ở cấp QĐ — BA xác nhận. (3) STT 14: đổi sang `COUNT(DISTINCT a.ID)` + `LEFT JOIN` đối tượng (QĐ chưa có đối tượng → 'Khác'); Fact Penalty Decision Subject đổi driving sang `penalty_decision`, FK đối tượng nullable. (4) STT 12 có dòng 'Thời gian' (Chiều) chưa có KPI_ID → K_TT_89. KPI: K_TT_42–49, K_TT_89 | Mở — chờ BA xác nhận (1a)(1b)(2) |
+| O_TT_22 | **[MỚI 2026-10-01 — BA cập nhật mapping TT + yêu cầu dev, Đơn thư]** (1) K_TT_56/58/60/62/64 (+ tỷ lệ K_TT_57/61/63/65): `COUNT(petition_code)` → `COUNT(DISTINCT petition_id)` — nguồn có 161 đơn `petition_code = NULL` (dữ liệu cũ) bị bỏ/gộp (2019 khai thác thấp hơn BA ở 8/11 tháng; 2026 khớp vì đơn có mã). `Operational Petition List` đổi PK từ `petition_code` sang `petition_id` (ngoại lệ có chủ đích của quy tắc 'Operational PK = _code' vì mã có thể NULL; khớp thay đổi khoá 2026-09-29 phía dev); `petition_code` giữ làm thuộc tính hiển thị. **Cần Atomic Team xác minh:** `lld_THANHTRA_PETITION.yaml` ghi `petition_id` = hash_id('THANHTRA.PETITION', CODE) — nếu hash theo CODE thì các đơn mã NULL trùng id; phải hash theo `ID` gốc. (2) STT 18: mẫu số % = tổng đơn trong tháng ở MỌI loại (kể cả `MULTI_CONTENT` 'Đơn có nhiều nội dung' và 'Khác' — BA thêm loại mới) nên tỷ lệ K_TT_61/63/65 đổi mẫu số; chưa có KPI Base cho MULTI_CONTENT vì BA không có dòng. (3) STT 19: cột 'Đối tượng' (K_TT_68) đổi nguồn sang `PETITION_TARGET.TARGET_NAME` nhưng Atomic `Petition Target` không có file LLD (manifest có entry, file chỉ ở Backup, pending_design ghi Excluded) → ban đầu PENDING; **Data Modeler duyệt 2026-10-01 dùng TẠM `petition.target_nm` (`PETITION.TARGET_NAME`, cấp đơn) cho K_TT_68 (READY tạm, cột mới `target_nm`)** — KHÁC bảng BA chỉ định; khi Atomic có `Petition Target` và BA xác nhận phải đổi nguồn, grain danh sách thành 1 đơn × 1 đối tượng (LEFT JOIN). (4) STT 17/18 có dòng 'Thời gian' (Chiều) chưa có KPI_ID → K_TT_90/91. Nhãn trạng thái đổi 'Đã xử lý xong' → 'Đã xử lý'. KPI: K_TT_56–69, K_TT_90–91 | Mở — Atomic Team xử lý (1)(3), BA xác nhận (2)(3) |
+| O_TT_23 | **[MỚI 2026-10-01 — BA cập nhật mapping TT, STT 1/2/5/6/7/10]** BA đổi định nghĩa Hoàn thành/Đang thực hiện đoàn thanh tra/kiểm tra: dùng `COALESCE(START_DATE, *_PERIOD_FROM)` / `COALESCE(END_DATE, *_PERIOD_TO)` và so với `sysdate`. Đã thêm `effective_start_dt`/`effective_end_dt` vào `inspection_team_dim`/`examination_team_dim` (ETL, nguồn Atomic `*_period_from_dt/to_dt` đang draft) và đổi 12 KPI (K_TT_3–6, 9–10, 22–25, 28–29) + `status_code` của 2 danh sách (K_TT_19, K_TT_38). (1) `START_DATE/END_DATE` là DATE không có giờ nên thanh tra `end < sysdate` và kiểm tra `end <= sysdate` cho cùng kết quả (ngày kết thúc = đã hoàn thành); thiết kế dùng `<= CURRENT_DATE()`. (2) SQL BA kiểm tra (STT 6/7) nhánh Đang thực hiện `END_DATE > sysdate` không đòi `START_DATE IS NOT NULL` (thanh tra có) — giữ đúng SQL BA, BA xác nhận có chủ ý không. (3) KPI Base so với `CURRENT_DATE()` lúc truy vấn nên không bị cũ; còn `status_code` trong 2 bảng Tác nghiệp danh sách tính ở ETL theo ngày ETL (như `sysdate` BA) và ETL đang lọc `decision_dt = :etl_date` — trạng thái chỉ đúng nếu bảng được nạp lại hằng ngày; chờ đội dev xác nhận chế độ nạp. KPI: K_TT_3–6, K_TT_9–10, K_TT_19, K_TT_22–25, K_TT_28–29, K_TT_38 | Mở — BA xác nhận (2), đội dev xác nhận (3) |

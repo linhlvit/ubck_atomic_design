@@ -272,6 +272,8 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_corporate_bond_market_snpst_flat ON
     maturity_pressure_12_months             Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng',
     maturity_pressure_12_months_previous    Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng tại kỳ liền trước',
     maturity_pressure_growth_percentage     Nullable(Decimal(5,2))  COMMENT 'Tăng trưởng áp lực đáo hạn',
+    bond_trading_val                        Nullable(Decimal(23,2)) COMMENT 'GTGD trái phiếu toàn thị trường ngày t (Market ID BDO)',
+    bond_yield_weighted_average             Nullable(Decimal(9,4))  COMMENT 'Lợi suất TP bình quân gia quyền GTGD ngày t',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                            Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'
@@ -293,8 +295,14 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_corporate_bond_maturity_wall_flat O
 (
     -- From: FACT Corporate Bond Maturity Wall
     snpst_dt_dim_id      String            COMMENT 'FK → Calendar Date Dimension',
-    securities_dim_id    String            COMMENT 'FK → Securities Dimension',
+    securities_dim_id    Nullable(String)  COMMENT 'FK → Securities Dimension (chỉ luồng LISTED)',
     ranking_code          Nullable(String)  COMMENT 'Xếp hạng tín nhiệm DN',
+    bond_flow_code        String            COMMENT 'Luồng nguồn: LISTED / PRIVATE',
+    bond_code             String            COMMENT 'Mã trái phiếu',
+    par_val               Nullable(Decimal(23,2)) COMMENT 'Mệnh giá',
+    outstanding_vol       Nullable(Decimal(23,2)) COMMENT 'KL lưu hành',
+    bond_outstanding_val  Nullable(Decimal(23,2)) COMMENT 'Dư nợ = mệnh giá × KL lưu hành',
+    maturity_dt           Nullable(Date)    COMMENT 'Ngày đáo hạn',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt          Nullable(Date)    COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -313,7 +321,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_corporate_bond_maturity_wall_flat O
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), securities_dim_id)
+ORDER BY (assumeNotNull(snpst_cdr_dt), bond_flow_code, bond_code)
 COMMENT 'Flat table — Fact Corporate Bond Maturity Wall × Calendar Date Dimension × Securities Dimension'
 ;
 
@@ -442,13 +450,13 @@ COMMENT 'Flat table — Fact Market Statistics Snapshot × Calendar Date Dimensi
 -- ============================================================
 -- 13. OPERATIONAL: pttt_opr_corporate_bond_issuer_credit_monitor_flat
 --    Danh sách TCPH TPDN kèm chỉ tiêu tín dụng để giám sát rủi ro
---    Grain: 1 row / TCPH / ngày
+--    Grain: 1 row / mã TP / ngày (TCPH xác định qua public_company.equity_ticker_symbol = symbol)
 --    Không JOIN Calendar Date, không JOIN dim nào
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.pttt_opr_corporate_bond_issuer_credit_monitor_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Corporate Bond Issuer Credit Monitor
-    issuer_symbol_code    String                  COMMENT 'PK — mã TCPH (định danh qua mã TP)',
+    issuer_symbol_code    String                  COMMENT 'PK — mã trái phiếu (symbol); TCPH xác định qua public_company.equity_ticker_symbol = symbol',
     snpst_dt               Date                    COMMENT 'PK — ngày thống kê',
     bond_outstanding_val   Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu per TCPH tại ngày t',
     par_val                 Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
@@ -506,4 +514,35 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), snpst_dt_dim_id)
 COMMENT 'Flat table — Fact Macro Indicator Snapshot — chỉ tiêu vĩ mô, lãi suất LNH, tỷ giá, CPI, GDP, DXY'
+;
+
+
+-- ============================================================
+-- 15. FACT: pttt_fct_securities_company_balance_snpst_flat
+--    Nợ phải trả + VCSH CTCK niêm yết theo quý (IDS BCDKT)
+--    Grain: 1 CTCK / quý báo cáo
+--    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Securities Company Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.pttt_fct_securities_company_balance_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Securities Company Balance Snapshot
+    snpst_dt_dim_id            String                  COMMENT 'FK → Calendar Date Dimension',
+    securities_company_dim_id  String                  COMMENT 'FK → Securities Company Dimension',
+    rpt_year                   Int32                   COMMENT 'Năm báo cáo tài chính',
+    rpt_quarter                Int32                   COMMENT 'Quý báo cáo tài chính',
+    total_liabilities_amt      Nullable(Decimal(23,2)) COMMENT 'Tổng nợ phải trả (BCDKT)',
+    owner_equity_amt           Nullable(Decimal(23,2)) COMMENT 'VCSH (BCDKT)',
+    src_stm_code               String                  COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt               Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_code                    Nullable(String)        COMMENT 'Mã CTCK — từ Securities Company Dimension',
+    sc_nm                      Nullable(String)        COMMENT 'Tên CTCK — từ Securities Company Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), securities_company_dim_id)
+COMMENT 'Flat table — Fact Securities Company Balance Snapshot × Calendar Date Dimension × Securities Company Dimension'
 ;

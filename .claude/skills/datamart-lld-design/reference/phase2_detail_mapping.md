@@ -45,10 +45,10 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 
 | `column_role` | Khi nào dùng |
 |---|---|
-| `MEASURE` | KPI Base — phép tính aggregate trực tiếp trên mart |
-| `FILTER` | Điều kiện lọc có giá trị cố định |
+| `MEASURE` | KPI Base — phép tính aggregate trực tiếp trên mart; **nhúng luôn `WHERE` / `GROUP BY` của KPI vào `logic`** (Quy tắc L18) |
+| `FILTER` | Điều kiện lọc có giá trị cố định — **chỉ cho KPI không có MEASURE** (KPI danh sách/Attribute trên Operational). KPI có MEASURE không sinh dòng FILTER riêng (L18) |
 | `SLICER` | Chiều phân tích — user chọn giá trị tại runtime |
-| `GROUP_BY` | Chiều nhóm trong aggregate |
+| `GROUP_BY` | Chiều nhóm trong aggregate — **chỉ cho KPI không có MEASURE**. KPI có MEASURE nhúng `GROUP BY` vào `logic`; chiều thời gian/loại dùng chung đã có KPI `SLICER` thì không lặp lại |
 | `JOIN_KEY` | FK dùng để join |
 | `DERIVED` | KPI Phái sinh — tính tại presentation layer |
 | `DEPRECATED` | Chỉ tiêu đã bãi bỏ sau thống nhất với BA — không sinh cột/slicer |
@@ -65,15 +65,17 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 
 **Lưu ý `tinh_chat` cho dòng FILTER/SLICER của KPI Base:**
 Dòng FILTER/SLICER thuộc cùng KPI Base (cùng `kpi_id`) kế thừa `tinh_chat = "Base"` từ KPI cha — không để trống.
+(Từ Quy tắc L18, KPI có MEASURE chỉ còn 1 dòng nên lưu ý này chỉ áp dụng cho KPI danh sách/Attribute có nhiều cột.)
 
 ---
 
 ## Quy tắc từng column_role
 
 **MEASURE:**
-- Chỉ khai báo phép tính thuần: `COUNT`, `SUM`, `AVG`
-- Không nhúng `WHERE` condition vào MEASURE — tách thành FILTER/SLICER row riêng
-- Ngoại lệ: aggregate nhiều nhánh không thể tách (VD: CASE WHEN trong SUM)
+- Khai báo phép tính aggregate (`COUNT`, `SUM`, `AVG`...) **kèm `WHERE` và `GROUP BY` của chính KPI đó** trên cùng 1 dòng (Quy tắc L18) — 1 KPI Base = 1 dòng MEASURE, không sinh dòng FILTER/GROUP_BY đi kèm
+- Thứ tự trong `logic`: `[JOIN ...] → AGG(...) WHERE <đk1> AND <đk2> GROUP BY <biểu thức>`
+- Điều kiện dùng chung cả nhóm (`src_stm_code`, năm `:Y`) vẫn viết vào `WHERE` của từng MEASURE — mỗi dòng phải tự đủ nghĩa, không dùng "xem KPI/nhóm X"
+- Aggregate nhiều nhánh (VD: CASE WHEN trong SUM) vẫn viết trọn trong `logic` như cũ
 
 **DERIVED:**
 - `mart_table` và `mart_column` để **trống**
@@ -419,11 +421,13 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 **Pattern:** Bảng `opr_*` (Operational) có `src_stm_code` nhưng Detail Mapping không có dòng FILTER để lọc nguồn — khi Atomic table nhận thêm nguồn mới, presentation layer khai thác dữ liệu lẫn nguồn.
 
 **Quy tắc:**
-- **Operational table** có `src_stm_code`: bắt buộc có 1 row `column_role = FILTER` với `logic = "src_stm_code = '<VALUE>'"`, `ghi_chu = 'Forward-compat: lọc đúng nguồn khi bảng có nhiều src_stm_code'`. Đặt ngay sau row `JOIN_KEY` đầu tiên của bảng đó trong Detail Mapping.
+- **Operational table** có `src_stm_code`: bắt buộc lọc đúng nguồn bằng `src_stm_code = '<VALUE>'`.
+  - KPI **có MEASURE**: đưa vào `WHERE` của dòng MEASURE (Quy tắc L18) — KHÔNG sinh dòng FILTER riêng.
+  - KPI **không có MEASURE** (danh sách/Attribute): 1 row `column_role = FILTER` với `logic = "src_stm_code = '<VALUE>'"`, `ghi_chu = 'Forward-compat: lọc đúng nguồn khi bảng có nhiều src_stm_code'`, đặt ngay sau row `JOIN_KEY`/SLICER đầu tiên của bảng đó trong nhóm.
 - **Dimension table**: KHÔNG cần row FILTER `src_stm_code` — Surrogate Key đã encode nguồn (SK = hash(natural_key + src_stm_code)), JOIN từ Fact sang Dim qua SK đã đảm bảo đúng nguồn.
 - Ngoại lệ không áp dụng: `cv` (Classification Value) và `cdr_dt_dim` (Calendar Date) — conformed/shared tables.
 
-**Kiểm tra:** Với mỗi Operational table trong Detail Mapping, tìm row `column_role = FILTER` có `logic` chứa `src_stm_code`. Nếu thiếu → thêm row.
+**Kiểm tra:** Với mỗi Operational table trong Detail Mapping, tìm `src_stm_code = '<VALUE>'` trong `logic` của MEASURE (KPI có MEASURE) hoặc row `FILTER` (KPI danh sách). Nếu thiếu → bổ sung.
 
 ❌ `opr_prac_360_profile` không có FILTER `src_stm_code = 'NHNCK_PROFESSIONALS'` → sai.
 ✅ `opr_prac_360_profile` có 1 dòng `column_role = FILTER`, `logic = "src_stm_code = 'NHNCK_PROFESSIONALS'"`.
@@ -517,7 +521,7 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 **Pattern:** 
 File BA analyst (`BRD/BA/BA_analyst_{MODULE}.csv`) cung cấp các cột kỹ thuật rất chi tiết: `Câu lệnh tham khảo` (SQL mẫu), `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note`.
 Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên chỉ tiêu (`Thông tin`) và `Phân loại` mà bỏ qua `Câu lệnh tham khảo` thì sẽ mắc các lỗi nghiêm trọng:
-1. **Bỏ sót các điều kiện lọc tĩnh (`WHERE` clause):** Trong SQL tham khảo có điều kiện lọc sàn (`FloorCode IN ('10','02','04')`), loại trừ chứng khoán (`StockType NOT IN (1,4)`), phân loại bảng lệnh (`Board Type IN ('T1','T2','T3','T4','T6','R1')`), trạng thái hoạt động (`active_flg = 1`), hoặc phân loại nhà đầu tư (`Buyer/Seller Foreign Investor Type IN ('10','20')`). Nếu Detail Mapping không sinh các dòng `column_role = FILTER` tương ứng (hoặc Fact/Dim chưa nhúng trong ETL), dữ liệu tầng báo cáo sẽ bị lẫn tạp chất.
+1. **Bỏ sót các điều kiện lọc tĩnh (`WHERE` clause):** Trong SQL tham khảo có điều kiện lọc sàn (`FloorCode IN ('10','02','04')`), loại trừ chứng khoán (`StockType NOT IN (1,4)`), phân loại bảng lệnh (`Board Type IN ('T1','T2','T3','T4','T6','R1')`), trạng thái hoạt động (`active_flg = 1`), hoặc phân loại nhà đầu tư (`Buyer/Seller Foreign Investor Type IN ('10','20')`). Nếu Detail Mapping không phản ánh các điều kiện này — trong `WHERE` của dòng MEASURE (hoặc dòng `FILTER` với KPI không có MEASURE), hoặc Fact/Dim chưa nhúng trong ETL — dữ liệu tầng báo cáo sẽ bị lẫn tạp chất.
 2. **Nhầm lẫn giữa các biến thể số đo (Measure Misalignment):**
    - **Khớp lệnh vs Thỏa thuận:** Khớp lệnh thuần (`Board Type NOT IN ('T1','T2','T3','T4','T6','R1')`) phải map sang `Total Matched Volume` / `total_matched_vol` và `Total Matched Value` / `total_matched_val`. TUYỆT ĐỐI KHÔNG map nhầm sang `Total Volume` / `total_vol` (vốn là số gộp cả thỏa thuận). Thỏa thuận phải map sang `Total Negotiated Volume` / `total_negotiated_vol`.
    - **Mua vs Bán vs Ròng:** Chỉ tiêu Mua / Bán / Ròng (NĐTNN, Tự doanh) phải đối chiếu đúng công thức trong SELECT của SQL tham khảo (ví dụ: `SUM(kl_nn_mua) - SUM(kl_nn_ban)` ➔ `foreign_net_vol`).
@@ -528,18 +532,38 @@ Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên c
 1. **Đọc trọn vẹn SQL tham khảo:** Trước khi thiết kế bất kỳ KPI nào, BẮT BUỘC mở file BA đọc cột `Câu lệnh tham khảo` + `Điều kiện chung` + `Note`.
 2. **Bóc tách 4 thành phần:**
    - `SELECT` ➔ Đối chiếu số đo (`mart_column`, phép tính `SUM`/`COUNT`/`AVG` trong `logic`).
-   - `WHERE` ➔ Tách thành các dòng `column_role = FILTER` explicit trong Detail Mapping (nếu Fact chưa lọc sẵn tại ETL).
+   - `WHERE` ➔ Ghi explicit trong `WHERE` của `logic` dòng MEASURE (KPI có MEASURE), hoặc thành dòng `column_role = FILTER` (KPI không có MEASURE) — nếu Fact chưa lọc sẵn tại ETL.
    - `FROM/JOIN` ➔ Kiểm tra đủ Dimension và FK liên kết.
-   - `GROUP BY` ➔ Đối chiếu grain của bảng Fact/Operational và các dòng `SLICER`/`GROUP_BY`.
+   - `GROUP BY` ➔ Đối chiếu grain của bảng Fact/Operational với `GROUP BY` trong `logic` MEASURE và các dòng `SLICER`.
 3. **Ghi chú đối soát:** Nếu một điều kiện lọc trong SQL tham khảo đã được xử lý ngầm ở tầng ETL (ví dụ: Fact table chỉ nạp giao dịch khớp lệnh), cột `ghi_chu` của Detail Mapping phải ghi rõ: `"Đã lọc sẵn tại ETL Fact theo SQL tham khảo BA: <điều kiện>"`.
 
 **Kiểm tra:**
-- Với mọi chỉ tiêu có SQL tham khảo trong BA: kiểm tra xem mọi điều kiện `WHERE` đã được ánh xạ thành dòng `FILTER` hoặc ghi nhận trong ETL chưa.
+- Với mọi chỉ tiêu có SQL tham khảo trong BA: kiểm tra xem mọi điều kiện `WHERE` đã nằm trong `logic` của MEASURE (hoặc dòng `FILTER` với KPI không có MEASURE) hoặc ghi nhận trong ETL chưa.
 - Kiểm tra `mart_column` và `logic` có phản ánh đúng biểu thức trong mệnh đề `SELECT` của SQL tham khảo không.
 
 ❌ BA SQL có `Board Type NOT IN ('T1','T2','T3','T4','T6','R1')` (khớp lệnh thuần) nhưng Detail Mapping lại map vào `Total Volume` / `SUM(total_vol)` (gộp thỏa thuận) → vi phạm L17.
-❌ BA SQL có `FloorCode IN ('10','02','04') AND StockType NOT IN (1,4)` nhưng Detail Mapping không có dòng FILTER Stock Type Code tương ứng → vi phạm L17.
-✅ Phản ánh đầy đủ dòng FILTER `Stock Type Code`, và map đúng `Total Matched Volume` / `SUM(total_matched_vol)` cho chỉ tiêu khớp lệnh.
+❌ BA SQL có `FloorCode IN ('10','02','04') AND StockType NOT IN (1,4)` nhưng `logic` MEASURE không có `stock_tp_code NOT IN (1,4)` (và không có ghi chú lọc sẵn tại ETL) → vi phạm L17.
+✅ `logic` MEASURE chứa đủ `WHERE ... stock_tp_code NOT IN (1,4)`, và map đúng `Total Matched Volume` / `SUM(total_matched_vol)` cho chỉ tiêu khớp lệnh.
+
+---
+
+### L18 — Một KPI Base = một dòng MEASURE (không nhân dòng)
+
+**Pattern:** Detail Mapping sinh 1 dòng MEASURE + n dòng FILTER + 1 dòng GROUP_BY cho cùng 1 `kpi_id`. Trong đó phần lớn dòng không riêng của KPI: lọc nguồn `src_stm_code`, tham số năm `:Y`, `GROUP BY` tháng — lặp y hệt ở mọi KPI cùng nhóm và trùng với KPI `SLICER` đã có. Thực tế đã xảy ra (module TT, 2026-10-01): K_TT_62 (Số đơn Tố cáo theo tháng) chiếm 5 dòng, 91 KPI chiếm 180 dòng; cột "Lệch HLD ↔ DM" của `datamart_progress_analyzer.py` báo +2…+14 ở hầu hết nhóm chỉ vì dòng bị nhân. Các module TKNB/QLKD/PTTT vốn đã dùng 1 dòng/KPI.
+
+**Quy tắc:**
+1. KPI có `column_role = MEASURE`: toàn bộ `JOIN`, `WHERE`, `GROUP BY` của KPI viết trong `logic` của đúng 1 dòng MEASURE theo dạng `[JOIN ...] → AGG(...) WHERE <đk> AND <đk> GROUP BY <biểu thức>`. Không sinh dòng `FILTER`/`GROUP_BY` cho KPI đó.
+2. Ghi chú của điều kiện đặc biệt (VD: lý do `IS NOT NULL`) chuyển sang `ghi_chu` của dòng MEASURE.
+3. Chiều dùng chung (năm, tháng, loại đơn...) khai 1 lần bằng KPI `SLICER` riêng; MEASURE không lặp lại dòng GROUP_BY cho chiều đó.
+4. Ngoại lệ — KPI **không có MEASURE** (danh sách/Attribute có nhiều cột hiển thị, VD "Mã vụ việc") vẫn dùng nhiều dòng `SLICER` + 1 dòng `FILTER` (L11).
+5. Cột FK của Fact (VD `decision_dt_dim_id`) chỉ xuất hiện trong chuỗi `logic` của MEASURE là hợp lệ — Gate Orphan/Parity không dò theo dòng FILTER.
+
+**Phạm vi áp dụng:** module mới và nhóm làm lại. Module đã bàn giao theo kiểu cũ (GSDC, GSTT...) không bắt buộc sửa hồi tố; không trộn 2 kiểu trong cùng 1 nhóm.
+
+**Kiểm tra:** với mỗi `kpi_id` có dòng MEASURE → số dòng của `kpi_id` đó phải = 1; không có dòng `FILTER`/`GROUP_BY` cùng `kpi_id`. Tự động bằng Gate 8 (`check_design_lint.py`, mã D5 `L3-KPI-ROW-MULTIPLIED`) — ERROR với module trong `L18_MODULES` (hiện: TT); module mới thiết kế theo L18 thì thêm vào tập này. `--l18` đo module khác ở mức WARNING.
+
+❌ K_TT_62: MEASURE `COUNT(DISTINCT petition_id)` + FILTER `src_stm_code` + FILTER `petition_category_code = 'DENUNCIATION'` + FILTER `received_year = :Y` + GROUP_BY `MONTH(received_dt)` (5 dòng).
+✅ K_TT_62: 1 dòng MEASURE `COUNT(DISTINCT opr_petition_list.petition_id) WHERE src_stm_code = 'THANHTRA_PETITION' AND opr_petition_list.petition_category_code = 'DENUNCIATION' AND opr_petition_list.received_year = :Y GROUP BY MONTH(opr_petition_list.received_dt)`.
 
 ---
 
@@ -556,13 +580,14 @@ Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên c
 □ L8: Không có giá trị <TBD> hoặc placeholder chưa xác định trong cột logic
 □ L9: Cột nhom → tên đầy đủ theo HLD (không chỉ "Nhóm X" — phải có phần tên ngắn)
 □ L10: DERIVED _YOY → logic viết bằng physical column theo template rút gọn (không refer KPI_ID)
-□ L11: Mỗi Operational table (opr_*) có src_stm_code → có đúng 1 dòng FILTER logic="src_stm_code = '<VALUE>'" ngay sau JOIN_KEY đầu tiên; Dimension table → không thêm FILTER này
+□ L11: Mỗi Operational table (opr_*) có src_stm_code → KPI có MEASURE: `src_stm_code = '<VALUE>'` nằm trong WHERE của MEASURE; KPI danh sách (không MEASURE): có đúng 1 dòng FILTER logic="src_stm_code = '<VALUE>'" trong nhóm; Dimension table → không thêm điều kiện này
 □ L12: Cột nhom theo thứ tự dòng trong file → số nhóm xuất hiện lần đầu phải tăng dần 1, 2, ..., N_max (parse bằng regex, không so sánh string) — nếu phát hiện lệch, sắp xếp lại toàn file
 □ L13: Tổng số nhóm trong Detail Mapping (cột nhom, unique) = tổng số nhóm trong HLD Section 2 (kể cả nhóm PENDING toàn bộ không có bảng Attributes nào) — không dùng danh sách nhóm từ Phase 0 Plan để xác định "đã xong"
 □ L14: Mọi dòng `ghi_chu` chứa "Reuse từ Nhóm X" mà `logic` có GROUP BY/PARTITION BY/SUM/MAX theo 1 chiều cụ thể → xác định grain hiển thị thật của Nhóm đang reuse (nhìn cột lân cận trong mockup: 1 dòng = 1 mã CK hay 1 chỉ số hay 1 công ty?) và đối chiếu đúng với GROUP BY trong logic — KHÔNG mặc định giữ nguyên GROUP BY của Nhóm gốc chỉ vì đang copy công thức
 □ L15: Mọi dòng REUSE Case 1 (measure/dim vật lý) → điền đầy đủ mart_table và mart_column; Mọi dòng REUSE Case 2 (presentation/derived) → để trống mart_table và mart_column, column_role = DERIVED (không tạo cột ảo)
 □ L16: Mọi chỉ tiêu đã thống nhất bãi bỏ với BA → column_role = DEPRECATED, mart_table/mart_column để trống, logic = 'Đã loại bỏ — không tạo cột/slicer' — TUYỆT ĐỐI KHÔNG đánh tráo thành PENDING
-□ L17: Bám sát Câu lệnh tham khảo (Reference SQL) & Điều kiện chung trong file BA: đọc trọn vẹn SQL tham khảo, bóc tách WHERE clause thành dòng FILTER, ánh xạ đúng số đo trong SELECT (khớp lệnh vs thỏa thuận, mua vs bán vs ròng, rolling window), ghi rõ vào ghi_chu nếu đã lọc ngầm ở ETL Fact
+□ L17: Bám sát Câu lệnh tham khảo (Reference SQL) & Điều kiện chung trong file BA: đọc trọn vẹn SQL tham khảo, đưa WHERE clause vào logic MEASURE (hoặc dòng FILTER với KPI không có MEASURE), ánh xạ đúng số đo trong SELECT (khớp lệnh vs thỏa thuận, mua vs bán vs ròng, rolling window), ghi rõ vào ghi_chu nếu đã lọc ngầm ở ETL Fact
+□ L18: Mỗi kpi_id có dòng MEASURE → đúng 1 dòng (WHERE/GROUP BY nằm trong logic MEASURE), không có dòng FILTER/GROUP_BY cùng kpi_id; chiều dùng chung khai 1 lần bằng KPI SLICER
 ```
 
 > **L12 và L13 là 2 testcase module-level** (chạy 1 lần sau khi TOÀN BỘ nhóm đã xử lý, tương ứng TC6 và TC5 trong `SKILL.md`) — khác với L1–L11 vốn kiểm tra trong phạm vi từng nhóm/dòng riêng lẻ.

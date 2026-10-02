@@ -25893,9 +25893,9 @@ NĐTNN:
 Cá nhân trong nước:
         buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
         sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
-Tổ chức trong nước:
-        buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
-        sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+Tổ chức trong nước:( GT Tổ chức trong nước mua - GT Tổ chức trong nước bán ) - ( GT tự doanh mua - GT tự doanh bán) 
+        buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+         sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
         
 + Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
         *Tổng GTGD:
@@ -26417,9 +26417,9 @@ NĐTNN:
 Cá nhân trong nước:
         buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
         sell_client_house_classification_(code) = '10' AND sell_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'
-Tổ chức trong nước:
-        buy_client_house_classification_code = '10' AND buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
-        sell_client_house_classification_code = '10' AND sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+Tổ chức trong nước: ( GT Tổ chức trong nước mua - GT Tổ chức trong nước bán ) - ( GT tự doanh mua - GT tự doanh bán) 
+       buy_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
+       sell_foreigner_investor_type = '00' AND buy_invest_type/buy_invest_type_Classification_code <> '8000'
         
 + Khớp lệnh: thêm điều kiện: BOARD_TYPE/BOARD_ID NOT IN ('T1', 'T2', 'T3', 'T4', 'T6', 'R1')
         *Tổng GTGD:
@@ -27590,54 +27590,312 @@ LNST AS (
 )
 ",đối với doanh thu và lợi nhuận đang theo kỳ lên sẽ vẫn theo từng kỳ một ,,,,,Chưa có sql,Dữ liệu tĩnh,PE
 35,,Sở hữu và giao dịch nội bộ ,Mã cổ phiếu,,Dashboard,Chiều,TB,Mã CK,IDS,,,,Done,,major_shareholder,ticker_symbol,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
-35,,Sở hữu và giao dịch nội bộ ,Tên cổ đông,Tên tổ chức hoặc cá nhân sở hữu cổ phần,Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
-35,,Sở hữu và giao dịch nội bộ ,Số cổ phiếu sở hữu,"VÌ trong bảng major_shareholder có từ kỳ đến kỳ. Ví dụ: 20250820-20250825 
-tham số: 20250821 thì mình sẽ lấy số cổ phiếu sở hữu tại kỳ 20250820 và ngày cập nhật bằng 20250820 
-Tham số: 20250826 thì mình sẽ lấy số cổ phiếu sở hữu tại kỳ 20250825 và ngày cập nhật bằng 20250825",Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,"case when :p_date >= end_period_date then end_period_shares
-        when :p_date >= begin_period_date then begin_period_shares
-         end so_co_phieu",,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
-35,,Sở hữu và giao dịch nội bộ ,Sở hữu nước ngoài ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,current_shares_foreign_hold,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
-35,,Sở hữu và giao dịch nội bộ ,Sở hữu trong nước,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,total_issued_shares  - current_shares_foreign_hold,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
-35,,Sở hữu và giao dịch nội bộ ,Tỷ lệ sở hữu,"VÌ trong bảng major_shareholder có từ kỳ đến kỳ. Ví dụ: 20250820-20250825 
-tham số: 20250821 thì mình sẽ lấy số cổ phiếu sở hữu tại kỳ 20250820 và ngày cập nhật bằng 20250820 
-Tham số: 20250826 thì mình sẽ lấy số cổ phiếu sở hữu tại kỳ 20250825 và ngày cập nhật bằng 20250825",Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,"case when :p_date >= end_period_date then end_period_ratio
-	when :p_date >= begin_period_date then begin_period_ratio
-	 end ty_le",,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
-35,,Sở hữu và giao dịch nội bộ ,Ngày cập nhật,"VÌ trong bảng major_shareholder có từ kỳ đến kỳ. Ví dụ: 20250820-20250825 
-tham số: 20250821 thì mình sẽ lấy số cổ phiếu sở hữu tại kỳ 20250820 và ngày cập nhật bằng 20250820 
-Tham số: 20250826 thì mình sẽ lấy số cổ phiếu sở hữu tại kỳ 20250825 và ngày cập nhật bằng 20250825",Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,"case when :p_date >= end_period_date then end_period_date
-	when :p_date >= begin_period_date then begin_period_date
-	 end ngay_cap_nhat",,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
-35,,Sở hữu và giao dịch nội bộ ,Chức vụ người nội bộ,Join giũa major_shareholder và IDS qua bảng id_number = identity_no,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,IDS,,,,Done,,IDS.positions,position_cd," LOOKUP_GROUP = ""POSITION""","SELECT 
-position_cd,cs.ownership_qty,cs.ownership_ratio,cp.equity_ticker,le.identity_type_cd,identity_no
-FROM UAT_IDS_STG.LEGAL_ENTITIES le 
-left join UAT_IDS_STG.`identity` i on le.id = i.legal_entity_id 
-and date_format( i.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
-left join UAT_IDS_STG.LOOKUP_VALUES lv1 ON lv1.LOOKUP_CD = i.identity_type_cd 
-AND lv1.LOOKUP_GROUP = 'IDENTITY_TYPE' and lv1.lookup_cd = '4'
-and date_format( lv1.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
-LEFT JOIN UAT_IDS_STG.POSITIONS p ON le.id = p.legal_entity_id 
-and date_format( p.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
-LEFT JOIN UAT_IDS_STG.LOOKUP_VALUES lv ON lv.LOOKUP_CD = p.position_cd 
-and date_format( lv.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
-LEFT JOIN UAT_IDS_STG.COMPANY_SHAREHOLDING cs ON p.legal_entity_id = cs.legal_entity_id
-  and date_format( cs.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
-LEFT JOIN UAT_IDS_STG.company_profiles cp ON cp.id = cs.COMPANY_PROFILE_ID 
-and date_format( cp.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
-WHERE 1=1 
-and date_format( le.ds_snpst_dt, 'yyyyMMdd') =  :Ngay_gd
-AND lv.LOOKUP_GROUP = 'POSITION'","SELECT position_cd,cs.ownership_qty,cs.ownership_ratio,cp.equity_ticker FROM ids.LEGAL_ENTITIES le 
-LEFT JOIN ids.POSITIONS p ON le.id = p.legal_entity_id
-LEFT JOIN ids.LOOKUP_VALUES lv ON lv.LOOKUP_CD = p.position_cd
-LEFT JOIN ids.COMPANY_SHAREHOLDING cs ON p.legal_entity_id = cs.legal_entity_id
-LEFT JOIN ids.company_profiles cp ON cp.id = cs.COMPANY_PROFILE_ID 
-WHERE 1=1 
-AND lv.LOOKUP_GROUP = 'POSITION'",,,,,Chưa có sql,Dữ liệu tĩnh,PE
-35,,Sở hữu và giao dịch nội bộ ,Sở hữu cổ đông lớn của người nội bộ/ban lãnh đạo,"VÌ trong bảng major_shareholder có từ kỳ đến kỳ. Ví dụ: 20250820-20250825 
-tham số: 20250821 thì mình sẽ lấy số cổ phiếu sở hữu tại kỳ 20250820 và ngày cập nhật bằng 20250820 
-Tham số: 20250826 thì mình sẽ lấy số cổ phiếu sở hữu tại kỳ 20250825 và ngày cập nhật bằng 20250825",Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,"case when :p_date >= end_period_date then end_period_shares
-        when :p_date >= begin_period_date then begin_period_shares
-         end so_co_phieu",,,Sẽ đánh giá lại xem là lấy từ IDS hay thẳng VSDC. VÌ lấy IDS có thể sẽ phụ thuộc,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+35,,Sở hữu và giao dịch nội bộ ,Sở hữu nước ngoài ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,(current_shares_foreign_hold/total_issued_shares)*100,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+35,,Sở hữu và giao dịch nội bộ ,Sở hữu trong nước,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,foreign_investor_info,(total_issued_shares  - current_shares_foreign_hold)/total_issued_shares *100,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+35,,Sở hữu và giao dịch nội bộ ,Tên cổ đông,"danh sách cổ đông lớn: câu lệnh là từ Mã sổ ra tên cổ đông 
+WITH 
+-- Danh sách ngày có dữ liệu <= ngày tra cứu
+trading_dates AS (
+  SELECT ticker_symbol, begin_period_date AS data_date
+  FROM uat_vsdc_stg.major_shareholder
+  WHERE ticker_symbol = :symbol
+          AND begin_period_date <= to_date(:todate)
+  UNION
+  SELECT ticker_symbol, end_period_date AS data_date
+  FROM major_shareholder
+  WHERE ticker_symbol = :symbol
+          AND end_period_date <= to_date(:todate)
+)
+-- Lấy ngày gần nhất có dữ liệu <= ngày tra cứu
+, asof AS (
+  SELECT
+    ticker_symbol,
+    max(data_date) AS updated_date
+  FROM trading_dates
+  WHERE data_date IS NOT NULL
+  GROUP BY ticker_symbol
+)
+-- Dữ liệu sở hữu của CĐL
+SELECT
+    ms.ticker_symbol
+  , ms.voting_shares
+  , ms.shareholder_name
+  , ms.id_number
+  , ms.issue_date
+  , ms.contact_address
+  , a.updated_date
+  -- Nếu begin_period_date = end_period_date thì ưu tiên lấy giá trị theo end_period_date
+  , CASE
+    WHEN a.snapshot_date = ms.end_period_shares THEN ms.end_period_shares
+    ELSE ms.begin_period_shares
+  END AS shares
+  , CASE
+    WHEN a.snapshot_date = ms.end_period_date THEN ms.end_period_ratio
+    ELSE ms.begin_period_ratio
+  END AS ratio
+  --, ms.begin_period_date
+  --, ms.end_period_date
+  --, ms.begin_period_shares
+  --, ms.begin_period_ratio
+  --, ms.end_period_shares
+  --, ms.end_period_ratio
+FROM uat_vsdc_stg.major_shareholder ms
+JOIN asof a ON ms.ticker_symbol = a.ticker_symbol
+WHERE ms.begin_period_date = a.snapshot_date OR ms.end_period_date = a.snapshot_date
+;
+>> từ câu lệnh này đối với phần hiện tooltip xoay ngược lại từ cổ đông ra mã",Dashboard,Chiều,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,shareholder_name,,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+35,,Sở hữu và giao dịch nội bộ ,Số cổ phiếu sở hữu ,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,"WITH 
+-- Danh sách ngày có dữ liệu <= ngày tra cứu
+trading_dates AS (
+  SELECT ticker_symbol, begin_period_date AS data_date
+  FROM uat_vsdc_stg.major_shareholder
+  WHERE ticker_symbol = :symbol
+          AND begin_period_date <= to_date(:todate)
+  UNION
+  SELECT ticker_symbol, end_period_date AS data_date
+  FROM major_shareholder
+  WHERE ticker_symbol = :symbol
+          AND end_period_date <= to_date(:todate)
+)
+-- Lấy ngày gần nhất có dữ liệu <= ngày tra cứu
+, asof AS (
+  SELECT
+    ticker_symbol,
+    max(data_date) AS updated_date
+  FROM trading_dates
+  WHERE data_date IS NOT NULL
+  GROUP BY ticker_symbol
+)
+-- Dữ liệu sở hữu của CĐL
+SELECT
+    ms.ticker_symbol
+  , ms.voting_shares
+  , ms.shareholder_name
+  , ms.id_number
+  , ms.issue_date
+  , ms.contact_address
+  , a.updated_date
+  -- Nếu begin_period_date = end_period_date thì ưu tiên lấy giá trị theo end_period_date
+  , CASE
+    WHEN a.snapshot_date = ms.end_period_shares THEN ms.end_period_shares
+    ELSE ms.begin_period_shares
+  END AS shares
+  , CASE
+    WHEN a.snapshot_date = ms.end_period_date THEN ms.end_period_ratio
+    ELSE ms.begin_period_ratio
+  END AS ratio
+  --, ms.begin_period_date
+  --, ms.end_period_date
+  --, ms.begin_period_shares
+  --, ms.begin_period_ratio
+  --, ms.end_period_shares
+  --, ms.end_period_ratio
+FROM uat_vsdc_stg.major_shareholder ms
+JOIN asof a ON ms.ticker_symbol = a.ticker_symbol
+WHERE ms.begin_period_date = a.snapshot_date OR ms.end_period_date = a.snapshot_date
+;",,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+35,,Sở hữu và giao dịch nội bộ ,Tỷ lệ sở hữu của cổ đông lớn,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,"WITH 
+-- Danh sách ngày có dữ liệu <= ngày tra cứu
+trading_dates AS (
+  SELECT ticker_symbol, begin_period_date AS data_date
+  FROM uat_vsdc_stg.major_shareholder
+  WHERE ticker_symbol = :symbol
+  	AND begin_period_date <= to_date(:todate)
+  UNION
+  SELECT ticker_symbol, end_period_date AS data_date
+  FROM major_shareholder
+  WHERE ticker_symbol = :symbol
+  	AND end_period_date <= to_date(:todate)
+)
+-- Lấy ngày gần nhất có dữ liệu <= ngày tra cứu
+, asof AS (
+  SELECT
+    ticker_symbol,
+    max(data_date) AS updated_date
+  FROM trading_dates
+  WHERE data_date IS NOT NULL
+  GROUP BY ticker_symbol
+)
+-- Dữ liệu sở hữu của CĐL
+SELECT
+    ms.ticker_symbol
+  , ms.voting_shares
+  , ms.shareholder_name
+  , ms.id_number
+  , ms.issue_date
+  , ms.contact_address
+  , a.updated_date
+  -- Nếu begin_period_date = end_period_date thì ưu tiên lấy giá trị theo end_period_date
+  , CASE
+    WHEN a.snapshot_date = ms.end_period_shares THEN ms.end_period_shares
+    ELSE ms.begin_period_shares
+  END AS shares
+  , CASE
+    WHEN a.snapshot_date = ms.end_period_date THEN ms.end_period_ratio
+    ELSE ms.begin_period_ratio
+  END AS ratio
+  --, ms.begin_period_date
+  --, ms.end_period_date
+  --, ms.begin_period_shares
+  --, ms.begin_period_ratio
+  --, ms.end_period_shares
+  --, ms.end_period_ratio
+FROM uat_vsdc_stg.major_shareholder ms
+JOIN asof a ON ms.ticker_symbol = a.ticker_symbol
+WHERE ms.begin_period_date = a.snapshot_date OR ms.end_period_date = a.snapshot_date
+;",,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+35,,Sở hữu và giao dịch nội bộ ,Ngày cập nhật của cổ đông lớn,,Dashboard,Chỉ tiêu phái sinh,TB,Mã CK,CSDLTT,,,,Done,,major_shareholder,"WITH 
+-- Danh sách ngày có dữ liệu <= ngày tra cứu
+trading_dates AS (
+  SELECT ticker_symbol, begin_period_date AS data_date
+  FROM uat_vsdc_stg.major_shareholder
+  WHERE ticker_symbol = :symbol
+          AND begin_period_date <= to_date(:todate)
+  UNION
+  SELECT ticker_symbol, end_period_date AS data_date
+  FROM major_shareholder
+  WHERE ticker_symbol = :symbol
+          AND end_period_date <= to_date(:todate)
+)
+-- Lấy ngày gần nhất có dữ liệu <= ngày tra cứu
+, asof AS (
+  SELECT
+    ticker_symbol,
+    max(data_date) AS updated_date
+  FROM trading_dates
+  WHERE data_date IS NOT NULL
+  GROUP BY ticker_symbol
+)
+-- Dữ liệu sở hữu của CĐL
+SELECT
+    ms.ticker_symbol
+  , ms.voting_shares
+  , ms.shareholder_name
+  , ms.id_number
+  , ms.issue_date
+  , ms.contact_address
+  , a.updated_date
+  -- Nếu begin_period_date = end_period_date thì ưu tiên lấy giá trị theo end_period_date
+  , CASE
+    WHEN a.snapshot_date = ms.end_period_shares THEN ms.end_period_shares
+    ELSE ms.begin_period_shares
+  END AS shares
+  , CASE
+    WHEN a.snapshot_date = ms.end_period_date THEN ms.end_period_ratio
+    ELSE ms.begin_period_ratio
+  END AS ratio
+  --, ms.begin_period_date
+  --, ms.end_period_date
+  --, ms.begin_period_shares
+  --, ms.begin_period_ratio
+  --, ms.end_period_shares
+  --, ms.end_period_ratio
+FROM uat_vsdc_stg.major_shareholder ms
+JOIN asof a ON ms.ticker_symbol = a.ticker_symbol
+WHERE ms.begin_period_date = a.snapshot_date OR ms.end_period_date = a.snapshot_date
+;",,,,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+,,Sở hữu và giao dịch nội bộ ,Tên người nội bộ,"đây là danh sách của người nội bộ và tool tip của người nội bộ: 
+Phần danh sách sql: 
+SELECT 
+le.id,le.ENTITY_NAME  
+,cer.COMPANY_profile_id
+--, cpcer.EQUITY_TICKER
+,csh.COMPANY_profile_id
+,csh.OWNERSHIP_QTY, csh.OWNERSHIP_RATIO, csh.OWNERSHIP_DATE, csh.UPDATED_DATE
+        , cpsh.COMPANY_NAME_VN CTySh, cpsh.EQUITY_TICKER , cpsh.BUSINESS_REG_NO
+        , FOUNDER_HLD_FLG CDSL, MAJOR_HLD_FLG CDL, STRATEGIC_HLD_FLG CDCL, INSIDER_HLD_FLG CDNB
+        FROM GMS_IDS_UAT.legal_entities le
+        LEFT  JOIN GMS_IDS_UAT.company_entity_role cer ON le.id = cer.LEGAL_ENTITY_ID AND cer.DELETE_FLG = '0'
+        LEFT JOIN GMS_IDS_UAT.company_profiles cpcer ON cpcer.id = cer.COMPANY_PROFILE_ID
+        LEFT JOIN GMS_IDS_UAT.company_shareholding csh ON le.id = csh.LEGAL_ENTITY_ID AND csh.DELETE_FLG = '0'  AND csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID
+        LEFT JOIN GMS_IDS_UAT.company_profiles cpsh ON cpsh.id = csh.COMPANY_PROFILE_ID --AND csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID
+        WHERE cer.ROLE_TYPE_CD = 'NNB' 
+--and le.id = '92515'
+        AND cpcer.EQUITY_TICKER = 'VGT' 
+Phần để hiện lên màn tooltip: 
+SELECT 
+le.id,le.ENTITY_NAME  
+,cer.COMPANY_profile_id
+--, cpcer.EQUITY_TICKER
+,csh.COMPANY_profile_id
+,csh.OWNERSHIP_QTY, csh.OWNERSHIP_RATIO, csh.OWNERSHIP_DATE, csh.UPDATED_DATE
+        , cpsh.COMPANY_NAME_VN CTySh, cpsh.EQUITY_TICKER , cpsh.BUSINESS_REG_NO
+        , FOUNDER_HLD_FLG CDSL, MAJOR_HLD_FLG CDL, STRATEGIC_HLD_FLG CDCL, INSIDER_HLD_FLG CDNB
+        FROM GMS_IDS_UAT.legal_entities le
+        LEFT  JOIN GMS_IDS_UAT.company_entity_role cer ON le.id = cer.LEGAL_ENTITY_ID AND cer.DELETE_FLG = '0'
+        LEFT JOIN GMS_IDS_UAT.company_profiles cpcer ON cpcer.id = cer.COMPANY_PROFILE_ID
+        LEFT JOIN GMS_IDS_UAT.company_shareholding csh ON le.id = csh.LEGAL_ENTITY_ID AND csh.DELETE_FLG = '0'  AND csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID
+        LEFT JOIN GMS_IDS_UAT.company_profiles cpsh ON cpsh.id = csh.COMPANY_PROFILE_ID --AND csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID
+        WHERE cer.ROLE_TYPE_CD = 'NNB' 
+        AND cpcer.EQUITY_TICKER = 'VGT' 
+        AND le.id = '92515'",,,,,,,,,Done,,GMS_IDS_UAT.legal_entities,ENTITY_NAME,,,,,,,,,,
+35,,Sở hữu và giao dịch nội bộ ,Chức vụ người nội bộ,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,IDS,,,,Done,,"(SELECT LOOKUP_CD, LOOKUP_VALUE_VN FROM GMS_IDS_UAT.LOOKUP_VALUES lv WHERE lv.LOOKUP_GROUP LIKE 'POSITION')",LOOKUP_VALUE_VN," LOOKUP_GROUP = ""POSITION""","SELECT le.id, le.ENTITY_NAME, le.BIRTH_DATE , le.BUSINESS_REG_NO ,cer.ROLE_TYPE_CD, cer.DELETE_FLG 
+--        , gen.LOOKUP_VALUE_VN Gioitinh
+--        , edu.LOOKUP_VALUE_VN hocvan
+--        , ent.LOOKUP_VALUE_VN loaihinh
+        --cty noi la NNB
+        , cer.COMPANY_PROFILE_ID, cp.COMPANY_NAME_VN , cp.EQUITY_TICKER , cp.BUSINESS_REG_NO , enr.LOOKUP_VALUE_VN loairole, cer.ACTIVE_FLG , cer.EFFECTIVE_FROM_DATE HLtu, cer.EFFECTIVE_TO_DATE 
+        --Vi tri
+        , pocd.LOOKUP_VALUE_VN chucvu, po.APPOINTMENT_DATE Chucvutu
+        --Giay to
+        , idecd.LOOKUP_VALUE_VN loaigiayto, ide.IDENTITY_NO, ide.IDENTITY_ISSUED_DATE ngaygiayto, ide.IDENTITY_ISSUED_PLACE noicap
+        --so huu
+        , csh.OWNERSHIP_QTY, csh.OWNERSHIP_RATIO, csh.OWNERSHIP_DATE, csh.UPDATED_DATE
+        , cpsh.COMPANY_NAME_VN CTySh, cpsh.EQUITY_TICKER , cpsh.BUSINESS_REG_NO
+        , FOUNDER_HLD_FLG CDSL, MAJOR_HLD_FLG CDL, STRATEGIC_HLD_FLG CDCL, INSIDER_HLD_FLG CDNB
+FROM GMS_IDS_UAT.legal_entities le
+--LEFT JOIN (SELECT LOOKUP_CD, LOOKUP_VALUE_VN FROM GMS_IDS_UAT.LOOKUP_VALUES lv WHERE lv.LOOKUP_GROUP LIKE 'GENDER') gen ON gen.LOOKUP_CD = le.GENDER_CD
+--LEFT JOIN (SELECT LOOKUP_CD, LOOKUP_VALUE_VN FROM GMS_IDS_UAT.LOOKUP_VALUES lv WHERE lv.LOOKUP_GROUP LIKE 'EDUCATION_LEVEL') edu ON edu.LOOKUP_CD = le.EDUCATION_LEVEL_CD
+--LEFT JOIN (SELECT LOOKUP_CD, LOOKUP_VALUE_VN FROM GMS_IDS_UAT.LOOKUP_VALUES lv WHERE lv.LOOKUP_GROUP LIKE 'ENTITY_TYPE') ent ON ent.LOOKUP_CD = le.ENTITY_TYPE_CD
+--thongtin
+LEFT JOIN GMS_IDS_UAT.company_entity_role cer ON le.id = cer.LEGAL_ENTITY_ID AND cer.DELETE_FLG = '0'
+LEFT JOIN GMS_IDS_UAT.company_profiles cp ON cp.id = cer.COMPANY_PROFILE_ID 
+LEFT JOIN (SELECT LOOKUP_CD, LOOKUP_VALUE_VN FROM GMS_IDS_UAT.LOOKUP_VALUES lv WHERE lv.LOOKUP_GROUP LIKE 'ENTITY_ROLE_TYPE') enr ON enr.LOOKUP_CD = cer.ROLE_TYPE_CD
+--Chucvu
+LEFT JOIN GMS_IDS_UAT.positions po ON le.id = po.LEGAL_ENTITY_ID AND po.DELETE_FLG = '0'
+LEFT JOIN (SELECT LOOKUP_CD, LOOKUP_VALUE_VN FROM GMS_IDS_UAT.LOOKUP_VALUES lv WHERE lv.LOOKUP_GROUP LIKE 'POSITION') pocd ON pocd.LOOKUP_CD = po.POSITION_CD
+--giayto
+LEFT JOIN GMS_IDS_UAT.IDENTITY ide ON le.id = ide.LEGAL_ENTITY_ID
+LEFT JOIN (SELECT LOOKUP_CD, LOOKUP_VALUE_VN FROM GMS_IDS_UAT.LOOKUP_VALUES lv WHERE lv.LOOKUP_GROUP LIKE 'IDENTITY_TYPE') idecd ON idecd.LOOKUP_CD = ide.IDENTITY_TYPE_CD
+--sohuu
+LEFT JOIN GMS_IDS_UAT.company_shareholding csh ON le.id = csh.LEGAL_ENTITY_ID
+LEFT JOIN GMS_IDS_UAT.company_profiles cpsh ON cpsh.id = csh.COMPANY_PROFILE_ID
+--WHERE ENTITY_NAME = 'Data test'
+WHERE cer.ROLE_TYPE_CD = 'NNB' and 
+le.id = '92515'",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+35,,Sở hữu và giao dịch nội bộ ,Sở hữu  của người nội bộ,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,CSDLTT,,,,Done,,GMS_IDS_UAT.company_shareholding,OWNERSHIP_QTY,,"SELECT 
+le.id,le.ENTITY_NAME  
+,cer.COMPANY_profile_id
+--, cpcer.EQUITY_TICKER
+,csh.COMPANY_profile_id
+,csh.OWNERSHIP_QTY, csh.OWNERSHIP_RATIO, csh.OWNERSHIP_DATE, csh.UPDATED_DATE
+        , cpsh.COMPANY_NAME_VN CTySh, cpsh.EQUITY_TICKER , cpsh.BUSINESS_REG_NO
+        , FOUNDER_HLD_FLG CDSL, MAJOR_HLD_FLG CDL, STRATEGIC_HLD_FLG CDCL, INSIDER_HLD_FLG CDNB
+        FROM GMS_IDS_UAT.legal_entities le
+        LEFT  JOIN GMS_IDS_UAT.company_entity_role cer ON le.id = cer.LEGAL_ENTITY_ID AND cer.DELETE_FLG = '0'
+        LEFT JOIN GMS_IDS_UAT.company_profiles cpcer ON cpcer.id = cer.COMPANY_PROFILE_ID
+        LEFT JOIN GMS_IDS_UAT.company_shareholding csh ON le.id = csh.LEGAL_ENTITY_ID AND csh.DELETE_FLG = '0'  AND csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID
+        LEFT JOIN GMS_IDS_UAT.company_profiles cpsh ON cpsh.id = csh.COMPANY_PROFILE_ID --AND csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID
+        WHERE cer.ROLE_TYPE_CD = 'NNB' 
+        AND cpcer.EQUITY_TICKER = 'VGT' 
+",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+35,,Sở hữu và giao dịch nội bộ , tỷ lệ  Sở hữu  của người nội bộ,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,CSDLTT,,,,Done,,GMS_IDS_UAT.company_shareholding,OWNERSHIP_RATIO,,"SELECT 
+le.id,le.ENTITY_NAME  
+,cer.COMPANY_profile_id
+--, cpcer.EQUITY_TICKER
+,csh.COMPANY_profile_id
+,csh.OWNERSHIP_QTY, csh.OWNERSHIP_RATIO, csh.OWNERSHIP_DATE, csh.UPDATED_DATE
+        , cpsh.COMPANY_NAME_VN CTySh, cpsh.EQUITY_TICKER , cpsh.BUSINESS_REG_NO
+        , FOUNDER_HLD_FLG CDSL, MAJOR_HLD_FLG CDL, STRATEGIC_HLD_FLG CDCL, INSIDER_HLD_FLG CDNB
+        FROM GMS_IDS_UAT.legal_entities le
+        LEFT  JOIN GMS_IDS_UAT.company_entity_role cer ON le.id = cer.LEGAL_ENTITY_ID AND cer.DELETE_FLG = '0'
+        LEFT JOIN GMS_IDS_UAT.company_profiles cpcer ON cpcer.id = cer.COMPANY_PROFILE_ID
+        LEFT JOIN GMS_IDS_UAT.company_shareholding csh ON le.id = csh.LEGAL_ENTITY_ID AND csh.DELETE_FLG = '0'  AND csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID
+        LEFT JOIN GMS_IDS_UAT.company_profiles cpsh ON cpsh.id = csh.COMPANY_PROFILE_ID --AND csh.COMPANY_PROFILE_ID = cer.COMPANY_PROFILE_ID
+        WHERE cer.ROLE_TYPE_CD = 'NNB' 
+        AND cpcer.EQUITY_TICKER = 'VGT' 
+",,,,,,Chưa có sql,Dữ liệu tĩnh,PE
+,,Sở hữu và giao dịch nội bộ ,Ngày cập nhật,,,,,,,,,,,,GMS_IDS_UAT.company_shareholding,OWNERSHIP_DATE,,,,,,,,,,
 36,,Báo cáo Thống kê định giá TTCK Việt Nam ( BM021_MSS),Mã ck ,,Báo cáo,Chiều,Trùng,Mã ck ,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"tradingdate = :ngay_gd
 FloorCode IN ('10','02','04')
 StockType NOT IN ('B','1','BO','D')
@@ -28531,7 +28789,7 @@ Tự doanh:
         buy_client_house_classification_(code) = '30'
         sell_client_house_classification_(code) = '30'
 NĐTNN:
-        buy_foreigner_investor_type_(code) <> '00'
+        buy_foreigner_investor_type_(code) <> '00'c
         sell_foreigner_investor_type_(code) <> '00'
 Cá nhân trong nước:
         buy_client_house_classification_(code) = '10' AND buy_foreigner_investor_type_(code) = '00' AND buy_invest_type/buy_invest_type_Classification_code = '8000'

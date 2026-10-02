@@ -3,11 +3,11 @@ schema_version: "2.0"
 metadata:
   source_system: "MDDS"
   source_table: "JAD_STOCKINFOR"
-  atomic_entity: "Security Trading"
-  entity_physical_name: "security_trading"
+  atomic_entity: "Security Trading Snapshot"
+  entity_physical_name: "security_trading_snapshot"
   bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"
-  table_type: "Fact Append"
+  table_type: "Fact Snapshot"
   group: "T1"
   design_status: "approved"
   version: "1.0"
@@ -17,33 +17,33 @@ metadata:
   reviewed_at: null
   approved_by: "Chien Nguyen"
   approved_at: "2026-07-03"
-  notes: "Bảng giá intraday đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 bản ghi\
-    \ trạng thái của 1 mã CK (historyid) — historyid unique toàn cục kể cả khác ngày,\
-    \ không ghi đè — Fact Append. Không có FK đến entity khác — Tier 1 độc lập."
+  notes: "Snapshot bảng giá đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 lần chụp\
+    \ trạng thái của 1 mã CK (historyid). Không có FK đến entity khác — Tier 1 độc\
+    \ lập."
 attributes:
-- attribute_name: "Security Trading Id"
-  physical_name: "security_trading_id"
+- attribute_name: "Security Trading Snapshot Id"
+  physical_name: "security_trading_snpst_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Bản ghi trạng\
-    \ thái giao dịch của 1 mã CK tại 1 thời điểm — Fact Append."
+  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot trạng\
+    \ thái giao dịch của 1 mã CK tại 1 thời điểm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Security Trading Code"
-  physical_name: "security_trading_code"
-  description: "ID unique cho từng bản ghi — PK bảng nguồn. BK của entity."
+- attribute_name: "Security Trading Snapshot Code"
+  physical_name: "security_trading_snpst_code"
+  description: "ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot entity."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.HISTORYID"
-  comment: "BK chính. PK nguồn historyid — unique toàn cục kể cả khác ngày → Fact Append."
+  comment: "BK chính. PK nguồn historyid — unique per lần chụp."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

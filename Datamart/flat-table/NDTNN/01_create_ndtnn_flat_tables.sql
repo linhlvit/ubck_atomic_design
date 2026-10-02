@@ -130,11 +130,15 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_360_profile_flat 
     investor_code                   String                  COMMENT 'PK — Mã số giao dịch NĐTNN (VSDC cấp)',
     investor_nm                     String                  COMMENT 'Tên đầy đủ NĐT',
     nationality_code                Nullable(String)        COMMENT 'Mã quốc tịch',
+    nationality_nm                  Nullable(String)        COMMENT 'Tên quốc tịch (K_NDTNN_59, BA NATIONAL.Name)',
     investor_tp_code                Nullable(String)        COMMENT 'Loại hình NĐT',
+    investor_tp_nm                  Nullable(String)        COMMENT 'Tên loại hình NĐT (K_NDTNN_62, BA INVESTORTYPE.Name)',
     director_nm                     Nullable(String)        COMMENT 'Đại diện giao dịch',
     custodian_bank_nm               Nullable(String)        COMMENT 'Tên ngân hàng lưu ký (denormalize)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
-    investor_status_code            Nullable(String)        COMMENT 'Trạng thái hoạt động NĐTNN (proxy hiển thị ở thẻ Đại diện giao dịch)'
+    investor_status_code            Nullable(String)        COMMENT 'Trạng thái hoạt động NĐTNN (proxy hiển thị ở thẻ Đại diện giao dịch)',
+    investor_status_nm              Nullable(String)        COMMENT 'Tên trạng thái NĐTNN (K_NDTNN_255, BA STATUS.Name)',
+    identification_nbr              Nullable(String)        COMMENT 'Số giấy tờ ĐÃ MASKED — khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13), không hiển thị'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (investor_code)
@@ -150,8 +154,9 @@ COMMENT 'Flat table — Operational Foreign Investor 360 Profile'
 CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_investor_compliance_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Operational Investor Compliance History
-    investor_compliance_hist_code   String                  COMMENT 'PK — 1 hành vi vi phạm × 1 đối tượng bị xử phạt',
+    investor_compliance_hist_code   String                  COMMENT 'PK — mã hành vi vi phạm (thiếu thì mã đối tượng bị xử phạt) — 1 đối tượng × 1 hành vi',
     subject_nm                      String                  COMMENT 'Thông tin nhà đầu tư (tên/MSGD NĐTNN)',
+    subject_id_nbr                  Nullable(String)        COMMENT 'Số giấy tờ đối tượng ĐÃ MASKED — khóa nối với identification_nbr hồ sơ 360 (Nhóm 11), không hiển thị',
     issued_dt                       Date                    COMMENT 'Ngày quyết định',
     penalty_tp_nm                   Nullable(String)        COMMENT 'Phân loại hình thức xử lý',
     description                     Nullable(String)        COMMENT 'Nội dung/Trích yếu',
