@@ -1,26 +1,7 @@
 DATA DICTIONARY - SCHEMA: NHNCK_UAT
-Tong so bang: 93 | Materialized View: 0
+Tong so bang: 83 | Materialized View: 0
 ==============================================================================================================
-
-BANG: ACTION_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-USER_ID                       NUMBER(10,0)        YES     FK     USERS.ID                  
-CLIENT_MACHINE                NVARCHAR2(100)      NO                                       
-DETAILS                       NCLOB               NO                                       
-CREATED_AT                    DATE                NO                                       
-PERMISSION_NAME               NVARCHAR2(100)      YES                                      
-ACTION_NAME                   NVARCHAR2(100)      YES                                      
-IS_SUCCESS                    NUMBER(1,0)         YES                                      
-ERROR_MESSAGE                 NCLOB               YES                                      
-UPDATED_AT                    DATE                YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-UPDATED_BY                    NUMBER(10,0)        YES                                      
-
-
+                           
 BANG: APPLICATIONS
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -233,20 +214,7 @@ IS_REJECTED                   NUMBER(1,0)         YES
 FEEDBACK                      NCLOB               YES                                      
 UPDATED_AT                    DATE                YES                                      
 CREATED_BY                    NUMBER(10,0)        YES                                      
-UPDATED_BY                    NUMBER(10,0)        YES                                      
-
-
-BANG: APPLICATION_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-APPLICATION_ID                NUMBER(10,0)        NO                                       
-DETAIL                        NVARCHAR2(2048)     YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    DATE                NO                                       
-UPDATED_AT                    DATE                YES                                      
+UPDATED_BY                    NUMBER(10,0)        YES                                                                        
 
 
 BANG: APPLICATION_PROFESSIONALS
@@ -478,20 +446,7 @@ UPDATED_AT                    DATE                YES
 UPDATED_BY                    NUMBER(10,0)        YES                                      
 REQUEST_PAYLOAD               NCLOB               YES                                      
 ASSIGNEE_ID                   NUMBER(10,0)        YES                                      
-INFO_VERIFY_ID                NUMBER(10,0)        YES                                      
-
-
-BANG: CERTIFICATE_CONVERSION_REQUEST_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-CONVERSION_REQUEST_ID         NUMBER(10,0)        NO                                       
-ACTION                        NVARCHAR2(1000)     NO                                       
-DETAIL                        NVARCHAR2(4000)     YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
+INFO_VERIFY_ID                NUMBER(10,0)        YES                                                                            
 
 
 BANG: CERTIFICATE_DEPARTMENTS
@@ -599,25 +554,7 @@ ADDED_BY                      NUMBER(10,0)        YES     FK     USERS.ID
 STATUS                        NUMBER(10,0)        NO                                       
 IS_REISSUE                    NUMBER(10,0)        NO                                       
 REVOCATION_REASON             NVARCHAR2(4000)     YES                                      
-ORDER_INDEX                   NUMBER(10,0)        YES                                      
-
-
-BANG: CERTIFICATE_RECORD_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-CERTIFICATE_RECORD_ID         NUMBER(10,0)        NO                                       
-ACTION_TYPE                   NVARCHAR2(100)      YES                                      
-CERTIFICATE_NUMBER            NVARCHAR2(200)      NO                                       
-ISSUE_DECISION_ID             NUMBER(10,0)        YES                                      
-ISSUE_DATE                    DATE                YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    DATE                NO                                       
-UPDATED_AT                    DATE                YES                                      
-NOTE                          NVARCHAR2(2048)     YES                                      
-UPDATED_BY                    NUMBER(10,0)        YES                                      
+ORDER_INDEX                   NUMBER(10,0)        YES                                                                         
 
 
 BANG: CERTIFICATE_RECORD_STATUS_HISTORIES
@@ -843,23 +780,7 @@ IS_ORIGINAL_DATA              NUMBER(1,0)         YES
 SORT_ORDER                    NUMBER(10,0)        YES                                      
 STATUS                        NUMBER(10,0)        NO                                       
 MCDT_CODE                     NVARCHAR2(100)      YES                                      
-UPDATED_BY                    NUMBER(10,0)        YES                                      
-
-
-BANG: DOCUMENT_SIGN_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-DOCUMENT_ID                   NUMBER(10,0)        NO      FK     DECISION_DOCUMENTS.ID     
-SIGNED_BY                     NUMBER(10,0)        NO      FK     USERS.ID                  
-SIGNED_AT                     DATE                NO                                       
-TYPE                          NUMBER(10,0)        NO                                       
-HASH                          NVARCHAR2(1020)     NO                                       
-CREATED_BY                    NUMBER(10,0)        YES                                      
-CREATED_AT                    DATE                YES                                      
-UPDATED_AT                    DATE                YES                                      
+UPDATED_BY                    NUMBER(10,0)        YES                                                                        
 
 
 BANG: EDUCATION_LEVELS
@@ -876,22 +797,7 @@ STATUS                        NUMBER(10,0)        NO
 UPDATED_AT                    DATE                YES                                      
 CREATED_AT                    DATE                NO                                       
 CREATED_BY                    NUMBER(10,0)        YES                                      
-UPDATED_BY                    NUMBER(10,0)        YES                                      
-
-
-BANG: EMAIL_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-RECEIVER_ID                   NUMBER(10,0)        NO                                       
-EMAIL_TO                      NVARCHAR2(2000)     NO                                       
-SUBJECT                       NVARCHAR2(1000)     NO                                       
-BODY                          NCLOB               NO                                       
-STATUS                        NVARCHAR2(100)      NO                                       
-ERROR_MESSAGE                 NCLOB               YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_BY                    NUMBER(10,0)        YES                                                                            
 
 
 BANG: EXAM_DETAILS
@@ -1188,32 +1094,6 @@ CREATED_AT                    DATE                NO
 CREATED_BY                    NUMBER(10,0)        YES                                      
 UPDATED_AT                    DATE                YES                                      
 UPDATED_BY                    NUMBER(10,0)        YES                                      
-
-
-BANG: ORGANIZATION_REPORT_LOG_SYNCS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-FULL_NAME                     NVARCHAR2(1020)     YES                                      
-POSITION                      NVARCHAR2(2000)     YES                                      
-DEPARTMENT                    NVARCHAR2(4000)     YES                                      
-HIRE_DATE                     DATE                YES                                      
-TERMINATION_DATE              DATE                YES                                      
-CERTIFICATE_NUMBER            NVARCHAR2(200)      YES                                      
-ISSUE_DATE                    DATE                YES                                      
-REPORT_DATE                   DATE                YES                                      
-IS_VALID_CERTIFICATE_NUM      NUMBER(1,0)         NO                                       
-IS_VALID_ISSUE_DATE           NUMBER(1,0)         NO                                       
-IS_VALID_HIRE_DATE            NUMBER(1,0)         NO                                       
-IS_VALID_TERMINATION_DATE     NUMBER(1,0)         NO                                       
-CREATED_AT                    DATE                NO                                       
-UPDATED_AT                    DATE                YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-UPDATED_BY                    NUMBER(10,0)        YES                                      
-REPORT_YEARLY_ID              NUMBER(10,0)        YES     FK     ORGANIZATION_REPORT_YEARLYS.ID
-ORGANIZATION_REPORT_ID        NUMBER(10,0)        YES     FK     ORGANIZATION_REPORTS.ID   
 
 
 BANG: ORGANIZATION_REPORT_YEARLYS
@@ -1584,45 +1464,6 @@ STATUS                        NUMBER(10,0)        YES
 UPDATED_BY                    NUMBER(10,0)        YES                                      
 
 
-BANG: SEND_AND_RECIEVE_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-REQUEST_TYPE                  NUMBER(10,0)        NO                                       
-SOURCE_TYPE                   NUMBER(10,0)        NO                                       
-METHOD                        NVARCHAR2(20)       NO                                       
-PATH                          NVARCHAR2(1000)     NO                                       
-STATUS_CODE                   NUMBER(10,0)        NO                                       
-DURATION_TIME                 FLOAT               NO                                       
-PAYLOAD                       NCLOB               YES                                      
-RESPONSE                      NCLOB               YES                                      
-CREATED_AT                    DATE                NO                                       
-CREATED_BY                    NUMBER(10,0)        YES                                      
-UPDATED_AT                    DATE                YES                                      
-UPDATED_BY                    NUMBER(10,0)        YES                                      
-
-
-BANG: SIGNATURE_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-APPLICATION_ID                NUMBER(10,0)        YES                                      
-CERTIFICATE_RECORD_ID         NUMBER(10,0)        YES     FK     CERTIFICATE_RECORDS.ID    
-SIGNED_BY                     NUMBER(10,0)        NO      FK     USERS.ID                  
-SIGNED_AT                     DATE                NO                                       
-TYPE                          NUMBER(10,0)        NO                                       
-HASH                          NVARCHAR2(1020)     NO                                       
-CER_PATH                      NVARCHAR2(1020)     NO                                       
-CREATED_AT                    DATE                NO                                       
-UPDATED_AT                    DATE                YES                                      
-CREATED_BY                    NUMBER(10,0)        YES                                      
-UPDATED_BY                    NUMBER(10,0)        YES                                      
-
-
 BANG: SIGNING_AUDIT
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -1760,20 +1601,6 @@ FILE_PATH                     VARCHAR2(2048)      NO
 FILE_NAME                     VARCHAR2(1020)      YES                                      
 CREATED_AT                    TIMESTAMP(6)        NO                                       
 UPDATED_AT                    TIMESTAMP(6)        NO                                       
-
-
-BANG: SMS_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(10,0)        NO      PK                               
-RECEIVER_ID                   NUMBER(10,0)        NO                                       
-SMS_TO                        NVARCHAR2(40)       NO                                       
-MESSAGE                       NVARCHAR2(2000)     NO                                       
-STATUS                        NVARCHAR2(100)      NO                                       
-ERROR_MESSAGE                 NCLOB               YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
 
 
 BANG: SPECIALIZATIONS
