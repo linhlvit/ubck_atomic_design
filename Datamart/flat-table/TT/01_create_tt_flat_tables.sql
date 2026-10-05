@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_fla
 
     -- From: PENALTY DECISION SUBJECT BEHAVIOR DIMENSION
     penalty_decision_subject_behavior_code    Nullable(String) COMMENT 'BK per-row unique — từ Penalty Decision Subject Behavior Dimension (NULL khi QĐ không có Subject Behavior)',
-    violation_behavior_nm                     Nullable(String) COMMENT 'Tên hành vi ĐẠI DIỆN của QĐ (1 giá trị/QĐ) — nguồn Penalty Decision Dimension (decision_dim) từ 2026-08-22; CHỈ dùng cho Nhóm 20 (K_TT_70–84); Nhóm 13 (K_TT_46/47) dùng violation_behavior_group_nm',
+    violation_behavior_nm                     Nullable(String) COMMENT 'Tên hành vi ĐẠI DIỆN của QĐ (1 giá trị/QĐ) — nguồn Penalty Decision Dimension (decision_dim) từ 2026-08-22; dùng cho Nhóm 13 (K_TT_46/47); Nhóm 20 (K_TT_70–84) dùng violation_behavior_group_nm',
     penalty_decision_subject_behavior_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Penalty Decision Subject Behavior Dimension',
 
     -- From: PENALTY DECISION DIMENSION
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_fla
     data_dt                                   String           COMMENT 'Ngày ETL nạp dữ liệu (YYYYMMDD) — dùng lọc/xoá khi ETL Datamart → flat table',
 
     -- [MỚI 2026-10-01, yêu cầu dev] đặt CUỐI để khớp ALTER TABLE ADD COLUMN đã chạy trên ClickHouse
-    violation_behavior_group_nm               String           COMMENT 'Tên nhóm hành vi theo TỪNG dòng hành vi (fallback tên đại diện QĐ/Khác) — K_TT_46/47; 1 QĐ nhiều hành vi được đếm ở nhiều nhóm'
+    violation_behavior_group_nm               String           COMMENT 'Tên nhóm hành vi theo TỪNG dòng hành vi (fallback tên đại diện QĐ/Khác) — dùng cho Nhóm 20 (K_TT_70–84); 1 QĐ nhiều hành vi được đếm ở nhiều nhóm'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
