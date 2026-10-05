@@ -26,315 +26,490 @@ o Huy động vốn cổ phần (Equity Capital Raising - C)
 ▪ Công thức chuẩn hóa Z-Score:
 1. Công thức tổng quát:
 Z-score = (x − μ) / σ",Dashboard,Chỉ tiêu phái sinh,Khó,"Ngày, MarketIndex ","SCMS, MDDS, QLRR, FMS, CSDLTT",x,x,,Done,,,"risk_index_value, z_*, beta*
-", ,"
--- SQL TỔNG HỢP - STT=1 | Dashboard Giám sát rủi ro / Chỉ số rủi ro hệ thống
--- tính chỉ tiêu """"Risk index"""" theo TỪNG NGÀY trong khoảng [:tu_ngay, :den_ngay]
--- Công thức: RI(t) = b0 + b1*Z_L(t) + b2*Z_V(t) + b3*Z_M(t) + b4*Z_I(t)
---                       + b5*Z_F(t) + b6*Z_C(t) + eps
---   Z_V: Z-score Biến động giá (Volatility, cửa sổ trượt 30 phiên)
---   Z_L: Z-score Thanh khoản (ILLIQ - Amihud, cửa sổ trượt 30 phiên)
---   Z_M: Z-score Dư nợ Margin / Tổng vốn hóa thị trường (cửa sổ trượt 30 phiên)
---   Z_I: Z-score Lãi suất liên ngân hàng (cửa sổ trượt N phiên)
---   Z_F: Z-score Dòng tiền ròng NĐTNN, đảo chiều (cửa sổ trượt N phiên)
---   Z_C: Z-score Huy động vốn cổ phần, đảo chiều (cửa sổ trượt N phiên)
---   Tham số truyền vào:
---   :tu_ngay, :den_ngay  - khoảng ngày cần tính Risk Index (thay cho 1 :input_date)
---   :ma_chi_so           - mã chỉ số cho nhánh dòng tiền ròng NĐTNN (VD 'HOSE')
---   :n_periods           - số phiên cửa sổ trượt cho lãi suất/dòng tiền/huy động vốn (VD 20)
---   :beta0..:beta6, :epsilon - hệ số hồi quy do cán bộ/chuyên viên nhập
--- Epsilon
--- Cách JOIN theo ngày:
---   - Lấy """"lịch giao dịch"""" (trading_calendar) làm trục ngày chuẩn từ JAD_MARKETINFOR
-
--- ============================================================================
-WITH
-/* ---------- (0) Trục ngày chuẩn (lịch giao dịch HOSE) ---------- */
-trading_calendar AS (
-    SELECT DISTINCT TradingDate AS ngay
-    FROM JAD_MARKETINFOR
-    WHERE IndexCode = 'HOSE'
-      AND TradingDate BETWEEN :tu_ngay AND :den_ngay
+", ,"WITH
+/* ---------- (0) Giá đóng cửa chỉ số và lịch giao dịch ---------- */
+index_ranked AS (
+    SELECT
+        TO_DATE(m.TradingDate, 'yyyy-MM-dd') AS ngay,
+        m.marketIndex AS close_index,
+        ROW_NUMBER() OVER (
+            PARTITION BY TO_DATE(m.TradingDate, 'yyyy-MM-dd')
+            ORDER BY m.indexTime DESC
+        ) AS rn
+    FROM uat_mdds_stg.JAD_MARKETINFOR m
+    WHERE m.IndexCode = 'HOSE'
+      AND TO_DATE(m.TradingDate, 'yyyy-MM-dd')
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
 ),
-
-/* ---------- (1) Z-score Biến động giá (Volatility) theo từng ngày - dòng 6-11 ---------- */
 close_price AS (
-    SELECT TradingDate,
-           marketIndex AS CloseIndex
-    FROM JAD_MARKETINFOR
-    WHERE IndexCode = 'HOSE'
-      AND TradingDate <= :den_ngay
-      AND indexTime = (
-          SELECT MAX(m2.indexTime) FROM JAD_MARKETINFOR m2
-          WHERE m2.IndexCode = 'HOSE' AND m2.TradingDate = JAD_MARKETINFOR.TradingDate
-      )
+    SELECT ngay, close_index
+    FROM index_ranked
+    WHERE rn = 1
 ),
-daily_ret_v AS (
-    SELECT TradingDate,
-           LN(CloseIndex / LAG(CloseIndex) OVER (ORDER BY TradingDate)) AS r
+trading_calendar AS (
+    -- Giữ lịch sử trước :tu_ngay để tính cửa sổ trượt
+    SELECT
+        ngay,
+        ROW_NUMBER() OVER (ORDER BY ngay) AS phien
     FROM close_price
 ),
+daily_price AS (
+    SELECT
+        ngay,
+        close_index,
+        LAG(close_index) OVER (ORDER BY ngay) AS prev_close
+    FROM close_price
+),
+daily_return AS (
+    SELECT
+        ngay,
+        CASE
+            WHEN close_index > 0 AND prev_close > 0
+            THEN LN(close_index / prev_close)
+        END AS r
+    FROM daily_price
+),
+
+/* ---------- (1) Z-score biến động giá ---------- */
 vol_by_day AS (
-    -- sigma_v tại từng ngày = độ lệch chuẩn 30 phiên liền trước (kể cả ngày hiện tại)
-    SELECT TradingDate AS ngay,
-           STDDEV_SAMP(r) OVER (ORDER BY TradingDate
-               ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS sigma_v
-    FROM daily_ret_v
-    WHERE r IS NOT NULL
+    SELECT
+        ngay,
+        STDDEV_SAMP(r) OVER (
+            ORDER BY ngay
+            ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
+        ) AS sigma_v
+    FROM daily_return
 ),
 z_volatility AS (
-    SELECT ngay,
-           sigma_v,
-           AVG(sigma_v)         OVER (ORDER BY ngay ROWS UNBOUNDED PRECEDING) AS mu_hist,
-           STDDEV_SAMP(sigma_v) OVER (ORDER BY ngay ROWS UNBOUNDED PRECEDING) AS sd_hist,
-           (sigma_v - AVG(sigma_v) OVER (ORDER BY ngay ROWS UNBOUNDED PRECEDING))
-             / NULLIF(STDDEV_SAMP(sigma_v) OVER (ORDER BY ngay ROWS UNBOUNDED PRECEDING), 0) AS z_score_volatility
+    -- Giữ cách chuẩn hóa theo lịch sử tích lũy của SQL gốc
+    SELECT
+        ngay,
+        (
+            sigma_v
+            - AVG(sigma_v) OVER (
+                ORDER BY ngay
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            )
+        ) / NULLIF(
+            STDDEV_SAMP(sigma_v) OVER (
+                ORDER BY ngay
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ),
+            0
+        ) AS z_score_volatility
     FROM vol_by_day
 ),
 
-/* ---------- (2) Z-score Thanh khoản (ILLIQ - Amihud) theo từng ngày - dòng 12-19 ---------- */
-idx_return_l AS (
-    SELECT trading_date,
-           ABS(LN(close_index / NULLIF(LAG(close_index) OVER (ORDER BY trading_date), 0))) AS abs_rt
-    FROM JAD_MARKETINFOR
-    WHERE index_code = 'HOSE'
-      AND trading_date <= :den_ngay
+/* ---------- (2) Nguồn giao dịch dùng chung ---------- */
+trade_data AS (
+    -- HOSE
+    SELECT
+        t.Symbol AS symbol,
+        TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay,
+        t.Execution_Value AS gt_gd,
+        t.Board_Type AS board_code,
+        t.Buy_Foreigner_Investor_Type_Code AS buy_foreign_type,
+        t.Sell_Foreigner_Investor_Type_Code AS sell_foreign_type
+    FROM uat_hose_stg.TRADE_BOOK t
+    WHERE t.Market_ID = 'STK'
+      AND TO_DATE(t.Trade_Date, 'yyyy-MM-dd')
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
+
+    UNION ALL
+
+    -- HNX / UPCOM
+    SELECT
+        t.Issue_Code AS symbol,
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay,
+        CAST(t.Trade_price AS DECIMAL(18, 6))
+            * CAST(t.Trade_quantity AS DECIMAL(18, 0)) AS gt_gd,
+        t.Board_ID AS board_code,
+        t.Buy_Foreigner_Investor_Type_Code AS buy_foreign_type,
+        t.Sell_Foreigner_Investor_Type_Code AS sell_foreign_type
+    FROM uat_hnx_stg.TRADE_BOOK t
+    WHERE t.Market_ID IN ('STX', 'UPX')
+      AND TO_DATE(t.Trade_date, 'yyyy-MM-dd')
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
 ),
 exec_value_by_day AS (
-    SELECT trade_date, SUM(exec_value) AS exec_value
-    FROM (
-        SELECT trade_date, """"Execution - Value"""" AS exec_value, """"Board Type"""" AS board_type
-        FROM trade_hose
-        WHERE """"Market ID"""" IN ('STK') AND trade_date <= :den_ngay
-        UNION ALL
-        SELECT trade_date, trade_price * trade_quantity AS exec_value, """"Board ID"""" AS board_type
-        FROM trade_hnx
-        WHERE """"Market ID"""" IN ('STX', 'UPX') AND trade_date <= :den_ngay
-    ) t
-    WHERE t.board_type IN ('G1', 'G2', 'G3')
-    GROUP BY trade_date
+    SELECT
+        ngay,
+        SUM(gt_gd) AS exec_value
+    FROM trade_data
+    WHERE board_code IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8')
+    GROUP BY ngay
 ),
 illiq_by_day AS (
-    SELECT r.trading_date AS ngay,
-           r.abs_rt / NULLIF(e.exec_value, 0) AS illiq_t
-    FROM idx_return_l r
-    JOIN exec_value_by_day e ON e.trade_date = r.trading_date
+    SELECT
+        r.ngay,
+        ABS(r.r) / NULLIF(e.exec_value, 0) AS illiq_t
+    FROM daily_return r
+    LEFT JOIN exec_value_by_day e
+        ON e.ngay = r.ngay
 ),
 illiq_30_by_day AS (
-    -- ILLIQ30 tại từng ngày = trung bình 30 phiên liền trước (kể cả ngày hiện tại)
-    SELECT ngay,
-           AVG(illiq_t) OVER (ORDER BY ngay ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS illiq_avg
+    SELECT
+        ngay,
+        AVG(illiq_t) OVER (
+            ORDER BY ngay
+            ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
+        ) AS illiq_avg
     FROM illiq_by_day
 ),
 z_liquidity AS (
-    SELECT ngay,
-           illiq_avg,
-           (illiq_avg - AVG(illiq_avg) OVER (ORDER BY ngay ROWS UNBOUNDED PRECEDING))
-             / NULLIF(STDDEV_SAMP(illiq_avg) OVER (ORDER BY ngay ROWS UNBOUNDED PRECEDING), 0) AS z_score_liquidity
+    -- Giữ cách chuẩn hóa theo lịch sử tích lũy của SQL gốc
+    SELECT
+        ngay,
+        (
+            illiq_avg
+            - AVG(illiq_avg) OVER (
+                ORDER BY ngay
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            )
+        ) / NULLIF(
+            STDDEV_SAMP(illiq_avg) OVER (
+                ORDER BY ngay
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ),
+            0
+        ) AS z_score_liquidity
     FROM illiq_30_by_day
 ),
 
-/* ---------- (3) Z-score Dư nợ Margin / Vốn hóa thị trường theo từng ngày - dòng 20-27 ---------- */
+/* ---------- (3) Vốn hóa thị trường theo ngày ---------- */
+gia_dong_cua AS (
+    SELECT
+        s.symbol,
+        TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS ngay,
+        s.closePrice AS gia_dong_cua
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
+      AND s.FloorCode IN ('02', '04', '10')
+      AND s.StockType = '2'
+),
+kl_luu_hanh_ranked AS (
+    -- Lấy khối lượng lưu hành mới nhất không vượt từng ngày giao dịch
+    SELECT
+        g.symbol,
+        g.ngay,
+        t.outstanding_shares AS kl_luu_hanh,
+        ROW_NUMBER() OVER (
+            PARTITION BY g.symbol, g.ngay
+            ORDER BY TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') DESC
+        ) AS rn
+    FROM (
+        SELECT DISTINCT symbol, ngay
+        FROM gia_dong_cua
+    ) g
+    JOIN uat_vsdc_ods.outstanding_shares t
+        ON t.ticker_symbol = g.symbol
+       AND TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') <= g.ngay
+),
 mcap_ngay AS (
-    SELECT g.tradingdate,
-           SUM(g.closePrice * s.kl_luu_hanh) AS tong_von_hoa
-    FROM JAD_STOCKINFOR g
-    JOIN (
-        SELECT b.MCK, b.ngay_bc, SUM(b.KLLH) AS kl_luu_hanh
-        FROM BM1_BCKLLH b
-        WHERE b.loai_ck = N'Cổ phiếu'
-          AND b.ngay_bc BETWEEN :tu_ngay AND :den_ngay
-        GROUP BY b.MCK, b.ngay_bc
-    ) s ON s.MCK = g.symbol AND s.ngay_bc = g.tradingdate
-    WHERE g.tradingdate BETWEEN :tu_ngay AND :den_ngay
-      AND g.StockType NOT IN ('B', '1', 'BO', 'D')
-    GROUP BY g.tradingdate
-),
-du_no_margin_thang AS (
-    SELECT mr.REPORT_YEAR, mr.PERIOD,
-           SUM(CASE WHEN LOWER(rcv.ROW_NAME) LIKE N'%ii. giá trị chứng khoán ký quỹ%'
-                    THEN rcv.NUMERIC_VALUE ELSE 0 END) AS du_no_margin
-    FROM SSC_SCMS.MEMBER_REPORT mr
-    JOIN SSC_SCMS.FORM_REPORT fr
-        ON fr.ID = mr.FORM_REPORT_ID AND fr.REPORT_CODE = 'BCTHHDKD_TH'
-    JOIN SSC_SCMS.REPORT_CELL_VALUE rcv
-        ON rcv.MEMBER_REPORT_ID = mr.ID
-       AND rcv.SHEET_NAME = N'BCTHHD'
-       AND rcv.COLUMN_NAME LIKE N'%năm nay%'
-    WHERE mr.RECORD_STATUS IN (2, 3, 6)
-      AND mr.REPORT_PERIOD = 'TH'
-      AND mr.VERSION = (
-          SELECT MAX(mr2.VERSION) FROM SSC_SCMS.MEMBER_REPORT mr2
-          WHERE mr2.SC_FIRM_INFO_ID = mr.SC_FIRM_INFO_ID
-            AND mr2.FORM_REPORT_ID  = mr.FORM_REPORT_ID
-            AND mr2.REPORT_YEAR     = mr.REPORT_YEAR
-            AND mr2.PERIOD          = mr.PERIOD
-      )
-    GROUP BY mr.REPORT_YEAR, mr.PERIOD
-),
-ratio_by_day AS (
-    -- Ghép Margin theo tháng (du_no_margin_thang) với vốn hóa theo ngày (mcap_ngay)
-    -- bằng điều kiện: cùng năm và cùng tháng của tradingdate
-    SELECT m.tradingdate                                  AS ngay,
-           d.du_no_margin                                 AS mdt,
-           m.tong_von_hoa                                 AS mcapt,
-           d.du_no_margin / NULLIF(m.tong_von_hoa, 0)     AS rt
-    FROM mcap_ngay m
-    JOIN du_no_margin_thang d
-        ON d.REPORT_YEAR = EXTRACT(YEAR FROM m.tradingdate)
-       AND d.PERIOD      = EXTRACT(MONTH FROM m.tradingdate)
-),
-z_margin AS (
-    SELECT ngay,
-           mdt,
-           mcapt,
-           rt,
-           AVG(rt)    OVER (ORDER BY ngay ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS mu,
-           STDDEV(rt) OVER (ORDER BY ngay ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS sigma,
-           (rt - AVG(rt) OVER (ORDER BY ngay ROWS BETWEEN 29 PRECEDING AND CURRENT ROW))
-             / NULLIF(STDDEV(rt) OVER (ORDER BY ngay ROWS BETWEEN 29 PRECEDING AND CURRENT ROW), 0) AS z_score_margin
-    FROM ratio_by_day
+    SELECT
+        g.ngay,
+        SUM(g.gia_dong_cua * k.kl_luu_hanh) AS tong_von_hoa
+    FROM gia_dong_cua g
+    JOIN kl_luu_hanh_ranked k
+        ON k.symbol = g.symbol
+       AND k.ngay = g.ngay
+       AND k.rn = 1
+    GROUP BY g.ngay
 ),
 
-/* ---------- (4) Z-score Lãi suất liên ngân hàng theo từng ngày - dòng 28-31 ---------- */
+/* ---------- (4) Dư nợ margin theo nguồn SCMS mới ---------- */
+input_form AS (
+    SELECT fr.ID AS form_report_id
+    FROM SCMS_UAT.FORM_REPORT fr
+    WHERE fr.REPORT_CODE = 'BCTHHD_CTCK'
+      AND fr.REPORT_TYPE = 'INPUT'
+),
+sheet_json AS (
+    -- Spark SQL: đọc cấu hình sheet từ JSON
+    SELECT
+        dc.FORM_REPORT_ID,
+        jt.sheetId,
+        jt.sheetCode
+    FROM SCMS_UAT.FORM_REPORT_DEEP_CONFIG dc
+    LATERAL VIEW EXPLODE(
+        FROM_JSON(
+            CAST(dc.SHEETS_JSON AS STRING),
+            'ARRAY<STRUCT<sheetId:STRING,sheetCode:STRING>>'
+        )
+    ) j AS jt
+),
+margin_sheet AS (
+    SELECT DISTINCT
+        s.FORM_REPORT_ID,
+        s.sheetId
+    FROM sheet_json s
+    JOIN input_form f
+        ON f.form_report_id = s.FORM_REPORT_ID
+    WHERE s.sheetCode = 'II.8'
+),
+submission_ranked AS (
+    SELECT
+        sub.ID,
+        sub.REF_ID,
+        sub.FORM_REPORT_ID,
+        ROW_NUMBER() OVER (
+            PARTITION BY sub.REF_TYPE, sub.REF_ID
+            ORDER BY sub.ID DESC
+        ) AS rn
+    FROM SCMS_UAT.REPORT_INPUT_SUBMISSION sub
+    JOIN input_form f
+        ON f.form_report_id = sub.FORM_REPORT_ID
+    WHERE sub.REF_TYPE IS NOT NULL
+),
+margin_cell AS (
+    SELECT
+        sub.REF_ID,
+        TRY_CAST(
+            CAST(civ.ITEM_VALUE AS STRING) AS DECIMAL(38, 6)
+        ) AS numeric_value
+    FROM submission_ranked sub
+    JOIN SCMS_UAT.REPORT_INPUT_CELL_VALUE civ
+        ON civ.REPORT_INPUT_SUBMISSION_ID = sub.ID
+    JOIN margin_sheet s
+        ON s.FORM_REPORT_ID = sub.FORM_REPORT_ID
+       AND s.sheetId = civ.SHEET_ID
+    WHERE sub.rn = 1
+      AND civ.CELL_ID = 'TS024'
+),
+du_no_margin_thang AS (
+    -- Giữ nguyên đơn vị tiền, không chia tỷ đồng trước khi tính tỷ lệ
+    SELECT
+        p.REPORT_YEAR,
+        p.PERIOD,
+        SUM(cd.numeric_value) AS du_no_margin
+    FROM margin_cell cd
+    JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p
+        ON p.ID = cd.REF_ID
+    WHERE p.RECORD_STATUS IN (1, 2)
+      AND p.REPORT_PERIOD = 'THANG'
+      AND (p.REPORT_YEAR * 100 + p.PERIOD)
+          <= (
+              YEAR(TO_DATE(:den_ngay, 'yyyyMMdd')) * 100
+              + MONTH(TO_DATE(:den_ngay, 'yyyyMMdd'))
+          )
+    GROUP BY p.REPORT_YEAR, p.PERIOD
+),
+ratio_by_day AS (
+    -- Giữ logic ghép margin cùng tháng với vốn hóa của SQL gốc
+    SELECT
+        m.ngay,
+        d.du_no_margin / NULLIF(m.tong_von_hoa, 0) AS rt
+    FROM mcap_ngay m
+    LEFT JOIN du_no_margin_thang d
+        ON d.REPORT_YEAR = YEAR(m.ngay)
+       AND d.PERIOD = MONTH(m.ngay)
+),
+
+/* ---------- (5) Lãi suất liên ngân hàng ---------- */
 ir_by_day_raw AS (
-    SELECT TRUNC(CAST(v.PERIOD_DATE AS DATE)) AS ngay,
-           v.VALUE AS lai_suat
+    -- Giữ nguồn cũ: chưa có thông tin bảng thay thế
+    SELECT
+        CAST(v.PERIOD_DATE AS DATE) AS ngay,
+        v.VALUE AS lai_suat
     FROM SIT_MRMS.RISK_INDICATOR_VALUE v
-    JOIN SIT_MRMS.RISK_INDICATOR i ON i.ID = v.INDICATOR_ID
+    JOIN SIT_MRMS.RISK_INDICATOR i
+        ON i.ID = v.INDICATOR_ID
     WHERE i.INDICATOR_CODE = 'INTERBANK_IR'
       AND v.PERIOD_TYPE = 1
-      AND TRUNC(CAST(v.PERIOD_DATE AS DATE)) BETWEEN :tu_ngay AND :den_ngay
+      AND CAST(v.PERIOD_DATE AS DATE)
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
       AND i.DELETED = 0
       AND v.DELETED = 0
 ),
-z_interest AS (
-    SELECT ngay,
-           lai_suat,
-           AVG(lai_suat)         OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW) AS mu_ir,
-           STDDEV_SAMP(lai_suat) OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW) AS sigma_ir,
-           (lai_suat - AVG(lai_suat) OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW))
-             / NULLIF(STDDEV_SAMP(lai_suat) OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW), 0)
-             AS z_score_interest_rate
-    FROM ir_by_day_raw
-),
 
-/* ---------- (5) Z-score Dòng tiền ròng NĐTNN theo từng ngày (đảo chiều) - dòng 32-37 ---------- */
-gtgd_mua_f AS (
-    SELECT idx.indexCode, t.""""Trade Date"""" AS ngay_gd, t.""""Execution - Value"""" AS gt_gd
-    FROM TRADE_BOOK_HOSE t
-    JOIN JAD_CSIDXINFOR idx
-        ON t.Symbol = idx.symbol AND t.""""Trade Date"""" = idx.tradingdate AND idx.indexCode = :ma_chi_so
-    WHERE t.""""Market ID"""" = 'STK' AND t.""""Buy Foreigner InveSTKr type"""" IN ('10', '20')
-      AND t.""""Trade Date"""" BETWEEN :tu_ngay AND :den_ngay
-    UNION ALL
-    SELECT idx.indexCode, t.""""Trade date"""",
-           CAST(t.""""Trade price"""" AS NUMERIC) * CAST(t.""""Trade quantity"""" AS NUMERIC)
-    FROM Trade_HNX t
-    JOIN JAD_CSIDXINFOR idx
-        ON t.""""Issue Code"""" = idx.symbol AND t.""""Trade date"""" = idx.tradingdate AND idx.indexCode = :ma_chi_so
-    WHERE t.""""Market ID"""" IN ('STX', 'UPX') AND t.""""Buy Foreign InveSTKr Type Code"""" IN ('10', '20')
-      AND t.""""Trade date"""" BETWEEN :tu_ngay AND :den_ngay
-),
-gtgd_ban_f AS (
-    SELECT idx.indexCode, t.""""Trade Date"""" AS ngay_gd, t.""""Execution - Value"""" AS gt_gd
-    FROM TRADE_BOOK_HOSE t
-    JOIN JAD_CSIDXINFOR idx
-        ON t.Symbol = idx.symbol AND t.""""Trade Date"""" = idx.tradingdate AND idx.indexCode = :ma_chi_so
-    WHERE t.""""Market ID"""" = 'STK' AND t.""""Sell Foreigner InveSTKr type"""" IN ('10', '20')
-      AND t.""""Trade Date"""" BETWEEN :tu_ngay AND :den_ngay
-    UNION ALL
-    SELECT idx.indexCode, t.""""Trade date"""",
-           CAST(t.""""Trade price"""" AS NUMERIC) * CAST(t.""""Trade quantity"""" AS NUMERIC)
-    FROM Trade_HNX t
-    JOIN JAD_CSIDXINFOR idx
-        ON t.""""Issue Code"""" = idx.symbol AND t.""""Trade date"""" = idx.tradingdate AND idx.indexCode = :ma_chi_so
-    WHERE t.""""Market ID"""" IN ('STX', 'UPX') AND t.""""Sell Foreign InveSTKr Type Code"""" IN ('10', '20')
-      AND t.""""Trade date"""" BETWEEN :tu_ngay AND :den_ngay
+/* ---------- (6) Dòng tiền ròng NĐTNN ---------- */
+thanh_phan_chi_so AS (
+    SELECT DISTINCT
+        idx.symbol,
+        TO_DATE(idx.tradingdate, 'yyyy-MM-dd') AS ngay
+    FROM uat_mdds_stg.JAD_CSIDXINFOR idx
+    WHERE idx.indexCode = :ma_chi_so
+      AND TO_DATE(idx.tradingdate, 'yyyy-MM-dd')
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
 ),
 dong_tien_rong_by_day AS (
-    SELECT m.indexCode, m.ngay_gd AS ngay, SUM(m.gt_gd) - SUM(b.gt_gd) AS rt
-    FROM gtgd_mua_f m
-    JOIN gtgd_ban_f b ON b.indexCode = m.indexCode AND b.ngay_gd = m.ngay_gd
-    GROUP BY m.indexCode, m.ngay_gd
-),
-z_foreign AS (
-    SELECT ngay,
-           rt,
-           AVG(rt)         OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW) AS mu,
-           STDDEV_SAMP(rt) OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW) AS sigma,
-           -- Z-score đảo chiều: dòng tiền vào ròng cao -> rủi ro giảm
-           (AVG(rt) OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW) - rt)
-             / NULLIF(STDDEV_SAMP(rt) OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW), 0)
-             AS z_score_foreign_flow
-    FROM dong_tien_rong_by_day
+    -- Cộng mua/bán trước khi trừ, không JOIN chi tiết mua với chi tiết bán
+    SELECT
+        t.ngay,
+        SUM(CASE
+            WHEN t.buy_foreign_type IN ('10', '20')
+            THEN t.gt_gd ELSE 0
+        END)
+        - SUM(CASE
+            WHEN t.sell_foreign_type IN ('10', '20')
+            THEN t.gt_gd ELSE 0
+        END) AS rt
+    FROM trade_data t
+    JOIN thanh_phan_chi_so idx
+        ON idx.symbol = t.symbol
+       AND idx.ngay = t.ngay
+    GROUP BY t.ngay
 ),
 
-/* ---------- (6) Z-score Huy động vốn cổ phần theo từng ngày (đảo chiều) - dòng 38-41 ---------- */
+/* ---------- (7) Huy động vốn cổ phần ---------- */
 huy_dong_theo_nguon AS (
-    SELECT sof.OFFICIAL_LETTER_DATE AS NGAY, SUM(res.TOTAL_COLLECTED_AM) AS SO_TIEN
+    -- Giữ các nguồn cũ: chưa có thông tin bảng thay thế
+    SELECT
+        CAST(sof.OFFICIAL_LETTER_DATE AS DATE) AS ngay,
+        SUM(res.TOTAL_COLLECTED_AM) AS so_tien
     FROM IDS.SECURITIES_OFFERING sof
-    JOIN IDS.SECURITIES_OFFERING_PLAN sop ON sop.SECURITIES_OFFERING_ID = sof.ID
-    JOIN IDS.SECURITIES_OFFERING_RESULT res ON res.SECURITIES_OFFERING_ID = sof.ID
-    WHERE sop.OFFERING_METHOD_CD IN ('1', '2', '3', '5', '9', '11')
-      AND sof.OFFICIAL_LETTER_DATE BETWEEN :tu_ngay AND :den_ngay
-    GROUP BY sof.OFFICIAL_LETTER_DATE
+    JOIN IDS.SECURITIES_OFFERING_RESULT res
+        ON res.SECURITIES_OFFERING_ID = sof.ID
+    WHERE CAST(sof.OFFICIAL_LETTER_DATE AS DATE)
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
+      AND EXISTS (
+          -- Tránh nhân bản kết quả khi một đợt có nhiều kế hoạch
+          SELECT 1
+          FROM IDS.SECURITIES_OFFERING_PLAN sop
+          WHERE sop.SECURITIES_OFFERING_ID = sof.ID
+            AND sop.OFFERING_METHOD_CD IN ('1', '2', '3', '5', '9', '11')
+      )
+    GROUP BY CAST(sof.OFFICIAL_LETTER_DATE AS DATE)
+
     UNION ALL
-    SELECT dso.DOCUMENT_DATE, SUM(dso.PROCEEDS_COLLECTED)
+
+    SELECT
+        CAST(dso.DOCUMENT_DATE AS DATE) AS ngay,
+        SUM(dso.PROCEEDS_COLLECTED) AS so_tien
     FROM SCMS.DISCLOSURE_SECURITIES_OFFERING dso
     WHERE dso.OFFERING_TYPE IN ('1', '4', '5', '6', '7')
-      AND dso.DOCUMENT_DATE BETWEEN :tu_ngay AND :den_ngay
-    GROUP BY dso.DOCUMENT_DATE
+      AND CAST(dso.DOCUMENT_DATE AS DATE)
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
+    GROUP BY CAST(dso.DOCUMENT_DATE AS DATE)
+
     UNION ALL
-    SELECT o.APPROVAL_DOCUMENT_DATE, SUM(o.ACTUAL_TOTAL_VALUE)
+
+    SELECT
+        CAST(o.APPROVAL_DOCUMENT_DATE AS DATE) AS ngay,
+        SUM(o.ACTUAL_TOTAL_VALUE) AS so_tien
     FROM FMS.OFFERING o
-    WHERE o.APPROVAL_DOCUMENT_DATE BETWEEN :tu_ngay AND :den_ngay
-    GROUP BY o.APPROVAL_DOCUMENT_DATE
+    WHERE CAST(o.APPROVAL_DOCUMENT_DATE AS DATE)
+          <= TO_DATE(:den_ngay, 'yyyyMMdd')
+    GROUP BY CAST(o.APPROVAL_DOCUMENT_DATE AS DATE)
 ),
 huy_dong_theo_ngay AS (
-    SELECT NGAY AS ngay, SUM(SO_TIEN) AS RT
+    SELECT
+        ngay,
+        SUM(so_tien) AS rt
     FROM huy_dong_theo_nguon
-    WHERE NGAY IS NOT NULL
-    GROUP BY NGAY
+    WHERE ngay IS NOT NULL
+    GROUP BY ngay
 ),
-z_equity AS (
-    SELECT ngay,
-           RT,
-           AVG(RT)         OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW) AS mu,
-           STDDEV(RT)      OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW) AS sigma,
-           -- Z-score đảo chiều: huy động vốn cao -> rủi ro tăng áp lực pha loãng/nguồn cung
-           (AVG(RT) OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW) - RT)
-             / NULLIF(STDDEV(RT) OVER (ORDER BY ngay ROWS BETWEEN :n_periods PRECEDING AND CURRENT ROW), 0)
-             AS z_score_equity_raising
-    FROM huy_dong_theo_ngay
+
+/* ---------- (8) Chuẩn hóa các chuỗi theo lịch giao dịch ---------- */
+daily_series AS (
+    SELECT
+        c.ngay,
+        c.phien,
+        'M' AS chi_tieu,
+        m.rt AS gia_tri,
+        30 AS so_phien,
+        1 AS chieu
+    FROM trading_calendar c
+    LEFT JOIN ratio_by_day m ON m.ngay = c.ngay
+
+    UNION ALL
+
+    SELECT
+        c.ngay,
+        c.phien,
+        'I' AS chi_tieu,
+        i.lai_suat AS gia_tri,
+        CAST(:n_periods AS INT) AS so_phien,
+        1 AS chieu
+    FROM trading_calendar c
+    LEFT JOIN ir_by_day_raw i ON i.ngay = c.ngay
+
+    UNION ALL
+
+    SELECT
+        c.ngay,
+        c.phien,
+        'F' AS chi_tieu,
+        f.rt AS gia_tri,
+        CAST(:n_periods AS INT) AS so_phien,
+        -1 AS chieu
+    FROM trading_calendar c
+    LEFT JOIN dong_tien_rong_by_day f ON f.ngay = c.ngay
+
+    UNION ALL
+
+    SELECT
+        c.ngay,
+        c.phien,
+        'C' AS chi_tieu,
+        e.rt AS gia_tri,
+        CAST(:n_periods AS INT) AS so_phien,
+        -1 AS chieu
+    FROM trading_calendar c
+    LEFT JOIN huy_dong_theo_ngay e ON e.ngay = c.ngay
+),
+rolling_stats AS (
+    -- Cửa sổ N phiên gồm ngày hiện tại và N-1 phiên trước
+    SELECT
+        a.ngay,
+        a.chi_tieu,
+        a.gia_tri,
+        a.chieu,
+        AVG(b.gia_tri) AS mu,
+        STDDEV_SAMP(b.gia_tri) AS sigma
+    FROM daily_series a
+    LEFT JOIN daily_series b
+        ON b.chi_tieu = a.chi_tieu
+       AND b.phien BETWEEN a.phien - a.so_phien + 1 AND a.phien
+    GROUP BY
+        a.ngay,
+        a.chi_tieu,
+        a.gia_tri,
+        a.chieu
+),
+z_scores AS (
+    SELECT
+        ngay,
+        chi_tieu,
+        chieu * (gia_tri - mu) / NULLIF(sigma, 0) AS z_score
+    FROM rolling_stats
+),
+z_daily AS (
+    SELECT
+        ngay,
+        MAX(CASE WHEN chi_tieu = 'M' THEN z_score END) AS z_m_margin,
+        MAX(CASE WHEN chi_tieu = 'I' THEN z_score END) AS z_i_interest,
+        MAX(CASE WHEN chi_tieu = 'F' THEN z_score END) AS z_f_foreign,
+        MAX(CASE WHEN chi_tieu = 'C' THEN z_score END) AS z_c_equity
+    FROM z_scores
+    GROUP BY ngay
 )
 
-/* ---------- (7) TỔNG HỢP: Risk Index theo từng ngày - JOIN các nhánh theo điều kiện ngày ---------- */
+/* ---------- (9) Risk Index theo từng ngày ---------- */
 SELECT
-    cal.ngay                            AS ngay_tinh,
-    zv.z_score_volatility               AS z_v_volatility,
-    zl.z_score_liquidity                AS z_l_liquidity,
-    zm.z_score_margin                   AS z_m_margin,
-    zi.z_score_interest_rate            AS z_i_interest,
-    zf.z_score_foreign_flow             AS z_f_foreign,
-    zc.z_score_equity_raising           AS z_c_equity,
+    cal.ngay AS ngay_tinh,
+    zv.z_score_volatility AS z_v_volatility,
+    zl.z_score_liquidity AS z_l_liquidity,
+    z.z_m_margin,
+    z.z_i_interest,
+    z.z_f_foreign,
+    z.z_c_equity,
     :beta0
-      + :beta1 * zl.z_score_liquidity
-      + :beta2 * zv.z_score_volatility
-      + :beta3 * zm.z_score_margin
-      + :beta4 * zi.z_score_interest_rate
-      + :beta5 * zf.z_score_foreign_flow
-      + :beta6 * zc.z_score_equity_raising
-      + :epsilon                         AS risk_index
+        + :beta1 * zl.z_score_liquidity
+        + :beta2 * zv.z_score_volatility
+        + :beta3 * z.z_m_margin
+        + :beta4 * z.z_i_interest
+        + :beta5 * z.z_f_foreign
+        + :beta6 * z.z_c_equity
+        + :epsilon AS risk_index
 FROM trading_calendar cal
 LEFT JOIN z_volatility zv ON zv.ngay = cal.ngay
-LEFT JOIN z_liquidity  zl ON zl.ngay = cal.ngay
-LEFT JOIN z_margin     zm ON zm.ngay = cal.ngay
-LEFT JOIN z_interest   zi ON zi.ngay = cal.ngay
-LEFT JOIN z_foreign    zf ON zf.ngay = cal.ngay
-LEFT JOIN z_equity     zc ON zc.ngay = cal.ngay
-ORDER BY cal.ngay;
-
-",,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
+LEFT JOIN z_liquidity zl ON zl.ngay = cal.ngay
+LEFT JOIN z_daily z ON z.ngay = cal.ngay
+WHERE cal.ngay BETWEEN TO_DATE(:tu_ngay, 'yyyyMMdd')
+                   AND TO_DATE(:den_ngay, 'yyyyMMdd');",,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
 1,,Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống,"Z-score Biến động giá 
 Z-score = (x − μ) / σ
 
@@ -903,7 +1078,7 @@ mcap_ngay AS (
     JOIN scplh s ON s.symbol = g.symbol
     WHERE g.tradingdate BETWEEN TO_DATE(:ngay_gd,'YYYY-MM-DD') - INTERVAL '29' DAY
                             AND TO_DATE(:ngay_gd,'YYYY-MM-DD')
-      AND g.StockType NOT IN ('B','1','BO','D')
+      AND g.StockType = '2'
     GROUP BY g.tradingdate
 ),
 
@@ -1305,7 +1480,7 @@ s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"WITH gdongcua A
         s.FloorCode
     FROM uat_mdds_stg.JAD_STOCKINFOR s
     WHERE date_format(to_date(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
-      AND s.FloorCode IN ('02','04','10')  AND s.stocktype = '1'
+      AND s.FloorCode IN ('02','04','10')  AND s.stocktype = '2'
 ),
 scplh AS (
     -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
@@ -1340,7 +1515,7 @@ FROM mcap;",KLCK lưu hành lấy từ VSDC - Báo cáo TT138.2025.TT.BTC Mẫu 
 SELECT symbol, closePrice, tradingdate
 FROM uat_mdds_stg.JAD_STOCKINFOR
 WHERE date_format(to_date(tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :Ngay_gd 
-  AND FloorCode IN ('02','04','10');",,,,,,,Dữ liệu tĩnh,
+  AND FloorCode IN ('02','04','10')  AND s.stocktype = '2';",,,,,,,Dữ liệu tĩnh,
 1,,Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống,KL CK lưu hành tại ngày,KL CK lưu hành,Dashboard,Chỉ tiêu cơ sở,Khó,"Ngày, Mã CK",CSDLTT,x,x,,Done,Khối lượng CK đang lưu hành: VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ,outstanding_shares,outstanding_shares,Khối lượng chứng khoán đang lưu hành," SELECT
             t.ticker_symbol      AS symbol,
             t.outstanding_shares AS so_luong_cp_luu_hanh,
@@ -6936,13 +7111,16 @@ IDS.company_profile.category_l1_id","tradingdate = :input_date; FloorCode IN ('0
 -- Bước 1: Tính TotalValue_Sector
 total_value AS (
     SELECT
-        cd.category_l1_id                          AS nganh_id,
-        SUM(CAST(si.totalTradingValue AS NUMERIC))  AS total_value_sector
-    FROM JAD_STOCKINFOR si
-    JOIN IDS.company_profile cd ON cd.equity_ticker = si.symbol
-    WHERE si.tradingdate = :input_date
+        cp.category_l1_id AS nganh_id,
+        SUM(CAST(si.totalTradingValue AS NUMERIC)) AS total_value_sector
+    FROM uat_mdds_stg.JAD_STOCKINFOR si
+    JOIN UAT_IDS_STG.company_profiles cp
+        ON cp.equity_ticker = si.symbol
+    WHERE TO_DATE(si.tradingdate, 'yyyy-MM-dd')
+          = TO_DATE(:input_date, 'yyyyMMdd')
       AND si.FloorCode IN ('02', '04', '10')
-    GROUP BY cd.category_l1_id
+      AND si.StockType = '2'
+    GROUP BY cp.category_l1_id
 ),
 
 -- Bước 2: Tính TotalCap_Sector
@@ -6950,20 +7128,32 @@ gia_dong_cua AS (
     SELECT
         s.symbol,
         s.tradingdate,
-        s.closePrice  AS gia_dong_cua,
+        s.closePrice AS gia_dong_cua,
         s.FloorCode
-    FROM JAD_STOCKINFOR s
-    WHERE s.tradingdate = :input_date
-      AND s.StockType NOT IN ('B', '1', 'BO', 'D')
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+          = TO_DATE(:input_date, 'yyyyMMdd')
+      AND s.FloorCode IN ('02', '04', '10')
+      AND s.StockType = '2'
 ),
 kl_luu_hanh AS (
+    -- Lấy số cổ phiếu lưu hành mới nhất theo mã
     SELECT
-        b.MCK,
-        SUM(b.KLLH) AS kl_luu_hanh
-    FROM BM1_BCKLLH b
-    WHERE b.loai_ck  = N'Cổ phiếu'
-      AND b.ngay_bc  = :input_date
-    GROUP BY b.MCK
+        symbol,
+        kl_luu_hanh
+    FROM (
+        SELECT
+            t.ticker_symbol AS symbol,
+            t.outstanding_shares AS kl_luu_hanh,
+            ROW_NUMBER() OVER (
+                PARTITION BY t.ticker_symbol
+                ORDER BY TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') DESC
+            ) AS rn
+        FROM uat_vsdc_ods.outstanding_shares t
+        WHERE TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd')
+              <= TO_DATE(:input_date, 'yyyyMMdd')
+    ) x
+    WHERE rn = 1
 ),
 von_hoa_ma AS (
     SELECT
@@ -6971,34 +7161,35 @@ von_hoa_ma AS (
         g.FloorCode,
         g.gia_dong_cua * k.kl_luu_hanh AS market_cap
     FROM gia_dong_cua g
-    JOIN kl_luu_hanh  k ON k.MCK = g.symbol
+    JOIN kl_luu_hanh k
+        ON k.symbol = g.symbol
 ),
 total_cap AS (
     SELECT
-        n.industry_cd                  AS nganh_id,
-        SUM(v.market_cap)              AS total_cap_sector
+        cp.category_l1_id AS nganh_id,
+        SUM(v.market_cap) AS total_cap_sector
     FROM von_hoa_ma v
-    JOIN IDS.company_info ci ON ci.symbol       = v.symbol
-    JOIN IDS.categories   n  ON n.industry_cd   = ci.industry_cd
-                             AND n.active_flg    = 1
-    GROUP BY n.industry_cd
+    JOIN UAT_IDS_STG.company_profiles cp
+        ON cp.equity_ticker = v.symbol
+    GROUP BY cp.category_l1_id
 )
 
 -- Bước 3: Tính LiquidScore_Sector = TotalValue / TotalCap
 SELECT
-    :input_date                                          AS ngay_gd,
+    TO_DATE(:input_date, 'yyyyMMdd') AS ngay_gd,
     tc.nganh_id,
+    n.industry_cd AS ma_nganh,
+    n.industry_name AS ten_nganh,
     tv.total_value_sector,
     tc.total_cap_sector,
-    CASE
-        WHEN tc.total_cap_sector IS NULL
-          OR tc.total_cap_sector = 0
-        THEN NULL
-        ELSE tv.total_value_sector / tc.total_cap_sector
-    END                                                  AS liquid_score_sector
+    tv.total_value_sector / NULLIF(tc.total_cap_sector, 0)
+        AS liquid_score_sector
 FROM total_cap tc
-LEFT JOIN total_value tv ON tv.nganh_id = tc.nganh_id
-ORDER BY liquid_score_sector DESC NULLS LAST;","Bước 2 chuẩn hóa cần bảng lịch sử LiquidScore theo ngành, lưu trong mart DWH",,,,,,Dữ liệu tĩnh,
+JOIN UAT_IDS_STG.CATEGORIES n
+    ON n.ID = tc.nganh_id
+   AND n.active_flg = 1
+LEFT JOIN total_value tv
+    ON tv.nganh_id = tc.nganh_id;","Bước 2 chuẩn hóa cần bảng lịch sử LiquidScore theo ngành, lưu trong mart DWH",,,,,,Dữ liệu tĩnh,
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,TotalValue_Sector (Tổng giá trị giao dịch của toàn bộ cổ phiếu trong ngành),TotalValue_Sector = ∑TradingValue_i,Dashboard,Chỉ tiêu phái sinh,Khó,"Ngày, Mã chứng khoán ","MDDS, MSS",x,x,,Done,Thông tin thị trường ,"JAD_STOCKINFOR (PriceBoardAPI)
 IDS.company_profile","JAD_STOCKINFOR.totalTradingValue
 IDS.company_profile.category_l1_id","tradingdate = :input_date; FloorCode IN ('02','04','10')","SELECT cd.category_l1_id AS nganh_id,

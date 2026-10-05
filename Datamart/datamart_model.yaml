@@ -11413,7 +11413,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KL TP lưu hành toàn thị trường ngày t = TP niêm yết (HNX listed_securities_list.outstanding_shares, StockType = '1' loại TP Chính phủ) + TP riêng lẻ (private_corp_bond_registration, report_month = tháng ngày t) — BA dòng 300; PENDING chờ cột HNX (O_PTTT_36)"
+        description: "KL TP lưu hành toàn thị trường ngày t = TP niêm yết (HNX listed_securities_list.listed_shares (tạm thay outstanding_shares của BA), StockType = '1' loại TP Chính phủ) + TP riêng lẻ (private_corp_bond_registration, report_month = tháng ngày t) — BA dòng 300; tạm dùng listed_shares (O_PTTT_36)"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.total_listing_vol"
       - logical_name: "Bond Outstanding Value"
@@ -11431,7 +11431,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Áp lực đáo hạn 12 tháng — tổng dư nợ TP có ngày đáo hạn trong (ngày t, ngày t + 12 tháng], gồm TP niêm yết HNX và riêng lẻ — BA dòng 301; PENDING chờ cột HNX (O_PTTT_36)"
+        description: "Áp lực đáo hạn 12 tháng — tổng dư nợ TP có ngày đáo hạn trong (ngày t, ngày t + 12 tháng], gồm TP niêm yết HNX và riêng lẻ — BA dòng 301; tạm dùng listed_shares (O_PTTT_36)"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.maturity_dt"
       - logical_name: "Maturity Pressure 12 Months Previous"
@@ -11548,7 +11548,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KL trái phiếu lưu hành tại ngày chốt quý. LISTED: listed_share_info.outstanding_share_quantity (HNX listed_securities_list.outstanding_shares) tại ngày báo cáo cuối quý, PENDING chờ cột HNX (O_PTTT_36); PRIVATE: offering_bond_quantity (BA dòng 320/324)"
+        description: "KL trái phiếu lưu hành tại ngày chốt quý. LISTED: listed_share_info.listed_share_quantity (HNX listed_securities_list.listed_shares (tạm thay outstanding_shares của BA)) tại ngày báo cáo cuối quý, tạm dùng listed_shares (O_PTTT_36); PRIVATE: offering_bond_quantity (BA dòng 320/324)"
         source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
         source_atomic_column: "security_trading_snapshot.total_listing_vol / private_corp_bond_offering.offering_bond_quantity"
       - logical_name: "Bond Outstanding Value"

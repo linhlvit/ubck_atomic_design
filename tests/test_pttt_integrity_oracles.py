@@ -111,7 +111,7 @@ def test_oracle_02_hld_kpi_coverage_and_structure():
 
 
 # ==============================================================================
-# TEST 3: Kiểm chứng đối soát phạm vi Detail Mapping (390 Dashboard, 327 READY, 63 PENDING)
+# TEST 3: Kiểm chứng đối soát phạm vi Detail Mapping (390 Dashboard, 344 READY, 46 PENDING)
 # ==============================================================================
 def test_oracle_03_detail_mapping_scope_and_status():
     """
@@ -119,8 +119,8 @@ def test_oracle_03_detail_mapping_scope_and_status():
     - Tổng cộng 423 dòng = 390 dòng Dashboard + 33 dòng Data Explorer (Nhóm 32–34).
     - Bộ phân tích tiến độ chuẩn (DatamartProgressAnalyzer):
       + Đánh giá phạm vi Dashboard: 390 dòng.
-      + READY: đúng 327 dòng (83.85%).
-      + PENDING: đúng 63 dòng (16.15%).
+      + READY: đúng 344 dòng (88.21%).
+      + PENDING: đúng 46 dòng (11.79%).
     """
     assert DETAIL_MAPPING_PATH.is_file(), f"Tệp Detail Mapping không tồn tại: {DETAIL_MAPPING_PATH}"
 
@@ -142,10 +142,10 @@ def test_oracle_03_detail_mapping_scope_and_status():
     res = analyzer.analyze_module("PTTT")
 
     assert res["total_dm_rows"] == 390, f"Scope Dashboard phải là 390, thực tế: {res['total_dm_rows']}"
-    assert res["ready_count"] == 327, f"READY count phải là 327, thực tế: {res['ready_count']}"
-    assert res["pending_count"] == 63, f"PENDING count phải là 63, thực tế: {res['pending_count']}"
-    assert abs(res["ready_pct"] - 83.85) < 0.1, f"READY % lệch: {res['ready_pct']}"
-    assert abs(res["pending_pct"] - 16.15) < 0.1, f"PENDING % lệch: {res['pending_pct']}"
+    assert res["ready_count"] == 344, f"READY count phải là 344, thực tế: {res['ready_count']}"
+    assert res["pending_count"] == 46, f"PENDING count phải là 46, thực tế: {res['pending_count']}"
+    assert abs(res["ready_pct"] - 88.21) < 0.1, f"READY % lệch: {res['ready_pct']}"
+    assert abs(res["pending_pct"] - 11.79) < 0.1, f"PENDING % lệch: {res['pending_pct']}"
 
 
 # ==============================================================================
@@ -264,7 +264,7 @@ def test_oracle_07_group_21_grain_mismatch_empirical():
     assert "Symbol" in pk_row["source_attribute"]
 
     val_row = rows["bond_outstanding_val"]
-    assert "outstanding_share_quantity" in val_row["etl_logic"]
+    assert any(k in val_row["etl_logic"] for k in ["outstanding_share_quantity", "listed_share_quantity"])
     assert "SUM" not in val_row["etl_logic"].upper()
 
     bctc_row = rows["total_liabilities_amt"]
