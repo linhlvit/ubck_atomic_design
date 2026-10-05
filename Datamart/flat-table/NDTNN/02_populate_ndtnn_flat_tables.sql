@@ -269,7 +269,6 @@ SELECT
     f.rpt_marker_ind,
     f.val_nbr,
     f.val_raw,
-    f.val_string,
     f.src_stm_code,
 
     submission_cal.cdr_dt AS submission_cdr_dt,
@@ -289,7 +288,9 @@ SELECT
     ent_dim.reporting_entity_code,
     ent_dim.reporting_entity_tp_code,
     ent_dim.reporting_entity_nm,
-    ent_dim.reporting_entity_short_nm
+    ent_dim.reporting_entity_short_nm,
+
+    str_dim.fir_structure_code   -- [MỚI 2026-10-05] cột cuối, khớp ALTER TABLE ADD COLUMN
 FROM datamart.fct_foreign_investor_report_value f
 JOIN datamart.cdr_dt_dim submission_cal
     ON submission_cal.cdr_dt_dim_id = f.submission_dt_dim_id

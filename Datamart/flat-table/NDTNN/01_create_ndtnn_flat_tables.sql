@@ -258,9 +258,8 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_report_value_flat
     band_overflow_ind                          Nullable(Int32)            COMMENT '1 = ô tràn band (BA: is_band_overflow)',
     static_copy_ind                            Nullable(Int32)            COMMENT '1 = ô sao chép tĩnh (BA: is_static_copy)',
     rpt_marker_ind                             Nullable(Int32)            COMMENT '1 = ô đánh dấu template (BA: is_template_marker)',
-    val_nbr                                    Nullable(Decimal(23,2))    COMMENT 'Giá trị số của ô (BA: value_num). Đơn vị theo từng ô (USD, VND, số lượng…)',
+    val_nbr                                    Nullable(Decimal(23,2))    COMMENT 'Giá trị số của ô — ép từ val_raw (nguồn không có VALUE_NUM). Đơn vị theo từng ô (USD, VND, số lượng…)',
     val_raw                                    Nullable(String)           COMMENT 'Giá trị gốc nguồn nộp (BA: value_raw)',
-    val_string                                 Nullable(String)           COMMENT 'Giá trị dạng chữ (BA: value_text)',
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
 
     -- From: CALENDAR DATE DIMENSION
@@ -283,7 +282,10 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_report_value_flat
     reporting_entity_code                      Nullable(String)           COMMENT 'Mã đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
     reporting_entity_tp_code                   Nullable(String)           COMMENT 'Loại đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
     reporting_entity_nm                        Nullable(String)           COMMENT 'Tên đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_short_nm                  Nullable(String)           COMMENT 'Tên viết tắt đối tượng nộp — từ Foreign Investor Reporting Entity Dimension'
+    reporting_entity_short_nm                  Nullable(String)           COMMENT 'Tên viết tắt đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+
+    -- [MỚI 2026-10-05] đặt CUỐI để khớp ALTER TABLE ADD COLUMN; khóa nghiệp vụ SHEET_ID ‖ INDICATOR_UID (structure_code chỉ duy nhất trong 1 sheet)
+    fir_structure_code                         Nullable(String)           COMMENT 'Mã ô cấu trúc = SHEET_ID ‖ INDICATOR_UID — từ Foreign Investor Report Structure Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(submission_cdr_dt))
