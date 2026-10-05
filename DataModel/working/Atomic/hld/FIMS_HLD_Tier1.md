@@ -1,7 +1,7 @@
 # FIMS HLD — Tier 1
 
 **Source system:** FIMS (Hệ thống quản lý giám sát và công bố thông tin thành viên thị trường — Oracle)
-**Tier 1:** Entity độc lập, không FK đến entity nghiệp vụ khác — chỉ FK đến Classification Value. Gồm 8 entity: Market Participant Organization (5 bảng nguồn gộp), Foreign Investor, Reporting Template, Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price.
+**Tier 1:** Entity độc lập, không FK đến entity nghiệp vụ khác — chỉ FK đến Classification Value. Gồm 9 entity: Market Participant Organization (5 bảng nguồn gộp), Foreign Investor, Foreign Investor Report (thay Reporting Template — 2026-09-30), Classification Foreign Investor Reporting Entity (mới 2026-09-30), Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price.
 
 > **Cập nhật (2026-07-10):** NATIONAL/LOCATION đã loại khỏi scope Atomic — dữ liệu địa
 > giới hành chính chuyển sang chuẩn hóa tại nguồn **ECAT** (xem `ECAT_HLD_Tier1.md`).
@@ -20,7 +20,9 @@
 | Involved Party | [Involved Party] Organization | Organization | DEPOSITORYCENTER | Danh sách Trung tâm lưu ký chứng khoán (VSDC) — đối tượng thành viên thị trường | Market Participant Organization | Fundamental | Cùng entity với FUNDCOMPANY — gộp vào Market Participant Organization, `FIMS_MARKET_PARTICIPANT_TYPE = DEPOSITORY_CENTER`. |
 | Involved Party | [Involved Party] Organization | Organization | STOCKEXCHANGE | Danh sách sở giao dịch chứng khoán — đối tượng thành viên thị trường | Market Participant Organization | Fundamental | Cùng entity với FUNDCOMPANY — gộp vào Market Participant Organization, `FIMS_MARKET_PARTICIPANT_TYPE = STOCK_EXCHANGE`. |
 | Involved Party | [Involved Party] Individual | Individual | INVESTOR | Danh sách nhà đầu tư nước ngoài (cá nhân và tổ chức) đăng ký hoạt động tại Việt Nam theo quy định UBCKNN | Foreign Investor | Fundamental | (1) BCV term `[Involved Party] Individual` — đây là cá nhân/tổ chức nước ngoài. (2) INVESTOR: ObjectType(1=Cá nhân, 2=Tổ chức), IdNo, NaId, Address, Tel, Email, StatusId — profile NĐT NN với thông tin nhận dạng và liên lạc. (3) ObjectType gộp cả cá nhân lẫn tổ chức → 1 entity dùng Classification Value phân biệt. Chọn `[Involved Party] Individual` vì primary use case là cá nhân; tổ chức NĐT NN là ngoại lệ (ít trường hơn). |
-| Business Activity | [Business Activity] Business Activity | Business Activity | RPTTEMP | Danh sách biểu mẫu báo cáo định kỳ do UBCKNN ban hành — master template mà thành viên thị trường phải nộp | Reporting Template | Fundamental | (1) BCV term `[Business Activity] Business Activity` — biểu mẫu báo cáo định nghĩa một nghĩa vụ hoạt động. (2) RPTTEMP: mã biểu mẫu, tên, loại báo cáo, trạng thái, phiên bản — đây là chuẩn báo cáo pháp lý. (3) Không phải Entity "Arrangement" (không có tài khoản/hợp đồng) hay "Documentation" (không phải hồ sơ cụ thể) → BCV `[Business Activity] Business Activity`. |
+| Documentation | [Documentation] Form Document | Form Document | RPTTEMP (qua ODS `FOREIGN_INVESTOR_REPORT`) | Danh sách biểu mẫu báo cáo định kỳ do UBCKNN ban hành — master template mà thành viên thị trường phải nộp | Foreign Investor Report | Relative | (1) Term candidate `Form Document` (BCV Documentation): "Identifies a Documentation Item presented in a standard template layout which requires additional information to be supplied". (2) ODS `FOREIGN_INVESTOR_REPORT` (tên cũ `dim_report_template`) = `RPTTEMP ⋈ SHEET` (`SHEET.RptId = RPTTEMP.Id`, chỉ `Status = 1`): rpt_id, report_code, report_name, legal_basis, template_status, sheet_id, sheet_code, sheet_name, sheet_index. Grain = 1 sheet × 1 mẫu. (3) Mẫu báo cáo là template layout chờ thành viên điền số liệu → khớp `Form Document`; thay quyết định cũ `[Business Activity] Business Activity` của entity `Reporting Template` (2026-09-30). ODS ghi đè toàn bộ mỗi lần chạy → Atomic SCD2 (Relative). Domain Prefix `Foreign Investor Report` (gốc của nhóm; physical `foreign_investor_report`, cột viết tắt `fir_`). |
+| Documentation | [Documentation] Form Document | Form Document | SHEET (qua ODS `FOREIGN_INVESTOR_REPORT`) | Danh sách các sheet trong biểu mẫu báo cáo đầu vào | Foreign Investor Report | Relative | Cùng entity với RPTTEMP — SHEET quyết định grain (BK `sheet_id` → `fir_code`). SHEET đồng thời là nguồn parse JSON của `Foreign Investor Report Structure` (Tier 2). |
+| Common | [Common] Classification | Classification | 9 bảng danh mục đối tượng (qua ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`) | Danh mục tổ chức/cá nhân từng là bên nộp báo cáo động | Classification Foreign Investor Reporting Entity | Relative | (1) **Quyết định Data Modeler 2026-09-30:** BCO `Common`, concept `[Common] Classification` — đây là bảng danh mục tra cứu (mã + tên + loại), không phải hồ sơ Involved Party đầy đủ. BCV không có term Common riêng cho "reporting entity"; dùng cùng concept với các entity `cl_*` khác trong dự án. (2) ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` (tên cũ `dim_object`) UNION 9 bảng FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, INFODISCREPRES, BRANCHS, INVESTOR, TRADINGREPRESENTATIVE (không JOIN), gắn `object_type`: object_id, object_code, object_name, object_short_name. (3) Bảng tra cứu hợp nhất (Code + tên + loại) phục vụ báo cáo động → Domain Prefix `Classification` theo quyết định Data Modeler; BK = `object_id ‖ object_type` (object_id không duy nhất giữa các loại). Không tách shared entity IP (chỉ có mã/tên, không có địa chỉ/liên lạc/giấy tờ). 9 bảng staging đã in scope cho entity khác. |
 | Business Activity | [Business Activity] Assessment Period | Period | RPTPERIOD | Danh sách kỳ báo cáo định kỳ gắn với biểu mẫu — xác định ngày bắt đầu, kết thúc, hạn nộp | Reporting Period | Fundamental | (1) BCV term `[Business Activity] Assessment Period` — kỳ đánh giá/báo cáo. (2) RPTPERIOD: mã kỳ, ngày bắt đầu, ngày kết thúc, hạn nộp, FK đến RPTTEMP. (3) Kỳ báo cáo pháp lý mang ngữ nghĩa "assessment period" rõ ràng → chọn `[Business Activity] Assessment Period`. |
 | Business Activity | [Business Activity] Business Activity | Business Activity | RPT_EVENT_TYPE | Danh mục loại sự vụ/nghĩa vụ báo cáo mà thành viên thị trường phải thực hiện theo pháp luật | Reporting Obligation Type | Fundamental | (1) BCV term `[Business Activity] Business Activity` — loại sự vụ định nghĩa một nghĩa vụ hoạt động. (2) RPT_EVENT_TYPE: MA_SU_VU, TEN_SU_VU, PHAN_LOAI_SU_VU, LOAI_NGHIA_VU — phân loại nghĩa vụ báo cáo/CBTT/hồ sơ. (3) Đây là danh mục loại nghĩa vụ (master reference) chứ không phải instance → Fundamental (Classification có cấu trúc rộng hơn Code+Name). |
 | Condition | [Condition] Scoring Criterion | Scoring Criterion | PARAWARN | Danh sách tham số cảnh báo giám sát — định nghĩa chỉ tiêu theo dõi thành viên thị trường kèm công thức tính | Warning Parameter | Fundamental | (1) BCV term `[Condition] Scoring Criterion` — tham số cảnh báo là tiêu chí chấm điểm/đánh giá. (2) PARAWARN: Name, LegalCode, FormulaInfo (NCLOB), SystemObject — tham số kỹ thuật với công thức. (3) Đây là "criterion" định nghĩa ngưỡng đánh giá, không phải Condition instance → `[Condition] Scoring Criterion`. Nền tảng cho Warning Condition (Tier 2). |
@@ -186,6 +188,8 @@ erDiagram
 
 ---
 
+> **Ghi chú 6b — nhóm Báo cáo động (2026-09-30):** `Foreign Investor Report` và `Classification Foreign Investor Reporting Entity` KHÔNG map trực tiếp từ bảng staging ở diagram trên mà qua lớp ODS: `RPTTEMP ⋈ SHEET` → ODS `FOREIGN_INVESTOR_REPORT`; UNION 9 bảng danh mục đối tượng → ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`. Chi tiết luồng: ghi chú cuối mục 7a của `FIMS_HLD_Overview.md`.
+
 ## 6c. Diagram Atomic (Mermaid)
 
 ```mermaid
@@ -250,16 +254,6 @@ erDiagram
         string activity_status_code
         timestamp ds_effective_from
         timestamp ds_effective_to
-        string ds_source_system
-        timestamp ds_loaded_at
-    }
-
-    Reporting_Template {
-        bigint ds_reporting_template_id PK
-        string reporting_template_code
-        string name
-        string report_type_code
-        string activity_status_code
         string ds_source_system
         timestamp ds_loaded_at
     }
@@ -329,7 +323,29 @@ erDiagram
     Market_Participant_Organization ||--o{ IP_Alt_Identification : "ds_involved_party_id"
     Foreign_Investor ||--o{ Geographic_Area : "geographic_area_id"
     Foreign_Investor ||--o{ IP_Alt_Identification : "ds_involved_party_id"
-    Reporting_Period ||--o{ Reporting_Template : "ds_reporting_template_id"
+    Reporting_Period ||--o{ Foreign_Investor_Report : "Reporting Template FK cũ — chờ repoint, xem T1-08"
+    Foreign_Investor_Report {
+        string fir_id PK
+        string fir_code "sheet_id"
+        string rpt_id
+        string rpt_code
+        string rpt_nm
+        string legal_basis
+        string rpt_status_code
+        string sheet_code
+        string sheet_nm
+        int sheet_index
+    }
+    Classification_Foreign_Investor_Reporting_Entity {
+        string cl_foreign_investor_reporting_entity_id PK
+        string cl_foreign_investor_reporting_entity_code "object_id + object_type"
+        string reporting_entity_code
+        string reporting_entity_tp_code
+        string reporting_entity_tp_nm
+        string entity_reference_nbr
+        string reporting_entity_nm
+        string reporting_entity_short_nm
+    }
     Trading_Representative ||--o{ Geographic_Area : "geographic_area_id"
     Trading_Representative ||--o{ IP_Postal_Address : "ds_involved_party_id"
     Trading_Representative ||--o{ IP_Electronic_Address : "ds_involved_party_id"
@@ -352,6 +368,8 @@ erDiagram
 | RPT_EVENT_TYPE.LOAI_NGHIA_VU | Loại nghĩa vụ (BC/CBTT/hồ sơ/khác) | `FIMS_REPORTING_OBLIGATION_CATEGORY` | etl_derived | |
 | PARAWARN.SystemObject | Loại đối tượng áp dụng tham số cảnh báo | `FIMS_SYSTEM_OBJECT_TYPE` | etl_derived | 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN |
 | CLOSING_PRICE_SECURITIES.Source | Nguồn dữ liệu giá đóng cửa (HOSE/HNX/UPCOM/MANUAL) | `FIMS_PRICE_SOURCE` | source_table | |
+| ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE` | Loại đối tượng nộp báo cáo (9 loại theo bảng danh mục gốc) | `FIMS_REPORTING_ENTITY_TYPE` | etl_derived | Dùng chung với Foreign Investor Report Value |
+| ODS `FOREIGN_INVESTOR_REPORT.TEMPLATE_STATUS` (RPTTEMP.Status) | Trạng thái mẫu báo cáo | `FIMS_REPORT_TEMPLATE_STATUS` | etl_derived | ODS chỉ nạp `Status = 1` |
 
 ---
 
@@ -372,3 +390,5 @@ erDiagram
 | T1-05 | `TRADINGREPRESENTATIVE` là bảng riêng cho đại diện giao dịch, nhưng `INFODISCREPRES.ProfileKind = 6` (`FIMS_PROFILE_KIND` scheme, Tier 2) cũng có giá trị "Đại diện giao dịch" (`TRADING_REPRESENTATIVE`). Đây có phải 2 cách lưu trùng lặp cho cùng 1 vai trò nghiệp vụ, hay `INFODISCREPRES` chỉ dùng ProfileKind=6 cho mục đích phân loại lịch sử/di trú dữ liệu còn `TRADINGREPRESENTATIVE` mới là bảng vận hành hiện tại? | Cần xác nhận với đội FIMS. Nếu trùng lặp → cân nhắc gộp `Trading Representative` vào `Info Disclosure Representative` (dùng Profile Kind Code phân biệt) thay vì giữ 2 entity riêng. Tạm thời giữ tách biệt vì `TRADINGREPRESENTATIVE` có PK và FK độc lập, được `RPTMEMBER`/`TRADINGAUTHORIZATION` FK trực tiếp (không qua `INFODISCREPRES`). |
 | T1-06 | `CLOSING_PRICE_SECURITIES.Source` = HOSE/HNX/UPCOM/MANUAL — xác nhận FIMS có phải nguồn gốc dữ liệu giá hay chỉ cache lại từ sàn giao dịch để tính toán nội bộ (VD: tính tỷ lệ sở hữu/room ngoại trên `Foreign Investor Securities Account`)? | Không ảnh hưởng quyết định scope (đã in-scope vì FIMS lưu bản ghi giá cục bộ phục vụ nghiệp vụ giám sát), nhưng cần ghi rõ trong LLD: `ds_source_system = FIMS` chỉ phản ánh nơi bản ghi được lưu, `price_source_code` mới là nguồn gốc giá thực tế (HOSE/HNX/UPCOM/MANUAL). |
 | T1-07 | **[GHI NHẬN 2026-07-19]** `INVESTOR` có cột `Address` (địa chỉ) và `Telephone/Fax/Email/Website` (liên lạc) nhưng HLD ban đầu chỉ ghi "Tách IP Alt Identification", bỏ sót IP Postal Address + IP Electronic Address. | Áp dụng quy tắc bắt buộc "grain = Involved Party → luôn tách đủ 3 shared entity" khi thiết kế LLD (`lld_FIMS_INVESTOR_IP_Postal_Address.yaml`, `lld_FIMS_INVESTOR_IP_Electronic_Address.yaml`) — không phụ thuộc HLD Tier có liệt kê hay không. Đã đồng bộ lại 7a/Entities/diagram của `FIMS_HLD_Overview.md`. |
+| T1-08 | **[2026-09-30]** `Reporting Template` (RPTTEMP) được thay bằng `Foreign Investor Report` (grain = sheet, BK `sheet_id`, qua ODS `FOREIGN_INVESTOR_REPORT`). `Reporting Period` (RPTPERIOD.RptTempId) và `Member Periodic Report` (RPTMEMBER.RptTempId) trước đây FK đến Reporting Template (grain = mẫu). | Chờ Data Modeler chốt: repoint FK sang `Foreign Investor Report` qua `rpt_id` (1 mẫu → n sheet, không phải BK) hay giữ mã mẫu dạng text. Chưa có LLD Reporting Period/Member Periodic Report nên chưa phát sinh sửa file. Xem 7e-12 Overview. |
+| T1-09 | **[2026-09-30]** `Classification Foreign Investor Reporting Entity` chồng lấn nội dung với `Market Participant Organization`, `Foreign Investor`, `Trading Representative`, `Info Disclosure Representative`, `Foreign FM Branch Organization` (cùng 9 bảng nguồn). Giữ riêng theo quyết định Data Modeler vì là danh mục tra cứu hợp nhất của luồng báo cáo động (ODS). `object_code` loại "Đại diện giao dịch" = `idno` đã được nguồn mã hóa trước khi tới staging (xác nhận BA 24/09/2026) — không phải số giấy tờ gốc. | Không tạo FK sang các entity IP trên ở phạm vi này. |

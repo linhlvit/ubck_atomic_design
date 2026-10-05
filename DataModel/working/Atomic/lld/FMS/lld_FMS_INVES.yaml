@@ -120,18 +120,30 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Stockholder Type Code"
-  physical_name: "stockholder_tp_code"
+- attribute_name: "Classification FMS Stockholder Type Id"
+  physical_name: "cl_fms_stockholder_tp_id"
   description: "FK -> STOCKHOLDER_TYPE: Loại cổ đông."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.INVES.STO_ID"
-  comment: "Scheme: FMS_STOCKHOLDER_TYPE (tái sử dụng — đã đăng ký, nguồn FMS.STOCKHOLDERTYPE).\
-    \ Nguồn STO_ID là UUID FK — ETL resolve sang mã tương ứng."
-  classification_context: "FMS_STOCKHOLDER_TYPE"
+  comment: "FK target: cl_fms_stockholder_type.cl_fms_stockholder_tp_id. Hash: hash_id('FMS_STOCKHOLDER_TYPE', STO_ID). [MỚI 2026-10-02] Trước đây Classification Value scheme FMS_STOCKHOLDER_TYPE (nay deprecated), promote lên entity Classification FMS Stockholder Type."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Stockholder Type Code"
+  physical_name: "cl_fms_stockholder_tp_code"
+  description: "Mã loại cổ đông (BK của bảng danh mục STOCKHOLDER_TYPE — chính là ID nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.STO_ID"
+  comment: "Lookup pair: cl_fms_stockholder_type.cl_fms_stockholder_tp_code. Pair with Classification FMS Stockholder Type Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Discretionary Investment Investor Full Name"
@@ -156,8 +168,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INVES.DORF"
-  comment: "Scheme: FMS_ORG_TERRITORY_TYPE (tái sử dụng). ETL derived: 1=DOMESTIC;2=FOREIGN."
-  classification_context: "FMS_ORG_TERRITORY_TYPE"
+  comment: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;2=FOREIGN."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Relationship Description"

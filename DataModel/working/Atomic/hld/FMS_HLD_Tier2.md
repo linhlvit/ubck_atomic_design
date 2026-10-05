@@ -112,7 +112,7 @@ graph TD
 
 | Source Table | Mô tả | Scheme Code dự kiến | Ghi chú |
 |---|---|---|---|
-| FUNDS.FTYPE_ID → FUND_TYPE | Loại quỹ đầu tư | `FMS_FUND_TYPE` | source_table — Values load từ FUND_TYPE.CODE + ITEM_NAME; bảng FUND_TYPE status=pending. |
+| ~~FUNDS.FTYPE_ID → FUND_TYPE~~ | ~~Loại quỹ đầu tư~~ | ~~`FMS_FUND_TYPE`~~ | **[MỚI 2026-10-02]** FUND_TYPE promote lên entity `Classification FMS Fund Type` (Tier 1, xem FMS_HLD_Tier1.md 6a) — scheme `deprecated`. FUNDS.FTYPE_ID đổi sang cặp FK Fund Type Id + Code. |
 | RANK.RANK_TYPE | Loại xếp hạng: 1=Cuối năm, 2=Giữa năm | `FMS_RATING_PERIOD_TYPE` | etl_derived — Đã đăng ký Tier 1; tham chiếu lại. |
 | CDT_WARN.COMPARE_TYPE | Kiểu so sánh điều kiện cảnh báo: 1=Lớn hơn, 2=Nhỏ hơn, 3=Bằng | `FMS_WARNING_COMPARE_TYPE` | etl_derived — Values load từ mô tả cột (chưa profile dữ liệu thực tế để xác nhận đủ 3 giá trị). |
 | CDT_WARN.FROM_VALUE_CONDITION | Toán tử so sánh ngưỡng dưới: 1=>=, 2=> | `FMS_WARNING_FROM_VALUE_OPERATOR` | etl_derived — Values load từ mô tả cột BRD. |

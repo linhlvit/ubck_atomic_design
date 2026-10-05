@@ -1,4 +1,4 @@
-# 12 Data Domain chuẩn
+# 13 Data Domain chuẩn
 
 Mỗi attribute Atomic phải dùng đúng 1 Data Domain trong bảng dưới đây.
 
@@ -16,6 +16,7 @@ Mỗi attribute Atomic phải dùng đúng 1 Data Domain trong bảng dưới đ
 | `Indicator` | Cờ đánh dấu — bản thân giá trị đã mang ý nghĩa tường minh | `string` |
 | `Boolean` | True/False | `boolean` |
 | `Small Counter` | Số đếm nhỏ, dạng lưu version number | `int` |
+| `Large Counter` | Số đếm/số lượng lớn, có thể vượt giới hạn `int32` (VD: số dòng dữ liệu lớn, byte size, sequence number lớn) — dùng khi `Small Counter` (`int`) không đủ dải giá trị | `bigint` |
 
 ## Data Domain mở rộng cho junction denormalized
 

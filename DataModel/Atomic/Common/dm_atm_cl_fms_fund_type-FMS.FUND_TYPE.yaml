@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fms_fund_type-FMS.FUND_TYPE
+  logical_name: Classification FMS Fund Type
+  physical_name: cl_fms_fund_type
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Fund Management Type"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Danh mục loại quỹ đầu tư (quỹ mở, quỹ đóng, ETF, quỹ thành viên, quỹ bất động sản...) kèm cờ đánh dấu quỹ mở. Promote từ Classification Value (scheme FMS_FUND_TYPE, nay deprecated) lên entity riêng; BK = ID nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-FUND_TYPE
+
+attributes:
+  - name: Classification FMS Fund Type Id
+    physical_name: cl_fms_fund_tp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: FUND_TYPE
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('FMS_FUND_TYPE', ID). BCV: \"[Common] Fund Management Type\" (BCV: phân biệt quỹ theo chính sách giao dịch đơn vị quỹ — mở/đóng). Danh mục loại quỹ đầu tư: quỹ mở, quỹ đóng, ETF, quỹ thành viên, quỹ bất động sản..."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Fund Type Code
+    physical_name: cl_fms_fund_tp_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TYPE
+    source_column: FMS.FUND_TYPE.ID
+    comment: BK chính. PK nguồn — không có cột mã nghiệp vụ riêng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TYPE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_FUND_TYPE'"
+    etl_derived_value: FMS_FUND_TYPE
+
+  - name: Classification FMS Fund Type Name
+    physical_name: cl_fms_fund_tp_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TYPE
+    source_column: FMS.FUND_TYPE.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TYPE
+    source_column: FMS.FUND_TYPE.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Open Fund Indicator
+    physical_name: open_fund_ind
+    business_meaning: "Đánh dấu loại hình quỹ là quỹ mở: 1=Quỹ mở, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TYPE
+    source_column: FMS.FUND_TYPE.IS_OPEN_FUND
+    comment: NUMBER(1). Nguồn khai báo NOT NULL.
+    classification_context: null
+    etl_derived_value: null

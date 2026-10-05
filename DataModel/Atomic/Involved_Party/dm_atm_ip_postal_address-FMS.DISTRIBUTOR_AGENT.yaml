@@ -1,0 +1,93 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-FMS.DISTRIBUTOR_AGENT
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-DISTRIBUTOR_AGENT
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Distribution Agent.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.ID
+    comment: "FK target: securities_distribution_agent.securities_distribution_agent_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_DISTRIBUTOR_AGENT', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã đại lý phân phối.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.ID
+    comment: "Lookup pair: securities_distribution_agent.securities_distribution_agent_code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_DISTRIBUTOR_AGENT' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: FMS_DISTRIBUTOR_AGENT
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — trụ sở chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_DISTRIBUTOR_AGENT' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: HEAD_OFFICE
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ trụ sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.ADDRESS
+    comment: null
+    classification_context: "Source System Code = 'FMS_DISTRIBUTOR_AGENT' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null

@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fms_business-FMS.BUSINESS
+  logical_name: Classification FMS Business
+  physical_name: cl_fms_business
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Industry Classification"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Danh mục lĩnh vực/ngành nghề hoạt động kinh doanh của công ty QLQ và các đối tượng liên quan kèm danh sách loại đối tượng hệ thống áp dụng. Promote từ Classification Value (scheme FMS_BUSINESS_TYPE, nay deprecated) lên entity riêng; BK = ID nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-BUSINESS
+
+attributes:
+  - name: Classification FMS Business Id
+    physical_name: cl_fms_business_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: BUSINESS
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('FMS_BUSINESS', ID). BCV: \"[Common] Industry Classification\" (phân loại Organization theo hoạt động kinh doanh — khớp danh mục lĩnh vực/ngành nghề kinh doanh của công ty QLQ, cùng concept với ECAT Classification Business Line). Danh mục lĩnh vực hoạt động kinh doanh của công ty QLQ và các đối tượng liên quan."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Business Code
+    physical_name: cl_fms_business_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BUSINESS
+    source_column: FMS.BUSINESS.ID
+    comment: BK chính. PK nguồn — không có cột mã nghiệp vụ riêng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BUSINESS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_BUSINESS'"
+    etl_derived_value: FMS_BUSINESS
+
+  - name: Classification FMS Business Name
+    physical_name: cl_fms_business_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BUSINESS
+    source_column: FMS.BUSINESS.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BUSINESS
+    source_column: FMS.BUSINESS.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: System Object Type Codes
+    physical_name: stm_object_tp_codes
+    business_meaning: "Danh sách loại đối tượng hệ thống áp dụng (nhiều giá trị, phân tách phẩy): 1=UBCK, 2=Công ty QLQ, 3=Ngân hàng LKGS, 4=CN CTQLQ NN, 5=VPĐD CTQLQ NN, 6=ĐTCK riêng lẻ, 7=Quỹ đầu tư, 8=Đại lý PP, 9=Đại lý CN, 10=Đại lý HT, 11=TCCCDV, 12=Đại lý khác, 13=Quỹ HT, 14=CT kiểm toán, 15=Kiểm toán viên."
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BUSINESS
+    source_column: FMS.BUSINESS.SYSTEM_OBJECT
+    comment: "Scheme: FMS_SYSTEM_OBJECT_TYPE (tái sử dụng — đã đăng ký cho Classification FMS Company Type, cùng encoding 1-15). Nguồn NVARCHAR2(1000) lưu danh sách mã số phân tách bằng dấu phẩy trong 1 chuỗi — ETL cần tách chuỗi, convert từng phần tử sang mã scheme, lưu dạng Array<Text> codes-only."
+    classification_context: FMS_SYSTEM_OBJECT_TYPE
+    etl_derived_value: null

@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fms_job-FMS.JOBS
+  logical_name: Classification FMS Job
+  physical_name: cl_fms_job
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Position"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Danh mục chức danh/vị trí công việc áp dụng cho nhân sự công ty QLQ, kèm loại chức vụ (JOB_TYPE) denormalize vào cùng entity. **[SỬA 2026-10-02]** Đổi tên từ Classification FMS Position; gộp JOBS + JOB_TYPE, chỉ map ID, ITEM_NAME, JOB_TYPE_ID (JOBS) và ID, ITEM_NAME (JOB_TYPE). Được FK từ Fund Management Company Employee X Classification FMS Job Relationship (Tier 3).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-JOBS
+
+attributes:
+  - name: Classification FMS Job Id
+    physical_name: cl_fms_job_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: JOBS
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('FMS_JOBS', ID). BCV: \"[Common] Position\". Danh mục chức danh/vị trí công việc áp dụng cho nhân sự công ty QLQ."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Job Code
+    physical_name: cl_fms_job_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOBS
+    source_column: FMS.JOBS.ID
+    comment: BK chính. PK nguồn — không có cột mã nghiệp vụ riêng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOBS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_JOBS'"
+    etl_derived_value: FMS_JOBS
+
+  - name: Classification FMS Job Name
+    physical_name: cl_fms_job_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOBS
+    source_column: FMS.JOBS.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Job Type Id
+    physical_name: cl_fms_job_tp_id
+    business_meaning: "FK -> JOB_TYPE: Loại chức danh nghề nghiệp (mã = ID bảng JOB_TYPE)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOBS
+    source_column: FMS.JOBS.JOB_TYPE_ID
+    comment: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOB_TYPE', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Job Type Code
+    physical_name: cl_fms_job_tp_code
+    business_meaning: "FK -> JOB_TYPE: Loại chức danh nghề nghiệp (mã = ID bảng JOB_TYPE)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOBS
+    source_column: FMS.JOBS.JOB_TYPE_ID
+    comment: "Lookup pair: cl_fms_job.cl_fms_job_code. Pair with Classification FMS Job Id."
+    classification_context: null
+    etl_derived_value: null

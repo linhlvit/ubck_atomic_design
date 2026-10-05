@@ -1,0 +1,110 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "STATUS"
+  atomic_entity: "Classification FMS Status"
+  entity_physical_name: "cl_fms_status"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Involved Party Life Cycle Status"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-02] Promote từ Classification Value (scheme FMS_OPERATION_STATUS, nay deprecated). Theo DDL UAT 1 bảng có cột CODE (mã trạng thái nghiệp vụ) — BK = CODE, Id hash từ CODE. Theo quyết định Data Modeler chỉ map ITEM_NAME, TYPE_SEC, SUBMIT_REPORT, DESCRIPTION, CODE; ID, ACTIVE, DELETED, ICON, COLOR, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. 5 entity tiêu thụ STATUS_ID (Fund Management Company, Investment Fund, Custodian Bank, Foreign Fund Management Organization Unit, Pension Fund) đổi sang cặp FK Id + Code."
+attributes:
+- attribute_name: "Classification FMS Status Id"
+  physical_name: "cl_fms_status_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('FMS_STATUS', CODE). BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh mục trạng thái hoạt động của thành viên thị trường."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Status Code"
+  physical_name: "cl_fms_status_code"
+  description: "Mã trạng thái nghiệp vụ (vd. CTQLQ_HD). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.CODE"
+  comment: "BK duy nhất của entity. Nguồn nullable (unique khi có giá trị) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live vì Code đóng vai trò BK và đầu vào hash Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_STATUS"
+  etl_derived_value: "FMS_STATUS"
+  data_type: "string"
+- attribute_name: "Classification FMS Status Name"
+  physical_name: "cl_fms_status_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Object Type Code"
+  physical_name: "object_tp_code"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP..."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.TYPE_SEC"
+  comment: "SCHEMA_CODE=FMS.OBJECT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Submission Required Indicator"
+  physical_name: "rpt_submission_required_ind"
+  description: "Cờ trạng thái phải nộp báo cáo: 1=Phải nộp, 0=Không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.SUBMIT_REPORT"
+  comment: "NUMBER(1). Cùng pattern rpt_submission_required_ind của Classification Securities Company Firm Status (SCMS)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

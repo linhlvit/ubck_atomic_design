@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-FMS.BANK_MONI
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-BANK_MONI
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Custodian Bank.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.ID
+    comment: "FK target: custodian_bank.custodian_bank_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_BANK_MONI', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã ngân hàng lưu ký giám sát.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.ID
+    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: FMS_BANK_MONI
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — trụ sở chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: HEAD_OFFICE
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ trụ sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.ADDRESS
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Province Id
+    physical_name: province_id
+    business_meaning: FK đến Geographic Area — tỉnh/thành phố trụ sở.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.PROVINCE_ID
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang FMS.PROVINCE: BANK_MONI.PROVINCE_ID = PROVINCE.ID để xác nhận CODE sau đó hash_id('ECAT_PROVINCE_NEW', CODE) | FMS.PROVINCE (đồng bộ từ eCAT DMDC province-news) ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: province_code
+    business_meaning: Mã tỉnh/thành phố.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.PROVINCE.CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id. Giá trị lấy từ FMS.PROVINCE.CODE sau ETL crosswalk — chi tiết xem comment Province Id."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Id
+    physical_name: ward_id
+    business_meaning: FK đến Geographic Area — xã/phường trụ sở.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.WARD_ID
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'WARD'). Cần ETL crosswalk sang FMS.WARD: BANK_MONI.WARD_ID = WARD.ID để xác nhận CODE sau đó hash_id('ECAT_WARD_NEW', CODE) | FMS.WARD (đồng bộ từ eCAT DMDC ward-news) ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Code
+    physical_name: ward_code
+    business_meaning: Mã xã/phường.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.WARD.CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id. Giá trị lấy từ FMS.WARD.CODE sau ETL crosswalk — chi tiết xem comment Ward Id."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null

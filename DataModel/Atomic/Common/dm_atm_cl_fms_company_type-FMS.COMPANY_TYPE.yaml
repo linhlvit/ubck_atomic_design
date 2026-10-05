@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fms_company_type-FMS.COMPANY_TYPE
+  logical_name: Classification FMS Company Type
+  physical_name: cl_fms_company_type
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Organization Legal Structure"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Danh mục loại hình doanh nghiệp (công ty cổ phần/TNHH...) kèm danh sách loại đối tượng hệ thống áp dụng. Promote từ Classification Value (scheme FMS_COMPANY_TYPE, nay deprecated) lên entity riêng; Id hash từ ID nguồn, Code map từ cột CODE.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-COMPANY_TYPE
+
+attributes:
+  - name: Classification FMS Company Type Id
+    physical_name: cl_fms_company_tp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: COMPANY_TYPE
+    source_column: FMS.COMPANY_TYPE.ID
+    comment: "PK surrogate. Hash: hash_id('FMS_COMPANY_TYPE', ID) — hash từ ID nguồn theo chỉ đạo Data Modeler (không hash từ Code vì CODE nguồn nullable). BCV: \"[Common] Organization Legal Structure\" (phân biệt Organization theo hình thức pháp lý — cổ phần/TNHH, khớp cờ JOINT_STOCK). Danh mục loại hình doanh nghiệp."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Company Type Code
+    physical_name: cl_fms_company_tp_code
+    business_meaning: Mã loại hình doanh nghiệp eCAT được phép đồng bộ vào FMS.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: COMPANY_TYPE
+    source_column: FMS.COMPANY_TYPE.CODE
+    comment: "Mã nghiệp vụ, không dùng làm đầu vào hash Id. Nguồn nullable (DDL UAT 1) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: COMPANY_TYPE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_COMPANY_TYPE'"
+    etl_derived_value: FMS_COMPANY_TYPE
+
+  - name: Classification FMS Company Type Name
+    physical_name: cl_fms_company_tp_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: COMPANY_TYPE
+    source_column: FMS.COMPANY_TYPE.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: COMPANY_TYPE
+    source_column: FMS.COMPANY_TYPE.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: System Object Type Codes
+    physical_name: stm_object_tp_codes
+    business_meaning: "Danh sách loại đối tượng hệ thống áp dụng: 1=UBCK, 2=Công ty QLQ, 3=Ngân hàng LKGS, 4=CN CTQLQ NN, 5=VPĐD CTQLQ NN, 6=ĐTCK riêng lẻ, 7=Quỹ đầu tư, 8=Đại lý PP, 9=Đại lý CN, 10=Đại lý HT, 11=TCCCDV, 12=Đại lý khác, 13=Quỹ HT, 14=CT kiểm toán, 15=Kiểm toán viên."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: COMPANY_TYPE
+    source_column: FMS.COMPANY_TYPE.SYSTEM_OBJECT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Joint Stock Indicator
+    physical_name: joint_stock_ind
+    business_meaning: "Cờ là công ty cổ phần: 1=Công ty CP, 0=Công ty TNHH."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: COMPANY_TYPE
+    source_column: FMS.COMPANY_TYPE.JOINT_STOCK
+    comment: NUMBER(1). Nguồn khai báo NOT NULL.
+    classification_context: null
+    etl_derived_value: null

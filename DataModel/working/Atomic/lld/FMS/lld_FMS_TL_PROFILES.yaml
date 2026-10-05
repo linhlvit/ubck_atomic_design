@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -147,17 +147,16 @@ attributes:
   data_type: "string"
 - attribute_name: "Gender Code"
   physical_name: "gender_code"
-  description: "Giới tính: 1=Nam, 0=Nữ (hoặc chuỗi Nam/Nữ tùy bảng)."
+  description: "Giới tính."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.SEX"
-  comment: "Scheme: FMS_GENDER. [PROPOSE NEW SCHEME]. Mô tả nguồn cho biết encoding\
-    \ không nhất quán (số hoặc chuỗi tùy bản ghi) — cần profile dữ liệu thực tế trước\
-    \ khi chốt etl_derived_value."
-  classification_context: "FMS_GENDER"
+  comment: "SCHEMA_CODE=GENDER"
+  classification_context: null
+  etl_derived_value: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Held Unit Quantity"
@@ -170,20 +169,6 @@ attributes:
   source_columns:
   - "FMS.TL_PROFILES.QTTY"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Active Status Flag"
-  physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PROFILES.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
@@ -239,32 +224,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Practice Certificate Number"
-  physical_name: "practice_certificate_nbr"
-  description: "Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PROFILES.CERT_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Practice Certificate Date"
-  physical_name: "practice_certificate_dt"
-  description: "Ngày cấp chứng chỉ hành nghề."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PROFILES.CERT_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Held Share Percentage"
   physical_name: "held_share_percentage"
   description: "Tỷ lệ nắm giữ cổ phần (%) của người hành nghề."
@@ -278,8 +237,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
-- attribute_name: "Education Level Description"
-  physical_name: "education_level_description"
+- attribute_name: "Education Level Name"
+  physical_name: "education_level_nm"
   description: "Trình độ học vấn (cử nhân, thạc sĩ, tiến sĩ...)."
   data_domain: "Text"
   nullable: true
@@ -291,8 +250,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Professional Qualification Description"
-  physical_name: "professional_qualification_description"
+- attribute_name: "Professional Qualification Name"
+  physical_name: "professional_qualification_nm"
   description: "Trình độ chuyên môn/bằng cấp chuyên ngành."
   data_domain: "Text"
   nullable: true
@@ -304,8 +263,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Job Type Code"
-  physical_name: "job_tp_code"
+- attribute_name: "Certificate Type Code"
+  physical_name: "certificate_tp_code"
   description: "Loại hành nghề: 1=Quản lý quỹ, 2=Phân tích đầu tư..."
   data_domain: "Classification Value"
   nullable: true
@@ -313,25 +272,23 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.JOB_TYPE"
-  comment: "Scheme: FMS_JOB_TYPE (tái sử dụng — đã đăng ký Tier 1, nguồn FMS.JOBTYPE).\
-    \ Giá trị NUMBER trên cột này cần đối chiếu với JOBTYPE.ID để xác nhận cùng domain."
-  classification_context: "FMS_JOB_TYPE"
+  comment: "Scheme: FMS.SECURITIES_PRACTICING_CERTIFICATE_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Political Information Text"
-  physical_name: "political_information_text"
+- attribute_name: "Political Information Indicator"
+  physical_name: "political_information_ind"
   description: "Thông tin chính trị của người hành nghề (nếu có)."
-  data_domain: "Text"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.POLITICS"
-  comment: "Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string. Ý nghĩa cụ thể\
-    \ chưa rõ, cần profile dữ liệu."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Birth Date"
   physical_name: "birth_dt"
   description: "Ngày sinh."
@@ -384,8 +341,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Internal Identification Number"
-  physical_name: "internal_identification_nbr"
+- attribute_name: "Internal Identification Indicator"
+  physical_name: "internal_identification_ind"
   description: "Số hiệu định danh nội bộ của người hành nghề."
   data_domain: "Text"
   nullable: true
@@ -393,13 +350,12 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.ISI"
-  comment: "Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string. Giữ nguyên leading\
-    \ zeros nếu có."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Head Office Flag"
-  physical_name: "head_office_flag"
+- attribute_name: "Head Office Indicator"
+  physical_name: "head_office_ind"
   description: "Cờ là trụ sở chính: 1=Trụ sở chính, 0=Chi nhánh/VPĐD."
   data_domain: "Small Counter"
   nullable: true
@@ -440,16 +396,16 @@ attributes:
 - attribute_name: "Employment Active Indicator"
   physical_name: "employment_active_ind"
   description: "Cờ đang có hợp đồng lao động hiệu lực: Y=Còn HĐLĐ, N=Không."
-  data_domain: "Indicator"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.EMPLOYED"
-  comment: null
+  comment: "Xử lí CASE WHEN EMPLOYED = 'Y' then 1, EMPLOYED = 'N' then 0"
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Current Position Title"
   physical_name: "current_position_title"
   description: "Vị trí công việc tại tổ chức hiện tại."
@@ -582,22 +538,34 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Business Type Code"
-  physical_name: "business_tp_code"
+- attribute_name: "Classification FMS Business Id"
+  physical_name: "cl_fms_business_id"
   description: "FK -> BUSINESS: Lĩnh vực hoạt động liên quan."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.BUSI_ID"
-  comment: "Scheme: FMS_BUSINESS_TYPE (tái sử dụng — đã đăng ký Tier 1, nguồn FMS.BUSINESS).\
-    \ Nguồn BUSI_ID là UUID FK — ETL resolve sang mã BUSINESS.CODE tương ứng."
-  classification_context: "FMS_BUSINESS_TYPE"
+  comment: "FK target: cl_fms_business.cl_fms_business_id. Hash: hash_id('FMS_BUSINESS', BUSI_ID)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Confirmation Status Flag"
-  physical_name: "confirmation_status_flag"
+- attribute_name: "Classification FMS Business Code"
+  physical_name: "cl_fms_business_code"
+  description: "Mã lĩnh vực hoạt động (BK của bảng danh mục BUSINESS — chính là ID nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TL_PROFILES.BUSI_ID"
+  comment: "Lookup pair: cl_fms_business.cl_fms_business_code. Pair with Classification FMS Business Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Confirmation Status Indicator"
+  physical_name: "confirmation_status_ind"
   description: "Trạng thái xác nhận thông tin: 1=Đã xác nhận, 0=Chưa xác nhận."
   data_domain: "Small Counter"
   nullable: true
@@ -609,18 +577,30 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Classification FMS Event Type Id"
+  physical_name: "cl_fms_event_tp_id"
   description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.TL_PROFILES.EVENT_TYPE_ID"
-  comment: "Scheme: FMS_EVENT_TYPE. Nguồn EVENT_TYPE_ID là UUID FK — ETL resolve sang\
-    \ mã EVENT_TYPE tương ứng."
-  classification_context: "FMS_EVENT_TYPE"
+  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang FMS.EVENT_TYPE: TL_PROFILES.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận EVENT_CODE sau đó hash_id('FMS_EVENT_TYPE', EVENT_CODE). | [SỬA 2026-10-02] Trước đây Classification Value scheme FMS_EVENT_TYPE, nay FK sang entity Classification FMS Event Type."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Event Type Code"
+  physical_name: "cl_fms_event_tp_code"
+  description: "Mã loại sự vụ áp dụng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.EVENT_TYPE.EVENT_CODE"
+  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification FMS Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.EVENT_CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Event Type Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Edit Reason Description"
@@ -636,22 +616,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Payload Text"
-  physical_name: "event_payload_text"
-  description: "JSON giá trị các trường bổ sung theo cấu hình sự vụ (NCLOB)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PROFILES.EVENT_PAYLOAD"
-  comment: "Nguồn NCLOB — ETL lưu nguyên chuỗi JSON dạng text, không tách cấu trúc\
-    \ ở Atomic."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Certified Practitioner Flag"
-  physical_name: "certified_practitioner_flag"
+- attribute_name: "Certified Practitioner Indicator"
+  physical_name: "certified_practitioner_ind"
   description: "Cờ có chứng chỉ hành nghề hợp lệ: 1=Có CCHN, 0=Không."
   data_domain: "Small Counter"
   nullable: true

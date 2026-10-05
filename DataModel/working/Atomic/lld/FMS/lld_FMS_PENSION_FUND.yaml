@@ -196,18 +196,30 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Operation Status Code"
-  physical_name: "operation_status_code"
+- attribute_name: "Classification FMS Status Id"
+  physical_name: "cl_fms_status_id"
   description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.PENSION_FUND.STATUS_ID"
-  comment: "Scheme: FMS_OPERATION_STATUS (tái sử dụng). Nguồn STATUS_ID là UUID FK\
-    \ — ETL resolve sang mã STATUS.CODE tương ứng."
-  classification_context: "FMS_OPERATION_STATUS"
+  comment: "FK target: cl_fms_status.cl_fms_status_id. Cần ETL crosswalk sang FMS.STATUS: PENSION_FUND.STATUS_ID = STATUS.ID để xác nhận CODE sau đó hash_id('FMS_STATUS', CODE) | [MỚI 2026-10-02] Trước đây Classification Value scheme FMS_OPERATION_STATUS (nay deprecated), promote lên entity Classification FMS Status."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Status Code"
+  physical_name: "cl_fms_status_code"
+  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.CODE"
+  comment: "Lookup pair: cl_fms_status.cl_fms_status_code. Pair with Classification FMS Status Id. Giá trị lấy từ FMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Status Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Note"

@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Tách IP Postal Address + IP Electronic Address (xem lld_FMS_AGENCIES_IP_*.yaml\
+  notes: "[SỬA 2026-10-02] DECISION/DECISION_DATE/DECISION_PLACE đẩy ra IP Alt Identification type ESTABLISHMENT_OPERATION_LICENSE. Tách IP Postal Address + IP Electronic Address (xem lld_FMS_AGENCIES_IP_*.yaml\
     \ — Electronic Address bổ sung so với HLD Tier1 diagram 6c do BRD columns thực\
     \ tế có TELEPHONE/FAX). HLD 6b/7c nêu FK đến AGENCY_TYPE nhưng BRD columns thực\
     \ tế của AGENCIES không có cột AGENCYTYPE_ID — không tạo FK, cần xác nhận lại\
@@ -100,45 +100,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "License Decision Number"
-  physical_name: "license_decision_nbr"
-  description: "Số quyết định/giấy phép thành lập hoặc chấp thuận hoạt động."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.AGENCIES.DECISION"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "License Decision Date"
-  physical_name: "license_decision_dt"
-  description: "Ngày ban hành quyết định/giấy phép chấp thuận hoạt động đại lý."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.AGENCIES.DECISION_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-- attribute_name: "License Decision Issuing Place"
-  physical_name: "license_decision_issuing_place"
-  description: "Nơi ban hành quyết định/giấy phép."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.AGENCIES.DECISION_PLACE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Note"
   physical_name: "note"
   description: "Nội dung/ghi chú chi tiết về đại lý phân phối."
@@ -193,9 +154,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Registered Fund Certificate Count"
-  physical_name: "registered_fund_certificate_count"
-  description: "Số lượng quỹ đầu tư đăng ký hoạt động phân phối CCQ tại đại lý này."
+- attribute_name: "Number Registered Fund Certificate"
+  physical_name: "nbr_registered_fund_certificate"
+  description: "Số giấy phép đăng ký hoạt động phân phối CCQ tại đại lý."
   data_domain: "Text"
   nullable: true
   is_primary_key: false

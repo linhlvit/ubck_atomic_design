@@ -1,7 +1,7 @@
 # FIMS HLD — Tier 3
 
 **Source system:** FIMS (Hệ thống quản lý giám sát và công bố thông tin thành viên thị trường — Oracle)
-**Tier 3:** Entity có FK đến Tier 2. Gồm 7 entity: Foreign Investor Securities Account (FK→Foreign Investor + Market Participant Organization; gộp thêm CATEGORIESSTOCK — cùng grain Investor×Securities Company), Report Import Value (FK→Member Periodic Report), Report Processing Activity Log (FK→Member Periodic Report), Market Participant Conduct Violation (FK→Market Participant Organization + Warning Condition + Warning Parameter), Info Disclosure Authorization (FK→Market Participant Organization + Info Disclosure Representative), Trading Authorization (FK→Foreign Investor + Market Participant Organization + Trading Representative), Info Disclosure Announcement (FK→Member Periodic Report + Info Disclosure Representative + Foreign Investor + Market Participant Organization + Reporting Obligation Type).
+**Tier 3:** Entity có FK đến Tier 2. Gồm 7 entity: Foreign Investor Securities Account (FK→Foreign Investor + Market Participant Organization; gộp thêm CATEGORIESSTOCK — cùng grain Investor×Securities Company), Foreign Investor Report Value (FK→Foreign Investor Report Structure + Foreign Investor Report; thay Report Import Value — 2026-09-30), Report Processing Activity Log (FK→Member Periodic Report), Market Participant Conduct Violation (FK→Market Participant Organization + Warning Condition + Warning Parameter), Info Disclosure Authorization (FK→Market Participant Organization + Info Disclosure Representative), Trading Authorization (FK→Foreign Investor + Market Participant Organization + Trading Representative), Info Disclosure Announcement (FK→Member Periodic Report + Info Disclosure Representative + Foreign Investor + Market Participant Organization + Reporting Obligation Type).
 
 ---
 
@@ -11,7 +11,8 @@
 |---|---|---|---|---|---|---|---|
 | Arrangement | [Arrangement] Investment Account | Investment Account | SECURITIESACCOUNT | Danh sách tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài mở tại công ty chứng khoán | Foreign Investor Securities Account | Fundamental | (1) BCV term `[Arrangement] Investment Account` — tài khoản giao dịch là arrangement giữa NĐT và CTCK. (2) SECURITIESACCOUNT: InvesId (FK→INVESTOR), SecId (FK→SECURITIESCOMPANY), Account (số tài khoản), OpenPlace. (3) Đây là tài khoản đầu tư mở tại tổ chức tài chính → `[Arrangement] Investment Account`. FK đến Foreign Investor (T1) + Market Participant Organization (T1) → Tier 3 theo dependency. **[ĐÃ ĐIỀU CHỈNH — quyết định Data Modeler 2026-07-19]** Table Type đổi từ Relative sang Fundamental (qua CATEGORIESSTOCK — xem dòng dưới); entity được xem là tài khoản gốc có lifecycle độc lập, không chỉ là thuộc tính bổ sung SCD2 của Foreign Investor/Market Participant Organization. |
 | Arrangement | [Arrangement] Investment Account | Investment Account | CATEGORIESSTOCK | Danh mục chứng khoán NĐT NN đang nắm giữ tại 1 công ty chứng khoán — số lượng và tỷ lệ sở hữu hiện tại | Foreign Investor Securities Account | Fundamental | (1) CATEGORIESSTOCK: InvesId (FK→INVESTOR), SecId (FK→SECURITIESCOMPANY), Quantity, Rate (tỷ lệ sở hữu %) — **cùng cặp FK (Investor, Securities Company) với SECURITIESACCOUNT**, không có FK riêng đến 1 mã chứng khoán cụ thể (không FK đến SECURITIES). (2) Áp dụng quy tắc "Gộp entity khi hợp lý" — cùng grain 1 NĐT NN × 1 CTCK, chỉ khác thuộc tính (SECURITIESACCOUNT lưu số tài khoản/nơi mở, CATEGORIESSTOCK lưu số lượng/tỷ lệ sở hữu hiện tại). Không tạo entity riêng — gộp `current_holding_quantity` + `current_ownership_rate` làm thuộc tính bổ sung trên `Foreign Investor Securities Account`, thêm CATEGORIESSTOCK vào `source_table`. (3) `CATEGORIESSTOCKHIS` (lịch sử) giữ nguyên ngoài scope — audit log nguồn cho 2 trường này. **[ĐÃ ĐIỀU CHỈNH — quyết định Data Modeler 2026-07-19]** Table Type của `Foreign Investor Securities Account` đổi từ Relative sang Fundamental (SCD4A thay vì SCD2). |
-| Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTVALUES | Dữ liệu giá trị từng ô (cell) trong báo cáo định kỳ thành viên — bảng phân vùng theo năm | Report Import Value | Fact Append | (1) BCV term `[Documentation] Gov. Registration Document` — giá trị báo cáo là dữ liệu nội dung hồ sơ pháp lý. (2) RPTVALUES: RptMemberId (FK→RPTMEMBER), SheetId (FK→SHEET), Code (mã chỉ tiêu), Values (giá trị string), FormatDataType, IsDynamic. Bảng phân vùng RPTVALUES_YYYY. (3) Grain = 1 field per báo cáo thành viên. Change Mode = Update nhưng ETL cần xác nhận: tái nộp tạo dòng mới hay update? Fact Append nếu immutable; xem mục T3-01. |
+| Documentation | [Documentation] Regulatory Information | Regulatory Information | RPTVALUES (qua ODS `FIR_VALUE`) | Dữ liệu giá trị từng ô (cell) trong báo cáo định kỳ thành viên — bảng phân vùng theo năm | Foreign Investor Report Value | Classification | (1) Term candidate `Regulatory Information` (BCV Documentation): "Identifies Reported Information that is required to be filed with regulatory bodies" — giá trị thành viên nộp lên UBCKNN; thay quyết định cũ `Gov. Registration Document` của entity `Report Import Value` (2026-09-30). (2) ODS `FIR_VALUE` (tên cũ `fact_report_cell`) = `RPTMEMBER ⋈ RPTVALUES` (`RPTVALUES.MebId = RPTMEMBER.Id`, trạng thái đã nộp 2/3/5, khoảng `DateSubmitted`); ETL tra `TgtId` (RAW(16)) → `indicator_uid` cùng `sheet_id`, và FK đối tượng trên RPTMEMBER (secid→fundid→bankid→depid→stockid→inid→branid→investorid→tradingrepresentativeid, cột đầu tiên có giá trị) → `object_type/object_id`. (3) Grain = 1 ô × 1 lần nộp × 1 dòng động; BK = `report_log_id ‖ sheet_id ‖ indicator_uid ‖ row_order`. Upsert theo BK → Table Type `Classification` (quyết định Data Modeler). FK đến `Foreign Investor Report Structure` (T2) → Tier 3. |
+| Documentation | [Documentation] Regulatory Information | Regulatory Information | RPTMEMBER (qua ODS `FIR_VALUE`) | Lần nộp báo cáo của thành viên | Foreign Investor Report Value | Classification | RPTMEMBER cung cấp thông tin lần nộp denormalize trên từng ô: `report_log_id` (= RPTMEMBER.Id), period_type/period_value, year_value, day_report, han_nop, late_status/late_status_code/late_duration, object_type/object_id. RPTMEMBER vẫn là nguồn chính của `Member Periodic Report` (T2) — xem T3-09. |
 | Business Activity | [Business Activity] Status Log | Status Log | RPTPROCESS | Lịch sử xử lý báo cáo của chuyên viên UBCKNN — duyệt/từ chối/yêu cầu gửi lại | Report Processing Activity Log | Fact Append | (1) BCV term ETL Pattern `[Business Activity] Status Log` — nhật ký sự kiện xử lý trạng thái. (2) RPTPROCESS: RptMemberId (FK→RPTMEMBER), UserId (FK→USERS), Status, Comment, DateChange. (3) Đây là event log ghi nhận từng hành động của cán bộ UBCKNN — insert-only (không update). Fact Append. |
 | Business Activity | [Business Activity] Conduct Violation | Conduct Violation | VIOLT | Danh sách vi phạm điều kiện cảnh báo giám sát của thành viên thị trường | Market Participant Conduct Violation | Fact Append | (1) BCV term `[Business Activity] Conduct Violation` — vi phạm là sự kiện hoạt động. (2) VIOLT: FK đến các loại tổ chức thành viên (QLQ/CTCK/NHLK/VSDC/Sở GD/CN QLQ NN) + PrWId (FK→PARAWARN) + CDTWarnId (FK→CDTWARN); Change Mode = Append. (3) Mỗi dòng = 1 vi phạm phát sinh → Fact Append. Tier 3 vì FK đến Warning Condition (T2) + Market Participant Organization (T1). |
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | AUTHOANNOUNCE | Danh sách ủy quyền CBTT — thành viên thị trường ủy quyền cho đại diện CBTT | Info Disclosure Authorization | Fundamental | (1) BCV term `[Documentation] Gov. Registration Document` — giấy ủy quyền là hồ sơ pháp lý. (2) AUTHOANNOUNCE: FK đến nhiều loại tổ chức thành viên + InfoDisRepId (FK→INFODISCREPRES); có StartDate, EndDate, RelatedPropertyId. (3) Đây là văn bản ủy quyền có hiệu lực pháp lý → Gov. Registration Document. Fundamental SCD4A (ủy quyền có thể hết hạn/thu hồi). Tier 3 vì FK đến Info Disclosure Representative (T2). |
@@ -220,6 +221,8 @@ erDiagram
 
 ---
 
+> **Ghi chú 6b — nhóm Báo cáo động (2026-09-30):** `Foreign Investor Report Value` KHÔNG map trực tiếp từ RPTVALUES ở diagram trên mà qua ODS `FIR_VALUE` (= `RPTMEMBER ⋈ RPTVALUES` + tra `indicator_uid`/`object_type,object_id`). Chi tiết luồng: ghi chú cuối mục 7a của `FIMS_HLD_Overview.md`.
+
 ## 6c. Diagram Atomic (Mermaid)
 
 ```mermaid
@@ -240,19 +243,29 @@ erDiagram
         timestamp ds_loaded_at
     }
 
-    Report_Import_Value {
-        bigint ds_report_import_value_id PK
-        bigint ds_member_periodic_report_id FK
-        string member_periodic_report_code
-        string sheet_code
-        string field_code
-        string field_name
-        string value
-        string format_data_type
-        int is_dynamic
-        int row_dynamic
-        string ds_source_system
-        timestamp ds_loaded_at
+    Foreign_Investor_Report_Value {
+        string fir_value_id PK
+        string fir_value_code "report_log_id + sheet_id + indicator_uid + row_order"
+        string fir_structure_id FK
+        string fir_structure_code
+        string fir_id FK
+        string fir_code
+        string rpt_log_id
+        string rpt_id
+        string fi_reporting_entity_tp_code
+        string fi_reporting_entity_code
+        string period_tp_code
+        string period_val
+        int rpt_year
+        date rpt_day
+        timestamp submission_deadline_tms
+        string submission_status_code
+        string submission_status_tp_code
+        decimal late_duration
+        string val_raw
+        decimal val_nbr
+        string val_string
+        date submission_dt
     }
 
     Report_Processing_Activity_Log {
@@ -376,7 +389,9 @@ erDiagram
 
     Foreign_Investor_Securities_Account ||--o{ Foreign_Investor : "ds_foreign_investor_id"
     Foreign_Investor_Securities_Account ||--o{ Market_Participant_Organization : "ds_market_participant_org_id"
-    Report_Import_Value ||--o{ Member_Periodic_Report : "ds_member_periodic_report_id"
+    Foreign_Investor_Report_Value ||--o{ Foreign_Investor_Report_Structure : "fir_structure_id"
+    Foreign_Investor_Report_Value ||--o{ Foreign_Investor_Report : "fir_id"
+    Foreign_Investor_Report_Value ||--o{ Classification_Foreign_Investor_Reporting_Entity : "fi_reporting_entity_tp_code + fi_reporting_entity_code"
     Report_Processing_Activity_Log ||--o{ Member_Periodic_Report : "ds_member_periodic_report_id"
     Market_Participant_Conduct_Violation ||--o{ Market_Participant_Organization : "ds_market_participant_org_id"
     Market_Participant_Conduct_Violation ||--o{ Warning_Parameter : "ds_warning_parameter_id"
@@ -401,7 +416,10 @@ erDiagram
 |---|---|---|---|---|
 | AUTHOANNOUNCE.RelatedPropertyId → RELATEDPROPERTIES | Hình thức liên quan trong ủy quyền CBTT | `FIMS_RELATED_PROPERTY` | source_table | |
 | TRADINGAUTHORIZATION.RelatedPropertyId → RELATEDPROPERTIES | Hình thức liên quan trong ủy quyền giao dịch | `FIMS_RELATED_PROPERTY` | source_table | Dùng chung scheme với AUTHOANNOUNCE |
-| RPTVALUES.FormatDataType | Định dạng kiểu dữ liệu của ô báo cáo (text/number/date) | modeler_defined | modeler_defined | Không cần scheme riêng — lưu trực tiếp dạng string classification |
+| ODS `FIR_VALUE.OBJECT_TYPE` | Loại đối tượng nộp báo cáo | `FIMS_REPORTING_ENTITY_TYPE` | etl_derived | Dùng chung với Classification Foreign Investor Reporting Entity (T1) |
+| ODS `FIR_VALUE.PERIOD_TYPE` (RPTMEMBER) | Loại kỳ báo cáo (THANG/QUY/NAM...) | `FIMS_REPORT_PERIOD_TYPE` | etl_derived | |
+| ODS `FIR_VALUE.LATE_STATUS_CODE` (RPTMEMBER) | Trạng thái nộp đúng hạn/trễ hạn | `FIMS_REPORT_LATE_STATUS` | etl_derived | Nhãn text đi kèm (`late_status`) lưu ở `submission_status_code` (Text) |
+| RPTVALUES.FormatDataType | ~~Định dạng kiểu dữ liệu của ô báo cáo~~ | — | — | **2026-09-30:** không map trên `fir_value` ("bỏ, link tự lấy") — lấy qua `Foreign Investor Report Structure.data_tp` (scheme `FIMS_REPORT_DATA_TYPE`, T2) |
 | VIOLT (Conduct Violation) | Loại vi phạm giám sát | `FIMS_VIOLATION_TYPE` | source_table | → FIMS.VIOLATIONTYPE (nếu có FK); cần xác nhận |
 | ANNOUNCE.AnnounceTypeId → ANNOUNCETYPE | Loại hình công bố thông tin | `FIMS_ANNOUNCEMENT_TYPE` | source_table | Scheme đã đăng ký ở Overview 7c — dùng lại |
 | ANNOUNCE.PeriodType | Loại kỳ CBTT/báo cáo (1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm) | `FIMS_PERIOD_TYPE` | etl_derived | |
@@ -420,11 +438,13 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T3-01 | RPTVALUES.Change Mode = Update. Khi thành viên gửi lại báo cáo (RPTMEMBER.Status = 5=Đã gửi lại) → các giá trị RPTVALUES được update hay tạo dòng mới? | Cần xác nhận từ team FIMS. Nếu update → Table Type = Fundamental SCD4A. Nếu insert mới + đánh dấu inactive dòng cũ → Fact Append với partition. Tác động lớn đến ETL pattern. |
+| T3-01 | RPTVALUES.Change Mode = Update. Khi thành viên gửi lại báo cáo (RPTMEMBER.Status = 5=Đã gửi lại) → các giá trị RPTVALUES được update hay tạo dòng mới? | **Đã chốt 2026-09-30:** entity `Foreign Investor Report Value` lấy qua ODS `FIR_VALUE`, Upsert theo BK `report_log_id ‖ sheet_id ‖ indicator_uid ‖ row_order` (Table Type `Classification`). Mỗi lần gửi lại sinh `report_log_id` mới (RPTMEMBER.Id) nên không ghi đè giá trị lần nộp trước. |
 | T3-02 | TRADINGAUTHORIZATION có FK đến LO (loại hình quỹ / đại lý). LO là bảng gì trong FIMS — Classification Value hay entity nghiệp vụ? | Cần đọc brd_FIMS_TRADINGAUTHORIZATION.yaml và xác định LO. Nếu LO = Classification Value → scheme `FIMS_LO_TYPE`. Nếu LO = entity nghiệp vụ → xem xét tier của Trading Authorization. |
 | T3-03 | AUTHOANNOUNCE: ANNOUNCEINVES (junction AUTHOANNOUNCE + INVESTOR) đã được denormalize thành ARRAY trên Info Disclosure Authorization. Xác nhận cardinality: 1 ủy quyền CBTT có thể ủy quyền cho nhiều NĐT NN không? | Nếu 1:N → ARRAY là đúng. Nếu 1:1 → lưu trực tiếp trường `authorized_investor_id` đơn giản hơn. |
 | T3-04 | VIOLT (vi phạm): có FK đến cả BRANCHS (chi nhánh QLQ NN) song song với 5 loại tổ chức thành viên. ETL xử lý tương tự TLPROFILES — cần COALESCE dựa vào SystemObject để xác định `ds_market_participant_org_id`. | Xác nhận: BRANCHS có được map vào Market Participant Organization entity không, hay cần tạo FK riêng đến Foreign FM Branch Organization (T2)? |
-| T3-05 | RPTVALUES bảng phân vùng theo năm (RPTVALUES_2020, RPTVALUES_2021, ...). ETL cần union all partitions. Xác nhận có bao nhiêu partition hiện tại và strategy incremental load là gì? | Cần input từ ETL team. |
+| T3-05 | RPTVALUES bảng phân vùng theo năm (RPTVALUES_2020, RPTVALUES_2021, ...). ETL cần union all partitions. Xác nhận có bao nhiêu partition hiện tại và strategy incremental load là gì? | **Đã xử lý tại tầng ODS (2026-09-30):** `fims_staging_to_ods.py` đọc RPTVALUES theo khoảng `[from_date, to_date)` của `RPTMEMBER.DateSubmitted` và ghi ODS `FIR_VALUE` partition theo `ngay_nop` — Atomic chỉ đọc ODS, không tự union partition staging. |
 | T3-06 | Gộp `CATEGORIESSTOCK` vào `Foreign Investor Securities Account` dựa trên giả định: 1 NĐT NN chỉ có 1 tài khoản tại 1 CTCK (grain SECURITIESACCOUNT và CATEGORIESSTOCK trùng nhau — cùng cặp InvesId+SecId). Xác nhận giả định này đúng — nếu 1 NĐT NN có thể mở nhiều tài khoản tại cùng 1 CTCK, cần tách `CATEGORIESSTOCK` thành entity con riêng (Holding) thay vì gộp thuộc tính. | Nếu đúng 1:1 → giữ nguyên gộp. Nếu 1:N → tách `Foreign Investor Securities Holding` (Relative, FK đến Foreign Investor Securities Account). |
 | T3-07 | `ANNOUNCE.EformSubmissionJson` — dữ liệu eform CBTT nộp qua form động (JSON). Có cần parse chi tiết từng field JSON thành entity con (tương tự RPTVALUES cho RPTMEMBER) hay giữ nguyên dạng JSON string trên `Info Disclosure Announcement`? | Đề xuất tạm thời: giữ nguyên JSON string ở Atomic (không parse), vì không có catalog field cố định như RPT_FIELD_CATALOG. Đánh giá lại nếu có yêu cầu báo cáo chi tiết theo field. |
 | T3-08 | `ANNOUNCE.IncidentMatterType` chưa có danh mục giá trị tường minh trong BRD. Cần profile dữ liệu thực tế để hoàn thiện `FIMS_INCIDENT_MATTER_TYPE`. | Chờ LLD — không ảnh hưởng quyết định scope/tier của `Info Disclosure Announcement`. |
+| T3-09 | **[2026-09-30]** `Foreign Investor Report Value` denormalize thông tin lần nộp của RPTMEMBER (`rpt_log_id`, kỳ, hạn nộp, trạng thái trễ) — chồng lấn với `Member Periodic Report`. Bản map Data Modeler không tạo cặp FK Id sang Member Periodic Report; `Report Processing Activity Log`/`Info Disclosure Announcement` vẫn FK đến Member Periodic Report. | Khi thiết kế LLD Member Periodic Report → cân nhắc bổ sung FK `Member Periodic Report Id/Code` trên `fir_value` (hash từ `rpt_log_id`). |
+| T3-10 | **[2026-09-30]** Đối tượng nộp trên `fir_value` chỉ có `fi_reporting_entity_tp_code` + `fi_reporting_entity_code` (không có Id — theo bản map). Join sang `Classification Foreign Investor Reporting Entity` bắt buộc đủ 2 cột. Các cột "bỏ, link tự lấy" (report_code/name, sheet_name, row_path, column_path, object_name...) không map — lấy qua FK. 5 cờ chẩn đoán (`section_echo_ind`, `band_overflow_ind`, `static_copy_ind`, `rpt_marker_ind`, `dynamic_ind`) giữ nguyên để Datamart lọc dữ liệu thật; `is_mirror`/`is_label_col`/`entity_code`/`indicator_code`/`item_id`/`prd_id` không map. | Xem `pending_design.yaml`. |

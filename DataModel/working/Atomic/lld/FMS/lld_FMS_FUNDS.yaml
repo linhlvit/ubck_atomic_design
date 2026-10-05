@@ -121,18 +121,30 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Operation Status Code"
-  physical_name: "operation_status_code"
+- attribute_name: "Classification FMS Status Id"
+  physical_name: "cl_fms_status_id"
   description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.FUNDS.STATUS_ID"
-  comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK — ETL resolve\
-    \ sang mã STATUS.CODE tương ứng."
-  classification_context: "FMS_OPERATION_STATUS"
+  comment: "FK target: cl_fms_status.cl_fms_status_id. Cần ETL crosswalk sang FMS.STATUS: FUNDS.STATUS_ID = STATUS.ID để xác nhận CODE sau đó hash_id('FMS_STATUS', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Status Code"
+  physical_name: "cl_fms_status_code"
+  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.CODE"
+  comment: "Lookup pair: cl_fms_status.cl_fms_status_code. Pair with Classification FMS Status Id. Giá trị lấy từ FMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Status Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Investment Fund Full Name"
@@ -174,8 +186,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Certificate Ticker Code"
-  physical_name: "fund_certificate_ticker_code"
+- attribute_name: "TICKER SYMBOL"
+  physical_name: "ticker_symbol"
   description: "Mã chứng chỉ quỹ (ticker symbol trên sàn giao dịch)."
   data_domain: "Text"
   nullable: true
@@ -187,18 +199,30 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Type Code"
-  physical_name: "fund_tp_code"
+- attribute_name: "Classification FMS Fund Type Id"
+  physical_name: "cl_fms_fund_tp_id"
   description: "FK -> FUND_TYPE: Loại quỹ đầu tư."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.FUNDS.FTYPE_ID"
-  comment: "Scheme: FMS_FUND_TYPE (đã đăng ký). Nguồn FTYPE_ID là UUID FK — ETL resolve\
-    \ sang mã FUND_TYPE.CODE tương ứng."
-  classification_context: "FMS_FUND_TYPE"
+  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE', FTYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Fund Type Code"
+  physical_name: "cl_fms_fund_tp_code"
+  description: "Mã loại quỹ đầu tư (BK của bảng danh mục FUND_TYPE — chính là ID nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.FTYPE_ID"
+  comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification FMS Fund Type Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Charter Capital Amount"
@@ -217,7 +241,7 @@ attributes:
 - attribute_name: "Total Outstanding Unit Quantity"
   physical_name: "total_outstanding_unit_quantity"
   description: "Tổng số lượng CCQ/cổ phiếu đang lưu hành."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -226,7 +250,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Description"
   physical_name: "description"
   description: "Mô tả chi tiết."
@@ -240,8 +264,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Type Decision Number"
-  physical_name: "fund_tp_decision_nbr"
+- attribute_name: "Type Of Fund No"
+  physical_name: "tp_of_fund_no"
   description: "Số quyết định về loại hình quỹ."
   data_domain: "Text"
   nullable: true
@@ -253,8 +277,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Type Par Value Description"
-  physical_name: "fund_tp_par_val_description"
+- attribute_name: "Type Of Fund Mnp"
+  physical_name: "tp_of_fund_mnp"
   description: "Mệnh giá CCQ theo loại quỹ."
   data_domain: "Text"
   nullable: true
@@ -268,8 +292,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Type Identifier Description"
-  physical_name: "fund_tp_identifier_description"
+- attribute_name: "Type Of Fund Dent"
+  physical_name: "tp_of_fund_dent"
   description: "Loại quỹ theo định danh nội bộ."
   data_domain: "Text"
   nullable: true
@@ -401,7 +425,7 @@ attributes:
 - attribute_name: "Initial Offering Unit Quantity"
   physical_name: "initial_offering_unit_quantity"
   description: "Số lượng CCQ phát hành lần đầu tiên."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -410,7 +434,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Stock Exchange Name"
   physical_name: "stock_exchange_nm"
   description: "Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM."
@@ -420,11 +444,20 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.FUNDS.STOCK_EXCHANGE"
-  comment: "[ĐỔI 2026-07-19] Đổi từ Classification Value sang Text 1:1 theo yêu cầu\
-    \ Data Modeler — map trực tiếp từ nguồn, không qua classification. Đổi tên từ\
-    \ 'Listing Market Code' (tránh trùng tên với attribute cùng ý nghĩa của SECURITIES.MARKET\
-    \ — nay là 'Market Code', vẫn giữ Classification Value FMS_LISTING_MARKET, không\
-    \ đổi)."
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Open Fund Type Code"
+  physical_name: "open_fund_tp_code"
+  description: "Phân loại quỹ mở: EQUITY/BOND/BALANCED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.OPEN_FUND_TYPE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

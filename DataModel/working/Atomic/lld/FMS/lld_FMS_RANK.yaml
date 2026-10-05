@@ -7,9 +7,9 @@ metadata:
   entity_physical_name: "member_rating"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
-  table_type: "Fact Append"
+  table_type: "Classification"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -143,20 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.RANK.RANK_TYPE"
-  comment: "Scheme: FMS_RATING_PERIOD_TYPE (tái sử dụng — đã đăng ký Tier 1, values gốc YEAR_END=1/MID_YEAR=2 khớp đúng cột này). ETL map: 1=YEAR_END;2=MID_YEAR."
-  classification_context: "FMS_RATING_PERIOD_TYPE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Data Date"
-  physical_name: "data_dt"
-  description: "Ngày dữ liệu — dùng làm filter logic tải incremental cho bảng Append (nguồn insert-only)."
-  data_domain: "Date"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.RANK.DATE_CREATED"
-  comment: "[ĐỔI 2026-07-19] Đổi từ 'Created Timestamp' theo yêu cầu Data Modeler — bảng Append dùng DATE_CREATED làm filter logic tải incremental, nên map vào Data Date (ETL truncate timestamp về granularity ngày) thay vì giữ nguyên như audit timestamp thông thường."
+  comment: "SCHEMA_CODE=FMS.RANK_TYPE"
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"

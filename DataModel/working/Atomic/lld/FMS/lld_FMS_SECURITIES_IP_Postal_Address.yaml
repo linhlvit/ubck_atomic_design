@@ -84,3 +84,81 @@ attributes:
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Country Id"
+  physical_name: "country_id"
+  description: "FK đến Geographic Area — quốc gia trụ sở."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SECURITIES.COUNTRY_ID"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang ECAT.COUNTRY: SECURITIES.COUNTRY_ID = COUNTRY.ID để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE) | FMS không có bảng danh mục quốc gia nội bộ (COUNTRY_ID VARCHAR2(256) là ID danh mục eCAT) — giả định COUNTRY_ID = ECAT.COUNTRY.ID, cần profile dữ liệu xác nhận. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Country Code"
+  physical_name: "country_code"
+  description: "Mã quốc gia."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.COUNTRY.CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country Id. Giá trị lấy từ ECAT.COUNTRY.CODE sau ETL crosswalk — chi tiết xem comment Country Id."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Id"
+  physical_name: "province_id"
+  description: "FK đến Geographic Area — tỉnh/thành phố trụ sở."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SECURITIES.PROVINCE_ID"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang FMS.PROVINCE: SECURITIES.PROVINCE_ID = PROVINCE.ID để xác nhận CODE sau đó hash_id('ECAT_PROVINCE_NEW', CODE) | FMS.PROVINCE (đồng bộ từ eCAT DMDC province-news) ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành phố."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PROVINCE.CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id. Giá trị lấy từ FMS.PROVINCE.CODE sau ETL crosswalk — chi tiết xem comment Province Id."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ward Id"
+  physical_name: "ward_id"
+  description: "FK đến Geographic Area — xã/phường trụ sở."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SECURITIES.WARD_ID"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'WARD'). Cần ETL crosswalk sang FMS.WARD: SECURITIES.WARD_ID = WARD.ID để xác nhận CODE sau đó hash_id('ECAT_WARD_NEW', CODE) | FMS.WARD (đồng bộ từ eCAT DMDC ward-news) ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ward Code"
+  physical_name: "ward_code"
+  description: "Mã xã/phường."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.WARD.CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id. Giá trị lấy từ FMS.WARD.CODE sau ETL crosswalk — chi tiết xem comment Ward Id."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"

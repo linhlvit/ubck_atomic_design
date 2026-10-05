@@ -61,19 +61,19 @@ attributes:
   data_type: "string"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
-  description: "Loại địa chỉ — trụ sở chính."
+  description: "Loại địa chỉ — đại lý phân phối."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
   comment: null
-  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
-  etl_derived_value: "HEAD_OFFICE"
+  classification_context: "IP_ADDR_TYPE=DISTRIBUTION_AGENT"
+  etl_derived_value: "DISTRIBUTION_AGENT"
   data_type: "string"
 - attribute_name: "Address Value"
   physical_name: "adr_val"
-  description: "Địa chỉ trụ sở."
+  description: "Địa chỉ đại lý phân phối."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -81,6 +81,6 @@ attributes:
   source_columns:
   - "FMS.AGENCIES.ADDRESS"
   comment: null
-  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  classification_context: "IP_ADDR_TYPE=DISTRIBUTION_AGENT"
   etl_derived_value: null
   data_type: "string"

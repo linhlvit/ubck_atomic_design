@@ -1,0 +1,97 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "STOCKHOLDER_TYPE"
+  atomic_entity: "Classification FMS Stockholder Type"
+  entity_physical_name: "cl_fms_stockholder_type"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Involved Party Type"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-02] Promote từ Classification Value (scheme FMS_STOCKHOLDER_TYPE, nay deprecated). Không có cột CODE riêng — dùng ID làm BK (cùng pattern JOBS/FUND_TYPE). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME, DESCRIPTION, PERSONAL_TYPE; RECORD_STATUS, DELETED, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Entity tiêu thụ INVES.STO_ID (Discretionary Investment Investor) và MB_FUND.ST_ID (Investment Fund Investor Membership) đổi sang cặp FK Id + Code."
+attributes:
+- attribute_name: "Classification FMS Stockholder Type Id"
+  physical_name: "cl_fms_stockholder_tp_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('FMS_STOCKHOLDER_TYPE', ID). BCV: \"[Common] Involved Party Type\" (phân biệt Involved Party theo đặc tính — cá nhân/tổ chức, khớp cờ PERSONAL_TYPE). Danh mục loại cổ đông: cá nhân/tổ chức trong nước và nước ngoài."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Stockholder Type Code"
+  physical_name: "cl_fms_stockholder_tp_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STOCKHOLDER_TYPE.ID"
+  comment: "BK chính. PK nguồn — không có cột mã nghiệp vụ riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_STOCKHOLDER_TYPE"
+  etl_derived_value: "FMS_STOCKHOLDER_TYPE"
+  data_type: "string"
+- attribute_name: "Classification FMS Stockholder Type Name"
+  physical_name: "cl_fms_stockholder_tp_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STOCKHOLDER_TYPE.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STOCKHOLDER_TYPE.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Personal Type Indicator"
+  physical_name: "personal_tp_ind"
+  description: "Cờ là quan hệ cá nhân/gia đình: 1=Cá nhân, 0=Tổ chức/Kinh tế."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STOCKHOLDER_TYPE.PERSONAL_TYPE"
+  comment: "NUMBER(1). Nguồn khai báo NOT NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

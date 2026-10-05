@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "FMS"
   source_table: "JOB_TL_PRO"
-  atomic_entity: "Fund Management Company Employee X Classification FMS Position Relationship"
-  entity_physical_name: "fmc_employee_x_classification_fms_position_relationship"
+  atomic_entity: "Fund Management Company Employee X Classification FMS Job Relationship"
+  entity_physical_name: "fmc_employee_x_classification_fms_job_relationship"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Relative"
@@ -25,7 +25,7 @@ metadata:
     \ Hạ về draft (2026-08-13) để bỏ cặp Id/Code riêng của entity — theo quyết định\
     \ Data Modeler, bảng \"_x_\" (link/relationship thuần) không cần surrogate Id\
     \ + BK Code riêng; PK là composite 2 FK (Fund Management Company Employee Id +\
-    \ Classification FMS Position Id)."
+    \ Classification FMS Job Id)."
 attributes:
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
@@ -49,7 +49,7 @@ attributes:
   source_columns:
   - "FMS.JOB_TL_PRO.TLPRO_ID"
   comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
-    \ TLPRO_ID). Composite PK cùng Classification FMS Position Id."
+    \ TLPRO_ID). Composite PK cùng Classification FMS Job Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -67,8 +67,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification FMS Position Id"
-  physical_name: "cl_fms_position_id"
+- attribute_name: "Classification FMS Job Id"
+  physical_name: "cl_fms_job_id"
   description: "FK -> JOBS: Chức danh/vị trí công việc được gán."
   data_domain: "Surrogate Key"
   nullable: false
@@ -76,13 +76,13 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.JOB_TL_PRO.JOB_ID"
-  comment: "FK target: cl_fms_position.cl_fms_position_id. Hash: hash_id('FMS_JOBS',\
+  comment: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS',\
     \ JOB_ID). Composite PK cùng Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification FMS Position Code"
-  physical_name: "cl_fms_position_code"
+- attribute_name: "Classification FMS Job Code"
+  physical_name: "cl_fms_job_code"
   description: "Mã chức danh/vị trí công việc được gán."
   data_domain: "Text"
   nullable: false
@@ -90,8 +90,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.JOB_TL_PRO.JOB_ID"
-  comment: "Lookup pair: cl_fms_position.cl_fms_position_code. Pair with Classification\
-    \ FMS Position Id."
+  comment: "Lookup pair: cl_fms_job.cl_fms_job_code. Pair with Classification\
+    \ FMS Job Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

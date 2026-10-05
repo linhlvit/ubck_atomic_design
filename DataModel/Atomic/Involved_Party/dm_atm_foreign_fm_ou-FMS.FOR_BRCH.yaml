@@ -7,7 +7,7 @@ ldm:
   physical_name: foreign_fm_ou
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Organization"
   table_type: Fundamental
@@ -64,18 +64,32 @@ attributes:
     classification_context: "Source System Code = 'FMS_FOR_BRCH'"
     etl_derived_value: FMS_FOR_BRCH
 
-  - name: Operation Status Code
-    physical_name: operation_status_code
+  - name: Classification FMS Status Id
+    physical_name: cl_fms_status_id
     business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
-    data_domain: Classification Value
+    data_domain: Surrogate Key
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FMS
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.STATUS_ID
-    comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK — ETL resolve sang mã STATUS.CODE tương ứng."
-    classification_context: FMS_OPERATION_STATUS
+    comment: "FK target: cl_fms_status.cl_fms_status_id. Cần ETL crosswalk sang FMS.STATUS: FOR_BRCH.STATUS_ID = STATUS.ID để xác nhận CODE sau đó hash_id('FMS_STATUS', CODE)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Status Code
+    physical_name: cl_fms_status_code
+    business_meaning: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.STATUS.CODE
+    comment: "Lookup pair: cl_fms_status.cl_fms_status_code. Pair with Classification FMS Status Id. Giá trị lấy từ FMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Status Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Country of Registration Id
@@ -88,7 +102,7 @@ attributes:
     source_system: FMS
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.NAT_ID
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: FOR_BRCH.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: FOR_BRCH.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -106,8 +120,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Branch Type Code
-    physical_name: branch_tp_code
+  - name: Organization Unit Type Code
+    physical_name: ou_tp_code
     business_meaning: "Cờ là chi nhánh: 1=Chi nhánh, 0=Văn phòng đại diện."
     data_domain: Classification Value
     data_type: string
@@ -116,8 +130,8 @@ attributes:
     source_system: FMS
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.BRANCH_FLAG
-    comment: "Scheme: FMS_BRANCH_TYPE."
-    classification_context: FMS_BRANCH_TYPE
+    comment: "SCHEMA_CODE=FMS.ORGANIZATION_UNIT_TYPE"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit Full Name
@@ -190,8 +204,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Parent Company Name
-    physical_name: parent_company_nm
+  - name: Parent Organization Unit Name
+    physical_name: parent_ou_nm
     business_meaning: Tên công ty mẹ (tổ chức nước ngoài sở hữu).
     data_domain: Text
     data_type: string
@@ -204,8 +218,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Parent Company Code
-    physical_name: parent_company_code
+  - name: Parent Organization Unit Code
+    physical_name: parent_ou_code
     business_meaning: Mã công ty mẹ trong hệ thống.
     data_domain: Text
     data_type: string
@@ -288,8 +302,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Event Type Id
-    physical_name: event_tp_id
+  - name: Classification FMS Event Type Id
+    physical_name: cl_fms_event_tp_id
     business_meaning: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
     data_domain: Surrogate Key
     data_type: string
@@ -298,12 +312,12 @@ attributes:
     source_system: FMS
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.EVENT_TYPE_ID
-    comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang FMS.EVENT_TYPE: FOR_BRCH.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME sau đó hash_id('FMS.EVENT_TYPE', ITEM_NAME) |"
+    comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang FMS.EVENT_TYPE: FOR_BRCH.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận EVENT_CODE sau đó hash_id('FMS_EVENT_TYPE', EVENT_CODE)."
     classification_context: null
     etl_derived_value: null
 
-  - name: Event Type Code
-    physical_name: event_tp_code
+  - name: Classification FMS Event Type Code
+    physical_name: cl_fms_event_tp_code
     business_meaning: Mã loại sự vụ áp dụng.
     data_domain: Text
     data_type: string
@@ -311,7 +325,7 @@ attributes:
     is_primary_key: false
     source_system: FMS
     source_table: FOR_BRCH
-    source_column: FMS.EVENT_TYPE.ITEM_NAME
-    comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.ITEM_NAME sau ETL crosswalk — chi tiết xem comment Event Type Id."
+    source_column: FMS.EVENT_TYPE.EVENT_CODE
+    comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification FMS Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.EVENT_CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Event Type Id."
     classification_context: null
     etl_derived_value: null

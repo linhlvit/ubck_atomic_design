@@ -65,8 +65,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.ObjectType"
-  comment: "Scheme: FIMS_STOCKHOLDER_TYPE. Nguồn lưu dạng số — ETL cần convert sang string code."
-  classification_context: "FIMS_STOCKHOLDER_TYPE"
+  comment: "SCHEMA_CODE=FIMS.OBJECT_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Full Name"
@@ -104,8 +104,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.Sex"
-  comment: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — chưa có trong HLD 6d, đăng ký bổ sung cùng lượt LLD này. Chỉ áp dụng NĐT cá nhân (ObjectType=1)."
-  classification_context: "FIMS_GENDER"
+  comment: "SCHEMA_CODE=GENDER"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Date of Birth"
@@ -143,7 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.NATIONAL.SName"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -159,7 +159,7 @@ consolidation_notes:
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=TAX_ID)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=OPERATION_LICENSE)\
+- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=ENTERPRISE_CODE)\
   \ — đặt nullable=true"
@@ -886,11 +886,11 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode OPERATION_LICENSE — chỉ có 1 cột\
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode ESTABLISHMENT_OPERATION_LICENSE — chỉ có 1 cột\
     \ BUSINESS_LICENSE_NUMBER, ý nghĩa là giấy phép thành lập và hoạt động chuyên\
     \ ngành do UBCKNN cấp (không phải giấy phép kinh doanh thông thường)."
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
-  etl_derived_value: "OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
+  etl_derived_value: "ESTABLISHMENT_OPERATION_LICENSE"
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
@@ -1060,13 +1060,13 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
     SCMS.AUDIT_FIRM: null
-    SCMS.BANK: "SCMS.BANK.OPERATION_LICENSE_NUMBER"
+    SCMS.BANK: "SCMS.BANK.ESTABLISHMENT_OPERATION_LICENSE_NUMBER"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_NUMBER"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
@@ -1117,7 +1117,7 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: null
@@ -1174,7 +1174,7 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: null

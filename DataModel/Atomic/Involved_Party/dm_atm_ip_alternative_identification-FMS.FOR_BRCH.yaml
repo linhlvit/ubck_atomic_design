@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.ID
-    comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.FOR_BRCH', ID)."
+    comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_FOR_BRCH', ID)."
     classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
@@ -102,9 +102,9 @@ attributes:
     source_system: FMS
     source_table: FOR_BRCH
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATION_LICENSE."
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'OPERATION_LICENSE'"
-    etl_derived_value: OPERATION_LICENSE
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
+    etl_derived_value: ESTABLISHMENT_OPERATION_LICENSE
 
   - name: Identification Number
     physical_name: identification_nbr
@@ -117,7 +117,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.LICENSE
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'OPERATION_LICENSE'"
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -131,7 +131,7 @@ attributes:
     source_table: FOR_BRCH
     source_column: FMS.FOR_BRCH.LICENSE_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'OPERATION_LICENSE'"
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Type Code

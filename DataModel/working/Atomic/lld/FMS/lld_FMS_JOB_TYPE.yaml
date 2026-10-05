@@ -1,0 +1,71 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "JOB_TYPE"
+  atomic_entity: "Classification FMS Job"
+  entity_physical_name: "cl_fms_job"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Position"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-02] Bảng danh mục loại chức danh, gộp (denormalize) vào entity Classification FMS Job cùng nguồn JOBS (JOBS.JOB_TYPE_ID = JOB_TYPE.ID). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME; RECORD_STATUS, DISPLAY_ON_MEMBER_PROFILE, PUBLISHED, DELETED, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Không phải entity có Id/Code riêng — chỉ bổ sung thuộc tính loại chức danh cho entity Classification FMS Job."
+attributes:
+- attribute_name: "Classification FMS Job Id"
+  physical_name: "cl_fms_job_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate dùng chung với lld_FMS_JOBS.yaml (hash_id('FMS_JOBS', JOBS.ID)). Hash: hash_id('FMS_JOB_TYPE', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Job Code"
+  physical_name: "cl_fms_job_code"
+  description: "Khóa chính của bản ghi loại chức danh (UUID dạng RAW(16))."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.JOB_TYPE.ID"
+  comment: "Khóa nối với JOBS.JOB_TYPE_ID (join JOBS.JOB_TYPE_ID = JOB_TYPE.ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_JOB_TYPE"
+  etl_derived_value: "FMS_JOB_TYPE"
+  data_type: "string"
+- attribute_name: "Job Type Name"
+  physical_name: "job_tp_nm"
+  description: "Tên loại chức danh (tên hiển thị chính của JOB_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.JOB_TYPE.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

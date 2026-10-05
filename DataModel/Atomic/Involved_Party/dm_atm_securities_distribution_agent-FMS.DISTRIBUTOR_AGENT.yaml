@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-securities_distribution_agent-FMS.DISTRIBUTOR_AGENT
+  logical_name: Securities Distribution Agent
+  physical_name: securities_distribution_agent
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Đại lý phân phối chứng chỉ quỹ có giấy chứng nhận đăng ký hoạt động phân phối riêng biệt. Nghi ngờ trùng lặp nghiệp vụ với Fund Distribution Agent — cần xác nhận trước LLD.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-DISTRIBUTOR_AGENT
+
+attributes:
+  - name: Securities Distribution Agent Id
+    physical_name: securities_distribution_agent_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Đại lý phân phối chứng chỉ quỹ có GCN đăng ký hoạt động riêng."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Distribution Agent Code
+    physical_name: securities_distribution_agent_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.ID
+    comment: BK chính. PK nguồn.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_DISTRIBUTOR_AGENT'"
+    etl_derived_value: FMS_DISTRIBUTOR_AGENT
+
+  - name: Agent Type Description
+    physical_name: agent_tp_description
+    business_meaning: "Loại đại lý — mặc định: Đại lý phân phối, read-only."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.AGENT_TYPE
+    comment: "Giá trị cố định toàn bảng — giữ Text denormalized, không cần Classification Value vì không có biến thể."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Company Type Code
+    physical_name: company_tp_code
+    business_meaning: "Loại công ty: 1=CK, 2=NH TM, 3=Bảo hiểm, 4=Tổ chức khác."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.COMPANY_TYPE
+    comment: "Scheme: FMS_AGENT_COMPANY_TYPE (đã đăng ký, dùng chung cho các entity dạng Organization đại lý/trung gian)."
+    classification_context: FMS_AGENT_COMPANY_TYPE
+    etl_derived_value: null
+
+  - name: Securities Distribution Agent Full Name
+    physical_name: securities_distribution_agent_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Distribution Agent English Name
+    physical_name: securities_distribution_agent_english_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Distribution Agent Short Name
+    physical_name: securities_distribution_agent_short_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.SHORT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Termination Date
+    physical_name: termination_dt
+    business_meaning: Ngày chấm dứt hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: DISTRIBUTOR_AGENT
+    source_column: FMS.DISTRIBUTOR_AGENT.TERMINATION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

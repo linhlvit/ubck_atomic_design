@@ -1,0 +1,97 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "BUSINESS"
+  atomic_entity: "Classification FMS Business"
+  entity_physical_name: "cl_fms_business"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Industry Classification"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-02] Promote từ Classification Value (scheme FMS_BUSINESS_TYPE, nay deprecated). Không có cột CODE riêng (DDL UAT 1) — dùng ID làm BK (cùng pattern JOBS/FUND_TYPE). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME, DESCRIPTION, SYSTEM_OBJECT; RECORD_STATUS, DELETED, DATA_MIGRATION, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Entity tiêu thụ TL_PROFILES.BUSI_ID (Fund Management Company Employee) đổi sang cặp FK Id + Code; các junction SEC_BUSINESS/FG_BUSINESS/BRA_BUSINESS (HLD 7d) chưa có attribute ARRAY trong LLD entity cha — chưa đổi."
+attributes:
+- attribute_name: "Classification FMS Business Id"
+  physical_name: "cl_fms_business_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('FMS_BUSINESS', ID). BCV: \"[Common] Industry Classification\" (phân loại Organization theo hoạt động kinh doanh — khớp danh mục lĩnh vực/ngành nghề kinh doanh của công ty QLQ, cùng concept với ECAT Classification Business Line). Danh mục lĩnh vực hoạt động kinh doanh của công ty QLQ và các đối tượng liên quan."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Business Code"
+  physical_name: "cl_fms_business_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BUSINESS.ID"
+  comment: "BK chính. PK nguồn — không có cột mã nghiệp vụ riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_BUSINESS"
+  etl_derived_value: "FMS_BUSINESS"
+  data_type: "string"
+- attribute_name: "Classification FMS Business Name"
+  physical_name: "cl_fms_business_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BUSINESS.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BUSINESS.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "System Object Type Codes"
+  physical_name: "stm_object_tp_codes"
+  description: "Danh sách loại đối tượng hệ thống áp dụng (nhiều giá trị, phân tách phẩy): 1=UBCK, 2=Công ty QLQ, 3=Ngân hàng LKGS, 4=CN CTQLQ NN, 5=VPĐD CTQLQ NN, 6=ĐTCK riêng lẻ, 7=Quỹ đầu tư, 8=Đại lý PP, 9=Đại lý CN, 10=Đại lý HT, 11=TCCCDV, 12=Đại lý khác, 13=Quỹ HT, 14=CT kiểm toán, 15=Kiểm toán viên."
+  data_domain: "Array<Text>"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BUSINESS.SYSTEM_OBJECT"
+  comment: "Scheme: FMS_SYSTEM_OBJECT_TYPE (tái sử dụng — đã đăng ký cho Classification FMS Company Type, cùng encoding 1-15). Nguồn NVARCHAR2(1000) lưu danh sách mã số phân tách bằng dấu phẩy trong 1 chuỗi — ETL cần tách chuỗi, convert từng phần tử sang mã scheme, lưu dạng Array<Text> codes-only."
+  classification_context: "FMS_SYSTEM_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "array<string>"

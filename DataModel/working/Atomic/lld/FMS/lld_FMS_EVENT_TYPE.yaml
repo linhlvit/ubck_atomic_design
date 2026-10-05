@@ -77,8 +77,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Category Description"
-  physical_name: "event_category_description"
+- attribute_name: "Event Category"
+  physical_name: "event_category"
   description: "Danh mục phân nhóm sự vụ (VD: CBTT_CONG_TY_QLQ, CBTT_QUY_DAU_TU...)."
   data_domain: "Text"
   nullable: true
@@ -109,28 +109,28 @@ attributes:
   physical_name: "obligation_tp_code"
   description: "Nghĩa vụ: CHI_BAO_CAO=Chỉ báo cáo, CHI_CBTT=Chỉ CBTT, BAO_CAO_VA_CBTT=Cả\
     \ hai, THAY_DOI=Thay đổi hồ sơ."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.EVENT_TYPE.OBLIGATION_TYPE"
-  comment: "Scheme: FMS_EVENT_OBLIGATION_TYPE."
-  classification_context: "FMS_EVENT_OBLIGATION_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deadline Calc Method Code"
   physical_name: "deadline_calc_method_code"
   description: "Cách tính thời hạn nộp: DINH_KY=Định kỳ cố định, SU_KIEN=Tính từ sự\
     \ kiện phát sinh."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.EVENT_TYPE.DEADLINE_CALC_METHOD"
-  comment: "Scheme: FMS_EVENT_DEADLINE_CALC_METHOD."
-  classification_context: "FMS_EVENT_DEADLINE_CALC_METHOD"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"
@@ -157,48 +157,5 @@ attributes:
   - "FMS.EVENT_TYPE.NOTE"
   comment: null
   classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Metadata Config"
-  physical_name: "metadata_config"
-  description: "Metadata bổ sung của sự vụ (JSON CLOB: cấu hình form, tham số riêng)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.EVENT_TYPE.METADATA"
-  comment: "Nguồn lưu dạng CLOB (JSON) — ETL cần cast/parse sang string. Không structured-parse\
-    \ nội dung JSON ở Atomic layer."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Business Rule Config"
-  physical_name: "business_rule_config"
-  description: "Cấu hình nghiệp vụ bổ sung của sự vụ: điều kiện áp dụng, biểu mẫu,\
-    \ lịch gửi, tham số (JSON CLOB)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.EVENT_TYPE.BUSINESS_RULE_CONFIG"
-  comment: "Nguồn lưu dạng CLOB (JSON) — ETL cần cast/parse sang string. Không structured-parse\
-    \ nội dung JSON ở Atomic layer."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Event Type Record Status Code"
-  physical_name: "event_tp_record_status_code"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.EVENT_TYPE.RECORD_STATUS"
-  comment: "Scheme: FMS_EVENT_TYPE_RECORD_STATUS. ETL derived: 1=ACTIVE;0=INACTIVE."
-  classification_context: "FMS_EVENT_TYPE_RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"

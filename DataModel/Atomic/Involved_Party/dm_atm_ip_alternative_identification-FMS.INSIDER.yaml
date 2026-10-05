@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: INSIDER
     source_column: FMS.INSIDER.ID
-    comment: "FK target: fmc_insider.fmc_insider_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.INSIDER', ID)."
+    comment: "FK target: fmc_insider.fmc_insider_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_INSIDER', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -61,7 +61,7 @@ attributes:
     source_table: INSIDER
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: FMS_INSIDER
 
   - name: Identification Type Code
@@ -74,9 +74,9 @@ attributes:
     source_system: FMS
     source_table: INSIDER
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại giấy tờ."
-    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: NATIONAL_ID
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION — nguồn không phân biệt loại giấy tờ."
+    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: IDENTIFICATION
 
   - name: Identification Number
     physical_name: identification_nbr
@@ -89,7 +89,7 @@ attributes:
     source_table: INSIDER
     source_column: FMS.INSIDER.ID_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -103,7 +103,7 @@ attributes:
     source_table: INSIDER
     source_column: FMS.INSIDER.ID_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Place
@@ -117,5 +117,5 @@ attributes:
     source_table: INSIDER
     source_column: FMS.INSIDER.ID_ADD
     comment: null
-    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_INSIDER' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null

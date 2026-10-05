@@ -32,8 +32,8 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ID
-    comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.STF_FG_BRCH', ID)."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_STF_FG_BRCH', ID)."
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,7 +47,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ID
     comment: "Lookup pair: foreign_fm_ou_staff.foreign_fm_ou_staff_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -61,8 +61,50 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: FMS_STF_FG_BRCH
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ — giấy phép thành lập và hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE — tái sử dụng value đã có. [MỚI 2026-10-02] Đẩy ra từ lld_FMS_STF_FG_BRCH.yaml theo yêu cầu Data Modeler."
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
+    etl_derived_value: ESTABLISHMENT_OPERATION_LICENSE
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số giấy phép hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.LICENSE
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp giấy phép.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.LICENSE_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
+    etl_derived_value: null
 
   - name: Identification Type Code
     physical_name: identification_tp_code
@@ -74,9 +116,9 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại giấy tờ."
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: NATIONAL_ID
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION — nguồn không phân biệt loại giấy tờ."
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: IDENTIFICATION
 
   - name: Identification Number
     physical_name: identification_nbr
@@ -89,7 +131,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ID_CODE
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -103,7 +145,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.DATE_CODE
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Place
@@ -117,7 +159,7 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ISSUED_CODE
     comment: null
-    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Type Code

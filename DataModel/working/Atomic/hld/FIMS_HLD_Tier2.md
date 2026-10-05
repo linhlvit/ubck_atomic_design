@@ -1,7 +1,7 @@
 # FIMS HLD — Tier 2
 
 **Source system:** FIMS (Hệ thống quản lý giám sát và công bố thông tin thành viên thị trường — Oracle)
-**Tier 2:** Entity có FK đến Tier 1. Gồm 5 entity: Foreign FM Branch Organization (FK đến Geographic Area), Info Disclosure Representative (self-ref + FK Geographic Area), Market Participant Key Person (FK đến Market Participant Organization), Member Periodic Report (FK đến Reporting Template + Reporting Period + Market Participant Organization + Reporting Obligation Type + Trading Representative), Warning Condition (FK đến Warning Parameter).
+**Tier 2:** Entity có FK đến Tier 1. Gồm 6 entity: Foreign FM Branch Organization (FK đến Geographic Area), Info Disclosure Representative (self-ref + FK Geographic Area), Market Participant Key Person (FK đến Market Participant Organization), Member Periodic Report (FK đến Reporting Template [chờ repoint sang Foreign Investor Report — xem T1-08] + Reporting Period + Market Participant Organization + Reporting Obligation Type + Trading Representative), Warning Condition (FK đến Warning Parameter), Foreign Investor Report Structure (FK đến Foreign Investor Report — mới 2026-09-30).
 
 ---
 
@@ -14,6 +14,7 @@
 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | TLPROFILES | Danh sách nhân sự chủ chốt tại các tổ chức thành viên thị trường đăng ký với UBCKNN | Market Participant Key Person | Fundamental | (1) BCV term `[Involved Party] Individual Employment Status` — nhân sự hành nghề tại tổ chức thành viên. (2) TLPROFILES: SystemObject (1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN), FundComId/SecComId/BankId/DepCenId/StockCenId (FK đa hướng đến 5 loại tổ chức), Name, IdNo, DateOfBirth, Sex, Tel, Email, IsRepresentative, CertNo, DegreeId, StatusId. (3) Đây là "employment status" — nhân sự đang làm việc tại tổ chức thành viên cụ thể. Tier 2 vì FK đến Market Participant Organization (T1). |
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTMEMBER | Hồ sơ kỳ báo cáo của thành viên thị trường gửi UBCKNN — 1 bản ghi per thành viên per kỳ per biểu mẫu | Member Periodic Report | Fundamental | (1) BCV term `[Documentation] Gov. Registration Document` — báo cáo định kỳ pháp lý gửi cơ quan quản lý. (2) RPTMEMBER: FK đến 7 loại thành viên + RPTTEMP + RPTPERIOD + INFODISCREPRES + BRANCHS + REPORTTYPE + RPT_EVENT_TYPE + INVESTOR + TRADINGREPRESENTATIVE; Status, ObjectType, DeadlineSend, DateSubmitted. (3) Đây là hồ sơ pháp lý (gov. registration document) — báo cáo bắt buộc theo quy định pháp luật. Change Mode = Update → Fundamental SCD4A (trạng thái hiện tại). Tier 2 vì FK đến T1 entities. FK `TradingRepresentativeId` → `Trading Representative` (Tier 1, xem Tier1.md) — bổ sung vào diagram 6b/6c (trước đây chỉ ghi trong mô tả, thiếu trên diagram). |
 | Condition | [Condition] Scoring Criterion | Scoring Criterion | CDTWARN | Danh sách điều kiện cảnh báo giám sát — ngưỡng min/max cho từng tham số cảnh báo | Warning Condition | Fundamental | (1) BCV term `[Condition] Scoring Criterion` — điều kiện cảnh báo là tiêu chí đánh giá ngưỡng. (2) CDTWARN: PrWId (FK→PARAWARN primary), OtherWId (FK→PARAWARN secondary), FromValue, ToValue, NumberDayRun, CompareType, Status. (3) Đây là điều kiện cụ thể hóa tham số thành ngưỡng kích hoạt cảnh báo → `[Condition] Scoring Criterion`. FK đến Warning Parameter (T1) → Tier 2. |
+| Documentation | [Documentation] Form Document | Form Document | SHEET (qua ODS `FIR_STRUCTURE`) | Cấu hình ô chỉ tiêu của sheet (JSON CellsMeta/SectionsMeta/DataLabel) | Foreign Investor Report Structure | Relative | (1) Term candidate `Form Document` (BCV Documentation) — cấu trúc ô của template layout; BCV không có term riêng cho "form cell/indicator", dùng cùng concept với entity cha `Foreign Investor Report`. (2) ODS `FIR_STRUCTURE` (tên cũ `dim_indicator`) sinh bằng **parse JSON** `CellsMeta`/`SectionsMeta`/`DataLabel` của SHEET (+ cấu hình đè `fims_row_overrides/`), không phải JOIN: indicator_uid, sheet_row/sheet_col, row_path/column_path, section_id/section_type, các cờ is_*, item_id, sort_order, override_source. (3) Grain = 1 ô template trong 1 sheet; BK = `sheet_id ‖ indicator_uid` (indicator_uid chỉ duy nhất trong 1 sheet). FK đến `Foreign Investor Report` (T1) → Tier 2. ODS ghi đè toàn bộ → SCD2 (Relative). `mirror_of_uid` lọc ở bước ODS → ATM. |
 
 ---
 
@@ -175,6 +176,8 @@ erDiagram
 
 ---
 
+> **Ghi chú 6b — nhóm Báo cáo động (2026-09-30):** `Foreign Investor Report Structure` KHÔNG map trực tiếp từ cột SHEET mà qua ODS `FIR_STRUCTURE` — cây chỉ tiêu được **parse từ JSON** `CellsMeta`/`SectionsMeta`/`DataLabel` của SHEET. Chi tiết luồng: ghi chú cuối mục 7a của `FIMS_HLD_Overview.md`.
+
 ## 6c. Diagram Atomic (Mermaid)
 
 ```mermaid
@@ -313,7 +316,31 @@ erDiagram
     Info_Disclosure_Representative ||--o{ Geographic_Area : "geographic_area_id"
     Info_Disclosure_Representative ||--o{ Info_Disclosure_Representative : "parent_info_disclosure_rep_id"
     Market_Participant_Key_Person ||--o{ Market_Participant_Organization : "market_participant_org_id"
-    Member_Periodic_Report ||--o{ Reporting_Template : "ds_reporting_template_id"
+    Member_Periodic_Report ||--o{ Foreign_Investor_Report : "Reporting Template FK cũ — chờ repoint, xem T1-08"
+    Foreign_Investor_Report_Structure ||--o{ Foreign_Investor_Report : "fir_id"
+    Foreign_Investor_Report_Structure {
+        string fir_structure_id PK
+        string fir_structure_code "sheet_id + indicator_uid"
+        string structure_code "indicator_uid"
+        string fir_id FK
+        string fir_code "sheet_id"
+        string rpt_id
+        int row_index
+        int column_index
+        string data_tp
+        string row_path
+        string column_path
+        string section_id
+        string section_tp_code
+        string dynamic_ind
+        string last_band_ind
+        string total_row_ind
+        string ordinal_col_ind
+        string data_explorer_id
+        bigint sort_order
+        string excluded_by_config_ind
+        string override_src
+    }
     Member_Periodic_Report ||--o{ Reporting_Period : "ds_reporting_period_id"
     Member_Periodic_Report ||--o{ Market_Participant_Organization : "ds_market_participant_org_id"
     Member_Periodic_Report ||--o{ Reporting_Obligation_Type : "ds_reporting_obligation_type_id"
@@ -337,6 +364,8 @@ erDiagram
 | RPTMEMBER.Status | Trạng thái nộp báo cáo (1–5) | `FIMS_REPORT_SUBMISSION_STATUS` | etl_derived | Giá trị 1–5 ánh xạ thành code |
 | RPTMEMBER.ReportTypeId → REPORTTYPE | Loại báo cáo | `FIMS_REPORT_TYPE` | source_table | |
 | CDTWARN.Status | Cờ kích hoạt điều kiện cảnh báo (1=active, 0=inactive) | `FIMS_ACTIVITY_STATUS` | etl_derived | Boolean → map ACTIVE/INACTIVE |
+| ODS `FIR_STRUCTURE.SECTION_TYPE` (SHEET.SectionsMeta) | Loại vùng dữ liệu của ô chỉ tiêu (DYNAMIC/FIXED) | `FIMS_REPORT_SECTION_TYPE` | etl_derived | |
+| ODS `FIR_STRUCTURE.FORMAT_DATA_TYPE` (SHEET.CellsMeta) | Kiểu dữ liệu ô chỉ tiêu (numberic/percentage/string...) | `FIMS_REPORT_DATA_TYPE` | etl_derived | Giữ nguyên chính tả nguồn `numberic` |
 
 ---
 
@@ -354,3 +383,5 @@ erDiagram
 | T2-02 | INFODISCREPRES.ProfileKind có 10 loại — có cần tách 10 entity riêng không? | Đề xuất: Giữ 1 entity. Cấu trúc cột đồng nhất, phân biệt bằng `FIMS_PROFILE_KIND`. |
 | T2-03 | TLPROFILES có FK đến cả FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE và cả INFODISCREPRES — nhân sự làm việc tại tổ chức nào thì FK tương ứng non-null còn lại null. ETL cần xử lý: lấy FK nào để map `market_participant_org_id`? | Đề xuất: Dùng SystemObject để xác định bảng nguồn, sau đó COALESCE(FundComId, SecComId, BankId, DepCenId, StockCenId) → lookup `ds_market_participant_org_id`. |
 | T2-04 | RPTMEMBER có cả FK đến INFODISCREPRES và BRANCHS song song với FK đến 5 loại tổ chức thành viên. Grain = thành viên thị trường nào nộp báo cáo này? ObjectType xác định loại thành viên. | Cần xác nhận: ObjectType có map 1-1 với các FK (ví dụ ObjectType=1 → FUNDCOMPANY) không? Hay có trường hợp ObjectType=CN_QLQ_NN → dùng BRANCHS thay vì 5 bảng thành viên thông thường? |
+| T2-05 | **[2026-09-30]** `Foreign Investor Report Structure` (SHEET qua ODS `FIR_STRUCTURE`) — cây chỉ tiêu suy ra từ thuật toán parse JSON, có lớp cấu hình đè `fims_row_overrides/`. `data_explorer_id` (ODS `item_id` = MD5 theo `report_code + legal_basis + sheet_name + row_path + column_path`) đổi khi `row_path` bị sửa → không dùng làm BK. | BK = `sheet_id ‖ indicator_uid`; SCD2 ghi nhận version mới khi row_path/data_explorer_id đổi. Cột `report_code/report_name/legal_basis/sheet_name` không map (lấy qua FK Foreign Investor Report); `mirror_of_uid` lọc ở bước ODS → ATM. |
+| T2-06 | **[2026-09-30]** Cờ `is_*` (INT 0/1) trên `fir_structure` map domain `Indicator` (hậu tố `_ind` theo bản map Data Modeler). | Nguồn lưu số — ETL convert sang string. |

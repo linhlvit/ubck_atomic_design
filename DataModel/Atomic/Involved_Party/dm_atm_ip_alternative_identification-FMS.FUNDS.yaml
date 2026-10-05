@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: FUNDS
     source_column: FMS.FUNDS.ID
-    comment: "FK target: investment_fund.investment_fund_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.FUNDS', ID)."
+    comment: "FK target: investment_fund.investment_fund_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_FUNDS', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -61,7 +61,7 @@ attributes:
     source_table: FUNDS
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'TAX_ID'"
+    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: FMS_FUNDS
 
   - name: Identification Type Code
@@ -74,9 +74,9 @@ attributes:
     source_system: FMS
     source_table: FUNDS
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID — nguồn không phân biệt loại giấy tờ, đối tượng là quỹ đầu tư (định chế) nên chọn mã số thuế."
-    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: TAX_ID
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE — nguồn không phân biệt loại giấy tờ, đối tượng là quỹ đầu tư (định chế) nên chọn mã số thuế."
+    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
+    etl_derived_value: ESTABLISHMENT_OPERATION_LICENSE
 
   - name: Identification Number
     physical_name: identification_nbr
@@ -89,7 +89,7 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.ID_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'TAX_ID'"
+    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -103,5 +103,5 @@ attributes:
     source_table: FUNDS
     source_column: FMS.FUNDS.ID_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'TAX_ID'"
+    classification_context: "Source System Code = 'FMS_FUNDS' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null

@@ -7,7 +7,7 @@ ldm:
   physical_name: foreign_fm_ou_staff
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: Fundamental
@@ -74,7 +74,7 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.FOR_BRCH_ID
-    comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS.FOR_BRCH', FOR_BRCH_ID)."
+    comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH', FOR_BRCH_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -92,18 +92,32 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Job Title Code
-    physical_name: job_title_code
+  - name: Classification FMS Job Id
+    physical_name: cl_fms_job_id
     business_meaning: "FK -> JOBS: Chức danh/vị trí công tác của nhân sự."
-    data_domain: Classification Value
+    data_domain: Surrogate Key
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.JOBS_ID
-    comment: "Scheme: FMS_JOB_TITLE. [PROPOSE NEW SCHEME] — nguồn FMS.JOBS khác FMS.JOBTYPE (đã đăng ký FMS_JOB_TYPE ở Tier 1). Nguồn JOBS_ID là UUID FK — ETL resolve sang mã JOBS tương ứng."
-    classification_context: FMS_JOB_TITLE
+    comment: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS', JOBS_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Job Code
+    physical_name: cl_fms_job_code
+    business_meaning: Mã chức danh/vị trí công tác của nhân sự (BK của bảng JOBS — chính là ID nguồn).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.JOBS_ID
+    comment: "Lookup pair: cl_fms_job.cl_fms_job_code. Pair with Classification FMS Job Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Nationality Id
@@ -116,7 +130,7 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.NAT_ID
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: STF_FG_BRCH.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: STF_FG_BRCH.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -144,8 +158,8 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.STAFF_BRANCH
-    comment: "Scheme: FMS_BRANCH_TYPE (tái sử dụng từ FOR_BRCH.BRANCH_FLAG — cùng khái niệm Chi nhánh/VPĐD)."
-    classification_context: FMS_BRANCH_TYPE
+    comment: "SCHEMA_CODE=FMS.ORGANIZATION_UNIT_TYPE"
+    classification_context: null
     etl_derived_value: null
 
   - name: Foreign Fund Management Organization Unit Staff Full Name
@@ -164,7 +178,7 @@ attributes:
 
   - name: Gender Code
     physical_name: gender_code
-    business_meaning: "Giới tính: 1=Nam, 0=Nữ (hoặc chuỗi Nam/Nữ tùy bảng)."
+    business_meaning: Giới tính.
     data_domain: Classification Value
     data_type: string
     nullable: true
@@ -172,26 +186,12 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.SEX
-    comment: "Scheme: FMS_GENDER (tái sử dụng — đã đăng ký Tier 2)."
-    classification_context: FMS_GENDER
-    etl_derived_value: null
-
-  - name: Active Status Flag
-    physical_name: active_status_flag
-    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: STF_FG_BRCH
-    source_column: FMS.STF_FG_BRCH.RECORD_STATUS
-    comment: Giá trị 1 → true; 0 → false.
+    comment: "SCHEMA_CODE=GENDER"
     classification_context: null
     etl_derived_value: null
 
-  - name: Legal Representative Flag
-    physical_name: legal_representative_flag
+  - name: Legal Representative Indicator
+    physical_name: legal_representative_ind
     business_meaning: "Cờ là người đại diện theo pháp luật: 1=Có, 0=Không."
     data_domain: Small Counter
     data_type: int
@@ -201,34 +201,6 @@ attributes:
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.REPRESENT
     comment: Giá trị 1 → true; 0 → false.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Operating License Number
-    physical_name: operating_license_nbr
-    business_meaning: Số giấy phép hoạt động.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: STF_FG_BRCH
-    source_column: FMS.STF_FG_BRCH.LICENSE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Operating License Date
-    physical_name: operating_license_dt
-    business_meaning: Ngày cấp giấy phép.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: STF_FG_BRCH
-    source_column: FMS.STF_FG_BRCH.LICENSE_DATE
-    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -260,8 +232,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Branch Director Flag
-    physical_name: branch_director_flag
+  - name: Branch Director Indicator
+    physical_name: branch_director_ind
     business_meaning: "Cờ là Giám đốc chi nhánh: 1=Là GĐ CN, 0=Nhân viên thường."
     data_domain: Small Counter
     data_type: int

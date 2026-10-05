@@ -24,6 +24,7 @@ metadata:
     \ + IP Alt Identification (NATIONAL_ID mặc định + PRACTICE_CERT_NO/PRACTICE_CERT_ISSUE_DATE\
     \ — đẩy ra shared entity 2026-07-19, dùng lại Scheme value IP_ALT_ID_TYPE=PRACTITIONER_LICENSE\
     \ thay vì tạo value mới, vì \"Chứng chỉ hành nghề (CCHN)\" đã có sẵn — xem lld_FMS_STF_FG_BRCH_IP_Alt_Identification.yaml).\
+    \ + LICENSE/LICENSE_DATE đẩy ra IP Alt Identification type ESTABLISHMENT_OPERATION_LICENSE (2026-10-02).\
     \ CREATED_BY, MODIFY_BY, FILE_DATA, DELETED, DATA_MIGRATION document trong pending_design.yaml."
 attributes:
 - attribute_name: "Foreign Fund Management Organization Unit Staff Id"
@@ -92,19 +93,30 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Job Title Code"
-  physical_name: "job_title_code"
+- attribute_name: "Classification FMS Job Id"
+  physical_name: "cl_fms_job_id"
   description: "FK -> JOBS: Chức danh/vị trí công tác của nhân sự."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.STF_FG_BRCH.JOBS_ID"
-  comment: "Scheme: FMS_JOB_TITLE. [PROPOSE NEW SCHEME] — nguồn FMS.JOBS khác FMS.JOBTYPE\
-    \ (đã đăng ký FMS_JOB_TYPE ở Tier 1). Nguồn JOBS_ID là UUID FK — ETL resolve sang\
-    \ mã JOBS tương ứng."
-  classification_context: "FMS_JOB_TITLE"
+  comment: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS', JOBS_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Job Code"
+  physical_name: "cl_fms_job_code"
+  description: "Mã chức danh/vị trí công tác của nhân sự (BK của bảng JOBS — chính là ID nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.JOBS_ID"
+  comment: "Lookup pair: cl_fms_job.cl_fms_job_code. Pair with Classification FMS Job Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Nationality Id"
@@ -148,9 +160,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.STF_FG_BRCH.STAFF_BRANCH"
-  comment: "Scheme: FMS_BRANCH_TYPE (tái sử dụng từ FOR_BRCH.BRANCH_FLAG — cùng khái\
-    \ niệm Chi nhánh/VPĐD)."
-  classification_context: "FMS_BRANCH_TYPE"
+  comment: "SCHEMA_CODE=FMS.ORGANIZATION_UNIT_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit Staff Full Name"
@@ -168,33 +179,19 @@ attributes:
   data_type: "string"
 - attribute_name: "Gender Code"
   physical_name: "gender_code"
-  description: "Giới tính: 1=Nam, 0=Nữ (hoặc chuỗi Nam/Nữ tùy bảng)."
+  description: "Giới tính."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.STF_FG_BRCH.SEX"
-  comment: "Scheme: FMS_GENDER (tái sử dụng — đã đăng ký Tier 2)."
-  classification_context: "FMS_GENDER"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Active Status Flag"
-  physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.STF_FG_BRCH.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
+  comment: "SCHEMA_CODE=GENDER"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Legal Representative Flag"
-  physical_name: "legal_representative_flag"
+  data_type: "string"
+- attribute_name: "Legal Representative Indicator"
+  physical_name: "legal_representative_ind"
   description: "Cờ là người đại diện theo pháp luật: 1=Có, 0=Không."
   data_domain: "Small Counter"
   nullable: true
@@ -206,32 +203,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Operating License Number"
-  physical_name: "operating_license_nbr"
-  description: "Số giấy phép hoạt động."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.STF_FG_BRCH.LICENSE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Operating License Date"
-  physical_name: "operating_license_dt"
-  description: "Ngày cấp giấy phép."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.STF_FG_BRCH.LICENSE_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Note"
   physical_name: "note"
   description: "Ghi chú bổ sung."
@@ -258,8 +229,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Branch Director Flag"
-  physical_name: "branch_director_flag"
+- attribute_name: "Branch Director Indicator"
+  physical_name: "branch_director_ind"
   description: "Cờ là Giám đốc chi nhánh: 1=Là GĐ CN, 0=Nhân viên thường."
   data_domain: "Small Counter"
   nullable: true

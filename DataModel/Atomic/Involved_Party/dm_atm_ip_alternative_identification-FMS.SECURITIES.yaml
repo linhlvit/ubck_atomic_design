@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID
-    comment: "FK target: fund_management_company.fmc_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
+    comment: "FK target: fund_management_company.fmc_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_SECURITIES', ID)."
     classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
@@ -94,7 +94,7 @@ attributes:
 
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning: Loại giấy tờ định danh — mã số thuế.
+    business_meaning: Loại giấy tờ định danh — Giấy phép thành lập và hoạt động do UBCKNN cấp.
     data_domain: Classification Value
     data_type: string
     nullable: false
@@ -102,13 +102,13 @@ attributes:
     source_system: FMS
     source_table: SECURITIES
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID — nguồn không phân biệt loại giấy tờ, mô tả gốc ghi chung 'CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp' nhưng đối tượng là tổ chức (công ty QLQ) nên chọn mã số thuế."
-    classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: TAX_ID
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
+    etl_derived_value: ESTABLISHMENT_OPERATION_LICENSE
 
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning: Mã số thuế của công ty quản lý quỹ.
+    business_meaning: Mã giấy phép thành lập và hoạt động của công ty quản lý quỹ.
     data_domain: Text
     data_type: string
     nullable: true
@@ -117,12 +117,12 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'TAX_ID'"
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Issue Date
     physical_name: identification_issue_dt
-    business_meaning: Ngày cấp mã số thuế.
+    business_meaning: Ngày cấp giấy phép.
     data_domain: Date
     data_type: date
     nullable: true
@@ -131,12 +131,12 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'TAX_ID'"
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Issue Place
     physical_name: identification_issue_place
-    business_meaning: Nơi cấp mã số thuế.
+    business_meaning: Nơi cấp giấy phép.
     data_domain: Text
     data_type: string
     nullable: true
@@ -145,5 +145,5 @@ attributes:
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID_ADD
     comment: null
-    classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'TAX_ID'"
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null

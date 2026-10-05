@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fms_status-FMS.STATUS
+  logical_name: Classification FMS Status
+  physical_name: cl_fms_status
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Common
+  bcv_concept: "[Common] Involved Party Life Cycle Status"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Danh mục trạng thái hoạt động của thành viên thị trường (công ty QLQ, quỹ, ngân hàng lưu ký, đại lý...) kèm loại đối tượng áp dụng và cờ phải nộp báo cáo. Promote từ Classification Value (scheme FMS_OPERATION_STATUS, nay deprecated) lên entity riêng; BK = mã nghiệp vụ CODE.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-STATUS
+
+attributes:
+  - name: Classification FMS Status Id
+    physical_name: cl_fms_status_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: STATUS
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('FMS_STATUS', CODE). BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh mục trạng thái hoạt động của thành viên thị trường."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Status Code
+    physical_name: cl_fms_status_code
+    business_meaning: Mã trạng thái nghiệp vụ (vd. CTQLQ_HD). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STATUS
+    source_column: FMS.STATUS.CODE
+    comment: "BK duy nhất của entity. Nguồn nullable (unique khi có giá trị) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live vì Code đóng vai trò BK và đầu vào hash Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STATUS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_STATUS'"
+    etl_derived_value: FMS_STATUS
+
+  - name: Classification FMS Status Name
+    physical_name: cl_fms_status_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STATUS
+    source_column: FMS.STATUS.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STATUS
+    source_column: FMS.STATUS.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Type Code
+    physical_name: object_tp_code
+    business_meaning: "Loại đối tượng áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP..."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STATUS
+    source_column: FMS.STATUS.TYPE_SEC
+    comment: "SCHEMA_CODE=FMS.OBJECT_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Submission Required Indicator
+    physical_name: rpt_submission_required_ind
+    business_meaning: "Cờ trạng thái phải nộp báo cáo: 1=Phải nộp, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STATUS
+    source_column: FMS.STATUS.SUBMIT_REPORT
+    comment: NUMBER(1). Cùng pattern rpt_submission_required_ind của Classification Securities Company Firm Status (SCMS).
+    classification_context: null
+    etl_derived_value: null

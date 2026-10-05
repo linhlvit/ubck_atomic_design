@@ -45,7 +45,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.SECURITIES.ID"
+  - "FMS.SECURITIES.CODE"
   comment: "BK chính. PK nguồn."
   classification_context: null
   etl_derived_value: null
@@ -62,18 +62,30 @@ attributes:
   classification_context: "SOURCE_SYSTEM=FMS_SECURITIES"
   etl_derived_value: "FMS_SECURITIES"
   data_type: "string"
-- attribute_name: "Operation Status Code"
-  physical_name: "operation_status_code"
+- attribute_name: "Classification FMS Status Id"
+  physical_name: "cl_fms_status_id"
   description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.STATUS_ID"
-  comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK đến bảng danh\
-    \ mục STATUS — ETL resolve sang mã STATUS.CODE tương ứng."
-  classification_context: "FMS_OPERATION_STATUS"
+  comment: "FK target: cl_fms_status.cl_fms_status_id. Cần ETL crosswalk sang FMS.STATUS: SECURITIES.STATUS_ID = STATUS.ID để xác nhận CODE sau đó hash_id('FMS_STATUS', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Status Code"
+  physical_name: "cl_fms_status_code"
+  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.CODE"
+  comment: "Lookup pair: cl_fms_status.cl_fms_status_code. Pair with Classification FMS Status Id. Giá trị lấy từ FMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Status Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Full Name"
@@ -128,20 +140,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Short Code"
-  physical_name: "fmc_short_code"
-  description: "Mã định danh ngắn gọn."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.SECURITIES.CODE"
-  comment: "Mã nghiệp vụ do UBCK/nội bộ cấp — khác Fund Management Company Code (BK\
-    \ derived từ ID kỹ thuật)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Charter Capital Amount"
   physical_name: "charter_capital_amt"
   description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
@@ -158,7 +156,7 @@ attributes:
 - attribute_name: "Total Outstanding Unit Quantity"
   physical_name: "total_outstanding_unit_quantity"
   description: "Tổng số lượng CCQ/cổ phiếu đang lưu hành."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -167,7 +165,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Business Type Description"
   physical_name: "business_tp_description"
   description: "Loại hình kinh doanh của công ty QLQ (mô tả hoặc mã danh mục)."
@@ -182,19 +180,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Organization Territory Type Code"
-  physical_name: "organization_territory_tp_code"
+- attribute_name: "Organization Territory Indicator"
+  physical_name: "organization_territory_ind"
   description: "Loại tổ chức theo địa giới: 1=Trong nước, 0=Nước ngoài."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.BORF_FLAG"
-  comment: "Scheme: FMS_ORG_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;0=FOREIGN."
-  classification_context: "FMS_ORG_TERRITORY_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Fund Management Company Insider Id"
   physical_name: "fmc_insider_id"
   description: "FK -> INSIDER: Cổ đông nội bộ sáng lập/kiểm soát công ty QLQ."
@@ -249,8 +247,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Market Code"
-  physical_name: "market_code"
+- attribute_name: "Stock Exchange Code"
+  physical_name: "stock_exchange_code"
   description: "Sàn giao dịch: 1=HOSE, 2=HNX, 3=UPCOM."
   data_domain: "Classification Value"
   nullable: true
@@ -258,9 +256,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.MARKET"
-  comment: "Scheme: FMS_LISTING_MARKET. ETL map: 1=HOSE;2=HNX;3=UPCOM. [PROPOSE NEW\
-    \ SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml."
-  classification_context: "FMS_LISTING_MARKET"
+  comment: "SCHEMA_CODE=FMS.STOCK_EXCHANGE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Country of Registration Name"
@@ -374,7 +371,7 @@ attributes:
 - attribute_name: "Legal Representative Indicator"
   physical_name: "legal_representative_ind"
   description: "Cờ là người đại diện theo pháp luật: 1=Có, 0=Không."
-  data_domain: "Indicator"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -383,7 +380,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Parent Organization Name"
   physical_name: "parent_organization_nm"
   description: "Tên tổ chức chủ quản/tổ chức phụ thuộc."
@@ -426,16 +423,16 @@ attributes:
 - attribute_name: "Public Listed Indicator"
   physical_name: "public_listed_ind"
   description: "Cờ công ty đại chúng đang niêm yết: Y=Có, N=Không."
-  data_domain: "Indicator"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.PUBLIC_LISTED"
-  comment: null
+  comment: "Xử lí CASE WHEN PUBLIC_LISTED = 'Y' then 1, PUBLIC_LISTED = 'N' then 0"
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Registration Date"
   physical_name: "registration_dt"
   description: "Ngày đăng ký hoạt động."
@@ -529,20 +526,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Other Business Activity Description"
-  physical_name: "other_business_activity_description"
-  description: "Hoạt động khác ngoài quản lý quỹ (NCLOB: JSON danh sách)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.SECURITIES.ACTIV_OTHER"
-  comment: "Nguồn NCLOB chứa JSON — ETL lưu nguyên chuỗi JSON dạng text, không tách\
-    \ cấu trúc ở Atomic."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Foreign Organization Type Description"
   physical_name: "foreign_organization_tp_description"
   description: "Loại hình tổ chức nước ngoài: chi nhánh, VPĐD..."
@@ -605,8 +588,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.PAR_ID"
-  comment: "Self-reference. FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ PAR_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES', PAR_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -619,8 +601,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.PAR_ID"
-  comment: "Self-reference. Lookup pair: fund_management_company.fmc_code. Pair with\
-    \ Parent Fund Management Company Id."
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Parent Fund Management Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -637,24 +618,34 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Company Type Code"
-  physical_name: "company_tp_code"
+- attribute_name: "Classification FMS Company Type Id"
+  physical_name: "cl_fms_company_tp_id"
   description: "FK -> COMPANY_TYPE: Loại hình công ty QLQ."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.CT_ID"
-  comment: "Scheme: FMS_COMPANY_TYPE. FMS.COMPANY_TYPE là reference data set (chỉ\
-    \ Code/Name, không có instance data riêng) — theo quyết định Data Modeler (2026-07-24),\
-    \ đẩy vào Classification Value, không thiết kế thành Atomic entity riêng. Nguồn\
-    \ CT_ID là UUID FK — ETL resolve sang mã COMPANY_TYPE tương ứng."
-  classification_context: "FMS_COMPANY_TYPE"
+  comment: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Hash: hash_id('FMS_COMPANY_TYPE', CT_ID)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Id"
-  physical_name: "event_tp_id"
+- attribute_name: "Classification FMS Company Type Code"
+  physical_name: "cl_fms_company_tp_code"
+  description: "Mã loại hình doanh nghiệp (cột CODE của bảng danh mục COMPANY_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.COMPANY_TYPE.CODE"
+  comment: "Lookup pair: cl_fms_company_type.cl_fms_company_tp_code. Pair with Classification FMS Company Type Id. Giá trị lấy từ FMS.COMPANY_TYPE.CODE sau ETL crosswalk (SECURITIES.CT_ID = COMPANY_TYPE.ID) — chi tiết xem comment Classification FMS Company Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Event Type Id"
+  physical_name: "cl_fms_event_tp_id"
   description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
   data_domain: "Surrogate Key"
   nullable: true
@@ -663,23 +654,23 @@ attributes:
   source_columns:
   - "FMS.SECURITIES.EVENT_TYPE_ID"
   comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang\
-    \ FMS.EVENT_TYPE: SECURITIES.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận ITEM_NAME\
-    \ sau đó hash_id('FMS_EVENT_TYPE', ITEM_NAME) |"
+    \ FMS.EVENT_TYPE: SECURITIES.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận EVENT_CODE\
+    \ sau đó hash_id('FMS_EVENT_TYPE', EVENT_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Classification FMS Event Type Code"
+  physical_name: "cl_fms_event_tp_code"
   description: "Mã loại sự vụ áp dụng."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.EVENT_TYPE.ITEM_NAME"
-  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Event Type\
-    \ Id. Giá trị lấy từ FMS.EVENT_TYPE.ITEM_NAME sau ETL crosswalk — chi tiết xem\
-    \ comment Event Type Id."
+  - "FMS.EVENT_TYPE.EVENT_CODE"
+  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification\
+    \ FMS Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.EVENT_CODE sau ETL crosswalk\
+    \ — chi tiết xem comment Classification FMS Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

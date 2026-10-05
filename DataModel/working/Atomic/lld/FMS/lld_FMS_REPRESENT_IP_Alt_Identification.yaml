@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Nguồn không có cột phân biệt loại giấy tờ — hardcode NATIONAL_ID mặc định.\
+  notes: "Nguồn không có cột phân biệt loại giấy tờ — hardcode IDENTIFICATION mặc định.\
     \ Document pending_design.yaml."
 attributes:
 - attribute_name: "Involved Party Id"
@@ -69,10 +69,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại\
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION — nguồn không phân biệt loại\
     \ giấy tờ."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  etl_derived_value: "IDENTIFICATION"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -84,7 +84,7 @@ attributes:
   source_columns:
   - "FMS.REPRESENT.ID_NO"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -97,6 +97,19 @@ attributes:
   source_columns:
   - "FMS.REPRESENT.ID_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "date"
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Nơi cấp giấy tờ định danh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.PROVINCE"
+  comment: "[MỚI 2026-10-02] Theo xác nhận Data Modeler, cột PROVINCE của REPRESENT thực chất lưu nơi cấp giấy tờ định danh (ID_NO/ID_DATE) dù mô tả nguồn ghi 'Tỉnh/thành phố của thành viên quỹ'. Đẩy ra từ lld_FMS_REPRESENT.yaml."
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  etl_derived_value: null
+  data_type: "string"

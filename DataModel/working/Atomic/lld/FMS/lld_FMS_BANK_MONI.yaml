@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Organization"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Tách IP Postal Address + IP Electronic Address (xem lld_FMS_BANK_MONI_IP_*.yaml).\
+  notes: "Tách IP Postal Address + IP Electronic Address + IP Alt Identification (CERT_NO → ELIGIBILITY_CERTIFICATE, 2026-10-02) (xem lld_FMS_BANK_MONI_IP_*.yaml).\
     \ CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION, ID_DB_OLD, FILE_NAME, FILE_DATA\
     \ document trong pending_design.yaml."
 attributes:
@@ -59,18 +59,30 @@ attributes:
   classification_context: "SOURCE_SYSTEM=FMS_BANK_MONI"
   etl_derived_value: "FMS_BANK_MONI"
   data_type: "string"
-- attribute_name: "Operation Status Code"
-  physical_name: "operation_status_code"
+- attribute_name: "Classification FMS Status Id"
+  physical_name: "cl_fms_status_id"
   description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.BANK_MONI.STATUS_ID"
-  comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK đến bảng danh\
-    \ mục STATUS — ETL resolve sang mã STATUS.CODE tương ứng."
-  classification_context: "FMS_OPERATION_STATUS"
+  comment: "FK target: cl_fms_status.cl_fms_status_id. Cần ETL crosswalk sang FMS.STATUS: BANK_MONI.STATUS_ID = STATUS.ID để xác nhận CODE sau đó hash_id('FMS_STATUS', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Status Code"
+  physical_name: "cl_fms_status_code"
+  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STATUS.CODE"
+  comment: "Lookup pair: cl_fms_status.cl_fms_status_code. Pair with Classification FMS Status Id. Giá trị lấy từ FMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Status Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Custodian Bank Full Name"
@@ -121,20 +133,6 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BANK_MONI.BANK_CODE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Custodian Certificate Number"
-  physical_name: "custodian_certificate_nbr"
-  description: "Số chứng nhận/giấy phép đủ điều kiện hoạt động lưu ký, giám sát của\
-    \ ngân hàng."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.BANK_MONI.CERT_NO"
   comment: null
   classification_context: null
   etl_derived_value: null

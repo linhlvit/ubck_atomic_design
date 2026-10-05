@@ -1,0 +1,98 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "INVESTORTYPE"
+  atomic_entity: "Classification FIMS Investor Type"
+  entity_physical_name: "cl_fims_investor_type"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Involved Party Type"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-10-05"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-05] Promote từ Classification Value (scheme FIMS_INVESTOR_TYPE, nay deprecated) lên entity riêng, cùng pattern các bảng Classification FMS (Status/Company Type/Stockholder Type). Theo chỉ đạo Data Modeler: chỉ map Id, SName, Name, Description, ECATALOG_ID; surrogate Id hash từ SNAME (BK = SNAME → Classification FIMS Investor Type Code). PK kỹ thuật nguồn Id (NUMBER) không thành cột Atomic. Các cột Deleted, DateCreated, CreatedBy, DateModified, ModifyBy, Status, IsDataMigration không map — document trong pending_design.yaml. Entity tiêu thụ: Foreign Investor (cột INVESTOR.InvestorTypeId là ID kỹ thuật → cần ETL crosswalk INVESTORTYPE.Id = INVESTOR.InvestorTypeId để lấy SNAME rồi hash_id) — chưa đồng bộ lld_FIMS_INVESTOR.yaml, ghi trong Điểm cần xác nhận."
+attributes:
+- attribute_name: "Classification FIMS Investor Type Id"
+  physical_name: "cl_fims_investor_tp_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTORTYPE.SName"
+  comment: "PK surrogate. Hash: hash_id('FIMS_INVESTORTYPE', SNAME) — hash từ SNAME theo chỉ đạo Data Modeler (SNAME là BK). BCV: \"[Common] Involved Party Type\" — danh mục loại nhà đầu tư nước ngoài."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FIMS Investor Type Code"
+  physical_name: "cl_fims_investor_tp_code"
+  description: "Mã nghiệp vụ loại nhà đầu tư nước ngoài. Map từ SNAME — Tên viết tắt / tên ngắn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTORTYPE.SName"
+  comment: "BK duy nhất của entity, đồng thời là đầu vào hash Id. Nguồn NVARCHAR2(20) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FIMS_INVESTORTYPE"
+  etl_derived_value: "FIMS_INVESTORTYPE"
+  data_type: "string"
+- attribute_name: "Classification FIMS Investor Type Name"
+  physical_name: "cl_fims_investor_tp_nm"
+  description: "Tên đầy đủ (tiếng Việt) của loại nhà đầu tư nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTORTYPE.Name"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết / ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTORTYPE.Description"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "ECatalog Id"
+  physical_name: "ecatalog_id"
+  description: "Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng chung eCatalog."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTORTYPE.ECATALOG_ID"
+  comment: "Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần Data Modeler/BA xác nhận (cùng trường hợp NHNCK.DEPARTMENTS.ECATALOG_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

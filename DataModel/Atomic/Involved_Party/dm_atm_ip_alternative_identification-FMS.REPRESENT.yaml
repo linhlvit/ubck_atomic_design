@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: REPRESENT
     source_column: FMS.REPRESENT.ID
-    comment: "FK target: investment_fund_representative_board_member.investment_fund_representative_board_member_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.REPRESENT', ID)."
+    comment: "FK target: investment_fund_representative_board_member.investment_fund_representative_board_member_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_REPRESENT', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -61,7 +61,7 @@ attributes:
     source_table: REPRESENT
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: FMS_REPRESENT
 
   - name: Identification Type Code
@@ -74,9 +74,9 @@ attributes:
     source_system: FMS
     source_table: REPRESENT
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại giấy tờ."
-    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: NATIONAL_ID
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION — nguồn không phân biệt loại giấy tờ."
+    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: IDENTIFICATION
 
   - name: Identification Number
     physical_name: identification_nbr
@@ -89,7 +89,7 @@ attributes:
     source_table: REPRESENT
     source_column: FMS.REPRESENT.ID_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -103,5 +103,19 @@ attributes:
     source_table: REPRESENT
     source_column: FMS.REPRESENT.ID_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identification_issue_place
+    business_meaning: Nơi cấp giấy tờ định danh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.PROVINCE
+    comment: "[MỚI 2026-10-02] Theo xác nhận Data Modeler, cột PROVINCE của REPRESENT thực chất lưu nơi cấp giấy tờ định danh (ID_NO/ID_DATE) dù mô tả nguồn ghi 'Tỉnh/thành phố của thành viên quỹ'. Đẩy ra từ lld_FMS_REPRESENT.yaml."
+    classification_context: "Source System Code = 'FMS_REPRESENT' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
