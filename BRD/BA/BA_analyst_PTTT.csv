@@ -505,7 +505,7 @@ WHERE t.marketCode  = 'HOSE'
                        FROM uat_mdds_stg.JAD_MARKETINFOR m
                        WHERE m.marketCode  = 'HOSE'
                          AND m.tradingdate = :input_date);",,,,,,,Dữ liệu tĩnh,
-1,,Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống,Giá đóng cửa ngày P(t),Giá đóng cửa ngày t,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, MarketIndex ",MDDS,x,x,,Done,Thông tin thị trường,uat_mdds_stg.JAD_MARKETINFOR,"MarketIndex, TradingDate, MarketCode
+1,,Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống,Giá đóng cửa ngày P(t),,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, MarketIndex ",MDDS,x,x,,Done,Thông tin thị trường,uat_mdds_stg.JAD_MARKETINFOR,"MarketIndex, TradingDate, MarketCode
 ","IndexCode = 'HOSE'; TradingDate = :input_date
 ","SELECT marketIndex AS close_index_t
 FROM uat_mdds_stg.JAD_MARKETINFOR
@@ -671,7 +671,7 @@ vold_daily AS (
         UNION ALL
         SELECT trade_date, trade_price * trade_quantity AS exec_value, Board_ID AS board_type
         FROM uat_hnx_stg.trade_book
-        WHERE ""Market ID"" IN ('STX','UPX')
+        WHERE MARKET_ID  IN ('STX','UPX')
           AND trade_date <= :input_date
     ) t
     WHERE t.board_type IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') 
@@ -734,7 +734,7 @@ vold_t AS (
         UNION ALL
         SELECT trade_date, trade_price * trade_quantity AS exec_value, Board_ID AS board_type
         FROM uat_hnx_stg.trade_book
-        WHERE ""Market ID"" IN ('STX','UPX')
+        WHERE MARKET_ID IN ('STX','UPX')
           AND trade_date <= :input_date
     ) t
     WHERE t.board_type IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8') 
@@ -1037,7 +1037,7 @@ gdongcua AS (
         s.FloorCode
     FROM uat_mdds_stg.JAD_STOCKINFOR s
     WHERE s.tradingdate = :ngay_gd
-      AND s.StockType NOT IN ('B','1','BO','D')
+      AND s.FloorCode IN ('02','04','10')
 ),
 scplh AS (
     -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
@@ -1150,7 +1150,7 @@ gdongcua AS (
     FROM uat_mdds_stg.JAD_STOCKINFOR s
     WHERE s.tradingdate BETWEEN TO_DATE(:ngay_gd,'YYYY-MM-DD') - 29
                             AND TO_DATE(:ngay_gd,'YYYY-MM-DD')
-      AND s.StockType NOT IN ('B','1','BO','D')
+      AND s.FloorCode IN ('02','04','10')
 ),
 scplh AS (
     -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
@@ -1305,7 +1305,7 @@ s.closePrice  ",Khối lượng chứng khoán đang lưu hành,"WITH gdongcua A
         s.FloorCode
     FROM uat_mdds_stg.JAD_STOCKINFOR s
     WHERE date_format(to_date(s.tradingdate, 'yyyy-MM-dd'), 'yyyyMMdd') = :ngay_gd
-      AND s.FloorCode IN ('02','04','10')
+      AND s.FloorCode IN ('02','04','10')  AND s.stocktype = '1'
 ),
 scplh AS (
     -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
@@ -2243,7 +2243,7 @@ gdongcua AS (
         s.FloorCode
     FROM uat_mdds_stg.JAD_STOCKINFOR s
     WHERE s.tradingdate = :ngay_gd
-      AND s.StockType NOT IN ('B','1','BO','D')
+      AND s.FloorCode IN ('02','04','10')
 ),
 scplh AS (
     -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
@@ -2664,7 +2664,7 @@ mcap_ngay AS (
     JOIN scplh s ON s.symbol = g.symbol
     WHERE g.tradingdate BETWEEN TO_DATE(:ngay_gd,'YYYY-MM-DD') - INTERVAL '29' DAY
                             AND TO_DATE(:ngay_gd,'YYYY-MM-DD')
-      AND g.StockType NOT IN ('B','1','BO','D')
+      AND g.FloorCode IN ('02','04','10')
     GROUP BY g.tradingdate
 ),
 
@@ -2794,7 +2794,7 @@ gdongcua AS (
         s.FloorCode
     FROM uat_mdds_stg.JAD_STOCKINFOR s
     WHERE s.tradingdate = :ngay_gd
-      AND s.StockType NOT IN ('B','1','BO','D')
+      AND s.FloorCode IN ('02','04','10')
 ),
 scplh AS (
     -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
@@ -2903,7 +2903,7 @@ gdongcua AS (
     FROM uat_mdds_stg.JAD_STOCKINFOR s
     WHERE s.tradingdate BETWEEN TO_DATE(:ngay_gd,'YYYY-MM-DD') - 29
                             AND TO_DATE(:ngay_gd,'YYYY-MM-DD')
-      AND s.StockType NOT IN ('B','1','BO','D')
+      AND s.FloorCode IN ('02','04','10')
 ),
 scplh AS (
     -- Số lượng cổ phiếu lưu hành: lấy bản ghi mới nhất theo mã, nguồn uat_vsdc_ods.outstanding_shares
@@ -6422,10 +6422,9 @@ von_hoa_nganh AS (
         SUM(v.market_cap) OVER (
             PARTITION BY ci.industry_cd
         ) AS tong_von_hoa_nganh
-    FROM von_hoa_ma v
-    JOIN IDS.company_info ci ON ci.symbol = v.symbol
-    JOIN IDS.categories c ON c.industry_cd = ci.industry_cd
-                         AND c.active_flg = 1
+    FROM von_hoa_ma v                                         
+        LEFT JOIN UAT_IDS_STG.company_profiles cp ON cp.equity_ticker = s.symbol AND cp.delete_flg = 0
+        LEFT JOIN UAT_IDS_STG.CATEGORIES c ON c.ID = cd.category_l1_id 
 )
 SELECT
     :ngay_gd AS ngay_gd,
@@ -6485,6 +6484,7 @@ von_hoa_ma AS (
 ),
 nganh AS (
     SELECT
+	    c.ID,
         c.industry_cd,
         c.industry_name
     FROM IDS.categories c
@@ -6496,8 +6496,8 @@ SELECT
     n.industry_name AS ten_nganh,
     SUM(v.market_cap) AS tong_von_hoa_nganh
 FROM von_hoa_ma v
-JOIN IDS.company_info ci ON ci.symbol = v.symbol
-JOIN nganh n ON n.industry_cd = ci.industry_cd
+LEFT JOIN UAT_IDS_STG.company_profiles cp ON cp.equity_ticker = s.symbol AND cp.delete_flg = 0
+LEFT JOIN UAT_IDS_STG.CATEGORIES c ON c.ID = cd.category_l1_id 
 GROUP BY
     n.industry_cd,
     n.industry_name
@@ -6593,7 +6593,8 @@ WHERE TO_DATE(effective_date, 'yyyy-MM-dd')
       OR TO_DATE(end_date, 'yyyy-MM-dd')
          >= TO_DATE(:Ngay_gd, 'yyyyMMdd')
   )
-  AND input_indicator_code = 'PDRAWDOWN';",,,,,,,Dữ liệu tĩnh,
+  AND input_indicator_code = 'PDRAWDOWN';
+",,,,,,,Dữ liệu tĩnh,
 7,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ áp lực ngành ,Pselling,Áp lực bán,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, Mã chứng khoán ",Kho dữ liệu,x,x,,Done,"Trọng số W1,W2,W3 cần cấu hình trong bảng tham số DWH do chuyên viên nhập",uat_uploadfile_stg.weight_config,,,"SELECT
     weight,
     input_indicator_code,
@@ -11212,108 +11213,263 @@ Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ",Tổng dư nợ TP,"Tổng quy mô trái phiếu đang lưu hành
-Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành)",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"MDDS, MSS",x,x,,Done,,JAD_STOCKINFOR,ListedShare,,"SELECT
-    TO_DATE(s.tradingdate, 'DD/MM/YYYY')         AS ngay_thong_ke,
-    SUM(CAST(s.ListedShare AS NUMERIC) * 100000) AS tong_du_no_tp
-FROM JAD_STOCKINFOR s
-WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
-  AND s.StockType IN ('B','1','D');",,,,,,,Dữ liệu tĩnh,
+Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành)",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"MDDS, MSS",x,x,,Done,,"uat_hnx_stg.listed_securities_list
+uat_hnx_stg.private_corp_bond_registration",,,"SELECT
+    TO_DATE(:ngay_gd, 'yyyyMMdd') AS tradingdate,
+    SUM(sub.kl_luu_hanh * 100000) AS tong_du_no_tp
+FROM (
+    -- TPDN niêm yết: lọc đúng ngày báo cáo
+    SELECT
+        t.outstanding_shares AS kl_luu_hanh
+    FROM uat_hnx_stg.listed_securities_list t
+    WHERE t.report_date = TO_DATE(:ngay_gd, 'yyyyMMdd')
+
+    UNION ALL
+
+    -- TPDN riêng lẻ: ngày tra cứu <= ngày cuối tháng báo cáo
+    SELECT
+        t.outstanding_volume AS kl_luu_hanh
+    FROM uat_hnx_stg.private_corp_bond_registration t
+    WHERE TO_DATE(:ngay_gd, 'yyyyMMdd')
+          <= LAST_DAY(
+              TO_DATE(CONCAT(t.report_month, '01'), 'yyyyMMdd')
+          )
+) sub;",,,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ",Mệnh giá,Mệnh giá,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,MDDS,x,x,,Done,"Danh mục chứng khoán
-Fix sẵn 100.000/ 1 trái phiếu ",JAD_STOCKINFOR,,,,Fix sẵn 100.000/ 1 trái phiếu ,,,,,,Dữ liệu tĩnh,
+Fix sẵn 100.000/ 1 trái phiếu ",,,,Fix sẵn 100.000/ 1 trái phiếu ,Fix sẵn 100.000/ 1 trái phiếu ,,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
-",KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,MSS,x,x,,Done,Thông tin thị trường,JAD_STOCKINFOR,ListedShare,,"SELECT
-    TO_DATE(s.tradingdate, 'DD/MM/YYYY') AS ngay_thong_ke,
-    SUM(CAST(s.ListedShare AS NUMERIC))  AS kl_tp_luu_hanh
-FROM JAD_STOCKINFOR s
-WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
-  AND s.StockType IN ('B','1','D');","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
+",KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,MSS,x,x,,Done,Thông tin thị trường,"uat_hnx_stg.listed_securities_list
+uat_hnx_stg.private_corp_bond_registration",,,"SELECT
+    sub.loai_trai_phieu,
+    sub.ky_thong_ke,
+    SUM(sub.kl_luu_hanh) AS kl_tp_luu_hanh
+FROM (
+    -- TPDN niêm yết: dữ liệu theo ngày
+    SELECT
+        'TPDN niêm yết' AS loai_trai_phieu,SELECT
+    sub.loai_trai_phieu,
+    sub.ky_thong_ke,
+    SUM(sub.kl_luu_hanh) AS kl_tp_luu_hanh
+FROM (
+    -- TPDN niêm yết: dữ liệu theo ngày
+    SELECT
+        'TPDN niêm yết' AS loai_trai_phieu,
+        TO_DATE(:ngay_gd, 'yyyyMMdd') AS ky_thong_ke,
+        t.outstanding_shares AS kl_luu_hanh
+    FROM uat_hnx_stg.listed_securities_list t
+    WHERE t.report_date = TO_DATE(:ngay_gd, 'yyyyMMdd')
+
+    UNION ALL
+
+    -- TPDN riêng lẻ: lấy tháng báo cáo tương ứng ngày thống kê
+    SELECT
+        'TPDN riêng lẻ' AS loai_trai_phieu,
+        TO_DATE(:ngay_gd, 'yyyyMMdd') AS ky_thong_ke,
+        t.outstanding_volume AS kl_luu_hanh
+    FROM uat_hnx_stg.private_corp_bond_registration t
+    WHERE t.report_month = DATE_FORMAT(
+        TO_DATE(:ngay_gd, 'yyyyMMdd'),
+        'yyyyMM'
+    )
+) sub
+GROUP BY sub.loai_trai_phieu, sub.ky_thong_ke;
+        DATE_FORMAT(t.report_date, 'yyyyMMdd') AS ky_thong_ke,
+        t.outstanding_shares AS kl_luu_hanh
+    FROM uat_hnx_stg.listed_securities_list t
+    WHERE t.report_date = TO_DATE(:ngay_gd, 'yyyyMMdd')
+
+    UNION ALL
+
+    -- TPDN riêng lẻ: lấy tháng báo cáo tương ứng ngày thống kê
+    SELECT
+        'TPDN riêng lẻ' AS loai_trai_phieu,
+        t.report_month AS ky_thong_ke,
+        t.outstanding_volume AS kl_luu_hanh
+    FROM uat_hnx_stg.private_corp_bond_registration t
+    WHERE t.report_month = DATE_FORMAT(
+        TO_DATE(:ngay_gd, 'yyyyMMdd'),
+        'yyyyMM'
+    )
+) sub
+GROUP BY sub.loai_trai_phieu, sub.ky_thong_ke;","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ","Áp lực đáo hạn 12T
 Tổng TP có ngày đáo hạn trong vòng 12 tháng tiếp theo tính từ ngày báo cáo ","Tổng giá trị TP sẽ đáo hạn trong 12 tháng tới chỉ báo áp lực thanh toán / tái cấp vốn của thị trường
 Áp lực đáo hạn 12T  = Σ (Mệnh giá * KL TP lưu hành)",Dashboard,Chỉ tiêu phái sinh,TB,Ngày ,"MSS, MDDS",x,x,,Done,"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung 
-(Mẫu bc ngày TT138)",JAD_STOCKINFOR,ListedShare,,"SELECT
-    :ngay_gd  AS ngay_thong_ke,
-    SUM(CAST(s.ListedShare AS NUMERIC) * 100000) AS ap_luc_dao_han_12t
-FROM JAD_STOCKINFOR s
-WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
-  AND s.StockType IN ('B','1','D')
-  AND TO_DATE(s.MaturityDate, 'DD/MM/YYYY')
-        BETWEEN :ngay_gd
-        AND     :ngay_gd + 365;","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
+(Mẫu bc ngày TT138)","uat_hnx_stg.listed_securities_list
+uat_mdds_stg.JAD_STOCKINFOR
+uat_hnx_stg.private_corp_bond_registration",,,"SELECT
+    TO_DATE(:ngay_gd, 'yyyyMMdd') AS tradingdate,
+    SUM(sub.kl_luu_hanh * 100000) AS ap_luc_dao_han_12t
+FROM (
+    -- TPDN niêm yết: lấy ngày đáo hạn từ JAD_STOCKINFOR
+    SELECT
+        t.outstanding_shares AS kl_luu_hanh
+    FROM uat_hnx_stg.listed_securities_list t
+    JOIN (
+        SELECT DISTINCT
+            s.symbol,
+            SUBSTR(s.symbol, 1, 3) AS join_ticker,
+            TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS tradingdate
+        FROM uat_mdds_stg.JAD_STOCKINFOR s
+        WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+              = TO_DATE(:ngay_gd, 'yyyyMMdd')
+          AND s.StockType = '1'
+          -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+          AND NOT (
+              s.symbol RLIKE '^[A-Za-z]{2}GB'
+              OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+              OR s.symbol RLIKE '^(HCM|HAN)'
+          )
+          AND TO_DATE(s.MaturityDate, 'yyyy-MM-dd')
+              > TO_DATE(:ngay_gd, 'yyyyMMdd')
+          AND TO_DATE(s.MaturityDate, 'yyyy-MM-dd')
+              <= ADD_MONTHS(TO_DATE(:ngay_gd, 'yyyyMMdd'), 12)
+    ) s
+        ON s.symbol = t.ticker_symbol
+       AND s.tradingdate = t.report_date
+    WHERE t.report_date = TO_DATE(:ngay_gd, 'yyyyMMdd')
+
+    UNION ALL
+
+    -- TPDN riêng lẻ: ngày tra cứu <= ngày cuối tháng báo cáo
+    SELECT
+        t.outstanding_volume AS kl_luu_hanh
+    FROM uat_hnx_stg.private_corp_bond_registration t
+    WHERE TO_DATE(:ngay_gd, 'yyyyMMdd')
+          <= LAST_DAY(
+              TO_DATE(CONCAT(t.report_month, '01'), 'yyyyMMdd')
+          )
+      AND t.maturity_date > TO_DATE(:ngay_gd, 'yyyyMMdd')
+      AND t.maturity_date
+          <= ADD_MONTHS(TO_DATE(:ngay_gd, 'yyyyMMdd'), 12)
+) sub;","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ",Tăng trưởng áp lực đáo hạn,%Δ = (Áp lực đáo hạn 12T kỳ này - Áp lực đáo hạn 12T kỳ trước ) / Áp lực đáo hạn 12T kỳ trước * 100,Dashboard,Chỉ tiêu phái sinh,TB,Ngày ,"MSS, MDDS",x,x,,Done,"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung 
-(Mẫu bc ngày TT138)",JAD_STOCKINFOR,ListedShare,,"WITH
-ky_nay AS (
+(Mẫu bc ngày TT138)","uat_mdds_stg.JAD_STOCKINFOR
+uat_hnx_stg.listed_securities_list
+uat_hnx_stg.private_corp_bond_registration",,,"WITH
+ky_thong_ke AS (
     SELECT
-        SUM(CAST(s.ListedShare AS NUMERIC) * 100000) AS ap_luc_dao_han
-    FROM JAD_STOCKINFOR s
-    WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
-      AND s.StockType IN ('B','1','D')
-      AND TO_DATE(s.MaturityDate, 'DD/MM/YYYY')
-            BETWEEN :ngay_gd
-            AND     :ngay_gd + 365
+        'KY_NAY' AS ky,
+        TO_DATE(:ngay_gd, 'yyyyMMdd') AS ngay_thong_ke
+
+    UNION ALL
+
+    SELECT
+        'KY_TRUOC' AS ky,
+        TO_DATE(:ngay_gd_truoc, 'yyyyMMdd') AS ngay_thong_ke
 ),
-ky_truoc AS (
+tp_dao_han AS (
+    -- TPDN niêm yết đáo hạn trong 12 tháng sau ngày thống kê
+    SELECT DISTINCT
+        k.ky,
+        k.ngay_thong_ke,
+        s.symbol,
+        SUBSTR(s.symbol, 1, 3) AS join_ticker
+    FROM ky_thong_ke k
+    JOIN uat_mdds_stg.JAD_STOCKINFOR s
+        ON TO_DATE(s.tradingdate, 'yyyy-MM-dd') = k.ngay_thong_ke
+    WHERE s.StockType = '1'
+      -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+      AND NOT (
+          s.symbol RLIKE '^[A-Za-z]{2}GB'
+          OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+          OR s.symbol RLIKE '^(HCM|HAN)'
+      )
+      AND TO_DATE(s.MaturityDate, 'yyyy-MM-dd')
+          > k.ngay_thong_ke
+      AND TO_DATE(s.MaturityDate, 'yyyy-MM-dd')
+          <= ADD_MONTHS(k.ngay_thong_ke, 12)
+),
+du_lieu AS (
+    -- TPDN niêm yết: khối lượng tại ngày thống kê từng kỳ
     SELECT
-        SUM(CAST(s.ListedShare AS NUMERIC) * 100000) AS ap_luc_dao_han
-    FROM JAD_STOCKINFOR s
-    WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd_truoc
-      AND s.StockType IN ('B','1','D')
-      AND TO_DATE(s.MaturityDate, 'DD/MM/YYYY')
-            BETWEEN :ngay_gd_truoc
-            AND     :ngay_gd_truoc + 365
+        s.ky,
+        t.outstanding_shares AS kl_luu_hanh
+    FROM uat_hnx_stg.listed_securities_list t
+    JOIN tp_dao_han s
+        ON s.symbol = t.ticker_symbol
+       AND s.ngay_thong_ke = t.report_date
+
+    UNION ALL
+
+    -- TPDN riêng lẻ: ngày tra cứu <= ngày cuối tháng báo cáo
+    SELECT
+        k.ky,
+        t.outstanding_volume AS kl_luu_hanh
+    FROM ky_thong_ke k
+    JOIN uat_hnx_stg.private_corp_bond_registration t
+        ON k.ngay_thong_ke <= LAST_DAY(
+            TO_DATE(CONCAT(t.report_month, '01'), 'yyyyMMdd')
+        )
+    WHERE t.maturity_date > k.ngay_thong_ke
+      AND t.maturity_date <= ADD_MONTHS(k.ngay_thong_ke, 12)
+),
+ap_luc_theo_ky AS (
+    SELECT
+        k.ky,
+        SUM(d.kl_luu_hanh * 100000) AS ap_luc_dao_han
+    FROM ky_thong_ke k
+    LEFT JOIN du_lieu d
+        ON d.ky = k.ky
+    GROUP BY k.ky
+),
+gia_tri AS (
+    SELECT
+        MAX(CASE
+            WHEN ky = 'KY_NAY' THEN ap_luc_dao_han
+        END) AS ap_luc_12t_ky_nay,
+        MAX(CASE
+            WHEN ky = 'KY_TRUOC' THEN ap_luc_dao_han
+        END) AS ap_luc_12t_ky_truoc
+    FROM ap_luc_theo_ky
 )
 SELECT
-    :ngay_gd                                AS ngay_thong_ke,
-    :ngay_gd_truoc                          AS ngay_ky_truoc,
-    n.ap_luc_dao_han                        AS ap_luc_12t_ky_nay,
-    t.ap_luc_dao_han                        AS ap_luc_12t_ky_truoc,
-    CASE
-        WHEN t.ap_luc_dao_han IS NULL
-          OR t.ap_luc_dao_han = 0 THEN NULL
-        ELSE ROUND(
-            (n.ap_luc_dao_han - t.ap_luc_dao_han)
-            / t.ap_luc_dao_han * 100, 2)
-    END                                     AS tang_truong_ap_luc_dao_han_pct
-FROM ky_nay n
-CROSS JOIN ky_truoc t;","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
+    TO_DATE(:ngay_gd, 'yyyyMMdd') AS ngay_thong_ke,
+    TO_DATE(:ngay_gd_truoc, 'yyyyMMdd') AS ngay_ky_truoc,
+    ap_luc_12t_ky_nay,
+    ap_luc_12t_ky_truoc,
+    ROUND(
+        (ap_luc_12t_ky_nay - ap_luc_12t_ky_truoc)
+        / NULLIF(ap_luc_12t_ky_truoc, 0) * 100,
+        2
+    ) AS tang_truong_ap_luc_dao_han_pct
+FROM gia_tri;","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ",Áp lực đáo hạn 12T kỳ này ,Áp lực đáo hạn 12T kỳ này ,Dashboard,Chỉ tiêu phái sinh,TB,Ngày ,"MSS, MDDS",x,x,,Done,"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung 
-(Mẫu bc ngày TT138)",JAD_STOCKINFOR,ListedShare,,,"Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
+(Mẫu bc ngày TT138)","uat_mdds_stg.JAD_STOCKINFOR
+uat_hnx_stg.listed_securities_list
+uat_hnx_stg.private_corp_bond_registration",,,,"Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ",Áp lực đáo hạn 12T kỳ trước ,Áp lực đáo hạn 12T kỳ trước ,Dashboard,Chỉ tiêu phái sinh,TB,Ngày ,"MSS, MDDS",x,x,,Done,"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung 
-(Mẫu bc ngày TT138)",JAD_STOCKINFOR,ListedShare,,,"Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
+(Mẫu bc ngày TT138)","uat_mdds_stg.JAD_STOCKINFOR
+uat_hnx_stg.listed_securities_list
+uat_hnx_stg.private_corp_bond_registration",,,,"Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ",Lợi suất trái phiếu (AVG),Lợi suất TP bình quân = ∑(YTMi * GTGDi) / ∑GTGDi,Dashboard,Chỉ tiêu phái sinh,TB,Ngày ,"MDDS, MSS",x,x,,Done,"Danh mục chứng khoán
-Sổ lệnh","TRADE_BOOK_HOSE
-TRADE_BOOK_HNX
-
-JAD_STOCKINFOR","Lấy từ sổ lệnh: 
+Sổ lệnh","uat_mdds_stg.JAD_STOCKINFOR
+uat_hnx_stg.TRADE_BOOK","Lấy từ sổ lệnh: 
 - Hose: 
 Execution - Volume
 - HNX: 
 Trade quantity
---> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số
 
-Lấy từ thông tin thị trường: 
-",,"SELECT
-    ytm.ngay_gd,
-    SUM(ytm.ytmi_loi_suat_thi_truong * gtgd.tong_gt_gd)
-        / NULLIF(SUM(gtgd.tong_gt_gd), 0) AS loi_suat_tp_binh_quan
-FROM (
-    -- YTMi
+",,"WITH
+ytm AS (
+    -- YTMi: lợi suất thị trường từng trái phiếu
     SELECT
         symbol AS ma_tp,
         TO_DATE(tradingdate, 'yyyy-MM-dd') AS ngay_gd,
@@ -11321,40 +11477,41 @@ FROM (
     FROM uat_mdds_stg.JAD_STOCKINFOR
     WHERE yield IS NOT NULL
       AND TRIM(CAST(yield AS STRING)) <> ''
-      AND floorcode = '06'
-) ytm
-JOIN (
-    -- GTGDi
+      AND StockType = '1'
+      AND DATE_FORMAT(
+              TO_DATE(tradingdate, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+),
+gtgd AS (
+    -- GTGDi: tổng giá trị giao dịch từng trái phiếu trên HNX
     SELECT
-        sub.symbol AS ma_tp,
-        sub.ngay_gd,
-        SUM(sub.gt_gd) AS tong_gt_gd
-    FROM (
-        -- HOSE
-        SELECT
-            t.Symbol AS symbol,
-            TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay_gd,
-            t.Execution_Value AS gt_gd
-        FROM uat_hose_stg.TRADE_BOOK t
-        WHERE t.Market_ID = 'BDO'
-
-        UNION ALL
-
-        -- HNX
-        SELECT
-            t.Issue_Code AS symbol,
-            TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+        t.Issue_Code AS ma_tp,
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+        SUM(
             CAST(t.Trade_price AS DECIMAL(18, 6))
-                * CAST(t.Trade_quantity AS DECIMAL(18, 0)) AS gt_gd
-        FROM uat_hnx_stg.TRADE_BOOK t
-        WHERE t.Market_ID = 'BDO'
-    ) sub
-    GROUP BY sub.symbol, sub.ngay_gd
-) gtgd
-    ON ytm.ma_tp = gtgd.ma_tp
-   AND ytm.ngay_gd = gtgd.ngay_gd
-GROUP BY ytm.ngay_gd
-ORDER BY ytm.ngay_gd;",Tính phái sinh từ YTMi và GTGDi,,,,,,Dữ liệu tĩnh,
+            * CAST(t.Trade_quantity AS DECIMAL(18, 0))
+        ) AS tong_gt_gd
+    FROM uat_hnx_stg.TRADE_BOOK t
+    WHERE DATE_FORMAT(
+              TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
+              'yyyyMMdd'
+          ) = :ngay_gd
+      AND t.Market_ID = 'HCX'
+    GROUP BY
+        t.Issue_Code,
+        TO_DATE(t.Trade_date, 'yyyy-MM-dd')
+)
+SELECT
+    y.ngay_gd,
+    SUM(y.ytmi_loi_suat_thi_truong * g.tong_gt_gd)
+        / NULLIF(SUM(g.tong_gt_gd), 0) AS loi_suat_tp_binh_quan
+FROM ytm y
+JOIN gtgd g
+    ON g.ma_tp = y.ma_tp
+   AND g.ngay_gd = y.ngay_gd
+GROUP BY y.ngay_gd
+ORDER BY y.ngay_gd;",Tính phái sinh từ YTMi và GTGDi,,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 ",YTMi,Lợi suất thực tế của trái phiếu đang giao dịch trên thị trường thứ cấp,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MDDS,x,x,,Done,Danh mục chứng khoán ,JAD_STOCKINFOR,yield ,floorcode = '06',"SELECT
@@ -11366,150 +11523,183 @@ Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
 FROM uat_mdds_stg.JAD_STOCKINFOR
 WHERE yield IS NOT NULL
   AND yield <> ''
-  AND floorcode = '06'
+  AND stocktype = '1'
 ORDER BY symbol, tradingdate;","MDDS đang thêm trường này dữ liệu từ Sở tính sẵn
 MDDS sẽ bổ sung tại bảng JAD_STOCKINFOR lấy theo Ma_CK, lọc theo ngày",,,,,,Dữ liệu tĩnh,
 18,,"
 Dashboard Trái phiếu doanh nghiệp/ Chỉ số chung
-",GTGD,Giá trị giao dịch,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Done,Sổ lệnh,"TRADE_BOOK_HOSE
+",GTGD,Giá trị giao dịch,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày ,MSS,x,x,,Done,Sổ lệnh,"
 TRADE_BOOK_HNX
-JAD_CSIDXINFOR 
+ 
 ","lấy từ sổ lệnh: 
 - Hose: 
 Execution - Volume
 - HNX: 
 Trade quantity
---> cần join qua bảng JAD_CSIDXINFOR để lấy KLGD của chỉ số ","Market ID = 'BDO'
+","Market ID = 'BDO'
 
 ","SELECT
-    sub.symbol AS ma_trai_phieu,
-    sub.ngay_gd,
-    SUM(sub.kl_gd) AS tong_kl_gd,
-    SUM(sub.gt_gd) AS tong_gt_gd
-FROM (
-    -- HOSE
-    SELECT
-        t.Symbol AS symbol,
-        TO_DATE(t.Trade_Date, 'yyyy-MM-dd') AS ngay_gd,
-        t.Execution_Volume AS kl_gd,
-        t.Execution_Value AS gt_gd
-    FROM uat_hose_stg.TRADE_BOOK t
-    WHERE DATE_FORMAT(
-              TO_DATE(t.Trade_Date, 'yyyy-MM-dd'),
-              'yyyyMMdd'
-          ) = :ngay_gd
-      AND t.Symbol = :ma_trai_phieu
-      AND t.Market_ID = 'BDO'
-
-    UNION ALL
-
-    -- HNX
-    SELECT
-        t.Issue_Code AS symbol,
-        TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
-        t.Trade_quantity AS kl_gd,
+    t.Issue_Code AS ma_trai_phieu,
+    TO_DATE(t.Trade_date, 'yyyy-MM-dd') AS ngay_gd,
+    SUM(t.Trade_quantity) AS tong_kl_gd,
+    SUM(
         CAST(t.Trade_price AS NUMERIC)
-            * CAST(t.Trade_quantity AS NUMERIC) AS gt_gd
-    FROM uat_hnx_stg.TRADE_BOOK t
-    WHERE DATE_FORMAT(
-              TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
-              'yyyyMMdd'
-          ) = :ngay_gd
-      AND t.Issue_Code = :ma_trai_phieu
-      AND t.Market_ID = 'BDO'
-) sub
-GROUP BY sub.symbol, sub.ngay_gd;",,,,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Thời gian ,Quý thống kê,Dashboard,Chiều,Dễ,,MDDS,x,x,,Done,,JAD_STOCKINFOR,,,,,,,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Tổng dư nợ TP niêm yết ,Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành),Dashboard,Chỉ tiêu phái sinh,TB,"Quý, Mâ TP",MDDS,x,x,,Done,,JAD_STOCKINFOR,ListedShare,,"SELECT
-    :nam                                         AS nam,
-    :quy                                         AS quy,
-    SUM(CAST(s.ListedShare AS NUMERIC) * 100000) AS tong_du_no_tp
-FROM JAD_STOCKINFOR s
-WHERE EXTRACT(YEAR FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY'))    = :nam
-  AND EXTRACT(QUARTER FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY')) = :quy
-  AND s.StockType IN ('B','1','D');","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
+        * CAST(t.Trade_quantity AS NUMERIC)
+    ) AS tong_gt_gd
+FROM uat_hnx_stg.TRADE_BOOK t
+WHERE DATE_FORMAT(
+          TO_DATE(t.Trade_date, 'yyyy-MM-dd'),
+          'yyyyMMdd'
+      ) = :ngay_gd
+  AND t.Issue_Code = :ma_trai_phieu
+  AND t.Market_ID = 'HCX'
+GROUP BY
+    t.Issue_Code,
+    TO_DATE(t.Trade_date, 'yyyy-MM-dd');",,,,,,,Dữ liệu tĩnh,
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Thời gian ,Quý thống kê,Dashboard,Chiều,Dễ,,MDDS,x,x,,Done,,,,,,,,,,,,Dữ liệu tĩnh,
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Tổng dư nợ TP niêm yết ,Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành),Dashboard,Chỉ tiêu phái sinh,TB,"Quý, Mâ TP",MDDS,x,x,,Done,,uat_hnx_stg.listed_securities_list,ListedShare,,"SELECT
+    :nam AS nam,
+    :quy AS quy,
+    t.report_date AS ngay_thong_ke,
+    SUM(t.outstanding_shares * 100000) AS tong_du_no_tp_niem_yet
+FROM uat_hnx_stg.listed_securities_list t
+JOIN (
+    SELECT DISTINCT
+        s.symbol,
+        TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS tradingdate
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE s.StockType = '1'
+      -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+      AND NOT (
+          s.symbol RLIKE '^[A-Za-z]{2}GB'
+          OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+          OR s.symbol RLIKE '^(HCM|HAN)'
+      )
+) s
+    ON s.symbol = t.ticker_symbol
+   AND s.tradingdate = t.report_date
+WHERE t.report_date = (
+    -- Lấy ngày báo cáo cuối cùng có dữ liệu trong quý thống kê
+    SELECT MAX(t2.report_date)
+    FROM uat_hnx_stg.listed_securities_list t2
+    WHERE YEAR(t2.report_date) = :nam
+      AND QUARTER(t2.report_date) = :quy
+)
+GROUP BY t.report_date;","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
 19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Mệnh giá ,Mệnh giá ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý, Mâ TP",MDDS,x,x,,Done,"- Danh mục chứng khoán
 ",,,,,Fix sẵn 100.000/ 1 trái phiếu ,,,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,KL TP lưu hành,KL TP lưu hành ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý, Mâ TP",CSDLTT,x,x,,Done,,JAD_STOCKINFOR,ListedShare,,"SELECT
-    s.symbol,
-    s.tradingdate,
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,KL TP lưu hành,KL TP lưu hành ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý, Mâ TP",CSDLTT,x,x,,Done,,uat_hnx_stg.listed_securities_list,ListedShare,,"SELECT
+    t.ticker_symbol AS symbol,
+    t.report_date AS tradingdate,
     s.FloorCode,
-    CAST(s.ListedShare AS NUMERIC) AS kl_tp_luu_hanh,
-    EXTRACT(YEAR FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY'))  AS nam,
-    EXTRACT(QUARTER FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY')) AS quy
-FROM JAD_STOCKINFOR s
-WHERE EXTRACT(YEAR FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY'))    = :nam
-  AND EXTRACT(QUARTER FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY')) = :quy
-  AND s.StockType IN ('B','1','D')
-ORDER BY s.tradingdate, s.symbol;",,,,,,,Dữ liệu tĩnh,
+    t.outstanding_shares AS kl_tp_luu_hanh,
+    YEAR(t.report_date) AS nam,
+    QUARTER(t.report_date) AS quy
+FROM uat_hnx_stg.listed_securities_list t
+JOIN (
+    SELECT DISTINCT
+        s.symbol,
+        TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS tradingdate,
+        s.FloorCode
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE s.StockType = '1'
+      -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+      AND NOT (
+          s.symbol RLIKE '^[A-Za-z]{2}GB'
+          OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+          OR s.symbol RLIKE '^(HCM|HAN)'
+      )
+) s
+    ON s.symbol = t.ticker_symbol
+   AND s.tradingdate = t.report_date
+WHERE YEAR(t.report_date) = :nam
+  AND QUARTER(t.report_date) = :quy
+ORDER BY t.report_date, t.ticker_symbol;",,,,,,,Dữ liệu tĩnh,
 19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Giá trị đáo hạn rủi ro cao,Σ giá trị đáo hạn trái phiếu của doanh nghiệp có xếp hạng tín nhiệm thấp,Dashboard,Chỉ tiêu phái sinh,TB,"Quý, Mâ TP, Xếp hạng tín nhiệm","MDDS, MSS",x,x,,Done,"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)",,,,"WITH
--- Buoc 1: Lay xep hang tin nhiem moi nhat cua tung doanh nghiep trong ky
+-- Bước 1: Lấy xếp hạng tín nhiệm của doanh nghiệp trong kỳ
 xep_hang AS (
     SELECT
         ecb.company_id,
         ecb.ranking AS xep_hang_tin_nhiem
     FROM evaluation_cbonds ecb
-    WHERE ecb.year  = :p_year
+    WHERE ecb.year = :p_year
       AND ecb.month = :p_month
 ),
 
--- Buoc 2: Loc doanh nghiep co xep hang tin nhiem thap
+-- Bước 2: Lọc doanh nghiệp có xếp hạng tín nhiệm thấp
 dn_rui_ro_cao AS (
-    SELECT company_id
+    SELECT DISTINCT company_id
     FROM xep_hang
     WHERE xep_hang_tin_nhiem IN (:nguong_xep_hang_thap)
 ),
 
--- Buoc 3: Lay thong tin TP dao han cua cac DN co xep hang thap
--- Join voi bang TP qua company_id / issuer
+-- Bước 3: Lấy TPDN niêm yết của doanh nghiệp có xếp hạng thấp
 tp_dao_han AS (
     SELECT
         s.symbol,
-        s.tradingdate,
-        s.MaturityDate,
-        CAST(s.ListedShare AS NUMERIC)          AS kl_tp_luu_hanh,
-        CAST(s.ListedShare AS NUMERIC) * 100000 AS gia_tri_dao_han
-    FROM JAD_STOCKINFOR s
-    JOIN IDS.company_profile cd ON cd.equity_ticker = s.symbol
-    JOIN dn_rui_ro_cao dn     ON dn.company_id     = cd.company_id
-    WHERE s.StockType IN ('B','1','D')
-      AND TO_DATE(s.tradingdate, 'DD/MM/YYYY') = (
-            SELECT MAX(TO_DATE(s2.tradingdate, 'DD/MM/YYYY'))
-            FROM JAD_STOCKINFOR s2
-            WHERE s2.StockType IN ('B','1','D')
-              AND EXTRACT(YEAR    FROM TO_DATE(s2.tradingdate, 'DD/MM/YYYY')) = :p_year
-              AND EXTRACT(QUARTER FROM TO_DATE(s2.tradingdate, 'DD/MM/YYYY')) = :p_quarter
-      )
-      -- Chi tinh TP dao han trong 12 thang toi (theo spec ""ap luc dao han 12T"")
-      AND TO_DATE(s.MaturityDate, 'DD/MM/YYYY')
-              BETWEEN SYSDATE
-              AND     ADD_MONTHS(SYSDATE, 12)
+        t.report_date AS tradingdate,
+        s.maturity_date,
+        t.outstanding_shares AS kl_tp_luu_hanh,
+        t.outstanding_shares * 100000 AS gia_tri_dao_han
+    FROM uat_hnx_stg.listed_securities_list t
+    JOIN (
+        SELECT DISTINCT
+            s.symbol,
+            SUBSTR(s.symbol, 1, 3) AS join_ticker,
+            TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS tradingdate,
+            TO_DATE(s.MaturityDate, 'yyyy-MM-dd') AS maturity_date
+        FROM uat_mdds_stg.JAD_STOCKINFOR s
+        WHERE s.StockType = '1'
+          -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+          AND NOT (
+              s.symbol RLIKE '^[A-Za-z]{2}GB'
+              OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+              OR s.symbol RLIKE '^(HCM|HAN)'
+          )
+    ) s
+        ON s.symbol = t.ticker_symbol
+       AND s.tradingdate = t.report_date
+    JOIN UAT_IDS_STG.company_profiles cp
+        ON cp.equity_ticker = s.join_ticker
+    JOIN dn_rui_ro_cao dn
+        ON dn.company_id = cp.company_id
+    WHERE t.report_date = (
+        -- Lấy ngày báo cáo cuối cùng có dữ liệu trong quý
+        SELECT MAX(t2.report_date)
+        FROM uat_hnx_stg.listed_securities_list t2
+        WHERE YEAR(t2.report_date) = :p_year
+          AND QUARTER(t2.report_date) = :p_quarter
+    )
+      -- Chỉ tính TP đáo hạn trong 12 tháng sau ngày báo cáo
+      AND s.maturity_date > t.report_date
+      AND s.maturity_date <= ADD_MONTHS(t.report_date, 12)
 )
 
--- Buoc 4: Tong gia tri dao han rui ro cao
+-- Bước 4: Tổng giá trị đáo hạn rủi ro cao
 SELECT
-    :p_year                     AS nam,
-    :p_quarter                  AS quy,
-    COUNT(DISTINCT symbol)      AS so_ma_tp_rui_ro,
-    SUM(gia_tri_dao_han)        AS gt_dao_han_rui_ro_cao
+    :p_year AS nam,
+    :p_quarter AS quy,
+    COUNT(DISTINCT symbol) AS so_ma_tp_rui_ro,
+    SUM(gia_tri_dao_han) AS gt_dao_han_rui_ro_cao
 FROM tp_dao_han;",,,,,,,Dữ liệu tĩnh,
 19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Tổng dư nợ TP theo xếp hạng tín nhiệm,Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,"Quý, Mâ TP","MSS, MDDS",x,x,,Done,"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)",,,,,,,,,,,Dữ liệu tĩnh,
 19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Mệnh giá ,Mệnh giá ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Quý, Mâ TP",MDDS,x,x,,Done,"- Danh mục chứng khoán
-",,,,,Fix sẵn 100.000/ 1 trái phiếu ,,,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Quý, Mâ TP",CSDLTT,x,x,,Done,,JAD_STOCKINFOR,ListedShare,,"SELECT
-    s.symbol,
-    s.tradingdate,
-    s.FloorCode,
-    CAST(s.ListedShare AS NUMERIC) AS kl_tp_luu_hanh,
-    EXTRACT(YEAR FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY'))  AS nam,
-    EXTRACT(QUARTER FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY')) AS quy
-FROM JAD_STOCKINFOR s
-WHERE EXTRACT(YEAR FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY'))    = :nam
-  AND EXTRACT(QUARTER FROM TO_DATE(s.tradingdate, 'DD/MM/YYYY')) = :quy
-  AND s.StockType IN ('B','1','D')
-ORDER BY s.tradingdate, s.symbol;",,,,,,,Dữ liệu tĩnh,
+",,,,Fix sẵn 100.000/ 1 trái phiếu ,Fix sẵn 100.000/ 1 trái phiếu ,,,,,,Dữ liệu tĩnh,
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Quý, Mâ TP",CSDLTT,x,x,,Done,,uat_hnx_stg.listed_securities_list,outstanding_shares,,"SELECT
+    :p_nam AS nam_thong_ke,
+    :p_quy AS quy_thong_ke,
+    t.report_date AS ngay_bao_cao,
+    SUM(t.outstanding_shares) AS kl_luu_hanh
+FROM uat_hnx_stg.listed_securities_list t
+WHERE t.report_date = (
+    SELECT MAX(s.report_date)
+    FROM uat_hnx_stg.listed_securities_list s
+    WHERE YEAR(s.report_date) = :p_nam
+      AND QUARTER(s.report_date) = :p_quy
+)
+GROUP BY t.report_date;",,,,,,,Dữ liệu tĩnh,
 19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Xếp hạng tín nhiệm DN ,Xếp hạng tín nhiệm DN ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý, Mâ TP",IDS,x,x,,Done,,evaluation_cbonds (ecb),ecb.ranking AS xep_hang_tin_nhiem,"ecb.company_id = :p_company_id
   AND ecb.year = :p_year
   AND ecb.month = :p_month","SELECT company_id, ecb.ranking AS xep_hang_tin_nhiem
@@ -11540,7 +11730,7 @@ WHERE YEAR(TO_DATE(t.report_month, 'yyyyMM')) = :p_nam
 FROM private_corp_bond_offering t
 WHERE YEAR(TO_DATE(t.report_month, 'yyyyMM')) = :p_nam
   AND QUARTER(TO_DATE(t.report_month, 'yyyyMM')) = :p_quy;",BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành,,,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Giá trị đáo hạn rủi ro cao (trái phiếu riêng lẻ),Σ giá trị đáo hạn trái phiếu của doanh nghiệp có xếp hạng tín nhiệm thấp,Dashboard,Chỉ tiêu phái sinh,TB,"Quý, Mâ TP","IDS, CSDLTT",x,x,,Done,,"evaluation_cbonds (ecb)
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Giá trị đáo hạn rủi ro cao (trái phiếu riêng lẻ),Σ giá trị đáo hạn trái phiếu của doanh nghiệp có xếp hạng tín nhiệm thấp,Dashboard,Chỉ tiêu phái sinh,TB,"Quý, Mâ TP","IDS, CSDLTT",x,x,,Done,BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành,"evaluation_cbonds (ecb)
 private_corp_bond_offering ",,,"WITH
 xep_hang AS (
     SELECT
@@ -11608,7 +11798,7 @@ FROM tp_dang_luu_hanh tp
 JOIN dn_rui_ro_cao drc
     ON drc.company_id = tp.COMPANY_ID
 WHERE tp.MATURITY_DATE BETWEEN :p_tu_ngay AND :p_den_ngay;   -- kỳ đáo hạn cần xét (VD: 12 tháng tới)",,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Tổng dư nợ TP theo xếp hạng tín nhiệm (trái phiếu riêng lẻ),Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,"Quý, Mâ TP",CSDLTT,x,x,,Done,,uat_hnx_stg.private_corp_bond_trading_registration_scale,"t.par_value
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Tổng dư nợ TP theo xếp hạng tín nhiệm (trái phiếu riêng lẻ),Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành),Dashboard,Chỉ tiêu phái sinh,Trùng,"Quý, Mâ TP",CSDLTT,x,x,,Done,BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành,uat_hnx_stg.private_corp_bond_trading_registration_scale,"t.par_value
 t.offering_volume",,"SELECT
     :p_nam AS nam_thong_ke,
     :p_quy AS quy_thong_ke,
@@ -11617,20 +11807,20 @@ FROM private_corp_bond_offering t
 WHERE YEAR(TO_DATE(t.report_month, 'yyyyMM')) = :p_nam
   AND MONTH(TO_DATE(t.report_month, 'yyyyMM')) = :p_quy * 3;","Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành)
 Tổng dư nợ TP theo quý thống kê",,,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Mệnh giá ,Mệnh giá ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Quý, Mâ TP",CSDLTT,x,x,,Done,,uat_hnx_stg.private_corp_bond_trading_registration_scale, t.par_value,,"SELECT
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Mệnh giá ,Mệnh giá ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Quý, Mâ TP",CSDLTT,x,x,,Done,BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành,uat_hnx_stg.private_corp_bond_trading_registration_scale, t.par_value,,"SELECT
     t.bond_code AS ma_tp,
     t.par_value AS menh_gia
 FROM private_corp_bond_offering t
 WHERE YEAR(TO_DATE(t.report_month, 'yyyyMM')) = :p_nam
   AND QUARTER(TO_DATE(t.report_month, 'yyyyMM')) = :p_quy;",,,,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Quý, Mâ TP",CSDLTT,x,x,,Done,,uat_hnx_stg.private_corp_bond_trading_registration_scale,t.offering_volume,,"SELECT
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Quý, Mâ TP",CSDLTT,x,x,,Done,BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành,uat_hnx_stg.private_corp_bond_trading_registration_scale,t.offering_volume,,"SELECT
     t.bond_code AS ma_tp,
     t.par_value AS menh_gia,
     t.offering_volume AS kl_chao_ban
 FROM private_corp_bond_offering t
 WHERE YEAR(TO_DATE(t.report_month, 'yyyyMM')) = :p_nam
   AND QUARTER(TO_DATE(t.report_month, 'yyyyMM')) = :p_quy;",,,,,,,Dữ liệu tĩnh,
-19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Xếp hạng tín nhiệm DN ,Xếp hạng tín nhiệm DN ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý, Mâ TP",IDS,x,x,,Done,,evaluation_cbonds (ecb),ecb.ranking AS xep_hang_tin_nhiem,"ecb.company_id = :p_company_id
+19,,Dashboard Trái phiếu doanh nghiệp / Lịch biểu đáo hạn trái phiếu,Xếp hạng tín nhiệm DN ,Xếp hạng tín nhiệm DN ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý, Mâ TP",IDS,x,x,,Done,BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành,evaluation_cbonds (ecb),ecb.ranking AS xep_hang_tin_nhiem,"ecb.company_id = :p_company_id
   AND ecb.year = :p_year
   AND ecb.month = :p_month","SELECT company_id, ecb.ranking AS xep_hang_tin_nhiem
   FROM evaluation_cbonds ecb
@@ -11650,56 +11840,85 @@ where active_flg = 1""",IDS.CATEGORIES (c),"c.industry_cd, c.industry_name AS te
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
  -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)",,,,,,Dữ liệu tĩnh,
-20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,Tổng dư nợ TP theo nhóm ngành (TP DN niêm yết),Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành),Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Ngành ","MSS, MDDS, IDS",x,x,,Done,Thông tin thị trường ,"JAD_STOCKINFOR
-IDS.CATEGORIES (c)
-IDS.COMPANY_INFO (ci)
-",ListedShare,,"WITH
-du_no_nganh AS (
+20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,Tổng dư nợ TP theo nhóm ngành (TP DN niêm yết),Tổng dư nợ TP = Σ (Mệnh giá * KL TP lưu hành),Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Ngành ","MSS, MDDS, IDS",x,x,,Done,Thông tin thị trường ,"uat_mdds_stg.JAD_STOCKINFOR
+uat_hnx_stg.listed_securities_list
+UAT_IDS_STG.company_profiles
+UAT_IDS_STG.CATEGORIES",,,"WITH
+tp_niem_yet AS (
+    -- Lọc TPDN và xác định mã cổ phiếu doanh nghiệp phát hành
+    SELECT DISTINCT
+        s.symbol,
+        SUBSTR(s.symbol, 1, 3) AS join_ticker,
+        TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS tradingdate
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+          = TO_DATE(:ngay_gd, 'yyyyMMdd')
+      AND s.StockType = '1'
+      -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+      AND NOT (
+          s.symbol RLIKE '^[A-Za-z]{2}GB'
+          OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+          OR s.symbol RLIKE '^(HCM|HAN)'
+      )
+),
+du_no_tp AS (
+    -- Dư nợ từng mã TPDN niêm yết, mệnh giá 100.000 đồng
     SELECT
-        c.industry_cd                                AS ma_nganh,
-        c.industry_name                              AS ten_nganh,
-        SUM(CAST(s.ListedShare AS NUMERIC) * 100000) AS du_no_tp_nganh
-    FROM JAD_STOCKINFOR s
-    JOIN IDS.company_info ci ON ci.symbol     = s.symbol
-    JOIN IDS.categories   c  ON c.industry_cd = ci.industry_cd
-                             AND c.active_flg  = 1
-    WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
-      AND s.StockType IN ('B','1','D')
-    GROUP BY c.industry_cd, c.industry_name
+        t.ticker_symbol AS ma_tp,
+        s.join_ticker,
+        SUM(t.outstanding_shares * 100000) AS du_no_tp
+    FROM uat_hnx_stg.listed_securities_list t
+    JOIN tp_niem_yet s
+        ON s.symbol = t.ticker_symbol
+       AND s.tradingdate = t.report_date
+    WHERE t.report_date = TO_DATE(:ngay_gd, 'yyyyMMdd')
+    GROUP BY
+        t.ticker_symbol,
+        s.join_ticker
+),
+du_no_nganh AS (
+    -- Nối ngành bằng 3 ký tự đầu của mã trái phiếu
+    SELECT
+        c.industry_cd AS ma_nganh,
+        c.industry_name AS ten_nganh,
+        SUM(d.du_no_tp) AS du_no_tp_nganh
+    FROM du_no_tp d
+    LEFT JOIN UAT_IDS_STG.company_profiles cp
+        ON cp.equity_ticker = d.join_ticker
+    LEFT JOIN UAT_IDS_STG.CATEGORIES c
+        ON c.ID = cp.category_l1_id
+    GROUP BY
+        c.industry_cd,
+        c.industry_name
 ),
 du_no_toan_tt AS (
+    -- Tổng dư nợ toàn bộ TPDN niêm yết
     SELECT
-        SUM(CAST(s.ListedShare AS NUMERIC) * 100000) AS tong_du_no_tp
-    FROM JAD_STOCKINFOR s
-    WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
-      AND s.StockType IN ('B','1','D')
+        SUM(du_no_tp) AS tong_du_no_tp
+    FROM du_no_tp
 )
 SELECT
-    :ngay_gd                                        AS ngay_thong_ke,
+    TO_DATE(:ngay_gd, 'yyyyMMdd') AS ngay_thong_ke,
     n.ma_nganh,
     n.ten_nganh,
     n.du_no_tp_nganh,
     t.tong_du_no_tp,
-    CASE
-        WHEN t.tong_du_no_tp IS NULL
-          OR t.tong_du_no_tp = 0 THEN NULL
-        ELSE ROUND(n.du_no_tp_nganh / t.tong_du_no_tp * 100, 2)
-    END                                             AS ty_trong_du_no_pct
+    ROUND(
+        n.du_no_tp_nganh / NULLIF(t.tong_du_no_tp, 0) * 100,
+        2
+    ) AS ty_trong_du_no_pct
 FROM du_no_nganh n
 CROSS JOIN du_no_toan_tt t
 ORDER BY n.du_no_tp_nganh DESC;",,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
-20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,Dư nợ TP toàn thị trường,Dư nợ TP toàn thị trường = ΣTổng dư nợ TP,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Ngành ","MSS, MDDS",x,x,,Done,Thông tin thị trường ,JAD_STOCKINFOR,ListedShare,,,,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
-20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,Tỷ trọng dư nợ theo nhóm ngành,Dư nợ TP ngành / Dư nợ TP toàn thị trường (%),Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Ngành ","MSS, MDDS",x,x,,Done,Thông tin thị trường ,JAD_STOCKINFOR,ListedShare,,,,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
+20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,Dư nợ TP toàn thị trường,Dư nợ TP toàn thị trường = ΣTổng dư nợ TP,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Ngành ","MSS, MDDS",x,x,,Done,Thông tin thị trường ,uat_hnx_stg.listed_securities_list,,,,,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
+20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,Tỷ trọng dư nợ theo nhóm ngành,Dư nợ TP ngành / Dư nợ TP toàn thị trường (%),Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Ngành ","MSS, MDDS",x,x,,Done,Thông tin thị trường ,uat_hnx_stg.listed_securities_list,,,,,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
 20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,Mệnh giá,Mệnh giá,Dashboard,Chỉ tiêu cơ sở,Trùng,"Ngày, Ngành ",MDDS,x,x,,Done,Danh mục chứng khoán,,,,,Fix sẵn 100.000/ 1 trái phiếu ,,,,,,Dữ liệu tĩnh,
-20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Ngày, Ngành ",CSDLTT,x,x,,Done,Thông tin thị trường ,JAD_STOCKINFOR,ListedShare,,"SELECT
-    s.symbol,
-    TO_DATE(s.tradingdate, 'DD/MM/YYYY') AS ngay_thong_ke,
-    s.FloorCode,
-    CAST(s.ListedShare AS NUMERIC)       AS kl_tp_luu_hanh
-FROM JAD_STOCKINFOR s
-WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
-  AND s.StockType IN ('B','1','D')
-ORDER BY s.symbol;",,,,,,,Dữ liệu tĩnh,
+20,,Dashboard Trái phiếu doanh nghiệp / Cơ cấu nợ vay theo ngành,KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Ngày, Ngành ",CSDLTT,x,x,,Done,Thông tin thị trường ,uat_hnx_stg.listed_securities_list,outstanding_shares,,"SELECT
+    t.report_date AS tradingdate,
+    SUM(t.outstanding_shares) AS kl_tp_luu_hanh
+FROM uat_hnx_stg.listed_securities_list t
+WHERE t.report_date = TO_DATE(:ngay_gd, 'yyyyMMdd')
+GROUP BY t.report_date;",,,,,,,Dữ liệu tĩnh,
 21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,Thời gian ,Ngày thống kê ,Dashboard,Chiều,Dễ,,"MDDS, CSDLTT",x,x,,Done,,,,,,,,,,,,Dữ liệu tĩnh,
 21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,Tổ chức phát hành,Định danh tổ chức phát hành,Dashboard,Chiều,Dễ,,"IDS, MDDS",x,x,,Done,,"MDDS.JAD_STOCKINFOR 
 IDS.company_profiles 
@@ -11761,32 +11980,109 @@ GROUP BY
 21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,Dư nợ,"Tổng giá trị nợ vay hiện hữu của doanh nghiệp
 Tổng dư nợ  = Mệnh giá * KL TP lưu hành",Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Tổ chức phát hành",MDDS,x,x,,Done,"- Danh mục chứng khoán
 - VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138)
-",JAD_STOCKINFOR,ListedShare,,"SELECT
-    s.symbol,
-    TO_DATE(s.tradingdate,'DD/MM/YYYY') AS ngay_thong_ke,
-    s.FloorCode,
-    CAST(s.ListedShare AS NUMERIC) AS kl_tp_luu_hanh,
-    100000 AS menh_gia,
-    100000*CAST(s.ListedShare AS NUMERIC) AS tong_du_no
-FROM JAD_STOCKINFOR s
-WHERE TO_DATE(s.tradingdate,'DD/MM/YYYY')=:ngay_gd
-  AND s.StockType IN ('B','1','D')
-ORDER BY s.symbol;",Tính phái sinh từ chỉ tiêu,,,,,,Dữ liệu tĩnh,
+",uat_hnx_stg.listed_securities_lis,outstanding_shares ,,"SELECT
+    s.join_ticker AS ma_doanh_nghiep,
+    t.report_date AS ngay_thong_ke,
+    SUM(t.outstanding_shares * 100000) AS tong_du_no
+FROM uat_hnx_stg.listed_securities_list t
+JOIN (
+    SELECT DISTINCT
+        s.symbol,
+        SUBSTR(s.symbol, 1, 3) AS join_ticker,
+        TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS tradingdate
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+          = TO_DATE(:ngay_gd, 'yyyyMMdd')
+      AND s.StockType = '1'
+      -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+      AND NOT (
+          s.symbol RLIKE '^[A-Za-z]{2}GB'
+          OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+          OR s.symbol RLIKE '^(HCM|HAN)'
+      )
+) s
+    ON s.symbol = t.ticker_symbol
+   AND s.tradingdate = t.report_date
+WHERE t.report_date = TO_DATE(:ngay_gd, 'yyyyMMdd')
+GROUP BY
+    s.join_ticker,
+    t.report_date;",Tính phái sinh từ chỉ tiêu,,,,,,Dữ liệu tĩnh,
 21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,Mệnh giá ,Mệnh giá ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Ngày, Tổ chức phát hành",MDDS,x,x,,Done,- Danh mục chứng khoán ,,,,,Fix sẵn 100.000/ 1 trái phiếu ,,,,,,Dữ liệu tĩnh,
-21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Ngày, Tổ chức phát hành",MDDS,x,x,,Done,- VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138),JAD_STOCKINFOR,ListedShare,,"SELECT
-    s.symbol,
-    TO_DATE(s.tradingdate, 'DD/MM/YYYY') AS ngay_thong_ke,
+21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,KL TP lưu hành,KL TP lưu hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Ngày, Tổ chức phát hành",MDDS,x,x,,Done,- VSDS lập bảo cáo đẩy cồng trung cập tập trung (Mẫu bc ngày TT138),uat_hnx_stg.listed_securities_lis,outstanding_shares ,,"SELECT
+    t.ticker_symbol AS symbol,
+    t.report_date AS ngay_thong_ke,
     s.FloorCode,
-    CAST(s.ListedShare AS NUMERIC)       AS kl_tp_luu_hanh
-FROM JAD_STOCKINFOR s
-WHERE TO_DATE(s.tradingdate, 'DD/MM/YYYY') = :ngay_gd
-  AND s.StockType IN ('B','1','D')
-ORDER BY s.symbol;","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
+    t.outstanding_shares AS kl_tp_luu_hanh
+FROM uat_hnx_stg.listed_securities_list t
+JOIN (
+    SELECT DISTINCT
+        s.symbol,
+        TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS tradingdate,
+        s.FloorCode
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+          = TO_DATE(:ngay_gd, 'yyyyMMdd')
+      AND s.StockType = '1'
+      -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+      AND NOT (
+          s.symbol RLIKE '^[A-Za-z]{2}GB'
+          OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+          OR s.symbol RLIKE '^(HCM|HAN)'
+      )
+) s
+    ON s.symbol = t.ticker_symbol
+   AND s.tradingdate = t.report_date
+WHERE t.report_date = TO_DATE(:ngay_gd, 'yyyyMMdd')
+ORDER BY t.ticker_symbol;","Đã xin thiết kế CSDL, đang chờ HTTT phản hồi",,,,,,Dữ liệu tĩnh,
 21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,D/E,Tỷ lệ giữa tổng nợ trên vốn chủ sở hữu,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tổ chức phát hành",IDS,x,x,,Done,,,,,"Chỉ tiêu phái sinh từ chỉ tiêu 
 Tổng nợ phải trả / Vốn chủ sở hữu",,,,,,,Dữ liệu tĩnh,
 21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,Tổng nợ phải trả ,Tổng nợ phải trả tổ chức phát hành trái phiếu ,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, Tổ chức phát hành","IDS, MDDS",x,x,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
  IDS.rcol (rc2), IDS.company_data (cd),
- IDS.company_profiles (cp), IDS.categories (cat)",SUM(d.data_value) AS no_phai_tra,"BCDKT% | col_desc='1' | row_desc: '300'(dn/bh), '400'(td)","SELECT 
+ IDS.company_profiles (cp), IDS.categories (cat)",SUM(d.data_value) AS no_phai_tra,"BCDKT% | col_desc='1' | row_desc: '300'(dn/bh), '400'(td)","WITH tp_niem_yet AS (
+    -- Danh sách TPDN niêm yết và mã cổ phiếu doanh nghiệp phát hành (3 ký tự đầu của mã TP)
+    SELECT DISTINCT
+        s.symbol,
+        SUBSTR(s.symbol, 1, 3) AS join_ticker
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+          = TO_DATE(:ngay_gd, 'yyyyMMdd')
+      AND s.StockType = '1'
+      -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+      AND NOT (
+          s.symbol RLIKE '^[A-Za-z]{2}GB'
+          OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+          OR s.symbol RLIKE '^(HCM|HAN)'
+      )
+)
+SELECT
+    tp.symbol           AS MA_TP,
+    c.industry_cd       AS MA_NGANH,
+    c.industry_name     AS TEN_NGANH,
+    cp.equity_ticker    AS MA_CK,
+    SUM(e.data_value)   AS no_phai_tra
+FROM tp_niem_yet tp
+JOIN UAT_IDS_STG.company_profiles cp ON cp.equity_ticker = tp.join_ticker
+JOIN UAT_IDS_STG.CATEGORIES c        ON c.id = cp.category_l1_id
+JOIN UAT_IDS_STG.company_data e      ON e.company_profile_id = cp.id
+JOIN UAT_IDS_STG.data d              ON d.company_data_id = e.company_data_id
+JOIN UAT_IDS_STG.report_catalog rc   ON d.report_catalog_id = rc.id
+JOIN UAT_IDS_STG.rrow rr             ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
+JOIN UAT_IDS_STG.rcol rc2            ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
+WHERE rc2.col_desc = '1'
+  AND rc.report_cd LIKE 'BCDKT%'
+  AND e.report_year = :year
+  AND e.report_quarter = :quarter
+  AND ((rc.enterprise_type_cd = 'dn' AND rr.row_desc IN ('300'))
+    OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc IN ('300'))
+    OR (rc.enterprise_type_cd = 'td' AND rr.row_desc IN ('400')))
+GROUP BY
+    tp.symbol,
+    c.industry_cd,
+    c.industry_name,
+    cp.equity_ticker,
+    cp.report_type_cd,
+    e.report_year,
+    e.report_quarter;","SELECT 
   TP.""symbol"" MA_TP, 
   c.industry_cd MA_NGANH, 
   c.industry_name TEN_NGANH,
@@ -11826,7 +12122,7 @@ AND e.report_year=:year AND e.report_quarter=:quarter
 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc IN ('300'))
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc IN ('300'))
 OR (rc.enterprise_type_cd='td' AND rr.row_desc IN ('400')))
-GROUP BY c.industry_cd, c.industry_name, p.report_type_cd, e.report_year, e.report_quarter",,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
+GROUP BY c.industry_cd, c.industry_name, p.report_type_cd, e.report_year, e.report_quarter",,,,,,"Dữ liệu tĩnh, Dữ liệu động",
 21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,VCSH,Tổng vốn chủ sở hữu tổ chức phát hành trái phiếu ,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, Tổ chức phát hành",IDS,x, ,,Done,"select sum(data_value)
 from data a
 join report_catalog b on a.report_catalog_id  = b.id
@@ -11837,7 +12133,51 @@ and ((b.enterprise_type_cd = 'dn' and row_cd = 'D')
 or (b.enterprise_type_cd = 'bh' and row_cd = 'B')
 or (b.enterprise_type_cd = 'td' and row_cd = 'VIII'))","IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
  IDS.rcol (rc2), IDS.company_data (cd),
- IDS.company_profiles (cp), IDS.categories (cat)",SUM(d.data_value) AS vcsh,"BCDKT% | col_desc='1' | row_desc: '400'(dn/bh), '500'(td)","SELECT 
+ IDS.company_profiles (cp), IDS.categories (cat)",SUM(d.data_value) AS vcsh,"BCDKT% | col_desc='1' | row_desc: '400'(dn/bh), '500'(td)","WITH tp_niem_yet AS (
+    -- Danh sách TPDN niêm yết và mã cổ phiếu doanh nghiệp phát hành (3 ký tự đầu của mã TP)
+    SELECT DISTINCT
+        s.symbol,
+        SUBSTR(s.symbol, 1, 3) AS join_ticker
+    FROM uat_mdds_stg.JAD_STOCKINFOR s
+    WHERE TO_DATE(s.tradingdate, 'yyyy-MM-dd')
+          = TO_DATE(:ngay_gd, 'yyyyMMdd')
+      AND s.StockType = '1'
+      -- Loại trái phiếu Chính phủ/Kho bạc/địa phương
+      AND NOT (
+          s.symbol RLIKE '^[A-Za-z]{2}GB'
+          OR s.symbol RLIKE '^(TD|TP|CP|QH|KB|BL)'
+          OR s.symbol RLIKE '^(HCM|HAN)'
+      )
+)
+SELECT
+    tp.symbol           AS MA_TP,
+    c.industry_cd       AS MA_NGANH,
+    c.industry_name     AS TEN_NGANH,
+    cp.equity_ticker    AS MA_CK,
+    SUM(d.data_value)   AS vcsh
+FROM tp_niem_yet tp
+JOIN UAT_IDS_STG.company_profiles cp ON cp.equity_ticker = tp.join_ticker
+JOIN UAT_IDS_STG.CATEGORIES c        ON c.id = cp.category_l1_id
+JOIN UAT_IDS_STG.company_data e      ON e.company_profile_id = cp.id
+JOIN UAT_IDS_STG.data d              ON d.company_data_id = e.company_data_id
+JOIN UAT_IDS_STG.report_catalog rc   ON d.report_catalog_id = rc.id
+JOIN UAT_IDS_STG.rrow rr             ON rr.row_cd = d.row_cd AND rr.report_catalog_id = d.report_catalog_id
+JOIN UAT_IDS_STG.rcol rc2            ON rc2.col_cd = d.col_cd AND rc2.report_catalog_id = d.report_catalog_id
+WHERE rc2.col_desc = '1'
+  AND rc.report_cd LIKE 'BCDKT%'
+  AND e.report_year = :year
+  AND e.report_quarter = :quarter
+  AND ((rc.enterprise_type_cd = 'dn' AND rr.row_desc = '400')
+    OR (rc.enterprise_type_cd = 'bh' AND rr.row_desc = '400')
+    OR (rc.enterprise_type_cd = 'td' AND rr.row_desc = '500'))
+GROUP BY
+    tp.symbol,
+    c.industry_cd,
+    c.industry_name,
+    cp.equity_ticker,
+    cp.report_type_cd,
+    e.report_year,
+    e.report_quarter;","SELECT 
   TP.""symbol"" MA_TP, 
   c.industry_cd MA_NGANH, 
   c.industry_name TEN_NGANH,
@@ -11877,7 +12217,7 @@ AND cd.report_year=:year AND cd.report_quarter=:quarter
 AND ((rc.enterprise_type_cd='dn' AND rr.row_desc='400')
 OR (rc.enterprise_type_cd='bh' AND rr.row_desc='400')
 OR (rc.enterprise_type_cd='td' AND rr.row_desc='500'))
-GROUP BY c.industry_cd, c.industry_name, p.report_type_cd, e.report_year, e.report_quarter",,,,,,,"Dữ liệu tĩnh, Dữ liệu động",
+GROUP BY c.industry_cd, c.industry_name, p.report_type_cd, e.report_year, e.report_quarter",,,,,,"Dữ liệu tĩnh, Dữ liệu động",
 21,,Dashboard Trái phiếu doanh nghiệp / Danh mục tổ chức phát hành cần giám sát tín dụng ,ROE,Tỷ suất sinh lời trên vốn chủ sở hữu,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tổ chức phát hành",IDS,x,x,,Done,"VCSH bình quân:
 select sum(case when dau_ky is null then cuoi_ky
         when cuoi_ky is null then dau_ky

@@ -43,7 +43,6 @@ erDiagram
 | Investor Group Dimension | dim | new | Chiều nhóm nhà đầu tư (NĐTNN/Tự doanh/Tổ chức trong nước/Cá nhân trong nước) — SCD4A — grain 1 row/nhóm NĐT | `securities_trade` |
 | Corp Bond Industry Dimension | dim | new | Chiều ngành nghề tổ chức phát hành trái phiếu doanh nghiệp — SCD4A — grain 1 row/ngành TCPH | `public_company` |
 | Securities Company Dimension | dim | reuse | Chiều công ty chứng khoán — mã/tên/trạng thái hoạt động — SCD4A — grain 1 row/CTCK — reuse securities_company_dim từ module QLKD | `securities_company` |
-| Report Indicator Dimension | dim | reuse | Chiều chỉ tiêu báo cáo định kỳ CTCK — cell_id/mã chỉ tiêu/nhóm chỉ tiêu/loại BCTC — SCD4A — grain 1 row/chỉ tiêu (cell_id) — reuse report_indicator_dim từ module QLKD | `sc_report_input_value` |
 | Securities Dimension | dim | reuse | Chiều mã chứng khoán/HĐTL/mã TP (reuse từ module NDTNN) — SCD4A — grain 1 row/mã CK | `security_trading_snapshot` |
 | Fact Market Risk Snapshot | fact | new | Chỉ số rủi ro hệ thống tổng hợp theo ngày — Risk Index, Volatility, Z-score, Sentiment, Margin Tension/Stress — grain 1 row/ngày | `market_index_snapshot / securities_trade / security_trading_snapshot / cl_risk_indicator_value / sc_report_input_value / risk_weight_config` |
 | Fact Macro Indicator Snapshot | fact | new | Chỉ tiêu vĩ mô — lãi suất LNH, tỷ giá USD/VND, CPI, GDP, DXY — grain 1 row/chỉ tiêu vĩ mô/kỳ công bố | `cl_risk_indicator / cl_risk_indicator_value` |
@@ -53,7 +52,6 @@ erDiagram
 | Fact Foreign Net Trade Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng NĐTNN per mã CK — grain 1 row/mã CK/ngày | `securities_trade` |
 | Fact Proprietary Net Trade Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng khối tự doanh per mã CK — grain 1 row/mã CK/ngày | `securities_trade` |
 | Fact Corporate Bond Sector Snapshot | fact | new | GTGD trái phiếu và tỷ trọng dư nợ theo ngành TCPH — grain 1 row/ngành TCPH/kỳ báo cáo | `security_trading_snapshot / securities_trade / public_company` |
-| Fact Securities Company Financial Structure Snapshot | fact | reuse | Periodic Snapshot cơ cấu tài chính định kỳ CTCK theo cấu trúc EAV (dư nợ margin, VCSH, nợ phải trả, tỷ lệ vốn khả dụng) — reuse 100% từ QLKD — grain 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu | `sc_report_input_value / sc_report_input_submission / sc_periodic_report / securities_company` |
 | Fact Securities Company Balance Snapshot | fact | new | Nợ phải trả và VCSH của CTCK niêm yết theo quý (IDS BCDKT, cùng cách BA dòng 339 Nhóm 21) — grain 1 CTCK × 1 quý báo cáo | `pc_report_submission / fr_value / public_company / securities_company` |
 | Fact Securities Company Safety Snapshot | fact | new | Snapshot an toàn tài chính CTCK theo tháng báo cáo — dư nợ margin, VCSH, tỷ lệ margin/VCSH, tỷ lệ vốn khả dụng (SCMS) — grain 1 CTCK × 1 tháng báo cáo; phục vụ Nhóm 22–25 (Dashboard An toàn CTCK) | `sc_report_input_value / sc_report_input_submission / sc_periodic_report / securities_company` |
 | Fact Corporate Bond Market Snapshot | fact | new | Quy mô thị trường TPDN tổng hợp toàn thị trường theo ngày — grain 1 row/ngày | `security_trading_snapshot / securities_trade` |
@@ -75,6 +73,8 @@ Không còn bảng nào — `Fact Cap Group Snapshot` đã chuyển sang Bảng 
 | Datamart Entity | datamart_table | Ghi chú |
 |---|---|---|
 | Operational Member Safety Monitor | opr_mbr_sfty_monitor | Bãi bỏ 2026-09-18 — thiết kế trên entity giả `Member Report Indicator Value`, từng khai nguồn là bảng Datamart. Nhóm 25 đọc trực tiếp Fact Securities Company Financial Structure Snapshot + Dimension. |
+| Fact Securities Company Financial Structure Snapshot | fct_securities_company_financial_structure_snpst | Ngừng reuse 2026-10-02 — PTTT chuyển sang `fct_securities_company_safety_snpst` (pivot sẵn theo CTCK × tháng); QLKD vẫn sở hữu. |
+| Report Indicator Dimension | report_indicator_dim | Ngừng reuse 2026-10-02 — chỉ phục vụ lọc cell_id trên Fact EAV; QLKD vẫn sở hữu. |
 | Fact Market Statistics By Industry Snapshot | — | Chưa khai sinh — sẽ tách khỏi Fact Market Statistics Snapshot khi Chiều Ngành nghề kinh tế hết PENDING (O_PTTT_14). |
 | Fact Market Statistics By Cap Snapshot | — | Chưa khai sinh — sẽ tách khi Chiều Nhóm vốn hóa hết PENDING (O_PTTT_14). |
 | Corp Bond Sector Dimension | — | Tên cũ đã thay bằng `Corp Bond Industry Dimension` (corp_bond_industry_dim) — gỡ khỏi Entities 2026-09-18. |

@@ -5,14 +5,16 @@ tests/test_pttt_integrity_oracles.py
 Independent Adversarial Empirical Test Oracles for PTTT Datamart Multi-Tier Integrity Audit.
 
 Authentic verification test suite evaluating multi-tier integrity:
-- Test 1: Full 34-group coverage across BRD/BA (454 items, 34 groups).
-- Test 2: Complete HLD KPI coverage across 34 groups (421 HLD KPIs).
-- Test 3: Detail Mapping scope reconciliation (421 total = 388 Dashboard + 33 Data Explorer; 231 READY [59.54%], 157 PENDING [40.46%]).
-- Test 4: Empirical reproduction of 4 S5 errors (Measure Type Mismatch) in Group 28 (rows 399, 400) and Group 31 (rows 421, 422).
-- Test 5: ClickHouse Flat Tables 1:1 Parity (15 DDL tables, 15 DML tables, 0 column drift).
-- Test 6: Empirical Rule L4 compliance audit (100% of 91 true PENDING rows blank; forensic separation of 66 false positives).
-- Test 7: Group 21 empirical grain mismatch verification (opr_corporate_bond_issuer_credit_monitor: symbol vs pc_id).
-- Test 8: Group 19 empirical schema emptiness verification (fct_corporate_bond_maturity_wall: 3 columns, missing maturity_dt).
+Snapshot cập nhật 2026-10-02 theo LLD hiện hành (BA 455 dòng, HLD 421 KPI, Detail Mapping 423 dòng, flat 17 bảng).
+
+- Test 1: Full 34-group coverage across BRD/BA (455 items, 34 groups).
+- Test 2: Complete HLD KPI coverage across 34 groups (420 HLD KPIs).
+- Test 3: Detail Mapping scope reconciliation (423 total = 390 Dashboard + 33 Data Explorer; 327 READY [83.85%], 63 PENDING [16.15%]).
+- Test 4: 4 cảnh báo S5 đã giải trình (K_PTTT_223/226, VOL đúng theo mô tả BA) ở Group 28 (rows 400, 401) và Group 31 (rows 422, 423) — BA thêm 1 dòng nên số dòng dịch +1.
+- Test 5: ClickHouse Flat Tables 1:1 Parity (17 DDL tables, 17 DML tables, 0 column drift).
+- Test 6: Rule L4 — mọi dòng PENDING phải để trống 4 trường kỹ thuật; Cụm 4 (Nhóm 22-25) đã READY, 30 dòng đều có logic.
+- Test 7: Group 21 — opr_corporate_bond_issuer_credit_monitor: PK theo mã trái phiếu, pc_id suy ra từ mã TP (equity_ticker).
+- Test 8: Group 19 — fct_corporate_bond_maturity_wall đã đủ 9 cột, có maturity_dt.
 """
 
 from collections import Counter, defaultdict
@@ -47,13 +49,13 @@ FACT_GRP19_PATH = LLD_PTTT_DIR / "DTM_PTTT_fct_corporate_bond_maturity_wall.csv"
 
 
 # ==============================================================================
-# TEST 1: Kiểm chứng bao phủ 34 nhóm và 454 dòng chỉ tiêu trong BRD/BA
+# TEST 1: Kiểm chứng bao phủ 34 nhóm và 455 dòng chỉ tiêu trong BRD/BA
 # ==============================================================================
 def test_oracle_01_ba_coverage_and_group_continuity():
     """
     Test 1: Kiểm chứng số lượng nhóm và số dòng BA:
     - BRD/BA phải chứa đúng 34 nhóm STT (1 đến 34), không gián đoạn.
-    - Tổng số dòng phân tích nghiệp vụ hợp lệ phải là 454 dòng.
+    - Tổng số dòng phân tích nghiệp vụ hợp lệ phải là 455 dòng.
     """
     assert BA_CSV_PATH.is_file(), f"Tệp BA không tồn tại: {BA_CSV_PATH}"
 
@@ -77,7 +79,7 @@ def test_oracle_01_ba_coverage_and_group_continuity():
 
     assert len(ba_groups) == 34, f"Số nhóm BA thực tế là {len(ba_groups)}, kỳ vọng 34"
     assert not missing_groups, f"BA thiếu các nhóm STT: {sorted(missing_groups)}"
-    assert len(ba_items) == 454, f"Số dòng BA thực tế là {len(ba_items)}, kỳ vọng 454"
+    assert len(ba_items) == 455, f"Số dòng BA thực tế là {len(ba_items)}, kỳ vọng 455"
 
 
 # ==============================================================================
@@ -105,20 +107,20 @@ def test_oracle_02_hld_kpi_coverage_and_structure():
     sys.path.insert(0, str(REPO_ROOT / ".claude" / "skills" / "datamart-review" / "scripts"))
     from datamart_progress_analyzer import HLDParser
     hld_items = HLDParser.parse_file(HLD_MD_PATH, "PTTT")
-    assert len(hld_items) == 421, f"Số KPI HLD thực tế là {len(hld_items)}, kỳ vọng 421"
+    assert len(hld_items) == 420, f"Số KPI HLD thực tế là {len(hld_items)}, kỳ vọng 420"
 
 
 # ==============================================================================
-# TEST 3: Kiểm chứng đối soát phạm vi Detail Mapping (388 Dashboard, 231 READY, 157 PENDING)
+# TEST 3: Kiểm chứng đối soát phạm vi Detail Mapping (390 Dashboard, 327 READY, 63 PENDING)
 # ==============================================================================
 def test_oracle_03_detail_mapping_scope_and_status():
     """
     Test 3: Kiểm chứng Detail Mapping:
-    - Tổng cộng 421 dòng = 388 dòng Dashboard + 33 dòng Data Explorer (Nhóm 32–34).
+    - Tổng cộng 423 dòng = 390 dòng Dashboard + 33 dòng Data Explorer (Nhóm 32–34).
     - Bộ phân tích tiến độ chuẩn (DatamartProgressAnalyzer):
-      + Đánh giá phạm vi Dashboard: 388 dòng.
-      + READY: đúng 231 dòng (59.54%).
-      + PENDING: đúng 157 dòng (40.46%).
+      + Đánh giá phạm vi Dashboard: 390 dòng.
+      + READY: đúng 327 dòng (83.85%).
+      + PENDING: đúng 63 dòng (16.15%).
     """
     assert DETAIL_MAPPING_PATH.is_file(), f"Tệp Detail Mapping không tồn tại: {DETAIL_MAPPING_PATH}"
 
@@ -126,37 +128,40 @@ def test_oracle_03_detail_mapping_scope_and_status():
         dr = csv.DictReader(f)
         all_rows = list(dr)
 
-    assert len(all_rows) == 421, f"Tổng số dòng Detail Mapping là {len(all_rows)}, kỳ vọng 421"
+    assert len(all_rows) == 423, f"Tổng số dòng Detail Mapping là {len(all_rows)}, kỳ vọng 423"
 
     de_rows = [r for r in all_rows if r.get("tab", "").strip().upper() == "DATA EXPLORER"]
     dash_rows = [r for r in all_rows if r.get("tab", "").strip().upper() != "DATA EXPLORER"]
 
     assert len(de_rows) == 33, f"Số dòng Data Explorer là {len(de_rows)}, kỳ vọng 33"
-    assert len(dash_rows) == 388, f"Số dòng Dashboard khai thác là {len(dash_rows)}, kỳ vọng 388"
+    assert len(dash_rows) == 390, f"Số dòng Dashboard khai thác là {len(dash_rows)}, kỳ vọng 390"
 
     sys.path.insert(0, str(REPO_ROOT / ".claude" / "skills" / "datamart-review" / "scripts"))
     from datamart_progress_analyzer import DatamartProgressAnalyzer
     analyzer = DatamartProgressAnalyzer()
     res = analyzer.analyze_module("PTTT")
 
-    assert res["total_dm_rows"] == 388, f"Scope Dashboard phải là 388, thực tế: {res['total_dm_rows']}"
-    assert res["ready_count"] == 231, f"READY count phải là 231, thực tế: {res['ready_count']}"
-    assert res["pending_count"] == 157, f"PENDING count phải là 157, thực tế: {res['pending_count']}"
-    assert abs(res["ready_pct"] - 59.54) < 0.1, f"READY % lệch: {res['ready_pct']}"
-    assert abs(res["pending_pct"] - 40.46) < 0.1, f"PENDING % lệch: {res['pending_pct']}"
+    assert res["total_dm_rows"] == 390, f"Scope Dashboard phải là 390, thực tế: {res['total_dm_rows']}"
+    assert res["ready_count"] == 327, f"READY count phải là 327, thực tế: {res['ready_count']}"
+    assert res["pending_count"] == 63, f"PENDING count phải là 63, thực tế: {res['pending_count']}"
+    assert abs(res["ready_pct"] - 83.85) < 0.1, f"READY % lệch: {res['ready_pct']}"
+    assert abs(res["pending_pct"] - 16.15) < 0.1, f"PENDING % lệch: {res['pending_pct']}"
 
 
 # ==============================================================================
-# TEST 4: Tái hiện thực nghiệm 4 lỗi S5 tại Nhóm 28 (dòng 399, 400) và Nhóm 31 (dòng 421, 422)
+# TEST 4: Tái hiện thực nghiệm 4 lỗi S5 tại Nhóm 28 (dòng 400, 401) và Nhóm 31 (dòng 422, 423)
 # ==============================================================================
 def test_oracle_04_measure_type_mismatch_s5_reproduction():
     """
     Test 4: Chạy script ba_hld_sync_check.py --module PTTT và kiểm tra:
     - Có đúng 4 lỗi S5 được phát hiện.
-    - Nhóm 28 dòng BA 399: 'Dòng tiền ròng NĐTNN' đo VAL nhưng K_PTTT_223 đọc cột VOL.
-    - Nhóm 28 dòng BA 400: 'Dòng tiền ròng tự doanh' đo VAL nhưng K_PTTT_226 đọc cột VOL.
-    - Nhóm 31 dòng BA 421: 'Dòng tiền ròng NĐTNN' đo VAL nhưng K_PTTT_223 đọc cột VOL.
-    - Nhóm 31 dòng BA 422: 'Dòng tiền ròng tự doanh' đo VAL nhưng K_PTTT_226 đọc cột VOL.
+    - Nhóm 28 dòng BA 400: 'Dòng tiền ròng NĐTNN' đo VAL nhưng K_PTTT_223 đọc cột VOL.
+    - Nhóm 28 dòng BA 401: 'Dòng tiền ròng tự doanh' đo VAL nhưng K_PTTT_226 đọc cột VOL.
+    - Nhóm 31 dòng BA 422: 'Dòng tiền ròng NĐTNN' đo VAL nhưng K_PTTT_223 đọc cột VOL.
+    - Nhóm 31 dòng BA 423: 'Dòng tiền ròng tự doanh' đo VAL nhưng K_PTTT_226 đọc cột VOL.
+    Đây là cảnh báo S5 đã giải trình, KHÔNG phải lỗi thiết kế: checker đọc nhãn 'Dòng tiền ròng' (suy ra VAL) nhưng
+    mô tả BA là 'Chênh lệch KLGD mua và KLGD bán' → đo khối lượng, nên đọc cột VOL là đúng (xem ghi chú K_PTTT_223/226).
+    Test ghi nhận đúng 4 cảnh báo này để phát hiện cảnh báo S5 mới phát sinh.
     """
     script_path = REPO_ROOT / ".claude" / "skills" / "datamart-review" / "scripts" / "ba_hld_sync_check.py"
     assert script_path.is_file(), f"Script không tồn tại: {script_path}"
@@ -167,19 +172,19 @@ def test_oracle_04_measure_type_mismatch_s5_reproduction():
     s5_lines = [line.strip() for line in res.stdout.splitlines() if "S5" in line and "❌" in line]
     assert len(s5_lines) == 4, f"Kỳ vọng 4 lỗi S5, thực tế tìm thấy {len(s5_lines)}: {s5_lines}"
 
-    assert any("Nhóm 28" in l and "399" in l and "K_PTTT_223" in l and "VOL" in l for l in s5_lines)
-    assert any("Nhóm 28" in l and "400" in l and "K_PTTT_226" in l and "VOL" in l for l in s5_lines)
-    assert any("Nhóm 31" in l and "421" in l and "K_PTTT_223" in l and "VOL" in l for l in s5_lines)
-    assert any("Nhóm 31" in l and "422" in l and "K_PTTT_226" in l and "VOL" in l for l in s5_lines)
+    assert any("Nhóm 28" in l and "400" in l and "K_PTTT_223" in l and "VOL" in l for l in s5_lines)
+    assert any("Nhóm 28" in l and "401" in l and "K_PTTT_226" in l and "VOL" in l for l in s5_lines)
+    assert any("Nhóm 31" in l and "422" in l and "K_PTTT_223" in l and "VOL" in l for l in s5_lines)
+    assert any("Nhóm 31" in l and "423" in l and "K_PTTT_226" in l and "VOL" in l for l in s5_lines)
 
 
 # ==============================================================================
-# TEST 5: Kiểm chứng 15 bảng ClickHouse Flat Tables (0 column drift DDL vs DML)
+# TEST 5: Kiểm chứng 17 bảng ClickHouse Flat Tables (0 column drift DDL vs DML)
 # ==============================================================================
 def test_oracle_05_clickhouse_flat_tables_ddl_dml_parity():
     """
     Test 5: Chạy check_flat_table.py --module PTTT --strict:
-    - Đúng 15 bảng DDL và 15 bảng DML.
+    - Đúng 17 bảng DDL và 17 bảng DML.
     - 0 Critical Issues, 0 Warning Issues (0 column drift).
     """
     script_path = REPO_ROOT / ".claude" / "skills" / "datamart-review" / "scripts" / "check_flat_table.py"
@@ -189,44 +194,40 @@ def test_oracle_05_clickhouse_flat_tables_ddl_dml_parity():
     res = subprocess.run(cmd, cwd=REPO_ROOT, capture_output=True, text=True, encoding="utf-8")
 
     assert res.returncode == 0, f"check_flat_table.py thất bại với exit code {res.returncode}: {res.stdout}"
-    assert "Tables in DDL (CREATE):  15" in res.stdout
-    assert "Tables in DML (INSERT):  15" in res.stdout
+    assert "Tables in DDL (CREATE):  17" in res.stdout
+    assert "Tables in DML (INSERT):  17" in res.stdout
     assert "Critical Issues:         0" in res.stdout
     assert "Warning Issues:          0" in res.stdout
 
 
 # ==============================================================================
-# TEST 6: Kiểm chứng thực nghiệm Rule L4 và bóc tách 66 False Positives
+# TEST 6: Rule L4 — dòng PENDING để trống 4 trường kỹ thuật; Cụm 4 (Nhóm 22-25) đã READY
 # ==============================================================================
 def test_oracle_06_rule_l4_compliance_and_false_positive_forensic():
     """
-    Test 6: Đánh giá pháp y Rule L4 trên các chỉ tiêu PENDING:
-    - Toàn bộ 91 chỉ tiêu thực sự PENDING (tinh_chat=PENDING hoặc ghi_chu bắt đầu bằng 'Pending')
-      phải để trống 100% cả 4 trường kỹ thuật (mart_table, mart_column, logic, column_role).
-    - 30/30 chỉ tiêu Cụm 4 (Nhóm 22-25) tuân thủ 100% Rule L4.
-    - Bóc tách chính xác 66 chỉ tiêu trong tập 157 của analyzer có trường kỹ thuật được điền
-      (chứng minh đây là False Positives do bẫy chuỗi changelog hoặc biến DERIVED).
+    Test 6: Đánh giá Rule L4 trên Detail Mapping hiện hành:
+    - Mọi dòng PENDING (tinh_chat=PENDING hoặc ghi_chu bắt đầu bằng 'Pending') phải để trống 100% cả 4 trường
+      kỹ thuật (mart_table, mart_column, logic, column_role). Hiện không còn dòng nào ở trạng thái này.
+    - Cụm 4 (Nhóm 22-25, An toàn CTCK) đã READY từ 2026-10-01 và đọc Fact Securities Company Safety Snapshot
+      từ 2026-10-02: 30 dòng, mỗi dòng có logic và column_role hợp lệ.
     """
     sys.path.insert(0, str(REPO_ROOT / ".claude" / "skills" / "datamart-review" / "scripts"))
     from datamart_progress_analyzer import DetailMappingParser
     dm_items = DetailMappingParser.parse_file(DETAIL_MAPPING_PATH)
     active_dm = [dm for dm in dm_items if dm.tab.upper() != "DATA EXPLORER"]
 
-    # 1. 30 chỉ tiêu Cụm 4
+    # 1. 30 dòng Cụm 4 đã READY
     c4_items = [dm for dm in active_dm if any(g in dm.nhom for g in ["Nhóm 22", "Nhóm 23", "Nhóm 24", "Nhóm 25"])]
-    assert len(c4_items) == 30, f"Cụm 4 phải có 30 chỉ tiêu, thực tế: {len(c4_items)}"
+    assert len(c4_items) == 30, f"Cụm 4 phải có 30 dòng, thực tế: {len(c4_items)}"
     for dm in c4_items:
-        assert not dm.mart_table, f"{dm.kpi_id} vi phạm Rule L4: mart_table populated"
-        assert not dm.mart_column, f"{dm.kpi_id} vi phạm Rule L4: mart_column populated"
-        assert not dm.logic, f"{dm.kpi_id} vi phạm Rule L4: logic populated"
-        assert dm.column_role.upper() in ("", "PENDING"), f"{dm.kpi_id} role invalid: {dm.column_role}"
+        assert dm.logic, f"{dm.kpi_id} (Cụm 4) READY nhưng thiếu logic"
+        assert dm.column_role.upper() in ("MEASURE", "SLICER", "DERIVED"), f"{dm.kpi_id} role invalid: {dm.column_role}"
 
-    # 2. 91 chỉ tiêu true pending
+    # 2. Rule L4 cho mọi dòng PENDING (nếu có)
     true_pending = [
         dm for dm in active_dm
         if dm.tinh_chat.strip().lower() == "pending" or dm.ghi_chu.strip().lower().startswith("pending")
     ]
-    assert len(true_pending) == 91, f"Số chỉ tiêu true pending phải là 91, thực tế: {len(true_pending)}"
     for dm in true_pending:
         assert not dm.mart_table, f"{dm.kpi_id} vi phạm Rule L4: mart_table={dm.mart_table}"
         assert not dm.mart_column, f"{dm.kpi_id} vi phạm Rule L4: mart_column={dm.mart_column}"
@@ -263,33 +264,32 @@ def test_oracle_07_group_21_grain_mismatch_empirical():
     assert "Symbol" in pk_row["source_attribute"]
 
     val_row = rows["bond_outstanding_val"]
-    assert "total_listing_vol" in val_row["etl_logic"]
+    assert "outstanding_share_quantity" in val_row["etl_logic"]
     assert "SUM" not in val_row["etl_logic"].upper()
 
     bctc_row = rows["total_liabilities_amt"]
     assert "pc_report_submission.pc_id = public_company.pc_id" in bctc_row["etl_logic"]
     assert ":p_company_id" not in bctc_row["etl_logic"]
-    assert "public_company.equity_ticker_symbol = bond_snpst.symbol" in bctc_row["etl_logic"]
+    assert "public_company.equity_ticker_symbol = SUBSTR(bond_snpst.symbol, 1, 3)" in bctc_row["etl_logic"]
 
 
 # ==============================================================================
-# TEST 8: Kiểm chứng thực nghiệm độ rỗng Fact Maturity Wall Nhóm 19
+# TEST 8: Nhóm 19 — fct_corporate_bond_maturity_wall đã đủ cột (có maturity_dt)
 # ==============================================================================
 def test_oracle_08_group_19_maturity_wall_emptiness_empirical():
     """
-    Test 8: Kiểm tra bảng fct_corporate_bond_maturity_wall.csv:
-    - Bảng chỉ có 3 cột: snpst_dt_dim_id, securities_dim_id, ranking_code.
-    - Hoàn toàn thiếu cột maturity_dt (ngày đáo hạn).
-    - Hoàn toàn thiếu các cột bucket kỳ hạn (<3T, 3-6T, 6-12T, 1-3N, >3N).
+    Test 8: Kiểm tra bảng fct_corporate_bond_maturity_wall.csv (đã mở rộng 2 luồng LISTED/PRIVATE ngày 2026-10-01):
+    - Có đủ 9 cột: snpst_dt_dim_id, securities_dim_id, ranking_code, bond_flow_code, bond_code, par_val,
+      outstanding_vol, bond_outstanding_val, maturity_dt.
+    - Có cột maturity_dt (ngày đáo hạn) — thiếu cột này từng làm bảng rỗng về nghiệp vụ.
+    - Các cột bucket kỳ hạn (<3T, 3-6T, 6-12T, 1-3N, >3N) tính ở presentation layer từ maturity_dt, không lưu cột.
     """
     assert FACT_GRP19_PATH.is_file(), f"Tệp Nhóm 19 không tồn tại: {FACT_GRP19_PATH}"
 
     with open(FACT_GRP19_PATH, "r", encoding="utf-8-sig", errors="replace") as f:
         cols = [r["datamart_column"] for r in csv.DictReader(f)]
 
-    assert len(cols) == 3, f"Số cột fct_corporate_bond_maturity_wall là {len(cols)}, kỳ vọng đúng 3"
-    assert "snpst_dt_dim_id" in cols
-    assert "securities_dim_id" in cols
-    assert "ranking_code" in cols
-    assert "maturity_dt" not in cols, "maturity_dt không được có mặt trong schema rỗng hiện tại"
-    assert not any("bucket" in c.lower() for c in cols), "Các cột bucket không được có mặt trong schema hiện tại"
+    assert len(cols) == 9, f"Số cột fct_corporate_bond_maturity_wall là {len(cols)}, kỳ vọng đúng 9"
+    for c in ("snpst_dt_dim_id", "securities_dim_id", "ranking_code", "bond_flow_code", "bond_code",
+              "par_val", "outstanding_vol", "bond_outstanding_val", "maturity_dt"):
+        assert c in cols, f"Thiếu cột {c}"

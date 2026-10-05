@@ -267,12 +267,12 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_corporate_bond_market_snpst_flat ON
     -- From: FACT Corporate Bond Market Snapshot
     snpst_dt_dim_id                        String                  COMMENT 'FK → Calendar Date Dimension',
     par_val                                 Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
-    outstanding_vol                         Nullable(Decimal(23,2)) COMMENT 'KL TP lưu hành toàn thị trường ngày t',
+    outstanding_vol                         Nullable(Decimal(23,2)) COMMENT 'KL TP lưu hành toàn thị trường ngày t (HNX niêm yết + riêng lẻ)',
     bond_outstanding_val                    Nullable(Decimal(23,2)) COMMENT 'Tổng dư nợ trái phiếu toàn thị trường ngày t',
     maturity_pressure_12_months             Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng',
     maturity_pressure_12_months_previous    Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng tại kỳ liền trước',
     maturity_pressure_growth_percentage     Nullable(Decimal(5,2))  COMMENT 'Tăng trưởng áp lực đáo hạn',
-    bond_trading_val                        Nullable(Decimal(23,2)) COMMENT 'GTGD trái phiếu toàn thị trường ngày t (Market ID BDO)',
+    bond_trading_val                        Nullable(Decimal(23,2)) COMMENT 'GTGD trái phiếu toàn thị trường ngày t (Market ID HCX, HNX)',
     bond_yield_weighted_average             Nullable(Decimal(9,4))  COMMENT 'Lợi suất TP bình quân gia quyền GTGD ngày t',
 
     -- From: CALENDAR DATE DIMENSION
@@ -450,13 +450,13 @@ COMMENT 'Flat table — Fact Market Statistics Snapshot × Calendar Date Dimensi
 -- ============================================================
 -- 13. OPERATIONAL: pttt_opr_corporate_bond_issuer_credit_monitor_flat
 --    Danh sách TCPH TPDN kèm chỉ tiêu tín dụng để giám sát rủi ro
---    Grain: 1 row / mã TP / ngày (TCPH xác định qua public_company.equity_ticker_symbol = symbol)
+--    Grain: 1 row / mã TP / ngày (TCPH xác định qua public_company.equity_ticker_symbol = SUBSTR(symbol, 1, 3))
 --    Không JOIN Calendar Date, không JOIN dim nào
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.pttt_opr_corporate_bond_issuer_credit_monitor_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Corporate Bond Issuer Credit Monitor
-    issuer_symbol_code    String                  COMMENT 'PK — mã trái phiếu (symbol); TCPH xác định qua public_company.equity_ticker_symbol = symbol',
+    issuer_symbol_code    String                  COMMENT 'PK — mã trái phiếu (symbol); TCPH xác định qua public_company.equity_ticker_symbol = SUBSTR(symbol, 1, 3)',
     snpst_dt               Date                    COMMENT 'PK — ngày thống kê',
     bond_outstanding_val   Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu per TCPH tại ngày t',
     par_val                 Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',

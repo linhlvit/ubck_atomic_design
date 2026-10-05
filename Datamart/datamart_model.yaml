@@ -11413,7 +11413,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KL TP lưu hành toàn thị trường ngày t"
+        description: "KL TP lưu hành toàn thị trường ngày t = TP niêm yết (HNX listed_securities_list.outstanding_shares, StockType = '1' loại TP Chính phủ) + TP riêng lẻ (private_corp_bond_registration, report_month = tháng ngày t) — BA dòng 300; PENDING chờ cột HNX (O_PTTT_36)"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.total_listing_vol"
       - logical_name: "Bond Outstanding Value"
@@ -11431,7 +11431,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Áp lực đáo hạn 12 tháng — tổng dư nợ TP có ngày đáo hạn trong 365 ngày tới tính từ ngày t"
+        description: "Áp lực đáo hạn 12 tháng — tổng dư nợ TP có ngày đáo hạn trong (ngày t, ngày t + 12 tháng], gồm TP niêm yết HNX và riêng lẻ — BA dòng 301; PENDING chờ cột HNX (O_PTTT_36)"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.maturity_dt"
       - logical_name: "Maturity Pressure 12 Months Previous"
@@ -11458,7 +11458,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "GTGD trái phiếu toàn thị trường ngày t (Market ID = 'BDO', HOSE + HNX) — BA dòng 307. Cột `execution_val` của HNX không khai trong YAML LLD nhưng bảng vật lý đã có giá trị (= Trade price × Trade quantity, Data Modeler xác nhận 2026-09-25) nên dùng chung cho cả 2 sàn"
+        description: "GTGD trái phiếu toàn thị trường ngày t (Market ID = 'HCX', chỉ sổ lệnh HNX) — BA dòng 307. Cột `execution_val` của HNX không khai trong YAML LLD nhưng bảng vật lý đã có giá trị (= Trade price × Trade quantity, Data Modeler xác nhận 2026-09-25) nên dùng chung cho cả 2 sàn"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Bond Yield Weighted Average"
@@ -11467,7 +11467,7 @@ entities:
         data_type: "decimal(9,4)"
         nullable: true
         key: "DD"
-        description: "Lợi suất trái phiếu bình quân gia quyền theo GTGD ngày t = Σ(YTMi × GTGDi) / ΣGTGDi — BA dòng 305. YTMi = security_trading_snapshot.yield của mã TP (floorcode = '06') lấy bản ghi cuối ngày; GTGDi = tổng execution_val của mã TP trong ngày (Market ID = 'BDO'). INNER JOIN như SQL BA: mã không có YTM hoặc không có giao dịch trong ngày bị loại khỏi cả tử và mẫu"
+        description: "Lợi suất trái phiếu bình quân gia quyền theo GTGD ngày t = Σ(YTMi × GTGDi) / ΣGTGDi — BA dòng 305. YTMi = security_trading_snapshot.yield của mã TP (StockType = '1') lấy bản ghi cuối ngày; GTGDi = tổng execution_val của mã TP trong ngày (Market ID = 'HCX', chỉ HNX). INNER JOIN như SQL BA: mã không có YTM hoặc không có giao dịch trong ngày bị loại khỏi cả tử và mẫu"
         source_atomic_table: "security_trading_snapshot / securities_trade"
         source_atomic_column: "security_trading_snapshot.yield / securities_trade.execution_val"
 
@@ -11548,7 +11548,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KL trái phiếu lưu hành tại ngày chốt quý. LISTED: total_listing_vol (JAD_STOCKINFOR.ListedShare) của ngày giao dịch cuối quý; PRIVATE: offering_bond_quantity (BA dòng 320/324)"
+        description: "KL trái phiếu lưu hành tại ngày chốt quý. LISTED: listed_share_info.outstanding_share_quantity (HNX listed_securities_list.outstanding_shares) tại ngày báo cáo cuối quý, PENDING chờ cột HNX (O_PTTT_36); PRIVATE: offering_bond_quantity (BA dòng 320/324)"
         source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
         source_atomic_column: "security_trading_snapshot.total_listing_vol / private_corp_bond_offering.offering_bond_quantity"
       - logical_name: "Bond Outstanding Value"
@@ -14149,7 +14149,6 @@ entities:
       - "securities_company"
     modules_using:
       - "QLKD"
-      - "PTTT"
     columns:
       - logical_name: "Snapshot Date Dimension Id"
         physical_name: "snpst_dt_dim_id"
@@ -14263,7 +14262,6 @@ entities:
       - "sc_report_input_value"
     modules_using:
       - "QLKD"
-      - "PTTT"
     columns:
       - logical_name: "Report Indicator Dimension Id"
         physical_name: "report_indicator_dim_id"
