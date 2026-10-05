@@ -152,31 +152,31 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,
-1,5,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới,Số lượng mã số giao dịch cấp mới cho NĐTNN (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'H0I8J'
+1,5,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới,Số lượng mã số giao dịch cấp mới cho NĐTNN (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
 and column_path = 'Tổng số lượng tới thời điểm báo cáo';
 and row_path = 'Tổng
-and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fir_value frc
 where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
 and column_path = 'Tổng số lượng tới thời điểm báo cáo';
 and row_path = 'Tổng
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Tổng,Tổng số lượng tới thời điểm báo cáo,
-1,6,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là cá nhân,Số lượng mã số giao dịch cấp mới cho NĐTNN là cá nhân (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'H0I8J'
+1,6,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là cá nhân,Số lượng mã số giao dịch cấp mới cho NĐTNN là cá nhân (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
 and column_path = 'Tổng số lượng tới thời điểm báo cáo';
 and row_path = 'Cá nhân'
-and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fir_value frc
 where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
 and column_path = 'Tổng số lượng tới thời điểm báo cáo';
 and row_path = 'Cá nhân'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Cá nhân,Tổng số lượng tới thời điểm báo cáo,
-1,7,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là tổ chức,Số lượng mã số giao dịch cấp mới cho NĐTNN là tổ chức (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'H0I8J'
+1,7,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là tổ chức,Số lượng mã số giao dịch cấp mới cho NĐTNN là tổ chức (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
 and column_path = 'Tổng số lượng tới thời điểm báo cáo';
 and row_path = 'Tổ chức'
-and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fir_value frc
 where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
 and column_path = 'Tổng số lượng tới thời điểm báo cáo';
@@ -1249,32 +1249,32 @@ GROUP BY symbol
 ORDER BY ty_trong_ndtnn_pct DESC
 LIMIT 5;",Cần bảng danh mục ngành từ IDS-GSĐC. Phần MSS đã xác định: trường mã CK để JOIN.,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,
 3,23,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ròng ,"Dòng tiền ròng = Tổng tiền vào - Tổng tiền ra
-Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'IBOU9'
+Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
-and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fir_value frc
 where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),Báo cáo tại ngày (lấy ngày cuối tháng)
-3,24,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền vào, ,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'IBOU9'
+3,24,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền vào, ,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"where report_code = 'IBOU9'
 and column_path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
-and ngay_nop = :ngaynop;","select sum(frc.value_num)  from uat_fims_ods.fact_report_cell frc
+and ngay_nop = :ngaynop;","select sum(frc.value_num)  from uat_fims_ods.fir_value frc
 where report_code = 'IBOU9'
 and column_path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD),
-3,25,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ra,Tổng tiền ra,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'IBOU9'
+3,25,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ra,Tổng tiền ra,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"where report_code = 'IBOU9'
 and column_path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
-and ngay_nop = :ngaynop;","select sum(frc.value_num)  from uat_fims_ods.fact_report_cell frc
+and ngay_nop = :ngaynop;","select sum(frc.value_num)  from uat_fims_ods.fir_value frc
 where report_code = 'IBOU9'
 and column_path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD),
 4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Dòng vốn ròng,"Dòng vốn ròng = Dòng vốn đầu tư vào - Dòng vốn rút ra
-Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,FIMS,X,X,X,Done,  ,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,FIMS,X,X,X,Done,  ,uat_fims_ods.fir_value,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1293,7 +1293,7 @@ Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell
+    FROM uat_fims_ods.fir_value
     WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
@@ -1360,7 +1360,7 @@ SELECT
 FROM pvt_data
 WHERE tong_gtri_danh_muc IS NOT NULL
 GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),join với cụm INVESTOR qua cột MSGD
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Loại hình NĐTNN,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Loại hình NĐTNN,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fir_value,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1369,7 +1369,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Loại hình đối với tổ chức,Nếu Loại hình có chi tiết thì lấy luôn phân loại theo báo cáo
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quốc gia,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quốc gia,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fir_value,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1378,7 +1378,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1387,7 +1387,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Cá nhân,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Cá nhân.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Cá nhân,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Cá nhân.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1396,7 +1396,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng (2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),"Báo cáo phân loại theo Cá nhân và Tổ chức, Tổ chức phân loại theo cột Loại hình đối với tổ chức"
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Tổ chức khác quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Tổ chức khác quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fact_report_cell,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Tổ chức khác quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Tổ chức khác quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_num  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1405,7 +1405,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia vào ròng,Top 5 quốc gia có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code = 'IBOU9'
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia vào ròng,Top 5 quốc gia có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -1418,7 +1418,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell
+    FROM uat_fims_ods.fir_value
     WHERE report_code = 'IBOU9'
       AND sheet_name  = 'I'
       AND is_mirror = 0 
@@ -1459,7 +1459,7 @@ WHERE q.quoc_tich IS NOT NULL
 GROUP BY q.quoc_tich
 ORDER BY vao_rong DESC
 LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 dương"
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia rút ròng,Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code = 'IBOU9'
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia rút ròng,Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -1472,7 +1472,7 @@ LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo c
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell
+    FROM uat_fims_ods.fir_value
     WHERE report_code = 'IBOU9'
       AND sheet_name  = 'I'
       AND is_mirror = 0 
@@ -1513,7 +1513,7 @@ WHERE q.quoc_tich IS NOT NULL
 GROUP BY q.quoc_tich
 ORDER BY vao_rong ASC
 LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 âm nhiều nhất"
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT vào ròng,Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code = 'IBOU9'
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT vào ròng,Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -1526,7 +1526,7 @@ LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo c
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell
+    FROM uat_fims_ods.fir_value
     WHERE report_code = 'IBOU9'
       AND sheet_name  = 'I'
       AND is_mirror = 0 
@@ -1566,7 +1566,7 @@ JOIN c_ndt c
 GROUP BY c.ten_ndt
 ORDER BY vao_rong DESC
 LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Tên nhà đầu tư,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 dương"
-4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT  rút ròng,Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code = 'IBOU9'
+4,,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT  rút ròng,Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -1579,7 +1579,7 @@ LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo c
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell
+    FROM uat_fims_ods.fir_value
     WHERE report_code = 'IBOU9'
       AND sheet_name  = 'I'
       AND is_mirror = 0 
@@ -1619,10 +1619,10 @@ JOIN c_ndt c
 GROUP BY c.ten_ndt
 ORDER BY vao_rong ASC
 LIMIT 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Tên nhà đầu tư,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 âm nhiều nhất"
-5,,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Dòng tiền ròng,Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.,Dashboard,Chỉ tiêu phái sinh,Trùng,Tháng,FIMS,,X,X,Done,,uat_fims_ods.fact_report_cell,value_num  ,"where report_code = 'IBOU9'
+5,,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Dòng tiền ròng,Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.,Dashboard,Chỉ tiêu phái sinh,Trùng,Tháng,FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_num  ,"where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
-and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fact_report_cell frc
+and ngay_nop = :ngaynop;","select frc.value_num  from uat_fims_ods.fir_value frc
 where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
@@ -1752,7 +1752,7 @@ SELECT
 FROM ranked
 WHERE rn = 1
 ORDER BY tradingdate, marketId, marketCode;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,
-6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục,"Tổng quy mô tài sản mà NĐTNN đang nắm giữ (bao gồm cổ phiếu, trái phiếu và tiền mặt.",Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Toàn thị trường",FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục,"Tổng quy mô tài sản mà NĐTNN đang nắm giữ (bao gồm cổ phiếu, trái phiếu và tiền mặt.",Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Toàn thị trường",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -1767,7 +1767,7 @@ ORDER BY tradingdate, marketId, marketCode;",,,,,Chưa có SQL,Dữ liệu tĩnh
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell
+    FROM uat_fims_ods.fir_value
     WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
@@ -1865,27 +1865,27 @@ SELECT
 FROM pvt_data
 WHERE tong_gtri_danh_muc IS NOT NULL
 GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tổng giá trị danh mục,
-6,,Dashboard/Danh mục/Thống kê danh mục,Loại hình nhà đầu tư,,Dashboard,Chiều,Trùng,,FIMS,,,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,,Dashboard/Danh mục/Thống kê danh mục,Loại hình nhà đầu tư,,Dashboard,Chiều,Trùng,,FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,Loại hình đối với tổ chức,
-6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của cá nhân,Tổng giá trị danh mục của NĐTNN là cá nhân,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của cá nhân,Tổng giá trị danh mục của NĐTNN là cá nhân,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (2),Tổng giá trị danh mục,
-6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của quỹ,Tổng giá trị danh mục của NĐTNN là quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của quỹ,Tổng giá trị danh mục của NĐTNN là quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
-6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của tổ chức khác quỹ,Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của tổ chức khác quỹ,Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
-6,,Dashboard/Danh mục/Thống kê danh mục,Top 5 quốc gia,Top 5 quốc gia có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Quốc gia",FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,,Dashboard/Danh mục/Thống kê danh mục,Top 5 quốc gia,Top 5 quốc gia có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Quốc gia",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -1900,7 +1900,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell
+    FROM uat_fims_ods.fir_value
     WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
@@ -1975,7 +1975,7 @@ group by quoc_tich
 order by sum(tong_gtri_danh_muc) desc
 limit 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
 Quốc tịch","Sum (Tổng giá trị danh mục) theo cột Quốc tịch, lấy top 5 lớn nhất"
-6,,Dashboard/Danh mục/Thống kê danh mục,Top 5 NĐT,Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, NĐT",FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,,Dashboard/Danh mục/Thống kê danh mục,Top 5 NĐT,Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, NĐT",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -1990,7 +1990,7 @@ Quốc tịch","Sum (Tổng giá trị danh mục) theo cột Quốc tịch, l�
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell
+    FROM uat_fims_ods.fir_value
     WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
@@ -2065,7 +2065,7 @@ group by ten_kh
 order by sum(tong_gtri_danh_muc) desc
 limit 5;",,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
 Tên khách hàng","Sum (Tổng giá trị danh mục) theo cột Tên khách hàng, lấy top 5 lớn nhất"
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Giá trị tài sản,,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Giá trị tài sản,,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2080,7 +2080,7 @@ Tên khách hàng","Sum (Tổng giá trị danh mục) theo cột Tên khách h�
         value_raw,
         value_num,
         value_text
-    FROM uat_fims_ods.fact_report_cell_spk2
+    FROM uat_fims_ods.fir_value_spk2
     WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
@@ -2186,32 +2186,32 @@ SELECT
         sum(gtri_von_gop)*100/sum(tong_gtri_danh_muc) as gtri_von_gop,
         sum(tien)*100/sum(tong_gtri_danh_muc) as tien
 FROM pvt_data;",,,,,Done,Dữ liệu động,,,,,,
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Loại tài sản,,Dashboard,Chiều,TB,,FIMS,X,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Loại tài sản,,Dashboard,Chiều,TB,,FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Cổ phiếu, CCQ niêm yết","Giá trị tài sản NĐTNN đầu tư vào cổ phiếu, CCQ niêm yết",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Cổ phiếu, CCQ niêm yết","Giá trị tài sản NĐTNN đầu tư vào cổ phiếu, CCQ niêm yết",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),"Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết>>Giá trị",
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Trái phiếu,Giá trị tài sản NĐTNN đầu tư vào trái phiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Trái phiếu,Giá trị tài sản NĐTNN đầu tư vào trái phiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Trái phiếu,Sum (Giá trị) của 3 loại trái phiếu
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Upcom,Giá trị tài sản NĐTNN đầu tư vào upcom,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Upcom,Giá trị tài sản NĐTNN đầu tư vào upcom,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom)>>Giá trị,
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác","Giá trị tài sản NĐTNN đầu tư vào giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác","Giá trị tài sản NĐTNN đầu tư vào giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),"Cổ phiếu/Chứng chỉ quỹ>>Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác>>Giá trị",
-7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Tiền và tương đương với tiền,Giá trị tài sản NĐTNN là tiền và tương đương với tiền,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Tiền và tương đương với tiền,Giá trị tài sản NĐTNN là tiền và tương đương với tiền,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2247,21 +2247,19 @@ FIMS:
 where CLOSING_PRICE_SECURITIES.TradeDate = :p_trade_date(lấy giá cuối ngày) and CLOSING_PRICE_SECURITIES.IsFake    = 0 ",,,,,,Done,Dữ liệu tĩnh,,,,,,
 9,,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Mã CK,,Dashboard,Chỉ tiêu cơ sở,Dễ,,FIMS,,,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,ticker_symbol,,"select 
         ticker_symbol as ma_ck,
-        round((current_shares_foreign_hold*100)/max_shares_foreign_can_hold,2) as ty_le_so_huu,
+        max_foreign_ownership_ratio as ty_le_so_huu,
         remaining_shares_foreign_can_hold as room_con_lai,
         max_shares_foreign_can_hold as room_toi_da
 from uat_vsdc_stg.foreign_investor_info;",,,,,,Dữ liệu tĩnh,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,"Các dòng mã CK tại cột ""Mã trong 
 nước""","Mã trong 
 nước",
-9,,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Tỷ lệ sở hữu (theo mã CK),Tỷ lệ sở hữu của NĐTNN với từng mã chứng khoán,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,"current_shares_foreign_hold
-max_shares_foreign_can_hold",,,,,,,Done,Chưa có CSDL - Map biểu mẫu,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN * 100/ Tổng số cổ phiếu phát hành,
+9,,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Tỷ lệ sở hữu (theo mã CK),Tỷ lệ sở hữu của NĐTNN với từng mã chứng khoán,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,max_foreign_ownership_ratio,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN * 100/ Tổng số cổ phiếu phát hành,
 9,,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room còn lại (theo mã CK),Giá trị room còn được phép nắm giữ của NĐTNN,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành,
 9,,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room tối đa,Giới hạn room theo quy định từng mã CK.,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,max_shares_foreign_can_hold,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Tỷ lệ sở hữu nước ngoài tối đa (%),
-9,,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Top 5 mã có room còn lại thấp nhất.,Lấy top 5 mã có room còn lại thấp nhất.,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,"where max_shares_foreign_can_hold > 0","select 
+9,,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Top 5 mã có room còn lại thấp nhất.,Lấy top 5 mã có room còn lại thấp nhất.,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,,"select 
         ticker_symbol as ma_ck,
         remaining_shares_foreign_can_hold as room_con_lai
 from uat_vsdc_stg.foreign_investor_info
-where max_shares_foreign_can_hold > 0
 order by remaining_shares_foreign_can_hold asc
 limit 5; ",,,,,Chưa có SQL,Chưa có CSDL - Map biểu mẫu,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành,Lấy top 5 nhỏ nhất
 9,,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room theo ngành (%),Room theo ngành = Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"IDS, CSDLTT",X,X,,Done,,"IDS.CATEGORIES
@@ -2286,8 +2284,7 @@ group by nvl(c.industry_name, 'Chưa phân ngành');",,,,,Chưa có SQL,Chưa c�
         remaining_shares_foreign_can_hold as room_con_lai
 from uat_vsdc_stg.foreign_investor_info
 where max_shares_foreign_can_hold = 0
-order by remaining_shares_foreign_can_hold asc
-limit 5; ",,,,,Done,Dữ liệu tĩnh,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,"Các dòng mã CK tại cột ""Mã trong 
+order by remaining_shares_foreign_can_hold asc;",,,,,Done,Dữ liệu tĩnh,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,"Các dòng mã CK tại cột ""Mã trong 
 nước""","Số lượng cổ phiếu còn được phép nắm giữ bởi NĐTNN
 
 Mã trong nước","Where ""Số lượng cổ phiếu còn được phép nắm giữ bởi NĐTNN"" = 0"
@@ -2317,7 +2314,7 @@ INVESTOR",INVESTOR.Director,,,,,,,Done,Dữ liệu tĩnh,,,,,,
 11,,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Đại diện giao dịch,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTOR
 STATUS","StatusId
 STATUS.Name",,,,,,,Done,Dữ liệu tĩnh,,,,,,
-12,,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,FIMS,,,,Doing,, uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+12,,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,FIMS,,,,Doing,, uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2330,7 +2327,7 @@ STATUS.Name",,,,,,,Done,Dữ liệu tĩnh,,,,,,
             entity_code,
             column_path,
             value_raw
-        FROM uat_fims_ods.fact_report_cell
+        FROM uat_fims_ods.fir_value
         WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
@@ -2347,7 +2344,7 @@ STATUS.Name",,,,,,,Done,Dữ liệu tĩnh,,,,,,
     )
 )
 select ten_kh, tong_gtri_danh_muc from pvt_data;",,,,,Done,Dữ liệu tĩnh,,,,,,
-12,,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Tổng giá trị danh mục,Tổng giá trị thị trường của tài sản mà nhà đầu tư nước ngoài đang nắm giữ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Tháng, NĐT",FIMS,,X,,Doing,, uat_fims_ods.fact_report_cell,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+12,,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Tổng giá trị danh mục,Tổng giá trị thị trường của tài sản mà nhà đầu tư nước ngoài đang nắm giữ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Tháng, NĐT",FIMS,,X,,Doing,, uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2360,7 +2357,7 @@ select ten_kh, tong_gtri_danh_muc from pvt_data;",,,,,Done,Dữ liệu tĩnh,,,,
             entity_code,
             column_path,
             value_raw
-        FROM uat_fims_ods.fact_report_cell
+        FROM uat_fims_ods.fir_value
         WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
@@ -2952,8 +2949,7 @@ select
         sum(case when type = 'buy' then gia_tri end) as gia_tri_mua,
         sum(case when type = 'sell' then gia_tri end) as gia_tri_ban
 from cte
-where tai_khoan_giao_dich = 'pii-key-v1.PnFCFWN8jYh3ds0c6-GtVRRfjSXM54BpCsYPXzmWEWk=.Vm3X75Aft169bjRL.bU3K8rndvc2G1SorrrJI8jBJI1P8o_ZR92lxhJg='
-group by tai_khoan_giao_dich , ma_ck;",,,,,,Dữ liệu tĩnh,,,,,,
+group by tai_khoan_giao_dich , ma_ck;",,,,,,Dữ liệu tĩnh,P,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Mã CK,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -2968,7 +2964,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -2977,13 +2973,13 @@ jad_stockinfor","TRADE_BOOK_HNX:
 - Trade quantity (where Buy Foreign Investor Type Code IN ('10','20'))
 
 TRADE_BOOK_HOSE:
-- Execution - Volume (where Buy - Invest Type = '7000')","TRADE_BOOK_HNX:
+- Execution - Volume ","TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL bán CK,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -2992,13 +2988,13 @@ jad_stockinfor","TRADE_BOOK_HNX:
 - Trade quantity (where Sell Foreign Investor Type Code IN ('10','20'))
 
 TRADE_BOOK_HOSE:
-- Execution - Volume (where Sell - Invest Type = '7000')","TRADE_BOOK_HNX:
+- Execution - Volume ","TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -3007,13 +3003,13 @@ jad_stockinfor","TRADE_BOOK_HNX:
 - Trade price * Trade quantity (where Buy Foreign Investor Type Code IN ('10','20'))
 
 TRADE_BOOK_HOSE:
-- Execution - Value (where Buy - Invest Type = '7000')","TRADE_BOOK_HNX:
+- Execution - Value ","TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,
 15,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT bán chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -3022,13 +3018,13 @@ jad_stockinfor","TRADE_BOOK_HNX:
 - Trade price * Trade quantity (where Sell Foreign Investor Type Code IN ('10','20'))
 
 TRADE_BOOK_HOSE:
-- Execution - Value (where Sell - Invest Type = '7000')","TRADE_BOOK_HNX:
+- Execution - Value ","TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,,,,,,
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,
 16,,Data Explorer Dòng vốn ròng của NĐTNN,Tháng,,Data Explorer,Chiều,Trùng,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.PeriodValue,,,,,,,,Dữ liệu động,,,,,,
 16,,Data Explorer Dòng vốn ròng của NĐTNN,Quốc gia,Tổng hợp Vốn đầu tư vào ròng/ Vốn đầu tư rút ròng theo Quốc gia,Data Explorer,Chỉ tiêu phái sinh,Trùng,,FIMS,X,X,,Done,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)","cột: GT dòng vốn vào (3)
 
@@ -3067,12 +3063,12 @@ RPTMEMBER.REPORTTypeID",,,,,,,,Dữ liệu động,P,,,,,
 19,,"Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)",Mã chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.MA_CHI_TIEU,,,,,,,,Dữ liệu động,P,,,,,
 19,,"Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)",Tên chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.TEN_CHI_TIEU,,,,,,,,Dữ liệu động,P,,,,,
 20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Loại báo cáo,Định kỳ,Data Explorer,,,,FIMS,X,X,,Done,,REPORTTYPE,"REPORTTYPE.NAME
-RPTMEMBER.REPORTTypeID",,,,,,,,Dữ liệu động,,,,,,
-20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Kỳ báo cáo,Tháng,Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.PeriodType,,,,,,,,Dữ liệu động,,,,,,
-20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Mã báo cáo,,Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.RPID,,,,,,,,Dữ liệu động,,,,,,
-20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Tên báo cáo,Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Data Explorer,,,,FIMS,X,X,,Done,,Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),,,,,,,,,Dữ liệu động,,,,,,
-20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Mã chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.MA_CHI_TIEU,,,,,,,,Dữ liệu động,,,,,,
-20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Tên chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.TEN_CHI_TIEU,,,,,,,,Dữ liệu động,,,,,,
+RPTMEMBER.REPORTTypeID",,,,,,,,Dữ liệu động,P,,,,,
+20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Kỳ báo cáo,Tháng,Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.PeriodType,,,,,,,,Dữ liệu động,P,,,,,
+20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Mã báo cáo,,Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.RPID,,,,,,,,Dữ liệu động,P,,,,,
+20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Tên báo cáo,Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Data Explorer,,,,FIMS,X,X,,Done,,Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),,,,,,,,,Dữ liệu động,P,,,,,
+20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Mã chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.MA_CHI_TIEU,,,,,,,,Dữ liệu động,P,,,,,
+20,,Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC),Tên chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.TEN_CHI_TIEU,,,,,,,,Dữ liệu động,P,,,,,
 21,,"Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC)",Loại báo cáo,Định kỳ,Data Explorer,,,,FIMS,X,X,,Done,,REPORTTYPE,"REPORTTYPE.NAME
 RPTMEMBER.REPORTTypeID",,,,,,,,Dữ liệu động,P,,,,,
 21,,"Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC)",Kỳ báo cáo,Tháng,Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.PeriodType,,,,,,,,Dữ liệu động,P,,,,,
@@ -3195,12 +3191,12 @@ RPTMEMBER.REPORTTypeID",,,,,,,,Dữ liệu động,P,,,,,
 37,,"Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ",Mã chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.MA_CHI_TIEU,,,,,,,,Dữ liệu động,P,,,,,
 37,,"Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ",Tên chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.TEN_CHI_TIEU,,,,,,,,Dữ liệu động,P,,,,,
 38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Loại báo cáo,Định kỳ,Data Explorer,,,,FIMS,X,X,,Done,,REPORTTYPE,"REPORTTYPE.NAME
-RPTMEMBER.REPORTTypeID",,,,,,,,Dữ liệu động,,,,,,
-38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Kỳ báo cáo,"Ngày, Tháng, Năm",Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.PeriodType,,,,,,,,Dữ liệu động,,,,,,
-38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Mã báo cáo,,Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.RPID,,,,,,,,Dữ liệu động,,,,,,
-38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Tên báo cáo,"Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC).",Data Explorer,,,,FIMS,X,X,,Done,,"Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC).",,,,,,,,,Dữ liệu động,,,,,,
-38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Mã chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.MA_CHI_TIEU,,,,,,,,Dữ liệu động,,,,,,
-38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Tên chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.TEN_CHI_TIEU,,,,,,,,Dữ liệu động,,,,,,
+RPTMEMBER.REPORTTypeID",,,,,,,,Dữ liệu động,P,,,,,
+38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Kỳ báo cáo,"Ngày, Tháng, Năm",Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.PeriodType,,,,,,,,Dữ liệu động,P,,,,,
+38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Mã báo cáo,,Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.RPID,,,,,,,,Dữ liệu động,P,,,,,
+38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Tên báo cáo,"Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC).",Data Explorer,,,,FIMS,X,X,,Done,,"Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC).",,,,,,,,,Dữ liệu động,P,,,,,
+38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Mã chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.MA_CHI_TIEU,,,,,,,,Dữ liệu động,P,,,,,
+38,,"Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC)",Tên chỉ tiêu,,Data Explorer,,,,FIMS,X,X,,Done,,RPT_FIELD_CATALOG,RPT_FIELD_CATALOG.TEN_CHI_TIEU,,,,,,,,Dữ liệu động,P,,,,,
 39,,Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC),Loại báo cáo,Tháng,Data Explorer,,,,FIMS,X,X,,Done,,REPORTTYPE,"REPORTTYPE.NAME
 RPTMEMBER.REPORTTypeID",,,,,,,,Dữ liệu động,P,,,,,
 39,,Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC),Kỳ báo cáo,,Data Explorer,,,,FIMS,X,X,,Done,,RPTMEMBER,RPTMEMBER.PeriodType,,,,,,,,Dữ liệu động,P,,,,,

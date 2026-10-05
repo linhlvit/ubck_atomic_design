@@ -546,3 +546,36 @@ PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), securities_company_dim_id)
 COMMENT 'Flat table — Fact Securities Company Balance Snapshot × Calendar Date Dimension × Securities Company Dimension'
 ;
+
+
+-- ============================================================
+-- 16. FACT: pttt_fct_securities_company_safety_snpst_flat
+--    An toàn tài chính CTCK theo tháng báo cáo (SCMS) — dư nợ margin, VCSH, tỷ lệ margin/VCSH, tỷ lệ vốn khả dụng
+--    Grain: 1 CTCK / tháng báo cáo
+--    Joins: Calendar Date (snpst_dt_dim_id JOIN) x Securities Company Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.pttt_fct_securities_company_safety_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Securities Company Safety Snapshot
+    snpst_dt_dim_id            String                  COMMENT 'FK → Calendar Date Dimension',
+    securities_company_dim_id  String                  COMMENT 'FK → Securities Company Dimension',
+    rpt_year                   Int32                   COMMENT 'Năm báo cáo',
+    period_nbr                 Int32                   COMMENT 'Tháng báo cáo (1–12)',
+    margin_debt_amt            Nullable(Decimal(23,2)) COMMENT 'Dư nợ margin của CTCK (VND) — SCMS BCTHHD_CTCK ô TS024',
+    owner_equity_amt           Nullable(Decimal(23,2)) COMMENT 'VCSH của CTCK (VND) — 1 báo cáo được chọn: BCTCHN ô TS359 / BCTCRL ô TS223, TS221',
+    margin_to_equity_ratio     Nullable(Decimal(8,2))  COMMENT 'Tỷ lệ dư nợ margin / VCSH (%)',
+    capital_adequacy_ratio     Nullable(Decimal(8,2))  COMMENT 'Tỷ lệ vốn khả dụng (%) — SCMS BCTLAT ô TS006',
+    src_stm_code               String                  COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt               Nullable(Date)          COMMENT 'Ngày snapshot (cuối tháng báo cáo) — từ Calendar Date Dimension',
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_code                    Nullable(String)        COMMENT 'Mã CTCK — từ Securities Company Dimension',
+    sc_nm                      Nullable(String)        COMMENT 'Tên CTCK — từ Securities Company Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), securities_company_dim_id)
+COMMENT 'Flat table — Fact Securities Company Safety Snapshot × Calendar Date Dimension × Securities Company Dimension'
+;

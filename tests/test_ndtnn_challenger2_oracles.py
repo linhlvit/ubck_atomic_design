@@ -131,7 +131,7 @@ def test_detail_mapping_ready_and_pending_counts():
     """
     header, rows = load_detail_mapping_rows()
     print(f"\n[ORACLE 3.1 - DETAIL MAPPING TOTAL ROWS] Total mapping rows: {len(rows)}")
-    assert len(rows) == 299, f"Expected 299 mapping rows, got {len(rows)}"
+    assert len(rows) == 305, f"Expected 305 mapping rows, got {len(rows)}"
     
     # Classify indicators by (nhom, kpi_id, kpi_name)
     nhom_ready = defaultdict(set)
@@ -169,24 +169,24 @@ def test_detail_mapping_ready_and_pending_counts():
     total_oos_indicators = sum(len(s) for s in nhom_oos.values())
     
     print(f"[ORACLE 3.2 - SCOPE BREAKDOWN]")
-    print(f"  Total READY indicators:       {total_ready_indicators} (Expected: 62)")
-    print(f"  Total PENDING indicators:     {total_pending_indicators} (Expected: 196)")
+    print(f"  Total READY indicators:       {total_ready_indicators} (Expected: 259)")
+    print(f"  Total PENDING indicators:     {total_pending_indicators} (Expected: 0)")
     print(f"  Total OUT-OF-SCOPE indicators:{total_oos_indicators} (Expected: 1)")
-    print(f"  Total indicators mapped:      {total_ready_indicators + total_pending_indicators + total_oos_indicators} (Expected: 259)")
-    print(f"  Empty 4-column rows:          {len(empty_4col_rows)} (196 PENDING + 1 OUT-OF-SCOPE = 197)")
-    print(f"  Populated mapping rows:       {len(populated_rows)} (102 rows covering 62 READY indicators)")
+    print(f"  Total indicators mapped:      {total_ready_indicators + total_pending_indicators + total_oos_indicators} (Expected: 260)")
+    print(f"  Empty 4-column rows:          {len(empty_4col_rows)} (0 PENDING + 1 OUT-OF-SCOPE = 1)")
+    print(f"  Populated mapping rows:       {len(populated_rows)} (304 rows covering 259 READY indicators)")
     
     # Assertions
-    assert total_ready_indicators == 62, f"Expected 62 READY indicators, got {total_ready_indicators}"
-    assert total_pending_indicators == 196, f"Expected 196 PENDING indicators, got {total_pending_indicators}"
+    assert total_ready_indicators == 259, f"Expected 259 READY indicators, got {total_ready_indicators}"
+    assert total_pending_indicators == 0, f"Expected 0 PENDING indicators, got {total_pending_indicators}"
     assert total_oos_indicators == 1, f"Expected 1 OUT-OF-SCOPE indicator, got {total_oos_indicators}"
-    assert len(empty_4col_rows) == 197, f"Expected 197 empty 4-column rows, got {len(empty_4col_rows)}"
-    assert len(populated_rows) == 102, f"Expected 102 populated rows, got {len(populated_rows)}"
+    assert len(empty_4col_rows) == 1, f"Expected 1 empty 4-column row, got {len(empty_4col_rows)}"
+    assert len(populated_rows) == 304, f"Expected 304 populated rows, got {len(populated_rows)}"
 
 
 def test_rule_l4_strict_compliance():
     """
-    Kiểm tra 100% chỉ tiêu PENDING có tuân thủ tuyệt đối Rule L4:
+    Kiểm tra 100% chỉ tiêu PENDING / OUT-OF-SCOPE có tuân thủ tuyệt đối Rule L4:
     Cả 4 cột mart_table, mart_column, column_role, logic đều để trống.
     
     Quy tắc L4 (phase2_detail_mapping.md / issue_classification.md):
@@ -196,13 +196,9 @@ def test_rule_l4_strict_compliance():
     """
     header, rows = load_detail_mapping_rows()
     
-    # Define the 196 PENDING KPI IDs as documented in HLD and Report
-    cum1_pending = {'K_NDTNN_5', 'K_NDTNN_6', 'K_NDTNN_7'} | {f'K_NDTNN_{i}' for i in range(20, 33)} | {'K_NDTNN_35'} | {f'K_NDTNN_{i}' for i in range(90, 95)}
-    cum2_pending = {f'K_NDTNN_{i}' for i in range(37, 50)} | {f'K_NDTNN_{i}' for i in range(95, 99)}
-    cum3_pending = {'K_NDTNN_65'}
-    cum4_pending = {f'K_NDTNN_{i}' for i in range(99, 255)}
-    all_pending_kpis = cum1_pending | cum2_pending | cum3_pending | cum4_pending
-    assert len(all_pending_kpis) == 196, f"Expected 196 PENDING KPIs, got {len(all_pending_kpis)}"
+    # Define the out-of-scope / pending KPI IDs
+    all_pending_kpis = {'K_NDTNN_70'}
+    assert len(all_pending_kpis) == 1, f"Expected 1 PENDING/OOS KPI, got {len(all_pending_kpis)}"
     
     pending_conforming_count = 0
     violations = []
@@ -216,7 +212,7 @@ def test_rule_l4_strict_compliance():
         gc = r.get("ghi_chu", "")
         line_no = r.get("_line_number", "")
         
-        # If this row is one of the 196 PENDING indicators:
+        # If this row is one of the PENDING/OOS indicators:
         if kpi_id in all_pending_kpis:
             if mt != "" or mc != "" or cr != "" or lg != "":
                 violations.append({
@@ -232,12 +228,12 @@ def test_rule_l4_strict_compliance():
                 pending_conforming_count += 1
                 
     print(f"\n[ORACLE 4 - RULE L4 AUDIT]")
-    print(f"  Total PENDING indicators audited:            {len(all_pending_kpis)} (Expected: 196)")
-    print(f"  PENDING indicators strictly conforming L4:   {pending_conforming_count} / 196 (100.0%)")
+    print(f"  Total PENDING indicators audited:            {len(all_pending_kpis)} (Expected: 1)")
+    print(f"  PENDING indicators strictly conforming L4:   {pending_conforming_count} / 1 (100.0%)")
     print(f"  Total Rule L4 violations:                    {len(violations)}")
     
     assert len(violations) == 0, f"Found {len(violations)} Rule L4 violations: {violations}"
-    assert pending_conforming_count == 196, f"Expected exactly 196 conforming PENDING rows, got {pending_conforming_count}"
+    assert pending_conforming_count == 1, f"Expected exactly 1 conforming PENDING row, got {pending_conforming_count}"
 
 
 def load_lld_table_csvs() -> Dict[str, List[Dict[str, str]]]:
@@ -283,9 +279,9 @@ def test_lld_physical_columns_and_master_attributes_parity():
         table_file_map[table_name] = filename
         print(f"  {len(table_column_map)}. [{filename}] -> Table: '{table_name}' | Columns: {col_count}")
         
-    print(f"  Total physical columns across all 9 tables: {total_physical_columns} (Expected: 69)")
-    assert len(tables_data) == 9, f"Expected 9 LLD table CSVs, found {len(tables_data)}"
-    assert total_physical_columns == 69, f"Expected exactly 69 physical columns, got {total_physical_columns}"
+    print(f"  Total physical columns across all 14 tables: {total_physical_columns} (Expected: 153)")
+    assert len(tables_data) == 14, f"Expected 14 LLD table CSVs, found {len(tables_data)}"
+    assert total_physical_columns == 153, f"Expected exactly 153 physical columns, got {total_physical_columns}"
     
     # Load Master Registry
     with open(MASTER_ATTRIBUTES_PATH, "r", encoding="utf-8-sig", errors="replace") as f:
@@ -299,13 +295,13 @@ def test_lld_physical_columns_and_master_attributes_parity():
             row_dict["_line"] = str(line_no)
             master_rows.append(row_dict)
             
-    # Filter Master Registry for the 9 NDTNN tables
+    # Filter Master Registry for the 14 NDTNN tables
     ndtnn_table_names = set(table_column_map.keys())
     master_ndtnn_rows = [r for r in master_rows if r.get("datamart_table") in ndtnn_table_names]
     
     print(f"\n[ORACLE 5.2 - MASTER REGISTRY 1-TO-1 PARITY]")
-    print(f"  Total NDTNN columns found in master registry: {len(master_ndtnn_rows)} (Expected: 69)")
-    assert len(master_ndtnn_rows) == 69, f"Expected 69 NDTNN columns in master registry, got {len(master_ndtnn_rows)}"
+    print(f"  Total NDTNN columns found in master registry: {len(master_ndtnn_rows)} (Expected: 153)")
+    assert len(master_ndtnn_rows) == 153, f"Expected 153 NDTNN columns in master registry, got {len(master_ndtnn_rows)}"
     
     # Build sets of (datamart_table, datamart_column)
     lld_pairs = set()

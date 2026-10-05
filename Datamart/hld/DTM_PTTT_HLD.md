@@ -2392,7 +2392,9 @@ flowchart LR
 | Tổng vốn CSH (Tỷ VND) | 225.4 |
 | Hệ số đòn bẩy trung bình | 1.2x |
 
-**Source:** `Fact Securities Company Financial Structure Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`, `Report Indicator Dimension`; `Fact Securities Company Balance Snapshot` (K_PTTT_198, K_PTTT_200) → `Calendar Date Dimension`, `Securities Company Dimension`
+**Source:** `Fact Securities Company Safety Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`; `Fact Securities Company Balance Snapshot` (K_PTTT_198, K_PTTT_200) → `Calendar Date Dimension`, `Securities Company Dimension`
+
+> **[ĐỔI NGUỒN 2026-10-02 — `fct_securities_company_safety_snpst`]** Các KPI per-CTCK / tổng hệ thống của Nhóm 22–25 không còn đọc Fact EAV `Fact Securities Company Financial Structure Snapshot` kèm FILTER `cell_id`/`rpt_code`/kỳ/trạng thái ở từng KPI, mà đọc Fact đã pivot sẵn `Fact Securities Company Safety Snapshot` (grain 1 CTCK × 1 tháng báo cáo): `margin_debt_amt` (TS024, BCTHHD_CTCK), `owner_equity_amt` (1 báo cáo được chọn/CTCK: BCTCHN TS359; BCTCRL TS223/TS221), `margin_to_equity_ratio`, `capital_adequacy_ratio` (TS006, BCTLAT). Quy tắc chọn báo cáo VCSH và các FILTER nằm một lần trong ETL của Fact. Mức xếp hạng ATTC vẫn tính ở presentation layer. Tên rút gọn trong ghi chú review PTTT: `fct_mbr_sfty_per_mbr_snpst` — xem **O_PTTT_34**.
 
 > **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** BA STT=22 nay có SQL tham khảo trên `SCMS_UAT.REPORT_INPUT_CELL_VALUE` với cell_id cụ thể: dư nợ margin = `TS024` (`BCTHHD_CTCK`, sheet `II.8`, kỳ `THANG`); VCSH = `TS359` (`BCTCHN` hợp nhất, sheet `06620`) hoặc `COALESCE(NULLIF(TS223,0), TS221)` (`BCTCRL` riêng lẻ, sheet `06608`, chỉ khi CTCK không có BCTCHN cùng kỳ); tỷ lệ vốn khả dụng = `TS006` (`BCTLAT`, sheet `06H08`, kỳ `THANG`). Reuse Case 1 Fact `Fact Securities Company Financial Structure Snapshot` (QLKD): lọc bằng FILTER `cell_id` + `rpt_code` + `rpt_period_tp_code` + `submission_status_code IN ('1','2')` (đúng mẫu K_QLKD_105), thay cho khóa `indicator_code` cũ (`DU_NO_MARGIN`/`VON_CHU_SO_HUU`/`TY_LE_VON_KHA_DUNG` — chưa từng có danh mục cell_id, O_PTTT_15). **K_PTTT_198 (Tổng nợ phải trả) và K_PTTT_200 (D/E):** BA dòng 357 vẫn Pending (SQL schema cũ `SSC_SCMS`, chưa có cell_id trên `SCMS_UAT`) nên dùng mapping BA dòng 339 Nhóm 21 — IDS `BCDKT` (row_desc 300 DN/BH, 400 TD; col_desc 1) — cho CTCK niêm yết, nối `securities_company.securities_code = public_company.equity_ticker_symbol`; Fact mới `Fact Securities Company Balance Snapshot` (grain 1 CTCK × quý). Chỉ phủ CTCK niêm yết (O_PTTT_32). Rủi ro `cell_id` trùng giữa sheet và `LEGAL_BASIS` — xem O_PTTT_28. **Giải trình S4:** BA dòng 352 và 358 'VCSH' cùng nghĩa với dòng 355 'Tổng VCSH' (cùng ô `TS359`/`TS223`/`TS221`, cùng quy tắc chọn báo cáo) → K_PTTT_197 (hệ thống); bản per-CTCK là K_PTTT_251 (Nhóm 24/25).
 
@@ -2400,31 +2402,29 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_PTTT_254 | Chiều Thời gian (Kỳ báo cáo CTCK) | Kỳ báo cáo | Chiều | `cdr_dt_dim.cdr_dt` JOIN qua `fct_securities_company_financial_structure_snpst.snpst_dt_dim_id` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Ngày cuối kỳ báo cáo THÁNG của CTCK (`rpt_year` × `period_nbr`) — grain kỳ báo cáo, KHÔNG phải ngày giao dịch (không dùng K_PTTT_43). BA dòng 349 'Thời gian'. | READY |
-| K_PTTT_58 | Tổng dư nợ margin tất cả CTCK | Tỷ VND | Cơ sở | `SUM(indicator_val_amt) / 1e9` WHERE `cell_id = 'TS024'` AND `rpt_code = 'BCTHHD_CTCK'` AND `rpt_period_tp_code = 'THANG'` AND `submission_status_code IN ('1','2')` GROUP BY `rpt_year`, `period_nbr` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 351: sheet `II.8` ô `TS024`, tổng mọi CTCK, chia 1e9 (tỷ VND). | READY |
-| K_PTTT_197 | Tổng VCSH tất cả CTCK | Tỷ VND | Cơ sở | `SUM(vcsh_ctck) / 1e9` — `vcsh_ctck`: 1 báo cáo/CTCK (ưu tiên `NAM` > `BAN_NIEN` > `QUY`, `submission_dt` mới nhất); `BCTCHN` → ô `TS359`; `BCTCRL` (chỉ khi CTCK không có `BCTCHN` cùng kỳ) → `COALESCE(NULLIF(TS223,0), TS221)`; lọc `submission_dt BETWEEN :from_date AND :to_date` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 352/355/358. VCSH là số dư thời điểm: mỗi CTCK chỉ 1 báo cáo, KHÔNG cộng dồn nhiều kỳ. | READY |
+| K_PTTT_254 | Chiều Thời gian (Kỳ báo cáo CTCK) | Kỳ báo cáo | Chiều | `cdr_dt_dim.cdr_dt` JOIN qua `fct_securities_company_safety_snpst.snpst_dt_dim_id` | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Ngày cuối kỳ báo cáo THÁNG của CTCK (`rpt_year` × `period_nbr`) — grain kỳ báo cáo, KHÔNG phải ngày giao dịch (không dùng K_PTTT_43). BA dòng 349 'Thời gian'. | READY |
+| K_PTTT_58 | Tổng dư nợ margin tất cả CTCK | Tỷ VND | Cơ sở | `SUM(fct_securities_company_safety_snpst.margin_debt_amt) / 1e9` GROUP BY `rpt_year`, `period_nbr` | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 351: sheet `II.8` ô `TS024`, tổng mọi CTCK, chia 1e9 (tỷ VND). | READY |
+| K_PTTT_197 | Tổng VCSH tất cả CTCK | Tỷ VND | Cơ sở | `SUM(fct_securities_company_safety_snpst.owner_equity_amt) / 1e9` GROUP BY `rpt_year`, `period_nbr` | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 352/355/358. VCSH là số dư thời điểm: mỗi CTCK chỉ 1 báo cáo, KHÔNG cộng dồn nhiều kỳ. | READY |
 | K_PTTT_198 | Tổng nợ phải trả tất cả CTCK | Tỷ VND | Cơ sở | `SUM(fct_securities_company_balance_snpst.total_liabilities_amt) / 1e9` tại quý báo cáo gần nhất của từng CTCK (`ROW_NUMBER() OVER (PARTITION BY securities_company_dim_id ORDER BY rpt_year DESC, rpt_quarter DESC) = 1`) | **[NÂNG READY 2026-10-01 — dùng mapping BA dòng 339 Nhóm 21]** IDS `BCDKT` row_desc 300 (DN/BH) / 400 (TD), col_desc 1 — cùng cách BA dòng 339 (Nhóm 21 K_PTTT_187). Chỉ CTCK niêm yết (nối mã chứng khoán). Giả định `data_val` đơn vị VND (chia 1e9 ra tỷ VND) — O_PTTT_32 | READY |
 | K_PTTT_199 | Tỷ lệ dư nợ margin / VCSH bình quân các CTCK | % | Phái sinh | `K_PTTT_58 / NULLIF(K_PTTT_197, 0) * 100` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 350: `du_no_margin` (tháng) / `von_chu_so_huu` (tổng `vcsh_best`). BA trả tỷ lệ thập phân; hiển thị % (×100). | READY |
 | K_PTTT_200 | D/E trung bình hệ thống CTCK | Lần | Phái sinh | `SUM(total_liabilities_amt) / NULLIF(SUM(owner_equity_amt), 0)` trên `fct_securities_company_balance_snpst`, quý gần nhất của từng CTCK | **[NÂNG READY 2026-10-01 — dùng mapping BA dòng 339 Nhóm 21]** BA dòng 356: D/E = Σ Tổng nợ phải trả / Σ VCSH. Mẫu số lấy VCSH từ cùng nguồn IDS BCDKT (row_desc 400 DN/BH, 500 TD) cho CÙNG tập CTCK niêm yết — không dùng K_PTTT_197 (VCSH SCMS toàn bộ CTCK) để tránh lệch tập | READY |
 | K_PTTT_201 | Số CTCK cần kiểm soát | CTCK | Phái sinh | `COUNT(DISTINCT securities_company_dim_id)` WHERE `K_PTTT_202 < 120` GROUP BY `rpt_year`, `period_nbr` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 353: đếm CTCK có `TS006` < 120 theo từng tháng (ngưỡng <120%, O_PTTT_9). | READY |
-| K_PTTT_202 | Tỷ lệ vốn khả dụng per CTCK | % | Cơ sở | `fct_securities_company_financial_structure_snpst.indicator_val_amt` WHERE `cell_id = 'TS006'` AND `rpt_code = 'BCTLAT'` AND `rpt_period_tp_code = 'THANG'` AND `submission_status_code IN ('1','2')` per CTCK per tháng | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 353/354: sheet `06H08` ô `TS006` 'Tỷ lệ vốn khả dụng (6=5/4)', không chia đơn vị. SQL BA còn lọc `FORM_REPORT.LEGAL_BASIS LIKE '%102/2025/TT-BTC%'` — Atomic không có `LEGAL_BASIS` (O_PTTT_28). | READY |
+| K_PTTT_202 | Tỷ lệ vốn khả dụng per CTCK | % | Cơ sở | `fct_securities_company_safety_snpst.capital_adequacy_ratio` per CTCK per tháng (không chia đơn vị) | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 353/354: sheet `06H08` ô `TS006` 'Tỷ lệ vốn khả dụng (6=5/4)', không chia đơn vị. SQL BA còn lọc `FORM_REPORT.LEGAL_BASIS LIKE '%102/2025/TT-BTC%'` — Atomic không có `LEGAL_BASIS` (O_PTTT_28). | READY |
 | K_PTTT_203 | Xếp hạng tỷ lệ an toàn tài chính (ATTC) | Text | Phái sinh | `CASE WHEN K_PTTT_202 > 150 THEN 'Cao' WHEN K_PTTT_202 >= 120 THEN 'Trung bình' ELSE 'Thấp' END` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 354: ngưỡng >150 / 120–150 / <120 (O_PTTT_9). Per CTCK per tháng. | READY |
 
 **Star Schema:**
 
 ```mermaid
 erDiagram
-    Fact_Securities_Company_Financial_Structure_Snapshot {
+    Fact_Securities_Company_Safety_Snapshot {
         string Snapshot_Date_Dimension_Id FK
         string Securities_Company_Dimension_Id FK
-        string Report_Indicator_Dimension_Id FK
         int Report_Year
-        string Report_Period_Type_Code
         int Period_Number
-        decimal Indicator_Value_Amount
-        string Report_Code
-        date Submission_Date
-        string Submission_Status_Code
+        decimal Margin_Debt_Amount
+        decimal Owner_Equity_Amount
+        decimal Margin_To_Equity_Ratio
+        decimal Capital_Adequacy_Ratio
         string Source_System_Code
     }
     Fact_Securities_Company_Balance_Snapshot {
@@ -2452,31 +2452,19 @@ erDiagram
         string Company_Status_Code
         string Source_System_Code
     }
-    Report_Indicator_Dimension {
-        string Report_Indicator_Dimension_Id PK
-        string Cell_Id
-        string Indicator_Code
-        string Indicator_Name
-        string Indicator_Group_Name
-        string Statement_Type_Code
-        string Unit_Of_Measure
-        string Source_System_Code
-    }
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
-    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Balance_Snapshot : " "
     Securities_Company_Dimension ||--o{ Fact_Securities_Company_Balance_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Safety_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Safety_Snapshot : " "
 ```
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_securities_company_financial_structure_snpst["Fact Securities Company Financial Structure Snapshot"] --> rpt_nhom22["Nhóm 22 - Bộ chỉ tiêu chung (An toàn CTCK): K_PTTT_254,58,197,198,199,200,201,202,203"]
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_financial_structure_snpst
-    securities_company_dim["Securities Company Dimension"] --> fct_securities_company_financial_structure_snpst
-    report_indicator_dim["Report Indicator Dimension"] --> fct_securities_company_financial_structure_snpst
+    fct_securities_company_safety_snpst["Fact Securities Company Safety Snapshot"] --> rpt_nhom22["Nhóm 22 - Bộ chỉ tiêu chung (An toàn CTCK): K_PTTT_254,58,197,198,199,200,201,202,203"]
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_safety_snpst
+    securities_company_dim["Securities Company Dimension"] --> fct_securities_company_safety_snpst
     fct_securities_company_balance_snpst["Fact Securities Company Balance Snapshot"] --> rpt_nhom22
     cdr_dt_dim --> fct_securities_company_balance_snpst
     securities_company_dim --> fct_securities_company_balance_snpst
@@ -2486,11 +2474,10 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company Financial Structure Snapshot | 1 row / CTCK / kỳ báo cáo / chỉ tiêu |
+| Fact Securities Company Safety Snapshot | 1 row / CTCK / tháng báo cáo |
 | Fact Securities Company Balance Snapshot | 1 row / CTCK niêm yết / quý báo cáo |
 | Calendar Date Dimension | 1 row / ngày |
 | Securities Company Dimension | 1 row / CTCK |
-| Report Indicator Dimension | 1 row / chỉ tiêu báo cáo (cell_id) |
 
 ---
 
@@ -2511,7 +2498,9 @@ flowchart LR
 
 *Bar chart ngang — 3 band màu (xanh lá / cam / đỏ). Càng thấp tỷ lệ dư nợ margin càng an toàn.*
 
-**Source:** `Fact Securities Company Financial Structure Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`, `Report Indicator Dimension`
+**Source:** `Fact Securities Company Safety Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`
+
+> **[ĐỔI NGUỒN 2026-10-02 — `fct_securities_company_safety_snpst`]** Các KPI per-CTCK / tổng hệ thống của Nhóm 22–25 không còn đọc Fact EAV `Fact Securities Company Financial Structure Snapshot` kèm FILTER `cell_id`/`rpt_code`/kỳ/trạng thái ở từng KPI, mà đọc Fact đã pivot sẵn `Fact Securities Company Safety Snapshot` (grain 1 CTCK × 1 tháng báo cáo): `margin_debt_amt` (TS024, BCTHHD_CTCK), `owner_equity_amt` (1 báo cáo được chọn/CTCK: BCTCHN TS359; BCTCRL TS223/TS221), `margin_to_equity_ratio`, `capital_adequacy_ratio` (TS006, BCTLAT). Quy tắc chọn báo cáo VCSH và các FILTER nằm một lần trong ETL của Fact. Mức xếp hạng ATTC vẫn tính ở presentation layer. Tên rút gọn trong ghi chú review PTTT: `fct_mbr_sfty_per_mbr_snpst` — xem **O_PTTT_34**.
 
 > **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Toàn bộ KPI Nhóm 23 theo SQL BA dòng 359–367 và cell_id đã chốt ở Nhóm 22 (xem ghi chú Nhóm 22): đếm CTCK theo ngưỡng `TS006` từng tháng, dư nợ margin `TS024`, VCSH `TS359`/`TS223`/`TS221`. Chiều 'Mức độ xếp hạng' (K_PTTT_204) tính tại presentation layer. **Giải trình S4:** BA dòng 367 'Phân loại CTCK' (Cao/Trung bình/Thấp theo ô `TS006`) → K_PTTT_204 (Chiều Mức xếp hạng).
 
@@ -2519,10 +2508,10 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_PTTT_254 | Chiều Thời gian (Kỳ báo cáo CTCK) | Kỳ báo cáo | Chiều | `cdr_dt_dim.cdr_dt` JOIN qua `fct_securities_company_financial_structure_snpst.snpst_dt_dim_id` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Ngày cuối kỳ báo cáo THÁNG của CTCK (`rpt_year` × `period_nbr`) — grain kỳ báo cáo, KHÔNG phải ngày giao dịch (không dùng K_PTTT_43). BA dòng 349 'Thời gian'. | READY |
+| K_PTTT_254 | Chiều Thời gian (Kỳ báo cáo CTCK) | Kỳ báo cáo | Chiều | `cdr_dt_dim.cdr_dt` JOIN qua `fct_securities_company_safety_snpst.snpst_dt_dim_id` | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Ngày cuối kỳ báo cáo THÁNG của CTCK (`rpt_year` × `period_nbr`) — grain kỳ báo cáo, KHÔNG phải ngày giao dịch (không dùng K_PTTT_43). BA dòng 349 'Thời gian'. | READY |
 | K_PTTT_204 | Chiều Mức xếp hạng ATTC | Text | Chiều | `K_PTTT_203` (Cao / Trung bình / Thấp) | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Reuse Case 2 (Presentation/Derived) — slicer tính tại presentation layer từ `K_PTTT_202`, không tạo cột vật lý. | READY |
-| K_PTTT_58 | Dư nợ margin tất cả CTCK | Tỷ VND | Cơ sở | `SUM(indicator_val_amt) / 1e9` WHERE `cell_id = 'TS024'` AND `rpt_code = 'BCTHHD_CTCK'` AND `rpt_period_tp_code = 'THANG'` AND `submission_status_code IN ('1','2')` GROUP BY `rpt_year`, `period_nbr` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 351: sheet `II.8` ô `TS024`, tổng mọi CTCK, chia 1e9 (tỷ VND). | READY |
-| K_PTTT_197 | Tổng VCSH tất cả CTCK | Tỷ VND | Cơ sở | `SUM(vcsh_ctck) / 1e9` — `vcsh_ctck`: 1 báo cáo/CTCK (ưu tiên `NAM` > `BAN_NIEN` > `QUY`, `submission_dt` mới nhất); `BCTCHN` → ô `TS359`; `BCTCRL` (chỉ khi CTCK không có `BCTCHN` cùng kỳ) → `COALESCE(NULLIF(TS223,0), TS221)`; lọc `submission_dt BETWEEN :from_date AND :to_date` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 352/355/358. VCSH là số dư thời điểm: mỗi CTCK chỉ 1 báo cáo, KHÔNG cộng dồn nhiều kỳ. | READY |
+| K_PTTT_58 | Dư nợ margin tất cả CTCK | Tỷ VND | Cơ sở | `SUM(fct_securities_company_safety_snpst.margin_debt_amt) / 1e9` GROUP BY `rpt_year`, `period_nbr` | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 351: sheet `II.8` ô `TS024`, tổng mọi CTCK, chia 1e9 (tỷ VND). | READY |
+| K_PTTT_197 | Tổng VCSH tất cả CTCK | Tỷ VND | Cơ sở | `SUM(fct_securities_company_safety_snpst.owner_equity_amt) / 1e9` GROUP BY `rpt_year`, `period_nbr` | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 352/355/358. VCSH là số dư thời điểm: mỗi CTCK chỉ 1 báo cáo, KHÔNG cộng dồn nhiều kỳ. | READY |
 | K_PTTT_199 | Tỷ lệ dư nợ margin / VCSH bình quân | % | Phái sinh | `K_PTTT_58 / NULLIF(K_PTTT_197, 0) * 100` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 350: `du_no_margin` (tháng) / `von_chu_so_huu` (tổng `vcsh_best`). BA trả tỷ lệ thập phân; hiển thị % (×100). | READY |
 | K_PTTT_203 | Xếp hạng tỷ lệ an toàn tài chính per CTCK | Text | Phái sinh | `CASE WHEN K_PTTT_202 > 150 THEN 'Cao' WHEN K_PTTT_202 >= 120 THEN 'Trung bình' ELSE 'Thấp' END` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 354: ngưỡng >150 / 120–150 / <120 (O_PTTT_9). Per CTCK per tháng. | READY |
 | K_PTTT_205 | Số CTCK xếp hạng Cao (TY_LE_VON_KHA_DUNG > 150%) | CTCK | Phái sinh | `COUNT(DISTINCT securities_company_dim_id)` WHERE `K_PTTT_202 > 150` GROUP BY `rpt_year`, `period_nbr` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 354: `so_ctck_tlvkd_cao`. | READY |
@@ -2533,17 +2522,15 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Fact_Securities_Company_Financial_Structure_Snapshot {
+    Fact_Securities_Company_Safety_Snapshot {
         string Snapshot_Date_Dimension_Id FK
         string Securities_Company_Dimension_Id FK
-        string Report_Indicator_Dimension_Id FK
         int Report_Year
-        string Report_Period_Type_Code
         int Period_Number
-        decimal Indicator_Value_Amount
-        string Report_Code
-        date Submission_Date
-        string Submission_Status_Code
+        decimal Margin_Debt_Amount
+        decimal Owner_Equity_Amount
+        decimal Margin_To_Equity_Ratio
+        decimal Capital_Adequacy_Ratio
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2562,39 +2549,26 @@ erDiagram
         string Company_Status_Code
         string Source_System_Code
     }
-    Report_Indicator_Dimension {
-        string Report_Indicator_Dimension_Id PK
-        string Cell_Id
-        string Indicator_Code
-        string Indicator_Name
-        string Indicator_Group_Name
-        string Statement_Type_Code
-        string Unit_Of_Measure
-        string Source_System_Code
-    }
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
-    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Safety_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Safety_Snapshot : " "
 ```
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_securities_company_financial_structure_snpst["Fact Securities Company Financial Structure Snapshot"] --> rpt_nhom23["Nhóm 23 - Phân bổ dư nợ margin (An toàn CTCK): K_PTTT_254,204,58,197,199,203,205,206,207"]
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_financial_structure_snpst
-    securities_company_dim["Securities Company Dimension"] --> fct_securities_company_financial_structure_snpst
-    report_indicator_dim["Report Indicator Dimension"] --> fct_securities_company_financial_structure_snpst
+    fct_securities_company_safety_snpst["Fact Securities Company Safety Snapshot"] --> rpt_nhom23["Nhóm 23 - Phân bổ dư nợ margin (An toàn CTCK): K_PTTT_254,204,58,197,199,203,205,206,207"]
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_safety_snpst
+    securities_company_dim["Securities Company Dimension"] --> fct_securities_company_safety_snpst
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company Financial Structure Snapshot | 1 row / CTCK / kỳ báo cáo / chỉ tiêu |
+| Fact Securities Company Safety Snapshot | 1 row / CTCK / tháng báo cáo |
 | Calendar Date Dimension | 1 row / ngày |
 | Securities Company Dimension | 1 row / CTCK |
-| Report Indicator Dimension | 1 row / chỉ tiêu báo cáo (cell_id) |
 
 ---
 
@@ -2616,7 +2590,9 @@ flowchart LR
 
 *Scatter/Bubble chart — mỗi CTCK = 1 bubble. Tooltip: Mã CTCK, VCSH, Dư nợ margin, Tỷ lệ margin/VCSH, Xếp hạng.*
 
-**Source:** `Fact Securities Company Financial Structure Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`, `Report Indicator Dimension`
+**Source:** `Fact Securities Company Safety Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`
+
+> **[ĐỔI NGUỒN 2026-10-02 — `fct_securities_company_safety_snpst`]** Các KPI per-CTCK / tổng hệ thống của Nhóm 22–25 không còn đọc Fact EAV `Fact Securities Company Financial Structure Snapshot` kèm FILTER `cell_id`/`rpt_code`/kỳ/trạng thái ở từng KPI, mà đọc Fact đã pivot sẵn `Fact Securities Company Safety Snapshot` (grain 1 CTCK × 1 tháng báo cáo): `margin_debt_amt` (TS024, BCTHHD_CTCK), `owner_equity_amt` (1 báo cáo được chọn/CTCK: BCTCHN TS359; BCTCRL TS223/TS221), `margin_to_equity_ratio`, `capital_adequacy_ratio` (TS006, BCTLAT). Quy tắc chọn báo cáo VCSH và các FILTER nằm một lần trong ETL của Fact. Mức xếp hạng ATTC vẫn tính ở presentation layer. Tên rút gọn trong ghi chú review PTTT: `fct_mbr_sfty_per_mbr_snpst` — xem **O_PTTT_34**.
 
 > **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Toàn bộ KPI Nhóm 24 theo SQL BA dòng 368–373 (per CTCK): VCSH `TS359`/`TS223`/`TS221`, dư nợ margin `TS024`, xếp hạng theo `TS006` — cell_id và quy tắc chọn báo cáo xem ghi chú Nhóm 22. Reuse 100% bảng của Nhóm 22. **Giải trình S4:** BA dòng 370 'Tổng VCSH' (độ chi tiết Ngày × Mã CK) → K_PTTT_251 (VCSH per CTCK); BA dòng 373 'Xếp hạng tỷ lệ an toàn tài chính' → K_PTTT_203.
 
@@ -2624,28 +2600,26 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_PTTT_254 | Chiều Thời gian (Kỳ báo cáo CTCK) | Kỳ báo cáo | Chiều | `cdr_dt_dim.cdr_dt` JOIN qua `fct_securities_company_financial_structure_snpst.snpst_dt_dim_id` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Ngày cuối kỳ báo cáo THÁNG của CTCK (`rpt_year` × `period_nbr`) — grain kỳ báo cáo, KHÔNG phải ngày giao dịch (không dùng K_PTTT_43). BA dòng 349 'Thời gian'. | READY |
+| K_PTTT_254 | Chiều Thời gian (Kỳ báo cáo CTCK) | Kỳ báo cáo | Chiều | `cdr_dt_dim.cdr_dt` JOIN qua `fct_securities_company_safety_snpst.snpst_dt_dim_id` | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Ngày cuối kỳ báo cáo THÁNG của CTCK (`rpt_year` × `period_nbr`) — grain kỳ báo cáo, KHÔNG phải ngày giao dịch (không dùng K_PTTT_43). BA dòng 349 'Thời gian'. | READY |
 | K_PTTT_208 | Chiều Mã CTCK | Text | Chiều | `securities_company_dim.sc_code` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Nguồn `SCMS.SC_FIRM_INFO` — reuse `securities_company_dim` từ QLKD. | READY |
-| K_PTTT_251 | VCSH per CTCK | Tỷ VND | Cơ sở | `vcsh_ctck / 1e9` per `securities_company_dim.sc_code` — cùng quy tắc chọn báo cáo VCSH như K_PTTT_197 (BCTCHN `TS359`; BCTCRL `TS223`/`TS221`) | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 370/376. Grain per-CTCK, không SUM toàn hệ thống. | READY |
-| K_PTTT_252 | Dư nợ margin per CTCK | Tỷ VND | Cơ sở | `SUM(indicator_val_amt) / 1e9` WHERE `cell_id = 'TS024'` AND `rpt_code = 'BCTHHD_CTCK'` AND `rpt_period_tp_code = 'THANG'` AND `submission_status_code IN ('1','2')` per `securities_company_dim.sc_code` per tháng | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 371/377: ô `TS024` per CTCK. | READY |
-| K_PTTT_253 | Tỷ lệ dư nợ margin/VCSH per CTCK | % | Phái sinh | `K_PTTT_252 / NULLIF(K_PTTT_251, 0) * 100` — cùng CTCK | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 372/378: dư nợ margin tháng / VCSH của báo cáo được chọn. | READY |
+| K_PTTT_251 | VCSH per CTCK | Tỷ VND | Cơ sở | `fct_securities_company_safety_snpst.owner_equity_amt / 1e9` per `securities_company_dim.sc_code` per tháng | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 370/376. Grain per-CTCK, không SUM toàn hệ thống. | READY |
+| K_PTTT_252 | Dư nợ margin per CTCK | Tỷ VND | Cơ sở | `fct_securities_company_safety_snpst.margin_debt_amt / 1e9` per `securities_company_dim.sc_code` per tháng | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 371/377: ô `TS024` per CTCK. | READY |
+| K_PTTT_253 | Tỷ lệ dư nợ margin/VCSH per CTCK | % | Phái sinh | `fct_securities_company_safety_snpst.margin_to_equity_ratio` (= `K_PTTT_252 / NULLIF(K_PTTT_251, 0) * 100`) — cùng CTCK, cùng tháng | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 372/378: dư nợ margin tháng / VCSH của báo cáo được chọn. | READY |
 | K_PTTT_203 | Xếp hạng ATTC per CTCK | Text | Phái sinh | `CASE WHEN K_PTTT_202 > 150 THEN 'Cao' WHEN K_PTTT_202 >= 120 THEN 'Trung bình' ELSE 'Thấp' END` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 354: ngưỡng >150 / 120–150 / <120 (O_PTTT_9). Per CTCK per tháng. | READY |
 
 **Star Schema:**
 
 ```mermaid
 erDiagram
-    Fact_Securities_Company_Financial_Structure_Snapshot {
+    Fact_Securities_Company_Safety_Snapshot {
         string Snapshot_Date_Dimension_Id FK
         string Securities_Company_Dimension_Id FK
-        string Report_Indicator_Dimension_Id FK
         int Report_Year
-        string Report_Period_Type_Code
         int Period_Number
-        decimal Indicator_Value_Amount
-        string Report_Code
-        date Submission_Date
-        string Submission_Status_Code
+        decimal Margin_Debt_Amount
+        decimal Owner_Equity_Amount
+        decimal Margin_To_Equity_Ratio
+        decimal Capital_Adequacy_Ratio
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2664,39 +2638,26 @@ erDiagram
         string Company_Status_Code
         string Source_System_Code
     }
-    Report_Indicator_Dimension {
-        string Report_Indicator_Dimension_Id PK
-        string Cell_Id
-        string Indicator_Code
-        string Indicator_Name
-        string Indicator_Group_Name
-        string Statement_Type_Code
-        string Unit_Of_Measure
-        string Source_System_Code
-    }
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
-    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Safety_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Safety_Snapshot : " "
 ```
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_securities_company_financial_structure_snpst["Fact Securities Company Financial Structure Snapshot"] --> rpt_nhom24["Nhóm 24 - Bản đồ tương quan vốn vs dư nợ margin (An toàn CTCK): K_PTTT_254,208,251,252,253,203"]
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_financial_structure_snpst
-    securities_company_dim["Securities Company Dimension"] --> fct_securities_company_financial_structure_snpst
-    report_indicator_dim["Report Indicator Dimension"] --> fct_securities_company_financial_structure_snpst
+    fct_securities_company_safety_snpst["Fact Securities Company Safety Snapshot"] --> rpt_nhom24["Nhóm 24 - Bản đồ tương quan vốn vs dư nợ margin (An toàn CTCK): K_PTTT_254,208,251,252,253,203"]
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_safety_snpst
+    securities_company_dim["Securities Company Dimension"] --> fct_securities_company_safety_snpst
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company Financial Structure Snapshot | 1 row / CTCK / kỳ báo cáo / chỉ tiêu |
+| Fact Securities Company Safety Snapshot | 1 row / CTCK / tháng báo cáo |
 | Calendar Date Dimension | 1 row / ngày |
 | Securities Company Dimension | 1 row / CTCK |
-| Report Indicator Dimension | 1 row / chỉ tiêu báo cáo (cell_id) |
 
 ---
 
@@ -2722,7 +2683,9 @@ flowchart LR
 
 *Bảng danh sách — sắp xếp giảm dần theo Tỷ lệ dư nợ margin. Màu: Đỏ (>150%) / Cam (120–150%) / Xanh (<120%).*
 
-**Source:** `Fact Securities Company Financial Structure Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`, `Report Indicator Dimension`
+**Source:** `Fact Securities Company Safety Snapshot` → `Calendar Date Dimension`, `Securities Company Dimension`
+
+> **[ĐỔI NGUỒN 2026-10-02 — `fct_securities_company_safety_snpst`]** Các KPI per-CTCK / tổng hệ thống của Nhóm 22–25 không còn đọc Fact EAV `Fact Securities Company Financial Structure Snapshot` kèm FILTER `cell_id`/`rpt_code`/kỳ/trạng thái ở từng KPI, mà đọc Fact đã pivot sẵn `Fact Securities Company Safety Snapshot` (grain 1 CTCK × 1 tháng báo cáo): `margin_debt_amt` (TS024, BCTHHD_CTCK), `owner_equity_amt` (1 báo cáo được chọn/CTCK: BCTCHN TS359; BCTCRL TS223/TS221), `margin_to_equity_ratio`, `capital_adequacy_ratio` (TS006, BCTLAT). Quy tắc chọn báo cáo VCSH và các FILTER nằm một lần trong ETL của Fact. Mức xếp hạng ATTC vẫn tính ở presentation layer. Tên rút gọn trong ghi chú review PTTT: `fct_mbr_sfty_per_mbr_snpst` — xem **O_PTTT_34**.
 
 > **[SỬA 2026-09-18]** Bãi bỏ bảng tác nghiệp `Operational Member Safety Monitor` (`opr_mbr_sfty_monitor`) — bảng này được thiết kế trên entity giả `Member Report Indicator Value` và từng khai nguồn là một bảng Datamart (`fct_securities_company_financial_structure_snpst`), vi phạm quy tắc "nguồn của bảng Datamart phải là Atomic entity". Nhóm 25 là danh sách xếp hạng đọc trực tiếp từ Fact và các Dimension, không cần bảng tác nghiệp riêng. Áp dụng Giao thức Bãi bỏ Bảng 5 tầng — xem Section 4.
 
@@ -2732,28 +2695,26 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_PTTT_254 | Chiều Thời gian (Kỳ báo cáo CTCK) | Kỳ báo cáo | Chiều | `cdr_dt_dim.cdr_dt` JOIN qua `fct_securities_company_financial_structure_snpst.snpst_dt_dim_id` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Ngày cuối kỳ báo cáo THÁNG của CTCK (`rpt_year` × `period_nbr`) — grain kỳ báo cáo, KHÔNG phải ngày giao dịch (không dùng K_PTTT_43). BA dòng 349 'Thời gian'. | READY |
+| K_PTTT_254 | Chiều Thời gian (Kỳ báo cáo CTCK) | Kỳ báo cáo | Chiều | `cdr_dt_dim.cdr_dt` JOIN qua `fct_securities_company_safety_snpst.snpst_dt_dim_id` | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Ngày cuối kỳ báo cáo THÁNG của CTCK (`rpt_year` × `period_nbr`) — grain kỳ báo cáo, KHÔNG phải ngày giao dịch (không dùng K_PTTT_43). BA dòng 349 'Thời gian'. | READY |
 | K_PTTT_208 | Chiều Mã CTCK | Text | Chiều | `securities_company_dim.sc_code` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** Nguồn `SCMS.SC_FIRM_INFO` — reuse `securities_company_dim` từ QLKD. | READY |
-| K_PTTT_251 | VCSH per CTCK | Tỷ VND | Cơ sở | `vcsh_ctck / 1e9` per `securities_company_dim.sc_code` — cùng quy tắc chọn báo cáo VCSH như K_PTTT_197 (BCTCHN `TS359`; BCTCRL `TS223`/`TS221`) | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 370/376. Grain per-CTCK, không SUM toàn hệ thống. | READY |
-| K_PTTT_252 | Dư nợ margin per CTCK | Tỷ VND | Cơ sở | `SUM(indicator_val_amt) / 1e9` WHERE `cell_id = 'TS024'` AND `rpt_code = 'BCTHHD_CTCK'` AND `rpt_period_tp_code = 'THANG'` AND `submission_status_code IN ('1','2')` per `securities_company_dim.sc_code` per tháng | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 371/377: ô `TS024` per CTCK. | READY |
-| K_PTTT_253 | Tỷ lệ dư nợ margin/VCSH per CTCK | % | Phái sinh | `K_PTTT_252 / NULLIF(K_PTTT_251, 0) * 100` — cùng CTCK | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 372/378: dư nợ margin tháng / VCSH của báo cáo được chọn. | READY |
+| K_PTTT_251 | VCSH per CTCK | Tỷ VND | Cơ sở | `fct_securities_company_safety_snpst.owner_equity_amt / 1e9` per `securities_company_dim.sc_code` per tháng | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 370/376. Grain per-CTCK, không SUM toàn hệ thống. | READY |
+| K_PTTT_252 | Dư nợ margin per CTCK | Tỷ VND | Cơ sở | `fct_securities_company_safety_snpst.margin_debt_amt / 1e9` per `securities_company_dim.sc_code` per tháng | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 371/377: ô `TS024` per CTCK. | READY |
+| K_PTTT_253 | Tỷ lệ dư nợ margin/VCSH per CTCK | % | Phái sinh | `fct_securities_company_safety_snpst.margin_to_equity_ratio` (= `K_PTTT_252 / NULLIF(K_PTTT_251, 0) * 100`) — cùng CTCK, cùng tháng | **[ĐỔI NGUỒN 2026-10-02]** **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 372/378: dư nợ margin tháng / VCSH của báo cáo được chọn. | READY |
 | K_PTTT_203 | Xếp hạng ATTC per CTCK | Text | Phái sinh | `CASE WHEN K_PTTT_202 > 150 THEN 'Cao' WHEN K_PTTT_202 >= 120 THEN 'Trung bình' ELSE 'Thấp' END` | **[NÂNG READY 2026-10-01 — BA cập nhật SQL + cell_id]** SQL BA dòng 354: ngưỡng >150 / 120–150 / <120 (O_PTTT_9). Per CTCK per tháng. | READY |
 
 **Star Schema:**
 
 ```mermaid
 erDiagram
-    Fact_Securities_Company_Financial_Structure_Snapshot {
+    Fact_Securities_Company_Safety_Snapshot {
         string Snapshot_Date_Dimension_Id FK
         string Securities_Company_Dimension_Id FK
-        string Report_Indicator_Dimension_Id FK
         int Report_Year
-        string Report_Period_Type_Code
         int Period_Number
-        decimal Indicator_Value_Amount
-        string Report_Code
-        date Submission_Date
-        string Submission_Status_Code
+        decimal Margin_Debt_Amount
+        decimal Owner_Equity_Amount
+        decimal Margin_To_Equity_Ratio
+        decimal Capital_Adequacy_Ratio
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2772,39 +2733,26 @@ erDiagram
         string Company_Status_Code
         string Source_System_Code
     }
-    Report_Indicator_Dimension {
-        string Report_Indicator_Dimension_Id PK
-        string Cell_Id
-        string Indicator_Code
-        string Indicator_Name
-        string Indicator_Group_Name
-        string Statement_Type_Code
-        string Unit_Of_Measure
-        string Source_System_Code
-    }
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
-    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Safety_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Safety_Snapshot : " "
 ```
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_securities_company_financial_structure_snpst["Fact Securities Company Financial Structure Snapshot"] --> rpt_nhom25["Nhóm 25 - Danh sách giám sát rủi ro dư nợ margin: K_PTTT_254,208,251,252,253,203"]
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_financial_structure_snpst
-    securities_company_dim["Securities Company Dimension"] --> fct_securities_company_financial_structure_snpst
-    report_indicator_dim["Report Indicator Dimension"] --> fct_securities_company_financial_structure_snpst
+    fct_securities_company_safety_snpst["Fact Securities Company Safety Snapshot"] --> rpt_nhom25["Nhóm 25 - Danh sách giám sát rủi ro dư nợ margin: K_PTTT_254,208,251,252,253,203"]
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_securities_company_safety_snpst
+    securities_company_dim["Securities Company Dimension"] --> fct_securities_company_safety_snpst
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Company Financial Structure Snapshot | 1 row / CTCK / kỳ báo cáo / chỉ tiêu |
+| Fact Securities Company Safety Snapshot | 1 row / CTCK / tháng báo cáo |
 | Calendar Date Dimension | 1 row / ngày |
 | Securities Company Dimension | 1 row / CTCK |
-| Report Indicator Dimension | 1 row / chỉ tiêu báo cáo (cell_id) |
 
 ---
 
@@ -3517,6 +3465,7 @@ graph TB
     opr_corporate_bond_issuer_credit_monitor(["Operational Corporate Bond Issuer Credit Monitor"]):::operational
     fct_securities_company_financial_structure_snpst(["Fact Securities Company Financial Structure Snapshot"]):::fact
     fct_securities_company_balance_snpst(["Fact Securities Company Balance Snapshot"]):::fact
+    fct_securities_company_safety_snpst(["Fact Securities Company Safety Snapshot"]):::fact
     securities_company_dim(["Securities Company Dimension"]):::dim
     report_indicator_dim(["Report Indicator Dimension"]):::dim
     fct_cap_grp_snpst(["Fact Cap Group Snapshot"]):::fact
@@ -3543,6 +3492,8 @@ graph TB
     report_indicator_dim --> fct_securities_company_financial_structure_snpst
     cdr_dt_dim --> fct_securities_company_balance_snpst
     securities_company_dim --> fct_securities_company_balance_snpst
+    cdr_dt_dim --> fct_securities_company_safety_snpst
+    securities_company_dim --> fct_securities_company_safety_snpst
     cdr_dt_dim --> fct_cap_grp_snpst
     cdr_dt_dim --> fct_corporate_bond_market_snpst
     cdr_dt_dim --> fct_corporate_bond_maturity_wall
@@ -3566,6 +3517,7 @@ graph TB
 | Fact Corporate Bond Sector Snapshot | GTGD trái phiếu và tỷ trọng dư nợ theo ngành TCPH — donut chart cơ cấu nợ vay TPDN | Fact Snapshot | 1 row / ngành TCPH / kỳ báo cáo | Corporate Bond Match Log (MSS.Trade_HOSE Market ID='BDO'), Corporate Bond Trading Snapshot (MDDS.StockInfor FloorCode='06'), Public Company (IDS) |
 | Fact Securities Company Financial Structure Snapshot | Cơ cấu tài chính định kỳ CTCK (dư nợ margin, VCSH, nợ phải trả, tỷ lệ vốn khả dụng) — reuse 100% từ QLKD, cấu trúc EAV theo chỉ tiêu | Fact Snapshot | 1 row / CTCK / kỳ báo cáo / chỉ tiêu | Securities Company Report Input Value (SCMS.REPORT_INPUT_CELL_VALUE), Securities Company Report Input Submission (SCMS.REPORT_INPUT_SUBMISSION), Securities Company Periodic Report (SCMS.SC_FIRM_PERIODIC_REPORT), Securities Company (SCMS.SC_FIRM_INFO) |
 | Fact Securities Company Balance Snapshot | Nợ phải trả và VCSH của CTCK niêm yết theo quý (IDS BCDKT) | Fact Snapshot | 1 row / CTCK niêm yết / quý báo cáo | Public Company Report Submission + Financial Report Value (IDS), Securities Company (SCMS), Public Company |
+| Fact Securities Company Safety Snapshot | Snapshot an toàn tài chính CTCK theo tháng — dư nợ margin, VCSH, tỷ lệ margin/VCSH, tỷ lệ vốn khả dụng (SCMS) — phục vụ Nhóm 22–25 | Fact Snapshot | 1 row / CTCK / tháng báo cáo | Securities Company Report Input Value + Report Input Submission + Periodic Report (SCMS), Securities Company |
 | Fact Cap Group Snapshot | GTGD và tỷ trọng thanh khoản theo nhóm vốn hóa (Large/Mid/Small-cap) — 100% PENDING, chờ KL CP lưu hành VSDC BM1 (O_PTTT_3/O_PTTT_6) | Fact Snapshot | 1 row / nhóm vốn hóa / ngày | Security Trading Snapshot (MDDS), Securities Trade (ORDERTRADE) — nguồn dự kiến; KL CP lưu hành VSDC BM1 PENDING |
 | Fact Corporate Bond Market Snapshot | Quy mô thị trường TPDN tổng hợp toàn thị trường — mệnh giá, KL/dư nợ lưu hành, áp lực đáo hạn 12T, GTGD, YTM bình quân | Fact Snapshot | 1 row / ngày | Security Trading Snapshot (MDDS.JAD_STOCKINFOR FloorCode='06'), Securities Trade (ORDERTRADE Market ID='BDO') |
 | Fact Corporate Bond Maturity Wall | Lịch biểu đáo hạn trái phiếu per mã TP — mệnh giá, KL lưu hành, dư nợ, xếp hạng tín nhiệm, giá trị đáo hạn rủi ro cao; 2 luồng nguồn (niêm yết JAD_STOCKINFOR / riêng lẻ HNX BM29 `private_corp_bond_offering`) — cả 2 READY | Fact Snapshot | 1 row / mã TP / kỳ (quý) | Security Trading Snapshot (MDDS.JAD_STOCKINFOR), Public Company Bond Evaluation (IDS.EVALUATION_CBONDS); nhánh riêng lẻ VSDC.BM29 PENDING (O_PTTT_7) |
@@ -3617,6 +3569,7 @@ graph TB
 | Fact Corporate Bond Sector Snapshot | fct_corporate_bond_sector_snpst | new | Chưa có trong `datamart_model.yaml` |
 | Fact Securities Company Financial Structure Snapshot | fct_securities_company_financial_structure_snpst | reuse | Đã đăng ký trong `datamart_model.yaml` (bổ sung PTTT vào `modules_using`). **[SỬA 2026-09-18]** Nguồn Atomic đúng tên: `sc_report_input_value` (không phải `sc_report_input_cell_value`), `sc_report_input_submission`, `sc_periodic_report`, `securities_company`. **Grain 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu** — PTTT reuse nguyên trạng, KHÔNG thêm cột; READY một phần (O_PTTT_13 Resolved một phần, phần grain ngày còn Open — xem O_PTTT_16) |
 | Fact Securities Company Balance Snapshot | fct_securities_company_balance_snpst | new | Mới 2026-10-01 — phục vụ K_PTTT_198/200 Nhóm 22; chưa có trong `datamart_model.yaml` trước đó, đã đăng ký — xem O_PTTT_32 |
+| Fact Securities Company Safety Snapshot | fct_securities_company_safety_snpst | new | Mới 2026-10-02 — thay cách đọc EAV theo từng KPI của Nhóm 22–25 bằng bảng đã pivot theo CTCK × tháng (chọn 1 báo cáo VCSH/CTCK, nối `cell_id` TS024/TS359/TS223/TS221/TS006 một lần). Tên rút gọn trong ghi chú review PTTT: `fct_mbr_sfty_per_mbr_snpst`; đặt theo convention datamart (từ đầy đủ, chỉ rút gọn `fct`/`snpst`, cùng họ `fct_securities_company_*`) — xem O_PTTT_34 |
 | Operational Corporate Bond Issuer Credit Monitor | opr_corporate_bond_issuer_credit_monitor | new | Chưa có trong `datamart_model.yaml` |
 | Operational Member Safety Monitor | opr_mbr_sfty_monitor | DEPRECATED | **[BÃI BỎ 2026-09-18]** Bảng được thiết kế trên entity giả `Member Report Indicator Value` và từng khai nguồn là bảng Datamart `fct_securities_company_financial_structure_snpst` (vi phạm quy tắc nguồn phải là Atomic entity). Nhóm 25 đọc trực tiếp Fact + Dimension. Áp dụng Giao thức Bãi bỏ Bảng 5 tầng: (1) không có file LLD CSV để xoá, (2) purge khỏi `datamart_attributes.csv`, (3) Detail Mapping đổi sang Fact reuse, (4) xoá block khỏi `datamart_model.yaml`, (5) xoá khỏi Section 3/Entities/Flat Table SQL |
 | Securities Dimension | securities_dim | reuse | Đã có trong `datamart_model.yaml` (module gốc NDTNN, `modules_using: [NDTNN]`) — cùng nguồn Atomic `security_trading_snapshot`, cùng grain 1 row/mã CK. PTTT dùng lại toàn bộ, không thêm cột — cần bổ sung `PTTT` vào `modules_using` ở Phase LLD |
@@ -3664,3 +3617,4 @@ graph TB
 | O_PTTT_31 | **[MỞ 2026-10-01 — K_PTTT_214 Nhóm 29 nâng READY; ĐÃ CHỐT]** BA dòng 408 (OI VN100) lọc hợp đồng bằng `StockType = '4'`, còn BA Nhóm 26/27 ghi `StockType = 'FU'` cho cùng loại hợp đồng tương lai. **Data Modeler quyết định 2026-10-01: dùng `'4'` thay `'FU'` cho Nhóm 26 và 27**; vì `Fact Futures Intraday Snapshot` và `Fact Futures Investor Flow Snapshot` dùng chung cho Nhóm 26–31 nên đổi `stock_tp_code = '4'` đồng loạt (LLD, master, HLD Nhóm 26–31). `src_stm_code` của VSDC OI chưa khai trong mapping md (không lọc). | `stock_tp_code = '4'` toàn bộ Nhóm 26–31; BA Nhóm 26/27 nên sửa điều kiện 'FU' → '4' cho khớp. | K_PTTT_209, 212, 214–226 | Resolved |
 | O_PTTT_32 | **[MỞ 2026-10-01 — K_PTTT_198/200 Nhóm 22 nâng READY]** BA dòng 357 (Tổng nợ phải trả CTCK) vẫn Pending, SQL dùng schema cũ `SSC_SCMS`; Data Modeler chỉ định dùng mapping BA dòng 339 Nhóm 21 (IDS `BCDKT`, row_desc 300 DN/BH – 400 TD, col_desc 1). Hệ quả: (1) chỉ phủ CTCK niêm yết/đã công bố trên IDS, không phủ toàn bộ CTCK như BA dòng 357 (SCMS); (2) nối CTCK ↔ DN IDS bằng `securities_company.securities_code = public_company.equity_ticker_symbol` — chưa kiểm chứng trên dữ liệu; (3) `fr_value.data_val` giả định đơn vị VND; (4) K_PTTT_200 lấy VCSH cũng từ IDS BCDKT (row 400/500), KHÔNG dùng K_PTTT_197 (VCSH SCMS) để cùng tập CTCK; (5) CTCK có loại báo cáo (`enterprise_tp_code`) khác DN/BH/TD sẽ không có dòng. | (1) Chấp nhận phạm vi CTCK niêm yết; (2) giả định khớp mã; (3) VND; (4) cùng nguồn IDS; (5) bỏ qua. | K_PTTT_198, K_PTTT_200 | Open |
 | O_PTTT_33 | **[MỞ 2026-10-02 — Nhóm 20/21, BA xác nhận khóa nối TCPH ↔ mã TP qua `company_profiles.equity_ticker`]** Đã đổi `public_company.bond_ticker_symbol = symbol` sang `public_company.equity_ticker_symbol = security_trading_snapshot.symbol` (mã TP lọc `stock_tp_code IN ('B','1','D')`), cùng cách SQL BA Nhóm 19; SQL BA Nhóm 21 dòng 334 lại nối qua `IssuerName` (dòng TP `FloorCode='06'` ↔ dòng CP `FloorCode IN ('02','04','10')`). Chưa BA/dev xác nhận: (1) **rủi ro chính** — mã trái phiếu thường khác mã cổ phiếu (VD mã TP dạng `<mã CP><số>`), nên nối thẳng có thể không khớp dòng nào; cần profile UAT tỷ lệ mã TP khớp `public_company.equity_ticker_symbol`. Nếu thấp, chuyển sang cầu nối `issuer_nm` (BA Nhóm 21) hoặc `BOND_LISTING_HISTORY.COMPANY_PROFILE_ID`; (2) mã TP không khớp TCPH: bị loại khỏi Fact ngành (INNER JOIN), còn ở danh sách giám sát (LEFT JOIN) với chỉ tiêu TCPH = NULL — cần BA xác nhận có muốn giữ dòng này; (3) lọc trái phiếu: Nhóm 19/20 dùng `StockType IN ('B','1','D')`, Nhóm 21 dùng `FloorCode = '06'` — thiết kế giữ `stock_tp_code IN ('B','1','D')`, cần BA chốt một tiêu chí; (4) ~~`bond_outstanding_val_total` lệch BA~~ **[ĐÃ XỬ LÝ 2026-10-02 — theo BA]** tính trên toàn bộ trái phiếu lọc B/1/D, không nối ngành; Σ tỷ trọng các ngành có thể < 100% khi có mã không khớp TCPH; (5) dedup cuối phiên theo `trading_time` áp cho dòng TP. | Giữ như mô tả trong từng ghi chú KPI; chạy profile UAT trước khi go-live. | K_PTTT_179–182, K_PTTT_183–196 | Open |
+| O_PTTT_34 | **[MỞ 2026-10-02 — Khai sinh `Fact Securities Company Safety Snapshot` (`fct_securities_company_safety_snpst`) cho Nhóm 22–25]** Thay việc đọc Fact EAV `Fact Securities Company Financial Structure Snapshot` + FILTER `cell_id` ở từng KPI bằng Fact đã pivot theo CTCK × tháng. Tên: ghi chú review PTTT viết tắt `fct_mbr_sfty_per_mbr_snpst`; convention Datamart (`datamart_conventions.yaml`, các Fact cùng họ `fct_securities_company_*`) chỉ rút gọn `fct`/`snpst`, giữ nguyên từ đầy đủ — nên đặt `fct_securities_company_safety_snpst`. Giả định chưa BA/dev xác nhận: (1) grain tháng báo cáo; một CTCK thiếu một trong các báo cáo tháng (BCTHHD_CTCK, BCTLAT) vẫn có dòng với cột tương ứng NULL; (2) `owner_equity_amt` là VCSH của 1 báo cáo được chọn (ưu tiên NAM > BAN_NIEN > QUY, `sent_tms` mới nhất) **tính đến cuối tháng snapshot** (as-of) — SQL BA dùng cửa sổ `:from_date`–`:to_date`; kỳ NAM cũ vẫn thắng QUY mới theo quy tắc BA; (3) đơn vị VND, chia 1e9 ở lớp hiển thị; (4) `LEGAL_BASIS` của TS006 (O_PTTT_28) vẫn chưa lọc được; (5) `Fact Securities Company Financial Structure Snapshot` và `Report Indicator Dimension` không còn KPI PTTT nào dùng — QLKD vẫn sở hữu, PTTT chỉ bỏ reuse. | Pivot ở Fact; filter nằm trong ETL; hiển thị chia 1e9; mức xếp hạng ATTC vẫn ở presentation layer. | K_PTTT_58, 197, 199, 201–207, 251–254 | Open |

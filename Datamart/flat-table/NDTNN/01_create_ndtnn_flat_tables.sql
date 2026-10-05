@@ -233,3 +233,142 @@ PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), market_index_dim_id)
 COMMENT 'Flat table — Fact Foreign Net Flow Market Index Snapshot × Calendar Date × Market Index Dimension'
 ;
+
+
+-- ============================================================
+-- 8. FACT: ndtnn_fct_foreign_investor_report_value_flat
+--    Giá trị ô báo cáo động FIMS (EAV) — Nhóm 1/3/5 và Data Explorer 18–43
+--    Grain: 1 ô × 1 lần nộp × 1 dòng động
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_report_value_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Foreign Investor Report Value
+    submission_dt_dim_id                       String                     COMMENT 'FK to Calendar Date Dimension — ngày THỰC TẾ nộp báo cáo (BA: ngay_nop), khác kỳ báo cáo',
+    foreign_investor_report_structure_dim_id   String                     COMMENT 'FK to Foreign Investor Report Structure Dimension — ô template (báo cáo/sheet/dòng/cột)',
+    foreign_investor_reporting_entity_dim_id   Nullable(String)           COMMENT 'FK to Foreign Investor Reporting Entity Dimension — đối tượng nộp báo cáo (NULL khi không tra được)',
+    rpt_log_id                                 Nullable(String)           COMMENT 'Mã LẦN NỘP (REPORT_LOG_ID) — lọc toàn bộ số liệu của 1 lần nộp',
+    dynamic_row_order                          Int32                      COMMENT 'Thứ tự dòng trong band động; 0 = ô tĩnh',
+    period_tp_code                             Nullable(String)           COMMENT 'Loại kỳ báo cáo (THANG, QUY, NAM…) — BA: Kỳ báo cáo',
+    period_val                                 Nullable(String)           COMMENT 'Giá trị kỳ báo cáo (VD T09/2026) — BA: Tháng',
+    rpt_year                                   Nullable(Int32)            COMMENT 'Năm báo cáo',
+    submission_status_code                     Nullable(String)           COMMENT 'Nhãn nộp đúng hạn/trễ hạn',
+    late_duration                              Nullable(Int32)            COMMENT 'Thời lượng nộp trễ',
+    total_row_ind                              Nullable(Int32)            COMMENT '1 = ô thuộc dòng TỔNG (BA: is_total_row)',
+    section_echo_ind                           Nullable(Int32)            COMMENT '1 = ô lặp lại section (BA: is_section_echo)',
+    band_overflow_ind                          Nullable(Int32)            COMMENT '1 = ô tràn band (BA: is_band_overflow)',
+    static_copy_ind                            Nullable(Int32)            COMMENT '1 = ô sao chép tĩnh (BA: is_static_copy)',
+    rpt_marker_ind                             Nullable(Int32)            COMMENT '1 = ô đánh dấu template (BA: is_template_marker)',
+    val_nbr                                    Nullable(Decimal(23,2))    COMMENT 'Giá trị số của ô (BA: value_num). Đơn vị theo từng ô (USD, VND, số lượng…)',
+    val_raw                                    Nullable(String)           COMMENT 'Giá trị gốc nguồn nộp (BA: value_raw)',
+    val_string                                 Nullable(String)           COMMENT 'Giá trị dạng chữ (BA: value_text)',
+    src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    submission_cdr_dt                          Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+
+    -- From: FOREIGN INVESTOR REPORT STRUCTURE DIMENSION
+    structure_code                             Nullable(String)           COMMENT 'Mã ô cấu trúc — từ Foreign Investor Report Structure Dimension',
+    rpt_code                                   Nullable(String)           COMMENT 'Mã báo cáo — từ Foreign Investor Report Structure Dimension',
+    rpt_nm                                     Nullable(String)           COMMENT 'Tên báo cáo — từ Foreign Investor Report Structure Dimension',
+    report_type_nm                             Nullable(String)           COMMENT 'Loại báo cáo (Định kỳ/Bất thường) — từ Foreign Investor Report Structure Dimension',
+    legal_basis                                Nullable(String)           COMMENT 'Căn cứ pháp lý — từ Foreign Investor Report Structure Dimension',
+    sheet_code                                 Nullable(String)           COMMENT 'Mã sheet — từ Foreign Investor Report Structure Dimension',
+    sheet_nm                                   Nullable(String)           COMMENT 'Tên sheet — từ Foreign Investor Report Structure Dimension',
+    section_id                                 Nullable(String)           COMMENT 'Mã section — từ Foreign Investor Report Structure Dimension',
+    row_path                                   Nullable(String)           COMMENT 'Nhãn dòng — từ Foreign Investor Report Structure Dimension',
+    column_path                                Nullable(String)           COMMENT 'Nhãn cột — từ Foreign Investor Report Structure Dimension',
+    data_tp                                    Nullable(String)           COMMENT 'Kiểu dữ liệu ô — từ Foreign Investor Report Structure Dimension',
+
+    -- From: FOREIGN INVESTOR REPORTING ENTITY DIMENSION
+    reporting_entity_code                      Nullable(String)           COMMENT 'Mã đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_tp_code                   Nullable(String)           COMMENT 'Loại đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_nm                        Nullable(String)           COMMENT 'Tên đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_short_nm                  Nullable(String)           COMMENT 'Tên viết tắt đối tượng nộp — từ Foreign Investor Reporting Entity Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(submission_cdr_dt))
+ORDER BY (assumeNotNull(submission_cdr_dt), assumeNotNull(rpt_log_id), foreign_investor_report_structure_dim_id, dynamic_row_order)
+COMMENT 'Flat table — Fact Foreign Investor Report Value × Calendar Date Dimension × Foreign Investor Report Structure Dimension × Foreign Investor Reporting Entity Dimension'
+;
+
+
+-- ============================================================
+-- 9. FACT: ndtnn_fct_foreign_investor_capital_flow_snpst_flat
+--    Dòng vốn ròng theo quốc tịch / nhà đầu tư (PLIV-TT51) — Nhóm 4, 16
+--    Grain: 1 dòng báo cáo IBOU9 sheet I
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_capital_flow_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Foreign Investor Capital Flow Snapshot
+    snpst_dt_dim_id                            String                     COMMENT 'FK to Calendar Date Dimension — ngày snapshot = ngày thực tế nộp báo cáo (BA: ngay_nop)',
+    foreign_investor_reporting_entity_dim_id   Nullable(String)           COMMENT 'FK to Foreign Investor Reporting Entity Dimension — đối tượng nộp báo cáo (ngân hàng lưu ký/CTCK)',
+    rpt_log_id                                 Nullable(String)           COMMENT 'Mã LẦN NỘP (REPORT_LOG_ID)',
+    section_id                                 Nullable(String)           COMMENT 'Mã section (band) chứa dòng',
+    dynamic_row_order                          Int32                      COMMENT 'Thứ tự dòng trong band động (BA: row_order)',
+    period_val                                 Nullable(String)           COMMENT 'Giá trị kỳ báo cáo (VD T09/2026) — BA Data Explorer: Tháng (RPTMEMBER.PeriodValue)',
+    nationality_nm                             Nullable(String)           COMMENT 'Quốc tịch NĐTNN (cột Quốc tịch — PLIV-TT51, báo cáo IBOU9 sheet I)',
+    investor_nm                                Nullable(String)           COMMENT 'Tên nhà đầu tư (cột Tên nhà đầu tư)',
+    capital_flow_net_val                       Nullable(Decimal(23,2))    COMMENT 'Giá trị dòng vốn vào ròng trong kỳ báo cáo (+/-), đơn vị USD (cột Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD))',
+    src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+
+    -- From: FOREIGN INVESTOR REPORTING ENTITY DIMENSION
+    reporting_entity_code                      Nullable(String)           COMMENT 'Mã đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_tp_code                   Nullable(String)           COMMENT 'Loại đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_nm                        Nullable(String)           COMMENT 'Tên đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_short_nm                  Nullable(String)           COMMENT 'Tên viết tắt đối tượng nộp — từ Foreign Investor Reporting Entity Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), assumeNotNull(rpt_log_id), assumeNotNull(section_id), dynamic_row_order)
+COMMENT 'Flat table — Fact Foreign Investor Capital Flow Snapshot × Calendar Date Dimension × Foreign Investor Reporting Entity Dimension'
+;
+
+
+-- ============================================================
+-- 10. FACT: ndtnn_fct_foreign_investor_portfolio_report_snpst_flat
+--    Danh mục NĐTNN theo loại tài sản (PLIII-TT51) — Nhóm 4, 6, 7, 17
+--    Grain: 1 dòng báo cáo 59WJB/BZ5X4 sheet II
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_portfolio_report_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Foreign Investor Portfolio Report Snapshot
+    snpst_dt_dim_id                            String                     COMMENT 'FK to Calendar Date Dimension — ngày snapshot = ngày thực tế nộp báo cáo (BA: ngay_nop)',
+    foreign_investor_reporting_entity_dim_id   Nullable(String)           COMMENT 'FK to Foreign Investor Reporting Entity Dimension — đối tượng nộp báo cáo (ngân hàng lưu ký/CTCK)',
+    rpt_log_id                                 Nullable(String)           COMMENT 'Mã LẦN NỘP (REPORT_LOG_ID)',
+    section_id                                 Nullable(String)           COMMENT 'Mã section (band) chứa dòng',
+    dynamic_row_order                          Int32                      COMMENT 'Thứ tự dòng trong band động (BA: row_order)',
+    period_val                                 Nullable(String)           COMMENT 'Giá trị kỳ báo cáo (VD T09/2026) — BA Data Explorer: Tháng (RPTMEMBER.PeriodValue)',
+    rpt_code                                   Nullable(String)           COMMENT 'Mã báo cáo (59WJB: CTCK; BZ5X4: ngân hàng lưu ký — PLIII-TT51)',
+    investor_group_nm                          Nullable(String)           COMMENT 'Nhóm nhà đầu tư theo nhãn dòng: A-Tổ chức / B-Cá nhân',
+    nationality_nm                             Nullable(String)           COMMENT 'Quốc tịch (cột Quốc tịch)',
+    investor_type_nm                           Nullable(String)           COMMENT 'Loại hình đối với tổ chức (cột Loại hình đối với tổ chức)',
+    investor_nm                                Nullable(String)           COMMENT 'Tên khách hàng (cột Tên khách hàng)',
+    bill_val                                   Nullable(Decimal(23,2))    COMMENT 'Giá trị tín phiếu (cột Tín phiếu > Giá trị)',
+    bond_val                                   Nullable(Decimal(23,2))    COMMENT 'Giá trị trái phiếu = tổng 3 kỳ hạn còn lại (<12 tháng, 12–24 tháng, >24 tháng)',
+    listed_equity_fund_val                     Nullable(Decimal(23,2))    COMMENT 'Giá trị cổ phiếu niêm yết, chứng chỉ quỹ niêm yết',
+    upcom_equity_val                           Nullable(Decimal(23,2))    COMMENT 'Giá trị cổ phiếu công ty đại chúng đăng ký giao dịch (UPCoM)',
+    capital_contribution_val                   Nullable(Decimal(23,2))    COMMENT 'Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác',
+    cash_equivalent_val                        Nullable(Decimal(23,2))    COMMENT 'Giá trị tiền và các khoản tương đương tiền',
+    total_portfolio_val                        Nullable(Decimal(23,2))    COMMENT 'Tổng giá trị danh mục (cột Tổng giá trị danh mục > Giá trị) — không gồm dòng tổng (ETL Fact lọc total_row_ind = 0)',
+    individual_ind                             Nullable(Int32)            COMMENT '1 = nhà đầu tư cá nhân (BA: row_path = B-Cá nhân)',
+    fund_ind                                   Nullable(Int32)            COMMENT '1 = tổ chức là quỹ (BA: row_path = A-Tổ chức AND loại hình LIKE %Quỹ% AND NOT LIKE %Không phải quỹ%)',
+    non_fund_org_ind                           Nullable(Int32)            COMMENT '1 = tổ chức khác quỹ (BA: A-Tổ chức AND loại hình LIKE Công ty/Ngân hàng/Tổ chức/Không phải quỹ/Các loại khác). Điều kiện của BA KHÔNG loại ',
+    src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+
+    -- From: FOREIGN INVESTOR REPORTING ENTITY DIMENSION
+    reporting_entity_code                      Nullable(String)           COMMENT 'Mã đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_tp_code                   Nullable(String)           COMMENT 'Loại đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_nm                        Nullable(String)           COMMENT 'Tên đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
+    reporting_entity_short_nm                  Nullable(String)           COMMENT 'Tên viết tắt đối tượng nộp — từ Foreign Investor Reporting Entity Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), assumeNotNull(rpt_log_id), assumeNotNull(section_id), dynamic_row_order)
+COMMENT 'Flat table — Fact Foreign Investor Portfolio Report Snapshot × Calendar Date Dimension × Foreign Investor Reporting Entity Dimension'
+;

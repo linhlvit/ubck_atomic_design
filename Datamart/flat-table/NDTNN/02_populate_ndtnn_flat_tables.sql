@@ -243,3 +243,137 @@ LEFT JOIN datamart.market_index_dim mi_dim
     ON mi_dim.market_index_dim_id = f.market_index_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
+
+
+-- ============================================================
+-- 8. FACT: ndtnn_fct_foreign_investor_report_value_flat
+-- ============================================================
+DELETE FROM datamart.ndtnn_fct_foreign_investor_report_value_flat ON CLUSTER 'my_cluster'
+WHERE submission_cdr_dt = :etl_date;
+INSERT INTO datamart.ndtnn_fct_foreign_investor_report_value_flat
+SELECT
+    f.submission_dt_dim_id,
+    f.foreign_investor_report_structure_dim_id,
+    f.foreign_investor_reporting_entity_dim_id,
+    f.rpt_log_id,
+    f.dynamic_row_order,
+    f.period_tp_code,
+    f.period_val,
+    f.rpt_year,
+    f.submission_status_code,
+    f.late_duration,
+    f.total_row_ind,
+    f.section_echo_ind,
+    f.band_overflow_ind,
+    f.static_copy_ind,
+    f.rpt_marker_ind,
+    f.val_nbr,
+    f.val_raw,
+    f.val_string,
+    f.src_stm_code,
+
+    submission_cal.cdr_dt AS submission_cdr_dt,
+
+    str_dim.structure_code,
+    str_dim.rpt_code,
+    str_dim.rpt_nm,
+    str_dim.report_type_nm,
+    str_dim.legal_basis,
+    str_dim.sheet_code,
+    str_dim.sheet_nm,
+    str_dim.section_id,
+    str_dim.row_path,
+    str_dim.column_path,
+    str_dim.data_tp,
+
+    ent_dim.reporting_entity_code,
+    ent_dim.reporting_entity_tp_code,
+    ent_dim.reporting_entity_nm,
+    ent_dim.reporting_entity_short_nm
+FROM datamart.fct_foreign_investor_report_value f
+JOIN datamart.cdr_dt_dim submission_cal
+    ON submission_cal.cdr_dt_dim_id = f.submission_dt_dim_id
+LEFT JOIN datamart.foreign_investor_report_structure_dim str_dim
+    ON str_dim.foreign_investor_report_structure_dim_id = f.foreign_investor_report_structure_dim_id
+LEFT JOIN datamart.foreign_investor_reporting_entity_dim ent_dim
+    ON ent_dim.foreign_investor_reporting_entity_dim_id = f.foreign_investor_reporting_entity_dim_id
+WHERE submission_cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 9. FACT: ndtnn_fct_foreign_investor_capital_flow_snpst_flat
+-- ============================================================
+DELETE FROM datamart.ndtnn_fct_foreign_investor_capital_flow_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.ndtnn_fct_foreign_investor_capital_flow_snpst_flat
+SELECT
+    f.snpst_dt_dim_id,
+    f.foreign_investor_reporting_entity_dim_id,
+    f.rpt_log_id,
+    f.section_id,
+    f.dynamic_row_order,
+    f.period_val,
+    f.nationality_nm,
+    f.investor_nm,
+    f.capital_flow_net_val,
+    f.src_stm_code,
+
+    submission_cal.cdr_dt AS snpst_cdr_dt,
+
+    ent_dim.reporting_entity_code,
+    ent_dim.reporting_entity_tp_code,
+    ent_dim.reporting_entity_nm,
+    ent_dim.reporting_entity_short_nm
+FROM datamart.fct_foreign_investor_capital_flow_snpst f
+JOIN datamart.cdr_dt_dim submission_cal
+    ON submission_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.foreign_investor_reporting_entity_dim ent_dim
+    ON ent_dim.foreign_investor_reporting_entity_dim_id = f.foreign_investor_reporting_entity_dim_id
+WHERE submission_cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 10. FACT: ndtnn_fct_foreign_investor_portfolio_report_snpst_flat
+-- ============================================================
+DELETE FROM datamart.ndtnn_fct_foreign_investor_portfolio_report_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.ndtnn_fct_foreign_investor_portfolio_report_snpst_flat
+SELECT
+    f.snpst_dt_dim_id,
+    f.foreign_investor_reporting_entity_dim_id,
+    f.rpt_log_id,
+    f.section_id,
+    f.dynamic_row_order,
+    f.period_val,
+    f.rpt_code,
+    f.investor_group_nm,
+    f.nationality_nm,
+    f.investor_type_nm,
+    f.investor_nm,
+    f.bill_val,
+    f.bond_val,
+    f.listed_equity_fund_val,
+    f.upcom_equity_val,
+    f.capital_contribution_val,
+    f.cash_equivalent_val,
+    f.total_portfolio_val,
+    f.individual_ind,
+    f.fund_ind,
+    f.non_fund_org_ind,
+    f.src_stm_code,
+
+    submission_cal.cdr_dt AS snpst_cdr_dt,
+
+    ent_dim.reporting_entity_code,
+    ent_dim.reporting_entity_tp_code,
+    ent_dim.reporting_entity_nm,
+    ent_dim.reporting_entity_short_nm
+FROM datamart.fct_foreign_investor_portfolio_report_snpst f
+JOIN datamart.cdr_dt_dim submission_cal
+    ON submission_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.foreign_investor_reporting_entity_dim ent_dim
+    ON ent_dim.foreign_investor_reporting_entity_dim_id = f.foreign_investor_reporting_entity_dim_id
+WHERE submission_cal.cdr_dt = :etl_date
+;
