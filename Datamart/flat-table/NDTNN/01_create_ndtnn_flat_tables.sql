@@ -352,7 +352,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_portfolio_report_
     upcom_equity_val                           Nullable(Decimal(23,2))    COMMENT 'Giá trị cổ phiếu công ty đại chúng đăng ký giao dịch (UPCoM)',
     capital_contribution_val                   Nullable(Decimal(23,2))    COMMENT 'Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác',
     cash_equivalent_val                        Nullable(Decimal(23,2))    COMMENT 'Giá trị tiền và các khoản tương đương tiền',
-    total_portfolio_val                        Nullable(Decimal(23,2))    COMMENT 'Tổng giá trị danh mục (cột Tổng giá trị danh mục > Giá trị)',
+    total_portfolio_val                        Nullable(Decimal(23,2))    COMMENT 'Tổng giá trị danh mục (cột Tổng giá trị danh mục > Giá trị) — không gồm dòng tổng (ETL Fact lọc total_row_ind = 0)',
     individual_ind                             Nullable(Int32)            COMMENT '1 = nhà đầu tư cá nhân (BA: row_path = B-Cá nhân)',
     fund_ind                                   Nullable(Int32)            COMMENT '1 = tổ chức là quỹ (BA: row_path = A-Tổ chức AND loại hình LIKE %Quỹ% AND NOT LIKE %Không phải quỹ%)',
     non_fund_org_ind                           Nullable(Int32)            COMMENT '1 = tổ chức khác quỹ (BA: A-Tổ chức AND loại hình LIKE Công ty/Ngân hàng/Tổ chức/Không phải quỹ/Các loại khác). Điều kiện của BA KHÔNG loại ',
