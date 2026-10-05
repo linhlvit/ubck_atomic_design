@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_foreign_investor_reporting_entity-FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+  logical_name: Classification Foreign Investor Reporting Entity
+  physical_name: cl_foreign_investor_reporting_entity
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Classification"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  description: |
+    Danh mục tổ chức/cá nhân từng là bên nộp báo cáo động FIMS (9 loại đối tượng). BK = object_id ‖ object_type. Nguồn ODS cl_foreign_investor_reporting_entity (UNION 9 bảng danh mục).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+
+attributes:
+  - name: Classification Foreign Investor Reporting Entity Id
+    physical_name: cl_foreign_investor_reporting_entity_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Common] Classification\" — bảng danh mục tra cứu (quyết định Data Modeler 2026-09-30). Hash: hash_id('FIMS_CL_FOREIGN_INVESTOR_REPORTING_ENTITY', OBJECT_ID || OBJECT_TYPE)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Foreign Investor Reporting Entity Code
+    physical_name: cl_foreign_investor_reporting_entity_code
+    business_meaning: "Mã nghiệp vụ duy nhất của đối tượng nộp báo cáo = OBJECT_ID || OBJECT_TYPE. BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: null
+    comment: "ETL-derived: concat(OBJECT_ID, OBJECT_TYPE) từ ODS CL_FOREIGN_INVESTOR_REPORTING_ENTITY — BK composite OBJECT_ID || OBJECT_TYPE — OBJECT_ID KHÔNG duy nhất giữa các loại đối tượng (2 loại dùng chung 1 bảng danh mục nguồn có thể trùng OBJECT_ID). Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_CL_FOREIGN_INVESTOR_REPORTING_ENTITY'"
+    etl_derived_value: FIMS_CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+
+  - name: Reporting Entity Code
+    physical_name: reporting_entity_code
+    business_meaning: Mã định danh đối tượng nộp báo cáo trong hệ thống nguồn (OBJECT_ID).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_ID
+    comment: "BCV: không có term riêng. Đi kèm Reporting Entity Type Code mới xác định duy nhất 1 đối tượng."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reporting Entity Type Code
+    physical_name: reporting_entity_tp_code
+    business_meaning: "Loại đối tượng nộp báo cáo: quỹ, công ty chứng khoán, ngân hàng lưu ký, VSDC, Sở GDCK, đại diện CBTT, CN QLQ nước ngoài, NĐT nước ngoài, đại diện giao dịch (OBJECT_TYPE)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reporting Entity Type Name
+    physical_name: reporting_entity_tp_nm
+    business_meaning: Tên loại đối tượng nộp báo cáo (OBJECT_TYPE_NAME).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE_NAME
+    comment: Denormalized — giữ theo bản map Data Modeler.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Entity Reference Number
+    physical_name: entity_reference_nbr
+    business_meaning: "Mã tra cứu đối tượng (OBJECT_CODE): regno/taxcode/certno/transactioncode tùy loại; riêng \"Đại diện giao dịch\" dùng idno."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_CODE
+    comment: "Loại \"Đại diện giao dịch\" = idno đã được nguồn mã hóa CMND/CCCD trước khi tới staging (xác nhận BA 24/09/2026) — không phải số giấy tờ gốc."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reporting Entity Name
+    physical_name: reporting_entity_nm
+    business_meaning: Tên đầy đủ đối tượng nộp báo cáo (OBJECT_NAME).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reporting Entity Short Name
+    physical_name: reporting_entity_short_nm
+    business_meaning: Tên viết tắt đối tượng nộp báo cáo (OBJECT_SHORT_NAME).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
+    source_column: FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_SHORT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null

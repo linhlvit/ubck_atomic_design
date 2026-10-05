@@ -1231,6 +1231,12 @@ entries:
   lld_file: FMS/lld_FMS_BANK_MONI_IP_Electronic_Address.yaml
   design_status: draft
 - source_system: FMS
+  source_table: BANK_MONI
+  atomic_entity: Involved Party Alternative Identification
+  group: T1
+  lld_file: FMS/lld_FMS_BANK_MONI_IP_Alt_Identification.yaml
+  design_status: draft
+- source_system: FMS
   source_table: AGENCIES
   atomic_entity: Fund Distribution Agent
   group: T1
@@ -1247,6 +1253,12 @@ entries:
   atomic_entity: Involved Party Electronic Address
   group: T1
   lld_file: FMS/lld_FMS_AGENCIES_IP_Electronic_Address.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: AGENCIES
+  atomic_entity: Involved Party Alternative Identification
+  group: T1
+  lld_file: FMS/lld_FMS_AGENCIES_IP_Alt_Identification.yaml
   design_status: draft
 - source_system: FMS
   source_table: RATING_PD
@@ -1349,7 +1361,7 @@ entries:
   atomic_entity: Discretionary Investment Investor
   group: T2
   lld_file: FMS/lld_FMS_INVES.yaml
-  design_status: approved
+  design_status: draft
 - source_system: FMS
   source_table: INVES
   atomic_entity: Involved Party Postal Address
@@ -1487,7 +1499,7 @@ entries:
   atomic_entity: Fund Management Company Insider
   group: T5
   lld_file: FMS/lld_FMS_INSIDER.yaml
-  design_status: approved
+  design_status: draft
 - source_system: FMS
   source_table: INSIDER
   atomic_entity: Involved Party Postal Address
@@ -1796,9 +1808,15 @@ entries:
   design_status: approved
 - source_system: FMS
   source_table: JOBS
-  atomic_entity: Classification FMS Position
+  atomic_entity: Classification FMS Job
   group: T1
   lld_file: FMS/lld_FMS_JOBS.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: JOB_TYPE
+  atomic_entity: Classification FMS Job
+  group: T1
+  lld_file: FMS/lld_FMS_JOB_TYPE.yaml
   design_status: draft
 - source_system: FMS
   source_table: STATUS
@@ -1807,8 +1825,32 @@ entries:
   lld_file: FMS/lld_FMS_STATUS.yaml
   design_status: draft
 - source_system: FMS
+  source_table: FUND_TYPE
+  atomic_entity: Classification FMS Fund Type
+  group: T1
+  lld_file: FMS/lld_FMS_FUND_TYPE.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: STOCKHOLDER_TYPE
+  atomic_entity: Classification FMS Stockholder Type
+  group: T1
+  lld_file: FMS/lld_FMS_STOCKHOLDER_TYPE.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: COMPANY_TYPE
+  atomic_entity: Classification FMS Company Type
+  group: T1
+  lld_file: FMS/lld_FMS_COMPANY_TYPE.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: BUSINESS
+  atomic_entity: Classification FMS Business
+  group: T1
+  lld_file: FMS/lld_FMS_BUSINESS.yaml
+  design_status: draft
+- source_system: FMS
   source_table: JOB_TL_PRO
-  atomic_entity: Fund Management Company Employee X Classification FMS Position Relationship
+  atomic_entity: Fund Management Company Employee X Classification FMS Job Relationship
   group: T3
   lld_file: FMS/lld_FMS_JOB_TL_PRO.yaml
   design_status: approved
@@ -2717,22 +2759,28 @@ entries:
   atomic_entity: Classification Foreign Investor Reporting Entity
   group: T1
   lld_file: FIMS/lld_FIMS_CL_FOREIGN_INVESTOR_REPORTING_ENTITY.yaml
-  design_status: draft
+  design_status: approved
 - source_system: FIMS
   source_table: FOREIGN_INVESTOR_REPORT
   atomic_entity: Foreign Investor Report
   group: T1
   lld_file: FIMS/lld_FIMS_FOREIGN_INVESTOR_REPORT.yaml
-  design_status: draft
+  design_status: approved
 - source_system: FIMS
   source_table: FIR_STRUCTURE
   atomic_entity: Foreign Investor Report Structure
   group: T2
   lld_file: FIMS/lld_FIMS_FIR_STRUCTURE.yaml
-  design_status: draft
+  design_status: approved
 - source_system: FIMS
   source_table: FIR_VALUE
   atomic_entity: Foreign Investor Report Value
   group: T3
   lld_file: FIMS/lld_FIMS_FIR_VALUE.yaml
+  design_status: approved
+- source_system: FIMS
+  source_table: INVESTORTYPE
+  atomic_entity: Classification FIMS Investor Type
+  group: T1
+  lld_file: FIMS/lld_FIMS_INVESTORTYPE.yaml
   design_status: draft

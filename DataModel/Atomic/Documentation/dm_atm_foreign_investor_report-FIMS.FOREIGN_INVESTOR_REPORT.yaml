@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-foreign_investor_report-FIMS.FOREIGN_INVESTOR_REPORT
+  logical_name: Foreign Investor Report
+  physical_name: foreign_investor_report
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  description: |
+    Mẫu báo cáo đầu vào FIMS ở mức sheet — 1 dòng = 1 sheet × 1 mẫu. BK = sheet_id. Nguồn ODS foreign_investor_report (RPTTEMP ⋈ SHEET). Thay Reporting Template (2026-09-30).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-FOREIGN_INVESTOR_REPORT
+
+attributes:
+  - name: Foreign Investor Report Id
+    physical_name: fir_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('FIMS_FOREIGN_INVESTOR_REPORT', SHEET_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Investor Report Code
+    physical_name: fir_code
+    business_meaning: Mã sheet của mẫu báo cáo (SHEET_ID). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.SHEET_ID
+    comment: "BK chính — grain = sheet. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_FOREIGN_INVESTOR_REPORT'"
+    etl_derived_value: FIMS_FOREIGN_INVESTOR_REPORT
+
+  - name: Report Id
+    physical_name: rpt_id
+    business_meaning: "Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID = RPTTEMP.Id)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.RPT_ID
+    comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic — 1 mẫu (RPT_ID) có nhiều sheet. Dùng để gom các sheet cùng mẫu."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: "Mã mẫu báo cáo — mã KỸ THUẬT do hệ thống tự sinh (VD BZ5X4, H0I8J), không phải tên gọi tắt nghiệp vụ."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.REPORT_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: "Tên đầy đủ của mẫu báo cáo (VD \"Phụ lục III...\")."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.REPORT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Basis
+    physical_name: legal_basis
+    business_meaning: Căn cứ pháp lý (thông tư/quyết định) của mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.LEGAL_BASIS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Status
+    physical_name: rpt_status
+    business_meaning: "Trạng thái mẫu báo cáo (TEMPLATE_STATUS) — ODS chỉ nạp mẫu Status = 1 (đang dùng)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.TEMPLATE_STATUS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Code
+    physical_name: sheet_code
+    business_meaning: Mã sheet/tab trong mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.SHEET_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Name
+    physical_name: sheet_nm
+    business_meaning: "Tên sheet/tab trong mẫu (VD \"I\", \"II\", \"III\")."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.SHEET_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Index
+    physical_name: sheet_index
+    business_meaning: Thứ tự sheet trong mẫu báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FOREIGN_INVESTOR_REPORT
+    source_column: FIMS.FOREIGN_INVESTOR_REPORT.SHEET_INDEX
+    comment: null
+    classification_context: null
+    etl_derived_value: null

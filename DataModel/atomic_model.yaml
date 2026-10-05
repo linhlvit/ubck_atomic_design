@@ -22295,7 +22295,7 @@ entities:
     - source_system: TTHC
       source_tables:
       - source_table: AP_DOCUMENT
-        source_column: TTHC.AP_DOCUMENT.FEE_PAID_INDICATOR
+        source_column: TTHC.AP_DOCUMENT.FEE_PAID
         business_meaning: Người nộp đã thanh toán lệ phí hay chưa.
         comment: "Nguồn thực: Document.Content->'HoSoTTHC'->'DaNopLePhi'->'Value'."
   - name: Fee Amount
@@ -32523,38 +32523,10 @@ entities:
         source_column: NHNCK.DECISION_DOCUMENTS.FILE_PATH
         business_meaning: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...).
         comment: null
-  - name: Signed By Officer Id
-    physical_name: signed_by_officer_id
-    business_meaning_1st: "FK -> USERS: Người thực hiện ký số."
-    comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Nguồn lưu NVARCHAR2(255) — giả định đã là USERNAME (không cần crosswalk qua\
-      \ USERS.ID như các FK Officer khác); hash_id('IAM_USERS', SIGNED_BY) | Chưa\
-      \ xác nhận value set khớp danh mục IAM.USERS, và chưa xác nhận SIGNED_BY có\
-      \ đúng là USERNAME hay tên hiển thị tự do — cần profile dữ liệu trước go-live."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: DECISION_DOCUMENTS
-        source_column: NHNCK.DECISION_DOCUMENTS.SIGNED_BY
-        business_meaning: "FK -> USERS: Người thực hiện ký số."
-        comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Nguồn lưu NVARCHAR2(255) — giả định đã là USERNAME (không cần crosswalk\
-          \ qua USERS.ID như các FK Officer khác); hash_id('IAM_USERS', SIGNED_BY)\
-          \ | Chưa xác nhận value set khớp danh mục IAM.USERS, và chưa xác nhận SIGNED_BY\
-          \ có đúng là USERNAME hay tên hiển thị tự do — cần profile dữ liệu trước\
-          \ go-live."
-  - name: Signed By Officer Code
-    physical_name: signed_by_officer_code
-    business_meaning_1st: Mã cán bộ thực hiện ký số.
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pair with Signed By Officer Id. Giá trị lấy trực tiếp từ NHNCK.DECISION_DOCUMENTS.SIGNED_BY\
-      \ (giả định đã là USERNAME) — chi tiết xem comment Signed By Officer Id."
+  - name: Signed By Officer Name
+    physical_name: signed_by_officer_nm
+    business_meaning_1st: Tên cán bộ thực hiện ký số.
+    comment_1st: null
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -32566,10 +32538,8 @@ entities:
       source_tables:
       - source_table: DECISION_DOCUMENTS
         source_column: NHNCK.DECISION_DOCUMENTS.SIGNED_BY
-        business_meaning: Mã cán bộ thực hiện ký số.
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pair with Signed By Officer Id. Giá trị lấy trực tiếp từ NHNCK.DECISION_DOCUMENTS.SIGNED_BY\
-          \ (giả định đã là USERNAME) — chi tiết xem comment Signed By Officer Id."
+        business_meaning: Tên cán bộ thực hiện ký số.
+        comment: null
   - name: Signed Date
     physical_name: signed_dt
     business_meaning_1st: Ngày ký ban hành quyết định.

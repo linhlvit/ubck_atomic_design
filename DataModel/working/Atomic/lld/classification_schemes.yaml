@@ -576,6 +576,9 @@ schemes:
       - code: "NATIONAL_ID"
         name: "CMND"
         source_table: null
+      - code: "IDENTIFICATION"
+        name: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
+        source_table: null
       - code: "PASSPORT"
         name: "Hộ chiếu"
         source_table: null
@@ -886,6 +889,8 @@ schemes:
       - "Foreign Fund Management Organization Unit"
       - "Fund Management Company Employee"
     values: []
+    deprecated: true
+    deprecated_reason: "FMS.BUSINESS đã nâng cấp thành Atomic entity thật 'Classification FMS Business' (table_type Relative, HLD FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities) — không còn dùng scheme này (2026-10-02). Entity tiêu thụ Fund Management Company Employee đổi BUSI_ID sang cặp FK Classification FMS Business Id + Code; junction SEC_BUSINESS/FG_BUSINESS/BRA_BUSINESS (7d) chưa triển khai trong LLD."
 
   - scheme_code: "FMS_CAPITAL_CHANGE_TYPE"
     name: "Loại thay đổi vốn góp nhà đầu tư quỹ"
@@ -931,6 +936,25 @@ schemes:
     used_in_entities:
       - "Investment Fund"
     values: []
+    deprecated: true
+    deprecated_reason: "FMS.FUND_TYPE đã nâng cấp thành Atomic entity thật 'Classification FMS Fund Type' (table_type Relative, HLD FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities) — không còn dùng scheme này (2026-10-02). Entity tiêu thụ Investment Fund đổi FTYPE_ID sang cặp FK Classification FMS Fund Type Id + Code."
+
+  - scheme_code: "FMS_OPEN_FUND_TYPE"
+    name: "Phân loại quỹ mở theo chính sách đầu tư — nguồn FUNDS.OPEN_FUND_TYPE (VARCHAR2(30), mô tả nguồn: EQUITY/BOND/BALANCED, chưa profile)"
+    source_type: "modeler_defined"
+    source_table: "FMS.FUNDS"
+    used_in_entities:
+      - "Investment Fund"
+    values:
+      - code: "EQUITY"
+        name: "Quỹ cổ phiếu"
+        source_value: "EQUITY"
+      - code: "BOND"
+        name: "Quỹ trái phiếu"
+        source_value: "BOND"
+      - code: "BALANCED"
+        name: "Quỹ cân bằng"
+        source_value: "BALANCED"
 
   - scheme_code: "FMS_JOB_TYPE"
     name: "Loại chức vụ nhân sự công ty QLQ"
@@ -1080,6 +1104,62 @@ schemes:
     used_in_entities:
       - "Fund Management Company"
     values: []
+    deprecated: true
+    deprecated_reason: "FMS.COMPANY_TYPE đã nâng cấp thành Atomic entity thật 'Classification FMS Company Type' (table_type Relative, HLD FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities) — không còn dùng scheme này (2026-10-02, đảo ngược quyết định 2026-07-24). Entity tiêu thụ Fund Management Company đổi CT_ID sang cặp FK Classification FMS Company Type Id + Code."
+
+  - scheme_code: "FMS_SYSTEM_OBJECT_TYPE"
+    name: "Loại đối tượng hệ thống áp dụng (15 giá trị) — nguồn FMS.COMPANY_TYPE.SYSTEM_OBJECT; khác encoding FMS_WARNING_SYSTEM_OBJECT_TYPE (1-5)"
+    source_type: "modeler_defined"
+    source_table: "FMS.COMPANY_TYPE"
+    used_in_entities:
+      - "Classification FMS Company Type"
+      - "Classification FMS Business"
+    values:
+      - code: "UBCK"
+        name: "UBCK"
+        source_value: "1"
+      - code: "FUND_MANAGEMENT_COMPANY"
+        name: "Công ty QLQ"
+        source_value: "2"
+      - code: "CUSTODIAN_BANK"
+        name: "Ngân hàng LKGS"
+        source_value: "3"
+      - code: "FOREIGN_FMC_BRANCH"
+        name: "Chi nhánh CTQLQ nước ngoài"
+        source_value: "4"
+      - code: "FOREIGN_FMC_REPRESENTATIVE_OFFICE"
+        name: "VPĐD CTQLQ nước ngoài"
+        source_value: "5"
+      - code: "INDIVIDUAL_SECURITIES_INVESTMENT"
+        name: "ĐTCK riêng lẻ"
+        source_value: "6"
+      - code: "INVESTMENT_FUND"
+        name: "Quỹ đầu tư"
+        source_value: "7"
+      - code: "DISTRIBUTION_AGENT"
+        name: "Đại lý phân phối"
+        source_value: "8"
+      - code: "BRANCH_AGENT"
+        name: "Đại lý chi nhánh"
+        source_value: "9"
+      - code: "PENSION_AGENT"
+        name: "Đại lý HT (cần xác nhận: hưu trí)"
+        source_value: "10"
+      - code: "SERVICE_PROVIDER"
+        name: "TCCCDV"
+        source_value: "11"
+      - code: "OTHER_AGENT"
+        name: "Đại lý khác"
+        source_value: "12"
+      - code: "PENSION_FUND"
+        name: "Quỹ HT (cần xác nhận: hưu trí)"
+        source_value: "13"
+      - code: "AUDIT_FIRM"
+        name: "Công ty kiểm toán"
+        source_value: "14"
+      - code: "AUDITOR"
+        name: "Kiểm toán viên"
+        source_value: "15"
 
   - scheme_code: "FMS_RATING_PERIOD_TYPE"
     name: "Loại kỳ xếp hạng: cuối năm / giữa năm"
@@ -1112,6 +1192,8 @@ schemes:
       - "Investment Fund Investor Membership"
       - "Discretionary Investment Investor"
     values: []
+    deprecated: true
+    deprecated_reason: "FMS.STOCKHOLDER_TYPE đã nâng cấp thành Atomic entity thật 'Classification FMS Stockholder Type' (table_type Relative, HLD FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities) — không còn dùng scheme này (2026-10-02). Entity tiêu thụ (Discretionary Investment Investor, Investment Fund Investor Membership) đổi STO_ID/ST_ID sang cặp FK Classification FMS Stockholder Type Id + Code."
 
   - scheme_code: "FMS_INSIDER_TYPE"
     name: "Loại cổ đông nội bộ: cổ đông lớn / ban điều hành / HĐQT"

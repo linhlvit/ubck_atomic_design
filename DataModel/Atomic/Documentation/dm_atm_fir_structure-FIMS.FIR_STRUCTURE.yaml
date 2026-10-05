@@ -1,0 +1,331 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fir_structure-FIMS.FIR_STRUCTURE
+  logical_name: Foreign Investor Report Structure
+  physical_name: fir_structure
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  description: |
+    Cây chỉ tiêu mẫu báo cáo — 1 dòng = 1 ô template trong 1 sheet. BK = sheet_id ‖ indicator_uid. Nguồn ODS fir_structure (parse JSON SHEET).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-FIR_STRUCTURE
+
+attributes:
+  - name: Foreign Investor Report Structure Id
+    physical_name: fir_structure_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Form Document\" — cùng concept entity cha. Hash: hash_id('FIMS_FIR_STRUCTURE', SHEET_ID || INDICATOR_UID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Investor Report Structure Code
+    physical_name: fir_structure_code
+    business_meaning: "Mã nghiệp vụ ô chỉ tiêu = SHEET_ID || INDICATOR_UID. BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: null
+    comment: "ETL-derived: concat(SHEET_ID, INDICATOR_UID) từ ODS FIR_STRUCTURE — BK composite — INDICATOR_UID chỉ duy nhất trong 1 sheet, bắt buộc đi kèm SHEET_ID. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_FIR_STRUCTURE'"
+    etl_derived_value: FIMS_FIR_STRUCTURE
+
+  - name: Structure Code
+    physical_name: structure_code
+    business_meaning: "Mã định danh ô template (INDICATOR_UID) — sinh từ tọa độ ô trong cellsMeta, duy nhất trong 1 sheet."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.INDICATOR_UID
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Investor Report Id
+    physical_name: fir_id
+    business_meaning: "FK → Foreign Investor Report: sheet chứa ô chỉ tiêu."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.SHEET_ID
+    comment: "FK target: foreign_investor_report.fir_id. Hash: hash_id('FIMS_FOREIGN_INVESTOR_REPORT', SHEET_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Investor Report Code
+    physical_name: fir_code
+    business_meaning: Mã sheet (SHEET_ID).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.SHEET_ID
+    comment: "Lookup pair: foreign_investor_report.fir_code. Pair with Foreign Investor Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Id
+    physical_name: rpt_id
+    business_meaning: Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.RPT_ID
+    comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Index
+    physical_name: row_index
+    business_meaning: "Vị trí dòng 0-based trong template (SHEET_ROW). Excel_row = Row Index + 1."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.SHEET_ROW
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Index
+    physical_name: column_index
+    business_meaning: "Vị trí cột 0-based trong template (SHEET_COL)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.SHEET_COL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Type
+    physical_name: data_tp
+    business_meaning: "Kiểu dữ liệu nguồn khai cho ô (FORMAT_DATA_TYPE): numberic, percentage, string..."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.FORMAT_DATA_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Path
+    physical_name: row_path
+    business_meaning: "Đường dẫn CHA→CON của dòng, nối bằng \" > \" — tên nhóm chỉ tiêu hiển thị trên Data Explorer."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.ROW_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Path
+    physical_name: column_path
+    business_meaning: "Đường dẫn header của cột (VD \"Kỳ báo cáo\")."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.COLUMN_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Section Id
+    physical_name: section_id
+    business_meaning: Mã vùng dữ liệu (section) chứa ô.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.SECTION_ID
+    comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Section Type Code
+    physical_name: section_tp_code
+    business_meaning: "Loại vùng dữ liệu: DYNAMIC (nhiều dòng) hay NULL (dòng cố định)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.SECTION_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Indicator
+    physical_name: dynamic_ind
+    business_meaning: "1 = ô thuộc band/slot động (IS_DYNAMIC_SLOT)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.IS_DYNAMIC_SLOT
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Last Band Indicator
+    physical_name: last_band_ind
+    business_meaning: "1 = band động cuối cùng trong nhóm (IS_GROUP_LAST_BAND) — nhận diện dữ liệu thật vs bản sao lỗi nguồn."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.IS_GROUP_LAST_BAND
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Row Indicator
+    physical_name: total_row_ind
+    business_meaning: "1 = dòng TỔNG, không phải dòng nhập liệu chi tiết."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.IS_TOTAL_ROW
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Ordinal Column Indicator
+    physical_name: ordinal_column_ind
+    business_meaning: "1 = cột số thứ tự (STT), không phải chỉ tiêu nghiệp vụ."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.IS_ORDINAL_COL
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Explorer Id
+    physical_name: data_explorer_id
+    business_meaning: "Mã chỉ tiêu dùng trên Data Explorer (ITEM_ID) = MD5(REPORT_CODE + LEGAL_BASIS + SHEET_NAME + ROW_PATH + COLUMN_PATH)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.ITEM_ID
+    comment: Không dùng làm BK — đổi khi ROW_PATH bị sửa qua fims_row_overrides/ (SCD2 ghi nhận version mới).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sort Order
+    physical_name: sort_order
+    business_meaning: Thứ tự hiển thị trên UI.
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.SORT_ORDER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Excluded By Config Indicator
+    physical_name: excluded_by_config_ind
+    business_meaning: "1 = dòng bị loại khỏi cây chỉ tiêu do khai drop: true trong file cấu hình đè."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.IS_EXCLUDED_BY_CONFIG
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Override Source
+    physical_name: override_src
+    business_meaning: "Nguồn cấu hình đè đã sửa dòng: \"<tên file>.yaml#<excel_row>\"."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: FIR_STRUCTURE
+    source_column: FIMS.FIR_STRUCTURE.OVERRIDE_SOURCE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
