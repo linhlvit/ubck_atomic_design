@@ -423,7 +423,7 @@ flowchart LR
     cdr_dt_dim_c --> fact_c
 ```
 
-**Trạng thái:** READY — **[THIẾT KẾ 2026-10-02]** BA đã map xong các chỉ tiêu "Dữ liệu động" vào `uat_fims_ods.fir_value` (BA cập nhật 2026-10-02 — trước đó ghi tên ODS cũ `fact_report_cell`) và Atomic FIMS luồng báo cáo động đã thiết kế (`DataModel/working/Atomic/lld/FIMS/`, 2026-09-30: `fir_value` draft; `fir_structure`, `foreign_investor_report`, `cl_foreign_investor_reporting_entity` approved) — thay thế `Member Regulatory Report`/`Member Report Value`/`Report Template` và các Fact tạm (`Capital Flow Report`, `Portfolio Value Report`, `Registration Report`, `NDTNN Regulatory Report Store`) ở Cụm 1b/3a/5a/7. Ánh xạ cột BA → Atomic: `report_code` → `foreign_investor_report.rpt_code`; `sheet_name` → `sheet_nm`; `row_path`/`column_path`/`section_id` → `fir_structure`; `ngay_nop` → `fir_value.submission_dt`; `value_num`/`value_raw`/`value_text` → `val_nbr`/`val_raw`/`val_string`; `row_order` → `dynamic_row_order`; `report_log_id` → `rpt_log_id`; `is_total_row`/`is_section_echo`/`is_band_overflow`/`is_static_copy`/`is_template_marker` → `total_row_ind`/`section_echo_ind`/`band_overflow_ind`/`static_copy_ind`/`rpt_marker_ind`; `is_mirror` đã lọc ở bước ODS → ATM.
+**Trạng thái:** READY — **[THIẾT KẾ 2026-10-02]** BA đã map xong các chỉ tiêu "Dữ liệu động" vào `uat_fims_ods.fir_value` (BA cập nhật 2026-10-02 — trước đó ghi tên ODS cũ `fact_report_cell`) và Atomic FIMS luồng báo cáo động đã thiết kế (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05: `fir_value`, `fir_structure`, `foreign_investor_report`, `cl_foreign_investor_reporting_entity`; `fir_value` đã bỏ `val_nbr`/`val_string`) — thay thế `Member Regulatory Report`/`Member Report Value`/`Report Template` và các Fact tạm (`Capital Flow Report`, `Portfolio Value Report`, `Registration Report`, `NDTNN Regulatory Report Store`) ở Cụm 1b/3a/5a/7. Ánh xạ cột BA → Atomic: `report_code` → `foreign_investor_report.rpt_code`; `sheet_name` → `sheet_nm`; `row_path`/`column_path`/`section_id` → `fir_structure`; `ngay_nop` → `fir_value.submission_dt`; `value_raw` → `val_raw` (BA còn ghi `value_num`/`value_text` nhưng nguồn dev chỉ có `value_raw` — Datamart ép số/chuỗi từ `val_raw`, O_NDTNN_39); `row_order` → `dynamic_row_order`; `report_log_id` → `rpt_log_id`; `is_total_row`/`is_section_echo`/`is_band_overflow`/`is_static_copy`/`is_template_marker` → `total_row_ind`/`section_echo_ind`/`band_overflow_ind`/`static_copy_ind`/`rpt_marker_ind`; `is_mirror` đã lọc ở bước ODS → ATM.
 
 Kiến trúc 3 Fact: (1) `Fact Foreign Investor Report Value` — EAV, grain 1 ô × 1 lần nộp × 1 dòng động, phục vụ chỉ tiêu 1 ô (Nhóm 1 K_NDTNN_5–7, Nhóm 3, Nhóm 5 K_NDTNN_35 qua cột vật lý dự phòng) và Data Explorer (Nhóm 18–43: metadata báo cáo); (2) `Fact Foreign Investor Capital Flow Snapshot` — pivot 1 dòng báo cáo IBOU9 sheet I (Quốc tịch, Tên nhà đầu tư, GT dòng vốn vào ròng +/-), phục vụ Nhóm 4 (Top 5) và Nhóm 16; (3) `Fact Foreign Investor Portfolio Report Snapshot` — pivot 1 dòng báo cáo PLIII-TT51 (59WJB/BZ5X4 sheet II: quốc tịch, loại hình, tên khách hàng, 6 giá trị tài sản, tổng danh mục, 3 cờ cá nhân/quỹ/tổ chức khác quỹ), phục vụ Nhóm 4, 6, 7, 17. Pivot dùng 5 cờ = 0 (không dòng tổng/echo/overflow/static/marker) theo SQL BA. Các điểm chờ BA/dev xác nhận: xem **O_NDTNN_38**.
 
@@ -477,11 +477,11 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -718,7 +718,7 @@ flowchart LR
 ---
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 > Loại dữ liệu: Dữ liệu động (cả 3 dòng)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
@@ -745,7 +745,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -755,6 +754,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -820,7 +820,7 @@ flowchart LR
 ---
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 > Loại dữ liệu: Dữ liệu động (8/10 dòng) / Dữ liệu tĩnh (2 Chiều — Loại hình NĐTNN, Quốc gia — dùng filter/GROUP BY cho measure động, không tự đứng độc lập)
 
 **Source:** `Fact Foreign Investor Portfolio Report Snapshot` → `Calendar Date Dimension`, `Foreign Investor Reporting Entity Dimension`; `Fact Foreign Investor Capital Flow Snapshot` → `Calendar Date Dimension`, `Foreign Investor Reporting Entity Dimension`
@@ -1022,7 +1022,7 @@ flowchart LR
 #### Nhóm 6 - Thống kê danh mục (STT=6)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 > Loại dữ liệu: Dữ liệu tĩnh (Loại hình nhà đầu tư) / Dữ liệu động (6 KPI còn lại)
 
 **Mockup:**
@@ -1118,7 +1118,7 @@ flowchart LR
 #### Nhóm 7 - Cơ cấu danh mục theo loại hình tài sản (STT=7)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 > Loại dữ liệu: Dữ liệu động (toàn bộ 7/7 dòng BA)
 
 **Mockup:**
@@ -1464,7 +1464,7 @@ flowchart LR
 #### Nhóm 12 - Biến động tài sản
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 > **Sửa Kịch bản D (2026-07-23, xem O_NDTNN_21):** Header cũ dùng entity ảo `Foreign Investor Stock Portfolio Snapshot` (FIMS.CATEGORIESSTOCK) — entity này KHÔNG tồn tại trong `DataModel/working/Atomic/lld/manifest.yaml`; `CATEGORIESSTOCK` đã gộp vào `Foreign Investor Securities Account` (Fundamental, current-state, không có `Portfolio Market Value`). BA STT=12 xác nhận chỉ 2 dòng: "Thông tin nhà đầu tư" (tĩnh) và "Tổng giá trị danh mục" (động, nguồn báo cáo PLIII-TT51 — cùng gốc rễ K_NDTNN_37, Nhóm 6).
 
 **Mockup:**
@@ -1775,7 +1775,7 @@ flowchart LR
 #### Nhóm 16 - Data Explorer Dòng vốn ròng của NĐTNN
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Mockup:**
 
@@ -1858,7 +1858,7 @@ flowchart LR
 #### Nhóm 17 - Data Explorer Tổng giá trị danh mục của NĐTNN
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 > **Sửa O_NDTNN_21 + lỗi lệch STT:** Header cũ ghi sai STT ("không STT") và dùng entity ảo `Foreign Investor Stock Portfolio Snapshot` (không tồn tại) đánh READY — BA thực tế xác nhận STT=17, toàn bộ 4/4 dòng Dữ liệu động (nguồn báo cáo PLIII-TT51, cùng gốc rễ Nhóm 6) → PENDING.
 
 **Mockup:**
@@ -1952,7 +1952,7 @@ flowchart LR
 #### Nhóm 18 - Data Explorer Pass-through PLV-TT51
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 > **Sửa gating "Loại dữ liệu" + KPI thừa không có dòng BA:** HLD cũ đánh READY toàn bộ (đúng gốc rễ đã sửa ở Nhóm 6/7/9/17) — BA STT=18 xác nhận **toàn bộ 6/6 dòng đều Dữ liệu động** → PENDING theo gate rule. Đồng thời "Giá trị" (`K_NDTNN_DE8` cũ) **không có dòng BA tương ứng** — BA chỉ có 6 dòng (Loại/Kỳ/Mã/Tên báo cáo + Mã/Tên chỉ tiêu), không có dòng "Giá trị" độc lập nào — đã loại khỏi bảng KPI theo xác nhận Data Modeler (2026-07-23). Xem O_NDTNN_25.
 
 **Mockup:**
@@ -1988,7 +1988,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -1998,6 +1997,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2053,7 +2053,7 @@ flowchart LR
 #### Nhóm 19 - CTCK - Báo cáo thống kê danh mục lưu ký NĐTNN, tổ chức phát hành CCLK tại nước ngoài (PLIII-TT51/2021/TT-BTC) (STT=19)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2082,7 +2082,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2092,6 +2091,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2147,7 +2147,7 @@ flowchart LR
 #### Nhóm 20 - CTCK - Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho NĐTNN (PLV-TT51/2021/TT-BTC) (STT=20)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2176,7 +2176,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2186,6 +2185,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2241,7 +2241,7 @@ flowchart LR
 #### Nhóm 21 - Ngân hàng lưu ký - Báo cáo thống kê danh mục lưu ký NĐTNN, tổ chức phát hành CCLK tại nước ngoài (PLIII-TT51/2011/TT-BTC) (STT=21)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2270,7 +2270,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2280,6 +2279,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2335,7 +2335,7 @@ flowchart LR
 #### Nhóm 22 - Ngân hàng lưu ký - Báo cáo hoạt động chu chuyển vốn của NĐTNN, tổ chức phát hành CCLK tại nước ngoài (PLIV-TT51/2021/TT-BTC) (STT=22)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2364,7 +2364,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2374,6 +2373,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2429,7 +2429,7 @@ flowchart LR
 #### Nhóm 23 - Ngân hàng lưu ký - Báo cáo số liệu hoạt động NĐTNN (STT=23)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2458,7 +2458,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2468,6 +2467,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2523,7 +2523,7 @@ flowchart LR
 #### Nhóm 24 - Ngân hàng lưu ký - Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN (STT=24)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2552,7 +2552,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2562,6 +2561,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2617,7 +2617,7 @@ flowchart LR
 #### Nhóm 25 - Đại diện CBTT - Giấy chỉ định/ủy quyền thực hiện CBTT của NĐTNN hoặc nhóm NĐTNN có liên quan (STT=25)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2646,7 +2646,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2656,6 +2655,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2711,7 +2711,7 @@ flowchart LR
 #### Nhóm 26 - Đại diện CBTT - Báo cáo về sở hữu của nhóm NĐTNN có liên quan là cổ đông lớn, NĐT nắm giữ từ 5% trở lên CP/CCQ đóng (PLIX-TT96/2020/TT-BTC) (STT=26)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2740,7 +2740,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2750,6 +2749,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2805,7 +2805,7 @@ flowchart LR
 #### Nhóm 27 - Đại diện CBTT - Báo cáo thay đổi về sở hữu của nhóm NĐTNN có liên quan là cổ đông lớn, NĐT nắm giữ từ 5% trở lên CP/CCQ đóng (PLX-TT96/2020/TT-BTC) (STT=27)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2834,7 +2834,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2844,6 +2843,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2899,7 +2899,7 @@ flowchart LR
 #### Nhóm 28 - Đại diện CBTT - Báo cáo về ngày trở thành/không còn là cổ đông lớn, NĐT nắm giữ từ 5% trở lên CP/CCQ đóng (STT=28)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -2928,7 +2928,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -2938,6 +2937,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -2993,7 +2993,7 @@ flowchart LR
 #### Nhóm 29 - Đại diện CBTT - Báo cáo về thay đổi sở hữu của cổ đông lớn, NĐT nắm giữ từ 5% trở lên CP/CCQ đóng (STT=29)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3022,7 +3022,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3032,6 +3031,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3087,7 +3087,7 @@ flowchart LR
 #### Nhóm 30 - Đại diện CBTT - Cập nhật thay đổi về danh sách nhóm NĐTNN có liên quan (PLII-TT51/2021/TT-BTC) (STT=30)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3116,7 +3116,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3126,6 +3125,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3181,7 +3181,7 @@ flowchart LR
 #### Nhóm 31 - Đại diện giao dịch - Báo cáo tình hình hoạt động đầu tư của NĐTNN (PLVIII-TT51/2021/TT-BTC) (STT=31)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3210,7 +3210,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3220,6 +3219,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3275,7 +3275,7 @@ flowchart LR
 #### Nhóm 32 - NĐTNN - Báo cáo về ngày trở thành/không còn là cổ đông lớn, NĐT nắm giữ từ 5% trở lên CP/CCQ đóng (STT=32)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3304,7 +3304,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3314,6 +3313,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3369,7 +3369,7 @@ flowchart LR
 #### Nhóm 33 - NĐTNN - Báo cáo về thay đổi sở hữu của cổ đông lớn, NĐT nắm giữ từ 5% trở lên CP/CCQ đóng (STT=33)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3398,7 +3398,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3408,6 +3407,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3463,7 +3463,7 @@ flowchart LR
 #### Nhóm 34 - NĐTNN - Thông báo giao dịch CP/CCQ/chứng quyền có bảo đảm của người nội bộ và người có liên quan (STT=34)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3492,7 +3492,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3502,6 +3501,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3557,7 +3557,7 @@ flowchart LR
 #### Nhóm 35 - NĐTNN - Thông báo giao dịch trái phiếu chuyển đổi, quyền mua CP/CCQ, quyền mua TPCĐ của người nội bộ và người có liên quan (STT=35)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3586,7 +3586,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3596,6 +3595,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3651,7 +3651,7 @@ flowchart LR
 #### Nhóm 36 - NĐTNN - Báo cáo kết quả giao dịch CP/CCQ/chứng quyền có bảo đảm của người nội bộ và người có liên quan (STT=36)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3680,7 +3680,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3690,6 +3689,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3745,7 +3745,7 @@ flowchart LR
 #### Nhóm 37 - NĐTNN - Báo cáo kết quả giao dịch TPCĐ, quyền mua CP/CCQ, quyền mua TPCĐ của người nội bộ và người có liên quan (STT=37)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3774,7 +3774,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3784,6 +3783,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3839,7 +3839,7 @@ flowchart LR
 #### Nhóm 38 - SGDCK - Báo cáo tình hình giao dịch của NĐTNN, tổ chức phát hành CCLK tại nước ngoài (PLVII-TT51/2021/TT-BTC) (STT=38)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3868,7 +3868,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3878,6 +3877,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -3933,7 +3933,7 @@ flowchart LR
 #### Nhóm 39 - VSDC - Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC) (STT=39)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -3962,7 +3962,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -3972,6 +3971,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -4027,7 +4027,7 @@ flowchart LR
 #### Nhóm 40 - VSDC - Báo cáo danh mục của từng NĐT nước ngoài (STT=40)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -4056,7 +4056,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -4066,6 +4065,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -4121,7 +4121,7 @@ flowchart LR
 #### Nhóm 41 - VSDC - Báo cáo thống kê tình hình nắm giữ chứng khoán của NĐTNN (STT=41)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -4150,7 +4150,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -4160,6 +4159,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -4215,7 +4215,7 @@ flowchart LR
 #### Nhóm 42 - VSDC - Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/đăng ký giao dịch (STT=42)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -4244,7 +4244,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -4254,6 +4253,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -4309,7 +4309,7 @@ flowchart LR
 #### Nhóm 43 - VSDC - Báo cáo thống kê tình hình chia cổ tức cho NĐTNN (STT=43)
 
 > Phân loại: **Phân tích**
-> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **draft** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/working/Atomic/lld/FIMS/`, thiết kế 2026-09-30; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
+> Atomic: `Foreign Investor Report Value` (`fir_value`) ← FIMS.FIR_VALUE — **approved** | `Foreign Investor Report Structure` (`fir_structure`) ← FIMS.FIR_STRUCTURE — **approved** | `Foreign Investor Report` (`foreign_investor_report`) ← FIMS.FOREIGN_INVESTOR_REPORT — **approved** | `Classification Foreign Investor Reporting Entity` (`cl_foreign_investor_reporting_entity`) — **approved** (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05, đã bỏ `val_nbr`/`val_string` — nguồn chỉ có `val_raw`; luồng báo cáo động thay `Member Regulatory Report`/`Member Report Value`/`Report Template` cũ)
 
 **Source:** `Fact Foreign Investor Report Value` → `Calendar Date Dimension`, `Foreign Investor Report Structure Dimension`, `Foreign Investor Reporting Entity Dimension`
 
@@ -4338,7 +4338,6 @@ erDiagram
         string Period_Value
         decimal Value_Number
         string Value_Raw
-        string Value_String
         string Source_System_Code
     }
     Calendar_Date_Dimension {
@@ -4348,6 +4347,7 @@ erDiagram
     }
     Foreign_Investor_Report_Structure_Dimension {
         string Foreign_Investor_Report_Structure_Dimension_Id PK
+        string Fir_Structure_Code
         string Structure_Code
         string Report_Code
         string Report_Name
@@ -4544,11 +4544,12 @@ graph TB
 | O_NDTNN_24 | **[Cập nhật 2026-07-24 — thay đổi kiến trúc, xem O_NDTNN_28] Nhóm 14 (STT=14) — đổi từ Star Schema (Fact dùng chung Nhóm 1/2) sang bảng Tác nghiệp riêng; giá trị filter CCQ chưa xác nhận tên gọi chuẩn hoá:** Lịch sử: (1) BA tự ghi chú "[M-01] Cần bổ sung bảng danh mục loại CK để filter CCQ", nguyên văn SQL tham khảo `JAD_STOCKINFOR.stocktype = '3'`. Bản thiết kế 2026-07-23 từng tuyên bố "đã đối chiếu đúng giá trị chuẩn hoá Atomic" và dùng `'MF'` thay cho `'3'` — tuyên bố SAI, không có căn cứ (scheme `MDDS_STOCK_TYPE` `values: []`, chưa profile — `'MF'` chỉ là suy diễn từ tên mô tả scheme). Đã sửa dùng đúng `'3'` nguyên văn (2026-07-24). (2) Đối chiếu tiếp nguyên văn BA đầy đủ hơn phát hiện công thức CCQ còn thiếu 2 điều kiện: `Market ID = 'STO'` và `Investor_Type_Code = '7000'` — attribute này KHÁC HẲN `Foreign_Investor_Type_Code` dùng ở 9 KPI Cổ phiếu/Trái phiếu/Tổng (2 attribute độc lập trên `Securities Trade`: `buy/sell_investor_tp_code` scheme `ORDERTRADE_INVESTOR_TYPE` vs `buy/sell_foreign_investor_tp_code` scheme `ORDERTRADE_FOREIGN_INVESTOR_TYPE`). (3) **Phát hiện gốc rễ (2026-07-24):** Vì `Foreign_Buy_Value`/`Foreign_Sell_Value` trên `Fact Securities Foreign Trading Snapshot` đã pre-aggregate SUM cố định theo `Foreign_Investor_Type_Code` — filter thêm `Investor_Type_Code='7000'` ở query-time trên measure đã collapse là VÔ NGHĨA (2 điều kiện độc lập, không lồng nhau). Đã đánh giá và loại bỏ 3 phương án: (a) Fact riêng cho CCQ — vi phạm nguyên tắc 1 báo cáo không ghép nhiều Fact; (b) thêm 2 measure sparse vào Fact chung — NULL tràn lan cho dòng CP/TP; (c) đưa Investor Type vào Securities Dimension — sai bản chất Kimball (per-trade attribute, không phải per-mã CK). (4) Đối chiếu cột "Chiều dữ liệu" BA xác nhận grain thật của báo cáo là "Ngày, Loại CK" (1 ngày × 1 trong 4 nhóm loại CK cố định) — đúng bản chất báo cáo tổng hợp đã đóng gói, không phải use-case Star Schema. | Đã tách Nhóm 14 thành bảng TÁC NGHIỆP riêng `Foreign Investor Trading Statistics Report` (grain 1 ngày × 1 Security_Type_Group: STOCK/BOND/FUND_CERT/TOTAL) — không còn dùng `Fact Securities Foreign Trading Snapshot`. FUND_CERT filter đúng 3 điều kiện: `Market_Id_Code='STO'` AND `Investor_Type_Code='7000'` AND join `Securities_Dimension.Stock_Type_Code='3'` (giá trị nguyên văn BA). 12/12 KPI giữ **READY** — BA đã cung cấp đủ giá trị filter cụ thể để thực thi; chỉ chưa biết TÊN GỌI chuẩn hoá của `'3'` (không ảnh hưởng khả năng chạy). Cần Data Modeler xác nhận/profile scheme `MDDS_STOCK_TYPE` để biết `'3'` thực sự tương ứng loại chứng khoán nào trên MDDS. | K_NDTNN_72-83 | Open — dùng được ngay, chờ Data Modeler xác nhận tên gọi chuẩn hoá qua profile scheme MDDS_STOCK_TYPE |
 | O_NDTNN_25 | **Nhóm 18 (STT=18) — gating "Loại dữ liệu" sai + KPI thừa không có dòng BA — phát hiện khi review Nhóm 18 (2026-07-23):** HLD cũ đánh READY toàn bộ "26 mẫu biểu TT51/2021" (Nhóm 18 gốc + block "Bổ sung Loại 1" trùng lặp) dù BA STT=18 xác nhận **toàn bộ 6/6 dòng đều Dữ liệu động**. Đồng thời KPI "Giá trị" (`K_NDTNN_DE8` cũ, Cell Value) **không có dòng BA tương ứng** — BA STT=18 chỉ có 6 dòng (Loại/Kỳ/Mã/Tên báo cáo + Mã/Tên chỉ tiêu), không dòng nào là "Giá trị" độc lập; các STT Data Explorer khác cùng pattern (19, 20...) cũng chỉ 6 dòng, xác nhận đây không phải thiếu sót ngẫu nhiên của riêng STT=18. | Theo xác nhận Data Modeler (2026-07-23): (1) Chuyển toàn bộ Nhóm 18 sang PENDING theo gate rule. (2) Loại bỏ KPI "Giá trị" khỏi bảng KPI — tuân thủ đúng rule "cấm thêm KPI không có dòng BA", dù hợp lý về nghiệp vụ (Pass-through cần measure). (3) Giữ ID khai sinh trước (từ block "Bổ sung Loại 1"), xóa bộ `K_NDTNN_DE3-DE7b` trùng lặp ở Nhóm 18 gốc — xem O_NDTNN_15. (4) Xóa `NDTNN Regulatory Report Store` khỏi Section 3 Bảng Tác nghiệp/graph TB, chuyển Cụm 7 (Section 1) sang PENDING. **Đề xuất bổ sung BA:** nếu màn hình Pass-through thực sự cần hiển thị giá trị chỉ tiêu, cần yêu cầu BA bổ sung dòng "Giá trị" vào STT=18 trước khi thiết kế lại. | K_NDTNN_99-104 (Nhóm 18, đã sửa); "Giá trị" (đã loại bỏ, chờ BA xác nhận bổ sung) | Open — chờ BA xác nhận có cần bổ sung dòng "Giá trị" hay không |
 | O_NDTNN_26 | **Nhóm 13 Lịch sử tuân thủ (STT=13) — entity Atomic sai hoàn toàn, phát hiện khi review theo yêu cầu rà soát BA (2026-07-23):** HLD cũ dùng `Surveillance Enforcement Case` (TT.GS_HO_SO) + `Surveillance Enforcement Decision` (TT.GS_VAN_BAN_XU_LY) — BA STT=13 (6 dòng, 100% Dữ liệu tĩnh) xác nhận nguồn thật hoàn toàn khác: `PENALTY_DECISION` (Ngày quyết định, Trạng thái), `PENALTY_DECISION_SUBJECT` (Thông tin nhà đầu tư), `PENALTY_DECISION_SUBJECT_BEHAVIOR` (Nội dung/Trích yếu), `PENALTY_TYPE` (Phân loại) — cả 4 entity đều `design_status: approved` trong manifest. Đây không phải cùng 1 concept khác tên gọi — 2 bộ entity (GS_* vs PENALTY_*) là 2 luồng nghiệp vụ Thanh Tra khác nhau hoàn toàn (Surveillance case-based workflow vs Penalty decision-based workflow). BA cũng ghi rõ dòng "Mức độ" không có trường nguồn (giá trị NULL, đề xuất loại bỏ khỏi màn hình). | Đã sửa `Operational Investor Compliance History` dùng đúng 4 entity Penalty Decision/Subject/Subject Behavior/Penalty Type — 5/6 KPI READY (K_NDTNN_66-68,70), 1 Out-of-scope (K_NDTNN_70 "Mức độ", theo đúng ghi chú BA). Cập nhật Section 1 Cụm 4, Section 3 Bảng Tác nghiệp, O_NDTNN_6. | K_NDTNN_66-70 | Closed — đã sửa đúng entity Atomic |
-| O_NDTNN_27 | **Nhóm 19-43 (STT 19-43) — 25 loại báo cáo Pass-through TT51/TT96 khác nhau, cần xác nhận 25 Report Code riêng biệt — phát hiện khi rà soát toàn bộ BA 43 STT (2026-07-23):** Sau khi phát hiện 25 STT (19-43) chưa có Nhóm HLD (xem O_NDTNN_18), đã khai sinh mới toàn bộ theo đúng pattern Nhóm 18 (STT=18) — mỗi Nhóm 6 KPI (Loại/Kỳ/Mã/Tên báo cáo + Mã/Tên chỉ tiêu), 100% PENDING (Dữ liệu động), reuse chung `NDTNN Regulatory Report Store` (generic store TT51, Cụm 7). Khác Nhóm 18, mỗi Nhóm trong số 25 Nhóm này ứng với 1 loại báo cáo/tổ chức nộp khác nhau (CTCK, Ngân hàng lưu ký, Đại diện CBTT, Đại diện giao dịch, NĐTNN, SGDCK, VSDC — theo các phụ lục PLII/III/IV/V/VI/VII/VIII/IX/X-TT51/2021/TT-BTC và TT96/2020/TT-BTC) — cần xác nhận 25 Report Code riêng biệt (1 cho mỗi loại báo cáo) trong generic store trước khi go-live, không thể dùng chung 1 Report Code cho cả 25 Nhóm. | Đã khai sinh 25 Nhóm mới (Nhóm 19-43), 100% PENDING, K_NDTNN_105-254 (150 KPI, 6 KPI/Nhóm). Cần Data Modeler/BA xác nhận 25 Report Code tương ứng trong `Member Regulatory Report`/`Report Template` trước khi thiết kế lại thành READY. | K_NDTNN_105-254 | Open — chờ xác nhận 25 Report Code riêng biệt. **[2026-10-02] Đã thiết kế Nhóm 18–43 theo `rpt_nm` (Tên báo cáo BA); còn xác nhận Report Code — O_NDTNN_38** |
+| O_NDTNN_27 | **Nhóm 19-43 (STT 19-43) — 25 loại báo cáo Pass-through TT51/TT96 khác nhau, cần xác nhận 25 Report Code riêng biệt — phát hiện khi rà soát toàn bộ BA 43 STT (2026-07-23):** Sau khi phát hiện 25 STT (19-43) chưa có Nhóm HLD (xem O_NDTNN_18), đã khai sinh mới toàn bộ theo đúng pattern Nhóm 18 (STT=18) — mỗi Nhóm 6 KPI (Loại/Kỳ/Mã/Tên báo cáo + Mã/Tên chỉ tiêu), ban đầu 100% PENDING (Dữ liệu động) — nay đã READY, xem O_NDTNN_38, reuse chung `NDTNN Regulatory Report Store` (generic store TT51, Cụm 7). Khác Nhóm 18, mỗi Nhóm trong số 25 Nhóm này ứng với 1 loại báo cáo/tổ chức nộp khác nhau (CTCK, Ngân hàng lưu ký, Đại diện CBTT, Đại diện giao dịch, NĐTNN, SGDCK, VSDC — theo các phụ lục PLII/III/IV/V/VI/VII/VIII/IX/X-TT51/2021/TT-BTC và TT96/2020/TT-BTC) — cần xác nhận 25 Report Code riêng biệt (1 cho mỗi loại báo cáo) trong generic store trước khi go-live, không thể dùng chung 1 Report Code cho cả 25 Nhóm. | Đã khai sinh 25 Nhóm mới (Nhóm 19-43), ban đầu 100% PENDING (nay READY từ 2026-10-02), K_NDTNN_105-254 (150 KPI, 6 KPI/Nhóm). Cần Data Modeler/BA xác nhận 25 Report Code tương ứng trong `Member Regulatory Report`/`Report Template` trước khi thiết kế lại thành READY. | K_NDTNN_105-254 | **Closed (2026-10-05)** — đã thiết kế Nhóm 18–43 theo `rpt_nm` (Tên báo cáo BA), toàn bộ READY (2026-10-02). Việc xác nhận 25 Report Code riêng biệt chuyển sang O_NDTNN_38 mục (3) |
 | O_NDTNN_28 | **[GỐC RỄ] `Security_Symbol_Code` trên Fact là degenerate text, join Public Company Dimension chỉ là text-match không FK chính thức — phát hiện khi rà soát độ dư thừa thiết kế (2026-07-23):** Rà soát Atomic xác nhận: (1) `Securities Trade` (ORDERTRADE, nguồn của Fact) chỉ có 1 field text `Security Symbol Code` (`data_domain: Text`, không FK, `comment: null`) — không có entity "Securities"/danh mục mã CK nào khác đi kèm. (2) `Public Company` (IDS.COMPANY_PROFILES, approved) có grain **1 công ty đại chúng** (PK=Public_Company_Id), KHÔNG phải "1 mã CK" như HLD từng ghi sai — 1 công ty có thể có nhiều mã CK khác nhau (Equity Ticker Symbol + Bond Ticker Symbol là 2 field riêng trên cùng 1 dòng), và join `Security_Symbol_Code = Equity_Ticker_Symbol` trước đây chỉ là text-match tự nhiên, không có FK khai báo — chỉ phủ được cổ phiếu hiện tại (current-state), không phủ trái phiếu/CCQ/lịch sử đổi mã. (3) `Public Company Stock Listing History`/`Bond Listing History` (IDS, working/lld, **draft**) là nguồn đúng cấp lịch sử niêm yết nhưng chưa approved — không dùng được. (4) Xác nhận nguồn đúng grain "1 mã CK" là `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR, `design_status: approved` ở cấp LLD table-level dù chưa sync vào `dm_manifest.yaml`/`DataModel/Atomic/` chính thức) — module GSTT đã tự thiết kế Dimension cùng khái niệm (`scr_tdg_snpst_dim`) ở cấp HLD/Entities.csv riêng nhưng CHƯA đăng ký `datamart_model.yaml`, nên không thể `reuse` chính thức. | Đã tạo `Securities Dimension` (`securities_dim`, Cụm 1a Section 1, Conformed Dimension module: SHARED) — grain 1 mã CK (SCD4A), ETL derive từ `Security Trading Snapshot` (Fact Snapshot) lấy bản ghi mới nhất theo Symbol, giữ 10 thuộc tính tĩnh (Symbol/Security Full Name/Stock Type Code/Floor Code/Listed Share Count/Total Listing Volume/Underlying Symbol/Issuer Name/Listing Date/Symbol Status Code — loại bỏ toàn bộ field giá/khối lượng/sổ lệnh biến động). Thêm FK `Securities_Dimension_Id` vào `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2), thay thế cột text `Security_Symbol_Code` lặp lại trên Fact. Sửa lại grain `Public Company Dimension` (Nhóm 2/8) từ "1 mã CK niêm yết" thành đúng "1 công ty đại chúng" — vẫn giữ join text-match `Equity_Ticker_Symbol = Securities_Dimension.Symbol` cho Chiều Ngành (không có FK chính thức ở tầng Atomic, đã ghi rõ rủi ro). **[Cập nhật 2026-07-24]** Nhóm 14 (K_NDTNN_78-80) KHÔNG còn dùng `Securities_Dimension` qua FK Star Schema — đã chuyển thành ETL filter nội bộ trong bảng tác nghiệp `Foreign Investor Trading Statistics Report` (xem O_NDTNN_24). **[Cập nhật 2026-07-24]** Nhóm 15 KHÔNG còn dùng `Securities_Dimension` — đã chuyển sang bảng tác nghiệp `Foreign Investor Trading Detail Report`, denormalize `Symbol` trực tiếp (text), không qua FK (xem O_NDTNN_30). **Cần Data Modeler xác nhận thêm:** (a) đồng bộ `Security Trading Snapshot` vào `dm_manifest.yaml`/`DataModel/Atomic/` chính thức; (b) đăng ký `Securities Dimension`/`securities_dim` vào `datamart_model.yaml` với `module: SHARED` để GSTT (và module khác) reuse thay vì tự tạo bản riêng `scr_tdg_snpst_dim`. | K_NDTNN_9 (Nhóm 2) | Open — chờ đồng bộ Atomic manifest + đăng ký Conformed Dimension |
 | O_NDTNN_29 | **`Market_Id`/`Market_Code` trên Fact Market Index Snapshot là degenerate text, cùng pattern O_NDTNN_28 — phát hiện khi đánh giá thêm chiều liên kết Nhóm 5 (2026-07-23):** Rà soát Atomic `Market Index Snapshot` (MDDS.JAD_MARKETINFOR, 34 attribute) xác nhận 5 cột mang tính định danh/mô tả tĩnh — KHÔNG đổi theo từng lần snapshot — tách biệt rõ khỏi 29 cột còn lại (measure giá/khối lượng/trạng thái biến động theo phiên): `Market Id`, `Market Code` (composite key BA dùng để định danh 1 chỉ số — cả 2 cùng xuất hiện trong SELECT lẫn PARTITION BY của SQL BA K_NDTNN_34, không chỉ dùng ngầm trong WHERE), `Index Type Code` (scheme `MDDS_INDEX_TYPE`, `values: []` chưa profile), `TSC Product Group Id` (mã sản phẩm giao dịch hose/hnx/upcom), `Market Status Code` (trạng thái phiên, lấy current-state theo SCD4A). Atomic KHÔNG có field tên chỉ số tường minh (không có `Index_Name`) — xác nhận qua BA gốc: tên "VN-Index" trong mockup chỉ là nhãn tiêu đề BA tự đặt gắn với đúng 1 combo filter cứng `marketId='10' AND marketCode='HOSE'`, không xuất phát từ bất kỳ danh mục chuẩn hoá nào. Đồng thời phát hiện module QLKD đã có `Fact Market Index Snapshot` riêng (`market_index_snpst` trong `datamart_model.yaml`, grain 1 chỉ số × 1 tháng, chỉ dùng `Market_Code` text) từ cùng nguồn Atomic nhưng chưa từng tách Dimension. | Đã tạo `Market Index Dimension` (`market_index_dim`, Cụm 5c Section 1, Conformed Dimension module: SHARED) — grain 1 combo Market_Id+Market_Code (SCD4A current-state), giữ 5 thuộc tính tĩnh nêu trên. Thêm FK `Market_Index_Dimension_Id` vào `Fact Market Index Snapshot` (Nhóm 5), thay thế cột text `Market_Id`/`Market_Code` lặp lại trên Fact. Không hardcode tên hiển thị "VN-Index" trên Dimension vì Atomic không có nguồn — chỉ giữ đúng các cột tĩnh kéo 1-1 từ Atomic. **Chưa đóng hoàn toàn O_NDTNN_19** — Dimension kiểm soát được giá trị hợp lệ qua FK thay vì free-text, nhưng KHÔNG chứng minh được tính duy nhất 1 chỉ số/ngày (vẫn cần profile dữ liệu thật để xác nhận `Index_Time` không trùng do nhiều chỉ số khác publish cùng combo). **Sửa 24/07/2026:** Data Modeler đã xác nhận — thay vì QLKD tạo Fact riêng dùng `Market_Code` text, đã gộp thành 1 Fact logic `fct_market_index_snpst` sở hữu bởi QLKD (module phát triển trước), nâng schema thêm FK `Market_Index_Dimension_Id`; NDTNN reuse nguyên Fact này (`datamart_model.yaml` id `DTM-fct_market_index_snpst`, `modules_using: [QLKD, NDTNN]`). `Market Index Dimension` (`market_index_dim`) cũng chuyển module sang QLKD (cùng module sở hữu Fact), NDTNN reuse. **[Cập nhật 24/07/2026, datamart-review]** Phát hiện thêm: Fact gộp lúc đó vẫn giữ ETL populate grain 1 tháng (QLKD) — khiến K_NDTNN_34 filter `:pdate` theo ngày bất kỳ trả về rỗng cho mọi ngày không phải cuối tháng, vì Fact không có dòng cho ngày giữa tháng. Đã sửa: đổi grain vật lý Fact sang **1 chỉ số × 1 ngày** thống nhất — QLKD nay tự filter/JOIN đúng ngày cuối tháng trên Fact grain-ngày này (`DTM_QLKD_Detail_Mapping.csv` K_QLKD_88-91 đã bổ sung filter `cdr_dt = LAST_DAY(:pmonth)`). | K_NDTNN_34 (Nhóm 5) | **Closed** — Fact gộp + Dimension dùng chung đã đăng ký trong `datamart_model.yaml`, cả hai sở hữu QLKD. Grain đã thống nhất về ngày (24/07/2026). Chưa đóng hoàn toàn O_NDTNN_19 (vẫn cần profile dữ liệu thật xác nhận tính duy nhất 1 chỉ số/ngày) |
 | O_NDTNN_37 | **[MỞ 2026-10-02 — đồng bộ tên entity VSDC, K_NDTNN_50/51 Nhóm 8 và K_GSDC_1381–1390]** Fact `Fact Public Company Listing Info Snapshot` (GSDC) từng dùng tên `listed_security_info_snapshot`/`foreign_ownership_info_snapshot` và `src_stm_code` `VSDC_LISTED_SECURITY_INFO_SNAPSHOT`/`VSDC_FOREIGN_OWNERSHIP_INFO_SNAPSHOT` — không tồn tại ở đâu trong `DataModel/` (HLD GSDC khẳng định sai là đã có YAML trong `DataModel/Atomic/Product/`). Data Modeler xác nhận 2026-10-02: đúng là `listed_share_info` và `foreign_ownership_info` (`mapping_vsdc_ods_atm.md` Bảng 1/19/27 và Bảng 9). Đã đồng bộ tên entity, tên logic và `src_stm_code` (`VSDC_OUTSTANDING_SHARES`, `VSDC_FOREIGN_INVESTOR_INFO` — cùng giá trị các module GSTT/PTTT/NDTNN đang dùng) ở GSDC/GSTT/NDTNN (LLD, Detail Mapping, HLD, flat, `datamart_model.yaml`). Còn mở: (1) hai entity vẫn là ngoại lệ VSDC — chưa có YAML Atomic/manifest, Gate 0 còn cảnh báo `L0-ATOMIC-COLUMN-NOT-FOUND`; (2) `foreign_holding_value` thêm dedup bản ghi cuối phiên của `security_trading_snapshot` (tránh nhân dòng khi nhiều bản ghi/phiên); (3) grain `ds_snpst_dt` (ngày dev xử lý) chưa được dev xác nhận là cuối tháng. | Dùng tên mapping VSDC; chờ thiết kế YAML Atomic cho VSDC (Bảng 1/19/27, 9) để đóng Gate 0. | K_NDTNN_50, K_NDTNN_51, K_GSDC_1381–1390 | Open |
-| O_NDTNN_38 | **[MỞ 2026-10-02 — thiết kế mới theo BA báo cáo động + Atomic FIMS fir_*; 100% KPI NDTNN đã thiết kế, không còn PENDING]** Các quyết định thiết kế và giả định chưa BA/dev xác nhận: (1) **K_NDTNN_25–28 (Nhóm 4)** thiết kế theo Điều kiện + SQL tham khảo của BA (báo cáo 59WJB/BZ5X4 sheet II, SUM "Tổng giá trị danh mục > Giá trị") dù mô tả BA là dòng vốn ròng (IBOU9) — nếu BA đổi sang IBOU9 thì chuyển sang `Fact Foreign Investor Capital Flow Snapshot`; (2) tên sheet BA (`sheet_name` = I/II) giả định = `foreign_investor_report.sheet_nm`; (3) Data Explorer Nhóm 18–43: báo cáo xác định theo `rpt_nm` = "Tên báo cáo" của BA (chưa có 25 Report Code — O_NDTNN_27; các cặp Nhóm 28/32, 29/33 trùng tên báo cáo, khác đối tượng nộp); "Loại báo cáo" = `report_type_nm` suy ra theo danh sách báo cáo bất thường của BA vì Atomic fir_* không có `REPORTTYPE.NAME`; "Mã chỉ tiêu" = `structure_code`, "Tên chỉ tiêu" = nhãn dòng > nhãn cột (giả định); (4) K_NDTNN_22 đọc trực tiếp ô "(+/-)" theo BA thay vì (vào − ra) như HLD cũ — cần đối chiếu số; (5) K_NDTNN_5–7 cột "Tổng số lượng tới thời điểm báo cáo" là lũy kế, BA mô tả "mới cấp YTD" — chưa có công thức tăng trưởng; SQL BA có lỗi cú pháp; (6) K_NDTNN_93/94 (Data Explorer) vào ròng = phần dương, rút ròng = phần âm (tuyệt đối) của tổng — giả định; (7) BA tách Quỹ / Tổ chức khác quỹ bằng LIKE chồng lấn — giữ nguyên 3 cờ độc lập `individual_ind`/`fund_ind`/`non_fund_org_ind`; (8) **[BA cập nhật 2026-10-02]** nguồn đổi tên `uat_fims_ods.fir_value`; Nhóm 9: tỷ lệ sở hữu = `max_foreign_ownership_ratio`, Room tối đa = `max_foreign_holding_quantity`, Top 5 room thấp nhất bỏ điều kiện `max > 0`; Nhóm 10 bỏ `limit 5`; K_NDTNN_35: quy tắc ưu tiên kỳ nửa tháng khi trùng bản ngày (O_NDTNN_33) và đơn vị USD; (9) Nhóm 12 (K_NDTNN_64/65) BA còn Doing — K_NDTNN_64 giữ `Foreign Investor Dimension` (tên + mã số GD), K_NDTNN_65 đọc `Fact Foreign Investor Portfolio Report Snapshot` lọc theo tên khách hàng; cột MSGD của báo cáo (nối cụm INVESTOR) chưa pivot vì chưa biết nhãn cột; (10) `fir_value` còn draft, `val_nbr` decimal(23,2) có thể mất độ chính xác của tỷ lệ; SQL BA Nhóm 7 tham chiếu `fir_value_spk2` (tên bảng không có trong Atomic) và `base_rows` thiếu `report_log_id`. | Thiết kế theo SQL/Điều kiện BA; ghi giả định ở từng KPI; profile dữ liệu UAT trước go-live (tỷ lệ khớp tên báo cáo, giá trị sheet, danh sách báo cáo bất thường). | K_NDTNN_5–7, 20–22, 23–32, 35–49, 64–65, 90–254 | Open |
+| O_NDTNN_38 | **[MỞ 2026-10-02 — thiết kế mới theo BA báo cáo động + Atomic FIMS fir_*; 100% KPI NDTNN đã thiết kế, không còn PENDING]** Các quyết định thiết kế và giả định chưa BA/dev xác nhận: (1) **K_NDTNN_25–28 (Nhóm 4)** thiết kế theo Điều kiện + SQL tham khảo của BA (báo cáo 59WJB/BZ5X4 sheet II, SUM "Tổng giá trị danh mục > Giá trị") dù mô tả BA là dòng vốn ròng (IBOU9) — nếu BA đổi sang IBOU9 thì chuyển sang `Fact Foreign Investor Capital Flow Snapshot`; (2) tên sheet BA (`sheet_name` = I/II) giả định = `foreign_investor_report.sheet_nm`; (3) Data Explorer Nhóm 18–43: báo cáo xác định theo `rpt_nm` = "Tên báo cáo" của BA (chưa có 25 Report Code — O_NDTNN_27; các cặp Nhóm 28/32, 29/33 trùng tên báo cáo, khác đối tượng nộp); "Loại báo cáo" = `report_type_nm` suy ra theo danh sách báo cáo bất thường của BA vì Atomic fir_* không có `REPORTTYPE.NAME`; "Mã chỉ tiêu" = `structure_code`, "Tên chỉ tiêu" = nhãn dòng > nhãn cột (giả định); (4) K_NDTNN_22 đọc trực tiếp ô "(+/-)" theo BA thay vì (vào − ra) như HLD cũ — cần đối chiếu số; (5) K_NDTNN_5–7 cột "Tổng số lượng tới thời điểm báo cáo" là lũy kế, BA mô tả "mới cấp YTD" — chưa có công thức tăng trưởng; SQL BA có lỗi cú pháp; (6) K_NDTNN_93/94 (Data Explorer) vào ròng = phần dương, rút ròng = phần âm (tuyệt đối) của tổng — giả định; (7) BA tách Quỹ / Tổ chức khác quỹ bằng LIKE chồng lấn — giữ nguyên 3 cờ độc lập `individual_ind`/`fund_ind`/`non_fund_org_ind`; (8) **[BA cập nhật 2026-10-02]** nguồn đổi tên `uat_fims_ods.fir_value`; Nhóm 9: tỷ lệ sở hữu = `max_foreign_ownership_ratio`, Room tối đa = `max_foreign_holding_quantity`, Top 5 room thấp nhất bỏ điều kiện `max > 0`; Nhóm 10 bỏ `limit 5`; K_NDTNN_35: quy tắc ưu tiên kỳ nửa tháng khi trùng bản ngày (O_NDTNN_33) và đơn vị USD; (9) Nhóm 12 (K_NDTNN_64/65) BA còn Doing — K_NDTNN_64 giữ `Foreign Investor Dimension` (tên + mã số GD), K_NDTNN_65 đọc `Fact Foreign Investor Portfolio Report Snapshot` lọc theo tên khách hàng; cột MSGD của báo cáo (nối cụm INVESTOR) chưa pivot vì chưa biết nhãn cột; (10) `fir_value` đã approved (2026-10-05) và bỏ `val_nbr`/`val_string`; cột Datamart `val_nbr` của `fct_foreign_investor_report_value` (decimal(23,2), ép từ `val_raw`) có thể mất độ chính xác của tỷ lệ — xem O_NDTNN_39; SQL BA Nhóm 7 tham chiếu `fir_value_spk2` (tên bảng không có trong Atomic) và `base_rows` thiếu `report_log_id`. | Thiết kế theo SQL/Điều kiện BA; ghi giả định ở từng KPI; profile dữ liệu UAT trước go-live (tỷ lệ khớp tên báo cáo, giá trị sheet, danh sách báo cáo bất thường). | K_NDTNN_5–7, 20–22, 23–32, 35–49, 64–65, 90–254 | Open |
+| O_NDTNN_39 | **[MỞ 2026-10-05 — dev rà báo cáo động NDTNN]** (1) **Nguồn chỉ có `VALUE_RAW`:** dev xác nhận ODS `fir_value` không có `VALUE_NUM`/`VALUE_TEXT` — BA SQL vẫn ghi `value_num`/`value_text` và Atomic `fir_value.val_nbr`/`val_string` khai nguồn là 2 cột này; 4 bảng Fact Datamart đang đọc 2 cột đó (`fct_foreign_investor_report_value` 2 cột, `portfolio_report_snpst` 10 cột, `capital_flow_snpst` 3 cột, `foreign_net_flow_market_index_snpst` 1 cột). (2) **Khóa ô cấu trúc:** LLD dim đặt BK là `structure_code` (= `INDICATOR_UID`, chỉ duy nhất trong 1 sheet) và Fact `report_value` tra theo cột này → gán nhầm ô giữa các sheet; khóa thật là `fir_structure_code` = `SHEET_ID ‖ INDICATOR_UID`. | (1) Bỏ mọi tham chiếu `val_nbr`/`val_string` ở Datamart: số = `TRY_CAST(REGEXP_REPLACE(val_raw, '^''', '') AS DECIMAL(38,10))` (NULL nếu không ép được), chữ = `val_raw`; cột `val_string` đã bỏ khỏi Fact `report_value` (2026-10-05, trùng `val_raw`; flat đã deploy cần `ALTER TABLE … DROP COLUMN val_string` nếu muốn dọn); `val_nbr` giữ tên. Cần: Atomic team bỏ/sửa `val_nbr`, `val_string` của `fir_value`; profile `val_raw` (dấu nháy đầu, dấu phân cách nghìn/thập phân, %) vì cách ép số giả định chỉ bỏ nháy đầu. (2) Dim `foreign_investor_report_structure_dim` đổi BK sang cột mới `fir_structure_code`; `structure_code` giữ làm thuộc tính hiển thị 'Mã chỉ tiêu' (K_NDTNN_103–253, giả định O_NDTNN_38; trùng giữa các sheet nên lọc kèm `rpt_nm`/`sheet_code`); Fact lookup `fir_structure_code = fir_value.fir_structure_code`; flat `ndtnn_fct_foreign_investor_report_value_flat` thêm cột cuối `fir_structure_code` (cần `ALTER TABLE … ADD COLUMN` trên ClickHouse). | Nhóm 4, 6, 16, 18+ (báo cáo động), K_NDTNN_5–7, 20–22, 36–42, 103–253 | Open |
 | O_NDTNN_30 | **[Cập nhật 2026-07-24 — thay đổi kiến trúc] Nhóm 15 (STT=15) — đổi từ Star Schema (Fact riêng) sang bảng Tác nghiệp; phát hiện lại pattern grain-mismatch 2 attribute Investor Type độc lập, giống O_NDTNN_24:** Lịch sử: (1) Thiết kế trước dùng `Fact Securities Foreign Investor Trade Detail` + FK `Calendar Date Dimension`/`Securities Dimension` (Star Schema), phân loại "Phân tích". User chỉ ra 2 vấn đề: `Account_Number`/`Trade_Direction_Code` trên Fact không phải chiều (không FK Dimension) cũng không phải measure — đúng bản chất là degenerate key + grain component, không phải lỗi thiết kế nhưng cần đánh giá đúng vai trò. (2) Đánh giá tách `Investor_Account_Dimension` riêng (Account_Number + Account_Holder_Name + 3 cột phân loại Investor Type/Foreign Investor Type/Client House) — sau khi đọc kỹ `business_meaning` trong Atomic YAML (`"...của lệnh mua/bán"` — sở hữu cách gắn với giao dịch, không phải account cố định) xác nhận 3 cột phân loại là **per-trade attribute**, không phải per-account — chỉ giữ `Account_Number` + `Account_Holder_Name` trong Dimension nếu tách, còn 3 cột phân loại phải ở Fact. (3) Rà soát tiếp: `Client_House_Classification_Code` không được KPI nào của Nhóm 15 dùng — loại khỏi thiết kế. `Foreign_Investor_Type_Code` (K_NDTNN_84/85 dùng `<> '00'`) và `Investor_Type_Code` (K_NDTNN_86-89 dùng `='7000'`) là **2 attribute Atomic độc lập** — cả 2 đều cần giữ (không phải ghi chú lỏng lẻo). (4) **Quyết định kiến trúc cuối:** Nhóm 15 thuộc Tab BÁO CÁO (đóng gói cố định, không cần drill-down Star Schema tự do — giống Nhóm 14) — chuyển hẳn sang bảng Tác nghiệp `Foreign Investor Trading Detail Report`, denormalize hoàn toàn: bỏ `Investor_Account_Dimension` (không tách), bỏ FK `Securities_Dimension` (denormalize `Symbol` text trực tiếp), `Account_Holder_Name` đệm sẵn trực tiếp trên bảng. (5) Đối chiếu lại BA cột "Chiều dữ liệu" (ghi tắt "Ngày, NĐT") với câu lệnh tham khảo SQL thật (`GROUP BY Buy_Acct_No, Symbol`) xác nhận grain đầy đủ vẫn là **1 ngày × 1 Account × 1 Symbol × 1 bên (Buy/Sell)** — không rút gọn bỏ Symbol như cách đọc tắt cột tóm tắt có thể gây hiểu lầm. | Đã tách Nhóm 15 thành bảng `Foreign Investor Trading Detail Report` (`foreign_investor_trading_detail_rpt`, grain 1 ngày × 1 Account_Number × 1 Symbol × 1 Trade_Direction_Code, composite grain 4 cột — đổi `table_type: fact` xem O_NDTNN_31b) — không còn dùng `Fact Securities Foreign Investor Trade Detail`/`Securities Dimension` FK. `Foreign_Investor_Type_Code`/`Investor_Type_Code` là điều kiện ETL filter (OR 2 điều kiện độc lập), không lưu thành cột trên bảng kết quả. 6/6 KPI giữ **READY**. | K_NDTNN_84-89 | Closed — đã tách bảng Tác nghiệp, denormalize hoàn toàn |
 | O_NDTNN_32 | **[Phát hiện 2026-09-16, qua audit bắt buộc Bước 5B] `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2/5) dùng sai tên FK ngày — `Trade_Date_Dimension_Id` thay vì `Snapshot_Date_Dimension_Id`:** `check_date_fk.py --module NDTNN --strict` phát hiện `fct_securities_foreign_trading_snpst.trade_dt_dim_id` vi phạm chuẩn Role-Playing Date FK — Fact có hậu tố `_Snapshot`/`_snpst` (grain 1 mã CK × 1 ngày, không phải Fact Event) bắt buộc dùng `Snapshot_Date_Dimension_Id`/`snpst_dt_dim_id`, không được dùng tên vai trò khác. Cùng đợt phát hiện: script `check_ba_mapping.py`/`datamart_ba_cross_checker.py`/`module_resolver.py` tìm sai tên file BA (`BA_analyst_NDTNN.csv` ASCII thay vì `BA_analyst_NĐTNN.csv` có dấu Đ) khiến audit BA↔HLD không đối soát được gì. | Đổi `trade_dt_dim_id`/`Trade_Date_Dimension_Id`/`Trade Date Dimension Id` → `snpst_dt_dim_id`/`Snapshot_Date_Dimension_Id`/`Snapshot Date Dimension Id` xuyên suốt `DTM_NDTNN_HLD.md`, `DTM_NDTNN_Detail_Mapping.csv`, `DTM_NDTNN_fct_securities_foreign_trading_snpst.csv`, `01_create_ndtnn_flat_tables.sql`, `02_populate_ndtnn_flat_tables.sql`, `datamart_model.yaml`. Bổ sung alias `"NDTNN": "NĐTNN"` / `"NĐTNN": "NĐTNN"` vào `MODULE_ALIASES` của `datamart_ba_cross_checker.py` và `scripts/datamart_common/module_resolver.py` (cùng pattern đã áp dụng cho GSĐC) — `check_ba_mapping.py` nay PASS, đối soát đúng 260 dòng BA. | K_NDTNN_1-19, 33-34 (Nhóm 1/2/5) | Closed — đã đổi tên cột + sửa script resolver |
 | O_NDTNN_31b | **[Cập nhật 2026-07-24] `Foreign Investor Trading Statistics Report` và `Foreign Investor Trading Detail Report` (Nhóm 14/15) — đăng ký sai `table_type: operational`, đúng phải là `fact`:** Cả 2 bảng là ETL append-only theo Report Date (mỗi lần chạy ETL thêm dòng mới cho ngày báo cáo mới, không update/replace lịch sử của cùng 1 khóa) — đúng bản chất Fact, không phải Operational (Operational dùng SCD4A — giữ current-state, ETL update/replace theo latest). Ban đầu đăng ký `table_type: operational` vì gọi là "bảng Tác nghiệp" (denormalize, không Star Schema) — nhưng "denormalize" và "table_type" là 2 tiêu chí độc lập: 1 bảng có thể denormalize hoàn toàn (không FK Dimension) mà vẫn là Fact nếu ETL append theo thời gian. | Đổi `table_type` cả 2 bảng từ `operational` sang `fact` trong `datamart_model.yaml`. Đổi tên vật lý: bỏ tiền tố `opr_` (không thêm `fct_`) — nhóm Fact dạng report/đóng gói theo kỳ chỉ cần hậu tố `_rpt` làm dấu hiệu nhận diện, theo quy ước riêng đã bổ sung vào `SKILL.md` (`datamart-lld-design`, TC8 — ngoại lệ Fact-report không bắt buộc tiền tố `fct_`). Đổi `logical_name` từ "Operational..." sang "Fact...". Xóa `key: PK` trên các cột grain (Report Date, Security Type Group / Account Number / Symbol / Trade Direction Code), đổi thành `key: DD` — theo TC2b, Fact không được có `key = PK`. Đồng bộ `datamart_attributes.csv`, file Attributes detail 2 bảng, `DTM_NDTNN_Detail_Mapping.csv`. | K_NDTNN_72-89 (Nhóm 14/15) | Closed — đã đổi table_type, tên vật lý, và key theo đúng quy ước Fact |
