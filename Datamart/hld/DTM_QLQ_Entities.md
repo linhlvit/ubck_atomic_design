@@ -91,21 +91,13 @@ erDiagram
 
 ---
 
-## Nhóm 12 — Tỉ lệ tăng trưởng NAV/CCQ so với VN-Index và Lãi suất liên NH (Fact Investment Fund NAV per CCQ Snapshot)
+## Nhóm 12 — Tỉ lệ tăng trưởng NAV/CCQ so với VN-Index và Lãi suất liên NH (không còn Fact riêng)
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_NAV_per_CCQ_Snapshot : " "
-    Investment_Fund_Dimension ||--o{ Fact_Investment_Fund_NAV_per_CCQ_Snapshot : " "
-    Classification_Dimension ||--o{ Fact_Investment_Fund_NAV_per_CCQ_Snapshot : " "
-```
+> **[SỬA 2026-10-05 — All-Tier Cleanup]** BA lấy NAV/CCQ (K_QLQ_81–91) từ engine báo cáo định kỳ `RPT_*` (chưa có Atomic entity) → hạ PENDING, `Fact Investment Fund NAV per CCQ Snapshot` còn 0 KPI READY mang measure nên đã xóa. K_QLQ_77 (Thời gian) gắn `Fact Fund Management Company Snapshot`; K_QLQ_80 (Loại hình quỹ chi tiết) là Chiều DERIVED chưa gắn cột (giống K_QLQ_45); VN-Index/Lãi suất reuse module khác. Xem O_QLQ_25.
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Investment Fund NAV per CCQ Snapshot | Fact Snapshot | partial | Tỉ lệ tăng trưởng NAV/CCQ theo loại hình quỹ chi tiết | 1 loại hình quỹ chi tiết × 1 tháng | K_QLQ_77,78,79,80 |
-| Investment Fund Dimension | Dimension | new | Quỹ đầu tư (SCD4A) | 1 quỹ (current state) | — |
-| Classification Dimension | Dimension | reuse | Loại hình quỹ chi tiết (scheme FMS_FUND_TYPE) | 1 giá trị classification | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+| Classification Dimension | Dimension | reuse | Loại hình quỹ chi tiết (scheme FMS_FUND_TYPE) | 1 giá trị classification | K_QLQ_80 (DERIVED) |
 | Fact Market Index Snapshot (module GSTT) | Fact Snapshot | reuse | VN-Index — reuse xuyên module, không sinh file LLD cho QLQ | 1 chỉ số × 1 ngày | K_QLQ_78 |
 | Fact Macro Indicator Snapshot (module PTTT) | Fact Snapshot | reuse | Lãi suất liên NH qua đêm (INTERBANK_IR) — reuse xuyên module | 1 chỉ số × 1 kỳ | K_QLQ_79 |
 
@@ -209,8 +201,8 @@ erDiagram
 | Datamart Entity | Lý do PENDING | Issue |
 |---|---|---|
 | Fact Discretionary Investment Contract Snapshot (Nhóm 2) | 0/7 KPI READY — BA đổi hẳn nguồn sang engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
-| Fund Management Company Contract List (Nhóm 5) | 0/3 KPI READY — BA đổi nguồn + đổi nội dung K_QLQ_36, grain cần xác nhận lại | O_QLQ_5, O_QLQ_15 |
+| Fund Management Company Contract List (Nhóm 5) | 0/3 KPI READY — BA (2026-10-05) lấy từ engine báo cáo định kỳ `RPT_*`, chưa có Atomic entity; bảng LLD/flat đã xóa (All-Tier Cleanup) | O_QLQ_15, O_QLQ_25 |
 | Investment Fund Distribution Agent List (Nhóm 14) | 0/1 KPI READY — thiếu attribute FK scheme FMS_AGENCY_TYPE trên `fund_distribution_agent` | O_QLQ_9 |
-| Report Pass-through View (Tab DATA EXPLORER, STT 28-90) | 100% BA Pending, chưa khảo sát | O_QLQ_1 |
-| Foreign Fund Management Organization Unit Contract List (popup trong Nhóm 26, cùng STT=26 — không phải Nhóm riêng, xem O_QLQ_20) | 0/3 KPI READY — engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
-| Fund Management Company Staff Trade Report (Nhóm 27) | 1/10 KPI READY (chỉ join-key Chiều) — cầu nối VSDC investor registry chưa có Atomic entity | O_QLQ_11 |
+| Report Pass-through View (Tab DATA EXPLORER, STT 29–91) | 100% PENDING — engine báo cáo định kỳ chưa có Atomic (O_QLQ_15); STT 33 (từ dòng 10)–91 BA Pending (O_QLQ_26) | O_QLQ_1 |
+| Foreign Fund Management Organization Unit Contract List (popup — Nhóm 27 riêng từ BA 2026-10-05) | 0/3 KPI READY — engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
+| Fund Management Company Staff Trade Report (Nhóm 28) | 1/10 KPI READY (chỉ join-key Chiều) — cầu nối VSDC investor registry chưa có Atomic entity | O_QLQ_11 |

@@ -2,7 +2,7 @@
 -- QLQ Flat Tables — POPULATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 15 bảng: 6 fact + 9 operational
+-- 13 bảng: 5 fact + 8 operational
 -- Tham số ETL hàng ngày: :etl_date (không dùng {etl_date}/$etl_date/hardcode)
 -- ============================================================
 
@@ -20,9 +20,6 @@ SELECT
     f.pending_closure_foreign_fund_management_organization_unit_count,
     f.closed_foreign_fund_management_organization_unit_count,
     f.custodian_bank_count,
-    f.investment_fund_nav_amt,
-    f.investment_fund_nav_per_ccq_amt,
-    f.investment_fund_nav_per_ccq_growth_pct,
     snpst_cal.cdr_dt              AS cdr_dt
 FROM datamart.fct_fund_management_company_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
@@ -40,7 +37,6 @@ SELECT
     f.snpst_dt_dim_id,
     f.fund_tp_cl_dim_id,
     f.fund_count,
-    f.investment_fund_nav_amt,
     f.src_stm_code,
     snpst_cal.cdr_dt              AS cdr_dt,
     fund_tp_dim.schema_code       AS schema_code,
@@ -85,33 +81,7 @@ WHERE snpst_cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 4. FACT: qlq_fct_investment_fund_nav_per_ccq_snpst_flat
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlq_fct_investment_fund_nav_per_ccq_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlq_fct_investment_fund_nav_per_ccq_snpst_flat
-SELECT
-    f.snpst_dt_dim_id,
-    f.fund_tp_cl_dim_id,
-    f.nav_per_ccq_amt,
-    f.src_stm_code,
-    snpst_cal.cdr_dt              AS cdr_dt,
-    fund_tp_dim.schema_code       AS schema_code,
-    fund_tp_dim.schema_nm         AS schema_nm,
-    fund_tp_dim.cl_code           AS cl_code,
-    fund_tp_dim.cl_nm             AS cl_nm,
-    fund_tp_dim.cl_nm_english     AS cl_nm_english,
-    fund_tp_dim.cl_description    AS cl_description
-FROM datamart.fct_investment_fund_nav_per_ccq_snpst f
-JOIN datamart.cdr_dt_dim snpst_cal
-    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.cl_dim fund_tp_dim
-    ON fund_tp_dim.cl_dim_id = f.fund_tp_cl_dim_id
-WHERE snpst_cal.cdr_dt = :etl_date
-;
-
-
--- ============================================================
--- 5. FACT: qlq_fct_fund_distribution_agent_snpst_flat
+-- 4. FACT: qlq_fct_fund_distribution_agent_snpst_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_fct_fund_distribution_agent_snpst_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_fct_fund_distribution_agent_snpst_flat
@@ -127,7 +97,7 @@ WHERE snpst_cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 6. FACT: qlq_fct_foreign_fund_management_organization_unit_snpst_flat
+-- 5. FACT: qlq_fct_foreign_fund_management_organization_unit_snpst_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_fct_foreign_fund_management_organization_unit_snpst_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_fct_foreign_fund_management_organization_unit_snpst_flat
@@ -143,7 +113,7 @@ WHERE snpst_cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 7. OPERATIONAL: qlq_opr_fund_management_company_profile_flat
+-- 6. OPERATIONAL: qlq_opr_fund_management_company_profile_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_profile_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_opr_fund_management_company_profile_flat
@@ -155,14 +125,13 @@ SELECT
     o.rank_index,
     o.total_score_amt,
     o.charter_capital_amt,
-    o.discretionary_investment_account_count,
     o.src_stm_code
 FROM datamart.opr_fund_management_company_profile o
 ;
 
 
 -- ============================================================
--- 8. OPERATIONAL: qlq_opr_fund_management_company_fund_list_flat
+-- 7. OPERATIONAL: qlq_opr_fund_management_company_fund_list_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_fund_list_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_opr_fund_management_company_fund_list_flat
@@ -172,31 +141,13 @@ SELECT
     o.fmc_code,
     o.investment_fund_full_nm,
     o.fund_tp_code,
-    o.net_asset_val_amt,
     o.src_stm_code
 FROM datamart.opr_fund_management_company_fund_list o
 ;
 
 
 -- ============================================================
--- 9. OPERATIONAL: qlq_opr_fund_management_company_contract_list_flat
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_contract_list_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlq_opr_fund_management_company_contract_list_flat
-SELECT
-    o.discretionary_investment_account_code,
-    o.fmc_id,
-    o.fmc_code,
-    o.contract_nbr,
-    o.account_nbr,
-    o.portfolio_val_amt,
-    o.src_stm_code
-FROM datamart.opr_fund_management_company_contract_list o
-;
-
-
--- ============================================================
--- 10. OPERATIONAL: qlq_opr_investment_fund_profile_flat
+-- 8. OPERATIONAL: qlq_opr_investment_fund_profile_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_opr_investment_fund_profile_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_opr_investment_fund_profile_flat
@@ -209,14 +160,13 @@ SELECT
     o.representative_board_member_count,
     o.manager_count,
     o.outstanding_unit_quantity,
-    o.net_asset_val_amt,
     o.src_stm_code
 FROM datamart.opr_investment_fund_profile o
 ;
 
 
 -- ============================================================
--- 11. OPERATIONAL: qlq_opr_investment_fund_representative_board_member_list_flat
+-- 9. OPERATIONAL: qlq_opr_investment_fund_representative_board_member_list_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_opr_investment_fund_representative_board_member_list_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_opr_investment_fund_representative_board_member_list_flat
@@ -231,7 +181,7 @@ FROM datamart.opr_investment_fund_representative_board_member_list o
 
 
 -- ============================================================
--- 12. OPERATIONAL: qlq_opr_investment_fund_manager_list_flat
+-- 10. OPERATIONAL: qlq_opr_investment_fund_manager_list_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_opr_investment_fund_manager_list_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_opr_investment_fund_manager_list_flat
@@ -245,7 +195,7 @@ FROM datamart.opr_investment_fund_manager_list o
 
 
 -- ============================================================
--- 13. OPERATIONAL: qlq_opr_fund_distribution_agent_profile_flat
+-- 11. OPERATIONAL: qlq_opr_fund_distribution_agent_profile_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_distribution_agent_profile_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_opr_fund_distribution_agent_profile_flat
@@ -263,7 +213,7 @@ FROM datamart.opr_fund_distribution_agent_profile o
 
 
 -- ============================================================
--- 14. OPERATIONAL: qlq_opr_fund_distribution_agent_fund_list_flat
+-- 12. OPERATIONAL: qlq_opr_fund_distribution_agent_fund_list_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_distribution_agent_fund_list_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_opr_fund_distribution_agent_fund_list_flat
@@ -277,7 +227,7 @@ FROM datamart.opr_fund_distribution_agent_fund_list o
 
 
 -- ============================================================
--- 15. OPERATIONAL: qlq_opr_foreign_fund_management_organization_unit_profile_flat
+-- 13. OPERATIONAL: qlq_opr_foreign_fund_management_organization_unit_profile_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_opr_foreign_fund_management_organization_unit_profile_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_opr_foreign_fund_management_organization_unit_profile_flat

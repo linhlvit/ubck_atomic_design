@@ -2,7 +2,7 @@
 -- QLQ Flat Tables — CREATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 15 bảng: 6 fact + 9 operational
+-- 13 bảng: 5 fact + 8 operational
 -- ============================================================
 
 -- ============================================================
@@ -22,9 +22,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_management_company_snpst_flat O
     pending_closure_foreign_fund_management_organization_unit_count Nullable(Int64) COMMENT 'Số VPĐD CTQLQ NN đang chờ đóng cửa tại kỳ',
     closed_foreign_fund_management_organization_unit_count Nullable(Int64) COMMENT 'Số VPĐD CTQLQ NN đã đóng cửa tại kỳ',
     custodian_bank_count                         Nullable(Int64)         COMMENT 'Tổng số ngân hàng giám sát tại kỳ',
-    investment_fund_nav_amt                      Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị NAV toàn thị trường tại kỳ',
-    investment_fund_nav_per_ccq_amt              Nullable(Decimal(23,2)) COMMENT 'NAV/CCQ bình quân toàn thị trường tại kỳ',
-    investment_fund_nav_per_ccq_growth_pct       Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ tăng trưởng NAV/CCQ toàn thị trường so với tháng liền trước',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                        Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension'
@@ -48,7 +45,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_investment_fund_count_snpst_flat ON 
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot tháng — Calendar Date Dimension',
     fund_tp_cl_dim_id                String                  COMMENT 'FK loại hình quỹ — Classification Dimension (scheme FMS_FUND_TYPE)',
     fund_count                      Nullable(Int64)         COMMENT 'Số lượng quỹ theo loại hình quỹ, hiệu lực tại kỳ',
-    investment_fund_nav_amt          Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị NAV theo loại hình quỹ, hiệu lực tại kỳ',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
 
     -- From: CALENDAR DATE DIMENSION
@@ -102,39 +98,7 @@ COMMENT 'Flat table — Fact Investment Fund CCQ Snapshot × Calendar Date × Cl
 
 
 -- ============================================================
--- 4. FACT: qlq_fct_investment_fund_nav_per_ccq_snpst_flat
---    Fact Investment Fund NAV per CCQ Snapshot
---    Grain: 1 loại hình quỹ chi tiết (9 giá trị) × 1 tháng
---    Joins: Calendar Date (snpst_dt_dim_id) × Classification Dimension (fund_tp_cl_dim_id, scheme FMS_FUND_TYPE)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlq_fct_investment_fund_nav_per_ccq_snpst_flat ON CLUSTER 'my_cluster'
-(
-    -- From: FACT Fact Investment Fund NAV per CCQ Snapshot
-    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot tháng — Calendar Date Dimension',
-    fund_tp_cl_dim_id                String                  COMMENT 'FK loại hình quỹ chi tiết (9 giá trị) — Classification Dimension (scheme FMS_FUND_TYPE)',
-    nav_per_ccq_amt                  Nullable(Decimal(23,2)) COMMENT 'NAV/CCQ bình quân theo loại hình quỹ chi tiết, hiệu lực tại kỳ',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
-
-    -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension',
-
-    -- From: CLASSIFICATION DIMENSION (Fund Type Detail)
-    schema_code                     Nullable(String)        COMMENT 'Mã scheme phân loại (FMS_FUND_TYPE) — từ Classification Dimension',
-    schema_nm                       Nullable(String)        COMMENT 'Tên scheme phân loại — từ Classification Dimension',
-    cl_code                         Nullable(String)        COMMENT 'Mã loại hình quỹ chi tiết — từ Classification Dimension',
-    cl_nm                           Nullable(String)        COMMENT 'Tên loại hình quỹ chi tiết — từ Classification Dimension',
-    cl_nm_english                   Nullable(String)        COMMENT 'Tên loại hình quỹ chi tiết (tiếng Anh) — từ Classification Dimension',
-    cl_description                  Nullable(String)        COMMENT 'Diễn giải chi tiết loại hình quỹ chi tiết — từ Classification Dimension'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), fund_tp_cl_dim_id)
-COMMENT 'Flat table — Fact Investment Fund NAV per CCQ Snapshot × Calendar Date × Classification Dimension'
-;
-
-
--- ============================================================
--- 5. FACT: qlq_fct_fund_distribution_agent_snpst_flat
+-- 4. FACT: qlq_fct_fund_distribution_agent_snpst_flat
 --    Fact Fund Distribution Agent Snapshot
 --    Grain: 1 snapshot toàn thị trường × 1 quý/năm (No Driving Table)
 --    Joins: Calendar Date (snpst_dt_dim_id) — không có dim khác (market-level)
@@ -156,7 +120,7 @@ COMMENT 'Flat table — Fact Fund Distribution Agent Snapshot × Calendar Date'
 
 
 -- ============================================================
--- 6. FACT: qlq_fct_foreign_fund_management_organization_unit_snpst_flat
+-- 5. FACT: qlq_fct_foreign_fund_management_organization_unit_snpst_flat
 --    Fact Foreign Fund Management Organization Unit Snapshot
 --    Grain: 1 snapshot toàn thị trường × 1 tháng (No Driving Table)
 --    Joins: Calendar Date (snpst_dt_dim_id) — không có dim khác (market-level)
@@ -178,7 +142,7 @@ COMMENT 'Flat table — Fact Foreign Fund Management Organization Unit Snapshot 
 
 
 -- ============================================================
--- 7. OPERATIONAL: qlq_opr_fund_management_company_profile_flat
+-- 6. OPERATIONAL: qlq_opr_fund_management_company_profile_flat
 --    Operational Fund Management Company Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat ON CLUSTER 'my_cluster'
@@ -191,7 +155,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat
     rank_index                      Nullable(Int64)         COMMENT 'Thứ hạng xếp loại (1=Tốt nhất) tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
     total_score_amt                  Nullable(Int64)         COMMENT 'Tổng điểm CAMEL tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
     charter_capital_amt              Nullable(Decimal(23,2)) COMMENT 'Vốn điều lệ/vốn góp (VNĐ)',
-    discretionary_investment_account_count Nullable(Int64)  COMMENT 'Số lượng hợp đồng UTQLDM của công ty này, hiệu lực tại kỳ',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -202,7 +165,7 @@ COMMENT 'Flat table — Operational Fund Management Company Profile'
 
 
 -- ============================================================
--- 8. OPERATIONAL: qlq_opr_fund_management_company_fund_list_flat
+-- 7. OPERATIONAL: qlq_opr_fund_management_company_fund_list_flat
 --    Operational Fund Management Company Fund List (bảng con drill-down)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_fund_list_flat ON CLUSTER 'my_cluster'
@@ -213,7 +176,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_fund_list_fl
     fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ sở hữu quỹ (lookup pair với Fund Management Company Id)',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ',
     fund_tp_code                     Nullable(String)        COMMENT 'Loại hình quỹ — Classification Value (scheme FMS_FUND_TYPE)',
-    net_asset_val_amt                Nullable(Decimal(23,2)) COMMENT 'Giá trị NAV hiện tại của quỹ',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -224,29 +186,7 @@ COMMENT 'Flat table — Operational Fund Management Company Fund List'
 
 
 -- ============================================================
--- 9. OPERATIONAL: qlq_opr_fund_management_company_contract_list_flat
---    Operational Fund Management Company Contract List (bảng con drill-down UTQLDM)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_list_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Fund Management Company Contract List
-    discretionary_investment_account_code String             COMMENT 'PK — mã hợp đồng UTQLDM (Bảng Tác nghiệp con, 1 dòng / hợp đồng)',
-    fmc_id                           Nullable(String)        COMMENT 'FK -> Fund Management Company Dimension (CTQLQ sở hữu hợp đồng)',
-    fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ sở hữu hợp đồng (lookup pair với Fund Management Company Id)',
-    contract_nbr                     Nullable(String)        COMMENT 'Số hợp đồng UTQLDM',
-    account_nbr                      Nullable(String)        COMMENT 'Số tài khoản lưu ký của hợp đồng',
-    portfolio_val_amt                Nullable(Decimal(23,2)) COMMENT 'Giá trị danh mục của hợp đồng',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY tuple()
-ORDER BY (discretionary_investment_account_code)
-COMMENT 'Flat table — Operational Fund Management Company Contract List'
-;
-
-
--- ============================================================
--- 10. OPERATIONAL: qlq_opr_investment_fund_profile_flat
+-- 8. OPERATIONAL: qlq_opr_investment_fund_profile_flat
 --    Operational Investment Fund Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_profile_flat ON CLUSTER 'my_cluster'
@@ -260,7 +200,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_profile_flat ON CLUS
     representative_board_member_count Nullable(Int64)        COMMENT 'Số lượng thành viên ban đại diện đang hoạt động',
     manager_count                    Nullable(Int64)         COMMENT 'Số lượng người điều hành quỹ',
     outstanding_unit_quantity        Nullable(Int64)         COMMENT 'Số lượng CCQ đang lưu hành',
-    net_asset_val_amt                Nullable(Decimal(23,2)) COMMENT 'Giá trị NAV hiện tại của quỹ',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -271,7 +210,7 @@ COMMENT 'Flat table — Operational Investment Fund Profile'
 
 
 -- ============================================================
--- 11. OPERATIONAL: qlq_opr_investment_fund_representative_board_member_list_flat
+-- 9. OPERATIONAL: qlq_opr_investment_fund_representative_board_member_list_flat
 --    Operational Investment Fund Representative Board Member List
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_representative_board_member_list_flat ON CLUSTER 'my_cluster'
@@ -291,7 +230,7 @@ COMMENT 'Flat table — Operational Investment Fund Representative Board Member 
 
 
 -- ============================================================
--- 12. OPERATIONAL: qlq_opr_investment_fund_manager_list_flat
+-- 10. OPERATIONAL: qlq_opr_investment_fund_manager_list_flat
 --    Operational Investment Fund Manager List
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_manager_list_flat ON CLUSTER 'my_cluster'
@@ -310,7 +249,7 @@ COMMENT 'Flat table — Operational Investment Fund Manager List'
 
 
 -- ============================================================
--- 13. OPERATIONAL: qlq_opr_fund_distribution_agent_profile_flat
+-- 11. OPERATIONAL: qlq_opr_fund_distribution_agent_profile_flat
 --    Operational Fund Distribution Agent Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_distribution_agent_profile_flat ON CLUSTER 'my_cluster'
@@ -333,7 +272,7 @@ COMMENT 'Flat table — Operational Fund Distribution Agent Profile'
 
 
 -- ============================================================
--- 14. OPERATIONAL: qlq_opr_fund_distribution_agent_fund_list_flat
+-- 12. OPERATIONAL: qlq_opr_fund_distribution_agent_fund_list_flat
 --    Operational Fund Distribution Agent Fund List
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_distribution_agent_fund_list_flat ON CLUSTER 'my_cluster'
@@ -352,7 +291,7 @@ COMMENT 'Flat table — Operational Fund Distribution Agent Fund List'
 
 
 -- ============================================================
--- 15. OPERATIONAL: qlq_opr_foreign_fund_management_organization_unit_profile_flat
+-- 13. OPERATIONAL: qlq_opr_foreign_fund_management_organization_unit_profile_flat
 --    Operational Foreign Fund Management Organization Unit Profile
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_organization_unit_profile_flat ON CLUSTER 'my_cluster'
