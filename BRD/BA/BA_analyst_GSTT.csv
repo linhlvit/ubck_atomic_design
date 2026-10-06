@@ -26765,7 +26765,7 @@ and Market ID in (UPX,STX,STO)
 """,,,,,,Done,Dữ liệu tĩnh,F
 33,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng>> chỉ số",GT ròng của thỏa thuận theo phân loại nhà đầu tư tự doanh/ nước ngoài,GT Mua của tổng GTGT thỏa thuân - GT Bán của tổng GTGT thỏa thuân,Dashboard,Chỉ tiêu phái sinh,TB,Chỉ số,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"Tính từ GT mua và GT bán:
  GT ròng = GT mua - GT bán",,,,,,,,Done,Dữ liệu tĩnh,F
-34,,Biểu đồ phân tích kỹ thuật,Mã,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
+34,,Biểu đồ phân tích kỹ thuật,Mã,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,symbol,"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
       'B', '1',   -- Trái phiếu HOSE
       'BO',       -- Trái phiếu HNX
       'D'         -- Trái phiếu chuyển đổi HOSE
@@ -26779,7 +26779,7 @@ WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
       'D'         -- Trái phiếu chuyển đổi HOSE
                 )
   AND s.tradingdate = :ngay_gd;",,,,,,Done,Dữ liệu tĩnh,F
-34,,Biểu đồ phân tích kỹ thuật,Chỉ số,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MarketInfor,marketindex,Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol,,,"--------------------------------Tham số từ ngày đến ngày -------------------------------------------------
+34,,Biểu đồ phân tích kỹ thuật,Chỉ số,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,marketindex,Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol,,,"--------------------------------Tham số từ ngày đến ngày -------------------------------------------------
 WITH
 Tham_so AS (
     SELECT
@@ -27313,12 +27313,12 @@ JOIN Ky_bao_cao kb ON kb.ngay_gd = a.ngay_gd
 LEFT JOIN Doanh_thu dt ON dt.MCK = a.ma_chung_khoan AND dt.report_year = kb.report_year AND dt.report_quarter = kb.report_quarter
 LEFT JOIN LNST ln ON ln.equity_ticker = a.ma_chung_khoan AND ln.report_year = kb.report_year AND ln.report_quarter = kb.report_quarter
 ORDER BY a.tradingtime;",,,,,,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá mở cửa theo từng time trong 1 ngày,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá cao nhất  theo từng time trong 1 ngày,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá thấp nhất  theo từng time trong 1 ngày,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá đóng cửa  theo từng time trong 1 ngày,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch  theo từng time trong 1 ngày,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,JAD_STOCKINFOR,totaltrading,,,Đây là lũy kế từ đầu ngày chứ không phải tổng khối lượng theo từng time,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,open,,"SELECT * 
+34,,Biểu đồ phân tích kỹ thuật,Giá mở cửa theo từng time trong 1 ngày,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá cao nhất  theo từng time trong 1 ngày,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá thấp nhất  theo từng time trong 1 ngày,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá đóng cửa  theo từng time trong 1 ngày,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,closePrice,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch  theo từng time trong 1 ngày,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,CSDLTT,,X,,Done,Sổ lệnh,JAD_tvhistory1m/JAD_tvhistory1d,totaltrading,,,Đây là lũy kế từ đầu ngày chứ không phải tổng khối lượng theo từng time,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,open,,"SELECT * 
 FROM 
 (
 SELECT 
@@ -27347,10 +27347,10 @@ SELECT
         AND s.StockType  NOT IN ('1')
         )
         WHERE rn = 1",Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá cao nhất,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,high,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,low,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
+34,,Biểu đồ phân tích kỹ thuật,Giá cao nhất,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,high,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,low,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,closePrice,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,"-- HOSE
@@ -27370,7 +27370,7 @@ and Market ID in (UPX,STX,STO)
 Execution - Volume: Khối lượng khớp lệnh
 Trade_HNX:
 Trade quantity: Khối lượng giao dịch",,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Doanh thu,Doanh thu doanh nghiệp công bố,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,X,,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd)",SUM(d.data_value) AS doanh_thu,,"Company_data_chuan AS (
+34,,Biểu đồ phân tích kỹ thuật,Doanh thu theo mã chứng khoán,Doanh thu doanh nghiệp công bố,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,X,,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd)",SUM(d.data_value) AS doanh_thu,,"Company_data_chuan AS (
     SELECT
         company_profile_id,
         report_year,
@@ -27479,7 +27479,7 @@ Doanh_thu AS (
     )
     WHERE rn = 1
 )",đối với doanh thu và lợi nhuận đang theo kỳ lên sẽ vẫn theo từng kỳ một ,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Lợi nhuận sau thuế,Lợi nhuận doanh nghiệp công bố,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,X,,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd)",SUM(d.data_value) AS lnst,,"Company_data_chuan AS (
+34,,Biểu đồ phân tích kỹ thuật,Lợi nhuận sau thuế theo mã chứng khoán ,Lợi nhuận doanh nghiệp công bố,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,X,,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d), IDS.report_catalog (rc), IDS.company_data (cd)",SUM(d.data_value) AS lnst,,"Company_data_chuan AS (
     SELECT
         company_profile_id,
         report_year,
@@ -30898,108 +30898,112 @@ kl_nn_ban: Execution - Volume (điều kiện: Sell - Foreigner Investor type IN
 Trade_HNX:
 kl_nn_mua: Trade quantity (điều kiện: Buy Foreign Investor Type Code type IN ('10','20'))
 kl_nn_ban: Trade quantity (điều kiện: Sell Foreign Investor Type Code IN ('10','20'))",,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,trade_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,trade_date,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,market_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,market_id,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,symbol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,symbol,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,currency,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,currency,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,board_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,board_type,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,trade_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,trade_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,time,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,session,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,session,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_exec_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_exec_price,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_exec_price_ltp,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_exec_price_ltp,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_volume,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_volume,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_value,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_value,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_ltp,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_ltp,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_new_high_low_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_new_high_low_price,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_date,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_time,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_accept_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_accept_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_brk_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_brk_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_brk,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_brk,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_pin,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_pin,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_acct_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_acct_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_name,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_client_house_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_client_house_classification_code,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_invest_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_invest_type,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_foreigner_investor_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_foreigner_investor_type,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_price,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_vol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_vol,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_trader_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_trader_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_trader_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_trader_name,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_reference_sequence_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_date,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_time,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_accept_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_accept_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_brk_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_brk_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_brk,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_brk,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_pin,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_pin,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_acct_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_acct_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_name,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_client_house_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_client_house_classification_code,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_invest_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_invest_type,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_foreigner_investor_type,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_foreigner_investor_type,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_price,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_vol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_vol,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_trader_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_trader_no,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_trader_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_trader_name,,,,,,,,,,
-43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_reference_sequence_no,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,trade_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_date,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,market_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,market_id,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,board_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,board_id,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,issue_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,issue_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,trade_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_number,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,trade_time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_time,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,trade_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_price,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,trade_quantity,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_quantity,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,session_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,session_id,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_replace_cancel_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_replace_cancel_classification_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_member_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_member_number,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_account_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_account_number,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_type_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_type_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_condition_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_condition_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_client_house_classification,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_client_house_classification,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_investor_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_investor_classification_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_quantity,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_quantity,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_price,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_member_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_member_number,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_replace_cancel_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_replace_cancel_classification_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_account_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_account_number,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_type_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_type_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_condition_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_condition_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_client_house_classification,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_client_house_classification,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_investor_classification_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_investor_classification_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_quantity,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_quantity,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_price,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,message_sequence,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,message_sequence,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_reception_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_reception_number,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_reception_number,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_reception_number,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_quote_request_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_quote_request_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_quote_request_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_quote_request_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,execution_price_of_spread_first,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,execution_price_of_spread_first,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,execution_price_of_spread_second,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,execution_price_of_spread_second,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,sell_foreign_investor_type_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_foreign_investor_type_code,,,,,,,,,,
-44,,Kết xuất sổ lệnh >> Trade book HNX,buy_foreign_investor_type_code,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_foreign_investor_type_code,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,trade_date,Ngày giao dịch,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,trade_date,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,market_id,Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market có rule riêng,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,market_id,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,board_id,Loại bảng: Xác định kiểm mua bán trong thị trường,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,board_id,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,issue_code,Mã định danh của loại chứng khoán đang được giao dịch. Mã này là duy nhất.,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,issue_code,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,trade_date,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,trade_date,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,market_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,market_id,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,symbol,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,symbol,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,currency,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,currency,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,board_type,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,board_type,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,trade_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,trade_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,time,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,time,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,session,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,session,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_exec_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_exec_price,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_exec_price_ltp,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_exec_price_ltp,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_volume,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_volume,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_value,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_value,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_ltp,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_ltp,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,execution_new_high_low_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,execution_new_high_low_price,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_date,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_date,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_time,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_time,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_accept_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_accept_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_brk_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_brk_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_brk,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_brk,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_pin,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_pin,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_acct_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_acct_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_name,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_name,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_client_house_classification_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_client_house_classification_code,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_invest_type,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_invest_type,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_foreigner_investor_type,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_foreigner_investor_type,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_price,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_order_vol,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_order_vol,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_trader_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_trader_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_trader_name,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_trader_name,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,buy_reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,buy_reference_sequence_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_date,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_date,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_time,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_time,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_accept_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_accept_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_brk_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_brk_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_brk,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_brk,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_pin,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_pin,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_acct_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_acct_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_name,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_name,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_client_house_classification_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_client_house_classification_code,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_invest_type,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_invest_type,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_foreigner_investor_type,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_foreigner_investor_type,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_price,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_order_vol,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_order_vol,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_trader_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_trader_no,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_trader_name,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_trader_name,,,,,,,,,,
+43,,Kết xuất sổ lệnh >> Trade book HOSE,sell_reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.trade_book,sell_reference_sequence_no,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,trade_date,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_date,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,market_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,market_id,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,Chi_so,"Chiều này dùng trong cho sổ lệnh theo chỉ số HNX. Tạo 1 bảng danh mục giống bảng JAD_CSIDXInfor ( có gồm cả mã chứng khoán quốc tế, chỉ số, mã VIệt Nam) để xuất sổ lệnh HNX ",Data Explorer,Chiều,,Mã ck ,CSDLTT,,,,,Thông tin thị trường,UAT_MDDS_stg.JAD_CSIDXInfor,symbolisin,"UAT_MDDS_stg.JAD_CSIDXInfor a
+Left join JAD_StockInfor b on a.symbol = b.symbol",,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,board_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,board_id,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,issue_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,issue_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,trade_number,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_number,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,trade_time,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_time,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,trade_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_price,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,trade_quantity,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,trade_quantity,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,session_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,session_id,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_replace_cancel_classification_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_replace_cancel_classification_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_member_number,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_member_number,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_account_number,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_account_number,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_type_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_type_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_condition_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_condition_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_client_house_classification,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_client_house_classification,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_investor_classification_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_investor_classification_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_quantity,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_quantity,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_price,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_member_number,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_member_number,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_replace_cancel_classification_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_replace_cancel_classification_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_account_number,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_account_number,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_type_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_type_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_condition_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_condition_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_client_house_classification,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_client_house_classification,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_investor_classification_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_investor_classification_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_quantity,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_quantity,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_price,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,message_sequence,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,message_sequence,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_order_reception_number,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_order_reception_number,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_order_reception_number,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_order_reception_number,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_quote_request_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_quote_request_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_quote_request_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_quote_request_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,execution_price_of_spread_first,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,execution_price_of_spread_first,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,execution_price_of_spread_second,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,execution_price_of_spread_second,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,sell_foreign_investor_type_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,sell_foreign_investor_type_code,,,,,,,,,,
+44,,Kết xuất sổ lệnh >> Trade book HNX,buy_foreign_investor_type_code,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.trade_book,buy_foreign_investor_type_code,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,trade_date,Ngày giao dịch,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,trade_date,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,Chi_so,"Chiều này dùng trong cho sổ lệnh theo chỉ số HNX. Tạo 1 bảng danh mục giống bảng JAD_CSIDXInfor ( có gồm cả mã chứng khoán quốc tế, chỉ số, mã VIệt Nam) để xuất sổ lệnh HNX ",Data Explorer,Chiều,,Mã ck ,CSDLTT,,,,,Thông tin thị trường,UAT_MDDS_stg.JAD_CSIDXInfor,symbolisin,"UAT_MDDS_stg.JAD_CSIDXInfor a
+Left join JAD_StockInfor b on a.symbol = b.symbol",,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,market_id,Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market có rule riêng,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,market_id,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,board_id,Loại bảng: Xác định kiểm mua bán trong thị trường,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,board_id,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,issue_code,Mã định danh của loại chứng khoán đang được giao dịch. Mã này là duy nhất.,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,issue_code,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,order_accept_time,"Thời điểm chính xác mà lệnh được hệ thống giao dịch (matching engine) chấp nhận hợp lệ và đưa vào sổ lệnh.
 Lưu ý: Giá trị này:
 - Không phải lúc người dùng bấm “đặt lệnh”
 - Không phải lúc công ty chứng khoán nhận lệnh 
 - Mà là lúc KRX core system ghi nhận lệnh
-- Dùng để xếp thứ tự ưu tiên và khớp lệnh",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_accept_time,,,,,,,,,,
+- Dùng để xếp thứ tự ưu tiên và khớp lệnh",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_accept_time,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,member_id,"Mã định danh thành viên giao dịch trên thị trường – thường là công ty chứng khoán hoặc tổ chức được phép gửi lệnh vào hệ thống KRX.
-Member ID là mã duy nhất do Sở giao dịch cấp",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,member_id,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,sell_buy_classification_code,Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,sell_buy_classification_code,,,,,,,,,,
+Member ID là mã duy nhất do Sở giao dịch cấp",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,member_id,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,sell_buy_classification_code,Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,sell_buy_classification_code,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,account_number,"Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng khoán (Member). Dùng để xác định chủ sở hữu lệnh, phục vụ quản lý rủi ro, thanh toán và giám sát thị trường.
 - Member ID → công ty chứng khoán
 - Account Number → khách hàng cụ thể trong công ty đó
-- Account Number + Member ID = xác định duy nhất một nhà đầu tư",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,account_number,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,order_type_code,Trường dữ liệu xác định loại lệnh (order type) — tức là cách hệ thống matching engine xử lý lệnh đó.,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_type_code,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,order_condition_code,"Trường xác định điều kiện thực hiện lệnh — tức là lệnh được khớp khi nào, như thế nào, và có được giữ lại hay không.",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_condition_code,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,client_house_classification_code,Lệnh này là của khách hàng (client) hay của chính công ty chứng khoán (house),Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,client_house_classification_code,,,,,,,,,,
+- Account Number + Member ID = xác định duy nhất một nhà đầu tư",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,account_number,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,order_type_code,Trường dữ liệu xác định loại lệnh (order type) — tức là cách hệ thống matching engine xử lý lệnh đó.,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_type_code,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,order_condition_code,"Trường xác định điều kiện thực hiện lệnh — tức là lệnh được khớp khi nào, như thế nào, và có được giữ lại hay không.",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_condition_code,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,client_house_classification_code,Lệnh này là của khách hàng (client) hay của chính công ty chứng khoán (house),Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,client_house_classification_code,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,investor_classification_code,"Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường.
 Trả lời câu hỏi: Nhà đầu tư đứng sau lệnh này thuộc loại nào trong nền kinh tế?
 Investor Classification Code có cấu trúc ABCD, trong đó:
@@ -31008,13 +31012,13 @@ Investor Classification Code có cấu trúc ABCD, trong đó:
 Ví dụ: 
 - 3000 là Quỹ
 - 3100: Quỹ cụ thể (mutual fund)
-- 3200: ETF",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,investor_classification_code,,,,,,,,,,
+- 3200: ETF",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,investor_classification_code,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,order_date,"Ngày mà lệnh được ghi nhận (được tạo/nhận) theo ngày giao dịch của hệ thống
-Không phải thời gian chi tiết (không có giờ/phút/giây)",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_date,,,,,,,,,,
+Không phải thời gian chi tiết (không có giờ/phút/giây)",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_date,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,order_reject_reason_code,"Mã lý do giải thích vì sao lệnh bị từ chối (reject) bởi hệ thống.
-Trả lời câu hỏi: Tại sao một lệnh KHÔNG được chấp nhận vào hệ thống KRX",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_reject_reason_code,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,order_quantity,Số lượng chứng khoán mà nhà đầu tư muốn mua hoặc bán trong một lệnh,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_quantity,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,order_price,Mức giá mà nhà đầu tư sẵn sàng mua hoặc bán chứng khoán,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_price,,,,,,,,,,
+Trả lời câu hỏi: Tại sao một lệnh KHÔNG được chấp nhận vào hệ thống KRX",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_reject_reason_code,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,order_quantity,Số lượng chứng khoán mà nhà đầu tư muốn mua hoặc bán trong một lệnh,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_quantity,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,order_price,Mức giá mà nhà đầu tư sẵn sàng mua hoặc bán chứng khoán,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_price,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,public_quantity,"Phần khối lượng của lệnh được hiển thị công khai trên sổ lệnh (order book).
 Public Quantity ≤ Order Quantity
 Vai trò (ý nghĩa):
@@ -31022,47 +31026,47 @@ Vai trò (ý nghĩa):
 - Biết bạn muốn mua/bán nhiều
 - Di chuyển giá bất lợi
 2. Giảm market impact, Nếu đặt full thì giá có thể: Tăng mạnh (buy) hoặc Giảm mạnh (sell)
-3. Tối ưu execution: Khớp dần dần giá tốt hơn",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,public_quantity,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,condition_price,Mức giá điều kiện dùng để kích hoạt một lệnh (thường là stop order hoặc conditional order),Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,condition_price,,,,,,,,,,
+3. Tối ưu execution: Khớp dần dần giá tốt hơn",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,public_quantity,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,condition_price,Mức giá điều kiện dùng để kích hoạt một lệnh (thường là stop order hoặc conditional order),Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,condition_price,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,order_reception_number,"Số định danh của lệnh tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh. Đặc điểm:
 - Duy nhất trong ngày giao dịch
 - Thường tăng dần
 - Do hệ thống sinh ra
-- Độ dài: Theo spec (ví dụ 10–12 ký tự số)",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_reception_number,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,original_order_reception_number,Số Order Reception Number của lệnh gốc mà một yêu cầu (sửa/hủy) đang tham chiếu tới,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,original_order_reception_number,,,,,,,,,,
+- Độ dài: Theo spec (ví dụ 10–12 ký tự số)",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_reception_number,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,original_order_reception_number,Số Order Reception Number của lệnh gốc mà một yêu cầu (sửa/hủy) đang tham chiếu tới,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,original_order_reception_number,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,original_order_type_code,"Loại lệnh (Order Type) của lệnh GỐC trước khi bị sửa (amend) hoặc hủy (cancel)
-Bạn đã biết: Order Type Code → loại lệnh hiện tại (Limit, Market, Stop…) nhưng khi có thay đổi Hệ thống vẫn cần biết Ban đầu lệnh này là loại gì? Đó chính là: Original Order Type Code",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,original_order_type_code,,,,,,,,,,
+Bạn đã biết: Order Type Code → loại lệnh hiện tại (Limit, Market, Stop…) nhưng khi có thay đổi Hệ thống vẫn cần biết Ban đầu lệnh này là loại gì? Đó chính là: Original Order Type Code",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,original_order_type_code,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,session_id,"Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về.
-Bản chất: Một ngày giao dịch không phải là một khối liên tục, mà được chia thành nhiều phiên nên Session ID cho biết “Lệnh này đang ở phiên nào?”",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,session_id,,,,,,,,,,
+Bản chất: Một ngày giao dịch không phải là một khối liên tục, mà được chia thành nhiều phiên nên Session ID cho biết “Lệnh này đang ở phiên nào?”",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,session_id,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,order_remaining_quantity,"Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy.
 Khi một lệnh được gửi vào thị trường có thể:
 - Khớp một phần
 - Khớp hết
 - Bị hủy một phần
-Vì vậy Order Quantity = Executed Quantity + Remaining Quantity + Cancelled Quantity",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_remaining_quantity,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,message_sequence,"Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự.",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,message_sequence,,,,,,,,,,
+Vì vậy Order Quantity = Executed Quantity + Remaining Quantity + Cancelled Quantity",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_remaining_quantity,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,message_sequence,"Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự.",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,message_sequence,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,replace_cancel,"Mã xác định loại hành động đối với lệnh hiện tại, cụ thể là:
 - Sửa lệnh (Replace/Amend)
-- Hủy lệnh (Cancel)",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,replace_cancel,,,,,,,,,,
+- Hủy lệnh (Cancel)",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,replace_cancel,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,quote_request_type,"Mã xác định loại yêu cầu báo giá (Request For Quote – RFQ) mà một bên gửi tới thị trường hoặc đối tác.
 Khác với order thông thường: Order → đặt trực tiếp vào order book
 Quote flow sẽ là: Request Quote → Nhận báo giá → Quyết định giao dịch
-=> Quote Request Type = loại yêu cầu báo giá",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,quote_request_type,,,,,,,,,,
+=> Quote Request Type = loại yêu cầu báo giá",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,quote_request_type,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,automated_cancel,"Mã xác định việc hủy lệnh có được thực hiện tự động bởi hệ thống hay không, và nếu có thì do cơ chế nào.
 Giúp trả lời câu hỏi: “Lệnh này bị hủy vì người dùng hay vì hệ thống?”
-Trong các giá trị thì 0 là không phải auto, từ 1 - 5 đều là auto",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,automated_cancel,,,,,,,,,,
+Trong các giá trị thì 0 là không phải auto, từ 1 - 5 đều là auto",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,automated_cancel,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,order_id,"Mã định danh của một lệnh giao dịch, dùng để nhận diện lệnh đó trong toàn bộ hệ thống.
 Phân biệt một số loại ID ở trên:
 + Client Order ID: Do client/broker tạo
 + Order ID: ID logic của lệnh
 + Order Reception Number: ID khi vào KRX
-+ Trade ID: ID khi khớp",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_id,,,,,,,,,,
++ Trade ID: ID khi khớp",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,order_id,,,,,,,,,,
 45,,Kết xuất sổ lệnh >> order book HNX,original_order_id,"Order ID của lệnh GỐC mà một lệnh sửa (replace) hoặc hủy (cancel) đang tham chiếu tới
 Ví dụ:
 Bước 1: Đặt lệnh Order ID = A123
-Bước 2: Sửa lệnh Order ID = A124 và Original Order ID = A123",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,original_order_id,,,,,,,,,,
-45,,Kết xuất sổ lệnh >> order book HNX,foreign_investor_type_code,Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch.,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,foreign_investor_type_code,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,trade_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,trade_date,,,,,,,,,,
+Bước 2: Sửa lệnh Order ID = A124 và Original Order ID = A123",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,original_order_id,,,,,,,,,,
+45,,Kết xuất sổ lệnh >> order book HNX,foreign_investor_type_code,Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch.,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hnx_stg.order_book,foreign_investor_type_code,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,trade_date,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,trade_date,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,market_id,"STO : HoSE Stock Market là giao dịch Cổ phiếu niêm yết trên HOSE
 BDO : HoSE Bond Market là giao dịch trái phiếu (thường là doanh nghiệp hoặc một số loại đặc biệt) trên HOSE
 RPO : HoSE Repo Market là giao dịch mua bán có cam kết mua lại trên thị trường HOSE.
@@ -31070,9 +31074,9 @@ STX : HNX Listed Stock Market là giao dịch Cổ phiếu niêm yết trên HNX
 UPX : HNX UPCOM Stock Market là cổ phiếu chưa niêm yết chính thức (UPCOM) trên HNX
 BDX : HNX Government Bond Market là giao dịch Trái phiếu Chính phủ trên HNX
 DVX : HNX Derivatives Market là Thị trường phái sinh trên HNX
-HCX : HNX Corporate Bond Market là giao dịch trái phiếu doanh nghiệp riêng lẻ trên HNX",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,market_id,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,symbol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,symbol,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,currency,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,currency,,,,,,,,,,
+HCX : HNX Corporate Bond Market là giao dịch trái phiếu doanh nghiệp riêng lẻ trên HNX",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,market_id,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,symbol,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,symbol,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,currency,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,currency,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,board_type,"G1 : Main => Phiên giao dịch chính khớp lệnh liên tục
 Ví dụ: Có người mua CP giá 25 và có người bán CP đó giá 25 thì sẽ khớp lệnh ngay
 90% giao dịch ở dạng G1
@@ -31093,9 +31097,9 @@ T2 : Negotiation (pre) => Giống T1 nhưng thỏa thuận trước giờ mở c
 T3 : Negotiation (post) => Giống T1 nhưng thỏa thuận sau giờ giao dịch
 T6 : Negotiation (post for Odd lot) => Giống T1 nhưng thỏa thuận sau giờ cho lô lẻ
 R1 : Negotiation (Repo) => Giao dịch repo (mua bán có cam kết mua lại)
-Ví dụ: Bán CP cho người khác nhưng vài ngày sau sẽ mua lại với giá cao hơn",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,board_type,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,order_date,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_date,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,order_time,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_time,,,,,,,,,,
+Ví dụ: Bán CP cho người khác nhưng vài ngày sau sẽ mua lại với giá cao hơn",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,board_type,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,order_date,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_date,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,order_time,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_time,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,session,"00 — Pre-market opening session: Trước giờ mở cửa, Nhận lệnh nhưng chưa khớp
 10 — Opening call auction session: Phiên khớp lệnh định kỳ mở cửa (ATO)
 11 — Extension of opening call auction: Phiên gia hạn ATO, Dùng khi Cần thêm thời gian xác định giá Hoặc tránh thao túng phút cuối
@@ -31110,23 +31114,23 @@ Ví dụ: Bán CP cho người khác nhưng vài ngày sau sẽ mua lại với 
 70 — Post-market off-hour (Call Auction): Đấu giá ngoài giờ
 80 — Unit trading: Giao dịch lô lẻ
 90 — Trading halt: Tạm dừng giao dịch
-99 — Market closing: Đóng thị trường hoàn toàn",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,session,,,,,,,,,,
+99 — Market closing: Đóng thị trường hoàn toàn",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,session,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,modify_cancel,"C - Cancel: Là lệnh hủy
 M - Modify: Là lệnh sửa đổi
-N - No: Không hủy/sửa đổi",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,modify_cancel,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,order_accept_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_accept_id,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,orig_order_accept_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,orig_order_accept_id,,,,,,,,,,
+N - No: Không hủy/sửa đổi",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,modify_cancel,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,order_accept_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_accept_id,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,orig_order_accept_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,orig_order_accept_id,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,side,"S: Sell - Bán
-B: Buy - Mua",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,side,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,brk_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,brk_id,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,brk,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,brk,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,pin,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,pin,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,acct_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,acct_no,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,name,,,,,,,,,,
+B: Buy - Mua",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,side,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,brk_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,brk_id,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,brk,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,brk,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,pin,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,pin,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,acct_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,acct_no,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,name,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,name,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,market_maker_order,"Y - Yes: Là lệnh đặt của nhà tạo lập thị trường
-N - No: Không phải là lệnh đặt của nhà tạo lập thị trường",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,market_maker_order,,,,,,,,,,
+N - No: Không phải là lệnh đặt của nhà tạo lập thị trường",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,market_maker_order,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,client_house_classification_code,"10 Client trade: Khách hàng
-30 House trade: Tự doanh công ty chứng khoán",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,client_house_classification_code,,,,,,,,,,
+30 House trade: Tự doanh công ty chứng khoán",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,client_house_classification_code,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,invest_type,"1000 / 8000: Cá nhân (Individual)
 1100: Cá nhân trong nước
 1200: Cá nhân chuyên nghiệp
@@ -31145,10 +31149,10 @@ N - No: Không phải là lệnh đặt của nhà tạo lập thị trường",
 7000: Nhà đầu tư nước ngoài
 7100: Tổ chức nước ngoài
 7200: Cá nhân nước ngoài
-9000: Không xác định / khác",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,invest_type,,,,,,,,,,
+9000: Không xác định / khác",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,invest_type,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,foreigner_investor_type,"00 Not Foreigner: Không phải NĐT nước ngoài
 10 Foreigner (Residence): NĐT nước ngoài cư trú
-20 Foreigner (Nonresidence): NĐT nước ngoài không cư trú",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,foreigner_investor_type,,,,,,,,,,
+20 Foreigner (Nonresidence): NĐT nước ngoài không cư trú",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,foreigner_investor_type,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,order_type,"1 Market: Lệnh thị trường
 Ý nghĩa: Khớp ngay với giá tốt nhất trên thị trường (Mua bằng mọi giá, Có thể bị khớp giá xấu nếu thanh khoản thấp)
 2 Limit: Lệnh giới hạn
@@ -31156,9 +31160,9 @@ N - No: Không phải là lệnh đặt của nhà tạo lập thị trường",
 3 Stop Market: Lệnh dừng - thị trường
 Ý nghĩa: Khi đạt giá kích hoạt → biến thành Market Order (Ví dụ: Giá ≥ 105 → bán ngay)
 4 Stop Limit: Lệnh dừng - giới hạn
-Ý nghĩa: Khi đạt giá kích hoạt → biến thành Limit Order",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_type,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,order_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_price,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,order_vol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_vol,,,,,,,,,,
+Ý nghĩa: Khi đạt giá kích hoạt → biến thành Limit Order",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_type,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,order_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_price,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,order_vol,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_vol,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,order_condition,"0 FAS (Fill And Store): Khớp được bao nhiêu thì khớp, phần còn lại được giữ lại trong sổ lệnh
 1: Lệnh thường, có thể khớp dần, phần chưa khớp sẽ nằm lại trong order book
 2 ATO (At The Open): Lệnh khớp tại giá mở cửa
@@ -31166,17 +31170,17 @@ N - No: Không phải là lệnh đặt của nhà tạo lập thị trường",
 4 FOK (Fill Or Kill): Phải khớp toàn bộ ngay, Không thì hủy toàn bộ
 6 GTD (Good Till Date): Lệnh có hiệu lực đến một ngày cụ thể, sau đó tự động hết hiệu lực
 7 ATC (At The Close): Lệnh khớp tại giá đóng cửa
-9 MTL (Market To Limit)",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_condition,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,ltp,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,ltp,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,execution_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,execution_price,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,immed_matched_vol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,immed_matched_vol,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,matched_vol,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,matched_vol,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,order_rqty,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_rqty,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,order_price_ltp,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_price_ltp,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,matched_ratio,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,matched_ratio,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,buy_up_sell_down_amt,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,buy_up_sell_down_amt,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,buy_up_sell_down_tick,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,buy_up_sell_down_tick,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,new_high_low_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,new_high_low_price,,,,,,,,,,
+9 MTL (Market To Limit)",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_condition,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,ltp,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,ltp,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,execution_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,execution_price,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,immed_matched_vol,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,immed_matched_vol,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,matched_vol,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,matched_vol,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,order_rqty,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_rqty,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,order_price_ltp,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_price_ltp,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,matched_ratio,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,matched_ratio,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,buy_up_sell_down_amt,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,buy_up_sell_down_amt,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,buy_up_sell_down_tick,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,buy_up_sell_down_tick,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,new_high_low_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,new_high_low_price,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,order_status,"0 - New / Accepted: Lệnh đã được sàn chấp nhận vào hệ thống nhưng chưa khớp.
 1 - Partially Filled: Lệnh đã khớp một phần.
 2 - Filled: Lệnh đã khớp toàn bộ.
@@ -31185,17 +31189,17 @@ N - No: Không phải là lệnh đặt của nhà tạo lập thị trường",
 5 - Expired: Lệnh hết hiệu lực (ví dụ hết phiên giao dịch).
 6 - Pending Cancel: Đang chờ xử lý hủy lệnh.
 7 - Pending Replace: Đang chờ sửa lệnh.
-8 - Replaced: Lệnh đã được sửa thành công.",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_status,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,icd_bug_qty,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,icd_bug_qty,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,expected_execution_price,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,expected_execution_price,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,expected_execution_volume,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,expected_execution_volume,,,,,,,,,,
+8 - Replaced: Lệnh đã được sửa thành công.",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_status,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,icd_bug_qty,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,icd_bug_qty,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,expected_execution_price,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,expected_execution_price,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,expected_execution_volume,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,expected_execution_volume,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,short_sell_indicator,"00 - Không phải lệnh bán khống
-10 - Là lệnh bán khống",Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,short_sell_indicator,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,trader_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,trader_no,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,trader_name,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,trader_name,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,reference_sequence_no,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,order_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_id,,,,,,,,,,
-46,,Kết xuất sổ lệnh >> order book HOSE,orig_order_id,,Data Explorer,Chỉ tiêu phái sinh,Trùng,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,orig_order_id,,,,,,,,,,
+10 - Là lệnh bán khống",Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,short_sell_indicator,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,trader_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,trader_no,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,trader_name,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,trader_name,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,reference_sequence_no,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,order_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_id,,,,,,,,,,
+46,,Kết xuất sổ lệnh >> order book HOSE,orig_order_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,orig_order_id,,,,,,,,,,
 47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Sàn phẩm phái sinh,,Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,,FloorCode='03' (FDS) AND StockType='FU' cho phái sinh,"SELECT
     s.StockType,
      DECODE(si.""""StockType"""", '4', 'HĐTL') || DECODE(si.""""underlyingSymbol"""", 'GB05', 'TPCP', 'GB10', 'TPCP', si.""""underlyingSymbol"""") AS loai_phai_sinh

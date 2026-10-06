@@ -2,7 +2,7 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 9 bảng: 8 fact + 1 operational (opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
+-- 10 bảng: 8 fact + 2 operational (opr_security_index_constituent_ref — mới 2026-10-06, bảng tham chiếu Index Code ↔ Symbol ↔ ISIN; opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
 -- Sửa 2026-09-26: bổ sung bảng #7/#8 (Fact HOSE/HNX Securities Trade — Nhóm 43/44 Data Explorer kết xuất sổ lệnh, có cột PII — O_GSTT_36)
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
@@ -248,36 +248,36 @@ COMMENT 'Flat table — Fact Market Index Intraday × Calendar Date Dimension ×
 
 
 -- ============================================================
--- 3. FACT: gstt_fct_security_trading_intraday_flat
---    Biểu đồ phân tích kỹ thuật — 1 row / mã CK (Symbol) / Trading Timestamp —
---    [SỬA 2026-09-07] Nguồn Atomic đổi sang Market Price Snapshot (nến OHLCV
---    thật theo phút, MDDS.JAD_TRADINGVIEWHISTORY1MIN, filter
---    src_stm_code='MDDS_JAD_TRADINGVIEWHISTORY1MIN'), thay workaround trading_tms
---    cũ (nối trading_dt+trading_time trên Security Trading Snapshot, giá trị
---    lũy kế-tick sai bản chất nến — xem O_GSTT_11). trading_tms nay = nối
---    market_price_snapshot.trading_dt + processing_time.
---    Grain: 1 row / Symbol / (Trading Date, Processing Time) — 1 nến/phút,
---    KHÔNG lọc rn=1 (khác Fact EOD security_trading_snpst_dim)
---    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension
+-- 3. FACT: gstt_fct_instrument_price_candle_flat
+--    [THIẾT KẾ LẠI 2026-10-06 v4.29] Nhóm 34 — Fact riêng theo độ mịn cả mã CK VÀ chỉ số: 1 row / Instrument Code / Candle Period (1MIN|1DAY) / Trading Timestamp.
+--    Nguồn Atomic market_price_snapshot (MDDS.JAD_TRADINGVIEWHISTORY1MIN + 1DAY = JAD_tvhistory1m/1d — symbol gồm cả chứng khoán và chỉ số); màn chọn nguồn theo khung thời gian
+--    (BI lọc candle_period_code). Doanh thu/LNST NULL với dòng chỉ số. Thay gstt_fct_security_trading_intraday_flat (bãi bỏ — DROP bảng cũ khi deploy; xem O_GSTT_58).
+--    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension (LEFT JOIN — NULL với dòng chỉ số)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_intraday_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_instrument_price_candle_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT Security Trading Intraday
-    security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
-    trade_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
-    trading_tms                         Nullable(DateTime)      COMMENT 'Thời điểm ghi nhận nến trong ngày (DD — grain component, nối Market Price Snapshot trading_dt + processing_time)',
-    open_price_at_time                  Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa tại thời điểm ghi nhận',
-    high_price_at_time                  Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất tại thời điểm ghi nhận',
-    low_price_at_time                   Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất tại thời điểm ghi nhận',
-    close_price_at_time                 Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa (khớp gần nhất) tại thời điểm ghi nhận',
-    cumulative_vol_at_time              Nullable(Int64)         COMMENT 'Khối lượng khớp lũy kế từ đầu ngày tại thời điểm ghi nhận — không phải KL phát sinh riêng tại thời điểm đó',
+    -- From: FACT Fact Instrument Price Candle
+    security_trading_snpst_dim_id    Nullable(String)         COMMENT 'FK → Security Trading Snapshot Dimension — NULL với dòng chỉ số',
+    trade_dt_dim_id                  String                   COMMENT 'FK → Calendar Date Dimension',
+    instrument_code                  String                   COMMENT 'Mã chứng khoán HOẶC mã chỉ số (DD — grain component)',
+    instrument_tp_code               Nullable(String)         COMMENT 'SECURITY (mã CK) / INDEX (chỉ số) — suy ra từ ETL, xem O_GSTT_58',
+    candle_period_code               String                   COMMENT 'Chu kỳ nến: 1MIN (nguồn tvhistory1m) / 1DAY (nguồn tvhistory1d) — BI chọn theo khung thời gian màn (DD — grain component)',
+    trading_tms                      Nullable(DateTime)       COMMENT 'Thời điểm nến: 1MIN = Trading Date + Processing Time; 1DAY = Trading Date 00:00:00 (DD — grain component)',
+    open_price                       Nullable(Decimal(23,2))  COMMENT 'Giá mở cửa của nến (phút hoặc ngày theo candle_period_code); chỉ số = điểm chỉ số',
+    high_price                       Nullable(Decimal(23,2))  COMMENT 'Giá cao nhất của nến (phút hoặc ngày theo candle_period_code)',
+    low_price                        Nullable(Decimal(23,2))  COMMENT 'Giá thấp nhất của nến (phút hoặc ngày theo candle_period_code)',
+    close_price                      Nullable(Decimal(23,2))  COMMENT 'Giá đóng cửa của nến (phút hoặc ngày theo candle_period_code)',
+    vol                              Nullable(Int32)          COMMENT 'Khối lượng khớp của nến (phát sinh riêng từng nến, không lũy kế) — mã CK và chỉ số; dòng 1DAY = nguồn K_GSTT_13 Nhóm 34',
+    cumulative_vol_at_time           Nullable(Int32)          COMMENT 'Khối lượng khớp lũy kế từ đầu ngày tại thời điểm nến phút — chỉ có với 1MIN (NULL với 1DAY)',
+    revenue                          Nullable(Decimal(23,2))  COMMENT 'Doanh thu kỳ BCTC gần nhất đã công bố — NULL với dòng chỉ số; lặp trên mọi dòng nến của cùng mã/ngày',
+    net_profit_after_tax             Nullable(Decimal(23,2))  COMMENT 'LNST kỳ BCTC gần nhất đã công bố — NULL với dòng chỉ số; lặp trên mọi dòng nến của cùng mã/ngày',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
-    is_trading_date                     Nullable(String)        COMMENT '[BỔ SUNG 2026-09-14] Cờ Y/N — ngày lịch có phải ngày thị trường thực sự mở cửa giao dịch hay không — từ Calendar Date Dimension',
+    is_trading_date                     Nullable(String)        COMMENT 'Cờ Y/N — ngày lịch có phải ngày thị trường mở cửa giao dịch — từ Calendar Date Dimension',
 
-    -- From: SECURITY TRADING SNAPSHOT DIMENSION
-    symbol                               Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION (NULL với dòng chỉ số)
+    symbol                              Nullable(String)        COMMENT 'Mã chứng khoán — từ Security Trading Snapshot Dimension',
     security_full_nm                    Nullable(String)        COMMENT 'Tên chứng khoán — từ Security Trading Snapshot Dimension',
     floor_code                          Nullable(String)        COMMENT 'Mã sàn — từ Security Trading Snapshot Dimension',
     stock_tp_code                       Nullable(String)        COMMENT 'Loại chứng khoán — từ Security Trading Snapshot Dimension',
@@ -286,8 +286,8 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_intraday_flat ON C
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), security_trading_snpst_dim_id, trading_tms)
-COMMENT 'Flat table — Fact Security Trading Intraday × Calendar Date Dimension × Security Trading Snapshot Dimension'
+ORDER BY (assumeNotNull(cdr_dt), instrument_code, candle_period_code, assumeNotNull(trading_tms))
+COMMENT 'Flat table — Fact Instrument Price Candle × Calendar Date Dimension × Security Trading Snapshot Dimension (nến phút/ngày của mã CK và chỉ số)'
 ;
 
 
@@ -295,7 +295,7 @@ COMMENT 'Flat table — Fact Security Trading Intraday × Calendar Date Dimensio
 -- 3b. FACT: gstt_fct_security_trading_daily_flat
 --    Biểu đồ kỹ thuật cổ phiếu (Nhóm 3) — khung thời gian từ 1 THÁNG trở lên: nến NGÀY
 --    thật MDDS.JAD_TRADINGVIEWHISTORY1DAY (filter src_stm_code='MDDS_JAD_TRADINGVIEWHISTORY1DAY'),
---    cùng entity Atomic Market Price Snapshot với Fact Security Trading Intraday (nến phút).
+--    cùng entity Atomic Market Price Snapshot với Fact Instrument Price Candle (nến phút).
 --    Grain: 1 row / Symbol / Trading Date. Khung trong ngày vẫn dùng Fact intraday (Nhóm 34).
 --    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension (LEFT)
 -- ============================================================
@@ -511,6 +511,31 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (public_company_entity_role_code)
 COMMENT 'Flat table — Operational Public Company Insider Ownership (current-state, 1 row / công ty × người nội bộ)'
+;
+
+
+-- ============================================================
+-- 6c. OPERATIONAL: gstt_opr_security_index_constituent_ref_flat
+--    [MỚI 2026-10-06] Bảng tham chiếu mã thuộc rổ chỉ số — GSTT lookup Index Code ↔ Symbol ↔ ISIN Code (mã quốc tế).
+--    1 row / (rổ chỉ số × mã CK thành viên ở ngày giao dịch mới nhất của rổ), current-state. Phục vụ chiều lọc Chi_so Nhóm 44/45 (K_GSTT_360–361): BI lọc sổ lệnh HNX security_symbol_code IN (symbol, isin_code). Không FK Star Schema.
+--    Nguồn Atomic: index_constituent_snapshot (driving) + security_trading_snapshot (isin_code) + market_index_snapshot (index_nm).
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_opr_security_index_constituent_ref_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Operational Security Index Constituent Reference
+    index_code                  String              COMMENT 'PK — mã rổ chỉ số (Index Code)',
+    symbol                      String              COMMENT 'PK — mã chứng khoán thành viên rổ (khóa lookup GSTT)',
+    isin_code                   Nullable(String)    COMMENT 'Mã quốc tế ISIN của mã chứng khoán — NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR',
+    index_nm                    Nullable(String)    COMMENT 'Tên chuẩn của rổ chỉ số (VN-Index/HNX-Index/VN30...) — NULL nếu thiếu Market Index Snapshot (O_GSTT_3)',
+    floor_code                  Nullable(String)    COMMENT 'Mã sàn của mã chứng khoán trong rổ',
+    add_dt                      Nullable(Date)      COMMENT 'Ngày mã chứng khoán được thêm vào rổ chỉ số',
+    as_of_dt                    Date                COMMENT 'Ngày giao dịch mới nhất của rổ chỉ số — mốc hiệu lực danh sách thành viên',
+    src_stm_code                String              COMMENT 'Mã hệ thống nguồn — MDDS_JAD_CSIDXINFOR'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (index_code, symbol)
+COMMENT 'Flat table — Operational Security Index Constituent Reference (current-state, 1 row / rổ chỉ số × mã CK thành viên; lookup Index Code ↔ Symbol ↔ ISIN Code)'
 ;
 
 

@@ -2,7 +2,7 @@
 -- GSTT Flat Tables — POPULATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 5 fact + 1 operational
+-- 6 bảng: 5 fact + 1 operational (+ 6b/6c: 2 bảng Operational current-state TRUNCATE + INSERT; 6c mới 2026-10-06)
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
 -- Sửa 2026-09-14: bổ sung Fact 1b (Index Constituent Snapshot, Bridge Factless) —
@@ -254,22 +254,28 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 3. FACT: gstt_fct_security_trading_intraday_flat
---    cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (nhiều dòng/ngày theo Trading Timestamp)
+-- 3. FACT: gstt_fct_instrument_price_candle_flat
+--    [THIẾT KẾ LẠI 2026-10-06 v4.29] cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (nhiều dòng/ngày: nến phút + 1 nến ngày/mã); dòng chỉ số: dim LEFT JOIN → NULL
 -- ============================================================
-DELETE FROM datamart.gstt_fct_security_trading_intraday_flat ON CLUSTER 'my_cluster'
+DELETE FROM datamart.gstt_fct_instrument_price_candle_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO datamart.gstt_fct_security_trading_intraday_flat
+INSERT INTO datamart.gstt_fct_instrument_price_candle_flat
 SELECT
-    -- From: FACT Security Trading Intraday
+    -- From: FACT Fact Instrument Price Candle
     f.security_trading_snpst_dim_id,
     f.trade_dt_dim_id,
+    f.instrument_code,
+    f.instrument_tp_code,
+    f.candle_period_code,
     f.trading_tms,
-    f.open_price_at_time,
-    f.high_price_at_time,
-    f.low_price_at_time,
-    f.close_price_at_time,
+    f.open_price,
+    f.high_price,
+    f.low_price,
+    f.close_price,
+    f.vol,
     f.cumulative_vol_at_time,
+    f.revenue,
+    f.net_profit_after_tax,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                          AS cdr_dt,
@@ -283,7 +289,7 @@ SELECT
     scr_dim.stock_tp_nm                 AS stock_tp_nm,
     scr_dim.src_stm_code                AS security_trading_src_stm_code
 
-FROM datamart.fct_security_trading_intraday f
+FROM datamart.fct_instrument_price_candle f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.trade_dt_dim_id
 LEFT JOIN datamart.security_trading_snpst_dim scr_dim
@@ -492,7 +498,7 @@ WHERE snpst_cal.cdr_dt = :etl_date
 -- 6b. OPERATIONAL: gstt_opr_public_company_insider_ownership_flat
 --    [MỚI 2026-10-01] Current-state — TRUNCATE + INSERT toàn bộ, không lọc theo ngày chạy ETL
 --    (khác Fact Snapshot/Event). Bảng nguồn datamart.opr_public_company_insider_ownership đã lọc
---    hiệu lực tại ngày chạy ETL.
+--    vai trò NNB còn hiệu lực tại ngày chạy ETL (effective_from_dt/effective_to_dt rỗng = không giới hạn) — sửa 2026-10-06.
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.gstt_opr_public_company_insider_ownership_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.gstt_opr_public_company_insider_ownership_flat
@@ -512,6 +518,29 @@ SELECT
 
 FROM datamart.opr_public_company_insider_ownership o
 ;
+
+
+-- ============================================================
+-- 6c. OPERATIONAL: gstt_opr_security_index_constituent_ref_flat
+--    [MỚI 2026-10-06] Current-state — TRUNCATE + INSERT toàn bộ, không lọc theo ngày chạy ETL (cùng pattern 6b).
+--    Bảng nguồn datamart.opr_security_index_constituent_ref đã lọc ngày giao dịch mới nhất của từng rổ chỉ số.
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.gstt_opr_security_index_constituent_ref_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gstt_opr_security_index_constituent_ref_flat
+SELECT
+    -- From: OPERATIONAL Operational Security Index Constituent Reference
+    o.index_code,
+    o.symbol,
+    o.isin_code,
+    o.index_nm,
+    o.floor_code,
+    o.add_dt,
+    o.as_of_dt,
+    o.src_stm_code
+
+FROM datamart.opr_security_index_constituent_ref o
+;
+
 
 
 -- ============================================================

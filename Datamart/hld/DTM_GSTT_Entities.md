@@ -3,6 +3,9 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.10 (2026-10-06):** Đổi `Fact Instrument Chart Intraday` → `Fact Instrument Price Candle` (BA cập nhật Nhóm 34: nguồn JAD_tvhistory1m/1d chọn theo khung thời gian, Độ chi tiết 'Mã CK và chỉ số' → grain 1 nến/dòng, thêm `Candle Period Code`).
+**Thay đổi v2.9 (2026-10-06):** Thay `Fact Security Trading Intraday` bằng `Fact Instrument Chart Intraday` (Fact riêng Nhóm 34 theo độ mịn mã CK và chỉ số — Data Modeler thiết kế lại sau câu hỏi BA).
+**Thay đổi v2.8 (2026-10-06):** Bổ sung `Operational Security Index Constituent Reference` (mới, bảng tham chiếu Index Code ↔ Symbol ↔ ISIN Code — Data Modeler yêu cầu trực tiếp, không gắn KPI).
 **Thay đổi v2.7 (2026-09-26):** Bổ sung `Fact HOSE Securities Trade` và `Fact HNX Securities Trade` (mới, Fact Event grain giao dịch khớp — Data Explorer kết xuất sổ lệnh Nhóm 42/43). Nhóm 38–41 (Data Explorer) 100% reuse bảng có sẵn, không thêm entity.
 **Thay đổi v2.6 (2026-09-23):** Bổ sung `Fact Investor Category Index Trading Snapshot` (mới, Nhóm 29/32 — grain Chỉ số); `Fact Investor Category Trading Snapshot` nay phục vụ Nhóm 30/31. Đánh số lại Nhóm 30→31 … 35→36 theo BA 2026-09-23 (HLD v4.23).
 **Thay đổi v2.5 (2026-09-21):** Bổ sung `Fact Investor Category Trading Snapshot` (mới) — tách phân loại NĐT khỏi `Fact Stock Portfolio Snapshot`, phục vụ Nhóm 29/30 (K_GSTT_85–94).
@@ -90,27 +93,27 @@ erDiagram
 
 ---
 
-## Fact Security Trading Intraday (phục vụ Nhóm 34)
+## Fact Instrument Price Candle (phục vụ Nhóm 34)
 
-Biểu đồ phân tích kỹ thuật theo thời gian trong ngày — grain khác `Security Trading Snapshot Dimension` (theo Trading Timestamp thay vì 1 row/mã CK cuối ngày). `Trading Timestamp` (`trading_tms`) là cột mới bổ sung 2026-08-26 trên Atomic `Security Trading Snapshot` (nối chuỗi `trading_dt` + `' '` + `trading_time` tại tầng ODS) — `Trading Date`/`Trading Time` gốc giữ nguyên không đổi.
+**[THIẾT KẾ LẠI 2026-10-06 v4.29, Data Modeler]** Fact riêng cho Nhóm 34 theo độ mịn **cả mã CK và chỉ số** (BA cập nhật 2026-10-06 15:09: Độ chi tiết "Mã CK và chỉ số", nguồn `JAD_tvhistory1m/JAD_tvhistory1d` — màn chọn nguồn theo khung thời gian hiển thị). Nguồn Atomic `market_price_snapshot` (`symbol` gồm cả chứng khoán và chỉ số). Grain 1 row / `Instrument Code` / `Candle Period Code` (1MIN|1DAY) / `Trading Timestamp`: nến phút và nến ngày là các dòng riêng, BI lọc `candle_period_code` theo khung thời gian chọn. Doanh thu/LNST **NULL với dòng chỉ số**; FK `Security Trading Snapshot Dimension` NULL với dòng chỉ số. Thay `Fact Security Trading Intraday` (bãi bỏ). Xem O_GSTT_58.
 
 ```mermaid
 erDiagram
-    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Trading_Intraday : " "
-    Calendar_Date_Dimension ||--o{ Fact_Security_Trading_Intraday : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Instrument_Price_Candle : " "
+    Calendar_Date_Dimension ||--o{ Fact_Instrument_Price_Candle : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Security Trading Intraday | Fact Snapshot | new | Giá mở/cao/thấp/đóng cửa + khối lượng lũy kế theo từng thời điểm trong ngày | 1 row / mã CK (Symbol) / Trading Timestamp (`trading_tms`) — FK Calendar Date Dimension qua Trading Date | K_GSTT_95–99 |
-| Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
+| Fact Instrument Price Candle | Fact Snapshot | new | Nến giá (mở/cao/thấp/đóng + khối lượng) phút và ngày của mã CK và chỉ số; Doanh thu/LNST (NULL với chỉ số) | 1 row / mã CK hoặc chỉ số (Instrument Code) / Candle Period (1MIN, 1DAY) / Trading Timestamp — FK Calendar Date Dimension qua Trading Date | K_GSTT_1, 4, 13, 95–99, 349–352, 31, 32 (Nhóm 34) |
+| Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 (FK NULL với dòng chỉ số) | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
 ---
 
 ## Fact Security Trading Daily (phục vụ Nhóm 3)
 
-**[MỚI 2026-09-30]** Biểu đồ kỹ thuật cổ phiếu ở khung thời gian từ 1 tháng trở lên đọc nến NGÀY (Atomic `market_price_snapshot`, nguồn MDDS.JAD_TRADINGVIEWHISTORY1DAY) thay vì `Security Trading Snapshot Dimension` (1 row/mã CK cuối ngày). Grain 1 row / mã CK (Symbol) / ngày giao dịch; khung trong ngày vẫn dùng `Fact Security Trading Intraday` (Nhóm 34). Xem O_GSTT_51.
+**[MỚI 2026-09-30]** Biểu đồ kỹ thuật cổ phiếu ở khung thời gian từ 1 tháng trở lên đọc nến NGÀY (Atomic `market_price_snapshot`, nguồn MDDS.JAD_TRADINGVIEWHISTORY1DAY) thay vì `Security Trading Snapshot Dimension` (1 row/mã CK cuối ngày). Grain 1 row / mã CK (Symbol) / ngày giao dịch; khung trong ngày vẫn dùng `Fact Instrument Price Candle` (Nhóm 34). Xem O_GSTT_51.
 
 ```mermaid
 erDiagram
@@ -211,7 +214,7 @@ erDiagram
 
 ## Operational Public Company Insider Ownership (phục vụ Nhóm 35)
 
-**[MỚI 2026-10-01, GSTT Nhóm 35 — BA mapping lại]** Danh sách người nội bộ của công ty đại chúng (vai trò `NNB` — IDS `company_entity_role`) kèm chức vụ (`positions`) và sở hữu (`company_shareholding`). Bảng Tác nghiệp current-state (BA không có tham số ngày; Atomic `pc_shareholding`/`legal_entity_position` là SCD4A) — Data Modeler duyệt 2026-10-01. Không có quan hệ FK Star Schema; lọc theo mã cổ phiếu qua `Equity Ticker Symbol`.
+**[MỚI 2026-10-01, GSTT Nhóm 35 — BA mapping lại]** Danh sách người nội bộ của công ty đại chúng (vai trò `NNB` — IDS `company_entity_role`) kèm chức vụ (`positions`) và sở hữu (`company_shareholding`). Bảng Tác nghiệp current-state (BA không có tham số ngày; Atomic `pc_shareholding`/`legal_entity_position` là SCD4A) — Data Modeler duyệt 2026-10-01. **[SỬA 2026-10-06]** Chỉ lấy vai trò NNB còn hiệu lực tại ngày ETL (`effective_from_dt`/`effective_to_dt` rỗng = không giới hạn). Không có quan hệ FK Star Schema; lọc theo mã cổ phiếu qua `Equity Ticker Symbol`.
 
 ```mermaid
 erDiagram
@@ -233,6 +236,30 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Operational Public Company Insider Ownership | Operational | new | Danh sách người nội bộ + chức vụ + sở hữu (nguồn IDS) | 1 row / (công ty đại chúng × người nội bộ NNB hiện hành) | K_GSTT_354–358 |
+
+---
+
+## Operational Security Index Constituent Reference (phục vụ Nhóm 44, 45 — chiều lọc Chỉ số)
+
+**[MỚI 2026-10-06, Data Modeler yêu cầu trực tiếp]** Bảng tham chiếu mô tả mã thuộc rổ chỉ số: `index_code` ↔ `symbol` ↔ `isin_code` (mã quốc tế) để phân hệ GSTT lookup trên flat table. Current-state — chỉ giữ danh sách thành viên ở ngày giao dịch mới nhất của từng rổ; lịch sử thành viên theo ngày tra `Fact Index Constituent Snapshot`. Không FK Star Schema; phục vụ chiều lọc `Chi_so` của sổ lệnh HNX (K_GSTT_360 Nhóm 44, K_GSTT_361 Nhóm 45) — BI lọc `security_symbol_code IN (symbol, isin_code)`.
+
+```mermaid
+erDiagram
+    Operational_Security_Index_Constituent_Reference {
+        string Index_Code PK
+        string Symbol PK
+        string ISIN_Code
+        string Index_Name
+        string Floor_Code
+        date Add_Date
+        date As_Of_Date
+        string Source_System_Code
+    }
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Operational Security Index Constituent Reference | Operational | new | Tham chiếu Index Code ↔ Symbol ↔ ISIN Code (mã quốc tế) của mã thuộc rổ chỉ số (nguồn MDDS) | 1 row / (rổ chỉ số × mã CK thành viên ở ngày giao dịch mới nhất của rổ) | K_GSTT_360–361 (Nhóm 44–45) |
 
 ---
 
@@ -265,6 +292,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Fact HNX Securities Trade | Fact Event | new | Sổ lệnh khớp HNX — pass-through toàn bộ cột BA yêu cầu (giá/KL/GT khớp, thông tin lệnh mua/bán, CTCK, tài khoản, loại NĐT) | 1 row / giao dịch khớp (Securities Trade Code) / Trade Date | K_GSTT_227–262 |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+| Operational Security Index Constituent Reference | Operational | new | Tham chiếu chỉ số ↔ mã CK ↔ ISIN — lọc sổ lệnh theo chỉ số (lookup, không FK) | 1 row / (rổ chỉ số × mã CK thành viên) | K_GSTT_360 |
 
 ---
 
@@ -281,6 +309,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Fact HNX Securities Order | Fact Event | new | Order book HNX — pass-through 30 cột BA yêu cầu | 1 row / lệnh (Securities Order Code) / Trade Date | K_GSTT_266–295 |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+| Operational Security Index Constituent Reference | Operational | new | Tham chiếu chỉ số ↔ mã CK ↔ ISIN — lọc sổ lệnh theo chỉ số (lookup, không FK) | 1 row / (rổ chỉ số × mã CK thành viên) | K_GSTT_361 |
 
 ---
 
