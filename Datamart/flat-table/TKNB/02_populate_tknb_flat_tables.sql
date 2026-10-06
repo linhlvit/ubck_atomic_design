@@ -407,43 +407,7 @@ FROM datamart.bm031fmss_derivatives_foreign_proprietary_trading_rpt o
 
 
 -- ============================================================
--- 21. OPERATIONAL: bm035mss_security_trading_detail_rpt
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_bm035mss_security_trading_detail_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_bm035mss_security_trading_detail_rpt_flat
-SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.security_symbol_code,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.bm035mss_security_trading_detail_rpt o
-;
-
-
--- ============================================================
--- 22. OPERATIONAL: bm043mss_derivatives_security_detail_rpt
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_bm043mss_derivatives_security_detail_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_bm043mss_derivatives_security_detail_rpt_flat
-SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.security_symbol_code,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.bm043mss_derivatives_security_detail_rpt o
-;
-
-
--- ============================================================
--- 23. FACT: fct_private_corporate_bond_international_offering_snpst
+-- 21. FACT: fct_private_corporate_bond_international_offering_snpst
 --    snpst_cal: JOIN + lọc cdr_dt theo ngày chạy ETL; chuỗi kỳ báo cáo — DELETE đúng ngày rồi INSERT (giữ lịch sử)
 -- ============================================================
 DELETE FROM datamart.tknb_fct_private_corporate_bond_international_offering_snpst_flat ON CLUSTER 'my_cluster'
@@ -485,5 +449,172 @@ JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.private_corporate_bond_dim bd
     ON bd.private_corporate_bond_dim_id = f.private_corporate_bond_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
+;
+
+-- ============================================================
+-- 22. FACT: fct_private_corporate_bond_issuance_snpst
+--    snpst_cal: JOIN + lọc cdr_dt theo ngày chạy ETL; chuỗi kỳ báo cáo — DELETE đúng ngày rồi INSERT (giữ lịch sử)
+-- ============================================================
+DELETE FROM datamart.tknb_fct_private_corporate_bond_issuance_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.tknb_fct_private_corporate_bond_issuance_snpst_flat
+SELECT
+    -- From: FACT Fact Private Corporate Bond Issuance Snapshot
+    f.snpst_dt_dim_id,
+    f.private_corporate_bond_dim_id,
+    f.rpt_month,
+    f.issued_bond_quantity,
+    f.par_value,
+    f.issued_bond_val_amt,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                   AS snpst_cdr_dt,
+
+    -- From: PRIVATE CORPORATE BOND DIMENSION
+    bd.bond_code                      AS bond_code,
+    bd.issuer_nm                      AS issuer_nm,
+    bd.enterprise_tp                  AS enterprise_tp,
+    bd.business_sector                AS business_sector,
+    bd.bond_term_unit                 AS bond_term_unit,
+    bd.bond_term                      AS bond_term,
+    bd.interest_rate_tp               AS interest_rate_tp,
+    bd.issue_interest_rate            AS issue_interest_rate,
+    bd.issue_dt                       AS issue_dt,
+    bd.maturity_dt                    AS maturity_dt,
+    bd.interest_payment_method        AS interest_payment_method,
+    bd.convertible_bond_ind           AS convertible_bond_ind,
+    bd.warrant_linked_bond_ind        AS warrant_linked_bond_ind,
+    bd.secured_bond_ind               AS secured_bond_ind,
+    bd.src_stm_code                    AS bond_src_stm_code
+
+FROM datamart.fct_private_corporate_bond_issuance_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.private_corporate_bond_dim bd
+    ON bd.private_corporate_bond_dim_id = f.private_corporate_bond_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 23. FACT: fct_security_trading_detail_snpst
+--    snpst_cal: JOIN + lọc cdr_dt theo ngày chạy ETL; chuỗi theo ngày — DELETE đúng ngày rồi INSERT (giữ lịch sử)
+-- ============================================================
+DELETE FROM datamart.tknb_fct_security_trading_detail_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.tknb_fct_security_trading_detail_snpst_flat
+SELECT
+    -- From: FACT Fact Security Trading Detail Snapshot
+    f.snpst_dt_dim_id,
+    f.security_trading_snpst_dim_id,
+    f.trading_status_code,
+    f.reference_price,
+    f.ceiling_price,
+    f.floor_price,
+    f.close_price,
+    f.average_price,
+    f.high_price,
+    f.low_price,
+    f.buy_order_cnt,
+    f.buy_order_vol,
+    f.sell_order_cnt,
+    f.sell_order_vol,
+    f.matched_trading_vol,
+    f.matched_trading_val,
+    f.negotiated_trading_vol,
+    f.negotiated_trading_val,
+    f.odd_lot_trading_vol,
+    f.odd_lot_trading_val,
+    f.total_trading_vol,
+    f.total_trading_val,
+    f.max_foreign_ownership_ratio,
+    f.remaining_foreign_ownership_ratio,
+    f.foreign_investor_total_buy_vol,
+    f.foreign_investor_total_sell_vol,
+    f.foreign_investor_total_buy_val,
+    f.foreign_investor_total_sell_val,
+    f.foreign_investor_negotiated_buy_vol,
+    f.foreign_investor_negotiated_sell_vol,
+    f.foreign_investor_negotiated_buy_val,
+    f.foreign_investor_negotiated_sell_val,
+    f.foreign_investor_matched_buy_vol,
+    f.foreign_investor_matched_sell_vol,
+    f.foreign_investor_matched_buy_val,
+    f.foreign_investor_matched_sell_val,
+    f.proprietary_total_buy_vol,
+    f.proprietary_total_sell_vol,
+    f.proprietary_total_buy_val,
+    f.proprietary_total_sell_val,
+    f.proprietary_negotiated_buy_vol,
+    f.proprietary_negotiated_sell_vol,
+    f.proprietary_negotiated_buy_val,
+    f.proprietary_negotiated_sell_val,
+    f.proprietary_matched_buy_vol,
+    f.proprietary_matched_sell_vol,
+    f.proprietary_matched_buy_val,
+    f.proprietary_matched_sell_val,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                   AS snpst_cdr_dt,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    sd.symbol                            AS symbol,
+    sd.security_full_nm                  AS security_full_nm,
+    sd.floor_code                        AS floor_code,
+    sd.stock_tp_code                     AS stock_tp_code,
+    sd.isin_code                         AS isin_code
+
+FROM datamart.fct_security_trading_detail_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim sd
+    ON sd.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 24. FACT: fct_derivatives_security_detail_snpst
+--    snpst_cal: JOIN + lọc cdr_dt theo ngày chạy ETL; chuỗi theo ngày — DELETE đúng ngày rồi INSERT (giữ lịch sử)
+-- ============================================================
+DELETE FROM datamart.tknb_fct_derivatives_security_detail_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.tknb_fct_derivatives_security_detail_snpst_flat
+SELECT
+    -- From: FACT Fact Derivatives Security Detail Snapshot
+    f.snpst_dt_dim_id,
+    f.security_trading_snpst_dim_id,
+    f.open_interest_quantity,
+    f.trading_vol,
+    f.trading_val,
+    f.foreign_investor_buy_vol,
+    f.foreign_investor_sell_vol,
+    f.foreign_investor_buy_val,
+    f.foreign_investor_sell_val,
+    f.proprietary_buy_vol,
+    f.proprietary_sell_vol,
+    f.proprietary_buy_val,
+    f.proprietary_sell_val,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                   AS snpst_cdr_dt,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    sd.symbol                            AS symbol,
+    sd.security_full_nm                  AS security_full_nm,
+    sd.floor_code                        AS floor_code,
+    sd.isin_code                         AS isin_code,
+    sd.maturity_dt                       AS maturity_dt,
+    sd.contract_multiplier               AS contract_multiplier
+
+FROM datamart.fct_derivatives_security_detail_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim sd
+    ON sd.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;

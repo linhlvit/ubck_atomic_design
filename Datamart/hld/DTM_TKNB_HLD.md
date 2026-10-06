@@ -12,12 +12,13 @@ Nguồn TKNB gồm các báo cáo thống kê định kỳ do Sở GDCK/UBCKNN c
 - **Dòng tổng (derived) lưu vật lý**: các dòng tổng/mục lớn (VD: mục 4 = tổng 5 dòng con) được ETL tự tính `SUM` và insert thành 1 dòng vật lý riêng trong bảng — khi SELECT theo đúng `item_stt` sẽ ra ngay bảng giống layout báo cáo gốc, không cần tầng BI tính lại.
 - Lý do: lưu trên kho MinIO, không lo chi phí/hiệu năng storage do trùng lặp dữ liệu chiều giữa các bảng report; mỗi báo cáo có mẫu biểu cố định theo quy định pháp lý, không có nhu cầu khai thác cắt lớp linh hoạt xuyên nhiều báo cáo.
 - Vẫn giữ discipline cơ bản: grain rõ ràng, technical fields `ds_` theo quy tắc chung.
+- **Quy ước đánh số KPI_ID**: Đánh số bám sát số dòng BA (BA row) để đảm bảo tính truy xuất nguồn gốc hai chiều giữa tài liệu BA và Datamart.
 
 ---
 
 ## Section 1 — Data Lineage
 
-### Cụm 1a: HNX01 — Báo cáo về giao dịch trên thị trường cổ phiếu
+##### Cụm 1a: HNX01 — Báo cáo về giao dịch trên thị trường cổ phiếu
 
 ```mermaid
 flowchart LR
@@ -42,7 +43,7 @@ flowchart LR
     A3 --> G1
 ```
 
-### Cụm 2: HNX02 — Báo cáo về giao dịch trên thị trường Trái phiếu Chính phủ
+##### Cụm 2: HNX02 — Báo cáo về giao dịch trên thị trường Trái phiếu Chính phủ
 
 ```mermaid
 flowchart LR
@@ -65,7 +66,7 @@ flowchart LR
 
 > Chỉ 7/165 KPI có nguồn Atomic sẵn sàng (tổng KL/GT/lợi suất theo 3/7 loại hình GD — Outright/Repo1/Repo2, không breakdown theo loại TP). 158 KPI còn lại vẫn PENDING (biểu mẫu HNX.BM24 chưa CSDL cho 4/7 loại hình GD, dimension NĐTNN chưa có, dòng tổng toàn thị trường không đủ căn cứ tính đúng khi thiếu 4/7 loại hình).
 
-### Cụm 3: TK-HNX03 — Báo cáo về giao dịch trên thị trường Chứng khoán Phái sinh
+##### Cụm 3: TK-HNX03 — Báo cáo về giao dịch trên thị trường Chứng khoán Phái sinh
 
 ```mermaid
 flowchart LR
@@ -86,7 +87,7 @@ flowchart LR
     A2 --> G1
 ```
 
-### Cụm 4: HNX04 — Báo cáo tổng hợp về quy mô TTCK
+##### Cụm 4: HNX04 — Báo cáo tổng hợp về quy mô TTCK
 
 ```mermaid
 flowchart LR
@@ -115,7 +116,7 @@ flowchart LR
 
 > Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 8 (HNX11) và Nhóm 13 (TTLK01) 100% PENDING (Nhóm 9 HNX12 đã READY 2026-09-24 — Star Schema riêng, xem Nhóm 9) — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
 
-### Cụm 6: TK-HNX07 — Báo cáo về giao dịch trên thị trường TPDN niêm yết
+##### Cụm 6: TK-HNX07 — Báo cáo về giao dịch trên thị trường TPDN niêm yết
 
 ```mermaid
 flowchart LR
@@ -132,7 +133,70 @@ flowchart LR
     A1 --> G1
 ```
 
-### Cụm 10: TK-HSX01 — Báo cáo về giao dịch trên thị trường Cổ phiếu HOSE
+####### Cụm 8: HNX11 — Báo cáo danh sách phát hành Trái phiếu doanh nghiệp (Fact Private Corporate Bond Issuance Snapshot)
+
+Phục vụ Nhóm 8 (16/16 KPI READY). Dimension `Private Corporate Bond Dimension` dùng chung với Nhóm 9; Fact mới lấy khối lượng phát hành từ `private_corp_bond_registration` (HNX BM31).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["HNX.PRIVATE_CORP_BOND_REGISTRATION"]
+        S2["HNX.PRIVATE_CORP_BOND_OFFERING"]
+        S3["ECAT.ECAT_29_HolidayInfo"]
+    end
+    subgraph SIL["Atomic"]
+        A1["Private Corporate Bond Registration"]
+        A2["Private Corporate Bond Offering"]
+        A3["Calendar Date"]
+    end
+    subgraph GOLD["Datamart"]
+        G1["Fact Private Corporate Bond Issuance Snapshot"]
+        G2["Private Corporate Bond Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    S1 --> A1
+    S2 --> A2
+    S3 --> A3
+    A1 --> G1
+    A2 --> G2
+    A3 --> G3
+    G2 --> G1
+    G3 --> G1
+```
+
+---
+
+####### Cụm 9: HNX12 — Báo cáo danh sách phát hành TPDN ra thị trường quốc tế (Fact Private Corporate Bond International Offering Snapshot)
+
+Phục vụ Nhóm 9 (18/18 KPI READY) — thiết kế 2026-09-24 (bổ sung Cụm lineage còn thiếu 2026-10-05). Nguồn `private_corp_bond_offering` (HNX BM33).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["HNX.PRIVATE_CORP_BOND_OFFERING"]
+        S2["ECAT.ECAT_29_HolidayInfo"]
+    end
+    subgraph SIL["Atomic"]
+        A1["Private Corporate Bond Offering"]
+        A2["Calendar Date"]
+    end
+    subgraph GOLD["Datamart"]
+        G1["Fact Private Corporate Bond International Offering Snapshot"]
+        G2["Private Corporate Bond Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    S1 --> A1
+    S2 --> A2
+    A1 --> G1
+    A1 --> G2
+    A2 --> G3
+    G2 --> G1
+    G3 --> G1
+```
+
+---
+
+##### Cụm 10: TK-HSX01 — Báo cáo về giao dịch trên thị trường Cổ phiếu HOSE
 
 ```mermaid
 flowchart LR
@@ -159,7 +223,7 @@ flowchart LR
 
 > Nguồn biểu mẫu (VSDC.BM1, VSDC.MB1, phân ngành GICS) chưa có Atomic — không vẽ trong Cụm 10 (chỉ vẽ nguồn Atomic thật đã READY, theo `flowchart_rules.md`).
 
-### Cụm 11: HSX02 — Báo cáo về niêm yết và giao dịch chứng khoán HOSE, kỳ tháng
+##### Cụm 11: HSX02 — Báo cáo về niêm yết và giao dịch chứng khoán HOSE, kỳ tháng
 
 ```mermaid
 flowchart LR
@@ -186,7 +250,7 @@ flowchart LR
 
 > Nguồn biểu mẫu (HOSE.BM15, HOSE.BM16, VSDC.BM1) chưa có Atomic — không vẽ trong Cụm 11 (chỉ vẽ nguồn Atomic thật đã READY, theo `flowchart_rules.md`).
 
-### Cụm 12: TK-HSX04 — Báo cáo về giao dịch tự doanh của CTCK trên HOSE
+##### Cụm 12: TK-HSX04 — Báo cáo về giao dịch tự doanh của CTCK trên HOSE
 
 ```mermaid
 flowchart LR
@@ -210,7 +274,7 @@ flowchart LR
 > Nhóm 13 (TTLK01) 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
 > Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) cũng 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
 
-### Cụm 14: TTLK10 — Danh sách chứng quyền đang lưu hành
+##### Cụm 14: TTLK10 — Danh sách chứng quyền đang lưu hành
 
 ```mermaid
 flowchart LR
@@ -227,7 +291,7 @@ flowchart LR
     A1 --> G1
 ```
 
-### Cụm 15: Biểu 0513.H.UBCK.QG — Báo cáo kết quả thực hiện phát hành
+##### Cụm 15: Biểu 0513.H.UBCK.QG — Báo cáo kết quả thực hiện phát hành
 
 ```mermaid
 flowchart LR
@@ -244,7 +308,7 @@ flowchart LR
     A1 --> G1
 ```
 
-### Cụm 16: Biểu TK-04.BTC — Báo cáo tổng hợp thị trường chứng khoán theo quý/lũy kế
+##### Cụm 16: Biểu TK-04.BTC — Báo cáo tổng hợp thị trường chứng khoán theo quý/lũy kế
 
 ```mermaid
 flowchart LR
@@ -265,7 +329,7 @@ flowchart LR
 
 > Nguồn biểu mẫu (VSDC.BM1/BM2/BM5, HNX.BM39/BM40/BM7, HOSE.BM1/BM15/BM9, IDS/SCMS/FMS tổng hợp, SSC_SCMS.MEMBER_REPORT) chưa có Atomic — không vẽ trong Cụm 16 (chỉ vẽ nguồn Atomic thật đã READY, theo `flowchart_rules.md`).
 
-### Cụm 17: TK_NienGiam — Niên giám thống kê thị trường chứng khoán
+##### Cụm 17: TK_NienGiam — Niên giám thống kê thị trường chứng khoán
 
 ```mermaid
 flowchart LR
@@ -308,13 +372,13 @@ flowchart LR
 
 ---
 
-### Cụm 18a: BM030a_MSS — Chỉ số thị trường (gộp vào Cụm 18b)
+##### Cụm 18a: BM030a_MSS — Chỉ số thị trường (gộp vào Cụm 18b)
 
 > **SỬA 2026-09-23** Không còn reuse `Fact Market Index Snapshot`/`Market Index Dimension` (QLKD). "Loại chỉ số"/"Giá trị chỉ số" (K_TKNB_1013/1014) chuyển lên `Fact Market Trading Snapshot` (FK `index_constituent_dim_id` + cột `market_index_val`) — xem Cụm 18b.
 
 ---
 
-### Cụm 18b: BM030a_MSS — GTGD/KLGD toàn thị trường cổ phiếu + chỉ số (Fact Market Trading Snapshot)
+##### Cụm 18b: BM030a_MSS — GTGD/KLGD toàn thị trường cổ phiếu + chỉ số (Fact Market Trading Snapshot)
 
 > **SỬA 2026-09-23** Grain đổi: 1 Trade Date × 1 Index Code (6 mã BA dòng 1131) — mang thêm FK `index_constituent_dim_id` và `market_index_val` (K_TKNB_1013/1014). 8 đo lường GTGD/KLGD toàn thị trường lặp lại theo Index Code.
 
@@ -349,7 +413,7 @@ flowchart LR
 
 ---
 
-### Cụm 20: BM030c_MSS — Thống kê giao dịch toàn thị trường trái phiếu doanh nghiệp niêm yết
+##### Cụm 20: BM030c_MSS — Thống kê giao dịch toàn thị trường trái phiếu doanh nghiệp niêm yết
 
 ```mermaid
 flowchart LR
@@ -370,7 +434,7 @@ flowchart LR
 
 ---
 
-### Cụm 22: BM030e_MSS — Thống kê giao dịch thị trường chứng chỉ quỹ, ETF và CW
+##### Cụm 22: BM030e_MSS — Thống kê giao dịch thị trường chứng chỉ quỹ, ETF và CW
 
 ```mermaid
 flowchart LR
@@ -395,7 +459,7 @@ flowchart LR
 
 ---
 
-### Cụm 23: BM031a_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường cổ phiếu (Fact Foreign Proprietary Trading Index Snapshot)
+##### Cụm 23: BM031a_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường cổ phiếu (Fact Foreign Proprietary Trading Index Snapshot)
 
 > **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Thay bảng phẳng EAV `bm031amss_foreign_proprietary_trading_rpt` cũ (đã DEPRECATED, xem Section 4) bằng Fact mới — toàn bộ 24 đo lường đều JOIN `Index Constituent Snapshot` breakdown theo Index Code, grain nhất quán 1 (Trade Date × Index Code) suốt Nhóm, không có grain mismatch nội bộ. Reuse `Index Constituent Dimension` (sở hữu GSTT) làm FK thay vì tự tạo Dimension riêng. Bỏ nhánh `Market Index Snapshot`/`MDDS.JAD_MARKETINFOR` khỏi Cụm này so với bản cũ — rà lại Detail Mapping xác nhận không có KPI nào thực sự dùng nguồn này (Chiều "Chỉ số" K_TKNB_1069 lấy từ `Index Constituent Dimension`, không phải `Market Index Snapshot`).
 
@@ -424,7 +488,7 @@ flowchart LR
 
 ---
 
-### Cụm 24: BM031b_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường TPCP
+##### Cụm 24: BM031b_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường TPCP
 
 ```mermaid
 flowchart LR
@@ -445,7 +509,7 @@ flowchart LR
 
 ---
 
-### Cụm 25: BM031C_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường TPDN niêm yết
+##### Cụm 25: BM031C_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường TPDN niêm yết
 
 ```mermaid
 flowchart LR
@@ -464,7 +528,7 @@ flowchart LR
 
 ---
 
-### Cụm 26: BM031d_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường CCQ, ETF, CW
+##### Cụm 26: BM031d_MSS — Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường CCQ, ETF, CW
 
 ```mermaid
 flowchart LR
@@ -489,7 +553,7 @@ flowchart LR
 
 ---
 
-### Cụm 27: BM031f_MSS — Thống kê giao dịch thị trường chứng khoán phái sinh
+##### Cụm 27: BM031f_MSS — Thống kê giao dịch thị trường chứng khoán phái sinh
 
 ```mermaid
 flowchart LR
@@ -514,7 +578,7 @@ flowchart LR
 
 ---
 
-### Cụm 28: BM035_MSS — Thống kê thông tin giao dịch của từng mã chứng khoán
+##### Cụm 28: BM035_MSS — Thống kê thông tin giao dịch của từng mã chứng khoán (Fact Security Trading Detail Snapshot)
 
 ```mermaid
 flowchart LR
@@ -522,47 +586,79 @@ flowchart LR
         S1["ORDERTRADE.TRADE_BOOK_HOSE"]
         S2["ORDERTRADE.TRADE_BOOK_HNX"]
         S3["MDDS.JAD_STOCKINFOR"]
+        S4["ORDERTRADE.ORDER_BOOK_HOSE"]
+        S5["ORDERTRADE.ORDER_BOOK_HNX"]
+        S6["VSDC.FOREIGN_INVESTOR_INFO"]
+        S7["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
         A1["Securities Trade"]
         A2["Security Trading Snapshot"]
+        A3["Securities Order"]
+        A4["Foreign Ownership Info"]
+        A5["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        G1["bm035mss_security_trading_detail_rpt"]
+        G1["Fact Security Trading Detail Snapshot"]
+        G2["Security Trading Snapshot Dimension"]
+        G3["Calendar Date Dimension"]
     end
     S1 --> A1
     S2 --> A1
     S3 --> A2
+    S4 --> A3
+    S5 --> A3
+    S6 --> A4
+    S7 --> A5
     A1 --> G1
     A2 --> G1
+    A3 --> G1
+    A4 --> G1
+    A2 --> G2
+    A5 --> G3
+    G2 --> G1
+    G3 --> G1
 ```
 
-> Nguồn biểu mẫu (VSDC.BM64 — Tỷ lệ sở hữu NĐTNN) chưa có Atomic — không vẽ trong Cụm 28 (chỉ vẽ nguồn Atomic thật đã READY, theo `flowchart_rules.md`).
+> **[THIẾT KẾ LẠI 2026-10-06]** Star Schema thay bảng EAV phẳng; Dimension `Security Trading Snapshot Dimension` sở hữu GSTT (reuse).
 
 ---
 
-### Cụm 29: BM043_MSS — Thị trường chứng khoán phái sinh - chi tiết từng mã
+##### Cụm 29: BM043_MSS — Thị trường chứng khoán phái sinh - chi tiết từng mã (Fact Derivatives Security Detail Snapshot)
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
         S1["ORDERTRADE.TRADE_BOOK_HNX"]
         S2["MDDS.JAD_STOCKINFOR"]
+        S3["VSDC.END_OF_DAY_OPEN_INTEREST"]
+        S4["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
         A1["Securities Trade"]
         A2["Security Trading Snapshot"]
+        A3["End Of Day Open Interest"]
+        A4["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        G1["bm043mss_derivatives_security_detail_rpt"]
+        G1["Fact Derivatives Security Detail Snapshot"]
+        G2["Security Trading Snapshot Dimension"]
+        G3["Calendar Date Dimension"]
     end
     S1 --> A1
     S2 --> A2
+    S3 --> A3
+    S4 --> A4
     A1 --> G1
     A2 --> G1
+    A3 --> G1
+    A2 --> G2
+    A4 --> G3
+    G2 --> G1
+    G3 --> G1
 ```
 
-> Nguồn biểu mẫu (VSDC.BM1 — KL hợp đồng đang lưu hành) chưa có Atomic — không vẽ trong Cụm 29 (chỉ vẽ nguồn Atomic thật đã READY, theo `flowchart_rules.md`).
+> **[THIẾT KẾ LẠI 2026-10-06]** Star Schema thay bảng EAV phẳng; Dimension `Security Trading Snapshot Dimension` sở hữu GSTT (reuse).
 
 ---
 
@@ -607,7 +703,7 @@ flowchart LR
 | K_TKNB_17 | II.3 KLGD — Trái phiếu doanh nghiệp | CK | Cơ sở | `SUM(execution_vol)` filter `market_id_code = 'HCX'` | | READY |
 | K_TKNB_18 | II.4 KLGD — Chứng chỉ quỹ | CK | Cơ sở | `SUM(execution_vol)` filter join `stock_tp_code='3' AND fund_tp_code='M'` | | READY |
 | K_TKNB_19 | II.5 KLGD — Chứng chỉ quỹ (ETF) | CK | Cơ sở | `SUM(execution_vol)` filter join `stock_tp_code='3' AND fund_tp_code='E'` | | READY |
-| K_TKNB_20 | III. Tổng giá trị vốn hóa thị trường cổ phiếu | VND | Phái sinh | `= K_TKNB_21 + K_TKNB_22` | **[SỬA 2026-09-16, đóng PENDING — commit b8868c9e]** [STT=20, item_code=`total_market_cap`] Nguồn "KL chứng khoán đang lưu hành" nay dùng `listed_share_info` (VSDC `outstanding_shares`, cùng nguồn vừa mở cho GSTT K_GSTT_53/55/61, xem O_GSTT_22). Header derived-sum của K_TKNB_21 (HNX)+K_TKNB_22 (UPCoM) — báo cáo HNX01 chỉ phủ 2 sàn do HNX vận hành, không gồm HOSE. Mart: `hnx01_stock_trading_rpt`."Item Value" | READY |
+| K_TKNB_20 | III. Tổng giá trị vốn hóa thị trường cổ phiếu | VND | Phái sinh | `= K_TKNB_21 + K_TKNB_22` | **[SỬA 2026-09-16, đóng PENDING — commit b8868c9e]** [STT=20, item_code=`total_market_cap`] Nguồn "KL chứng khoán đang lưu hành" nay dùng `listed_share_info` (VSDC `outstanding_shares`, cùng nguồn vừa mở cho GSTT (chỉ tiêu GSTT 53/55/61, xem O_GSTT_22)). Header derived-sum của K_TKNB_21 (HNX)+K_TKNB_22 (UPCoM) — báo cáo HNX01 chỉ phủ 2 sàn do HNX vận hành, không gồm HOSE. Mart: `hnx01_stock_trading_rpt`."Item Value" | READY |
 | K_TKNB_21 | III.1 Vốn hóa Niêm yết (theo phân ngành - Ngành cấp 1) | VND | Cơ sở | `SUM(security_trading_snapshot.close_price × listed_share_info.outstanding_share_quantity) WHERE floor_code = '02' AND trading_dt = :to_date` | **[SỬA 2026-09-16, đóng PENDING]** [STT=21, item_code=`market_cap_cpny_by_sector1`] Dù tên gọi "theo phân ngành" nhưng công thức thực tế (đã verify UAT) chỉ lọc theo sàn HNX (`floor_code='02'`), không group theo ngành cấp 1 — tên gọi trong báo cáo gốc, không phải grain thiết kế. Nguồn `listed_share_info`. Mart: `hnx01_stock_trading_rpt` | READY |
 | K_TKNB_22 | III.2 Vốn hóa UPCoM | VND | Cơ sở | `SUM(security_trading_snapshot.close_price × listed_share_info.outstanding_share_quantity) WHERE floor_code = '04' AND trading_dt = :to_date` | **[SỬA 2026-09-16, đóng PENDING]** [STT=22, item_code=`market_cap_upcom`] Nguồn `listed_share_info`. Mart: `hnx01_stock_trading_rpt` | READY |
 | K_TKNB_23 | IV. Giao dịch khớp lệnh | - | Chiều | BA đánh N/A (Bảng nguồn/Trường nguồn) — không có giá trị | [STT=23, item_code=`matched_trading_volume`] Label-only, `item_value = NULL` theo thiết kế. Chỉ là tên nhãn nhóm hiển thị, không SUM. Chứa 2 nhóm con: KLGD khớp lệnh (K_TKNB_24), GTGD khớp lệnh (K_TKNB_29) | READY |
@@ -1280,47 +1376,110 @@ flowchart LR
 
 #### Nhóm 8 - Báo cáo danh sách phát hành Trái phiếu doanh nghiệp (HNX11)
 
-**Phân loại:** Báo cáo danh sách (list-detail) — mỗi dòng STT = 1 mã trái phiếu doanh nghiệp riêng lẻ (TPDNRL) phát hành trong kỳ, gồm 16 cột thuộc tính: thông tin doanh nghiệp phát hành (Tên/Loại hình/Lĩnh vực), thông tin trái phiếu (Mã TP/Giá trị PH/Kỳ hạn/Lãi suất/Ngày PH/Ngày đáo hạn), đặc điểm trái phiếu (Thanh toán lãi/Chuyển đổi/Kèm chứng quyền/Có bảo đảm). Khác cấu trúc EAV của Nhóm 1/3/6 (báo cáo tổng hợp số liệu) — đây là bảng danh sách chi tiết từng trái phiếu.
+**Phân loại:** Báo cáo danh sách (list-detail) — mỗi dòng = 1 mã trái phiếu doanh nghiệp riêng lẻ (TPDNRL) phát hành, 16 cột thuộc tính: thông tin doanh nghiệp phát hành (Tên/Loại hình/Lĩnh vực), thông tin trái phiếu (Mã TP/Giá trị PH/Kỳ hạn/Lãi suất/Ngày PH/Ngày đáo hạn), đặc điểm trái phiếu (Thanh toán lãi/Chuyển đổi/Kèm chứng quyền/Có bảo đảm). Thiết kế **Star Schema** cùng mẫu Nhóm 9 (không dùng bảng EAV phẳng).
 
-**Atomic:** Không áp dụng — toàn bộ 16/16 dòng BA có nguồn từ biểu mẫu `HNX.BM 27_Tình hình chào bán TPDNRL trong nước` / `HNX.BM 32_Tình hình chào bán TPDNRL trong nước` (`Loại dữ liệu = "Chưa có CSDL - Map biểu mẫu"`). Có xét entity `Public Company Securities Offering Result`/`Plan` (nguồn IDS, đã tìm thấy qua grep "offering"/"issuance") nhưng đọc kỹ mô tả: đây là khái niệm "chào bán chứng khoán" của công ty đại chúng nói chung (Business Activity concept, nguồn IDS — Information Disclosure System), KHÔNG phải nguồn TPDNRL phát hành trên HNX mà BA yêu cầu (nguồn HNX.BM27/BM32) — khác concept, không dùng để lấp PENDING.
+> **[THIẾT KẾ MỚI 2026-10-05, BA cập nhật mapping TKNB]** BA cập nhật Bảng nguồn cho cả 16/16 dòng (dòng 648–663): `private_corp_bond_offering` as H (thuộc tính trái phiếu) và `private_corp_bond_registration` as P (khối lượng phát hành, JOIN theo `bond_code + issue_date + maturity_date + report_month`) — trước đó HLD ghi PENDING 100% vì "Map biểu mẫu" (HNX.BM 27/32). Theo tiền lệ Nhóm 9 (2026-09-24): ô `Loại dữ liệu` BA vẫn ghi "Chưa có CSDL - Map biểu mẫu" nhưng đã có Bảng nguồn cụ thể → nâng READY toàn bộ 16/16. 15 thuộc tính tĩnh dùng lại `Private Corporate Bond Dimension` (Nhóm 9); số liệu theo kỳ (Giá trị phát hành, K_TKNB_542) nằm ở Fact mới `Fact Private Corporate Bond Issuance Snapshot`. Có 5 điểm cần BA/dev xác nhận — xem Section 5 mục 33.
+
+**Atomic:**
+- `Private Corporate Bond Offering` (`private_corp_bond_offering`) ← `uat_hnx_stg.private_corp_bond_offering` — **READY (mapping md)** `mapping_vsdc_ods_atm.md` Bảng 15 (dùng cho Dimension, như Nhóm 9).
+- `Private Corporate Bond Registration` (`private_corp_bond_registration`) ← `uat_hnx_stg.private_corp_bond_registration` (HNX BM 31) — **READY (mapping md)** `mapping_vsdc_ods_atm.md` Bảng 16: `issued_bond_quantity` (BA `issued_volume`), `par_value`, `report_month`, `ds_snpst_dt`. Cùng ngoại lệ mapping md đã dùng ở PTTT (`private_corp_bond_registration.outstanding_bond_quantity`). Chưa có YAML LLD/`dm_manifest.yaml` — Gate 0 báo WARNING "không tìm thấy bảng Atomic" (xem Section 5 mục 33).
 
 **Mockup:** Báo cáo HNX11 — user cung cấp template thật (2 khối bảng: "Doanh nghiệp phát hành + Kỳ phát hành", "Lãi suất phát hành + đặc điểm trái phiếu"), khớp đúng 16 cột với BA.
 
-**Kết luận: PENDING TOÀN BỘ báo cáo** — 100% KPI (16/16) không có nguồn CSDL sẵn sàng. Không thiết kế bảng vật lý/erDiagram/Star Schema/Bảng grain ở giai đoạn này (theo checklist Nhóm 100% PENDING).
+**Source:** `Fact Private Corporate Bond Issuance Snapshot` → `Calendar Date Dimension`, `Private Corporate Bond Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_537 | Kỳ báo cáo: Quý | - | Chiều | TBD — chờ Atomic | [STT=1] Chiều slicer — Map biểu mẫu HNX.BM 27 | PENDING |
-| K_TKNB_538 | Tên Doanh nghiệp phát hành | - | Cơ sở | TBD — chờ Atomic | [STT=2] Nguồn HNX.BM 27 — Tên DN; Map biểu mẫu | PENDING |
-| K_TKNB_539 | Loại hình doanh nghiệp | - | Cơ sở | TBD — chờ Atomic | [STT=3] Nguồn HNX.BM 27 — Loại hình doanh nghiệp; Map biểu mẫu | PENDING |
-| K_TKNB_540 | Lĩnh vực hoạt động doanh nghiệp | - | Cơ sở | TBD — chờ Atomic | [STT=4] Nguồn HNX.BM 27 — Lĩnh vực hoạt động; Map biểu mẫu | PENDING |
-| K_TKNB_541 | Mã trái phiếu | - | Cơ sở | TBD — chờ Atomic | [STT=5] Nguồn HNX.BM 27 — Mã trái phiếu; Map biểu mẫu | PENDING |
-| K_TKNB_542 | Giá trị phát hành | VND | Cơ sở | TBD — chờ Atomic | [STT=6] Nguồn HNX.BM 27 — Khối lượng chào bán × Mệnh giá; Map biểu mẫu | PENDING |
-| K_TKNB_543 | Đơn vị kỳ hạn phát hành | - | Chiều | TBD — chờ Atomic | [STT=7] Nguồn HNX.BM 27 — Đơn vị kỳ hạn; Map biểu mẫu | PENDING |
-| K_TKNB_544 | Kỳ hạn phát hành | - | Cơ sở | TBD — chờ Atomic | [STT=8] Nguồn HNX.BM 27 — Kỳ hạn; Map biểu mẫu | PENDING |
-| K_TKNB_545 | Loại lãi suất phát hành | - | Chiều | TBD — chờ Atomic | [STT=9] Nguồn HNX.BM 27 — Loại lãi suất; Map biểu mẫu | PENDING |
-| K_TKNB_546 | Lãi suất thực tế | % | Cơ sở | TBD — chờ Atomic | [STT=10] Nguồn HNX.BM 27 — Lãi suất phát hành (%); Map biểu mẫu | PENDING |
-| K_TKNB_547 | Ngày phát hành | Ngày | Cơ sở | TBD — chờ Atomic | [STT=11] Nguồn HNX.BM 27 — Ngày phát hành; Map biểu mẫu | PENDING |
-| K_TKNB_548 | Ngày đáo hạn | Ngày | Cơ sở | TBD — chờ Atomic | [STT=12] Nguồn HNX.BM 27 — Ngày đáo hạn; Map biểu mẫu | PENDING |
-| K_TKNB_549 | Thanh toán lãi | - | Cơ sở | TBD — chờ Atomic | [STT=13] Nguồn HNX.BM 32 — Phương thức thanh toán lãi; Map biểu mẫu | PENDING |
-| K_TKNB_550 | Trái phiếu chuyển đổi | - | Cơ sở | TBD — chờ Atomic | [STT=14] Nguồn HNX.BM 32 — TP chuyển đổi (Có/Không); Map biểu mẫu | PENDING |
-| K_TKNB_551 | Trái phiếu kèm chứng quyền | - | Cơ sở | TBD — chờ Atomic | [STT=15] Nguồn HNX.BM 32 — TP kèm chứng quyền (Có/Không); Map biểu mẫu | PENDING |
-| K_TKNB_552 | Trái phiếu có bảo đảm | - | Cơ sở | TBD — chờ Atomic | [STT=16] Nguồn HNX.BM 32 — TP bảo đảm (Có/Không); Map biểu mẫu | PENDING |
+| K_TKNB_537 | Kỳ báo cáo: Quý | - | Chiều | `CASE RIGHT(fct_private_corporate_bond_issuance_snpst.rpt_month,2) WHEN '03' THEN 'Quý I' WHEN '06' THEN 'Quý II' WHEN '09' THEN 'Quý III' WHEN '12' THEN 'Quý IV' END` WHERE `RIGHT(fct_private_corporate_bond_issuance_snpst.rpt_month,2) IN ('03','06','09','12')` | [STT=1] [2026-10-05] BA dòng 648: `H.report_month` → Quý I–IV; lũy kế đến cuối tháng 3/6/9/12 (BA Điều kiện). Định dạng `report_month` MM/YYYYMM — xem Section 5 mục 32, 33 | READY |
+| K_TKNB_538 | Tên Doanh nghiệp phát hành | - | Cơ sở | `private_corporate_bond_dim.issuer_nm` | [STT=2] BA dòng 649: `issuer_name — Tên DN` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_539 | Loại hình doanh nghiệp | - | Cơ sở | `private_corporate_bond_dim.enterprise_tp` | [STT=3] BA dòng 650: `enterprise_type` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_540 | Lĩnh vực hoạt động doanh nghiệp | - | Cơ sở | `private_corporate_bond_dim.business_sector` | [STT=4] BA dòng 651: `business_sector` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_541 | Mã trái phiếu | - | Cơ sở | `private_corporate_bond_dim.bond_code` | [STT=5] BA dòng 652: `bond_code (BK Dimension)` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_542 | Giá trị phát hành | VND | Cơ sở | `fct_private_corporate_bond_issuance_snpst.issued_bond_val_amt` | [STT=6] [2026-10-05] BA dòng 653: `P.issued_volume * par_value` — `private_corp_bond_registration.issued_bond_quantity × par_value`; Điều kiện 'Tổng hợp theo quý' = lấy số lũy kế tại tháng 03/06/09/12 (không cộng dồn các tháng). `par_value` lấy từ bảng đăng ký (P) theo SQL BA — xem Section 5 mục 33 | READY |
+| K_TKNB_543 | Đơn vị kỳ hạn phát hành | - | Chiều | `private_corporate_bond_dim.bond_term_unit` | [STT=7] BA dòng 654: `term_unit` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_544 | Kỳ hạn phát hành | - | Cơ sở | `private_corporate_bond_dim.bond_term` | [STT=8] BA dòng 655: `term` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_545 | Loại lãi suất phát hành | - | Chiều | `private_corporate_bond_dim.interest_rate_tp` | [STT=9] BA dòng 656: `interest_rate_type` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_546 | Lãi suất thực tế | % | Cơ sở | `private_corporate_bond_dim.issue_interest_rate` | [STT=10] BA dòng 657: `issue_interest_rate` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_547 | Ngày phát hành | Ngày | Cơ sở | `private_corporate_bond_dim.issue_dt` | [STT=11] BA dòng 658: `issue_date` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_548 | Ngày đáo hạn | Ngày | Cơ sở | `private_corporate_bond_dim.maturity_dt` | [STT=12] BA dòng 659: `maturity_date` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_549 | Thanh toán lãi | - | Cơ sở | `private_corporate_bond_dim.interest_payment_method` | [STT=13] BA dòng 660: `interest_payment_method` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_550 | Trái phiếu chuyển đổi | - | Cơ sở | `private_corporate_bond_dim.convertible_bond_ind` | [STT=14] BA dòng 661: `convertible_bond (cờ boolean)` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_551 | Trái phiếu kèm chứng quyền | - | Cơ sở | `private_corporate_bond_dim.warrant_linked_bond_ind` | [STT=15] BA dòng 662: `warrant_linked_bond (cờ boolean)` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
+| K_TKNB_552 | Trái phiếu có bảo đảm | - | Cơ sở | `private_corporate_bond_dim.secured_bond_ind` | [STT=16] BA dòng 663: `secured_bond (cờ boolean)` (`private_corp_bond_offering` as H) — Dimension dùng chung với Nhóm 9 | READY |
 
-**Bảng mapping nguồn (Atomic Placeholder — cho dòng PENDING):**
+**Star Schema:**
 
-| Bảng nguồn BA | Atomic entity dự kiến | Atomic table dự kiến | KPI liên quan |
-|---|---|---|---|
-| HNX.BM 27 (Tình hình chào bán TPDNRL trong nước — thông tin DN + kỳ phát hành) | TBD — chưa có thiết kế Atomic | TBD | K_TKNB_537–548 |
-| HNX.BM 32 (Tình hình chào bán TPDNRL trong nước — lãi suất + đặc điểm trái phiếu) | TBD — chưa có thiết kế Atomic | TBD | K_TKNB_549–552 |
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Private_Corporate_Bond_Dimension {
+        string Private_Corporate_Bond_Dimension_Id PK
+        string Bond_Code
+        string Issuer_Name
+        string Enterprise_Type
+        string Business_Sector
+        string Bond_Term_Unit
+        int Bond_Term
+        string Interest_Rate_Type
+        decimal Issue_Interest_Rate
+        date Issue_Date
+        date Maturity_Date
+        string Interest_Payment_Method
+        boolean Convertible_Bond_Indicator
+        boolean Warrant_Linked_Bond_Indicator
+        boolean Secured_Bond_Indicator
+        string Source_System_Code
+    }
+    Fact_Private_Corporate_Bond_Issuance_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Private_Corporate_Bond_Dimension_Id FK
+        string Report_Month
+        bigint Issued_Bond_Quantity
+        decimal Par_Value
+        decimal Issued_Bond_Value_Amount
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Issuance_Snapshot : "Snapshot_Date_Dimension_Id"
+    Private_Corporate_Bond_Dimension ||--o{ Fact_Private_Corporate_Bond_Issuance_Snapshot : "Private_Corporate_Bond_Dimension_Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Private Corporate Bond Issuance Snapshot"]
+        G2["Private Corporate Bond Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["HNX11 - Nhom 8: K_TKNB_537-552"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Private Corporate Bond Issuance Snapshot | 1 row = 1 mã TP × 1 tháng báo cáo (bản ghi `ds_snpst_dt` mới nhất) — số lũy kế từ đầu năm; chỉ các mã có trong `private_corp_bond_offering` (EXISTS theo bond_code + issue_date + maturity_date + report_month) |
+| Private Corporate Bond Dimension | 1 row = 1 mã trái phiếu (SCD4A current-state) — dùng chung với Nhóm 9 |
+| Calendar Date Dimension | 1 row = 1 ngày |
 
 #### Nhóm 9 - Báo cáo danh sách phát hành Trái phiếu doanh nghiệp ra thị trường quốc tế (HNX12)
 
 **Phân loại:** Báo cáo danh sách (list-detail) — mỗi dòng = 1 mã TPDNRL × 1 thị trường phát hành quốc tế trong kỳ, 18 cột thuộc tính.
 
-> **[THIẾT KẾ MỚI 2026-09-24, theo yêu cầu Data Modeler — dạng Dim/Fact]** BA cập nhật Bảng nguồn `uat_hnx_stg.private_corp_bond_offering` cho cả 18/18 dòng (trước là "Map biểu mẫu" HNX.BM 33, không có CSDL) → chuyển toàn bộ PENDING → READY. Khác quy ước "mỗi báo cáo 1 bảng phẳng Operational" của module, Nhóm 9 thiết kế **Star Schema**: thuộc tính tĩnh của trái phiếu tách vào `Private Corporate Bond Dimension`, số liệu theo kỳ nằm ở `Fact Private Corporate Bond International Offering Snapshot` — Dimension trái phiếu riêng lẻ có thể dùng lại cho HNX11 (Nhóm 8, cùng họ nguồn `private_corp_bond_*`).
+> **[THIẾT KẾ MỚI 2026-09-24, theo yêu cầu Data Modeler — dạng Dim/Fact]** BA cập nhật Bảng nguồn `uat_hnx_stg.private_corp_bond_offering` cho cả 18/18 dòng (trước là "Map biểu mẫu" HNX.BM 33, không có CSDL) → chuyển toàn bộ PENDING → READY. Khác quy ước "mỗi báo cáo 1 bảng phẳng Operational" của module, Nhóm 9 thiết kế **Star Schema**: thuộc tính tĩnh của trái phiếu tách vào `Private Corporate Bond Dimension`, số liệu theo kỳ nằm ở `Fact Private Corporate Bond International Offering Snapshot` — Dimension trái phiếu riêng lẻ **đã được dùng lại cho HNX11 (Nhóm 8)** từ 2026-10-05. **[RÀ SOÁT 2026-10-05, BA cập nhật mapping TKNB]** Đối chiếu lại 18/18 dòng BA (dòng 664–681): Bảng nguồn/Trường nguồn không đổi so với thiết kế 2026-09-24 → giữ nguyên Dim/Fact, không sửa KPI.
 
 **Atomic:** `Private Corporate Bond Offering` (`private_corp_bond_offering`) ← `uat_hnx_stg.private_corp_bond_offering` (HNX BM 33) — **READY (mapping md)** theo `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` Bảng 15 (BK `bond_code + market_type + posting_date`, snapshot `ds_snpst_dt`). Chưa có YAML LLD/`dm_manifest.yaml` — Gate 0 báo WARNING "không tìm thấy bảng Atomic" (cùng loại ngoại lệ mapping md), xem Section 5 mục 32.
 
@@ -1887,7 +2046,7 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_TKNB_875 | Quý ... | - | Chiều | N/A | [STT=1, item_code=n_a_quarter_dimension, measure_type=N/A] Chiều slicer kỳ báo cáo (Q1/Q2/H1/Q3/9M) — chưa rõ nguồn dữ liệu kỳ báo cáo dùng để derive. Atomic cần bổ sung: chưa xác định. Mart dự kiến: tk04btc_market_summary_rpt. | PENDING |
 | K_TKNB_876 | Vốn hóa thị trường chứng khoán | Tỷ đồng | Phái sinh | `= K_TKNB_877` | **[SỬA 2026-09-16, thu hẹp phạm vi — commit b8868c9e]** [STT=2, item_code=market_capitalization, measure_type=snapshot] Trước đây định nghĩa `= SUM(K_TKNB_877, K_TKNB_878)` (CP + TP niêm yết); nguồn đã commit đổi thành CHỈ `= K_TKNB_877` (riêng phần cổ phiếu) — K_TKNB_878 (GT TP niêm yết) vẫn PENDING (gap Atomic khác, trái phiếu, ngoài phạm vi fix này) và KHÔNG còn cộng vào header. **Cần BA/Data Modeler xác nhận lại** phạm vi đúng của "Vốn hóa thị trường chứng khoán" là chỉ cổ phiếu hay gồm cả TP — hiện đang READY nhưng số liệu chỉ phản ánh phần CP. Mart: `tk04btc_market_summary_rpt`."Item Value" | READY |
-| K_TKNB_877 | Vốn hóa thị trường cổ phiếu | Tỷ đồng | Cơ sở | `SUM(security_trading_snapshot.close_price × listed_share_info.outstanding_share_quantity) WHERE floor_code IN ('10','02','04') AND trading_dt = :to_date` (toàn thị trường — cả 3 sàn HOSE+HNX+UPCoM) | **[SỬA 2026-09-16, đóng PENDING]** [STT=3, item_code=stock_market_capitalization, measure_type=snapshot] Nguồn `listed_share_info` (VSDC, cùng nguồn vừa mở cho GSTT K_GSTT_53/55/61, xem O_GSTT_22). Mart: `tk04btc_market_summary_rpt` | READY |
+| K_TKNB_877 | Vốn hóa thị trường cổ phiếu | Tỷ đồng | Cơ sở | `SUM(security_trading_snapshot.close_price × listed_share_info.outstanding_share_quantity) WHERE floor_code IN ('10','02','04') AND trading_dt = :to_date` (toàn thị trường — cả 3 sàn HOSE+HNX+UPCoM) | **[SỬA 2026-09-16, đóng PENDING]** [STT=3, item_code=stock_market_capitalization, measure_type=snapshot] Nguồn `listed_share_info` (VSDC, cùng nguồn vừa mở cho GSTT (chỉ tiêu GSTT 53/55/61, xem O_GSTT_22)). Mart: `tk04btc_market_summary_rpt` | READY |
 | K_TKNB_878 | Giá trị trái phiếu niêm yết | Tỷ đồng | Cơ sở | KL CK đang lưu hành (TP) × Giá đóng cửa | [STT=4, item_code=listed_bond_value, measure_type=snapshot] Cùng nguồn VSDC.BM1/JAD_STOCKINFOR như K_TKNB_877, chỉ khác filter stocktype=1 (TP). Atomic cần bổ sung: entity "Securities Outstanding Volume/Market Price". Mart dự kiến: tk04btc_market_summary_rpt. | PENDING |
 | K_TKNB_879 | Số lượng tài khoản nhà đầu tư | TK | Cơ sở | COUNT DISTINCT Mã TKGD (BM5 JOIN TRADE_BOOK_HOSE/HNX) | [STT=5, item_code=investor_account_count, measure_type=snapshot] Nguồn VSDC.BM5 (danh tính NĐT mở TK) — chưa có Atomic entity. Đây là số dư TK tại thời điểm chốt kỳ, không phải phát sinh. BA note "Hỏi Phương" — cần làm rõ định nghĩa đếm (TK đang hoạt động hay TK có giao dịch trong kỳ). Atomic cần bổ sung: entity "Investor Trading Account" từ VSDC.BM5. Mart dự kiến: tk04btc_market_summary_rpt. | PENDING |
 | K_TKNB_880 | Khối lượng và giá trị chứng khoán giao dịch | - | Chiều | N/A — header nhóm, không có value riêng | [STT=6, item_code=n_a_securities_traded_header, measure_type=N/A] Header label-only (giống pattern đã dùng ở Nhóm 1/6/10/11 module TKNB) — không phải 1 chỉ tiêu độc lập có value, item_value=NULL. | READY |
@@ -2581,114 +2740,279 @@ flowchart LR
 
 **Phân loại:** Báo cáo chi tiết theo TỪNG MÃ CHỨNG KHOÁN (khác grain EAV thị trường tổng ở các Nhóm trước) — Giá CK, Quy mô cung cầu (đặt lệnh), Quy mô giao dịch (khớp lệnh/thỏa thuận/lô lẻ/tổng), GD NĐTNN, GD tự doanh.
 
+> **[THIẾT KẾ LẠI 2026-10-06, theo yêu cầu Data Modeler — Star Schema thay bảng EAV phẳng]** Bảng EAV `bm035mss_security_trading_detail_rpt` (item_code/item_value Float64) không chứa được các thuộc tính không phải số (Trạng thái GD) và buộc phải thêm cột tạm; mỗi chỉ tiêu BA là 1 cột nên chuyển sang **`Fact Security Trading Detail Snapshot`** (grain 1 mã CK × 1 ngày giao dịch) + Dimension dùng chung `Security Trading Snapshot Dimension` (sở hữu GSTT, reuse như `Index Constituent Dimension`). Bảng EAV cũ bị bãi bỏ 5 tầng (Section 4: DEPRECATED). Không dùng lại `Fact Stock Portfolio Snapshot` (GSTT) vì thiếu ~30/49 cột (trần/sàn/bình quân, cung cầu, lô lẻ, NĐTNN/tự doanh theo khớp lệnh-thỏa thuận, tỷ lệ sở hữu) và khác định nghĩa bộ lọc — sửa Fact của module khác vi phạm H11. Nội dung nghiệp vụ theo BA cập nhật (2026-10-05): Trạng thái GD = `symbol_status_code`; cung cầu từ sổ lệnh `securities_order` (Mới − Hủy); tỷ lệ NĐTNN từ `foreign_ownership_info` (K_TKNB_1214 dùng `remaining_shares_foreign_can_hold` — Data Modeler xác nhận 2026-10-06). Xem Section 5 mục 34.
+
 **Atomic:**
-- `Security Trading Snapshot` (nguồn `MDDS.JAD_STOCKINFOR`) — READY. Dùng cho Chiều (symbol, trading_dt, security_event_status_code — map từ cột `Status`) và 7 measure Giá (`reference_price`, `ceiling_price`, `floor_price`, `close_price`, `average_price`, `high_price`, `low_price` — đã grep xác nhận đúng physical_name, không đoán tên cột).
-- `Securities Trade` (nguồn `ORDERTRADE.TRADE_BOOK_HOSE` + `TRADE_BOOK_HNX`) — READY. `execution_vol`/`execution_val` cho measure GD; `buy_order_vol`/`sell_order_vol` cho Quy mô cung cầu; `board_tp_code` phân loại khớp lệnh (G1-G8)/thỏa thuận (T1-T4,TR)/lô lẻ (G4); `buy/sell_foreign_investor_tp_code<>'00'` cho GD NĐTNN; `buy/sell_client_house_cl_code='30'` cho GD tự doanh.
-- `VSDC.BM 64_Quản lý thông tin nhà đầu tư nước ngoài` — biểu mẫu, `loai_du_lieu="Chưa có CSDL - Map biểu mẫu"`. Grep xác nhận không có entity map trực tiếp biểu mẫu này — entity gần giống nhất `Public Company Foreign Ownership Limit` (nguồn `IDS.FOREIGN_OWNER_LIMIT`) là nguồn khác hoàn toàn, không dùng để lấp PENDING (đúng rule "không suy diễn nguồn khác dù cùng khái niệm nghiệp vụ"). PENDING.
+- `Security Trading Snapshot` (nguồn `MDDS.JAD_STOCKINFOR`) — READY. Bảng điều khiển (1 dòng/mã CK/ngày): `symbol`, `isin_code`, `trading_dt`, `symbol_status_code`, 7 giá (`reference_price`, `ceiling_price`, `floor_price`, `close_price`, `average_price`, `high_price`, `low_price`).
+- `Securities Trade` (nguồn `ORDERTRADE.TRADE_BOOK_HOSE` + `TRADE_BOOK_HNX`) — READY. `execution_vol`/`execution_val`; `board_tp_code` (khớp lệnh G1–G8 / thỏa thuận T1–T4,TR / lô lẻ G4); `buy/sell_foreign_investor_tp_code <> '00'`; `buy/sell_client_house_cl_code = '30'`. Nối mã: `security_symbol_code IN (symbol, isin_code)` (HOSE = symbol, HNX = ISIN theo BA).
+- `Securities Order` (nguồn `ORDERTRADE.ORDER_BOOK_HOSE` + `ORDER_BOOK_HNX`) — READY. `order_vol`, `order_action_tp_code` (N/M/C), `side_ind` (B/S).
+- `Foreign Ownership Info` (`foreign_ownership_info`) ← `uat_vsdc_stg.foreign_investor_info` — **READY (mapping md)** `mapping_vsdc_ods_atm.md` Bảng 9 (`max_foreign_ownership_ratio`, `remaining_foreign_holding_quantity`, `total_issued_share_quantity`, `ticker_symbol`, `ds_snpst_dt`). Chưa có YAML LLD/`dm_manifest.yaml` — Gate 0 WARNING (cùng ngoại lệ mapping md).
 
 **Mockup:** Báo cáo BM035_MSS — user cung cấp template thật, cấu trúc nhiều block: Thời gian/Mã CK/Trạng thái GD × Giá CK (7 cột) × Quy mô cung cầu (4 cột) × Quy mô giao dịch (8 cột) × GD NĐTNN (Tỷ lệ sở hữu + 12 measure) × GD tự doanh (12 measure) — khớp đúng 53 dòng BA (5 header label-only + 48 measure/chiều).
+
+**Source:** `Fact Security Trading Detail Snapshot` → `Calendar Date Dimension`, `Security Trading Snapshot Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_1187 | Thời gian | Ngày | Chiều | N/A | [STT=1, item_code=`report_period_dt_mss035`] `security_trading_snapshot.trading_dt` — ngày cuối cùng của kỳ báo cáo (`tradingdate`) | READY |
-| K_TKNB_1188 | Mã chứng khoán | Text | Chiều | N/A | [STT=2, item_code=`security_symbol_code_mss035`] `security_trading_snapshot.symbol` (StockId) — ID duy nhất mỗi mã CK | READY |
-| K_TKNB_1189 | Trạng thái giao dịch | Classification Value | Chiều | N/A | [STT=3, item_code=`trading_status_code_mss035`] `security_trading_snapshot.security_event_status_code` (nguồn `Status`) — trạng thái GD của mã CK theo ngày | READY |
-| K_TKNB_1190 | Giá chứng khoán | - | Chiều | N/A | [STT=4, item_code=`security_price_group_mss035`] Header label-only — nhóm các KPI giá (STT 5-11), không có bảng nguồn | READY |
-| K_TKNB_1191 | Giá tham chiếu | VND | Cơ sở | `security_trading_snapshot.reference_price` | [STT=5, item_code=`reference_price_mss035`] Giá tham chiếu theo mã CK, theo ngày | READY |
-| K_TKNB_1192 | Giá trần | VND | Cơ sở | `security_trading_snapshot.ceiling_price` | [STT=6, item_code=`ceiling_price_mss035`] Giá trần theo mã CK, theo ngày | READY |
-| K_TKNB_1193 | Giá sàn | VND | Cơ sở | `security_trading_snapshot.floor_price` | [STT=7, item_code=`floor_price_mss035`] Giá sàn theo mã CK, theo ngày | READY |
-| K_TKNB_1194 | Giá đóng cửa | VND | Cơ sở | `security_trading_snapshot.close_price` | [STT=8, item_code=`close_price_mss035`] Giá đóng cửa theo mã CK, theo ngày | READY |
-| K_TKNB_1195 | Giá bình quân | VND | Cơ sở | `security_trading_snapshot.average_price` | [STT=9, item_code=`average_price_mss035`] Giá bình quân theo mã CK, theo ngày | READY |
-| K_TKNB_1196 | Giá khớp cao nhất | VND | Cơ sở | `MAX(security_trading_snapshot.high_price)` | [STT=10, item_code=`highest_matched_price_mss035`] Giá khớp cao nhất trong kỳ, theo mã CK | READY |
-| K_TKNB_1197 | Giá khớp thấp nhất | VND | Cơ sở | `MIN(security_trading_snapshot.low_price)` | [STT=11, item_code=`lowest_matched_price_mss035`] Giá khớp thấp nhất trong kỳ, theo mã CK | READY |
-| K_TKNB_1198 | Quy mô cung cầu | - | Chiều | N/A | [STT=12, item_code=`supply_demand_scale_group_mss035`] Header label-only — nhóm KPI đặt lệnh mua/bán (STT 13-16) | READY |
-| K_TKNB_1199 | Số lượng lệnh đặt mua | Lệnh | Cơ sở | `COUNT(*)` trên `securities_trade` WHERE `buy_order_vol IS NOT NULL`, GROUP BY `security_symbol_code, trade_dt` | [STT=13, item_code=`buy_order_count_mss035`] Đếm số lệnh đặt mua (không phải SUM khối lượng); Order Quantity = Executed + Remaining + Cancelled | READY |
-| K_TKNB_1200 | Khối lượng đặt mua | CP | Cơ sở | `SUM(securities_trade.buy_order_vol)` | [STT=14, item_code=`buy_order_vol_mss035`] Tổng khối lượng đặt mua, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1201 | Số lượng lệnh đặt bán | Lệnh | Cơ sở | `COUNT(*)` trên `securities_trade` WHERE `sell_order_vol IS NOT NULL`, GROUP BY `security_symbol_code, trade_dt` | [STT=15, item_code=`sell_order_count_mss035`] Đếm số lệnh đặt bán (không phải SUM khối lượng) | READY |
-| K_TKNB_1202 | Khối lượng đặt bán | CP | Cơ sở | `SUM(securities_trade.sell_order_vol)` | [STT=16, item_code=`sell_order_vol_mss035`] Tổng khối lượng đặt bán, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1203 | Quy mô giao dịch | - | Chiều | N/A | [STT=17, item_code=`trading_scale_group_mss035`] Header label-only — nhóm KPI KLGD/GTGD theo loại hình khớp lệnh/thỏa thuận/lô lẻ/tổng (STT 18-25) | READY |
-| K_TKNB_1204 | KLGD khớp lệnh | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` | [STT=18, item_code=`matched_trading_vol_mss035`] Tổng KLGD khớp lệnh trong kỳ, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1205 | GTGD khớp lệnh | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` | [STT=19, item_code=`matched_trading_val_mss035`] Tổng GTGD khớp lệnh trong kỳ, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1206 | KLGD thỏa thuận | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` | [STT=20, item_code=`negotiated_trading_vol_mss035`] Tổng KLGD thỏa thuận trong kỳ, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1207 | GTGD thỏa thuận | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` | [STT=21, item_code=`negotiated_trading_val_mss035`] Tổng GTGD thỏa thuận trong kỳ, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1208 | KLGD lô lẻ | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code = 'G4'` | [STT=22, item_code=`odd_lot_trading_vol_mss035`] G4 = Odd lot, GD lô lẻ (<100 cổ phiếu) | READY |
-| K_TKNB_1209 | GTGD Lô lẻ | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code = 'G4'` | [STT=23, item_code=`odd_lot_trading_val_mss035`] G4 = Odd lot, GD lô lẻ (<100 cổ phiếu) | READY |
-| K_TKNB_1210 | Tổng KLGD | CP | Cơ sở | `SUM(securities_trade.execution_vol)` GROUP BY `security_symbol_code, trade_dt` (không filter board_tp_code) | [STT=24, item_code=`total_trading_vol_mss035`] Tổng KLGD toàn thị trường trong kỳ, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1211 | Tổng GTGD | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` GROUP BY `security_symbol_code, trade_dt` (không filter board_tp_code) | [STT=25, item_code=`total_trading_val_mss035`] Tổng GTGD toàn thị trường trong kỳ, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1212 | GD NĐTNN | - | Chiều | N/A | [STT=26, item_code=`foreign_investor_trading_group_mss035`] Header label-only — nhóm KPI GD của NĐTNN (STT 27-40); điều kiện chung: `buy_foreign_investor_tp_code <> '00'` (mua) hoặc `sell_foreign_investor_tp_code <> '00'` (bán) | READY |
-| K_TKNB_1213 | Tỷ lệ được phép sở hữu của NĐTNN | % | Cơ sở | TBD — chờ Atomic | [STT=27, item_code=`foreign_max_ownership_rate_mss035`] Nguồn VSDC.BM 64 (biểu mẫu) — grep xác nhận không có entity map trực tiếp biểu mẫu VSDC.BM64; entity gần giống nhất `Public Company Foreign Ownership Limit` (IDS.FOREIGN_OWNER_LIMIT) là nguồn khác, không đúng nguồn BA yêu cầu — không dùng để lấp PENDING. Atomic cần bổ sung: entity map biểu mẫu VSDC.BM64. Mart dự kiến: bm035mss_security_trading_detail_rpt. | PENDING |
-| K_TKNB_1214 | Tỷ lệ còn được phép mua của NĐTNN | % | Cơ sở | TBD — chờ Atomic | [STT=28, item_code=`foreign_remaining_buy_rate_mss035`] Nguồn VSDC.BM 64 (biểu mẫu), `loai_du_lieu="Chưa có CSDL - Map biểu mẫu"`. Cùng gap K_TKNB_1213. Mart dự kiến: bm035mss_security_trading_detail_rpt. | PENDING |
+| K_TKNB_1187 | Thời gian | Ngày | Chiều | `cdr_dt_dim.cdr_dt` (qua FK `snpst_dt_dim_id`) | [STT=1] BA dòng 1600 — Chiều thời gian; kỳ báo cáo = khoảng ngày, BI cộng dồn chỉ tiêu theo ngày | READY |
+| K_TKNB_1188 | Mã chứng khoán | Text | Chiều | `security_trading_snpst_dim.symbol` (qua FK `security_trading_snpst_dim_id`) | [STT=2] BA dòng 1601 — Chiều mã CK, Dimension dùng chung GSTT | READY |
+| K_TKNB_1189 | Trạng thái giao dịch | Classification Value | Chiều | `fct_security_trading_detail_snpst.trading_status_code` | [STT=3] BA dòng 1602 — Trạng thái giao dịch của mã CK tại ngày (BA dòng 1602: `Symbolstatuscode`; scheme MDDS_SYMBOL_STATUS — nguồn lưu string, cần profile giá trị). Thuộc tính theo ngày nên nằm ở Fact, không ở Dimension current-state | READY |
+| K_TKNB_1190 | Giá chứng khoán | - | Chiều | N/A | [STT=4] BA dòng 1603 — header label-only, không có cột vật lý (nhóm hiển thị các KPI liền sau) | READY |
+| K_TKNB_1191 | Giá tham chiếu | VND | Cơ sở | `fct_security_trading_detail_snpst.reference_price` | [STT=5] BA dòng 1604 — Giá tham chiếu của mã CK trong ngày (BA `JAD_STOCKINFOR`). | READY |
+| K_TKNB_1192 | Giá trần | VND | Cơ sở | `fct_security_trading_detail_snpst.ceiling_price` | [STT=6] BA dòng 1605 — Giá trần của mã CK trong ngày (BA `JAD_STOCKINFOR`). | READY |
+| K_TKNB_1193 | Giá sàn | VND | Cơ sở | `fct_security_trading_detail_snpst.floor_price` | [STT=7] BA dòng 1606 — Giá sàn của mã CK trong ngày (BA `JAD_STOCKINFOR`). | READY |
+| K_TKNB_1194 | Giá đóng cửa | VND | Cơ sở | `fct_security_trading_detail_snpst.close_price` | [STT=8] BA dòng 1607 — Giá đóng cửa của mã CK trong ngày (BA `JAD_STOCKINFOR`). | READY |
+| K_TKNB_1195 | Giá bình quân | VND | Cơ sở | `fct_security_trading_detail_snpst.average_price` | [STT=9] BA dòng 1608 — Giá bình quân của mã CK trong ngày (BA `JAD_STOCKINFOR`). | READY |
+| K_TKNB_1196 | Giá khớp cao nhất | VND | Cơ sở | `MAX(fct_security_trading_detail_snpst.high_price)` trên khoảng ngày | [STT=10] BA dòng 1609 — Giá khớp cao nhất của mã CK trong ngày (BA `JAD_STOCKINFOR`). Kỳ báo cáo nhiều ngày: BI lấy MAX theo khoảng ngày (BA Điều kiện: Max(high)). | READY |
+| K_TKNB_1197 | Giá khớp thấp nhất | VND | Cơ sở | `MIN(fct_security_trading_detail_snpst.low_price)` trên khoảng ngày | [STT=11] BA dòng 1610 — Giá khớp thấp nhất của mã CK trong ngày (BA `JAD_STOCKINFOR`). Kỳ báo cáo nhiều ngày: BI lấy MIN theo khoảng ngày (BA Điều kiện: Min(low)). | READY |
+| K_TKNB_1198 | Quy mô cung cầu | - | Chiều | N/A | [STT=12] BA dòng 1611 — header label-only, không có cột vật lý (nhóm hiển thị các KPI liền sau) | READY |
+| K_TKNB_1199 | Số lượng lệnh đặt mua | Lệnh | Cơ sở | `fct_security_trading_detail_snpst.buy_order_cnt` | [STT=13] BA dòng 1612 — Số lượng lệnh đặt mua = số lệnh MỚI (N) trừ số lệnh HỦY (C) — BA dòng 1612. Rủi ro HNX: `side_ind` của lệnh hủy normalize SPACE (D-08) — Section 5 mục 34 | READY |
+| K_TKNB_1200 | Khối lượng đặt mua | CP | Cơ sở | `fct_security_trading_detail_snpst.buy_order_vol` | [STT=14] BA dòng 1613 — Khối lượng đặt mua = tổng Order Volume của lệnh MỚI (N) — BA dòng 1613: sổ lệnh `Order_HOSE`/`Order_HNX` thay vì sổ khớp. HNX map Issue Code → Symbol qua ISIN | READY |
+| K_TKNB_1201 | Số lượng lệnh đặt bán | Lệnh | Cơ sở | `fct_security_trading_detail_snpst.sell_order_cnt` | [STT=15] BA dòng 1614 — Số lượng lệnh đặt bán = số lệnh MỚI (N) trừ số lệnh HỦY (C) — BA dòng 1614. Rủi ro HNX: `side_ind` của lệnh hủy normalize SPACE (D-08) — Section 5 mục 34 | READY |
+| K_TKNB_1202 | Khối lượng đặt bán | CP | Cơ sở | `fct_security_trading_detail_snpst.sell_order_vol` | [STT=16] BA dòng 1615 — Khối lượng đặt bán = tổng Order Volume của lệnh MỚI (N) — BA dòng 1615: sổ lệnh `Order_HOSE`/`Order_HNX` thay vì sổ khớp. HNX map Issue Code → Symbol qua ISIN | READY |
+| K_TKNB_1203 | Quy mô giao dịch | - | Chiều | N/A | [STT=17] BA dòng 1616 — header label-only, không có cột vật lý (nhóm hiển thị các KPI liền sau) | READY |
+| K_TKNB_1204 | KLGD khớp lệnh | CP | Cơ sở | `fct_security_trading_detail_snpst.matched_trading_vol` | [STT=18] BA dòng 1617 — KLGD khớp lệnh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1205 | GTGD khớp lệnh | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.matched_trading_val` | [STT=19] BA dòng 1618 — GTGD khớp lệnh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1206 | KLGD thỏa thuận | CP | Cơ sở | `fct_security_trading_detail_snpst.negotiated_trading_vol` | [STT=20] BA dòng 1619 — KLGD thỏa thuận theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1207 | GTGD thỏa thuận | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.negotiated_trading_val` | [STT=21] BA dòng 1620 — GTGD thỏa thuận theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1208 | KLGD lô lẻ | CP | Cơ sở | `fct_security_trading_detail_snpst.odd_lot_trading_vol` | [STT=22] BA dòng 1621 — KLGD lô lẻ theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1209 | GTGD Lô lẻ | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.odd_lot_trading_val` | [STT=23] BA dòng 1622 — GTGD lô lẻ theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1210 | Tổng KLGD | CP | Cơ sở | `fct_security_trading_detail_snpst.total_trading_vol` | [STT=24] BA dòng 1623 — Tổng KLGD theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1211 | Tổng GTGD | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.total_trading_val` | [STT=25] BA dòng 1624 — Tổng GTGD theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1212 | GD NĐTNN | - | Chiều | N/A | [STT=26] BA dòng 1625 — header label-only, không có cột vật lý (nhóm hiển thị các KPI liền sau) | READY |
+| K_TKNB_1213 | Tỷ lệ được phép sở hữu của NĐTNN | % | Cơ sở | `fct_security_trading_detail_snpst.max_foreign_ownership_ratio` | [STT=27] BA dòng 1626 — Tỷ lệ sở hữu tối đa cho phép của NĐTNN (BA dòng 1626: `uat_vsdc_stg.foreign_investor_info.max_foreign_ownership_ratio`; mapping md Bảng 9). Ngày nối: `ds_snpst_dt` thay `report_date` (Data Modeler xác nhận 2026-10-06) | READY |
+| K_TKNB_1214 | Tỷ lệ còn được phép mua của NĐTNN | % | Cơ sở | `fct_security_trading_detail_snpst.remaining_foreign_ownership_ratio` | [STT=28] BA dòng 1627 — Tỷ lệ còn được phép mua của NĐTNN — Data Modeler xác nhận cột nguồn là `remaining_shares_foreign_can_hold` (mapping md `remaining_foreign_holding_quantity`); quy ra % = số CP còn được mua / tổng CP phát hành × 100 (phép quy đổi do thiết kế suy ra, BA cần xác nhận — Section 5 mục 34) | READY |
+| K_TKNB_1215 | Tổng KL mua | CP | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_total_buy_vol` | [STT=29] BA dòng 1628 — KL mua Tổng của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1216 | Tổng KL bán | CP | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_total_sell_vol` | [STT=30] BA dòng 1629 — KL bán Tổng của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1217 | Tổng GT mua | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_total_buy_val` | [STT=31] BA dòng 1630 — GT mua Tổng của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1218 | Tổng GT bán | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_total_sell_val` | [STT=32] BA dòng 1631 — GT bán Tổng của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1219 | KL mua thỏa thuận | CP | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_negotiated_buy_vol` | [STT=33] BA dòng 1632 — KL mua thỏa thuận của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1220 | KL bán thỏa thuận | CP | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_negotiated_sell_vol` | [STT=34] BA dòng 1633 — KL bán thỏa thuận của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1221 | GT mua thỏa thuận | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_negotiated_buy_val` | [STT=35] BA dòng 1634 — GT mua thỏa thuận của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1222 | GT bán thỏa thuận | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_negotiated_sell_val` | [STT=36] BA dòng 1635 — GT bán thỏa thuận của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1223 | KL mua khớp lệnh | CP | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_matched_buy_vol` | [STT=37] BA dòng 1636 — KL mua khớp lệnh của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1224 | KL bán khớp lệnh | CP | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_matched_sell_vol` | [STT=38] BA dòng 1637 — KL bán khớp lệnh của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1225 | GT mua khớp lệnh | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_matched_buy_val` | [STT=39] BA dòng 1638 — GT mua khớp lệnh của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1226 | GT bán khớp lệnh | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.foreign_investor_matched_sell_val` | [STT=40] BA dòng 1639 — GT bán khớp lệnh của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1227 | GD của khối tự doanh | - | Chiều | N/A | [STT=41] BA dòng 1640 — header label-only, không có cột vật lý (nhóm hiển thị các KPI liền sau) | READY |
+| K_TKNB_1228 | Tổng KL mua | CP | Cơ sở | `fct_security_trading_detail_snpst.proprietary_total_buy_vol` | [STT=42] BA dòng 1641 — KL mua Tổng của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1229 | Tổng KL bán | CP | Cơ sở | `fct_security_trading_detail_snpst.proprietary_total_sell_vol` | [STT=43] BA dòng 1642 — KL bán Tổng của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1230 | Tổng GT mua | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.proprietary_total_buy_val` | [STT=44] BA dòng 1643 — GT mua Tổng của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1231 | Tổng GT bán | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.proprietary_total_sell_val` | [STT=45] BA dòng 1644 — GT bán Tổng của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1232 | KL mua thỏa thuận | CP | Cơ sở | `fct_security_trading_detail_snpst.proprietary_negotiated_buy_vol` | [STT=46] BA dòng 1645 — KL mua thỏa thuận của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1233 | KL bán thỏa thuận | CP | Cơ sở | `fct_security_trading_detail_snpst.proprietary_negotiated_sell_vol` | [STT=47] BA dòng 1646 — KL bán thỏa thuận của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1234 | GT mua thỏa thuận | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.proprietary_negotiated_buy_val` | [STT=48] BA dòng 1647 — GT mua thỏa thuận của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1235 | GT bán thỏa thuận | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.proprietary_negotiated_sell_val` | [STT=49] BA dòng 1648 — GT bán thỏa thuận của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1236 | KL mua khớp lệnh | CP | Cơ sở | `fct_security_trading_detail_snpst.proprietary_matched_buy_vol` | [STT=50] BA dòng 1649 — KL mua khớp lệnh của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1237 | KL bán khớp lệnh | CP | Cơ sở | `fct_security_trading_detail_snpst.proprietary_matched_sell_vol` | [STT=51] BA dòng 1650 — KL bán khớp lệnh của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng | READY |
+| K_TKNB_1238 | GT mua khớp lệnh | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.proprietary_matched_buy_val` | [STT=52] BA dòng 1651 — GT mua khớp lệnh của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
+| K_TKNB_1239 | GT bán khớp lệnh | Tỷ đồng | Cơ sở | `fct_security_trading_detail_snpst.proprietary_matched_sell_val` | [STT=53] BA dòng 1652 — GT bán khớp lệnh của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI) | READY |
 
-**Bảng mapping nguồn (Atomic Placeholder — cho dòng PENDING):**
+**Star Schema:**
 
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| Tỷ lệ được phép sở hữu của NĐTNN (K_TKNB_1213), Tỷ lệ còn được phép mua của NĐTNN (K_TKNB_1214) | VSDC.BM 64_Quản lý thông tin nhà đầu tư nước ngoài | TBD — không dùng `Public Company Foreign Ownership Limit` (IDS.FOREIGN_OWNER_LIMIT, nguồn khác) | bm035mss_security_trading_detail_rpt |
-| K_TKNB_1215 | Tổng KL mua | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `buy_foreign_investor_tp_code <> '00'` | [STT=29, item_code=`foreign_buy_vol_total_mss035`] Tổng KL mua của NĐTNN trong kỳ, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1216 | Tổng KL bán | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `sell_foreign_investor_tp_code <> '00'` | [STT=30, item_code=`foreign_sell_vol_total_mss035`] Tổng KL bán của NĐTNN trong kỳ, theo mã CK, trạng thái GD; kế thừa điều kiện NĐTNN từ STT=26 | READY |
-| K_TKNB_1217 | Tổng GT mua | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `buy_foreign_investor_tp_code <> '00'` | [STT=31, item_code=`foreign_buy_val_total_mss035`] Tổng GT mua của NĐTNN trong kỳ, theo mã CK, trạng thái GD; kế thừa điều kiện NĐTNN từ STT=26 | READY |
-| K_TKNB_1218 | Tổng GT bán | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `sell_foreign_investor_tp_code <> '00'` | [STT=32, item_code=`foreign_sell_val_total_mss035`] Tổng GT bán của NĐTNN trong kỳ, theo mã CK, trạng thái GD; kế thừa điều kiện NĐTNN từ STT=26 | READY |
-| K_TKNB_1219 | KL mua thỏa thuận | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` AND `buy_foreign_investor_tp_code <> '00'` | [STT=33, item_code=`foreign_negotiated_buy_vol_mss035`] KL mua thỏa thuận của NĐTNN, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1220 | KL bán thỏa thuận | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` AND `sell_foreign_investor_tp_code <> '00'` | [STT=34, item_code=`foreign_negotiated_sell_vol_mss035`] KL bán thỏa thuận của NĐTNN; kế thừa điều kiện thỏa thuận (STT=33) + NĐTNN bán (STT=26) | READY |
-| K_TKNB_1221 | GT mua thỏa thuận | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` AND `buy_foreign_investor_tp_code <> '00'` | [STT=35, item_code=`foreign_negotiated_buy_val_mss035`] GT mua thỏa thuận của NĐTNN; kế thừa điều kiện từ STT=33 | READY |
-| K_TKNB_1222 | GT bán thỏa thuận | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` AND `sell_foreign_investor_tp_code <> '00'` | [STT=36, item_code=`foreign_negotiated_sell_val_mss035`] GT bán thỏa thuận của NĐTNN; kế thừa điều kiện từ STT=34 | READY |
-| K_TKNB_1223 | KL mua khớp lệnh | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` AND `buy_foreign_investor_tp_code <> '00'` | [STT=37, item_code=`foreign_matched_buy_vol_mss035`] KL mua khớp lệnh của NĐTNN, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1224 | KL bán khớp lệnh | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` AND `sell_foreign_investor_tp_code <> '00'` | [STT=38, item_code=`foreign_matched_sell_vol_mss035`] KL bán khớp lệnh của NĐTNN; kế thừa điều kiện khớp lệnh (STT=37) + NĐTNN bán | READY |
-| K_TKNB_1225 | GT mua khớp lệnh | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` AND `buy_foreign_investor_tp_code <> '00'` | [STT=39, item_code=`foreign_matched_buy_val_mss035`] GT mua khớp lệnh của NĐTNN; kế thừa điều kiện từ STT=37 | READY |
-| K_TKNB_1226 | GT bán khớp lệnh | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` AND `sell_foreign_investor_tp_code <> '00'` | [STT=40, item_code=`foreign_matched_sell_val_mss035`] GT bán khớp lệnh của NĐTNN; kế thừa điều kiện từ STT=38 | READY |
-| K_TKNB_1227 | GD của khối tự doanh | - | Chiều | N/A | [STT=41, item_code=`proprietary_trading_group_mss035`] Header label-only — nhóm KPI GD tự doanh (STT 42-53); điều kiện chung: `buy_client_house_cl_code = '30'` (mua) hoặc `sell_client_house_cl_code = '30'` (bán); '30'=tự doanh, '10'=môi giới | READY |
-| K_TKNB_1228 | Tổng KL mua | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `buy_client_house_cl_code = '30'` | [STT=42, item_code=`prop_buy_vol_total_mss035`] Tổng KL mua của GD tự doanh, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1229 | Tổng KL bán | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `sell_client_house_cl_code = '30'` | [STT=43, item_code=`prop_sell_vol_total_mss035`] Tổng KL bán của GD tự doanh; kế thừa điều kiện tự doanh từ STT=41 | READY |
-| K_TKNB_1230 | Tổng GT mua | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `buy_client_house_cl_code = '30'` | [STT=44, item_code=`prop_buy_val_total_mss035`] Tổng GT mua của GD tự doanh; kế thừa điều kiện tự doanh từ STT=41 | READY |
-| K_TKNB_1231 | Tổng GT bán | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `sell_client_house_cl_code = '30'` | [STT=45, item_code=`prop_sell_val_total_mss035`] Tổng GT bán của GD tự doanh; kế thừa điều kiện tự doanh từ STT=41 | READY |
-| K_TKNB_1232 | KL mua thỏa thuận | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` AND `buy_client_house_cl_code = '30'` | [STT=46, item_code=`prop_negotiated_buy_vol_mss035`] KL mua thỏa thuận của GD tự doanh, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1233 | KL bán thỏa thuận | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` AND `sell_client_house_cl_code = '30'` | [STT=47, item_code=`prop_negotiated_sell_vol_mss035`] KL bán thỏa thuận của GD tự doanh; kế thừa điều kiện từ STT=46 | READY |
-| K_TKNB_1234 | GT mua thỏa thuận | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` AND `buy_client_house_cl_code = '30'` | [STT=48, item_code=`prop_negotiated_buy_val_mss035`] GT mua thỏa thuận của GD tự doanh; kế thừa điều kiện từ STT=46 | READY |
-| K_TKNB_1235 | GT bán thỏa thuận | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('T1','T2','T3','T4','TR')` AND `sell_client_house_cl_code = '30'` | [STT=49, item_code=`prop_negotiated_sell_val_mss035`] GT bán thỏa thuận của GD tự doanh; kế thừa điều kiện từ STT=47 | READY |
-| K_TKNB_1236 | KL mua khớp lệnh | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` AND `buy_client_house_cl_code = '30'` | [STT=50, item_code=`prop_matched_buy_vol_mss035`] KL mua khớp lệnh của GD tự doanh, theo mã CK, trạng thái GD | READY |
-| K_TKNB_1237 | KL bán khớp lệnh | CP | Cơ sở | `SUM(securities_trade.execution_vol)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` AND `sell_client_house_cl_code = '30'` | [STT=51, item_code=`prop_matched_sell_vol_mss035`] KL bán khớp lệnh của GD tự doanh; kế thừa điều kiện từ STT=50 | READY |
-| K_TKNB_1238 | GT mua khớp lệnh | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` AND `buy_client_house_cl_code = '30'` | [STT=52, item_code=`prop_matched_buy_val_mss035`] GT mua khớp lệnh của GD tự doanh; kế thừa điều kiện từ STT=50 | READY |
-| K_TKNB_1239 | GT bán khớp lệnh | Tỷ đồng | Cơ sở | `SUM(securities_trade.execution_val)` WHERE `board_tp_code IN ('G1','G2','G3','G4','G7','G8')` AND `sell_client_house_cl_code = '30'` | [STT=53, item_code=`prop_matched_sell_val_mss035`] GT bán khớp lệnh của GD tự doanh; kế thừa điều kiện từ STT=51 | READY |
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string ISIN_Code
+        date Maturity_Date
+        decimal Contract_Multiplier
+        string Source_System_Code
+    }
+    Fact_Security_Trading_Detail_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Trading_Status_Code
+        decimal Reference_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
+        decimal Close_Price
+        decimal Average_Price
+        decimal High_Price
+        decimal Low_Price
+        int Buy_Order_Count
+        bigint Buy_Order_Volume
+        int Sell_Order_Count
+        bigint Sell_Order_Volume
+        bigint Matched_Trading_Volume
+        decimal Matched_Trading_Value
+        bigint Negotiated_Trading_Volume
+        decimal Negotiated_Trading_Value
+        bigint Odd_Lot_Trading_Volume
+        decimal Odd_Lot_Trading_Value
+        bigint Total_Trading_Volume
+        decimal Total_Trading_Value
+        decimal Max_Foreign_Ownership_Ratio
+        decimal Remaining_Foreign_Ownership_Ratio
+        bigint Foreign_Investor_Total_Buy_Volume
+        bigint Foreign_Investor_Total_Sell_Volume
+        decimal Foreign_Investor_Total_Buy_Value
+        decimal Foreign_Investor_Total_Sell_Value
+        bigint Foreign_Investor_Negotiated_Buy_Volume
+        bigint Foreign_Investor_Negotiated_Sell_Volume
+        decimal Foreign_Investor_Negotiated_Buy_Value
+        decimal Foreign_Investor_Negotiated_Sell_Value
+        bigint Foreign_Investor_Matched_Buy_Volume
+        bigint Foreign_Investor_Matched_Sell_Volume
+        decimal Foreign_Investor_Matched_Buy_Value
+        decimal Foreign_Investor_Matched_Sell_Value
+        bigint Proprietary_Total_Buy_Volume
+        bigint Proprietary_Total_Sell_Volume
+        decimal Proprietary_Total_Buy_Value
+        decimal Proprietary_Total_Sell_Value
+        bigint Proprietary_Negotiated_Buy_Volume
+        bigint Proprietary_Negotiated_Sell_Volume
+        decimal Proprietary_Negotiated_Buy_Value
+        decimal Proprietary_Negotiated_Sell_Value
+        bigint Proprietary_Matched_Buy_Volume
+        bigint Proprietary_Matched_Sell_Volume
+        decimal Proprietary_Matched_Buy_Value
+        decimal Proprietary_Matched_Sell_Value
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Security_Trading_Detail_Snapshot : "Snapshot_Date_Dimension_Id"
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Trading_Detail_Snapshot : "Security_Trading_Snapshot_Dimension_Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Security Trading Detail Snapshot"]
+        G2["Security Trading Snapshot Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["BM035_MSS - Nhom 28: K_TKNB_1187-1239"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Security Trading Detail Snapshot | 1 row = 1 mã chứng khoán × 1 ngày giao dịch — kỳ báo cáo nhiều ngày do BI cộng dồn (giá: MAX/MIN/giá cuối kỳ) |
+| Security Trading Snapshot Dimension | 1 row = 1 mã CK (SCD4A current-state) — sở hữu GSTT, dùng chung |
+| Calendar Date Dimension | 1 row = 1 ngày |
 
 #### Nhóm 29 - Thị trường chứng khoán phái sinh - chi tiết từng mã (BM043_MSS)
 
 **Phân loại:** Báo cáo chi tiết CKPS theo TỪNG MÃ hợp đồng — Thời gian đáo hạn, KL hợp đồng đang lưu hành, KL/GT GD, GD NĐTNN (KL/GT mua/bán), GD tự doanh (KL/GT mua/bán). Grain khác thị trường tổng — theo `security_symbol_code` như Nhóm 28.
 
-**Atomic:**
-- `Security Trading Snapshot` (nguồn `MDDS.JAD_STOCKINFOR`) — READY. `floor_code='03'` (FDS/phái sinh) xác định mã CKPS; `maturity_dt` (map `MATURITYDATE`) cho Thời gian đáo hạn.
-- `Securities Trade` (nguồn `ORDERTRADE.TRADE_BOOK_HNX`) — READY. Filter CKPS: `market_id_code='DVX'`. GD NĐTNN: `buy_foreign_investor_tp_code`/`sell_foreign_investor_tp_code<>'00'`. GD tự doanh: `buy_client_house_cl_code`/`sell_client_house_cl_code='30'`. Chỉ HNX — CKPS hiện chỉ có trên HNX (BA note xác nhận).
-- `VSDC.BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành` — biểu mẫu, `loai_du_lieu="Chưa có CSDL - Map biểu mẫu"`. Cùng gap KL hợp đồng đang lưu hành đã ghi ở Nhóm 27 (K_TKNB_1178) — cùng nguồn VSDC.BM1, khác với gap Open Interest ở Nhóm 3 (VSDC.BM2). PENDING.
+> **[THIẾT KẾ LẠI 2026-10-06, theo yêu cầu Data Modeler — Star Schema thay bảng EAV phẳng]** Bảng EAV `bm043mss_derivatives_security_detail_rpt` bị bãi bỏ (5 tầng), thay bằng **`Fact Derivatives Security Detail Snapshot`** (grain 1 mã hợp đồng CKPS × 1 ngày) + Dimension dùng chung `Security Trading Snapshot Dimension` (GSTT; Thời gian đáo hạn = `maturity_dt`, hệ số hợp đồng = `contract_multiplier`). Khác `fct_futures_investor_flow_snpst` (PTTT): PTTT chỉ HĐTL chỉ số, chỉ khối lượng, không có giá trị/open interest. BA cập nhật 2026-10-05: 18 dòng (thêm 'Kỳ báo cáo' và 'Mã CK' cơ sở), Giá trị = Σ(Trade quantity × Trade price × `ContractMultiplier`), KL hợp đồng lưu hành từ `end_of_day_open_interest`; NĐTNN `IN ('10','20')` theo SQL tham khảo (Data Modeler chốt 2026-10-06). Xem Section 5 mục 35.
 
-**Mockup:** Báo cáo BM043_MSS — user cung cấp template thật, cấu trúc: Mã CK × Thời gian × Thời gian đáo hạn × KL hợp đồng đang lưu hành × KL/GT giao dịch × GD NĐTNN (KL mua, KL bán, GT mua, GT bán) × GD tự doanh (KL mua, KL bán, GT mua, GT bán) — khớp đúng 16 dòng BA (2 Chiều + 2 header label-only + 12 measure).
+**Atomic:**
+- `Security Trading Snapshot` (nguồn `MDDS.JAD_STOCKINFOR`) — READY. Bảng điều khiển CKPS (`floor_code='03'`), `symbol`/`isin_code`/`trading_dt`, `maturity_dt`, `contract_multiplier`.
+- `Securities Trade` (nguồn `ORDERTRADE.TRADE_BOOK_HNX`) — READY. Lọc CKPS `market_id_code='DVX'`; NĐTNN `buy/sell_foreign_investor_tp_code IN ('10','20')`; tự doanh `buy/sell_client_house_cl_code='30'`. HNX `issue_code` = ISIN → nối `security_symbol_code IN (symbol, isin_code)`. Chỉ HNX (CKPS chỉ có trên HNX).
+- `End Of Day Open Interest` (`end_of_day_open_interest`) ← `uat_vsdc_stg.end_of_day_open_interest` — **READY (mapping md)** Bảng 6 (`ticker_symbol`, `open_interest_quantity`, `ds_snpst_dt`). Chưa có YAML LLD/manifest — Gate 0 WARNING.
+
+**Mockup:** Báo cáo BM043_MSS — user cung cấp template thật, cấu trúc: Mã CK × Thời gian × Thời gian đáo hạn × KL hợp đồng đang lưu hành × KL/GT giao dịch × GD NĐTNN (KL mua, KL bán, GT mua, GT bán) × GD tự doanh (KL mua, KL bán, GT mua, GT bán) — khớp 18 dòng BA (3 Chiều + 2 header label-only + 13 chỉ tiêu cơ sở; dòng "Mã CK" và "Thời gian" xuất hiện cả dạng Chiều lẫn Chỉ tiêu cơ sở).
+
+**Source:** `Fact Derivatives Security Detail Snapshot` → `Calendar Date Dimension`, `Security Trading Snapshot Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_1240 | Mã CK | - | Chiều | `symbol` (Security Trading Snapshot) WHERE `floor_code='03'` | [STT=1, item_code=`dim_security_symbol_mss043`] Chiều mã hợp đồng CKPS. CKPS hiện chỉ có trên HNX. | READY |
-| K_TKNB_1241 | Thời gian | - | Chiều | `trade_dt` (Securities Trade) | [STT=2, item_code=`dim_trade_date_mss043`] Chiều thời gian, mô tả BA "Ngày giao dịch". | READY |
-| K_TKNB_1242 | Thời gian đáo hạn | - | Cơ sở | `maturity_dt` (Security Trading Snapshot) | [STT=3, item_code=`maturity_date_mss043`] Ngày đáo hạn hợp đồng CKPS, theo mã CK. | READY |
-| K_TKNB_1243 | Khối lượng hợp đồng đang lưu hành | Hợp đồng | Cơ sở | TBD — chờ Atomic | [STT=4] Nguồn `VSDC.BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành`, JOIN theo mã CK WHERE `floor_code='03'` — biểu mẫu chưa có CSDL. Cùng gap K_TKNB_1178 (Nhóm 27). Atomic cần bổ sung: entity map biểu mẫu VSDC.BM1 cho CKPS. Mart dự kiến: bm043mss_derivatives_security_detail_rpt. | PENDING |
-| K_TKNB_1244 | Khối lượng giao dịch | Hợp đồng | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code='DVX'` GROUP BY `security_symbol_code, trade_dt` | [STT=5, item_code=`trading_volume_mss043`] Chỉ HNX. Atomic READY. | READY |
-| K_TKNB_1245 | Giá trị giao dịch | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code='DVX'` GROUP BY `security_symbol_code, trade_dt` | [STT=6, item_code=`trading_value_mss043`] Chỉ HNX. Atomic READY. | READY |
-| K_TKNB_1246 | Giao dịch của NĐTNN | - | Chiều | N/A | [STT=7, item_code=`foreign_investor_trading_group_mss043`] Header label-only — nhóm KPI GD NĐTNN (STT 8-11); điều kiện chung: `buy_foreign_investor_tp_code<>'00'` (mua) hoặc `sell_foreign_investor_tp_code<>'00'` (bán), WHERE `market_id_code='DVX'`. | READY |
-| K_TKNB_1247 | Khối lượng mua | Hợp đồng | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code='DVX'` AND `buy_foreign_investor_tp_code<>'00'` GROUP BY `security_symbol_code, trade_dt` | [STT=8, item_code=`foreign_investor_buy_vol_mss043`] Chỉ HNX. Atomic READY. | READY |
-| K_TKNB_1248 | Khối lượng bán | Hợp đồng | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code='DVX'` AND `sell_foreign_investor_tp_code<>'00'` GROUP BY `security_symbol_code, trade_dt` | [STT=9, item_code=`foreign_investor_sell_vol_mss043`] Chỉ HNX; kế thừa điều kiện NĐTNN từ STT=7. | READY |
-| K_TKNB_1249 | Giá trị mua | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code='DVX'` AND `buy_foreign_investor_tp_code<>'00'` GROUP BY `security_symbol_code, trade_dt` | [STT=10, item_code=`foreign_investor_buy_val_mss043`] Chỉ HNX; kế thừa điều kiện từ STT=8. | READY |
-| K_TKNB_1250 | Giá trị bán | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code='DVX'` AND `sell_foreign_investor_tp_code<>'00'` GROUP BY `security_symbol_code, trade_dt` | [STT=11, item_code=`foreign_investor_sell_val_mss043`] Chỉ HNX; kế thừa điều kiện từ STT=9. | READY |
-| K_TKNB_1251 | Giao dịch của khối tự doanh | - | Chiều | N/A | [STT=12, item_code=`proprietary_trading_group_mss043`] Header label-only — nhóm KPI GD tự doanh (STT 13-16); điều kiện chung: `buy_client_house_cl_code='30'` (mua) hoặc `sell_client_house_cl_code='30'` (bán), WHERE `market_id_code='DVX'`. | READY |
-| K_TKNB_1252 | Khối lượng mua | Hợp đồng | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code='DVX'` AND `buy_client_house_cl_code='30'` GROUP BY `security_symbol_code, trade_dt` | [STT=13, item_code=`proprietary_buy_vol_mss043`] Chỉ HNX. Atomic READY. | READY |
-| K_TKNB_1253 | Khối lượng bán | Hợp đồng | Cơ sở | `SUM(execution_vol)` FROM `securities_trade` WHERE `market_id_code='DVX'` AND `sell_client_house_cl_code='30'` GROUP BY `security_symbol_code, trade_dt` | [STT=14, item_code=`proprietary_sell_vol_mss043`] Chỉ HNX; kế thừa điều kiện tự doanh từ STT=12. | READY |
-| K_TKNB_1254 | Giá trị mua | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code='DVX'` AND `buy_client_house_cl_code='30'` GROUP BY `security_symbol_code, trade_dt` | [STT=15, item_code=`proprietary_buy_val_mss043`] Chỉ HNX; kế thừa điều kiện từ STT=13. | READY |
-| K_TKNB_1255 | Giá trị bán | Tỷ đồng | Cơ sở | `SUM(execution_val)` FROM `securities_trade` WHERE `market_id_code='DVX'` AND `sell_client_house_cl_code='30'` GROUP BY `security_symbol_code, trade_dt` | [STT=16, item_code=`proprietary_sell_val_mss043`] Chỉ HNX; kế thừa điều kiện từ STT=14. | READY |
+| K_TKNB_1256 | Kỳ báo cáo | - | Chiều | `cdr_dt_dim.cdr_dt` (qua FK `snpst_dt_dim_id`) | [STT=1] BA dòng 1653 — Chiều thời gian; kỳ báo cáo = khoảng ngày, BI cộng dồn chỉ tiêu theo ngày | READY |
+| K_TKNB_1240 | Mã CK | - | Chiều | `security_trading_snpst_dim.symbol` (qua FK `security_trading_snpst_dim_id`) | [STT=2] BA dòng 1654 — Chiều mã CK, Dimension dùng chung GSTT ; CKPS = `floor_code='03'` | READY |
+| K_TKNB_1257 | Mã CK | - | Cơ sở | `security_trading_snpst_dim.symbol` | [STT=3] BA dòng 1655 — BỔ SUNG theo BA ('Chỉ tiêu cơ sở', trùng nội dung dòng 1654 'Chiều'; thêm nguồn `bm2.contract_code` của open interest) — reuse, không cột riêng | READY |
+| K_TKNB_1241 | Thời gian | - | Cơ sở | `cdr_dt_dim.cdr_dt` | [STT=4] BA dòng 1656 — BA phân loại 'Chỉ tiêu cơ sở' (HLD cũ ghi Chiều); cùng `Trade date` với 'Kỳ báo cáo' — reuse, không cột riêng | READY |
+| K_TKNB_1242 | Thời gian đáo hạn | - | Cơ sở | `security_trading_snpst_dim.maturity_dt` | [STT=5] BA dòng 1657 (`JAD_STOCKINFOR.MaturityDate`) — thuộc tính Dimension (hợp đồng có 1 ngày đáo hạn cố định nên Dimension current-state đúng) | READY |
+| K_TKNB_1243 | Khối lượng hợp đồng đang lưu hành | Hợp đồng | Cơ sở | `fct_derivatives_security_detail_snpst.open_interest_quantity` | [STT=6] BA dòng 1658 — KL hợp đồng đang lưu hành (BA dòng 1658: `uat_vsdc_stg.end_of_day_open_interest` Σ open_interest_volume; mapping md Bảng 6). Ngày nối `ds_snpst_dt` thay `report_date` (Data Modeler xác nhận 2026-10-06). BA ghi 'khi nào có dữ liệu thật thì dùng JOIN' → LEFT JOIN | READY |
+| K_TKNB_1244 | Khối lượng giao dịch | Hợp đồng | Cơ sở | `fct_derivatives_security_detail_snpst.trading_vol` | [STT=7] BA dòng 1659 — Khối lượng giao dịch hợp đồng CKPS trong ngày (HNX, `market_id_code='DVX'`) | READY |
+| K_TKNB_1245 | Giá trị giao dịch | Tỷ đồng | Cơ sở | `fct_derivatives_security_detail_snpst.trading_val` | [STT=8] BA dòng 1660 — Giá trị giao dịch hợp đồng CKPS = Σ(Trade quantity × Trade price × ContractMultiplier) (BA dòng 1660; thay `execution_val`) — VND, đổi Tỷ đồng ở BI | READY |
+| K_TKNB_1246 | Giao dịch của NĐTNN | - | Chiều | N/A | [STT=9] BA dòng 1661 — header label-only, không có cột vật lý (nhóm hiển thị các KPI liền sau) | READY |
+| K_TKNB_1247 | Khối lượng mua | Hợp đồng | Cơ sở | `fct_derivatives_security_detail_snpst.foreign_investor_buy_vol` | [STT=10] BA dòng 1662 — KL mua của NĐTNN trên hợp đồng CKPS trong ngày. NĐTNN = `IN ('10','20')` theo SQL tham khảo BA (Data Modeler chốt 2026-10-06). | READY |
+| K_TKNB_1248 | Khối lượng bán | Hợp đồng | Cơ sở | `fct_derivatives_security_detail_snpst.foreign_investor_sell_vol` | [STT=11] BA dòng 1663 — KL bán của NĐTNN trên hợp đồng CKPS trong ngày. NĐTNN = `IN ('10','20')` theo SQL tham khảo BA (Data Modeler chốt 2026-10-06). | READY |
+| K_TKNB_1249 | Giá trị mua | Tỷ đồng | Cơ sở | `fct_derivatives_security_detail_snpst.foreign_investor_buy_val` | [STT=12] BA dòng 1664 — GT mua của NĐTNN trên hợp đồng CKPS trong ngày. NĐTNN = `IN ('10','20')` theo SQL tham khảo BA (Data Modeler chốt 2026-10-06). | READY |
+| K_TKNB_1250 | Giá trị bán | Tỷ đồng | Cơ sở | `fct_derivatives_security_detail_snpst.foreign_investor_sell_val` | [STT=13] BA dòng 1665 — GT bán của NĐTNN trên hợp đồng CKPS trong ngày. NĐTNN = `IN ('10','20')` theo SQL tham khảo BA (Data Modeler chốt 2026-10-06). | READY |
+| K_TKNB_1251 | Giao dịch của khối tự doanh | - | Chiều | N/A | [STT=14] BA dòng 1666 — header label-only, không có cột vật lý (nhóm hiển thị các KPI liền sau) | READY |
+| K_TKNB_1252 | Khối lượng mua | Hợp đồng | Cơ sở | `fct_derivatives_security_detail_snpst.proprietary_buy_vol` | [STT=15] BA dòng 1667 — KL mua của tự doanh trên hợp đồng CKPS trong ngày. Tự doanh = `client_house_cl_code='30'`. | READY |
+| K_TKNB_1253 | Khối lượng bán | Hợp đồng | Cơ sở | `fct_derivatives_security_detail_snpst.proprietary_sell_vol` | [STT=16] BA dòng 1668 — KL bán của tự doanh trên hợp đồng CKPS trong ngày. Tự doanh = `client_house_cl_code='30'`. | READY |
+| K_TKNB_1254 | Giá trị mua | Tỷ đồng | Cơ sở | `fct_derivatives_security_detail_snpst.proprietary_buy_val` | [STT=17] BA dòng 1669 — GT mua của tự doanh trên hợp đồng CKPS trong ngày. Tự doanh = `client_house_cl_code='30'`. | READY |
+| K_TKNB_1255 | Giá trị bán | Tỷ đồng | Cơ sở | `fct_derivatives_security_detail_snpst.proprietary_sell_val` | [STT=18] BA dòng 1670 — GT bán của tự doanh trên hợp đồng CKPS trong ngày. Tự doanh = `client_house_cl_code='30'`. | READY |
 
-**Bảng mapping nguồn (Atomic Placeholder — cho dòng PENDING):**
+**Star Schema:**
 
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| Khối lượng hợp đồng đang lưu hành (K_TKNB_1243) | VSDC.BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành | TBD — cùng gap Nhóm 27 (K_TKNB_1178) | bm043mss_derivatives_security_detail_rpt |
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string ISIN_Code
+        date Maturity_Date
+        decimal Contract_Multiplier
+        string Source_System_Code
+    }
+    Fact_Derivatives_Security_Detail_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        bigint Open_Interest_Quantity
+        bigint Trading_Volume
+        decimal Trading_Value
+        bigint Foreign_Investor_Buy_Volume
+        bigint Foreign_Investor_Sell_Volume
+        decimal Foreign_Investor_Buy_Value
+        decimal Foreign_Investor_Sell_Value
+        bigint Proprietary_Buy_Volume
+        bigint Proprietary_Sell_Volume
+        decimal Proprietary_Buy_Value
+        decimal Proprietary_Sell_Value
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Security_Detail_Snapshot : "Snapshot_Date_Dimension_Id"
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Derivatives_Security_Detail_Snapshot : "Security_Trading_Snapshot_Dimension_Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Derivatives Security Detail Snapshot"]
+        G2["Security Trading Snapshot Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["BM043_MSS - Nhom 29: K_TKNB_1240-1257"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Derivatives Security Detail Snapshot | 1 row = 1 mã hợp đồng CKPS × 1 ngày giao dịch — kỳ báo cáo nhiều ngày do BI cộng dồn (giá: MAX/MIN/giá cuối kỳ) |
+| Security Trading Snapshot Dimension | 1 row = 1 mã CK (SCD4A current-state) — sở hữu GSTT, dùng chung |
+| Calendar Date Dimension | 1 row = 1 ngày |
+
 
 ---
 
@@ -2719,18 +3043,26 @@ graph TB
     OpMSS031c["Corp Bond Foreign Proprietary Trading Report (BM031c)"]:::oper
     OpMSS031d["Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d)"]:::oper
     OpMSS031f["Derivatives Foreign Proprietary Trading Report (BM031f)"]:::oper
-    OpMSS035["Security Trading Detail Report (BM035)"]:::oper
-    OpMSS043["Derivatives Security Detail Report (BM043)"]:::oper
 
     FactMktTrading["Fact Market Trading Snapshot"]:::fact
     FactFrgnPropIdx["Fact Foreign Proprietary Trading Index Snapshot"]:::fact
     DimIdxConst["Index Constituent Dimension"]:::dim
+    DimPcb["Private Corporate Bond Dimension"]:::dim
+    DimSecTrading["Security Trading Snapshot Dimension"]:::dim
+    FactSecDetail["Fact Security Trading Detail Snapshot"]:::fact
+    FactDerivDetail["Fact Derivatives Security Detail Snapshot"]:::fact
+    FactPcbIssuance["Fact Private Corporate Bond Issuance Snapshot"]:::fact
+    FactPcbIntl["Fact Private Corporate Bond International Offering Snapshot"]:::fact
 
     DimIdxConst --> FactMktTrading
     DimIdxConst --> FactFrgnPropIdx
+    DimPcb --> FactPcbIssuance
+    DimPcb --> FactPcbIntl
+    DimSecTrading --> FactSecDetail
+    DimSecTrading --> FactDerivDetail
 ```
 
-> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 8 (HNX11), Nhóm 13 (TTLK01), Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ.
+> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 13 (TTLK01), Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ. **[MỚI 2026-10-05]** Nhóm 8 (HNX11) không còn PENDING — thiết kế Star Schema dùng chung `Private Corporate Bond Dimension` với Nhóm 9 (graph TB bổ sung `Private Corporate Bond Dimension` + 2 Fact của Nhóm 8/9 — trước đây Nhóm 9 chưa có trong Section 3).
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 
@@ -2740,6 +3072,10 @@ graph TB
 |---|---|---|---|---|
 | `fct_market_trading_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 Trade Date × 1 Index Code (8 đo lường toàn thị trường cộng gộp HOSE/HNX/UPCoM, lặp theo Index Code) | K_TKNB_1013–1022 (Nhóm 18) | READY |
 | `fct_foreign_proprietary_trading_index_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 Trade Date × 1 Index Code | K_TKNB_1070–1093 (Nhóm 23) | READY |
+| `fct_private_corporate_bond_issuance_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 mã TP × 1 tháng báo cáo (số lũy kế từ đầu năm) | K_TKNB_537, 542 (Nhóm 8; 14 thuộc tính còn lại qua `private_corporate_bond_dim`) | READY |
+| `fct_security_trading_detail_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 mã CK × 1 ngày giao dịch | K_TKNB_1187–1239 (Nhóm 28; 49 cột — giá, cung cầu, quy mô GD, NĐTNN, tự doanh) | READY |
+| `fct_derivatives_security_detail_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 mã hợp đồng CKPS × 1 ngày giao dịch | K_TKNB_1240–1257 (Nhóm 29; 14 cột — open interest, KL/GT, NĐTNN, tự doanh) | READY |
+| `fct_private_corporate_bond_international_offering_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 mã TP × 1 thị trường phát hành × 1 tháng báo cáo | K_TKNB_553, 558–560 (Nhóm 9; thuộc tính còn lại qua `private_corporate_bond_dim`) | READY |
 
 ```mermaid
 erDiagram
@@ -2811,8 +3147,6 @@ erDiagram
 | `bm031cmss_corp_bond_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm031amss_foreign_proprietary_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt` | K_TKNB_1113–1122 (Nhóm 25) | READY (10/10 KPI) |
 | `bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với các bảng `mss031x` | K_TKNB_1123–1173 (Nhóm 26) | READY (51/51 KPI) |
 | `bm031fmss_derivatives_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với các bảng `mss031x` | K_TKNB_1174–1186 (Nhóm 27) | READY (12/13 KPI) / PENDING (1/13 KPI — biểu mẫu VSDC.BM1, KL hợp đồng đang lưu hành) |
-| `bm035mss_security_trading_detail_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 mã CK (`security_symbol_code`) / 1 kỳ báo cáo (`report_period_dt`) — grain chi tiết theo TỪNG MÃ CK, khác các bảng EAV thị trường tổng khác của module | K_TKNB_1187–1239 (Nhóm 28) | READY (51/53 KPI) / PENDING (2/53 KPI — biểu mẫu VSDC.BM64, tỷ lệ sở hữu NĐTNN) |
-| `bm043mss_derivatives_security_detail_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 mã CK (`security_symbol_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc grain chi tiết theo mã CK với `bm035mss_security_trading_detail_rpt`, áp dụng riêng cho CKPS | K_TKNB_1240–1255 (Nhóm 29) | READY (15/16 KPI) / PENDING (1/16 KPI — biểu mẫu VSDC.BM1, KL hợp đồng đang lưu hành) |
 
 **Composite key**: `hnx01_stock_trading_rpt`/`hnx03_derivative_trading_rpt`/`hnx07_corp_bond_trading_rpt`/`hsx01_stock_trading_rpt`/`hsx04_proprietary_trading_rpt`/`0513hubckqg_offering_result_rpt`/`tkniengiam_market_annual_rpt`/`bm030cmss_corp_bond_trading_rpt`/`bm030emss_fund_cert_etf_cw_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt`/`bm031cmss_corp_bond_foreign_proprietary_trading_rpt`/`bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt`/`bm031fmss_derivatives_foreign_proprietary_trading_rpt` = `report_code + report_period_dt + item_code`; `bm035mss_security_trading_detail_rpt`/`bm043mss_derivatives_security_detail_rpt` = `report_code + report_period_dt + security_symbol_code + item_code` (thêm `security_symbol_code` do grain chi tiết theo mã CK); `hnx04_market_scale_rpt`/`hsx02_listing_trading_rpt` = `report_code + report_period_dt + item_code + period_type`; `tk04btc_market_summary_rpt` = `report_code + report_period_dt + item_code + period_marker` (period_marker khác period_type — 3 giá trị Q1/Q2/Q3 cố định, không phải trong_ky/cong_don); `ttlk10_cw_outstanding_rpt` = `report_code + report_period_dt + listed_cw_code` (khóa nghiệp vụ mã CW, không dùng `item_code` vì đây là bảng danh sách không phải EAV). Không dùng surrogate key riêng cho 19 bảng Tác nghiệp còn lại. **[SỬA 2026-09-22]** `bm030amss_market_trading_rpt`/`bm031amss_foreign_proprietary_trading_rpt` đã DEPRECATED, thay bằng Fact có surrogate key chuẩn (xem 3.2 và Section 4).
 
@@ -3017,11 +3351,13 @@ erDiagram
 
 *Tất cả Dimension áp dụng SCD Type 4A.*
 
-19/21 bảng Tác nghiệp của TKNB không tách Dimension dùng chung (theo quyết định thiết kế ở đầu file), toàn bộ chiều (Sàn, Chỉ số, Loại CK...) nằm trong `item_code` của từng bảng Tác nghiệp. **[MỚI 2026-09-22]** 2 Dimension dưới đây là ngoại lệ, phục vụ riêng 2 Fact của Nhóm 18/23 — xem Section 4 lý do ngoại lệ.
+18 bảng Tác nghiệp EAV còn lại của TKNB không tách Dimension dùng chung (theo quyết định thiết kế ở đầu file), toàn bộ chiều (Sàn, Chỉ số, Loại CK...) nằm trong `item_code` của từng bảng Tác nghiệp. **[MỚI 2026-09-22]** 2 Dimension dưới đây là ngoại lệ, phục vụ riêng 2 Fact của Nhóm 18/23 — xem Section 4 lý do ngoại lệ.
 
 | Dimension | Loại | Mô tả | Scheme | Trạng thái |
 |---|---|---|---|---|
 | Index Constituent Dimension (`index_constituent_dim`, reuse — sở hữu GSTT) | Dùng chung (conformed, cross-module) | Danh mục rổ chỉ số — 1 row / Index Code | — | READY |
+| Private Corporate Bond Dimension (`private_corporate_bond_dim`, sở hữu TKNB) | Dimension TPDN riêng lẻ — dùng chung Nhóm 8, 9 | 1 row / 1 mã trái phiếu (SCD4A) | — | READY |
+| Security Trading Snapshot Dimension (`security_trading_snpst_dim`, reuse — sở hữu GSTT) | Dùng chung (conformed, cross-module) | Hồ sơ chứng khoán — 1 row / mã CK (SCD4A) | — | READY |
 
 ---
 
@@ -3052,11 +3388,15 @@ erDiagram
 | Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường TPDN niêm yết (BM031C_MSS) | bm031cmss_corp_bond_foreign_proprietary_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm031amss_foreign_proprietary_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt` (Nhóm 23/24, cùng khái niệm GD NĐTNN/tự doanh) dù cùng entity nguồn `Securities Trade`, vì đối tượng chứng khoán khác (TPDN niêm yết, `market_id_code='HCX'`). Cũng không reuse `bm030cmss_corp_bond_trading_rpt` (Nhóm 20, cùng đối tượng TPDN niêm yết) vì BM030c_MSS là tổng hợp toàn thị trường (không NĐTNN/tự doanh) và cộng cả 2 sàn HOSE+HNX, còn BM031C_MSS chỉ tính riêng HNX theo đúng nguồn BA cung cấp — không tự suy diễn thêm HOSE dù cùng khái niệm nghiệp vụ. |
 | Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường CCQ, ETF, CW (BM031d_MSS) | bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm031amss_foreign_proprietary_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt`/`bm031cmss_corp_bond_foreign_proprietary_trading_rpt` (Nhóm 23/24/25, cùng khái niệm GD NĐTNN/tự doanh) dù cùng entity nguồn `Securities Trade`, vì đối tượng chứng khoán khác (CCQ/ETF/CW thay vì cổ phiếu/TPCP/TPDN). Cũng không reuse `bm030emss_fund_cert_etf_cw_trading_rpt` (Nhóm 22, cùng đối tượng CCQ/ETF/CW) vì BM030e_MSS là tổng hợp toàn thị trường (không NĐTNN/tự doanh) — khác nghiệp vụ, dù cùng dùng `Security Trading Snapshot` để phân loại 3 loại CK. |
 | Thống kê giao dịch thị trường chứng khoán phái sinh (BM031f_MSS) | bm031fmss_derivatives_foreign_proprietary_trading_rpt | new | Bảng phẳng EAV theo ngày, mixed READY/PENDING — không reuse `mss031a`/`mss031b`/`mss031c`/`mss031d` (Nhóm 23-26, cùng khái niệm GD NĐTNN/tự doanh) dù cùng entity nguồn `Securities Trade`, vì đối tượng chứng khoán khác (CKPS, `market_id_code='DVX'`). 12/13 KPI dùng `Securities Trade`/`Security Trading Snapshot` READY; 1/13 KPI (KL hợp đồng đang lưu hành) PENDING do nguồn biểu mẫu VSDC.BM1 — khác nguồn với gap OI đã ghi ở Nhóm 3 (VSDC.BM2), cần BA xác nhận quan hệ giữa 2 khái niệm này. |
-| Thống kê thông tin giao dịch của từng mã chứng khoán (BM035_MSS) | bm035mss_security_trading_detail_rpt | new | Bảng phẳng EAV theo mã CK — grain khác hẳn mọi bảng khác trong module (thêm `security_symbol_code` vào composite key), không reuse bảng nào dù cùng dùng entity nguồn `Securities Trade`/`Security Trading Snapshot`, vì đây là báo cáo chi tiết cấp mã CK (không phải tổng hợp thị trường). 51/53 KPI READY; 2/53 KPI (Tỷ lệ sở hữu NĐTNN) PENDING do nguồn biểu mẫu VSDC.BM64 — đã grep xác nhận entity `Public Company Foreign Ownership Limit` (IDS.FOREIGN_OWNER_LIMIT) là nguồn khác, không dùng để lấp gap. |
-| Thị trường chứng khoán phái sinh - chi tiết từng mã (BM043_MSS) | bm043mss_derivatives_security_detail_rpt | new | Bảng phẳng EAV theo mã CK, cùng grain `bm035mss_security_trading_detail_rpt` (Nhóm 28) nhưng không reuse — đối tượng khác (CKPS, `market_id_code='DVX'`, chỉ HNX) so với cổ phiếu toàn thị trường của Nhóm 28. Cũng không reuse `bm031fmss_derivatives_foreign_proprietary_trading_rpt` (Nhóm 27, cùng đối tượng CKPS) vì Nhóm 27 là tổng hợp thị trường (EAV item_code thường), còn Nhóm 29 chi tiết theo từng mã hợp đồng (thêm `security_symbol_code`). 15/16 KPI READY; 1/16 KPI (KL hợp đồng đang lưu hành) PENDING — cùng gap VSDC.BM1 đã ghi ở Nhóm 27. |
+| ~~Thống kê thông tin giao dịch của từng mã chứng khoán (BM035_MSS)~~ | ~~bm035mss_security_trading_detail_rpt~~ | **DEPRECATED** | **[SỬA 2026-10-06 — All-Tier Cleanup]** Bãi bỏ bảng phẳng EAV (item_value Float64 không chứa được thuộc tính phi số, phải thêm cột tạm) — thay bằng `fct_security_trading_detail_snpst` (Star Schema, dùng chung `security_trading_snpst_dim` của GSTT). Đã xóa LLD/master/model.yaml/Entities/flat SQL/Detail Mapping cũ |
+| ~~Thị trường chứng khoán phái sinh - chi tiết từng mã (BM043_MSS)~~ | ~~bm043mss_derivatives_security_detail_rpt~~ | **DEPRECATED** | **[SỬA 2026-10-06 — All-Tier Cleanup]** Bãi bỏ bảng phẳng EAV — thay bằng `fct_derivatives_security_detail_snpst` (Star Schema, Thời gian đáo hạn/hệ số hợp đồng lấy từ `security_trading_snpst_dim`). Đã xóa 5 tầng |
 
-| Private Corporate Bond Dimension (Nhóm 9) | private_corporate_bond_dim | new | **[MỚI 2026-09-24]** Dimension mới, sở hữu TKNB — 1 dòng/1 mã TPDN riêng lẻ (SCD4A current-state), nguồn Atomic `private_corp_bond_offering` (HNX BM 33, mapping md). Chưa có Dimension trái phiếu doanh nghiệp riêng lẻ ở module nào (`datamart_model.yaml`) — có thể reuse cho HNX11 (Nhóm 8) |
+| Private Corporate Bond Dimension (Nhóm 8, 9) | private_corporate_bond_dim | new | **[MỚI 2026-09-24]** Dimension mới, sở hữu TKNB — 1 dòng/1 mã TPDN riêng lẻ (SCD4A current-state), nguồn Atomic `private_corp_bond_offering` (HNX BM 33, mapping md). Chưa có Dimension trái phiếu doanh nghiệp riêng lẻ ở module nào (`datamart_model.yaml`) — **[SỬA 2026-10-05] đã reuse cho HNX11 (Nhóm 8)**, 14 thuộc tính tĩnh dùng chung |
 | Fact Private Corporate Bond International Offering Snapshot (Nhóm 9) | fct_private_corporate_bond_international_offering_snpst | new | **[MỚI 2026-09-24]** Fact mới, sở hữu TKNB — ngoại lệ thứ 3 của quy ước 'mỗi báo cáo 1 bảng phẳng' theo yêu cầu Data Modeler thiết kế dạng Dim/Fact. Grain 1 mã TP × 1 thị trường × 1 tháng báo cáo |
+| Fact Private Corporate Bond Issuance Snapshot (Nhóm 8) | fct_private_corporate_bond_issuance_snpst | new | **[MỚI 2026-10-05]** Fact mới, sở hữu TKNB — Nhóm 8 (HNX11) thiết kế dạng Dim/Fact như Nhóm 9 (ngoại lệ thứ 4 của quy ước 'mỗi báo cáo 1 bảng phẳng', theo tiền lệ yêu cầu Data Modeler 2026-09-24). Grain 1 mã TP × 1 tháng báo cáo; nguồn `private_corp_bond_registration` (mapping md Bảng 16). Không gộp vào Fact quốc tế của Nhóm 9 vì khác nguồn, khác grain (không có `market_type`) và khác measure (giá trị phát hành vs khối lượng chào bán) |
+| Fact Security Trading Detail Snapshot (Nhóm 28) | fct_security_trading_detail_snpst | new | **[MỚI 2026-10-06]** Fact mới, sở hữu TKNB — thiết kế lại BM035 dạng Star Schema (ngoại lệ thứ 5 của quy ước 'mỗi báo cáo 1 bảng phẳng', theo yêu cầu Data Modeler). Grain 1 mã CK × 1 ngày; 49 cột. Không reuse `fct_stock_portfolio_snpst` (GSTT): thiếu ~30 cột và khác bộ lọc (H11). Không reuse `fct_market_trading_snpst`/`fct_foreign_proprietary_trading_index_snpst` (TKNB): grain Index Code, không phải mã CK |
+| Fact Derivatives Security Detail Snapshot (Nhóm 29) | fct_derivatives_security_detail_snpst | new | **[MỚI 2026-10-06]** Fact mới, sở hữu TKNB — thiết kế lại BM043 dạng Star Schema. Grain 1 mã hợp đồng CKPS × 1 ngày; 14 cột. Không reuse `fct_futures_investor_flow_snpst` (PTTT): chỉ HĐTL chỉ số, chỉ khối lượng |
+| Security Trading Snapshot Dimension (Nhóm 28, 29) | security_trading_snpst_dim | reuse | **[MỚI 2026-10-06]** Conformed Dimension sở hữu GSTT (Lớp 3 reuse, cùng nguồn Atomic `security_trading_snapshot`) — 1 dòng/mã CK (SCD4A); TKNB dùng `Symbol`, `Maturity Date`; giá hiện hành trong Dimension KHÔNG dùng (giá theo ngày nằm ở Fact) |
 ---
 
 ## Section 5 — Vấn đề mở
@@ -3096,3 +3436,6 @@ erDiagram
 29. **[MỞ 2026-09-10] Nhóm 4 (HNX04) mục 6-11 — filter `stock_tp_code` trên `Security Trading Snapshot` dùng code suy đoán từ mô tả scheme, chưa profile dữ liệu thật**: khi thiết kế Phase 2 Detail Mapping cho 54 KPI (K_TKNB_418-471), Công thức cần lọc CPNY/CPDKGD/CCQETF/TPDN theo `stock_tp_code` — nhưng scheme `MDDS_STOCK_TYPE` trong `classification_schemes.yaml` mới chỉ có `name: "Loại chứng khoán MDDS — ST/BO/MF/FU/OP/EF/CW theo sàn"`, chưa có `values` cụ thể (list rỗng, chưa profile dữ liệu thật `MDDS.StockInfor`). Đã tạm dùng `stock_tp_code='ST'` (cổ phiếu), `'BO'` (trái phiếu), `'EF'` (ETF) suy trực tiếp từ mô tả tên scheme (không phải suy đoán tùy tiện, cũng không phải giá trị BA cung cấp). Cần team quản trị Atomic profile dữ liệu `MDDS.StockInfor` để sync đủ `values` cho `MDDS_STOCK_TYPE` và xác nhận lại 3 code này trước khi build ETL chính thức — rủi ro nếu sai: đếm nhầm loại chứng khoán giữa CP/TP/CCQ ở toàn bộ 24 sub-item (mục 6.1/6.2/6.6/6.8 và tương ứng ở mục 7-11) dùng chung filter này. (Ghi chú liên quan: cột `floor_code` dùng đúng theo scheme `MDDS_FLOOR_CODE` đã có values xác nhận — không có rủi ro tương tự.)
 31. **[MỚI 2026-09-22, datamart-review — Kịch bản D] Nhóm 18 (BM030a_MSS) và Nhóm 23 (BM031a_MSS) là 2 ngoại lệ duy nhất trong module thoát khỏi quy ước "mỗi báo cáo 1 bảng phẳng riêng, không tách Dimension"**: Qua `datamart-review` phát hiện bảng EAV `bm030amss_market_trading_rpt` gộp sai 2 grain khác nhau vào cùng 1 bảng phẳng (Nhóm 18 — "Loại chỉ số"/"Giá trị chỉ số" grain 1 Trade Date × Market Code, và 8 đo lường GTGD/KLGD grain 1 Trade Date), đồng thời phát hiện 2 bug LLD cấp thấp trên chính bảng này và `bm031amss_foreign_proprietary_trading_rpt` (mart_table trỏ sai Atomic entity, board_tp_code dùng code `'TR'` không tồn tại trong domain — đã fix tạm trước khi đánh giá lại kiến trúc). User xác nhận trực tiếp (2026-09-22): thiết kế lại 2 Nhóm này sang Fact/Dim chuẩn — reuse `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD) và `Index Constituent Dimension` (sở hữu GSTT), tạo mới `Fact Market Trading Snapshot` và `Fact Foreign Proprietary Trading Index Snapshot` (sở hữu TKNB) — thay 2 bảng EAV cũ (nay DEPRECATED, xem Section 4). **Đây là ngoại lệ có chủ đích, KHÔNG áp dụng ngược lại cho 19 bảng còn lại của module** — lý do ngoại lệ là lỗi grain mismatch kiến trúc thật + cơ hội reuse cross-module đã tồn tại sẵn trong `datamart_model.yaml`, không phải thay đổi sở thích phong cách lưu trữ. Nếu phát sinh Nhóm khác nghi ngờ có cùng vấn đề grain mismatch, xử lý case-by-case tương tự (không tự động áp dụng hàng loạt).
 32. **[MỞ 2026-09-24] Nhóm 9 (HNX12) — 2 điểm cần xác nhận khi dựng Dim/Fact từ `private_corp_bond_offering`:** (1) **Định dạng `report_month`:** câu lệnh BA so sánh trực tiếp `'03'/'06'/'09'/'12'`, nhưng dòng comment cùng câu lệnh dùng `SUBSTR(thang_BC, 5, 2)` (gợi ý dạng `YYYYMM`) — thiết kế dùng `RIGHT(rpt_month, 2)` để chạy được cả 2 dạng; nếu là `MM` thì Fact chưa có năm báo cáo (đang dựa `snpst_dt_dim_id` = `ds_snpst_dt`). Cần profile dữ liệu thật. (2) **Atomic chỉ có mapping md** (`mapping_vsdc_ods_atm.md` Bảng 15), chưa có YAML LLD/`dm_manifest.yaml` — Gate 0 WARNING `L0-ATOMIC-COLUMN-NOT-FOUND` cho 24 cột; tên cột Atomic lấy theo cột 'Trường atomic' của file md (`currency_code`, `bond_term_unit`, `bond_term`, `offering_bond_quantity`, `*_bond_ind`).
+33. **[MỚI 2026-10-05] Nhóm 8 (HNX11) — thiết kế Dim/Fact từ `private_corp_bond_offering` + `private_corp_bond_registration`, 5 điểm cần BA/dev xác nhận:** (1) **Trong nước hay quốc tế — ĐÃ XÁC NHẬN 2026-10-06 (Data Modeler): lấy TOÀN THỊ TRƯỜNG.** BA dòng 648 vừa ghi nguồn BM30 (quốc tế) vừa ghi Điều kiện BM27 (trong nước) và SQL không lọc `market_type`; chốt giữ đúng SQL BA — không lọc `market_type`, lấy mọi mã có trong `private_corp_bond_offering`. (2) **`par_value`:** ô Trường nguồn dòng 653 ghi `P.issued_volume * h.par_value`, SQL tham khảo ghi `P.issued_volume * P.par_value` → thiết kế dùng `P.par_value` (cùng dòng đăng ký với khối lượng). (3) **Tránh nhân dòng:** JOIN H–P theo `bond_code + issue_date + maturity_date + report_month` có thể nhân dòng nếu 1 mã có nhiều `market_type` ở H → Fact lấy từ P (1 dòng/mã/tháng, `ds_snpst_dt` mới nhất) và dùng EXISTS trên H. (4) **`report_month`** định dạng MM hay YYYYMM — cùng vấn đề mục 32 (Fact dùng `RIGHT(rpt_month,2)`). (5) **Atomic chỉ có mapping md** (Bảng 15, 16 `mapping_vsdc_ods_atm.md`), chưa có YAML/manifest — Gate 0 WARNING; ô `Loại dữ liệu` BA vẫn ghi "Chưa có CSDL - Map biểu mẫu" như Nhóm 9 (nâng READY theo tiền lệ 2026-09-24).
+34. **[CẬP NHẬT 2026-10-06] Nhóm 28 (BM035_MSS) — thiết kế lại thành Star Schema; điểm đã chốt và điểm còn mở:** **Đã chốt (Data Modeler 2026-10-06):** (a) bỏ bảng EAV, dùng `Fact Security Trading Detail Snapshot` + Dimension GSTT; (b) lệnh hủy HNX: đồng ý giữ thiết kế Mới − Hủy (HNX normalize `side_ind` lệnh hủy = SPACE, D-08 → số lệnh có thể lệch, dev kiểm khi ETL); (c) `ds_snpst_dt` thay `report_date` khi nối `foreign_ownership_info`; (d) K_TKNB_1214 lấy từ `remaining_shares_foreign_can_hold`. **Còn mở:** (1) K_TKNB_1214 quy ra % = `remaining_foreign_holding_quantity / total_issued_share_quantity × 100` do thiết kế suy ra — BA xác nhận (nếu muốn hiển thị số CP thì đổi đơn vị sang CP, bỏ phép chia). (2) **Tập Board ID — ĐÃ CHỐT 2026-10-06 (Data Modeler): theo BA BM035, không sửa.** BM035 giữ thỏa thuận `('T1','T2','T3','T4','TR')` và lô lẻ `('G4')`; `fct_market_trading_snpst`/`fct_foreign_proprietary_trading_index_snpst` (Nhóm 18/23) dùng `('T1','T2','T3','T4','T6','R1')` và lô lẻ `('G4','T4','T6')` — hai bộ chỉ tiêu khác định nghĩa nên tổng theo mã CK của BM035 không cần khớp Nhóm 18/23. (3) Trạng thái GD = `symbol_status_code` (scheme `MDDS_SYMBOL_STATUS`, nguồn lưu string — cần profile giá trị). (4) Nối mã HNX: `security_symbol_code IN (symbol, isin_code)` — HOSE = symbol, HNX = ISIN theo BA (sổ lệnh); chưa kiểm sổ khớp HNX cổ phiếu có lưu ISIN hay ticker. (5) Mã CK không có dòng `security_trading_snapshot` trong ngày thì không có hàng trong Fact dù có giao dịch. (6) `foreign_ownership_info` chỉ có mapping md (Bảng 9) — Gate 0 WARNING.
+35. **[CẬP NHẬT 2026-10-06] Nhóm 29 (BM043_MSS) — thiết kế lại thành Star Schema; điểm đã chốt và điểm còn mở:** **Đã chốt (Data Modeler 2026-10-06):** (a) bỏ bảng EAV, dùng `Fact Derivatives Security Detail Snapshot` + Dimension GSTT (`maturity_dt`, `contract_multiplier`); (b) `ds_snpst_dt` thay `report_date` khi nối `end_of_day_open_interest`; (c) **NĐTNN = `IN ('10','20')` theo SQL tham khảo BA** (cột Điều kiện ghi `<> '00'`). **Đã sửa theo BA 2026-10-05:** thêm K_TKNB_1256 (Kỳ báo cáo — Chiều) và K_TKNB_1257 (Mã CK — Chỉ tiêu cơ sở) → 18/18 dòng BA; 'Thời gian' đổi sang Chỉ tiêu cơ sở; Giá trị = Σ(Trade quantity × Trade price × `ContractMultiplier`). **Còn mở:** (1) Lọc CKPS: BA ghi `FloorCode = '03'` hoặc `Market_ID = 'DVX'`, SQL tham khảo lọc `FloorCode IN ('02','04','03','10')` — thiết kế dùng `floor_code='03'` cho Dimension/Fact và `market_id_code='DVX'` cho Securities Trade. (2) KL hợp đồng lưu hành dùng `end_of_day_open_interest` (chỉ mapping md Bảng 6) — Gate 0 WARNING; Nhóm 3 (VSDC.BM2) và Nhóm 27 (K_TKNB_1178) cùng khái niệm chưa được BA cập nhật. (3) HNX `issue_code` = ISIN → nối `security_symbol_code IN (symbol, isin_code)`. (4) BA ghi 'khi nào có dữ liệu thật thì dùng JOIN' → open interest dùng LEFT JOIN (mã không có open interest vẫn có hàng).

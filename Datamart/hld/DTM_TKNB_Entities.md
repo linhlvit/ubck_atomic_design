@@ -113,7 +113,7 @@ erDiagram
     Private_Corporate_Bond_Dimension ||--o{ Fact_Private_Corporate_Bond_International_Offering_Snapshot : "Private_Corporate_Bond_Dimension_Id"
 ```
 
-## Bảng entity tóm tắt (23 bảng: 3 Star Schema mới/reuse + 20 Operational — 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED và xóa khỏi bảng này, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
+## Bảng entity tóm tắt (24 bảng: 3 Star Schema mới/reuse + 20 Operational — 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED và xóa khỏi bảng này, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
@@ -121,8 +121,12 @@ erDiagram
 | — | Index Constituent Dimension | Dimension | reuse (GSTT) | Danh mục rổ chỉ số | 1 dòng/Index Code | K_TKNB_1013 (Nhóm 18), K_TKNB_1069 (Nhóm 23) |
 | — | Fact Market Trading Snapshot | Fact | new | GTGD/KLGD toàn thị trường cổ phiếu + giá trị chỉ số theo ngày [SỬA 2026-09-23] | 1 dòng/Trade Date × Index Code | K_TKNB_1013–1022 (Nhóm 18) |
 | — | Fact Foreign Proprietary Trading Index Snapshot | Fact | new | GD NĐTNN/tự doanh theo chỉ số | 1 dòng/Trade Date × Index Code | K_TKNB_1070–1093 (Nhóm 23) |
-| — | Private Corporate Bond Dimension | Dimension | new | [MỚI 2026-09-24] Danh mục TPDN riêng lẻ phát hành ra thị trường quốc tế | 1 dòng/1 mã TP (SCD4A) | K_TKNB_554–557, 561–570 (Nhóm 9) |
+| — | Private Corporate Bond Dimension | Dimension | new | [MỚI 2026-09-24] Danh mục TPDN riêng lẻ phát hành ra thị trường quốc tế | 1 dòng/1 mã TP (SCD4A) | K_TKNB_554–557, 561–570 (Nhóm 9); K_TKNB_538–541, 543–552 (Nhóm 8) |
 | — | Fact Private Corporate Bond International Offering Snapshot | Fact | new | [MỚI 2026-09-24] Tình hình chào bán TPDN riêng lẻ ra thị trường quốc tế (HNX12) | 1 dòng/1 mã TP × 1 thị trường × 1 tháng báo cáo | K_TKNB_553, 558–560 (Nhóm 9) |
+| — | Fact Private Corporate Bond Issuance Snapshot | Fact | new | [MỚI 2026-10-05, TKNB Nhóm 8 HNX11] Khối lượng/giá trị phát hành TPDN riêng lẻ trong nước (HNX11) | 1 dòng/1 mã TP × 1 tháng báo cáo | K_TKNB_537, 542 (Nhóm 8) |
+| — | Security Trading Snapshot Dimension | Dimension | reuse (GSTT) | Hồ sơ chứng khoán — Symbol/ISIN/Sàn/Ngày đáo hạn/Hệ số hợp đồng | 1 dòng/mã CK (SCD4A) | K_TKNB_1188 (Nhóm 28), K_TKNB_1240, 1242 (Nhóm 29) |
+| — | Fact Security Trading Detail Snapshot | Fact | new | [THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Thống kê giao dịch từng mã CK (giá, cung cầu, quy mô GD, NĐTNN, tự doanh) | 1 dòng/mã CK × 1 ngày | K_TKNB_1187–1239 (Nhóm 28) |
+| — | Fact Derivatives Security Detail Snapshot | Fact | new | [THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] Thống kê giao dịch CKPS từng mã hợp đồng (open interest, KL/GT, NĐTNN, tự doanh) | 1 dòng/mã hợp đồng × 1 ngày | K_TKNB_1240–1257 (Nhóm 29) |
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
@@ -144,8 +148,6 @@ erDiagram
 | 25 | Corp Bond Foreign Proprietary Trading Report (BM031c) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường TPDN niêm yết theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1113–1122 |
 | 26 | Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường CCQ/ETF/CW theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1123–1173 |
 | 27 | Derivatives Foreign Proprietary Trading Report (BM031f) | Operational | new | Thống kê giao dịch thị trường CKPS (NĐTNN/tự doanh) theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1174–1186 |
-| 28 | Security Trading Detail Report (BM035) | Operational | new | Thống kê giao dịch chi tiết theo TỪNG MÃ chứng khoán theo ngày | 1 dòng/1 chỉ tiêu/1 mã CK/1 kỳ báo cáo | K_TKNB_1187–1239 |
-| 29 | Derivatives Security Detail Report (BM043) | Operational | new | Thị trường CKPS chi tiết theo từng mã hợp đồng theo ngày | 1 dòng/1 chỉ tiêu/1 mã CK/1 kỳ báo cáo | K_TKNB_1240–1255 |
 
 ## Nguồn Atomic theo bảng
 
@@ -157,6 +159,10 @@ erDiagram
 | Fact Foreign Proprietary Trading Index Snapshot | securities_trade / index_constituent_snapshot |
 | Private Corporate Bond Dimension | private_corp_bond_offering |
 | Fact Private Corporate Bond International Offering Snapshot | private_corp_bond_offering |
+| Fact Private Corporate Bond Issuance Snapshot | private_corp_bond_registration / private_corp_bond_offering |
+| Fact Security Trading Detail Snapshot | securities_trade / security_trading_snapshot / securities_order / foreign_ownership_info |
+| Fact Derivatives Security Detail Snapshot | securities_trade / security_trading_snapshot / end_of_day_open_interest |
+| Security Trading Snapshot Dimension (reuse GSTT) | security_trading_snapshot |
 | Stock Trading Report (HNX01) | market_index_snapshot / security_trading_snapshot / securities_trade |
 | Gov Bond OTC Trading Report (HNX02) | bond_order_book |
 | Derivative Trading Report (HNX03) | security_trading_snapshot / securities_trade |
@@ -175,5 +181,3 @@ erDiagram
 | Corp Bond Foreign Proprietary Trading Report (BM031c) | securities_trade |
 | Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d) | securities_trade / security_trading_snapshot |
 | Derivatives Foreign Proprietary Trading Report (BM031f) | securities_trade / security_trading_snapshot |
-| Security Trading Detail Report (BM035) | securities_trade / security_trading_snapshot |
-| Derivatives Security Detail Report (BM043) | securities_trade / security_trading_snapshot |

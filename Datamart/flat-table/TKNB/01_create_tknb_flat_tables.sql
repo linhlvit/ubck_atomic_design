@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — CREATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 23 bảng (bảng #13/#16/#23 là FACT, còn lại operational EAV báo cáo phẳng — 1 báo cáo = 1 bảng phẳng)
+-- 24 bảng (bảng #13/#16/#23/#24 là FACT, còn lại operational EAV báo cáo phẳng — 1 báo cáo = 1 bảng phẳng)
 -- Toàn bộ bảng operational — KHÔNG JOIN Calendar Date, KHÔNG JOIN dim nào khác
 -- ============================================================
 
@@ -494,53 +494,7 @@ COMMENT 'Flat table — Derivatives Foreign Proprietary Trading Report (BM031f)'
 
 
 -- ============================================================
--- 21. OPERATIONAL: bm035mss_security_trading_detail_rpt
---    Security Trading Detail Report (BM035)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_bm035mss_security_trading_detail_rpt_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Security Trading Detail Report (BM035)
-    report_code             String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt        Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code               String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM035_MSS',
-    security_symbol_code    String                   COMMENT 'BK — mã chứng khoán/hợp đồng, 1 phần composite key (grain chi tiết theo từng mã)',
-    item_stt                Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit               Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value              Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code và mã CK, giá/khối lượng/giá trị giao dịch, GD NĐTNN/tự doanh chi tiết theo từng mã chứng khoán',
-    src_stm_code            String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code, security_symbol_code)
-COMMENT 'Flat table — Security Trading Detail Report (BM035)'
-;
-
-
--- ============================================================
--- 22. OPERATIONAL: bm043mss_derivatives_security_detail_rpt
---    Derivatives Security Detail Report (BM043)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_bm043mss_derivatives_security_detail_rpt_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Derivatives Security Detail Report (BM043)
-    report_code             String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt        Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code               String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM043_MSS',
-    security_symbol_code    String                   COMMENT 'BK — mã chứng khoán/hợp đồng, 1 phần composite key (grain chi tiết theo từng mã)',
-    item_stt                Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit               Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value              Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code và mã hợp đồng, thời gian đáo hạn/khối lượng/giá trị giao dịch, GD NĐTNN/tự doanh chi tiết theo từng mã CKPS',
-    src_stm_code            String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code, security_symbol_code)
-COMMENT 'Flat table — Derivatives Security Detail Report (BM043)'
-;
-
-
--- ============================================================
--- 23. FACT: fct_private_corporate_bond_international_offering_snpst
+-- 21. FACT: fct_private_corporate_bond_international_offering_snpst
 --    Fact Private Corporate Bond International Offering Snapshot (HNX12 — Nhóm 9)
 --    Joins: Calendar Date × Private Corporate Bond Dimension
 -- ============================================================
@@ -580,4 +534,164 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, market_tp, rpt_month)
 COMMENT 'Flat table — Fact Private Corporate Bond International Offering Snapshot × Calendar Date × Private Corporate Bond Dimension'
+;
+
+
+-- ============================================================
+-- 22. FACT: fct_private_corporate_bond_issuance_snpst
+--    Fact Private Corporate Bond Issuance Snapshot (HNX11 — Nhóm 8)
+--    Joins: Calendar Date × Private Corporate Bond Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_issuance_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Private Corporate Bond Issuance Snapshot
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày chụp dữ liệu biểu mẫu',
+    private_corporate_bond_dim_id   String                  COMMENT 'FK mã trái phiếu',
+    rpt_month                       String                  COMMENT 'Tháng báo cáo (số lũy kế từ đầu năm) — Quý = 03/06/09/12',
+    issued_bond_quantity            Nullable(Int64)         COMMENT 'Khối lượng phát hành (lũy kế tại tháng báo cáo)',
+    par_value                       Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
+    issued_bond_val_amt             Nullable(Decimal(23,2)) COMMENT 'Giá trị phát hành = khối lượng phát hành × mệnh giá',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: PRIVATE CORPORATE BOND DIMENSION
+    bond_code                       Nullable(String)        COMMENT 'Mã trái phiếu',
+    issuer_nm                       Nullable(String)        COMMENT 'Tên DN phát hành',
+    enterprise_tp                   Nullable(String)        COMMENT 'Loại hình doanh nghiệp',
+    business_sector                 Nullable(String)        COMMENT 'Lĩnh vực hoạt động',
+    bond_term_unit                  Nullable(String)        COMMENT 'Đơn vị kỳ hạn',
+    bond_term                       Nullable(Int32)         COMMENT 'Kỳ hạn',
+    interest_rate_tp                Nullable(String)        COMMENT 'Loại lãi suất',
+    issue_interest_rate             Nullable(Decimal(8,5))  COMMENT 'Lãi suất phát hành',
+    issue_dt                        Nullable(Date)          COMMENT 'Ngày phát hành',
+    maturity_dt                     Nullable(Date)          COMMENT 'Ngày đáo hạn',
+    interest_payment_method         Nullable(String)        COMMENT 'Phương thức thanh toán lãi',
+    convertible_bond_ind            Nullable(Bool)          COMMENT 'Trái phiếu chuyển đổi',
+    warrant_linked_bond_ind         Nullable(Bool)          COMMENT 'Trái phiếu kèm chứng quyền',
+    secured_bond_ind                Nullable(Bool)          COMMENT 'Trái phiếu có bảo đảm',
+    bond_src_stm_code               Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Private Corporate Bond Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, rpt_month)
+COMMENT 'Flat table — Fact Private Corporate Bond Issuance Snapshot × Calendar Date × Private Corporate Bond Dimension'
+;
+
+
+-- ============================================================
+-- 23. FACT: fct_security_trading_detail_snpst
+--    Fact Security Trading Detail Snapshot (Nhóm 28 — BM035_MSS)
+--    Joins: Calendar Date × Security Trading Snapshot Dimension (reuse GSTT)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_security_trading_detail_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Security Trading Detail Snapshot
+    snpst_dt_dim_id                         String                  COMMENT 'Snapshot Date Dimension Id',
+    security_trading_snpst_dim_id           String                  COMMENT 'Security Trading Snapshot Dimension Id',
+    trading_status_code                     Nullable(String)        COMMENT 'Trading Status Code',
+    reference_price                         Nullable(Decimal(23,2)) COMMENT 'Reference Price',
+    ceiling_price                           Nullable(Decimal(23,2)) COMMENT 'Ceiling Price',
+    floor_price                             Nullable(Decimal(23,2)) COMMENT 'Floor Price',
+    close_price                             Nullable(Decimal(23,2)) COMMENT 'Close Price',
+    average_price                           Nullable(Decimal(23,2)) COMMENT 'Average Price',
+    high_price                              Nullable(Decimal(23,2)) COMMENT 'High Price',
+    low_price                               Nullable(Decimal(23,2)) COMMENT 'Low Price',
+    buy_order_cnt                           Nullable(Int32)         COMMENT 'Buy Order Count',
+    buy_order_vol                           Nullable(Int64)         COMMENT 'Buy Order Volume',
+    sell_order_cnt                          Nullable(Int32)         COMMENT 'Sell Order Count',
+    sell_order_vol                          Nullable(Int64)         COMMENT 'Sell Order Volume',
+    matched_trading_vol                     Nullable(Int64)         COMMENT 'Matched Trading Volume',
+    matched_trading_val                     Nullable(Decimal(23,2)) COMMENT 'Matched Trading Value',
+    negotiated_trading_vol                  Nullable(Int64)         COMMENT 'Negotiated Trading Volume',
+    negotiated_trading_val                  Nullable(Decimal(23,2)) COMMENT 'Negotiated Trading Value',
+    odd_lot_trading_vol                     Nullable(Int64)         COMMENT 'Odd Lot Trading Volume',
+    odd_lot_trading_val                     Nullable(Decimal(23,2)) COMMENT 'Odd Lot Trading Value',
+    total_trading_vol                       Nullable(Int64)         COMMENT 'Total Trading Volume',
+    total_trading_val                       Nullable(Decimal(23,2)) COMMENT 'Total Trading Value',
+    max_foreign_ownership_ratio             Nullable(Decimal(9,4))  COMMENT 'Max Foreign Ownership Ratio',
+    remaining_foreign_ownership_ratio       Nullable(Decimal(9,4))  COMMENT 'Remaining Foreign Ownership Ratio',
+    foreign_investor_total_buy_vol          Nullable(Int64)         COMMENT 'Foreign Investor Total Buy Volume',
+    foreign_investor_total_sell_vol         Nullable(Int64)         COMMENT 'Foreign Investor Total Sell Volume',
+    foreign_investor_total_buy_val          Nullable(Decimal(23,2)) COMMENT 'Foreign Investor Total Buy Value',
+    foreign_investor_total_sell_val         Nullable(Decimal(23,2)) COMMENT 'Foreign Investor Total Sell Value',
+    foreign_investor_negotiated_buy_vol     Nullable(Int64)         COMMENT 'Foreign Investor Negotiated Buy Volume',
+    foreign_investor_negotiated_sell_vol    Nullable(Int64)         COMMENT 'Foreign Investor Negotiated Sell Volume',
+    foreign_investor_negotiated_buy_val     Nullable(Decimal(23,2)) COMMENT 'Foreign Investor Negotiated Buy Value',
+    foreign_investor_negotiated_sell_val    Nullable(Decimal(23,2)) COMMENT 'Foreign Investor Negotiated Sell Value',
+    foreign_investor_matched_buy_vol        Nullable(Int64)         COMMENT 'Foreign Investor Matched Buy Volume',
+    foreign_investor_matched_sell_vol       Nullable(Int64)         COMMENT 'Foreign Investor Matched Sell Volume',
+    foreign_investor_matched_buy_val        Nullable(Decimal(23,2)) COMMENT 'Foreign Investor Matched Buy Value',
+    foreign_investor_matched_sell_val       Nullable(Decimal(23,2)) COMMENT 'Foreign Investor Matched Sell Value',
+    proprietary_total_buy_vol               Nullable(Int64)         COMMENT 'Proprietary Total Buy Volume',
+    proprietary_total_sell_vol              Nullable(Int64)         COMMENT 'Proprietary Total Sell Volume',
+    proprietary_total_buy_val               Nullable(Decimal(23,2)) COMMENT 'Proprietary Total Buy Value',
+    proprietary_total_sell_val              Nullable(Decimal(23,2)) COMMENT 'Proprietary Total Sell Value',
+    proprietary_negotiated_buy_vol          Nullable(Int64)         COMMENT 'Proprietary Negotiated Buy Volume',
+    proprietary_negotiated_sell_vol         Nullable(Int64)         COMMENT 'Proprietary Negotiated Sell Volume',
+    proprietary_negotiated_buy_val          Nullable(Decimal(23,2)) COMMENT 'Proprietary Negotiated Buy Value',
+    proprietary_negotiated_sell_val         Nullable(Decimal(23,2)) COMMENT 'Proprietary Negotiated Sell Value',
+    proprietary_matched_buy_vol             Nullable(Int64)         COMMENT 'Proprietary Matched Buy Volume',
+    proprietary_matched_sell_vol            Nullable(Int64)         COMMENT 'Proprietary Matched Sell Volume',
+    proprietary_matched_buy_val             Nullable(Decimal(23,2)) COMMENT 'Proprietary Matched Buy Value',
+    proprietary_matched_sell_val            Nullable(Decimal(23,2)) COMMENT 'Proprietary Matched Sell Value',
+    src_stm_code                            String                  COMMENT 'Source System Code',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                            Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                                  Nullable(String)        COMMENT 'Mã CK/hợp đồng — từ Security Trading Snapshot Dimension',
+    security_full_nm                        Nullable(String)        COMMENT 'Tên đầy đủ chứng khoán — từ Security Trading Snapshot Dimension',
+    floor_code                              Nullable(String)        COMMENT 'Mã sàn — từ Security Trading Snapshot Dimension',
+    stock_tp_code                           Nullable(String)        COMMENT 'Loại chứng khoán — từ Security Trading Snapshot Dimension',
+    isin_code                               Nullable(String)        COMMENT 'Mã ISIN — từ Security Trading Snapshot Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), security_trading_snpst_dim_id)
+COMMENT 'Flat table — Fact Security Trading Detail Snapshot × Calendar Date × Security Trading Snapshot Dimension'
+;
+
+
+
+-- ============================================================
+-- 24. FACT: fct_derivatives_security_detail_snpst
+--    Fact Derivatives Security Detail Snapshot (Nhóm 29 — BM043_MSS)
+--    Joins: Calendar Date × Security Trading Snapshot Dimension (reuse GSTT)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_derivatives_security_detail_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Derivatives Security Detail Snapshot
+    snpst_dt_dim_id                         String                  COMMENT 'Snapshot Date Dimension Id',
+    security_trading_snpst_dim_id           String                  COMMENT 'Security Trading Snapshot Dimension Id',
+    open_interest_quantity                  Nullable(Int64)         COMMENT 'Open Interest Quantity',
+    trading_vol                             Nullable(Int64)         COMMENT 'Trading Volume',
+    trading_val                             Nullable(Decimal(23,2)) COMMENT 'Trading Value',
+    foreign_investor_buy_vol                Nullable(Int64)         COMMENT 'Foreign Investor Buy Volume',
+    foreign_investor_sell_vol               Nullable(Int64)         COMMENT 'Foreign Investor Sell Volume',
+    foreign_investor_buy_val                Nullable(Decimal(23,2)) COMMENT 'Foreign Investor Buy Value',
+    foreign_investor_sell_val               Nullable(Decimal(23,2)) COMMENT 'Foreign Investor Sell Value',
+    proprietary_buy_vol                     Nullable(Int64)         COMMENT 'Proprietary Buy Volume',
+    proprietary_sell_vol                    Nullable(Int64)         COMMENT 'Proprietary Sell Volume',
+    proprietary_buy_val                     Nullable(Decimal(23,2)) COMMENT 'Proprietary Buy Value',
+    proprietary_sell_val                    Nullable(Decimal(23,2)) COMMENT 'Proprietary Sell Value',
+    src_stm_code                            String                  COMMENT 'Source System Code',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                            Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                                  Nullable(String)        COMMENT 'Mã CK/hợp đồng — từ Security Trading Snapshot Dimension',
+    security_full_nm                        Nullable(String)        COMMENT 'Tên đầy đủ chứng khoán — từ Security Trading Snapshot Dimension',
+    floor_code                              Nullable(String)        COMMENT 'Mã sàn — từ Security Trading Snapshot Dimension',
+    isin_code                               Nullable(String)        COMMENT 'Mã ISIN — từ Security Trading Snapshot Dimension',
+    maturity_dt                             Nullable(Date)          COMMENT 'Ngày đáo hạn — từ Security Trading Snapshot Dimension',
+    contract_multiplier                     Nullable(Decimal(23,2)) COMMENT 'Hệ số hợp đồng — từ Security Trading Snapshot Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), security_trading_snpst_dim_id)
+COMMENT 'Flat table — Fact Derivatives Security Detail Snapshot × Calendar Date × Security Trading Snapshot Dimension'
 ;
