@@ -3,6 +3,7 @@
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
 -- 11 bảng: 9 fact + 2 operational (opr_security_index_constituent_ref — mới 2026-10-06, bảng tham chiếu Index Code ↔ Symbol ↔ ISIN; opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
+-- Sửa 2026-10-06 (v4.33–v4.36): Nhóm 34 — #3 gstt_fct_instrument_price_intraday_flat (nến phút) và #3a gstt_fct_instrument_price_daily_flat (nến ngày + Doanh thu/LNST) thay gstt_fct_security_trading_intraday_flat; mã CK và chỉ số (BA nguồn JAD_tvhistory1m/1d), dùng chung Nhóm 3, 10, 12, 14, 20, 47 (v4.35); #3b gstt_fct_security_trading_daily_flat chỉ còn Nhóm 48 (K_GSTT_352).
 -- Sửa 2026-09-26: bổ sung bảng #7/#8 (Fact HOSE/HNX Securities Trade — Nhóm 43/44 Data Explorer kết xuất sổ lệnh, có cột PII — O_GSTT_36)
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
@@ -250,8 +251,8 @@ COMMENT 'Flat table — Fact Market Index Intraday × Calendar Date Dimension ×
 -- ============================================================
 -- 3. FACT: gstt_fct_instrument_price_intraday_flat
 --    [THIẾT KẾ LẠI 2026-10-06 v4.33] Nhóm 34 — Fact nến PHÚT theo độ mịn cả mã CK VÀ chỉ số: 1 row / Instrument Code / Trading Timestamp.
---    Nguồn Atomic market_price_snapshot (MDDS.JAD_TRADINGVIEWHISTORY1MIN = JAD_tvhistory1m — symbol gồm cả chứng khoán và chỉ số); dùng khi màn hiển thị trong ngày.
---    Thay gstt_fct_security_trading_intraday_flat (bãi bỏ — DROP bảng cũ khi deploy; xem O_GSTT_58). Cặp với #3b (nến ngày).
+--    Nguồn Atomic market_price_snapshot (MDDS.JAD_TRADINGVIEWHISTORY1MIN = JAD_tvhistory1m — symbol gồm cả chứng khoán và chỉ số); dùng khi người dùng lọc theo ngày.
+--    Thay gstt_fct_security_trading_intraday_flat (bãi bỏ — DROP bảng cũ khi deploy; xem O_GSTT_58). Cặp với #3a (nến ngày).
 --    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension (LEFT JOIN — NULL với dòng chỉ số)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_instrument_price_intraday_flat ON CLUSTER 'my_cluster'
@@ -288,9 +289,9 @@ COMMENT 'Flat table — Fact Instrument Price Intraday × Calendar Date Dimensio
 
 
 -- ============================================================
--- 3b. FACT: gstt_fct_instrument_price_daily_flat
+-- 3a. FACT: gstt_fct_instrument_price_daily_flat
 --    [THIẾT KẾ LẠI 2026-10-06 v4.33] Nhóm 34 — Fact nến NGÀY theo độ mịn cả mã CK VÀ chỉ số: 1 row / Instrument Code / Trade Date, kèm Doanh thu/LNST (NULL với chỉ số).
---    Nguồn Atomic market_price_snapshot (MDDS.JAD_TRADINGVIEWHISTORY1DAY = JAD_tvhistory1d) + IDS báo cáo tài chính; dùng khi màn hiển thị từ 1 ngày trở lên. K_GSTT_13 Nhóm 34 = vol nến ngày.
+--    Nguồn Atomic market_price_snapshot (MDDS.JAD_TRADINGVIEWHISTORY1DAY = JAD_tvhistory1d) + IDS báo cáo tài chính; dùng khi người dùng lọc theo tháng. K_GSTT_13 Nhóm 34 = vol nến ngày.
 --    Khác gstt_fct_security_trading_daily_flat (Nhóm 3/47/48: chỉ mã CK). Cặp với #3 (nến phút).
 --    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension (LEFT JOIN — NULL với dòng chỉ số)
 -- ============================================================
@@ -329,10 +330,9 @@ COMMENT 'Flat table — Fact Instrument Price Daily × Calendar Date Dimension �
 
 -- ============================================================
 -- 3b. FACT: gstt_fct_security_trading_daily_flat
---    Biểu đồ kỹ thuật cổ phiếu (Nhóm 3) — khung thời gian từ 1 THÁNG trở lên: nến NGÀY
---    thật MDDS.JAD_TRADINGVIEWHISTORY1DAY (filter src_stm_code='MDDS_JAD_TRADINGVIEWHISTORY1DAY'),
---    cùng entity Atomic Market Price Snapshot với Fact Instrument Price Intraday (nến phút).
---    Grain: 1 row / Symbol / Trading Date. Khung trong ngày vẫn dùng Fact intraday (Nhóm 34).
+--    [v4.35 2026-10-06] Chỉ còn dùng cho Nhóm 48 (K_GSTT_352 — Giá đóng cửa trái phiếu); Nhóm 3/34/47 chuyển sang #3 / #3a (mã CK và chỉ số).
+--    Nến NGÀY thật MDDS.JAD_TRADINGVIEWHISTORY1DAY (filter src_stm_code='MDDS_JAD_TRADINGVIEWHISTORY1DAY'), grain 1 row / Symbol / Trading Date;
+--    cột open/high/low/vol giữ đủ nến nhưng không còn KPI dùng.
 --    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension (LEFT)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_daily_flat ON CLUSTER 'my_cluster'

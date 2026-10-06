@@ -9725,7 +9725,7 @@ entities:
     module: "GSTT"
     status: "draft"
     reuse_status: "new"
-    description: "Nến giá OHLCV theo NGÀY của mã CK (biểu đồ kỹ thuật cổ phiếu, khung thời gian từ 1 tháng) — grain 1 row/Symbol/Trading Date. Nguồn Atomic Market Price Snapshot (MDDS.JAD_TRADINGVIEWHISTORY1DAY). 2026-09-30, xem O_GSTT_51"
+    description: "Nến giá OHLCV theo NGÀY của mã CK (biểu đồ kỹ thuật cổ phiếu, khung thời gian từ 1 tháng) — grain 1 row/Symbol/Trading Date. Nguồn Atomic Market Price Snapshot (MDDS.JAD_TRADINGVIEWHISTORY1DAY). 2026-09-30, xem O_GSTT_51. [v4.35] Chỉ còn dùng cho Nhóm 48 (K_GSTT_352); Nhóm 3/34/47 chuyển sang Fact Instrument Price Daily/Intraday"
     source_atomic:
       - "market_price_snapshot"
     modules_using:
@@ -9755,7 +9755,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá mở cửa của nến ngày (khung thời gian từ 1 tháng trở lên)"
+        description: "Giá mở cửa của nến ngày. [v4.35] Không còn KPI dùng (Nhóm 3/47 chuyển sang Fact Instrument Price Daily); giữ đủ nến, Nhóm 48 chỉ dùng daily_close_price"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.open_price"
       - logical_name: "Daily High Price"
@@ -9764,7 +9764,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá cao nhất của nến ngày"
+        description: "Giá cao nhất của nến ngày. [v4.35] Không còn KPI dùng (xem daily_open_price)"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.high_price"
       - logical_name: "Daily Low Price"
@@ -9773,7 +9773,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá thấp nhất của nến ngày"
+        description: "Giá thấp nhất của nến ngày. [v4.35] Không còn KPI dùng (xem daily_open_price)"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.low_price"
       - logical_name: "Daily Close Price"
@@ -9782,7 +9782,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá đóng cửa của nến ngày"
+        description: "Giá đóng cửa của nến ngày — nguồn K_GSTT_352 Nhóm 48 (trái phiếu). [v4.35] Nhóm 3/34/47 chuyển sang Fact Instrument Price Daily"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.close_price"
       - logical_name: "Daily Volume"
@@ -9791,7 +9791,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Tổng khối lượng khớp trong ngày của nến ngày (nguồn nến TradingView, khác K_GSTT_13 lấy từ sổ lệnh)"
+        description: "Tổng khối lượng khớp trong ngày của nến ngày (nguồn nến TradingView). [v4.35] Không còn KPI dùng (K_GSTT_353 bỏ khỏi Nhóm 3; khối lượng ngày nay từ Fact Instrument Price Daily)"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.vol"
   - id: "DTM-fct_instrument_price_intraday"
@@ -9801,7 +9801,7 @@ entities:
     module: "GSTT"
     status: "draft"
     reuse_status: "new"
-    description: "[THIẾT KẾ LẠI 2026-10-06 v4.33, GSTT Nhóm 34] Fact nến PHÚT của mã CK và chỉ số (BA: Độ chi tiết 'Mã CK và chỉ số', nguồn JAD_tvhistory1m khi màn hiển thị trong ngày) — grain 1 row / Instrument Code / Trading Timestamp (phút). Nguồn Market Price Snapshot (1MIN; symbol gồm cả chứng khoán và chỉ số). Thay Fact Security Trading Intraday (bãi bỏ). Xem O_GSTT_58"
+    description: "[THIẾT KẾ LẠI 2026-10-06 v4.33, GSTT Nhóm 34] Fact nến PHÚT của mã CK và chỉ số (BA: Độ chi tiết 'Mã CK và chỉ số', nguồn JAD_tvhistory1m khi người dùng lọc theo ngày) — grain 1 row / Instrument Code / Trading Timestamp (phút). Nguồn Market Price Snapshot (1MIN; symbol gồm cả chứng khoán và chỉ số). Thay Fact Security Trading Intraday (bãi bỏ). Xem O_GSTT_58. Từ v4.35 dùng chung Nhóm 3, 10, 12, 14, 20, 47 (OHLC + khối lượng — BA 2026-10-06 nguồn JAD_tvhistory1M/1d)"
     source_atomic:
       - "market_price_snapshot"
     modules_using:
@@ -9849,7 +9849,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá mở cửa của nến PHÚT (JAD_tvhistory1m) — dùng khi màn hiển thị trong ngày; với dòng chỉ số là điểm chỉ số"
+        description: "Giá mở cửa của nến PHÚT (JAD_tvhistory1m) — dùng khi người dùng lọc theo ngày; với dòng chỉ số là điểm chỉ số"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.open_price"
       - logical_name: "High Price"
@@ -9858,7 +9858,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá cao nhất của nến PHÚT (JAD_tvhistory1m) — dùng khi màn hiển thị trong ngày; với dòng chỉ số là điểm chỉ số"
+        description: "Giá cao nhất của nến PHÚT (JAD_tvhistory1m) — dùng khi người dùng lọc theo ngày; với dòng chỉ số là điểm chỉ số"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.high_price"
       - logical_name: "Low Price"
@@ -9867,7 +9867,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá thấp nhất của nến PHÚT (JAD_tvhistory1m) — dùng khi màn hiển thị trong ngày; với dòng chỉ số là điểm chỉ số"
+        description: "Giá thấp nhất của nến PHÚT (JAD_tvhistory1m) — dùng khi người dùng lọc theo ngày; với dòng chỉ số là điểm chỉ số"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.low_price"
       - logical_name: "Close Price"
@@ -9876,7 +9876,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá đóng cửa của nến PHÚT (JAD_tvhistory1m) — dùng khi màn hiển thị trong ngày; với dòng chỉ số là điểm chỉ số"
+        description: "Giá đóng cửa của nến PHÚT (JAD_tvhistory1m) — dùng khi người dùng lọc theo ngày; với dòng chỉ số là điểm chỉ số"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.close_price"
       - logical_name: "Volume"
@@ -9885,7 +9885,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Khối lượng khớp của nến phút (volume JAD_tvhistory1m, phát sinh riêng từng phút, không lũy kế) — mã CK và chỉ số; là nguồn của cumulative_vol_at_time"
+        description: "Khối lượng khớp của nến phút (volume JAD_tvhistory1m, phát sinh riêng từng phút, không lũy kế) — mã CK và chỉ số; là nguồn của cumulative_vol_at_time. Từ v4.35 cũng là nguồn khối lượng lọc theo ngày của Nhóm 3, 10, 12, 14, 20, 47 (K_GSTT_13/133/15)"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.vol"
       - logical_name: "Cumulative Volume At Time"
@@ -9904,7 +9904,7 @@ entities:
     module: "GSTT"
     status: "draft"
     reuse_status: "new"
-    description: "[THIẾT KẾ LẠI 2026-10-06 v4.33, GSTT Nhóm 34] Fact nến NGÀY của mã CK và chỉ số (BA: Độ chi tiết 'Mã CK và chỉ số', nguồn JAD_tvhistory1d khi màn hiển thị từ 1 ngày trở lên) kèm Doanh thu/LNST theo mã (NULL với chỉ số) — grain 1 row / Instrument Code / Trade Date. Nguồn Market Price Snapshot (1DAY) + IDS báo cáo tài chính. Khác Fact Security Trading Daily (Nhóm 3/47/48: chỉ mã CK, FK dimension mã CK). Xem O_GSTT_58"
+    description: "[THIẾT KẾ LẠI 2026-10-06 v4.33, GSTT Nhóm 34] Fact nến NGÀY của mã CK và chỉ số (BA: Độ chi tiết 'Mã CK và chỉ số', nguồn JAD_tvhistory1d khi người dùng lọc theo tháng) kèm Doanh thu/LNST theo mã (NULL với chỉ số) — grain 1 row / Instrument Code / Trade Date. Nguồn Market Price Snapshot (1DAY) + IDS báo cáo tài chính. Khác Fact Security Trading Daily (nay chỉ Nhóm 48: chỉ mã CK, FK dimension mã CK). Xem O_GSTT_58. Từ v4.35 dùng chung Nhóm 3, 10, 12, 14, 20, 47 (OHLC + khối lượng — BA 2026-10-06 nguồn JAD_tvhistory1M/1d)"
     source_atomic:
       - "market_price_snapshot"
       - "public_company"
@@ -9950,7 +9950,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá mở cửa của nến NGÀY (JAD_tvhistory1d) — dùng khi màn hiển thị từ 1 ngày trở lên; với dòng chỉ số là điểm chỉ số"
+        description: "Giá mở cửa của nến NGÀY (JAD_tvhistory1d) — dùng khi người dùng lọc theo tháng; với dòng chỉ số là điểm chỉ số"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.open_price"
       - logical_name: "High Price"
@@ -9959,7 +9959,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá cao nhất của nến NGÀY (JAD_tvhistory1d) — dùng khi màn hiển thị từ 1 ngày trở lên; với dòng chỉ số là điểm chỉ số"
+        description: "Giá cao nhất của nến NGÀY (JAD_tvhistory1d) — dùng khi người dùng lọc theo tháng; với dòng chỉ số là điểm chỉ số"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.high_price"
       - logical_name: "Low Price"
@@ -9968,7 +9968,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá thấp nhất của nến NGÀY (JAD_tvhistory1d) — dùng khi màn hiển thị từ 1 ngày trở lên; với dòng chỉ số là điểm chỉ số"
+        description: "Giá thấp nhất của nến NGÀY (JAD_tvhistory1d) — dùng khi người dùng lọc theo tháng; với dòng chỉ số là điểm chỉ số"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.low_price"
       - logical_name: "Close Price"
@@ -9977,7 +9977,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá đóng cửa của nến NGÀY (JAD_tvhistory1d) — dùng khi màn hiển thị từ 1 ngày trở lên; với dòng chỉ số là điểm chỉ số"
+        description: "Giá đóng cửa của nến NGÀY (JAD_tvhistory1d) — dùng khi người dùng lọc theo tháng; với dòng chỉ số là điểm chỉ số"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.close_price"
       - logical_name: "Volume"
@@ -9986,7 +9986,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Tổng khối lượng khớp trong ngày (volume JAD_tvhistory1d) — mã CK và chỉ số; là nguồn của K_GSTT_13 'Khối lượng giao dịch' Nhóm 34 (Data Modeler chỉ đạo 2026-10-06, thay nguồn sổ lệnh)"
+        description: "Tổng khối lượng khớp trong ngày (volume JAD_tvhistory1d) — mã CK và chỉ số; là nguồn khối lượng ngày K_GSTT_13 (Nhóm 3, 10, 34), K_GSTT_133 (Nhóm 12, 14, 20), K_GSTT_15 (Nhóm 47) — BA cập nhật 2026-10-06, thay nguồn sổ lệnh"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.vol"
       - logical_name: "Revenue"

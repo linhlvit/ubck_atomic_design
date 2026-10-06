@@ -3,6 +3,7 @@
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
 -- 6 bảng: 5 fact + 1 operational (+ 6b/6c: 2 bảng Operational current-state TRUNCATE + INSERT; 6c mới 2026-10-06)
+-- Sửa 2026-10-06 (v4.33–v4.36): Nhóm 34 — #3 gstt_fct_instrument_price_intraday_flat (nến phút) và #3a gstt_fct_instrument_price_daily_flat (nến ngày + Doanh thu/LNST) thay gstt_fct_security_trading_intraday_flat; mã CK và chỉ số (BA nguồn JAD_tvhistory1m/1d), dùng chung Nhóm 3, 10, 12, 14, 20, 47 (v4.35); #3b gstt_fct_security_trading_daily_flat chỉ còn Nhóm 48 (K_GSTT_352).
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
 -- Sửa 2026-09-14: bổ sung Fact 1b (Index Constituent Snapshot, Bridge Factless) —
@@ -296,7 +297,7 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 3b. FACT: gstt_fct_instrument_price_daily_flat
+-- 3a. FACT: gstt_fct_instrument_price_daily_flat
 --    [THIẾT KẾ LẠI 2026-10-06 v4.33] Nhóm 34 — Fact nến NGÀY theo độ mịn cả mã CK VÀ chỉ số: 1 row / Instrument Code / Trade Date, kèm Doanh thu/LNST (NULL với chỉ số).
 --    cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (1 dòng/mã-chỉ số/ngày); dòng chỉ số: dim LEFT JOIN → NULL
 -- ============================================================
@@ -339,7 +340,7 @@ WHERE cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 3b. FACT: gstt_fct_security_trading_daily_flat
---    cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (1 nến ngày / mã CK / ngày)
+--    cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (1 nến ngày / mã CK / ngày) — [v4.35] chỉ còn dùng cho Nhóm 48 (K_GSTT_352)
 -- ============================================================
 DELETE FROM datamart.gstt_fct_security_trading_daily_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;

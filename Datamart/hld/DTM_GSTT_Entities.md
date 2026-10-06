@@ -3,6 +3,9 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.15 (2026-10-06):** Sửa quy tắc chọn Fact nến: lọc theo ngày → bảng 1m (`Fact Instrument Price Intraday`), lọc theo tháng → bảng 1d (`Fact Instrument Price Daily`).
+**Thay đổi v2.14 (2026-10-06):** Đồng bộ LLD/flat sau v4.35: `Fact Security Trading Daily` chỉ còn Nhóm 48; `Fact Instrument Price Intraday`/`Daily` ghi nhận dùng chung Nhóm 3, 10, 12, 14, 20, 47.
+**Thay đổi v2.13 (2026-10-06):** BA cập nhật mapping Dashboard kỹ thuật (Nhóm 3, 10, 12, 14, 20, 47): `Fact Instrument Price Intraday`/`Daily` dùng chung cho OHLC + khối lượng (v4.35); `Fact Security Trading Daily` chỉ còn Nhóm 48.
 **Thay đổi v2.12 (2026-10-06):** Bỏ phân loại `Instrument Type Code` (SECURITY/INDEX) ở `Fact Instrument Price Intraday`/`Daily` — Nhóm 34 không cần phân loại (Data Modeler); K_GSTT_13 lấy `vol` nến ngày (`JAD_tvhistory1d.volume`).
 **Thay đổi v2.11 (2026-10-06):** Tách `Fact Instrument Price Candle` thành `Fact Instrument Price Intraday` (nến phút) và `Fact Instrument Price Daily` (nến ngày + Doanh thu/LNST) — Data Modeler chỉ đạo.
 **Thay đổi v2.10 (2026-10-06):** Đổi `Fact Instrument Chart Intraday` → `Fact Instrument Price Candle` (BA cập nhật Nhóm 34: nguồn JAD_tvhistory1m/1d chọn theo khung thời gian, Độ chi tiết 'Mã CK và chỉ số' → grain 1 nến/dòng, thêm `Candle Period Code`).
@@ -95,7 +98,7 @@ erDiagram
 
 ---
 
-## Fact Instrument Price Intraday (phục vụ Nhóm 34 — nến phút)
+## Fact Instrument Price Intraday (phục vụ Nhóm 34 — nến phút; dùng chung Nhóm 3, 10, 12, 14, 20, 47 từ v4.35)
 
 **[THIẾT KẾ LẠI 2026-10-06 v4.33, Data Modeler]** Tách Fact Nhóm 34 thành 2 Fact theo độ mịn (BA cập nhật 15:09: nguồn `JAD_tvhistory1m/JAD_tvhistory1d`, Độ chi tiết "Mã CK và chỉ số"; màn chọn nguồn theo khung thời gian). Fact này là **nến phút** (`JAD_tvhistory1m`): grain 1 row / `Instrument Code` (mã CK hoặc chỉ số) / `Trading Timestamp`. FK `Security Trading Snapshot Dimension` NULL với dòng chỉ số. Thay `Fact Security Trading Intraday` (bãi bỏ). Xem O_GSTT_58.
 
@@ -107,13 +110,13 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Instrument Price Intraday | Fact Snapshot | new | Nến phút (mở/cao/thấp/đóng, khối lượng, lũy kế) của mã CK và chỉ số | 1 row / mã CK hoặc chỉ số (Instrument Code) / Trading Timestamp (`trading_tms`) — FK Calendar Date Dimension qua Trading Date | K_GSTT_1, 4, 95–99 (Nhóm 34) |
+| Fact Instrument Price Intraday | Fact Snapshot | new | Nến phút (mở/cao/thấp/đóng, khối lượng, lũy kế) của mã CK và chỉ số | 1 row / mã CK hoặc chỉ số (Instrument Code) / Trading Timestamp (`trading_tms`) — FK Calendar Date Dimension qua Trading Date | K_GSTT_1, 4, 95–99 (Nhóm 34); K_GSTT_27–29, 10, 13/133/15 (Nhóm 3, 10, 12, 14, 20, 47) |
 | Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 (FK NULL với dòng chỉ số) | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
 ---
 
-## Fact Instrument Price Daily (phục vụ Nhóm 34 — nến ngày)
+## Fact Instrument Price Daily (phục vụ Nhóm 34 — nến ngày; dùng chung Nhóm 3, 10, 12, 14, 20, 47 từ v4.35)
 
 **[THIẾT KẾ LẠI 2026-10-06 v4.33, Data Modeler]** **Nến ngày** (`JAD_tvhistory1d`) của mã CK và chỉ số, kèm Doanh thu/LNST theo mã (rule GSĐC, **NULL với dòng chỉ số**) và khối lượng ngày (K_GSTT_13 Nhóm 34 = `vol` nến ngày). Grain 1 row / `Instrument Code` / `Trade Date`. Khác `Fact Security Trading Daily` (Nhóm 3/47/48: chỉ mã CK). Xem O_GSTT_58.
 
@@ -125,7 +128,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Instrument Price Daily | Fact Snapshot | new | Nến ngày (mở/cao/thấp/đóng, khối lượng) của mã CK và chỉ số; Doanh thu/LNST (NULL với chỉ số) | 1 row / mã CK hoặc chỉ số (Instrument Code) / Trade Date — FK Calendar Date Dimension | K_GSTT_1, 4, 13, 349–352, 31, 32 (Nhóm 34) |
+| Fact Instrument Price Daily | Fact Snapshot | new | Nến ngày (mở/cao/thấp/đóng, khối lượng) của mã CK và chỉ số; Doanh thu/LNST (NULL với chỉ số) | 1 row / mã CK hoặc chỉ số (Instrument Code) / Trade Date — FK Calendar Date Dimension | K_GSTT_1, 13, 349–352, 31, 32 (Nhóm 34); K_GSTT_27–29, 10, 13/133/15 (Nhóm 3, 10, 12, 14, 20, 47) |
 | Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 (FK NULL với dòng chỉ số) | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
@@ -133,7 +136,7 @@ erDiagram
 
 ## Fact Security Trading Daily (phục vụ Nhóm 3)
 
-**[MỚI 2026-09-30]** Biểu đồ kỹ thuật cổ phiếu ở khung thời gian từ 1 tháng trở lên đọc nến NGÀY (Atomic `market_price_snapshot`, nguồn MDDS.JAD_TRADINGVIEWHISTORY1DAY) thay vì `Security Trading Snapshot Dimension` (1 row/mã CK cuối ngày). Grain 1 row / mã CK (Symbol) / ngày giao dịch; khung trong ngày vẫn dùng `Fact Instrument Price Intraday` (Nhóm 34). Xem O_GSTT_51.
+**[MỚI 2026-09-30]** Biểu đồ kỹ thuật cổ phiếu ở khung thời gian từ 1 tháng trở lên đọc nến NGÀY (Atomic `market_price_snapshot`, nguồn MDDS.JAD_TRADINGVIEWHISTORY1DAY) thay vì `Security Trading Snapshot Dimension` (1 row/mã CK cuối ngày). Grain 1 row / mã CK (Symbol) / ngày giao dịch; lọc theo ngày vẫn dùng `Fact Instrument Price Intraday` (Nhóm 34). Xem O_GSTT_51. **[v4.35, 2026-10-06]** Fact này chỉ còn dùng cho Nhóm 48 (K_GSTT_352 — trái phiếu); Nhóm 3/34/47 chuyển sang `Fact Instrument Price Daily`/`Intraday` (mã CK và chỉ số).
 
 ```mermaid
 erDiagram

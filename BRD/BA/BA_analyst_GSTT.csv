@@ -1474,16 +1474,13 @@ Lô lẻ là không đủ 100 cổ phiếu",,,,,Chưa có sql,Dữ liệu tĩnh,
 không lấy từ bảng CSDL","-- Chiều thời gian: tham số người dùng chọn
 -- :year = năm (vd 2024), :quarter = quý (vd Q1..Q4)
 -- Dùng trong WHERE của tất cả câu SQL liên quan",Join qua từ company_profiles với Id và company_profile_id,,,,,Done,Dữ liệu tĩnh,PE
-3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,open,,,,,,,,Done,Dữ liệu tĩnh,PE
-3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,high,,,,,,,,Done,Dữ liệu tĩnh,PE
-3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,low,,,,,,,,Done,Dữ liệu tĩnh,PE
-3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,PE
-3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá tham chiếu,Giá tham chiếu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,reference,,,,,,,,Done,Dữ liệu tĩnh,PE
-3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Thay đổi (%),Thay đổi (%),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,Done,Dữ liệu tĩnh,PE
-3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Khối lượng giao dịch,Σ KLGD  khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Volume: Khối lượng khớp lệnh
-Trade_HNX:
-Trade quantity: Khối lượng giao dịch","Market ID in (UPX,STX,STO)","-- HOSE
+3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK và chỉ số,MDDS,X,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,open,,,,,,,,Done,Dữ liệu tĩnh,PE
+3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK và chỉ số,MDDS,X,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,high,,,,,,,,Done,Dữ liệu tĩnh,PE
+3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK và chỉ số,MDDS,X,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,low,,,,,,,,Done,Dữ liệu tĩnh,PE
+3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,closePrice,,,,,,,,Done,Dữ liệu tĩnh,PE
+3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Giá tham chiếu,Giá tham chiếu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,reference,,,,,,,,Done,Dữ liệu tĩnh,PE
+3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Thay đổi (%),Thay đổi (%),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số,MDDS,,,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,change,,,,,,,,Done,Dữ liệu tĩnh,PE
+3,,Dashboard về danh mục chứng khoán theo biểu đồ kỹ thuật,Khối lượng giao dịch,Σ KLGD  khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số,CSDLTT,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,volume,"Market ID in (UPX,STX,STO)","-- HOSE
 SELECT
     SUM(t.[Execution - Volume])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -8525,7 +8522,7 @@ Von_hoa AS (
     LEFT JOIN KLLH_asof kl
         ON kl.symbol = gh.symbol
 )",,,,,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",PE
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Mã CK,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol," NOT  (
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Mã CK,,Dashboard,Chiều,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol," NOT  (
     (s.floorcode In ('02', '04)  AND s.stocktype in (1,4))
     OR
     (s.floorcode = '10' AND s.stocktype = 1)
@@ -8880,17 +8877,17 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,PE
  GROUP BY symbol;
  -- Lưu ý: :ngay_gd - N cần tính theo ngày giao dịch thực tế,
  -- không phải ngày lịch. Cần dùng bảng trading_calendar.",,,,,,Done,Dữ liệu tĩnh,PE
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,,open,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,,high,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,,low,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,,closePrice,"SELECT
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,,open,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,,high,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,,low,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,,closePrice,"SELECT
     s.symbol,
     s.tradingdate,
     s.closePrice        AS gia_dong_cua,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,PE
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Thay đổi (+/-),Thay đổi so với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,,Change,"SELECT
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Thay đổi (+/-),Thay đổi so với giá tham chiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,,Change,"SELECT
     s.symbol,
     s.tradingdate,
     s.change            AS thay_doi_gia,       -- closePrice - reference
@@ -8899,7 +8896,7 @@ WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
 ",,,,,,Done,Dữ liệu tĩnh,PE
-10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Khối lượng giao dịch,Σ KLGD của khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,X,Done,sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,,,,,,,,,Done,Dữ liệu tĩnh,PE
+10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Khối lượng giao dịch,Σ KLGD của khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số,CSDLTT,,X,X,Done,sổ lệnh,JAD_tvhistory1M/JAD_tvhistory1d,,,,,,,,,Done,Dữ liệu tĩnh,PE
 10,,"Top đột phá dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành) ",Doanh thu,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,IDS,,X,X,Done,lấy từ báo cáo tài chính IDS,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.company_data (cd)",SUM(d.data_value) AS doanh_thu,,"Company_data_chuan AS (
@@ -10688,7 +10685,7 @@ group by
         category_l1_id
 )
 --select * from VCSH;",,,,,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",P
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Mã CK,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Mã CK,,Dashboard,Chiều,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
     ANd NOT  (
     (s.floorcode In ('02', '04)  AND s.stocktype in (1,4))
     OR
@@ -10704,7 +10701,7 @@ WHERE s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
     (s.floorcode = '10' AND s.stocktype = 1)
 );
   AND s.tradingdate = :ngay_gd;",,,,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Sàn,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,,"--------------------------------Tham số từ ngày đến ngày -------------------------------------------------
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Sàn,,Dashboard,Chiều,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,,"--------------------------------Tham số từ ngày đến ngày -------------------------------------------------
 WITH
 Tham_so AS (
     SELECT
@@ -11238,7 +11235,7 @@ JOIN Ky_bao_cao kb ON kb.ngay_gd = a.ngay_gd
 LEFT JOIN Doanh_thu dt ON dt.MCK = a.ma_chung_khoan AND dt.report_year = kb.report_year AND dt.report_quarter = kb.report_quarter
 LEFT JOIN LNST ln ON ln.equity_ticker = a.ma_chung_khoan AND ln.report_year = kb.report_year AND ln.report_quarter = kb.report_quarter
 ORDER BY a.tradingtime;",,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Bộ chỉ số ngành/ bộ chỉ số thị trường,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Bộ chỉ số ngành/ bộ chỉ số thị trường,,Dashboard,Chiều,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
 chỉ số ngành: 
 MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,Hiện tại bên CK đang sửa nên chưa có dữ liệu để xác thực giữa bộ chỉ số thị tường và bộ chỉ số ngành,,,,,Done,Dữ liệu tĩnh,PE
 12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Ngành,"Ngành nghề kinh tế cấp 1. 
@@ -11246,23 +11243,23 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,Hiện tại bên CK đang sửa nên
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Lấy theo ngành kinh tế cấp 1,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK và chỉ số,IDS,,X,,Done,Lấy theo ngành kinh tế cấp 1,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
  -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)",,,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,"SELECT
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Ngày,,Dashboard,Chiều,Trùng,Mã CK và chỉ số,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,PE
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,closePrice,,"SELECT
     s.symbol,
     s.tradingdate,
     s.closePrice        AS gia_dong_cua,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Thay đổi (+/-),Giá đóng cửa − Giá TC,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,X,X,Done,Thông tin thị trường,JAD_STOCKINFOR,Change,,"SELECT
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Thay đổi (+/-),Giá đóng cửa − Giá TC,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số,MDDS,,X,X,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,Change,,"SELECT
     s.symbol,
     s.tradingdate,
     s.change            AS thay_doi_gia,       -- closePrice - reference
@@ -11271,10 +11268,7 @@ WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd
 ",,,,,,Done,Dữ liệu tĩnh,PE
-12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Volume: Khối lượng khớp lệnh
-Trade_HNX:
-Trade quantity: Khối lượng giao dịch",,"-- HOSE
+12,,"Top giá trị dạng biểu đồ kỹ thuật theo toàn thị trường, theo sàn, theo bộ chỉ số",Khối lượng giao dịch,Σ KLGD,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số,CSDLTT,,X,,Done,Sổ lệnh,JAD_tvhistory1M/JAD_tvhistory1d,volume,,"-- HOSE
 SELECT
     SUM(t.[Execution - Volume])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -12524,7 +12518,7 @@ WHERE s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
     (s.floorcode = '10' AND s.stocktype = 1)
 );
   AND s.tradingdate = :ngay_gd;",,,,,,Done,Dữ liệu tĩnh,PE
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Sàn,,Dashboard,Chiều,TB,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,,"WITH
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Sàn,,Dashboard,Chiều,TB,Mã CK và chỉ số,MDDS,,X,,Done,,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,,"WITH
 Tham_so AS (
     SELECT
         TO_DATE(:tu_ngay, 'YYYYMMDD') AS tu_ngay,
@@ -12657,7 +12651,7 @@ Von_hoa AS (
     LEFT JOIN KLLH_asof k
         ON k.symbol = gc.symbol
 )",,,,Done,Dữ liệu tĩnh,PE
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Chỉ số ngành/ chỉ số thị trường,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Chỉ số ngành/ chỉ số thị trường,,Dashboard,Chiều,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
 chỉ số ngành: 
 MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,,,PE
 14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngành,"Ngành nghề kinh tế cấp 1. 
@@ -12665,26 +12659,23 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,,,PE
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK và chỉ số,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
  -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)",,,,,Done,Dữ liệu tĩnh,PE
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,PE
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá mở cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá cao nhất,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,closePrice,,"SELECT
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngày,,Dashboard,Chiều,Trùng,Mã CK và chỉ số,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,PE
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá mở cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá cao nhất,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số,MDDS,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,closePrice,,"SELECT
     s.symbol,
     s.tradingdate,
     s.closePrice        AS gia_dong_cua,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,PE
-14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Volume: Khối lượng khớp lệnh
-Trade_HNX:
-Trade quantity: Khối lượng giao dịch",,"-- HOSE
+14,,"Top giảm giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số,CSDLTT,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,volume,,"-- HOSE
 SELECT
     SUM(t.[Execution - Volume])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -19460,7 +19451,7 @@ ORDER BY stt;
 
 
 ",,,,,,Chưa có sql,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",P
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Mã,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,symbol,"s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Mã,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,,JAD_STOCKINFOR,symbol,"s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
     ANd NOT  (
     (s.floorcode In ('02', '04)  AND s.stocktype in (1,4))
     OR
@@ -19476,7 +19467,7 @@ WHERE s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
     (s.floorcode = '10' AND s.stocktype = 1)
 );
   AND s.tradingdate = :ngay_gd;",,,,,,Done,Dữ liệu tĩnh,PE
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Sàn,,Dashboard,Chiều,TB,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,,"WITH GIA_DAU AS 
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Sàn,,Dashboard,Chiều,TB,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,floorcode," '10'=HOSE, '02'=HNX, '04'=UPCOM",,,"WITH GIA_DAU AS 
 (
     -- Giá đóng cửa tại phiên giao dịch gần nhất TRƯỚC từ_ngày (dùng để xếp hạng % tăng giá)
     SELECT symbol, closePrice AS gia_dau
@@ -19642,7 +19633,7 @@ LEFT JOIN LNST ln                ON ln.equity_ticker = a.ma_chung_khoan AND ln.r
 LEFT JOIN Chi_so_thi_truong ctt  ON ctt.symbol = a.ma_chung_khoan
 LEFT JOIN Chi_so_nganh cn        ON cn.symbol = a.ma_chung_khoan
 ORDER BY tm.pct_thay_doi DESC, a.ngay_gd;",,,,Done,Dữ liệu tĩnh,PE
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Bộ chỉ số thị trường/ bộ chỉ số ngành,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Bộ chỉ số thị trường/ bộ chỉ số ngành,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,MDDS,,,,Done,Thông tin thị trường,JAD_MARKETINFOR,indexName,"MARKETCODE IN ('HOSE','UPCOM','HNX')
 chỉ số ngành: 
 MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,PE
 20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngành,"Ngành nghề kinh tế cấp 1. 
@@ -19650,26 +19641,23 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,PE
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK và chỉ số ,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
  -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)",,,,,Done,Dữ liệu tĩnh,PE
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,PE
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá mở cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá cao nhất,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,,JAD_STOCKINFOR,closePrice,,"SELECT
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Ngày,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,PE
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá mở cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá cao nhất,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,closePrice,,"SELECT
     s.symbol,
     s.tradingdate,
     s.closePrice        AS gia_dong_cua,
     s.FloorCode
 FROM JAD_STOCKINFOR s
 WHERE s.tradingdate = :ngay_gd","Giá đóng cửa, giá gần nhất (có thể bao gồm cả giá dự khớp trong các phiên khớp lệnh định kỳ)",,,,,Done,Dữ liệu tĩnh,PE
-20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch KHớp lệnh,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Volume: Khối lượng khớp lệnh
-Trade_HNX:
-Trade quantity: Khối lượng giao dịch",,"-- HOSE
+20,,"Top tăng giá theo dạng biểu đồ kỹ thuật theo sàn (HOSE/HNX/UPCOM), Bộ chỉ số tài chính, Bộ chỉ số ngành",Khối lượng giao dịch KHớp lệnh,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,CSDLTT,,X,,Done,,JAD_tvhistory1M/JAD_tvhistory1d,volume,,"-- HOSE
 SELECT
     SUM(t.[Execution - Volume])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -26765,21 +26753,8 @@ and Market ID in (UPX,STX,STO)
 """,,,,,,Done,Dữ liệu tĩnh,F
 33,,"Xu hướng dòng tiền >>Theo dõi giao dịch theo phân loại Nhà đầu tư >> Xem bản đồ nhiệt GT mua ròng, GT bán ròng>> chỉ số",GT ròng của thỏa thuận theo phân loại nhà đầu tư tự doanh/ nước ngoài,GT Mua của tổng GTGT thỏa thuân - GT Bán của tổng GTGT thỏa thuân,Dashboard,Chỉ tiêu phái sinh,TB,Chỉ số,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"Tính từ GT mua và GT bán:
  GT ròng = GT mua - GT bán",,,,,,,,Done,Dữ liệu tĩnh,F
-34,,Biểu đồ phân tích kỹ thuật,Mã,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,symbol,"FloorCode IN ('10','02','04', ' 03') AND StockType NOT IN (
-      'B', '1',   -- Trái phiếu HOSE
-      'BO',       -- Trái phiếu HNX
-      'D'         -- Trái phiếu chuyển đổi HOSE
-  )","SELECT DISTINCT
-    s.symbol            AS ma_ck,
-FROM JAD_STOCKINFOR s
-WHERE s.FloorCode IN ('10','02','04', ' 03')   -- HOSE, HNX, UPCOM
-   AND StockType NOT IN (
-      'B', '1',   -- Trái phiếu HOSE
-      'BO',       -- Trái phiếu HNX
-      'D'         -- Trái phiếu chuyển đổi HOSE
-                )
-  AND s.tradingdate = :ngay_gd;",,,,,,Done,Dữ liệu tĩnh,F
-34,,Biểu đồ phân tích kỹ thuật,Chỉ số,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,marketindex,Join bảng JAD_CSIDXINFOR với JAD_STOCKINFOR qua symbol,,,"--------------------------------Tham số từ ngày đến ngày -------------------------------------------------
+34,,Biểu đồ phân tích kỹ thuật,Mã,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,symbol,,,,,,,,Done,Dữ liệu tĩnh,F
+34,,Biểu đồ phân tích kỹ thuật,Chỉ số,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m,symbol,,,,"--------------------------------Tham số từ ngày đến ngày -------------------------------------------------
 WITH
 Tham_so AS (
     SELECT
@@ -27313,12 +27288,12 @@ JOIN Ky_bao_cao kb ON kb.ngay_gd = a.ngay_gd
 LEFT JOIN Doanh_thu dt ON dt.MCK = a.ma_chung_khoan AND dt.report_year = kb.report_year AND dt.report_quarter = kb.report_quarter
 LEFT JOIN LNST ln ON ln.equity_ticker = a.ma_chung_khoan AND ln.report_year = kb.report_year AND ln.report_quarter = kb.report_quarter
 ORDER BY a.tradingtime;",,,,,,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá mở cửa theo từng time trong 1 ngày,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá cao nhất  theo từng time trong 1 ngày,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá thấp nhất  theo từng time trong 1 ngày,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá đóng cửa  theo từng time trong 1 ngày,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,closePrice,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch  theo từng time trong 1 ngày,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,CSDLTT,,X,,Done,Sổ lệnh,JAD_tvhistory1m/JAD_tvhistory1d,totaltrading,,,Đây là lũy kế từ đầu ngày chứ không phải tổng khối lượng theo từng time,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,open,,"SELECT * 
+34,,Biểu đồ phân tích kỹ thuật,Giá mở cửa theo từng time trong 1 ngày,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m,open,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá cao nhất  theo từng time trong 1 ngày,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m,high,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá thấp nhất  theo từng time trong 1 ngày,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m,low,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá đóng cửa  theo từng time trong 1 ngày,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m,closePrice,,,1:1,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch  theo từng time trong 1 ngày,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,CSDLTT,,X,,Done,Sổ lệnh,JAD_tvhistory1m,volume,,,Đây là lũy kế từ đầu ngày chứ không phải tổng khối lượng theo từng time,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1d,open,,"SELECT * 
 FROM 
 (
 SELECT 
@@ -27347,13 +27322,10 @@ SELECT
         AND s.StockType  NOT IN ('1')
         )
         WHERE rn = 1",Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá cao nhất,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,high,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,low,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1m/JAD_tvhistory1d,closePrice,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
-34,,Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,CSDLTT,,X,,Done,Sổ lệnh,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Volume: Khối lượng khớp lệnh
-Trade_HNX:
-Trade quantity: Khối lượng giao dịch",,"-- HOSE
+34,,Biểu đồ phân tích kỹ thuật,Giá cao nhất,Giá giao dịch cao nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1d,high,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá thấp nhất,Giá giao dịch thấp nhất trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1d,low,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Giá đóng cửa,Giá giao dịch cuối cùng trong phiên,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1d,closePrice,,,Lấy giá trị cuối ngày,,,,,Done,Dữ liệu tĩnh,PE
+34,,Biểu đồ phân tích kỹ thuật,Khối lượng giao dịch,Tổng khối lượng cổ phiếu được giao dịch,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,CSDLTT,,X,,Done,Sổ lệnh,JAD_tvhistory1d,volume,,"-- HOSE
 SELECT
     SUM(t.[Execution - Volume])     AS tong_kl_khop
 FROM TRADE_BOOK_HOSE t
@@ -31200,7 +31172,7 @@ N - No: Không phải là lệnh đặt của nhà tạo lập thị trường",
 46,,Kết xuất sổ lệnh >> order book HOSE,reference_sequence_no,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,reference_sequence_no,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,order_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,order_id,,,,,,,,,,
 46,,Kết xuất sổ lệnh >> order book HOSE,orig_order_id,,Data Explorer,Chỉ tiêu phái sinh,,Mã ck ,CSDLTT,,,,Done,Thông tin thị trường,UAT_Hose_stg.order_book,orig_order_id,,,,,,,,,,
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Sàn phẩm phái sinh,,Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,,FloorCode='03' (FDS) AND StockType='FU' cho phái sinh,"SELECT
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Sàn phẩm phái sinh,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,IDS,,X,,Done,,FloorCode='03' (FDS) AND StockType='FU' cho phái sinh,"SELECT
     s.StockType,
      DECODE(si.""""StockType"""", '4', 'HĐTL') || DECODE(si.""""underlyingSymbol"""", 'GB05', 'TPCP', 'GB10', 'TPCP', si.""""underlyingSymbol"""") AS loai_phai_sinh
 FROM JAD_STOCKINFOR s
@@ -31211,38 +31183,19 @@ WHERE s.FloorCode IN ('03')
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
  -- (sheet câu hỏi phân hệ ghi nhận bảng này có 10 ngành IDS, không phải 21 ngành KT)",,,,,Done,Dữ liệu tĩnh,P
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Mã phái sinh,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,,,,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Ngày,,Dashboard,Chiều,Trùng,Mã CK,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Kỳ báo cáo,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK,IDS,X,X,,Done,,Tham số lọc (không map bảng),":year (YYYY), :quarter (QX)","Tham số đầu vào của báo cáo/dashboard;
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Mã phái sinh,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,symbol,,,,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Ngày,,Dashboard,Chiều,Trùng,Mã CK và chỉ số ,,,X,,Done,,,,,,,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Kỳ báo cáo,,Dashboard,Chỉ tiêu cơ sở,TB,Mã CK và chỉ số ,IDS,X,X,,Done,,Tham số lọc (không map bảng),":year (YYYY), :quarter (QX)","Tham số đầu vào của báo cáo/dashboard;
 không lấy từ bảng CSDL","-- Chiều thời gian: tham số người dùng chọn
 -- :year = năm (vd 2024), :quarter = quý (vd Q1..Q4)
 -- Dùng trong WHERE của tất cả câu SQL liên quan",Join qua từ company_profiles với Id và company_profile_id,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,open,,,,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,high,,,,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK,MDDS,X,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,low,,,,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,closePrice,,,,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá tham chiếu,Giá tham chiếu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,reference,,,,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Thay đổi (%),Thay đổi (%),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,MDDS,,,,Done,Thông tin thị trường,JAD_STOCKINFOR,change,,,,,,,,Done,Dữ liệu tĩnh,PE
-47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Khối lượng giao dịch,Σ KLGD  khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK,CSDLTT,,X,,Done,Thông tin thị trường,TRADE_BOOK_HOSE/ TRADE_BOOK_HNX,"(TRADE_BOOK_HOSE):
-Execution - Volume: Khối lượng khớp lệnh
-Trade_HNX:
-Trade quantity: Khối lượng giao dịch","Market ID in (DVX)
- Khớp lệnh 
-   + MARKET_ID IN ('STK','STX','UPX')
-   + AND BOARD_TYPE/BOARD_ID  <> ('T1','T2','T3','T4','T6','R1')","WITH tmp AS (
-  SELECT 
-      DECODE(si.StockType, '4', 'HĐTL') || DECODE(SUBSTR(si.underlyingSymbol,1,2), 'GB', 'TPCP', si.underlyingSymbol) AS derivative_product,
-      SUM(Trade quantity) qty
-  FROM MSS.Trade_HNX t
-  LEFT JOIN MDDS.JAD_STOCKINFOR si ON t.Issue Code = si.symbol
-  WHERE t.Market ID = 'DVX'
-    AND t.Trade date BETWEEN :from_date AND :to_date --Theo kỳ báo cáo
-  GROUP BY DECODE(si.StockType, '4', 'HĐTL') || DECODE(SUBSTR(si.underlyingSymbol,1,2), 'GB', 'TPCP', si.underlyingSymbol)
-)
-SELECT derivative_product, qty FROM tmp --Từng Sản phẩm phái sinh
-UNION ALL
-SELECT 'Toàn thị trường', SUM(qty) qty FROM tmp --Tổng toàn thị trường
-;",,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá mở cửa,Giá giao dịch đầu tiên,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK và chỉ số ,MDDS,X,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,open,,,,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá cao nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK và chỉ số ,MDDS,X,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,high,,,,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá thấp nhất,,Dashboard,Chỉ tiêu cơ sở,Dễ,Mã CK và chỉ số ,MDDS,X,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,low,,,,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá đóng cửa,,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,closePrice,,,,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Giá tham chiếu,Giá tham chiếu,Dashboard,Chỉ tiêu cơ sở,Trùng,Mã CK và chỉ số ,MDDS,,,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,reference,,,,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Thay đổi (%),Thay đổi (%),Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,MDDS,,,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,change,,,,,,,,Done,Dữ liệu tĩnh,PE
+47,,Dashboard về danh mục phái sinh theo biểu đồ kỹ thuật,Khối lượng giao dịch,Σ KLGD  khớp lệnh,Dashboard,Chỉ tiêu phái sinh,Trùng,Mã CK và chỉ số ,CSDLTT,,X,,Done,Thông tin thị trường,JAD_tvhistory1M/JAD_tvhistory1d,volume,,,,,,,,Done,Dữ liệu tĩnh,PE
 48,,Dashboard về danh mục trái phiếu theo biểu đồ,Mã trái phiếu,,Dashboard,Chiều,Trùng,Mã CK,MDDS,,X,,Done,Thông tin thị trường,JAD_STOCKINFOR,symbol,"                AND s.STOCKTYPE  = '1'
                 AND s.FLOORCODE in ('04','10','03','02') 
                 AND s.MARKETID IN ('BDO', 'HCX')","""SELECT DISTINCT
