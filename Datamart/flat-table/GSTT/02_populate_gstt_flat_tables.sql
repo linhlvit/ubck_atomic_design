@@ -254,19 +254,18 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 3. FACT: gstt_fct_instrument_price_candle_flat
---    [THIẾT KẾ LẠI 2026-10-06 v4.29] cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (nhiều dòng/ngày: nến phút + 1 nến ngày/mã); dòng chỉ số: dim LEFT JOIN → NULL
+-- 3. FACT: gstt_fct_instrument_price_intraday_flat
+--    [THIẾT KẾ LẠI 2026-10-06 v4.33] Nhóm 34 — Fact nến PHÚT theo độ mịn cả mã CK VÀ chỉ số: 1 row / Instrument Code / Trading Timestamp.
+--    cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (nhiều dòng/ngày theo Trading Timestamp); dòng chỉ số: dim LEFT JOIN → NULL
 -- ============================================================
-DELETE FROM datamart.gstt_fct_instrument_price_candle_flat ON CLUSTER 'my_cluster'
+DELETE FROM datamart.gstt_fct_instrument_price_intraday_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO datamart.gstt_fct_instrument_price_candle_flat
+INSERT INTO datamart.gstt_fct_instrument_price_intraday_flat
 SELECT
-    -- From: FACT Fact Instrument Price Candle
+    -- From: FACT Fact Instrument Price Intraday
     f.security_trading_snpst_dim_id,
     f.trade_dt_dim_id,
     f.instrument_code,
-    f.instrument_tp_code,
-    f.candle_period_code,
     f.trading_tms,
     f.open_price,
     f.high_price,
@@ -274,6 +273,46 @@ SELECT
     f.close_price,
     f.vol,
     f.cumulative_vol_at_time,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt                          AS cdr_dt,
+    cal.is_trading_date                 AS is_trading_date,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    scr_dim.symbol                      AS symbol,
+    scr_dim.security_full_nm            AS security_full_nm,
+    scr_dim.floor_code                  AS floor_code,
+    scr_dim.stock_tp_code               AS stock_tp_code,
+    scr_dim.stock_tp_nm                 AS stock_tp_nm,
+    scr_dim.src_stm_code                AS security_trading_src_stm_code
+
+FROM datamart.fct_instrument_price_intraday f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.trade_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim scr_dim
+    ON scr_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 3b. FACT: gstt_fct_instrument_price_daily_flat
+--    [THIẾT KẾ LẠI 2026-10-06 v4.33] Nhóm 34 — Fact nến NGÀY theo độ mịn cả mã CK VÀ chỉ số: 1 row / Instrument Code / Trade Date, kèm Doanh thu/LNST (NULL với chỉ số).
+--    cal: JOIN + DELETE-scoped theo cdr_dt = :etl_date (1 dòng/mã-chỉ số/ngày); dòng chỉ số: dim LEFT JOIN → NULL
+-- ============================================================
+DELETE FROM datamart.gstt_fct_instrument_price_daily_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_instrument_price_daily_flat
+SELECT
+    -- From: FACT Fact Instrument Price Daily
+    f.security_trading_snpst_dim_id,
+    f.trade_dt_dim_id,
+    f.instrument_code,
+    f.open_price,
+    f.high_price,
+    f.low_price,
+    f.close_price,
+    f.vol,
     f.revenue,
     f.net_profit_after_tax,
 
@@ -289,7 +328,7 @@ SELECT
     scr_dim.stock_tp_nm                 AS stock_tp_nm,
     scr_dim.src_stm_code                AS security_trading_src_stm_code
 
-FROM datamart.fct_instrument_price_candle f
+FROM datamart.fct_instrument_price_daily f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.trade_dt_dim_id
 LEFT JOIN datamart.security_trading_snpst_dim scr_dim
