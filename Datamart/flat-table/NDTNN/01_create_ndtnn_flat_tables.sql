@@ -258,7 +258,6 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_report_value_flat
     band_overflow_ind                          Nullable(Int32)            COMMENT '1 = ô tràn band (BA: is_band_overflow)',
     static_copy_ind                            Nullable(Int32)            COMMENT '1 = ô sao chép tĩnh (BA: is_static_copy)',
     rpt_marker_ind                             Nullable(Int32)            COMMENT '1 = ô đánh dấu template (BA: is_template_marker)',
-    val_nbr                                    Nullable(Decimal(23,2))    COMMENT 'Giá trị số của ô — ép từ val_raw (nguồn không có VALUE_NUM). Đơn vị theo từng ô (USD, VND, số lượng…)',
     val_raw                                    Nullable(String)           COMMENT 'Giá trị gốc nguồn nộp (BA: value_raw)',
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
 

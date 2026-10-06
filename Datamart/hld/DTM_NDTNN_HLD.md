@@ -459,9 +459,9 @@ Kiến trúc 3 Fact: (1) `Fact Foreign Investor Report Value` — EAV, grain 1 �
 | K_NDTNN_2 | Tổng giá trị bán của NĐTNN | Tỷ đồng | Cơ sở | `SUM(Foreign_Sell_Value)` GROUP BY `Snapshot Date Dimension Id` WHERE `Trade Date = :pdate` (SUM xuyên suốt mọi mã CK trong ngày) | Pre-aggregate như trên | READY |
 | K_NDTNN_3 | Tổng giá trị giao dịch toàn thị trường | Tỷ đồng | Cơ sở | `SUM(Total_Market_Value)` GROUP BY `Snapshot Date Dimension Id` WHERE `Trade Date = :pdate` (SUM xuyên suốt mọi mã CK trong ngày, không lọc theo NĐT) | Pre-aggregate như trên | READY |
 | K_NDTNN_4 | Tỷ lệ tham gia | % | Phái sinh | `(K_NDTNN_1 + K_NDTNN_2) × 100 / (K_NDTNN_3 × 2)` | Derived từ K_NDTNN_1/3/4 cùng ngày | READY |
-| K_NDTNN_5 | Tăng trưởng NĐT mới | — | Phái sinh | `SUM(Fact_Foreign_Investor_Report_Value.Value_Number)` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'H0I8J'` AND `Foreign_Investor_Report_Structure_Dimension.Sheet_Name = 'I'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng số lượng tới thời điểm báo cáo'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổng'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 8: báo cáo PLVI-TT51 (VSDC, kỳ tháng) mục I, dòng "Tổng", cột "Tổng số lượng tới thời điểm báo cáo" (lũy kế mã số GD cấp mới, YTD). Đọc 1 ô từ Fact Foreign Investor Report Value. SQL BA có lỗi cú pháp (dấu ; thừa, thiếu đóng nháy row_path) — thiết kế theo Điều kiện. O_NDTNN_38 | READY |
-| K_NDTNN_6 | Tăng trưởng NĐT Cá nhân mới | — | Phái sinh | `SUM(Fact_Foreign_Investor_Report_Value.Value_Number)` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'H0I8J'` AND `Foreign_Investor_Report_Structure_Dimension.Sheet_Name = 'I'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng số lượng tới thời điểm báo cáo'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Cá nhân'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 9: báo cáo PLVI-TT51 (VSDC, kỳ tháng) mục I, dòng "Cá nhân", cột "Tổng số lượng tới thời điểm báo cáo" (lũy kế mã số GD cấp mới, YTD). Đọc 1 ô từ Fact Foreign Investor Report Value. SQL BA có lỗi cú pháp (dấu ; thừa, thiếu đóng nháy row_path) — thiết kế theo Điều kiện. O_NDTNN_38 | READY |
-| K_NDTNN_7 | Tăng trưởng NĐT Tổ chức mới | — | Phái sinh | `SUM(Fact_Foreign_Investor_Report_Value.Value_Number)` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'H0I8J'` AND `Foreign_Investor_Report_Structure_Dimension.Sheet_Name = 'I'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng số lượng tới thời điểm báo cáo'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổ chức'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 10: báo cáo PLVI-TT51 (VSDC, kỳ tháng) mục I, dòng "Tổ chức", cột "Tổng số lượng tới thời điểm báo cáo" (lũy kế mã số GD cấp mới, YTD). Đọc 1 ô từ Fact Foreign Investor Report Value. SQL BA có lỗi cú pháp (dấu ; thừa, thiếu đóng nháy row_path) — thiết kế theo Điều kiện. O_NDTNN_38 | READY |
+| K_NDTNN_5 | Tăng trưởng NĐT mới | — | Phái sinh | `SUM(TRY_CAST(REGEXP_REPLACE(Fact_Foreign_Investor_Report_Value.Value_Raw, '^''', '') AS DECIMAL(38,10)))` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'H0I8J'` AND `Foreign_Investor_Report_Structure_Dimension.Sheet_Name = 'I'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng số lượng tới thời điểm báo cáo'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổng'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 8: báo cáo PLVI-TT51 (VSDC, kỳ tháng) mục I, dòng "Tổng", cột "Tổng số lượng tới thời điểm báo cáo" (lũy kế mã số GD cấp mới, YTD). Đọc 1 ô từ Fact Foreign Investor Report Value. SQL BA có lỗi cú pháp (dấu ; thừa, thiếu đóng nháy row_path) — thiết kế theo Điều kiện. O_NDTNN_38 | READY |
+| K_NDTNN_6 | Tăng trưởng NĐT Cá nhân mới | — | Phái sinh | `SUM(TRY_CAST(REGEXP_REPLACE(Fact_Foreign_Investor_Report_Value.Value_Raw, '^''', '') AS DECIMAL(38,10)))` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'H0I8J'` AND `Foreign_Investor_Report_Structure_Dimension.Sheet_Name = 'I'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng số lượng tới thời điểm báo cáo'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Cá nhân'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 9: báo cáo PLVI-TT51 (VSDC, kỳ tháng) mục I, dòng "Cá nhân", cột "Tổng số lượng tới thời điểm báo cáo" (lũy kế mã số GD cấp mới, YTD). Đọc 1 ô từ Fact Foreign Investor Report Value. SQL BA có lỗi cú pháp (dấu ; thừa, thiếu đóng nháy row_path) — thiết kế theo Điều kiện. O_NDTNN_38 | READY |
+| K_NDTNN_7 | Tăng trưởng NĐT Tổ chức mới | — | Phái sinh | `SUM(TRY_CAST(REGEXP_REPLACE(Fact_Foreign_Investor_Report_Value.Value_Raw, '^''', '') AS DECIMAL(38,10)))` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'H0I8J'` AND `Foreign_Investor_Report_Structure_Dimension.Sheet_Name = 'I'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng số lượng tới thời điểm báo cáo'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổ chức'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 10: báo cáo PLVI-TT51 (VSDC, kỳ tháng) mục I, dòng "Tổ chức", cột "Tổng số lượng tới thời điểm báo cáo" (lũy kế mã số GD cấp mới, YTD). Đọc 1 ô từ Fact Foreign Investor Report Value. SQL BA có lỗi cú pháp (dấu ; thừa, thiếu đóng nháy row_path) — thiết kế theo Điều kiện. O_NDTNN_38 | READY |
 
 **Star Schema:**
 
@@ -475,7 +475,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -727,9 +726,9 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_NDTNN_20 | Dòng tiền vào | — | Phái sinh | `SUM(Fact_Foreign_Investor_Report_Value.Value_Number)` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'IBOU9'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổng= (1) + (2)'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 28: báo cáo PLIV-TT51 (IBOU9, Ngân hàng lưu ký, kỳ nửa tháng), dòng "Tổng= (1) + (2)", cột "Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)". Đơn vị USD. Lấy ngày cuối tháng (Note BA); đơn vị USD khác VND của các Nhóm khác | READY |
-| K_NDTNN_21 | Dòng tiền ra | — | Phái sinh | `SUM(Fact_Foreign_Investor_Report_Value.Value_Number)` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'IBOU9'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổng= (1) + (2)'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 29: báo cáo PLIV-TT51 (IBOU9, Ngân hàng lưu ký, kỳ nửa tháng), dòng "Tổng= (1) + (2)", cột "Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)". Đơn vị USD. Lấy ngày cuối tháng (Note BA); đơn vị USD khác VND của các Nhóm khác | READY |
-| K_NDTNN_22 | Dòng tiền ròng | — | Phái sinh | `SUM(Fact_Foreign_Investor_Report_Value.Value_Number)` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'IBOU9'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổng= (1) + (2)'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 27: báo cáo PLIV-TT51 (IBOU9, Ngân hàng lưu ký, kỳ nửa tháng), dòng "Tổng= (1) + (2)", cột "Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)". Đơn vị USD. Lấy ngày cuối tháng (Note BA); K_NDTNN_22 đọc trực tiếp ô (+/-) theo BA (không tính vào − ra như HLD cũ); nên đối chiếu K_NDTNN_22 = K_NDTNN_20 − K_NDTNN_21 khi có dữ liệu. O_NDTNN_38 | READY |
+| K_NDTNN_20 | Dòng tiền vào | — | Phái sinh | `SUM(TRY_CAST(REGEXP_REPLACE(Fact_Foreign_Investor_Report_Value.Value_Raw, '^''', '') AS DECIMAL(38,10)))` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'IBOU9'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổng= (1) + (2)'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 28: báo cáo PLIV-TT51 (IBOU9, Ngân hàng lưu ký, kỳ nửa tháng), dòng "Tổng= (1) + (2)", cột "Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)". Đơn vị USD. Lấy ngày cuối tháng (Note BA); đơn vị USD khác VND của các Nhóm khác | READY |
+| K_NDTNN_21 | Dòng tiền ra | — | Phái sinh | `SUM(TRY_CAST(REGEXP_REPLACE(Fact_Foreign_Investor_Report_Value.Value_Raw, '^''', '') AS DECIMAL(38,10)))` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'IBOU9'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổng= (1) + (2)'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 29: báo cáo PLIV-TT51 (IBOU9, Ngân hàng lưu ký, kỳ nửa tháng), dòng "Tổng= (1) + (2)", cột "Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)". Đơn vị USD. Lấy ngày cuối tháng (Note BA); đơn vị USD khác VND của các Nhóm khác | READY |
+| K_NDTNN_22 | Dòng tiền ròng | — | Phái sinh | `SUM(TRY_CAST(REGEXP_REPLACE(Fact_Foreign_Investor_Report_Value.Value_Raw, '^''', '') AS DECIMAL(38,10)))` WHERE `Foreign_Investor_Report_Structure_Dimension.Report_Code = 'IBOU9'` AND `Foreign_Investor_Report_Structure_Dimension.Column_Path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'` AND `Foreign_Investor_Report_Structure_Dimension.Row_Path = 'Tổng= (1) + (2)'` AND `Submission Date = :ngaynop` | [THIẾT KẾ 2026-10-02 — BA đã map báo cáo động, Atomic FIMS fir_* đã thiết kế] BA dòng 27: báo cáo PLIV-TT51 (IBOU9, Ngân hàng lưu ký, kỳ nửa tháng), dòng "Tổng= (1) + (2)", cột "Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)". Đơn vị USD. Lấy ngày cuối tháng (Note BA); K_NDTNN_22 đọc trực tiếp ô (+/-) theo BA (không tính vào − ra như HLD cũ); nên đối chiếu K_NDTNN_22 = K_NDTNN_20 − K_NDTNN_21 khi có dữ liệu. O_NDTNN_38 | READY |
 
 **Star Schema:**
 
@@ -743,7 +742,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -1986,7 +1984,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2080,7 +2077,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2174,7 +2170,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2268,7 +2263,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2362,7 +2356,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2456,7 +2449,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2550,7 +2542,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2644,7 +2635,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2738,7 +2728,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2832,7 +2821,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -2926,7 +2914,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3020,7 +3007,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3114,7 +3100,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3208,7 +3193,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3302,7 +3286,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3396,7 +3379,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3490,7 +3472,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3584,7 +3565,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3678,7 +3658,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3772,7 +3751,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3866,7 +3844,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -3960,7 +3937,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -4054,7 +4030,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -4148,7 +4123,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -4242,7 +4216,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -4336,7 +4309,6 @@ erDiagram
         int Dynamic_Row_Order
         string Period_Type_Code
         string Period_Value
-        decimal Value_Number
         string Value_Raw
         string Source_System_Code
     }
@@ -4548,8 +4520,8 @@ graph TB
 | O_NDTNN_28 | **[GỐC RỄ] `Security_Symbol_Code` trên Fact là degenerate text, join Public Company Dimension chỉ là text-match không FK chính thức — phát hiện khi rà soát độ dư thừa thiết kế (2026-07-23):** Rà soát Atomic xác nhận: (1) `Securities Trade` (ORDERTRADE, nguồn của Fact) chỉ có 1 field text `Security Symbol Code` (`data_domain: Text`, không FK, `comment: null`) — không có entity "Securities"/danh mục mã CK nào khác đi kèm. (2) `Public Company` (IDS.COMPANY_PROFILES, approved) có grain **1 công ty đại chúng** (PK=Public_Company_Id), KHÔNG phải "1 mã CK" như HLD từng ghi sai — 1 công ty có thể có nhiều mã CK khác nhau (Equity Ticker Symbol + Bond Ticker Symbol là 2 field riêng trên cùng 1 dòng), và join `Security_Symbol_Code = Equity_Ticker_Symbol` trước đây chỉ là text-match tự nhiên, không có FK khai báo — chỉ phủ được cổ phiếu hiện tại (current-state), không phủ trái phiếu/CCQ/lịch sử đổi mã. (3) `Public Company Stock Listing History`/`Bond Listing History` (IDS, working/lld, **draft**) là nguồn đúng cấp lịch sử niêm yết nhưng chưa approved — không dùng được. (4) Xác nhận nguồn đúng grain "1 mã CK" là `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR, `design_status: approved` ở cấp LLD table-level dù chưa sync vào `dm_manifest.yaml`/`DataModel/Atomic/` chính thức) — module GSTT đã tự thiết kế Dimension cùng khái niệm (`scr_tdg_snpst_dim`) ở cấp HLD/Entities.csv riêng nhưng CHƯA đăng ký `datamart_model.yaml`, nên không thể `reuse` chính thức. | Đã tạo `Securities Dimension` (`securities_dim`, Cụm 1a Section 1, Conformed Dimension module: SHARED) — grain 1 mã CK (SCD4A), ETL derive từ `Security Trading Snapshot` (Fact Snapshot) lấy bản ghi mới nhất theo Symbol, giữ 10 thuộc tính tĩnh (Symbol/Security Full Name/Stock Type Code/Floor Code/Listed Share Count/Total Listing Volume/Underlying Symbol/Issuer Name/Listing Date/Symbol Status Code — loại bỏ toàn bộ field giá/khối lượng/sổ lệnh biến động). Thêm FK `Securities_Dimension_Id` vào `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2), thay thế cột text `Security_Symbol_Code` lặp lại trên Fact. Sửa lại grain `Public Company Dimension` (Nhóm 2/8) từ "1 mã CK niêm yết" thành đúng "1 công ty đại chúng" — vẫn giữ join text-match `Equity_Ticker_Symbol = Securities_Dimension.Symbol` cho Chiều Ngành (không có FK chính thức ở tầng Atomic, đã ghi rõ rủi ro). **[Cập nhật 2026-07-24]** Nhóm 14 (K_NDTNN_78-80) KHÔNG còn dùng `Securities_Dimension` qua FK Star Schema — đã chuyển thành ETL filter nội bộ trong bảng tác nghiệp `Foreign Investor Trading Statistics Report` (xem O_NDTNN_24). **[Cập nhật 2026-07-24]** Nhóm 15 KHÔNG còn dùng `Securities_Dimension` — đã chuyển sang bảng tác nghiệp `Foreign Investor Trading Detail Report`, denormalize `Symbol` trực tiếp (text), không qua FK (xem O_NDTNN_30). **Cần Data Modeler xác nhận thêm:** (a) đồng bộ `Security Trading Snapshot` vào `dm_manifest.yaml`/`DataModel/Atomic/` chính thức; (b) đăng ký `Securities Dimension`/`securities_dim` vào `datamart_model.yaml` với `module: SHARED` để GSTT (và module khác) reuse thay vì tự tạo bản riêng `scr_tdg_snpst_dim`. | K_NDTNN_9 (Nhóm 2) | Open — chờ đồng bộ Atomic manifest + đăng ký Conformed Dimension |
 | O_NDTNN_29 | **`Market_Id`/`Market_Code` trên Fact Market Index Snapshot là degenerate text, cùng pattern O_NDTNN_28 — phát hiện khi đánh giá thêm chiều liên kết Nhóm 5 (2026-07-23):** Rà soát Atomic `Market Index Snapshot` (MDDS.JAD_MARKETINFOR, 34 attribute) xác nhận 5 cột mang tính định danh/mô tả tĩnh — KHÔNG đổi theo từng lần snapshot — tách biệt rõ khỏi 29 cột còn lại (measure giá/khối lượng/trạng thái biến động theo phiên): `Market Id`, `Market Code` (composite key BA dùng để định danh 1 chỉ số — cả 2 cùng xuất hiện trong SELECT lẫn PARTITION BY của SQL BA K_NDTNN_34, không chỉ dùng ngầm trong WHERE), `Index Type Code` (scheme `MDDS_INDEX_TYPE`, `values: []` chưa profile), `TSC Product Group Id` (mã sản phẩm giao dịch hose/hnx/upcom), `Market Status Code` (trạng thái phiên, lấy current-state theo SCD4A). Atomic KHÔNG có field tên chỉ số tường minh (không có `Index_Name`) — xác nhận qua BA gốc: tên "VN-Index" trong mockup chỉ là nhãn tiêu đề BA tự đặt gắn với đúng 1 combo filter cứng `marketId='10' AND marketCode='HOSE'`, không xuất phát từ bất kỳ danh mục chuẩn hoá nào. Đồng thời phát hiện module QLKD đã có `Fact Market Index Snapshot` riêng (`market_index_snpst` trong `datamart_model.yaml`, grain 1 chỉ số × 1 tháng, chỉ dùng `Market_Code` text) từ cùng nguồn Atomic nhưng chưa từng tách Dimension. | Đã tạo `Market Index Dimension` (`market_index_dim`, Cụm 5c Section 1, Conformed Dimension module: SHARED) — grain 1 combo Market_Id+Market_Code (SCD4A current-state), giữ 5 thuộc tính tĩnh nêu trên. Thêm FK `Market_Index_Dimension_Id` vào `Fact Market Index Snapshot` (Nhóm 5), thay thế cột text `Market_Id`/`Market_Code` lặp lại trên Fact. Không hardcode tên hiển thị "VN-Index" trên Dimension vì Atomic không có nguồn — chỉ giữ đúng các cột tĩnh kéo 1-1 từ Atomic. **Chưa đóng hoàn toàn O_NDTNN_19** — Dimension kiểm soát được giá trị hợp lệ qua FK thay vì free-text, nhưng KHÔNG chứng minh được tính duy nhất 1 chỉ số/ngày (vẫn cần profile dữ liệu thật để xác nhận `Index_Time` không trùng do nhiều chỉ số khác publish cùng combo). **Sửa 24/07/2026:** Data Modeler đã xác nhận — thay vì QLKD tạo Fact riêng dùng `Market_Code` text, đã gộp thành 1 Fact logic `fct_market_index_snpst` sở hữu bởi QLKD (module phát triển trước), nâng schema thêm FK `Market_Index_Dimension_Id`; NDTNN reuse nguyên Fact này (`datamart_model.yaml` id `DTM-fct_market_index_snpst`, `modules_using: [QLKD, NDTNN]`). `Market Index Dimension` (`market_index_dim`) cũng chuyển module sang QLKD (cùng module sở hữu Fact), NDTNN reuse. **[Cập nhật 24/07/2026, datamart-review]** Phát hiện thêm: Fact gộp lúc đó vẫn giữ ETL populate grain 1 tháng (QLKD) — khiến K_NDTNN_34 filter `:pdate` theo ngày bất kỳ trả về rỗng cho mọi ngày không phải cuối tháng, vì Fact không có dòng cho ngày giữa tháng. Đã sửa: đổi grain vật lý Fact sang **1 chỉ số × 1 ngày** thống nhất — QLKD nay tự filter/JOIN đúng ngày cuối tháng trên Fact grain-ngày này (`DTM_QLKD_Detail_Mapping.csv` K_QLKD_88-91 đã bổ sung filter `cdr_dt = LAST_DAY(:pmonth)`). | K_NDTNN_34 (Nhóm 5) | **Closed** — Fact gộp + Dimension dùng chung đã đăng ký trong `datamart_model.yaml`, cả hai sở hữu QLKD. Grain đã thống nhất về ngày (24/07/2026). Chưa đóng hoàn toàn O_NDTNN_19 (vẫn cần profile dữ liệu thật xác nhận tính duy nhất 1 chỉ số/ngày) |
 | O_NDTNN_37 | **[MỞ 2026-10-02 — đồng bộ tên entity VSDC, K_NDTNN_50/51 Nhóm 8 và K_GSDC_1381–1390]** Fact `Fact Public Company Listing Info Snapshot` (GSDC) từng dùng tên `listed_security_info_snapshot`/`foreign_ownership_info_snapshot` và `src_stm_code` `VSDC_LISTED_SECURITY_INFO_SNAPSHOT`/`VSDC_FOREIGN_OWNERSHIP_INFO_SNAPSHOT` — không tồn tại ở đâu trong `DataModel/` (HLD GSDC khẳng định sai là đã có YAML trong `DataModel/Atomic/Product/`). Data Modeler xác nhận 2026-10-02: đúng là `listed_share_info` và `foreign_ownership_info` (`mapping_vsdc_ods_atm.md` Bảng 1/19/27 và Bảng 9). Đã đồng bộ tên entity, tên logic và `src_stm_code` (`VSDC_OUTSTANDING_SHARES`, `VSDC_FOREIGN_INVESTOR_INFO` — cùng giá trị các module GSTT/PTTT/NDTNN đang dùng) ở GSDC/GSTT/NDTNN (LLD, Detail Mapping, HLD, flat, `datamart_model.yaml`). Còn mở: (1) hai entity vẫn là ngoại lệ VSDC — chưa có YAML Atomic/manifest, Gate 0 còn cảnh báo `L0-ATOMIC-COLUMN-NOT-FOUND`; (2) `foreign_holding_value` thêm dedup bản ghi cuối phiên của `security_trading_snapshot` (tránh nhân dòng khi nhiều bản ghi/phiên); (3) grain `ds_snpst_dt` (ngày dev xử lý) chưa được dev xác nhận là cuối tháng. | Dùng tên mapping VSDC; chờ thiết kế YAML Atomic cho VSDC (Bảng 1/19/27, 9) để đóng Gate 0. | K_NDTNN_50, K_NDTNN_51, K_GSDC_1381–1390 | Open |
-| O_NDTNN_38 | **[MỞ 2026-10-02 — thiết kế mới theo BA báo cáo động + Atomic FIMS fir_*; 100% KPI NDTNN đã thiết kế, không còn PENDING]** Các quyết định thiết kế và giả định chưa BA/dev xác nhận: (1) **K_NDTNN_25–28 (Nhóm 4)** thiết kế theo Điều kiện + SQL tham khảo của BA (báo cáo 59WJB/BZ5X4 sheet II, SUM "Tổng giá trị danh mục > Giá trị") dù mô tả BA là dòng vốn ròng (IBOU9) — nếu BA đổi sang IBOU9 thì chuyển sang `Fact Foreign Investor Capital Flow Snapshot`; (2) tên sheet BA (`sheet_name` = I/II) giả định = `foreign_investor_report.sheet_nm`; (3) Data Explorer Nhóm 18–43: báo cáo xác định theo `rpt_nm` = "Tên báo cáo" của BA (chưa có 25 Report Code — O_NDTNN_27; các cặp Nhóm 28/32, 29/33 trùng tên báo cáo, khác đối tượng nộp); "Loại báo cáo" = `report_type_nm` suy ra theo danh sách báo cáo bất thường của BA vì Atomic fir_* không có `REPORTTYPE.NAME`; "Mã chỉ tiêu" = `structure_code`, "Tên chỉ tiêu" = nhãn dòng > nhãn cột (giả định); (4) K_NDTNN_22 đọc trực tiếp ô "(+/-)" theo BA thay vì (vào − ra) như HLD cũ — cần đối chiếu số; (5) K_NDTNN_5–7 cột "Tổng số lượng tới thời điểm báo cáo" là lũy kế, BA mô tả "mới cấp YTD" — chưa có công thức tăng trưởng; SQL BA có lỗi cú pháp; (6) K_NDTNN_93/94 (Data Explorer) vào ròng = phần dương, rút ròng = phần âm (tuyệt đối) của tổng — giả định; (7) BA tách Quỹ / Tổ chức khác quỹ bằng LIKE chồng lấn — giữ nguyên 3 cờ độc lập `individual_ind`/`fund_ind`/`non_fund_org_ind`; (8) **[BA cập nhật 2026-10-02]** nguồn đổi tên `uat_fims_ods.fir_value`; Nhóm 9: tỷ lệ sở hữu = `max_foreign_ownership_ratio`, Room tối đa = `max_foreign_holding_quantity`, Top 5 room thấp nhất bỏ điều kiện `max > 0`; Nhóm 10 bỏ `limit 5`; K_NDTNN_35: quy tắc ưu tiên kỳ nửa tháng khi trùng bản ngày (O_NDTNN_33) và đơn vị USD; (9) Nhóm 12 (K_NDTNN_64/65) BA còn Doing — K_NDTNN_64 giữ `Foreign Investor Dimension` (tên + mã số GD), K_NDTNN_65 đọc `Fact Foreign Investor Portfolio Report Snapshot` lọc theo tên khách hàng; cột MSGD của báo cáo (nối cụm INVESTOR) chưa pivot vì chưa biết nhãn cột; (10) `fir_value` đã approved (2026-10-05) và bỏ `val_nbr`/`val_string`; cột Datamart `val_nbr` của `fct_foreign_investor_report_value` (decimal(23,2), ép từ `val_raw`) có thể mất độ chính xác của tỷ lệ — xem O_NDTNN_39; SQL BA Nhóm 7 tham chiếu `fir_value_spk2` (tên bảng không có trong Atomic) và `base_rows` thiếu `report_log_id`. | Thiết kế theo SQL/Điều kiện BA; ghi giả định ở từng KPI; profile dữ liệu UAT trước go-live (tỷ lệ khớp tên báo cáo, giá trị sheet, danh sách báo cáo bất thường). | K_NDTNN_5–7, 20–22, 23–32, 35–49, 64–65, 90–254 | Open |
-| O_NDTNN_39 | **[MỞ 2026-10-05 — dev rà báo cáo động NDTNN]** (1) **Nguồn chỉ có `VALUE_RAW`:** dev xác nhận ODS `fir_value` không có `VALUE_NUM`/`VALUE_TEXT` — BA SQL vẫn ghi `value_num`/`value_text` và Atomic `fir_value.val_nbr`/`val_string` khai nguồn là 2 cột này; 4 bảng Fact Datamart đang đọc 2 cột đó (`fct_foreign_investor_report_value` 2 cột, `portfolio_report_snpst` 10 cột, `capital_flow_snpst` 3 cột, `foreign_net_flow_market_index_snpst` 1 cột). (2) **Khóa ô cấu trúc:** LLD dim đặt BK là `structure_code` (= `INDICATOR_UID`, chỉ duy nhất trong 1 sheet) và Fact `report_value` tra theo cột này → gán nhầm ô giữa các sheet; khóa thật là `fir_structure_code` = `SHEET_ID ‖ INDICATOR_UID`. | (1) Bỏ mọi tham chiếu `val_nbr`/`val_string` ở Datamart: số = `TRY_CAST(REGEXP_REPLACE(val_raw, '^''', '') AS DECIMAL(38,10))` (NULL nếu không ép được), chữ = `val_raw`; cột `val_string` đã bỏ khỏi Fact `report_value` (2026-10-05, trùng `val_raw`; flat đã deploy cần `ALTER TABLE … DROP COLUMN val_string` nếu muốn dọn); `val_nbr` giữ tên. Cần: Atomic team bỏ/sửa `val_nbr`, `val_string` của `fir_value`; profile `val_raw` (dấu nháy đầu, dấu phân cách nghìn/thập phân, %) vì cách ép số giả định chỉ bỏ nháy đầu. (2) Dim `foreign_investor_report_structure_dim` đổi BK sang cột mới `fir_structure_code`; `structure_code` giữ làm thuộc tính hiển thị 'Mã chỉ tiêu' (K_NDTNN_103–253, giả định O_NDTNN_38; trùng giữa các sheet nên lọc kèm `rpt_nm`/`sheet_code`); Fact lookup `fir_structure_code = fir_value.fir_structure_code`; flat `ndtnn_fct_foreign_investor_report_value_flat` thêm cột cuối `fir_structure_code` (cần `ALTER TABLE … ADD COLUMN` trên ClickHouse). | Nhóm 4, 6, 16, 18+ (báo cáo động), K_NDTNN_5–7, 20–22, 36–42, 103–253 | Open |
+| O_NDTNN_38 | **[MỞ 2026-10-02 — thiết kế mới theo BA báo cáo động + Atomic FIMS fir_*; 100% KPI NDTNN đã thiết kế, không còn PENDING]** Các quyết định thiết kế và giả định chưa BA/dev xác nhận: (1) **K_NDTNN_25–28 (Nhóm 4)** thiết kế theo Điều kiện + SQL tham khảo của BA (báo cáo 59WJB/BZ5X4 sheet II, SUM "Tổng giá trị danh mục > Giá trị") dù mô tả BA là dòng vốn ròng (IBOU9) — nếu BA đổi sang IBOU9 thì chuyển sang `Fact Foreign Investor Capital Flow Snapshot`; (2) tên sheet BA (`sheet_name` = I/II) giả định = `foreign_investor_report.sheet_nm`; (3) Data Explorer Nhóm 18–43: báo cáo xác định theo `rpt_nm` = "Tên báo cáo" của BA (chưa có 25 Report Code — O_NDTNN_27; các cặp Nhóm 28/32, 29/33 trùng tên báo cáo, khác đối tượng nộp); "Loại báo cáo" = `report_type_nm` suy ra theo danh sách báo cáo bất thường của BA vì Atomic fir_* không có `REPORTTYPE.NAME`; "Mã chỉ tiêu" = `structure_code`, "Tên chỉ tiêu" = nhãn dòng > nhãn cột (giả định); (4) K_NDTNN_22 đọc trực tiếp ô "(+/-)" theo BA thay vì (vào − ra) như HLD cũ — cần đối chiếu số; (5) K_NDTNN_5–7 cột "Tổng số lượng tới thời điểm báo cáo" là lũy kế, BA mô tả "mới cấp YTD" — chưa có công thức tăng trưởng; SQL BA có lỗi cú pháp; (6) K_NDTNN_93/94 (Data Explorer) vào ròng = phần dương, rút ròng = phần âm (tuyệt đối) của tổng — giả định; (7) BA tách Quỹ / Tổ chức khác quỹ bằng LIKE chồng lấn — giữ nguyên 3 cờ độc lập `individual_ind`/`fund_ind`/`non_fund_org_ind`; (8) **[BA cập nhật 2026-10-02]** nguồn đổi tên `uat_fims_ods.fir_value`; Nhóm 9: tỷ lệ sở hữu = `max_foreign_ownership_ratio`, Room tối đa = `max_foreign_holding_quantity`, Top 5 room thấp nhất bỏ điều kiện `max > 0`; Nhóm 10 bỏ `limit 5`; K_NDTNN_35: quy tắc ưu tiên kỳ nửa tháng khi trùng bản ngày (O_NDTNN_33) và đơn vị USD; (9) Nhóm 12 (K_NDTNN_64/65) BA còn Doing — K_NDTNN_64 giữ `Foreign Investor Dimension` (tên + mã số GD), K_NDTNN_65 đọc `Fact Foreign Investor Portfolio Report Snapshot` lọc theo tên khách hàng; cột MSGD của báo cáo (nối cụm INVESTOR) chưa pivot vì chưa biết nhãn cột; (10) `fir_value` đã approved (2026-10-05) và bỏ `val_nbr`/`val_string`; cột Datamart `val_nbr` đã **bỏ** khỏi `fct_foreign_investor_report_value` (2026-10-06): KPI số ép trực tiếp từ `val_raw` tại Detail Mapping (`TRY_CAST(REGEXP_REPLACE(val_raw, '^''', '') AS DECIMAL(38,10))`) — độ chính xác của tỷ lệ xem O_NDTNN_39; SQL BA Nhóm 7 tham chiếu `fir_value_spk2` (tên bảng không có trong Atomic) và `base_rows` thiếu `report_log_id`. | Thiết kế theo SQL/Điều kiện BA; ghi giả định ở từng KPI; profile dữ liệu UAT trước go-live (tỷ lệ khớp tên báo cáo, giá trị sheet, danh sách báo cáo bất thường). | K_NDTNN_5–7, 20–22, 23–32, 35–49, 64–65, 90–254 | Open |
+| O_NDTNN_39 | **[MỞ 2026-10-05 — dev rà báo cáo động NDTNN]** (1) **Nguồn chỉ có `VALUE_RAW`:** dev xác nhận ODS `fir_value` không có `VALUE_NUM`/`VALUE_TEXT` — BA SQL vẫn ghi `value_num`/`value_text` và Atomic `fir_value.val_nbr`/`val_string` khai nguồn là 2 cột này; 4 bảng Fact Datamart đang đọc 2 cột đó (`fct_foreign_investor_report_value` 2 cột, `portfolio_report_snpst` 10 cột, `capital_flow_snpst` 3 cột, `foreign_net_flow_market_index_snpst` 1 cột). (2) **Khóa ô cấu trúc:** LLD dim đặt BK là `structure_code` (= `INDICATOR_UID`, chỉ duy nhất trong 1 sheet) và Fact `report_value` tra theo cột này → gán nhầm ô giữa các sheet; khóa thật là `fir_structure_code` = `SHEET_ID ‖ INDICATOR_UID`. | (1) Bỏ mọi tham chiếu `val_nbr`/`val_string` ở Datamart: số = `TRY_CAST(REGEXP_REPLACE(val_raw, '^''', '') AS DECIMAL(38,10))` (NULL nếu không ép được), chữ = `val_raw`; cột `val_string` đã bỏ khỏi Fact `report_value` (2026-10-05, trùng `val_raw`; flat đã deploy cần `ALTER TABLE … DROP COLUMN val_string` nếu muốn dọn); `val_nbr` cũng đã bỏ khỏi Fact `report_value` (2026-10-06, Data Modeler yêu cầu) — KPI số ép trực tiếp từ `val_raw` ở Detail Mapping; flat đã deploy cần `ALTER TABLE … DROP COLUMN val_nbr`. Cần: Atomic team bỏ/sửa `val_nbr`, `val_string` của `fir_value`; profile `val_raw` (dấu nháy đầu, dấu phân cách nghìn/thập phân, %) vì cách ép số giả định chỉ bỏ nháy đầu. (2) Dim `foreign_investor_report_structure_dim` đổi BK sang cột mới `fir_structure_code`; `structure_code` giữ làm thuộc tính hiển thị 'Mã chỉ tiêu' (K_NDTNN_103–253, giả định O_NDTNN_38; trùng giữa các sheet nên lọc kèm `rpt_nm`/`sheet_code`); Fact lookup `fir_structure_code = fir_value.fir_structure_code`; flat `ndtnn_fct_foreign_investor_report_value_flat` thêm cột cuối `fir_structure_code` (cần `ALTER TABLE … ADD COLUMN` trên ClickHouse). | Nhóm 4, 6, 16, 18+ (báo cáo động), K_NDTNN_5–7, 20–22, 36–42, 103–253 | Open |
 | O_NDTNN_30 | **[Cập nhật 2026-07-24 — thay đổi kiến trúc] Nhóm 15 (STT=15) — đổi từ Star Schema (Fact riêng) sang bảng Tác nghiệp; phát hiện lại pattern grain-mismatch 2 attribute Investor Type độc lập, giống O_NDTNN_24:** Lịch sử: (1) Thiết kế trước dùng `Fact Securities Foreign Investor Trade Detail` + FK `Calendar Date Dimension`/`Securities Dimension` (Star Schema), phân loại "Phân tích". User chỉ ra 2 vấn đề: `Account_Number`/`Trade_Direction_Code` trên Fact không phải chiều (không FK Dimension) cũng không phải measure — đúng bản chất là degenerate key + grain component, không phải lỗi thiết kế nhưng cần đánh giá đúng vai trò. (2) Đánh giá tách `Investor_Account_Dimension` riêng (Account_Number + Account_Holder_Name + 3 cột phân loại Investor Type/Foreign Investor Type/Client House) — sau khi đọc kỹ `business_meaning` trong Atomic YAML (`"...của lệnh mua/bán"` — sở hữu cách gắn với giao dịch, không phải account cố định) xác nhận 3 cột phân loại là **per-trade attribute**, không phải per-account — chỉ giữ `Account_Number` + `Account_Holder_Name` trong Dimension nếu tách, còn 3 cột phân loại phải ở Fact. (3) Rà soát tiếp: `Client_House_Classification_Code` không được KPI nào của Nhóm 15 dùng — loại khỏi thiết kế. `Foreign_Investor_Type_Code` (K_NDTNN_84/85 dùng `<> '00'`) và `Investor_Type_Code` (K_NDTNN_86-89 dùng `='7000'`) là **2 attribute Atomic độc lập** — cả 2 đều cần giữ (không phải ghi chú lỏng lẻo). (4) **Quyết định kiến trúc cuối:** Nhóm 15 thuộc Tab BÁO CÁO (đóng gói cố định, không cần drill-down Star Schema tự do — giống Nhóm 14) — chuyển hẳn sang bảng Tác nghiệp `Foreign Investor Trading Detail Report`, denormalize hoàn toàn: bỏ `Investor_Account_Dimension` (không tách), bỏ FK `Securities_Dimension` (denormalize `Symbol` text trực tiếp), `Account_Holder_Name` đệm sẵn trực tiếp trên bảng. (5) Đối chiếu lại BA cột "Chiều dữ liệu" (ghi tắt "Ngày, NĐT") với câu lệnh tham khảo SQL thật (`GROUP BY Buy_Acct_No, Symbol`) xác nhận grain đầy đủ vẫn là **1 ngày × 1 Account × 1 Symbol × 1 bên (Buy/Sell)** — không rút gọn bỏ Symbol như cách đọc tắt cột tóm tắt có thể gây hiểu lầm. | Đã tách Nhóm 15 thành bảng `Foreign Investor Trading Detail Report` (`foreign_investor_trading_detail_rpt`, grain 1 ngày × 1 Account_Number × 1 Symbol × 1 Trade_Direction_Code, composite grain 4 cột — đổi `table_type: fact` xem O_NDTNN_31b) — không còn dùng `Fact Securities Foreign Investor Trade Detail`/`Securities Dimension` FK. `Foreign_Investor_Type_Code`/`Investor_Type_Code` là điều kiện ETL filter (OR 2 điều kiện độc lập), không lưu thành cột trên bảng kết quả. 6/6 KPI giữ **READY**. | K_NDTNN_84-89 | Closed — đã tách bảng Tác nghiệp, denormalize hoàn toàn |
 | O_NDTNN_32 | **[Phát hiện 2026-09-16, qua audit bắt buộc Bước 5B] `Fact Securities Foreign Trading Snapshot` (Nhóm 1/2/5) dùng sai tên FK ngày — `Trade_Date_Dimension_Id` thay vì `Snapshot_Date_Dimension_Id`:** `check_date_fk.py --module NDTNN --strict` phát hiện `fct_securities_foreign_trading_snpst.trade_dt_dim_id` vi phạm chuẩn Role-Playing Date FK — Fact có hậu tố `_Snapshot`/`_snpst` (grain 1 mã CK × 1 ngày, không phải Fact Event) bắt buộc dùng `Snapshot_Date_Dimension_Id`/`snpst_dt_dim_id`, không được dùng tên vai trò khác. Cùng đợt phát hiện: script `check_ba_mapping.py`/`datamart_ba_cross_checker.py`/`module_resolver.py` tìm sai tên file BA (`BA_analyst_NDTNN.csv` ASCII thay vì `BA_analyst_NĐTNN.csv` có dấu Đ) khiến audit BA↔HLD không đối soát được gì. | Đổi `trade_dt_dim_id`/`Trade_Date_Dimension_Id`/`Trade Date Dimension Id` → `snpst_dt_dim_id`/`Snapshot_Date_Dimension_Id`/`Snapshot Date Dimension Id` xuyên suốt `DTM_NDTNN_HLD.md`, `DTM_NDTNN_Detail_Mapping.csv`, `DTM_NDTNN_fct_securities_foreign_trading_snpst.csv`, `01_create_ndtnn_flat_tables.sql`, `02_populate_ndtnn_flat_tables.sql`, `datamart_model.yaml`. Bổ sung alias `"NDTNN": "NĐTNN"` / `"NĐTNN": "NĐTNN"` vào `MODULE_ALIASES` của `datamart_ba_cross_checker.py` và `scripts/datamart_common/module_resolver.py` (cùng pattern đã áp dụng cho GSĐC) — `check_ba_mapping.py` nay PASS, đối soát đúng 260 dòng BA. | K_NDTNN_1-19, 33-34 (Nhóm 1/2/5) | Closed — đã đổi tên cột + sửa script resolver |
 | O_NDTNN_31b | **[Cập nhật 2026-07-24] `Foreign Investor Trading Statistics Report` và `Foreign Investor Trading Detail Report` (Nhóm 14/15) — đăng ký sai `table_type: operational`, đúng phải là `fact`:** Cả 2 bảng là ETL append-only theo Report Date (mỗi lần chạy ETL thêm dòng mới cho ngày báo cáo mới, không update/replace lịch sử của cùng 1 khóa) — đúng bản chất Fact, không phải Operational (Operational dùng SCD4A — giữ current-state, ETL update/replace theo latest). Ban đầu đăng ký `table_type: operational` vì gọi là "bảng Tác nghiệp" (denormalize, không Star Schema) — nhưng "denormalize" và "table_type" là 2 tiêu chí độc lập: 1 bảng có thể denormalize hoàn toàn (không FK Dimension) mà vẫn là Fact nếu ETL append theo thời gian. | Đổi `table_type` cả 2 bảng từ `operational` sang `fact` trong `datamart_model.yaml`. Đổi tên vật lý: bỏ tiền tố `opr_` (không thêm `fct_`) — nhóm Fact dạng report/đóng gói theo kỳ chỉ cần hậu tố `_rpt` làm dấu hiệu nhận diện, theo quy ước riêng đã bổ sung vào `SKILL.md` (`datamart-lld-design`, TC8 — ngoại lệ Fact-report không bắt buộc tiền tố `fct_`). Đổi `logical_name` từ "Operational..." sang "Fact...". Xóa `key: PK` trên các cột grain (Report Date, Security Type Group / Account Number / Symbol / Trade Direction Code), đổi thành `key: DD` — theo TC2b, Fact không được có `key = PK`. Đồng bộ `datamart_attributes.csv`, file Attributes detail 2 bảng, `DTM_NDTNN_Detail_Mapping.csv`. | K_NDTNN_72-89 (Nhóm 14/15) | Closed — đã đổi table_type, tên vật lý, và key theo đúng quy ước Fact |

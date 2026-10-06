@@ -267,7 +267,6 @@ SELECT
     f.band_overflow_ind,
     f.static_copy_ind,
     f.rpt_marker_ind,
-    f.val_nbr,
     f.val_raw,
     f.src_stm_code,
 
