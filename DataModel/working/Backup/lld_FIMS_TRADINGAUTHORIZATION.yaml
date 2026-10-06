@@ -34,7 +34,7 @@ attributes:
   source_columns: []
   comment: "PK surrogate. BCV: \"[Arrangement] Authority Arrangement\". Foreign Investor\
     \ ủy quyền cho Trading Representative hành động thay mặt trong giao dịch. Hash:\
-    \ hash_id('FIMS.TRADINGAUTHORIZATION', Id)."
+    \ hash_id('FIMS_TRADINGAUTHORIZATION', Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -90,7 +90,7 @@ attributes:
   - "FIMS.TRADINGAUTHORIZATION.FundComId"
   comment: "FK target: Fund Management Company.Fund Management Company Id. Nguồn lưu\
     \ ID kỹ thuật của FMS.SECURITIES — ETL join FundComId → FMS.SECURITIES.ID để lấy\
-    \ giá trị rồi hash_id('FMS.SECURITIES', ID). Quyết định Data Modeler 2026-07-20\
+    \ giá trị rồi hash_id('FMS_SECURITIES', ID). Quyết định Data Modeler 2026-07-20\
     \ — thay thế placeholder Market Participant Organization/FIMS.FUNDCOMPANY trước\
     \ đây."
   classification_context: null
@@ -121,7 +121,7 @@ attributes:
   - "FIMS.TRADINGAUTHORIZATION.SecComId"
   comment: "FK target: Securities Company.Securities Company Id. Nguồn lưu ID kỹ thuật\
     \ của SCMS.SC_FIRM_INFO — ETL join SecComId → SCMS.SC_FIRM_INFO.ID để lấy CODE\
-    \ rồi hash_id('SCMS.SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-20 —\
+    \ rồi hash_id('SCMS_SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-20 —\
     \ thay thế placeholder Market Participant Organization/FIMS.SECURITIESCOMPANY\
     \ trước đây."
   classification_context: null
@@ -152,7 +152,7 @@ attributes:
   - "FIMS.TRADINGAUTHORIZATION.InvestorId"
   comment: "FK target: Foreign Investor.Foreign Investor Id. Nguồn lưu ID kỹ thuật\
     \ của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode\
-    \ rồi hash_id('FIMS.INVESTOR', TransactionCode)."
+    \ rồi hash_id('FIMS_INVESTOR', TransactionCode)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -260,7 +260,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId"
-  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
+  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS_TRADINGREPRESENTATIVE',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -293,7 +293,7 @@ attributes:
     \ là quan hệ 1:1 với TRADINGAUTHORIZATION (không phải junction nhiều-nhiều — quyết\
     \ định Data Modeler 2026-07-20, thay thế quyết định denormalize ARRAY trước đây\
     \ tại FIMS_HLD_Overview.md mục 7d). Nguồn lưu ID kỹ thuật của INVESTOR — ETL join\
-    \ InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode rồi hash_id('FIMS.INVESTOR',\
+    \ InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode rồi hash_id('FIMS_INVESTOR',\
     \ TransactionCode)."
   classification_context: null
   etl_derived_value: null

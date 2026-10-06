@@ -1,0 +1,170 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  atomic_entity: "Fund Management Report Period"
+  entity_physical_name: "fmr_period"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Relative"
+  group: "T8"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Cấu hình kỳ báo cáo của biểu mẫu (loại kỳ, hạn nộp, hạn CBTT). Thiết kế\
+    \ theo mẫu báo cáo IDS (fr_catalog/fr_value). DDL chuẩn: Source/DDL UAT 1/FMS_UAT_schema\
+    \ 1.txt. Theo quyết định Data Modeler 2026-10-06: BK = hash từ ID (RAW(16)), các\
+    \ cột NCLOB/CLOB JSON map Text (string). CREATED_BY/MODIFY_BY/DELETED document\
+    \ trong pending_design.yaml."
+attributes:
+- attribute_name: "Fund Management Report Period Id"
+  physical_name: "fmr_period_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('FMS_RPT_PERIOD', ID). BCV: \"[Documentation]\
+    \ Form Document\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Report Period Code"
+  physical_name: "fmr_period_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.ID"
+  comment: "BK chính — ID nguồn (RAW(16), chuyển hex string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_RPT_PERIOD"
+  etl_derived_value: "FMS_RPT_PERIOD"
+  data_type: "string"
+- attribute_name: "Fund Management Report Id"
+  physical_name: "fmr_id"
+  description: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.RPT_ID"
+  comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+    \ RPT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Report Code"
+  physical_name: "fmr_code"
+  description: "Mã biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.RPT_ID"
+  comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Period Type Code"
+  physical_name: "rpt_period_tp_code"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm,\
+    \ 7=Nửa tháng."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.PERIOD_TYPE"
+  comment: "SCHEMA_CODE=FMS.PERIOD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Send In Day Count"
+  physical_name: "send_in_day_count"
+  description: "Số ngày phải gửi trong kỳ báo cáo tính từ đầu kỳ."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.SEND_IN_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Latest Send Timestamp"
+  physical_name: "latest_send_tms"
+  description: "Thời điểm gửi muộn nhất trong kỳ (ngày/giờ)."
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.LATEST_SEND_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Latest Send Week Day Number"
+  physical_name: "latest_send_week_day_nbr"
+  description: "Thứ gửi muộn nhất trong tuần: 0=Chủ nhật, 1=Thứ hai...6=Thứ bảy."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.LATEST_SEND_WEEK"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Repeat Count"
+  physical_name: "repeat_count"
+  description: "Số kỳ lặp lại trong một chu kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_PERIOD.REPEAT_TIME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

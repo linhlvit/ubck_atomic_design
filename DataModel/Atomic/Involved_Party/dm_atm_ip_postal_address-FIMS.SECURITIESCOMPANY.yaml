@@ -2,7 +2,7 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-ip_postal_address-FIMS.INVESTOR
+  id: ATM-ip_postal_address-FIMS.SECURITIESCOMPANY
   logical_name: Involved Party Postal Address
   physical_name: ip_postal_address
   layer: Atomic
@@ -19,35 +19,35 @@ ldm:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-FIMS-INVESTOR
+    brd: BRD-SRC-FIMS-SECURITIESCOMPANY
 
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Foreign Investor (Involved Party).
+    business_meaning: FK đến Securities Company (Involved Party).
     data_domain: Surrogate Key
     data_type: string
     nullable: false
     is_primary_key: true
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.TransactionCode
-    comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.Id
+    comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Involved Party Code
     physical_name: ip_code
-    business_meaning: Mã Foreign Investor.
+    business_meaning: Mã Securities Company.
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.TransactionCode
-    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.Id
+    comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -58,24 +58,24 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
+    source_table: SECURITIESCOMPANY
     source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: FIMS_INVESTOR
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: FIMS_SECURITIESCOMPANY
 
   - name: Address Type Code
     physical_name: adr_tp_code
-    business_meaning: Loại địa chỉ.
+    business_meaning: Loại địa chỉ — trụ sở/văn phòng.
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: true
     source_system: FIMS
-    source_table: INVESTOR
+    source_table: SECURITIESCOMPANY
     source_column: null
     comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 loại địa chỉ (trụ sở/văn phòng) — hardcode HEAD_OFFICE."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: HEAD_OFFICE
 
   - name: Address Value
@@ -86,8 +86,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.Address
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.Address
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null

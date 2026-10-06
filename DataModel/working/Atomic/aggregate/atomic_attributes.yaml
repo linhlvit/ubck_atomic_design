@@ -22553,6 +22553,2905 @@ attributes:
   atomic_table: "fir_value"
   atomic_column: "submission_dt"
   data_type: "date"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Member Rating Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\". Kết quả\
+    \ xếp hạng của 1 Fund Management Company trong 1 kỳ đánh giá."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "member_rating_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Member Rating Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: "FMS.RANK.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "member_rating_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'FMS_RANK'"
+  etl_derived_value: "FMS_RANK"
+  atomic_table: "member_rating"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Fund Management Company Id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: "FMS.RANK.SEC_ID"
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "fmc_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Fund Management Company Code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: "FMS.RANK.SEC_ID"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "fmc_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Member Rating Period Id"
+  description: "FK -> RATING_PD: Kỳ đánh giá xếp loại."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: "FMS.RANK.RT_PD_ID"
+  comment: "FK target: member_rating_period.member_rating_period_id. Hash: hash_id('FMS_RATING_PD',\
+    \ RT_PD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "m_ember_rating_period_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Member Rating Period Code"
+  description: "Mã kỳ đánh giá xếp loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: "FMS.RANK.RT_PD_ID"
+  comment: "Lookup pair: member_rating_period.member_rating_period_code. Pair with\
+    \ Member Rating Period Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "m_ember_rating_period_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Total Score Amount"
+  description: "Tổng điểm đánh giá xếp loại của công ty QLQ trong kỳ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: "FMS.RANK.TOTAL_SCORE"
+  comment: "[PROPOSE NEW DOMAIN] Bản chất là điểm số (score), không phải currency\
+    \ hay counter — 12 domain chuẩn không có \"Numeric Score\" riêng, tạm dùng Small\
+    \ Counter (cùng data type int/decimal), cần reviewer xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "total_score_amt"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Rank Index"
+  description: "Thứ hạng xếp loại trong nhóm cùng loại (1=Tốt nhất)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: "FMS.RANK.RANK_INDEX"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "rank_index"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Member Rating"
+  atomic_attribute: "Rating Period Type Code"
+  description: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 **và** không nhóm nhân tố nào <\
+    \ 65); 2=B (Tổng điểm ≥ 65 **và** không nhóm nào < 50); 3=C (Tổng điểm ≥ 50 **và**\
+    \ không nhóm nào < 45); 4=D (Các trường hợp còn lại; **hoặc** công ty **không\
+    \ nộp báo cáo** trong kỳ (ép D dù điểm = 0))."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RANK"
+  source_column: "FMS.RANK.RANK_TYPE"
+  comment: "SCHEMA_CODE=FMS.RANK_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "member_rating"
+  atomic_column: "rating_period_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Fund Management Report Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('FMS_RPT_TEMP', ID). BCV: \"[Documentation]\
+    \ Form Document\"."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "fmr_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Fund Management Report Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.ID"
+  comment: "BK chính — ID nguồn (RAW(16), chuyển hex string). Không dùng cột CODE\
+    \ làm BK — CODE giữ ở Report Short Code."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "fmr_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_RPT_TEMP'"
+  etl_derived_value: "FMS_RPT_TEMP"
+  atomic_table: "fund_management_report"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Fund Management Report Name"
+  description: "Tên hiển thị chính của biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "fmr_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Legal Basis"
+  description: "Cơ sở pháp lý của biểu mẫu báo cáo (tên thông tư/nghị định)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.LEGAL_BASIS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "legal_basis"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Fund Management Report Type Code"
+  description: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường, 3=Báo cáo theo\
+    \ yêu cầu, 4=Báo cáo khác."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.REPORT_TYPE"
+  comment: "SCHEMA_CODE=FMS.REPORT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "fmr_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Disclosure Required Indicator"
+  description: "Cờ báo cáo cần công bố thông tin: 1=Cần CBTT, 0=Không."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.REQUIRE_DISCLOSURE"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "disclosure_required_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Version Number"
+  description: "Số phiên bản biểu mẫu/báo cáo."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.VERSION"
+  comment: "Nguồn NUMBER(18,2) — ETL cast sang int. Cần profile xem có phiên bản thập\
+    \ phân (1.5...) không; nếu có cần đổi domain."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "version_nbr"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Classification FMS Fund Type Id"
+  description: "FK -> FUND_TYPE: Loại quỹ đầu tư."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.FTYPE_ID"
+  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE',\
+    \ FTYPE_ID). Cùng pattern lld_FMS_FUNDS.FTYPE_ID."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "cl_fms_fund_tp_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Classification FMS Fund Type Code"
+  description: "Mã loại quỹ đầu tư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.FTYPE_ID"
+  comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification\
+    \ FMS Fund Type Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "cl_fms_fund_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Report Group Code"
+  description: "Nhóm báo cáo"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.REPORT_GROUP"
+  comment: "SCHEMA_CODE=FMS.REPORT_GROUP"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "rpt_group_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "System Object Type Code"
+  description: "Đối tượng hệ thống áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN..."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.SYSTEM_OBJECTS"
+  comment: "SCHEMA_CODE=FMS.SYSTEM_OBJECTS"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "stm_object_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Report Short Code"
+  description: "Mã định danh ngắn gọn của biểu mẫu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.CODE"
+  comment: "Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ ID theo\
+    \ quyết định Data Modeler)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "rpt_short_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Audit Report Indicator"
+  description: "Cờ là báo cáo kiểm toán: 1=Báo cáo kiểm toán, 0=Không."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.AUDIT_REPORT"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "audit_rpt_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Price Check Setting Indicator"
+  description: "Cờ kiểm tra cài đặt giá khi nộp báo cáo: 1=Có kiểm tra, 0=Không."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.CHECK_PRICE_SETTING"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "price_check_setting_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report"
+  atomic_attribute: "Usage Start Date"
+  description: "Ngày bắt đầu áp dụng biểu mẫu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  source_column: "FMS.RPT_TEMP.DATE_USED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fund_management_report"
+  atomic_column: "usage_start_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Fund Management Report Period Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('FMS_RPT_PERIOD', ID). BCV: \"[Documentation]\
+    \ Form Document\"."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "fmr_period_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Fund Management Report Period Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.ID"
+  comment: "BK chính — ID nguồn (RAW(16), chuyển hex string)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "fmr_period_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_RPT_PERIOD'"
+  etl_derived_value: "FMS_RPT_PERIOD"
+  atomic_table: "fmr_period"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Fund Management Report Id"
+  description: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.RPT_ID"
+  comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+    \ RPT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "fmr_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Fund Management Report Code"
+  description: "Mã biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.RPT_ID"
+  comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "fmr_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Report Period Type Code"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm,\
+    \ 7=Nửa tháng."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.PERIOD_TYPE"
+  comment: "SCHEMA_CODE=FMS.PERIOD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "rpt_period_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Send In Day Count"
+  description: "Số ngày phải gửi trong kỳ báo cáo tính từ đầu kỳ."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.SEND_IN_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "send_in_day_count"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Latest Send Timestamp"
+  description: "Thời điểm gửi muộn nhất trong kỳ (ngày/giờ)."
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.LATEST_SEND_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "latest_send_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Latest Send Week Day Number"
+  description: "Thứ gửi muộn nhất trong tuần: 0=Chủ nhật, 1=Thứ hai...6=Thứ bảy."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.LATEST_SEND_WEEK"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "latest_send_week_day_nbr"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Period"
+  atomic_attribute: "Repeat Count"
+  description: "Số kỳ lặp lại trong một chu kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_PERIOD"
+  source_column: "FMS.RPT_PERIOD.REPEAT_TIME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_period"
+  atomic_column: "repeat_count"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Fund Management Report Sheet Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('FMS_SHEET', ID). BCV: \"[Documentation] Form\
+    \ Document\"."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "fmr_sheet_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Fund Management Report Sheet Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: "FMS.SHEET.ID"
+  comment: "BK chính — ID nguồn (RAW(16), chuyển hex string). Không dùng cột CODE\
+    \ làm BK — CODE giữ ở Sheet Short Code."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "fmr_sheet_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_SHEET'"
+  etl_derived_value: "FMS_SHEET"
+  atomic_table: "fmr_sheet"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Fund Management Report Id"
+  description: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: "FMS.SHEET.RPT_ID"
+  comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+    \ RPT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "fmr_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Fund Management Report Code"
+  description: "Mã biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: "FMS.SHEET.RPT_ID"
+  comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "fmr_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Fund Management Report Sheet Name"
+  description: "Tên hiển thị chính của sheet."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: "FMS.SHEET.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "fmr_sheet_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Sheet Index"
+  description: "Thứ tự sheet trong biểu mẫu Excel (bắt đầu từ 0)."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: "FMS.SHEET.SHEET_INDEX"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "sheet_index"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: "FMS.SHEET.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Investment Portfolio Indicator"
+  description: "Cờ sheet là danh mục đầu tư: 1=Là DMĐT, 0=Không."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: "FMS.SHEET.INVESTMENT_PORTFOLIO"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "investment_portfolio_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Sheet"
+  atomic_attribute: "Sheet Short Code"
+  description: "Mã định danh ngắn gọn của sheet."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "SHEET"
+  source_column: "FMS.SHEET.CODE"
+  comment: "Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_sheet"
+  atomic_column: "sheet_short_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Fund Management Report Submission Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('FMS_RPT_MEMBER', ID). BCV: \"[Documentation]\
+    \ Regulatory Report\"."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "fmr_submission_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Fund Management Report Submission Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.ID"
+  comment: "BK chính — ID nguồn (RAW(16), chuyển hex string)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "fmr_submission_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_RPT_MEMBER'"
+  etl_derived_value: "FMS_RPT_MEMBER"
+  atomic_table: "fmr_submission"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Fund Management Report Period Id"
+  description: "FK -> RPT_PERIOD: Kỳ báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.PRD_ID"
+  comment: "FK target: fmr_period.fmr_period_id. Hash: hash_id('FMS_RPT_PERIOD', PRD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "fmr_period_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Fund Management Report Period Code"
+  description: "Mã kỳ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.PRD_ID"
+  comment: "Lookup pair: fmr_period.fmr_period_code. Pair with Fund Management Report\
+    \ Period Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "fmr_period_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Fund Management Report Id"
+  description: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.RPT_ID"
+  comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+    \ RPT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "fmr_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Fund Management Report Code"
+  description: "Mã biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.RPT_ID"
+  comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "fmr_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Report Name"
+  description: "Tên báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.RPT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "rpt_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Report Type Code"
+  description: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường, 3=Báo cáo theo\
+    \ yêu cầu, 4=Báo cáo khác."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.REPORT_TYPE"
+  comment: "SCHEMA_CODE=FMS.REPORT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "rpt_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Imported Indicator"
+  description: "Cờ đã import dữ liệu: 1=Đã import, 0=Chưa import."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.IMPORTED"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "imported_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Submitted Date"
+  description: "Ngày thành viên nộp/gửi báo cáo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.DATE_SUBMITTED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "submitted_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Custodian Bank Id"
+  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.BKM_ID"
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
+    \ BKM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "custodian_bank_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Custodian Bank Code"
+  description: "Mã ngân hàng lưu ký/giám sát liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.BKM_ID"
+  comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "custodian_bank_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Investment Fund Id"
+  description: "FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.FND_ID"
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
+    \ FND_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "investment_fund_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Investment Fund Code"
+  description: "Mã quỹ đầu tư liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.FND_ID"
+  comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
+    \ Fund Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "investment_fund_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Foreign Fund Management Organization Unit Id"
+  description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.FR_BR_ID"
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
+    \ FR_BR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "foreign_fm_ou_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Foreign Fund Management Organization Unit Code"
+  description: "Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.FR_BR_ID"
+  comment: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign Fund\
+    \ Management Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "foreign_fm_ou_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Fund Management Company Id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.SEC_ID"
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "fmc_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Fund Management Company Code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.SEC_ID"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "fmc_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Record Type"
+  description: "Loại/phân loại của bản ghi."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.RECORD_TYPE"
+  comment: "Nguồn NUMBER(38,0) — ETL convert sang string. Mô tả nguồn chung chung,\
+    \ giữ Text denormalized (cùng pattern lld_FMS_BANK_MONI.RECORD_TYPE), cần xác\
+    \ nhận nghiệp vụ."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "record_tp"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Report Date"
+  description: "Ngày lập báo cáo (kỳ ngày)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.DAY_REPORT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "rpt_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Period Value"
+  description: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "period_val"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Report Year"
+  description: "Năm của kỳ báo cáo (định dạng YYYY)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.YEAR_VALUE"
+  comment: "Nguồn NUMBER(18,2) — ETL cast về số nguyên."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "rpt_year"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Report Period Type Code"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm,\
+    \ 7=Nửa tháng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.PERIOD_TYPE"
+  comment: "SCHEMA_CODE=FMS.PERIOD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "rpt_period_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Securities Distribution Agent Id"
+  description: "FK -> DISTRIBUTOR_AGENT: Đại lý phân phối liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.DISTRIBUTOR_ID"
+  comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
+    \ Hash: hash_id('FMS_DISTRIBUTOR_AGENT', DISTRIBUTOR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "securities_distribution_agent_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Securities Distribution Agent Code"
+  description: "Mã đại lý phân phối liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.DISTRIBUTOR_ID"
+  comment: "Lookup pair: securities_distribution_agent.securities_distribution_agent_code.\
+    \ Pair with Securities Distribution Agent Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "securities_distribution_agent_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Member Name"
+  description: "Tên thành viên gửi báo cáo (snapshot tại thời điểm nộp)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.MEMBER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "member_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Classification FMS Event Type Id"
+  description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.EVENT_TYPE_ID"
+  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
+    \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
+    \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier8 6f)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "cl_fms_event_tp_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Classification FMS Event Type Code"
+  description: "Mã loại sự vụ áp dụng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.EVENT_TYPE_ID"
+  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification\
+    \ FMS Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "cl_fms_event_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Submission Deadline Timestamp"
+  description: "Hạn nộp báo cáo (UTC): job tính theo cuối ngày 23:59:00 UTC."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.DEADLINE_SEND"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "submission_deadline_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Value Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('FMS_RPT_VALUES', ID). BCV: \"[Documentation]\
+    \ Regulatory Report\"."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_val_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Value Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.ID"
+  comment: "BK chính — ID nguồn (RAW(16), chuyển hex string). DDL không khai PK cho\
+    \ RPT_VALUES (ID NOT NULL nhưng cột Khóa trống) — cần profile xác nhận ID duy\
+    \ nhất; nếu không, đổi sang composite (MEB_ID, SHEET_ID, CODE, ROW_DYNAMIC)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_val_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_RPT_VALUES'"
+  etl_derived_value: "FMS_RPT_VALUES"
+  atomic_table: "fmr_value"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Submission Id"
+  description: "FK -> RPT_MEMBER: Báo cáo thành viên."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.MEB_ID"
+  comment: "FK target: fmr_submission.fmr_submission_id. Hash: hash_id('FMS_RPT_MEMBER',\
+    \ MEB_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_submission_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Submission Code"
+  description: "Mã báo cáo thành viên."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.MEB_ID"
+  comment: "Lookup pair: fmr_submission.fmr_submission_code. Pair with Fund Management\
+    \ Report Submission Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_submission_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Sheet Id"
+  description: "FK -> SHEET: Sheet biểu mẫu báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.SHEET_ID"
+  comment: "FK target: fmr_sheet.fmr_sheet_id. Hash: hash_id('FMS_SHEET', SHEET_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_sheet_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Sheet Code"
+  description: "Mã sheet biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.SHEET_ID"
+  comment: "Lookup pair: fmr_sheet.fmr_sheet_code. Pair with Fund Management Report\
+    \ Sheet Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_sheet_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Id"
+  description: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.RPT_ID"
+  comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+    \ RPT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Code"
+  description: "Mã biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.RPT_ID"
+  comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Period Id"
+  description: "FK -> RPT_PERIOD: Kỳ báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.PRD_ID"
+  comment: "FK target: fmr_period.fmr_period_id. Hash: hash_id('FMS_RPT_PERIOD', PRD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_period_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Report Period Code"
+  description: "Mã kỳ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.PRD_ID"
+  comment: "Lookup pair: fmr_period.fmr_period_code. Pair with Fund Management Report\
+    \ Period Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmr_period_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Cell Value"
+  description: "Giá trị của ô dữ liệu trong báo cáo (DDL không có mô tả)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.VALUES"
+  comment: "Cột nguồn tên 'VALUES' (từ khóa Oracle) — đặt tên vật lý cell_val. Nguồn\
+    \ NVARCHAR2(4000) lưu cả số lẫn text → giữ Text (khác IDS fr_value.data_val Currency\
+    \ Amount)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "cell_val"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Dynamic Value Indicator"
+  description: "Cờ giá trị là động (tính real-time): 1=Động, 0=Nhập tĩnh."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.DYNAMIC_VALUE"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "dynamic_val_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Accumulated Value"
+  description: "Giá trị lũy kế/tích lũy của ô báo cáo tổng hợp (lũy kế nhiều kỳ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.ACC_VALUES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "accumulated_val"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Report Period Type Code"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm,\
+    \ 7=Nửa tháng."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.PERIOD_TYPE"
+  comment: "SCHEMA_CODE=FMS.PERIOD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "rpt_period_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Format Data Type Code"
+  description: "Kiểu định dạng hiển thị giá trị ô báo cáo đầu ra (NUMBER, PERCENT,\
+    \ TEXT...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.FORMAT_DATA_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "format_data_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Custodian Bank Id"
+  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.BKM_ID"
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
+    \ BKM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "custodian_bank_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Custodian Bank Code"
+  description: "Mã ngân hàng lưu ký/giám sát liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.BKM_ID"
+  comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "custodian_bank_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Investment Fund Id"
+  description: "FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.FND_ID"
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
+    \ FND_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "investment_fund_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Investment Fund Code"
+  description: "Mã quỹ đầu tư liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.FND_ID"
+  comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
+    \ Fund Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "investment_fund_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Foreign Fund Management Organization Unit Id"
+  description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.FR_BR_ID"
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
+    \ FR_BR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "foreign_fm_ou_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Foreign Fund Management Organization Unit Code"
+  description: "Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.FR_BR_ID"
+  comment: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign Fund\
+    \ Management Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "foreign_fm_ou_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Company Id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.SEC_ID"
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmc_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Fund Management Company Code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.SEC_ID"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "fmc_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Record Type"
+  description: "Loại/phân loại của bản ghi."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.RECORD_TYPE"
+  comment: "Nguồn NUMBER(38,0) — ETL convert sang string. Mô tả nguồn chung chung,\
+    \ cần xác nhận nghiệp vụ."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "record_tp"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Period Value"
+  description: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "period_val"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Report Year"
+  description: "Năm của kỳ báo cáo (định dạng YYYY)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.YEAR_VALUE"
+  comment: "Nguồn NUMBER(18,2) — ETL cast về số nguyên."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "rpt_year"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Value"
+  atomic_attribute: "Dynamic Row Number"
+  description: "Số thứ tự hàng động trong sheet báo cáo tổng hợp (dành cho bảng dữ\
+    \ liệu mở rộng)."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_VALUES"
+  source_column: "FMS.RPT_VALUES.ROW_DYNAMIC"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_value"
+  atomic_column: "dynamic_row_nbr"
+  data_type: "int"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Fund Management Company Insider Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Cổ đông nội bộ/người\
+    \ có liên quan của Fund Management Company."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_insider_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Fund Management Company Insider Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_insider_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'FMS_INSIDER'"
+  etl_derived_value: "FMS_INSIDER"
+  atomic_table: "fmc_insider"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Fund Management Company Id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan đến giao dịch nội bộ."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.SC_ID"
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+    \ SC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Fund Management Company Code"
+  description: "Mã công ty QLQ liên quan đến giao dịch nội bộ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.SC_ID"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Classification FMS Stockholder Type Id"
+  description: "FK -> STOCKHOLDER_TYPE: Loại cổ đông."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.S_ID"
+  comment: "FK target: cl_fms_stockholder_type.cl_fms_stockholder_tp_id. Hash: hash_id('FMS_STOCKHOLDER_TYPE',\
+    \ S_ID). [SỬA 2026-10-02] Trước đây hiểu sai S_ID là FK sang SECURITIES (Employer\
+    \ Fund Management Company); theo BRD fk_note S_ID → STOCKHOLDER_TYPE.ID."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "cl_fms_stockholder_tp_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Classification FMS Stockholder Type Code"
+  description: "Mã loại cổ đông (BK của bảng danh mục STOCKHOLDER_TYPE — chính là\
+    \ ID nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.S_ID"
+  comment: "Lookup pair: cl_fms_stockholder_type.cl_fms_stockholder_tp_code. Pair\
+    \ with Classification FMS Stockholder Type Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "cl_fms_stockholder_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Nationality Id"
+  description: "FK đến Geographic Area (quốc tịch)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.NAT_ID"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INSIDER.NAT_ID = NATIONAL.ID\
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "nationality_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Nationality Code"
+  description: "Mã quốc gia/quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.NATIONAL.SNAME"
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
+    \ Nationality Id. Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết\
+    \ xem comment Nationality Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "nationality_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Fund Management Company Employee Id"
+  description: "FK -> TL_PROFILES: Người hành nghề liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.TLPRO_ID"
+  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
+    \ TLPRO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_employee_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Fund Management Company Employee Code"
+  description: "Mã người hành nghề liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.TLPRO_ID"
+  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management\
+    \ Company Employee Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_employee_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Fund Management Company Insider Full Name"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_insider_full_nm"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Insider Registration Number"
+  description: "Số định danh nội bộ của cổ đông nội bộ trong công ty QLQ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.INSIDER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "insider_registration_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Key Person Linked Indicator"
+  description: "Cờ cổ đông nội bộ là người hành nghề (TL_PROFILES): 1=Có liên kết,\
+    \ 0=Không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.TL_PROFILE_LINKED"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "key_person_linked_ind"
+  data_type: "int"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Practitioner Affiliated Fund Management Company Indicator"
+  description: "Cờ người hành nghề thuộc công ty QLQ này: 1=Thuộc, 0=Không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.TL_PROFILE_IN_SEC"
+  comment: "Giá trị 1 → true; 0 → false. [ĐỔI TÊN 2026-07-19] Đổi từ 'Key Person In\
+    \ Company Flag' theo yêu cầu Data Modeler — tên cũ chưa sát nghĩa (cờ xác định\
+    \ practitioner liên kết (TL_PROFILE_LINKED) có thuộc chính Fund Management Company\
+    \ đang xét hay công ty khác)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "practitioner_affiliated_fmc_ind"
+  data_type: "int"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Insider Type Code"
+  description: "Loại cổ đông nội bộ: 1=FOUNDING_PARTNER (Cổ đông sáng lập); 2=MAJOR_SHAREHOLDER\
+    \ (Cổ đông lớn);3=ORDINARY_SHAREHOLDER (Cổ đông thường); 4=OWNER (Chủ sở hữu);\
+    \ 5=FOUNDING_MEMBER (Thành viên sáng lập); 6=CAPITAL_MEMBER (Thành viên vốn góp)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.INSIDER_TYPE"
+  comment: "SCHEMA_CODE=FMS.INSIDER_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "insider_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Contributed Capital Amount"
+  description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.CAPITAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "contributed_capital_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Held Unit Quantity"
+  description: "Số lượng CCQ/cổ phiếu nắm giữ."
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "held_unit_quantity"
+  data_type: "bigint"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Representation Percentage"
+  description: "Tỷ lệ đại diện theo ủy quyền (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.REPRECENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "representation_percentage"
+  data_type: "decimal(5,2)"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Percentage Determination Date"
+  description: "Ngày xác định tỷ lệ sở hữu/đại diện."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.PER_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "percentage_determination_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Birth Date"
+  description: "Ngày sinh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.BIRTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "birth_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Employment Start Date"
+  description: "Ngày bắt đầu làm việc (khi insider là nhân sự công ty QLQ)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.S_WORK_DTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "employment_start_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Employment Status Code"
+  description: "Trạng thái hợp đồng lao động: 1=Còn hiệu lực, 2=Hết hiệu lực, 3=Vô\
+    \ thời hạn."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.EMPLOY_STATUS"
+  comment: "SCHEMA_CODE=FMS.EMPLOYMENT_STATUS. ETL map: 1=ACTIVE;2=EXPIRED;3=INDEFINITE."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "employment_status_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Decision Document Number"
+  description: "Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.GP_QD_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "decision_document_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Approval Date"
+  description: "Ngày chấp thuận/phê duyệt của UBCKNN."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.APPROVAL_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "approval_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Fund Management Company Insider"
+  atomic_attribute: "Insider Start Date"
+  description: "Ngày bắt đầu làm cổ đông (TVS2601TK-4003) - kỳ báo cáo lấy từ tháng\
+    \ phát sinh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "INSIDER"
+  source_column: "FMS.INSIDER.INSIDER_START_DATE"
+  comment: "Khác với Start Work Date (S_WORK_DTE — ngày bắt đầu làm việc khi insider\
+    \ là nhân sự công ty QLQ). DDL UAT 1 bổ sung (TVS2601TK-4003)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_insider"
+  atomic_column: "insider_start_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Investment Fund Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Involved Party] Funds\" (id 10821). Quỹ đầu tư chứng\
+    \ khoán — định chế đầu tư đóng vai trò Involved Party."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "investment_fund_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Investment Fund Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "investment_fund_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'FMS_FUNDS'"
+  etl_derived_value: "FMS_FUNDS"
+  atomic_table: "investment_fund"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Fund Management Company Id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.SEC_ID"
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "fmc_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Fund Management Company Code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.SEC_ID"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "fmc_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Custodian Bank Id"
+  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.BANK_ID"
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
+    \ BANK_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "custodian_bank_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Custodian Bank Code"
+  description: "Mã ngân hàng lưu ký/giám sát liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.BANK_ID"
+  comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "custodian_bank_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Classification FMS Status Id"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.STATUS_ID"
+  comment: "FK target: cl_fms_status.cl_fms_status_id. Cần ETL crosswalk sang FMS.STATUS:\
+    \ FUNDS.STATUS_ID = STATUS.ID để xác nhận CODE sau đó hash_id('FMS_STATUS', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "cl_fms_status_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Classification FMS Status Code"
+  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh\
+    \ mục STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.STATUS.CODE"
+  comment: "Lookup pair: cl_fms_status.cl_fms_status_code. Pair with Classification\
+    \ FMS Status Id. Giá trị lấy từ FMS.STATUS.CODE sau ETL crosswalk — chi tiết xem\
+    \ comment Classification FMS Status Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "cl_fms_status_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Investment Fund Full Name"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "investment_fund_full_nm"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Investment Fund English Name"
+  description: "Tên tiếng Anh đầy đủ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.ENAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "investment_fund_english_nm"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Investment Fund Short Name"
+  description: "Tên viết tắt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.SHORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "investment_fund_short_nm"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "TICKER SYMBOL"
+  description: "Mã chứng chỉ quỹ (ticker symbol trên sàn giao dịch)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.CER_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "ticker_symbol"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Classification FMS Fund Type Id"
+  description: "FK -> FUND_TYPE: Loại quỹ đầu tư."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.FTYPE_ID"
+  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE',\
+    \ FTYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "cl_fms_fund_tp_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Classification FMS Fund Type Code"
+  description: "Mã loại quỹ đầu tư (BK của bảng danh mục FUND_TYPE — chính là ID nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.FTYPE_ID"
+  comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification\
+    \ FMS Fund Type Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "cl_fms_fund_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Charter Capital Amount"
+  description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.CAPITAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "charter_capital_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Total Outstanding Unit Quantity"
+  description: "Tổng số lượng CCQ/cổ phiếu đang lưu hành."
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.TOTAL_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "total_outstanding_unit_quantity"
+  data_type: "bigint"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Fund Duration Description"
+  description: "Thời hạn hoạt động của quỹ (số năm hoặc 'Vô thời hạn')."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.TIME_OF_FUND"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "fund_duration_description"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Amendment Document Number"
+  description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.VOUCHER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "amendment_document_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Net Asset Value Amount"
+  description: "Giá trị tài sản ròng (NAV) của quỹ (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.NAV"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "net_asset_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Net Asset Value Per Unit Amount"
+  description: "NAV trên mỗi chứng chỉ quỹ - NAV/CCQ (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.NAV_CCQ"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "net_asset_val_per_unit_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Decision Issue Date"
+  description: "Ngày ban hành quyết định/nghị quyết."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.DEC_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "decision_issue_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Unit Par Value Amount"
+  description: "Mệnh giá CCQ (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.PAR_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "unit_par_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Investment Strategy Description"
+  description: "Chiến lược đầu tư của quỹ (mô tả)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.INVES_STRATEGY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "investment_strategy_description"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Change Description"
+  description: "Mô tả thay đổi hồ sơ quỹ khi cập nhật."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.DESCHANGE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "change_description"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Listing Date"
+  description: "Ngày niêm yết CCQ trên sàn giao dịch chứng khoán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.LISTING_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "listing_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Initial Offering Unit Quantity"
+  description: "Số lượng CCQ phát hành lần đầu tiên."
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.NUMBER_FUND_CER_FIRST"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "initial_offering_unit_quantity"
+  data_type: "bigint"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Investment Fund"
+  atomic_attribute: "Open Fund Type Code"
+  description: "Phân loại quỹ mở: EQUITY/BOND/BALANCED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FUNDS"
+  source_column: "FMS.FUNDS.OPEN_FUND_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "investment_fund"
+  atomic_column: "open_fund_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Agency Type"
+  atomic_attribute: "Classification FMS Agency Type Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "AGENCY_TYPE"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('FMS_AGENCY_TYPE', ID). BCV: \"[Common] Agent\
+    \ Type\" (BCV: phân biệt các đại lý theo hoạt động cụ thể thực hiện thay mặt người\
+    \ ủy quyền). Danh mục loại đại lý quỹ đầu tư."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_agency_type"
+  atomic_column: "cl_fms_agency_tp_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Agency Type"
+  atomic_attribute: "Classification FMS Agency Type Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "AGENCY_TYPE"
+  source_column: "FMS.AGENCY_TYPE.ID"
+  comment: "BK chính. PK nguồn — không có cột mã nghiệp vụ riêng."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_agency_type"
+  atomic_column: "cl_fms_agency_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Agency Type"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "AGENCY_TYPE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_AGENCY_TYPE'"
+  etl_derived_value: "FMS_AGENCY_TYPE"
+  atomic_table: "cl_fms_agency_type"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Agency Type"
+  atomic_attribute: "Classification FMS Agency Type Name"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "AGENCY_TYPE"
+  source_column: "FMS.AGENCY_TYPE.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_agency_type"
+  atomic_column: "cl_fms_agency_tp_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Agency Type"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "AGENCY_TYPE"
+  source_column: "FMS.AGENCY_TYPE.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_agency_type"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Status"
+  atomic_attribute: "Classification FMS Status Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "STATUS"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('FMS_STATUS', CODE). BCV: \"[Common] Involved\
+    \ Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh\
+    \ mục trạng thái hoạt động của thành viên thị trường."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_status"
+  atomic_column: "cl_fms_status_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Status"
+  atomic_attribute: "Classification FMS Status Code"
+  description: "Mã trạng thái nghiệp vụ (vd. CTQLQ_HD). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "STATUS"
+  source_column: "FMS.STATUS.CODE"
+  comment: "BK duy nhất của entity. Nguồn nullable (unique khi có giá trị) — cần profile\
+    \ dữ liệu xác nhận NOT NULL/unique trước go-live vì Code đóng vai trò BK và đầu\
+    \ vào hash Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_status"
+  atomic_column: "cl_fms_status_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Status"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "STATUS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_STATUS'"
+  etl_derived_value: "FMS_STATUS"
+  atomic_table: "cl_fms_status"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Status"
+  atomic_attribute: "Classification FMS Status Name"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "STATUS"
+  source_column: "FMS.STATUS.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_status"
+  atomic_column: "cl_fms_status_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Status"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "STATUS"
+  source_column: "FMS.STATUS.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_status"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Status"
+  atomic_attribute: "Object Type Code"
+  description: "Loại đối tượng áp dụng"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "STATUS"
+  source_column: "FMS.STATUS.TYPE_SEC"
+  comment: "SCHEMA_CODE=FMS.SYSTEM_OBJECT"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_status"
+  atomic_column: "object_tp_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FMS Status"
+  atomic_attribute: "Report Submission Required Indicator"
+  description: "Cờ trạng thái phải nộp báo cáo: 1=Phải nộp, 0=Không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "STATUS"
+  source_column: "FMS.STATUS.SUBMIT_REPORT"
+  comment: "NUMBER(1). Cùng pattern rpt_submission_required_ind của Classification\
+    \ Securities Company Firm Status (SCMS)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_fms_status"
+  atomic_column: "rpt_submission_required_ind"
+  data_type: "int"
 - bcv_core_object: "Documentation"
   atomic_entity: "Public Company Report Submission"
   atomic_attribute: "Public Company Report Submission Id"
@@ -38118,458 +41017,6 @@ attributes:
   atomic_column: "fmc_employee_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Fund Management Company Insider Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Cổ đông nội bộ/người\
-    \ có liên quan của Fund Management Company."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "fmc_insider_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Fund Management Company Insider Code"
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.ID"
-  comment: "BK chính. PK nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "fmc_insider_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'FMS_INSIDER'"
-  etl_derived_value: "FMS_INSIDER"
-  atomic_table: "fmc_insider"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Fund Management Company Id"
-  description: "FK -> SECURITIES: Công ty QLQ liên quan đến giao dịch nội bộ."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.SC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SC_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "fmc_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Fund Management Company Code"
-  description: "Mã công ty QLQ liên quan đến giao dịch nội bộ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.SC_ID"
-  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
-    \ Company Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "fmc_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Employer Fund Management Company Id"
-  description: "FK -> SECURITIES: Công ty QLQ mà người nội bộ thuộc về."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.S_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ S_ID). Xem T5-04 — cần xác nhận quan hệ với Fund Management Company Id (SC_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "employer_fmc_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Employer Fund Management Company Code"
-  description: "Mã công ty QLQ mà người nội bộ thuộc về."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.S_ID"
-  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Employer Fund\
-    \ Management Company Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "employer_fmc_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Nationality Id"
-  description: "FK đến Geographic Area (quốc tịch)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.NAT_ID"
-  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-    \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INSIDER.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
-    \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "nationality_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Nationality Code"
-  description: "Mã quốc gia/quốc tịch."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.NATIONAL.SNAME"
-  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
-    \ Nationality Id. Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết\
-    \ xem comment Nationality Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "nationality_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Fund Management Company Employee Id"
-  description: "FK -> TL_PROFILES: Người hành nghề liên quan."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.TLPRO_ID"
-  comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS_TL_PROFILES',\
-    \ TLPRO_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "fmc_employee_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Fund Management Company Employee Code"
-  description: "Mã người hành nghề liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.TLPRO_ID"
-  comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with Fund Management\
-    \ Company Employee Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "fmc_employee_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Fund Management Company Insider Full Name"
-  description: "Tên hiển thị chính."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.ITEM_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "fmc_insider_full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Insider Registration Number"
-  description: "Số định danh nội bộ của cổ đông nội bộ trong công ty QLQ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.INSIDER_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "insider_registration_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Key Person Linked Flag"
-  description: "Cờ cổ đông nội bộ là người hành nghề (TL_PROFILES): 1=Có liên kết,\
-    \ 0=Không."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.TL_PROFILE_LINKED"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "key_person_linked_flag"
-  data_type: "int"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Practitioner Affiliated Fund Management Company Flag"
-  description: "Cờ người hành nghề thuộc công ty QLQ này: 1=Thuộc, 0=Không."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.TL_PROFILE_IN_SEC"
-  comment: "Giá trị 1 → true; 0 → false. [ĐỔI TÊN 2026-07-19] Đổi từ 'Key Person In\
-    \ Company Flag' theo yêu cầu Data Modeler — tên cũ chưa sát nghĩa (cờ xác định\
-    \ practitioner liên kết (TL_PROFILE_LINKED) có thuộc chính Fund Management Company\
-    \ đang xét hay công ty khác)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "practitioner_affiliated_fmc_flag"
-  data_type: "int"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Insider Type Code"
-  description: "Loại cổ đông nội bộ: 1=Cổ đông lớn, 2=Ban điều hành, 3=HĐQT..."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.INSIDER_TYPE"
-  comment: "Scheme: FMS_INSIDER_TYPE (đã đăng ký sẵn trong classification_schemes.yaml).\
-    \ ETL map: 1=MAJOR_SHAREHOLDER;2=EXECUTIVE;3=BOARD_MEMBER."
-  classification_context: "FMS_INSIDER_TYPE"
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "insider_tp_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Contributed Capital Amount"
-  description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.CAPITAL"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "contributed_capital_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Held Unit Quantity"
-  description: "Số lượng CCQ/cổ phiếu nắm giữ."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.QTTY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "held_unit_quantity"
-  data_type: "int"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Representation Percentage"
-  description: "Tỷ lệ đại diện theo ủy quyền (%)."
-  data_domain: "Percentage"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.REPRECENT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "representation_percentage"
-  data_type: "decimal(5,2)"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Percentage Determination Date"
-  description: "Ngày xác định tỷ lệ sở hữu/đại diện."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.PER_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "percentage_determination_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Active Status Flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "active_status_flag"
-  data_type: "int"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Description"
-  description: "Mô tả chi tiết."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.DESCRIPTION"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Birth Date"
-  description: "Ngày sinh."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.BIRTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "birth_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Employment Start Date"
-  description: "Ngày bắt đầu làm việc (khi insider là nhân sự công ty QLQ)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.S_WORK_DTE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "employment_start_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Employment Status Code"
-  description: "Trạng thái hợp đồng lao động: 1=Còn hiệu lực, 2=Hết hiệu lực, 3=Vô\
-    \ thời hạn."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.EMPLOY_STATUS"
-  comment: "Scheme: FMS_EMPLOYMENT_STATUS. [PROPOSE NEW SCHEME] chưa có trong HLD\
-    \ 6d — bổ sung classification_schemes.yaml. ETL map: 1=ACTIVE;2=EXPIRED;3=INDEFINITE."
-  classification_context: "FMS_EMPLOYMENT_STATUS"
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "employment_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Decision Document Number"
-  description: "Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.GP_QD_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "decision_document_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Fund Management Company Insider"
-  atomic_attribute: "Approval Date"
-  description: "Ngày chấp thuận/phê duyệt của UBCKNN."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "INSIDER"
-  source_column: "FMS.INSIDER.APPROVAL_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fmc_insider"
-  atomic_column: "approval_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Organization Unit"
   atomic_attribute: "Fund Management Company Organization Unit Id"
   description: "Khóa đại diện (surrogate key)."
@@ -39401,499 +41848,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "identity_and_access_management_user"
   atomic_column: "representative_position_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Investment Fund Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Involved Party] Funds\" (id 10821). Quỹ đầu tư chứng\
-    \ khoán — định chế đầu tư đóng vai trò Involved Party."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "investment_fund_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Investment Fund Code"
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.ID"
-  comment: "BK chính. PK nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "investment_fund_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'FMS_FUNDS'"
-  etl_derived_value: "FMS_FUNDS"
-  atomic_table: "investment_fund"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Fund Management Company Id"
-  description: "FK -> SECURITIES: Công ty QLQ liên quan."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "fmc_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Fund Management Company Code"
-  description: "Mã công ty QLQ liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.SEC_ID"
-  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
-    \ Company Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "fmc_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Custodian Bank Id"
-  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.BANK_ID"
-  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
-    \ BANK_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "custodian_bank_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Custodian Bank Code"
-  description: "Mã ngân hàng lưu ký/giám sát liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.BANK_ID"
-  comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank\
-    \ Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "custodian_bank_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Operation Status Code"
-  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.STATUS_ID"
-  comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK — ETL resolve\
-    \ sang mã STATUS.CODE tương ứng."
-  classification_context: "FMS_OPERATION_STATUS"
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "operation_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Investment Fund Full Name"
-  description: "Tên hiển thị chính."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.ITEM_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "investment_fund_full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Investment Fund English Name"
-  description: "Tên tiếng Anh đầy đủ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.ENAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "investment_fund_english_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Investment Fund Short Name"
-  description: "Tên viết tắt."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.SHORT_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "investment_fund_short_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "TICKER SYMBOL"
-  description: "Mã chứng chỉ quỹ (ticker symbol trên sàn giao dịch)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.CER_CODE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "ticker_symbol"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Fund Type Code"
-  description: "FK -> FUND_TYPE: Loại quỹ đầu tư."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.FTYPE_ID"
-  comment: "Scheme: FMS_FUND_TYPE (đã đăng ký). Nguồn FTYPE_ID là UUID FK — ETL resolve\
-    \ sang mã FUND_TYPE.CODE tương ứng."
-  classification_context: "FMS_FUND_TYPE"
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "fund_tp_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Charter Capital Amount"
-  description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.CAPITAL"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "charter_capital_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Total Outstanding Unit Quantity"
-  description: "Tổng số lượng CCQ/cổ phiếu đang lưu hành."
-  data_domain: "Large Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.TOTAL_QTTY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "total_outstanding_unit_quantity"
-  data_type: "bigint"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Description"
-  description: "Mô tả chi tiết."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.DESCRIPTION"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Fund Type Decision Number"
-  description: "Số quyết định về loại hình quỹ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.TYPE_OF_FUND_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "fund_tp_decision_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Fund Type Par Value Description"
-  description: "Mệnh giá CCQ theo loại quỹ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.TYPE_OF_FUND_MNP"
-  comment: "Mô tả nguồn gợi ý giá trị tiền tệ nhưng data type là NVARCHAR2 và tên\
-    \ cột lẫn giữa 'type' và 'mệnh giá' — giữ Text denormalized, cần xác nhận nghiệp\
-    \ vụ trước khi tách sang Currency Amount."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "fund_tp_par_val_description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Fund Type Identifier Description"
-  description: "Loại quỹ theo định danh nội bộ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.TYPE_OF_FUND_DENT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "fund_tp_identifier_description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Fund Duration Description"
-  description: "Thời hạn hoạt động của quỹ (số năm hoặc 'Vô thời hạn')."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.TIME_OF_FUND"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "fund_duration_description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Amendment Document Number"
-  description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.VOUCHER_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "amendment_document_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Net Asset Value Amount"
-  description: "Giá trị tài sản ròng (NAV) của quỹ (đơn vị: VNĐ)."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.NAV"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "net_asset_val_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Net Asset Value Per Unit Amount"
-  description: "NAV trên mỗi chứng chỉ quỹ - NAV/CCQ (đơn vị: VNĐ)."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.NAV_CCQ"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "net_asset_val_per_unit_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Decision Issue Date"
-  description: "Ngày ban hành quyết định/nghị quyết."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.DEC_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "decision_issue_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Unit Par Value Amount"
-  description: "Mệnh giá CCQ (đơn vị: VNĐ)."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.PAR_VALUE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "unit_par_val_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Investment Strategy Description"
-  description: "Chiến lược đầu tư của quỹ (mô tả)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.INVES_STRATEGY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "investment_strategy_description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Change Description"
-  description: "Mô tả thay đổi hồ sơ quỹ khi cập nhật."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.DESCHANGE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "change_description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Listing Date"
-  description: "Ngày niêm yết CCQ trên sàn giao dịch chứng khoán."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.LISTING_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "listing_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Initial Offering Unit Quantity"
-  description: "Số lượng CCQ phát hành lần đầu tiên."
-  data_domain: "Large Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.NUMBER_FUND_CER_FIRST"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "initial_offering_unit_quantity"
-  data_type: "bigint"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Investment Fund"
-  atomic_attribute: "Stock Exchange Name"
-  description: "Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "FUNDS"
-  source_column: "FMS.FUNDS.STOCK_EXCHANGE"
-  comment: "[ĐỔI 2026-07-19] Đổi từ Classification Value sang Text 1:1 theo yêu cầu\
-    \ Data Modeler — map trực tiếp từ nguồn, không qua classification. Đổi tên từ\
-    \ 'Listing Market Code' (tránh trùng tên với attribute cùng ý nghĩa của SECURITIES.MARKET\
-    \ — nay là 'Market Code', vẫn giữ Classification Value FMS_LISTING_MARKET, không\
-    \ đổi)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "investment_fund"
-  atomic_column: "stock_exchange_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Investment Fund Representative Board Member"
@@ -72048,194 +74002,6 @@ attributes:
   atomic_table: "member_inspection_target"
   atomic_column: "target_nm_snpst"
   data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Member Rating Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\". Kết quả\
-    \ xếp hạng của 1 Fund Management Company trong 1 kỳ đánh giá."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "member_rating_id"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Member Rating Code"
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.ID"
-  comment: "BK chính. PK nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "member_rating_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'FMS_RANK'"
-  etl_derived_value: "FMS_RANK"
-  atomic_table: "member_rating"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Fund Management Company Id"
-  description: "FK -> SECURITIES: Công ty QLQ liên quan."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "fmc_id"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Fund Management Company Code"
-  description: "Mã công ty QLQ liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.SEC_ID"
-  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
-    \ Company Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "fmc_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Member Rating Period Id"
-  description: "FK -> RATING_PD: Kỳ đánh giá xếp loại."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.RT_PD_ID"
-  comment: "FK target: member_rating_period.member_rating_period_id. Hash: hash_id('FMS_RATING_PD',\
-    \ RT_PD_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "m_ember_rating_period_id"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Member Rating Period Code"
-  description: "Mã kỳ đánh giá xếp loại."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.RT_PD_ID"
-  comment: "Lookup pair: member_rating_period.member_rating_period_code. Pair with\
-    \ Member Rating Period Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "m_ember_rating_period_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Total Score Amount"
-  description: "Tổng điểm đánh giá xếp loại của công ty QLQ trong kỳ."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.TOTAL_SCORE"
-  comment: "[PROPOSE NEW DOMAIN] Bản chất là điểm số (score), không phải currency\
-    \ hay counter — 12 domain chuẩn không có \"Numeric Score\" riêng, tạm dùng Small\
-    \ Counter (cùng data type int/decimal), cần reviewer xác nhận."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "total_score_amt"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Rank Index"
-  description: "Thứ hạng xếp loại trong nhóm cùng loại (1=Tốt nhất)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.RANK_INDEX"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "rank_index"
-  data_type: "int"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Rating Period Type Code"
-  description: "Loại xếp hạng: 1=Xếp hạng cuối năm, 2=Xếp hạng giữa năm."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.RANK_TYPE"
-  comment: "Scheme: FMS_RATING_PERIOD_TYPE (tái sử dụng — đã đăng ký Tier 1, values\
-    \ gốc YEAR_END=1/MID_YEAR=2 khớp đúng cột này). ETL map: 1=YEAR_END;2=MID_YEAR."
-  classification_context: "FMS_RATING_PERIOD_TYPE"
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "rating_period_tp_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Member Rating"
-  atomic_attribute: "Data Date"
-  description: "Ngày dữ liệu — dùng làm filter logic tải incremental cho bảng Append\
-    \ (nguồn insert-only)."
-  data_domain: "Date"
-  nullable: false
-  is_primary_key: false
-  source_system: "FMS"
-  source_table: "RANK"
-  source_column: "FMS.RANK.DATE_CREATED"
-  comment: "[ĐỔI 2026-07-19] Đổi từ 'Created Timestamp' theo yêu cầu Data Modeler\
-    \ — bảng Append dùng DATE_CREATED làm filter logic tải incremental, nên map vào\
-    \ Data Date (ETL truncate timestamp về granularity ngày) thay vì giữ nguyên như\
-    \ audit timestamp thông thường."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "member_rating"
-  atomic_column: "data_dt"
-  data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Member Rating Criterion"
   atomic_attribute: "Member Rating Criterion Id"

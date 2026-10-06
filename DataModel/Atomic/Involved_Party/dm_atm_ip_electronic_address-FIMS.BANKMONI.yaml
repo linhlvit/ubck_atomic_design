@@ -2,7 +2,7 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-ip_electronic_address-FIMS.INVESTOR
+  id: ATM-ip_electronic_address-FIMS.BANKMONI
   logical_name: Involved Party Electronic Address
   physical_name: ip_electronic_address
   layer: Atomic
@@ -19,35 +19,35 @@ ldm:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-FIMS-INVESTOR
+    brd: BRD-SRC-FIMS-BANKMONI
 
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Foreign Investor (Involved Party).
+    business_meaning: FK đến Custodian Bank (Involved Party).
     data_domain: Surrogate Key
     data_type: string
     nullable: false
     is_primary_key: true
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.TransactionCode
-    comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'EMAIL'"
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Id
+    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI', Id)."
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
   - name: Involved Party Code
     physical_name: ip_code
-    business_meaning: Mã Foreign Investor.
+    business_meaning: Mã Custodian Bank.
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.TransactionCode
-    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'EMAIL'"
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Id
+    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -58,11 +58,11 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
+    source_table: BANKMONI
     source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'EMAIL'"
-    etl_derived_value: FIMS_INVESTOR
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: FIMS_BANKMONI
 
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
@@ -72,10 +72,10 @@ attributes:
     nullable: false
     is_primary_key: true
     source_system: FIMS
-    source_table: INVESTOR
+    source_table: BANKMONI
     source_column: null
-    comment: "Scheme: IP_ELEC_ADDR_TYPE."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'EMAIL'"
+    comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode EMAIL."
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: EMAIL
 
   - name: Electronic Address Value
@@ -86,10 +86,10 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.Email
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Email
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'EMAIL'"
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
   - name: Electronic Address Type Code
@@ -100,10 +100,10 @@ attributes:
     nullable: false
     is_primary_key: true
     source_system: FIMS
-    source_table: INVESTOR
+    source_table: BANKMONI
     source_column: null
-    comment: "Scheme: IP_ELEC_ADDR_TYPE."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'FAX'"
+    comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode FAX."
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: FAX
 
   - name: Electronic Address Value
@@ -114,10 +114,10 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.Fax
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Fax
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Electronic Address Type Code
@@ -128,10 +128,10 @@ attributes:
     nullable: false
     is_primary_key: true
     source_system: FIMS
-    source_table: INVESTOR
+    source_table: BANKMONI
     source_column: null
-    comment: "Scheme: IP_ELEC_ADDR_TYPE."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'PHONE'"
+    comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode PHONE."
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: PHONE
 
   - name: Electronic Address Value
@@ -142,10 +142,10 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.Telephone
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Telephone
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'PHONE'"
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
 
   - name: Electronic Address Type Code
@@ -156,10 +156,10 @@ attributes:
     nullable: false
     is_primary_key: true
     source_system: FIMS
-    source_table: INVESTOR
+    source_table: BANKMONI
     source_column: null
-    comment: "Scheme: IP_ELEC_ADDR_TYPE."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'WEBSITE'"
+    comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode WEBSITE."
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'WEBSITE'"
     etl_derived_value: WEBSITE
 
   - name: Electronic Address Value
@@ -170,8 +170,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.Website
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Website
     comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'WEBSITE'"
+    classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address Type Code = 'WEBSITE'"
     etl_derived_value: null

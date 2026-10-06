@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fims_company_type-FIMS.COMPANYTYPE
+  logical_name: Classification FIMS Company Type
+  physical_name: cl_fims_company_type
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Organization Legal Structure"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  description: |
+    Danh mục loại hình doanh nghiệp của tổ chức thành viên thị trường (FIMS) kèm loại đối tượng áp dụng và mã tham chiếu eCatalog. Promote từ Classification Value (scheme FIMS_COMPANY_TYPE) lên entity riêng; Id hash từ CODE, Code map từ cột CODE.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-COMPANYTYPE
+
+attributes:
+  - name: Classification FIMS Company Type Id
+    physical_name: cl_fims_company_tp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: COMPANYTYPE
+    source_column: FIMS.COMPANYTYPE.CODE
+    comment: "PK surrogate. Hash: hash_id('FIMS_COMPANYTYPE', CODE). BCV: \"[Common] Organization Legal Structure\" (phân biệt Organization theo hình thức/loại hình doanh nghiệp). Danh mục loại hình doanh nghiệp của tổ chức thành viên thị trường."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FIMS Company Type Code
+    physical_name: cl_fims_company_tp_code
+    business_meaning: Mã loại hình doanh nghiệp. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: COMPANYTYPE
+    source_column: FIMS.COMPANYTYPE.CODE
+    comment: "BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (VARCHAR2(40)) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: COMPANYTYPE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_COMPANYTYPE'"
+    etl_derived_value: FIMS_COMPANYTYPE
+
+  - name: Classification FIMS Company Type Name
+    physical_name: cl_fims_company_tp_nm
+    business_meaning: Tên đầy đủ (tiếng Việt) của loại hình doanh nghiệp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: COMPANYTYPE
+    source_column: FIMS.COMPANYTYPE.Name
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: COMPANYTYPE
+    source_column: FIMS.COMPANYTYPE.Description
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Type Code
+    physical_name: object_tp_code
+    business_meaning: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT..."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: COMPANYTYPE
+    source_column: FIMS.COMPANYTYPE.TypeObject
+    comment: "Scheme: FIMS_COMPANY_TYPE_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2) — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TypeObject (kết thúc bằng \"...\") — cần profile dữ liệu xác nhận bộ giá trị."
+    classification_context: FIMS_COMPANY_TYPE_OBJECT_TYPE
+    etl_derived_value: null
+
+  - name: ECatalog Id
+    physical_name: ecatalog_id
+    business_meaning: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng chung eCatalog.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: COMPANYTYPE
+    source_column: FIMS.COMPANYTYPE.ECATALOG_ID
+    comment: "Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần Data Modeler/BA xác nhận."
+    classification_context: null
+    etl_derived_value: null

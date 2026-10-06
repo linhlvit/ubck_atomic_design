@@ -33,7 +33,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "PK surrogate. BCV: \"[Arrangement] Investment Account\". Tài khoản chứng\
-    \ khoán của NĐT NN mở tại công ty CK. Hash: hash_id('FIMS.SECURITIESACCOUNT',\
+    \ khoán của NĐT NN mở tại công ty CK. Hash: hash_id('FIMS_SECURITIESACCOUNT',\
     \ Account)."
   classification_context: null
   etl_derived_value: null
@@ -74,7 +74,7 @@ attributes:
   - "FIMS.SECURITIESACCOUNT.InvesId"
   comment: "FK target: Foreign Investor.Foreign Investor Id. Nguồn lưu ID kỹ thuật\
     \ của INVESTOR — ETL join InvesId → FIMS.INVESTOR.Id để lấy TransactionCode rồi\
-    \ hash_id('FIMS.INVESTOR', TransactionCode)."
+    \ hash_id('FIMS_INVESTOR', TransactionCode)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -103,7 +103,7 @@ attributes:
   - "FIMS.SECURITIESACCOUNT.SecId"
   comment: "FK target: Securities Company.Securities Company Id. Nguồn lưu ID kỹ thuật\
     \ của SCMS.SC_FIRM_INFO — ETL join SecId → SCMS.SC_FIRM_INFO.ID để lấy CODE rồi\
-    \ hash_id('SCMS.SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-21 — thay\
+    \ hash_id('SCMS_SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-21 — thay\
     \ thế placeholder Market Participant Organization/FIMS.SECURITIESCOMPANY trước\
     \ đây (đồng bộ với FIMS.TRADINGAUTHORIZATION.SecComId)."
   classification_context: null

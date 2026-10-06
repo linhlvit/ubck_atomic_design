@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-securities_company-FIMS.SECURITIESCOMPANY
+  logical_name: Securities Company
+  physical_name: securities_company
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Broker Dealer"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Công ty chứng khoán thành viên do UBCKNN quản lý. Ghi nhận thông tin pháp lý toàn diện: tên, địa chỉ, vốn điều lệ, số giấy phép UBCKNN, loại hình doanh nghiệp và trạng thái hoạt động.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-SECURITIESCOMPANY
+
+attributes:
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Broker Dealer\". Công ty chứng khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Khóa chính của bản ghi (ID số tự tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.Id
+    comment: "BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm BK (cùng pattern FIMS.BANKMONI). Nguồn lưu NUMBER(18,2) — ETL cần convert sang string, bỏ phần thập phân .00."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY'"
+    etl_derived_value: FIMS_SECURITIESCOMPANY
+
+  - name: Classification FIMS Status Id
+    physical_name: cl_fims_status_id
+    business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.StatusId
+    comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: SECURITIESCOMPANY.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS', Code)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FIMS Status Code
+    physical_name: cl_fims_status_code
+    business_meaning: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.STATUS.Code
+    comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Name
+    physical_name: sc_nm
+    business_meaning: Tên đầy đủ (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.Name
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company English Name
+    physical_name: sc_english_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.EName
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Short Name
+    physical_name: sc_short_nm
+    business_meaning: Tên viết tắt của tổ chức.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.ShortName
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: FK đến Geographic Area (quốc gia/quốc tịch).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.NaId
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NaId = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc gia/quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.NATIONAL.SName
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_capital_amt
+    business_meaning: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.Capital
+    comment: "Nguồn NUMBER(36,2). Dùng chung attribute với SCMS.SC_FIRM_INFO.CHARTER_CAPITAL."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Director Full Name
+    physical_name: director_full_nm
+    business_meaning: Họ tên Giám đốc/Tổng giám đốc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.Director
+    comment: Denormalized — không có FK.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESCOMPANY
+    source_column: FIMS.SECURITIESCOMPANY.Description
+    comment: null
+    classification_context: null
+    etl_derived_value: null

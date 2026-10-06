@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fmr_period-FMS.RPT_PERIOD
+  logical_name: Fund Management Report Period
+  physical_name: fmr_period
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Cấu hình kỳ báo cáo của biểu mẫu: loại kỳ (ngày/tuần/tháng/quý/bán niên/năm), hạn nộp và hạn công bố thông tin trong kỳ. Con của Fund Management Report.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RPT_PERIOD
+
+attributes:
+  - name: Fund Management Report Period Id
+    physical_name: fmr_period_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('FMS_RPT_PERIOD', ID). BCV: \"[Documentation] Form Document\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fund Management Report Period Code
+    physical_name: fmr_period_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.ID
+    comment: "BK chính — ID nguồn (RAW(16), chuyển hex string)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_RPT_PERIOD'"
+    etl_derived_value: FMS_RPT_PERIOD
+
+  - name: Fund Management Report Id
+    physical_name: fmr_id
+    business_meaning: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.RPT_ID
+    comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP', RPT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fund Management Report Code
+    physical_name: fmr_code
+    business_meaning: Mã biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.RPT_ID
+    comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Period Type Code
+    physical_name: rpt_period_tp_code
+    business_meaning: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.PERIOD_TYPE
+    comment: "SCHEMA_CODE=FMS.PERIOD_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Send In Day Count
+    physical_name: send_in_day_count
+    business_meaning: Số ngày phải gửi trong kỳ báo cáo tính từ đầu kỳ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.SEND_IN_DAY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Latest Send Timestamp
+    physical_name: latest_send_tms
+    business_meaning: Thời điểm gửi muộn nhất trong kỳ (ngày/giờ).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.LATEST_SEND_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Latest Send Week Day Number
+    physical_name: latest_send_week_day_nbr
+    business_meaning: "Thứ gửi muộn nhất trong tuần: 0=Chủ nhật, 1=Thứ hai...6=Thứ bảy."
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.LATEST_SEND_WEEK
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Repeat Count
+    physical_name: repeat_count
+    business_meaning: Số kỳ lặp lại trong một chu kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_PERIOD
+    source_column: FMS.RPT_PERIOD.REPEAT_TIME
+    comment: null
+    classification_context: null
+    etl_derived_value: null

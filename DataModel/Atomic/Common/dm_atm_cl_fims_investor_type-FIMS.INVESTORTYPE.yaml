@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fims_investor_type-FIMS.INVESTORTYPE
+  logical_name: Classification FIMS Investor Type
+  physical_name: cl_fims_investor_type
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Involved Party Type"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  description: |
+    Danh mục loại nhà đầu tư nước ngoài (FIMS) kèm mã tham chiếu eCatalog. Promote từ Classification Value (scheme FIMS_INVESTOR_TYPE, nay deprecated) lên entity riêng; Id hash từ SNAME, Code map từ SNAME. Được tham chiếu bởi Foreign Investor.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-INVESTORTYPE
+
+attributes:
+  - name: Classification FIMS Investor Type Id
+    physical_name: cl_fims_investor_tp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: INVESTORTYPE
+    source_column: FIMS.INVESTORTYPE.SName
+    comment: "PK surrogate. Hash: hash_id('FIMS_INVESTORTYPE', SNAME) — hash từ SNAME theo chỉ đạo Data Modeler (SNAME là BK). BCV: \"[Common] Involved Party Type\" — danh mục loại nhà đầu tư nước ngoài."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FIMS Investor Type Code
+    physical_name: cl_fims_investor_tp_code
+    business_meaning: Mã nghiệp vụ loại nhà đầu tư nước ngoài. Map từ SNAME — Tên viết tắt / tên ngắn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTORTYPE
+    source_column: FIMS.INVESTORTYPE.SName
+    comment: "BK duy nhất của entity, đồng thời là đầu vào hash Id. Nguồn NVARCHAR2(20) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTORTYPE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_INVESTORTYPE'"
+    etl_derived_value: FIMS_INVESTORTYPE
+
+  - name: Classification FIMS Investor Type Name
+    physical_name: cl_fims_investor_tp_nm
+    business_meaning: Tên đầy đủ (tiếng Việt) của loại nhà đầu tư nước ngoài.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTORTYPE
+    source_column: FIMS.INVESTORTYPE.Name
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTORTYPE
+    source_column: FIMS.INVESTORTYPE.Description
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: ECatalog Id
+    physical_name: ecatalog_id
+    business_meaning: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng chung eCatalog.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTORTYPE
+    source_column: FIMS.INVESTORTYPE.ECATALOG_ID
+    comment: "Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần Data Modeler/BA xác nhận (cùng trường hợp NHNCK.DEPARTMENTS.ECATALOG_ID)."
+    classification_context: null
+    etl_derived_value: null

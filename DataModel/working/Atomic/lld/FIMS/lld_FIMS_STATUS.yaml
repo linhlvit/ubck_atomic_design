@@ -1,0 +1,111 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "STATUS"
+  atomic_entity: "Classification FIMS Status"
+  entity_physical_name: "cl_fims_status"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Involved Party Life Cycle Status"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-10-05"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-05] Promote từ Classification Value (scheme FIMS_ACTIVITY_STATUS) lên entity riêng, cùng pattern Classification FMS Status. Cấu trúc cột theo DDL UAT 1 (FIMS_UAT_schema 2.txt) — có thêm Code và ECATALOG_ID so với bản DDL đầu. Theo chỉ đạo Data Modeler: chỉ map Code, Name, TypeObject, Description, ECATALOG_ID; surrogate Id hash từ Code (BK = Code, nguồn nullable). Id, Deleted, DateCreated, CreatedBy, DateModified, ModifyBy, IsActive, IsSubmitReport, Icon, Color, IdOld không map — document trong pending_design.yaml. Các entity FIMS tiêu thụ StatusId (ID kỹ thuật) chưa đồng bộ: cần ETL crosswalk STATUS.Id = {TABLE}.StatusId để lấy Code rồi hash_id."
+attributes:
+- attribute_name: "Classification FIMS Status Id"
+  physical_name: "cl_fims_status_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FIMS.STATUS.Code"
+  comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FIMS Status Code"
+  physical_name: "cl_fims_status_code"
+  description: "Mã trạng thái (khóa mapping đồng bộ). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.STATUS.Code"
+  comment: "BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100)) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FIMS_STATUS"
+  etl_derived_value: "FIMS_STATUS"
+  data_type: "string"
+- attribute_name: "Classification FIMS Status Name"
+  physical_name: "cl_fims_status_nm"
+  description: "Tên đầy đủ (tiếng Việt) của trạng thái."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.STATUS.Name"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết / ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.STATUS.Description"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Object Type Code"
+  physical_name: "object_tp_code"
+  description: "Loại đối tượng áp dụng trạng thái: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT..."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.STATUS.TypeObject"
+  comment: "Scheme: FIMS_STATUS_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2) — ETL cần convert sang string. Danh sách giá trị đầy đủ chưa có trong nguồn (mô tả kết thúc bằng \"...\") — cần profile dữ liệu."
+  classification_context: "FIMS_STATUS_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "ECatalog Id"
+  physical_name: "ecatalog_id"
+  description: "Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng chung eCatalog."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.STATUS.ECATALOG_ID"
+  comment: "Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần Data Modeler/BA xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

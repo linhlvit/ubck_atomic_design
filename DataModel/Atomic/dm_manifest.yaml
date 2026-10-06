@@ -600,6 +600,45 @@ entries:
   attribute_count: 8
   brd_ref: BRD-SRC-SCMS-CAT_BUSINESS_LINE
 - subfolder: Common
+  file_name: dm_atm_cl_fims_company_type-FIMS.COMPANYTYPE.yaml
+  id: ATM-cl_fims_company_type-FIMS.COMPANYTYPE
+  physical_name: cl_fims_company_type
+  logical_name: Classification FIMS Company Type
+  bcv_core_object: Common
+  bcv_concept: "[Common] Organization Legal Structure"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-FIMS-COMPANYTYPE
+- subfolder: Common
+  file_name: dm_atm_cl_fims_investor_type-FIMS.INVESTORTYPE.yaml
+  id: ATM-cl_fims_investor_type-FIMS.INVESTORTYPE
+  physical_name: cl_fims_investor_type
+  logical_name: Classification FIMS Investor Type
+  bcv_core_object: Common
+  bcv_concept: "[Common] Involved Party Type"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  status: draft
+  attribute_count: 6
+  brd_ref: BRD-SRC-FIMS-INVESTORTYPE
+- subfolder: Common
+  file_name: dm_atm_cl_fims_status-FIMS.STATUS.yaml
+  id: ATM-cl_fims_status-FIMS.STATUS
+  physical_name: cl_fims_status
+  logical_name: Classification FIMS Status
+  bcv_core_object: Common
+  bcv_concept: "[Common] Involved Party Life Cycle Status"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-FIMS-STATUS
+- subfolder: Common
   file_name: dm_atm_cl_firm_status-SCMS.CAT_SC_FIRM_STATUS.yaml
   id: ATM-cl_firm_status-SCMS.CAT_SC_FIRM_STATUS
   physical_name: cl_firm_status
@@ -612,6 +651,19 @@ entries:
   status: draft
   attribute_count: 14
   brd_ref: BRD-SRC-SCMS-CAT_SC_FIRM_STATUS
+- subfolder: Common
+  file_name: dm_atm_cl_fms_agency_type-FMS.AGENCY_TYPE.yaml
+  id: ATM-cl_fms_agency_type-FMS.AGENCY_TYPE
+  physical_name: cl_fms_agency_type
+  logical_name: Classification FMS Agency Type
+  bcv_core_object: Common
+  bcv_concept: "[Common] Agent Type"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: draft
+  attribute_count: 5
+  brd_ref: BRD-SRC-FMS-AGENCY_TYPE
 - subfolder: Common
   file_name: dm_atm_cl_fms_business-FMS.BUSINESS.yaml
   id: ATM-cl_fms_business-FMS.BUSINESS
@@ -1250,6 +1302,58 @@ entries:
   attribute_count: 30
   brd_ref: BRD-SRC-FIMS-FIR_VALUE
 - subfolder: Documentation
+  file_name: dm_atm_fmr_period-FMS.RPT_PERIOD.yaml
+  id: ATM-fmr_period-FMS.RPT_PERIOD
+  physical_name: fmr_period
+  logical_name: Fund Management Report Period
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: draft
+  attribute_count: 11
+  brd_ref: BRD-SRC-FMS-RPT_PERIOD
+- subfolder: Documentation
+  file_name: dm_atm_fmr_sheet-FMS.SHEET.yaml
+  id: ATM-fmr_sheet-FMS.SHEET
+  physical_name: fmr_sheet
+  logical_name: Fund Management Report Sheet
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-FMS-SHEET
+- subfolder: Documentation
+  file_name: dm_atm_fmr_submission-FMS.RPT_MEMBER.yaml
+  id: ATM-fmr_submission-FMS.RPT_MEMBER
+  physical_name: fmr_submission
+  logical_name: Fund Management Report Submission
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: draft
+  attribute_count: 30
+  brd_ref: BRD-SRC-FMS-RPT_MEMBER
+- subfolder: Documentation
+  file_name: dm_atm_fmr_value-FMS.RPT_VALUES.yaml
+  id: ATM-fmr_value-FMS.RPT_VALUES
+  physical_name: fmr_value
+  logical_name: Fund Management Report Value
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: FMS
+  status: draft
+  attribute_count: 28
+  brd_ref: BRD-SRC-FMS-RPT_VALUES
+- subfolder: Documentation
   file_name: dm_atm_foreign_investor_report-FIMS.FOREIGN_INVESTOR_REPORT.yaml
   id: ATM-foreign_investor_report-FIMS.FOREIGN_INVESTOR_REPORT
   physical_name: foreign_investor_report
@@ -1301,6 +1405,19 @@ entries:
   status: draft
   attribute_count: 14
   brd_ref: BRD-SRC-IDS-DATA
+- subfolder: Documentation
+  file_name: dm_atm_fund_management_report-FMS.RPT_TEMP.yaml
+  id: ATM-fund_management_report-FMS.RPT_TEMP
+  physical_name: fund_management_report
+  logical_name: Fund Management Report
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  status: approved
+  attribute_count: 17
+  brd_ref: BRD-SRC-FMS-RPT_TEMP
 - subfolder: Documentation
   file_name: dm_atm_inspection_conclusion_remedial-THANHTRA.INSPECTION_CONCLUSION_REMEDIAL.yaml
   id: ATM-inspection_conclusion_remedial-THANHTRA.INSPECTION_CONCLUSION_REMEDIAL
@@ -1878,6 +1995,19 @@ entries:
   attribute_count: 6
   brd_ref: BRD-SRC-TTHC-AP_DOCUMENT_APPLICANT
 - subfolder: Involved_Party
+  file_name: dm_atm_custodian_bank-FIMS.BANKMONI.yaml
+  id: ATM-custodian_bank-FIMS.BANKMONI
+  physical_name: custodian_bank
+  logical_name: Custodian Bank
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  status: approved
+  attribute_count: 13
+  brd_ref: BRD-SRC-FIMS-BANKMONI
+- subfolder: Involved_Party
   file_name: dm_atm_custodian_bank-FMS.BANK_MONI.yaml
   id: ATM-custodian_bank-FMS.BANK_MONI
   physical_name: custodian_bank
@@ -2031,7 +2161,7 @@ entries:
   etl_pattern: SCD4A
   source: FIMS
   status: draft
-  attribute_count: 26
+  attribute_count: 27
   brd_ref: BRD-SRC-FIMS-INVESTOR
 - subfolder: Involved_Party
   file_name: dm_atm_fund_distribution_agent-FMS.AGENCIES.yaml
@@ -2096,7 +2226,7 @@ entries:
   etl_pattern: SCD4A
   source: FMS
   status: approved
-  attribute_count: 33
+  attribute_count: 29
   brd_ref: BRD-SRC-FMS-FUNDS
 - subfolder: Involved_Party
   file_name: dm_atm_investment_fund_representative_board_member-FMS.REPRESENT.yaml
@@ -2112,6 +2242,19 @@ entries:
   attribute_count: 17
   brd_ref: BRD-SRC-FMS-REPRESENT
 - subfolder: Involved_Party
+  file_name: dm_atm_ip_alternative_identification-FIMS.BANKMONI.yaml
+  id: ATM-ip_alternative_identification-FIMS.BANKMONI
+  physical_name: ip_alternative_identification
+  logical_name: Involved Party Alternative Identification
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  status: approved
+  attribute_count: 13
+  brd_ref: BRD-SRC-FIMS-BANKMONI
+- subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FIMS.INVESTOR.yaml
   id: ATM-ip_alternative_identification-FIMS.INVESTOR
   physical_name: ip_alternative_identification
@@ -2122,8 +2265,21 @@ entries:
   etl_pattern: SCD4A
   source: FIMS
   status: approved
-  attribute_count: 7
+  attribute_count: 9
   brd_ref: BRD-SRC-FIMS-INVESTOR
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_alternative_identification-FIMS.SECURITIESCOMPANY.yaml
+  id: ATM-ip_alternative_identification-FIMS.SECURITIESCOMPANY
+  physical_name: ip_alternative_identification
+  logical_name: Involved Party Alternative Identification
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  status: approved
+  attribute_count: 13
+  brd_ref: BRD-SRC-FIMS-SECURITIESCOMPANY
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FIMS.TRADINGREPRESENTATIVE.yaml
   id: ATM-ip_alternative_identification-FIMS.TRADINGREPRESENTATIVE
@@ -2437,6 +2593,19 @@ entries:
   attribute_count: 7
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
 - subfolder: Involved_Party
+  file_name: dm_atm_ip_electronic_address-FIMS.BANKMONI.yaml
+  id: ATM-ip_electronic_address-FIMS.BANKMONI
+  physical_name: ip_electronic_address
+  logical_name: Involved Party Electronic Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  status: approved
+  attribute_count: 11
+  brd_ref: BRD-SRC-FIMS-BANKMONI
+- subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-FIMS.INVESTOR.yaml
   id: ATM-ip_electronic_address-FIMS.INVESTOR
   physical_name: ip_electronic_address
@@ -2449,6 +2618,19 @@ entries:
   status: approved
   attribute_count: 11
   brd_ref: BRD-SRC-FIMS-INVESTOR
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_electronic_address-FIMS.SECURITIESCOMPANY.yaml
+  id: ATM-ip_electronic_address-FIMS.SECURITIESCOMPANY
+  physical_name: ip_electronic_address
+  logical_name: Involved Party Electronic Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  status: approved
+  attribute_count: 11
+  brd_ref: BRD-SRC-FIMS-SECURITIESCOMPANY
 - subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-FIMS.TRADINGREPRESENTATIVE.yaml
   id: ATM-ip_electronic_address-FIMS.TRADINGREPRESENTATIVE
@@ -2775,6 +2957,19 @@ entries:
   attribute_count: 7
   brd_ref: BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
 - subfolder: Involved_Party
+  file_name: dm_atm_ip_postal_address-FIMS.BANKMONI.yaml
+  id: ATM-ip_postal_address-FIMS.BANKMONI
+  physical_name: ip_postal_address
+  logical_name: Involved Party Postal Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  status: approved
+  attribute_count: 5
+  brd_ref: BRD-SRC-FIMS-BANKMONI
+- subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-FIMS.INVESTOR.yaml
   id: ATM-ip_postal_address-FIMS.INVESTOR
   physical_name: ip_postal_address
@@ -2787,6 +2982,19 @@ entries:
   status: approved
   attribute_count: 5
   brd_ref: BRD-SRC-FIMS-INVESTOR
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_postal_address-FIMS.SECURITIESCOMPANY.yaml
+  id: ATM-ip_postal_address-FIMS.SECURITIESCOMPANY
+  physical_name: ip_postal_address
+  logical_name: Involved Party Postal Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  status: approved
+  attribute_count: 5
+  brd_ref: BRD-SRC-FIMS-SECURITIESCOMPANY
 - subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-FIMS.TRADINGREPRESENTATIVE.yaml
   id: ATM-ip_postal_address-FIMS.TRADINGREPRESENTATIVE
@@ -3349,6 +3557,19 @@ entries:
   status: draft
   attribute_count: 10
   brd_ref: BRD-SRC-SCMS-LNK_SC_FIRM_SERVICE
+- subfolder: Involved_Party
+  file_name: dm_atm_securities_company-FIMS.SECURITIESCOMPANY.yaml
+  id: ATM-securities_company-FIMS.SECURITIESCOMPANY
+  physical_name: securities_company
+  logical_name: Securities Company
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Broker Dealer"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-FIMS-SECURITIESCOMPANY
 - subfolder: Involved_Party
   file_name: dm_atm_securities_company-SCMS.SC_FIRM_INFO.yaml
   id: ATM-securities_company-SCMS.SC_FIRM_INFO

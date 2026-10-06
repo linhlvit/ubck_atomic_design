@@ -1,0 +1,84 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "AGENCY_TYPE"
+  atomic_entity: "Classification FMS Agency Type"
+  entity_physical_name: "cl_fms_agency_type"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Agent Type"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-06] Promote từ Classification Value (scheme FMS_AGENCY_TYPE, nay deprecated). Không có cột CODE riêng — dùng ID làm BK (cùng pattern FUND_TYPE/JOBS). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME, DESCRIPTION; RECORD_STATUS, DELETED, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Entity tiêu thụ (OTHER_AGENT.AGENCY_TYPE_ID — Other Intermediary Organization Unit) chưa chuyển sang cặp FK Id + Code; chờ Data Modeler xác nhận."
+attributes:
+- attribute_name: "Classification FMS Agency Type Id"
+  physical_name: "cl_fms_agency_tp_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('FMS_AGENCY_TYPE', ID). BCV: \"[Common] Agent Type\" (BCV: phân biệt các đại lý theo hoạt động cụ thể thực hiện thay mặt người ủy quyền). Danh mục loại đại lý quỹ đầu tư."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Agency Type Code"
+  physical_name: "cl_fms_agency_tp_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCY_TYPE.ID"
+  comment: "BK chính. PK nguồn — không có cột mã nghiệp vụ riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_AGENCY_TYPE"
+  etl_derived_value: "FMS_AGENCY_TYPE"
+  data_type: "string"
+- attribute_name: "Classification FMS Agency Type Name"
+  physical_name: "cl_fms_agency_tp_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCY_TYPE.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCY_TYPE.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

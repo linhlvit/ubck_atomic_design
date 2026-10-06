@@ -28,7 +28,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.TransactionCode"
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS.INVESTOR',\
+  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS_INVESTOR',\
     \ TransactionCode)."
   classification_context: "IP_ALT_ID_TYPE=(source)"
   etl_derived_value: null
@@ -113,5 +113,30 @@ attributes:
   - "FIMS.INVESTOR.IdAdd"
   comment: null
   classification_context: "IP_ALT_ID_TYPE=(source)"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ: Giấy phép/Số đăng ký kinh doanh của NĐT tổ chức."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE cho BusinessNumber (chỉ áp dụng NĐT tổ chức, ObjectType=2) — mã gần nhất trong scheme hiện có, cần Data Modeler xác nhận."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: "BUSINESS_LICENSE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số đăng ký kinh doanh/mã số doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.BusinessNumber"
+  comment: "Chỉ áp dụng NĐT tổ chức (Lọc ObjectType=2)."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "string"

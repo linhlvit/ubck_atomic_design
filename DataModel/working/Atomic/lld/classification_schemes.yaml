@@ -879,6 +879,8 @@ schemes:
       - "Fund Distribution Agent"
       - "Other Intermediary Organization Unit"
     values: []
+    deprecated: true
+    deprecated_reason: "FMS.AGENCY_TYPE đã nâng cấp thành Atomic entity thật 'Classification FMS Agency Type' (table_type Relative, HLD FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities) — không còn dùng scheme này (2026-10-06). Entity tiêu thụ Other Intermediary Organization Unit (OTHER_AGENT.AGENCY_TYPE_ID) chờ chuyển sang cặp FK Id + Code."
 
   - scheme_code: "FMS_BUSINESS_TYPE"
     name: "Ngành nghề kinh doanh của công ty QLQ và VPĐD NN"
@@ -1491,6 +1493,7 @@ schemes:
       - "Member Warning Parameter"
       - "Fund Management Conduct Violation"
       - "Classification FMS Status"
+      - "Fund Management Report"
     values:
       - code: "FUND_MANAGEMENT_COMPANY"
         name: "Công ty quản lý quỹ"
@@ -4531,6 +4534,14 @@ schemes:
       - "Trading Authorization"
     values: []
 
+  - scheme_code: "FIMS_STATUS_OBJECT_TYPE"
+    name: "Loại đối tượng áp dụng của danh mục trạng thái FIMS (1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT...)"
+    source_type: "source_table"
+    source_table: "FIMS.STATUS"
+    used_in_entities:
+      - "Classification FIMS Status"
+    values: []
+
   - scheme_code: "FIMS_INVESTOR_TYPE"
     name: "Loại nhà đầu tư nước ngoài"
     source_type: "source_table"
@@ -4545,7 +4556,14 @@ schemes:
     source_table: "FIMS.COMPANYTYPE"
     used_in_entities:
       - "Market Participant Organization"
-      - "Foreign Investor"
+    values: []
+
+  - scheme_code: "FIMS_COMPANY_TYPE_OBJECT_TYPE"
+    name: "Loại đối tượng áp dụng của danh mục loại hình doanh nghiệp FIMS (1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT...)"
+    source_type: "source_table"
+    source_table: "FIMS.COMPANYTYPE"
+    used_in_entities:
+      - "Classification FIMS Company Type"
     values: []
 
   - scheme_code: "FIMS_STOCKHOLDER_TYPE"
@@ -6877,4 +6895,115 @@ schemes:
     source_table: "TTHC.CLASSIFICATION_VALUE"
     used_in_entities:
       - "Administrative Procedure Document"
+    values: []
+
+  - scheme_code: "FMS_REPORT_TYPE"
+    name: "Loại báo cáo FMS: 1=Định kỳ, 2=Bất thường, 3=Theo yêu cầu, 4=Khác"
+    source_type: "etl_derived"
+    source_table: "FMS.RPT_TEMP.REPORT_TYPE"
+    used_in_entities:
+      - "Fund Management Report"
+      - "Fund Management Report Submission"
+    values:
+      - code: "PERIODIC"
+        name: "Báo cáo định kỳ"
+        source_value: "1"
+      - code: "IRREGULAR"
+        name: "Báo cáo bất thường"
+        source_value: "2"
+      - code: "ON_REQUEST"
+        name: "Báo cáo theo yêu cầu"
+        source_value: "3"
+      - code: "OTHER"
+        name: "Báo cáo khác"
+        source_value: "4"
+
+  - scheme_code: "FMS_REPORT_GROUP"
+    name: "Nhóm báo cáo FMS: 1=Công ty QLQ, 2=Quỹ đầu tư, 3=Quỹ hưu trí, 4=Đại lý (mô tả nguồn liệt kê '...', chưa đầy đủ)"
+    source_type: "etl_derived"
+    source_table: "FMS.RPT_TEMP.REPORT_GROUP"
+    used_in_entities:
+      - "Fund Management Report"
+    values:
+      - code: "FUND_MANAGEMENT_COMPANY"
+        name: "Công ty quản lý quỹ"
+        source_value: "1"
+      - code: "INVESTMENT_FUND"
+        name: "Quỹ đầu tư"
+        source_value: "2"
+      - code: "PENSION_FUND"
+        name: "Quỹ hưu trí"
+        source_value: "3"
+      - code: "AGENT"
+        name: "Đại lý"
+        source_value: "4"
+
+  - scheme_code: "FMS_REPORT_PERIOD_TYPE"
+    name: "Loại kỳ báo cáo FMS: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
+    source_type: "etl_derived"
+    source_table: "FMS.RPT_PERIOD.PERIOD_TYPE"
+    used_in_entities:
+      - "Fund Management Report Period"
+      - "Fund Management Report Submission"
+      - "Fund Management Report Value"
+    values:
+      - code: "DAY"
+        name: "Ngày"
+        source_value: "1"
+      - code: "WEEK"
+        name: "Tuần"
+        source_value: "2"
+      - code: "MONTH"
+        name: "Tháng"
+        source_value: "3"
+      - code: "QUARTER"
+        name: "Quý"
+        source_value: "4"
+      - code: "HALF_YEAR"
+        name: "Bán niên"
+        source_value: "5"
+      - code: "YEAR"
+        name: "Năm"
+        source_value: "6"
+      - code: "HALF_MONTH"
+        name: "Nửa tháng"
+        source_value: "7"
+
+  - scheme_code: "FMS_REPORT_RECORD_STATUS"
+    name: "Trạng thái bản ghi biểu mẫu/kỳ/sheet/báo cáo FMS: 1=Đang hoạt động, 0=Ngừng hoạt động"
+    source_type: "etl_derived"
+    source_table: "FMS.RPT_TEMP.RECORD_STATUS"
+    used_in_entities:
+      - "Fund Management Report"
+      - "Fund Management Report Sheet"
+      - "Fund Management Report Period"
+      - "Fund Management Report Submission"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Ngừng hoạt động"
+        source_value: "0"
+
+  - scheme_code: "FMS_REPORT_APPROVAL_ACTION"
+    name: "Kết quả xử lý báo cáo thành viên: 1=Chấp thuận, 2=Từ chối"
+    source_type: "etl_derived"
+    source_table: "FMS.RPT_MEMBER.APPROVAL_ACTION"
+    used_in_entities:
+      - "Fund Management Report Submission"
+    values:
+      - code: "APPROVED"
+        name: "Chấp thuận"
+        source_value: "1"
+      - code: "REJECTED"
+        name: "Từ chối"
+        source_value: "2"
+
+  - scheme_code: "FMS_REPORT_VALUE_FORMAT_TYPE"
+    name: "Kiểu định dạng hiển thị giá trị ô báo cáo (NUMBER, PERCENT, TEXT... — chưa profile values)"
+    source_type: "modeler_defined"
+    source_table: "FMS.RPT_VALUES.FORMAT_DATA_TYPE"
+    used_in_entities:
+      - "Fund Management Report Value"
     values: []

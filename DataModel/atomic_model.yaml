@@ -4971,7 +4971,10 @@ entities:
         comment: null
   - name: Rating Period Type Code
     physical_name: rating_period_tp_code
-    business_meaning_1st: "Loại xếp hạng: 1=Xếp hạng cuối năm, 2=Xếp hạng giữa năm."
+    business_meaning_1st: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 **và** không nhóm nhân\
+      \ tố nào < 65); 2=B (Tổng điểm ≥ 65 **và** không nhóm nào < 50); 3=C (Tổng điểm\
+      \ ≥ 50 **và** không nhóm nào < 45); 4=D (Các trường hợp còn lại; **hoặc** công\
+      \ ty **không nộp báo cáo** trong kỳ (ép D dù điểm = 0))."
     comment_1st: SCHEMA_CODE=FMS.RANK_TYPE
     data_domain_most: Classification Value
     data_type_most: string
@@ -4984,7 +4987,10 @@ entities:
       source_tables:
       - source_table: RANK
         source_column: FMS.RANK.RANK_TYPE
-        business_meaning: "Loại xếp hạng: 1=Xếp hạng cuối năm, 2=Xếp hạng giữa năm."
+        business_meaning: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 **và** không nhóm nhân\
+          \ tố nào < 65); 2=B (Tổng điểm ≥ 65 **và** không nhóm nào < 50); 3=C (Tổng\
+          \ điểm ≥ 50 **và** không nhóm nào < 45); 4=D (Các trường hợp còn lại; **hoặc**\
+          \ công ty **không nộp báo cáo** trong kỳ (ép D dù điểm = 0))."
         comment: SCHEMA_CODE=FMS.RANK_TYPE
 - ldm:
     id: ATM-member_rating_period
@@ -16705,6 +16711,467 @@ entities:
         comment: "Scheme: SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS (đã pre-đăng\
           \ ký trong classification_schemes.yaml, xem SCMS_HLD_Tier1.md 6f T1-09)."
 - ldm:
+    id: ATM-cl_fims_company_type
+    logical_name_1st: Classification FIMS Company Type
+    physical_name_1st: cl_fims_company_type
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Danh mục loại hình doanh nghiệp của tổ chức thành viên thị trường
+      (FIMS) kèm loại đối tượng áp dụng và mã tham chiếu eCatalog. Promote từ Classification
+      Value (scheme FIMS_COMPANY_TYPE) lên entity riêng; Id hash từ CODE, Code map
+      từ cột CODE.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Common
+    bcv_concept_most: "[Common] Organization Legal Structure"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FIMS
+    references:
+      brd:
+      - BRD-SRC-FIMS-COMPANYTYPE
+  attributes:
+  - name: Classification FIMS Company Type Id
+    physical_name: cl_fims_company_tp_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FIMS_COMPANYTYPE', CODE). BCV: \"[Common]\
+      \ Organization Legal Structure\" (phân biệt Organization theo hình thức/loại\
+      \ hình doanh nghiệp). Danh mục loại hình doanh nghiệp của tổ chức thành viên\
+      \ thị trường."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: COMPANYTYPE
+        source_column: FIMS.COMPANYTYPE.CODE
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FIMS_COMPANYTYPE', CODE). BCV: \"[Common]\
+          \ Organization Legal Structure\" (phân biệt Organization theo hình thức/loại\
+          \ hình doanh nghiệp). Danh mục loại hình doanh nghiệp của tổ chức thành\
+          \ viên thị trường."
+  - name: Classification FIMS Company Type Code
+    physical_name: cl_fims_company_tp_code
+    business_meaning_1st: Mã loại hình doanh nghiệp. BK.
+    comment_1st: BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (VARCHAR2(40))
+      — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: COMPANYTYPE
+        source_column: FIMS.COMPANYTYPE.CODE
+        business_meaning: Mã loại hình doanh nghiệp. BK.
+        comment: BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (VARCHAR2(40))
+          — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FIMS_COMPANYTYPE
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: COMPANYTYPE
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Classification FIMS Company Type Name
+    physical_name: cl_fims_company_tp_nm
+    business_meaning_1st: Tên đầy đủ (tiếng Việt) của loại hình doanh nghiệp.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: COMPANYTYPE
+        source_column: FIMS.COMPANYTYPE.Name
+        business_meaning: Tên đầy đủ (tiếng Việt) của loại hình doanh nghiệp.
+        comment: null
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết / ghi chú bổ sung.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: COMPANYTYPE
+        source_column: FIMS.COMPANYTYPE.Description
+        business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+        comment: null
+  - name: Object Type Code
+    physical_name: object_tp_code
+    business_meaning_1st: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT..."
+    comment_1st: "Scheme: FIMS_COMPANY_TYPE_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2)\
+      \ — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TypeObject\
+      \ (kết thúc bằng \"...\") — cần profile dữ liệu xác nhận bộ giá trị."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: COMPANYTYPE
+        source_column: FIMS.COMPANYTYPE.TypeObject
+        business_meaning: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT..."
+        comment: "Scheme: FIMS_COMPANY_TYPE_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2)\
+          \ — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TypeObject\
+          \ (kết thúc bằng \"...\") — cần profile dữ liệu xác nhận bộ giá trị."
+  - name: ECatalog Id
+    physical_name: ecatalog_id
+    business_meaning_1st: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng
+      chung eCatalog.
+    comment_1st: Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần
+      Data Modeler/BA xác nhận.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: COMPANYTYPE
+        source_column: FIMS.COMPANYTYPE.ECATALOG_ID
+        business_meaning: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng
+          chung eCatalog.
+        comment: Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần
+          Data Modeler/BA xác nhận.
+- ldm:
+    id: ATM-cl_fims_investor_type
+    logical_name_1st: Classification FIMS Investor Type
+    physical_name_1st: cl_fims_investor_type
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Danh mục loại nhà đầu tư nước ngoài (FIMS) kèm mã tham chiếu
+      eCatalog. Promote từ Classification Value (scheme FIMS_INVESTOR_TYPE, nay deprecated)
+      lên entity riêng; Id hash từ SNAME, Code map từ SNAME. Được tham chiếu bởi Foreign
+      Investor.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Common
+    bcv_concept_most: "[Common] Involved Party Type"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FIMS
+    references:
+      brd:
+      - BRD-SRC-FIMS-INVESTORTYPE
+  attributes:
+  - name: Classification FIMS Investor Type Id
+    physical_name: cl_fims_investor_tp_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FIMS_INVESTORTYPE', SNAME) — hash từ\
+      \ SNAME theo chỉ đạo Data Modeler (SNAME là BK). BCV: \"[Common] Involved Party\
+      \ Type\" — danh mục loại nhà đầu tư nước ngoài."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTORTYPE
+        source_column: FIMS.INVESTORTYPE.SName
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FIMS_INVESTORTYPE', SNAME) — hash từ\
+          \ SNAME theo chỉ đạo Data Modeler (SNAME là BK). BCV: \"[Common] Involved\
+          \ Party Type\" — danh mục loại nhà đầu tư nước ngoài."
+  - name: Classification FIMS Investor Type Code
+    physical_name: cl_fims_investor_tp_code
+    business_meaning_1st: Mã nghiệp vụ loại nhà đầu tư nước ngoài. Map từ SNAME —
+      Tên viết tắt / tên ngắn.
+    comment_1st: BK duy nhất của entity, đồng thời là đầu vào hash Id. Nguồn NVARCHAR2(20)
+      — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTORTYPE
+        source_column: FIMS.INVESTORTYPE.SName
+        business_meaning: Mã nghiệp vụ loại nhà đầu tư nước ngoài. Map từ SNAME —
+          Tên viết tắt / tên ngắn.
+        comment: BK duy nhất của entity, đồng thời là đầu vào hash Id. Nguồn NVARCHAR2(20)
+          — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FIMS_INVESTORTYPE
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTORTYPE
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Classification FIMS Investor Type Name
+    physical_name: cl_fims_investor_tp_nm
+    business_meaning_1st: Tên đầy đủ (tiếng Việt) của loại nhà đầu tư nước ngoài.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTORTYPE
+        source_column: FIMS.INVESTORTYPE.Name
+        business_meaning: Tên đầy đủ (tiếng Việt) của loại nhà đầu tư nước ngoài.
+        comment: null
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết / ghi chú bổ sung.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTORTYPE
+        source_column: FIMS.INVESTORTYPE.Description
+        business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+        comment: null
+  - name: ECatalog Id
+    physical_name: ecatalog_id
+    business_meaning_1st: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng
+      chung eCatalog.
+    comment_1st: Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần
+      Data Modeler/BA xác nhận (cùng trường hợp NHNCK.DEPARTMENTS.ECATALOG_ID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTORTYPE
+        source_column: FIMS.INVESTORTYPE.ECATALOG_ID
+        business_meaning: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng
+          chung eCatalog.
+        comment: Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần
+          Data Modeler/BA xác nhận (cùng trường hợp NHNCK.DEPARTMENTS.ECATALOG_ID).
+- ldm:
+    id: ATM-cl_fims_status
+    logical_name_1st: Classification FIMS Status
+    physical_name_1st: cl_fims_status
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Danh mục tình trạng hoạt động của đối tượng thành viên thị trường
+      / nhà đầu tư nước ngoài (FIMS) kèm loại đối tượng áp dụng và mã tham chiếu eCatalog.
+      Promote từ Classification Value (scheme FIMS_ACTIVITY_STATUS) lên entity riêng;
+      Id hash từ Code, Code map từ cột Code.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Common
+    bcv_concept_most: "[Common] Involved Party Life Cycle Status"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FIMS
+    references:
+      brd:
+      - BRD-SRC-FIMS-STATUS
+  attributes:
+  - name: Classification FIMS Status Id
+    physical_name: cl_fims_status_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common]\
+      \ Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common).\
+      \ Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu\
+      \ tư."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: STATUS
+        source_column: FIMS.STATUS.Code
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common]\
+          \ Involved Party Life Cycle Status\" (không có term trần \"Status\" trong\
+          \ Common). Danh mục tình trạng hoạt động của đối tượng thành viên thị trường\
+          \ / nhà đầu tư."
+  - name: Classification FIMS Status Code
+    physical_name: cl_fims_status_code
+    business_meaning_1st: Mã trạng thái (khóa mapping đồng bộ). BK.
+    comment_1st: BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100))
+      — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: STATUS
+        source_column: FIMS.STATUS.Code
+        business_meaning: Mã trạng thái (khóa mapping đồng bộ). BK.
+        comment: BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100))
+          — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FIMS_STATUS
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: STATUS
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Classification FIMS Status Name
+    physical_name: cl_fims_status_nm
+    business_meaning_1st: Tên đầy đủ (tiếng Việt) của trạng thái.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: STATUS
+        source_column: FIMS.STATUS.Name
+        business_meaning: Tên đầy đủ (tiếng Việt) của trạng thái.
+        comment: null
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết / ghi chú bổ sung.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: STATUS
+        source_column: FIMS.STATUS.Description
+        business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+        comment: null
+  - name: Object Type Code
+    physical_name: object_tp_code
+    business_meaning_1st: "Loại đối tượng áp dụng trạng thái: 1=QLQ, 2=CTCK, 3=NHLK,\
+      \ 4=NĐT..."
+    comment_1st: "Scheme: FIMS_STATUS_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2)\
+      \ — ETL cần convert sang string. Danh sách giá trị đầy đủ chưa có trong nguồn\
+      \ (mô tả kết thúc bằng \"...\") — cần profile dữ liệu."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: STATUS
+        source_column: FIMS.STATUS.TypeObject
+        business_meaning: "Loại đối tượng áp dụng trạng thái: 1=QLQ, 2=CTCK, 3=NHLK,\
+          \ 4=NĐT..."
+        comment: "Scheme: FIMS_STATUS_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2)\
+          \ — ETL cần convert sang string. Danh sách giá trị đầy đủ chưa có trong\
+          \ nguồn (mô tả kết thúc bằng \"...\") — cần profile dữ liệu."
+  - name: ECatalog Id
+    physical_name: ecatalog_id
+    business_meaning_1st: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng
+      chung eCatalog.
+    comment_1st: Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần
+      Data Modeler/BA xác nhận.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: STATUS
+        source_column: FIMS.STATUS.ECATALOG_ID
+        business_meaning: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng
+          chung eCatalog.
+        comment: Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần
+          Data Modeler/BA xác nhận.
+- ldm:
     id: ATM-cl_firm_status
     logical_name_1st: Classification Firm Status
     physical_name_1st: cl_firm_status
@@ -17003,6 +17470,119 @@ entities:
         business_meaning: Cột active (mô tả gốc BRD trống).
         comment: Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng
           lặp với Record Status Code (RECORD_STATUS).
+- ldm:
+    id: ATM-cl_fms_agency_type
+    logical_name_1st: Classification FMS Agency Type
+    physical_name_1st: cl_fms_agency_type
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Danh mục loại đại lý quỹ đầu tư (đại lý phân phối, đại lý chuyển
+      nhượng, đại lý khác...). Promote từ Classification Value (scheme FMS_AGENCY_TYPE,
+      nay deprecated) lên entity riêng; BK = ID nguồn.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Common
+    bcv_concept_most: "[Common] Agent Type"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-AGENCY_TYPE
+  attributes:
+  - name: Classification FMS Agency Type Id
+    physical_name: cl_fms_agency_tp_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FMS_AGENCY_TYPE', ID). BCV: \"[Common]\
+      \ Agent Type\" (BCV: phân biệt các đại lý theo hoạt động cụ thể thực hiện thay\
+      \ mặt người ủy quyền). Danh mục loại đại lý quỹ đầu tư."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: AGENCY_TYPE
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FMS_AGENCY_TYPE', ID). BCV: \"[Common]\
+          \ Agent Type\" (BCV: phân biệt các đại lý theo hoạt động cụ thể thực hiện\
+          \ thay mặt người ủy quyền). Danh mục loại đại lý quỹ đầu tư."
+  - name: Classification FMS Agency Type Code
+    physical_name: cl_fms_agency_tp_code
+    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    comment_1st: BK chính. PK nguồn — không có cột mã nghiệp vụ riêng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: AGENCY_TYPE
+        source_column: FMS.AGENCY_TYPE.ID
+        business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+        comment: BK chính. PK nguồn — không có cột mã nghiệp vụ riêng.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_AGENCY_TYPE
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: AGENCY_TYPE
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Classification FMS Agency Type Name
+    physical_name: cl_fms_agency_tp_nm
+    business_meaning_1st: Tên hiển thị chính.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: AGENCY_TYPE
+        source_column: FMS.AGENCY_TYPE.ITEM_NAME
+        business_meaning: Tên hiển thị chính.
+        comment: null
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: AGENCY_TYPE
+        source_column: FMS.AGENCY_TYPE.DESCRIPTION
+        business_meaning: Mô tả chi tiết.
+        comment: null
 - ldm:
     id: ATM-cl_fms_business
     logical_name_1st: Classification FMS Business
@@ -17942,8 +18522,8 @@ entities:
         comment: null
   - name: Object Type Code
     physical_name: object_tp_code
-    business_meaning_1st: "Loại đối tượng áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP..."
-    comment_1st: SCHEMA_CODE=FMS.OBJECT_TYPE
+    business_meaning_1st: Loại đối tượng áp dụng
+    comment_1st: SCHEMA_CODE=FMS.SYSTEM_OBJECT
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -17955,8 +18535,8 @@ entities:
       source_tables:
       - source_table: STATUS
         source_column: FMS.STATUS.TYPE_SEC
-        business_meaning: "Loại đối tượng áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP..."
-        comment: SCHEMA_CODE=FMS.OBJECT_TYPE
+        business_meaning: Loại đối tượng áp dụng
+        comment: SCHEMA_CODE=FMS.SYSTEM_OBJECT
   - name: Report Submission Required Indicator
     physical_name: rpt_submission_required_ind
     business_meaning_1st: "Cờ trạng thái phải nộp báo cáo: 1=Phải nộp, 0=Không."
@@ -29551,6 +30131,1575 @@ entities:
           ODS.
         comment: null
 - ldm:
+    id: ATM-fmr_period
+    logical_name_1st: Fund Management Report Period
+    physical_name_1st: fmr_period
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Cấu hình kỳ báo cáo của biểu mẫu: loại kỳ (ngày/tuần/tháng/quý/bán\
+      \ niên/năm), hạn nộp và hạn công bố thông tin trong kỳ. Con của Fund Management\
+      \ Report."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Form Document"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-RPT_PERIOD
+  attributes:
+  - name: Fund Management Report Period Id
+    physical_name: fmr_period_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FMS_RPT_PERIOD', ID). BCV: \"[Documentation]\
+      \ Form Document\"."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FMS_RPT_PERIOD', ID). BCV: \"[Documentation]\
+          \ Form Document\"."
+  - name: Fund Management Report Period Code
+    physical_name: fmr_period_code
+    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    comment_1st: BK chính — ID nguồn (RAW(16), chuyển hex string).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.ID
+        business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+        comment: BK chính — ID nguồn (RAW(16), chuyển hex string).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_RPT_PERIOD
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Fund Management Report Id
+    physical_name: fmr_id
+    business_meaning_1st: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+    comment_1st: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+      \ RPT_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.RPT_ID
+        business_meaning: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+        comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+          \ RPT_ID)."
+  - name: Fund Management Report Code
+    physical_name: fmr_code
+    business_meaning_1st: Mã biểu mẫu báo cáo.
+    comment_1st: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+      \ Report Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.RPT_ID
+        business_meaning: Mã biểu mẫu báo cáo.
+        comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+          \ Report Id."
+  - name: Report Period Type Code
+    physical_name: rpt_period_tp_code
+    business_meaning_1st: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán\
+      \ niên, 6=Năm, 7=Nửa tháng."
+    comment_1st: SCHEMA_CODE=FMS.PERIOD_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.PERIOD_TYPE
+        business_meaning: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán\
+          \ niên, 6=Năm, 7=Nửa tháng."
+        comment: SCHEMA_CODE=FMS.PERIOD_TYPE
+  - name: Send In Day Count
+    physical_name: send_in_day_count
+    business_meaning_1st: Số ngày phải gửi trong kỳ báo cáo tính từ đầu kỳ.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.SEND_IN_DAY
+        business_meaning: Số ngày phải gửi trong kỳ báo cáo tính từ đầu kỳ.
+        comment: null
+  - name: Latest Send Timestamp
+    physical_name: latest_send_tms
+    business_meaning_1st: Thời điểm gửi muộn nhất trong kỳ (ngày/giờ).
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.LATEST_SEND_DATE
+        business_meaning: Thời điểm gửi muộn nhất trong kỳ (ngày/giờ).
+        comment: null
+  - name: Latest Send Week Day Number
+    physical_name: latest_send_week_day_nbr
+    business_meaning_1st: "Thứ gửi muộn nhất trong tuần: 0=Chủ nhật, 1=Thứ hai...6=Thứ\
+      \ bảy."
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.LATEST_SEND_WEEK
+        business_meaning: "Thứ gửi muộn nhất trong tuần: 0=Chủ nhật, 1=Thứ hai...6=Thứ\
+          \ bảy."
+        comment: null
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.DESCRIPTION
+        business_meaning: Mô tả chi tiết.
+        comment: null
+  - name: Repeat Count
+    physical_name: repeat_count
+    business_meaning_1st: Số kỳ lặp lại trong một chu kỳ báo cáo.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_PERIOD
+        source_column: FMS.RPT_PERIOD.REPEAT_TIME
+        business_meaning: Số kỳ lặp lại trong một chu kỳ báo cáo.
+        comment: null
+- ldm:
+    id: ATM-fmr_sheet
+    logical_name_1st: Fund Management Report Sheet
+    physical_name_1st: fmr_sheet
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Sheet dữ liệu trong biểu mẫu báo cáo đầu vào: tên, thứ tự sheet,\
+      \ cấu hình bố cục ô (JSON lưu dạng chuỗi). Con của Fund Management Report."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Form Document"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-SHEET
+  attributes:
+  - name: Fund Management Report Sheet Id
+    physical_name: fmr_sheet_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FMS_SHEET', ID). BCV: \"[Documentation]\
+      \ Form Document\"."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FMS_SHEET', ID). BCV: \"[Documentation]\
+          \ Form Document\"."
+  - name: Fund Management Report Sheet Code
+    physical_name: fmr_sheet_code
+    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    comment_1st: BK chính — ID nguồn (RAW(16), chuyển hex string). Không dùng cột
+      CODE làm BK — CODE giữ ở Sheet Short Code.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: FMS.SHEET.ID
+        business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+        comment: BK chính — ID nguồn (RAW(16), chuyển hex string). Không dùng cột
+          CODE làm BK — CODE giữ ở Sheet Short Code.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_SHEET
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Fund Management Report Id
+    physical_name: fmr_id
+    business_meaning_1st: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+    comment_1st: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+      \ RPT_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: FMS.SHEET.RPT_ID
+        business_meaning: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+        comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+          \ RPT_ID)."
+  - name: Fund Management Report Code
+    physical_name: fmr_code
+    business_meaning_1st: Mã biểu mẫu báo cáo.
+    comment_1st: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+      \ Report Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: FMS.SHEET.RPT_ID
+        business_meaning: Mã biểu mẫu báo cáo.
+        comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+          \ Report Id."
+  - name: Fund Management Report Sheet Name
+    physical_name: fmr_sheet_nm
+    business_meaning_1st: Tên hiển thị chính của sheet.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: FMS.SHEET.ITEM_NAME
+        business_meaning: Tên hiển thị chính của sheet.
+        comment: null
+  - name: Sheet Index
+    physical_name: sheet_index
+    business_meaning_1st: Thứ tự sheet trong biểu mẫu Excel (bắt đầu từ 0).
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: FMS.SHEET.SHEET_INDEX
+        business_meaning: Thứ tự sheet trong biểu mẫu Excel (bắt đầu từ 0).
+        comment: null
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: FMS.SHEET.DESCRIPTION
+        business_meaning: Mô tả chi tiết.
+        comment: null
+  - name: Investment Portfolio Indicator
+    physical_name: investment_portfolio_ind
+    business_meaning_1st: "Cờ sheet là danh mục đầu tư: 1=Là DMĐT, 0=Không."
+    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+      fr_value.Cell Enabled Indicator.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: FMS.SHEET.INVESTMENT_PORTFOLIO
+        business_meaning: "Cờ sheet là danh mục đầu tư: 1=Là DMĐT, 0=Không."
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+          fr_value.Cell Enabled Indicator.
+  - name: Sheet Short Code
+    physical_name: sheet_short_code
+    business_meaning_1st: Mã định danh ngắn gọn của sheet.
+    comment_1st: Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ
+      ID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: SHEET
+        source_column: FMS.SHEET.CODE
+        business_meaning: Mã định danh ngắn gọn của sheet.
+        comment: Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ
+          ID).
+- ldm:
+    id: ATM-fmr_submission
+    logical_name_1st: Fund Management Report Submission
+    physical_name_1st: fmr_submission
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Báo cáo của thành viên thị trường theo kỳ: biểu mẫu, kỳ, trạng\
+      \ thái, ngày nộp, kết quả xử lý, file đính kèm và dữ liệu eForm; gắn tới thành\
+      \ viên liên quan (công ty QLQ, quỹ, ngân hàng lưu ký, đại lý...) qua các FK\
+      \ nullable."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Regulatory Report"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-RPT_MEMBER
+  attributes:
+  - name: Fund Management Report Submission Id
+    physical_name: fmr_submission_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FMS_RPT_MEMBER', ID). BCV: \"[Documentation]\
+      \ Regulatory Report\"."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FMS_RPT_MEMBER', ID). BCV: \"[Documentation]\
+          \ Regulatory Report\"."
+  - name: Fund Management Report Submission Code
+    physical_name: fmr_submission_code
+    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    comment_1st: BK chính — ID nguồn (RAW(16), chuyển hex string).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.ID
+        business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+        comment: BK chính — ID nguồn (RAW(16), chuyển hex string).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_RPT_MEMBER
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Fund Management Report Period Id
+    physical_name: fmr_period_id
+    business_meaning_1st: "FK -> RPT_PERIOD: Kỳ báo cáo."
+    comment_1st: "FK target: fmr_period.fmr_period_id. Hash: hash_id('FMS_RPT_PERIOD',\
+      \ PRD_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.PRD_ID
+        business_meaning: "FK -> RPT_PERIOD: Kỳ báo cáo."
+        comment: "FK target: fmr_period.fmr_period_id. Hash: hash_id('FMS_RPT_PERIOD',\
+          \ PRD_ID)."
+  - name: Fund Management Report Period Code
+    physical_name: fmr_period_code
+    business_meaning_1st: Mã kỳ báo cáo.
+    comment_1st: "Lookup pair: fmr_period.fmr_period_code. Pair with Fund Management\
+      \ Report Period Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.PRD_ID
+        business_meaning: Mã kỳ báo cáo.
+        comment: "Lookup pair: fmr_period.fmr_period_code. Pair with Fund Management\
+          \ Report Period Id."
+  - name: Fund Management Report Id
+    physical_name: fmr_id
+    business_meaning_1st: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+    comment_1st: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+      \ RPT_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.RPT_ID
+        business_meaning: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+        comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+          \ RPT_ID)."
+  - name: Fund Management Report Code
+    physical_name: fmr_code
+    business_meaning_1st: Mã biểu mẫu báo cáo.
+    comment_1st: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+      \ Report Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.RPT_ID
+        business_meaning: Mã biểu mẫu báo cáo.
+        comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+          \ Report Id."
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning_1st: Tên báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.RPT_NAME
+        business_meaning: Tên báo cáo.
+        comment: null
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning_1st: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường,\
+      \ 3=Báo cáo theo yêu cầu, 4=Báo cáo khác."
+    comment_1st: SCHEMA_CODE=FMS.REPORT_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.REPORT_TYPE
+        business_meaning: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường,\
+          \ 3=Báo cáo theo yêu cầu, 4=Báo cáo khác."
+        comment: SCHEMA_CODE=FMS.REPORT_TYPE
+  - name: Imported Indicator
+    physical_name: imported_ind
+    business_meaning_1st: "Cờ đã import dữ liệu: 1=Đã import, 0=Chưa import."
+    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+      fr_value.Cell Enabled Indicator.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.IMPORTED
+        business_meaning: "Cờ đã import dữ liệu: 1=Đã import, 0=Chưa import."
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+          fr_value.Cell Enabled Indicator.
+  - name: Submitted Date
+    physical_name: submitted_dt
+    business_meaning_1st: Ngày thành viên nộp/gửi báo cáo.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.DATE_SUBMITTED
+        business_meaning: Ngày thành viên nộp/gửi báo cáo.
+        comment: null
+  - name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    business_meaning_1st: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến\
+      \ báo cáo."
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
+      \ BKM_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.BKM_ID
+        business_meaning: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến\
+          \ báo cáo."
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
+          \ BKM_ID)."
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning_1st: Mã ngân hàng lưu ký/giám sát liên quan đến báo cáo.
+    comment_1st: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian\
+      \ Bank Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.BKM_ID
+        business_meaning: Mã ngân hàng lưu ký/giám sát liên quan đến báo cáo.
+        comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian\
+          \ Bank Id."
+  - name: Investment Fund Id
+    physical_name: investment_fund_id
+    business_meaning_1st: "FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo."
+    comment_1st: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
+      \ FND_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.FND_ID
+        business_meaning: "FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo."
+        comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
+          \ FND_ID)."
+  - name: Investment Fund Code
+    physical_name: investment_fund_code
+    business_meaning_1st: Mã quỹ đầu tư liên quan đến báo cáo.
+    comment_1st: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
+      \ Fund Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.FND_ID
+        business_meaning: Mã quỹ đầu tư liên quan đến báo cáo.
+        comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
+          \ Fund Id."
+  - name: Foreign Fund Management Organization Unit Id
+    physical_name: foreign_fm_ou_id
+    business_meaning_1st: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến\
+      \ báo cáo."
+    comment_1st: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
+      \ FR_BR_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.FR_BR_ID
+        business_meaning: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến\
+          \ báo cáo."
+        comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
+          \ FR_BR_ID)."
+  - name: Foreign Fund Management Organization Unit Code
+    physical_name: foreign_fm_ou_code
+    business_meaning_1st: Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo.
+    comment_1st: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign\
+      \ Fund Management Organization Unit Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.FR_BR_ID
+        business_meaning: Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo.
+        comment: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign\
+          \ Fund Management Organization Unit Id."
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning_1st: "FK -> SECURITIES: Công ty QLQ liên quan."
+    comment_1st: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+      \ SEC_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.SEC_ID
+        business_meaning: "FK -> SECURITIES: Công ty QLQ liên quan."
+        comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+          \ SEC_ID)."
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning_1st: Mã công ty QLQ liên quan.
+    comment_1st: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+      \ Company Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.SEC_ID
+        business_meaning: Mã công ty QLQ liên quan.
+        comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+          \ Company Id."
+  - name: Record Type
+    physical_name: record_tp
+    business_meaning_1st: Loại/phân loại của bản ghi.
+    comment_1st: Nguồn NUMBER(38,0) — ETL convert sang string. Mô tả nguồn chung chung,
+      giữ Text denormalized (cùng pattern lld_FMS_BANK_MONI.RECORD_TYPE), cần xác
+      nhận nghiệp vụ.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.RECORD_TYPE
+        business_meaning: Loại/phân loại của bản ghi.
+        comment: Nguồn NUMBER(38,0) — ETL convert sang string. Mô tả nguồn chung chung,
+          giữ Text denormalized (cùng pattern lld_FMS_BANK_MONI.RECORD_TYPE), cần
+          xác nhận nghiệp vụ.
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning_1st: Ngày lập báo cáo (kỳ ngày).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.DAY_REPORT
+        business_meaning: Ngày lập báo cáo (kỳ ngày).
+        comment: null
+  - name: Period Value
+    physical_name: period_val
+    business_meaning_1st: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.PERIOD_VALUE
+        business_meaning: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)."
+        comment: null
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning_1st: Năm của kỳ báo cáo (định dạng YYYY).
+    comment_1st: Nguồn NUMBER(18,2) — ETL cast về số nguyên.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.YEAR_VALUE
+        business_meaning: Năm của kỳ báo cáo (định dạng YYYY).
+        comment: Nguồn NUMBER(18,2) — ETL cast về số nguyên.
+  - name: Report Period Type Code
+    physical_name: rpt_period_tp_code
+    business_meaning_1st: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán\
+      \ niên, 6=Năm, 7=Nửa tháng."
+    comment_1st: SCHEMA_CODE=FMS.PERIOD_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.PERIOD_TYPE
+        business_meaning: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán\
+          \ niên, 6=Năm, 7=Nửa tháng."
+        comment: SCHEMA_CODE=FMS.PERIOD_TYPE
+  - name: Securities Distribution Agent Id
+    physical_name: securities_distribution_agent_id
+    business_meaning_1st: "FK -> DISTRIBUTOR_AGENT: Đại lý phân phối liên quan."
+    comment_1st: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
+      \ Hash: hash_id('FMS_DISTRIBUTOR_AGENT', DISTRIBUTOR_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.DISTRIBUTOR_ID
+        business_meaning: "FK -> DISTRIBUTOR_AGENT: Đại lý phân phối liên quan."
+        comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
+          \ Hash: hash_id('FMS_DISTRIBUTOR_AGENT', DISTRIBUTOR_ID)."
+  - name: Securities Distribution Agent Code
+    physical_name: securities_distribution_agent_code
+    business_meaning_1st: Mã đại lý phân phối liên quan.
+    comment_1st: "Lookup pair: securities_distribution_agent.securities_distribution_agent_code.\
+      \ Pair with Securities Distribution Agent Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.DISTRIBUTOR_ID
+        business_meaning: Mã đại lý phân phối liên quan.
+        comment: "Lookup pair: securities_distribution_agent.securities_distribution_agent_code.\
+          \ Pair with Securities Distribution Agent Id."
+  - name: Member Name
+    physical_name: member_nm
+    business_meaning_1st: Tên thành viên gửi báo cáo (snapshot tại thời điểm nộp).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.MEMBER_NAME
+        business_meaning: Tên thành viên gửi báo cáo (snapshot tại thời điểm nộp).
+        comment: null
+  - name: Classification FMS Event Type Id
+    physical_name: cl_fms_event_tp_id
+    business_meaning_1st: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
+    comment_1st: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
+      \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
+      \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier8 6f)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.EVENT_TYPE_ID
+        business_meaning: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
+        comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
+          \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
+          \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier8 6f)."
+  - name: Classification FMS Event Type Code
+    physical_name: cl_fms_event_tp_code
+    business_meaning_1st: Mã loại sự vụ áp dụng.
+    comment_1st: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification\
+      \ FMS Event Type Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.EVENT_TYPE_ID
+        business_meaning: Mã loại sự vụ áp dụng.
+        comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification\
+          \ FMS Event Type Id."
+  - name: Submission Deadline Timestamp
+    physical_name: submission_deadline_tms
+    business_meaning_1st: "Hạn nộp báo cáo (UTC): job tính theo cuối ngày 23:59:00\
+      \ UTC."
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.DEADLINE_SEND
+        business_meaning: "Hạn nộp báo cáo (UTC): job tính theo cuối ngày 23:59:00\
+          \ UTC."
+        comment: null
+- ldm:
+    id: ATM-fmr_value
+    logical_name_1st: Fund Management Report Value
+    physical_name_1st: fmr_value
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Giá trị từng ô dữ liệu trong báo cáo thành viên: gắn với báo\
+      \ cáo, sheet, kỳ và thành viên; 1 dòng = 1 ô (mô hình EAV theo ô, tương tự Financial\
+      \ Report Value của IDS)."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Regulatory Report"
+    table_type_most: Classification
+    etl_pattern_most: Upsert
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-RPT_VALUES
+  attributes:
+  - name: Fund Management Report Value Id
+    physical_name: fmr_val_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FMS_RPT_VALUES', ID). BCV: \"[Documentation]\
+      \ Regulatory Report\"."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FMS_RPT_VALUES', ID). BCV: \"[Documentation]\
+          \ Regulatory Report\"."
+  - name: Fund Management Report Value Code
+    physical_name: fmr_val_code
+    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    comment_1st: BK chính — ID nguồn (RAW(16), chuyển hex string). DDL không khai
+      PK cho RPT_VALUES (ID NOT NULL nhưng cột Khóa trống) — cần profile xác nhận
+      ID duy nhất; nếu không, đổi sang composite (MEB_ID, SHEET_ID, CODE, ROW_DYNAMIC).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.ID
+        business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+        comment: BK chính — ID nguồn (RAW(16), chuyển hex string). DDL không khai
+          PK cho RPT_VALUES (ID NOT NULL nhưng cột Khóa trống) — cần profile xác nhận
+          ID duy nhất; nếu không, đổi sang composite (MEB_ID, SHEET_ID, CODE, ROW_DYNAMIC).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_RPT_VALUES
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Fund Management Report Submission Id
+    physical_name: fmr_submission_id
+    business_meaning_1st: "FK -> RPT_MEMBER: Báo cáo thành viên."
+    comment_1st: "FK target: fmr_submission.fmr_submission_id. Hash: hash_id('FMS_RPT_MEMBER',\
+      \ MEB_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.MEB_ID
+        business_meaning: "FK -> RPT_MEMBER: Báo cáo thành viên."
+        comment: "FK target: fmr_submission.fmr_submission_id. Hash: hash_id('FMS_RPT_MEMBER',\
+          \ MEB_ID)."
+  - name: Fund Management Report Submission Code
+    physical_name: fmr_submission_code
+    business_meaning_1st: Mã báo cáo thành viên.
+    comment_1st: "Lookup pair: fmr_submission.fmr_submission_code. Pair with Fund\
+      \ Management Report Submission Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.MEB_ID
+        business_meaning: Mã báo cáo thành viên.
+        comment: "Lookup pair: fmr_submission.fmr_submission_code. Pair with Fund\
+          \ Management Report Submission Id."
+  - name: Fund Management Report Sheet Id
+    physical_name: fmr_sheet_id
+    business_meaning_1st: "FK -> SHEET: Sheet biểu mẫu báo cáo."
+    comment_1st: "FK target: fmr_sheet.fmr_sheet_id. Hash: hash_id('FMS_SHEET', SHEET_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.SHEET_ID
+        business_meaning: "FK -> SHEET: Sheet biểu mẫu báo cáo."
+        comment: "FK target: fmr_sheet.fmr_sheet_id. Hash: hash_id('FMS_SHEET', SHEET_ID)."
+  - name: Fund Management Report Sheet Code
+    physical_name: fmr_sheet_code
+    business_meaning_1st: Mã sheet biểu mẫu báo cáo.
+    comment_1st: "Lookup pair: fmr_sheet.fmr_sheet_code. Pair with Fund Management\
+      \ Report Sheet Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.SHEET_ID
+        business_meaning: Mã sheet biểu mẫu báo cáo.
+        comment: "Lookup pair: fmr_sheet.fmr_sheet_code. Pair with Fund Management\
+          \ Report Sheet Id."
+  - name: Fund Management Report Id
+    physical_name: fmr_id
+    business_meaning_1st: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+    comment_1st: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+      \ RPT_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.RPT_ID
+        business_meaning: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+        comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+          \ RPT_ID)."
+  - name: Fund Management Report Code
+    physical_name: fmr_code
+    business_meaning_1st: Mã biểu mẫu báo cáo.
+    comment_1st: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+      \ Report Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.RPT_ID
+        business_meaning: Mã biểu mẫu báo cáo.
+        comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+          \ Report Id."
+  - name: Fund Management Report Period Id
+    physical_name: fmr_period_id
+    business_meaning_1st: "FK -> RPT_PERIOD: Kỳ báo cáo."
+    comment_1st: "FK target: fmr_period.fmr_period_id. Hash: hash_id('FMS_RPT_PERIOD',\
+      \ PRD_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.PRD_ID
+        business_meaning: "FK -> RPT_PERIOD: Kỳ báo cáo."
+        comment: "FK target: fmr_period.fmr_period_id. Hash: hash_id('FMS_RPT_PERIOD',\
+          \ PRD_ID)."
+  - name: Fund Management Report Period Code
+    physical_name: fmr_period_code
+    business_meaning_1st: Mã kỳ báo cáo.
+    comment_1st: "Lookup pair: fmr_period.fmr_period_code. Pair with Fund Management\
+      \ Report Period Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.PRD_ID
+        business_meaning: Mã kỳ báo cáo.
+        comment: "Lookup pair: fmr_period.fmr_period_code. Pair with Fund Management\
+          \ Report Period Id."
+  - name: Cell Value
+    physical_name: cell_val
+    business_meaning_1st: Giá trị của ô dữ liệu trong báo cáo (DDL không có mô tả).
+    comment_1st: Cột nguồn tên 'VALUES' (từ khóa Oracle) — đặt tên vật lý cell_val.
+      Nguồn NVARCHAR2(4000) lưu cả số lẫn text → giữ Text (khác IDS fr_value.data_val
+      Currency Amount).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.VALUES
+        business_meaning: Giá trị của ô dữ liệu trong báo cáo (DDL không có mô tả).
+        comment: Cột nguồn tên 'VALUES' (từ khóa Oracle) — đặt tên vật lý cell_val.
+          Nguồn NVARCHAR2(4000) lưu cả số lẫn text → giữ Text (khác IDS fr_value.data_val
+          Currency Amount).
+  - name: Dynamic Value Indicator
+    physical_name: dynamic_val_ind
+    business_meaning_1st: "Cờ giá trị là động (tính real-time): 1=Động, 0=Nhập tĩnh."
+    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+      fr_value.Cell Enabled Indicator.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.DYNAMIC_VALUE
+        business_meaning: "Cờ giá trị là động (tính real-time): 1=Động, 0=Nhập tĩnh."
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+          fr_value.Cell Enabled Indicator.
+  - name: Accumulated Value
+    physical_name: accumulated_val
+    business_meaning_1st: Giá trị lũy kế/tích lũy của ô báo cáo tổng hợp (lũy kế nhiều
+      kỳ).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.ACC_VALUES
+        business_meaning: Giá trị lũy kế/tích lũy của ô báo cáo tổng hợp (lũy kế nhiều
+          kỳ).
+        comment: null
+  - name: Report Period Type Code
+    physical_name: rpt_period_tp_code
+    business_meaning_1st: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán\
+      \ niên, 6=Năm, 7=Nửa tháng."
+    comment_1st: SCHEMA_CODE=FMS.PERIOD_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.PERIOD_TYPE
+        business_meaning: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán\
+          \ niên, 6=Năm, 7=Nửa tháng."
+        comment: SCHEMA_CODE=FMS.PERIOD_TYPE
+  - name: Format Data Type Code
+    physical_name: format_data_tp_code
+    business_meaning_1st: Kiểu định dạng hiển thị giá trị ô báo cáo đầu ra (NUMBER,
+      PERCENT, TEXT...).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.FORMAT_DATA_TYPE
+        business_meaning: Kiểu định dạng hiển thị giá trị ô báo cáo đầu ra (NUMBER,
+          PERCENT, TEXT...).
+        comment: null
+  - name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    business_meaning_1st: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến\
+      \ báo cáo."
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
+      \ BKM_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.BKM_ID
+        business_meaning: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến\
+          \ báo cáo."
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
+          \ BKM_ID)."
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning_1st: Mã ngân hàng lưu ký/giám sát liên quan đến báo cáo.
+    comment_1st: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian\
+      \ Bank Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.BKM_ID
+        business_meaning: Mã ngân hàng lưu ký/giám sát liên quan đến báo cáo.
+        comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian\
+          \ Bank Id."
+  - name: Investment Fund Id
+    physical_name: investment_fund_id
+    business_meaning_1st: "FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo."
+    comment_1st: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
+      \ FND_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.FND_ID
+        business_meaning: "FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo."
+        comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
+          \ FND_ID)."
+  - name: Investment Fund Code
+    physical_name: investment_fund_code
+    business_meaning_1st: Mã quỹ đầu tư liên quan đến báo cáo.
+    comment_1st: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
+      \ Fund Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.FND_ID
+        business_meaning: Mã quỹ đầu tư liên quan đến báo cáo.
+        comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
+          \ Fund Id."
+  - name: Foreign Fund Management Organization Unit Id
+    physical_name: foreign_fm_ou_id
+    business_meaning_1st: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến\
+      \ báo cáo."
+    comment_1st: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
+      \ FR_BR_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.FR_BR_ID
+        business_meaning: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến\
+          \ báo cáo."
+        comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
+          \ FR_BR_ID)."
+  - name: Foreign Fund Management Organization Unit Code
+    physical_name: foreign_fm_ou_code
+    business_meaning_1st: Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo.
+    comment_1st: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign\
+      \ Fund Management Organization Unit Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.FR_BR_ID
+        business_meaning: Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo.
+        comment: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign\
+          \ Fund Management Organization Unit Id."
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning_1st: "FK -> SECURITIES: Công ty QLQ liên quan."
+    comment_1st: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+      \ SEC_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.SEC_ID
+        business_meaning: "FK -> SECURITIES: Công ty QLQ liên quan."
+        comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+          \ SEC_ID)."
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning_1st: Mã công ty QLQ liên quan.
+    comment_1st: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+      \ Company Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.SEC_ID
+        business_meaning: Mã công ty QLQ liên quan.
+        comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+          \ Company Id."
+  - name: Record Type
+    physical_name: record_tp
+    business_meaning_1st: Loại/phân loại của bản ghi.
+    comment_1st: Nguồn NUMBER(38,0) — ETL convert sang string. Mô tả nguồn chung chung,
+      cần xác nhận nghiệp vụ.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.RECORD_TYPE
+        business_meaning: Loại/phân loại của bản ghi.
+        comment: Nguồn NUMBER(38,0) — ETL convert sang string. Mô tả nguồn chung chung,
+          cần xác nhận nghiệp vụ.
+  - name: Period Value
+    physical_name: period_val
+    business_meaning_1st: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.PERIOD_VALUE
+        business_meaning: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)."
+        comment: null
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning_1st: Năm của kỳ báo cáo (định dạng YYYY).
+    comment_1st: Nguồn NUMBER(18,2) — ETL cast về số nguyên.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.YEAR_VALUE
+        business_meaning: Năm của kỳ báo cáo (định dạng YYYY).
+        comment: Nguồn NUMBER(18,2) — ETL cast về số nguyên.
+  - name: Dynamic Row Number
+    physical_name: dynamic_row_nbr
+    business_meaning_1st: Số thứ tự hàng động trong sheet báo cáo tổng hợp (dành cho
+      bảng dữ liệu mở rộng).
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_VALUES
+        source_column: FMS.RPT_VALUES.ROW_DYNAMIC
+        business_meaning: Số thứ tự hàng động trong sheet báo cáo tổng hợp (dành cho
+          bảng dữ liệu mở rộng).
+        comment: null
+- ldm:
     id: ATM-foreign_investor_report
     logical_name_1st: Foreign Investor Report
     physical_name_1st: foreign_investor_report
@@ -30717,6 +32866,344 @@ entities:
         business_meaning: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
         comment: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
           (LOOKUP_GROUP='RC_TYPE').
+- ldm:
+    id: ATM-fund_management_report
+    logical_name_1st: Fund Management Report
+    physical_name_1st: fund_management_report
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Biểu mẫu báo cáo mà thành viên thị trường (công ty QLQ, quỹ\
+      \ đầu tư, đại lý...) phải nộp: tên, cơ sở pháp lý, loại báo cáo, phiên bản,\
+      \ cấu hình import/eForm. Entity gốc của nhóm báo cáo; chỉ tham chiếu danh mục\
+      \ Classification FMS Fund Type."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Form Document"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-RPT_TEMP
+  attributes:
+  - name: Fund Management Report Id
+    physical_name: fmr_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('FMS_RPT_TEMP', ID). BCV: \"[Documentation]\
+      \ Form Document\"."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('FMS_RPT_TEMP', ID). BCV: \"[Documentation]\
+          \ Form Document\"."
+  - name: Fund Management Report Code
+    physical_name: fmr_code
+    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    comment_1st: BK chính — ID nguồn (RAW(16), chuyển hex string). Không dùng cột
+      CODE làm BK — CODE giữ ở Report Short Code.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.ID
+        business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+        comment: BK chính — ID nguồn (RAW(16), chuyển hex string). Không dùng cột
+          CODE làm BK — CODE giữ ở Report Short Code.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_RPT_TEMP
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Fund Management Report Name
+    physical_name: fmr_nm
+    business_meaning_1st: Tên hiển thị chính của biểu mẫu báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.ITEM_NAME
+        business_meaning: Tên hiển thị chính của biểu mẫu báo cáo.
+        comment: null
+  - name: Legal Basis
+    physical_name: legal_basis
+    business_meaning_1st: Cơ sở pháp lý của biểu mẫu báo cáo (tên thông tư/nghị định).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.LEGAL_BASIS
+        business_meaning: Cơ sở pháp lý của biểu mẫu báo cáo (tên thông tư/nghị định).
+        comment: null
+  - name: Fund Management Report Type Code
+    physical_name: fmr_tp_code
+    business_meaning_1st: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường,\
+      \ 3=Báo cáo theo yêu cầu, 4=Báo cáo khác."
+    comment_1st: SCHEMA_CODE=FMS.REPORT_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.REPORT_TYPE
+        business_meaning: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường,\
+          \ 3=Báo cáo theo yêu cầu, 4=Báo cáo khác."
+        comment: SCHEMA_CODE=FMS.REPORT_TYPE
+  - name: Disclosure Required Indicator
+    physical_name: disclosure_required_ind
+    business_meaning_1st: "Cờ báo cáo cần công bố thông tin: 1=Cần CBTT, 0=Không."
+    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+      fr_value.Cell Enabled Indicator.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.REQUIRE_DISCLOSURE
+        business_meaning: "Cờ báo cáo cần công bố thông tin: 1=Cần CBTT, 0=Không."
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+          fr_value.Cell Enabled Indicator.
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.DESCRIPTION
+        business_meaning: Mô tả chi tiết.
+        comment: null
+  - name: Version Number
+    physical_name: version_nbr
+    business_meaning_1st: Số phiên bản biểu mẫu/báo cáo.
+    comment_1st: Nguồn NUMBER(18,2) — ETL cast sang int. Cần profile xem có phiên
+      bản thập phân (1.5...) không; nếu có cần đổi domain.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.VERSION
+        business_meaning: Số phiên bản biểu mẫu/báo cáo.
+        comment: Nguồn NUMBER(18,2) — ETL cast sang int. Cần profile xem có phiên
+          bản thập phân (1.5...) không; nếu có cần đổi domain.
+  - name: Classification FMS Fund Type Id
+    physical_name: cl_fms_fund_tp_id
+    business_meaning_1st: "FK -> FUND_TYPE: Loại quỹ đầu tư."
+    comment_1st: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE',\
+      \ FTYPE_ID). Cùng pattern lld_FMS_FUNDS.FTYPE_ID."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.FTYPE_ID
+        business_meaning: "FK -> FUND_TYPE: Loại quỹ đầu tư."
+        comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE',\
+          \ FTYPE_ID). Cùng pattern lld_FMS_FUNDS.FTYPE_ID."
+  - name: Classification FMS Fund Type Code
+    physical_name: cl_fms_fund_tp_code
+    business_meaning_1st: Mã loại quỹ đầu tư.
+    comment_1st: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification\
+      \ FMS Fund Type Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.FTYPE_ID
+        business_meaning: Mã loại quỹ đầu tư.
+        comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification\
+          \ FMS Fund Type Id."
+  - name: Report Group Code
+    physical_name: rpt_group_code
+    business_meaning_1st: Nhóm báo cáo
+    comment_1st: SCHEMA_CODE=FMS.REPORT_GROUP
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.REPORT_GROUP
+        business_meaning: Nhóm báo cáo
+        comment: SCHEMA_CODE=FMS.REPORT_GROUP
+  - name: System Object Type Code
+    physical_name: stm_object_tp_code
+    business_meaning_1st: "Đối tượng hệ thống áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP,\
+      \ 5=ĐLCN..."
+    comment_1st: SCHEMA_CODE=FMS.SYSTEM_OBJECTS
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.SYSTEM_OBJECTS
+        business_meaning: "Đối tượng hệ thống áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP,\
+          \ 5=ĐLCN..."
+        comment: SCHEMA_CODE=FMS.SYSTEM_OBJECTS
+  - name: Report Short Code
+    physical_name: rpt_short_code
+    business_meaning_1st: Mã định danh ngắn gọn của biểu mẫu.
+    comment_1st: Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ
+      ID theo quyết định Data Modeler).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.CODE
+        business_meaning: Mã định danh ngắn gọn của biểu mẫu.
+        comment: Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ
+          ID theo quyết định Data Modeler).
+  - name: Audit Report Indicator
+    physical_name: audit_rpt_ind
+    business_meaning_1st: "Cờ là báo cáo kiểm toán: 1=Báo cáo kiểm toán, 0=Không."
+    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+      fr_value.Cell Enabled Indicator.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.AUDIT_REPORT
+        business_meaning: "Cờ là báo cáo kiểm toán: 1=Báo cáo kiểm toán, 0=Không."
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+          fr_value.Cell Enabled Indicator.
+  - name: Price Check Setting Indicator
+    physical_name: price_check_setting_ind
+    business_meaning_1st: "Cờ kiểm tra cài đặt giá khi nộp báo cáo: 1=Có kiểm tra,\
+      \ 0=Không."
+    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+      fr_value.Cell Enabled Indicator.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.CHECK_PRICE_SETTING
+        business_meaning: "Cờ kiểm tra cài đặt giá khi nộp báo cáo: 1=Có kiểm tra,\
+          \ 0=Không."
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS
+          fr_value.Cell Enabled Indicator.
+  - name: Usage Start Date
+    physical_name: usage_start_dt
+    business_meaning_1st: Ngày bắt đầu áp dụng biểu mẫu.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_TEMP
+        source_column: FMS.RPT_TEMP.DATE_USED
+        business_meaning: Ngày bắt đầu áp dụng biểu mẫu.
+        comment: null
 - ldm:
     id: ATM-inspection_conclusion_remedial
     logical_name_1st: Inspection Conclusion Remedial
@@ -46676,16 +49163,19 @@ entities:
     etl_pattern_most: SCD4A
     conflict_review: null
     sources:
+    - FIMS
     - FMS
     references:
       brd:
+      - BRD-SRC-FIMS-BANKMONI
       - BRD-SRC-FMS-BANK_MONI
   attributes:
   - name: Custodian Bank Id
     physical_name: custodian_bank_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng\
-      \ lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ."
+      \ lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ. Hash:\
+      \ hash_id('FIMS_BANKMONI', Id)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -46693,6 +49183,14 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng\
+          \ lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ.\
+          \ Hash: hash_id('FIMS_BANKMONI', Id)."
     - source_system: FMS
       source_tables:
       - source_table: BANK_MONI
@@ -46702,8 +49200,10 @@ entities:
           \ lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ."
   - name: Custodian Bank Code
     physical_name: custodian_bank_code
-    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
-    comment_1st: BK chính. PK nguồn.
+    business_meaning_1st: Khóa chính của bản ghi (ID số tự tăng). BK.
+    comment_1st: BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm
+      BK (cùng pattern FMS.BANK_MONI). Nguồn lưu NUMBER(18,2) — ETL cần convert sang
+      string, bỏ phần thập phân .00.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -46711,6 +49211,14 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Id
+        business_meaning: Khóa chính của bản ghi (ID số tự tăng). BK.
+        comment: BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm
+          BK (cùng pattern FMS.BANK_MONI). Nguồn lưu NUMBER(18,2) — ETL cần convert
+          sang string, bỏ phần thập phân .00.
     - source_system: FMS
       source_tables:
       - source_table: BANK_MONI
@@ -46720,20 +49228,240 @@ entities:
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: FMS_BANK_MONI
+    etl_derived_value:
+    - FIMS_BANKMONI
+    - FMS_BANK_MONI
     conflict_review: null
     source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     - source_system: FMS
       source_tables:
       - source_table: BANK_MONI
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
+  - name: Classification FIMS Status Id
+    physical_name: cl_fims_status_id
+    business_meaning_1st: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
+      \ danh mục STATUS)."
+    comment_1st: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
+      \ FIMS.STATUS: BANKMONI.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+      \ Code)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.StatusId
+        business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
+          \ danh mục STATUS)."
+        comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
+          \ FIMS.STATUS: BANKMONI.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+          \ Code)."
+  - name: Classification FIMS Status Code
+    physical_name: cl_fims_status_code
+    business_meaning_1st: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong
+      bảng danh mục STATUS).
+    comment_1st: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
+      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+      \ xem comment Classification FIMS Status Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.STATUS.Code
+        business_meaning: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong
+          bảng danh mục STATUS).
+        comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
+          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi\
+          \ tiết xem comment Classification FIMS Status Id."
+  - name: Custodian Bank Full Name
+    physical_name: custodian_bank_full_nm
+    business_meaning_1st: Tên đầy đủ (tiếng Việt).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Name
+        business_meaning: Tên đầy đủ (tiếng Việt).
+        comment: null
+    - source_system: FMS
+      source_tables:
+      - source_table: BANK_MONI
+        source_column: FMS.BANK_MONI.ITEM_NAME
+        business_meaning: Tên hiển thị chính.
+        comment: null
+  - name: Custodian Bank English Name
+    physical_name: custodian_bank_english_nm
+    business_meaning_1st: Tên tiếng Anh.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.EName
+        business_meaning: Tên tiếng Anh.
+        comment: null
+    - source_system: FMS
+      source_tables:
+      - source_table: BANK_MONI
+        source_column: FMS.BANK_MONI.EN_NAME
+        business_meaning: Tên tiếng Anh.
+        comment: null
+  - name: Custodian Bank Short Name
+    physical_name: custodian_bank_short_nm
+    business_meaning_1st: Tên viết tắt của tổ chức.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.ShortName
+        business_meaning: Tên viết tắt của tổ chức.
+        comment: null
+    - source_system: FMS
+      source_tables:
+      - source_table: BANK_MONI
+        source_column: FMS.BANK_MONI.SHORT_NAME
+        business_meaning: Tên viết tắt.
+        comment: null
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning_1st: FK đến Geographic Area (quốc gia/quốc tịch).
+    comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+      \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NaId = NATIONAL.Id\
+      \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value\
+      \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.NaId
+        business_meaning: FK đến Geographic Area (quốc gia/quốc tịch).
+        comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+          \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NaId = NATIONAL.Id\
+          \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận\
+          \ value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning_1st: Mã quốc gia/quốc tịch.
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+      \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+      \ Nationality Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.NATIONAL.SName
+        business_meaning: Mã quốc gia/quốc tịch.
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+          \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem\
+          \ comment Nationality Id."
+  - name: Charter Capital Amount
+    physical_name: charter_capital_amt
+    business_meaning_1st: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
+    comment_1st: Nguồn NOT NULL — Atomic để nullable do entity gộp thêm nguồn FMS.BANK_MONI
+      không có cột vốn.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Capital
+        business_meaning: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
+        comment: Nguồn NOT NULL — Atomic để nullable do entity gộp thêm nguồn FMS.BANK_MONI
+          không có cột vốn.
+  - name: Director Full Name
+    physical_name: director_full_nm
+    business_meaning_1st: Họ tên Giám đốc/Tổng giám đốc.
+    comment_1st: Denormalized — không có FK.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Director
+        business_meaning: Họ tên Giám đốc/Tổng giám đốc.
+        comment: Denormalized — không có FK.
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết / ghi chú bổ sung.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Description
+        business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+        comment: null
   - name: Classification FMS Status Id
     physical_name: cl_fms_status_id
     business_meaning_1st: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
@@ -46780,57 +49508,6 @@ entities:
         comment: "Lookup pair: cl_fms_status.cl_fms_status_code. Pair with Classification\
           \ FMS Status Id. Giá trị lấy từ FMS.STATUS.CODE sau ETL crosswalk — chi\
           \ tiết xem comment Classification FMS Status Id."
-  - name: Custodian Bank Full Name
-    physical_name: custodian_bank_full_nm
-    business_meaning_1st: Tên hiển thị chính.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FMS
-      source_tables:
-      - source_table: BANK_MONI
-        source_column: FMS.BANK_MONI.ITEM_NAME
-        business_meaning: Tên hiển thị chính.
-        comment: null
-  - name: Custodian Bank English Name
-    physical_name: custodian_bank_english_nm
-    business_meaning_1st: Tên tiếng Anh.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FMS
-      source_tables:
-      - source_table: BANK_MONI
-        source_column: FMS.BANK_MONI.EN_NAME
-        business_meaning: Tên tiếng Anh.
-        comment: null
-  - name: Custodian Bank Short Name
-    physical_name: custodian_bank_short_nm
-    business_meaning_1st: Tên viết tắt.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FMS
-      source_tables:
-      - source_table: BANK_MONI
-        source_column: FMS.BANK_MONI.SHORT_NAME
-        business_meaning: Tên viết tắt.
-        comment: null
   - name: Bank Swift Code
     physical_name: bank_swift_code
     business_meaning_1st: Mã ngân hàng lưu ký (SWIFT code hoặc mã BIC).
@@ -49573,9 +52250,11 @@ entities:
           Company đang xét hay công ty khác).
   - name: Insider Type Code
     physical_name: insider_tp_code
-    business_meaning_1st: "Loại cổ đông nội bộ: 1=Cổ đông lớn, 2=Ban điều hành, 3=HĐQT..."
-    comment_1st: "Scheme: FMS_INSIDER_TYPE (đã đăng ký sẵn trong classification_schemes.yaml).\
-      \ ETL map: 1=MAJOR_SHAREHOLDER;2=EXECUTIVE;3=BOARD_MEMBER."
+    business_meaning_1st: "Loại cổ đông nội bộ: 1=FOUNDING_PARTNER (Cổ đông sáng lập);\
+      \ 2=MAJOR_SHAREHOLDER (Cổ đông lớn);3=ORDINARY_SHAREHOLDER (Cổ đông thường);\
+      \ 4=OWNER (Chủ sở hữu); 5=FOUNDING_MEMBER (Thành viên sáng lập); 6=CAPITAL_MEMBER\
+      \ (Thành viên vốn góp)."
+    comment_1st: SCHEMA_CODE=FMS.INSIDER_TYPE
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -49587,9 +52266,11 @@ entities:
       source_tables:
       - source_table: INSIDER
         source_column: FMS.INSIDER.INSIDER_TYPE
-        business_meaning: "Loại cổ đông nội bộ: 1=Cổ đông lớn, 2=Ban điều hành, 3=HĐQT..."
-        comment: "Scheme: FMS_INSIDER_TYPE (đã đăng ký sẵn trong classification_schemes.yaml).\
-          \ ETL map: 1=MAJOR_SHAREHOLDER;2=EXECUTIVE;3=BOARD_MEMBER."
+        business_meaning: "Loại cổ đông nội bộ: 1=FOUNDING_PARTNER (Cổ đông sáng lập);\
+          \ 2=MAJOR_SHAREHOLDER (Cổ đông lớn);3=ORDINARY_SHAREHOLDER (Cổ đông thường);\
+          \ 4=OWNER (Chủ sở hữu); 5=FOUNDING_MEMBER (Thành viên sáng lập); 6=CAPITAL_MEMBER\
+          \ (Thành viên vốn góp)."
+        comment: SCHEMA_CODE=FMS.INSIDER_TYPE
   - name: Contributed Capital Amount
     physical_name: contributed_capital_amt
     business_meaning_1st: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
@@ -51019,7 +53700,7 @@ entities:
     physical_name: foreign_investor_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước\
-      \ ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS.INVESTOR',\
+      \ ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS_INVESTOR',\
       \ TransactionCode)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -51034,7 +53715,7 @@ entities:
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước\
-          \ ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS.INVESTOR',\
+          \ ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS_INVESTOR',\
           \ TransactionCode)."
   - name: Foreign Investor Code
     physical_name: foreign_investor_code
@@ -51075,8 +53756,7 @@ entities:
   - name: Investor Object Type Code
     physical_name: investor_object_tp_code
     business_meaning_1st: "Loại đối tượng: 1=Cá nhân, 2=Tổ chức."
-    comment_1st: "Scheme: FIMS_STOCKHOLDER_TYPE. Nguồn lưu dạng số — ETL cần convert\
-      \ sang string code."
+    comment_1st: SCHEMA_CODE=FIMS.OBJECT_TYPE
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -51089,8 +53769,7 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.ObjectType
         business_meaning: "Loại đối tượng: 1=Cá nhân, 2=Tổ chức."
-        comment: "Scheme: FIMS_STOCKHOLDER_TYPE. Nguồn lưu dạng số — ETL cần convert\
-          \ sang string code."
+        comment: SCHEMA_CODE=FIMS.OBJECT_TYPE
   - name: Full Name
     physical_name: full_nm
     business_meaning_1st: Tên đầy đủ (tiếng Việt).
@@ -51128,8 +53807,7 @@ entities:
   - name: Gender Code
     physical_name: gender_code
     business_meaning_1st: "Giới tính: 1=Nam, 2=Nữ."
-    comment_1st: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — chưa có trong HLD 6d,\
-      \ đăng ký bổ sung cùng lượt LLD này. Chỉ áp dụng NĐT cá nhân (ObjectType=1)."
+    comment_1st: SCHEMA_CODE=GENDER
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -51142,8 +53820,7 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.Sex
         business_meaning: "Giới tính: 1=Nam, 2=Nữ."
-        comment: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — chưa có trong HLD 6d,\
-          \ đăng ký bổ sung cùng lượt LLD này. Chỉ áp dụng NĐT cá nhân (ObjectType=1)."
+        comment: SCHEMA_CODE=GENDER
   - name: Date of Birth
     physical_name: dt_of_birth
     business_meaning_1st: Ngày sinh (với NĐT cá nhân).
@@ -51166,7 +53843,7 @@ entities:
     business_meaning_1st: FK đến Geographic Area (quốc tịch).
     comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
       \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id\
-      \ để xác nhận SName sau đó hash_id('ECAT.COUNTRY', SName) | Chưa xác nhận value\
+      \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value\
       \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -51182,14 +53859,14 @@ entities:
         business_meaning: FK đến Geographic Area (quốc tịch).
         comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
           \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id\
-          \ để xác nhận SName sau đó hash_id('ECAT.COUNTRY', SName) | Chưa xác nhận\
+          \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận\
           \ value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc gia/quốc tịch.
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
-      \ Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk\
-      \ — chi tiết xem comment Nationality Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+      \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+      \ Nationality Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -51202,26 +53879,9 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.NATIONAL.SName
         business_meaning: Mã quốc gia/quốc tịch.
-        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
-          \ Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk\
-          \ — chi tiết xem comment Nationality Id."
-  - name: Business Registration Number
-    physical_name: business_registration_nbr
-    business_meaning_1st: Số đăng ký kinh doanh/mã số doanh nghiệp.
-    comment_1st: Chỉ áp dụng NĐT tổ chức (ObjectType=2).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FIMS
-      source_tables:
-      - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.BusinessNumber
-        business_meaning: Số đăng ký kinh doanh/mã số doanh nghiệp.
-        comment: Chỉ áp dụng NĐT tổ chức (ObjectType=2).
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+          \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem\
+          \ comment Nationality Id."
   - name: Director Full Name
     physical_name: director_full_nm
     business_meaning_1st: Họ tên Giám đốc/Tổng giám đốc.
@@ -51239,11 +53899,14 @@ entities:
         source_column: FIMS.INVESTOR.Director
         business_meaning: Họ tên Giám đốc/Tổng giám đốc.
         comment: Denormalized — không có FK, chỉ áp dụng NĐT tổ chức.
-  - name: Investor Type Code
-    physical_name: investor_tp_code
-    business_meaning_1st: Loại nhà đầu tư nước ngoài.
-    comment_1st: "Scheme: FIMS_INVESTOR_TYPE."
-    data_domain_most: Classification Value
+  - name: Classification FIMS Investor Type Id
+    physical_name: cl_fims_investor_tp_id
+    business_meaning_1st: "FK -> INVESTORTYPE: Loại nhà đầu tư nước ngoài."
+    comment_1st: "FK target: cl_fims_investor_type.cl_fims_investor_tp_id. Cần ETL\
+      \ crosswalk sang FIMS.INVESTORTYPE: INVESTOR.InvestorTypeId = INVESTORTYPE.Id\
+      \ để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SName) | Thay scheme\
+      \ FIMS_INVESTOR_TYPE (deprecated) bằng FK tới entity cl_fims_investor_type (2026-10-05)."
+    data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -51254,8 +53917,35 @@ entities:
       source_tables:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.InvestorTypeId
-        business_meaning: Loại nhà đầu tư nước ngoài.
-        comment: "Scheme: FIMS_INVESTOR_TYPE."
+        business_meaning: "FK -> INVESTORTYPE: Loại nhà đầu tư nước ngoài."
+        comment: "FK target: cl_fims_investor_type.cl_fims_investor_tp_id. Cần ETL\
+          \ crosswalk sang FIMS.INVESTORTYPE: INVESTOR.InvestorTypeId = INVESTORTYPE.Id\
+          \ để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SName) | Thay scheme\
+          \ FIMS_INVESTOR_TYPE (deprecated) bằng FK tới entity cl_fims_investor_type\
+          \ (2026-10-05)."
+  - name: Classification FIMS Investor Type Code
+    physical_name: cl_fims_investor_tp_code
+    business_meaning_1st: Mã loại nhà đầu tư nước ngoài.
+    comment_1st: "Lookup pair: cl_fims_investor_type.cl_fims_investor_tp_code. Pair\
+      \ with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SName\
+      \ sau ETL crosswalk — chi tiết xem comment Classification FIMS Investor Type\
+      \ Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTOR
+        source_column: FIMS.INVESTORTYPE.SName
+        business_meaning: Mã loại nhà đầu tư nước ngoài.
+        comment: "Lookup pair: cl_fims_investor_type.cl_fims_investor_tp_code. Pair\
+          \ with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SName\
+          \ sau ETL crosswalk — chi tiết xem comment Classification FIMS Investor\
+          \ Type Id."
   - name: Depository Account Number
     physical_name: depository_account_nbr
     business_meaning_1st: Số tài khoản lưu ký tại VSDC.
@@ -51294,12 +53984,12 @@ entities:
           NN).
         comment: Không phải Classification Value — map 1:1 nguyên giá trị nguồn (quyết
           định Data Modeler 2026-07-20). Không tạo classification_context/scheme.
-  - name: Trading Securities Company Id
-    physical_name: trading_sc_id
+  - name: Securities Company Id
+    physical_name: sc_id
     business_meaning_1st: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản."
     comment_1st: "Pending — FK target: Market Participant Organization.Market Participant\
       \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash:\
-      \ hash_id('FIMS.SECURITIESCOMPANY', CODE) sau khi Market Participant Organization\
+      \ hash_id('FIMS_SECURITIESCOMPANY', CODE) sau khi Market Participant Organization\
       \ được thiết kế và xác định cột BK."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -51315,10 +54005,10 @@ entities:
         business_meaning: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản."
         comment: "Pending — FK target: Market Participant Organization.Market Participant\
           \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash:\
-          \ hash_id('FIMS.SECURITIESCOMPANY', CODE) sau khi Market Participant Organization\
+          \ hash_id('FIMS_SECURITIESCOMPANY', CODE) sau khi Market Participant Organization\
           \ được thiết kế và xác định cột BK."
-  - name: Trading Securities Company Code
-    physical_name: trading_sc_code
+  - name: Securities Company Code
+    physical_name: sc_code
     business_meaning_1st: Mã công ty CK nơi mở tài khoản.
     comment_1st: "Lookup pair: Market Participant Organization.Market Participant\
       \ Organization Code. Pending — xem ghi chú ở Trading Securities Company Id."
@@ -51341,9 +54031,9 @@ entities:
     physical_name: custodian_bank_id
     business_meaning_1st: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao\
       \ dịch."
-    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
-      \ BankAddId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI\
-      \ hay không."
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+      \ BankAddId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI (xem\
+      \ lld_FIMS_BANKMONI.yaml, 2026-10-05)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -51357,9 +54047,9 @@ entities:
         source_column: FIMS.INVESTOR.BankAddId
         business_meaning: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao\
           \ dịch."
-        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
-          \ BankAddId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng\
-          \ FIMS.BANKMONI hay không."
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+          \ BankAddId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI\
+          \ (xem lld_FIMS_BANKMONI.yaml, 2026-10-05)."
   - name: Custodian Bank Code
     physical_name: custodian_bank_code
     business_meaning_1st: Mã ngân hàng lưu ký đăng ký tài khoản giao dịch.
@@ -51399,9 +54089,9 @@ entities:
   - name: Capital Custodian Bank Id
     physical_name: capital_custodian_bank_id
     business_meaning_1st: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn."
-    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
-      \ BankAddCapId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI\
-      \ hay không."
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+      \ BankAddCapId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI\
+      \ (xem lld_FIMS_BANKMONI.yaml, 2026-10-05)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -51414,9 +54104,9 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.BankAddCapId
         business_meaning: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn."
-        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI',\
-          \ BankAddCapId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng\
-          \ FIMS.BANKMONI hay không."
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+          \ BankAddCapId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI\
+          \ (xem lld_FIMS_BANKMONI.yaml, 2026-10-05)."
   - name: Capital Custodian Bank Code
     physical_name: capital_custodian_bank_code
     business_meaning_1st: Mã ngân hàng lưu ký đăng ký tài khoản vốn.
@@ -51436,12 +54126,15 @@ entities:
         business_meaning: Mã ngân hàng lưu ký đăng ký tài khoản vốn.
         comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital\
           \ Custodian Bank Id."
-  - name: Company Type Code
-    physical_name: company_tp_code
-    business_meaning_1st: Loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
-    comment_1st: "Scheme: FIMS_COMPANY_TYPE. Bổ sung Foreign Investor vào used_in_entities\
-      \ (trước đây chỉ Market Participant Organization)."
-    data_domain_most: Classification Value
+  - name: Classification FIMS Company Type Id
+    physical_name: cl_fims_company_tp_id
+    business_meaning_1st: "FK -> COMPANYTYPE: Loại hình doanh nghiệp (chỉ áp dụng\
+      \ NĐT tổ chức)."
+    comment_1st: "FK target: cl_fims_company_type.cl_fims_company_tp_id. Cần ETL crosswalk\
+      \ sang FIMS.COMPANYTYPE: INVESTOR.CompanyTypeId = COMPANYTYPE.Id để xác nhận\
+      \ CODE sau đó hash_id('FIMS_COMPANYTYPE', CODE) | Thay scheme FIMS_COMPANY_TYPE\
+      \ bằng FK tới entity cl_fims_company_type (2026-10-05). Chỉ áp dụng NĐT tổ chức."
+    data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -51452,14 +54145,44 @@ entities:
       source_tables:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.CompanyTypeId
-        business_meaning: Loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
-        comment: "Scheme: FIMS_COMPANY_TYPE. Bổ sung Foreign Investor vào used_in_entities\
-          \ (trước đây chỉ Market Participant Organization)."
-  - name: Activity Status Code
-    physical_name: activity_status_code
-    business_meaning_1st: Trạng thái hoạt động của đối tượng.
-    comment_1st: "Scheme: FIMS_ACTIVITY_STATUS."
-    data_domain_most: Classification Value
+        business_meaning: "FK -> COMPANYTYPE: Loại hình doanh nghiệp (chỉ áp dụng\
+          \ NĐT tổ chức)."
+        comment: "FK target: cl_fims_company_type.cl_fims_company_tp_id. Cần ETL crosswalk\
+          \ sang FIMS.COMPANYTYPE: INVESTOR.CompanyTypeId = COMPANYTYPE.Id để xác\
+          \ nhận CODE sau đó hash_id('FIMS_COMPANYTYPE', CODE) | Thay scheme FIMS_COMPANY_TYPE\
+          \ bằng FK tới entity cl_fims_company_type (2026-10-05). Chỉ áp dụng NĐT\
+          \ tổ chức."
+  - name: Classification FIMS Company Type Code
+    physical_name: cl_fims_company_tp_code
+    business_meaning_1st: Mã loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
+    comment_1st: "Lookup pair: cl_fims_company_type.cl_fims_company_tp_code. Pair\
+      \ with Classification FIMS Company Type Id. Giá trị lấy từ FIMS.COMPANYTYPE.CODE\
+      \ sau ETL crosswalk — chi tiết xem comment Classification FIMS Company Type\
+      \ Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTOR
+        source_column: FIMS.COMPANYTYPE.CODE
+        business_meaning: Mã loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
+        comment: "Lookup pair: cl_fims_company_type.cl_fims_company_tp_code. Pair\
+          \ with Classification FIMS Company Type Id. Giá trị lấy từ FIMS.COMPANYTYPE.CODE\
+          \ sau ETL crosswalk — chi tiết xem comment Classification FIMS Company Type\
+          \ Id."
+  - name: Classification FIMS Status Id
+    physical_name: cl_fims_status_id
+    business_meaning_1st: "FK -> STATUS: Trạng thái hoạt động của đối tượng."
+    comment_1st: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
+      \ FIMS.STATUS: INVESTOR.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+      \ Code) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status\
+      \ (2026-10-05)."
+    data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -51470,8 +54193,32 @@ entities:
       source_tables:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.StatusId
-        business_meaning: Trạng thái hoạt động của đối tượng.
-        comment: "Scheme: FIMS_ACTIVITY_STATUS."
+        business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng."
+        comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
+          \ FIMS.STATUS: INVESTOR.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+          \ Code) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status\
+          \ (2026-10-05)."
+  - name: Classification FIMS Status Code
+    physical_name: cl_fims_status_code
+    business_meaning_1st: Mã trạng thái hoạt động của đối tượng.
+    comment_1st: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
+      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+      \ xem comment Classification FIMS Status Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: INVESTOR
+        source_column: FIMS.STATUS.Code
+        business_meaning: Mã trạng thái hoạt động của đối tượng.
+        comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
+          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi\
+          \ tiết xem comment Classification FIMS Status Id."
   - name: Description
     physical_name: description
     business_meaning_1st: Mô tả chi tiết / ghi chú bổ sung.
@@ -51488,23 +54235,6 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.Description
         business_meaning: Mô tả chi tiết / ghi chú bổ sung.
-        comment: null
-  - name: Attachment File Name
-    physical_name: attachment_file_nm
-    business_meaning_1st: Tên file đính kèm.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FIMS
-      source_tables:
-      - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.FileName
-        business_meaning: Tên file đính kèm.
         comment: null
 - ldm:
     id: ATM-fund_distribution_agent
@@ -53680,61 +56410,6 @@ entities:
         source_column: FMS.FUNDS.DESCRIPTION
         business_meaning: Mô tả chi tiết.
         comment: null
-  - name: Type Of Fund No
-    physical_name: tp_of_fund_no
-    business_meaning_1st: Số quyết định về loại hình quỹ.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FMS
-      source_tables:
-      - source_table: FUNDS
-        source_column: FMS.FUNDS.TYPE_OF_FUND_NO
-        business_meaning: Số quyết định về loại hình quỹ.
-        comment: null
-  - name: Type Of Fund Mnp
-    physical_name: tp_of_fund_mnp
-    business_meaning_1st: Mệnh giá CCQ theo loại quỹ.
-    comment_1st: Mô tả nguồn gợi ý giá trị tiền tệ nhưng data type là NVARCHAR2 và
-      tên cột lẫn giữa 'type' và 'mệnh giá' — giữ Text denormalized, cần xác nhận
-      nghiệp vụ trước khi tách sang Currency Amount.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FMS
-      source_tables:
-      - source_table: FUNDS
-        source_column: FMS.FUNDS.TYPE_OF_FUND_MNP
-        business_meaning: Mệnh giá CCQ theo loại quỹ.
-        comment: Mô tả nguồn gợi ý giá trị tiền tệ nhưng data type là NVARCHAR2 và
-          tên cột lẫn giữa 'type' và 'mệnh giá' — giữ Text denormalized, cần xác nhận
-          nghiệp vụ trước khi tách sang Currency Amount.
-  - name: Type Of Fund Dent
-    physical_name: tp_of_fund_dent
-    business_meaning_1st: Loại quỹ theo định danh nội bộ.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FMS
-      source_tables:
-      - source_table: FUNDS
-        source_column: FMS.FUNDS.TYPE_OF_FUND_DENT
-        business_meaning: Loại quỹ theo định danh nội bộ.
-        comment: null
   - name: Fund Duration Description
     physical_name: fund_duration_description
     business_meaning_1st: Thời hạn hoạt động của quỹ (số năm hoặc 'Vô thời hạn').
@@ -53904,23 +56579,6 @@ entities:
       - source_table: FUNDS
         source_column: FMS.FUNDS.NUMBER_FUND_CER_FIRST
         business_meaning: Số lượng CCQ phát hành lần đầu tiên.
-        comment: null
-  - name: Stock Exchange Name
-    physical_name: stock_exchange_nm
-    business_meaning_1st: "Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM."
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: FMS
-      source_tables:
-      - source_table: FUNDS
-        source_column: FMS.FUNDS.STOCK_EXCHANGE
-        business_meaning: "Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM."
         comment: null
   - name: Open Fund Type Code
     physical_name: open_fund_tp_code
@@ -54303,7 +56961,9 @@ entities:
     - SCMS
     references:
       brd:
+      - BRD-SRC-FIMS-BANKMONI
       - BRD-SRC-FIMS-INVESTOR
+      - BRD-SRC-FIMS-SECURITIESCOMPANY
       - BRD-SRC-FIMS-TRADINGREPRESENTATIVE
       - BRD-SRC-FMS-AGENCIES
       - BRD-SRC-FMS-BANK_MONI
@@ -54331,9 +56991,9 @@ entities:
   attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning_1st: FK đến Foreign Investor (Involved Party).
-    comment_1st: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS.INVESTOR',\
-      \ TransactionCode)."
+    business_meaning_1st: FK đến Custodian Bank (Involved Party).
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+      \ Id)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -54343,11 +57003,21 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Id
+        business_meaning: FK đến Custodian Bank (Involved Party).
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+          \ Id)."
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.TransactionCode
         business_meaning: FK đến Foreign Investor (Involved Party).
-        comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS.INVESTOR',\
+        comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS_INVESTOR',\
           \ TransactionCode)."
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        business_meaning: FK đến Securities Company (Involved Party).
+        comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
+          \ Id)."
       - source_table: TRADINGREPRESENTATIVE
         source_column: FIMS.TRADINGREPRESENTATIVE.ID
         business_meaning: FK đến Trading Representative (Involved Party).
@@ -54493,8 +57163,8 @@ entities:
           \ ID)."
   - name: Involved Party Code
     physical_name: ip_code
-    business_meaning_1st: Mã Foreign Investor.
-    comment_1st: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved\
+    business_meaning_1st: Mã Custodian Bank.
+    comment_1st: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved\
       \ Party Id."
     data_domain_most: Text
     data_type_most: string
@@ -54505,11 +57175,21 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Id
+        business_meaning: Mã Custodian Bank.
+        comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved\
+          \ Party Id."
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.TransactionCode
         business_meaning: Mã Foreign Investor.
         comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved\
           \ Party Id."
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        business_meaning: Mã Securities Company.
+        comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party\
+          \ Id."
       - source_table: TRADINGREPRESENTATIVE
         source_column: FIMS.TRADINGREPRESENTATIVE.ID
         business_meaning: Mã Trading Representative.
@@ -54644,13 +57324,15 @@ entities:
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
     etl_derived_value:
+    - FIMS_BANKMONI
     - FIMS_INVESTOR
+    - FIMS_SECURITIESCOMPANY
     - FIMS_TRADINGREPRESENTATIVE
     - FMS_AGENCIES
     - FMS_BANK_MONI
@@ -54679,10 +57361,18 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
       - source_table: INVESTOR
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
       - source_table: TRADINGREPRESENTATIVE
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -54791,36 +57481,43 @@ entities:
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning_1st: Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT
-      cá nhân, Giấy phép/Mã số DN với NĐT tổ chức).
-    comment_1st: "Scheme: IP_ALT_ID_TYPE. (source) — type xác định tại ETL dựa theo\
-      \ ObjectType (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE),\
-      \ không có cột type riêng biệt trong nguồn. Cần profile dữ liệu để xác nhận\
-      \ loại giấy tờ thực tế của NĐT cá nhân (nguồn không phân biệt CMND cũ/CCCD/Hộ\
-      \ chiếu)."
+    business_meaning_1st: Loại giấy tờ — giấy phép/đăng ký hoạt động.
+    comment_1st: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
     etl_derived_value:
+    - BUSINESS_LICENSE
+    - CUSTODIAN_MEMBER_CERT
+    - IDENTIFICATION
     - NATIONAL_ID
     - ESTABLISHMENT_OPERATION_LICENSE
     - ELIGIBILITY_CERTIFICATE
-    - BUSINESS_LICENSE
     - TAX_ID
-    - IDENTIFICATION
     - PRACTITIONER_LICENSE
     - PASSPORT
     - OPERATION_LICENSE
     - CERTIFICATE
     - CUSTODIAN_CERT
-    - CUSTODIAN_MEMBER_CERT
     - ENTERPRISE_CODE
     - LEGACY_NATIONAL_ID
     conflict_review: "is_primary_key: [False, True]"
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Loại giấy tờ — giấy phép/đăng ký hoạt động.
+        comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Loại giấy tờ — chứng nhận thành viên lưu ký (VSDC).
+        comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_MEMBER_CERT."
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Loại giấy tờ — số CMND/CCCD/Hộ chiếu/Giấy phép.
+        comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION."
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.ObjectType
         business_meaning: Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT
@@ -54830,6 +57527,25 @@ entities:
           \ không có cột type riêng biệt trong nguồn. Cần profile dữ liệu để xác nhận\
           \ loại giấy tờ thực tế của NĐT cá nhân (nguồn không phân biệt CMND cũ/CCCD/Hộ\
           \ chiếu)."
+      - source_table: INVESTOR
+        source_column: null
+        business_meaning: "Loại giấy tờ: Giấy phép/Số đăng ký kinh doanh của NĐT tổ\
+          \ chức."
+        comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE cho BusinessNumber\
+          \ (chỉ áp dụng NĐT tổ chức, ObjectType=2) — mã gần nhất trong scheme hiện\
+          \ có, cần Data Modeler xác nhận."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Loại giấy tờ — giấy phép/đăng ký hoạt động.
+        comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Loại giấy tờ — chứng nhận thành viên lưu ký (VSDC).
+        comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_MEMBER_CERT."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Loại giấy tờ — số CMND/CCCD/Hộ chiếu/Giấy phép.
+        comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION."
       - source_table: TRADINGREPRESENTATIVE
         source_column: null
         business_meaning: Loại giấy tờ tùy thân.
@@ -55043,8 +57759,9 @@ entities:
           \ 1 cột ID_NUMBER (CMND legacy, không phân biệt CCCD mới)."
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning_1st: Số CMND/CCCD/Hộ chiếu/Giấy phép.
-    comment_1st: null
+    business_meaning_1st: Số giấy phép/đăng ký hoạt động.
+    comment_1st: BK của shared entity cùng với Involved Party Id + Identification
+      Type Code.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -55054,10 +57771,44 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.RegNo
+        business_meaning: Số giấy phép/đăng ký hoạt động.
+        comment: BK của shared entity cùng với Involved Party Id + Identification
+          Type Code.
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.DepCert
+        business_meaning: Số chứng nhận thành viên lưu ký (VSDC).
+        comment: BK của shared entity cùng với Involved Party Id + Identification
+          Type Code.
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.IdNo
+        business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
+        comment: BK của shared entity cùng với Involved Party Id + Identification
+          Type Code.
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.IdNo
         business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
         comment: null
+      - source_table: INVESTOR
+        source_column: FIMS.INVESTOR.BusinessNumber
+        business_meaning: Số đăng ký kinh doanh/mã số doanh nghiệp.
+        comment: Chỉ áp dụng NĐT tổ chức (Lọc ObjectType=2).
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.RegNo
+        business_meaning: Số giấy phép/đăng ký hoạt động.
+        comment: BK của shared entity cùng với Involved Party Id + Identification
+          Type Code.
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.DepCert
+        business_meaning: Số chứng nhận thành viên lưu ký (VSDC).
+        comment: BK của shared entity cùng với Involved Party Id + Identification
+          Type Code.
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.IdNo
+        business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
+        comment: BK của shared entity cùng với Involved Party Id + Identification
+          Type Code.
       - source_table: TRADINGREPRESENTATIVE
         source_column: FIMS.TRADINGREPRESENTATIVE.IDNO
         business_meaning: Số CMND/CCCD/Hộ chiếu của đại diện giao dịch.
@@ -55237,7 +57988,7 @@ entities:
         comment: NVARCHAR2(30) — số CMND legacy.
   - name: Identification Issue Date
     physical_name: identification_issue_dt
-    business_meaning_1st: Ngày cấp giấy tờ định danh.
+    business_meaning_1st: Ngày cấp giấy phép/đăng ký.
     comment_1st: null
     data_domain_most: Date
     data_type_most: date
@@ -55248,8 +57999,24 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.RegDate
+        business_meaning: Ngày cấp giấy phép/đăng ký.
+        comment: null
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.IdDate
+        business_meaning: Ngày cấp giấy tờ định danh.
+        comment: null
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.IdDate
+        business_meaning: Ngày cấp giấy tờ định danh.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.RegDate
+        business_meaning: Ngày cấp giấy phép/đăng ký.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.IdDate
         business_meaning: Ngày cấp giấy tờ định danh.
         comment: null
     - source_system: FMS
@@ -55364,7 +58131,7 @@ entities:
         comment: DATE.
   - name: Identification Issue Place
     physical_name: identification_issue_place
-    business_meaning_1st: Nơi cấp giấy tờ định danh.
+    business_meaning_1st: Nơi cấp giấy phép/đăng ký.
     comment_1st: null
     data_domain_most: Text
     data_type_most: string
@@ -55375,8 +58142,24 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.RegAdd
+        business_meaning: Nơi cấp giấy phép/đăng ký.
+        comment: null
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.IdAdd
+        business_meaning: Nơi cấp giấy tờ định danh.
+        comment: null
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.IdAdd
+        business_meaning: Nơi cấp giấy tờ định danh.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.RegAdd
+        business_meaning: Nơi cấp giấy phép/đăng ký.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.IdAdd
         business_meaning: Nơi cấp giấy tờ định danh.
         comment: null
     - source_system: FMS
@@ -55474,7 +58257,9 @@ entities:
     - SCMS
     references:
       brd:
+      - BRD-SRC-FIMS-BANKMONI
       - BRD-SRC-FIMS-INVESTOR
+      - BRD-SRC-FIMS-SECURITIESCOMPANY
       - BRD-SRC-FIMS-TRADINGREPRESENTATIVE
       - BRD-SRC-FMS-AGENCIES
       - BRD-SRC-FMS-BANK_MONI
@@ -55503,9 +58288,9 @@ entities:
   attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning_1st: FK đến Foreign Investor (Involved Party).
-    comment_1st: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS.INVESTOR',\
-      \ TransactionCode)."
+    business_meaning_1st: FK đến Custodian Bank (Involved Party).
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+      \ Id)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -55515,11 +58300,21 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Id
+        business_meaning: FK đến Custodian Bank (Involved Party).
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+          \ Id)."
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.TransactionCode
         business_meaning: FK đến Foreign Investor (Involved Party).
-        comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS.INVESTOR',\
+        comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS_INVESTOR',\
           \ TransactionCode)."
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        business_meaning: FK đến Securities Company (Involved Party).
+        comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
+          \ Id)."
       - source_table: TRADINGREPRESENTATIVE
         source_column: FIMS.TRADINGREPRESENTATIVE.ID
         business_meaning: FK đến Trading Representative (Involved Party).
@@ -55676,8 +58471,8 @@ entities:
           \ ID)."
   - name: Involved Party Code
     physical_name: ip_code
-    business_meaning_1st: Mã Foreign Investor.
-    comment_1st: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved\
+    business_meaning_1st: Mã Custodian Bank.
+    comment_1st: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved\
       \ Party Id."
     data_domain_most: Text
     data_type_most: string
@@ -55688,11 +58483,21 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Id
+        business_meaning: Mã Custodian Bank.
+        comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved\
+          \ Party Id."
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.TransactionCode
         business_meaning: Mã Foreign Investor.
         comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved\
           \ Party Id."
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        business_meaning: Mã Securities Company.
+        comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party\
+          \ Id."
       - source_table: TRADINGREPRESENTATIVE
         source_column: FIMS.TRADINGREPRESENTATIVE.ID
         business_meaning: Mã Trading Representative.
@@ -55832,13 +58637,15 @@ entities:
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
     etl_derived_value:
+    - FIMS_BANKMONI
     - FIMS_INVESTOR
+    - FIMS_SECURITIESCOMPANY
     - FIMS_TRADINGREPRESENTATIVE
     - FMS_AGENCIES
     - FMS_BANK_MONI
@@ -55868,10 +58675,18 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
       - source_table: INVESTOR
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
       - source_table: TRADINGREPRESENTATIVE
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -55985,7 +58800,7 @@ entities:
   - name: Electronic Address Type Code
     physical_name: electronic_adr_tp_code
     business_meaning_1st: Loại kênh liên lạc — email.
-    comment_1st: "Scheme: IP_ELEC_ADDR_TYPE."
+    comment_1st: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode EMAIL."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -56006,6 +58821,22 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Loại kênh liên lạc — email.
+        comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode EMAIL."
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Loại kênh liên lạc — fax.
+        comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode FAX."
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Loại kênh liên lạc — điện thoại.
+        comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode PHONE."
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Loại kênh liên lạc — website.
+        comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode WEBSITE."
       - source_table: INVESTOR
         source_column: null
         business_meaning: Loại kênh liên lạc — email.
@@ -56022,6 +58853,22 @@ entities:
         source_column: null
         business_meaning: Loại kênh liên lạc — website.
         comment: "Scheme: IP_ELEC_ADDR_TYPE."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Loại kênh liên lạc — email.
+        comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode EMAIL."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Loại kênh liên lạc — fax.
+        comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode FAX."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Loại kênh liên lạc — điện thoại.
+        comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode PHONE."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Loại kênh liên lạc — website.
+        comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode WEBSITE."
       - source_table: TRADINGREPRESENTATIVE
         source_column: null
         business_meaning: Loại kênh liên lạc — email.
@@ -56358,6 +59205,22 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Email
+        business_meaning: Địa chỉ email liên hệ.
+        comment: null
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Fax
+        business_meaning: Số fax.
+        comment: null
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Telephone
+        business_meaning: Số điện thoại liên hệ.
+        comment: null
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Website
+        business_meaning: Địa chỉ website.
+        comment: null
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.Email
         business_meaning: Địa chỉ email liên hệ.
@@ -56372,6 +59235,22 @@ entities:
         comment: null
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.Website
+        business_meaning: Địa chỉ website.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Email
+        business_meaning: Địa chỉ email liên hệ.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Fax
+        business_meaning: Số fax.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Telephone
+        business_meaning: Số điện thoại liên hệ.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Website
         business_meaning: Địa chỉ website.
         comment: null
       - source_table: TRADINGREPRESENTATIVE
@@ -56726,7 +59605,9 @@ entities:
     - SCMS
     references:
       brd:
+      - BRD-SRC-FIMS-BANKMONI
       - BRD-SRC-FIMS-INVESTOR
+      - BRD-SRC-FIMS-SECURITIESCOMPANY
       - BRD-SRC-FIMS-TRADINGREPRESENTATIVE
       - BRD-SRC-FMS-AGENCIES
       - BRD-SRC-FMS-BANK_MONI
@@ -56757,9 +59638,9 @@ entities:
   attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning_1st: FK đến Foreign Investor (Involved Party).
-    comment_1st: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS.INVESTOR',\
-      \ TransactionCode)."
+    business_meaning_1st: FK đến Custodian Bank (Involved Party).
+    comment_1st: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+      \ Id)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -56769,11 +59650,21 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Id
+        business_meaning: FK đến Custodian Bank (Involved Party).
+        comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
+          \ Id)."
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.TransactionCode
         business_meaning: FK đến Foreign Investor (Involved Party).
-        comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS.INVESTOR',\
+        comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS_INVESTOR',\
           \ TransactionCode)."
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        business_meaning: FK đến Securities Company (Involved Party).
+        comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
+          \ Id)."
       - source_table: TRADINGREPRESENTATIVE
         source_column: FIMS.TRADINGREPRESENTATIVE.ID
         business_meaning: FK đến Trading Representative (Involved Party).
@@ -56944,8 +59835,8 @@ entities:
           \ ID)."
   - name: Involved Party Code
     physical_name: ip_code
-    business_meaning_1st: Mã Foreign Investor.
-    comment_1st: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved\
+    business_meaning_1st: Mã Custodian Bank.
+    comment_1st: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved\
       \ Party Id."
     data_domain_most: Text
     data_type_most: string
@@ -56956,11 +59847,21 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Id
+        business_meaning: Mã Custodian Bank.
+        comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved\
+          \ Party Id."
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.TransactionCode
         business_meaning: Mã Foreign Investor.
         comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved\
           \ Party Id."
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        business_meaning: Mã Securities Company.
+        comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party\
+          \ Id."
       - source_table: TRADINGREPRESENTATIVE
         source_column: FIMS.TRADINGREPRESENTATIVE.ID
         business_meaning: Mã Trading Representative.
@@ -57111,13 +60012,15 @@ entities:
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
     etl_derived_value:
+    - FIMS_BANKMONI
     - FIMS_INVESTOR
+    - FIMS_SECURITIESCOMPANY
     - FIMS_TRADINGREPRESENTATIVE
     - FMS_AGENCIES
     - FMS_BANK_MONI
@@ -57149,10 +60052,18 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
       - source_table: INVESTOR
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
       - source_table: TRADINGREPRESENTATIVE
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -57275,7 +60186,7 @@ entities:
         comment: "Scheme: SOURCE_SYSTEM."
   - name: Address Type Code
     physical_name: adr_tp_code
-    business_meaning_1st: Loại địa chỉ.
+    business_meaning_1st: Loại địa chỉ — trụ sở/văn phòng.
     comment_1st: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 loại địa chỉ (trụ sở/văn phòng)\
       \ — hardcode HEAD_OFFICE."
     data_domain_most: Classification Value
@@ -57300,9 +60211,19 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: null
+        business_meaning: Loại địa chỉ — trụ sở/văn phòng.
+        comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 loại địa chỉ (trụ sở/văn phòng)\
+          \ — hardcode HEAD_OFFICE."
       - source_table: INVESTOR
         source_column: null
         business_meaning: Loại địa chỉ.
+        comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 loại địa chỉ (trụ sở/văn phòng)\
+          \ — hardcode HEAD_OFFICE."
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Loại địa chỉ — trụ sở/văn phòng.
         comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 loại địa chỉ (trụ sở/văn phòng)\
           \ — hardcode HEAD_OFFICE."
       - source_table: TRADINGREPRESENTATIVE
@@ -57478,8 +60399,16 @@ entities:
     source_mappings:
     - source_system: FIMS
       source_tables:
+      - source_table: BANKMONI
+        source_column: FIMS.BANKMONI.Address
+        business_meaning: Địa chỉ trụ sở/văn phòng.
+        comment: null
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.Address
+        business_meaning: Địa chỉ trụ sở/văn phòng.
+        comment: null
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Address
         business_meaning: Địa chỉ trụ sở/văn phòng.
         comment: null
       - source_table: TRADINGREPRESENTATIVE
@@ -65207,16 +68136,18 @@ entities:
     etl_pattern_most: SCD4A
     conflict_review: null
     sources:
+    - FIMS
     - SCMS
     references:
       brd:
+      - BRD-SRC-FIMS-SECURITIESCOMPANY
       - BRD-SRC-SCMS-SC_FIRM_INFO
   attributes:
   - name: Securities Company Id
     physical_name: sc_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('SCMS.SC_FIRM_INFO', CODE). BCV: \"\
-      [Involved Party] Broker Dealer\". Công ty chứng khoán được UBCKNN cấp phép."
+    comment_1st: "PK surrogate. BCV: \"[Involved Party] Broker Dealer\". Công ty chứng\
+      \ khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -65224,6 +68155,13 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Involved Party] Broker Dealer\". Công ty chứng\
+          \ khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_INFO
@@ -65231,6 +68169,36 @@ entities:
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. Hash: hash_id('SCMS.SC_FIRM_INFO', CODE). BCV: \"\
           [Involved Party] Broker Dealer\". Công ty chứng khoán được UBCKNN cấp phép."
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning_1st: Khóa chính của bản ghi (ID số tự tăng). BK.
+    comment_1st: BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm
+      BK (cùng pattern FIMS.BANKMONI). Nguồn lưu NUMBER(18,2) — ETL cần convert sang
+      string, bỏ phần thập phân .00.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Id
+        business_meaning: Khóa chính của bản ghi (ID số tự tăng). BK.
+        comment: BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm
+          BK (cùng pattern FIMS.BANKMONI). Nguồn lưu NUMBER(18,2) — ETL cần convert
+          sang string, bỏ phần thập phân .00.
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.CODE
+        business_meaning: Mã định danh (mã viết tắt, mã nghiệp vụ) của CTCK. BK duy
+          nhất — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key
+          cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận
+          NOT NULL/unique trước go-live.
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -65239,15 +68207,240 @@ entities:
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: SCMS_SC_FIRM_INFO
+    etl_derived_value:
+    - FIMS_SECURITIESCOMPANY
+    - SCMS_SC_FIRM_INFO
     conflict_review: null
     source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_INFO
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Classification FIMS Status Id
+    physical_name: cl_fims_status_id
+    business_meaning_1st: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
+      \ danh mục STATUS)."
+    comment_1st: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
+      \ FIMS.STATUS: SECURITIESCOMPANY.StatusId = STATUS.Id để xác nhận Code sau đó\
+      \ hash_id('FIMS_STATUS', Code)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.StatusId
+        business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
+          \ danh mục STATUS)."
+        comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
+          \ FIMS.STATUS: SECURITIESCOMPANY.StatusId = STATUS.Id để xác nhận Code sau\
+          \ đó hash_id('FIMS_STATUS', Code)."
+  - name: Classification FIMS Status Code
+    physical_name: cl_fims_status_code
+    business_meaning_1st: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong
+      bảng danh mục STATUS).
+    comment_1st: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
+      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+      \ xem comment Classification FIMS Status Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.STATUS.Code
+        business_meaning: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong
+          bảng danh mục STATUS).
+        comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
+          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi\
+          \ tiết xem comment Classification FIMS Status Id."
+  - name: Securities Company Name
+    physical_name: sc_nm
+    business_meaning_1st: Tên đầy đủ (tiếng Việt).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Name
+        business_meaning: Tên đầy đủ (tiếng Việt).
+        comment: null
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.NAME_VI
+        business_meaning: Tên đầy đủ bằng tiếng Việt.
+        comment: null
+  - name: Securities Company English Name
+    physical_name: sc_english_nm
+    business_meaning_1st: Tên tiếng Anh.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.EName
+        business_meaning: Tên tiếng Anh.
+        comment: null
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.NAME_EN
+        business_meaning: Tên đầy đủ bằng tiếng Anh.
+        comment: null
+  - name: Securities Company Short Name
+    physical_name: sc_short_nm
+    business_meaning_1st: Tên viết tắt của tổ chức.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.ShortName
+        business_meaning: Tên viết tắt của tổ chức.
+        comment: null
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.SHORT_NAME
+        business_meaning: "Tên viết tắt (VD: SSI, VPS, MBS)."
+        comment: null
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning_1st: FK đến Geographic Area (quốc gia/quốc tịch).
+    comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+      \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NaId\
+      \ = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa\
+      \ xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.NaId
+        business_meaning: FK đến Geographic Area (quốc gia/quốc tịch).
+        comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+          \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NaId\
+          \ = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName)\
+          \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước\
+          \ go-live."
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning_1st: Mã quốc gia/quốc tịch.
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+      \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+      \ Nationality Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.NATIONAL.SName
+        business_meaning: Mã quốc gia/quốc tịch.
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+          \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem\
+          \ comment Nationality Id."
+  - name: Charter Capital Amount
+    physical_name: charter_capital_amt
+    business_meaning_1st: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
+    comment_1st: Nguồn NUMBER(36,2). Dùng chung attribute với SCMS.SC_FIRM_INFO.CHARTER_CAPITAL.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Capital
+        business_meaning: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
+        comment: Nguồn NUMBER(36,2). Dùng chung attribute với SCMS.SC_FIRM_INFO.CHARTER_CAPITAL.
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.CHARTER_CAPITAL
+        business_meaning: "Vốn điều lệ (đơn vị: đồng)."
+        comment: Nguồn lưu NUMBER(38) — lưu dạng số nguyên (không có phần thập phân).
+  - name: Director Full Name
+    physical_name: director_full_nm
+    business_meaning_1st: Họ tên Giám đốc/Tổng giám đốc.
+    comment_1st: Denormalized — không có FK.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Director
+        business_meaning: Họ tên Giám đốc/Tổng giám đốc.
+        comment: Denormalized — không có FK.
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết / ghi chú bổ sung.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FIMS
+      source_tables:
+      - source_table: SECURITIESCOMPANY
+        source_column: FIMS.SECURITIESCOMPANY.Description
+        business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+        comment: null
   - name: Parent Securities Company Id
     physical_name: parent_sc_id
     business_meaning_1st: FK tự tham chiếu — CTCK cha trong cấu trúc phân cấp (nếu
@@ -65290,80 +68483,6 @@ entities:
         business_meaning: Mã CTCK cha.
         comment: "Lookup pair: securities_company.securities_company_code. Pair with\
           \ Parent Securities Company Id."
-  - name: Securities Company Code
-    physical_name: sc_code
-    business_meaning_1st: Mã định danh (mã viết tắt, mã nghiệp vụ) của CTCK. BK duy
-      nhất — Id hash từ trường này.
-    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key
-      cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT
-      NULL/unique trước go-live.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.CODE
-        business_meaning: Mã định danh (mã viết tắt, mã nghiệp vụ) của CTCK. BK duy
-          nhất — Id hash từ trường này.
-        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key
-          cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận
-          NOT NULL/unique trước go-live.
-  - name: Securities Company Short Name
-    physical_name: sc_short_nm
-    business_meaning_1st: "Tên viết tắt (VD: SSI, VPS, MBS)."
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.SHORT_NAME
-        business_meaning: "Tên viết tắt (VD: SSI, VPS, MBS)."
-        comment: null
-  - name: Securities Company Name
-    physical_name: sc_nm
-    business_meaning_1st: Tên đầy đủ bằng tiếng Việt.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.NAME_VI
-        business_meaning: Tên đầy đủ bằng tiếng Việt.
-        comment: null
-  - name: Securities Company English Name
-    physical_name: sc_english_nm
-    business_meaning_1st: Tên đầy đủ bằng tiếng Anh.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.NAME_EN
-        business_meaning: Tên đầy đủ bằng tiếng Anh.
-        comment: null
   - name: Company Type Code
     physical_name: company_tp_code
     business_meaning_1st: Loại hình doanh nghiệp CTCK (FK đến CAT_COMPANY_TYPE).
@@ -65518,23 +68637,6 @@ entities:
         source_column: SCMS.SC_FIRM_INFO.TERMINATION_DECISION_NUMBER
         business_meaning: Số quyết định chấm dứt hoạt động.
         comment: Mô tả gốc BRD trống.
-  - name: Charter Capital Amount
-    physical_name: charter_capital_amt
-    business_meaning_1st: "Vốn điều lệ (đơn vị: đồng)."
-    comment_1st: Nguồn lưu NUMBER(38) — lưu dạng số nguyên (không có phần thập phân).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.CHARTER_CAPITAL
-        business_meaning: "Vốn điều lệ (đơn vị: đồng)."
-        comment: Nguồn lưu NUMBER(38) — lưu dạng số nguyên (không có phần thập phân).
   - name: Total Shares
     physical_name: total_shares
     business_meaning_1st: Tổng số lượng cổ phần (tự động = vốn điều lệ / mệnh giá

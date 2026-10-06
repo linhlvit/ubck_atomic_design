@@ -274,48 +274,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Type Of Fund No
-    physical_name: tp_of_fund_no
-    business_meaning: Số quyết định về loại hình quỹ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FUNDS
-    source_column: FMS.FUNDS.TYPE_OF_FUND_NO
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Type Of Fund Mnp
-    physical_name: tp_of_fund_mnp
-    business_meaning: Mệnh giá CCQ theo loại quỹ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FUNDS
-    source_column: FMS.FUNDS.TYPE_OF_FUND_MNP
-    comment: "Mô tả nguồn gợi ý giá trị tiền tệ nhưng data type là NVARCHAR2 và tên cột lẫn giữa 'type' và 'mệnh giá' — giữ Text denormalized, cần xác nhận nghiệp vụ trước khi tách sang Currency Amount."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Type Of Fund Dent
-    physical_name: tp_of_fund_dent
-    business_meaning: Loại quỹ theo định danh nội bộ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FUNDS
-    source_column: FMS.FUNDS.TYPE_OF_FUND_DENT
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
   - name: Fund Duration Description
     physical_name: fund_duration_description
     business_meaning: "Thời hạn hoạt động của quỹ (số năm hoặc 'Vô thời hạn')."
@@ -452,20 +410,6 @@ attributes:
     source_system: FMS
     source_table: FUNDS
     source_column: FMS.FUNDS.NUMBER_FUND_CER_FIRST
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Stock Exchange Name
-    physical_name: stock_exchange_nm
-    business_meaning: "Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM."
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: FUNDS
-    source_column: FMS.FUNDS.STOCK_EXCHANGE
     comment: null
     classification_context: null
     etl_derived_value: null

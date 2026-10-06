@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-custodian_bank-FIMS.BANKMONI
+  logical_name: Custodian Bank
+  physical_name: custodian_bank
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Ngân hàng lưu ký giám sát (LKGS) được chỉ định để lưu giữ tài sản quỹ và giám sát hoạt động công ty QLQ. Ghi nhận tên, mã, địa chỉ và thông tin liên hệ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-BANKMONI
+
+attributes:
+  - name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ. Hash: hash_id('FIMS_BANKMONI', Id)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning: Khóa chính của bản ghi (ID số tự tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Id
+    comment: "BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm BK (cùng pattern FMS.BANK_MONI). Nguồn lưu NUMBER(18,2) — ETL cần convert sang string, bỏ phần thập phân .00."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_BANKMONI'"
+    etl_derived_value: FIMS_BANKMONI
+
+  - name: Classification FIMS Status Id
+    physical_name: cl_fims_status_id
+    business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.StatusId
+    comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: BANKMONI.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS', Code)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FIMS Status Code
+    physical_name: cl_fims_status_code
+    business_meaning: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.STATUS.Code
+    comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Custodian Bank Full Name
+    physical_name: custodian_bank_full_nm
+    business_meaning: Tên đầy đủ (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Name
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Custodian Bank English Name
+    physical_name: custodian_bank_english_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.EName
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Custodian Bank Short Name
+    physical_name: custodian_bank_short_nm
+    business_meaning: Tên viết tắt của tổ chức.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.ShortName
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: FK đến Geographic Area (quốc gia/quốc tịch).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.NaId
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NaId = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc gia/quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.NATIONAL.SName
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_capital_amt
+    business_meaning: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Capital
+    comment: Nguồn NOT NULL — Atomic để nullable do entity gộp thêm nguồn FMS.BANK_MONI không có cột vốn.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Director Full Name
+    physical_name: director_full_nm
+    business_meaning: Họ tên Giám đốc/Tổng giám đốc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Director
+    comment: Denormalized — không có FK.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: BANKMONI
+    source_column: FIMS.BANKMONI.Description
+    comment: null
+    classification_context: null
+    etl_derived_value: null

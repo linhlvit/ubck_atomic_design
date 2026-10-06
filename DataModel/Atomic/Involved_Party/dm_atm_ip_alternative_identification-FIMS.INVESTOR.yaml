@@ -32,7 +32,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.TransactionCode
-    comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS.INVESTOR', TransactionCode)."
+    comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
     classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
     etl_derived_value: null
 
@@ -118,4 +118,32 @@ attributes:
     source_column: FIMS.INVESTOR.IdAdd
     comment: null
     classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: "Loại giấy tờ: Giấy phép/Số đăng ký kinh doanh của NĐT tổ chức."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE cho BusinessNumber (chỉ áp dụng NĐT tổ chức, ObjectType=2) — mã gần nhất trong scheme hiện có, cần Data Modeler xác nhận."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: BUSINESS_LICENSE
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số đăng ký kinh doanh/mã số doanh nghiệp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.BusinessNumber
+    comment: "Chỉ áp dụng NĐT tổ chức (Lọc ObjectType=2)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null

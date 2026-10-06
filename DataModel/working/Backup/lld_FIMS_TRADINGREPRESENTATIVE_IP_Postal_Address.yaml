@@ -3,11 +3,11 @@ schema_version: "2.0"
 metadata:
   source_system: "FIMS"
   source_table: "TRADINGREPRESENTATIVE"
-  atomic_entity: "Involved Party Alternative Identification"
-  entity_physical_name: "ip_alternative_identification"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
   bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Alternative Identification"
-  table_type: "Relative"
+  bcv_concept: "[Involved Party] Postal Address"
+  table_type: "Fundamental"
   group: "T1"
   design_status: "approved"
   version: "1.0"
@@ -28,9 +28,9 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.TRADINGREPRESENTATIVE.ID"
-  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
+  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS_TRADINGREPRESENTATIVE',\
     \ ID)."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
@@ -44,7 +44,7 @@ attributes:
   - "FIMS.TRADINGREPRESENTATIVE.ID"
   comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
     \ with Involved Party Id."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Source System Code"
@@ -59,30 +59,29 @@ attributes:
   classification_context: "SOURCE_SYSTEM=FIMS.TRADINGREPRESENTATIVE"
   etl_derived_value: "FIMS_TRADINGREPRESENTATIVE"
   data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân."
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Nguồn không có cột phân biệt loại giấy tờ (CMND/CCCD/Hộ\
-    \ chiếu) — mặc định NATIONAL_ID. Document pending_design.yaml, cần profile dữ\
-    \ liệu thực tế trước go-live."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
+  comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 loại địa chỉ (thường trú) — hardcode\
+    \ PERMANENT."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: "PERMANENT"
   data_type: "string"
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số CMND/CCCD/Hộ chiếu của đại diện giao dịch."
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ thường trú của đại diện giao dịch."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.IDNO"
+  - "FIMS.TRADINGREPRESENTATIVE.ADDRESS"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"

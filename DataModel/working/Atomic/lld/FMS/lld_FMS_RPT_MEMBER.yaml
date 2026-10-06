@@ -1,0 +1,438 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  atomic_entity: "Fund Management Report Submission"
+  entity_physical_name: "fmr_submission"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Relative"
+  group: "T8"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Báo cáo của thành viên thị trường (1 dòng = 1 lần nộp báo cáo theo kỳ).\
+    \ 4 FK thành viên cũ + 6 FK đại lý/quỹ hưu trí mở rộng ở DDL UAT 1 đều nullable\
+    \ (đa hướng — cùng pattern VIOLT/ANNOUNCE). Thiết kế theo mẫu báo cáo IDS (fr_catalog/fr_value).\
+    \ DDL chuẩn: Source/DDL UAT 1/FMS_UAT_schema 1.txt. Theo quyết định Data Modeler\
+    \ 2026-10-06: BK = hash từ ID (RAW(16)), các cột NCLOB/CLOB JSON map Text (string).\
+    \ CREATED_BY/MODIFY_BY/DELETED document trong pending_design.yaml. AUDIT_FIRM_ID/AUDITOR_ID\
+    \ (AUDIT_FIRM, AUDITOR ngoài scope Atomic — thông tin kiểm toán lấy từ IDS) và\
+    \ ID_DB_OLD document trong pending_design.yaml."
+attributes:
+- attribute_name: "Fund Management Report Submission Id"
+  physical_name: "fmr_submission_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('FMS_RPT_MEMBER', ID). BCV: \"[Documentation]\
+    \ Regulatory Report\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Report Submission Code"
+  physical_name: "fmr_submission_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.ID"
+  comment: "BK chính — ID nguồn (RAW(16), chuyển hex string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_RPT_MEMBER"
+  etl_derived_value: "FMS_RPT_MEMBER"
+  data_type: "string"
+- attribute_name: "Fund Management Report Period Id"
+  physical_name: "fmr_period_id"
+  description: "FK -> RPT_PERIOD: Kỳ báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.PRD_ID"
+  comment: "FK target: fmr_period.fmr_period_id. Hash: hash_id('FMS_RPT_PERIOD', PRD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Report Period Code"
+  physical_name: "fmr_period_code"
+  description: "Mã kỳ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.PRD_ID"
+  comment: "Lookup pair: fmr_period.fmr_period_code. Pair with Fund Management Report\
+    \ Period Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Report Id"
+  physical_name: "fmr_id"
+  description: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.RPT_ID"
+  comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP',\
+    \ RPT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Report Code"
+  physical_name: "fmr_code"
+  description: "Mã biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.RPT_ID"
+  comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Name"
+  physical_name: "rpt_nm"
+  description: "Tên báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.RPT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Type Code"
+  physical_name: "rpt_tp_code"
+  description: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường, 3=Báo cáo theo\
+    \ yêu cầu, 4=Báo cáo khác."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.REPORT_TYPE"
+  comment: "SCHEMA_CODE=FMS.REPORT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Imported Indicator"
+  physical_name: "imported_ind"
+  description: "Cờ đã import dữ liệu: 1=Đã import, 0=Chưa import."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.IMPORTED"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Submitted Date"
+  physical_name: "submitted_dt"
+  description: "Ngày thành viên nộp/gửi báo cáo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.DATE_SUBMITTED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Custodian Bank Id"
+  physical_name: "custodian_bank_id"
+  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.BKM_ID"
+  comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS_BANK_MONI',\
+    \ BKM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Code"
+  physical_name: "custodian_bank_code"
+  description: "Mã ngân hàng lưu ký/giám sát liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.BKM_ID"
+  comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Id"
+  physical_name: "investment_fund_id"
+  description: "FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.FND_ID"
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
+    \ FND_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Code"
+  physical_name: "investment_fund_code"
+  description: "Mã quỹ đầu tư liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.FND_ID"
+  comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment\
+    \ Fund Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Fund Management Organization Unit Id"
+  physical_name: "foreign_fm_ou_id"
+  description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.FR_BR_ID"
+  comment: "FK target: foreign_fm_ou.foreign_fm_ou_id. Hash: hash_id('FMS_FOR_BRCH',\
+    \ FR_BR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Fund Management Organization Unit Code"
+  physical_name: "foreign_fm_ou_code"
+  description: "Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.FR_BR_ID"
+  comment: "Lookup pair: foreign_fm_ou.foreign_fm_ou_code. Pair with Foreign Fund\
+    \ Management Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Id"
+  physical_name: "fmc_id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.SEC_ID"
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Code"
+  physical_name: "fmc_code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.SEC_ID"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Type"
+  physical_name: "record_tp"
+  description: "Loại/phân loại của bản ghi."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.RECORD_TYPE"
+  comment: "Nguồn NUMBER(38,0) — ETL convert sang string. Mô tả nguồn chung chung,\
+    \ giữ Text denormalized (cùng pattern lld_FMS_BANK_MONI.RECORD_TYPE), cần xác\
+    \ nhận nghiệp vụ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Date"
+  physical_name: "rpt_dt"
+  description: "Ngày lập báo cáo (kỳ ngày)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.DAY_REPORT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Period Value"
+  physical_name: "period_val"
+  description: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm của kỳ báo cáo (định dạng YYYY)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.YEAR_VALUE"
+  comment: "Nguồn NUMBER(18,2) — ETL cast về số nguyên."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Period Type Code"
+  physical_name: "rpt_period_tp_code"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm,\
+    \ 7=Nửa tháng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.PERIOD_TYPE"
+  comment: "SCHEMA_CODE=FMS.PERIOD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Distribution Agent Id"
+  physical_name: "securities_distribution_agent_id"
+  description: "FK -> DISTRIBUTOR_AGENT: Đại lý phân phối liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.DISTRIBUTOR_ID"
+  comment: "FK target: securities_distribution_agent.securities_distribution_agent_id.\
+    \ Hash: hash_id('FMS_DISTRIBUTOR_AGENT', DISTRIBUTOR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Distribution Agent Code"
+  physical_name: "securities_distribution_agent_code"
+  description: "Mã đại lý phân phối liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.DISTRIBUTOR_ID"
+  comment: "Lookup pair: securities_distribution_agent.securities_distribution_agent_code.\
+    \ Pair with Securities Distribution Agent Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Name"
+  physical_name: "member_nm"
+  description: "Tên thành viên gửi báo cáo (snapshot tại thời điểm nộp)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.MEMBER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Event Type Id"
+  physical_name: "cl_fms_event_tp_id"
+  description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.EVENT_TYPE_ID"
+  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
+    \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
+    \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier8 6f)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Event Type Code"
+  physical_name: "cl_fms_event_tp_code"
+  description: "Mã loại sự vụ áp dụng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.EVENT_TYPE_ID"
+  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification\
+    \ FMS Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Deadline Timestamp"
+  physical_name: "submission_deadline_tms"
+  description: "Hạn nộp báo cáo (UTC): job tính theo cuối ngày 23:59:00 UTC."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.DEADLINE_SEND"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

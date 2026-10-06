@@ -1,0 +1,93 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fms_agency_type-FMS.AGENCY_TYPE
+  logical_name: Classification FMS Agency Type
+  physical_name: cl_fms_agency_type
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Agent Type"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Danh mục loại đại lý quỹ đầu tư (đại lý phân phối, đại lý chuyển nhượng, đại lý khác...). Promote từ Classification Value (scheme FMS_AGENCY_TYPE, nay deprecated) lên entity riêng; BK = ID nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-AGENCY_TYPE
+
+attributes:
+  - name: Classification FMS Agency Type Id
+    physical_name: cl_fms_agency_tp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: AGENCY_TYPE
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('FMS_AGENCY_TYPE', ID). BCV: \"[Common] Agent Type\" (BCV: phân biệt các đại lý theo hoạt động cụ thể thực hiện thay mặt người ủy quyền). Danh mục loại đại lý quỹ đầu tư."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FMS Agency Type Code
+    physical_name: cl_fms_agency_tp_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCY_TYPE
+    source_column: FMS.AGENCY_TYPE.ID
+    comment: BK chính. PK nguồn — không có cột mã nghiệp vụ riêng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCY_TYPE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_AGENCY_TYPE'"
+    etl_derived_value: FMS_AGENCY_TYPE
+
+  - name: Classification FMS Agency Type Name
+    physical_name: cl_fms_agency_tp_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCY_TYPE
+    source_column: FMS.AGENCY_TYPE.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCY_TYPE
+    source_column: FMS.AGENCY_TYPE.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null

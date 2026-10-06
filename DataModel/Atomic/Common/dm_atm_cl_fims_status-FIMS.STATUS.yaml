@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fims_status-FIMS.STATUS
+  logical_name: Classification FIMS Status
+  physical_name: cl_fims_status
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Involved Party Life Cycle Status"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FIMS
+  description: |
+    Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư nước ngoài (FIMS) kèm loại đối tượng áp dụng và mã tham chiếu eCatalog. Promote từ Classification Value (scheme FIMS_ACTIVITY_STATUS) lên entity riêng; Id hash từ Code, Code map từ cột Code.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-STATUS
+
+attributes:
+  - name: Classification FIMS Status Id
+    physical_name: cl_fims_status_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: STATUS
+    source_column: FIMS.STATUS.Code
+    comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FIMS Status Code
+    physical_name: cl_fims_status_code
+    business_meaning: Mã trạng thái (khóa mapping đồng bộ). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STATUS
+    source_column: FIMS.STATUS.Code
+    comment: "BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100)) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STATUS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_STATUS'"
+    etl_derived_value: FIMS_STATUS
+
+  - name: Classification FIMS Status Name
+    physical_name: cl_fims_status_nm
+    business_meaning: Tên đầy đủ (tiếng Việt) của trạng thái.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STATUS
+    source_column: FIMS.STATUS.Name
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STATUS
+    source_column: FIMS.STATUS.Description
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Type Code
+    physical_name: object_tp_code
+    business_meaning: "Loại đối tượng áp dụng trạng thái: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT..."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STATUS
+    source_column: FIMS.STATUS.TypeObject
+    comment: "Scheme: FIMS_STATUS_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2) — ETL cần convert sang string. Danh sách giá trị đầy đủ chưa có trong nguồn (mô tả kết thúc bằng \"...\") — cần profile dữ liệu."
+    classification_context: FIMS_STATUS_OBJECT_TYPE
+    etl_derived_value: null
+
+  - name: ECatalog Id
+    physical_name: ecatalog_id
+    business_meaning: Mã định danh bản ghi tương ứng trên hệ thống danh mục dùng chung eCatalog.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: STATUS
+    source_column: FIMS.STATUS.ECATALOG_ID
+    comment: "Nguồn VARCHAR2(36), không có mô tả — ý nghĩa dựa trên tên cột, cần Data Modeler/BA xác nhận."
+    classification_context: null
+    etl_derived_value: null

@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fmr_sheet-FMS.SHEET
+  logical_name: Fund Management Report Sheet
+  physical_name: fmr_sheet
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Sheet dữ liệu trong biểu mẫu báo cáo đầu vào: tên, thứ tự sheet, cấu hình bố cục ô (JSON lưu dạng chuỗi). Con của Fund Management Report.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-SHEET
+
+attributes:
+  - name: Fund Management Report Sheet Id
+    physical_name: fmr_sheet_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: SHEET
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('FMS_SHEET', ID). BCV: \"[Documentation] Form Document\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fund Management Report Sheet Code
+    physical_name: fmr_sheet_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.ID
+    comment: "BK chính — ID nguồn (RAW(16), chuyển hex string). Không dùng cột CODE làm BK — CODE giữ ở Sheet Short Code."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_SHEET'"
+    etl_derived_value: FMS_SHEET
+
+  - name: Fund Management Report Id
+    physical_name: fmr_id
+    business_meaning: "FK -> RPT_TEMP: Biểu mẫu báo cáo."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.RPT_ID
+    comment: "FK target: fund_management_report.fmr_id. Hash: hash_id('FMS_RPT_TEMP', RPT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fund Management Report Code
+    physical_name: fmr_code
+    business_meaning: Mã biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.RPT_ID
+    comment: "Lookup pair: fund_management_report.fmr_code. Pair with Fund Management Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fund Management Report Sheet Name
+    physical_name: fmr_sheet_nm
+    business_meaning: Tên hiển thị chính của sheet.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Index
+    physical_name: sheet_index
+    business_meaning: Thứ tự sheet trong biểu mẫu Excel (bắt đầu từ 0).
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.SHEET_INDEX
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Investment Portfolio Indicator
+    physical_name: investment_portfolio_ind
+    business_meaning: "Cờ sheet là danh mục đầu tư: 1=Là DMĐT, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.INVESTMENT_PORTFOLIO
+    comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell Enabled Indicator."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Short Code
+    physical_name: sheet_short_code
+    business_meaning: Mã định danh ngắn gọn của sheet.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.CODE
+    comment: "Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ ID)."
+    classification_context: null
+    etl_derived_value: null

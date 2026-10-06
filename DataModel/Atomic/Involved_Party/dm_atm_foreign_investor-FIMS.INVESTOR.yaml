@@ -32,7 +32,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: null
-    comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS.INVESTOR', TransactionCode)."
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
     classification_context: null
     etl_derived_value: null
 
@@ -74,8 +74,8 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.ObjectType
-    comment: "Scheme: FIMS_STOCKHOLDER_TYPE. Nguồn lưu dạng số — ETL cần convert sang string code."
-    classification_context: FIMS_STOCKHOLDER_TYPE
+    comment: "SCHEMA_CODE=FIMS.OBJECT_TYPE"
+    classification_context: null
     etl_derived_value: null
 
   - name: Full Name
@@ -116,8 +116,8 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.Sex
-    comment: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — chưa có trong HLD 6d, đăng ký bổ sung cùng lượt LLD này. Chỉ áp dụng NĐT cá nhân (ObjectType=1)."
-    classification_context: FIMS_GENDER
+    comment: "SCHEMA_CODE=GENDER"
+    classification_context: null
     etl_derived_value: null
 
   - name: Date of Birth
@@ -144,7 +144,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.NaId
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT.COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -158,21 +158,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.NATIONAL.SName
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Business Registration Number
-    physical_name: business_registration_nbr
-    business_meaning: Số đăng ký kinh doanh/mã số doanh nghiệp.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.BusinessNumber
-    comment: "Chỉ áp dụng NĐT tổ chức (ObjectType=2)."
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
     classification_context: null
     etl_derived_value: null
 
@@ -190,18 +176,32 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Investor Type Code
-    physical_name: investor_tp_code
-    business_meaning: Loại nhà đầu tư nước ngoài.
-    data_domain: Classification Value
+  - name: Classification FIMS Investor Type Id
+    physical_name: cl_fims_investor_tp_id
+    business_meaning: "FK -> INVESTORTYPE: Loại nhà đầu tư nước ngoài."
+    data_domain: Surrogate Key
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.InvestorTypeId
-    comment: "Scheme: FIMS_INVESTOR_TYPE."
-    classification_context: FIMS_INVESTOR_TYPE
+    comment: "FK target: cl_fims_investor_type.cl_fims_investor_tp_id. Cần ETL crosswalk sang FIMS.INVESTORTYPE: INVESTOR.InvestorTypeId = INVESTORTYPE.Id để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SName) | Thay scheme FIMS_INVESTOR_TYPE (deprecated) bằng FK tới entity cl_fims_investor_type (2026-10-05)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FIMS Investor Type Code
+    physical_name: cl_fims_investor_tp_code
+    business_meaning: Mã loại nhà đầu tư nước ngoài.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTORTYPE.SName
+    comment: "Lookup pair: cl_fims_investor_type.cl_fims_investor_tp_code. Pair with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SName sau ETL crosswalk — chi tiết xem comment Classification FIMS Investor Type Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Depository Account Number
@@ -232,8 +232,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Trading Securities Company Id
-    physical_name: trading_sc_id
+  - name: Securities Company Id
+    physical_name: sc_id
     business_meaning: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản."
     data_domain: Surrogate Key
     data_type: string
@@ -242,12 +242,12 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.SecComAddId
-    comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS.SECURITIESCOMPANY', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
+    comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS_SECURITIESCOMPANY', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
     classification_context: null
     etl_derived_value: null
 
-  - name: Trading Securities Company Code
-    physical_name: trading_sc_code
+  - name: Securities Company Code
+    physical_name: sc_code
     business_meaning: Mã công ty CK nơi mở tài khoản.
     data_domain: Text
     data_type: string
@@ -270,7 +270,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddId
-    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BankAddId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI hay không."
+    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI', BankAddId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI (xem lld_FIMS_BANKMONI.yaml, 2026-10-05)."
     classification_context: null
     etl_derived_value: null
 
@@ -312,7 +312,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BankAddCapId
-    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BankAddCapId) | Cần đánh giá thêm FMS.BANK_MONI chứa đủ dữ liệu của bảng FIMS.BANKMONI hay không."
+    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI', BankAddCapId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI (xem lld_FIMS_BANKMONI.yaml, 2026-10-05)."
     classification_context: null
     etl_derived_value: null
 
@@ -330,32 +330,60 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Company Type Code
-    physical_name: company_tp_code
-    business_meaning: Loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
-    data_domain: Classification Value
+  - name: Classification FIMS Company Type Id
+    physical_name: cl_fims_company_tp_id
+    business_meaning: "FK -> COMPANYTYPE: Loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức)."
+    data_domain: Surrogate Key
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.CompanyTypeId
-    comment: "Scheme: FIMS_COMPANY_TYPE. Bổ sung Foreign Investor vào used_in_entities (trước đây chỉ Market Participant Organization)."
-    classification_context: FIMS_COMPANY_TYPE
+    comment: "FK target: cl_fims_company_type.cl_fims_company_tp_id. Cần ETL crosswalk sang FIMS.COMPANYTYPE: INVESTOR.CompanyTypeId = COMPANYTYPE.Id để xác nhận CODE sau đó hash_id('FIMS_COMPANYTYPE', CODE) | Thay scheme FIMS_COMPANY_TYPE bằng FK tới entity cl_fims_company_type (2026-10-05). Chỉ áp dụng NĐT tổ chức."
+    classification_context: null
     etl_derived_value: null
 
-  - name: Activity Status Code
-    physical_name: activity_status_code
-    business_meaning: Trạng thái hoạt động của đối tượng.
-    data_domain: Classification Value
+  - name: Classification FIMS Company Type Code
+    physical_name: cl_fims_company_tp_code
+    business_meaning: Mã loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.COMPANYTYPE.CODE
+    comment: "Lookup pair: cl_fims_company_type.cl_fims_company_tp_code. Pair with Classification FIMS Company Type Id. Giá trị lấy từ FIMS.COMPANYTYPE.CODE sau ETL crosswalk — chi tiết xem comment Classification FIMS Company Type Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FIMS Status Id
+    physical_name: cl_fims_status_id
+    business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng."
+    data_domain: Surrogate Key
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.StatusId
-    comment: "Scheme: FIMS_ACTIVITY_STATUS."
-    classification_context: FIMS_ACTIVITY_STATUS
+    comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: INVESTOR.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS', Code) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status (2026-10-05)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification FIMS Status Code
+    physical_name: cl_fims_status_code
+    business_meaning: Mã trạng thái hoạt động của đối tượng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.STATUS.Code
+    comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
+    classification_context: null
     etl_derived_value: null
 
   - name: Description
@@ -368,20 +396,6 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.Description
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Attachment File Name
-    physical_name: attachment_file_nm
-    business_meaning: Tên file đính kèm.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.FileName
     comment: null
     classification_context: null
     etl_derived_value: null

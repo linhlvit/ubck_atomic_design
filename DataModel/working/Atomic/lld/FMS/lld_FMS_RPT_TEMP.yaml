@@ -1,0 +1,256 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "RPT_TEMP"
+  atomic_entity: "Fund Management Report"
+  entity_physical_name: "fund_management_report"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Fundamental"
+  group: "T8"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Biểu mẫu báo cáo FMS — entity gốc của nhóm báo cáo (Domain Prefix 'Fund\
+    \ Management Report', abbr fmr). Thiết kế theo mẫu báo cáo IDS (fr_catalog/fr_value).\
+    \ DDL chuẩn: Source/DDL UAT 1/FMS_UAT_schema 1.txt. Theo quyết định Data Modeler\
+    \ 2026-10-06: BK = hash từ ID (RAW(16)), các cột NCLOB/CLOB JSON map Text (string).\
+    \ CREATED_BY/MODIFY_BY/DELETED document trong pending_design.yaml. Table Type\
+    \ = Fundamental: chỉ FK đến Classification FMS Fund Type (danh mục), không FK\
+    \ đến entity nghiệp vụ."
+attributes:
+- attribute_name: "Fund Management Report Id"
+  physical_name: "fmr_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('FMS_RPT_TEMP', ID). BCV: \"[Documentation]\
+    \ Form Document\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Report Code"
+  physical_name: "fmr_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.ID"
+  comment: "BK chính — ID nguồn (RAW(16), chuyển hex string). Không dùng cột CODE\
+    \ làm BK — CODE giữ ở Report Short Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_RPT_TEMP"
+  etl_derived_value: "FMS_RPT_TEMP"
+  data_type: "string"
+- attribute_name: "Fund Management Report Name"
+  physical_name: "fmr_nm"
+  description: "Tên hiển thị chính của biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Basis"
+  physical_name: "legal_basis"
+  description: "Cơ sở pháp lý của biểu mẫu báo cáo (tên thông tư/nghị định)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.LEGAL_BASIS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Report Type Code"
+  physical_name: "fmr_tp_code"
+  description: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường, 3=Báo cáo theo\
+    \ yêu cầu, 4=Báo cáo khác."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.REPORT_TYPE"
+  comment: "SCHEMA_CODE=FMS.REPORT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Required Indicator"
+  physical_name: "disclosure_required_ind"
+  description: "Cờ báo cáo cần công bố thông tin: 1=Cần CBTT, 0=Không."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.REQUIRE_DISCLOSURE"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Version Number"
+  physical_name: "version_nbr"
+  description: "Số phiên bản biểu mẫu/báo cáo."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.VERSION"
+  comment: "Nguồn NUMBER(18,2) — ETL cast sang int. Cần profile xem có phiên bản thập\
+    \ phân (1.5...) không; nếu có cần đổi domain."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Classification FMS Fund Type Id"
+  physical_name: "cl_fms_fund_tp_id"
+  description: "FK -> FUND_TYPE: Loại quỹ đầu tư."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.FTYPE_ID"
+  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE',\
+    \ FTYPE_ID). Cùng pattern lld_FMS_FUNDS.FTYPE_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Fund Type Code"
+  physical_name: "cl_fms_fund_tp_code"
+  description: "Mã loại quỹ đầu tư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.FTYPE_ID"
+  comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification\
+    \ FMS Fund Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Group Code"
+  physical_name: "rpt_group_code"
+  description: "Nhóm báo cáo"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.REPORT_GROUP"
+  comment: "SCHEMA_CODE=FMS.REPORT_GROUP"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "System Object Type Code"
+  physical_name: "stm_object_tp_code"
+  description: "Đối tượng hệ thống áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN..."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.SYSTEM_OBJECTS"
+  comment: "SCHEMA_CODE=FMS.SYSTEM_OBJECTS"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Short Code"
+  physical_name: "rpt_short_code"
+  description: "Mã định danh ngắn gọn của biểu mẫu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.CODE"
+  comment: "Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ ID theo\
+    \ quyết định Data Modeler)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Report Indicator"
+  physical_name: "audit_rpt_ind"
+  description: "Cờ là báo cáo kiểm toán: 1=Báo cáo kiểm toán, 0=Không."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.AUDIT_REPORT"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Price Check Setting Indicator"
+  physical_name: "price_check_setting_ind"
+  description: "Cờ kiểm tra cài đặt giá khi nộp báo cáo: 1=Có kiểm tra, 0=Không."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.CHECK_PRICE_SETTING"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0) — cùng pattern IDS fr_value.Cell\
+    \ Enabled Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Usage Start Date"
+  physical_name: "usage_start_dt"
+  description: "Ngày bắt đầu áp dụng biểu mẫu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_TEMP.DATE_USED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
