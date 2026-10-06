@@ -2,7 +2,7 @@
 -- QLQ Flat Tables — CREATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 13 bảng: 5 fact + 8 operational
+-- 14 bảng: 5 fact + 9 operational
 -- ============================================================
 
 -- ============================================================
@@ -307,4 +307,27 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (foreign_fund_management_organization_unit_code)
 COMMENT 'Flat table — Operational Foreign Fund Management Organization Unit Profile'
+;
+
+
+-- ============================================================
+-- 14. OPERATIONAL: qlq_opr_fund_management_report_sheet_list_flat
+--    Operational Fund Management Report Sheet List
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_report_sheet_list_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Fund Management Report Sheet List
+    fmr_sheet_code                  String                  COMMENT 'PK — mã sheet biểu mẫu báo cáo (SHEET.ID, hex)',
+    fmr_code                        Nullable(String)        COMMENT 'Mã biểu mẫu báo cáo chứa sheet (khóa nối sang báo cáo đã nộp)',
+    fmr_nm                          Nullable(String)        COMMENT 'Tên báo cáo (RPT_TEMP.ITEM_NAME)',
+    fmr_tp_code                     String                  COMMENT 'Loại báo cáo (scheme FMS_REPORT_TYPE)',
+    rpt_short_code                  Nullable(String)        COMMENT 'Mã báo cáo (RPT_TEMP.CODE)',
+    fmr_sheet_nm                    Nullable(String)        COMMENT 'Tên sheet (SHEET.ITEM_NAME)',
+    sheet_short_code                Nullable(String)        COMMENT 'Mã sheet (SHEET.CODE)',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (fmr_sheet_code)
+COMMENT 'Flat table — Operational Fund Management Report Sheet List'
 ;

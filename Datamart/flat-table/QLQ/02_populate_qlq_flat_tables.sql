@@ -2,7 +2,7 @@
 -- QLQ Flat Tables — POPULATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 13 bảng: 5 fact + 8 operational
+-- 14 bảng: 5 fact + 9 operational
 -- Tham số ETL hàng ngày: :etl_date (không dùng {etl_date}/$etl_date/hardcode)
 -- ============================================================
 
@@ -238,4 +238,22 @@ SELECT
     o.director_full_nm,
     o.src_stm_code
 FROM datamart.opr_foreign_fund_management_organization_unit_profile o
+;
+
+
+-- ============================================================
+-- 14. OPERATIONAL: qlq_opr_fund_management_report_sheet_list_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_report_sheet_list_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_opr_fund_management_report_sheet_list_flat
+SELECT
+    o.fmr_sheet_code,
+    o.fmr_code,
+    o.fmr_nm,
+    o.fmr_tp_code,
+    o.rpt_short_code,
+    o.fmr_sheet_nm,
+    o.sheet_short_code,
+    o.src_stm_code
+FROM datamart.opr_fund_management_report_sheet_list o
 ;

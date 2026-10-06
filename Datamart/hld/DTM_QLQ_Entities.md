@@ -196,6 +196,30 @@ erDiagram
 
 ---
 
+## Nhóm 29–33 — Data Explorer: danh sách sheet biểu mẫu báo cáo định kỳ (Operational)
+
+> **[MỚI 2026-10-06]** Atomic (commit e9378756) đã có `fund_management_report` (FMS.RPT_TEMP), `fmr_sheet` (FMS.SHEET), `fmr_period`, `fmr_submission`, `fmr_value`. Thiết kế phần **header** của Data Explorer: Loại/Mã/Tên báo cáo + Mã/Tên sheet (5/9 dòng BA mỗi sheet, 26 sheet có BA Done). Kỳ báo cáo, Mã chỉ tiêu, Tên chỉ tiêu, Giá trị vẫn PENDING — xem O_QLQ_27.
+
+```mermaid
+erDiagram
+    Fund_Management_Report_Sheet_List {
+        string Fund_Management_Report_Sheet_Code PK
+        string Fund_Management_Report_Code
+        string Fund_Management_Report_Name
+        string Fund_Management_Report_Type_Code
+        string Report_Short_Code
+        string Fund_Management_Report_Sheet_Name
+        string Sheet_Short_Code
+        string Source_System_Code
+    }
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fund Management Report Sheet List | Operational | new | Danh sách sheet biểu mẫu báo cáo định kỳ FMS — Loại/Mã/Tên báo cáo + Mã/Tên sheet | 1 sheet của 1 biểu mẫu (current state) | 130 KPI header Nhóm 29–33 (xem Detail Mapping) |
+
+---
+
 ## Bảng PENDING (không thiết kế trong Phase 2)
 
 | Datamart Entity | Lý do PENDING | Issue |
@@ -203,6 +227,6 @@ erDiagram
 | Fact Discretionary Investment Contract Snapshot (Nhóm 2) | 0/7 KPI READY — BA đổi hẳn nguồn sang engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
 | Fund Management Company Contract List (Nhóm 5) | 0/3 KPI READY — BA (2026-10-05) lấy từ engine báo cáo định kỳ `RPT_*`, chưa có Atomic entity; bảng LLD/flat đã xóa (All-Tier Cleanup) | O_QLQ_15, O_QLQ_25 |
 | Investment Fund Distribution Agent List (Nhóm 14) | 0/1 KPI READY — thiếu attribute FK scheme FMS_AGENCY_TYPE trên `fund_distribution_agent` | O_QLQ_9 |
-| Report Pass-through View (Tab DATA EXPLORER, STT 29–91) | 100% PENDING — engine báo cáo định kỳ chưa có Atomic (O_QLQ_15); STT 33 (từ dòng 10)–91 BA Pending (O_QLQ_26) | O_QLQ_1 |
+| Fund Management Report Data (giá trị ô báo cáo + Kỳ báo cáo — Tab DATA EXPLORER, STT 29–91; thay `Report Pass-through View`) | PENDING — `fmr_value` thiếu TGT_ID/CODE, `fmr_sheet` thiếu DATA_LABEL/CELLS_META, thiếu RECORD_STATUS (O_QLQ_27); STT 33 (từ dòng 10)–91 BA Pending (O_QLQ_26) | O_QLQ_1, O_QLQ_27 |
 | Foreign Fund Management Organization Unit Contract List (popup — Nhóm 27 riêng từ BA 2026-10-05) | 0/3 KPI READY — engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
 | Fund Management Company Staff Trade Report (Nhóm 28) | 1/10 KPI READY (chỉ join-key Chiều) — cầu nối VSDC investor registry chưa có Atomic entity | O_QLQ_11 |
