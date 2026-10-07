@@ -73,7 +73,6 @@ ORDER BY (assumeNotNull(trade_cdr_dt), securities_dim_id)
 COMMENT 'Flat table — Fact Securities Foreign Trading Snapshot × Calendar Date × Securities Dimension × Public Company Dimension'
 ;
 
-
 -- ============================================================
 -- 2. FACT (report): ndtnn_foreign_investor_trading_statistics_rpt_flat
 --    Foreign Investor Trading Statistics Report
@@ -93,7 +92,6 @@ PARTITION BY toYYYYMM(assumeNotNull(report_dt))
 ORDER BY (assumeNotNull(report_dt), security_tp_group)
 COMMENT 'Flat table — Foreign Investor Trading Statistics Report (denormalize, không FK Dimension)'
 ;
-
 
 -- ============================================================
 -- 3. FACT (report): ndtnn_foreign_investor_trading_detail_rpt_flat
@@ -117,7 +115,6 @@ PARTITION BY toYYYYMM(assumeNotNull(report_dt))
 ORDER BY (assumeNotNull(report_dt), account_nbr, symbol, trade_direction_code)
 COMMENT 'Flat table — Foreign Investor Trading Detail Report (denormalize, không FK Dimension)'
 ;
-
 
 -- ============================================================
 -- 4. OPERATIONAL: opr_foreign_investor_360_profile_flat
@@ -145,7 +142,6 @@ ORDER BY (investor_code)
 COMMENT 'Flat table — Operational Foreign Investor 360 Profile'
 ;
 
-
 -- ============================================================
 -- 5. OPERATIONAL: opr_investor_compliance_hist_flat
 --    Operational Investor Compliance History
@@ -167,7 +163,6 @@ ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (investor_compliance_hist_code)
 COMMENT 'Flat table — Operational Investor Compliance History'
 ;
-
 
 -- ============================================================
 -- 6. FACT: ndtnn_fct_public_company_foreign_ownership_snpst_flat
@@ -203,7 +198,6 @@ ORDER BY (assumeNotNull(snpst_cdr_dt), ticker_symbol)
 COMMENT 'Flat table — Fact Public Company Foreign Ownership Snapshot × Calendar Date × Public Company Dimension'
 ;
 
-
 -- ============================================================
 -- 7. FACT: ndtnn_fct_foreign_net_flow_market_index_snpst_flat
 --    Fact Foreign Net Flow Market Index Snapshot (Nhóm 5 — Tương quan Net Flow & VN-Index)
@@ -234,7 +228,6 @@ ORDER BY (assumeNotNull(snpst_cdr_dt), market_index_dim_id)
 COMMENT 'Flat table — Fact Foreign Net Flow Market Index Snapshot × Calendar Date × Market Index Dimension'
 ;
 
-
 -- ============================================================
 -- 8. FACT: ndtnn_fct_foreign_investor_report_value_flat
 --    Giá trị ô báo cáo động FIMS (EAV) — Nhóm 1/3/5 và Data Explorer 18–43
@@ -245,7 +238,6 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_report_value_flat
     -- From: FACT Fact Foreign Investor Report Value
     submission_dt_dim_id                       String                     COMMENT 'FK to Calendar Date Dimension — ngày THỰC TẾ nộp báo cáo (BA: ngay_nop), khác kỳ báo cáo',
     foreign_investor_report_structure_dim_id   String                     COMMENT 'FK to Foreign Investor Report Structure Dimension — ô template (báo cáo/sheet/dòng/cột)',
-    foreign_investor_reporting_entity_dim_id   Nullable(String)           COMMENT 'FK to Foreign Investor Reporting Entity Dimension — đối tượng nộp báo cáo (NULL khi không tra được)',
     rpt_log_id                                 Nullable(String)           COMMENT 'Mã LẦN NỘP (REPORT_LOG_ID) — lọc toàn bộ số liệu của 1 lần nộp',
     dynamic_row_order                          Int32                      COMMENT 'Thứ tự dòng trong band động; 0 = ô tĩnh',
     period_tp_code                             Nullable(String)           COMMENT 'Loại kỳ báo cáo (THANG, QUY, NAM…) — BA: Kỳ báo cáo',
@@ -277,21 +269,14 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_report_value_flat
     column_path                                Nullable(String)           COMMENT 'Nhãn cột — từ Foreign Investor Report Structure Dimension',
     data_tp                                    Nullable(String)           COMMENT 'Kiểu dữ liệu ô — từ Foreign Investor Report Structure Dimension',
 
-    -- From: FOREIGN INVESTOR REPORTING ENTITY DIMENSION
-    reporting_entity_code                      Nullable(String)           COMMENT 'Mã đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_tp_code                   Nullable(String)           COMMENT 'Loại đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_nm                        Nullable(String)           COMMENT 'Tên đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_short_nm                  Nullable(String)           COMMENT 'Tên viết tắt đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-
     -- [MỚI 2026-10-05] đặt CUỐI để khớp ALTER TABLE ADD COLUMN; khóa nghiệp vụ SHEET_ID ‖ INDICATOR_UID (structure_code chỉ duy nhất trong 1 sheet)
     fir_structure_code                         Nullable(String)           COMMENT 'Mã ô cấu trúc = SHEET_ID ‖ INDICATOR_UID — từ Foreign Investor Report Structure Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(submission_cdr_dt))
 ORDER BY (assumeNotNull(submission_cdr_dt), assumeNotNull(rpt_log_id), foreign_investor_report_structure_dim_id, dynamic_row_order)
-COMMENT 'Flat table — Fact Foreign Investor Report Value × Calendar Date Dimension × Foreign Investor Report Structure Dimension × Foreign Investor Reporting Entity Dimension'
+COMMENT 'Flat table — Fact Foreign Investor Report Value × Calendar Date Dimension × Foreign Investor Report Structure Dimension'
 ;
-
 
 -- ============================================================
 -- 9. FACT: ndtnn_fct_foreign_investor_capital_flow_snpst_flat
@@ -302,7 +287,6 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_capital_flow_snps
 (
     -- From: FACT Fact Foreign Investor Capital Flow Snapshot
     snpst_dt_dim_id                            String                     COMMENT 'FK to Calendar Date Dimension — ngày snapshot = ngày thực tế nộp báo cáo (BA: ngay_nop)',
-    foreign_investor_reporting_entity_dim_id   Nullable(String)           COMMENT 'FK to Foreign Investor Reporting Entity Dimension — đối tượng nộp báo cáo (ngân hàng lưu ký/CTCK)',
     rpt_log_id                                 Nullable(String)           COMMENT 'Mã LẦN NỘP (REPORT_LOG_ID)',
     section_id                                 Nullable(String)           COMMENT 'Mã section (band) chứa dòng',
     dynamic_row_order                          Int32                      COMMENT 'Thứ tự dòng trong band động (BA: row_order)',
@@ -313,20 +297,14 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_capital_flow_snps
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
 
     -- From: CALENDAR DATE DIMENSION
-    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension'
 
-    -- From: FOREIGN INVESTOR REPORTING ENTITY DIMENSION
-    reporting_entity_code                      Nullable(String)           COMMENT 'Mã đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_tp_code                   Nullable(String)           COMMENT 'Loại đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_nm                        Nullable(String)           COMMENT 'Tên đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_short_nm                  Nullable(String)           COMMENT 'Tên viết tắt đối tượng nộp — từ Foreign Investor Reporting Entity Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), assumeNotNull(rpt_log_id), assumeNotNull(section_id), dynamic_row_order)
-COMMENT 'Flat table — Fact Foreign Investor Capital Flow Snapshot × Calendar Date Dimension × Foreign Investor Reporting Entity Dimension'
+COMMENT 'Flat table — Fact Foreign Investor Capital Flow Snapshot × Calendar Date Dimension'
 ;
-
 
 -- ============================================================
 -- 10. FACT: ndtnn_fct_foreign_investor_portfolio_report_snpst_flat
@@ -337,7 +315,6 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_portfolio_report_
 (
     -- From: FACT Fact Foreign Investor Portfolio Report Snapshot
     snpst_dt_dim_id                            String                     COMMENT 'FK to Calendar Date Dimension — ngày snapshot = ngày thực tế nộp báo cáo (BA: ngay_nop)',
-    foreign_investor_reporting_entity_dim_id   Nullable(String)           COMMENT 'FK to Foreign Investor Reporting Entity Dimension — đối tượng nộp báo cáo (ngân hàng lưu ký/CTCK)',
     rpt_log_id                                 Nullable(String)           COMMENT 'Mã LẦN NỘP (REPORT_LOG_ID)',
     section_id                                 Nullable(String)           COMMENT 'Mã section (band) chứa dòng',
     dynamic_row_order                          Int32                      COMMENT 'Thứ tự dòng trong band động (BA: row_order)',
@@ -360,16 +337,11 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_portfolio_report_
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
 
     -- From: CALENDAR DATE DIMENSION
-    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension'
 
-    -- From: FOREIGN INVESTOR REPORTING ENTITY DIMENSION
-    reporting_entity_code                      Nullable(String)           COMMENT 'Mã đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_tp_code                   Nullable(String)           COMMENT 'Loại đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_nm                        Nullable(String)           COMMENT 'Tên đối tượng nộp — từ Foreign Investor Reporting Entity Dimension',
-    reporting_entity_short_nm                  Nullable(String)           COMMENT 'Tên viết tắt đối tượng nộp — từ Foreign Investor Reporting Entity Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), assumeNotNull(rpt_log_id), assumeNotNull(section_id), dynamic_row_order)
-COMMENT 'Flat table — Fact Foreign Investor Portfolio Report Snapshot × Calendar Date Dimension × Foreign Investor Reporting Entity Dimension'
+COMMENT 'Flat table — Fact Foreign Investor Portfolio Report Snapshot × Calendar Date Dimension'
 ;

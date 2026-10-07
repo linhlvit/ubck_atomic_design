@@ -322,7 +322,7 @@ Phân hệ NDTNN thực hiện giám sát dòng vốn đầu tư gián tiếp (F
 | Nhóm | Tên Nhóm Màn Hình | Phân Loại | Bảng Flat Khai Thác | Bảng Fact Cốt Lõi | Bảng Dimension Đi Kèm | Hệ Thống Upstream |
 |:---|:---|:---:|:---|:---|:---|:---|
 | Nhóm 1-2 | Tổng quan & Giá trị mua bán ròng NĐTNN | Dashboard | `datamart.ndtnn_fct_securities_foreign_trading_snpst_flat` | `datamart.fct_securities_foreign_trading_snpst` | `securities_dim`, `public_company_dim`, `cdr_dt_dim` | HOSE, HNX (MDDS) |
-| Nhóm 3-4 | Dòng tiền vào/ra/ròng & Dòng vốn FII | Dashboard | `datamart.ndtnn_fct_foreign_investor_capital_flow_snpst_flat` | `datamart.fct_foreign_investor_capital_flow_snpst` | `foreign_investor_reporting_entity_dim`, `cdr_dt_dim` | VSDC, Ngân hàng lưu ký |
+| Nhóm 3-4 | Dòng tiền vào/ra/ròng & Dòng vốn FII | Dashboard | `datamart.ndtnn_fct_foreign_investor_capital_flow_snpst_flat` | `datamart.fct_foreign_investor_capital_flow_snpst` | `cdr_dt_dim` | VSDC, Ngân hàng lưu ký |
 | Nhóm 5 | Tương quan Net Flow & VN-Index | Dashboard | `datamart.ndtnn_fct_foreign_net_flow_market_index_snpst_flat` | `datamart.fct_foreign_net_flow_market_index_snpst` | `market_index_dim`, `cdr_dt_dim` | HOSE (VN-Index), VSDC |
 | Nhóm 6-8 | Danh mục, cơ cấu tài sản & phân ngành | Dashboard | `datamart.ndtnn_fct_foreign_investor_portfolio_report_snpst_flat` | `datamart.fct_foreign_investor_portfolio_report_snpst` | `public_company_dim`, `industry_dim`, `cdr_dt_dim` | VSDC, CTCK lưu ký |
 | Nhóm 9-10 | Tỷ lệ sở hữu Room & Cảnh báo Room | Dashboard | `datamart.ndtnn_fct_public_company_foreign_ownership_snpst_flat` | `datamart.fct_public_company_foreign_ownership_snpst` | `public_company_dim` | VSDC (Room ngoại) |

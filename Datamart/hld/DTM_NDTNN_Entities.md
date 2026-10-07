@@ -165,14 +165,13 @@ erDiagram
 
 ### Cụm báo cáo động FIMS (Nhóm 1 K_NDTNN_5–7, 3, 4, 5, 6, 7, 16–43) — thiết kế 2026-10-02
 
-Nguồn Atomic: `fir_value`, `fir_structure`, `foreign_investor_report`, `cl_foreign_investor_reporting_entity` (FIMS luồng báo cáo động). Nhóm 12 (K_NDTNN_64/65) thiết kế theo SQL hiện có của BA (đang Doing).
+Nguồn Atomic: `fir_value`, `fir_structure`, `foreign_investor_report` (FIMS luồng báo cáo động). Nhóm 12 (K_NDTNN_64/65) thiết kế theo SQL hiện có của BA (đang Doing).
 
 #### Bảng entity
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Foreign Investor Report Structure Dimension | Dimension | new | Cấu trúc báo cáo động FIMS — 1 ô template (báo cáo/sheet/dòng/cột/section) | 1 row = 1 ô template trong 1 sheet | Nhóm 18–43 (metadata); chiều lọc cell của Nhóm 1/3/5 |
-| Foreign Investor Reporting Entity Dimension | Dimension | new | Đối tượng nộp báo cáo FIMS (CTCK, ngân hàng lưu ký, CTQLQ, NĐTNN…) — BK (mã đối tượng, loại đối tượng) | 1 row = 1 đối tượng nộp báo cáo (mã + loại) | Nhóm 1/3/4/5/6/7 (đối tượng nộp) |
 | Fact Foreign Investor Report Value | Fact | new | Giá trị ô báo cáo động FIMS (EAV) — chỉ tiêu 1 ô (Nhóm 1/3/5) và Data Explorer (Nhóm 18–43) | 1 row = 1 ô × 1 lần nộp × 1 dòng động | K_NDTNN_5-7, 20-22, 35, 90, 95, 99-254 |
 | Fact Foreign Investor Capital Flow Snapshot | Fact | new | Dòng vốn ròng theo quốc tịch / nhà đầu tư — pivot 1 dòng báo cáo PLIV-TT51 (IBOU9, sheet I) | 1 row = 1 dòng báo cáo IBOU9 sheet I (1 lần nộp × section × dòng động) | K_NDTNN_29-32, 91-94 |
 | Fact Foreign Investor Portfolio Report Snapshot | Fact | new | Danh mục NĐTNN theo loại tài sản — pivot 1 dòng báo cáo PLIII-TT51 (59WJB/BZ5X4, sheet II) | 1 row = 1 dòng báo cáo 59WJB/BZ5X4 sheet II (1 lần nộp × section × dòng động) | K_NDTNN_23-24, 37-49, 96-98 |

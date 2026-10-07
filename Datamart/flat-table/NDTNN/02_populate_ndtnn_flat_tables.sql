@@ -254,7 +254,6 @@ INSERT INTO datamart.ndtnn_fct_foreign_investor_report_value_flat
 SELECT
     f.submission_dt_dim_id,
     f.foreign_investor_report_structure_dim_id,
-    f.foreign_investor_reporting_entity_dim_id,
     f.rpt_log_id,
     f.dynamic_row_order,
     f.period_tp_code,
@@ -284,10 +283,6 @@ SELECT
     str_dim.column_path,
     str_dim.data_tp,
 
-    ent_dim.reporting_entity_code,
-    ent_dim.reporting_entity_tp_code,
-    ent_dim.reporting_entity_nm,
-    ent_dim.reporting_entity_short_nm,
 
     str_dim.fir_structure_code   -- [MỚI 2026-10-05] cột cuối, khớp ALTER TABLE ADD COLUMN
 FROM datamart.fct_foreign_investor_report_value f
@@ -295,8 +290,6 @@ JOIN datamart.cdr_dt_dim submission_cal
     ON submission_cal.cdr_dt_dim_id = f.submission_dt_dim_id
 LEFT JOIN datamart.foreign_investor_report_structure_dim str_dim
     ON str_dim.foreign_investor_report_structure_dim_id = f.foreign_investor_report_structure_dim_id
-LEFT JOIN datamart.foreign_investor_reporting_entity_dim ent_dim
-    ON ent_dim.foreign_investor_reporting_entity_dim_id = f.foreign_investor_reporting_entity_dim_id
 WHERE submission_cal.cdr_dt = :etl_date
 ;
 
@@ -309,7 +302,6 @@ WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.ndtnn_fct_foreign_investor_capital_flow_snpst_flat
 SELECT
     f.snpst_dt_dim_id,
-    f.foreign_investor_reporting_entity_dim_id,
     f.rpt_log_id,
     f.section_id,
     f.dynamic_row_order,
@@ -319,17 +311,11 @@ SELECT
     f.capital_flow_net_val,
     f.src_stm_code,
 
-    submission_cal.cdr_dt AS snpst_cdr_dt,
+    submission_cal.cdr_dt AS snpst_cdr_dt
 
-    ent_dim.reporting_entity_code,
-    ent_dim.reporting_entity_tp_code,
-    ent_dim.reporting_entity_nm,
-    ent_dim.reporting_entity_short_nm
 FROM datamart.fct_foreign_investor_capital_flow_snpst f
 JOIN datamart.cdr_dt_dim submission_cal
     ON submission_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.foreign_investor_reporting_entity_dim ent_dim
-    ON ent_dim.foreign_investor_reporting_entity_dim_id = f.foreign_investor_reporting_entity_dim_id
 WHERE submission_cal.cdr_dt = :etl_date
 ;
 
@@ -342,7 +328,6 @@ WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.ndtnn_fct_foreign_investor_portfolio_report_snpst_flat
 SELECT
     f.snpst_dt_dim_id,
-    f.foreign_investor_reporting_entity_dim_id,
     f.rpt_log_id,
     f.section_id,
     f.dynamic_row_order,
@@ -364,16 +349,10 @@ SELECT
     f.non_fund_org_ind,
     f.src_stm_code,
 
-    submission_cal.cdr_dt AS snpst_cdr_dt,
+    submission_cal.cdr_dt AS snpst_cdr_dt
 
-    ent_dim.reporting_entity_code,
-    ent_dim.reporting_entity_tp_code,
-    ent_dim.reporting_entity_nm,
-    ent_dim.reporting_entity_short_nm
 FROM datamart.fct_foreign_investor_portfolio_report_snpst f
 JOIN datamart.cdr_dt_dim submission_cal
     ON submission_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.foreign_investor_reporting_entity_dim ent_dim
-    ON ent_dim.foreign_investor_reporting_entity_dim_id = f.foreign_investor_reporting_entity_dim_id
 WHERE submission_cal.cdr_dt = :etl_date
 ;
