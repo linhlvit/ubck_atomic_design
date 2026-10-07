@@ -1750,6 +1750,7 @@ entities:
       - "cl_firm_status"
     modules_using:
       - "QLKD"
+      - "GSTT"
     columns:
       - logical_name: "Securities Company Dimension Id"
         physical_name: "securities_company_dim_id"
@@ -9268,7 +9269,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "FK"
-        description: "[MỚI 2026-09-28, review chỉ tiêu Ngành] FK tới Securities Company Dimension (reuse từ QLKD) — fallback khi mã CK là CTCK đại chúng không map được Public Company Dimension (CTCK không nằm trong IDS.COMPANY_PROFILES). Nullable — chỉ có giá trị khi mã CK khớp Securities Company (SCMS.SC_FIRM_INFO) VÀ là công ty đại chúng (Public Company Indicator = 1) VÀ không ở trạng thái tạm/dự thảo (Provisional Indicator = 0 hoặc NULL). Dùng bởi K_GSTT_2 (Ngành) để gán fallback tên ngành 'Tài chính - Ngân hàng' khi Public Company Dimension Id NULL — xem O_GSTT_37."
+        description: "[MỚI 2026-09-28, review chỉ tiêu Ngành; SỬA 2026-10-07 theo BA cập nhật Mô tả 'Ngành'] FK tới Securities Company Dimension (reuse từ QLKD) — fallback khi mã CK là CTCK đại chúng không map được Public Company Dimension (CTCK không nằm trong IDS.COMPANY_PROFILES, theo đúng ghi chú gốc BA STT 1: 'Đối với các mã là công ty chứng khoán vì IDS không nhập mình sẽ join ngược lại với SCMS'). Nullable — chỉ có giá trị khi mã CK khớp Securities Company (SCMS.SC_FIRM_INFO.SECURITIES_CODE, so khớp UPPER(TRIM()) hai vế theo SQL BA) VÀ là công ty đại chúng (PUBLIC_COMPANY = 1, Public Company Indicator) VÀ không ở trạng thái tạm/dự thảo (Provisional Indicator = 0 hoặc NULL — điều kiện bổ sung của thiết kế 2026-09-28, KHÔNG có trong SQL BA). Dùng bởi K_GSTT_2 (Ngành) làm cờ CTCK đại chúng: khi Public Company Dimension Id NULL mà FK này có giá trị thì Ngành = ngành IDS mã '07000' (Industry Dimension: Industry Code/Industry Name) thay cho literal 'Tài chính - Ngân hàng' trước 2026-10-07 — xem etl_logic của K_GSTT_2 (Nhóm 1) và O_GSTT_37."
         source_atomic_table: "securities_company"
         source_atomic_column: "securities_company.sc_code"
       - logical_name: "Snapshot Date Dimension Id"
@@ -11128,6 +11129,7 @@ entities:
     modules_using:
       - "GSDC"
       - "PTTT"
+      - "GSTT"
     columns:
       - logical_name: "Industry Dimension Id"
         physical_name: "industry_dim_id"

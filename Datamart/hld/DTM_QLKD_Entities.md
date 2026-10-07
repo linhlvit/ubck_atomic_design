@@ -178,7 +178,7 @@ erDiagram
 
 ## Tab TRA CỨU CÁ NHÂN
 
-### Nhóm 41a — Mạng lưới quan hệ 360° (K_QLKD_203–210)
+### Nhóm 41 — Mạng lưới quan hệ 360° (K_QLKD_203–210)
 
 ```mermaid
 erDiagram
@@ -188,23 +188,23 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Operational Individual Profile | Tác nghiệp | new | Merge Securities Company Senior Personnel (SCMS) + Securities Practitioner (NHNCK) theo CCCD — landing page tìm kiếm/chọn cá nhân | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_204–205 |
-| Operational Individual Related Party Network | Tác nghiệp | new | Self-reference Securities Company Insider Related Person | 1 người liên quan × 1 cá nhân chính | K_QLKD_206–210 READY; K_QLKD_203 (Chiều ngày) PENDING |
+| Operational Individual Related Party Network | Tác nghiệp | new | Securities Company Insider Related Person (r) nối cá nhân chính `sp` qua `Senior Personnel Id` | 1 người liên quan × 1 cá nhân chính | K_QLKD_206–210 READY; K_QLKD_203 (Chiều ngày) PENDING |
 
-### Nhóm 41b — Hồ sơ và danh mục (K_QLKD_210–212)
+### Nhóm 42 — Hồ sơ và danh mục (K_QLKD_210–212)
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Operational Individual Listed Company Role | Tác nghiệp | new | Vai trò + số CP nắm giữ tại tổ chức khác | 1 vai trò × 1 CTCK × 1 cá nhân | K_QLKD_210–211 |
-| Operational Individual Related Party Network | Tác nghiệp | reuse (Nhóm 41a) | Mạng lưới người liên quan chi tiết — dùng chung entity với Nhóm 41a | 1 người liên quan × 1 cá nhân chính | K_QLKD_206–209 (reuse) |
+| Operational Individual Related Party Network | Tác nghiệp | reuse (Nhóm 41) | Mạng lưới người liên quan chi tiết — dùng chung entity với Nhóm 41 | 1 người liên quan × 1 cá nhân chính | K_QLKD_206–209 (reuse) |
 | Operational Individual Trading Account | Tác nghiệp | new | Tài khoản giao dịch — bao gồm cả tài khoản người liên quan | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân | K_QLKD_212 |
 
-### Nhóm 41c — Quá trình hành nghề: Lịch sử công tác (K_QLKD_213–217)
+### Nhóm 43 — Quá trình hành nghề: Lịch sử công tác (K_QLKD_213–217)
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Operational Individual Work History | Tác nghiệp | new | Lịch sử bổ nhiệm — tên công ty, chức vụ, thời gian, trạng thái | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_214–217 READY; K_QLKD_213 (Chiều ngày) PENDING |
 
-### Nhóm 41d — Lịch sử vi phạm & xử phạt cá nhân (K_QLKD_218–223)
+### Nhóm 44 — Lịch sử vi phạm & xử phạt cá nhân (K_QLKD_218–223)
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
@@ -214,15 +214,22 @@ erDiagram
 
 ## Tab DATA EXPLORER
 
-### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_224–4260) — READY
+### Nhóm 45-178 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_5000–13040) — Partial READY
 
 ```mermaid
 erDiagram
     Securities_Company_Dimension ||--o{ Securities_Company_Report_Data : " "
+    Report_Structure_Dimension ||..o{ Securities_Company_Report_Data : "chưa xác lập khóa nối (O_QLKD_35)"
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
+| Securities Company Report Data | Tác nghiệp | new | Dữ liệu từng ô (cell) của các biểu mẫu báo cáo định kỳ eForm động; sửa 02/10/2026: `rpt_code` lấy từ `sc_report.rpt_code` | 1 ô giá trị × 1 dòng dữ liệu × 1 lần nộp × 1 CTCK | 843 READY (chiều kỳ/CTCK), 7198 PENDING (giá trị ô) |
+| Report Structure Dimension | Dimension | new | Cấu trúc biểu mẫu: báo cáo → sheet → hàng/cột → ô → chỉ tiêu (Atomic sc_report*, draft) | 1 ô của 1 sheet (SCD4A) | Chiều Loại/Tên/Mã báo cáo, Mã/Tên sheet READY; Mã/Tên chỉ tiêu PENDING |
+| Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, sàn niêm yết | 1 CTCK (SCD4A) | Sàn giao dịch |
+| Securities Service Classification Dimension | Dimension | reuse (Nhóm 2/3/4) | Dịch vụ/nghiệp vụ — chiều "Ngành nghề" | 1 dịch vụ (SCD4A) | Ngành nghề |
+
+---|---|---|---|---|---|
 | Securities Company Report Data | Tác nghiệp | new | Tra cứu dữ liệu chi tiết từng ô (cell) của 102 biểu mẫu báo cáo định kỳ eForm động | 1 ô dữ liệu (cell) × 1 lần nộp báo cáo × 1 CTCK | K_QLKD_224–4260 |
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 

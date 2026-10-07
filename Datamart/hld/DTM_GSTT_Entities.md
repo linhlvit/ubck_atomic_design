@@ -38,6 +38,7 @@ erDiagram
 | Fact Stock Portfolio Snapshot | Fact Snapshot | new | Giá, khối lượng/giá trị GD, NĐT nước ngoài/tự doanh/phân loại NĐT, LNST/VCSH/P-E/P-B (PENDING). [SỬA 2026-09-14] + Free_Float_Share_Quantity (nguồn `listed_share_info`, VSDC outstanding_shares — sửa từ `listed_share_info` chưa tồn tại). Bỏ FK Index Constituent Dimension Id | 1 row / mã CK / ngày giao dịch | K_GSTT_1–32, 55–61, 64–92, 98–119, 124–125, 133–143 (xem Bảng grain Section 3.2 HLD) |
 | Security Trading Snapshot Dimension | Dimension | new | Hồ sơ mô tả chứng khoán + giá hiện hành (Open/High/Low/Reference/Close) | 1 row / mã CK (SCD4A) | — |
 | Public Company Dimension | Dimension | reuse | Mã CK/tên DN/ngành — conformed GSDC/QLCB/NDTNN | 1 row / mã CK (SCD4A) | — |
+| Industry Dimension | Dimension | reuse | Ngành cấp 1 — sở hữu GSDC (dùng chung PTTT); GSTT tra hằng số Industry Code '07000' cho Ngành fallback của CTCK đại chúng (K_GSTT_2, 2026-10-07) | 1 row / ngành cấp 1 (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
 ---

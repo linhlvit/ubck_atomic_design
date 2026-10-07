@@ -4,6 +4,7 @@
 -- Generated: Phase 3 LLD Datamart
 -- 6 bảng: 5 fact + 1 operational (+ 6b/6c: 2 bảng Operational current-state TRUNCATE + INSERT; 6c mới 2026-10-06)
 -- Sửa 2026-10-06 (v4.33–v4.36): Nhóm 34 — #3 gstt_fct_instrument_price_intraday_flat (nến phút) và #3a gstt_fct_instrument_price_daily_flat (nến ngày + Doanh thu/LNST) thay gstt_fct_security_trading_intraday_flat; mã CK và chỉ số (BA nguồn JAD_tvhistory1m/1d), dùng chung Nhóm 3, 10, 12, 14, 20, 47 (v4.35); #3b gstt_fct_security_trading_daily_flat chỉ còn Nhóm 48 (K_GSTT_352).
+-- Sửa 2026-10-07 (v4.38): #1 Ngành fallback CTCK đại chúng = ngành IDS mã 07000 (Industry Dimension, scalar subquery hằng số — industry_dim 1 row/ngành nên không nhân dòng), thay literal 'Tài chính - Ngân hàng'; thêm fallback business_line_level_1_code = '07000'.
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
 -- grain Index Code × ngày × Phân loại NĐT); đánh số lại tham chiếu Nhóm theo BA 37 Nhóm (PTKT → 32, Sở hữu → 33 … Data Explorer → 35/36/37).
 -- Sửa 2026-09-14: bổ sung Fact 1b (Index Constituent Snapshot, Bridge Factless) —
@@ -128,10 +129,10 @@ SELECT
     pc_dim.equity_ticker_symbol                    AS equity_ticker_symbol,
     pc_dim.public_company_nm                       AS public_company_nm,
     pc_dim.equity_listing_exchange_code            AS equity_listing_exchange_code,
-    pc_dim.business_line_level_1_code              AS business_line_level_1_code,
+    COALESCE(NULLIF(TRIM(pc_dim.business_line_level_1_code), ''), CASE WHEN sc_dim.securities_company_dim_id IS NOT NULL THEN (SELECT industry_code FROM datamart.industry_dim WHERE industry_code = '07000' LIMIT 1) END) AS business_line_level_1_code,
     pc_dim.ids_registration_dt                     AS ids_registration_dt,
     pc_dim.public_company_status_code              AS public_company_status_code,
-    COALESCE(pc_dim.classification_business_line_nm, CASE WHEN sc_dim.securities_company_dim_id IS NOT NULL THEN 'Tài chính - Ngân hàng' END) AS classification_business_line_nm,
+    COALESCE(NULLIF(TRIM(pc_dim.classification_business_line_nm), ''), CASE WHEN sc_dim.securities_company_dim_id IS NOT NULL THEN (SELECT industry_nm FROM datamart.industry_dim WHERE industry_code = '07000' LIMIT 1) END) AS classification_business_line_nm,
     pc_dim.public_company_english_nm               AS public_company_english_nm,
     pc_dim.enterprise_tp_code                      AS enterprise_tp_code,
     pc_dim.public_company_tp_code                  AS public_company_tp_code,

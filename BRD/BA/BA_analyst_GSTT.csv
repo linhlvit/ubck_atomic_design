@@ -23,7 +23,21 @@ WHERE s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,TB,Mã CK,IDS,X,X,,Done,Ngành kinh tế cấp 1 trên IDS,CATEGORIES,"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name,active_flg,equity_ticker
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,TB,Mã CK,IDS,X,X,,Done,Ngành kinh tế cấp 1 trên IDS,CATEGORIES,"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name,active_flg,equity_ticker
  FROM IDS.categories c
  JOIN IDS.company_profiles cp ON c.id = cp.category_l1_id
  WHERE c.active_flg = 1
@@ -4288,7 +4302,21 @@ https://prnt.sc/M-cd4ic77XSy",,,,,,Dữ liệu tĩnh,PE
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd","Xem các tính rule của từng chỉ tiêu top tại 
@@ -4667,7 +4695,21 @@ ORDER BY stt
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,theo ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,theo ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -9678,7 +9720,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,P
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Lấy theo ngành kinh tế cấp 1,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Lấy theo ngành kinh tế cấp 1,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd",,,,,,Done,Dữ liệu tĩnh,P
@@ -11243,7 +11299,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,Hiện tại bên CK đang sửa nên
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK và chỉ số,IDS,,X,,Done,Lấy theo ngành kinh tế cấp 1,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK và chỉ số,IDS,,X,,Done,Lấy theo ngành kinh tế cấp 1,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -11912,7 +11982,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,P
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd",,,,,,Done,Dữ liệu tĩnh,P
@@ -12659,7 +12743,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,,,PE
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK và chỉ số,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK và chỉ số,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -13353,7 +13451,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,P
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,X,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,X,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -15220,7 +15332,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,PE
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,X,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,X,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -15917,7 +16043,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,P
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,X,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,X,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -17282,7 +17422,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,PE
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,X,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,X,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -17954,7 +18108,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,P
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -19641,7 +19809,21 @@ MARKETCODE NOT IN ('HOSE','UPCOM','HNX')",,,,,,,Done,Dữ liệu tĩnh,PE
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK và chỉ số ,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK và chỉ số ,IDS,,X,,Done,,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -19914,7 +20096,21 @@ WHERE s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Lấy theo ngành kinh tế cấp 1,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Lấy theo ngành kinh tế cấp 1,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -22109,7 +22305,21 @@ WHERE s.FloorCode IN ('10','02','04')   -- HOSE, HNX, UPCOM
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,theo ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,theo ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -22860,7 +23070,21 @@ Tổ chức trong nước:
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Dashboard,Chiều,Trùng,Mã CK,IDS,,X,,Done,Ngành kinh tế cấp 1 trên IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories
@@ -28719,7 +28943,21 @@ https://prnt.sc/GY5Bdv3_o6NL",,,,Lý do khác,Dữ liệu tĩnh,PE
 Bảng SC_FIRM_INFO: Thông tin công ty chứng khoán
 Có trường: 
 SECURITIES_CODE - Mã chứng khoán niêm yết
-PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng gắn vào tài chính ngân hàng",Data Explorer,Chiều,Trùng,Mã ck ,IDS,,X,,Done,ngành kinh tế cấp 1 IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
+PUBLIC_COMPANY - Có là CTĐC ( PUBLIC_COMPANY  = 1). Nếu là công ty đại chúng thì lấy ngành ở IDS có mã là 07000
+CASE
+    WHEN NULLIF(TRIM(IDS.NNKD), '') IS NOT NULL
+        THEN IDS.NNKD
+    WHEN EXISTS (
+        SELECT 1
+        FROM SC_FIRM_INFO sc
+        WHERE UPPER(TRIM(sc.SECURITIES_CODE))
+              = UPPER(TRIM(x.Ma_nganh))
+          AND TRIM(CAST(sc.PUBLIC_COMPANY AS STRING))
+              = :Public_company_yes
+    )
+        THEN (select IDS.NNKD from IDS where IDS.INDUSTRY_CD = '07000')
+    ELSE NULL
+END AS ten_nganh",Data Explorer,Chiều,Trùng,Mã ck ,IDS,,X,,Done,ngành kinh tế cấp 1 IDS,IDS.categories (c),"c.industry_cd, c.industry_name AS ten_nganh",c.active_flg = 1,"SELECT c.industry_cd, c.industry_name
  FROM IDS.categories c
  WHERE c.active_flg = 1
  ORDER BY c.industry_cd"," -- Lưu ý: Cần xác nhận tên cột industry_cd, industry_name trong bảng IDS.categories

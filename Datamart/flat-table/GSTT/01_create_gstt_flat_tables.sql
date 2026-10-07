@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     -- From: FACT Stock Portfolio Snapshot
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
     public_company_dim_id               String                  COMMENT 'FK → Public Company Dimension',
-    securities_company_dim_id           String                  COMMENT '[MỚI 2026-09-28] FK → Securities Company Dimension (fallback Ngành cho CTCK đại chúng khi Public Company Dimension Id rỗng — xem O_GSTT_37)',
+    securities_company_dim_id           String                  COMMENT '[MỚI 2026-09-28] FK → Securities Company Dimension (cờ CTCK đại chúng; khi Public Company Dimension Id rỗng, Ngành fallback = ngành IDS mã 07000 tra từ Industry Dimension — SỬA 2026-10-07, xem O_GSTT_37)',
     snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
     fr_period_end_dt_dim_id             Nullable(String)        COMMENT 'FK → Calendar Date Dimension (Role-Playing: Financial Report Period End Date) — bổ sung 2026-09-08 theo rule GSĐC',
     total_vol                           Nullable(Int64)         COMMENT '[SỬA COMMENT 2026-09-16, không đổi giá trị/ETL] Tổng khối lượng giao dịch cổ phiếu/CCQ 3 sàn — GỘP CẢ khớp lệnh VÀ thỏa thuận, loại trừ phái sinh và trái phiếu. Comment cũ ghi nhầm "khớp lệnh" — phục vụ K_GSTT_146 (Nhóm 37), không phải K_GSTT_13 (đã chuyển sang total_matched_vol)',
