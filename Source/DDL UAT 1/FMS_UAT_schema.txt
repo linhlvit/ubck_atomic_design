@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: FMS_UAT
-Tong so bang: 189 | Materialized View: 0
+Tong so bang: 176 | Materialized View: 0
 ==============================================================================================================
 
 BANG: AGENCIES
@@ -65,6 +65,21 @@ ITEM_NAME                     NVARCHAR2(2000)     YES                           
 RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
 DESCRIPTION                   NVARCHAR2(2000)     YES                                      Mô tả chi tiết
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+
+
+BANG: AGENT_ID_UNIFY_AUDIT
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            RAW(16)             NO      PK                               
+OLD_JOB_AGENT_ID              RAW(16)             NO                                       
+NEW_ID                        RAW(16)             NO                                       
+SYSTEM_OBJECT_TYPE            NUMBER(2,0)         NO                                       
+TABLE_NAME                    VARCHAR2(50)        NO                                       
+ROWS_TOUCHED                  NUMBER              YES                                      
+NOTE                          VARCHAR2(500)       YES                                      
+DATE_CREATED                  TIMESTAMP(6)        YES                                      
 
 
 BANG: AGEN_FUNDS
@@ -310,6 +325,8 @@ DES_CHANGE                    NVARCHAR2(2000)     YES                           
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
 ID_DB_OLD                     NVARCHAR2(200)      YES                                      ID trong hệ thống cũ (trước khi migration dữ liệu)
 BANK_CODE                     VARCHAR2(50)        YES                                      Mã ngân hàng lưu ký (SWIFT code hoặc mã BIC)
+PROVINCE_ID                   VARCHAR2(256)       YES                                      
+WARD_ID                       VARCHAR2(256)       YES                                      
 
 
 BANG: BRANCHS
@@ -347,6 +364,8 @@ VOUCHER_DATE                  DATE                YES                           
 DES_CHANGE                    NVARCHAR2(2000)     YES                                      Mô tả nội dung thay đổi khi cập nhật hồ sơ
 RECORD_STATUS                 NUMBER(18,2)        NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
+PROVINCE_ID                   VARCHAR2(256)       YES                                      TVS2601TK-3430: Tinh/thanh pho (PROVINCE.ID)
+WARD_ID                       VARCHAR2(256)       YES                                      TVS2601TK-3430: Xa/phuong (WARD.ID)
 
 
 BANG: BRA_BUSINESS
@@ -534,6 +553,7 @@ SYSTEM_OBJECT                 NVARCHAR2(1000)     YES                           
 JOINT_STOCK                   NUMBER(1,0)         NO                                       Cờ là công ty cổ phần: 1=Công ty CP, 0=Công ty TNHH
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
+CODE                          NVARCHAR2(100)      YES                                      Mã loại hình doanh nghiệp eCAT được phép đồng bộ vào FMS
 
 
 BANG: CONFIG
@@ -548,30 +568,6 @@ TO_TABLE                      VARCHAR2(50)        YES                           
 TABLE_LVL                     NUMBER              YES                                      Cấp độ bảng trong cấu hình ánh xạ (thứ tự join)
 COLUMN_INDEX                  VARCHAR2(50)        YES                                      Chỉ số cột trong cấu hình ánh xạ
 CONDITION                     VARCHAR2(500)       YES                                      Điều kiện lọc dữ liệu trong cấu hình ánh xạ bảng
-
-
-BANG: CONFIG_CONVERT_DATA
-Mo ta: Cấu hình chuyển đổi dữ liệu báo cáo từ hệ thống cũ sang hệ thống mới: query, sheet, loại dữ liệu
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RPTID                         VARCHAR2(20)        YES                                      Mã báo cáo trong cấu hình chuyển đổi dữ liệu
-RPTDETAIL                     VARCHAR2(20)        YES                                      Chi tiết mã báo cáo
-RPTNAME                       VARCHAR2(250)       YES                                      Tên báo cáo trong cấu hình chuyển đổi
-DESCRIPTION                   VARCHAR2(250)       YES                                      Mô tả chi tiết
-TERM                          VARCHAR2(20)        YES                                      Kỳ báo cáo dạng chuỗi (trong LOG_CONVERT_DATA)
-RPTTYPE                       VARCHAR2(20)        YES                                      Loại báo cáo trong cấu hình chuyển đổi
-RECORD_TYPE                   VARCHAR2(20)        YES                                      Loại/phân loại của bản ghi
-SHEETNAME                     VARCHAR2(150)       YES                                      Tên sheet trong file báo cáo
-MODSEARCH                     VARCHAR2(20)        YES                                      Module tìm kiếm dữ liệu nguồn để chuyển đổi
-QUERY                         VARCHAR2(4000)      YES                                      Query SQL truy vấn dữ liệu nguồn để chuyển đổi
-MODEXEC                       VARCHAR2(20)        YES                                      Module thực thi chuyển đổi dữ liệu
-SELECT_DB_NEW                 VARCHAR2(2000)      YES                                      Query SELECT trên DB mới để kiểm tra sau chuyển đổi
-SELECT_DB_OLD                 VARCHAR2(2000)      YES                                      Query SELECT trên DB cũ để lấy dữ liệu nguồn
-STARTROW                      NUMBER(4,0)         YES                                      Dòng bắt đầu đọc dữ liệu trong file Excel báo cáo
-TEMP_ID_DB_NEW                VARCHAR2(60)        YES                                      ID template tương ứng trong DB mới
-STARTCOLUMN                   NUMBER              YES                                      Cột bắt đầu đọc dữ liệu trong file Excel báo cáo
-POSITIONFLDID                 NUMBER(4,0)         YES                                      Vị trí field ID trong dòng dữ liệu
 
 
 BANG: DISTRIBUTOR_AGENT
@@ -895,22 +891,6 @@ UPDATEDAT                     TIMESTAMP(6)        YES                           
 CREATEDBY                     VARCHAR2(255)       YES                                      Tài khoản tạo bảng/cột dữ liệu động
 
 
-BANG: ERROR_LOG
-Mo ta: Nhật ký lỗi hệ thống FMS: module, hành động, nội dung lỗi, exception trace, người dùng thực hiện
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-USER_ID                       RAW(16)             NO      FK     USERS.ID                  FK -> USERS: Người dùng liên quan
-MODULE_NAME                   NVARCHAR2(4000)     YES                                      Tên module phát sinh lỗi
-ACTION                        NVARCHAR2(4000)     YES                                      Hành động đang thực hiện khi xảy ra lỗi
-CONTENT                       NVARCHAR2(4000)     YES                                      Nội dung/mô tả ngắn của lỗi
-EXCEPTION                     NCLOB               YES                                      Chi tiết stack trace exception (NCLOB)
-DATE_CREATED                  DATE                NO                                       Thời điểm tạo bản ghi
-ACTION_FOR_END_USER           NVARCHAR2(4000)     YES                                      Thông báo lỗi thân thiện hiển thị cho người dùng cuối
-ERROR_FLAG                    NUMBER(1,0)         NO                                       Cờ là bản ghi lỗi: 1=Lỗi, 0=Bình thường
-
-
 BANG: EVENT_TYPE
 Mo ta: Danh mục loại sự vụ FMS: mã sự vụ, phân loại (định kỳ/bất thường/theo yêu cầu), nghĩa vụ báo cáo/CBTT, cách tính thời hạn, cấu hình nghiệp vụ JSON
 --------------------------------------------------------------------------------------------------------------
@@ -997,12 +977,12 @@ Mo ta: Snapshot bộ tiêu chí đánh giá xếp loại QLQ tại thời điể
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
 SNAPSHOT_JSON                 CLOB                NO                                       Snapshot toàn bộ dữ liệu tại thời điểm ghi log (JSON CLOB)
 NOTE                          VARCHAR2(2000)      YES                                      Ghi chú bổ sung
 SNAPSHOT_AT                   TIMESTAMP(6)        NO                                       Thời điểm chụp snapshot dữ liệu đánh giá
 DATE_CREATED                  TIMESTAMP(6)        YES                                      Thời điểm tạo bản ghi
 CREATED_BY                    VARCHAR2(100)       YES                                      Tài khoản người tạo bản ghi
+ID                            RAW(16)             NO      PK                               
 
 
 BANG: FG_BR_BUP
@@ -1074,37 +1054,6 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 FR_BCH_ID                     RAW(16)             NO      PK     FOR_BRCH.ID               FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài
 BU_ID                         RAW(16)             NO      PK     BUSINESS.ID               FK -> BUSINESS: Lĩnh vực hoạt động kinh doanh
-
-
-BANG: FLAG_RUN_CF
-Mo ta: Cờ điều khiển chạy batch/cấu hình: config_key, item_value, loại kỳ, giá trị kỳ, năm áp dụng
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-CONFIG_KEY                    NVARCHAR2(200)      YES                                      Khóa cấu hình (key tra cứu trong FLAG_RUN_CF)
-ITEM_VALUE                    NVARCHAR2(200)      YES                                      Giá trị của bản ghi (số tiền, mệnh giá, điểm số...)
-DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
-PERIOD_TYPE                   NVARCHAR2(200)      YES                                      Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng
-PERIOD_VALUE                  NVARCHAR2(200)      YES                                      Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)
-YEAR_VALUE                    NVARCHAR2(200)      YES                                      Năm của kỳ báo cáo (định dạng YYYY)
-
-
-BANG: FMS_AGENT_MAPPING
-Mo ta: Ánh xạ đại lý với loại đối tượng hệ thống và loại đại lý: xác định đại lý nào quản lý quỹ/hồ sơ nào
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-AGENCIES_ID                   RAW(16)             NO      FK     AGENCIES.ID               FK -> AGENCIES: Đại lý phân phối liên quan
-SYSTEM_OBJECT_TYPE            NUMBER(10,0)        NO                                       Loại đối tượng hệ thống của đại lý: 8=Đại lý phân phối, 9=Đại lý chuyển nhượng, 10=Đại lý hưu trí, 11=TCCCDV quản trị TK hưu trí cá nhân, 12=Đại lý khác
-JOB_AGENT_ID                  RAW(16)             NO                                       FK -> JOBS: Chức danh của người đại lý
-AGENCY_TYPE_ID                RAW(16)             YES     FK     AGENCY_TYPE.ID            FK -> AGENCY_TYPE: Loại đại lý
-ACTIVE                        NUMBER(1,0)         NO                                       Cờ đang kích hoạt: 1=Đang hoạt động, 0=Vô hiệu
-DATE_CREATED                  TIMESTAMP(6)        YES                                      Thời điểm tạo bản ghi
-CREATED_BY                    VARCHAR2(100)       YES                                      Tài khoản người tạo bản ghi
-DATE_MODIFIED                 TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi lần cuối
-MODIFY_BY                     VARCHAR2(100)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
 
 
 BANG: FMS_INDICATOR_CATALOG
@@ -1208,6 +1157,8 @@ EVENT_TYPE_ID                 RAW(16)             YES                           
 PARENT_ISSUE_PLACE            NVARCHAR2(1000)     YES                                      
 PARENT_ISSUE_DATE             DATE                YES                                      
 ACTIVITY_PERIOD               NVARCHAR2(200)      YES                                      Thời hạn hoạt động (text tự do)
+PROVINCE_ID                   VARCHAR2(256)       YES                                      TVS2601TK-3439: Tinh/thanh pho (PROVINCE.ID)
+WARD_ID                       VARCHAR2(256)       YES                                      TVS2601TK-3439: Xa/phuong (WARD.ID)
 
 
 BANG: FTOR_SCALE
@@ -1243,6 +1194,7 @@ FUD_ID                        RAW(16)             NO      FK     FUNDS.ID       
 AG_TY_ID                      RAW(16)             NO      FK     AGENCY_TYPE.ID            FK -> AGENCY_TYPE: Loại đại lý
 AGEN_ID                       RAW(16)             NO      FK     AGENCIES.ID               FK -> AGENCIES: Đại lý phân phối liên quan
 AGEN_ID_PARENT                RAW(16)             YES                                      FK -> AGENCIES: Đại lý phân phối cấp trên
+SYSTEM_OBJECT_TYPE            NUMBER(2,0)         YES                                      
 
 
 BANG: FUD_TAGT
@@ -1474,23 +1426,6 @@ NOTE                          NVARCHAR2(4000)     YES                           
 COLOR                         NVARCHAR2(4000)     YES                                      Màu sắc hiển thị của nhóm tiêu chí (mã màu HEX, VD: #FF5733)
 
 
-BANG: GUIDE_FILE
-Mo ta: File hướng dẫn sử dụng FMS: tên file, đối tượng hệ thống áp dụng, ghi chú, trạng thái
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
-CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
-DATE_MODIFIED                 DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
-MODIFY_BY                     NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
-ITEM_NAME                     NVARCHAR2(4000)     NO                                       Tên hiển thị chính
-FILE_DATA                     NCLOB               YES                                      Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)
-SYSTEM_OBJECTS                NVARCHAR2(4000)     NO                                       Đối tượng hệ thống áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN...
-NOTE                          NVARCHAR2(4000)     YES                                      Ghi chú bổ sung
-RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
-
-
 BANG: INSDER_RELA
 Mo ta: Người liên quan của cổ đông nội bộ (gia đình, người có quan hệ kinh tế): thông tin cá nhân, loại quan hệ
 --------------------------------------------------------------------------------------------------------------
@@ -1597,6 +1532,9 @@ S_WORK_DTE                    DATE                YES                           
 EMPLOY_STATUS                 NUMBER(18,2)        YES                                      Trạng thái hợp đồng lao động: 1=Còn hiệu lực, 2=Hết hiệu lực, 3=Vô thời hạn
 GP_QD_NO                      VARCHAR2(200)       YES                                      Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ
 APPROVAL_DATE                 DATE                YES                                      Ngày chấp thuận/phê duyệt của UBCKNN
+INSIDER_START_DATE            DATE                YES                                      Ngay bat dau lam co dong (TVS2601TK-4003) - ky bao cao lay tu thang phat sinh
+PROVINCE_ID                   VARCHAR2(256)       YES                                      TVS2601TK-3433: Tinh/thanh pho (PROVINCE.ID)
+WARD_ID                       VARCHAR2(256)       YES                                      TVS2601TK-3433: Xa/phuong (WARD.ID)
 
 
 BANG: INSIDER_CHG_LOG
@@ -1665,6 +1603,8 @@ DATE_CREATED                  TIMESTAMP(6)        YES                           
 CREATED_BY                    VARCHAR2(100)       YES                                      Tài khoản người tạo bản ghi
 DATE_MODIFIED                 TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi lần cuối
 MODIFY_BY                     VARCHAR2(100)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
+EXTERNAL_ID                   VARCHAR2(100)       YES                                      
+DATA_SOURCE                   VARCHAR2(20)        YES                                      
 
 
 BANG: INSPECTION_ROUND
@@ -1688,6 +1628,7 @@ DATE_CREATED                  TIMESTAMP(6)        YES                           
 CREATED_BY                    VARCHAR2(100)       YES                                      Tài khoản người tạo bản ghi
 DATE_MODIFIED                 TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi lần cuối
 MODIFY_BY                     VARCHAR2(100)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
+DATA_SOURCE                   VARCHAR2(80)        YES                                      Nguon du lieu: FMS = dot kiem tra nhap tai FMS, THANHTRA = dong bo tu phan he Thanh tra (TVS2601TK-3987)
 
 
 BANG: INSPECTION_TARGET
@@ -1705,21 +1646,6 @@ DATE_CREATED                  TIMESTAMP(6)        YES                           
 CREATED_BY                    VARCHAR2(100)       YES                                      Tài khoản người tạo bản ghi
 DATE_MODIFIED                 TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi lần cuối
 MODIFY_BY                     VARCHAR2(100)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
-
-
-BANG: INTEGRATION_CONFIG
-Mo ta: Cấu hình tích hợp với phân hệ khác: mã phân hệ (TTHC/SCMS/IDS...), trạng thái tích hợp
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-SUBSYSTEM_CODE                NUMBER(3,0)         NO                                       Mã phân hệ tích hợp: 1=TTHC, 2=SCMS, 3=IDS, 4=Người hành nghề...
-RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
-DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
-DATE_CREATED                  TIMESTAMP(6)        YES                                      Thời điểm tạo bản ghi
-CREATED_BY                    VARCHAR2(255)       YES                                      Tài khoản người tạo bản ghi
-DATE_MODIFIED                 TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi lần cuối
-MODIFY_BY                     VARCHAR2(255)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
 
 
 BANG: INVES
@@ -1864,37 +1790,6 @@ DELETED                       NUMBER(1,0)         NO                            
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
 
 
-BANG: LOG_CONVERT_DATA
-Mo ta: Nhật ký chuyển đổi dữ liệu báo cáo từ hệ thống cũ: mã báo cáo, kỳ, năm, sheet, trạng thái, lỗi phát sinh
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RPTID                         NVARCHAR2(40)       YES                                      Mã báo cáo trong cấu hình chuyển đổi dữ liệu
-SHORTNAME                     NVARCHAR2(40)       YES                                      Tên ngắn của báo cáo trong log chuyển đổi
-TERM                          NVARCHAR2(40)       YES                                      Kỳ báo cáo dạng chuỗi (trong LOG_CONVERT_DATA)
-TERMNO                        NVARCHAR2(40)       YES                                      Số kỳ báo cáo trong log chuyển đổi
-REPORT_YEAR                   NVARCHAR2(40)       YES                                      Năm báo cáo (định dạng YYYY)
-SHEET                         NVARCHAR2(300)      YES                                      Tên sheet trong file báo cáo đang chuyển đổi dữ liệu
-RECORD_STATUS                 NVARCHAR2(40)       YES                                      Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
-CREATEDATE                    DATE                YES                                      Ngày tạo bản ghi log chuyển đổi dữ liệu
-MESSAGE                       VARCHAR2(4000)      YES                                      Thông báo kết quả/lỗi trong quá trình chuyển đổi dữ liệu
-QUERY                         VARCHAR2(4000)      YES                                      Query SQL truy vấn dữ liệu nguồn để chuyển đổi
-
-
-BANG: LOG_CONVERT_DATA_2
-Mo ta: Nhật ký chuyển đổi dữ liệu báo cáo (tổng hợp cấp 2): tổng số báo cáo, tổng số bản ghi, trạng thái
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-RPTID                         VARCHAR2(50)        YES                                      Mã báo cáo trong cấu hình chuyển đổi dữ liệu
-RECORD_STATUS                 NUMBER(4,0)         YES                                      Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
-MESSAGE                       VARCHAR2(4000)      YES                                      Thông báo kết quả/lỗi trong quá trình chuyển đổi dữ liệu
-CREATEDATE                    DATE                YES                                      Ngày tạo bản ghi log chuyển đổi dữ liệu
-RYEAR                         NUMBER(4,0)         YES                                      Năm báo cáo trong log chuyển đổi (LOG_CONVERT_DATA_2)
-TOTAL_REPORT                  NUMBER(12,0)        YES                                      Tổng số báo cáo được xử lý trong lần chuyển đổi
-TOTAL_RECORD                  NUMBER(20,0)        YES                                      Tổng số bản ghi được xử lý trong lần chuyển đổi
-
-
 BANG: MB_CHANGE
 Mo ta: Giao dịch thay đổi CCQ của thành viên quỹ: số lượng/tỷ lệ trước-sau, ngày giao dịch, ngày thanh toán
 --------------------------------------------------------------------------------------------------------------
@@ -1973,99 +1868,7 @@ SORT_ORDER                    NUMBER(10,0)        NO                            
 ACCESS                        NCLOB               YES                                      
 ACTIVE                        NUMBER(1,0)         NO                                       Cờ đang kích hoạt: 1=Đang hoạt động, 0=Vô hiệu
 ACCESS_URL                    CLOB                YES                                      Danh sách URL con được phép truy cập (JSON CLOB)
-CODE                          VARCHAR2(200)       YES                                      Mã menu phân cấp (dot notation), vd. qlq-fg.vpdd-staff.add. Nullable cho đến khi backfill.
-
-
-BANG: MENUS_BAK
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO                                       
-DATE_CREATED                  DATE                YES                                      
-CREATED_BY                    NVARCHAR2(200)      YES                                      
-DATE_MODIFIED                 DATE                YES                                      
-MODIFY_BY                     NVARCHAR2(200)      YES                                      
-TITLE                         NVARCHAR2(1000)     YES                                      
-ICON                          NVARCHAR2(200)      YES                                      
-URL                           NVARCHAR2(1000)     YES                                      
-PARENT_ID                     RAW(16)             YES                                      
-MENU_TYPE                     NUMBER(1,0)         NO                                       
-SORT_ORDER                    NUMBER(10,0)        NO                                       
-ACCESS                        NCLOB               YES                                      
-ACTIVE                        NUMBER(1,0)         NO                                       
-ACCESS_URL                    CLOB                YES                                      
-
-
-BANG: MIG_AGENT_SYNC_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-BATCH_ID                      VARCHAR2(20)        NO      PK                               
-ACTION                        VARCHAR2(40)        NO      PK                               
-AGENCIES_ID                   RAW(16)             NO      PK                               
-SYSTEM_OBJECT_TYPE            NUMBER              NO      PK                               
-JOB_AGENT_ID                  RAW(16)             NO      PK                               
-MATCH_BY                      VARCHAR2(40)        YES                                      
-DETAIL                        VARCHAR2(1000)      YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-
-
-BANG: MIG_BACKUP_EVENT_DEDUP
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-BATCH_ID                      VARCHAR2(20)        NO      PK                               
-EVENT_TYPE_ID                 RAW(16)             NO      PK                               
-OLD_RECORD_STATUS             NUMBER              YES                                      
-NEW_RECORD_STATUS             NUMBER              YES                                      
-RPT_ID                        RAW(16)             YES                                      
-EVENT_CODE                    VARCHAR2(100)       YES                                      
-ACTION                        VARCHAR2(20)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-
-
-BANG: MIG_BACKUP_RPT_MEMBER_ET
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-BATCH_ID                      VARCHAR2(20)        NO      PK                               
-RPT_MEMBER_ID                 RAW(16)             NO      PK                               
-OLD_EVENT_TYPE_ID             RAW(16)             YES                                      
-NEW_EVENT_TYPE_ID             RAW(16)             NO                                       
-MATCH_METHOD                  VARCHAR2(20)        NO                                       
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-
-
-BANG: MIG_BACKUP_RPT_MEMBER_PT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-BATCH_ID                      VARCHAR2(20)        NO      PK                               
-RPT_MEMBER_ID                 RAW(16)             NO      PK                               
-OLD_PERIOD_TYPE               NUMBER              YES                                      
-NEW_PERIOD_TYPE               NUMBER              NO                                       
-PRD_ID                        RAW(16)             YES                                      
-YEAR_VALUE                    NUMBER              YES                                      
-PERIOD_VALUE                  VARCHAR2(50)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-
-
-BANG: MIG_BACKUP_RPT_VALUES_PT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-BATCH_ID                      VARCHAR2(20)        NO                                       
-RPT_VALUE_ID                  RAW(16)             NO                                       
-RPT_MEMBER_ID                 RAW(16)             YES                                      
-OLD_PERIOD_TYPE               NUMBER              YES                                      
-NEW_PERIOD_TYPE               NUMBER              NO                                       
-CREATED_AT                    TIMESTAMP(6)        NO                                       
+CODE                          VARCHAR2(200)       YES                                      Mã menu phân cấp (dot notation), vd. qlq.staff.add. Unique khi không null; title chỉ hiển thị.
 
 
 BANG: NATIONAL
@@ -2086,29 +1889,84 @@ DELETED                       NUMBER(1,0)         NO                            
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
 
 
-BANG: NOTIFICATION
-Mo ta: Thông báo nội bộ FMS: loại thông báo, tiêu đề, nội dung, trạng thái gửi email/SMS, người gửi/nhận
+BANG: NHNCK_PAPER_CERT_NOTICE
+Mo ta: Thông báo nộp lại CCHN giấy từ NHNCK → hiện inbox QLQ
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-VIEWED                        NUMBER(1,0)         NO                                       Cờ người nhận đã xem thông báo: 1=Đã xem, 0=Chưa xem
-TITLE                         NVARCHAR2(4000)     NO                                       Tiêu đề thông báo/CBTT (tiếng Việt)
-LINK_TO_DETAIL                NVARCHAR2(4000)     YES                                      Đường dẫn URL đến trang chi tiết của thông báo nội bộ
-RECORD_TYPE                   NUMBER(10,0)        NO                                       Loại/phân loại của bản ghi
-DATE_CREATED                  DATE                NO                                       Thời điểm tạo bản ghi
-UFROM_ID                      RAW(16)             YES     FK     USERS.ID                  FK -> USERS: Người gửi thông báo/email
-UTO_ID                        RAW(16)             YES     FK     USERS.ID                  FK -> USERS: Người nhận thông báo/email
-CONTENT                       CLOB                YES                                      Nội dung thông báo chi tiết gửi đến người dùng hệ thống
-FILE_DATA                     CLOB                YES                                      Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)
-RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
-SEND_EMAIL                    NUMBER(1,0)         NO                                       Cờ gửi kèm email: 1=Có gửi email, 0=Không gửi
-SEND_SMS                      NUMBER(1,0)         NO                                       Cờ gửi kèm SMS: 1=Có gửi SMS, 0=Không gửi
-SEND_DATE                     TIMESTAMP(6)        YES                                      Ngày thành viên gửi thông báo/email
-SEND_BY                       VARCHAR2(100)       YES                                      Tài khoản gửi thông báo/email
-CREATED_BY                    VARCHAR2(100)       YES                                      Tài khoản người tạo bản ghi
-DATE_MODIFIED                 TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi lần cuối
-MODIFY_BY                     VARCHAR2(100)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
+CONVERSION_REQUEST_ID         NUMBER(19,0)        NO                                       Idempotent key từ NHNCK
+IDENTITY_NUMBER               VARCHAR2(50)        NO                                       
+FULL_NAME                     VARCHAR2(500)       NO                                       
+CERTIFICATE_NUMBERS_JSON      CLOB                YES                                      
+ORGANIZATION_REF              VARCHAR2(100)       YES                                      
+LICENSE_NUMBER                VARCHAR2(100)       YES                                      
+ORGANIZATION_TAX_CODE         VARCHAR2(100)       YES                                      MST / SECURITIES.CODE — khóa map QLQ chính
+ORGANIZATION_NAME             VARCHAR2(500)       YES                                      
+SUBMITTED_AT                  TIMESTAMP(6)        YES                                      
+MESSAGE_TEXT                  CLOB                YES                                      
+RECEIVED_AT                   TIMESTAMP(6)        NO                                       
+DATE_CREATED                  TIMESTAMP(6)        YES                                      
+CREATED_BY                    VARCHAR2(100)       YES                                      
+DATE_MODIFIED                 TIMESTAMP(6)        YES                                      
+MODIFY_BY                     VARCHAR2(100)       YES                                      
+ID                            RAW(16)             NO      PK                               
+SEC_ID                        RAW(16)             YES                                      
+
+
+BANG: NHNCK_PRACTICE_CONFIRM_REQ
+Mo ta: Yêu cầu QLQ xác nhận quá trình hành nghề (CCHN chuyển đổi)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+REQUEST_ID                    VARCHAR2(100)       NO                                       Idempotent key — dùng lại khi callback NHNCK
+CONVERSION_REQUEST_ID         NUMBER(19,0)        NO                                       
+ORGANIZATION_REF              VARCHAR2(100)       YES                                      
+LICENSE_NUMBER                VARCHAR2(100)       YES                                      
+ORGANIZATION_TAX_CODE         VARCHAR2(100)       YES                                      
+ORGANIZATION_NAME             VARCHAR2(500)       YES                                      
+FULL_NAME                     VARCHAR2(500)       NO                                       
+IDENTITY_NUMBER               VARCHAR2(50)        NO                                       
+DECLARED_WORK_HISTORY_JSON    CLOB                YES                                      
+CONTENT_TEXT                  CLOB                YES                                      
+ATTACHMENT_URLS_JSON          CLOB                YES                                      
+REQUESTED_BY                  VARCHAR2(200)       YES                                      
+REQUESTED_AT                  TIMESTAMP(6)        YES                                      
+RECORD_STATUS                 VARCHAR2(30)        NO                                       PENDING | RESPONDED
+RESULT_CODE                   VARCHAR2(40)        YES                                      ACCURATE | INACCURATE | UNABLE_TO_CONFIRM
+CORRECTED_WORK_HISTORY_JSON   CLOB                YES                                      
+REASON_TEXT                   VARCHAR2(2000)      YES                                      
+RESPONDED_BY                  VARCHAR2(200)       YES                                      
+RESPONDED_AT                  TIMESTAMP(6)        YES                                      
+RECEIVED_AT                   TIMESTAMP(6)        NO                                       
+DATE_CREATED                  TIMESTAMP(6)        YES                                      
+CREATED_BY                    VARCHAR2(100)       YES                                      
+DATE_MODIFIED                 TIMESTAMP(6)        YES                                      
+MODIFY_BY                     VARCHAR2(100)       YES                                      
+ID                            RAW(16)             NO      PK                               
+SEC_ID                        RAW(16)             YES                                      
+
+
+BANG: NHN_ORG_WARNING_SNAPSHOT
+Mo ta: Snapshot cảnh báo NHNCK theo CTQLQ (sync D02) — nguồn D_ NHN_CHUNG_KHOAN.*
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            RAW(16)             NO      PK                               
+TARGET_ID                     RAW(16)             NO                                       SECURITIES.ID
+LICENSE_NO                    VARCHAR2(100)       YES                                      
+TAX_CODE                      VARCHAR2(50)        YES                                      
+WARN_2COMPANY                 NUMBER(1,0)         NO                                       1=Có NHN gắn ≥2 tổ chức
+WARN_3YEAR_NOPRACTICE         NUMBER(1,0)         NO                                       1=Có NHN cảnh báo 3 năm không hành nghề
+WARN_VPHC                     NUMBER(1,0)         NO                                       1=Có NHN cảnh báo VPHC
+REVOKE_REASON                 VARCHAR2(4000)      YES                                      Ghép lý do thu hồi CCHN (nếu có)
+PRACTITIONER_COUNT            NUMBER(10,0)        YES                                      
+WARNING_COUNT                 NUMBER(10,0)        YES                                      
+SOURCE_UPDATED_AT             TIMESTAMP(6)        YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+DATE_CREATED                  TIMESTAMP(6)        YES                                      
+CREATED_BY                    VARCHAR2(100)       YES                                      
+DATE_MODIFIED                 TIMESTAMP(6)        YES                                      
+MODIFY_BY                     VARCHAR2(100)       YES                                      
 
 
 BANG: OFFERING
@@ -2347,6 +2205,15 @@ DATE_MODIFIED                 TIMESTAMP(6)        YES                           
 MODIFY_BY                     VARCHAR2(200)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
 
 
+BANG: PENSION_FUND_AGENT
+Mo ta: Đại lý hưu trí gắn với quỹ hưu trí (chọn nhiều, không bắt buộc)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PENSION_FUND_ID               RAW(16)             NO      PK     PENSION_FUND.ID           
+PENSION_AGENT_ID              RAW(16)             NO      PK     PENSION_AGENT.ID          
+
+
 BANG: PENSION_FUND_HISTORY
 Mo ta: Lịch sử thay đổi hồ sơ quỹ hưu trí (màn Lịch sử quỹ thống nhất)
 --------------------------------------------------------------------------------------------------------------
@@ -2364,6 +2231,15 @@ REASON                        VARCHAR2(2000)      YES
 FILE_DATA                     NCLOB               YES                                      
 DATE_CREATED                  DATE                NO                                       
 CREATED_BY                    VARCHAR2(100)       YES                                      
+
+
+BANG: PENSION_FUND_PROVIDER
+Mo ta: TCCCDV quản trị hưu trí gắn với quỹ hưu trí (chọn nhiều, không bắt buộc)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+PENSION_FUND_ID               RAW(16)             NO      PK     PENSION_FUND.ID           
+PENSION_PROVIDER_ID           RAW(16)             NO      PK     PENSION_PROVIDER.ID       
 
 
 BANG: PENSION_PROVIDER
@@ -2410,6 +2286,34 @@ CREATED_BY                    VARCHAR2(200)       YES                           
 DATE_MODIFIED                 TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi lần cuối
 MODIFY_BY                     VARCHAR2(200)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
 SNAPSHOT_AFTER                CLOB                YES                                      JSON array [{field, label, value}] ? snapshot sau thay ??i
+
+
+BANG: PROVINCE
+Mo ta: Tinh/thanh pho moi — dong bo tu eCAT DMDC province-news
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(256)       NO      PK                               
+CODE                          VARCHAR2(200)       YES                                      
+NAME_VN                       VARCHAR2(2000)      YES                                      
+NAME_EN                       VARCHAR2(2000)      YES                                      
+EFFECTIVE                     VARCHAR2(200)       YES                                      
+DISPLAY_LABEL                 VARCHAR2(2000)      YES                                      
+ACTIVE                        VARCHAR2(80)        YES                                      
+REGION_ID                     VARCHAR2(256)       YES                                      
+REGION_NAME                   VARCHAR2(1200)      YES                                      
+REGION_CODE                   VARCHAR2(200)       YES                                      
+COUNTRY_ID                    VARCHAR2(256)       YES                                      
+COUNTRY_NAME_VN               VARCHAR2(1200)      YES                                      
+COUNTRY_CODE                  VARCHAR2(200)       YES                                      
+COUNTRY_DISPLAY_LABEL         VARCHAR2(1200)      YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+LAST_SYNCED_AT                TIMESTAMP(6)        YES                                      
+DATE_CREATED                  TIMESTAMP(6)        YES                                      
+CREATED_BY                    VARCHAR2(400)       YES                                      
+DATE_MODIFIED                 TIMESTAMP(6)        YES                                      
+MODIFY_BY                     VARCHAR2(400)       YES                                      
+STABLE_ID                     VARCHAR2(256)       YES                                      stableId eCAT của tỉnh; dùng để remap WARD.provinceNewId → PROVINCE.ID
 
 
 BANG: RANK
@@ -2639,15 +2543,6 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ROLES_ID                      RAW(16)             NO      PK     ROLES.ID                  FK -> ROLES: Vai trò/nhóm quyền
 MENUS_ID                      RAW(16)             NO      PK     MENUS.ID                  FK -> MENUS: Menu/chức năng hệ thống
-
-
-BANG: ROLES_MENUS_BAK
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ROLES_ID                      RAW(16)             NO                                       
-MENUS_ID                      RAW(16)             NO                                       
 
 
 BANG: RPT_HTORY
@@ -2967,6 +2862,9 @@ DATA_MIGRATION                NUMBER(1,0)         YES                           
 ID_DB_OLD                     NVARCHAR2(200)      YES                                      ID trong hệ thống cũ (trước khi migration dữ liệu)
 EVENT_TYPE_ID                 RAW(16)             YES                                      FK -> EVENT_TYPE: Loại sự vụ áp dụng
 BANK_ID                       RAW(16)             YES                                      FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan
+PROVINCE_ID                   VARCHAR2(256)       YES                                      
+WARD_ID                       VARCHAR2(256)       YES                                      
+COUNTRY_ID                    VARCHAR2(256)       YES                                      
 
 
 BANG: SECURITIES_REPORT
@@ -3153,6 +3051,7 @@ MERGE_CELLS                   NCLOB               YES                           
 ROW_HEIGHTS                   NCLOB               YES                                      Chiều cao từng hàng trong sheet (JSON NCLOB)
 COL_WIDTHS                    NCLOB               YES                                      Độ rộng từng cột trong sheet (JSON NCLOB)
 CODE                          NVARCHAR2(4000)     YES                                      Mã định danh ngắn gọn
+IS_ADMIN_REPORT               NUMBER(1,0)         NO                                       
 
 
 BANG: SHEET_CELL_CONFIG
@@ -3214,29 +3113,6 @@ COL_WIDTHS                    NCLOB               YES                           
 CODE                          NVARCHAR2(4000)     YES                                      Mã định danh ngắn gọn
 
 
-BANG: SHEET_OUT_BAK_BMBCDR
-Mo ta: Backup sheet báo cáo đầu ra BMBCDR: phiên bản lưu trữ trước khi cập nhật cấu hình
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO                                       Khóa chính của bản ghi (UUID dạng RAW(16))
-DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
-CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
-DATE_MODIFIED                 DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
-MODIFY_BY                     NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
-TP_OUT_ID                     RAW(16)             YES                                      FK -> RPT_TP_OUT: Báo cáo tổng hợp đầu ra
-ITEM_NAME                     NVARCHAR2(4000)     YES                                      Tên hiển thị chính
-SHEET_INDEX                   NUMBER(10,0)        NO                                       Thứ tự sheet trong biểu mẫu Excel (bắt đầu từ 0)
-RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
-DESCRIPTION                   NVARCHAR2(4000)     YES                                      Mô tả chi tiết
-CELLS_META                    NCLOB               YES                                      Metadata cấu hình các ô trong sheet (JSON NCLOB: màu sắc, gộp ô, format...)
-ROW_HEIGHTS                   NCLOB               YES                                      Chiều cao từng hàng trong sheet (JSON NCLOB)
-DATA_LABEL                    NCLOB               YES                                      Nhãn dữ liệu hiển thị trong ô (JSON NCLOB)
-MERGE_CELLS                   NCLOB               YES                                      Cấu hình gộp ô trong sheet (NCLOB: danh sách dải ô được gộp)
-COL_WIDTHS                    NCLOB               YES                                      Độ rộng từng cột trong sheet (JSON NCLOB)
-CODE                          NVARCHAR2(4000)     YES                                      Mã định danh ngắn gọn
-
-
 BANG: STAKE
 Mo ta: Cổ đông/nhà đầu tư chiến lược của công ty QLQ: tên tổ chức, quan hệ sở hữu, vốn góp, mô tả
 --------------------------------------------------------------------------------------------------------------
@@ -3256,6 +3132,9 @@ DELETED                       NUMBER(1,0)         NO                            
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
 OWNER_FLAG                    NUMBER(1,0)         NO                                       Cờ là cổ đông sở hữu chính: 1=Cổ đông kiểm soát, 0=Không
 ID_NO                         VARCHAR2(200)       YES                                      Số Giấy NSH của bên liên quan
+PERIOD_TYPE                   NUMBER(10,0)        YES                                      Loại kỳ báo cáo gần nhất (PeriodTypeEnum)
+PERIOD_VALUE                  VARCHAR2(50)        YES                                      Giá trị kỳ báo cáo gần nhất
+YEAR_VALUE                    NUMBER(10,0)        YES                                      Năm báo cáo gần nhất
 
 
 BANG: STATUS
@@ -3276,6 +3155,7 @@ DESCRIPTION                   NVARCHAR2(4000)     YES                           
 ICON                          NVARCHAR2(1000)     YES                                      Icon hiển thị trên menu/giao diện (CSS class hoặc URL icon)
 COLOR                         NVARCHAR2(400)      YES                                      Màu sắc hiển thị của nhóm tiêu chí (mã màu HEX, VD: #FF5733)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+CODE                          NVARCHAR2(200)      YES                                      Mã trạng thái nghiệp vụ (vd. CTQLQ_HD). Nullable; unique khi có giá trị.
 
 
 BANG: STF_FG_BRCH
@@ -3388,44 +3268,6 @@ TG_OUT_ID                     RAW(16)             YES                           
 FTYPE_ID                      RAW(16)             YES     FK     FUND_TYPE.ID              FK -> FUND_TYPE: Loại quỹ đầu tư
 FORMULAS_INFO                 NCLOB               YES                                      Công thức tính giá trị đầu ra theo mục tiêu (NCLOB JSON)
 STR_FORMULA                   NVARCHAR2(4000)     YES                                      Công thức dạng chuỗi hiển thị cho đối tượng mục tiêu
-
-
-BANG: SYS_EMAIL
-Mo ta: Email hệ thống FMS: người gửi/nhận, tiêu đề, nội dung, file đính kèm, trạng thái gửi
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
-CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
-DATE_MODIFIED                 DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
-MODIFY_BY                     NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
-UFROM_ID                      RAW(16)             YES     FK     USERS.ID                  FK -> USERS: Người gửi thông báo/email
-UTO_ID                        RAW(16)             YES     FK     USERS.ID                  FK -> USERS: Người nhận thông báo/email
-PARENT_ID                     RAW(16)             YES     FK     SYS_EMAIL.ID              FK -> FACTOR: Tiêu chí cha trong hệ thống phân cấp tiêu chí đánh giá
-TITLE                         NVARCHAR2(4000)     NO                                       Tiêu đề thông báo/CBTT (tiếng Việt)
-BODY                          NCLOB               NO                                       Nội dung đầy đủ của thông báo/CBTT (NCLOB HTML hoặc văn bản)
-FILE_DATA                     NCLOB               YES                                      Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)
-RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
-SEND_DATE                     DATE                YES                                      Ngày thành viên gửi thông báo/email
-SEND_EMAIL                    NUMBER(1,0)         NO                                       Cờ gửi kèm email: 1=Có gửi email, 0=Không gửi
-
-
-BANG: SYS_VAR
-Mo ta: Tham số cấu hình hệ thống FMS: tên nhóm, tên tham số, giá trị, mô tả, loại control hiển thị
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            RAW(16)             NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-DATE_CREATED                  DATE                YES                                      Thời điểm tạo bản ghi
-CREATED_BY                    NVARCHAR2(200)      YES                                      Tài khoản người tạo bản ghi
-DATE_MODIFIED                 DATE                YES                                      Thời điểm cập nhật bản ghi lần cuối
-MODIFY_BY                     NVARCHAR2(200)      YES                                      Tài khoản người cập nhật bản ghi lần cuối
-GR_NAME                       NVARCHAR2(200)      YES                                      Tên nhóm tham số hệ thống
-VAR_NAME                      NVARCHAR2(400)      YES                                      Tên tham số hệ thống (key tra cứu)
-VAR_VALUE                     NVARCHAR2(4000)     YES                                      Giá trị tham số hệ thống
-VAR_DESC                      NVARCHAR2(2000)     YES                                      Mô tả ý nghĩa tham số hệ thống
-TYPE_CONTROL                  NVARCHAR2(4000)     YES                                      Loại control hiển thị tham số: TEXT, NUMBER, DATE, SELECT...
 
 
 BANG: TABS_INFO
@@ -3859,6 +3701,8 @@ BKM_ID                        RAW(16)             YES     FK     BANK_MONI.ID   
 FR_BR_ID                      RAW(16)             YES     FK     FOR_BRCH.ID               FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
 CHECK_DIGITAL_SIGNATURE       NUMBER(1,0)         NO                                       Bật (1) / tắt (0) kiểm tra chữ ký số cho tài khoản ngoài UBCK
+PHONE                         VARCHAR2(30)        YES                                      S? ?i?n tho?i ng??i d?ng ??ng b? t? IAM/SSO, d?ng ?? g?i SMS
+SSO_USER_ID                   VARCHAR2(144)       YES                                      UUID ng�����i d��ng IAM; kh��a �����nh danh ���n �����nh khi username thay �����i
 
 
 BANG: USERS_MENUS
@@ -3868,15 +3712,6 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 USERS_ID                      RAW(16)             NO      PK     USERS.ID                  FK -> USERS: Tài khoản người dùng sở hữu token
 MENUS_ID                      RAW(16)             NO      PK     MENUS.ID                  FK -> MENUS: Menu/chức năng hệ thống
-
-
-BANG: USERS_MENUS_BAK
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-USERS_ID                      RAW(16)             NO                                       
-MENUS_ID                      RAW(16)             NO                                       
 
 
 BANG: USER_EVENT_TYPE
@@ -3954,20 +3789,26 @@ OTHER_AGENT_ID                RAW(16)             YES                           
 PENSION_FUND_ID               RAW(16)             YES                                      FK -> PENSION_FUND: Quỹ hưu trí liên quan
 
 
-BANG: flyway_schema_history
-Mo ta: 
+BANG: WARD
+Mo ta: Xa/phuong moi — dong bo tu eCAT DMDC ward-news
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-installed_rank                NUMBER              NO      PK                               
-version                       VARCHAR2(50)        YES                                      
-description                   VARCHAR2(200)       NO                                       
-type                          VARCHAR2(20)        NO                                       
-script                        VARCHAR2(1000)      NO                                       
-checksum                      NUMBER              YES                                      
-installed_by                  VARCHAR2(100)       NO                                       
-installed_on                  TIMESTAMP(6)        NO                                       
-execution_time                NUMBER              NO                                       
-success                       NUMBER(1,0)         NO                                       
-
+ID                            VARCHAR2(256)       NO      PK                               
+CODE                          VARCHAR2(200)       YES                                      
+NAME_VN                       VARCHAR2(2000)      YES                                      
+NAME_EN                       VARCHAR2(2000)      YES                                      
+CATEGORY                      VARCHAR2(400)       YES                                      
+EFFECTIVE                     VARCHAR2(200)       YES                                      
+DISPLAY_LABEL                 VARCHAR2(2000)      YES                                      
+ACTIVE                        VARCHAR2(80)        YES                                      
+PROVINCE_ID                   VARCHAR2(256)       YES                                      
+PROVINCE_CODE                 VARCHAR2(200)       YES                                      
+PROVINCE_NAME_VN              VARCHAR2(2000)      YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+LAST_SYNCED_AT                TIMESTAMP(6)        YES                                      
+DATE_CREATED                  TIMESTAMP(6)        YES                                      
+CREATED_BY                    VARCHAR2(400)       YES                                      
+DATE_MODIFIED                 TIMESTAMP(6)        YES                                      
+MODIFY_BY                     VARCHAR2(400)       YES                                      
 

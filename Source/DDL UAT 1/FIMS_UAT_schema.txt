@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: FIMS_UAT
-Tong so bang: 126 | Materialized View: 0
+Tong so bang: 105 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ANNOUNCE
@@ -76,36 +76,6 @@ SName                         NVARCHAR2(40)       YES                           
 Name                          NVARCHAR2(200)      YES                                      Tên đầy đủ (tiếng Việt)
 Status                        NUMBER(1,0)         NO                                       Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
 Description                   NVARCHAR2(1000)     YES                                      Mô tả chi tiết / ghi chú bổ sung
-
-
-BANG: API_MAPPINGS
-Mo ta: Mapping form -> API microservice
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               UUID mapping
-FORM_SCHEMA_ID                VARCHAR2(36)        YES     FK     FORM_SCHEMAS.ID           FK form
-HTTP_METHOD                   VARCHAR2(10)        YES                                      GET/POST/PUT/DELETE
-ENDPOINT                      VARCHAR2(255)       YES                                      API endpoint
-REQUEST_MAP                   CLOB                YES                                      Mapping request JSON
-RESPONSE_MAP                  CLOB                YES                                      Mapping response JSON
-SERVICE_NAME                  VARCHAR2(50)        YES                                      Tên service đích
-CREATED_AT                    TIMESTAMP(6)        YES                                      Ngày tạo
-
-
-BANG: AUDIT_LOGS
-Mo ta: Log thay đổi cấu hình
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               UUID log
-ENTITY                        VARCHAR2(50)        YES                                      Tên bảng
-ENTITY_ID                     VARCHAR2(36)        YES                                      ID bản ghi
-ACTION                        VARCHAR2(50)        YES                                      CREATE/UPDATE/DELETE
-OLD_VALUE                     CLOB                YES                                      Giá trị trước
-NEW_VALUE                     CLOB                YES                                      Giá trị sau
-CHANGED_BY                    VARCHAR2(50)        YES                                      User
-CHANGED_AT                    TIMESTAMP(6)        YES                                      Thời điểm
 
 
 BANG: AUTHOANNOUNCE
@@ -232,7 +202,7 @@ IdNo                          NVARCHAR2(100)      YES                           
 IdDate                        DATE                YES                                      Ngày cấp giấy tờ định danh
 IdAdd                         NVARCHAR2(400)      YES                                      Nơi cấp giấy tờ định danh
 RegNo                         NVARCHAR2(100)      YES                                      Số giấy phép/đăng ký hoạt động
-RegDate                       DATE                NO                                       Ngày cấp giấy phép/đăng ký
+RegDate                       DATE                YES                                      Ngày cấp giấy phép/đăng ký
 RegAdd                        NVARCHAR2(400)      YES                                      Nơi cấp giấy phép/đăng ký
 CodeTax                       NVARCHAR2(100)      YES                                      Mã số thuế của chi nhánh QLQ NN tại Việt Nam
 Capital                       NUMBER(36,2)        NO                                       Vốn điều lệ/vốn pháp định (đơn vị: đồng)
@@ -390,6 +360,14 @@ Type                          NUMBER(1,0)         NO                            
 Status                        NUMBER(1,0)         NO                                       Trạng thái chứng thư số: 1/true=Chấp nhận/Hợp lệ, 0/false=Từ chối/Không hợp lệ
 IsDataMigration               NUMBER(1,0)         YES                                      Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không
 IdOld                         NVARCHAR2(4000)     YES                                      ID trạng thái trong hệ thống cũ
+ssoId                         NVARCHAR2(128)      YES                                      
+stableId                      NVARCHAR2(128)      YES                                      
+SsoUserId                     NVARCHAR2(128)      YES                                      
+DateCreated                   DATE                YES                                      
+CreatedBy                     NVARCHAR2(400)      YES                                      
+AccountHolderName             NVARCHAR2(1000)     YES                                      Tên chủ tài khoản chứng thư số (IAM accountHolderName)
+ValidFrom                     DATE                YES                                      Ngày hiệu lực CTS (IAM validFrom)
+ValidTo                       DATE                YES                                      Ngày hết hạn CTS (IAM validTo)
 
 
 BANG: CLOSING_PRICE_SECURITIES
@@ -418,7 +396,7 @@ CreatedBy                     NVARCHAR2(200)      YES                           
 DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
 ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
 SName                         NVARCHAR2(40)       YES                                      Tên viết tắt / tên ngắn
-TypeObject                    NUMBER(18,2)        NO                                       Loại đối tượng áp dụng trạng thái: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT...
+TypeObject                    NUMBER(18,2)        YES                                      Loại đối tượng áp dụng trạng thái: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT...
 Name                          NVARCHAR2(200)      YES                                      Tên đầy đủ (tiếng Việt)
 Status                        NUMBER(1,0)         NO                                       Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
 IsDataMigration               NUMBER(1,0)         YES                                      Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không
@@ -595,45 +573,6 @@ UPDATEDAT                     TIMESTAMP(6)        YES                           
 CREATEDBY                     VARCHAR2(255)       YES                                      Tài khoản người dùng tạo bản ghi
 
 
-BANG: EMAILSENTSYSTEM
-Mo ta: Bảng "EMAILSENTSYSTEM" (entity EmailSentSystem). [Cần BA xác nhận]
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-Deleted                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-DateCreated                   DATE                YES                                      Thời điểm tạo bản ghi
-CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
-DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
-ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
-UFrom                         NVARCHAR2(4000)     NO                                       Username/email người gửi
-UTo                           NVARCHAR2(4000)     NO                                       Username/email người nhận
-Title                         NVARCHAR2(4000)     NO                                       Tiêu đề thông báo
-Body                          NCLOB               NO                                       Nội dung email (HTML hoặc text thuần)
-FileData                      NCLOB               YES                                      Nội dung file đính kèm (BLOB/CLOB)
-Status                        NVARCHAR2(4000)     YES                                      Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
-SendDate                      DATE                YES                                      Thời điểm gửi email
-DetailExcerpt                 NVARCHAR2(4000)     YES                                      Trích dẫn chi tiết nội dung email (tóm tắt ngắn để hiển thị trong danh sách)
-
-
-BANG: ERRORLOG
-Mo ta: Bảng "ERRORLOG" (entity ErrorLog). [Cần BA xác nhận]
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-UserId                        NUMBER(18,2)        NO      FK     USERS.Id                  FK -> USERS: Người thực hiện thao tác xử lý báo cáo
-ModuleName                    NVARCHAR2(4000)     YES                                      Tên module/controller phát sinh lỗi
-Action                        NVARCHAR2(4000)     YES                                      Hành động thực hiện: DOWNLOAD=Tải xuống, VIEW=Xem, EXPORT=Xuất
-ActionForEndUser              NVARCHAR2(4000)     YES                                      Thông báo lỗi thân thiện hiển thị cho người dùng cuối
-IsError                       NUMBER(1,0)         NO                                       Cờ đây là lỗi nghiêm trọng: 1=Lỗi, 0=Cảnh báo/log thông thường
-Content                       NVARCHAR2(4000)     YES                                      Nội dung thông báo
-Exception                     NCLOB               YES                                      Stack trace/exception đầy đủ từ hệ thống
-DateCreated                   DATE                NO                                       Thời điểm tạo bản ghi
-ACTORUSERNAME                 VARCHAR2(200)       YES                                      Username người thực hiện gây ra lỗi (uppercase)
-ActorUsername                 VARCHAR2(200)       YES                                      Username người thực hiện hành động gây lỗi
-
-
 BANG: FORM_SCHEMAS
 Mo ta: Cấu hình form động AMIS
 --------------------------------------------------------------------------------------------------------------
@@ -804,6 +743,8 @@ IsDataMigration               NUMBER(1,0)         NO                            
 ProfileKind                   NUMBER(2,0)         YES                                      Loại hồ sơ đối tượng (InfoDiscRepresProfileKind): 1=Đại diện Sở GDCK, 2=Đại diện VSDC, 3=Đại diện QLQ NN, 4=CTCK, 5=Ngân hàng lưu ký, 6=Đại diện giao dịch, 7=Đại diện CBTT, 8=Chi nhánh, 9=Tổ chức khác, 10=Cá nhân
 RepresentedInfodiscrepresId   NUMBER(18,0)        YES                                      FK -> INFODISCREPRES: Đối tượng được đại diện (khi là đại diện CBTT/giao dịch)
 NaIdDmdc                      VARCHAR2(64)        YES                                      Mã quốc gia theo danh mục dùng chung (DMDC)
+ProvinceId                    NUMBER(18,0)        YES                                      
+WardId                        NUMBER(18,0)        YES                                      
 
 
 BANG: INVESTOR
@@ -848,6 +789,8 @@ FileName                      NVARCHAR2(4000)     YES                           
 FileData                      NCLOB               YES                                      Nội dung file đính kèm (BLOB/CLOB)
 IdOld                         NVARCHAR2(4000)     YES                                      ID trạng thái trong hệ thống cũ
 DMDC_COUNTRY_ID               VARCHAR2(256)       YES                                      
+ProvinceId                    NUMBER(18,0)        YES                                      
+WardId                        NUMBER(18,0)        YES                                      
 
 
 BANG: INVESTORHIS
@@ -892,6 +835,8 @@ Description                   NVARCHAR2(4000)     YES                           
 FileName                      NVARCHAR2(4000)     YES                                      Tên file đính kèm
 FileData                      NCLOB               YES                                      Nội dung file đính kèm (BLOB/CLOB)
 IdDbOld                       NVARCHAR2(4000)     YES                                      ID bản ghi trong database cũ (đối chiếu sau migration)
+ProvinceId                    NUMBER(18,0)        YES                                      
+WardId                        NUMBER(18,0)        YES                                      
 
 
 BANG: INVESTORTYPE
@@ -971,48 +916,6 @@ Access                        NCLOB               YES                           
 IsActive                      NUMBER(1,0)         NO                                       Cờ menu đang hiển thị/hoạt động: 1=Hiển thị, 0=Ẩn
 
 
-BANG: MENUS_BU
-Mo ta: Bản sao menu hệ thống FIMS dành riêng cho nghiệp vụ (backup/clone của MENUS)
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO                                       Khóa chính của bản ghi (ID số tự tăng)
-Deleted                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-DateCreated                   DATE                YES                                      Thời điểm tạo bản ghi
-CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
-DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
-ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
-Title                         NVARCHAR2(1000)     YES                                      Tiêu đề thông báo
-Icon                          NVARCHAR2(200)      YES                                      CSS class icon hiển thị trạng thái
-Url                           NVARCHAR2(1000)     YES                                      Đường dẫn URL của trang/chức năng tương ứng
-ParentId                      NUMBER(18,2)        YES                                      FK -> MENUS: Menu cha trong cây phân cấp menu
-MenuType                      NUMBER(1,0)         NO                                       Loại menu: 1=Menu chính, 2=Menu con, 3=Nút chức năng
-SortOrder                     NUMBER(10,0)        NO                                       Thứ tự sắp xếp hiển thị trong menu
-Access                        NCLOB               YES                                      Quyền truy cập menu (danh sách role được phép, JSON/CSV)
-IsActive                      NUMBER(1,0)         NO                                       Cờ menu đang hiển thị/hoạt động: 1=Hiển thị, 0=Ẩn
-
-
-BANG: MENU_CLONE
-Mo ta: Menu mới theo menu.md, thứ tự như file
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,0)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-Title                         VARCHAR2(500)       YES                                      Tiêu đề thông báo
-Icon                          VARCHAR2(100)       YES                                      CSS class icon hiển thị trạng thái
-Url                           VARCHAR2(500)       YES                                      Đường dẫn URL của trang/chức năng tương ứng
-ParentId                      NUMBER(18,0)        YES                                      FK -> MENUS: Menu cha trong cây phân cấp menu
-MenuType                      NUMBER(1,0)         NO                                       Loại menu: 1=Menu chính, 2=Menu con, 3=Nút chức năng
-SortOrder                     NUMBER(10,0)        NO                                       Thứ tự sắp xếp hiển thị trong menu
-Access                        NCLOB               YES                                      Quyền truy cập menu (danh sách role được phép, JSON/CSV)
-IsActive                      NUMBER(1,0)         NO                                       Cờ menu đang hiển thị/hoạt động: 1=Hiển thị, 0=Ẩn
-Deleted                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-DateCreated                   TIMESTAMP(6)        YES                                      Thời điểm tạo bản ghi
-DateModified                  TIMESTAMP(6)        YES                                      Thời điểm cập nhật lần cuối
-CreatedBy                     VARCHAR2(100)       YES                                      Tài khoản người dùng tạo bản ghi
-ModifyBy                      VARCHAR2(100)       YES                                      Tài khoản người dùng cập nhật lần cuối
-
-
 BANG: MODULES
 Mo ta: Danh mục phân hệ/microservice
 --------------------------------------------------------------------------------------------------------------
@@ -1051,37 +954,6 @@ IdScmsOld                     NVARCHAR2(4000)     YES                           
 ECATALOG_ID                   VARCHAR2(36)        YES                                      
 
 
-BANG: NOTIFICATION
-Mo ta: Thông báo nội bộ
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-Deleted                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-DateCreated                   DATE                YES                                      Thời điểm tạo bản ghi
-CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
-DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
-ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
-Type                          NUMBER(10,0)        NO                                       Loại thông báo theo nguồn: 1=Thông báo hệ thống (system), 2=Thông báo từ người dùng (by user)
-TypeEnum                      NUMBER(10,0)        NO                                       Loại thông báo chi tiết (NotificationTypeEnum): 1=Thành viên thay đổi thông tin hồ sơ, 2=Thành viên gửi báo cáo, 3=Thành viên thực hiện CBTT, 4=Thành viên trao đổi tin nhắn, 5=Cảnh báo vi phạm tham số cảnh báo, 6=UBCK hủy báo cáo, 7=Cảnh báo hết hạn chứng thư số, 8=UBCK trao đổi, 9=UBCK kích hoạt biểu mẫu mới, 10=Thông báo từ UBCK gửi đến đối tượng, 11=Thông báo tài khoản người dùng
-UToId                         NUMBER(18,2)        YES     FK     USERS.Id                  FK -> USERS: Người nhận thông báo
-UFromId                       NUMBER(18,2)        YES     FK     USERS.Id                  FK -> USERS: Người gửi email
-SystemObject                  NUMBER(18,2)        YES                                      Loại đối tượng áp dụng (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD
-Title                         NVARCHAR2(4000)     NO                                       Tiêu đề thông báo
-LinkToDetail                  NVARCHAR2(4000)     YES                                      URL đến trang chi tiết liên quan đến thông báo
-ListMemberId                  NVARCHAR2(4000)     YES                                      Danh sách ID thành viên nhận thông báo (JSON/CSV)
-Status                        NUMBER(18,2)        NO                                       Trạng thái thông báo: 0=Bản nháp (chưa gửi), 1=Đã gửi
-IsSentMail                    NUMBER(18,2)        NO                                       Cờ đã gửi email thông báo: 1=Đã gửi, 0=Chưa
-Content                       NVARCHAR2(4000)     NO                                       Nội dung thông báo
-DateSend                      DATE                YES                                      Thời điểm gửi thông báo
-FileName                      NVARCHAR2(4000)     YES                                      Tên file đính kèm
-FileData                      NCLOB               YES                                      Nội dung file đính kèm (BLOB/CLOB)
-IsView                        NUMBER(1,0)         NO                                       Cờ người nhận đã xem thông báo: 1=Đã xem, 0=Chưa
-IsSentSms                     NUMBER(18,0)        NO                                       Cờ đã gửi SMS thông báo: 1=Đã gửi, 0=Chưa
-UTOUSERNAME                   VARCHAR2(100)       YES                                      Username người nhận (uppercase)
-UToUsername                   VARCHAR2(100)       YES                                      Username người nhận thông báo
-
-
 BANG: PARAWARN
 Mo ta: Bảng "PARAWARN" (entity ParaWarn). [Cần BA xác nhận]
 --------------------------------------------------------------------------------------------------------------
@@ -1117,15 +989,22 @@ CAN_EDIT                      NUMBER(1,0)         YES                           
 CAN_DELETE                    NUMBER(1,0)         YES                                      Quyền xóa
 
 
-BANG: REFRESHTOKEN
-Mo ta: Refresh token phiên đăng nhập
+BANG: PROVINCE_NEW
+Mo ta: 
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-Id                            RAW(16)             NO                                       Khóa chính của bản ghi (ID số tự tăng)
-ExpiresUtc                    TIMESTAMP(7)        NO                                       Thời điểm hết hạn của refresh token (UTC)
-Token                         NVARCHAR2(4000)     NO                                       Giá trị refresh token (chuỗi ngẫu nhiên đã mã hóa)
-UsersId                       NUMBER(18,2)        NO      FK     USERS.Id                  FK -> USERS: Người dùng được phân quyền
+Id                            NUMBER(19,0)        NO      PK                               
+Code                          NVARCHAR2(40)       NO                                       
+NameVn                        NVARCHAR2(400)      YES                                      
+NameEn                        NVARCHAR2(400)      YES                                      
+CountryCode                   NVARCHAR2(40)       YES                                      
+RegionCode                    NVARCHAR2(100)      YES                                      
+Status                        NUMBER(3,0)         NO                                       
+Deleted                       NUMBER(1,0)         NO                                       
+ECATALOG_ID                   NVARCHAR2(200)      YES                                      
+DateCreated                   DATE                YES                                      
+CreatedBy                     NVARCHAR2(400)      YES                                      
 
 
 BANG: RELATEDPROPERTIES
@@ -1493,192 +1372,6 @@ StockId                       NUMBER(18,2)        YES     FK     STOCKEXCHANGE.I
 InId                          NUMBER(18,2)        YES     FK     INFODISCREPRES.Id         FK -> INFODISCREPRES: Đại diện CBTT/giao dịch nộp báo cáo
 BranId                        NUMBER(18,2)        YES     FK     BRANCHS.Id                FK -> BRANCHS: Chi nhánh QLQ NN nộp báo cáo
 
-
-BANG: RPTVALUES122026
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            RAW(16)             NO      PK                               
-Deleted                       NUMBER(1,0)         NO                                       
-DateCreated                   DATE                YES                                      
-CreatedBy                     NVARCHAR2(200)      YES                                      
-DateModified                  DATE                YES                                      
-ModifyBy                      NVARCHAR2(200)      YES                                      
-MebId                         NUMBER(18,2)        YES     FK     RPTMEMBER.Id              
-PrdId                         NUMBER(18,2)        YES                                      
-SheetId                       NUMBER(18,2)        NO      FK     SHEET.Id                  
-RptId                         NUMBER(18,2)        NO      FK     RPTTEMP.Id                
-TgtId                         RAW(16)             NO                                       
-Type                          NUMBER(38,0)        NO                                       
-PeriodType                    NUMBER(10,0)        NO                                       
-PeriodValue                   NVARCHAR2(4000)     YES                                      
-YearValue                     NUMBER(18,2)        NO                                       
-Values                        NVARCHAR2(4000)     YES                                      
-Code                          NVARCHAR2(4000)     YES                                      
-FormatDataType                NVARCHAR2(4000)     YES                                      
-IsDynamic                     NUMBER(1,0)         NO                                       
-RowDynamic                    NUMBER(10,0)        NO                                       
-TableName                     NVARCHAR2(4000)     YES                                      
-FieldName                     NVARCHAR2(4000)     YES                                      
-Identification                NUMBER(1,0)         NO                                       
-FundId                        NUMBER(18,2)        YES     FK     FUNDCOMPANY.Id            
-SecId                         NUMBER(18,2)        YES     FK     SECURITIESCOMPANY.Id      
-BankId                        NUMBER(18,2)        YES     FK     BANKMONI.Id               
-DepId                         NUMBER(18,2)        YES     FK     DEPOSITORYCENTER.Id       
-StockId                       NUMBER(18,2)        YES     FK     STOCKEXCHANGE.Id          
-InId                          NUMBER(18,2)        YES     FK     INFODISCREPRES.Id         
-BranId                        NUMBER(18,2)        YES     FK     BRANCHS.Id                
-
-
-BANG: RPTVALUES22026
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            RAW(16)             NO      PK                               
-Deleted                       NUMBER(1,0)         NO                                       
-DateCreated                   DATE                YES                                      
-CreatedBy                     NVARCHAR2(200)      YES                                      
-DateModified                  DATE                YES                                      
-ModifyBy                      NVARCHAR2(200)      YES                                      
-MebId                         NUMBER(18,2)        YES     FK     RPTMEMBER.Id              
-PrdId                         NUMBER(18,2)        YES                                      
-SheetId                       NUMBER(18,2)        NO      FK     SHEET.Id                  
-RptId                         NUMBER(18,2)        NO      FK     RPTTEMP.Id                
-TgtId                         RAW(16)             NO                                       
-Type                          NUMBER(38,0)        NO                                       
-PeriodType                    NUMBER(10,0)        NO                                       
-PeriodValue                   NVARCHAR2(4000)     YES                                      
-YearValue                     NUMBER(18,2)        NO                                       
-Values                        NVARCHAR2(4000)     YES                                      
-Code                          NVARCHAR2(4000)     YES                                      
-FormatDataType                NVARCHAR2(4000)     YES                                      
-IsDynamic                     NUMBER(1,0)         NO                                       
-RowDynamic                    NUMBER(10,0)        NO                                       
-TableName                     NVARCHAR2(4000)     YES                                      
-FieldName                     NVARCHAR2(4000)     YES                                      
-Identification                NUMBER(1,0)         NO                                       
-FundId                        NUMBER(18,2)        YES     FK     FUNDCOMPANY.Id            
-SecId                         NUMBER(18,2)        YES     FK     SECURITIESCOMPANY.Id      
-BankId                        NUMBER(18,2)        YES     FK     BANKMONI.Id               
-DepId                         NUMBER(18,2)        YES     FK     DEPOSITORYCENTER.Id       
-StockId                       NUMBER(18,2)        YES     FK     STOCKEXCHANGE.Id          
-InId                          NUMBER(18,2)        YES     FK     INFODISCREPRES.Id         
-BranId                        NUMBER(18,2)        YES     FK     BRANCHS.Id                
-
-
-BANG: RPTVALUES32026
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            RAW(16)             NO      PK                               
-Deleted                       NUMBER(1,0)         NO                                       
-DateCreated                   DATE                YES                                      
-CreatedBy                     NVARCHAR2(200)      YES                                      
-DateModified                  DATE                YES                                      
-ModifyBy                      NVARCHAR2(200)      YES                                      
-MebId                         NUMBER(18,2)        YES     FK     RPTMEMBER.Id              
-PrdId                         NUMBER(18,2)        YES                                      
-SheetId                       NUMBER(18,2)        NO      FK     SHEET.Id                  
-RptId                         NUMBER(18,2)        NO      FK     RPTTEMP.Id                
-TgtId                         RAW(16)             NO                                       
-Type                          NUMBER(38,0)        NO                                       
-PeriodType                    NUMBER(10,0)        NO                                       
-PeriodValue                   NVARCHAR2(4000)     YES                                      
-YearValue                     NUMBER(18,2)        NO                                       
-Values                        NVARCHAR2(4000)     YES                                      
-Code                          NVARCHAR2(4000)     YES                                      
-FormatDataType                NVARCHAR2(4000)     YES                                      
-IsDynamic                     NUMBER(1,0)         NO                                       
-RowDynamic                    NUMBER(10,0)        NO                                       
-TableName                     NVARCHAR2(4000)     YES                                      
-FieldName                     NVARCHAR2(4000)     YES                                      
-Identification                NUMBER(1,0)         NO                                       
-FundId                        NUMBER(18,2)        YES     FK     FUNDCOMPANY.Id            
-SecId                         NUMBER(18,2)        YES     FK     SECURITIESCOMPANY.Id      
-BankId                        NUMBER(18,2)        YES     FK     BANKMONI.Id               
-DepId                         NUMBER(18,2)        YES     FK     DEPOSITORYCENTER.Id       
-StockId                       NUMBER(18,2)        YES     FK     STOCKEXCHANGE.Id          
-InId                          NUMBER(18,2)        YES     FK     INFODISCREPRES.Id         
-BranId                        NUMBER(18,2)        YES     FK     BRANCHS.Id                
-
-
-BANG: RPTVALUES42026
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            RAW(16)             NO      PK                               
-Deleted                       NUMBER(1,0)         NO                                       
-DateCreated                   DATE                YES                                      
-CreatedBy                     NVARCHAR2(200)      YES                                      
-DateModified                  DATE                YES                                      
-ModifyBy                      NVARCHAR2(200)      YES                                      
-MebId                         NUMBER(18,2)        YES     FK     RPTMEMBER.Id              
-PrdId                         NUMBER(18,2)        YES                                      
-SheetId                       NUMBER(18,2)        NO      FK     SHEET.Id                  
-RptId                         NUMBER(18,2)        NO      FK     RPTTEMP.Id                
-TgtId                         RAW(16)             NO                                       
-Type                          NUMBER(38,0)        NO                                       
-PeriodType                    NUMBER(10,0)        NO                                       
-PeriodValue                   NVARCHAR2(4000)     YES                                      
-YearValue                     NUMBER(18,2)        NO                                       
-Values                        NVARCHAR2(4000)     YES                                      
-Code                          NVARCHAR2(4000)     YES                                      
-FormatDataType                NVARCHAR2(4000)     YES                                      
-IsDynamic                     NUMBER(1,0)         NO                                       
-RowDynamic                    NUMBER(10,0)        NO                                       
-TableName                     NVARCHAR2(4000)     YES                                      
-FieldName                     NVARCHAR2(4000)     YES                                      
-Identification                NUMBER(1,0)         NO                                       
-FundId                        NUMBER(18,2)        YES     FK     FUNDCOMPANY.Id            
-SecId                         NUMBER(18,2)        YES     FK     SECURITIESCOMPANY.Id      
-BankId                        NUMBER(18,2)        YES     FK     BANKMONI.Id               
-DepId                         NUMBER(18,2)        YES     FK     DEPOSITORYCENTER.Id       
-StockId                       NUMBER(18,2)        YES     FK     STOCKEXCHANGE.Id          
-InId                          NUMBER(18,2)        YES     FK     INFODISCREPRES.Id         
-BranId                        NUMBER(18,2)        YES     FK     BRANCHS.Id                
-
-
-BANG: RPTVALUES62026
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            RAW(16)             NO      PK                               
-Deleted                       NUMBER(1,0)         NO                                       
-DateCreated                   DATE                YES                                      
-CreatedBy                     NVARCHAR2(200)      YES                                      
-DateModified                  DATE                YES                                      
-ModifyBy                      NVARCHAR2(200)      YES                                      
-MebId                         NUMBER(18,2)        YES     FK     RPTMEMBER.Id              
-PrdId                         NUMBER(18,2)        YES                                      
-SheetId                       NUMBER(18,2)        NO      FK     SHEET.Id                  
-RptId                         NUMBER(18,2)        NO      FK     RPTTEMP.Id                
-TgtId                         RAW(16)             NO                                       
-Type                          NUMBER(38,0)        NO                                       
-PeriodType                    NUMBER(10,0)        NO                                       
-PeriodValue                   NVARCHAR2(4000)     YES                                      
-YearValue                     NUMBER(18,2)        NO                                       
-Values                        NVARCHAR2(4000)     YES                                      
-Code                          NVARCHAR2(4000)     YES                                      
-FormatDataType                NVARCHAR2(4000)     YES                                      
-IsDynamic                     NUMBER(1,0)         NO                                       
-RowDynamic                    NUMBER(10,0)        NO                                       
-TableName                     NVARCHAR2(4000)     YES                                      
-FieldName                     NVARCHAR2(4000)     YES                                      
-Identification                NUMBER(1,0)         NO                                       
-FundId                        NUMBER(18,2)        YES     FK     FUNDCOMPANY.Id            
-SecId                         NUMBER(18,2)        YES     FK     SECURITIESCOMPANY.Id      
-BankId                        NUMBER(18,2)        YES     FK     BANKMONI.Id               
-DepId                         NUMBER(18,2)        YES     FK     DEPOSITORYCENTER.Id       
-StockId                       NUMBER(18,2)        YES     FK     STOCKEXCHANGE.Id          
-InId                          NUMBER(18,2)        YES     FK     INFODISCREPRES.Id         
-BranId                        NUMBER(18,2)        YES     FK     BRANCHS.Id                
-
-
 BANG: RPTVALUESMANAGERMENT
 Mo ta: Bảng "RPTVALUESMANAGERMENT" (entity RptValuesManagerment). [Cần BA xác nhận]
 --------------------------------------------------------------------------------------------------------------
@@ -1862,12 +1555,13 @@ DateModified                  DATE                YES                           
 ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
 SName                         NVARCHAR2(1000)     YES                                      Tên viết tắt / tên ngắn
 Name                          NVARCHAR2(1000)     YES                                      Tên đầy đủ (tiếng Việt)
-Status                        NUMBER(1,0)         NO                                       Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
+Status                        NUMBER(1,0)         YES                                      Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
 IsDataMigration               NUMBER(1,0)         YES                                      Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không
 Description                   NVARCHAR2(2000)     YES                                      Mô tả chi tiết / ghi chú bổ sung
 SecuritiesTypeId              NUMBER(18,2)        YES                                      FK -> SECURITIESTYPE: Loại chứng khoán (cổ phiếu/trái phiếu/chứng quyền...)
 IdOld                         NVARCHAR2(4000)     YES                                      ID trạng thái trong hệ thống cũ
 ClosingPrice                  NUMBER(38,5)        NO                                       Giá đóng cửa gần nhất của chứng khoán (đồng/cổ phiếu)
+ECATALOG_ID                   VARCHAR2(36)        YES                                      
 
 
 BANG: SECURITIESACCOUNT
@@ -2055,6 +1749,8 @@ Description                   NVARCHAR2(4000)     YES                           
 Icon                          NVARCHAR2(1000)     YES                                      CSS class icon hiển thị trạng thái
 Color                         NVARCHAR2(400)      YES                                      Mã màu hiển thị trạng thái (HEX: #FF0000)
 IdOld                         NVARCHAR2(4000)     YES                                      ID trạng thái trong hệ thống cũ
+ECATALOG_ID                   VARCHAR2(36)        YES                                      
+Code                          NVARCHAR2(100)      YES                                      Mã trạng thái (khóa mapping đồng bộ)
 
 
 BANG: STOCKEXCHANGE
@@ -2105,94 +1801,6 @@ Status                        NUMBER(1,0)         NO                            
 IsDataMigration               NUMBER(1,0)         YES                                      Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không
 Description                   NVARCHAR2(1000)     YES                                      Mô tả chi tiết / ghi chú bổ sung
 IdOld                         NVARCHAR2(4000)     YES                                      ID trạng thái trong hệ thống cũ
-
-
-BANG: SYSEMAIL
-Mo ta: Trao đổi thông tin / email hệ thống
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-Deleted                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-DateCreated                   DATE                YES                                      Thời điểm tạo bản ghi
-CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
-DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
-ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
-UFromId                       NUMBER(18,2)        YES     FK     USERS.Id                  FK -> USERS: Người gửi email
-UToId                         NUMBER(18,2)        YES     FK     USERS.Id                  FK -> USERS: Người nhận thông báo
-ParentId                      NUMBER(18,2)        YES     FK     SYSEMAIL.Id               FK -> MENUS: Menu cha trong cây phân cấp menu
-Title                         NVARCHAR2(4000)     NO                                       Tiêu đề thông báo
-Body                          NCLOB               NO                                       Nội dung email (HTML hoặc text thuần)
-FileData                      NCLOB               YES                                      Nội dung file đính kèm (BLOB/CLOB)
-Status                        NUMBER(1,0)         NO                                       Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
-IsSendEmail                   NUMBER(1,0)         NO                                       Cờ đã gửi email thực tế: 1=Đã gửi, 0=Đang chờ/lỗi
-SendDate                      DATE                YES                                      Thời điểm gửi email
-UFROMUSERNAME                 VARCHAR2(100)       YES                                      Username người gửi (uppercase)
-UTOUSERNAME                   VARCHAR2(100)       YES                                      Username người nhận (uppercase)
-UFromUsername                 VARCHAR2(100)       YES                                      Username người gửi email
-UToUsername                   VARCHAR2(100)       YES                                      Username người nhận thông báo
-FileName                      NVARCHAR2(1000)     YES                                      
-
-
-BANG: SYSTEMINTEGRATIONCONFIG
-Mo ta: Bảng "SYSTEMINTEGRATIONCONFIG" (entity SystemIntegrationConfig). [Cần BA xác nhận]
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO                                       Khóa chính của bản ghi (ID số tự tăng)
-Deleted                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-DateCreated                   DATE                YES                                      Thời điểm tạo bản ghi
-CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
-DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
-ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
-Name                          NVARCHAR2(4000)     YES                                      Tên đầy đủ (tiếng Việt)
-Status                        NUMBER(18,2)        NO                                       Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
-Content                       NVARCHAR2(4000)     YES                                      Nội dung thông báo
-AddressConnect                NVARCHAR2(4000)     YES                                      Địa chỉ endpoint kết nối (URL/IP:Port)
-PortConnect                   NVARCHAR2(4000)     YES                                      Cổng kết nối (port number)
-UserConnect                   NVARCHAR2(4000)     YES                                      Tên đăng nhập xác thực kết nối hệ thống bên ngoài
-PasswordConnect               NVARCHAR2(4000)     YES                                      Mật khẩu xác thực kết nối hệ thống (đã mã hóa)
-DataType                      NUMBER(18,2)        NO                                       Kiểu dữ liệu trao đổi: JSON/XML/CSV...
-MethodType                    NUMBER(18,2)        NO                                       Phương thức HTTP: GET/POST/PUT/DELETE
-LanguageConnect               NUMBER(18,2)        NO                                       Ngôn ngữ/protocol kết nối: REST/SOAP/FTP...
-TimeoutRequest                NUMBER(18,2)        NO                                       Thời gian chờ tối đa cho mỗi request (giây)
-SystemCode                    NUMBER(10,0)        YES                                      Mã hệ thống bên ngoài tích hợp (VSDC/HNX/HOSE...)
-
-
-BANG: SYSTEMINTEGRATIONDATA
-Mo ta: Bảng "SYSTEMINTEGRATIONDATA" (entity SystemIntegrationData). [Cần BA xác nhận]
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-Deleted                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-DateCreated                   DATE                YES                                      Thời điểm tạo bản ghi
-CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
-DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
-ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
-Code                          NVARCHAR2(4000)     YES                                      Mã biểu mẫu báo cáo (mã định danh ngắn gọn)
-Status                        NUMBER(18,2)        NO                                       Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
-DataIntegration               NCLOB               YES                                      Dữ liệu đã nhận/tích hợp từ hệ thống bên ngoài (JSON/XML raw)
-SystemIntegrationConfigId     NUMBER(18,2)        YES                                      FK -> SYSTEMINTEGRATIONCONFIG: Cấu hình kết nối đã dùng
-DataFileImport                BLOB                YES                                      Dữ liệu file Excel đã import (BLOB)
-
-
-BANG: SYSVAR
-Mo ta: Bảng "SYSVAR" (entity SysVar). [Cần BA xác nhận]
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-Deleted                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-DateCreated                   DATE                YES                                      Thời điểm tạo bản ghi
-CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
-DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
-ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
-GrName                        NVARCHAR2(200)      YES                                      Tên nhóm tham số hệ thống (nhóm các biến liên quan)
-VarName                       NVARCHAR2(400)      YES                                      Tên/mã tham số hệ thống (key để tra cứu)
-VarValue                      NVARCHAR2(4000)     YES                                      Giá trị hiện tại của tham số hệ thống
-VarDesc                       NVARCHAR2(2000)     YES                                      Mô tả ý nghĩa của tham số hệ thống
-TypeControl                   NVARCHAR2(4000)     YES                                      Kiểu control hiển thị: TEXT/NUMBER/DATE/BOOLEAN/SELECT
 
 
 BANG: TLPROFILES
@@ -2256,20 +1864,6 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 TlProId                       NUMBER(18,2)        NO      PK     TLPROFILES.Id             FK -> TLPROFILES: Người hành nghề chứng khoán
 StockId                       NUMBER(18,2)        NO      PK     STOCKHOLDERTYPE.Id        FK -> STOCKEXCHANGE: Sở GD liên kết với người hành nghề
 SystemObject                  NUMBER(18,2)        NO                                       Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN
-
-
-BANG: TPOUTHTORY
-Mo ta: Bảng "TPOUTHTORY" (entity TpOutHtory). [Cần BA xác nhận]
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-Id                            NUMBER(18,2)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-TpOutId                       NUMBER(18,2)        NO                                       FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra người dùng được phép khai thác
-Action                        NVARCHAR2(4000)     YES                                      Hành động thực hiện: DOWNLOAD=Tải xuống, VIEW=Xem, EXPORT=Xuất
-Version                       NUMBER(18,2)        NO                                       Số phiên bản hiện tại của biểu mẫu
-IsDownload                    NUMBER(1,0)         NO                                       Cờ thao tác là tải file: 1=Tải xuống, 0=Chỉ xem
-DateCreated                   DATE                YES                                      Thời điểm tạo bản ghi
-CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
 
 
 BANG: TRADINGAUTHORIZATION
@@ -2357,10 +1951,10 @@ ID                            NUMBER(18,0)        NO      PK                    
 FULLNAME                      VARCHAR2(500)       NO                                       Họ và tên đầy đủ của đại diện giao dịch
 SEX                           VARCHAR2(1)         NO                                       Giới tính: 1=Nam, 2=Nữ
 DATEOFBIRTH                   DATE                YES                                      Ngày sinh của đại diện giao dịch
-IDNO                          VARCHAR2(50)        NO                                       Số CMND/CCCD/Hộ chiếu của đại diện giao dịch
+IDNO                          VARCHAR2(50)        YES                                      Số CMND/CCCD/Hộ chiếu của đại diện giao dịch
 NAID                          NUMBER(18,0)        YES                                      FK -> NATIONAL: Quốc tịch của đại diện giao dịch
-ADDRESS                       VARCHAR2(1000)      NO                                       Địa chỉ thường trú của đại diện giao dịch
-TELEPHONE                     VARCHAR2(50)        NO                                       Số điện thoại liên hệ của đại diện giao dịch
+ADDRESS                       VARCHAR2(1000)      YES                                      Địa chỉ thường trú của đại diện giao dịch
+TELEPHONE                     VARCHAR2(50)        YES                                      Số điện thoại liên hệ của đại diện giao dịch
 EMAIL                         VARCHAR2(200)       YES                                      Email liên hệ của đại diện giao dịch
 FAX                           VARCHAR2(50)        YES                                      Số fax của đại diện giao dịch
 STATUSID                      NUMBER(18,0)        NO                                       FK -> STATUS: Trạng thái hoạt động của đại diện giao dịch
@@ -2370,45 +1964,8 @@ DATECREATED                   TIMESTAMP(6)        NO                            
 MODIFYBY                      VARCHAR2(100)       YES                                      Tài khoản người dùng cập nhật lần cuối
 DATEMODIFIED                  TIMESTAMP(6)        YES                                      Thời điểm cập nhật lần cuối
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động
-
-
-BANG: UBCK_SYNC_CHECKPOINT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-FEED_CODE                     VARCHAR2(256)       NO      PK                               
-LAST_SYNCED_DATE              DATE                YES                                      
-LAST_RUN_AT                   TIMESTAMP(6)        YES                                      
-LAST_STATUS                   VARCHAR2(64)        YES                                      
-LAST_MESSAGE                  VARCHAR2(4000)      YES                                      
-PROCESSED_COUNT               NUMBER(18,0)        YES                                      
-CREATED_COUNT                 NUMBER(18,0)        YES                                      
-UPDATED_COUNT                 NUMBER(18,0)        YES                                      
-SKIPPED_COUNT                 NUMBER(18,0)        YES                                      
-
-
-BANG: UBCK_SYNC_REPORT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(18,0)        NO      PK                               
-FEED_CODE                     VARCHAR2(256)       NO                                       
-SYNC_ID                       VARCHAR2(1024)      NO                                       
-REPORT_NAME                   VARCHAR2(4000)      YES                                      
-PERIOD_TYPE                   VARCHAR2(64)        NO                                       
-REPORT_YEAR                   NUMBER(4,0)         NO                                       
-PERIOD_VALUE                  NUMBER(2,0)         NO                                       
-COMPANY_NAME                  VARCHAR2(4000)      YES                                      
-FILE_NAME                     VARCHAR2(2000)      YES                                      
-FILE_PATH                     VARCHAR2(4000)      YES                                      
-IS_SYNCED                     NUMBER(1,0)         NO                                       
-DELETED                       NUMBER(1,0)         NO                                       
-CREATED_BY                    VARCHAR2(400)       YES                                      
-MODIFY_BY                     VARCHAR2(400)       YES                                      
-DATE_CREATED                  TIMESTAMP(6)        YES                                      
-DATE_MODIFIED                 TIMESTAMP(6)        YES                                      
+PROVINCEID                    NUMBER(18,0)        YES                                      
+WARDID                        NUMBER(18,0)        YES                                      
 
 
 BANG: UNIT
@@ -2522,15 +2079,6 @@ UsersId                       NUMBER(18,2)        NO      FK     USERS.Id       
 MenusId                       NUMBER(18,2)        NO      FK     MENUS.Id                  FK -> MENUS: Menu/chức năng được phân quyền
 
 
-BANG: USERSMENUS_CLONE
-Mo ta: Bản sao phân quyền menu người dùng (dùng để thao tác/rollback mà không ảnh hưởng bản gốc)
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-UsersId                       NUMBER(18,0)        NO      PK     USERS.Id                  FK -> USERS: Người dùng được phân quyền
-MenusId                       NUMBER(18,0)        NO      PK     MENU_CLONE.Id             FK -> MENUS: Menu/chức năng được phân quyền
-
-
 BANG: USER_DATA_PERMISSION
 Mo ta: Phân quyền truy cập dữ liệu theo đối tượng gửi BC
 --------------------------------------------------------------------------------------------------------------
@@ -2613,29 +2161,20 @@ ResolvedDate                  TIMESTAMP(6)        YES                           
 InvestorCode                  NVARCHAR2(100)      YES                                      Mã giao dịch NĐT NN vi phạm (tại thời điểm phát hiện)
 
 
-BANG: __EFMigrationsHistory
+BANG: WARD_NEW
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-MigrationId                   NVARCHAR2(300)      NO      PK                               
-ProductVersion                NVARCHAR2(64)       NO                                       
-
-
-BANG: flyway_schema_history
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-installed_rank                NUMBER              NO      PK                               
-version                       VARCHAR2(50)        YES                                      
-description                   VARCHAR2(200)       NO                                       
-type                          VARCHAR2(20)        NO                                       
-script                        VARCHAR2(1000)      NO                                       
-checksum                      NUMBER              YES                                      
-installed_by                  VARCHAR2(100)       NO                                       
-installed_on                  TIMESTAMP(6)        NO                                       
-execution_time                NUMBER              NO                                       
-success                       NUMBER(1,0)         NO                                       
-
+Id                            NUMBER(19,0)        NO      PK                               
+Code                          NVARCHAR2(40)       NO                                       
+NameVn                        NVARCHAR2(400)      YES                                      
+NameEn                        NVARCHAR2(400)      YES                                      
+ProvinceCode                  NVARCHAR2(40)       YES                                      
+Category                      NVARCHAR2(100)      YES                                      
+Status                        NUMBER(3,0)         NO                                       
+Deleted                       NUMBER(1,0)         NO                                       
+ECATALOG_ID                   NVARCHAR2(200)      YES                                      
+DateCreated                   DATE                YES                                      
+CreatedBy                     NVARCHAR2(400)      YES                                      
 
