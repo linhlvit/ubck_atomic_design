@@ -4,11 +4,27 @@
 
 ## Mục Lục
 
-- [PHẦN I: TỔNG QUAN KIẾN TRÚC DỮ LIỆU & LUỒNG TÍCH HỢP (5 TẦNG)](#phần-i-tổng-quan-kiến-trúc-dữ-liệu--luồng-tích-hợp-5-tầng)
-- [PHẦN II: EXECUTIVE SUMMARY MATRIX (11 PHÂN HỆ)](#phần-ii-executive-summary-matrix-11-phân-hệ)
+- [PHẦN I: TỔNG QUAN KIẾN TRÚC DỮ LIỆU & LUỒNG TÍCH HỢP (5 TẦNG)](#phần-i-tổng-quan-kiến-trúc-dữ-liệu-luồng-tích-hợp-5-tầng)
+  - [1.1 Chi tiết Luồng Dữ liệu 5 Tầng (End-to-End Lineage)](#11-chi-tiết-luồng-dữ-liệu-5-tầng-end-to-end-lineage)
+  - [1.2 Kiến trúc 8 Conformed Dimensions và Shared Facts Dùng Chung](#12-kiến-trúc-8-conformed-dimensions-và-shared-facts-dùng-chung)
+  - [1.3 Ma Trận Nguồn Gốc 12 Hệ Thống Upstream ↔ 11 Phân Hệ Datamart](#13-ma-trận-nguồn-gốc-12-hệ-thống-upstream-11-phân-hệ-datamart)
+- [PHẦN II: BẢNG MA TRẬN TỔNG HỢP TOÀN DIỆN (EXECUTIVE SUMMARY MATRIX)](#phần-ii-bảng-ma-trận-tổng-hợp-toàn-diện-executive-summary-matrix)
 - [PHẦN III: CHI TIẾT NGUỒN DỮ LIỆU TỪNG PHÂN HỆ](#phần-iii-chi-tiết-nguồn-dữ-liệu-từng-phân-hệ)
-- [PHẦN IV: ĐÁNH GIÁ TRẠNG THÁI DỮ LIỆU & TÍNH KHẢ THI TRIỂN KHAI](#phần-iv-đánh-giá-trạng-thái-dữ-liệu--tính-khả-thi-triển-khai)
-- [PHẦN V: KẾT LUẬN & ĐỀ XUẤT KIẾN TRÚC TRIỂN KHAI](#phần-v-kết-luận--đề-xuất-kiến-trúc-triển-khai)
+  - [1. Phân Hệ Giám Sát Thị Trường (GSTT)](#1-phân-hệ-giám-sát-thị-trường-gstt)
+  - [2. Phân Hệ Giám Sát Công Ty Đại Chúng (GSDC)](#2-phân-hệ-giám-sát-công-ty-đại-chúng-gsdc)
+  - [3. Phân Hệ Nhà Đầu Tư Nước Ngoài (NDTNN)](#3-phân-hệ-nhà-đầu-tư-nước-ngoài-ndtnn)
+  - [4. Phân Hệ Người Hành Nghề Chứng Khoán (NHNCK)](#4-phân-hệ-người-hành-nghề-chứng-khoán-nhnck)
+  - [5. Phân Hệ Phát Triển Thị Trường (PTTT)](#5-phân-hệ-phát-triển-thị-trường-pttt)
+  - [6. Phân Hệ Quản Lý Chào Bán (QLCB)](#6-phân-hệ-quản-lý-chào-bán-qlcb)
+  - [7. Phân Hệ Quản Lý Kinh Doanh (QLKD)](#7-phân-hệ-quản-lý-kinh-doanh-qlkd)
+  - [8. Phân Hệ Quản Lý Quỹ (QLQ)](#8-phân-hệ-quản-lý-quỹ-qlq)
+  - [9. Phân Hệ Thống Kê Nội Bộ (TKNB)](#9-phân-hệ-thống-kê-nội-bộ-tknb)
+  - [10. Phân Hệ Thanh Tra (TT)](#10-phân-hệ-thanh-tra-tt)
+  - [11. Phân Hệ Văn Phòng (VP)](#11-phân-hệ-văn-phòng-vp)
+- [PHẦN IV: ĐÁNH GIÁ TRẠNG THÁI DỮ LIỆU (DATA HEALTH & READINESS ASSESSMENT)](#phần-iv-đánh-giá-trạng-thái-dữ-liệu-data-health-readiness-assessment)
+  - [4.1 Bảng Tổng Hợp Trạng Thái Dữ Liệu 11 Phân Hệ](#41-bảng-tổng-hợp-trạng-thái-dữ-liệu-11-phân-hệ)
+  - [4.2 Phân Tích Kỹ Thuật 3 Nhóm Trạng Thái](#42-phân-tích-kỹ-thuật-3-nhóm-trạng-thái)
+- [PHẦN V: KẾT LUẬN & HƯỚNG DẪN VẬN HÀNH KHAI THÁC](#phần-v-kết-luận-hướng-dẫn-vận-hành-khai-thác)
 
 ---
 
@@ -94,7 +110,7 @@ Hệ thống Kho dữ liệu và Phân tích nghiệp vụ Ủy ban Chứng kho�
 
 ---
 
-### 1.1 Kiến trúc 8 Conformed Dimensions và Shared Facts Dùng Chung
+### 1.2 Kiến trúc 8 Conformed Dimensions và Shared Facts Dùng Chung
 
 Để đảm bảo tính nhất quán dữ liệu xuyên suốt toàn bộ 11 phân hệ, hệ thống thiết lập 8 Chiều dữ liệu dùng chung (Conformed Dimensions) và 3 Fact Snapshots toàn hệ thống:
 
@@ -152,7 +168,7 @@ Bảng ma trận tổng hợp toàn diện đầy đủ 11 phân hệ, xác đ�
 | 4 | **NHNCK** | Người hành nghề chứng khoán | 46 | 55 | 22 | **123** | 11 | `fct_practitioner_license_certificate_snpst`, `fct_practitioner_daily_snpst`, `opr_practitioner_360_profile`, `opr_practitioner_related_party_profile`, `opr_practitioner_certificate_hist`, `opr_practitioner_data_explorer` | `securities_practitioner_dim`, `sp_license_certificate_type_dim`, `securities_company_dim`, `cl_dim`, `cdr_dt_dim` | CSDL NHNCK, SRTC, THANHTRA |
 | 5 | **PTTT** | Phát triển thị trường | 248 | 0 | 27 | **275** | 17 | `fct_market_risk_snpst`, `fct_macro_indicator_snpst`, `fct_sector_risk_snpst`, `fct_order_size_snpst`, `fct_investor_flow_snpst`, `fct_corporate_bond_maturity_wall`, `fct_securities_company_safety_snpst`, `fct_futures_intraday_snpst` | `investor_group_dim`, `corp_bond_industry_dim`, `industry_dim`, `securities_dim`, `securities_company_dim`, `cdr_dt_dim` | HOSE, HNX (BM29), SCMS, NHNN, MRMS |
 | 6 | **QLCB** | Quản lý chào bán | 23 | 21 | 25 | **69** | 5 | `fct_securities_offering_snpst`, `fct_securities_offering_plan_snpst`, `fct_securities_offering_result_snpst`, `fct_securities_offering_application_snpst`, `opr_securities_offering_360_profile` | `public_company_dim`, `offering_method_dim`, `ap_application_status_dim`, `ap_application_tp_dim`, `cdr_dt_dim` | IDS/ISS, Cổng TTHC |
-| 7 | **QLKD** | Quản lý kinh doanh (CTCK) | 193 | 4,074 | 1 | **4,268** | 17 | `fct_securities_company_status_snpst`, `fct_securities_company_business_type_snapshot`, `fct_securities_company_financial_structure_snpst`, `fct_securities_company_compliance_report_snpst`, `opr_securities_company_report_data` | `securities_company_dim`, `securities_service_cl_dim`, `report_indicator_dim`, `cdr_dt_dim` | SCMS, THANHTRA, NHNCK, MDDS |
+| 7 | **QLKD** | Quản lý kinh doanh (CTCK) | 193 | 4,074 | 1 | **4,268** | 17 | `fct_securities_company_status_snpst`, `fct_securities_company_service_assignment_snpst`, `fct_securities_company_business_type_snapshot`, `fct_securities_company_financial_structure_snpst`, `fct_securities_company_compliance_report_snpst`, `opr_securities_company_report_data` | `securities_company_dim`, `securities_service_cl_dim`, `report_indicator_dim`, `cdr_dt_dim` | SCMS, THANHTRA, NHNCK, MDDS |
 | 8 | **QLQ** | Quản lý quỹ | 171 | 10 | 2,516 | **2,697** | 15 | `fct_fund_management_company_snpst`, `fct_investment_fund_count_snpst`, `fct_investment_fund_ccq_snpst`, `fct_investment_fund_nav_per_ccq_snpst`, `fct_fund_distribution_agent_snpst` | `fund_management_company_dim`, `investment_fund_dim`, `custodian_bank_dim`, `foreign_fm_ou_dim`, `cdr_dt_dim`, `cl_dim` | FMS, ECAT, CL |
 | 9 | **TKNB** | Thống kê nội bộ | 0 | 1,183 | 71 | **1,254** | 24 | `fct_market_trading_snpst`, `fct_foreign_proprietary_trading_index_snpst`, `fct_security_trading_detail_snpst`, `fct_private_corporate_bond_issuance_snpst`, 20 bảng báo cáo EAV chuẩn HNX/HSX/VSDC/UBCK/BTC | `private_corporate_bond_dim`, `security_trading_snapshot_dim`, `index_constituent_dim`, `cdr_dt_dim` | ORDERTRADE, MDDS, VSDC, ISS, IDS, SCMS |
 | 10 | **TT** | Thanh tra | 57 | 15 | 19 | **91** | 11 | `fct_inspection_team_activity`, `fct_examination_team_activity`, `fct_penalty_decision`, `fct_penalty_decision_subject_behavior`, `opr_penalty_decision_list`, `opr_petition_list` | `inspection_team_dim`, `examination_team_dim`, `penalty_decision_dim`, `penalty_decision_subject_dim`, `cdr_dt_dim`, `cl_dim` | THANHTRA, ECAT |
@@ -237,7 +253,7 @@ Phân hệ GSDC thực hiện giám sát toàn diện tình hình tài chính, h
   - *Màn hình 2 — Giám sát tổng hợp (Nhóm 6–18)*: Thống kê niêm yết toàn thị trường, Tổng hợp chỉ tiêu tài chính toàn thị trường, Thống kê ngành VSIC, CTĐC chưa niêm yết, Thống kê theo từng sàn giao dịch (HNX, HOSE, UPCoM, OTC).
   - *Màn hình Hệ số tài chính (Nhóm 37)*: Bảng điều khiển theo dõi hệ số thanh toán, đòn bẩy tài chính, hiệu quả hoạt động (ROA, ROE, ROS, D/E).
 - **Nhóm Báo cáo (52 KPIs — 4 Nhóm):**
-  - *Nhóm 38 (BC01.1)*: Báo cáo tình hình tuân thủ CBTT của Công ty đại chúng.
+  - *Nhóm 38 (BC01.1)*: Báo cáo tình hình tuân thủ CBTT của Công ty đại chúng (giám sát vi phạm công bố thông tin, tổng hợp từ bảng Fact `datamart.fact_violation_rpt_snpst` / `fct_violation_rpt_snpst`).
   - *Nhóm 39 (BC01.2)*: Báo cáo vĩ mô và tài chính theo ngành kinh tế.
   - *Nhóm 40 (BC01.3)*: Báo cáo tài chính vĩ mô đa kỳ so sánh N / N-1 / N-2.
   - *Nhóm 41 (BC22)*: Báo cáo tổng hợp tình hình tài chính CTĐC theo sàn giao dịch.
@@ -269,7 +285,7 @@ Phân hệ GSDC thực hiện giám sát toàn diện tình hình tài chính, h
 | Nhóm 31 | Dữ liệu thông tin niêm yết chi tiết | Data Explorer | `datamart.gsdc_fct_public_company_listing_info_snpst_flat` | `datamart.fct_public_company_listing_info_snpst` | `public_company_dim`, `cdr_dt_dim` | HOSE, HNX, VSDC |
 | Nhóm 32-36 | Tra cứu chi tiết điểm số rủi ro CTDC | Data Explorer | `datamart.gsdc_fct_public_company_risk_score_snpst_flat` | `datamart.fct_public_company_risk_score_snpst` | `public_company_dim` | IDS, CIMS |
 | Nhóm 37 | Hệ số tài chính cơ bản (ROA, ROE, CR...) | Dashboard | `datamart.gsdc_fct_public_company_financial_smy_snpst_flat` | `datamart.fct_public_company_financial_smy_snpst` | `public_company_dim` | IDS |
-| Nhóm 38 | BC01.1: Tình hình tuân thủ CBTT | **Báo Cáo** | `datamart.gsdc_public_company_regulatory_compliance_rpt_flat` | `datamart.public_company_regulatory_compliance_rpt` (`fct_violation_rpt_snpst`) | `public_company_dim` | IDS |
+| Nhóm 38 | BC01.1: Tình hình tuân thủ CBTT | **Báo Cáo** | `datamart.gsdc_public_company_regulatory_compliance_rpt_flat` | `datamart.public_company_regulatory_compliance_rpt` / `datamart.fact_violation_rpt_snpst` (`fct_violation_rpt_snpst`) | `public_company_dim` | IDS |
 | Nhóm 39 | BC01.2: Báo cáo vĩ mô theo ngành | **Báo Cáo** | `datamart.gsdc_public_company_industry_financial_rpt_flat` | `datamart.public_company_industry_financial_rpt` | `industry_dim` | IDS, VSIC |
 | Nhóm 40 | BC01.3: Báo cáo vĩ mô đa kỳ N/N-1/N-2 | **Báo Cáo** | `datamart.gsdc_public_company_multi_period_financial_rpt_flat` | `datamart.public_company_multi_period_financial_rpt` | `public_company_dim` | IDS |
 | Nhóm 41 | BC22: Tổng hợp tình hình tài chính theo sàn | **Báo Cáo** | `datamart.gsdc_public_company_exchange_financial_summary_rpt_flat` | `datamart.public_company_exchange_financial_summary_rpt` | `public_company_dim` | HOSE, HNX, IDS |
@@ -440,7 +456,7 @@ Phân hệ QLKD giám sát 82+ Công ty chứng khoán (CTCK) trên toàn quốc
 
 #### 7.1 Danh mục Khai thác theo 3 Hình thức
 - **Nhóm Dashboard (193 KPIs — 18 Nhóm trên 2 Tabs):**
-  - *Tab Tổng Quan (Nhóm 1–9)*: Thống kê chung tình trạng pháp lý CTCK, Biểu đồ 4 nghiệp vụ được cấp phép (Môi giới, Tự doanh, Bảo lãnh, Tư vấn), Dịch vụ tài chính (Margin, Phái sinh, Trực tuyến), Điều kiện duy trì cấp phép, Cơ cấu tài sản và cơ cấu nguồn vốn toàn ngành CTCK.
+  - *Tab Tổng Quan (Nhóm 1–9)*: Thống kê chung tình trạng pháp lý CTCK, Biểu đồ 4 nghiệp vụ được cấp phép (Môi giới, Tự doanh, Bảo lãnh, Tư vấn) từ bảng Fact `datamart.fact_securities_company_service_assignment_snpst` (`fct_securities_company_service_assignment_snpst` / `datamart.fact_securities_company_business_type_snapshot` / `fct_securities_company_business_type_snapshot`), Dịch vụ tài chính (Margin, Phái sinh, Trực tuyến), Điều kiện duy trì cấp phép, Cơ cấu tài sản và cơ cấu nguồn vốn toàn ngành CTCK.
   - *Tab Giám Sát (Nhóm 10–18)*: Giám sát tuân thủ nộp báo cáo định kỳ/đột xuất, Tăng giảm vốn điều lệ, Tổng vốn chủ sở hữu, Tỷ lệ an toàn tài chính (Vốn khả dụng), Doanh thu & Lợi nhuận per CTCK, Dư nợ Margin & Ứng trước tiền bán, Diễn biến chỉ số thị trường, Dòng tiền CFO, Số lượng tài khoản mở mới.
 - **Nhóm Báo cáo (4,074 KPIs — 26 Nhóm trên 2 Tabs):**
   - *Tab Hồ Sơ CTCK 360° (Nhóm 19–40)*: Chi tiết cơ cấu tài sản, nguồn vốn, doanh thu, lợi nhuận, ROE/ROA, ATTC; Biến động người hành nghề làm việc tại CTCK; Danh sách nhân sự cấp cao; Mạng lưới chi nhánh, phòng giao dịch; Lịch sử thanh tra, kiểm tra và quyết định xử phạt vi phạm hành chính.
@@ -454,7 +470,7 @@ Phân hệ QLKD giám sát 82+ Công ty chứng khoán (CTCK) trên toàn quốc
 | Nhóm | Tên Nhóm Màn Hình | Phân Loại | Bảng Flat Khai Thác | Bảng Fact Cốt Lõi | Bảng Dimension Đi Kèm | Hệ Thống Upstream |
 |:---|:---|:---:|:---|:---|:---|:---|
 | Nhóm 1 | Thống kê tình trạng pháp lý CTCK | Dashboard | `datamart.qlkd_fact_securities_company_status_snapshot_flat` | `datamart.fct_securities_company_status_snpst` | `securities_company_dim`, `cdr_dt_dim` | SCMS (`CTCK_CONG_TY_CK`) |
-| Nhóm 2-4 | Biểu đồ Nghiệp vụ & Dịch vụ CTCK | Dashboard | `datamart.qlkd_fact_securities_company_business_type_snapshot_flat` | `datamart.fct_securities_company_service_assignment_snpst` (`fct_securities_company_business_type_snapshot`) | `securities_company_dim`, `securities_service_cl_dim` | SCMS (`CTCK_NGHIEP_VU_DICH_VU`) |
+| Nhóm 2-4 | Biểu đồ Nghiệp vụ & Dịch vụ CTCK | Dashboard | `datamart.qlkd_fact_securities_company_business_type_snapshot_flat` | `datamart.fct_securities_company_service_assignment_snpst` / `datamart.fact_securities_company_business_type_snapshot` (`fct_securities_company_business_type_snapshot`) | `securities_company_dim`, `securities_service_cl_dim` | SCMS (`CTCK_NGHIEP_VU_DICH_VU`) |
 | Nhóm 5-7 | Duy trì điều kiện cấp phép | Dashboard | `datamart.qlkd_fact_securities_company_service_registration_flat` | `datamart.fct_securities_company_license_condition_snpst` | `securities_company_dim`, `cdr_dt_dim` | SCMS (`CTCK_CANH_BAO_VP`) |
 | Nhóm 8-9, 11-17 | Cơ cấu tài sản, nguồn vốn, ATTC | Dashboard | `datamart.qlkd_fact_securities_company_financial_structure_snapshot_flat` | `datamart.fct_securities_company_financial_structure_snpst` | `securities_company_dim`, `report_indicator_dim` | SCMS (`CTCK_BC_DINH_KY`) |
 | Nhóm 10 | Giám sát nộp báo cáo CTCK | Dashboard | `datamart.qlkd_fact_securities_company_report_compliance_snapshot_flat` | `datamart.fct_securities_company_compliance_report_snpst` | `securities_company_dim`, `cdr_dt_dim` | SCMS (`CTCK_BC_DINH_KY`) |
