@@ -1,6 +1,7 @@
 # DTM_GSDC_HLD — High Level Design
 **Module:** GSDC — Giám sát Công ty Đại chúng
 **Phiên bản:** 3.0 — Phase 1 Draft
+**Thay đổi 2026-10-08 (sửa kiểu dữ liệu — tràn `int` thành số âm):** `Fact Public Company Listing Info Snapshot` (6 cột; bảng đã được dev tách thành `listed_share_snpst`/`foreign_holding_snpst`/`state_capital_snpst` — áp dụng cùng kiểu cho 3 bảng tách): `outstanding_share_quantity`, `total_issued_share_quantity`, `treasury_share_quantity`, `free_float_share_quantity`, `current_foreign_holding_quantity`, `remaining_foreign_holding_quantity` đổi `Small Counter`/`int` → `Large Counter`/`bigint` theo Atomic nguồn (BIGINT). Flat table ClickHouse đã là `Int64`; bảng Datamart (Iceberg) cần ALTER/tạo lại cột sang `bigint`. Công thức KPI không đổi.
 **Phạm vi:**
 - Màn hình 1: **Phân loại & Xếp hạng Rủi ro Doanh nghiệp Đại chúng** (5 tab: Tổng hợp / Tuân thủ / Phát hành / Tài chính / Phi tài chính & M-Score)
 - Màn hình 2: **Giám sát Tổng hợp** (5 tab sàn: Tổng hợp / HOSE / HNX / UPCoM / Chưa niêm yết — 3 nhóm nội dung)
