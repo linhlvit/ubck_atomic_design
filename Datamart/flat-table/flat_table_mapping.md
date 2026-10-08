@@ -54,6 +54,35 @@ Tài liệu mô tả từng bảng flat: nguồn fact/dim, quan hệ FK → PK, 
 ---
 
 
+---
+
+### `datamart.cl_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `common_flat` |
+| **Entity nguồn** | Classification Dimension (`datamart.cl_dim`, module SHARED, nguồn Atomic `cl_value`) |
+| **Bảng ClickHouse** | `datamart.cl_flat` |
+| **Bảng nguồn Datamart** | `datamart.cl_dim` |
+| **PK** | `cl_dim_id` |
+| **NK** | `schema_code` + `cl_code` |
+| **Mục đích khai thác ClickHouse** | Tra cứu mã → tên phân loại (`cl_nm`, `cl_nm_english`) theo scheme; JOIN với các fact flat qua (`schema_code`, `cl_code`) hoặc FK `*_cl_dim_id` |
+
+**Cấu trúc cột**
+
+| Cột | Kiểu | Mô tả |
+|-----|------|-------|
+| `cl_dim_id` | `String` | PK — Surrogate Key từ datamart.cl_dim |
+| `schema_code` | `String` | NK — Mã scheme phân loại; BK: (schema_code, cl_code) |
+| `schema_nm` | `Nullable(String)` | Tên scheme phân loại |
+| `cl_code` | `String` | NK — Mã giá trị phân loại; BK: (schema_code, cl_code) |
+| `cl_nm` | `Nullable(String)` | Tên giá trị phân loại |
+| `cl_nm_english` | `Nullable(String)` | Tên giá trị phân loại (tiếng Anh) |
+| `cl_description` | `Nullable(String)` | Diễn giải chi tiết ý nghĩa giá trị phân loại |
+| `src_stm_code` | `String` | Mã hệ thống nguồn — từ datamart.cl_dim |
+
+
+
 ## GSDC
 
 **2 bảng flat** · **1213 KPI unique**

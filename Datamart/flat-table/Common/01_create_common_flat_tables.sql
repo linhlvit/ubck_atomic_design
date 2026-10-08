@@ -4,6 +4,8 @@
 -- Generated: Phase 3 LLD Datamart — ClickHouse DDL
 -- Thực thể: Calendar Date Dimension (lấy nguồn từ datamart.cdr_dt_dim)
 -- Tên bảng ClickHouse: datamart.cdr_dt_flat
+-- Thực thể: Classification Dimension (lấy nguồn từ datamart.cl_dim — Atomic cl_value)
+-- Tên bảng ClickHouse: datamart.cl_flat
 -- Mục đích: Khai thác trực tiếp chiều ngày lịch trên ClickHouse,
 --          phục vụ truy vấn lịch thị trường, lọc ngày giao dịch is_trading_date,
 --          tính lookback phiên và JOIN tối ưu với các bảng Fact phẳng.
@@ -32,4 +34,27 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYY(cdr_dt)
 ORDER BY (cdr_dt, cdr_dt_dim_id)
 COMMENT 'Bảng phẳng chiều Ngày lịch trên ClickHouse (nguồn từ datamart.cdr_dt_dim, phục vụ khai thác trực tiếp và join với các fact flat)'
+;
+
+-- ============================================================
+-- 2. FLAT TABLE: datamart.cl_flat
+--    Nguồn dữ liệu: datamart.cl_dim (Classification Dimension — toàn bộ Classification Value Atomic cl_value)
+--    Grain: 1 row / giá trị phân loại / scheme (BK: schema_code + cl_code)
+--    Mục đích: tra cứu mã → tên (cl_nm, cl_nm_english) trực tiếp trên ClickHouse, JOIN với các bảng Fact phẳng
+--             qua (schema_code, cl_code) hoặc qua FK *_cl_dim_id = cl_dim_id.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.cl_flat ON CLUSTER 'my_cluster'
+(
+    cl_dim_id           String              COMMENT 'PK — Surrogate Key từ datamart.cl_dim',
+    schema_code         String              COMMENT 'NK — Mã scheme phân loại; BK: (schema_code, cl_code)',
+    schema_nm           Nullable(String)    COMMENT 'Tên scheme phân loại',
+    cl_code             String              COMMENT 'NK — Mã giá trị phân loại; BK: (schema_code, cl_code)',
+    cl_nm               Nullable(String)    COMMENT 'Tên giá trị phân loại',
+    cl_nm_english       Nullable(String)    COMMENT 'Tên giá trị phân loại (tiếng Anh)',
+    cl_description      Nullable(String)    COMMENT 'Diễn giải chi tiết ý nghĩa giá trị phân loại',
+    src_stm_code        String              COMMENT 'Mã hệ thống nguồn — từ datamart.cl_dim'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (schema_code, cl_code)
+COMMENT 'Bảng phẳng Classification Value trên ClickHouse (nguồn từ datamart.cl_dim, phục vụ tra cứu mã → tên và join với các fact flat)'
 ;
