@@ -268,6 +268,23 @@ FROM datamart.bm030cmss_corp_bond_trading_rpt o
 
 
 -- ============================================================
+-- 14b. OPERATIONAL: bm030dmss_otc_corp_bond_trading_rpt
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.tknb_bm030dmss_otc_corp_bond_trading_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.tknb_bm030dmss_otc_corp_bond_trading_rpt_flat
+SELECT
+    o.report_code,
+    o.report_period_dt,
+    o.item_code,
+    o.item_stt,
+    o.item_unit,
+    o.item_value,
+    o.src_stm_code
+FROM datamart.bm030dmss_otc_corp_bond_trading_rpt o
+;
+
+
+-- ============================================================
 -- 15. OPERATIONAL: bm030emss_fund_cert_etf_cw_trading_rpt
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.tknb_bm030emss_fund_cert_etf_cw_trading_rpt_flat ON CLUSTER 'my_cluster';

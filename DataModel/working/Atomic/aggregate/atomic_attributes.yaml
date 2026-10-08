@@ -116495,3 +116495,490 @@ attributes:
   atomic_table: "ip_postal_address"
   atomic_column: "adr_val"
   data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Internal Statistical Report Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Documentation] Form Documentation\". Hash: hash_id('ISS_FLAT_REPORT',\
+    \ report_code || sheet_name || field_code || row_index || origin_date_value)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "isr_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Internal Statistical Report Code"
+  description: "Mã nghiệp vụ ô giá trị = report_code || sheet_nm || field_code || row_index || origin_dt_val. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_code"
+  comment: "ETL-derived: concat(report_code, sheet_name, field_code, row_index, origin_date_value)\
+    \ từ ODS FLAT_REPORT — BK composite. Cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "isr_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=ISS_FLAT_REPORT"
+  etl_derived_value: "ISS_FLAT_REPORT"
+  atomic_table: "internal_statistical_report"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Report Code"
+  description: "Mã báo cáo (VD: HNX01A1, HSX02) — phân biệt loại báo cáo trong hệ thống ISS."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_code"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "rpt_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Report Name"
+  description: "Tên báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_name"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "rpt_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Submit Source Code"
+  description: "Nguồn nộp báo cáo (ICP, CDW, KDL, ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.submit_source"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "submit_src_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Template Version"
+  description: "Phiên bản template báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.template_version"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "template_version"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Template Status Code"
+  description: "Trạng thái template báo cáo (ACTIVE, CANCELLED, ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.template_status"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "template_status_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Report Layout Type Code"
+  description: "Kiểu layout biểu mẫu (MIXED, COLUMN_BASED, ROW_BASED)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_layout_type"
+  comment: "Ảnh hưởng cách đọc column_position/row_position và column_code/row_code:\
+    \ COLUMN_BASED → row_* là NULL; ROW_BASED → col_* là NULL; MIXED → cả hai đều có giá trị."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "rpt_layout_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Sheet Name"
+  description: "Tên sheet trong biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.sheet_name"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "sheet_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Row Start Position"
+  description: "Số dòng bắt đầu vùng dữ liệu trong Excel (VD: 7)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.row_start_position"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "row_start_position"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Column Start Position"
+  description: "Ký tự cột bắt đầu vùng dữ liệu trong Excel (VD: C)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.column_start_position"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "column_start_position"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Row Index"
+  description: "Vị trí hàng thực tế của ô = thứ tự JSON object trong json_data (bắt\
+    \ đầu từ 1) + data_index. Dùng để phân biệt các dòng động trong cùng band khi\
+    \ field_code trùng nhau."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.row_index"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "row_index"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Data Type Code"
+  description: "Kiểu dữ liệu của ô (NUMBER, CURRENCY, STRING, ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.data_type"
+  comment: "Dùng để CAST field_val phía consumer — không ép kiểu tại Atomic."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "data_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Column Position"
+  description: "Vị trí cột trong Excel của chỉ tiêu COLUMN (VD: C, D). NULL với layout ROW_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.col_position"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "column_position"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Column Path"
+  description: "Tên đầy đủ chỉ tiêu cột theo cây chỉ tiêu. NULL với layout ROW_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.column_path"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "column_path"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Row Position"
+  description: "Vị trí dòng trong Excel của chỉ tiêu ROW (VD: 7, 9). NULL với layout COLUMN_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.row_position"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "row_position"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Row Path"
+  description: "Tên đầy đủ chỉ tiêu dòng theo cây chỉ tiêu. NULL với layout COLUMN_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.row_path"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "row_path"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Column Code"
+  description: "Metric code của chỉ tiêu COLUMN. NULL với layout ROW_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.column_code"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "column_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Row Code"
+  description: "Metric code của chỉ tiêu ROW. NULL với layout COLUMN_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.row_code"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "row_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Field Code"
+  description: "Mã định danh ô gốc từ JSON: {col_code}-{row_code} (MIXED) / {col_code}\
+    \ (COLUMN_BASED) / {row_code} (ROW_BASED)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.field_code"
+  comment: "Thành phần BK. Không unique trong 1 sheet khi có band động — phân biệt bằng row_index."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "field_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Field Value"
+  description: "Giá trị của ô dữ liệu dạng chuỗi gốc từ nguồn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.field_value"
+  comment: "Luôn lưu dạng chuỗi; consumer tự CAST theo data_tp_code."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "field_val"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Date Type Code"
+  description: "Loại kỳ báo cáo (DAILY, MONTHLY, QUARTERLY, YEARLY, ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.date_type"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "dt_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Origin Date Value"
+  description: "Giá trị kỳ báo cáo dạng chuỗi gốc (VD: 25/11/2015, 07/2026)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.origin_date_value"
+  comment: "Thành phần BK — giữ nguyên chuỗi gốc, không parse."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "origin_dt_val"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Report Day"
+  description: "Ngày trong kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_day"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "rpt_day"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Report Month"
+  description: "Tháng trong kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_month"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "rpt_month"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Report Quarter"
+  description: "Quý trong kỳ báo cáo (1–4)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_quarter"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "rpt_quarter"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Report Half Year"
+  description: "Nửa năm trong kỳ báo cáo (1–2)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_half_year"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "rpt_half_year"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Report Year"
+  description: "Năm trong kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.report_year"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "rpt_year"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Internal Statistical Report"
+  atomic_attribute: "Submission Status Code"
+  description: "Trạng thái nộp báo cáo (SUBMITTED, LATE_SUBMITTED, RESUBMITTED, OVERDUE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  source_column: "ISS.FLAT_REPORT.submit_status"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "internal_statistical_report"
+  atomic_column: "submission_status_code"
+  data_type: "string"

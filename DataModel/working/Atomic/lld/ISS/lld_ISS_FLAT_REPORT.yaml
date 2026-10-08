@@ -1,0 +1,434 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "ISS"
+  source_table: "FLAT_REPORT"
+  atomic_entity: "Internal Statistical Report"
+  entity_physical_name: "internal_statistical_report"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Documentation"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-10-07"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Báo cáo định kỳ ISS (thống kê nội bộ UBCKNN): ODS ods.uat_ISS_ods.flat_report\
+    \ → ATM Upsert theo BK (table_type Classification — quyết định Data Modeler\
+    \ 2026-10-07). Grain = 1 ô × 1 lần nộp × 1 kỳ báo cáo. Dữ liệu flatten đến\
+    \ từng ô biểu mẫu (cell-level), hỗ trợ cả 3 layout: MIXED / COLUMN_BASED /\
+    \ ROW_BASED. BK composite: report_code || sheet_nm || field_code || row_index\
+    \ || origin_dt_val."
+attributes:
+- attribute_name: "Internal Statistical Report Id"
+  physical_name: "isr_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Form Documentation\". Hash:\
+    \ hash_id('ISS_FLAT_REPORT', report_code || sheet_name || field_code || row_index\
+    \ || origin_date_value)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Internal Statistical Report Code"
+  physical_name: "isr_code"
+  description: "Mã nghiệp vụ ô giá trị = report_code || sheet_nm || field_code\
+    \ || row_index || origin_dt_val. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_code"
+  - "ISS.FLAT_REPORT.sheet_name"
+  - "ISS.FLAT_REPORT.field_code"
+  - "ISS.FLAT_REPORT.row_index"
+  - "ISS.FLAT_REPORT.origin_date_value"
+  comment: "ETL-derived: concat(report_code, sheet_name, field_code, row_index, origin_date_value)\
+    \ từ ODS FLAT_REPORT — BK composite. Cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=ISS_FLAT_REPORT"
+  etl_derived_value: "ISS_FLAT_REPORT"
+  data_type: "string"
+- attribute_name: "Report Code"
+  physical_name: "rpt_code"
+  description: "Mã báo cáo (VD: HNX01A1, HSX02) — phân biệt loại báo cáo trong\
+    \ hệ thống ISS."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_code"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Name"
+  physical_name: "rpt_nm"
+  description: "Tên báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_name"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submit Source Code"
+  physical_name: "submit_src_code"
+  description: "Nguồn nộp báo cáo (ICP, CDW, KDL, ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.submit_source"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Template Version"
+  physical_name: "template_version"
+  description: "Phiên bản template báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.template_version"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Template Status Code"
+  physical_name: "template_status_code"
+  description: "Trạng thái template báo cáo (ACTIVE, CANCELLED, ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.template_status"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Layout Type Code"
+  physical_name: "rpt_layout_tp_code"
+  description: "Kiểu layout biểu mẫu (MIXED, COLUMN_BASED, ROW_BASED)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_layout_type"
+  comment: "Ảnh hưởng cách đọc column_position/row_position và column_code/row_code:\
+    \ COLUMN_BASED → row_* là NULL; ROW_BASED → col_* là NULL; MIXED → cả hai đều có giá trị."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sheet Name"
+  physical_name: "sheet_nm"
+  description: "Tên sheet trong biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.sheet_name"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Start Position"
+  physical_name: "row_start_position"
+  description: "Số dòng bắt đầu vùng dữ liệu trong Excel (VD: 7)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.row_start_position"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Start Position"
+  physical_name: "column_start_position"
+  description: "Ký tự cột bắt đầu vùng dữ liệu trong Excel (VD: C)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.column_start_position"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Index"
+  physical_name: "row_index"
+  description: "Vị trí hàng thực tế của ô = thứ tự JSON object trong json_data\
+    \ (bắt đầu từ 1) + data_index. Dùng để phân biệt các dòng động trong cùng\
+    \ band khi field_code trùng nhau."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.row_index"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Data Type Code"
+  physical_name: "data_tp_code"
+  description: "Kiểu dữ liệu của ô (NUMBER, CURRENCY, STRING, ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.data_type"
+  comment: "Dùng để CAST field_val phía consumer — không ép kiểu tại Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Position"
+  physical_name: "column_position"
+  description: "Vị trí cột trong Excel của chỉ tiêu COLUMN (VD: C, D). NULL với\
+    \ layout ROW_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.col_position"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Path"
+  physical_name: "column_path"
+  description: "Tên đầy đủ chỉ tiêu cột theo cây chỉ tiêu. NULL với layout\
+    \ ROW_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.column_path"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Position"
+  physical_name: "row_position"
+  description: "Vị trí dòng trong Excel của chỉ tiêu ROW (VD: 7, 9). NULL với\
+    \ layout COLUMN_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.row_position"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Path"
+  physical_name: "row_path"
+  description: "Tên đầy đủ chỉ tiêu dòng theo cây chỉ tiêu. NULL với layout\
+    \ COLUMN_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.row_path"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Code"
+  physical_name: "column_code"
+  description: "Metric code của chỉ tiêu COLUMN. NULL với layout ROW_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.column_code"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Code"
+  physical_name: "row_code"
+  description: "Metric code của chỉ tiêu ROW. NULL với layout COLUMN_BASED."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.row_code"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Field Code"
+  physical_name: "field_code"
+  description: "Mã định danh ô gốc từ JSON: {col_code}-{row_code} (MIXED) /\
+    \ {col_code} (COLUMN_BASED) / {row_code} (ROW_BASED)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.field_code"
+  comment: "Thành phần BK. Không unique trong 1 sheet khi có band động — phân\
+    \ biệt bằng row_index."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Field Value"
+  physical_name: "field_val"
+  description: "Giá trị của ô dữ liệu dạng chuỗi gốc từ nguồn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.field_value"
+  comment: "Luôn lưu dạng chuỗi; consumer tự CAST theo data_tp_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Date Type Code"
+  physical_name: "dt_tp_code"
+  description: "Loại kỳ báo cáo (DAILY, MONTHLY, QUARTERLY, YEARLY, ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.date_type"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Origin Date Value"
+  physical_name: "origin_dt_val"
+  description: "Giá trị kỳ báo cáo dạng chuỗi gốc (VD: 25/11/2015, 07/2026)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.origin_date_value"
+  comment: "Thành phần BK — giữ nguyên chuỗi gốc, không parse."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày trong kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_day"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng trong kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_month"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Quarter"
+  physical_name: "rpt_quarter"
+  description: "Quý trong kỳ báo cáo (1–4)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_quarter"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Half Year"
+  physical_name: "rpt_half_year"
+  description: "Nửa năm trong kỳ báo cáo (1–2)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_half_year"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm trong kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.report_year"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Submission Status Code"
+  physical_name: "submission_status_code"
+  description: "Trạng thái nộp báo cáo (SUBMITTED, LATE_SUBMITTED, RESUBMITTED,\
+    \ OVERDUE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ISS.FLAT_REPORT.submit_status"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

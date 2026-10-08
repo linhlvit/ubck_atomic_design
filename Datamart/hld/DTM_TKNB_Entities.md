@@ -113,7 +113,7 @@ erDiagram
     Private_Corporate_Bond_Dimension ||--o{ Fact_Private_Corporate_Bond_International_Offering_Snapshot : "Private_Corporate_Bond_Dimension_Id"
 ```
 
-## Bảng entity tóm tắt (24 bảng: 3 Star Schema mới/reuse + 20 Operational — 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED và xóa khỏi bảng này, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
+## Bảng entity tóm tắt (25 bảng: 3 Star Schema mới/reuse + 21 Operational — 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED và xóa khỏi bảng này, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
@@ -143,6 +143,7 @@ erDiagram
 | 16 | Market Summary Report (TK-04.BTC) | Operational | new | Báo cáo tổng hợp TTCK theo quý/lũy kế | 1 dòng/1 chỉ tiêu/1 kỳ gốc (period_marker) | K_TKNB_875–917 |
 | 17 | Market Annual Report (TK_NienGiam) | Operational | new | Niên giám thống kê thị trường chứng khoán theo năm | 1 dòng/1 chỉ tiêu/1 năm báo cáo | K_TKNB_918–1011 |
 | 20 | Corp Bond Trading Report (BM030c) | Operational | new | Thống kê giao dịch toàn thị trường TPDN niêm yết theo ngày (cộng gộp 2 sàn) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1037–1045 |
+| 21 | OTC Corp Bond Trading Report (BM030d) | Operational | new | Thống kê giao dịch thị trường TPDN riêng lẻ theo ngày (báo cáo HNX09 trên ISS) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1046–1052 |
 | 22 | Fund Cert ETF CW Trading Report (BM030e) | Operational | new | Thống kê giao dịch thị trường CCQ/ETF/CW toàn thị trường theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1053–1067 |
 | 24 | Gov Bond Foreign Proprietary Trading Report (BM031b) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường TPCP theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1094–1112 |
 | 25 | Corp Bond Foreign Proprietary Trading Report (BM031c) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường TPDN niêm yết theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1113–1122 |
@@ -176,6 +177,7 @@ erDiagram
 | Market Summary Report (TK-04.BTC) | securities_trade |
 | Market Annual Report (TK_NienGiam) | market_index_snapshot / securities_trade / security_trading_snapshot / public_company / securities_company / fund_management_company |
 | Corp Bond Trading Report (BM030c) | securities_trade |
+| OTC Corp Bond Trading Report (BM030d) | internal_statistical_report |
 | Fund Cert ETF CW Trading Report (BM030e) | securities_trade / security_trading_snapshot |
 | Gov Bond Foreign Proprietary Trading Report (BM031b) | securities_trade |
 | Corp Bond Foreign Proprietary Trading Report (BM031c) | securities_trade |

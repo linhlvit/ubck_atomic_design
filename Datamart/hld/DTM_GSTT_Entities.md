@@ -6,6 +6,7 @@
 **Thay đổi v2.15 (2026-10-06):** Sửa quy tắc chọn Fact nến: lọc theo ngày → bảng 1m (`Fact Instrument Price Intraday`), lọc theo tháng → bảng 1d (`Fact Instrument Price Daily`).
 **Thay đổi v2.14 (2026-10-06):** Đồng bộ LLD/flat sau v4.35: `Fact Security Trading Daily` chỉ còn Nhóm 48; `Fact Instrument Price Intraday`/`Daily` ghi nhận dùng chung Nhóm 3, 10, 12, 14, 20, 47.
 **Thay đổi v2.13 (2026-10-06):** BA cập nhật mapping Dashboard kỹ thuật (Nhóm 3, 10, 12, 14, 20, 47): `Fact Instrument Price Intraday`/`Daily` dùng chung cho OHLC + khối lượng (v4.35); `Fact Security Trading Daily` chỉ còn Nhóm 48.
+**Thay đổi v2.13 (2026-10-08):** `Operational Security Index Constituent Reference` bổ sung 8 cột (`index_constituent_snpst_code`, `index_id`, `stock_tp_code`, `stock_floor_code`, `derivative_product_nm`, `security_class_code`, `industry_code`, `industry_nm`) — nguồn Atomic thêm `public_company`, `securities_company`, `cl_business_line`; grain/PK/KPI không đổi (HLD v4.39, O_GSTT_60).
 **Thay đổi v2.12 (2026-10-06):** Bỏ phân loại `Instrument Type Code` (SECURITY/INDEX) ở `Fact Instrument Price Intraday`/`Daily` — Nhóm 34 không cần phân loại (Data Modeler); K_GSTT_13 lấy `vol` nến ngày (`JAD_tvhistory1d.volume`).
 **Thay đổi v2.11 (2026-10-06):** Tách `Fact Instrument Price Candle` thành `Fact Instrument Price Intraday` (nến phút) và `Fact Instrument Price Daily` (nến ngày + Doanh thu/LNST) — Data Modeler chỉ đạo.
 **Thay đổi v2.10 (2026-10-06):** Đổi `Fact Instrument Chart Intraday` → `Fact Instrument Price Candle` (BA cập nhật Nhóm 34: nguồn JAD_tvhistory1m/1d chọn theo khung thời gian, Độ chi tiết 'Mã CK và chỉ số' → grain 1 nến/dòng, thêm `Candle Period Code`).
@@ -272,11 +273,19 @@ erDiagram
     Operational_Security_Index_Constituent_Reference {
         string Index_Code PK
         string Symbol PK
-        string ISIN_Code
+        string Index_Constituent_Snapshot_Code
+        string Index_Id
         string Index_Name
         string Floor_Code
         date Add_Date
         date As_Of_Date
+        string ISIN_Code
+        string Stock_Type_Code
+        string Stock_Floor_Code
+        string Derivative_Product_Name
+        string Security_Class_Code
+        string Industry_Code
+        string Industry_Name
         string Source_System_Code
     }
 ```

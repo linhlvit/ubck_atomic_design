@@ -332,6 +332,28 @@ COMMENT 'Flat table — Corp Bond Trading Report (BM030c)'
 
 
 -- ============================================================
+-- 14b. OPERATIONAL: bm030dmss_otc_corp_bond_trading_rpt
+--    OTC Corp Bond Trading Report (BM030d)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_bm030dmss_otc_corp_bond_trading_rpt_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL OTC Corp Bond Trading Report (BM030d)
+    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
+    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
+    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM030d_MSS',
+    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
+    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
+    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, giá trị giao dịch TPDN riêng lẻ, NĐTNN, tự doanh (báo cáo HNX09, tổng field_val theo row_path)',
+    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(report_period_dt)
+ORDER BY (report_code, report_period_dt, item_code)
+COMMENT 'Flat table — OTC Corp Bond Trading Report (BM030d)'
+;
+
+
+-- ============================================================
 -- 15. OPERATIONAL: bm030emss_fund_cert_etf_cw_trading_rpt
 --    Fund Cert ETF CW Trading Report (BM030e)
 -- ============================================================
