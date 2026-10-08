@@ -5119,7 +5119,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số CTĐC báo lãi trong năm (lợi nhuận kỳ hiện tại > 0) theo sàn — tập con của các công ty ĐÃ NỘP báo cáo (code dev header 2026-09-30). [SỬA 2026-10-08] Đổi từ `profitable_company_count_year_n`; bỏ cột năm N-1 (chuẩn hóa daily, scope chỉ năm N — header 2026-09-17). Số CTĐC báo lãi Năm N theo sàn — DRIVING TABLE của toàn bộ report (xác định danh sách sàn+kỳ cho 3 measure còn lại). COUNT DISTINCT công ty có Net Profit > 0 trên fct_public_company_financial_smy_snpst (đã dedup form-ưu-tiên sẵn khi ETL populate Fact, xem Cụm 12) GROUP BY sàn/rpt_year/rpt_quarter, của CTĐC đã duyệt (Public Company Status Code = 'APPROVED_PUBLIC') niêm yết/đăng ký giao dịch trên 1 trong 4 sàn HNX/HOSE/UPCOM/OTC. [SỬA 2026-08-19] Đổi nguồn ETL nạp — từ JOIN trực tiếp fr_value sang aggregate từ Fact trung gian, tránh lặp lại logic dedup phức tạp lần thứ 2 trong module (giống nguyên tắc đã áp dụng Nhóm 39/40/41). [SỬA 2026-08-19 lần 4 — tối ưu] Xác nhận vai trò driving table — Report Due/Submitted Count JOIN vào theo sàn+kỳ của sub-select này; Company Count JOIN vào chỉ theo sàn (xem cột Company Count)."
+        description: "Số CTĐC báo lãi trong năm (lợi nhuận kỳ hiện tại > 0) theo sàn — tập con của các công ty ĐÃ NỘP báo cáo (code dev header 2026-09-30). [SỬA 2026-10-08] Đổi từ `profitable_company_count_year_n`; bỏ cột năm N-1 (chuẩn hóa daily, scope chỉ năm N — header 2026-09-17). Số CTĐC báo lãi Năm N theo sàn — DRIVING TABLE của toàn bộ report (xác định danh sách sàn+kỳ cho 3 measure còn lại). COUNT DISTINCT công ty có Net Profit > 0 trên fct_public_company_financial_smy_snpst (đã dedup form-ưu-tiên sẵn khi ETL populate Fact, xem Cụm 12) GROUP BY sàn/rpt_year/rpt_quarter, của CTĐC đã duyệt (Public Company Status Code = 'APPROVED_PUBLIC') niêm yết/đăng ký giao dịch trên 1 trong 4 sàn HNX/HOSE/UPCOM/OTC. [SỬA 2026-08-19] Đổi nguồn ETL nạp — từ JOIN trực tiếp fr_value sang aggregate từ Fact trung gian, tránh lặp lại logic dedup phức tạp lần thứ 2 trong module (giống nguyên tắc đã áp dụng Nhóm 39/40/41). [SỬA 2026-08-19 lần 4 — tối ưu] Xác nhận vai trò driving table — Report Due/Submitted Count JOIN vào theo sàn+kỳ của sub-select này; Company Count JOIN vào chỉ theo sàn (xem cột Company Count). [SỬA 2026-10-08, BA] Chỉ đếm công ty có `contributed_capital` (vốn điều lệ kỳ báo cáo trên smy) > 0: BA xác nhận vốn điều lệ = 0 cũng là giá trị không hợp lệ nên loại luôn (code dev dùng IS NOT NULL → đổi thành > 0; thiết kế trước đó chưa ghi điều kiện này). GIẢ ĐỊNH phạm vi: 3 cột đếm lấy từ smy — xem O_GSDC_38."
         source_atomic_table: "fct_public_company_financial_smy_snpst / public_company_dim"
         source_atomic_column: "fct_public_company_financial_smy_snpst / public_company_dim.net_profit / public_company_status_code / equity_listing_exchange_code"
       - logical_name: "Profitable Company Count YTD"
@@ -5128,7 +5128,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số CTĐC báo lãi TÍNH TỪ ĐẦU NĂM (LNST lũy kế `net_profit_ytd` > 0) theo sàn — tập con của công ty đã nộp. [MỚI 2026-10-08] BA bổ sung nhóm chỉ số thống kê từ đầu năm (dev xác nhận Q6)."
+        description: "Số CTĐC báo lãi TÍNH TỪ ĐẦU NĂM (LNST lũy kế `net_profit_ytd` > 0) theo sàn — tập con của công ty đã nộp. [MỚI 2026-10-08] BA bổ sung nhóm chỉ số thống kê từ đầu năm (dev xác nhận Q6). [SỬA 2026-10-08, BA] Chỉ đếm công ty có `contributed_capital` (vốn điều lệ kỳ báo cáo trên smy) > 0: BA xác nhận vốn điều lệ = 0 cũng là giá trị không hợp lệ nên loại luôn (code dev dùng IS NOT NULL → đổi thành > 0; thiết kế trước đó chưa ghi điều kiện này). GIẢ ĐỊNH phạm vi: 3 cột đếm lấy từ smy — xem O_GSDC_38."
         source_atomic_table: "fct_public_company_financial_smy_snpst / public_company_dim"
         source_atomic_column: "fct_public_company_financial_smy_snpst / public_company_dim.net_profit / public_company_status_code / equity_listing_exchange_code"
       - logical_name: "Large Scale Company Count"
@@ -5137,7 +5137,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số công ty quy mô lớn (UPCOM/OTC, vốn góp ≥ 120 tỷ) theo sàn. [MỚI 2026-10-08] BA yêu cầu 2026-09-29 (code dev header 2026-09-29). [GIẢ ĐỊNH] ngưỡng 120 tỷ áp lên `charter_capital_amt` của Public Company Dimension — dev xác nhận nguồn 'vốn góp'."
+        description: "Số công ty quy mô lớn (UPCOM/OTC, vốn góp ≥ 120 tỷ) theo sàn. [MỚI 2026-10-08] BA yêu cầu 2026-09-29 (code dev header 2026-09-29). [GIẢ ĐỊNH] ngưỡng 120 tỷ áp lên `charter_capital_amt` của Public Company Dimension — dev xác nhận nguồn 'vốn góp'. [SỬA 2026-10-08, BA] Chỉ đếm công ty có `contributed_capital` (vốn điều lệ kỳ báo cáo trên smy) > 0: BA xác nhận vốn điều lệ = 0 cũng là giá trị không hợp lệ nên loại luôn (code dev dùng IS NOT NULL → đổi thành > 0; thiết kế trước đó chưa ghi điều kiện này). GIẢ ĐỊNH phạm vi: 3 cột đếm lấy từ smy — xem O_GSDC_38."
         source_atomic_table: "fct_public_company_financial_smy_snpst / public_company_dim"
         source_atomic_column: "fct_public_company_financial_smy_snpst / public_company_dim.net_profit / public_company_status_code / equity_listing_exchange_code"
       - logical_name: "Source System Code"
