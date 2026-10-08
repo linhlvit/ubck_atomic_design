@@ -9207,7 +9207,7 @@ ORDER BY c.SHORT_NAME, pc.change_id, oc.cell_id;",Done,,,,,,Đã cấu hình - C
 48,,Báo cáo giám sát >> Báo cáo duy trì điều kiện phòng giao dịch,Tên trụ sở hoặc chi nhánh được hỗ trợ,Tên trụ sở hoặc chi nhánh được hỗ trợ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
 48,,Báo cáo giám sát >> Báo cáo duy trì điều kiện phòng giao dịch,Tình trạng hoạt động,Tình trạng hoạt động,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
 48,,Báo cáo giám sát >> Báo cáo duy trì điều kiện phòng giao dịch,Nghiệp vụ hỗ trợ,Nghiệp vụ hỗ trợ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
-48,,Báo cáo giám sát >> Báo cáo duy trì điều kiện phòng giao dịch,Số người hành nghề chứng khoán,Số người hành nghề chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+48,,Báo cáo giám sát >> Báo cáo duy trì điều kiện phòng giao dịch,Số người hành nghề chứng khoán,Số người hành nghề chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
 49,Nga,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Loại báo cáo,Loại báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT, 
 SCMS_UAT.FORM_REPORT_DEEP_CONFIG","fr.ID, fr.REPORT_CODE, 
 fr.REPORT_NAME, 
@@ -9323,20 +9323,9 @@ fscell.FORMULA_TEXT
 pc.ID
 pc.SC_FIRM_INFO_ID
 pc.ENTITY_TYPE
-pc.AFTER_DATA_JSON (tenTiengViet
-diaChi
-dienThoai
-soGpTlhdLanDau
-ngayCapGpTlhdLanDau
-maCongTy
-sanNiemYet
-maChungKhoan
-vonDieuLe
-website
-tenTrangThai
-nganhNgheKinhDoanh
-soVanBan
-nganhNgheKinhDoanhPhaiSinh)
+pc.AFTER_DATA_JSON
+pc.EVENT_TYPE_NAME
+pc.LICENSE_DECISION_DOC_NUMBER
 sub.ID
 sub.REF_TYPE
 sub.REF_ID
@@ -9436,10 +9425,17 @@ profile_change AS (
         JSON_VALUE(pc.AFTER_DATA_JSON, '$.website') AS website,
         JSON_VALUE(pc.AFTER_DATA_JSON, '$.tenTrangThai') AS tenTrangThai,
         JSON_VALUE(pc.AFTER_DATA_JSON, '$.nganhNgheKinhDoanh') AS nganhNgheKinhDoanh,
-        JSON_VALUE(pc.AFTER_DATA_JSON, '$.soVanBan') AS soVanBan,
         JSON_VALUE(pc.AFTER_DATA_JSON, '$.nganhNgheKinhDoanhPhaiSinh') AS nganhNgheKinhDoanhPhaiSinh
     FROM SCMS_UAT.SC_FIRM_PROFILE_CHANGE pc
     WHERE pc.ENTITY_TYPE = 'TRU_SO_CHINH'   -- CTCK
+),
+so_van_ban_ps AS (
+    SELECT DISTINCT
+        pc.SC_FIRM_INFO_ID,
+        TO_CHAR(pc.LICENSE_DECISION_DOC_NUMBER) AS so_van_ban
+    FROM SCMS_UAT.SC_FIRM_PROFILE_CHANGE pc
+    WHERE pc.EVENT_TYPE_NAME = N'Đăng ký kinh doanh chứng khoán phái sinh'
+      AND pc.LICENSE_DECISION_DOC_NUMBER IS NOT NULL
 ),
 -- Lấy form_report_id của báo cáo INPUT tương ứng
 input_submissions AS (
@@ -9528,7 +9524,7 @@ SELECT
                 WHEN 'website' THEN pc.website
                 WHEN 'tenTrangThai' THEN pc.tenTrangThai
                 WHEN 'nganhNgheKinhDoanh' THEN pc.nganhNgheKinhDoanh
-                WHEN 'soVanBan' THEN pc.soVanBan
+                WHEN 'soVanBan' THEN svb.so_van_ban
                 WHEN 'nganhNgheKinhDoanhPhaiSinh' THEN pc.nganhNgheKinhDoanhPhaiSinh
                 ELSE NULL
             END
@@ -9538,6 +9534,7 @@ FROM output_cells oc
 LEFT JOIN input_submissions sub ON sub.FORM_REPORT_ID = oc.rpt_id
 LEFT JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p ON p.ID = sub.REF_ID
 LEFT JOIN SCMS_UAT.SC_FIRM_INFO c ON c.ID = p.SC_FIRM_INFO_ID
+LEFT JOIN so_van_ban_ps svb ON svb.SC_FIRM_INFO_ID = c.ID
 LEFT JOIN nganh_nghe nn ON nn.sc_firm_info_id = c.ID
 LEFT JOIN input_cell_values icv ON icv.REPORT_INPUT_SUBMISSION_ID = sub.ID
                                 AND icv.SHEET_ID = oc.cell_sheet_id
@@ -9569,9 +9566,9 @@ ORDER BY c.SHORT_NAME, p.REPORT_YEAR, p.PERIOD,
 49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Nghiệp vụ được phép hoạt động,Nghiệp vụ được phép hoạt động,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
 49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Hoạt động kinh doanh chứng khoán phái sinh >> Số giấy chứng nhận kinh doanh phái sinh,Hoạt động kinh doanh chứng khoán phái sinh >> Số giấy chứng nhận kinh doanh phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
 49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Hoạt động kinh doanh chứng khoán phái sinh >> Nghiệp vụ chứng khoán phái sinh,Hoạt động kinh doanh chứng khoán phái sinh >> Nghiệp vụ chứng khoán phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
-49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Điều kiện về vốn >> Vốn pháp định theo nghiệp vụ CKPS được cấp (Đồng),Điều kiện về vốn >> Vốn pháp định theo nghiệp vụ CKPS được cấp (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Điều kiện về vốn >> Vốn pháp định theo nghiệp vụ CKPS được cấp (Đồng),Điều kiện về vốn >> Vốn pháp định theo nghiệp vụ CKPS được cấp (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
 49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Điều kiện về vốn >> Vốn chủ sở hữu (Đồng),Điều kiện về vốn >> Vốn chủ sở hữu (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
-49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Điều kiện về vốn >> Chênh lệch VCSH - vốn pháp định CKPS (Đồng),Điều kiện về vốn >> Chênh lệch VCSH - vốn pháp định CKPS (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Điều kiện về vốn >> Chênh lệch VCSH - vốn pháp định CKPS (Đồng),Điều kiện về vốn >> Chênh lệch VCSH - vốn pháp định CKPS (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
 49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Điều kiện về nhân sự >> Số lượng TGĐ / GĐ và Phó TGĐ phụ trách nghiệp vụ,Điều kiện về nhân sự >> Số lượng TGĐ / GĐ và Phó TGĐ phụ trách nghiệp vụ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
 49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Điều kiện về nhân sự >> Số người có CCHN CKPS - Môi giới phái sinh,Điều kiện về nhân sự >> Số người có CCHN CKPS - Môi giới phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
 49,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện kinh doanh chứng khoán phái sinh,Điều kiện về nhân sự >> Số người có CCHN CKPS - Tự doanh phái sinh,Điều kiện về nhân sự >> Số người có CCHN CKPS - Tự doanh phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
@@ -9612,12 +9609,12 @@ LEFT JOIN JSON_TABLE (
         )
      ) jt ON 1 = 1
 WHERE fr.REPORT_CODE = 'DG_DTDKCPTLHD'  -- Mã báo cáo
-  AND fr.REPORT_TYPE = 'OUTPUT';",Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Kỳ báo cáo,Kỳ báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã báo cáo,Mã báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên báo cáo,Tên báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã sheet,Mã sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên sheet,Tên sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
+  AND fr.REPORT_TYPE = 'OUTPUT';",Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Kỳ báo cáo,Kỳ báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã báo cáo,Mã báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên báo cáo,Tên báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã sheet,Mã sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên sheet,Tên sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
 50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã chỉ tiêu,Mã chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT, 
 SCMS_UAT.FORM_SHEET, 
 SCMS_UAT.FORM_SHEET_CELL, 
@@ -9665,8 +9662,8 @@ LEFT JOIN FSS.SCMS_MAP_CT m
 WHERE fr.REPORT_CODE = 'DG_DTDKCPTLHD'
   AND fr.REPORT_TYPE = 'OUTPUT'
   AND fscell.ID IS NOT NULL
-ORDER BY fscell.ID;",Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên chỉ tiêu,Tên chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
+ORDER BY fscell.ID;",Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên chỉ tiêu,Tên chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
 50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên CTCK,Tên CTCK,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.FORM_SHEET
 SCMS_UAT.FORM_SHEET_CELL
@@ -9694,20 +9691,9 @@ fscell.FORMULA_TEXT
 pc.ID
 pc.SC_FIRM_INFO_ID
 pc.ENTITY_TYPE
-pc.AFTER_DATA_JSON (tenTiengViet
-diaChi
-dienThoai
-soGpTlhdLanDau
-ngayCapGpTlhdLanDau
-maCongTy
-sanNiemYet
-maChungKhoan
-vonDieuLe
-website
-tenTrangThai
-nganhNgheKinhDoanh
-soVanBan
-nganhNgheKinhDoanhPhaiSinh)
+pc.AFTER_DATA_JSON
+pc.EVENT_TYPE_NAME
+pc.LICENSE_DECISION_DOC_NUMBER
 sub.ID
 sub.REF_TYPE
 sub.REF_ID
@@ -9807,8 +9793,384 @@ profile_change AS (
         JSON_VALUE(pc.AFTER_DATA_JSON, '$.website') AS website,
         JSON_VALUE(pc.AFTER_DATA_JSON, '$.tenTrangThai') AS tenTrangThai,
         JSON_VALUE(pc.AFTER_DATA_JSON, '$.nganhNgheKinhDoanh') AS nganhNgheKinhDoanh,
-        JSON_VALUE(pc.AFTER_DATA_JSON, '$.soVanBan') AS soVanBan,  -- AFTER_DATA_JSON đang không có soVanBan và suVuTen
         JSON_VALUE(pc.AFTER_DATA_JSON, '$.nganhNgheKinhDoanhPhaiSinh') AS nganhNgheKinhDoanhPhaiSinh
+    FROM SCMS_UAT.SC_FIRM_PROFILE_CHANGE pc
+    WHERE pc.ENTITY_TYPE = 'TRU_SO_CHINH'   -- CTCK
+),
+so_van_ban_ps AS (
+    SELECT DISTINCT
+        pc.SC_FIRM_INFO_ID,
+        TO_CHAR(pc.LICENSE_DECISION_DOC_NUMBER) AS so_van_ban
+    FROM SCMS_UAT.SC_FIRM_PROFILE_CHANGE pc
+    WHERE pc.EVENT_TYPE_NAME = N'Đăng ký kinh doanh chứng khoán phái sinh'
+      AND pc.LICENSE_DECISION_DOC_NUMBER IS NOT NULL
+),
+-- Lấy form_report_id của báo cáo INPUT tương ứng
+input_submissions AS (
+    SELECT ID, REF_TYPE, REF_ID, FORM_REPORT_ID
+    FROM (
+        SELECT sub.ID, sub.REF_TYPE, sub.REF_ID, sub.FORM_REPORT_ID,
+               ROW_NUMBER() OVER (PARTITION BY sub.FORM_REPORT_ID, sub.REF_TYPE, sub.REF_ID
+                                  ORDER BY sub.ID DESC) AS rn
+        FROM SCMS_UAT.REPORT_INPUT_SUBMISSION sub
+        WHERE sub.REF_TYPE IS NOT NULL
+          AND sub.FORM_REPORT_ID IN (SELECT DISTINCT rpt_id FROM output_cells WHERE rpt_id IS NOT NULL)
+    ) WHERE rn = 1
+),
+-- Lấy cell value từ INPUT tương ứng
+input_cell_values AS (
+    SELECT
+        civ.REPORT_INPUT_SUBMISSION_ID,
+        civ.SHEET_ID,
+        civ.CELL_ID,
+        civ.SECTION_ID,
+        civ.ROW_NO,
+        CAST(civ.ITEM_VALUE AS VARCHAR2(4000)) AS ITEM_VALUE,
+        TO_NUMBER(CAST(civ.ITEM_VALUE AS VARCHAR2(4000)) DEFAULT NULL ON CONVERSION ERROR) AS numeric_value
+    FROM SCMS_UAT.REPORT_INPUT_CELL_VALUE civ
+    WHERE civ.SHEET_ID IN (SELECT cell_sheet_id FROM output_cells WHERE cell_sheet_id IS NOT NULL)
+      AND civ.REPORT_INPUT_SUBMISSION_ID IN (SELECT ID FROM input_submissions)
+),
+nganh_nghe AS (
+    SELECT
+        c.ID AS sc_firm_info_id,
+        LISTAGG(
+            CASE sl.CATALOG_CODE
+                WHEN N'MG'   THEN N'Môi giới'
+                WHEN N'TD'   THEN N'Tự doanh'
+                WHEN N'BLPH' THEN N'Bảo lãnh phát hành'
+                WHEN N'TVDT' THEN N'Tư vấn đầu tư'
+                WHEN N'02'   THEN N'Giao dịch ký quỹ'
+                WHEN N'01'   THEN N'Ứng trước tiền bán'
+                WHEN N'04'   THEN N'Lưu ký'
+            END, ', '
+        ) WITHIN GROUP (ORDER BY sl.CATALOG_CODE) AS nganh_nghe
+    FROM SCMS_UAT.SC_FIRM_INFO c
+    JOIN SCMS_UAT.LNK_SC_FIRM_SERVICE lnk ON lnk.SC_FIRM_INFO_ID = c.SC_FIRM_INFO_ID
+    JOIN SCMS_UAT.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = lnk.SERVICE_ID
+                                               AND sl.RECORD_STATUS = 1
+                                               AND sl.CATALOG_CODE IN (N'MG',N'TD',N'BLPH',N'TVDT',N'02',N'01',N'04')
+    GROUP BY c.ID
+)
+SELECT
+    DENSE_RANK() OVER (
+        ORDER BY c.SHORT_NAME,
+                 NVL(TO_CHAR(pc.change_id), TO_CHAR(p.SC_FIRM_INFO_ID)),
+                 p.REPORT_YEAR, p.PERIOD
+    ) AS stt,
+    -- CHIỀU / BỘ LỌC
+    c.SHORT_NAME AS ten_ctck,
+    c.LISTING_EXCHANGE AS san_giao_dich,
+    nn.nganh_nghe,   
+    p.REPORT_PERIOD AS loai_ky,
+    p.PERIOD || '/' || p.REPORT_YEAR AS ky_du_lieu,
+    oc.SHEET_CODE, oc.SHEET_NAME,
+    oc.section_id,
+    -- MÃ / TÊN CHỈ TIÊU
+    oc.FORMULA_TEXT AS ma_ct,
+    oc.catalog_cell_id AS ma_ct_input,	
+    oc.field_of_member AS ten_chi_tieu_output,
+    oc.cot_du_lieu_bc,
+    m.ROW_NAME AS ten_hang_input,
+    m.COLUMN_NAME AS ten_cot_input,
+    icv.ROW_NO,
+    -- GIÁ TRỊ: ưu tiên INPUT nếu có, fallback SC_FIRM_PROFILE_CHANGE
+    CASE
+        WHEN oc.rpt_id IS NOT NULL THEN icv.ITEM_VALUE  -- Chỉ tiêu từ báo cáo đầu vào          
+        ELSE
+            -- Chỉ tiêu từ SC_FIRM_PROFILE_CHANGE
+            CASE oc.field_of_member
+                WHEN 'tenTiengViet' THEN pc.tenTiengViet
+                WHEN 'diaChi' THEN pc.diaChi
+                WHEN 'dienThoai' THEN pc.dienThoai
+                WHEN 'soGpTlhdLanDau' THEN pc.soGpTlhdLanDau
+                WHEN 'ngayCapGpTlhdLanDau' THEN pc.ngayCapGpTlhdLanDau
+                WHEN 'maCongTy' THEN pc.maCongTy
+                WHEN 'sanNiemYet' THEN pc.sanNiemYet
+                WHEN 'maChungKhoan' THEN pc.maChungKhoan
+                WHEN 'vonDieuLe' THEN pc.vonDieuLe
+                WHEN 'website' THEN pc.website
+                WHEN 'tenTrangThai' THEN pc.tenTrangThai
+                WHEN 'nganhNgheKinhDoanh' THEN pc.nganhNgheKinhDoanh
+                WHEN 'soVanBan' THEN svb.so_van_ban
+                WHEN 'nganhNgheKinhDoanhPhaiSinh' THEN pc.nganhNgheKinhDoanhPhaiSinh
+                ELSE NULL
+            END
+    END AS gia_tri,
+    icv.numeric_value AS gia_tri_so
+FROM output_cells oc
+LEFT JOIN input_submissions sub ON sub.FORM_REPORT_ID = oc.rpt_id
+LEFT JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p ON p.ID = sub.REF_ID
+LEFT JOIN SCMS_UAT.SC_FIRM_INFO c ON c.ID = p.SC_FIRM_INFO_ID
+LEFT JOIN so_van_ban_ps svb ON svb.SC_FIRM_INFO_ID = c.ID
+LEFT JOIN nganh_nghe nn ON nn.sc_firm_info_id = c.ID
+LEFT JOIN input_cell_values icv ON icv.REPORT_INPUT_SUBMISSION_ID = sub.ID
+                                AND icv.SHEET_ID = oc.cell_sheet_id
+                                AND icv.CELL_ID = oc.catalog_cell_id
+--                                AND icv.SECTION_ID = oc.section_id
+LEFT JOIN FSS.SCMS_MAP_CT m ON m.SHEETID = icv.SHEET_ID
+                            AND m.CELLID = icv.CELL_ID
+--                            AND m.SECTIONID = icv.SECTION_ID
+                            AND m.FORM_REPORT_ID = sub.FORM_REPORT_ID
+-- Nhánh SC_FIRM_PROFILE_CHANGE (chỉ với chỉ tiêu không từ INPUT)
+LEFT JOIN profile_change pc ON pc.SC_FIRM_INFO_ID = c.ID
+                            AND oc.rpt_id IS NULL
+WHERE p.RECORD_STATUS IN (1, 2)
+ORDER BY c.SHORT_NAME, p.REPORT_YEAR, p.PERIOD,
+         oc.SHEET_CODE, oc.cell_id, icv.ROW_NO;",Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Sàn giao dịch,Sàn giao dịch,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Ngành nghề,Ngành nghề,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên công ty chứng khoán,Tên công ty chứng khoán,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Địa chỉ trụ sở chính,Địa chỉ trụ sở chính,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số điện thoại,Số điện thoại,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số giấy phép thành lập và hoạt động lần đầu,Số giấy phép thành lập và hoạt động lần đầu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Ngày giấy phép lần đầu,Ngày giấy phép lần đầu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã số doanh nghiệp,Mã số doanh nghiệp,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Sàn giao dịch cổ phiếu,Sàn giao dịch cổ phiếu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã cổ phiếu,Mã cổ phiếu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Vốn điều lệ (Đồng),Vốn điều lệ (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Website,Website,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Trạng thái hoạt động,Trạng thái hoạt động,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Nghiệp vụ được phép hoạt động,Nghiệp vụ được phép hoạt động,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số giấy chứng nhận,Số giấy chứng nhận,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Nghiệp vụ chứng khoán phái sinh,Nghiệp vụ chứng khoán phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Vốn pháp định theo nghiệp vụ được cấp (Đồng),Vốn pháp định theo nghiệp vụ được cấp (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Vốn chủ sở hữu (Đồng),Vốn chủ sở hữu (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Chênh lệch VCSH - vốn pháp định (Đồng),Chênh lệch VCSH - vốn pháp định (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,"Cổ đông, thành viên góp vốn sở hữu từ 10% trở lên vốn điều lệ của 01 CTCK và người có liên quan của cổ đông, thành viên góp vốn đó (nếu có) không sở hữu trên 5% vốn điều lệ của 01 CTCK khác","Cổ đông, thành viên góp vốn sở hữu từ 10% trở lên vốn điều lệ của 01 CTCK và người có liên quan của cổ đông, thành viên góp vốn đó (nếu có) không sở hữu trên 5% vốn điều lệ của 01 CTCK khác",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số lượng Tổng giám đốc / Giám đốc,Số lượng Tổng giám đốc / Giám đốc,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số người có CCHN - Môi giới chứng khoán,Số người có CCHN - Môi giới chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số người có CCHN - Tự doanh chứng khoán,Số người có CCHN - Tự doanh chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số người có CCHN - Bảo lãnh phát hành chứng khoán,Số người có CCHN - Bảo lãnh phát hành chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số người có CCHN - Tư vấn đầu tư chứng khoán,Số người có CCHN - Tư vấn đầu tư chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,Nga,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Loại báo cáo,Loại báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT, 
+SCMS_UAT.FORM_REPORT_DEEP_CONFIG","fr.ID, fr.REPORT_CODE, 
+fr.REPORT_NAME, 
+fr.REPORT_TYPE, 
+fr.RECORD_STATUS, 
+fr.VERSION,
+dc.FORM_REPORT_ID, 
+dc.SHEETS_JSON, 
+jt.sheetCode, 
+jt.sheetName, 
+jt.ky_ap_dung",,"-- Mã BC / Tên BC / Loại BC / Kỳ BC (chiều DWH – dùng chung)
+-- Mã sheet / Tên sheet
+SELECT
+    fr.ID AS form_report_id,
+    fr.REPORT_CODE AS ma_bao_cao,
+    fr.REPORT_NAME AS ten_bao_cao,
+    fr.REPORT_TYPE AS loai_bao_cao,
+    fr.VERSION,
+    jt.ky_ap_dung AS ky_bao_cao,
+    jt.sheetCode AS ma_sheet,
+    jt.sheetName AS ten_sheet
+FROM SCMS_UAT.FORM_REPORT fr
+JOIN SCMS_UAT.FORM_REPORT_DEEP_CONFIG dc
+     ON dc.FORM_REPORT_ID = fr.ID
+LEFT JOIN JSON_TABLE (
+        dc.SHEETS_JSON, '$[*]'
+        COLUMNS (
+            sheetCode VARCHAR2(100) PATH '$.sheetCode',
+            sheetName VARCHAR2(500) PATH '$.sheetName',
+            ky_ap_dung VARCHAR2(2000) FORMAT JSON PATH '$.kyApDung'
+        )
+     ) jt ON 1 = 1
+WHERE fr.REPORT_CODE = 'GS_QDTC'  -- Mã báo cáo
+  AND fr.REPORT_TYPE = 'OUTPUT';",Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Kỳ báo cáo,Kỳ báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã báo cáo,Mã báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên báo cáo,Tên báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã sheet,Mã sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên sheet,Tên sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã chỉ tiêu,Mã chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT, 
+SCMS_UAT.FORM_SHEET, 
+SCMS_UAT.FORM_SHEET_CELL, 
+FSS.SCMS_MAP_CT","fr.ID
+fr.REPORT_CODE
+fr.REPORT_TYPE
+fs.ID
+fs.FORM_REPORT_ID
+fscell.ID
+fscell.FORM_SHEET_ID
+fscell.FORM_REPORT_ID
+fscell.FORMULA
+fscell.FORMULA_TEXT
+m.CELLID
+m.SHEETID
+m.FORM_REPORT_ID
+m.ROW_NAME
+m.COLUMN_NAME",,"-- Mã chỉ tiêu / Tên chỉ tiêu
+SELECT
+    fscell.FORM_REPORT_ID,
+    fscell.FORMULA_TEXT AS ma_chi_tieu,
+    jt.catalog_cell_id AS ma_chi_tieu_input,
+    jt.field_of_member AS ten_chi_tieu,
+    jt.cot_du_lieu_bc,
+    m.ROW_NAME AS ten_hang_input,
+    m.COLUMN_NAME AS ten_cot_input
+FROM SCMS_UAT.FORM_REPORT fr
+JOIN SCMS_UAT.FORM_SHEET fs ON fs.FORM_REPORT_ID = fr.ID
+LEFT JOIN SCMS_UAT.FORM_SHEET_CELL fscell ON fscell.FORM_SHEET_ID = fs.ID
+CROSS JOIN JSON_TABLE(
+    fscell.FORMULA, '$'
+    COLUMNS (
+        rpt_id NUMBER PATH '$.forMulaObjectInfos[0].rptId',
+        cell_sheet_id VARCHAR2(200) PATH '$.forMulaObjectInfos[0].sheetId',
+        catalog_cell_id VARCHAR2(100) PATH '$.forMulaObjectInfos[0].cellsMeta.catalogCellId',
+        section_id      VARCHAR2(100) PATH '$.forMulaObjectInfos[0].cellsMeta.sectionId',
+        field_of_member VARCHAR2(100) PATH '$.forMulaObjectInfos[0].fieldOfMember',
+        cot_du_lieu_bc  VARCHAR2(100) PATH '$.forMulaObjectInfos[0].cotDuLieuBc'
+    )
+) jt
+LEFT JOIN FSS.SCMS_MAP_CT m
+    ON  m.CELLID = jt.catalog_cell_id
+    AND m.SHEETID = jt.cell_sheet_id
+    AND m.FORM_REPORT_ID = jt.rpt_id
+WHERE fr.REPORT_CODE = 'GS_QDTC'
+  AND fr.REPORT_TYPE = 'OUTPUT'
+  AND fscell.ID IS NOT NULL
+ORDER BY fscell.ID;",Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên chỉ tiêu,Tên chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên CTCK,Tên CTCK,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,"SCMS_UAT.FORM_REPORT
+SCMS_UAT.FORM_SHEET
+SCMS_UAT.FORM_SHEET_CELL
+SCMS_UAT.SC_FIRM_PROFILE_CHANGE
+SCMS_UAT.REPORT_INPUT_SUBMISSION
+SCMS_UAT.REPORT_INPUT_CELL_VALUE
+SCMS_UAT.SC_FIRM_PERIODIC_REPORT
+SCMS_UAT.SC_FIRM_INFO
+SCMS_UAT.LNK_SC_FIRM_SERVICE
+SCMS_UAT.CAT_SERVICE_LEGAL_CAPITAL
+FSS.SCMS_MAP_CT","fr.ID
+fr.REPORT_CODE
+fr.REPORT_TYPE
+fs.ID
+fs.FORM_REPORT_ID
+fs.SHEET_CODE
+fs.SHEET_NAME
+fscell.ID
+fscell.FORM_SHEET_ID
+fscell.FORM_REPORT_ID
+fscell.CELL_CODE
+fscell.DATA_TYPE
+fscell.FORMULA
+fscell.FORMULA_TEXT
+pc.ID
+pc.SC_FIRM_INFO_ID
+pc.ENTITY_TYPE
+pc.AFTER_DATA_JSON (tenTiengViet
+diaChi
+dienThoai
+soGpTlhdLanDau
+ngayCapGpTlhdLanDau
+maCongTy
+sanNiemYet
+maChungKhoan
+vonDieuLe
+website
+tenTrangThai
+nganhNgheKinhDoanh
+soVanBan
+nganhNgheKinhDoanhPhaiSinh)
+sub.ID
+sub.REF_TYPE
+sub.REF_ID
+sub.FORM_REPORT_ID
+civ.REPORT_INPUT_SUBMISSION_ID
+civ.SHEET_ID
+civ.CELL_ID
+civ.SECTION_ID
+civ.ROW_NO
+civ.ITEM_VALUE
+p.ID
+p.SC_FIRM_INFO_ID
+p.REPORT_YEAR
+p.PERIOD
+p.REPORT_PERIOD
+p.RECORD_STATUS
+c.ID
+c.SHORT_NAME
+c.LISTING_EXCHANGE
+lnk.SC_FIRM_INFO_ID
+lnk.SERVICE_ID
+sl.SERVICE_ID
+sl.RECORD_STATUS
+sl.CATALOG_CODE
+m.SHEETID
+m.CELLID
+m.FORM_REPORT_ID
+m.ROW_NAME
+m.COLUMN_NAME",,"-- CHỈ TIÊU
+WITH output_form AS (
+    SELECT fr.ID AS form_report_id, fr.REPORT_CODE, fr.REPORT_NAME
+    FROM SCMS_UAT.FORM_REPORT fr
+    WHERE fr.REPORT_CODE = 'GS_QDTC'       -- Mã báo cáo
+      AND fr.REPORT_TYPE = 'OUTPUT'
+),
+-- Lấy cấu hình sheet/row/col/cell của báo cáo đầu ra
+output_cells AS (
+    SELECT
+        fs.ID AS form_sheet_id,
+        fs.SHEET_CODE, fs.SHEET_NAME,
+        fscell.ID AS cell_id,
+        fscell.FORM_REPORT_ID,
+        fscell.CELL_CODE,
+        fscell.DATA_TYPE,
+        fscell.FORMULA,
+        fscell.FORMULA_TEXT,
+        -- Parse FORMULA JSON
+        jt.formula_key,
+        jt.member_profile_type,
+        jt.field_of_member,
+        jt.su_vu_id,
+        jt.rpt_id,
+        jt.cell_sheet_id,
+        jt.catalog_cell_id,
+        jt.section_id,
+        jt.loai_du_lieu_bc,
+        jt.bang_du_lieu_bc,
+        jt.cot_du_lieu_bc
+    FROM output_form of_
+    JOIN SCMS_UAT.FORM_SHEET fs ON fs.FORM_REPORT_ID = of_.form_report_id
+    LEFT JOIN SCMS_UAT.FORM_SHEET_CELL fscell ON fscell.FORM_SHEET_ID = fs.ID
+    CROSS JOIN JSON_TABLE(
+        fscell.FORMULA, '$'
+        COLUMNS (
+            formula_key VARCHAR2(100) PATH '$.forMulaObjectInfos[0].key',
+            member_profile_type VARCHAR2(100) PATH '$.forMulaObjectInfos[0].memberProfileType',
+            field_of_member VARCHAR2(100) PATH '$.forMulaObjectInfos[0].fieldOfMember',
+            su_vu_id NUMBER PATH '$.forMulaObjectInfos[0].suVuId',
+            rpt_id NUMBER PATH '$.forMulaObjectInfos[0].rptId',
+            cell_sheet_id VARCHAR2(200) PATH '$.forMulaObjectInfos[0].sheetId',
+            catalog_cell_id VARCHAR2(100) PATH '$.forMulaObjectInfos[0].cellsMeta.catalogCellId',
+            section_id VARCHAR2(100) PATH '$.forMulaObjectInfos[0].cellsMeta.sectionId',
+            loai_du_lieu_bc VARCHAR2(100) PATH '$.forMulaObjectInfos[0].loaiDuLieuBc',
+            bang_du_lieu_bc VARCHAR2(100) PATH '$.forMulaObjectInfos[0].bangDuLieuBc',
+            cot_du_lieu_bc VARCHAR2(100) PATH '$.forMulaObjectInfos[0].cotDuLieuBc'
+        )
+    ) jt
+    WHERE fscell.ID IS NOT NULL
+      AND jt.member_profile_type = 'LS_CTCK'    
+),
+-- Lấy dữ liệu từ SC_FIRM_PROFILE_CHANGE, parse AFTER_DATA_JSON
+profile_change AS (
+    SELECT
+        pc.ID AS change_id,
+        pc.SC_FIRM_INFO_ID,
+        pc.ENTITY_TYPE,
+        -- Parse các trường từ AFTER_DATA_JSON
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.tenTiengViet') AS tenTiengViet,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.diaChi') AS diaChi,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.dienThoai') AS dienThoai,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.soGpTlhdLanDau') AS soGpTlhdLanDau,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.ngayCapGpTlhdLanDau') AS ngayCapGpTlhdLanDau,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.maCongTy') AS maCongTy,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.sanNiemYet') AS sanNiemYet,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.maChungKhoan') AS maChungKhoan,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.vonDieuLe') AS vonDieuLe,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.website') AS website,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.tenTrangThai') AS tenTrangThai,
+        JSON_VALUE(pc.AFTER_DATA_JSON, '$.nganhNgheKinhDoanh') AS nganhNgheKinhDoanh
     FROM SCMS_UAT.SC_FIRM_PROFILE_CHANGE pc
     WHERE pc.ENTITY_TYPE = 'TRU_SO_CHINH'   -- CTCK
 ),
@@ -9899,8 +10261,6 @@ SELECT
                 WHEN 'website' THEN pc.website
                 WHEN 'tenTrangThai' THEN pc.tenTrangThai
                 WHEN 'nganhNgheKinhDoanh' THEN pc.nganhNgheKinhDoanh
-                WHEN 'soVanBan' THEN pc.soVanBan
-                WHEN 'nganhNgheKinhDoanhPhaiSinh' THEN pc.nganhNgheKinhDoanhPhaiSinh
                 ELSE NULL
             END
     END AS gia_tri,
@@ -9923,280 +10283,40 @@ LEFT JOIN profile_change pc ON pc.SC_FIRM_INFO_ID = c.ID
                             AND oc.rpt_id IS NULL
 WHERE p.RECORD_STATUS IN (1, 2)
 ORDER BY c.SHORT_NAME, p.REPORT_YEAR, p.PERIOD,
-         oc.SHEET_CODE, oc.cell_id, icv.ROW_NO;",Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Sàn giao dịch,Sàn giao dịch,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Ngành nghề,Ngành nghề,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Tên công ty chứng khoán,Tên công ty chứng khoán,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Địa chỉ trụ sở chính,Địa chỉ trụ sở chính,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số điện thoại,Số điện thoại,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số giấy phép thành lập và hoạt động lần đầu,Số giấy phép thành lập và hoạt động lần đầu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Ngày giấy phép lần đầu,Ngày giấy phép lần đầu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã số doanh nghiệp,Mã số doanh nghiệp,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Sàn giao dịch cổ phiếu,Sàn giao dịch cổ phiếu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Mã cổ phiếu,Mã cổ phiếu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Vốn điều lệ (Đồng),Vốn điều lệ (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Website,Website,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Trạng thái hoạt động,Trạng thái hoạt động,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Nghiệp vụ được phép hoạt động,Nghiệp vụ được phép hoạt động,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số giấy chứng nhận,Số giấy chứng nhận,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Nghiệp vụ chứng khoán phái sinh,Nghiệp vụ chứng khoán phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Vốn pháp định theo nghiệp vụ được cấp (Đồng),Vốn pháp định theo nghiệp vụ được cấp (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Vốn chủ sở hữu (Đồng),Vốn chủ sở hữu (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Chênh lệch VCSH - vốn pháp định (Đồng),Chênh lệch VCSH - vốn pháp định (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,"Cổ đông, thành viên góp vốn sở hữu từ 10% trở lên vốn điều lệ của 01 CTCK và người có liên quan của cổ đông, thành viên góp vốn đó (nếu có) không sở hữu trên 5% vốn điều lệ của 01 CTCK khác","Cổ đông, thành viên góp vốn sở hữu từ 10% trở lên vốn điều lệ của 01 CTCK và người có liên quan của cổ đông, thành viên góp vốn đó (nếu có) không sở hữu trên 5% vốn điều lệ của 01 CTCK khác",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số lượng Tổng giám đốc / Giám đốc,Số lượng Tổng giám đốc / Giám đốc,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số người có CCHN - Môi giới chứng khoán,Số người có CCHN - Môi giới chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số người có CCHN - Tự doanh chứng khoán,Số người có CCHN - Tự doanh chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số người có CCHN - Bảo lãnh phát hành chứng khoán,Số người có CCHN - Bảo lãnh phát hành chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,,,,,,Đã cấu hình - Chưa có DL,
-50,,Báo cáo giám sát >> Báo cáo Đánh giá về duy trì điều kiện cấp phép thành lập và hoạt động,Số người có CCHN - Tư vấn đầu tư chứng khoán,Số người có CCHN - Tư vấn đầu tư chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
-51,Nga,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Loại báo cáo,Loại báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SSC_SCMS.FORM_REPORT
-SSC_SCMS.FORM_REPORT_PERIODIC","fr.REPORT_TYPE, 
-fr.REPORT_CODE, 
-fr.REPORT_NAME, 
-fr.ACTIVE, 
-frp.FORM_REPORT_ID, 
-frp.REPORT_PERIOD, 
-frp.ACTIVE",,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Kỳ báo cáo,Kỳ báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã báo cáo,Mã báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên báo cáo,Tên báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã sheet,Mã sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SSC_SCMS.FORM_REPORT
-SSC_SCMS.FORM_SHEET","fr.ID,  
-fr.REPORT_CODE, 
-fr.ACTIVE, 
-s.FORM_REPORT_ID, 
-s.SHEET_CODE, 
-s.SHEET_NAME, 
-s.SORT_ORDER",,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên sheet,Tên sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã chỉ tiêu,Mã chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SSC_SCMS.FORM_REPORT
-SSC_SCMS.FORM_SHEET
-SSC_SCMS.FORM_SHEET_CELL
-SSC_SCMS.CAT_INDICATOR","fr.ID, 
-fr.REPORT_CODE, 
-fr.ACTIVE, 
-fs.FORM_REPORT_ID, 
-fs.SHEET_CODE, 
-fs.ACTIVE, 
-fsc.FORM_SHEET_ID, 
-fsc.INDICATOR_ID, 
-fsc.ACTIVE, 
-ci.ID, 
-ci.INDICATOR_CODE, 
-ci.INDICATOR_NAME, 
-ci.ACTIVE",,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên chỉ tiêu,Tên chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên công ty chứng khoán,Tên công ty chứng khoán,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,"SSC_SCMS.MEMBER_REPORT, 
-SSC_SCMS.FORM_REPORT, 
-SSC_SCMS.REPORT_CELL_VALUE,
-SSC_SCMS.FORM_SHEET_ROW, 
-SSC_SCMS.FORM_SHEET_COLUMN","mr.ID, 
-mr.FORM_REPORT_ID, 
-mr.DATA_DATE, 
-mr.RECORD_STATUS, 
-fr.ID, 
-fr.REPORT_CODE, 
-rcv.MEMBER_REPORT_ID, 
-rcv.ITEM_VALUE, 
-rcv.FORM_SHEET_ROW_ID,
-fsc.ID, 
-fsc.FORM_SHEET_ID, 
-fsc.COLUMN_NAME, 
-fsc.COLUMN_CODE,
-fsr.ID,
-fsr.ROW_CODE",,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Địa chỉ trụ sở chính,Địa chỉ trụ sở chính,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số điện thoại,Số điện thoại,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số giấy phép thành lập và hoạt động lần đầu,Số giấy phép thành lập và hoạt động lần đầu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Ngày giấy phép lần đầu
-(Ngày/tháng/năm)","Ngày giấy phép lần đầu
-(Ngày/tháng/năm)",Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã số doanh nghiệp,Mã số doanh nghiệp,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Sàn giao dịch cổ phiếu,Sàn giao dịch cổ phiếu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã cổ phiếu,Mã cổ phiếu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Vốn điều lệ (Đồng),Vốn điều lệ (Đồng),Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Website,Website,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Trạng thái hoạt động,Trạng thái hoạt động,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Nghiệp vụ được phép hoạt động >> Môi giới chứng khoán,Nghiệp vụ được phép hoạt động >> Môi giới chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Nghiệp vụ được phép hoạt động >> Tự doanh chứng khoán,Nghiệp vụ được phép hoạt động >> Tự doanh chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Nghiệp vụ được phép hoạt động >> Bảo lãnh phát hành chứng khoán,Nghiệp vụ được phép hoạt động >> Bảo lãnh phát hành chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Nghiệp vụ được phép hoạt động >> Tư vấn đầu tư chứng khoán,Nghiệp vụ được phép hoạt động >> Tư vấn đầu tư chứng khoán,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hoạt động kinh doanh chứng khoán phái sinh >> Giấy chứng nhận kinh doanh phái sinh,Hoạt động kinh doanh chứng khoán phái sinh >> Giấy chứng nhận kinh doanh phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hoạt động kinh doanh chứng khoán phái sinh >> Môi giới chứng khoán phái sinh,Hoạt động kinh doanh chứng khoán phái sinh >> Môi giới chứng khoán phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hoạt động kinh doanh chứng khoán phái sinh >> Tự doanh chứng khoán phái sinh,Hoạt động kinh doanh chứng khoán phái sinh >> Tự doanh chứng khoán phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hoạt động kinh doanh chứng khoán phái sinh >> Tư vấn đầu tư chứng khoán phái sinh,Hoạt động kinh doanh chứng khoán phái sinh >> Tư vấn đầu tư chứng khoán phái sinh,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Quý I                                                              ,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Quý I                                                              ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Quý II                                    ,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Quý II                                    ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Bán niên                                               ,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Bán niên                                               ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Quý III                                    ,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Quý III                                    ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Quý IV,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Quý IV,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Năm,Hạn chế vay nợ >> Tỷ lệ nợ/vốn chủ sở hữu không vượt quá 5 lần >> Năm,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Quý I                                                              ,"Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Quý I (Đáp ứng, Không đáp ứng)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Quý II                                    ,"Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Quý II (Đáp ứng, Không đáp ứng)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Bán niên                                               ,"Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Bán niên (Đáp ứng, Không đáp ứng)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Quý III                                    ,"Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Quý III (Đáp ứng, Không đáp ứng)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Quý IV,"Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Quý IV (Đáp ứng, Không đáp ứng)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Năm,"Hạn chế vay nợ >> Nợ ngắn hạn tối đa bằng tài sản ngắn hạn >> Năm (Đáp ứng, Không đáp ứng)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Quý I","Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Quý I (Có, Không)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Quý II","Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Quý II (Có, Không)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Bán niên","Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Bán niên (Có, Không)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Quý III","Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Quý III (Có, Không)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Quý IV","Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Quý IV (Có, Không)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Năm","Hạn chế cho vay >> Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT >> Năm (Có, Không)",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 1                                                                                                                                           ,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 1                                                                                                                                           ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 2,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 2,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 3,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 3,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 4,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 4,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 5,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 5,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 6,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 6,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Bán niên,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Bán niên,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 7,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 7,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 8,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 8,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 9,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 9,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 10,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 10,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 11,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 11,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 12,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Tháng 12,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Năm,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu (không vượt quá 200%) >> Năm,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 1                 ,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 1                 ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 2,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 2,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 3,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 3,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 4,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 4,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 5,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 5,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 6,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 6,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Bán niên,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Bán niên,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 7,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 7,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 8,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 8,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 9,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 9,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 10,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 10,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 11,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 11,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 12,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Tháng 12,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Năm,Cho vay giao dịch ký quỹ >> Tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu (không vượt quá 10%) >> Năm,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 1                                                                                                                                                                                                       ,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 1                                                                                                                                                                                                       ,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 2,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 2,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 3,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 3,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 4,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 4,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 5,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 5,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 6,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 6,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 7,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 7,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 8,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 8,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 9,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 9,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 10,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 10,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 11,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 11,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 12,Cho vay giao dịch ký quỹ >> Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức (không được vượt quá 5%) >> Tháng 12,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 1,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 1,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 2,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 2,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 3,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 3,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 4,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 4,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 5,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 5,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 6,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 6,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 7,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 7,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 8,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 8,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 9,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 9,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 10,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 10,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 11,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 11,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 12,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn >> Tháng 12,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 1,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 1,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 2,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 2,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 3,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 3,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 4,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 4,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 5,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 5,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 6,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 6,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 7,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 7,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 8,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 8,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 9,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 9,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 10,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 10,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 11,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 11,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 12,Cho vay giao dịch ký quỹ >> Cho vay giao dịch ký quỹ đối với cổ phiếu do chính công ty chứng khoán bảo lãnh phát hành theo hình thức cam kết chắc chắn từ thời điểm công ty chứng khoán ký hợp đồng bảo lãnh đến hết 6 tháng tính từ khi hoàn tất đợt phát hành >> Tháng 12,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 1","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 1",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 2","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 2",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 3","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 3",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 4","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 4",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 5","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 5",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 6","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 6",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 7","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 7",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 8","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 8",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 9","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 9",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 10","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 10",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 11","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 11",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 12","Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ >> Tháng 12",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 1,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 1,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 2,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 2,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 3,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 3,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 4,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 4,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 5,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 5,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 6,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 6,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 7,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 7,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 8,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 8,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 9,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 9,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 10,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 10,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 11,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 11,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 12,Cho vay giao dịch ký quỹ >> Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của chính CTCK phát hành >> Tháng 12,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Quý I,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Quý I,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Quý II,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Quý II,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Quý III,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Quý III,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Quý IV,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Quý IV,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Năm,Hạn chế đầu tư >> Tổng giá trị đầu tư vào các trái phiếu doanh nhiệp của CTCK không được  vượt quá 70% vốn chủ sở hữu >> Năm,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 1","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 1",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 2","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 2",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 3","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 3",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 4","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 4",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 5","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 5",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 6","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 6",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 7","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 7",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 8","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 8",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 9","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 9",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 10","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 10",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 11","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 11",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 12","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Tháng 12",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Quý I","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Quý I",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Quý II","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Quý II",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Quý III","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Quý III",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Quý IV","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Quý IV",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Năm","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư vào cổ phiếu đầu tư vào cổ phiếu hoặc phần vốn góp của công ty có sở hữu trên 50% vốn điều lệ của CTCK >> Năm",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 1","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 1",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 2","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 2",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 3","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 3",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 4","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 4",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 5","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 5",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 6","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 6",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 7","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 7",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 8","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 8",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 9","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 9",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 10","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 10",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 11","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 11",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 12","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện cùng với người có liên quan đầu tư từ 5% trở lên vốn điều lệ của CTCK khác >> Tháng 12",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 1","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 1",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 2","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 2",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 3","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 3",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 4","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 4",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 5","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 5",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 6","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 6",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 7","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 7",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 8","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 8",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 9","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 9",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 10","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 10",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 11","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 11",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 12","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 20% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức niêm yết >> Tháng 12",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 15% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức chưa niêm yết >> Quý I","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 15% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức chưa niêm yết >> Quý I",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 15% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức chưa niêm yết >> Quý II","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 15% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức chưa niêm yết >> Quý II",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 15% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức chưa niêm yết >> Quý III","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 15% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức chưa niêm yết >> Quý III",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 15% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức chưa niêm yết >> Quý IV","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư quá 15% tổng số cổ phiếu, chứng chỉ quỹ đang lưu hành của một tổ chức chưa niêm yết >> Quý IV",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 10% tổng vốn góp của một công ty trách nhiệm hữu hạn hoặc dự án kinh doanh >> Quý I","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 10% tổng vốn góp của một công ty trách nhiệm hữu hạn hoặc dự án kinh doanh >> Quý I",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 10% tổng vốn góp của một công ty trách nhiệm hữu hạn hoặc dự án kinh doanh >> Quý II","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 10% tổng vốn góp của một công ty trách nhiệm hữu hạn hoặc dự án kinh doanh >> Quý II",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 10% tổng vốn góp của một công ty trách nhiệm hữu hạn hoặc dự án kinh doanh >> Quý III","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 10% tổng vốn góp của một công ty trách nhiệm hữu hạn hoặc dự án kinh doanh >> Quý III",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 10% tổng vốn góp của một công ty trách nhiệm hữu hạn hoặc dự án kinh doanh >> Quý IV","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 10% tổng vốn góp của một công ty trách nhiệm hữu hạn hoặc dự án kinh doanh >> Quý IV",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 15% vốn chủ sở hữu vào một tổ chức hoặc dự án kinh doanh >> Quý I","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 15% vốn chủ sở hữu vào một tổ chức hoặc dự án kinh doanh >> Quý I",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 15% vốn chủ sở hữu vào một tổ chức hoặc dự án kinh doanh >> Quý II","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 15% vốn chủ sở hữu vào một tổ chức hoặc dự án kinh doanh >> Quý II",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 15% vốn chủ sở hữu vào một tổ chức hoặc dự án kinh doanh >> Quý III","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 15% vốn chủ sở hữu vào một tổ chức hoặc dự án kinh doanh >> Quý III",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 15% vốn chủ sở hữu vào một tổ chức hoặc dự án kinh doanh >> Quý IV","Hạn chế đầu tư >> CTCK không được trực tiếp hoặc ủy thác cho tổ chức, cá nhân khác thực hiện đầu tư hoặc góp vốn quá 15% vốn chủ sở hữu vào một tổ chức hoặc dự án kinh doanh >> Quý IV",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> Đầu tư quá 70% vốn chủ sở hữu vào cổ phiếu, phần vốn góp và dự án kinh doanh >> Quý I","Hạn chế đầu tư >> Đầu tư quá 70% vốn chủ sở hữu vào cổ phiếu, phần vốn góp và dự án kinh doanh >> Quý I",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> Đầu tư quá 70% vốn chủ sở hữu vào cổ phiếu, phần vốn góp và dự án kinh doanh >> Quý II","Hạn chế đầu tư >> Đầu tư quá 70% vốn chủ sở hữu vào cổ phiếu, phần vốn góp và dự án kinh doanh >> Quý II",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> Đầu tư quá 70% vốn chủ sở hữu vào cổ phiếu, phần vốn góp và dự án kinh doanh >> Quý III","Hạn chế đầu tư >> Đầu tư quá 70% vốn chủ sở hữu vào cổ phiếu, phần vốn góp và dự án kinh doanh >> Quý III",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> Đầu tư quá 70% vốn chủ sở hữu vào cổ phiếu, phần vốn góp và dự án kinh doanh >> Quý IV","Hạn chế đầu tư >> Đầu tư quá 70% vốn chủ sở hữu vào cổ phiếu, phần vốn góp và dự án kinh doanh >> Quý IV",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> Đầu tư quá 20% vốn chủ sở hữu vào cổ phiếu chưa niêm yết, phần vốn góp và dự án kinh doanh >> Quý I","Hạn chế đầu tư >> Đầu tư quá 20% vốn chủ sở hữu vào cổ phiếu chưa niêm yết, phần vốn góp và dự án kinh doanh >> Quý I",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> Đầu tư quá 20% vốn chủ sở hữu vào cổ phiếu chưa niêm yết, phần vốn góp và dự án kinh doanh >> Quý II","Hạn chế đầu tư >> Đầu tư quá 20% vốn chủ sở hữu vào cổ phiếu chưa niêm yết, phần vốn góp và dự án kinh doanh >> Quý II",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> Đầu tư quá 20% vốn chủ sở hữu vào cổ phiếu chưa niêm yết, phần vốn góp và dự án kinh doanh >> Quý III","Hạn chế đầu tư >> Đầu tư quá 20% vốn chủ sở hữu vào cổ phiếu chưa niêm yết, phần vốn góp và dự án kinh doanh >> Quý III",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
-51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Hạn chế đầu tư >> Đầu tư quá 20% vốn chủ sở hữu vào cổ phiếu chưa niêm yết, phần vốn góp và dự án kinh doanh >> Quý IV","Hạn chế đầu tư >> Đầu tư quá 20% vốn chủ sở hữu vào cổ phiếu chưa niêm yết, phần vốn góp và dự án kinh doanh >> Quý IV",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,Chưa cấu hình,,,,,Đã cấu hình - Chưa có DL,
+         oc.SHEET_CODE, oc.cell_id, icv.ROW_NO;",Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Sàn giao dịch,Sàn giao dịch,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Ngành nghề,Ngành nghề,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tên công ty chứng khoán,Tên công ty chứng khoán,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Địa chỉ trụ sở chính,Địa chỉ trụ sở chính,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số điện thoại,Số điện thoại,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số giấy phép thành lập và hoạt động lần đầu,Số giấy phép thành lập và hoạt động lần đầu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Ngày giấy phép lần đầu (Tháng/ngày/năm),Ngày giấy phép lần đầu (Tháng/ngày/năm),Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã số doanh nghiệp,Mã số doanh nghiệp,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Sàn giao dịch cổ phiếu,Sàn giao dịch cổ phiếu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Mã cổ phiếu,Mã cổ phiếu,Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Vốn điều lệ (Đồng),Vốn điều lệ (Đồng),Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Website,Website,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Trạng thái hoạt động,Trạng thái hoạt động,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Nghiệp vụ được phép hoạt động,Nghiệp vụ được phép hoạt động,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tỷ lệ nợ/vốn chủ sở hữu,Tỷ lệ nợ/vốn chủ sở hữu,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tỷ lệ nợ ngắn hạn/Tài sản ngắn hạn,Tỷ lệ nợ ngắn hạn/Tài sản ngắn hạn,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT","Cho vay đối với chủ sở hữu, cổ đông lớn, thành viên HĐQT, BKS, HĐTV, KTT",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu,Tỷ lệ dư nợ cho vay ký quỹ/Vốn chủ sở hữu,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng cổ phiếu có tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu >10%,Số lượng cổ phiếu có tỷ lệ dư nợ cho vay ký quỹ đối với một mã cổ phiếu/Vốn chủ sở hữu >10%,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức,Tổng số chứng khoán cho vay giao dịch ký quỹ/Tổng số chứng khoán niêm yết của một tổ chức,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng mã cổ phiếu cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn,Số lượng mã cổ phiếu cho vay giao dịch ký quỹ ngoài danh sách cổ phiếu đủ tiêu chuẩn,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng mã chứng khoán vi phạm cho vay ký quỹ đối với CP do CTCK bảo lãnh phát hành,Số lượng mã chứng khoán vi phạm cho vay ký quỹ đối với CP do CTCK bảo lãnh phát hành,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,"Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ","Cho khách hàng vay tiền để thực hiện giao dịch ký quỹ đối với cổ phiếu của công ty niêm yết sở hữu 50% trở lên vốn điều lệ của CTCK và đối với cổ phiếu của công ty niêm yết, cổ phiếu của công ty đăng ký giao dịch Upcom do CTCK sở hữu từ 50% trở lên vốn điều lệ",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng mã chứng khoán vi phạm cho vay ký quỹ liên quan sở hữu chéo ≥50%,Số lượng mã chứng khoán vi phạm cho vay ký quỹ liên quan sở hữu chéo ≥50%,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tỷ lệ Đầu tư trái phiếu doanh nghiệp/Vốn chủ sở hữu,Tỷ lệ Đầu tư trái phiếu doanh nghiệp/Vốn chủ sở hữu,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng mã chứng khoán/tổ chức vi phạm đầu tư vào tổ chức sở hữu >50% VĐL CTCK,Số lượng mã chứng khoán/tổ chức vi phạm đầu tư vào tổ chức sở hữu >50% VĐL CTCK,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng CTCK khác bị đầu tư vượt ngưỡng 5% VĐL,Số lượng CTCK khác bị đầu tư vượt ngưỡng 5% VĐL,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng tổ chức niêm yết bị đầu tư vượt ngưỡng 20% CP/CCQ lưu hành,Số lượng tổ chức niêm yết bị đầu tư vượt ngưỡng 20% CP/CCQ lưu hành,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng tổ chức chưa niêm yết bị đầu tư vượt ngưỡng 15% CP/CCQ lưu hành,Số lượng tổ chức chưa niêm yết bị đầu tư vượt ngưỡng 15% CP/CCQ lưu hành,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng công ty TNHH/dự án kinh doanh bị góp vốn vượt ngưỡng 10%,Số lượng công ty TNHH/dự án kinh doanh bị góp vốn vượt ngưỡng 10%,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Số lượng tổ chức/dự án kinh doanh bị đầu tư vượt ngưỡng 15% VCSH,Số lượng tổ chức/dự án kinh doanh bị đầu tư vượt ngưỡng 15% VCSH,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tỷ lệ Tổng đầu tư (CP + vốn góp + dự án KD)/Vốn chủ sở hữu,Tỷ lệ Tổng đầu tư (CP + vốn góp + dự án KD)/Vốn chủ sở hữu,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
+51,,Báo cáo giám sát >> Báo cáo giám sát quy định về tài chính,Tỷ lệ Đầu tư (CP chưa niêm yết + vốn góp + dự án KD)/Vốn chủ sở hữu,Tỷ lệ Đầu tư (CP chưa niêm yết + vốn góp + dự án KD)/Vốn chủ sở hữu,Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Pending,"Chưa có nguồn dữ liệu để khai thác, chưa có mã chỉ tiêu",,,,,Đã cấu hình - Chưa có DL,
 52,,Báo cáo chứng quyền có đảm bảo >> Số lượng chứng quyền có bảo đảm phát hành,Loại báo cáo,Loại báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT, 
 SCMS_UAT.FORM_REPORT_DEEP_CONFIG","fr.ID, fr.REPORT_CODE, 
 fr.REPORT_NAME, 
@@ -16779,7 +16899,7 @@ ORDER BY c.SHORT_NAME, p.REPORT_PERIOD, p.REPORT_YEAR, p.PERIOD,
  BCTHHD_CTCK | II.1 | SEC_1 | 10 | 4 | TS042",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
 71,,Báo cáo theo Thông tư 121/2020/TT-BTC >> Số lượng tài khoản giao dịch chứng khoán của nhà đầu tư,II.2. Khách hàng nước ngoài >> Tổ chức >> Số lượng tài khoản có phát sinh giao dịch trong kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
  BCTHHD_CTCK | II.1 | SEC_1 | 10 | 5 | TS043",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
-71,,Báo cáo theo Thông tư 121/2020/TT-BTC >> Số lượng tài khoản giao dịch chứng khoán của nhà đầu tư,TỔNG >> Số lượng tài khoản	>> Trong kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
+71,,Báo cáo theo Thông tư 121/2020/TT-BTC >> Số lượng tài khoản giao dịch chứng khoán của nhà đầu tư,"TỔNG >> Số lượng tài khoản	>> Trong kỳ","REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
  BCTHHD_CTCK | II.1 | SEC_1 | 11 | 3 | TS044",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
 71,,Báo cáo theo Thông tư 121/2020/TT-BTC >> Số lượng tài khoản giao dịch chứng khoán của nhà đầu tư,TỔNG >> Số lượng tài khoản >> Tăng/Giảm,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
  BCTHHD_CTCK | II.1 | SEC_1 | 11 | 4 | TS045",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
@@ -50981,9 +51101,9 @@ HDTTTGDCK | CT | SEC_1 | 17 | 4 | TS036",Data Explorer,Chỉ tiêu cơ sở,Dễ
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,SL tổng,SL đã map,,,,,,,,,,,,,,,,,,,,,,
 ,,Dashboard,241,241,,,,,,,,,,,,,,,,,,,,,,
-,,Data Explorer,8017,7673,,,,,,,,,,,,,,,,,,,,,,
+,,Data Explorer,7860,7516,,,,,,,,,,,,,,,,,,,,,,
 ,,Báo cáo,0,0,,,,,,,,,,,,,,,,,,,,,,
-,,Tổng số chỉ tiêu:,8258,,,,,,,,,,,,,,,,,,,,,,,
+,,Tổng số chỉ tiêu:,8101,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,Dashboard,,,,,,,,,,,,,,,,,,,,,,,,,
 ,Tổng,Đã map (SL),Đã map (%),,,,,,,,,,,,,,,,,,,,,,,
@@ -50991,4 +51111,4 @@ HDTTTGDCK | CT | SEC_1 | 17 | 4 | TS036",Data Explorer,Chỉ tiêu cơ sở,Dễ
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,Data Explorer,,,,,,,,,,,,,,,,,,,,,,,,,
 ,Tổng,Đã map (SL),Đã map (%),,,,,,,,,,,,,,,,,,,,,,,
-,8017,7575,94.49,,,,,,,,,,,,,,,,,,,,,,,
+,7860,7626,97.02,,,,,,,,,,,,,,,,,,,,,,,
