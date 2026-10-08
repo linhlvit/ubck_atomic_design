@@ -1,12 +1,12 @@
 # DTM_GSDC_HLD — High Level Design
 **Module:** GSDC — Giám sát Công ty Đại chúng
 **Phiên bản:** 3.0 — Phase 1 Draft
-**Thay đổi 2026-10-08 (sửa kiểu dữ liệu — tràn `int` thành số âm):** `Fact Public Company Listing Info Snapshot` (6 cột; bảng đã được dev tách thành `listed_share_snpst`/`foreign_holding_snpst`/`state_capital_snpst` — áp dụng cùng kiểu cho 3 bảng tách): `outstanding_share_quantity`, `total_issued_share_quantity`, `treasury_share_quantity`, `free_float_share_quantity`, `current_foreign_holding_quantity`, `remaining_foreign_holding_quantity` đổi `Small Counter`/`int` → `Large Counter`/`bigint` theo Atomic nguồn (BIGINT). Flat table ClickHouse đã là `Int64`; bảng Datamart (Iceberg) cần ALTER/tạo lại cột sang `bigint`. Công thức KPI không đổi.
+**Thay đổi 2026-10-08 (đồng bộ code dev — báo cáo drift GSDC 2026-10-06):** (1) **Tách `Fact Public Company Listing Info Snapshot` thành 3 Fact**: `Fact Public Company Listed Share Snapshot` (`fct_public_company_listed_share_snpst`, K_GSDC_1381–1384), `Fact Public Company Foreign Holding Snapshot` (`fct_public_company_foreign_holding_snpst`, K_GSDC_1385–1388 + `foreign_holding_value` cho K_NDTNN_51), `Fact Public Company State Capital Snapshot` (`fct_public_company_state_capital_snpst`, K_GSDC_1389–1390) — BA chốt tầng khai thác lọc MAX(snpst_dt) ≤ ngày chặn độc lập cho từng nhóm chỉ số; mọi cột số lượng `bigint` (tràn `int` thành số âm); không có `trans_dt_dim_id` (mỗi mã CK có ngày giao dịch cuối khác nhau — dev xác nhận). (2) **5 bảng `*_score_snpst` → `*_evaluation_snpst`**: thêm 34 cột `*_assessment` (text `<mức đánh giá>: <kết quả định tính>`) + `credit_rating_tp_code` (xếp loại A/B/C/D) ở bảng risk; `snpst_dt_dim_id` = yyyyMMdd tương đương `cdr_dt_dim_id` (Data Modeler xác nhận). (3) **`fct_public_company_financial_smy_snpst`**: thêm cột `*_ytd` (net_revenue/net_profit/pre_tax_profit/ROA/ROE) + 7 cột `*_beginning` (đầu kỳ); nguồn Atomic đổi sang `financial_report` / `fr_catalog` / `fr_row` / `fr_column` / `pc_report_submission` (SCD2); decimal quy ước mới **(38,8)** cho chỉ tiêu cơ sở, **(30,6)** cho cột tính từ phép chia. (4) **`fct_public_company_financial_rpt_val`** `data_val` decimal(38,8), nối Fact–Dim theo `financial_catalog_code`; **`financial_rpt_catalog_dim`** thêm `financial_catalog_code`, `financial_rpt_catalog_code` = `rpt_code` (report_cd). (5) **5 bảng Fact-report**: `regulatory_compliance_rpt` (đổi `rpt_due_count`/`rpt_submitted_count` → `company_due_count`/`company_submitted_count`, bỏ `profitable_company_count_year_n1`, thêm `profitable_company_count_ytd` + `large_scale_company_count`), `exchange_financial_summary_rpt` (+25 cột), `financial_yoy_rpt` (grain cross-tab sàn × ngành), `industry_financial_rpt` / `multi_period_financial_rpt` (+`rpt_quarter`, +cột ytd). (6) **2 bảng mới**: `public_company_exchange_industry_financial_rpt` (Cụm 18) và `public_company_financial_ytd_chg_rpt` (Cụm 19, trung gian, không có bản ClickHouse). (7) `public_company_dim` thêm `equity_listing_exchange_name`; `fct_violation_rpt_snpst` nguồn 'đã nộp' = `financial_report` + `pc_report_submission` (approved), grain giữ nguyên theo code (dev xác nhận Q9). (8) Flat ClickHouse: thêm cột/đổi decimal theo LLD, flat `rpt_val` dùng `JOIN` (không `LEFT JOIN`) `public_company_dim`, thêm flat `exchange_industry_financial_rpt` và 2 flat Dimension 1-1 theo code dev (`gsdc_public_company_flat`, `gsdc_industry_flat` — ngoại lệ quy tắc Phase 3, xem O_GSDC_35). (9) **Cụm 15 tách thành Cụm 15/16/17** (mỗi Cụm 1 Mart — quy ước Bước 5B #5). Các điểm chưa chắc/giả định xem **O_GSDC_30–37** (Section 5).
 **Phạm vi:**
 - Màn hình 1: **Phân loại & Xếp hạng Rủi ro Doanh nghiệp Đại chúng** (5 tab: Tổng hợp / Tuân thủ / Phát hành / Tài chính / Phi tài chính & M-Score)
 - Màn hình 2: **Giám sát Tổng hợp** (5 tab sàn: Tổng hợp / HOSE / HNX / UPCoM / Chưa niêm yết — 3 nhóm nội dung)
 - Màn hình 3 *(READY)*: **Data Explorer — Dữ liệu tài chính doanh nghiệp** (DB21–32 + DB39: chi tiết BCTC theo loại hình DN + hệ số tài chính cơ bản — dùng `Fact Public Company Financial Report Value`, Atomic đủ 5 entity Financial Report Value, quy tắc khai thác theo SQL BA áp dụng cho toàn bộ Nhóm 19-30 + 37)
-- Màn hình 4: **Báo cáo giám sát CTDC** (DB40–43: BC01.1 / BC01.2 / BC01.3 / BC22 — 4 bảng Fact-report riêng, ETL populate theo batch, không FK Dimension runtime)
+- Màn hình 4: **Báo cáo giám sát CTDC** (DB40–43: BC01.1 / BC01.2 / BC01.3 / BC22 — 4 bảng Fact-report riêng + 3 bảng Fact-report bổ sung 2026-10-08 (YoY / Exchange Industry / YTD Change), ETL populate theo batch, không FK Dimension runtime)
 - Màn hình 5 *(PENDING)*: **Data Explorer — Dữ liệu thông tin niêm yết** (DB33 — nguồn MSS chưa có Atomic)
 - Màn hình 6 *(READY — Atomic draft)*: **Data Explorer — Dữ liệu chấm điểm phân loại CTDC** (DB34–38 — reuse KPI từ Nhóm 1–5)
 
@@ -18,7 +18,7 @@
 
 Toàn bộ 5 Nhóm (Tổng hợp, Tuân thủ, Phát hành, Tài chính, Phi tài chính & M-Score) có nguồn từ `IDS.EVALUATIONS` / `EVALUATION_DETAILS` / `EVALUATION_CRITERIA` / `EVALUATION_GROUPS` / `EVALUATION_PERIODS`. Atomic entity tương ứng `design_status: draft`, chưa approved (xem O_GSDC_1). Tách riêng theo từng Fact bên dưới để dễ theo dõi — mọi Fact đều dùng chung `Public Company Dimension` và `Calendar Date Dimension` (xem Cụm 6, Section 4 Reuse Analysis).
 
-##### Cụm 1: Điểm chấm & Xếp loại CTDC (Fact Public Company Risk Score Snapshot) (Nhóm 1)
+##### Cụm 1: Điểm chấm & Xếp loại CTDC (Fact Public Company Risk Evaluation Snapshot) (Nhóm 1)
 
 ```mermaid
 flowchart LR
@@ -37,7 +37,7 @@ flowchart LR
         Public_Company_Evaluation_Period_c1["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_public_company_risk_score_snpst["Fact Public Company Risk Score Snapshot"]
+        fct_public_company_risk_evaluation_snpst["Fact Public Company Risk Evaluation Snapshot"]
         public_company_dim_c1["Public Company Dimension"]
         cdr_dt_dim_c1["Calendar Date Dimension"]
     end
@@ -48,14 +48,14 @@ flowchart LR
     IDS_EVALUATION_PERIODS_c1 --> Public_Company_Evaluation_Period_c1
     Public_Company_c1 --> public_company_dim_c1
     Public_Company_Evaluation_Period_c1 --> cdr_dt_dim_c1
-    Public_Company_Evaluation_c1 --> fct_public_company_risk_score_snpst
-    Public_Company_Evaluation_Detail_c1 --> fct_public_company_risk_score_snpst
-    Public_Company_Evaluation_Group_c1 --> fct_public_company_risk_score_snpst
-    public_company_dim_c1 --> fct_public_company_risk_score_snpst
-    cdr_dt_dim_c1 --> fct_public_company_risk_score_snpst
+    Public_Company_Evaluation_c1 --> fct_public_company_risk_evaluation_snpst
+    Public_Company_Evaluation_Detail_c1 --> fct_public_company_risk_evaluation_snpst
+    Public_Company_Evaluation_Group_c1 --> fct_public_company_risk_evaluation_snpst
+    public_company_dim_c1 --> fct_public_company_risk_evaluation_snpst
+    cdr_dt_dim_c1 --> fct_public_company_risk_evaluation_snpst
 ```
 
-##### Cụm 2: Điểm chấm & Xếp loại CTDC (Fact Public Company Compliance Score Snapshot) (Nhóm 2)
+##### Cụm 2: Điểm chấm & Xếp loại CTDC (Fact Public Company Compliance Evaluation Snapshot) (Nhóm 2)
 
 ```mermaid
 flowchart LR
@@ -72,7 +72,7 @@ flowchart LR
         Public_Company_Evaluation_Period_c2["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_public_company_compliance_score_snpst["Fact Public Company Compliance Score Snapshot"]
+        fct_public_company_compliance_evaluation_snpst["Fact Public Company Compliance Evaluation Snapshot"]
         public_company_dim_c2["Public Company Dimension"]
         cdr_dt_dim_c2["Calendar Date Dimension"]
     end
@@ -82,13 +82,13 @@ flowchart LR
     IDS_EVALUATION_PERIODS_c2 --> Public_Company_Evaluation_Period_c2
     Public_Company_c2 --> public_company_dim_c2
     Public_Company_Evaluation_Period_c2 --> cdr_dt_dim_c2
-    Public_Company_Evaluation_Detail_c2 --> fct_public_company_compliance_score_snpst
-    Public_Company_Evaluation_Criterion_c2 --> fct_public_company_compliance_score_snpst
-    public_company_dim_c2 --> fct_public_company_compliance_score_snpst
-    cdr_dt_dim_c2 --> fct_public_company_compliance_score_snpst
+    Public_Company_Evaluation_Detail_c2 --> fct_public_company_compliance_evaluation_snpst
+    Public_Company_Evaluation_Criterion_c2 --> fct_public_company_compliance_evaluation_snpst
+    public_company_dim_c2 --> fct_public_company_compliance_evaluation_snpst
+    cdr_dt_dim_c2 --> fct_public_company_compliance_evaluation_snpst
 ```
 
-##### Cụm 3: Điểm chấm & Xếp loại CTDC (Fact Public Company Issuance Score Snapshot) (Nhóm 3)
+##### Cụm 3: Điểm chấm & Xếp loại CTDC (Fact Public Company Issuance Evaluation Snapshot) (Nhóm 3)
 
 ```mermaid
 flowchart LR
@@ -105,7 +105,7 @@ flowchart LR
         Public_Company_Evaluation_Period_c3["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_public_company_issuance_score_snpst["Fact Public Company Issuance Score Snapshot"]
+        fct_public_company_issuance_evaluation_snpst["Fact Public Company Issuance Evaluation Snapshot"]
         public_company_dim_c3["Public Company Dimension"]
         cdr_dt_dim_c3["Calendar Date Dimension"]
     end
@@ -115,13 +115,13 @@ flowchart LR
     IDS_EVALUATION_PERIODS_c3 --> Public_Company_Evaluation_Period_c3
     Public_Company_c3 --> public_company_dim_c3
     Public_Company_Evaluation_Period_c3 --> cdr_dt_dim_c3
-    Public_Company_Evaluation_Detail_c3 --> fct_public_company_issuance_score_snpst
-    Public_Company_Evaluation_Criterion_c3 --> fct_public_company_issuance_score_snpst
-    public_company_dim_c3 --> fct_public_company_issuance_score_snpst
-    cdr_dt_dim_c3 --> fct_public_company_issuance_score_snpst
+    Public_Company_Evaluation_Detail_c3 --> fct_public_company_issuance_evaluation_snpst
+    Public_Company_Evaluation_Criterion_c3 --> fct_public_company_issuance_evaluation_snpst
+    public_company_dim_c3 --> fct_public_company_issuance_evaluation_snpst
+    cdr_dt_dim_c3 --> fct_public_company_issuance_evaluation_snpst
 ```
 
-##### Cụm 4: Điểm chấm & Xếp loại CTDC (Fact Public Company Financial Score Snapshot) (Nhóm 4)
+##### Cụm 4: Điểm chấm & Xếp loại CTDC (Fact Public Company Financial Evaluation Snapshot) (Nhóm 4)
 
 ```mermaid
 flowchart LR
@@ -138,7 +138,7 @@ flowchart LR
         Public_Company_Evaluation_Period_c4["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_public_company_financial_score_snpst["Fact Public Company Financial Score Snapshot"]
+        fct_public_company_financial_evaluation_snpst["Fact Public Company Financial Evaluation Snapshot"]
         public_company_dim_c4["Public Company Dimension"]
         cdr_dt_dim_c4["Calendar Date Dimension"]
     end
@@ -148,13 +148,13 @@ flowchart LR
     IDS_EVALUATION_PERIODS_c4 --> Public_Company_Evaluation_Period_c4
     Public_Company_c4 --> public_company_dim_c4
     Public_Company_Evaluation_Period_c4 --> cdr_dt_dim_c4
-    Public_Company_Evaluation_Detail_c4 --> fct_public_company_financial_score_snpst
-    Public_Company_Evaluation_Criterion_c4 --> fct_public_company_financial_score_snpst
-    public_company_dim_c4 --> fct_public_company_financial_score_snpst
-    cdr_dt_dim_c4 --> fct_public_company_financial_score_snpst
+    Public_Company_Evaluation_Detail_c4 --> fct_public_company_financial_evaluation_snpst
+    Public_Company_Evaluation_Criterion_c4 --> fct_public_company_financial_evaluation_snpst
+    public_company_dim_c4 --> fct_public_company_financial_evaluation_snpst
+    cdr_dt_dim_c4 --> fct_public_company_financial_evaluation_snpst
 ```
 
-##### Cụm 5: Điểm chấm & Xếp loại CTDC (Fact Public Company Non-Financial Score Snapshot) (Nhóm 5)
+##### Cụm 5: Điểm chấm & Xếp loại CTDC (Fact Public Company Non-Financial Evaluation Snapshot) (Nhóm 5)
 
 ```mermaid
 flowchart LR
@@ -171,7 +171,7 @@ flowchart LR
         Public_Company_Evaluation_Period_c5["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_public_company_nonfinancial_score_snpst["Fact Public Company Non-Financial Score Snapshot"]
+        fct_public_company_nonfinancial_evaluation_snpst["Fact Public Company Non-Financial Evaluation Snapshot"]
         public_company_dim_c5["Public Company Dimension"]
         cdr_dt_dim_c5["Calendar Date Dimension"]
     end
@@ -181,10 +181,10 @@ flowchart LR
     IDS_EVALUATION_PERIODS_c5 --> Public_Company_Evaluation_Period_c5
     Public_Company_c5 --> public_company_dim_c5
     Public_Company_Evaluation_Period_c5 --> cdr_dt_dim_c5
-    Public_Company_Evaluation_Detail_c5 --> fct_public_company_nonfinancial_score_snpst
-    Public_Company_Evaluation_Criterion_c5 --> fct_public_company_nonfinancial_score_snpst
-    public_company_dim_c5 --> fct_public_company_nonfinancial_score_snpst
-    cdr_dt_dim_c5 --> fct_public_company_nonfinancial_score_snpst
+    Public_Company_Evaluation_Detail_c5 --> fct_public_company_nonfinancial_evaluation_snpst
+    Public_Company_Evaluation_Criterion_c5 --> fct_public_company_nonfinancial_evaluation_snpst
+    public_company_dim_c5 --> fct_public_company_nonfinancial_evaluation_snpst
+    cdr_dt_dim_c5 --> fct_public_company_nonfinancial_evaluation_snpst
 ```
 
 > **Ghi chú `Public Company Evaluation Period`:** Entity Atomic tương ứng `IDS.EVALUATION_PERIODS` (physical name `pc_evaluation_period`, `design_status: draft`) map trực tiếp vào `Calendar Date Dimension` (`cdr_dt_dim`) qua `evaluation_year`/`evaluation_month` — không tạo Dimension riêng, tái sử dụng `Calendar Date Dimension` đã có trong Reuse Analysis (Section 4).
@@ -491,7 +491,9 @@ flowchart LR
 
 ---
 
-##### Cụm 15: Cơ cấu khối lượng CP niêm yết & Sở hữu nước ngoài (Fact Public Company Listing Info Snapshot) (Nhóm 31)
+##### Cụm 15: Khối lượng CP niêm yết (Fact Public Company Listed Share Snapshot) (Nhóm 31)
+
+> **[TÁCH 2026-10-08]** Cụm 15 gốc (Fact Listing Info) tách theo code dev thành **Cụm 15** (Listed Share), **Cụm 16** (Foreign Holding), **Cụm 17** (State Capital) — mỗi Cụm 1 Mart (quy ước Bước 5B #5). Các ghi chú lịch sử bên dưới áp dụng chung cho cả 3 Cụm.
 
 > **[MỚI 2026-09-07 — Kịch bản A, PENDING → READY]** 2 entity VSDC theo `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` (Bảng 1/19/27 và Bảng 9) — **ngoại lệ VSDC** (cùng cách các module GSTT/PTTT/TKNB/NDTNN đang dùng): nguồn là biểu mẫu báo cáo định kỳ Thông tư 138/2025/TT-BTC, chưa có CSDL nguồn sống để khảo sát source-survey; **chưa có file YAML trong `DataModel/Atomic/`** (ghi chú trước đây khẳng định 'đã grep xác nhận tồn tại' là sai, đã sửa 2026-10-02): `Listed Share Info` (`listed_share_info`, cơ cấu khối lượng CP: lưu hành/niêm yết/quỹ/tự do chuyển nhượng) và `Foreign Ownership Info` (`foreign_ownership_info`, tỷ lệ/khối lượng sở hữu nước ngoài: FOL/hiện tại/room còn lại). 8/10 KPI của Nhóm 31 (K_GSDC_1381-1388) chuyển READY.
 >
@@ -503,33 +505,136 @@ flowchart LR
 flowchart LR
     subgraph SRC["Staging"]
         VSDC_LSIS["VSDC.outstanding_shares + listed_securities_list → listed_share_info"]
-        VSDC_FOIS["VSDC.foreign_investor_info → foreign_ownership_info"]
         IDS_COMPANY_PROFILES_c15["IDS.COMPANY_PROFILES"]
-        IDS_STATE_CAPITAL_c15["IDS.STATE_CAPITAL"]
     end
     subgraph SIL["Atomic"]
         Listed_Share_Info["Listed Share Info"]
-        Foreign_Ownership_Info["Foreign Ownership Info"]
         Public_Company_c15["Public Company"]
-        Public_Company_State_Capital_c15["Public Company State Capital"]
     end
     subgraph GOLD["Datamart"]
-        fct_public_company_listing_info_snpst["Fact Public Company Listing Info Snapshot"]
+        fct_public_company_listed_share_snpst["Fact Public Company Listed Share Snapshot"]
         public_company_dim_c15["Public Company Dimension"]
     end
     VSDC_LSIS --> Listed_Share_Info
-    VSDC_FOIS --> Foreign_Ownership_Info
     IDS_COMPANY_PROFILES_c15 --> Public_Company_c15
-    IDS_STATE_CAPITAL_c15 --> Public_Company_State_Capital_c15
-    Listed_Share_Info --> fct_public_company_listing_info_snpst
-    Foreign_Ownership_Info --> fct_public_company_listing_info_snpst
-    Public_Company_c15 --> fct_public_company_listing_info_snpst
-    Public_Company_State_Capital_c15 --> fct_public_company_listing_info_snpst
+    Listed_Share_Info --> fct_public_company_listed_share_snpst
     Public_Company_c15 --> public_company_dim_c15
-    public_company_dim_c15 --> fct_public_company_listing_info_snpst
+    public_company_dim_c15 --> fct_public_company_listed_share_snpst
 ```
 
 > **Ghi chú:** `Public Company Dimension` reuse từ Cụm 6, chỉ thêm edge JOIN mới (qua `equity_ticker_symbol`) — không tạo Dimension mới, không thêm cột. `Calendar Date Dimension` reuse Whitelist Lớp 1, xác định qua `ds_snpst_dt` của 2 entity nguồn VSDC. `Public Company` dùng làm bridge join key (`equity_ticker_symbol` → `pc_code`) để nối `Public Company State Capital` (không có ticker) vào cùng grain Fact — measure K_GSDC_1389/1390 flatten trực tiếp xuống `pc_state_capital`, không tham chiếu `public_company_dim`.
+
+---
+
+##### Cụm 16: Sở hữu nước ngoài (Fact Public Company Foreign Holding Snapshot) (Nhóm 31)
+
+> **[TÁCH 2026-10-08]** Tách từ Cụm 15 (Listing Info) theo code dev (DDL `20261005_gsdc_split_listing_info`) — BA chốt: tầng khai thác lọc MAX(snpst_dt) ≤ ngày chặn **độc lập** cho từng nhóm chỉ số. Driving `foreign_ownership_info` (`src_stm_code = 'VSDC_FOREIGN_INVESTOR_INFO'`); `foreign_holding_value` (K_NDTNN_51, reuse NDTNN) lấy thêm từ `security_trading_snapshot`. Dev đặt tên `foreign_holding` để tránh trùng tên bảng `foreign_ownership` của NDTNN. Cột số lượng (`current_foreign_holding_quantity`, `remaining_foreign_holding_quantity`) `bigint` (tràn `int` → số âm). Không có `trans_dt_dim_id` (ngày giao dịch cuối của từng mã CK khác nhau — dev xác nhận Q5). Flat ClickHouse giữ các cột denormalize của flat cũ (`snpst_cdr_dt`, `public_company_code`, `equity_ticker_symbol`, `public_company_nm`, `equity_listing_exchange_code`, `business_line_level_1_code`, `classification_business_line_nm`).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        VSDC_FOIS["VSDC.foreign_investor_info → foreign_ownership_info"]
+        MDDS_STS_c16["MDDS.security_trading_snapshot"]
+        IDS_COMPANY_PROFILES_c16["IDS.COMPANY_PROFILES"]
+    end
+    subgraph SIL["Atomic"]
+        Foreign_Ownership_Info["Foreign Ownership Info"]
+        Security_Trading_Snapshot_c16["Security Trading Snapshot"]
+        Public_Company_c16["Public Company"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_public_company_foreign_holding_snpst["Fact Public Company Foreign Holding Snapshot"]
+        public_company_dim_c16["Public Company Dimension"]
+    end
+    VSDC_FOIS --> Foreign_Ownership_Info
+    MDDS_STS_c16 --> Security_Trading_Snapshot_c16
+    IDS_COMPANY_PROFILES_c16 --> Public_Company_c16
+    Foreign_Ownership_Info --> fct_public_company_foreign_holding_snpst
+    Security_Trading_Snapshot_c16 --> fct_public_company_foreign_holding_snpst
+    Public_Company_c16 --> public_company_dim_c16
+    public_company_dim_c16 --> fct_public_company_foreign_holding_snpst
+```
+
+> **Ghi chú:** `Public Company Dimension` reuse từ Cụm 6. `Calendar Date Dimension` reuse Whitelist Lớp 1. Atomic `foreign_ownership_info`/`security_trading_snapshot` là ngoại lệ VSDC/MDDS (chưa có YAML trong `DataModel/Atomic/`) — Gate 0 báo cảnh báo (không phải lỗi) như trước khi tách.
+
+---
+
+##### Cụm 17: Sở hữu nhà nước (Fact Public Company State Capital Snapshot) (Nhóm 31)
+
+> **[TÁCH 2026-10-08]** Tách từ Cụm 15 (Listing Info) theo code dev. **Driving đổi sang `pc_state_capital` group by `public_company_dim_id`** (công ty, không còn theo mã CK): `state_owned_share_quantity` = SUM(`owned_share_quantity`) `bigint` (SUM nhiều dòng sở hữu có thể vượt int32), `state_ownership_ratio_percentage` = SUM(`ownership_ratio_percentage`); lọc `deleted_ind <> 1` và `src_stm_code = 'IDS_STATE_CAPITAL'`. **[SỬA 2026-10-08]** Atomic `pc_state_capital` (SCD4A) không có cột ngày snapshot (`ds_snpst_dt` không tồn tại — Gate 0): `snpst_dt_dim_id` = ngày chạy ETL — GIẢ ĐỊNH, xem **O_GSDC_33**.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        IDS_STATE_CAPITAL_c17["IDS.STATE_CAPITAL"]
+        IDS_COMPANY_PROFILES_c17["IDS.COMPANY_PROFILES"]
+    end
+    subgraph SIL["Atomic"]
+        Public_Company_State_Capital_c17["Public Company State Capital"]
+        Public_Company_c17["Public Company"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_public_company_state_capital_snpst["Fact Public Company State Capital Snapshot"]
+        public_company_dim_c17["Public Company Dimension"]
+    end
+    IDS_STATE_CAPITAL_c17 --> Public_Company_State_Capital_c17
+    IDS_COMPANY_PROFILES_c17 --> Public_Company_c17
+    Public_Company_State_Capital_c17 --> fct_public_company_state_capital_snpst
+    Public_Company_c17 --> public_company_dim_c17
+    public_company_dim_c17 --> fct_public_company_state_capital_snpst
+```
+
+> **Ghi chú:** `Public Company Dimension` reuse từ Cụm 6 — nối `public_company_dim.public_company_code = pc_state_capital.pc_code`.
+
+---
+
+##### Cụm 18: Tổng hợp tài chính sàn × ngành (Public Company Exchange Industry Financial Report) (chờ BA gán KPI)
+
+> **[MỚI 2026-10-08]** Cụm mới — phản ánh bảng `public_company_exchange_industry_financial_rpt` dev đã tạo (header code 2026-09-30, cập nhật 2026-10-01/02): cross-tab **sàn × ngành × kỳ** (`rpt_year` + `rpt_quarter`), tổng hợp chỉ tiêu tài chính + YoY + ytd + 9 cột `*_ytd_chg`. Pattern ETL **2 tầng (Gold-to-Gold)** giống Cụm 14: nguồn `fct_public_company_financial_smy_snpst` (Cụm 12), `public_company_financial_yoy_rpt` (Cụm 13), `public_company_financial_ytd_chg_rpt` (Cụm 19). Kiểu số: chỉ tiêu cơ sở decimal(38,8), cột tính từ phép chia decimal(30,6). Dev xác nhận (Q7): các cột ytd được thêm để tầng web app chỉ cần dùng bảng thống kê sàn / sàn × ngành / ngành. **[GIẢ ĐỊNH]** Danh sách cột/ETL theo header code (chưa đọc được `schema_dtm_gsdc.yml`) — **O_GSDC_31**; chưa có KPI/Detail Mapping (Gate 8 cảnh báo ZERO-USAGE) — **O_GSDC_32**.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        GOLD_fct_smy_c18["Datamart: fct_public_company_financial_smy_snpst (Cụm 12)"]
+        GOLD_yoy_rpt_c18["Datamart: public_company_financial_yoy_rpt (Cụm 13)"]
+        GOLD_ytd_chg_c18["Datamart: public_company_financial_ytd_chg_rpt (Cụm 19)"]
+    end
+    subgraph SIL["Atomic"]
+        Public_Company_c18["Public Company"]
+    end
+    subgraph GOLD["Datamart"]
+        public_company_exchange_industry_financial_rpt["Public Company Exchange Industry Financial Report"]
+    end
+    GOLD_fct_smy_c18 --> public_company_exchange_industry_financial_rpt
+    GOLD_yoy_rpt_c18 --> public_company_exchange_industry_financial_rpt
+    GOLD_ytd_chg_c18 --> public_company_exchange_industry_financial_rpt
+    Public_Company_c18 --> public_company_exchange_industry_financial_rpt
+```
+
+> **Ghi chú kỹ thuật flowchart:** như Cụm 14 — SRC là 3 bảng Datamart Gold đã populate (input ETL tầng 2), đặt trong subgraph `SRC["Staging"]` chỉ để giữ cú pháp 3-subgraph bắt buộc.
+
+---
+
+##### Cụm 19: Biến động chỉ tiêu so đầu năm (Public Company Financial YTD Change Report) (bảng trung gian)
+
+> **[MỚI 2026-10-08]** Cụm mới — phản ánh bảng `public_company_financial_ytd_chg_rpt` dev đã tạo (header code 2026-10-01): bảng **trung gian**, **không có bản ClickHouse** (code và thiết kế cùng không flat), là nguồn tính 9 cột `*_ytd_chg` cho `public_company_exchange_financial_summary_rpt` (Cụm 14) và `public_company_exchange_industry_financial_rpt` (Cụm 18). Grain sàn × ngành × kỳ. **[GIẢ ĐỊNH]** Tên/công thức cột `*_ytd_chg` (VD `debt_to_equity_ytd_diff` đã đổi tên `debt_to_equity_ytd_chg` 2026-10-02) theo header code — **O_GSDC_31**. Gate 3 báo Branch A vì checker chưa có khái niệm bảng trung gian không flat — **O_GSDC_35**.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        GOLD_fct_smy_c19["Datamart: fct_public_company_financial_smy_snpst (Cụm 12)"]
+    end
+    subgraph SIL["Atomic"]
+        Public_Company_c19["Public Company"]
+    end
+    subgraph GOLD["Datamart"]
+        public_company_financial_ytd_chg_rpt["Public Company Financial YTD Change Report"]
+    end
+    GOLD_fct_smy_c19 --> public_company_financial_ytd_chg_rpt
+    Public_Company_c19 --> public_company_financial_ytd_chg_rpt
+```
+
+> **Ghi chú kỹ thuật flowchart:** như Cụm 14 — SRC là bảng Datamart Gold (Cụm 12), không phải Staging thô.
 
 ---
 
@@ -555,7 +660,7 @@ flowchart LR
 |---|---|---|---|---|---|---|---|---|---|
 | Công ty tập đoàn địa ốc Novaland | NVL | 85 | 90 | 78 | 82 | 88 | Tốt | 84.6 | A |
 
-**Source:** `Fact Public Company Risk Score Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+**Source:** `Fact Public Company Risk Evaluation Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
 
 **Bảng KPI:**
 
@@ -574,7 +679,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Fact_Public_Company_Risk_Score_Snapshot {
+    Fact_Public_Company_Risk_Evaluation_Snapshot {
         string Public_Company_Dimension_Id PK
         string Snapshot_Date_Dimension_Id PK
         string Evaluation_Date_Dimension_Id FK
@@ -612,9 +717,9 @@ erDiagram
         string Source_System_Code
     }
 
-    Fact_Public_Company_Risk_Score_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
-    Fact_Public_Company_Risk_Score_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
-    Fact_Public_Company_Risk_Score_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
+    Fact_Public_Company_Risk_Evaluation_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
+    Fact_Public_Company_Risk_Evaluation_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
+    Fact_Public_Company_Risk_Evaluation_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
 ```
 
 > **Ghi chú grain & ETL:** Grain = "1 row/CTDC/ngày snapshot ETL" — driving table là `Public Company Dimension` (full-scan toàn bộ CTĐC mỗi ngày, vì không biết trước công ty nào phát sinh kỳ đánh giá mới vào ngày nào). Với mỗi công ty, các measure (Compliance/Issuance/Financial/NonFinancial/Credit Rating/Total Score) carry-forward từ kỳ đánh giá gần nhất (`Evaluation Date <= ngày ETL`, LEFT JOIN, nullable khi công ty chưa từng có kỳ đánh giá). `Snapshot Date Dimension Id` là PK (ngày chạy ETL); `Evaluation Date Dimension Id` là thuộc tính carry-forward (ngày kỳ đánh giá thật, không phải PK) — áp dụng đồng nhất cho cả 5 Fact `Fact Public Company *_Score_Snapshot` (Risk/Compliance/Issuance/Financial/Non-Financial).
@@ -625,7 +730,7 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    pc_risk_fct["Fact Public Company Risk Score Snapshot"] --> R1["Bảng Xếp hạng — Tuân thủ/Phát hành/Tài chính/Phi TC/Xếp hạng TN/Điểm"]
+    pc_risk_fct["Fact Public Company Risk Evaluation Snapshot"] --> R1["Bảng Xếp hạng — Tuân thủ/Phát hành/Tài chính/Phi TC/Xếp hạng TN/Điểm"]
     public_company_dim["Public Company Dimension"] --> R1
 ```
 
@@ -633,7 +738,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Risk Score Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
+| Fact Public Company Risk Evaluation Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
 
@@ -672,13 +777,13 @@ flowchart LR
 
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên. BA còn trả kèm `ed.result` (kết quả text) cho mỗi dòng — theo xác nhận Nhóm 1, cột này không đưa vào KPI (chỉ dùng `evaluation_score`).
 
-**Source:** `Fact Public Company Compliance Score Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+**Source:** `Fact Public Company Compliance Evaluation Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
 
 **Star Schema:**
 
 ```mermaid
 erDiagram
-    Fact_Public_Company_Compliance_Score_Snapshot {
+    Fact_Public_Company_Compliance_Evaluation_Snapshot {
         string Public_Company_Dimension_Id PK
         string Snapshot_Date_Dimension_Id PK
         string Evaluation_Date_Dimension_Id FK
@@ -725,18 +830,18 @@ erDiagram
         string Source_System_Code
     }
 
-    Fact_Public_Company_Compliance_Score_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
-    Fact_Public_Company_Compliance_Score_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
-    Fact_Public_Company_Compliance_Score_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
+    Fact_Public_Company_Compliance_Evaluation_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
+    Fact_Public_Company_Compliance_Evaluation_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
+    Fact_Public_Company_Compliance_Evaluation_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
 ```
 
-> Grain + carry-forward logic giống hệt `Fact Public Company Risk Score Snapshot` (Nhóm 1) — xem ghi chú chi tiết ở đó. Mỗi criterion (K_GSDC_9–22) là 1 measure riêng trên Fact — pivot từ `pc_evaluation_detail.evaluation_score` theo từng `pc_evaluation_criterion_code` cố định (LEFT JOIN riêng biệt cho mỗi cột); `Total_Compliance_Score` (K_GSDC_23) = `SUM(evaluation_score)` filter `pc_evaluation_group_code = 'TUAN_THU'`.
+> Grain + carry-forward logic giống hệt `Fact Public Company Risk Evaluation Snapshot` (Nhóm 1) — xem ghi chú chi tiết ở đó. Mỗi criterion (K_GSDC_9–22) là 1 measure riêng trên Fact — pivot từ `pc_evaluation_detail.evaluation_score` theo từng `pc_evaluation_criterion_code` cố định (LEFT JOIN riêng biệt cho mỗi cột); `Total_Compliance_Score` (K_GSDC_23) = `SUM(evaluation_score)` filter `pc_evaluation_group_code = 'TUAN_THU'`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    pc_compliance_fct["Fact Public Company Compliance Score Snapshot"] --> R2["K_GSDC_7-8,9-23: Top CTDC theo chỉ tiêu tuân thủ"]
+    pc_compliance_fct["Fact Public Company Compliance Evaluation Snapshot"] --> R2["K_GSDC_7-8,9-23: Top CTDC theo chỉ tiêu tuân thủ"]
     public_company_dim_g2["Public Company Dimension"] --> R2
 ```
 
@@ -744,7 +849,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Compliance Score Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
+| Fact Public Company Compliance Evaluation Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
 
@@ -776,13 +881,13 @@ flowchart LR
 
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên.
 
-**Source:** `Fact Public Company Issuance Score Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+**Source:** `Fact Public Company Issuance Evaluation Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
 
 **Star Schema:**
 
 ```mermaid
 erDiagram
-    Fact_Public_Company_Issuance_Score_Snapshot {
+    Fact_Public_Company_Issuance_Evaluation_Snapshot {
         string Public_Company_Dimension_Id PK
         string Snapshot_Date_Dimension_Id PK
         string Evaluation_Date_Dimension_Id FK
@@ -822,18 +927,18 @@ erDiagram
         string Source_System_Code
     }
 
-    Fact_Public_Company_Issuance_Score_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
-    Fact_Public_Company_Issuance_Score_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
-    Fact_Public_Company_Issuance_Score_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
+    Fact_Public_Company_Issuance_Evaluation_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
+    Fact_Public_Company_Issuance_Evaluation_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
+    Fact_Public_Company_Issuance_Evaluation_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
 ```
 
-> Grain + carry-forward logic giống hệt `Fact Public Company Risk Score Snapshot` (Nhóm 1). Mỗi criterion (K_GSDC_24–30) là 1 measure riêng — pivot từ `pc_evaluation_detail.evaluation_score` theo từng `pc_evaluation_criterion_code` cố định; `Total_Issuance_Score` (K_GSDC_31) = `SUM(evaluation_score)` filter `pc_evaluation_group_code = 'PHAT_HANH'`.
+> Grain + carry-forward logic giống hệt `Fact Public Company Risk Evaluation Snapshot` (Nhóm 1). Mỗi criterion (K_GSDC_24–30) là 1 measure riêng — pivot từ `pc_evaluation_detail.evaluation_score` theo từng `pc_evaluation_criterion_code` cố định; `Total_Issuance_Score` (K_GSDC_31) = `SUM(evaluation_score)` filter `pc_evaluation_group_code = 'PHAT_HANH'`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    pc_issuance_fct["Fact Public Company Issuance Score Snapshot"] --> R3["K_GSDC_7-8,24-31: Top CTDC theo chỉ tiêu phát hành"]
+    pc_issuance_fct["Fact Public Company Issuance Evaluation Snapshot"] --> R3["K_GSDC_7-8,24-31: Top CTDC theo chỉ tiêu phát hành"]
     public_company_dim_g3["Public Company Dimension"] --> R3
 ```
 
@@ -841,7 +946,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Issuance Score Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
+| Fact Public Company Issuance Evaluation Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
 
@@ -878,13 +983,13 @@ flowchart LR
 
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên.
 
-**Source:** `Fact Public Company Financial Score Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+**Source:** `Fact Public Company Financial Evaluation Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
 
 **Star Schema:**
 
 ```mermaid
 erDiagram
-    Fact_Public_Company_Financial_Score_Snapshot {
+    Fact_Public_Company_Financial_Evaluation_Snapshot {
         string Public_Company_Dimension_Id PK
         string Snapshot_Date_Dimension_Id PK
         string Evaluation_Date_Dimension_Id FK
@@ -927,18 +1032,18 @@ erDiagram
         string Source_System_Code
     }
 
-    Fact_Public_Company_Financial_Score_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
-    Fact_Public_Company_Financial_Score_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
-    Fact_Public_Company_Financial_Score_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
+    Fact_Public_Company_Financial_Evaluation_Snapshot }o--|| Public_Company_Dimension : "Public_Company_Dimension_Id"
+    Fact_Public_Company_Financial_Evaluation_Snapshot }o--|| Calendar_Date_Dimension : "Snapshot_Date_Dimension_Id"
+    Fact_Public_Company_Financial_Evaluation_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
 ```
 
-> Grain + carry-forward logic giống hệt `Fact Public Company Risk Score Snapshot` (Nhóm 1). Mỗi criterion (K_GSDC_32–41) là 1 measure riêng — pivot từ `pc_evaluation_detail.evaluation_score` theo từng `pc_evaluation_criterion_code` cố định; `Total_Financial_Score` (K_GSDC_42) = `SUM(evaluation_score)` filter `pc_evaluation_group_code = 'TAI_CHINH'`.
+> Grain + carry-forward logic giống hệt `Fact Public Company Risk Evaluation Snapshot` (Nhóm 1). Mỗi criterion (K_GSDC_32–41) là 1 measure riêng — pivot từ `pc_evaluation_detail.evaluation_score` theo từng `pc_evaluation_criterion_code` cố định; `Total_Financial_Score` (K_GSDC_42) = `SUM(evaluation_score)` filter `pc_evaluation_group_code = 'TAI_CHINH'`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    pc_financial_fct["Fact Public Company Financial Score Snapshot"] --> R4["K_GSDC_7-8,32-42: Top CTDC theo chỉ tiêu tài chính"]
+    pc_financial_fct["Fact Public Company Financial Evaluation Snapshot"] --> R4["K_GSDC_7-8,32-42: Top CTDC theo chỉ tiêu tài chính"]
     public_company_dim_g4["Public Company Dimension"] --> R4
 ```
 
@@ -946,7 +1051,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Financial Score Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
+| Fact Public Company Financial Evaluation Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
 
@@ -971,7 +1076,7 @@ flowchart LR
 
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên.
 
-**Source:** `Fact Public Company Non-Financial Score Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+**Source:** `Fact Public Company Non-Financial Evaluation Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
 
 **Star Schema:**
 
@@ -1017,13 +1122,13 @@ erDiagram
     Fact_Public_Company_NonFinancial_Score_Snapshot }o--o| Calendar_Date_Dimension : "Evaluation_Date_Dimension_Id"
 ```
 
-> Grain + carry-forward logic giống hệt `Fact Public Company Risk Score Snapshot` (Nhóm 1). Mỗi criterion (K_GSDC_43–44) là 1 measure riêng — pivot từ `pc_evaluation_detail.evaluation_score` theo từng `pc_evaluation_criterion_code` cố định; `Total_NonFinancial_Score` (K_GSDC_45) = `SUM(evaluation_score)` filter `pc_evaluation_group_code = 'PHI_TAI_CHINH'`.
+> Grain + carry-forward logic giống hệt `Fact Public Company Risk Evaluation Snapshot` (Nhóm 1). Mỗi criterion (K_GSDC_43–44) là 1 measure riêng — pivot từ `pc_evaluation_detail.evaluation_score` theo từng `pc_evaluation_criterion_code` cố định; `Total_NonFinancial_Score` (K_GSDC_45) = `SUM(evaluation_score)` filter `pc_evaluation_group_code = 'PHI_TAI_CHINH'`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    pc_nonfinancial_fct["Fact Public Company Non-Financial Score Snapshot"] --> R5["K_GSDC_7-8,43-45: Top CTDC theo chỉ tiêu phi tài chính & M-Score"]
+    pc_nonfinancial_fct["Fact Public Company Non-Financial Evaluation Snapshot"] --> R5["K_GSDC_7-8,43-45: Top CTDC theo chỉ tiêu phi tài chính & M-Score"]
     public_company_dim_g5["Public Company Dimension"] --> R5
 ```
 
@@ -1031,7 +1136,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Non-Financial Score Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
+| Fact Public Company Non-Financial Evaluation Snapshot | 1 row / công ty đại chúng / ngày snapshot ETL (full-scan daily, carry-forward điểm số từ kỳ đánh giá gần nhất) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD4A) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
 
@@ -3072,7 +3177,7 @@ flowchart LR
 > **Phân loại:** Phân tích
 > **Atomic:** `Listed Share Info` (`listed_share_info`) ← VSDC — **READY** (ngoại lệ VSDC, `mapping_vsdc_ods_atm.md` Bảng 1/19/27) / `Foreign Ownership Info` (`foreign_ownership_info`) ← VSDC — **READY** (ngoại lệ VSDC, `mapping_vsdc_ods_atm.md` Bảng 9) / `Public Company` ← IDS.COMPANY_PROFILES — **READY** (reuse, join qua `equity_ticker_symbol`/`pc_code`) / `Public Company State Capital` (`pc_state_capital`) ← IDS.STATE_CAPITAL — **READY** (Nguồn 1, đã bổ sung field `ds_snpst_dt` 2026-09-07, xem Section 1 Cụm 15)
 >
-> **[SỬA 2026-09-07 — Kịch bản A, PENDING → READY]** MDDS/VSDC đã bổ sung 2 Atomic entity mới (xem Section 1, Cụm 15) — 8/10 KPI (K_GSDC_1381-1388) chuyển READY. Rà soát 2026-07-16 trước đó: BA ghi Nguồn = "MSS, IDS", `Loại dữ liệu` = "Dữ liệu tĩnh - Chưa có CSDL" cho 8 KPI đầu (biểu mẫu TT138/2025/Ban PTTT chưa số hoá) — nay đã có bảng Atomic thật, không còn PENDING.
+> **[SỬA 2026-09-07 — Kịch bản A, PENDING → READY]** MDDS/VSDC đã bổ sung 2 Atomic entity mới (xem Section 1, Cụm 15–17) — 8/10 KPI (K_GSDC_1381-1388) chuyển READY. Rà soát 2026-07-16 trước đó: BA ghi Nguồn = "MSS, IDS", `Loại dữ liệu` = "Dữ liệu tĩnh - Chưa có CSDL" cho 8 KPI đầu (biểu mẫu TT138/2025/Ban PTTT chưa số hoá) — nay đã có bảng Atomic thật, không còn PENDING.
 > **[SỬA 2026-09-07 lần 2 — Kịch bản D, K_GSDC_1389/1390 PENDING → READY]** Gap-note trước đó ("thiếu audit field `created_date`/`update_dated`") sai — đọc lại full BA SQL (STT 31, dòng "Khối lượng cổ phiếu sở hữu nhà nước"/"Tỷ lệ sở hữu nhà nước") xác nhận nguồn thật dùng `MAX(ds_snpst_dt)` theo `YEAR/MONTH` từ `uat_ids_stg.state_capital`, không phải `created_date`/`update_dated`. Atomic `pc_state_capital` đã bổ sung field `ds_snpst_dt`. BA SQL cũng cho thấy 1 CTDC có thể có nhiều dòng `state_capital` (nhiều tổ chức nhà nước sở hữu) — dùng `SUM()` GROUP BY công ty + tháng. 10/10 KPI Nhóm 31 nay READY. Xem Section 1 Cụm 15.
 
 **Mockup:**
@@ -3081,7 +3186,7 @@ flowchart LR
 |---|---|---|---|---|---|---|---|---|---|
 | VCB | 2026-08 | 4,982,687,000 | 5,000,000,000 | 17,313,000 | 1,200,000,000 | 1,495,000,000 | 30.00% | 30.00% | 5,000,000 |
 
-**Source:** `Fact Public Company Listing Info Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+**Source:** `Fact Public Company Listed Share Snapshot` (K_GSDC_1381–1384), `Fact Public Company Foreign Holding Snapshot` (K_GSDC_1385–1388) và `Fact Public Company State Capital Snapshot` (K_GSDC_1389–1390) → `Public Company Dimension`, `Calendar Date Dimension` — **[TÁCH 2026-10-08]** thay cho 1 Fact `Listing Info` cũ; mỗi Fact lọc MAX(snpst_dt) ≤ ngày chặn độc lập.
 
 **Bảng KPI:**
 
@@ -3102,20 +3207,28 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Fact_Public_Company_Listing_Info_Snapshot {
+    Fact_Public_Company_Listed_Share_Snapshot {
         int Public_Company_Dimension_Id FK
         int Snapshot_Date_Dimension_Id FK
-        int Outstanding_Share_Quantity
-        int Total_Issued_Share_Quantity
-        int Treasury_Share_Quantity
-        int Free_Float_Share_Quantity
-        int Current_Foreign_Holding_Quantity
+        bigint Outstanding_Share_Quantity
+        bigint Total_Issued_Share_Quantity
+        bigint Treasury_Share_Quantity
+        bigint Free_Float_Share_Quantity
+    }
+    Fact_Public_Company_Foreign_Holding_Snapshot {
+        int Public_Company_Dimension_Id FK
+        int Snapshot_Date_Dimension_Id FK
+        bigint Current_Foreign_Holding_Quantity
         float Foreign_Ownership_Ratio
         float Max_Foreign_Ownership_Ratio
-        int Remaining_Foreign_Holding_Quantity
-        int State_Owned_Share_Quantity
-        float State_Ownership_Ratio_Percentage
+        bigint Remaining_Foreign_Holding_Quantity
         float Foreign_Holding_Value
+    }
+    Fact_Public_Company_State_Capital_Snapshot {
+        int Public_Company_Dimension_Id FK
+        int Snapshot_Date_Dimension_Id FK
+        bigint State_Owned_Share_Quantity
+        float State_Ownership_Ratio_Percentage
     }
     Public_Company_Dimension {
         int Public_Company_Dimension_Id PK
@@ -3131,8 +3244,12 @@ erDiagram
         string Month
         string Source_System_Code
     }
-    Public_Company_Dimension ||--o{ Fact_Public_Company_Listing_Info_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Public_Company_Listing_Info_Snapshot : " "
+    Public_Company_Dimension ||--o{ Fact_Public_Company_Listed_Share_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Public_Company_Listed_Share_Snapshot : " "
+    Public_Company_Dimension ||--o{ Fact_Public_Company_Foreign_Holding_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Public_Company_Foreign_Holding_Snapshot : " "
+    Public_Company_Dimension ||--o{ Fact_Public_Company_State_Capital_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Public_Company_State_Capital_Snapshot : " "
 ```
 
 > **Ghi chú:** `Public_Company_Dimension`/`Calendar_Date_Dimension` reuse — chỉ liệt kê field liên quan Nhóm này (Dimension đầy đủ vẽ ở Cụm 1/6). `State_Owned_Share_Quantity`/`State_Ownership_Ratio_Percentage` (K_GSDC_1389/1390) — nguồn `pc_state_capital`, join bridge qua `Public Company` (`equity_ticker_symbol` → `pc_code`), không vẽ riêng trong erDiagram vì `Public Company State Capital` không phải Dimension/Fact reuse trực tiếp mà chỉ là nguồn `join_atomic` — xem chi tiết ETL logic tại Attributes LLD.
@@ -3142,16 +3259,24 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    fct_public_company_listing_info_snpst["Fact Public Company Listing Info Snapshot"] --> rpt_nhom31["Nhóm 31 - Dữ liệu về thông tin niêm yết: K_GSDC_1381-1390"]
-    public_company_dim_rpt31["Public Company Dimension"] --> fct_public_company_listing_info_snpst
-    cdr_dt_dim_rpt31["Calendar Date Dimension"] --> fct_public_company_listing_info_snpst
+    fct_public_company_listed_share_snpst["Fact Public Company Listed Share Snapshot"] --> rpt_nhom31["Nhóm 31 - Dữ liệu về thông tin niêm yết: K_GSDC_1381-1390"]
+    public_company_dim_rpt31["Public Company Dimension"] --> fct_public_company_listed_share_snpst
+    cdr_dt_dim_rpt31["Calendar Date Dimension"] --> fct_public_company_listed_share_snpst
+    fct_public_company_foreign_holding_snpst["Fact Public Company Foreign Holding Snapshot"] --> rpt_nhom31["Nhóm 31 - Dữ liệu về thông tin niêm yết: K_GSDC_1381-1390"]
+    public_company_dim_rpt31["Public Company Dimension"] --> fct_public_company_foreign_holding_snpst
+    cdr_dt_dim_rpt31["Calendar Date Dimension"] --> fct_public_company_foreign_holding_snpst
+    fct_public_company_state_capital_snpst["Fact Public Company State Capital Snapshot"] --> rpt_nhom31["Nhóm 31 - Dữ liệu về thông tin niêm yết: K_GSDC_1381-1390"]
+    public_company_dim_rpt31["Public Company Dimension"] --> fct_public_company_state_capital_snpst
+    cdr_dt_dim_rpt31["Calendar Date Dimension"] --> fct_public_company_state_capital_snpst
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Listing Info Snapshot | 1 row / mã CK (CTDC) / tháng |
+| Fact Public Company Listed Share Snapshot | 1 row / mã CK (CTDC) / ngày snapshot |
+| Fact Public Company Foreign Holding Snapshot | 1 row / mã CK (CTDC) / ngày snapshot |
+| Fact Public Company State Capital Snapshot | 1 row / công ty / ngày snapshot (group by public_company_dim_id) |
 | Public Company Dimension | 1 row / CTDC |
 | Calendar Date Dimension | 1 row / ngày |
 
@@ -3177,7 +3302,7 @@ flowchart LR
 
 **Star Schema, Lineage, Bảng grain:** giống Nhóm 1.
 
-**Mart:** `Fact Public Company Risk Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward từ kỳ đánh giá gần nhất)
+**Mart:** `Fact Public Company Risk Evaluation Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward từ kỳ đánh giá gần nhất)
 
 ---
 
@@ -3208,9 +3333,9 @@ flowchart LR
 | K_GSDC_1414 | Thay đổi phương án sử dụng vốn | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
 | K_GSDC_1415 | Tổng điểm Tuân thủ | Điểm | Phái sinh | evaluation_score (trực tiếp) | SUM(evaluation_score)| READY |
 
-**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Compliance Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
+**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Compliance Evaluation Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
 
-**Mart:** `Fact Public Company Compliance Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward)
+**Mart:** `Fact Public Company Compliance Evaluation Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward)
 
 ---
 
@@ -3237,9 +3362,9 @@ flowchart LR
 | K_GSDC_1427 | Doanh thu từ hoạt động khác / Lợi nhuận sau thuế | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
 | K_GSDC_1428 | Tổng điểm Tài chính | Điểm | Phái sinh | evaluation_score (trực tiếp) | SUM(evaluation_score)| READY |
 
-**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Financial Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
+**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Financial Evaluation Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
 
-**Mart:** `Fact Public Company Financial Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward)
+**Mart:** `Fact Public Company Financial Evaluation Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward)
 
 ---
 
@@ -3263,9 +3388,9 @@ flowchart LR
 | K_GSDC_1437 | Dư nợ trái phiếu / Tổng VCSH | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
 | K_GSDC_1438 | Tổng điểm Phát hành | Điểm | Phái sinh | evaluation_score (trực tiếp) | SUM(evaluation_score)| READY |
 
-**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Issuance Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
+**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Issuance Evaluation Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
 
-**Mart:** `Fact Public Company Issuance Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward)
+**Mart:** `Fact Public Company Issuance Evaluation Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward)
 
 ---
 
@@ -3284,9 +3409,9 @@ flowchart LR
 | K_GSDC_1442 | M-Score | Điểm | Base | evaluation_score (trực tiếp) | —| READY |
 | K_GSDC_1443 | Tổng điểm Phi tài chính & M-Score | Điểm | Phái sinh | evaluation_score (trực tiếp) | SUM(evaluation_score)| READY |
 
-**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Non-Financial Score Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
+**Star Schema, Lineage, Bảng grain:** tương tự Nhóm 1 (cùng pattern `Fact_..._Score_Snapshot`), Fact riêng `Fact Public Company Non-Financial Evaluation Snapshot` — grain: 1 row / CTDC / ngày snapshot ETL (full-scan daily, carry-forward).
 
-**Mart:** `Fact Public Company Non-Financial Score Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward)
+**Mart:** `Fact Public Company Non-Financial Evaluation Snapshot` (grain: 1 row / CTDC / ngày snapshot ETL — full-scan daily, carry-forward)
 
 ---
 
@@ -3335,12 +3460,12 @@ flowchart LR
 |---|---|---|---|---|---|---|
 | K_GSDC_700 | Sàn NY/ĐKGD | Text | Chiều (Group By) | `equity_listing_exchange_code` (trực tiếp) | ETL nạp: từ driving table Profitable Company Count Year N | READY |
 | K_GSDC_701 | Số lượng DN | DN | Phái sinh | `company_count` (trực tiếp) | ETL nạp: sub-select độc lập, không phụ thuộc kỳ — COUNT DISTINCT từ Public Company Dimension WHERE status=APPROVED_PUBLIC GROUP BY sàn; JOIN vào driving chỉ qua sàn | READY |
-| K_GSDC_702 | Số lượng BCTC đến hạn nộp | DN | Cơ sở | `rpt_due_count` (trực tiếp) | ETL nạp: sub-select độc lập — SUM(fct_violation_rpt_snpst.rpt_due_count) tại snapshot mới nhất GROUP BY sàn/kỳ; JOIN vào driving qua sàn+kỳ | READY |
-| K_GSDC_703 | Số báo cáo (BCTC) đã nộp | DN | Cơ sở | `rpt_submitted_count` (trực tiếp) | ETL nạp: sub-select độc lập — SUM(fct_violation_rpt_snpst.rpt_submitted_count) tại snapshot mới nhất GROUP BY sàn/kỳ — đổi hẳn nguồn sang Fact Violation Report Snapshot, khớp Câu lệnh update SIT BA mới nhất | READY |
+| K_GSDC_702 | Số lượng BCTC đến hạn nộp | DN | Cơ sở | `company_due_count` (trực tiếp) | ETL nạp: sub-select độc lập — SUM(fct_violation_rpt_snpst.rpt_due_count) tại snapshot mới nhất GROUP BY sàn/kỳ; JOIN vào driving qua sàn+kỳ | READY |
+| K_GSDC_703 | Số báo cáo (BCTC) đã nộp | DN | Cơ sở | `company_submitted_count` (trực tiếp) | ETL nạp: sub-select độc lập — SUM(fct_violation_rpt_snpst.rpt_submitted_count) tại snapshot mới nhất GROUP BY sàn/kỳ — đổi hẳn nguồn sang Fact Violation Report Snapshot, khớp Câu lệnh update SIT BA mới nhất | READY |
 | K_GSDC_704 | Tỷ lệ nộp BCTC (%) | % | Phái sinh | — (trực tiếp) | Phái sinh = K_GSDC_703 / K_GSDC_702 × 100 | READY |
-| K_GSDC_705 | Số CTDC báo lãi Năm N | DN | Cơ sở | `profitable_company_count_year_n` (trực tiếp) | ETL nạp: DRIVING TABLE — COUNT DISTINCT WHERE fct_public_company_financial_smy_snpst.net_profit > 0 GROUP BY sàn/rpt_year/rpt_quarter (JOIN Public Company Dimension) | READY |
+| K_GSDC_705 | Số CTDC báo lãi Năm N | DN | Cơ sở | `profitable_company_count_year` (trực tiếp) — **[SỬA 2026-10-08]** đổi tên từ `_year_n`, tập con của công ty đã nộp; thêm `profitable_company_count_ytd` (lũy kế từ đầu năm) và `large_scale_company_count` (UPCOM/OTC vốn góp ≥ 120 tỷ) chưa có KPI BA | ETL nạp: DRIVING TABLE — COUNT DISTINCT WHERE fct_public_company_financial_smy_snpst.net_profit > 0 GROUP BY sàn/rpt_year/rpt_quarter (JOIN Public Company Dimension) | READY |
 | K_GSDC_706 | Tỷ lệ DN báo lãi Năm N (%) | % | Phái sinh | — (trực tiếp) | Phái sinh = K_GSDC_705 / K_GSDC_701 × 100 | READY |
-| K_GSDC_707 | Số CTDC báo lãi Năm N-1 | DN | Cơ sở | `profitable_company_count_year_n1` (trực tiếp) | ETL nạp: cùng công thức K_GSDC_705, JOIN danh sách kỳ N (từ chính Fact) lấy `rpt_year - 1` làm điều kiện lọc | READY |
+| K_GSDC_707 | Số CTDC báo lãi Năm N-1 | DN | Cơ sở | `profitable_company_count_year` của dòng `rpt_year - 1` — **[SỬA 2026-10-08]** cột `profitable_company_count_year_n1` đã bỏ trong code (chuẩn hóa daily, scope năm N) | ETL nạp: cùng công thức K_GSDC_705, JOIN danh sách kỳ N (từ chính Fact) lấy `rpt_year - 1` làm điều kiện lọc | READY |
 | K_GSDC_708 | Tỷ lệ DN báo lãi Năm N-1 (%) | % | Phái sinh | — (trực tiếp) | Phái sinh = K_GSDC_707 / K_GSDC_701 (kỳ N-1) × 100 | READY |
 
 **Star Schema:**
@@ -3629,13 +3754,15 @@ graph TB
     DIM_CTLG["Financial Report Catalog Dimension"]:::dim
     DIM_IND["Industry Dimension"]:::dim
 
-    FACT_RISK["Fact Public Company Risk Score Snapshot"]:::fact
-    FACT_COMP["Fact Public Company Compliance Score Snapshot"]:::fact
-    FACT_ISS["Fact Public Company Issuance Score Snapshot"]:::fact
-    FACT_FIN["Fact Public Company Financial Score Snapshot"]:::fact
-    FACT_NONFIN["Fact Public Company Non-Financial Score Snapshot"]:::fact
+    FACT_RISK["Fact Public Company Risk Evaluation Snapshot"]:::fact
+    FACT_COMP["Fact Public Company Compliance Evaluation Snapshot"]:::fact
+    FACT_ISS["Fact Public Company Issuance Evaluation Snapshot"]:::fact
+    FACT_FIN["Fact Public Company Financial Evaluation Snapshot"]:::fact
+    FACT_NONFIN["Fact Public Company Non-Financial Evaluation Snapshot"]:::fact
     FACT_RPTVAL["Fact Public Company Financial Report Value"]:::fact
-    FACT_LIST["Fact Public Company Listing Info Snapshot"]:::fact
+    FACT_LIST["Fact Public Company Listed Share Snapshot"]:::fact
+    FACT_FOREIGN["Fact Public Company Foreign Holding Snapshot"]:::fact
+    FACT_STATE["Fact Public Company State Capital Snapshot"]:::fact
     FACT_VLTREPORT_SNPST["Fact Violation Report Snapshot"]:::fact
     RPT_REGCOMP["Public Company Regulatory Compliance Report"]:::fact
     RPT_INDFIN["Public Company Industry Financial Report"]:::fact
@@ -3657,6 +3784,10 @@ graph TB
     DIM_IND --> FACT_RPTVAL
     DIM_CO --> FACT_LIST
     DIM_DATE --> FACT_LIST
+    DIM_CO --> FACT_FOREIGN
+    DIM_DATE --> FACT_FOREIGN
+    DIM_CO --> FACT_STATE
+    DIM_DATE --> FACT_STATE
     DIM_CO --> FACT_VLTREPORT_SNPST
     DIM_DATE --> FACT_VLTREPORT_SNPST
 ```
@@ -3675,20 +3806,24 @@ graph TB
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| `Fact Public Company Risk Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_1–6 (Nhóm 1); K_GSDC_1, 2, 3, 4, 5, 6, 7, 8 (Nhóm 32, reuse) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Compliance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_9–23 (Nhóm 2); reuse toàn bộ (Nhóm 33) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Issuance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_24–31 (Nhóm 3); reuse toàn bộ (Nhóm 35) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_32–42 (Nhóm 4); reuse toàn bộ (Nhóm 34) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Non-Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_43–45 (Nhóm 5); reuse toàn bộ (Nhóm 36) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Risk Evaluation Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_1–6 (Nhóm 1); K_GSDC_1, 2, 3, 4, 5, 6, 7, 8 (Nhóm 32, reuse) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Compliance Evaluation Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_9–23 (Nhóm 2); reuse toàn bộ (Nhóm 33) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Issuance Evaluation Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_24–31 (Nhóm 3); reuse toàn bộ (Nhóm 35) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Financial Evaluation Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_32–42 (Nhóm 4); reuse toàn bộ (Nhóm 34) | READY (Atomic draft — chưa approved) |
+| `Fact Public Company Non-Financial Evaluation Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot ETL (full-scan daily, carry-forward) | K_GSDC_43–45 (Nhóm 5); reuse toàn bộ (Nhóm 36) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Financial Summary Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter) — 12 chỉ tiêu pivot sẵn (+1 `Pre_Tax_Profit` bổ sung cho Nhóm 41, xem Section 5) + 3 computed (ROA/ROE/D-E) | K_GSDC_50–62 (Nhóm 7 Khối A); K_GSDC_63-76 (Nhóm 8); K_GSDC_50-62+79-92 (Nhóm 11/13/15/17, reuse ID); K_GSDC_1444-1456 (Nhóm 37, reuse ID); K_GSDC_705+707 (Nhóm 38, COUNT DISTINCT WHERE net_profit > 0 qua Public Company Dimension); K_GSDC_709-717 (Nhóm 39, GROUP BY ngành qua Public Company Dimension, ROA/ROE tính lại ở mức ngành); K_GSDC_718-739 (Nhóm 40, SUM toàn thị trường không GROUP BY, ROA/ROE tính lại toàn thị trường); K_GSDC_740-749+750+751 (Nhóm 41, GROUP BY toàn bộ sàn, ROA/ROE tính lại ở mức sàn — không dùng cột `roa`/`roe` per-company có sẵn) | READY (mới 2026-08-18 — thay `Fact Public Company Financial Report Value` cho các Nhóm trên, xem Nhóm 7 Khối A. Driving `fr_value`, pivot 1 lần khi ETL populate — không cần subquery pivot lặp lại ở Detail Mapping). **[SỬA 2026-08-19]** Bổ sung Nhóm 41. **[SỬA 2026-08-19 lần 2]** Bổ sung Nhóm 39/40 (đổi nguồn ETL nạp 2 bảng report này từ JOIN trực tiếp `fr_value` sang Fact này, tránh dedup lần thứ 3/4 trong module — xem Cụm 10/11, Section 1). **[SỬA 2026-08-19 lần 3]** Bổ sung Nhóm 38 (Số CTĐC báo lãi K_GSDC_705/707 đổi nguồn tương tự — xem Cụm 9, Section 1). |
 | `Public Company Financial YoY Report` | Fact-report | 1 row / sàn (bao gồm 'ALL'=toàn thị trường) / kỳ | K_GSDC_50_YOY-62_YOY (Nhóm 7 Khối B, Nhóm 11/13/15/17 reuse ID filter sàn); K_GSDC_741_YOY-751_YOY (Nhóm 41, JOIN theo Equity_Listing_Exchange_Code) | READY — giữ nguyên thiết kế cũ, không đổi theo yêu cầu Data Modeler (2026-08-18). Không FK Dimension, denormalize hoàn toàn. **[SỬA 2026-08-19]** Bổ sung Nhóm 41; cần thêm cột `Pre_Tax_Profit_Yoy` (xem Section 5). |
 | `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ (Report_Year + Report_Quarter, nullable = kỳ năm) × Row_Code × Column_Code | K_GSDC_99-689 (Nhóm 19-30, MH3 Data Explorer — DN thông thường/bảo hiểm/TCTD × BCĐKT/BCKQKD/LCTT trực tiếp/gián tiếp); K_GSDC_49 (Nhóm 6/10/12/14/16, reuse — Số DN báo lãi) | READY cho Nhóm 6/19-30 (Atomic đủ 5 entity: `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission`). **[SỬA 2026-08-18]** Không còn phục vụ Nhóm 7/8/11/13/15/17/37 (đã chuyển sang `Fact Public Company Financial Summary Snapshot`) — chỉ giữ lại cho Nhóm 19-30 (per-cell Data Explorer) và Nhóm 6 (K_GSDC_49). Nhóm 38-41 dùng 4 bảng Fact-report riêng (xem 4 dòng bên dưới), không dùng Fact này. |
 | `Fact Violation Report Snapshot` | Event | 1 row / công ty đại chúng / kỳ (Report_Year + Report_Quarter) / ngày ETL snapshot (FK Calendar Date Dimension) | K_GSDC_48 (Nhóm 6/10/12/14/16) — Tỷ lệ nộp BCTC; K_GSDC_702/703 (Nhóm 38, SUM theo sàn tại snapshot mới nhất, filter rpt_year/rpt_quarter bằng tham số ETL :p_year/:p_quarter — không dùng rpt_year/rpt_quarter của Fact làm nguồn kỳ vì nullable) | READY (2026-08-07 — nguồn `violation_report`/draft, sửa lại từ Operational → Fact vì dữ liệu phát sinh theo kỳ, không phải current-state; bổ sung FK Calendar Date Dimension theo ngày ETL; xem Nhóm 6). Sửa 2026-08-15: bỏ cột `Profitable_Indicator`, chỉ còn phục vụ K_GSDC_48. **[SỬA 2026-08-19 lần 2]** Bổ sung Nhóm 38 (K_GSDC_702/703) — xem Cụm 9, Section 1. |
-| `Fact Public Company Listing Info Snapshot` | Periodic Snapshot | 1 CTDC × 1 tháng | K_GSDC_1381–1390 (Nhóm 31, READY 10/10) | READY (10/10 KPI). **[SỬA 2026-09-07]** Nguồn `listed_share_info`/`foreign_ownership_info` (VSDC, mới) — xem Cụm 15, Section 1. **[SỬA 2026-09-07 lần 2]** K_GSDC_1389/1390 (`pc_state_capital`, sở hữu nhà nước) chuyển READY sau khi bổ sung field `ds_snpst_dt` vào Atomic — xem Cụm 15. Số KPI_ID trong bảng này trước đây ghi sai "K_GSDC_690–699" — đã sửa khớp đúng dải thật dùng ở Nhóm 31 |
+| `Fact Public Company Listed Share Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot | K_GSDC_1381–1384 (Nhóm 31) | READY (4/4) — nguồn `listed_share_info`; **[TÁCH 2026-10-08]** bigint |
+| `Fact Public Company Foreign Holding Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày snapshot | K_GSDC_1385–1388 (Nhóm 31) + K_NDTNN_51 | READY (5 cột) — nguồn `foreign_ownership_info` + `security_trading_snapshot`; **[TÁCH 2026-10-08]** bigint |
+| `Fact Public Company State Capital Snapshot` | Periodic Snapshot | 1 công ty × 1 ngày snapshot | K_GSDC_1389–1390 (Nhóm 31) | READY (2/2) — nguồn `pc_state_capital`; **[TÁCH 2026-10-08]** bigint |
 | `Public Company Regulatory Compliance Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_700-708 (Nhóm 38) — BC01.1 | READY (2026-08-07 — thiết kế lại từ query đa nguồn thành Fact-report denormalize, xem Nhóm 38). **[SỬA 2026-08-19]** Số CTĐC báo lãi (K_GSDC_705/707) đổi nguồn ETL nạp từ JOIN trực tiếp `fr_value` sang aggregate từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) + `Public Company Dimension`. **[SỬA 2026-08-19 lần 2]** Toàn bộ 9 measure đổi sang aggregate từ Datamart — Số lượng DN từ `Public Company Dimension`, Số BCTC đến hạn/đã nộp từ `Fact Violation Report Snapshot` — theo pattern 4 sub-select độc lập, Report Year/Quarter là tham số ETL (không suy diễn từ Fact) — xem Cụm 9, Section 1. |
 | `Public Company Industry Financial Report` | Fact-report | 1 row / ngành / năm báo cáo (kèm cột N-1) | K_GSDC_709-717 (Nhóm 39) — BC01.2 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 39). **[SỬA 2026-08-19]** ETL populate đổi nguồn từ JOIN trực tiếp `fr_value` sang aggregate từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) + `Public Company Dimension` (lấy ngành denormalize sẵn) — xem Cụm 10, Section 1. |
 | `Public Company Multi-Period Financial Report` | Fact-report | 1 row DUY NHẤT / năm báo cáo (kèm cột N-1/N-2), toàn thị trường không group-by | K_GSDC_718-739 (Nhóm 40) — BC01.3 | READY (2026-08-07 — thiết kế lại thành Fact-report, xem Nhóm 40). **[SỬA 2026-08-19]** ETL populate đổi nguồn từ JOIN trực tiếp `fr_value` sang SUM toàn thị trường từ `Fact Public Company Financial Summary Snapshot` (đã dedup sẵn) — xem Cụm 11, Section 1. |
 | `Public Company Exchange Financial Summary Report` | Fact-report | 1 row / sàn NY-ĐKGD / kỳ (Report_Year + Report_Quarter) | K_GSDC_740-751+YOY (Nhóm 41) — BC22 | READY. **[SỬA 2026-08-19 lần 2]** Khôi phục bảng report riêng (đã bị loại bỏ nhầm ở bản sửa lần 1 cùng ngày) — ETL populate đổi nguồn từ JOIN trực tiếp Atomic sang ETL 2 tầng (Gold-to-Gold) từ `Fact Public Company Financial Summary Snapshot` + `Public Company Financial YoY Report` (2 dòng phía trên), xem chi tiết Nhóm 41 và Cụm 14 (Section 1). |
+| `Public Company Exchange Industry Financial Report` | Fact-report | 1 row / sàn × ngành / kỳ (Report_Year + Report_Quarter) | — (chờ BA gán KPI, O_GSDC_32) | **[MỚI 2026-10-08]** Code dev tạo 2026-09-30 — cross-tab sàn × ngành, ETL 2 tầng Gold-to-Gold (smy + yoy + ytd_chg), xem Cụm 18. Danh sách cột GIẢ ĐỊNH (O_GSDC_31). |
+| `Public Company Financial YTD Change Report` | Fact-report (trung gian) | 1 row / sàn × ngành / kỳ | — (trung gian, không KPI trực tiếp) | **[MỚI 2026-10-08]** Code dev tạo 2026-10-01 — nguồn 9 cột `*_ytd_chg`, KHÔNG có bản ClickHouse, xem Cụm 19. |
 
 > KPI Nhóm 6/9/10/12/14/16 (K_GSDC_46–49) dùng trực tiếp `Public Company Dimension`/`Calendar Date Dimension`, `Fact Violation Report Snapshot` (K_GSDC_48, Nhóm 6), `Fact Public Company Financial Report Value` (K_GSDC_49, Nhóm 6, reuse từ Nhóm 7); K_GSDC_700–708 (Nhóm 38)/K_GSDC_709–717 (Nhóm 39)/K_GSDC_718–739 (Nhóm 40) dùng 3 bảng Fact-report riêng nguồn trực tiếp Atomic; K_GSDC_740-751+YOY (Nhóm 41) dùng Fact-report riêng nhưng nguồn ETL 2 tầng qua Gold (xem trên).
 
@@ -3716,12 +3851,14 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | Fact Public Company Financial Report Value | fct_public_company_financial_rpt_val | new | Fact cho Nhóm 6 (K_GSDC_49)/19-30 (MH2+MH3, READY) — driving `fr_value`, JOIN `financial_report_catalog`/`fr_row_template`/`fr_column_template` + EXISTS `pc_report_submission`. **[SỬA 2026-08-18]** Không còn phục vụ Nhóm 7/8/11/13/15/17/37 (đã chuyển sang `Fact Public Company Financial Summary Snapshot`). Không phục vụ Nhóm 38-41 (4 bảng Fact-report riêng) |
 | Financial Report Catalog Dimension | financial_rpt_catalog_dim | new | Dimension phụ trợ cho Fact Public Company Financial Report Value (READY 2026-08-06) — nguồn `financial_report_catalog` + denormalize `fr_row_template`/`fr_column_template`. Chỉ còn phục vụ Nhóm 6/19-30 (2026-08-18) |
 | Industry Dimension | industry_dim | new | Khai sinh 2026-08-17 tại GSDC (chuyển quyền sở hữu từ PTTT, PTTT reuse). Nguồn `cl_business_line`, filter `Active_Indicator = 1`. **[SỬA 2026-08-18]** Không còn làm driving table cho breakdown ngành ở Nhóm 8/11/13/15/17 — GROUP BY trực tiếp trên `Fact Public Company Financial Summary Snapshot` qua `Industry_Dimension_Id` denormalize sẵn, LOOKUP `Industry Dimension` chỉ để lấy tên hiển thị, không đảm bảo ngành rỗng = 0 nữa |
-| Fact Public Company Risk Score Snapshot | fct_public_company_risk_score_snpst | new | Fact mới cho Nhóm 1 (MH1 Tab Tổng hợp) — nguồn Atomic draft |
-| Fact Public Company Compliance Score Snapshot | fct_public_company_compliance_score_snpst | new | Fact mới cho Nhóm 2 (MH1 Tab Tuân thủ) — nguồn Atomic draft |
-| Fact Public Company Issuance Score Snapshot | fct_public_company_issuance_score_snpst | new | Fact mới cho Nhóm 3 (MH1 Tab Phát hành) — nguồn Atomic draft |
-| Fact Public Company Financial Score Snapshot | fct_public_company_financial_score_snpst | new | Fact mới cho Nhóm 4 (MH1 Tab Tài chính) — nguồn Atomic draft |
-| Fact Public Company Non-Financial Score Snapshot | fct_public_company_nonfinancial_score_snpst | new | Fact mới cho Nhóm 5 (MH1 Tab Phi TC & M-Score) — nguồn Atomic draft |
-| Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | new | **[SỬA 2026-09-07]** READY (10/10 KPI) — nguồn `listed_share_info`/`foreign_ownership_info` (VSDC, mới bổ sung Atomic) cho K_GSDC_1381-1388, Kịch bản A PENDING→READY. K_GSDC_1389/1390 (`pc_state_capital`) chuyển READY sau khi bổ sung field `ds_snpst_dt` (Kịch bản D — gap-note trước đó sai, xem Cụm 15). Xem Cụm 15 (Section 1), Nhóm 31 (Section 2). **[SỬA 2026-09-18, cross-module reuse NDTNN]** Bổ sung cột `Foreign Holding Value` (join thêm `security_trading_snapshot`) phục vụ K_NDTNN_51 (module NDTNN, Nhóm 8) — `modules_using` nay gồm cả GSDC và NDTNN. Không đổi grain/measure hiện có |
+| Fact Public Company Risk Evaluation Snapshot | fct_public_company_risk_evaluation_snpst | new | Fact mới cho Nhóm 1 (MH1 Tab Tổng hợp) — nguồn Atomic draft |
+| Fact Public Company Compliance Evaluation Snapshot | fct_public_company_compliance_evaluation_snpst | new | Fact mới cho Nhóm 2 (MH1 Tab Tuân thủ) — nguồn Atomic draft |
+| Fact Public Company Issuance Evaluation Snapshot | fct_public_company_issuance_evaluation_snpst | new | Fact mới cho Nhóm 3 (MH1 Tab Phát hành) — nguồn Atomic draft |
+| Fact Public Company Financial Evaluation Snapshot | fct_public_company_financial_evaluation_snpst | new | Fact mới cho Nhóm 4 (MH1 Tab Tài chính) — nguồn Atomic draft |
+| Fact Public Company Non-Financial Evaluation Snapshot | fct_public_company_nonfinancial_evaluation_snpst | new | Fact mới cho Nhóm 5 (MH1 Tab Phi TC & M-Score) — nguồn Atomic draft |
+| Fact Public Company Listed Share Snapshot | fct_public_company_listed_share_snpst | new | **[TÁCH 2026-10-08]** tách từ `listing_info`: 4 cột khối lượng (bigint), nguồn `listed_share_info` |
+| Fact Public Company Foreign Holding Snapshot | fct_public_company_foreign_holding_snpst | new | **[TÁCH 2026-10-08]** tách từ `listing_info`: 5 cột sở hữu nước ngoài, nguồn `foreign_ownership_info` + `security_trading_snapshot`; NDTNN reuse cho K_NDTNN_51 |
+| Fact Public Company State Capital Snapshot | fct_public_company_state_capital_snpst | new | **[TÁCH 2026-10-08]** tách từ `listing_info`: 2 cột sở hữu nhà nước, nguồn `pc_state_capital` group by công ty |
 | Public Company Dimension | public_company_dim | reuse | Dùng chung toàn bộ Nhóm 1–37 (MH1/MH2/MH3) — 1 Dimension duy nhất cho toàn module (không dùng cho Nhóm 38-41 nữa — xem 4 dòng Fact-report bên dưới) |
 | Calendar Date Dimension | cdr_dt_dim | reuse | Dimension Conformed dùng chung toàn hệ thống Lakehouse, không chỉ riêng GSDC |
 | Fact Violation Report Snapshot | fct_violation_rpt_snpst | new | Mới 2026-08-06, sửa table_type Operational → Fact + đổi tên thêm hậu tố Snapshot 2026-08-07 (grain 1 row/công ty/kỳ/ngày ETL snapshot, FK Calendar Date Dimension) — nguồn `violation_report`/IDS.VIOLATION_REPORT (draft), phục vụ K_GSDC_48 (Nhóm 6/10/12/14/16). Sửa 2026-08-15: bỏ cột `Profitable_Indicator` (K_GSDC_49 chuyển sang dùng `Fact Public Company Financial Report Value`, xem dòng trên) — lý do: kỳ join `fr_value` trước đó bắc cầu sai qua `violation_report.period_year`, 2 bảng nguồn độc lập không đảm bảo khớp kỳ. |
@@ -3729,6 +3866,8 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | Public Company Industry Financial Report | public_company_industry_financial_rpt | new | Mới 2026-08-07, thay thế reuse Fact Financial Report Value — Fact-report denormalize cho Nhóm 39 (BC01.2), K_GSDC_709-717, grain 1 row/ngành/năm |
 | Public Company Multi-Period Financial Report | public_company_multi_period_financial_rpt | new | Mới 2026-08-07, thay thế reuse Fact Financial Report Value — Fact-report denormalize cho Nhóm 40 (BC01.3), K_GSDC_718-739, grain 1 row DUY NHẤT/năm (toàn thị trường) |
 | Public Company Exchange Financial Summary Report | public_company_exchange_financial_summary_rpt | new | Mới 2026-08-07, Fact-report denormalize cho Nhóm 41 (BC22), K_GSDC_740-751+YOY, grain 1 row/sàn/kỳ. **[SỬA 2026-08-19 lần 2]** Khôi phục (đã bị xóa nhầm ở bản sửa lần 1 cùng ngày) — ETL populate đổi nguồn từ đa nguồn Atomic trực tiếp sang ETL 2 tầng (Gold-to-Gold) từ `fct_public_company_financial_smy_snpst` + `public_company_financial_yoy_rpt`, tránh lặp lại logic dedup form-ưu-tiên lần thứ 3 trong module |
+| Public Company Exchange Industry Financial Report | public_company_exchange_industry_financial_rpt | new | **[MỚI 2026-10-08]** Fact-report cross-tab sàn × ngành (code dev 2026-09-30); chưa có KPI — O_GSDC_32 |
+| Public Company Financial YTD Change Report | public_company_financial_ytd_chg_rpt | new | **[MỚI 2026-10-08]** Bảng trung gian YTD change (code dev 2026-10-01), không flat — O_GSDC_35 |
 
 > **Ghi chú KPI reuse (không phải Datamart Entity reuse):** Reuse ở cấp KPI/cột (không phải reuse bảng Fact/Dim) được ghi trực tiếp trong bảng KPI của từng Nhóm (cột Công thức/Ghi chú) — không lặp lại ở đây. Các KPI reuse chính xuyên suốt module: K_GSDC_7/K_GSDC_8 (Mã CK/Tên DN, gốc Nhóm 1) dùng ở mọi Nhóm 2 trở đi; K_GSDC_46/K_GSDC_78 (Kỳ thống kê/Sàn, gốc Nhóm 6) dùng ở Nhóm 10/12/14/16; K_GSDC_50–62+YOY (gốc Nhóm 7) và K_GSDC_79–92 (Ngành, gốc Nhóm 11) dùng ở Nhóm 11/13/15/17; K_GSDC_63 (Ngành, gốc Nhóm 8) dùng ở Nhóm 18; K_GSDC_48/49 (gốc Nhóm 6) dùng ở Nhóm 10/12/14/16.
 >
@@ -3749,3 +3888,11 @@ Không có bảng Tác nghiệp nào trong module này. `Operational Public Comp
 | O_GSDC_3 | BA SQL DB25 xác nhận `rr.row_desc` và `rc2.col_desc` dùng làm mã hiển thị nghiệp vụ và filter điều kiện trong mọi dashboard DB21–32 — map 1-1 (`Row Description Reference`/`row_description_reference` ← `IDS.RROW.ROW_DESC`, `Column Description Reference`/`column_description_reference` ← `IDS.RCOL.COL_DESC`). `fr_value`/`financial_report_catalog`/`fr_row_template`/`fr_column_template`/`pc_report_submission` đã có LLD (row/column template `approved`), dùng làm nền `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension`, áp dụng cho Nhóm 7/8/11/13/15/17/18/19-30/37 (Nhóm 38-41 đã tách thành Fact-report riêng, xem Nhóm 38-41). | Đã thiết kế `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension` dựa trên entity Atomic — xem chi tiết Nhóm 7/18. | K_GSDC_33, K_GSDC_D8–D11 | Closed |
 | O_GSDC_4 | DB43 BC22 có KPI "Lợi nhuận kế toán trước thuế" (LNKT trước thuế) — cần map đúng row BCTC. | K_GSDC_58 (Nhóm 41: K_GSDC_748, LNKT trước thuế theo sàn) — map `fr_value` row `50`(dn/bh)/`17`(td), `rc.report_cd LIKE 'BCKQKD%'`. | K_GSDC_58 | Closed |
 | O_GSDC_5 | **[MỞ 2026-08-19]** Nhóm 41 (BC22) đổi nguồn sang `Fact Public Company Financial Summary Snapshot` + `Public Company Financial YoY Report` (theo update SIT BA "Tham khảo câu lệnh mục 13, mục 7") — cần bổ sung 2 measure mới ở LLD (Attributes) trước khi Detail Mapping có thể trỏ tới: (1) `Pre_Tax_Profit` (row `50` dn/bh, `17` td, report BCKQKD, col_desc=1) trên `fct_public_company_financial_smy_snpst`, dùng đúng chuỗi JOIN dedup form-ưu-tiên (`pc_report_submission`+`fr_template`+`fr_catalog`+`fr_row_template`+`fr_column_template`, dedup `ROW_NUMBER() ... ds_rcrd_udt_dt/ds_rcrd_isrt_dt`) như các measure khác cùng Fact; (2) `Pre_Tax_Profit_Yoy` trên `public_company_financial_yoy_rpt`, cùng pattern các cột `_yoy` khác. | Chưa bổ sung — Attributes 2 bảng hiện chưa có 2 cột này. HLD tạm ghi K_GSDC_748/748_YOY là READY vì nguồn/logic đã xác định rõ, nhưng cần xử lý LLD trước khi Detail Mapping hoàn chỉnh. | K_GSDC_748, K_GSDC_748_YOY (Nhóm 41) | Open |
+| O_GSDC_30 | **[MỞ 2026-10-08]** BA có yêu cầu mới ở Google Sheet `SSC_DW_Issues_Requirement&Bug` (lọc từ 10/9/2026) — Data Modeler chưa truy cập được. Đợt đồng bộ này chỉ dựa trên báo cáo drift code 2026-10-06 + 9 câu trả lời của dev. | Thay đổi trong HLD/LLD/flat khớp code dev; yêu cầu BA chỉ có trong Sheet (nếu chưa phản ánh trong code) CHƯA được đối chiếu. | Toàn module (đặc biệt cột ytd/đầu kỳ/large_scale mới) | Open |
+| O_GSDC_31 | **[MỞ 2026-10-08]** Cột `*_ytd`, `*_beginning`, `*_ytd_yoy`, `*_ytd_chg` và 2 bảng mới (`exchange_industry`, `ytd_chg`): tên cột/công thức/ETL ghi theo header code của dev, không đọc được `schema_dtm_gsdc.yml`/SQL dbt (3 file DDL 20261002 không trong repo; dev trả lời Q8: không ảnh hưởng LLD). | Mô tả cột trong LLD gắn nhãn GIẢ ĐỊNH — CHỜ DEV. Cần dev gửi `schema_dtm_gsdc.yml` để chốt danh sách cột chính xác. | Cụm 12/13/14/18/19 | Open |
+| O_GSDC_32 | **[MỞ 2026-10-08]** `public_company_exchange_industry_financial_rpt` chưa có KPI/Detail Mapping (Gate 8 `L2-TABLE-ZERO-USAGE`); BI Mapping K_GSDC_702/703/704/705/707 cần cập nhật theo logic profitable ⊂ submitted (header code 2026-09-30). | K_GSDC_702/703/705/707 đã remap sang cột mới (`company_due_count`/`company_submitted_count`/`profitable_company_count_year`); K_GSDC_704 giữ nguyên chờ BA. | K_GSDC_702–707, Nhóm 38/41 | Open |
+| O_GSDC_33 | **[MỞ 2026-10-08]** Atomic `pc_state_capital` (SCD4A) không có cột ngày snapshot (`ds_snpst_dt` không tồn tại, Gate 0 CRITICAL khi tham chiếu) — thiết kế cũ (listing_info) tham chiếu cột này từ trước; ghi chú HLD 2026-09-07 (Nhóm 31) nói Atomic "đã bổ sung field `ds_snpst_dt`" nhưng YAML Atomic hiện hành (`dm_atm_pc_state_capital-IDS.STATE_CAPITAL.yaml`) không có — cần Atomic team/dev xác nhận. | `snpst_dt_dim_id` của `fct_public_company_state_capital_snpst` = ngày chạy ETL (full-scan daily, SUM các dòng chưa xóa tại thời điểm chạy). Chờ dev xác nhận code thật lấy ngày nào. | K_GSDC_1389, K_GSDC_1390 | Open |
+| O_GSDC_34 | **[MỞ 2026-10-08]** `large_scale_company_count` (BA 2026-09-29: UPCOM/OTC, vốn góp ≥ 120 tỷ): ngưỡng và cột vốn chưa thấy trong báo cáo drift. | ETL giả định `public_company_dim.charter_capital_amt >= 120 tỷ` trong nhóm sàn UPCOM/OTC; chờ dev xác nhận cột/điều kiện thực tế. | Nhóm 38 (BC01.1) | Open |
+| O_GSDC_35 | **[MỞ 2026-10-08]** (a) Dev có 2 flat Dimension `gsdc_public_company_flat`, `gsdc_industry_flat` (1-1 từ Dimension, full refresh). Quy tắc Phase 3 (mục 1–2) chỉ cho flat Fact/Operational và Common conformed (`cdr_dt_flat`) → **ngoại lệ quy tắc**, Gate 3 báo orphan Branch B (checker map flat `gsdc_public_company_flat` → `public_company` ≠ `public_company_dim`). (b) `public_company_financial_ytd_chg_rpt` không có flat theo dev nhưng Gate 3 báo Branch A (checker chưa có khái niệm bảng trung gian). | **[QUYẾT ĐỊNH 2026-10-08, Data Modeler]** Tạm thời giữ đúng theo thiết kế hiện tại của dev: 2 flat Dimension được ghi vào `01/02_create/populate_gsdc_flat_tables.sql` (khối 18–19, nhãn ngoại lệ); `ytd_chg` không flat. Data Modeler nghiên cứu bổ sung sau. Phương án đã đánh giá để quay lại: bỏ 2 flat; K_GSDC_47/77 (6 dòng Detail Mapping dùng `Public Company Dimension` trực tiếp, Nhóm 6/9/10/12/14/16) đếm trên flat `risk_evaluation_snpst` (full-scan 1 CTĐC/ngày); thêm `equity_listing_exchange_name` vào 11 flat Fact join `public_company_dim` (hiện thiếu); join `industry_dim` vào flat `smy`/`rpt_val` (hiện chỉ có `industry_dim_id`, thiếu `industry_code`/`industry_nm`). | K_GSDC_47, K_GSDC_77 | Open |
+| O_GSDC_36 | **[MỞ 2026-10-08]** Gate 4 `L4-FLAT-TABLE-COLUMN-DRIFT`: flat `gsdc_fct_public_company_financial_rpt_val_flat` có alias `fr_catalog_enterprise_tp_code` (= `financial_rpt_catalog_dim.enterprise_tp_code`) không có trong master — tồn tại từ trước đợt đồng bộ này. | Chưa sửa vì ảnh hưởng schema flat/BI hiện hành; phương án: bỏ cột (suy ra từ `financial_rpt_catalog_code`) hoặc đăng ký tên cột vào master. | Nhóm 19–30, 37 (Data Explorer) | Open |
+| O_GSDC_37 | **[GHI NHẬN 2026-10-08]** Dev đã trả lời 9 câu (Q1–Q9): đổi `*_score` → `*_evaluation` + cột `*_assessment` (dev ghi 35 cột; thiết kế: 34 `*_assessment` + `credit_rating_tp_code`; BA yêu cầu, định dạng `<mức đánh giá>: <kết quả>`); `credit_rating_tp_code` = xếp loại A/B/C/D từ `evaluation_tp_code`; `equity_listing_exchange_name` (BA muốn hiển thị tên sàn); không có `trans_dt_dim_id` ở `listed_share`; `profitable_company_count_year` + `_ytd`; cột ytd để web app dùng bảng sàn/sàn × ngành/ngành; grain `fct_violation_rpt_snpst` giữ theo code. | Đã phản ánh vào LLD/HLD/flat. `snpst_dt_dim_id` = `date_format(etl_date,'yyyyMMdd')` tương đương `cdr_dt_dim_id` — Data Modeler xác nhận, giữ lookup trong thiết kế. | Cụm 1–5, 7, 9, 15–17 | Closed |

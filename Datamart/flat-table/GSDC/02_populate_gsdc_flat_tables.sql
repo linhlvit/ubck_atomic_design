@@ -3,10 +3,10 @@
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
--- 1. Fact Public Company Risk Score Snapshot
+-- 1. Fact Public Company Risk Evaluation Snapshot
 -- ---------------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_risk_score_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gsdc_fct_public_company_risk_score_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_risk_evaluation_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_risk_evaluation_snpst_flat
 SELECT
     f.public_company_dim_id,
     f.snpst_dt_dim_id,
@@ -19,6 +19,8 @@ SELECT
     f.financial_score,
     f.non_financial_m_score,
     f.credit_rating_score,
+    f.credit_rating_assessment,
+    f.credit_rating_tp_code,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     evaluation_cal.cdr_dt       AS evaluation_cdr_dt,
     dim.public_company_code,
@@ -48,7 +50,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.fct_public_company_risk_score_snpst f
+FROM datamart.fct_public_company_risk_evaluation_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -59,10 +61,10 @@ WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 -- ---------------------------------------------------------------------
--- 2. Fact Public Company Compliance Score Snapshot
+-- 2. Fact Public Company Compliance Evaluation Snapshot
 -- ---------------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_compliance_score_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gsdc_fct_public_company_compliance_score_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_compliance_evaluation_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_compliance_evaluation_snpst_flat
 SELECT
     f.public_company_dim_id,
     f.snpst_dt_dim_id,
@@ -70,19 +72,33 @@ SELECT
     f.evaluation_year,
     f.evaluation_month,
     f.disclosure_bctc_score,
+    f.disclosure_bctc_assessment,
     f.disclosure_bctn_score,
+    f.disclosure_bctn_assessment,
     f.disclosure_governance_report_score,
+    f.disclosure_governance_report_assessment,
     f.disclosure_ceo_change_score,
+    f.disclosure_ceo_change_assessment,
     f.violation_ubck_score,
+    f.violation_ubck_assessment,
     f.violation_other_score,
+    f.violation_other_assessment,
     f.charter_regulation_score,
+    f.charter_regulation_assessment,
     f.annual_meeting_count_score,
+    f.annual_meeting_count_assessment,
     f.independent_board_member_count_score,
+    f.independent_board_member_count_assessment,
     f.non_executive_board_member_count_score,
+    f.non_executive_board_member_count_assessment,
     f.board_member_qualification_score,
+    f.board_member_qualification_assessment,
     f.supervisory_board_count_score,
+    f.supervisory_board_count_assessment,
     f.capital_use_progress_report_score,
+    f.capital_use_progress_report_assessment,
     f.capital_use_plan_change_score,
+    f.capital_use_plan_change_assessment,
     f.total_compliance_score,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     evaluation_cal.cdr_dt       AS evaluation_cdr_dt,
@@ -113,7 +129,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.fct_public_company_compliance_score_snpst f
+FROM datamart.fct_public_company_compliance_evaluation_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -124,10 +140,10 @@ WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 -- ---------------------------------------------------------------------
--- 3. Fact Public Company Issuance Score Snapshot
+-- 3. Fact Public Company Issuance Evaluation Snapshot
 -- ---------------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_issuance_score_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gsdc_fct_public_company_issuance_score_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_issuance_evaluation_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_issuance_evaluation_snpst_flat
 SELECT
     f.public_company_dim_id,
     f.snpst_dt_dim_id,
@@ -135,12 +151,19 @@ SELECT
     f.evaluation_year,
     f.evaluation_month,
     f.rapid_capital_increase_score,
+    f.rapid_capital_increase_assessment,
     f.private_placement_count_score,
+    f.private_placement_count_assessment,
     f.public_offering_count_score,
+    f.public_offering_count_assessment,
     f.esop_issuance_count_score,
+    f.esop_issuance_count_assessment,
     f.unsecured_bond_ratio_score,
+    f.unsecured_bond_ratio_assessment,
     f.credit_rating_score_issuance,
+    f.credit_rating_issuance_assessment,
     f.bond_debt_to_equity_score,
+    f.bond_debt_to_equity_assessment,
     f.total_issuance_score,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     evaluation_cal.cdr_dt       AS evaluation_cdr_dt,
@@ -171,7 +194,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.fct_public_company_issuance_score_snpst f
+FROM datamart.fct_public_company_issuance_evaluation_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -182,10 +205,10 @@ WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 -- ---------------------------------------------------------------------
--- 4. Fact Public Company Financial Score Snapshot
+-- 4. Fact Public Company Financial Evaluation Snapshot
 -- ---------------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_financial_score_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gsdc_fct_public_company_financial_score_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_financial_evaluation_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_financial_evaluation_snpst_flat
 SELECT
     f.public_company_dim_id,
     f.snpst_dt_dim_id,
@@ -193,15 +216,25 @@ SELECT
     f.evaluation_year,
     f.evaluation_month,
     f.audit_opinion_score,
+    f.audit_opinion_assessment,
     f.roa_score,
+    f.roa_assessment,
     f.operating_cash_flow_score,
+    f.operating_cash_flow_assessment,
     f.current_ratio_score,
+    f.current_ratio_assessment,
     f.ebit_interest_coverage_score,
+    f.ebit_interest_coverage_assessment,
     f.debt_to_equity_score,
+    f.debt_to_equity_assessment,
     f.equity_score,
+    f.equity_assessment,
     f.roe_score,
+    f.roe_assessment,
     f.financial_revenue_to_profit_score,
+    f.financial_revenue_to_profit_assessment,
     f.other_revenue_to_profit_score,
+    f.other_revenue_to_profit_assessment,
     f.total_financial_score,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     evaluation_cal.cdr_dt       AS evaluation_cdr_dt,
@@ -232,7 +265,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.fct_public_company_financial_score_snpst f
+FROM datamart.fct_public_company_financial_evaluation_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -243,10 +276,10 @@ WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 -- ---------------------------------------------------------------------
--- 5. Fact Public Company Non-Financial Score Snapshot
+-- 5. Fact Public Company Non-Financial Evaluation Snapshot
 -- ---------------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_nonfinancial_score_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gsdc_fct_public_company_nonfinancial_score_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_nonfinancial_evaluation_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_nonfinancial_evaluation_snpst_flat
 SELECT
     f.public_company_dim_id,
     f.snpst_dt_dim_id,
@@ -254,7 +287,9 @@ SELECT
     f.evaluation_year,
     f.evaluation_month,
     f.business_registration_status_score,
+    f.business_registration_status_assessment,
     f.m_score,
+    f.m_score_assessment,
     f.total_nonfinancial_score,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     evaluation_cal.cdr_dt       AS evaluation_cdr_dt,
@@ -285,7 +320,7 @@ SELECT
     dim.has_subsidiary_indicator,
     dim.has_joint_venture_indicator,
     dim.ipo_company_indicator
-FROM datamart.fct_public_company_nonfinancial_score_snpst f
+FROM datamart.fct_public_company_nonfinancial_evaluation_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim evaluation_cal
@@ -395,7 +430,8 @@ SELECT
 FROM datamart.fct_public_company_financial_rpt_val f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.public_company_dim dim
+-- [SỬA 2026-10-08, code dev] JOIN (không LEFT JOIN) để loại bản ghi của công ty không còn hiệu lực trong public_company_dim
+JOIN datamart.public_company_dim dim
     ON dim.public_company_dim_id = f.public_company_dim_id
 LEFT JOIN datamart.financial_rpt_catalog_dim catalog_dim
     ON catalog_dim.financial_rpt_catalog_dim_id = f.financial_rpt_catalog_dim_id
@@ -413,10 +449,11 @@ SELECT
     o.rpt_year,
     o.rpt_quarter,
     o.company_count,
-    o.rpt_due_count,
-    o.rpt_submitted_count,
-    o.profitable_company_count_year_n,
-    o.profitable_company_count_year_n1,
+    o.company_due_count,
+    o.company_submitted_count,
+    o.profitable_company_count_year,
+    o.profitable_company_count_ytd,
+    o.large_scale_company_count,
     o.src_stm_code,
     o.rpt_dt
 FROM datamart.public_company_regulatory_compliance_rpt o
@@ -433,6 +470,7 @@ SELECT
     o.business_line_level_1_code,
     o.business_line_level_1_name,
     o.rpt_year,
+    o.rpt_quarter,
     o.net_revenue_amt_year_n,
     o.net_profit_amt_year_n,
     o.roa_percentage_year_n,
@@ -441,6 +479,25 @@ SELECT
     o.net_profit_amt_year_n1,
     o.roa_percentage_year_n1,
     o.roe_percentage_year_n1,
+    o.total_asset_amt_year_n,
+    o.total_liability_amt_year_n,
+    o.equity_amt_year_n,
+    o.contributed_capital_amt_year_n,
+    o.pre_tax_profit_amt_year_n,
+    o.pre_tax_profit_ytd_amt_year_n,
+    o.inventory_amt_year_n,
+    o.undistributed_profit_amt_year_n,
+    o.receivable_amt_year_n,
+    o.cash_and_equivalent_amt_year_n,
+    o.debt_to_equity_year_n,
+    o.net_revenue_ytd_amt_year_n,
+    o.net_profit_ytd_amt_year_n,
+    o.roa_ytd_percentage_year_n,
+    o.roe_ytd_percentage_year_n,
+    o.net_revenue_ytd_amt_year_n1,
+    o.net_profit_ytd_amt_year_n1,
+    o.roa_ytd_percentage_year_n1,
+    o.roe_ytd_percentage_year_n1,
     o.src_stm_code,
     o.rpt_dt
 FROM datamart.public_company_industry_financial_rpt o
@@ -455,6 +512,7 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_multi_period_financial_rpt
 INSERT INTO datamart.gsdc_public_company_multi_period_financial_rpt_flat
 SELECT
     o.rpt_year,
+    o.rpt_quarter,
     o.total_asset_amt_year_n,
     o.total_liability_amt_year_n,
     o.equity_amt_year_n,
@@ -476,6 +534,15 @@ SELECT
     o.net_profit_amt_year_n2,
     o.roa_percentage_year_n2,
     o.roe_percentage_year_n2,
+    o.net_profit_ytd_amt_year_n,
+    o.roa_ytd_percentage_year_n,
+    o.roe_ytd_percentage_year_n,
+    o.net_profit_ytd_amt_year_n1,
+    o.roa_ytd_percentage_year_n1,
+    o.roe_ytd_percentage_year_n1,
+    o.net_profit_ytd_amt_year_n2,
+    o.roa_ytd_percentage_year_n2,
+    o.roe_ytd_percentage_year_n2,
     o.src_stm_code,
     o.rpt_dt
 FROM datamart.public_company_multi_period_financial_rpt o
@@ -490,6 +557,8 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_financial_yoy_rpt_flat ON 
 INSERT INTO datamart.gsdc_public_company_financial_yoy_rpt_flat
 SELECT
     o.equity_listing_exchange_code,
+    o.business_line_level_1_code,
+    o.business_line_level_1_name,
     o.rpt_year,
     o.rpt_quarter,
     o.total_asset_yoy,
@@ -497,6 +566,7 @@ SELECT
     o.equity_yoy,
     o.contributed_capital_yoy,
     o.net_profit_yoy,
+    o.pre_tax_profit_yoy,
     o.inventory_yoy,
     o.net_revenue_yoy,
     o.undistributed_profit_yoy,
@@ -505,6 +575,11 @@ SELECT
     o.roa_yoy,
     o.roe_yoy,
     o.debt_to_equity_yoy,
+    o.net_profit_ytd_yoy,
+    o.pre_tax_profit_ytd_yoy,
+    o.net_revenue_ytd_yoy,
+    o.roa_ytd_yoy,
+    o.roe_ytd_yoy,
     o.src_stm_code,
     o.rpt_dt
 FROM datamart.public_company_financial_yoy_rpt o
@@ -543,6 +618,31 @@ SELECT
     o.roa_yoy_percentage,
     o.roe_percentage,
     o.roe_yoy_percentage,
+    o.receivable_amt,
+    o.receivable_yoy,
+    o.cash_and_equivalent_amt,
+    o.cash_and_equivalent_yoy,
+    o.debt_to_equity_percentage,
+    o.debt_to_equity_yoy_percentage,
+    o.net_revenue_ytd_amt,
+    o.net_revenue_ytd_yoy,
+    o.pre_tax_profit_ytd_amt,
+    o.pre_tax_profit_ytd_yoy,
+    o.net_profit_ytd_amt,
+    o.net_profit_ytd_yoy,
+    o.roa_ytd_percentage,
+    o.roa_ytd_yoy_percentage,
+    o.roe_ytd_percentage,
+    o.roe_ytd_yoy_percentage,
+    o.total_asset_ytd_chg,
+    o.total_liability_ytd_chg,
+    o.equity_ytd_chg,
+    o.contributed_capital_ytd_chg,
+    o.inventory_ytd_chg,
+    o.undistributed_profit_ytd_chg,
+    o.receivable_ytd_chg,
+    o.cash_and_equivalent_ytd_chg,
+    o.debt_to_equity_ytd_chg,
     o.src_stm_code,
     o.rpt_dt
 FROM datamart.public_company_exchange_financial_summary_rpt o
@@ -568,6 +668,12 @@ SELECT
     f.pre_tax_profit,
     f.total_asset_beginning,
     f.equity_beginning,
+    f.total_liability_beginning,
+    f.contributed_capital_beginning,
+    f.inventory_beginning,
+    f.undistributed_profit_beginning,
+    f.receivable_beginning,
+    f.cash_and_equivalent_beginning,
     f.inventory,
     f.net_revenue,
     f.undistributed_profit,
@@ -576,6 +682,12 @@ SELECT
     f.roa,
     f.roe,
     f.debt_to_equity,
+    f.debt_to_equity_beginning,
+    f.net_profit_ytd,
+    f.net_revenue_ytd,
+    f.pre_tax_profit_ytd,
+    f.roa_ytd,
+    f.roe_ytd,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     dim.public_company_code,
     dim.equity_ticker_symbol,
@@ -613,13 +725,11 @@ WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 -- ---------------------------------------------------------------------
--- 14. Fact Public Company Listing Info Snapshot (Nhóm 31, K_GSDC_1381-1390)
---     [MỚI 2026-09-07] Nguồn VSDC listed_share_info + foreign_ownership_info
---     [SỬA 2026-09-07 lần 2] + IDS pc_state_capital (K_GSDC_1389/1390, sở hữu nhà nước)
---     [MỚI 2026-09-18, cross-module reuse NDTNN] + foreign_holding_value (K_NDTNN_51)
+-- 14. Fact Public Company Listed Share Snapshot (K_GSDC_1381-1384)
+--     [TÁCH 2026-10-08] tách từ listing_info theo code dev; lọc theo ngày snapshot như các Fact snapshot khác.
 -- ---------------------------------------------------------------------
-TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_listing_info_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gsdc_fct_public_company_listing_info_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_listed_share_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_listed_share_snpst_flat
 SELECT
     f.public_company_dim_id,
     f.snpst_dt_dim_id,
@@ -627,12 +737,35 @@ SELECT
     f.total_issued_share_quantity,
     f.treasury_share_quantity,
     f.free_float_share_quantity,
+    snpst_cal.cdr_dt            AS snpst_cdr_dt,
+    dim.public_company_code,
+    dim.equity_ticker_symbol,
+    dim.public_company_nm,
+    dim.equity_listing_exchange_code,
+    dim.business_line_level_1_code,
+    dim.classification_business_line_nm
+FROM datamart.fct_public_company_listed_share_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.public_company_dim dim
+    ON dim.public_company_dim_id = f.public_company_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
+;
+
+
+-- ---------------------------------------------------------------------
+-- 15. Fact Public Company Foreign Holding Snapshot (K_GSDC_1385-1388 + foreign_holding_value (K_NDTNN_51))
+--     [TÁCH 2026-10-08] tách từ listing_info theo code dev; lọc theo ngày snapshot như các Fact snapshot khác.
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_foreign_holding_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_foreign_holding_snpst_flat
+SELECT
+    f.public_company_dim_id,
+    f.snpst_dt_dim_id,
     f.current_foreign_holding_quantity,
     f.foreign_ownership_ratio,
     f.max_foreign_ownership_ratio,
     f.remaining_foreign_holding_quantity,
-    f.state_owned_share_quantity,
-    f.state_ownership_ratio_percentage,
     f.foreign_holding_value,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     dim.public_company_code,
@@ -641,10 +774,153 @@ SELECT
     dim.equity_listing_exchange_code,
     dim.business_line_level_1_code,
     dim.classification_business_line_nm
-FROM datamart.fct_public_company_listing_info_snpst f
+FROM datamart.fct_public_company_foreign_holding_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.public_company_dim dim
     ON dim.public_company_dim_id = f.public_company_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
+;
+
+
+-- ---------------------------------------------------------------------
+-- 16. Fact Public Company State Capital Snapshot (K_GSDC_1389-1390)
+--     [TÁCH 2026-10-08] tách từ listing_info theo code dev; lọc theo ngày snapshot như các Fact snapshot khác.
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_state_capital_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_fct_public_company_state_capital_snpst_flat
+SELECT
+    f.public_company_dim_id,
+    f.snpst_dt_dim_id,
+    f.state_owned_share_quantity,
+    f.state_ownership_ratio_percentage,
+    snpst_cal.cdr_dt            AS snpst_cdr_dt,
+    dim.public_company_code,
+    dim.equity_ticker_symbol,
+    dim.public_company_nm,
+    dim.equity_listing_exchange_code,
+    dim.business_line_level_1_code,
+    dim.classification_business_line_nm
+FROM datamart.fct_public_company_state_capital_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.public_company_dim dim
+    ON dim.public_company_dim_id = f.public_company_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
+;
+
+-- ---------------------------------------------------------------------
+-- 17. Public Company Exchange Industry Financial Report (Fact-report, cross-tab sàn × ngành — không FK Dimension)
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_exchange_industry_financial_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_public_company_exchange_industry_financial_rpt_flat
+SELECT
+    o.equity_listing_exchange_code,
+    o.business_line_level_1_code,
+    o.business_line_level_1_name,
+    o.rpt_year,
+    o.rpt_quarter,
+    o.total_asset_amt,
+    o.total_asset_yoy,
+    o.inventory_amt,
+    o.inventory_yoy,
+    o.total_liability_amt,
+    o.total_liability_yoy,
+    o.equity_amt,
+    o.equity_yoy,
+    o.contributed_capital_amt,
+    o.contributed_capital_yoy,
+    o.undistributed_profit_amt,
+    o.undistributed_profit_yoy,
+    o.net_revenue_amt,
+    o.net_revenue_yoy,
+    o.pre_tax_profit_amt,
+    o.pre_tax_profit_yoy,
+    o.net_profit_amt,
+    o.net_profit_yoy,
+    o.roa_percentage,
+    o.roa_yoy_percentage,
+    o.roe_percentage,
+    o.roe_yoy_percentage,
+    o.receivable_amt,
+    o.receivable_yoy,
+    o.cash_and_equivalent_amt,
+    o.cash_and_equivalent_yoy,
+    o.debt_to_equity_percentage,
+    o.debt_to_equity_yoy_percentage,
+    o.net_revenue_ytd_amt,
+    o.net_revenue_ytd_yoy,
+    o.pre_tax_profit_ytd_amt,
+    o.pre_tax_profit_ytd_yoy,
+    o.net_profit_ytd_amt,
+    o.net_profit_ytd_yoy,
+    o.roa_ytd_percentage,
+    o.roa_ytd_yoy_percentage,
+    o.roe_ytd_percentage,
+    o.roe_ytd_yoy_percentage,
+    o.total_asset_ytd_chg,
+    o.total_liability_ytd_chg,
+    o.equity_ytd_chg,
+    o.contributed_capital_ytd_chg,
+    o.inventory_ytd_chg,
+    o.undistributed_profit_ytd_chg,
+    o.receivable_ytd_chg,
+    o.cash_and_equivalent_ytd_chg,
+    o.debt_to_equity_ytd_chg,
+    o.src_stm_code,
+    o.rpt_dt
+FROM datamart.public_company_exchange_industry_financial_rpt o
+WHERE o.rpt_dt = formatDateTime(:etl_date, '%Y%m%d')
+;
+
+-- ---------------------------------------------------------------------
+-- 18. Public Company Dimension (1-1 từ Datamart dimension, full refresh) — [THEO CODE DEV, ngoại lệ quy tắc Phase 3: O_GSDC_35]
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_public_company_flat
+SELECT
+    d.public_company_dim_id,
+    d.public_company_code,
+    d.equity_ticker_symbol,
+    d.public_company_nm,
+    d.equity_listing_exchange_code,
+    d.equity_listing_exchange_name,
+    d.business_line_level_1_code,
+    d.ids_registration_dt,
+    d.public_company_status_code,
+    d.src_stm_code,
+    d.classification_business_line_nm,
+    d.public_company_english_nm,
+    d.enterprise_tp_code,
+    d.enterprise_tp_nm,
+    d.public_company_tp_code,
+    d.head_office_province_nm,
+    d.operating_status_code,
+    d.has_state_ownership_indicator,
+    d.charter_capital_amt,
+    d.first_registration_dt,
+    d.latest_registration_dt,
+    d.latest_registration_province_nm,
+    d.ids_registration_indicator,
+    d.public_company_form_code,
+    d.former_state_owned_indicator,
+    d.foreign_direct_investment_indicator,
+    d.has_parent_company_indicator,
+    d.has_subsidiary_indicator,
+    d.has_joint_venture_indicator,
+    d.ipo_company_indicator
+FROM datamart.public_company_dim d
+;
+
+-- ---------------------------------------------------------------------
+-- 19. Industry Dimension (1-1 từ Datamart dimension, full refresh) — [THEO CODE DEV, ngoại lệ quy tắc Phase 3: O_GSDC_35]
+-- ---------------------------------------------------------------------
+TRUNCATE TABLE IF EXISTS datamart.gsdc_industry_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_industry_flat
+SELECT
+    d.industry_dim_id,
+    d.industry_code,
+    d.industry_nm,
+    d.src_stm_code
+FROM datamart.industry_dim d
 ;
