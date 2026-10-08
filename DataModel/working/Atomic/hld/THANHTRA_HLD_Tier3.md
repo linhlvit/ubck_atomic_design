@@ -17,6 +17,7 @@
 | Business Activity | [Business Activity] Business Review | Examination Team Member | EXAMINATION_TEAM_MEMBER | Update | Danh sách thành viên đoàn kiểm tra: USER_ID, ROLE_TYPE | Examination Team Member | Fundamental | (1) Business Review — BCO đổi sang Business Activity. (2) Cấu trúc đồng nhất với INSPECTION_TEAM_MEMBER. (3) Tên chứa "Examination Team" ✓. Table Type = Fundamental. |
 | Business Activity | [Business Activity] Business Review | Inspection Team Target | INSPECTION_TEAM_TARGET | Update | Danh sách đối tượng được thanh tra trong đoàn cụ thể: TARGET_TYPE(7 loại), TARGET_REFERENCE_ID, TARGET_NAME | Inspection Team Target | Fundamental | (1) Business Review — BCV: entity này ghi nhận đối tượng của hoạt động thanh tra. (2) Bảng có FK→INSPECTION_TEAM, TARGET_TYPE(SECURITIES_COMPANY/FUND_MANAGEMENT_COMPANY/PUBLIC_COMPANY/AUDIT_COMPANY/CRYPTO_SERVICE_PROVIDER/INDIVIDUAL/ORGANIZATION), TARGET_REFERENCE_ID, TARGET_NAME. (3) Business Review phù hợp. Tên chứa "Inspection Team" ✓. Table Type = Fundamental. |
 | Business Activity | [Business Activity] Business Review | Examination Team Target | EXAMINATION_TEAM_TARGET | Update | Danh sách đối tượng được kiểm tra trong đoàn cụ thể: TARGET_TYPE(7 loại), TARGET_REFERENCE_ID, TARGET_NAME | Examination Team Target | Fundamental | (1) Business Review — BCV: cùng mô tả. (2) Cấu trúc đồng nhất với INSPECTION_TEAM_TARGET, cùng 7 TARGET_TYPE values. (3) Tên chứa "Examination Team" ✓. Table Type = Fundamental. |
+| Business Activity | [Business Activity] Conduct Violation | Violation Behavior Penalty Type | PENALTY_TYPE_VIOLATION_BEHAVIOR | Update | Hình thức xử phạt bổ sung theo hành vi vi phạm (DDL UAT): FK→PENALTY_TYPE, FK→VIOLATION_BEHAVIOR, không có business attribute nào khác ngoài audit fields chuẩn | Violation Behavior X Penalty Type Relationship | Relative | (1) Conduct Violation — BCV Concept kế thừa từ Violation Behavior (entity neo, Tier 2); Domain Prefix rỗng vì là entity link/relationship thuần, cùng cơ chế `{A} X {B} Relationship` của `Penalty Decision Subject Behavior X Penalty Type Relationship` (T6). (2) Bảng chỉ có 2 FK nghiệp vụ (PENALTY_TYPE_ID, VIOLATION_BEHAVIOR_ID) + audit/technical — pure link, quan hệ N:N giữa hành vi vi phạm và hình thức xử phạt bổ sung. (3) Giữ entity riêng thay vì denormalize ARRAY/PRIMARY_PENALTY_TYPE_ID vì cần biểu diễn N hình thức bổ sung/hành vi; PK composite 2 FK Id. Xem T3-05. |
 
 ---
 
@@ -89,6 +90,14 @@ erDiagram
     EXAMINATION_TEAM ||--o{ EXAMINATION_TEAM_MEMBER : "FK"
     INSPECTION_TEAM ||--o{ INSPECTION_TEAM_TARGET : "FK"
     EXAMINATION_TEAM ||--o{ EXAMINATION_TEAM_TARGET : "FK"
+
+    PENALTY_TYPE_VIOLATION_BEHAVIOR {
+        varchar ID PK
+        varchar PENALTY_TYPE_ID FK
+        varchar VIOLATION_BEHAVIOR_ID FK
+    }
+    VIOLATION_BEHAVIOR ||--o{ PENALTY_TYPE_VIOLATION_BEHAVIOR : "FK"
+    PENALTY_TYPE ||--o{ PENALTY_TYPE_VIOLATION_BEHAVIOR : "FK"
 ```
 
 > VIOLATION_RECORD có FK suy luận đến INSPECTION/EXAMINATION_TEAM — không vẽ trong diagram do không có formal FK trong BRD.
@@ -173,6 +182,21 @@ erDiagram
     Examination_Team ||--o{ Examination_Team_Member : ""
     Inspection_Team ||--o{ Inspection_Team_Target : ""
     Examination_Team ||--o{ Examination_Team_Target : ""
+
+    Violation_Behavior {
+        bigint violation_behavior_id PK
+    }
+    Classification_THANHTRA_Penalty_Type {
+        bigint cl_thanhtra_penalty_tp_id PK
+    }
+    Violation_Behavior_X_Penalty_Type_Relationship {
+        bigint violation_behavior_id PK,FK
+        varchar violation_behavior_code
+        bigint cl_thanhtra_penalty_tp_id PK,FK
+        varchar cl_thanhtra_penalty_tp_code
+    }
+    Violation_Behavior ||--o{ Violation_Behavior_X_Penalty_Type_Relationship : ""
+    Classification_THANHTRA_Penalty_Type ||--o{ Violation_Behavior_X_Penalty_Type_Relationship : ""
 ```
 
 ---
@@ -207,3 +231,4 @@ erDiagram
 | T3-03 | Review LLD: (1) TARGET_TYPE của INSPECTION_TEAM_TARGET/EXAMINATION_TEAM_TARGET có nên là Classification Value không? (2) EXAMINATION_TEAM_TARGET.ADDRESS có nên tách shared entity không? | (1) Không — map 1:1 dạng Text. Giá trị cross-reference nhiều source system (SCMS/FMS/IDS) qua Target Reference Id, không phải reference data set cố định trong THANHTRA. (2) Có — grain của EXAMINATION_TEAM_TARGET là 1 Involved Party (đối tượng kiểm tra); ADDRESS tách ra `Involved Party Postal Address` (`lld_THANHTRA_EXAMINATION_TEAM_TARGET_IP_Postal_Address.yaml`). INSPECTION_TEAM_TARGET không có cột ADDRESS trong nguồn nên không áp dụng. |
 | T3-03 | INSPECTION_TEAM_MEMBER và EXAMINATION_TEAM_MEMBER chỉ lưu USER_ID (FK→system_user ngoài scope THANHTRA). Có cần shared entity từ source khác không? | system_user là user nội bộ UBCKNN — không phải Involved Party trong NHNCK. Giữ denormalized trong THANHTRA, không link sang shared entity. Xác nhận với Data Architect. |
 | T3-04 | VIOLATION_CASE có cả FK→INSPECTION_TEAM và FK→EXAMINATION_TEAM đều nullable — một VPHC case có thể không từ inspection cũng không từ examination (SOURCE_CATEGORY=COMPLAINT/MEDIA/OTHER). Cần xử lý khi cả 2 FK đều null. | Ghi nhận. ETL cần handle null FK. Không ảnh hưởng thiết kế entity — grain vẫn là 1 hồ sơ VPHC. |
+| T3-05 | Bảng PENALTY_TYPE_VIOLATION_BEHAVIOR trước đây ngoài scope (7d: pure junction, denormalize vào Violation Behavior qua PRIMARY_PENALTY_TYPE_ID). Cột PENALTY_TYPE_ID nguồn mô tả là "hình thức xử phạt bổ sung" — quan hệ N:N, không thể biểu diễn bằng 1 FK PRIMARY_PENALTY_TYPE_ID (1:1, hình thức xử phạt chính). Có nên đưa vào scope thành entity link riêng? | Đề xuất: đưa vào scope, entity `Violation Behavior X Penalty Type Relationship` (Relative, pure link, composite PK 2 FK Id) — cùng cơ chế `Penalty Decision Subject Behavior X Penalty Type Relationship` (T6). Cross-tier FK →T1 Penalty Type. Chờ Data Modeler xác nhận; PRIMARY_PENALTY_TYPE_ID trên Violation Behavior giữ nguyên. |

@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Communication] Feedback"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -181,36 +181,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Assigned Officer Id"
-  physical_name: "assigned_officer_id"
-  description: "ID chuyên viên được phân công xử lý đơn thư."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.PETITION.ASSIGNED_OFFICER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNED_OFFICER_ID) | Chưa xác nhận join key THANHTRA.PETITION.ASSIGNED_OFFICER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Assigned Officer Name"
-  physical_name: "assigned_officer_nm"
-  description: "Tên chuyên viên được phân công xử lý đơn thư (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PETITION.ASSIGNED_OFFICER_NAME"
-  comment: "Denormalized snapshot tên chuyên viên tại thời điểm phân công, không phải\
-    \ Code nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern\
-    \ Lookup pair Code. Pair with Assigned Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Duplicate Type Code"
   physical_name: "duplicate_tp_code"
   description: "Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)."
@@ -278,90 +248,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Internal Transfer Unit Id"
-  physical_name: "internal_transfer_unit_id"
-  description: "FK đến ban/đơn vị nội bộ UBCKNN nhận chuyển đơn."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.PETITION.INTERNAL_TRANSFER_UNIT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'UNIT'). Cần ETL\
-    \ crosswalk sang NHNCK.UNITS: PETITION.INTERNAL_TRANSFER_UNIT_ID = UNITS.ID để\
-    \ xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS', UNIT_CODE) | Crosswalk khác\
-    \ phân hệ (THANHTRA → NHNCK) — chưa xác nhận INTERNAL_TRANSFER_UNIT_ID nguồn khớp\
-    \ NHNCK.UNITS.ID, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Internal Transfer Unit Code"
-  physical_name: "internal_transfer_unit_code"
-  description: "Mã ban/đơn vị nội bộ nhận chuyển đơn (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Internal Transfer\
-    \ Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem\
-    \ comment Internal Transfer Unit Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Internal Transfer Unit Name"
-  physical_name: "internal_transfer_unit_nm"
-  description: "Tên ban/đơn vị nội bộ UBCKNN nhận chuyển đơn."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PETITION.INTERNAL_TRANSFER_UNIT_NAME"
-  comment: "Denormalized snapshot tên đơn vị. Pair with Internal Transfer Unit Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Archived Indicator"
-  physical_name: "archived_ind"
-  description: "Lưu đơn: 0=Không, 1=Có."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PETITION.ARCHIVED"
-  comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Guidance Document Number"
-  physical_name: "guidance_document_nbr"
-  description: "Số văn bản hướng dẫn nhà đầu tư (văn bản đi)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PETITION.GUIDANCE_DOCUMENT_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Guidance Document Date"
-  physical_name: "guidance_document_dt"
-  description: "Ngày văn bản hướng dẫn nhà đầu tư."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PETITION.GUIDANCE_DOCUMENT_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Life Cycle Status Code"
   physical_name: "life_cycle_status_code"
   description: "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)."

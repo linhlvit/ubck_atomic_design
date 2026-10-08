@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -147,91 +147,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Source Unit Reference Id"
-  physical_name: "src_unit_reference_id"
-  description: "ID tham chiếu đơn vị gửi kết quả giám sát/vi phạm trong hệ thống nguồn\
-    \ (nội bộ UBCKNN hoặc bên ngoài tùy Source Category Code)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE.SOURCE_UNIT_ID"
-  comment: "Denormalized reference — không FK formal. Đơn vị nguồn có thể là đơn vị\
-    \ nội bộ UBCKNN (Source Category Code = INTERNAL_UNIT) hoặc tổ chức ngoài (STOCK_EXCHANGE,\
-    \ VSDC, OTHER_SUPERVISION) nên không crosswalk cố định sang 1 catalog duy nhất."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source Unit Name"
-  physical_name: "src_unit_nm"
-  description: "Tên đơn vị gửi kết quả giám sát/vi phạm (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE.SOURCE_UNIT_NAME"
-  comment: "Denormalized snapshot tên đơn vị. Pair with Source Unit Reference Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Assigned Officer Id"
-  physical_name: "assigned_officer_id"
-  description: "FK đến cán bộ được phân công xử lý hồ sơ VPHC."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE.ASSIGNED_OFFICER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNED_OFFICER_ID) | Chưa xác nhận join key THANHTRA.VIOLATION_CASE.ASSIGNED_OFFICER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Assigned Officer Name"
-  physical_name: "assigned_officer_nm"
-  description: "Tên cán bộ phụ trách xử lý hồ sơ VPHC (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE.ASSIGNED_OFFICER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Supervising Leader Id"
-  physical_name: "supervising_leader_id"
-  description: "FK đến lãnh đạo phụ trách hồ sơ VPHC."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE.SUPERVISING_LEADER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', SUPERVISING_LEADER_ID) | Chưa xác nhận join key THANHTRA.VIOLATION_CASE.SUPERVISING_LEADER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Supervising Leader Name"
-  physical_name: "supervising_leader_nm"
-  description: "Tên lãnh đạo phụ trách hồ sơ VPHC (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE.SUPERVISING_LEADER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Life Cycle Status Code"
   physical_name: "life_cycle_status_code"
   description: "Trạng thái: NEW, PROCESSING, DECISION_ISSUED, ENFORCED, CLOSED."
@@ -281,32 +196,6 @@ attributes:
   source_columns:
   - "THANHTRA.VIOLATION_CASE.BOND_CODE"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processing Progress"
-  physical_name: "processing_progress"
-  description: "Mô tả tiến trình xử lý hồ sơ VPHC."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE.PROCESSING_PROGRESS"
-  comment: "Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Note"
-  physical_name: "note"
-  description: "Ghi chú bổ sung."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.VIOLATION_CASE.NOTE"
-  comment: "Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

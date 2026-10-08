@@ -4,7 +4,7 @@ metadata:
   source_system: "THANHTRA"
   source_table: "PENALTY_DECISION"
   atomic_entity: "Penalty Decision"
-  entity_physical_name: "penalty_decision"
+  entity_physical_name: "pd"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Event"
   table_type: "Fundamental"
@@ -144,124 +144,6 @@ attributes:
   source_columns:
   - "THANHTRA.PENALTY_DECISION.STATUS"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Signer Officer Id"
-  physical_name: "signer_officer_id"
-  description: "FK đến cán bộ ký quyết định xử phạt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.PENALTY_DECISION.SIGNER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', SIGNER_ID) | Chưa xác nhận join key THANHTRA.PENALTY_DECISION.SIGNER_ID ↔ IAM.USERS,\
-    \ cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Signer Officer Code"
-  physical_name: "signer_officer_code"
-  description: "Tên cán bộ ký quyết định (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PENALTY_DECISION.SIGNER_NAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Signer Officer Id. Nguồn lưu SIGNER_NAME (text snapshot)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Assigned Officer Id"
-  physical_name: "assigned_officer_id"
-  description: "FK đến cán bộ được phân công xử lý quyết định."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.PENALTY_DECISION.ASSIGNED_OFFICER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNED_OFFICER_ID) | Chưa xác nhận join key THANHTRA.PENALTY_DECISION.ASSIGNED_OFFICER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Assigned Officer Name"
-  physical_name: "assigned_officer_nm"
-  description: "Tên cán bộ được phân công (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PENALTY_DECISION.ASSIGNED_OFFICER_NAME"
-  comment: "Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải Code\
-    \ nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern Lookup\
-    \ pair Code. Pair with Assigned Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Submitted By Officer Id"
-  physical_name: "submitted_by_officer_id"
-  description: "FK đến cán bộ trình ký quyết định."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.PENALTY_DECISION.SUBMITTED_BY_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', SUBMITTED_BY_ID) | Chưa xác nhận join key THANHTRA.PENALTY_DECISION.SUBMITTED_BY_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Submitted By Officer Code"
-  physical_name: "submitted_by_officer_code"
-  description: "Mã cán bộ trình ký (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PENALTY_DECISION.SUBMITTED_BY_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Submitted By Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver Officer Id"
-  physical_name: "approver_officer_id"
-  description: "FK đến người phê duyệt quyết định."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "THANHTRA.PENALTY_DECISION.APPROVER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', APPROVER_ID) | Chưa xác nhận join key THANHTRA.PENALTY_DECISION.APPROVER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver Officer Code"
-  physical_name: "approver_officer_code"
-  description: "Tên người phê duyệt (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PENALTY_DECISION.APPROVER_NAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver Officer Id. Nguồn lưu APPROVER_NAME (text snapshot) — trước\
-    \ đây tạm dùng APPROVER_ID do chưa có cột tên, đã sửa 2026-08-07."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -546,7 +428,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "decimal(23,2)"
 - attribute_name: "Other Penalty Revenue Amount"
   physical_name: "other_penalty_revenue_amt"
   description: "Các khoản tiền khác thu từ xử phạt vi phạm hành chính."
@@ -559,9 +441,9 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "decimal(23,2)"
 - attribute_name: "Report Classification Code"
-  physical_name: "report_classification_code"
+  physical_name: "rpt_cl_code"
   description: "Phân loại trong báo cáo: DEFERRED_OR_REDUCED, COERCIVE_ENFORCEMENT,\
     \ COMPLAINED_OR_SUED."
   data_domain: "Text"

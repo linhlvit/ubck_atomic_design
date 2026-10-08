@@ -58,7 +58,8 @@ attributes:
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.PENALTY_DECISION_SUBJECT_BEHAVIOR_ID"
   comment: "FK target: pd_subject_behavior.pd_subject_behavior_id. Hash: hash_id('THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR',\
-    \ PENALTY_DECISION_SUBJECT_BEHAVIOR_ID). Composite PK cùng Penalty Type Id."
+    \ PENALTY_DECISION_SUBJECT_BEHAVIOR_ID). Composite PK cùng Classification THANHTRA\
+    \ Penalty Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -76,8 +77,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Penalty Type Id"
-  physical_name: "penalty_tp_id"
+- attribute_name: "Classification THANHTRA Penalty Type Id"
+  physical_name: "cl_thanhtra_penalty_tp_id"
   description: "FK đến Penalty Type (hình thức xử phạt bổ sung được áp dụng)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -85,15 +86,15 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.PENALTY_TYPE_ID"
-  comment: "FK target: penalty_type.penalty_tp_id. Cần ETL crosswalk sang THANHTRA.PENALTY_TYPE:\
-    \ PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.PENALTY_TYPE_ID = PENALTY_TYPE.ID\
-    \ để xác nhận CODE sau đó hash_id('THANHTRA_PENALTY_TYPE', CODE). Composite PK\
-    \ cùng Penalty Decision Subject Behavior Id."
+  comment: "FK target: cl_thanhtra_penalty_type.cl_thanhtra_penalty_tp_id. Cần ETL\
+    \ crosswalk sang THANHTRA.PENALTY_TYPE: PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.PENALTY_TYPE_ID\
+    \ = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA_PENALTY_TYPE', CODE).\
+    \ Composite PK cùng Penalty Decision Subject Behavior Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Penalty Type Code"
-  physical_name: "penalty_tp_code"
+- attribute_name: "Classification THANHTRA Penalty Type Code"
+  physical_name: "cl_thanhtra_penalty_tp_code"
   description: "Mã hình thức xử phạt bổ sung (denormalized lookup)."
   data_domain: "Text"
   nullable: false
@@ -101,9 +102,10 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_TYPE.CODE"
-  comment: "Lookup pair: penalty_type.penalty_tp_code. Pair with Penalty Type Id.\
-    \ Giá trị lấy từ THANHTRA.PENALTY_TYPE.CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Penalty Type Id."
+  comment: "Lookup pair: cl_thanhtra_penalty_type.cl_thanhtra_penalty_tp_code. Pair\
+    \ with Classification THANHTRA Penalty Type Id. Giá trị lấy từ THANHTRA.PENALTY_TYPE.CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Classification THANHTRA Penalty Type\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

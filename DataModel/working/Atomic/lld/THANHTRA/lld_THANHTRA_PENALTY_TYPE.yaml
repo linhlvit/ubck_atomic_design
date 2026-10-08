@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "THANHTRA"
   source_table: "PENALTY_TYPE"
-  atomic_entity: "Penalty Type"
-  entity_physical_name: "penalty_type"
+  atomic_entity: "Classification THANHTRA Penalty Type"
+  entity_physical_name: "cl_thanhtra_penalty_type"
   bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Law"
   table_type: "Classification"
@@ -17,10 +17,12 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "[SỬA 2026-10-08] Đổi tên entity Penalty Type -> Classification THANHTRA\
+    \ Penalty Type (Domain Prefix Classification, cl_thanhtra_penalty_type) theo quyết\
+    \ định Data Modeler. Bỏ Life Cycle Status Code (STATUS) khỏi entity."
 attributes:
-- attribute_name: "Penalty Type Id"
-  physical_name: "penalty_tp_id"
+- attribute_name: "Classification THANHTRA Penalty Type Id"
+  physical_name: "cl_thanhtra_penalty_tp_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,8 +34,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Penalty Type Code"
-  physical_name: "penalty_tp_code"
+- attribute_name: "Classification THANHTRA Penalty Type Code"
+  physical_name: "cl_thanhtra_penalty_tp_code"
   description: "Mã hình thức xử phạt, tự động sinh, UNIQUE. BK của entity."
   data_domain: "Text"
   nullable: false
@@ -53,12 +55,12 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=THANHTRA.PENALTY_TYPE"
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=THANHTRA_PENALTY_TYPE"
   etl_derived_value: "THANHTRA_PENALTY_TYPE"
   data_type: "string"
-- attribute_name: "Penalty Type Name"
-  physical_name: "penalty_tp_nm"
+- attribute_name: "Classification THANHTRA Penalty Type Name"
+  physical_name: "cl_thanhtra_penalty_tp_nm"
   description: "Tên hình thức xử phạt hành chính."
   data_domain: "Text"
   nullable: false
@@ -94,19 +96,6 @@ attributes:
   source_columns:
   - "THANHTRA.PENALTY_TYPE.DESCRIPTION"
   comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Life Cycle Status Code"
-  physical_name: "life_cycle_status_code"
-  description: "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.PENALTY_TYPE.STATUS"
-  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
