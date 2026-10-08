@@ -1,5 +1,7 @@
 # DTM_QLQ_HLD — Data Mart: Phân hệ QLQ (Công ty Quản lý Quỹ)
 
+**Thay đổi 2026-10-08 (sửa kiểu dữ liệu — tràn `int` thành số âm):** QLQ: `total_outstanding_unit_quantity` (`Fund Management Company Dimension`, `Investment Fund Dimension`), `initial_offering_unit_quantity` (`Investment Fund Dimension`), `outstanding_unit_quantity` (`Fact Investment Fund CCQ Snapshot`, `Operational Investment Fund Profile`) đổi `Small Counter`/`int` → `Large Counter`/`bigint` theo Atomic nguồn (BIGINT). Flat table ClickHouse đã là `Int64`; bảng Datamart (Iceberg) cần ALTER/tạo lại cột sang `bigint`. Công thức KPI không đổi.
+
 ---
 
 ## Section 1 — Data Lineage: Staging → Atomic → Datamart
