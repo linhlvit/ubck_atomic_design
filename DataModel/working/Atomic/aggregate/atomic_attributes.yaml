@@ -1,4 +1,4 @@
-schema_type: "atomic_attributes"
+﻿schema_type: "atomic_attributes"
 schema_version: "1.0"
 attributes:
 - bcv_core_object: "Arrangement"
@@ -3910,7 +3910,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_period"
-  atomic_column: "m_ember_rating_period_id"
+  atomic_column: "member_rating_period_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating Period"
@@ -3926,7 +3926,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating_period"
-  atomic_column: "m_ember_rating_period_code"
+  atomic_column: "member_rating_period_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating Period"
@@ -9079,7 +9079,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Depositary Bank Id"
+  atomic_attribute: "Securities Company Bank Id"
   description: "FK đến ngân hàng liên quan đến báo cáo (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -9087,16 +9087,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_ADHOC_REPORT"
   source_column: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
-  comment: "FK target: sc_depositary_bank.sc_depositary_bank_id. Hash: hash_id('SCMS_BANK',\
+  comment: "FK target: sc_bank.sc_bank_id. Hash: hash_id('SCMS_BANK',\
     \ BANK_ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_depositary_bank_id"
+  atomic_column: "sc_bank_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Depositary Bank Code"
+  atomic_attribute: "Securities Company Bank Code"
   description: "Mã ngân hàng."
   data_domain: "Text"
   nullable: true
@@ -9104,12 +9104,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_ADHOC_REPORT"
   source_column: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
-  comment: "Lookup pair: sc_depositary_bank.sc_depositary_bank_code. Pair with Bank\
+  comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Bank\
     \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_depositary_bank_code"
+  atomic_column: "sc_bank_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Securities Company Adhoc Report"
@@ -22651,7 +22651,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating"
-  atomic_column: "m_ember_rating_period_id"
+  atomic_column: "member_rating_period_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating"
@@ -22668,7 +22668,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "member_rating"
-  atomic_column: "m_ember_rating_period_code"
+  atomic_column: "member_rating_period_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating"
@@ -44200,8 +44200,8 @@ attributes:
   atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
-  atomic_attribute: "Securities Company Depositary Bank Id"
+  atomic_entity: "Securities Company Bank"
+  atomic_attribute: "Securities Company Bank Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -44213,12 +44213,12 @@ attributes:
     \ toán/lưu ký cho CTCK."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
-  atomic_column: "sc_depositary_bank_id"
+  atomic_table: "sc_bank"
+  atomic_column: "sc_bank_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
-  atomic_attribute: "Securities Company Depositary Bank Code"
+  atomic_entity: "Securities Company Bank"
+  atomic_attribute: "Securities Company Bank Code"
   description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -44229,11 +44229,11 @@ attributes:
   comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
-  atomic_column: "sc_depositary_bank_code"
+  atomic_table: "sc_bank"
+  atomic_column: "sc_bank_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -44245,12 +44245,12 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "Source System Code = 'SCMS_BANK'"
   etl_derived_value: "SCMS_BANK"
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
-  atomic_attribute: "Securities Company Depositary Bank Name"
+  atomic_entity: "Securities Company Bank"
+  atomic_attribute: "Securities Company Bank Name"
   description: "Tên ngân hàng."
   data_domain: "Text"
   nullable: true
@@ -44261,12 +44261,12 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
-  atomic_column: "sc_depositary_bank_nm"
+  atomic_table: "sc_bank"
+  atomic_column: "sc_bank_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
-  atomic_attribute: "Securities Company Depositary Bank English Name"
+  atomic_entity: "Securities Company Bank"
+  atomic_attribute: "Securities Company Bank English Name"
   description: "Tên đầy đủ bằng tiếng Anh."
   data_domain: "Text"
   nullable: true
@@ -44277,12 +44277,12 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
-  atomic_column: "sc_depositary_bank_english_nm"
+  atomic_table: "sc_bank"
+  atomic_column: "sc_bank_english_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
-  atomic_attribute: "Securities Company Depositary Bank Short Name"
+  atomic_entity: "Securities Company Bank"
+  atomic_attribute: "Securities Company Bank Short Name"
   description: "Tên viết tắt (VD: TCB, VCB, BIDV)."
   data_domain: "Text"
   nullable: true
@@ -44293,11 +44293,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
-  atomic_column: "sc_depositary_bank_short_nm"
+  atomic_table: "sc_bank"
+  atomic_column: "sc_bank_short_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Enterprise Code"
   description: "Mã số doanh nghiệp đăng ký tại Sở KH&ĐT."
   data_domain: "Text"
@@ -44309,11 +44309,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "enterprise_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Tax Code"
   description: "Mã số thuế doanh nghiệp."
   data_domain: "Text"
@@ -44325,11 +44325,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "tax_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Charter Capital Amount"
   description: "Vốn điều lệ (đơn vị: đồng)."
   data_domain: "Currency Amount"
@@ -44341,11 +44341,11 @@ attributes:
   comment: "NUMBER(20,2)."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "charter_capital_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Bank Category"
   description: "Phân loại ngân hàng."
   data_domain: "Text"
@@ -44360,11 +44360,11 @@ attributes:
     \ nếu có."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "bank_category"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Operation License Number"
   description: "Số giấy phép hoạt động ngân hàng."
   data_domain: "Text"
@@ -44376,11 +44376,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "operation_license_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "License Issue Date"
   description: "Ngày cấp giấy phép hoạt động."
   data_domain: "Date"
@@ -44392,11 +44392,11 @@ attributes:
   comment: "Nguồn lưu DATE."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "license_issue_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "License Issuer Name"
   description: "Tên cơ quan cấp giấy phép hoạt động."
   data_domain: "Text"
@@ -44408,11 +44408,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "license_issuer_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Settlement Bank Decision Number"
   description: "Số quyết định chỉ định ngân hàng thanh toán."
   data_domain: "Text"
@@ -44424,11 +44424,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "settlement_bank_decision_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Settlement Bank Decision Date"
   description: "Ngày quyết định chỉ định ngân hàng thanh toán."
   data_domain: "Date"
@@ -44440,11 +44440,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "settlement_bank_decision_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Settlement Start Date"
   description: "Ngày bắt đầu thực hiện chức năng thanh toán."
   data_domain: "Date"
@@ -44456,11 +44456,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "settlement_start_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Settlement Function Description"
   description: "Mô tả chức năng thanh toán của ngân hàng."
   data_domain: "Text"
@@ -44472,11 +44472,11 @@ attributes:
   comment: "Nguồn lưu NCLOB — ETL cần xử lý large object."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "settlement_function_description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Business Registration Certificate Number"
   description: "Số giấy chứng nhận đăng ký kinh doanh."
   data_domain: "Text"
@@ -44488,11 +44488,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "business_registration_certificate_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Business Registration Certificate Date"
   description: "Ngày cấp giấy chứng nhận đăng ký kinh doanh."
   data_domain: "Date"
@@ -44504,11 +44504,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "business_registration_certificate_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Custodian Start Date"
   description: "Ngày bắt đầu chức năng lưu ký."
   data_domain: "Date"
@@ -44520,11 +44520,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "custodian_start_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Custodian Member Certificate Number"
   description: "Số chứng nhận thành viên lưu ký."
   data_domain: "Text"
@@ -44536,11 +44536,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "custodian_member_certificate_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Custodian Certificate Date"
   description: "Ngày cấp chứng nhận lưu ký."
   data_domain: "Date"
@@ -44552,11 +44552,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "custodian_certificate_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Custodian Member Code"
   description: "Mã thành viên lưu ký."
   data_domain: "Text"
@@ -44568,11 +44568,11 @@ attributes:
   comment: "Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "custodian_member_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Custodian Function Description"
   description: "Mô tả chức năng lưu ký của ngân hàng."
   data_domain: "Text"
@@ -44584,11 +44584,11 @@ attributes:
   comment: "Nguồn lưu NCLOB — ETL cần xử lý large object."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "custodian_function_description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Attachment Path"
   description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
   data_domain: "Text"
@@ -44600,11 +44600,11 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "attachment_path"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Note"
   description: "Ghi chú bổ sung, không bắt buộc."
   data_domain: "Text"
@@ -44616,11 +44616,11 @@ attributes:
   comment: "Nguồn lưu NCLOB — ETL cần xử lý large object."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Input Report Data Indicator"
   description: "Cờ cho phép nhập dữ liệu báo cáo."
   data_domain: "Small Counter"
@@ -44633,11 +44633,11 @@ attributes:
     \ sung từ tài liệu đặc tả SCMS."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "input_rpt_data_ind"
   data_type: "int"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Depositary Bank"
+  atomic_entity: "Securities Company Bank"
   atomic_attribute: "Record Status Code"
   description: "Trạng thái ngân hàng: 1=Hoạt động; 0=Ngừng hoạt động."
   data_domain: "Classification Value"
@@ -44650,7 +44650,7 @@ attributes:
     \ string."
   classification_context: null
   etl_derived_value: null
-  atomic_table: "sc_depositary_bank"
+  atomic_table: "sc_bank"
   atomic_column: "record_status_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -98263,14 +98263,14 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Company Depositary Bank."
+  description: "FK đến Securities Company Bank."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "BANK"
   source_column: "SCMS.BANK.ID"
-  comment: "FK target: sc_depositary_bank.sc_depositary_bank_id. Shared entity. Hash:\
+  comment: "FK target: sc_bank.sc_bank_id. Shared entity. Hash:\
     \ hash_id('SCMS_BANK', ID)."
   classification_context: "Source System Code = 'SCMS_BANK' | Identification Type\
     \ Code = 'BUSINESS_LICENSE'"
@@ -98281,14 +98281,14 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Company Depositary Bank."
+  description: "Mã Securities Company Bank."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "BANK"
   source_column: "SCMS.BANK.ID"
-  comment: "Lookup pair: sc_depositary_bank.sc_depositary_bank_code. Pair with Involved\
+  comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Involved\
     \ Party Id."
   classification_context: "Source System Code = 'SCMS_BANK' | Identification Type\
     \ Code = 'BUSINESS_LICENSE'"
@@ -105051,14 +105051,14 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Company Depositary Bank (Involved Party)."
+  description: "FK đến Securities Company Bank (Involved Party)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "BANK"
   source_column: "SCMS.BANK.ID"
-  comment: "FK target: sc_depositary_bank.sc_depositary_bank_id. Shared entity — không\
+  comment: "FK target: sc_bank.sc_bank_id. Shared entity — không\
     \ có PK surrogate riêng. Hash: hash_id('SCMS_BANK', ID)."
   classification_context: "Source System Code = 'SCMS_BANK' | Electronic Address Type\
     \ Code = 'EMAIL'"
@@ -105069,14 +105069,14 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Company Depositary Bank."
+  description: "Mã Securities Company Bank."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "BANK"
   source_column: "SCMS.BANK.ID"
-  comment: "Lookup pair: sc_depositary_bank.sc_depositary_bank_code. Pair with Involved\
+  comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Involved\
     \ Party Id."
   classification_context: "Source System Code = 'SCMS_BANK' | Electronic Address Type\
     \ Code = 'EMAIL'"
@@ -111748,14 +111748,14 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Postal Address"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Company Depositary Bank (Involved Party)."
+  description: "FK đến Securities Company Bank (Involved Party)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "BANK"
   source_column: "SCMS.BANK.ID"
-  comment: "FK target: sc_depositary_bank.sc_depositary_bank_id. Shared entity — không\
+  comment: "FK target: sc_bank.sc_bank_id. Shared entity — không\
     \ có PK surrogate riêng. Hash: hash_id('SCMS_BANK', ID)."
   classification_context: null
   etl_derived_value: null
@@ -111765,14 +111765,14 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Postal Address"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Company Depositary Bank."
+  description: "Mã Securities Company Bank."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "BANK"
   source_column: "SCMS.BANK.ID"
-  comment: "Lookup pair: sc_depositary_bank.sc_depositary_bank_code. Pair with Involved\
+  comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Involved\
     \ Party Id."
   classification_context: null
   etl_derived_value: null

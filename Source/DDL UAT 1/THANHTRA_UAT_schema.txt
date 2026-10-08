@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: THANHTRA_UAT
-Tong so bang: 77 | Materialized View: 0
+Tong so bang: 75 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ADHOC_ADMIN_VIOLATION_REPORT
@@ -925,27 +925,6 @@ DELETED                       NUMBER(1,0)         NO                            
 ECATALOG_ID                   VARCHAR2(36)        YES                                      
 
 
-BANG: NOTIFICATION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-RECIPIENT_ID                  VARCHAR2(400)       NO                                       ID người dùng nhận thông báo
-NOTIFICATION_TYPE             VARCHAR2(400)       NO                                       Loại thông báo: FINE_DUE, FINE_OVERDUE, CONCLUSION_DUE, PETITION_DUE, APPROVAL_REQUEST, APPROVAL_RESULT
-TITLE                         VARCHAR2(2000)      NO                                       Tiêu đề thông báo nhắc việc
-MESSAGE                       VARCHAR2(4000)      NO                                       Nội dung chi tiết thông báo
-REFERENCE_TYPE                VARCHAR2(400)       YES                                      Loại đối tượng liên kết: violation_case, inspection_team, petition, penalty_decision...
-REFERENCE_ID                  VARCHAR2(144)       YES                                      ID bản ghi đối tượng liên kết (dùng để truy cập nhanh)
-READ                          NUMBER(1,0)         NO                                       Đã đọc: 0=Chưa đọc, 1=Đã đọc
-CREATED_AT                    DATE                NO                                       Thời điểm tạo bản ghi
-LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật gần nhất
-CREATED_BY                    VARCHAR2(400)       NO                                       ID người dùng tạo bản ghi
-LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
-VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
-DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
-
-
 BANG: OFFICIAL_LETTER_TYPE
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -1049,29 +1028,6 @@ LAST_MODIFIED_BY              VARCHAR2(400)       YES                           
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
 CONTENT                       CLOB                YES                                      Nội dung tình tiết tăng nặng hoặc giảm nhẹ
-
-
-BANG: PENALTY_DECISION_SIGN_LOGS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-PENALTY_DECISION_ID           VARCHAR2(36)        NO      FK     PENALTY_DECISION.ID       
-SIGNED_BY                     VARCHAR2(400)       YES                                      
-SIGNED_AT                     TIMESTAMP(6)        YES                                      
-SIGN_TYPE                     VARCHAR2(80)        YES                                      
-FILE_HASH                     VARCHAR2(256)       YES                                      
-FILE_PATH                     VARCHAR2(4000)      YES                                      
-NOTE                          VARCHAR2(2000)      YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-CREATED_BY                    VARCHAR2(200)       YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
-LAST_MODIFIED_BY              VARCHAR2(200)       YES                                      
-VERSION                       NUMBER(19,0)        NO                                       
-DELETED                       NUMBER(1,0)         NO                                       
-SIGNATURE_DATA                CLOB                YES                                      
-MSSP_TRANS_ID                 VARCHAR2(800)       YES                                      
 
 
 BANG: PENALTY_DECISION_SUBJECT
@@ -1775,3 +1731,4 @@ FIELD_HTML_JSON               CLOB                YES                           
 FIELD_SOURCE_JSON             CLOB                YES                                      JSON {instanceId: plain} — snapshot dữ liệu API tại thời điểm lưu, dùng để phát hiện lệch và reset ô
 MANUAL_MERGE_DATA_JSON        CLOB                YES                                      JSON patch dữ liệu merge do người dùng chọn thủ công khi nguồn API chính rỗng
 OUTPUT_DOCUMENT_ID            VARCHAR2(144)       YES                                      Liên kết tới văn bản đầu ra trong hồ sơ xử lý VPHC khi công văn đã được đồng bộ
+
