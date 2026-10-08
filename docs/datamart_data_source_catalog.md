@@ -322,7 +322,7 @@ Phân hệ NDTNN thực hiện giám sát dòng vốn đầu tư gián tiếp (F
 | Nhóm | Tên Nhóm Màn Hình | Phân Loại | Bảng Flat Khai Thác | Bảng Fact Cốt Lõi | Bảng Dimension Đi Kèm | Hệ Thống Upstream |
 |:---|:---|:---:|:---|:---|:---|:---|
 | Nhóm 1-2 | Tổng quan & Giá trị mua bán ròng NĐTNN | Dashboard | `datamart.ndtnn_fct_securities_foreign_trading_snpst_flat` | `datamart.fct_securities_foreign_trading_snpst` | `securities_dim`, `public_company_dim`, `cdr_dt_dim` | HOSE, HNX (MDDS) |
-| Nhóm 3-4 | Dòng tiền vào/ra/ròng & Dòng vốn FII | Dashboard | `datamart.ndtnn_fct_foreign_investor_capital_flow_snpst_flat` | `datamart.fct_foreign_investor_capital_flow_snpst` | `cdr_dt_dim` | VSDC, Ngân hàng lưu ký |
+| Nhóm 3-4 | Dòng tiền vào/ra/ròng & Dòng vốn FII | Dashboard | `datamart.ndtnn_fct_foreign_investor_capital_flow_snpst_flat` | `datamart.fct_foreign_investor_capital_flow_snpst` | `foreign_investor_reporting_entity_dim`, `cdr_dt_dim` | VSDC, Ngân hàng lưu ký |
 | Nhóm 5 | Tương quan Net Flow & VN-Index | Dashboard | `datamart.ndtnn_fct_foreign_net_flow_market_index_snpst_flat` | `datamart.fct_foreign_net_flow_market_index_snpst` | `market_index_dim`, `cdr_dt_dim` | HOSE (VN-Index), VSDC |
 | Nhóm 6-8 | Danh mục, cơ cấu tài sản & phân ngành | Dashboard | `datamart.ndtnn_fct_foreign_investor_portfolio_report_snpst_flat` | `datamart.fct_foreign_investor_portfolio_report_snpst` | `public_company_dim`, `industry_dim`, `cdr_dt_dim` | VSDC, CTCK lưu ký |
 | Nhóm 9-10 | Tỷ lệ sở hữu Room & Cảnh báo Room | Dashboard | `datamart.ndtnn_fct_public_company_foreign_ownership_snpst_flat` | `datamart.fct_public_company_foreign_ownership_snpst` | `public_company_dim` | VSDC (Room ngoại) |
@@ -635,13 +635,14 @@ Phân hệ VP phục vụ tổng hợp thông tin kinh tế vĩ mô, diễn bi�
 | Nhóm 4 | Giá hợp đồng tương lai theo sản phẩm & kỳ hạn | Dashboard | `datamart.vp_fact_derivatives_price_snapshot_flat` | `datamart.fct_derv_prc_snpst` | `cdr_dt_dim` | MDDS, HNX Phái sinh |
 | Nhóm 7, 9 | Thống kê TPDN niêm yết & So sánh riêng lẻ | Dashboard | `datamart.vp_fact_listed_corporate_bond_snapshot_flat` | `datamart.fct_lst_crp_bnd_snpst` | `cdr_dt_dim` | ORDERTRADE, MDDS (HNX) |
 | Nhóm 8, 10 | Thống kê TPDN niêm yết theo ngành & kỳ hạn | Dashboard | `datamart.vp_fact_listed_corporate_bond_industry_term_snapshot_flat` | `datamart.fct_lst_crp_bnd_indy_trm_snpst` | `cdr_dt_dim`, `cl_dim` (`IDS_INDUSTRY_CATEGORY`) | ORDERTRADE, IDS (`pblc_co`) |
-| Nhóm 11-13 | TPDN riêng lẻ — Diễn biến & NĐTNN | Dashboard | `datamart.vp_fact_securities_market_index_snapshot_flat` (Mở rộng) | `datamart.fct_otc_bond_snpst` (Dự kiến) | `cdr_dt_dim` | HNX (BM11 TPDN riêng lẻ) |
+| Nhóm 11-13 | TPDN riêng lẻ — Diễn biến & NĐTNN | Dashboard | `datamart.vp_fact_otc_bond_snapshot_flat` | `datamart.fct_otc_bnd_snpst` (`fct_otc_bond_snpst`) | `cdr_dt_dim` | HNX (BM11, HNX09 TPDN riêng lẻ) |
 | Nhóm 14-16 | TPCP — Diễn biến GD & Mua bán ròng NĐTNN | Dashboard | `datamart.vp_fact_securities_market_index_snapshot_flat` (Mở rộng) | `datamart.fct_gov_bond_snpst` (Dự kiến) | `cdr_dt_dim` | HNX (BM24 TPCP) |
 | Nhóm 17-18 | Quy mô niêm yết toàn TT & theo sàn | Dashboard | `datamart.vp_fact_securities_market_index_snapshot_flat` (Mở rộng) | `datamart.fct_listing_snpst` (Dự kiến) | `cdr_dt_dim` | HNX (BM32), HOSE (BM18) |
 | Nhóm 19-22 | Vốn hóa CP & Cơ cấu theo ngành | Dashboard | `datamart.vp_fact_securities_market_index_snapshot_flat` (Mở rộng) | `datamart.fct_mkt_cap_snpst` (Dự kiến) | `cdr_dt_dim`, `cl_dim` | MDDS, IDS |
 | Nhóm 23-31 | Huy động vốn CP, TPDN, TPCP | Dashboard | `datamart.vp_fact_securities_market_index_snapshot_flat` (Mở rộng) | `datamart.fct_securities_offering_snpst` | `cdr_dt_dim` | ISS, HNX (BM22 TPCP) |
 | Nhóm 32, 34-38 | Hoạt động NĐTNN — Dòng tiền & GD | Dashboard | `datamart.vp_fact_securities_market_index_snapshot_flat` | `datamart.fct_scr_mkt_indx_snpst` | `cdr_dt_dim` | ORDERTRADE, VSDC |
 | Nhóm 33 | Chi tiết giao dịch NĐTNN per phiên/mã CK | Data Explorer | `datamart.vp_fact_securities_market_index_snapshot_flat` (View) | `datamart.fct_scr_mkt_indx_snpst` | `cdr_dt_dim` | ORDERTRADE |
+| Nhóm 43 | Đấu giá cổ phần tại Sở GDCK | Dashboard | `datamart.vp_fact_share_auction_snapshot_flat` | `datamart.fct_share_auction_snpst` | `cdr_dt_dim` | HSX (HSX03), HNX (HNX05) |
 | VP_TK02 | Báo cáo diễn biến TTCK bất thường | **Báo Cáo** | `datamart.vp_fact_securities_market_index_snapshot_flat` (View) | `datamart.fct_scr_mkt_indx_snpst`, `datamart.fct_derv_tdg_snpst` | `cdr_dt_dim` | MDDS, ORDERTRADE |
 
 ---

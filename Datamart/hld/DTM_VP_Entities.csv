@@ -1,0 +1,10 @@
+datamart_entity,table_type,reuse_status,status,description,source_table,FKs
+Fact Securities Market Index Snapshot,fact,new,draft,"Tổng hợp giá trị chỉ số thị trường và giao dịch mua/bán ròng theo loại nhà đầu tư (Nhóm 1, 2) — 1 dòng / thị trường / ngày giao dịch.",mkt_indx_snpst / scr_trd,Calendar Date Dimension.Trading Date Dimension Id
+Fact Derivatives Trading Snapshot,fact,new,draft,"Tổng hợp khối lượng giao dịch phái sinh và giao dịch NĐTNN theo sản phẩm (Nhóm 3, 5, 6) — 1 dòng / sản phẩm phái sinh / ngày giao dịch.",scr_tdg_snpst / scr_trd,Calendar Date Dimension.Trading Date Dimension Id
+Fact Derivatives Price Snapshot,fact,new,draft,"Giá đóng cửa HĐTL theo sản phẩm và kỳ hạn (Nhóm 4) — 1 dòng / sản phẩm phái sinh / kỳ hạn / ngày giao dịch.",scr_tdg_snpst,Calendar Date Dimension.Trading Date Dimension Id
+Fact Listed Corporate Bond Snapshot,fact,new,draft,"Tổng hợp giao dịch TPDN niêm yết: KLGD, GTGD, NĐTNN, số mã (Nhóm 7, 9) — 1 dòng / ngày giao dịch.",scr_trd / scr_tdg_snpst,Calendar Date Dimension.Trading Date Dimension Id
+Fact Listed Corporate Bond Industry Term Snapshot,fact,new,draft,"Thống kê TPDN niêm yết theo ngành và kỳ hạn phát hành: GTGD, kỳ hạn còn lại BQ, KL lưu hành, số mã (Nhóm 8, 10) — 1 dòng / ngành cấp 1 / nhóm kỳ hạn / ngày giao dịch.",scr_tdg_snpst / scr_trd / pblc_co,Calendar Date Dimension.Trading Date Dimension Id | Classification Dimension.Industry Dimension Id
+Fact OTC Bond Snapshot,fact,new,draft,"Thống kê giao dịch thị trường TPDN riêng lẻ theo ngày từ báo cáo HNX09 (ISS) (Nhóm 11, 12, 13) — 1 dòng / ngày giao dịch.",internal_statistical_report,Calendar Date Dimension.Trading Date Dimension Id
+Fact Share Auction Snapshot,fact,new,draft,"Thống kê kết quả hoạt động đấu giá cổ phần tại Sở GDCK theo năm và loại hình đấu giá từ báo cáo HSX03 và HNX05 (Nhóm 43) — 1 dòng / năm / loại hình đấu giá / sở tổ chức.",internal_statistical_report,
+Calendar Date Dimension,dim,reuse,draft,"Chiều ngày tháng — conformed toàn hệ thống Lakehouse.",cdr_dt,
+Classification Dimension,dim,reuse,draft,"Chiều phân loại dùng chung — conformed toàn hệ thống Lakehouse.",cv,

@@ -161,6 +161,50 @@ flowchart LR
 
 ---
 
+##### Cụm 6: TPDN riêng lẻ (Fact OTC Bond Snapshot)
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        ISS_FLAT_REPORT_HNX09["ISS.FLAT_REPORT (HNX09)"]
+        ECAT_ECAT_29_HolidayInfo6["ECAT.ECAT_29_HolidayInfo"]
+    end
+    subgraph SIL["Atomic"]
+        Internal_Statistical_Report6["Internal Statistical Report"]
+        Calendar_Date6["Calendar Date"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_otc_bnd_snpst["Fact OTC Bond Snapshot"]
+        cdr_dt_dim6["Calendar Date Dimension"]
+    end
+    ISS_FLAT_REPORT_HNX09 --> Internal_Statistical_Report6
+    ECAT_ECAT_29_HolidayInfo6 --> Calendar_Date6
+    Internal_Statistical_Report6 --> fct_otc_bnd_snpst
+    Calendar_Date6 --> cdr_dt_dim6
+    cdr_dt_dim6 --> fct_otc_bnd_snpst
+```
+
+---
+
+##### Cụm 7: Đấu giá cổ phần (Fact Share Auction Snapshot)
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        ISS_FLAT_REPORT_AUCT["ISS.FLAT_REPORT (HSX03, HNX05)"]
+    end
+    subgraph SIL["Atomic"]
+        Internal_Statistical_Report7["Internal Statistical Report"]
+    end
+    subgraph GOLD["Datamart"]
+        fct_share_auction_snpst["Fact Share Auction Snapshot"]
+    end
+    ISS_FLAT_REPORT_AUCT --> Internal_Statistical_Report7
+    Internal_Statistical_Report7 --> fct_share_auction_snpst
+```
+
+---
+
 ## Section 2 — Tổng quan báo cáo
 
 ### Tab Dashboard Thống kê thị trường
@@ -865,6 +909,8 @@ graph TB
     fct_derv_prc_snpst(["Fact Derivatives Price Snapshot"]):::fact
     fct_lst_crp_bnd_snpst(["Fact Listed Corporate Bond Snapshot"]):::fact
     fct_lst_crp_bnd_indy_trm_snpst(["Fact Listed Corporate Bond Industry Term Snapshot"]):::fact
+    fct_otc_bnd_snpst(["Fact OTC Bond Snapshot"]):::fact
+    fct_share_auction_snpst(["Fact Share Auction Snapshot"]):::fact
     cdr_dt_dim(["Calendar Date Dimension"]):::dim
     cl_dim(["Classification Dimension"]):::dim
 
@@ -873,6 +919,7 @@ graph TB
     cdr_dt_dim --> fct_derv_prc_snpst
     cdr_dt_dim --> fct_lst_crp_bnd_snpst
     cdr_dt_dim --> fct_lst_crp_bnd_indy_trm_snpst
+    cdr_dt_dim --> fct_otc_bnd_snpst
     cl_dim --> fct_lst_crp_bnd_indy_trm_snpst
 ```
 
@@ -885,6 +932,8 @@ graph TB
 | Fact Derivatives Price Snapshot | Giá đóng cửa HĐTL theo sản phẩm và kỳ hạn | Fact Snapshot | 1 dòng / sản phẩm phái sinh (Symbol) / kỳ hạn / ngày giao dịch | `scr_tdg_snpst` (MDDS) |
 | Fact Listed Corporate Bond Snapshot | Tổng hợp giao dịch TPDN niêm yết: KLGD, GTGD, NĐTNN, số mã | Fact Snapshot | 1 dòng / ngày giao dịch (toàn thị trường TPDN niêm yết) | `scr_trd` (ORDERTRADE), `scr_tdg_snpst` (MDDS) |
 | Fact Listed Corporate Bond Industry Term Snapshot | Thống kê TPDN niêm yết theo ngành và kỳ hạn phát hành: GTGD, kỳ hạn còn lại BQ, KL lưu hành, số mã | Fact Snapshot | 1 dòng / ngành cấp 1 (scheme IDS_INDUSTRY_CATEGORY) / nhóm kỳ hạn phát hành / ngày giao dịch | `scr_tdg_snpst` (MDDS), `scr_trd` (ORDERTRADE), `pblc_co` (IDS) |
+| Fact OTC Bond Snapshot | Thống kê giao dịch thị trường TPDN riêng lẻ theo ngày từ báo cáo HNX09 (ISS) | Fact Snapshot | 1 dòng / ngày giao dịch | `internal_statistical_report` (ISS) |
+| Fact Share Auction Snapshot | Thống kê kết quả hoạt động đấu giá cổ phần tại Sở GDCK theo năm và loại hình đấu giá từ báo cáo HSX03 và HNX05 | Fact Snapshot | 1 dòng / năm / loại hình đấu giá | `internal_statistical_report` (ISS) |
 
 ### 3.3 Bảng Tác nghiệp
 
@@ -952,101 +1001,169 @@ flowchart LR
 
 #### Nhóm 11 - TPDN riêng lẻ >> Chỉ tiêu tổng hợp
 
-> Phân loại: **PENDING**
-> Nguồn: TKNB (ISS.FACT_REPORT_DATA / ISS.INPUT_REPORT_SUBMISSION) + CSDLTT (JAD_STOCKINFOR) — chưa có Atomic entity cho TPDN riêng lẻ
+> Phân loại: **Phân tích** (Unblocked sang READY cho K_VP_48 → K_VP_57; K_VP_58, K_VP_59 PENDING chờ nguồn HNX BM29)
+> Nguồn: ISS.FLAT_REPORT (báo cáo HNX09) → Atomic: `internal_statistical_report` — **READY**
 
 **Mockup:**
 
 *Thẻ KPI tổng hợp — layout tương tự Nhóm 7 (TPDN niêm yết): Tổng GTGD / GTGD BQ phiên YTD / Số mã TP ĐKGD / GTGD NĐTNN (Mua / Bán / Ròng). Lọc theo Kỳ (Ngày/Tháng/Quý/Năm), Từ–Đến.*
 
----
+**Source:** `Fact OTC Bond Snapshot` → `Calendar Date Dimension`
 
 **KPI liên quan:** K_VP_48, K_VP_49, K_VP_50, K_VP_51, K_VP_52, K_VP_53, K_VP_54, K_VP_55, K_VP_56, K_VP_57, K_VP_58, K_VP_59
 
-**Lý do PENDING:** Toàn bộ dữ liệu TPDN riêng lẻ lấy từ TKNB (ISS — hệ thống tiếp nhận báo cáo HNX09 từ thành viên). Dữ liệu không có trong ORDERTRADE/CSDLTT (sổ lệnh). Số mã TP ĐKGD từ CSDLTT (`scr_tdg_snpst`) nhưng chưa xác định được filter phân biệt TPDN riêng lẻ.
+**Giải pháp kỹ thuật (RESOLVED):**
+Dữ liệu giao dịch thị trường TPDN riêng lẻ được thu nhận định kỳ hàng ngày từ Sở GDCK Hà Nội (HNX) qua kênh ICP của hệ thống ISS (mã biểu mẫu `HNX09`). Tầng Atomic đã chuẩn hóa thực thể `internal_statistical_report` lưu trữ dữ liệu cell-level (origin_dt_val, field_val, row_path). Datamart thiết kế bảng `Fact OTC Bond Snapshot` (`fct_otc_bnd_snpst`) tổng hợp toàn bộ các chỉ tiêu theo ngày giao dịch.
 
-**Atomic cần bổ sung:**
+Riêng chỉ tiêu `K_VP_58` và `K_VP_59` (Số mã TPDN riêng lẻ ĐKGD) lấy từ biểu mẫu ngoài HNX BM29 (danh sách mã TP), tiếp tục duy trì trạng thái PENDING cho đến khi bổ sung nguồn biểu mẫu này.
 
-| Bảng nguồn BA | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|
-| ISS.FACT_REPORT_DATA / ISS.INPUT_REPORT_SUBMISSION | Report Submission Data (OTC Bond) | TBD |
-| MDDS.JAD_STOCKINFOR | Securities Trading Snapshot | `scr_tdg_snpst` (đã có) — cần xác định filter mã TPDN riêng lẻ |
+**Bảng KPI:**
 
-**Mart dự kiến:** Fact OTC Bond Snapshot — grain: 1 dòng / ngày (toàn thị trường TPDN riêng lẻ); bổ sung sau khi Atomic ISS được approved.
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|:---:|
+| K_VP_48 | GTGD TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(field_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH'` | Ô giá trị giao dịch từ HNX09 | **READY** |
+| K_VP_49 | GTGD TPDN riêng lẻ % thay đổi so kỳ trước | % | Phái sinh | `(trading_val_cur - trading_val_prev) / trading_val_prev * 100` | So với phiên liền trước | **READY** |
+| K_VP_50 | GTGD bình quân phiên TPDN riêng lẻ (YTD) | Tỷ đồng | Phái sinh | `SUM(trading_val YTD) / COUNT(DISTINCT trading_dt YTD)` | Bình quân lũy kế từ đầu năm | **READY** |
+| K_VP_51 | GTGD bình quân phiên TPDN riêng lẻ (YTD) % thay đổi so kỳ trước | % | Phái sinh | `(avg_val_cur - avg_val_prev) / avg_val_prev * 100` | % thay đổi bình quân YTD | **READY** |
+| K_VP_52 | Giá trị mua NĐTNN TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(field_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ MUA'` | NĐTNN mua từ HNX09 | **READY** |
+| K_VP_53 | Giá trị mua NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | % | Phái sinh | `(foreign_buy_cur - foreign_buy_prev) / foreign_buy_prev * 100` | % thay đổi GT mua NĐTNN | **READY** |
+| K_VP_54 | Giá trị bán NĐTNN TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(field_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ BÁN'` | NĐTNN bán từ HNX09 | **READY** |
+| K_VP_55 | Giá trị bán NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | % | Phái sinh | `(foreign_sell_cur - foreign_sell_prev) / foreign_sell_prev * 100` | % thay đổi GT bán NĐTNN | **READY** |
+| K_VP_56 | Giá trị mua/bán ròng NĐTNN TPDN riêng lẻ | Tỷ đồng | Phái sinh | `foreign_buy_val - foreign_sell_val` | Mua ròng (dương) / Bán ròng (âm) | **READY** |
+| K_VP_57 | Giá trị mua/bán ròng NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | % | Phái sinh | `(net_val_cur - net_val_prev) / ABS(net_val_prev) * 100` | % thay đổi mua/bán ròng | **READY** |
+| K_VP_58 | Số mã TPDN riêng lẻ ĐKGD | Mã | Cơ sở | `COUNT(DISTINCT "Mã TP")` | Chờ bổ sung nguồn biểu mẫu HNX BM29 | PENDING |
+| K_VP_59 | Số mã TPDN riêng lẻ ĐKGD % thay đổi so kỳ trước | % | Phái sinh | `(reg_cnt_cur - reg_cnt_prev) / reg_cnt_prev * 100` | Theo K_VP_58 | PENDING |
 
-**Bảng KPI PENDING:**
+**Star Schema:**
 
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_VP_48 | GTGD TPDN riêng lẻ | Cơ sở | PENDING |
-| K_VP_49 | GTGD TPDN riêng lẻ % thay đổi so kỳ trước | Phái sinh | PENDING |
-| K_VP_50 | GTGD bình quân phiên TPDN riêng lẻ (YTD) | Phái sinh | PENDING |
-| K_VP_51 | GTGD bình quân phiên TPDN riêng lẻ (YTD) % thay đổi so kỳ trước | Phái sinh | PENDING |
-| K_VP_52 | Giá trị mua NĐTNN TPDN riêng lẻ | Cơ sở | PENDING |
-| K_VP_53 | Giá trị mua NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | Phái sinh | PENDING |
-| K_VP_54 | Giá trị bán NĐTNN TPDN riêng lẻ | Cơ sở | PENDING |
-| K_VP_55 | Giá trị bán NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | Phái sinh | PENDING |
-| K_VP_56 | Giá trị mua/bán ròng NĐTNN TPDN riêng lẻ | Phái sinh | PENDING |
-| K_VP_57 | Giá trị mua/bán ròng NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | Phái sinh | PENDING |
-| K_VP_58 | Số mã TPDN riêng lẻ ĐKGD | Cơ sở | PENDING |
-| K_VP_59 | Số mã TPDN riêng lẻ ĐKGD % thay đổi so kỳ trước | Phái sinh | PENDING |
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Month
+        boolean Is_Trading_Date
+    }
+    Fact_OTC_Bond_Snapshot {
+        string OTC_Bond_Snapshot_Id PK
+        date Trading_Date FK
+        float Trading_Value
+        float Foreign_Buy_Value
+        float Foreign_Sell_Value
+        float Foreign_Net_Value
+        float Proprietary_Buy_Value
+        float Proprietary_Sell_Value
+        int Registered_Security_Count
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_OTC_Bond_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        fct_otc_bnd_snpst["Fact OTC Bond Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
+    end
+    cdr_dt_dim --> fct_otc_bnd_snpst
+    fct_otc_bnd_snpst --> RPT11["Thẻ KPI Tổng hợp TPDN riêng lẻ"]
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact OTC Bond Snapshot | 1 dòng / ngày giao dịch |
+| Calendar Date Dimension | SCD4A (current state) |
 
 ---
 
 #### Nhóm 12 - TPDN riêng lẻ >> Biểu đồ Diễn biến giao dịch thị trường TPDN riêng lẻ
 
-> Phân loại: **PENDING**
-> Nguồn: TKNB (ISS) — cùng lý do Nhóm 11
+> Phân loại: **Phân tích** (READY)
+> Nguồn: Reuse `Fact OTC Bond Snapshot` (K_VP_48) — **READY**
 
 **Mockup:**
 
 *Biểu đồ cột đơn: GTGD TPDN riêng lẻ (Tỷ đồng) theo ngày. Lọc theo Từ kỳ / Đến kỳ.*
 
----
+**Source:** `Fact OTC Bond Snapshot` (reuse từ Nhóm 11) → `Calendar Date Dimension`
 
 **KPI liên quan:** K_VP_48 (reuse từ Nhóm 11)
 
-**Lý do PENDING:** Nguồn TKNB (ISS) chưa có Atomic entity — đã ghi nhận tại Nhóm 11.
+**Bảng KPI:**
 
-**Atomic cần bổ sung:** Report Submission Data (OTC Bond) — đã ghi nhận tại Nhóm 11. Không cần bổ sung thêm.
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|:---:|
+| K_VP_48 | GTGD TPDN riêng lẻ | Tỷ đồng | Cơ sở | `Fact OTC Bond Snapshot.Trading Value` | Reuse từ Nhóm 11, group by Trading Date | **READY** |
 
-**Mart dự kiến:** Reuse `Fact OTC Bond Snapshot` (dự kiến từ Nhóm 11) — grain: 1 dòng / ngày; thêm chiều ngày để vẽ diễn biến.
+**Star Schema:** Reuse `Fact OTC Bond Snapshot` → `Calendar Date Dimension` (xem Nhóm 11).
 
-**Bảng KPI PENDING:**
+**Lineage Mart → Báo cáo:**
 
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_VP_48 | GTGD TPDN riêng lẻ (reuse từ Nhóm 11) | Cơ sở | PENDING |
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        fct_otc_bnd_snpst["Fact OTC Bond Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
+    end
+    cdr_dt_dim --> fct_otc_bnd_snpst
+    fct_otc_bnd_snpst --> RPT12["Biểu đồ Diễn biến giao dịch TPDN riêng lẻ"]
+```
 
----
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact OTC Bond Snapshot | 1 dòng / ngày giao dịch |
+| Calendar Date Dimension | SCD4A (current state) |
 
 ---
 
 #### Nhóm 13 - TPDN riêng lẻ >> Giá trị mua/bán ròng NĐTNN trên thị trường TPDN riêng lẻ
 
-> Phân loại: **PENDING**
+> Phân loại: **Phân tích** (READY)
+> Nguồn: Reuse `Fact OTC Bond Snapshot` (K_VP_52, K_VP_54, K_VP_56) — **READY**
 
 **Mockup:**
 
 *Biểu đồ kết hợp: cột xanh (GTGD Mua) + cột đỏ (GTGD Bán, âm) + đường (GT Ròng). Trục Y trái: Tỷ đồng, Trục Y phải: Tỷ đồng (ròng). Theo ngày 16/02/2026 → 25/02/2026. Lọc theo Từ kỳ / Đến kỳ.*
 
----
+**Source:** `Fact OTC Bond Snapshot` (reuse từ Nhóm 11) → `Calendar Date Dimension`
 
 **KPI liên quan:** K_VP_52, K_VP_54, K_VP_56 (reuse từ Nhóm 11)
 
-**Lý do PENDING:** Nguồn TKNB (ISS) chưa có Atomic entity — đã ghi nhận tại Nhóm 11.
+**Bảng KPI:**
 
-**Atomic cần bổ sung:** Report Submission Data (OTC Bond) — đã ghi nhận tại Nhóm 11. Không cần bổ sung thêm.
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|:---:|
+| K_VP_52 | Giá trị mua NĐTNN TPDN riêng lẻ | Tỷ đồng | Cơ sở | `Fact OTC Bond Snapshot.Foreign Buy Value` | Reuse từ Nhóm 11, vẽ cột dương | **READY** |
+| K_VP_54 | Giá trị bán NĐTNN TPDN riêng lẻ | Tỷ đồng | Cơ sở | `Fact OTC Bond Snapshot.Foreign Sell Value` | Reuse từ Nhóm 11, vẽ cột âm | **READY** |
+| K_VP_56 | Giá trị mua/bán ròng NĐTNN TPDN riêng lẻ | Tỷ đồng | Phái sinh | `Fact OTC Bond Snapshot.Foreign Net Value` | Reuse từ Nhóm 11, vẽ đường line | **READY** |
 
-**Mart dự kiến:** Reuse `Fact OTC Bond Snapshot` (dự kiến từ Nhóm 11) — thêm chiều ngày để vẽ chuỗi thời gian mua/bán/ròng NĐTNN.
+**Star Schema:** Reuse `Fact OTC Bond Snapshot` → `Calendar Date Dimension` (xem Nhóm 11).
 
-**Bảng KPI PENDING:**
+**Lineage Mart → Báo cáo:**
 
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_VP_52 | Giá trị mua NĐTNN TPDN riêng lẻ (reuse từ Nhóm 11) | Cơ sở | PENDING |
-| K_VP_54 | Giá trị bán NĐTNN TPDN riêng lẻ (reuse từ Nhóm 11) | Cơ sở | PENDING |
-| K_VP_56 | Giá trị mua/bán ròng NĐTNN TPDN riêng lẻ (reuse từ Nhóm 11) | Phái sinh | PENDING |
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        fct_otc_bnd_snpst["Fact OTC Bond Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
+    end
+    cdr_dt_dim --> fct_otc_bnd_snpst
+    fct_otc_bnd_snpst --> RPT13["Biểu đồ Mua/bán ròng NĐTNN TPDN riêng lẻ"]
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact OTC Bond Snapshot | 1 dòng / ngày giao dịch |
+| Calendar Date Dimension | SCD4A (current state) |
 
 ---
 
@@ -2182,9 +2299,74 @@ Biểu đồ combo chart — trục X: tháng (3/2025 → 2/2026); trục Y: T�
 
 ---
 
+### Tab Dashboard Báo cáo thường niên >> Tổng quan thị trường
+
+#### Nhóm 43 - Đấu giá cổ phần >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá
+
+> Phân loại: **Phân tích**
+> Atomic: `internal_statistical_report` ← ISS.FLAT_REPORT (báo cáo `HSX03`, `HNX05`) — **READY**
+
+**Mockup:**
+
+*Biểu đồ cột chồng / nhóm: Tổng giá trị trúng giá cổ phần qua đấu giá theo năm (Tỷ đồng) và phân rã theo Loại hình đấu giá (IPO, Thoái vốn, Chào bán thêm / Đấu giá quyền mua). Bảng số liệu chi tiết: Năm, Loại hình, Số phiên đấu giá, Tổng giá trị trúng giá, GT trúng giá NĐT trong nước, GT trúng giá NĐT nước ngoài. Lọc theo Từ năm / Đến năm, Sàn tổ chức (HOSE/HNX).*
+
+**Source:** `Fact Share Auction Snapshot` (`fct_share_auction_snpst`)
+
+**KPI liên quan:** K_VP_144, K_VP_145, K_VP_146, K_VP_147, K_VP_148, K_VP_149
+
+**Giải pháp kỹ thuật (RESOLVED):**
+Dữ liệu hoạt động đấu giá cổ phần tại Sở GDCK TP.HCM (HOSE) và Sở GDCK Hà Nội (HNX) được nộp qua biểu mẫu báo cáo điện tử định kỳ năm `BM 9_HSX03` và `BM 7_HNX05` trong hệ thống ISS. Tầng Atomic đã lưu trữ dữ liệu cell-level trong thực thể `internal_statistical_report` (với `rpt_code IN ('HSX03', 'HNX05')`, `rpt_year`, `row_index` là 1 phiên đấu giá). Datamart thiết kế bảng `Fact Share Auction Snapshot` (`fct_share_auction_snpst`) lưu trữ dữ liệu tổng hợp theo năm, sàn và loại hình đấu giá. Toàn bộ 6 chỉ tiêu `K_VP_144` đến `K_VP_149` đạt trạng thái READY.
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|:---:|
+| K_VP_144 | Loại hình đấu giá | — | Chiều | `field_val WHERE UPPER(column_path) = 'LOẠI HÌNH ĐẤU GIÁ'` | Phân loại: IPO, Thoái vốn, Chào bán thêm / Đấu giá quyền mua | **READY** |
+| K_VP_145 | Tổng giá trị cổ phần trúng giá | Tỷ đồng | Cơ sở | `SUM(CAST(field_val AS DECIMAL(38,2))) WHERE column_path IN ('GIÁ TRỊ CP TRÚNG GIÁ > NĐT TRONG NƯỚC', 'GIÁ TRỊ CP TRÚNG GIÁ > NĐT NƯỚC NGOÀI', 'GIÁ TRỊ CP TRÚNG GIÁ (VND) > NĐT TRONG NƯỚC', 'GIÁ TRỊ CP TRÚNG GIÁ (VND) > NĐT NƯỚC NGOÀI')` | Tổng giá trị trúng giá đấu giá cổ phần | **READY** |
+| K_VP_146 | Số phiên đấu giá | Phiên | Cơ sở | `COUNT(DISTINCT row_index)` | Tổng số phiên đấu giá tổ chức thành công trong năm | **READY** |
+| K_VP_147 | Giá trị trúng giá IPO | Tỷ đồng | Cơ sở | `SUM(winning_auction_val) WHERE auction_type_name = 'IPO'` | Giá trị cổ phần trúng giá hình thức IPO | **READY** |
+| K_VP_148 | Giá trị trúng giá thoái vốn | Tỷ đồng | Cơ sở | `SUM(winning_auction_val) WHERE auction_type_name = 'Thoái vốn'` | Giá trị cổ phần trúng giá hình thức Thoái vốn | **READY** |
+| K_VP_149 | Giá trị phát hành ra công chúng / quyền mua | Tỷ đồng | Cơ sở | `SUM(winning_auction_val) WHERE auction_type_name IN ('Chào bán thêm', 'Đấu giá quyền mua')` | Giá trị trúng giá chào bán thêm ra công chúng | **READY** |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Share_Auction_Snapshot {
+        string Share_Auction_Snapshot_Id PK
+        int Report_Year FK
+        string Auction_Type_Code
+        string Auction_Type_Name
+        string Exchange_Code
+        int Auction_Session_Count
+        float Winning_Auction_Value
+        string Source_System_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        fct_share_auction_snpst["Fact Share Auction Snapshot"]
+    end
+    fct_share_auction_snpst --> RPT43["Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá"]
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Share Auction Snapshot | 1 dòng / năm / loại hình đấu giá / sở tổ chức |
+
+---
+
 ## Section 4 — Vấn đề mở
 
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
 | O_VP_1 | Mã phân loại tự doanh trong `scr_trd` (`Buy/Sell Client House Classification Code`) | Xác nhận từ BA: `'30'` = Tự doanh mua/bán | K_VP_11, K_VP_12, K_VP_13, K_VP_14 | Confirmed |
 | O_VP_2 | Điều kiện lọc NĐTNN trong `scr_trd` (`Buy/Sell Foreign Investor Type Code`) | Xác nhận từ BA: `<> '00'` (code '00' = trong nước; khác '00' = NĐTNN) | K_VP_7, K_VP_8, K_VP_9, K_VP_10 | Confirmed |
+| O_VP_3 | Nguồn dữ liệu TPDN riêng lẻ (Nhóm 11, 12, 13) | Ánh xạ sang thực thể Atomic `internal_statistical_report` từ biểu mẫu `HNX09` (ISS.FLAT_REPORT) | K_VP_48 đến K_VP_57 | Resolved |
+| O_VP_4 | Nguồn dữ liệu Đấu giá cổ phần (Nhóm 43) | Ánh xạ sang thực thể Atomic `internal_statistical_report` từ biểu mẫu `HSX03` và `HNX05` (ISS.FLAT_REPORT) | K_VP_144 đến K_VP_149 | Resolved |
