@@ -572,11 +572,19 @@ SELECT
     -- From: OPERATIONAL Operational Security Index Constituent Reference
     o.index_code,
     o.symbol,
-    o.isin_code,
+    o.index_constituent_snpst_code,
+    o.index_id,
     o.index_nm,
     o.floor_code,
     o.add_dt,
     o.as_of_dt,
+    o.isin_code,
+    o.stock_tp_code,
+    o.stock_floor_code,
+    o.derivative_product_nm,
+    o.security_class_code,
+    o.industry_code,
+    o.industry_nm,
     o.src_stm_code
 
 FROM datamart.opr_security_index_constituent_ref o

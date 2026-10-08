@@ -2576,8 +2576,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: sc_ou_x_cl_sc_firm_service_relationship (bộ Phòng giao dịch, mỗi dòng = 1 PGD × 1 dịch vụ được cấp phép). Surrogate sinh từ toàn bộ BK và src_stm_code."
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Securities Company Organization Unit Code"
         physical_name: "sc_ou_code"
         data_domain: "Text"
@@ -2585,17 +2585,17 @@ entities:
         nullable: false
         key: "BK"
         description: "Mã đơn vị (ID nguồn) — BK 1/3. ID chỉ duy nhất trong từng loại đơn vị, không duy nhất giữa Chi nhánh và Phòng giao dịch nên BK phải kèm loại đơn vị."
-        source_atomic_table: "sc_organization_unit"
-        source_atomic_column: "sc_organization_unit.sc_ou_code"
+        source_atomic_table: "sc_ou_x_cl_sc_firm_service_relationship"
+        source_atomic_column: "sc_ou_x_cl_sc_firm_service_relationship.sc_ou_code"
       - logical_name: "Classification Securities Company Firm Service Code"
         physical_name: "cl_sc_firm_service_code"
         data_domain: "Text"
         data_type: "string"
         nullable: false
         key: "BK"
-        description: "Mã dịch vụ/nghiệp vụ được cấp phép cho đơn vị — BK 3/3, tách từ danh sách business_lines của chi nhánh."
-        source_atomic_table: "cl_securities_company_firm_service"
-        source_atomic_column: "cl_securities_company_firm_service.cl_sc_firm_service_code"
+        description: "Mã dịch vụ/nghiệp vụ được cấp phép cho PGD — BK 3/3."
+        source_atomic_table: "sc_ou_x_cl_sc_firm_service_relationship"
+        source_atomic_column: "sc_ou_x_cl_sc_firm_service_relationship.cl_sc_firm_service_code"
       - logical_name: "Securities Company Code"
         physical_name: "sc_code"
         data_domain: "Text"
@@ -2639,8 +2639,9 @@ entities:
         nullable: false
         key: ""
         description: "Mã hệ thống nguồn dữ liệu."
-        source_atomic_table: "sc_organization_unit"
-        source_atomic_column: "sc_organization_unit.src_stm_code"
+        source_atomic_table: "sc_ou_x_cl_sc_firm_service_relationship"
+        source_atomic_column: "sc_ou_x_cl_sc_firm_service_relationship.src_stm_code"
+
   - id: "DTM-opr_securities_company_compliance_hist"
     logical_name: "Operational Securities Company Compliance History"
     datamart_table: "opr_securities_company_compliance_hist"
@@ -7287,7 +7288,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Tên hành vi vi phạm của QĐ — ưu tiên nhánh chính (qua đối tượng bị xử phạt) trước nhánh phụ (qua biên bản vi phạm liên kết) trước khi gộp 'Khác'."
+        description: "Tên hành vi vi phạm ĐẠI DIỆN của QĐ (1 giá trị/QĐ) — ưu tiên nhánh chính (qua đối tượng bị xử phạt) trước nhánh phụ (qua biên bản vi phạm liên kết) trước khi gộp 'Khác'. Dùng GROUP BY/lọc cho Nhóm 13 (K_TT_46/47) và làm fallback trong ETL của fct_penalty_decision_subject_behavior.violation_behavior_group_nm (cột này dùng cho Nhóm 20)"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
 
@@ -7331,15 +7332,6 @@ entities:
         description: "Tổng mức phạt tiền — measure, đã có sẵn trên Penalty Decision"
         source_atomic_table: "penalty_decision"
         source_atomic_column: "penalty_decision.total_fine_amt"
-      - logical_name: "Paid Fine Amount"
-        physical_name: "paid_fine_amt"
-        data_domain: "Currency Amount"
-        data_type: "decimal(23,2)"
-        nullable: true
-        key: ""
-        description: "Tổng số tiền đã nộp phạt tương ứng với quyết định — 1 quyết định có thể có nhiều đối tượng bị xử phạt (Penalty Decision Subject), SUM toàn bộ các đối tượng"
-        source_atomic_table: "pd_subject"
-        source_atomic_column: "pd_subject.paid_amt"
       - logical_name: "Data Dt"
         physical_name: "data_dt"
         data_domain: "Text"
@@ -7349,6 +7341,15 @@ entities:
         description: "Ngày ETL nạp dữ liệu (YYYYMMDD) — technical field dùng lọc/xoá khi ETL Datamart → flat table"
         source_atomic_table: null
         source_atomic_column: null
+      - logical_name: "Paid Fine Amount"
+        physical_name: "paid_fine_amt"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: ""
+        description: "Tổng số tiền đã nộp phạt tương ứng với quyết định — 1 quyết định có thể có nhiều đối tượng bị xử phạt (Penalty Decision Subject), SUM toàn bộ các đối tượng"
+        source_atomic_table: "pd_subject"
+        source_atomic_column: "pd_subject.paid_amt"
 
   - id: "DTM-penalty_decision_subject_dim"
     logical_name: "Penalty Decision Subject Dimension"
@@ -7369,7 +7370,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK surrogate — Driving: pd_subject"
+        description: "PK surrogate — Driving: penalty_decision_subject"
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Penalty Decision Subject Code"
@@ -7518,7 +7519,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Tên nhóm hành vi theo từng dòng hành vi của QĐ — ưu tiên tên hành vi của dòng, fallback tên đại diện của QĐ (nhánh phụ/'Khác') khi dòng không có hành vi nhánh chính; QĐ có N hành vi được đếm ở N nhóm; dùng cho Nhóm 20 (K_TT_70–84)"
+        description: "Tên nhóm hành vi theo từng dòng hành vi của QĐ — ưu tiên tên hành vi của dòng, fallback tên đại diện của QĐ (nhánh phụ/'Khác') khi dòng không có hành vi nhánh chính; QĐ có N hành vi được đếm ở N nhóm. Dùng để phân loại cho Nhóm 20 (K_TT_70–84); Nhóm 13 (K_TT_46/47) dùng penalty_decision_dim.violation_behavior_nm"
         source_atomic_table: "penalty_decision_subject_behavior_dim"
         source_atomic_column: "penalty_decision_subject_behavior_dim.violation_behavior_nm"
       - logical_name: "Data Dt"
@@ -7860,9 +7861,10 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "K_NDTNN_35 — Dòng tiền ròng NĐTNN lũy kế từ đầu tháng tới ngày snapshot, báo cáo PLIV-TT51 (IBOU9) theo BA STT 5 dòng 40. Đơn vị USD, semi-additive. [SỬA 2026-10-02] nạp từ fir_value (Atomic FIMS báo cáo động) — O_NDTNN_38"
+        description: "K_NDTNN_35 — Dòng tiền ròng NĐTNN lũy kế từ đầu tháng tới ngày snapshot (series DÒNG TIỀN RÒNG), báo cáo PLIV-TT51/2021/TT-BTC (IBOU9, Ngân hàng lưu ký gửi, kỳ nửa tháng) theo BA STT 5 dòng 40. Đơn vị USD — KHÁC 2 series còn lại (VND), presentation phải quy đổi hoặc tách trục. Semi-additive: KHÔNG SUM theo ngày; điểm tháng = giá trị ngày cuối tháng. [SỬA 2026-10-02] Atomic FIMS báo cáo động đã thiết kế (fir_value/fir_structure/foreign_investor_report) — hết PENDING; quy tắc 'ưu tiên kỳ nửa tháng' chờ dev xác nhận (O_NDTNN_33/38)"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
+
   - id: "DTM-fct_securities_foreign_trading_snpst"
     logical_name: "Fact Securities Foreign Trading Snapshot"
     datamart_table: "fct_securities_foreign_trading_snpst"
@@ -8058,7 +8060,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-22, theo yêu cầu Data Modeler] Thời gian ghi nhận snapshot của bản ghi mới nhất theo Symbol — dùng để đối chiếu MAX(Trading Time) GROUP BY Stock Type Code trong etl_logic Fact Securities Foreign Trading Snapshot, không phải proxy ngày hiện tại"
+        description: "[MOI 2026-09-22, theo yeu cau Data Modeler - doi chieu SQL tham khao BA STT 1 NDTNN Nhom 1] Thoi gian ghi nhan snapshot cua ban ghi security_trading_snapshot moi nhat theo Symbol dang duoc chon len Dimension nay. BA dung gia tri nay de xac dinh dung 'dot snapshot moi nhat' RIENG CHO TUNG Stock Type Code (MAX(tradingtime) GROUP BY stocktype trong SQL tham khao BA) - khac voi 'moi nhat theo tung Symbol' ma Dimension nay von da lam. Phoi hop voi Stock Type Code de loc dung pham vi trong etl_logic cua Fact Securities Foreign Trading Snapshot (Foreign Buy/Sell Value, Total Market Value) - xem ghi chu tai do. KHONG dung de suy dien 'ngay hien tai' - day la dieu kien loc du lieu that, khong phai proxy ngay thang."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.trading_time"
       - logical_name: "Source System Code"
@@ -8471,7 +8473,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — Driving: pd_subject_behavior (1 hành vi vi phạm × 1 đối tượng bị xử phạt)"
+        description: "PK — Driving: pd_subject. 1 đối tượng × 1 hành vi; đối tượng chưa có hành vi vẫn 1 dòng (LEFT JOIN theo BA) nên khóa = mã hành vi, thiếu thì mã đối tượng"
         source_atomic_table: "pd_subject_behavior"
         source_atomic_column: "pd_subject_behavior.pd_subject_behavior_code"
       - logical_name: "Subject Name"
@@ -8507,7 +8509,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Phân loại hình thức xử lý (nhắc nhở/xử phạt hành chính...)"
+        description: "Phân loại hình thức xử lý (BA PENALTY_TYPE.NAME) — LEFT JOIN: hành vi chưa có loại xử lý vẫn giữ dòng"
         source_atomic_table: "penalty_type"
         source_atomic_column: "penalty_type.penalty_tp_nm"
       - logical_name: "Description"
@@ -8535,8 +8537,8 @@ entities:
         nullable: false
         key: ""
         description: "src_stm_code — Driving: pd_subject_behavior"
-        source_atomic_table: "pd_subject_behavior"
-        source_atomic_column: "pd_subject_behavior.src_stm_code"
+        source_atomic_table: "pd_subject"
+        source_atomic_column: "pd_subject.src_stm_code"
 
   - id: "DTM-foreign_investor_trading_statistics_rpt"
     logical_name: "Foreign Investor Trading Statistics Report"
@@ -8576,18 +8578,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: false
         key: "DD"
-        description: "SUM Execution Value phía mua theo từng Security Type Group — [SỬA 2026-09-28] đổi cơ chế phân loại STOCK/BOND/FUND_CERT từ Market_Id_Code sang JOIN MDDS security_trading_snapshot.stock_tp_code, đồng bộ BA hiện hành, xem O_NDTNN_35"
+        description: "SUM Execution Value phía mua theo từng Security Type Group — **[SửA 2026-09-28]** đổi cơ chế phân loại STOCK/BOND/FUND_CERT từ Market_Id_Code sang JOIN MDDS security_trading_snapshot.stock_tp_code (lấy dòng trading_time mới nhất/ngày qua ROW_NUMBER), đồng bộ Câu lệnh tham khảo BA hiện hành và pattern đã duyệt ở Fact Securities Foreign Trading Snapshot (Nhóm 1/2, sửa 2026-09-25) — xem Ghi chú thiết kế HLD Nhóm 14, O_NDTNN_35"
         source_atomic_table: "securities_trade / security_trading_snapshot"
-        source_atomic_column: "securities_trade.execution_val / buy_foreign_investor_tp_code / security_symbol_code / security_trading_snapshot.symbol / isin_code / trading_dt / trading_time / stock_tp_code"
+        source_atomic_column: "securities_trade / security_trading_snapshot.execution_val / buy_foreign_investor_tp_code / security_symbol_code / symbol / isin_code / trading_dt / trading_time / stock_tp_code"
       - logical_name: "Sell Value"
         physical_name: "sell_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: false
         key: "DD"
-        description: "SUM Execution Value phía bán theo từng Security Type Group (cùng pattern filter với Buy Value, đổi buy_*→sell_*) — [SỬA 2026-09-28] đổi cơ chế phân loại, xem O_NDTNN_35"
+        description: "SUM Execution Value phía bán theo từng Security Type Group (cùng pattern filter với Buy Value, đổi buy_*→sell_*) — **[SửA 2026-09-28]** đổi cơ chế phân loại, xem Ghi chú thiết kế HLD Nhóm 14, O_NDTNN_35"
         source_atomic_table: "securities_trade / security_trading_snapshot"
-        source_atomic_column: "securities_trade.execution_val / sell_foreign_investor_tp_code / security_symbol_code / security_trading_snapshot.symbol / isin_code / trading_dt / trading_time / stock_tp_code"
+        source_atomic_column: "securities_trade / security_trading_snapshot.execution_val / sell_foreign_investor_tp_code / security_symbol_code / symbol / isin_code / trading_dt / trading_time / stock_tp_code"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -8637,7 +8639,7 @@ entities:
         key: "DD"
         description: "Grain (3/4) — Mã CK trong nước (ticker): HOSE `security_symbol_code` = symbol; HNX `security_symbol_code` là Issue Code (ISIN) → symbol qua Securities Dimension (`securities_dim.isin_code`). INNER JOIN như SQL BA 2026-10-01 — giao dịch không có trong Securities Dimension (MDDS JAD_STOCKINFOR) bị loại. Securities Dimension là current-state 1 dòng/mã nên không cần chọn bản ghi mới nhất theo ngày. Chỉ dùng securities_dim.symbol làm giá trị text (không lưu FK securities_dim_id)"
         source_atomic_table: "securities_trade / securities_dim"
-        source_atomic_column: "securities_trade.security_symbol_code / securities_dim.symbol"
+        source_atomic_column: "securities_trade / securities_dim.security_symbol_code / symbol"
       - logical_name: "Trade Direction Code"
         physical_name: "trade_direction_code"
         data_domain: "Classification Value"
@@ -8662,18 +8664,18 @@ entities:
         data_type: "int"
         nullable: false
         key: "DD"
-        description: "KL mua/bán CK. ETL filter: buy/sell_foreign_investor_tp_code IN ('10','20') OR buy/sell_investor_tp_code = '7000' (2 attribute độc lập)"
+        description: "KL mua/bán CK. ETL filter theo SQL BA 2026-10-01: HOSE buy/sell_foreign_investor_tp_code <> '00'; HNX IN ('10','20'). Điều kiện '7000' của Trường nguồn không còn trong SQL (O_NDTNN_36)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol / buy_foreign_investor_tp_code / buy_investor_tp_code / sell_foreign_investor_tp_code / sell_investor_tp_code"
+        source_atomic_column: "securities_trade.execution_vol / buy_foreign_investor_tp_code / sell_foreign_investor_tp_code"
       - logical_name: "Execution Value"
         physical_name: "execution_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: false
         key: "DD"
-        description: "GT mua/bán CK (HNX: Trade_price×Trade_quantity). Cùng điều kiện ETL filter với Execution Volume"
+        description: "GT mua/bán CK (HNX: Trade_price×Trade_quantity). ETL filter theo SQL BA 2026-10-01: HOSE buy/sell_foreign_investor_tp_code <> '00'; HNX IN ('10','20'). Điều kiện '7000' của Trường nguồn không còn trong SQL (O_NDTNN_36)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val / buy_foreign_investor_tp_code / buy_investor_tp_code / sell_foreign_investor_tp_code / sell_investor_tp_code"
+        source_atomic_column: "securities_trade.execution_val / buy_foreign_investor_tp_code / sell_foreign_investor_tp_code"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -8947,7 +8949,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-22, BA bổ sung gấp] Giá trần"
+        description: "[MOI 2026-09-22, BA bo sung gap STT 23] Gia tran"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.ceiling_price"
       - logical_name: "Floor Price"
@@ -8956,7 +8958,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-22, BA bổ sung gấp] Giá sàn"
+        description: "[MOI 2026-09-22, BA bo sung gap STT 23] Gia san"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.floor_price"
       - logical_name: "Reference Price"
@@ -9153,15 +9155,6 @@ entities:
         description: "[MỚI 2026-09-14, theo yêu cầu Design] Tổng giá trị giao dịch thỏa thuận của TOÀN BỘ mã CK thành viên rổ chỉ số — SUM GROUP BY Index Code + Trading Date, tính sẵn (phục vụ K_GSTT_52). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
-      - logical_name: "Index Market Index Value"
-        physical_name: "idx_market_index_val"
-        data_domain: "Currency Amount"
-        data_type: "decimal(23,4)"
-        nullable: true
-        key: ""
-        description: "Điểm chỉ số cuối phiên của rổ chỉ số theo Index+Date — giá trị chung của rổ, lặp lại trên mọi dòng mã CK cùng rổ, không SUM lại."
-        source_atomic_table: "market_index_snapshot"
-        source_atomic_column: "market_index_snapshot.market_index_val"
       - logical_name: "Index Market Cap"
         physical_name: "idx_market_cap"
         data_domain: "Currency Amount"
@@ -9225,6 +9218,15 @@ entities:
         description: "[SỬA 2026-09-19, review Nhóm 24] Tổng vốn hóa tự do chuyển nhượng TOÀN RỔ chỉ số tại phiên giao dịch LIỀN TRƯỚC (T-1) — LAG(Index Free Float Market Cap) OVER (PARTITION BY Index Code ORDER BY Trading Date), giá trị T-1 lưu sẵn trên dòng T (cùng pattern `fct_market_index_snpst.prior_index`). Mẫu số đúng của trọng số K_GSTT_76 (xem `fct_stock_portfolio_snpst.prior_free_float_market_cap` — lý do sửa như nhau, xem ghi chú tại đó)."
         source_atomic_table: "index_constituent_snapshot"
         source_atomic_column: "index_constituent_snapshot.index_code / trading_dt"
+      - logical_name: "Index Market Index Value"
+        physical_name: "idx_market_index_val"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,4)"
+        nullable: true
+        key: ""
+        description: "Điểm chỉ số cuối phiên của rổ chỉ số theo Index+Date — giá trị chung của rổ, lặp lại trên mọi dòng mã CK cùng rổ, không SUM lại."
+        source_atomic_table: "market_index_snapshot"
+        source_atomic_column: "market_index_snapshot.market_index_val"
 
   - id: "DTM-fct_stock_portfolio_snpst"
     logical_name: "Fact Stock Portfolio Snapshot"
@@ -9261,7 +9263,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "FK"
-        description: "FK tới Public Company Dimension — nullable khi mã CK chưa có bản ghi công ty đại chúng tương ứng (sửa 2026-09-08: INNER JOIN → LEFT JOIN để không loại mất cả dòng Fact của mã CK chưa map, cùng pattern với Index Constituent Dimension Id). [SỬA JOIN KEY 2026-09-11, xác nhận qua issue Thủy] Chứng quyền (stock_tp_code='4') dùng underlying_symbol thay vì symbol khi join sang IDS để lấy Ngành — mã CK gốc của chứng quyền không tồn tại như 1 Public Company riêng. [BỔ SUNG 2026-09-12, issue BA] Trái phiếu (stock_tp_code='1') không có equity_ticker_symbol khớp trong IDS — join qua Issuer Name (issuer_nm, nguồn MDDS) khớp Public Company Name (pc_nm) thay vì symbol/underlying_symbol. [SỬA 2026-09-12, đóng O_GSTT_15 — data profiling xác nhận] Bỏ floor_code '03' (FDS) khỏi điều kiện chứng quyền — stock_tp_code='4' trên floor '03' là HĐTL, không phải Chứng quyền: profiling `uat_mdds_stg.tmp_jad_stockinfor_eod` cho thấy 100% dòng floor='03'/stockType='4' có underlying_symbol RỖNG (70/70 mẫu) và contractmultiplier mang giá trị thật (10000/100000, khác dummy 1.0 của CW thật ở floor='10'), symbol dạng số thuần (VD 41B5G9000) không theo cấu trúc C{mã CS}{kỳ đáo hạn} của CW HOSE (VD CACB2511, underlying_symbol=ACB). Không đổi kết quả output (floor='03' vốn đã luôn ra NULL do underlying_symbol rỗng) — chỉ sửa để CASE phản ánh đúng bản chất, tránh nhầm lẫn khi bảo trì sau này. **CHỈ áp dụng cho cột này (Ngành)** — theo đúng phạm vi BA nêu (issue Thủy: 'join để lấy ngành'; issue BA trái phiếu cũng chỉ nói 'để join với ngành'). KHÔNG áp dụng cho Outstanding Share Quantity (BA nói rõ giữ nguyên symbol MDDS cho join KLLH/Vốn hóa) cũng như Revenue/Net Profit After Tax/NPAT TTM/Owner Equity (BA không đề cập — giữ nguyên hành vi gốc dùng symbol thuần, tránh gán nhầm P/E/P/B/Vốn hóa của chứng quyền/trái phiếu bằng tài chính công ty cơ sở). Sửa lại 2026-09-11 sau tự-review: bản sửa đầu tiên đã áp nhầm CASE này sang cả 5 cột kia. [SỬA 2026-09-28, review chỉ tiêu Ngành] Bổ sung bộ lọc loại trừ trước khi áp SUBSTR(symbol,1,3) cho nhánh trái phiếu (stock_tp_code='1') — tránh gán nhầm Ngành khi mã trái phiếu Chính phủ/Kho bạc/chính quyền địa phương (pattern [2 ký tự]GB..., tiền tố TD/TP/CP/QH/KB/BL, hoặc HCM.../HAN...) trùng ngẫu nhiên với ticker cổ phiếu thật (VD HCM trùng HSC; [xx]GB trùng HPG/HNG/KHG/TNG/THG/HTG). Danh sách tiền tố CHƯA được Data Modeler xác nhận đầy đủ 100% — xem O_GSTT_37."
+        description: "FK tới Public Company Dimension — nullable khi mã CK chưa có bản ghi công ty đại chúng tương ứng (sửa 2026-09-08: INNER JOIN → LEFT JOIN để không loại mất cả dòng Fact của mã CK chưa map, cùng pattern với Index Constituent Dimension Id). [SỬA JOIN KEY 2026-09-11, xác nhận qua issue Thủy] Chứng quyền (stock_tp_code='4') dùng underlying_symbol thay vì symbol khi join sang IDS để lấy Ngành — mã CK gốc của chứng quyền không tồn tại như 1 Public Company riêng. [BỔ SUNG 2026-09-12, issue BA] Trái phiếu (stock_tp_code='1') không có equity_ticker_symbol khớp trong IDS — join qua Issuer Name (issuer_nm, nguồn MDDS) khớp Public Company Name (pc_nm) thay vì symbol/underlying_symbol. [SỬA 2026-09-22, theo yêu cầu BA — thay công thức JOIN nhánh trái phiếu] Bỏ cách join theo Issuer Name = Public Company Name (`pc_nm = issuer_nm`, bản 2026-09-12) — BA yêu cầu đổi sang khớp 3 ký tự đầu của mã trái phiếu với mã cổ phiếu cùng tổ chức phát hành: `SUBSTR(security_trading_snapshot.symbol, 1, 3) = public_company.equity_ticker_symbol`. Cùng phạm vi áp dụng như note 2026-09-12 (CHỈ cột này/Ngành, không áp dụng Outstanding Share Quantity/Revenue/NPAT/Owner Equity — xem ghi chú phạm vi dưới). [SỬA 2026-09-12, đóng O_GSTT_15 — data profiling xác nhận] Bỏ floor_code '03' (FDS) khỏi điều kiện chứng quyền — stock_tp_code='4' trên floor '03' là HĐTL, không phải Chứng quyền: profiling `uat_mdds_stg.tmp_jad_stockinfor_eod` cho thấy 100% dòng floor='03'/stockType='4' có underlying_symbol RỖNG (70/70 mẫu) và contractmultiplier mang giá trị thật (10000/100000, khác dummy 1.0 của CW thật ở floor='10'), symbol dạng số thuần (VD 41B5G9000) không theo cấu trúc C{mã CS}{kỳ đáo hạn} của CW HOSE (VD CACB2511, underlying_symbol=ACB). Không đổi kết quả output (floor='03' vốn đã luôn ra NULL do underlying_symbol rỗng) — chỉ sửa để CASE phản ánh đúng bản chất, tránh nhầm lẫn khi bảo trì sau này. **CHỈ áp dụng cho cột này (Ngành)** — theo đúng phạm vi BA nêu (issue Thủy: 'join để lấy ngành'; issue BA trái phiếu cũng chỉ nói 'để join với ngành'). KHÔNG áp dụng cho Outstanding Share Quantity (BA nói rõ giữ nguyên symbol MDDS cho join KLLH/Vốn hóa) cũng như Revenue/Net Profit After Tax/NPAT TTM/Owner Equity (BA không đề cập — giữ nguyên hành vi gốc dùng symbol thuần, tránh gán nhầm P/E/P/B/Vốn hóa của chứng quyền/trái phiếu bằng tài chính công ty cơ sở). Sửa lại 2026-09-11 sau tự-review: bản sửa đầu tiên đã áp nhầm CASE này sang cả 5 cột kia. [SỬA 2026-09-28, review chỉ tiêu Ngành] Bổ sung bộ lọc loại trừ trước khi áp SUBSTR(symbol,1,3) cho nhánh trái phiếu (stock_tp_code='1') — SUBSTR 3 ký tự đầu của mã trái phiếu Chính phủ/Kho bạc/chính quyền địa phương (pattern [2 ký tự]GB..., hoặc tiền tố TD/TP/CP/QH/KB/BL, hoặc HCM.../HAN...) có thể trùng ngẫu nhiên với ticker cổ phiếu thật (VD trái phiếu HCM... trùng HCM — HSC; [xx]GB... trùng nhiều mã kết thúc bằng G như HPG/HNG/KHG/TNG/THG/HTG) — nếu không loại trừ sẽ gán nhầm Ngành của công ty niêm yết không liên quan cho trái phiếu nợ công. Loại các mã này khỏi so khớp (giữ NULL, giống hành vi trước khi thêm mapping trái phiếu 2026-09-22) thay vì gán nhầm. **Danh sách tiền tố dựa trên quy ước thị trường nợ công phổ biến, CHƯA được Data Modeler xác nhận đầy đủ 100% — xem O_GSTT_37.**"
         source_atomic_table: "public_company"
         source_atomic_column: "public_company.pc_code"
       - logical_name: "Securities Company Dimension Id"
@@ -9639,7 +9641,7 @@ entities:
         data_type: "decimal(23,4)"
         nullable: true
         key: ""
-        description: "[MOI 2026-09-29, sua sau review Nhom 34] WAOS tinh trong dung khung ngay cua ky BCTC VCSH gan nhat (ky rieng cua Owner Equity, xep hang doc lap voi ky LNST - co the lech ky). Dung cho mau so K_GSTT_112 (Gia tri so sach quy gan nhat)."
+        description: "[MOI 2026-09-29, sua sau review Nhom 34] WAOS tinh trong dung khung ngay cua ky BCTC VCSH gan nhat (ky rieng cua Owner Equity, xep hang doc lap voi ky LNST — co the lech ky). Dung cho mau so K_GSTT_112 (Gia tri so sach quy gan nhat)."
         source_atomic_table: "listed_share_info"
         source_atomic_column: "listed_share_info.outstanding_share_quantity"
       - logical_name: "Owner Equity Weighted Average Outstanding Share Quantity TTM"
@@ -9657,7 +9659,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MOI 2026-09-29, sua sau review Nhom 34 - dao nguoc quyet dinh 2026-09-04] VCSH binh quan cong cua 4 ky BCTC gan nhat (trung binh 4 gia tri roi rac theo tung quy, KHONG phai giu nguyen VCSH 1 quy nhu quyet dinh cu da xac nhan sai qua SQL tham khao BA). NULL neu khong du 4 ky. Dung cho tu so K_GSTT_113 (Gia tri so sach binh quan 4 quy gan nhat)."
+        description: "[MOI 2026-09-29, sua sau review Nhom 34 — dao nguoc quyet dinh 2026-09-04] VCSH binh quan cong cua 4 ky BCTC gan nhat (trung binh 4 gia tri roi rac theo tung quy, KHONG phai giu nguyen VCSH 1 quy nhu quyet dinh cu da xac nhan sai qua SQL tham khao BA). NULL neu khong du 4 ky. Dung cho tu so K_GSTT_113 (Gia tri so sach binh quan 4 quy gan nhat)."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.data_val"
 
@@ -9796,6 +9798,7 @@ entities:
         description: "Tổng khối lượng khớp trong ngày của nến ngày (nguồn nến TradingView). [v4.35] Không còn KPI dùng (K_GSTT_353 bỏ khỏi Nhóm 3; khối lượng ngày nay từ Fact Instrument Price Daily)"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.vol"
+
   - id: "DTM-fct_instrument_price_intraday"
     logical_name: "Fact Instrument Price Intraday"
     datamart_table: "fct_instrument_price_intraday"
@@ -9899,6 +9902,7 @@ entities:
         description: "Khối lượng khớp lũy kế từ đầu ngày tại thời điểm nến phút — KHÔNG phải KL phát sinh riêng tại thời điểm đó, giữ bản chất lũy kế theo BA (totaltrading). market_price_snapshot.vol là KLGD phát sinh trong phút nên phải running-sum"
         source_atomic_table: "market_price_snapshot"
         source_atomic_column: "market_price_snapshot.vol"
+
   - id: "DTM-fct_instrument_price_daily"
     logical_name: "Fact Instrument Price Daily"
     datamart_table: "fct_instrument_price_daily"
@@ -10009,6 +10013,7 @@ entities:
         description: "LNST point-in-time theo BCKQKD, kỳ gần nhất đã công bố tính đến ngày giao dịch — rule GSĐC (O_GSTT_1); BA dòng 501 'Lợi nhuận sau thuế theo mã chứng khoán'. NULL với dòng chỉ số. Chỉ ở Fact ngày"
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.data_val"
+
   - id: "DTM-fct_foreign_trading_min_snpst"
     logical_name: "Fact Foreign Trading Minute Snapshot"
     datamart_table: "fct_foreign_trading_min_snpst"
@@ -10125,7 +10130,7 @@ entities:
         key: ""
         description: "Khối lượng mua theo Phân loại NĐT (khớp lệnh + thỏa thuận)."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Sell Value"
         physical_name: "sell_val"
         data_domain: "Currency Amount"
@@ -10143,7 +10148,7 @@ entities:
         key: ""
         description: "Khối lượng bán theo Phân loại NĐT (khớp lệnh + thỏa thuận)."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Matched Buy Value"
         physical_name: "matched_buy_val"
         data_domain: "Currency Amount"
@@ -10305,6 +10310,7 @@ entities:
         description: "Phần trăm thay đổi điểm chỉ số so với cuối ngày hôm trước, tại bản ghi cuối phiên — giá trị chung của rổ."
         source_atomic_table: "market_index_snapshot"
         source_atomic_column: "market_index_snapshot.index_percent_change"
+
   - id: "DTM-fct_major_shareholder_ownership_snpst"
     logical_name: "Fact Major Shareholder Ownership Snapshot"
     datamart_table: "fct_major_shareholder_ownership_snpst"
@@ -10371,7 +10377,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-25, GSTT Nhóm 35 — BA cập nhật nguồn VSDC major_shareholder] Số cổ phiếu sở hữu tại ngày tham số (K_GSTT_102, K_GSTT_103b): ≥ ngày cuối kỳ → số cuối kỳ; ≥ ngày đầu kỳ → số đầu kỳ (BA dòng 462)"
+        description: "[MỚI 2026-09-25, GSTT Nhóm 35 — BA cập nhật nguồn VSDC major_shareholder] Số cổ phiếu sở hữu tại ngày tham số (K_GSTT_102): mốc as-of của mã (ngày đầu/cuối kỳ gần nhất ≤ ngày tham số) — trùng ngày cuối kỳ → số cuối kỳ, ngược lại số đầu kỳ; chỉ giữ cổ đông có kỳ chạm mốc (BA dòng 506) [SỬA 2026-10-01]"
         source_atomic_table: "major_shareholder_ownership"
         source_atomic_column: "major_shareholder_ownership.closing_share_quantity / opening_share_quantity / closing_balance_date / opening_balance_date"
       - logical_name: "Ownership Ratio"
@@ -10380,7 +10386,7 @@ entities:
         data_type: "decimal(7,4)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-25, GSTT Nhóm 35 — BA cập nhật nguồn VSDC major_shareholder] Tỷ lệ sở hữu tại ngày tham số (K_GSTT_103) — cùng quy tắc chọn kỳ (BA dòng 465)"
+        description: "[MỚI 2026-09-25, GSTT Nhóm 35 — BA cập nhật nguồn VSDC major_shareholder] Tỷ lệ sở hữu tại ngày tham số (K_GSTT_103) — cùng quy tắc chọn kỳ as-of theo mã (BA dòng 507) [SỬA 2026-10-01]"
         source_atomic_table: "major_shareholder_ownership"
         source_atomic_column: "major_shareholder_ownership.closing_ratio / opening_ratio / closing_balance_date / opening_balance_date"
       - logical_name: "Closing Ownership Ratio"
@@ -10398,7 +10404,7 @@ entities:
         data_type: "date"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-25, GSTT Nhóm 35 — BA cập nhật nguồn VSDC major_shareholder] Ngày cập nhật số liệu sở hữu (K_GSTT_177) = ngày cuối kỳ hoặc ngày đầu kỳ được chọn (BA dòng 466)"
+        description: "[MỚI 2026-09-25, GSTT Nhóm 35 — BA cập nhật nguồn VSDC major_shareholder] Ngày cập nhật số liệu sở hữu (K_GSTT_177) = ngày cuối kỳ hoặc ngày đầu kỳ được chọn = mốc as-of của mã (BA dòng 508) [SỬA 2026-10-01]"
         source_atomic_table: "major_shareholder_ownership"
         source_atomic_column: "major_shareholder_ownership.closing_balance_date / opening_balance_date"
       - logical_name: "Position Code"
@@ -10428,6 +10434,7 @@ entities:
         description: "[MỚI 2026-10-01, GSTT Nhóm 35] Khóa định danh cổ đông lớn (K_GSTT_359) — số giấy tờ định danh VSDC đã được MÃ HÓA TỪ NGUỒN (quyết định Data Modeler 2026-10-01); chỉ dùng làm khóa đối chiếu tooltip cổ đông → mã, không hiển thị, không giải mã"
         source_atomic_table: "major_shareholder_ownership"
         source_atomic_column: "major_shareholder_ownership.identification_nbr"
+
   - id: "DTM-fct_market_risk_snpst"
     logical_name: "Fact Market Risk Snapshot"
     datamart_table: "fct_market_risk_snpst"
@@ -10492,7 +10499,7 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Z-score Dư nợ Margin"
+        description: "Z-score Dư nợ Margin."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Z Score Interbank Rate"
@@ -10600,7 +10607,7 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Risk Index — Chỉ số rủi ro hệ thống tổng hợp"
+        description: "Risk Index — Chỉ số rủi ro hệ thống tổng hợp."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Z Score Equity Capital Raising"
@@ -10627,7 +10634,7 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Độ lệch chuẩn chuỗi tỷ lệ Dư nợ Margin/MCAP"
+        description: "Độ lệch chuẩn chuỗi tỷ lệ Dư nợ Margin / Tổng vốn hóa 30 phiên."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Margin To Cap Ratio Current"
@@ -10636,16 +10643,16 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Tỷ lệ Dư nợ Margin / Tổng vốn hóa tại ngày t"
-        source_atomic_table: null
-        source_atomic_column: null
+        description: "Tỷ lệ Dư nợ Margin / Tổng vốn hóa thị trường tại ngày t (Mₜ, %)."
+        source_atomic_table: "sc_report_input_value"
+        source_atomic_column: "sc_report_input_value.item_val"
       - logical_name: "Margin To Cap Ratio Avg"
         physical_name: "margin_to_cap_ratio_avg"
         data_domain: "Percentage"
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Tỷ lệ Dư nợ Margin / Tổng vốn hóa trung bình"
+        description: "Tỷ lệ Dư nợ Margin / Tổng vốn hóa trung bình 30 phiên (M̄)."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Total Margin Balance"
@@ -10735,7 +10742,7 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Chỉ số độ căng margin — tỷ lệ dư nợ margin trên hạn mức tối đa"
+        description: "Margin Tension (%) = Tổng dư nợ margin (tháng chứa ngày t) / Tổng hạn mức margin × 100 (BA dòng 127)."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.item_val"
       - logical_name: "Margin Tension Status"
@@ -10915,7 +10922,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng hạn mức margin toàn hệ thống = 2 × VCSH các CTCK tại kỳ báo cáo (K_PTTT_59)."
+        description: "Tổng hạn mức margin tối đa = 2 × Σ VCSH các CTCK (BA dòng 129): mỗi CTCK 1 báo cáo ưu tiên Năm > Bán niên > Quý, mới nhất trong năm của ngày t; VCSH BCTCHN TS359, thiếu thì BCTCRL TS223/TS221."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.item_val"
       - logical_name: "Margin Stress"
@@ -11282,7 +11289,7 @@ entities:
         key: "DD"
         description: "Tổng giá trị giao dịch khớp lệnh của các cổ phiếu thuộc ngành trong ngày t (GTGD theo ngành — PTTT Nhóm 33)."
         source_atomic_table: "securities_trade / public_company"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade / public_company.execution_val"
       - logical_name: "Foreign Net Value Sector"
         physical_name: "foreign_net_val_sector"
         data_domain: "Currency Amount"
@@ -11291,7 +11298,7 @@ entities:
         key: "DD"
         description: "Giá trị mua ròng của nhà đầu tư nước ngoài theo ngành ngày t = GT mua NĐTNN − GT bán NĐTNN (Dòng tiền ròng NĐTNN theo ngành — PTTT Nhóm 33)."
         source_atomic_table: "securities_trade / public_company"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade / public_company.execution_val"
       - logical_name: "Proprietary Net Value Sector"
         physical_name: "proprietary_net_val_sector"
         data_domain: "Currency Amount"
@@ -11300,7 +11307,7 @@ entities:
         key: "DD"
         description: "Giá trị mua ròng của tự doanh CTCK theo ngành ngày t = GT mua tự doanh − GT bán tự doanh (Dòng tiền ròng tự doanh theo ngành — PTTT Nhóm 33)."
         source_atomic_table: "securities_trade / public_company"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade / public_company.execution_val"
       - logical_name: "Total Outstanding Share Quantity Sector"
         physical_name: "total_outstanding_share_quantity_sector"
         data_domain: "Large Counter"
@@ -11309,7 +11316,7 @@ entities:
         key: "DD"
         description: "Tổng khối lượng cổ phiếu đang lưu hành của các mã thuộc ngành tại ngày t (VSDC TT138.2025 Mẫu 01 — PTTT Nhóm 33)."
         source_atomic_table: "listed_share_info / public_company"
-        source_atomic_column: "listed_share_info.outstanding_share_quantity"
+        source_atomic_column: "listed_share_info / public_company.outstanding_share_quantity"
       - logical_name: "Net Profit After Tax Amount Sector"
         physical_name: "net_profit_after_tax_amt_sector"
         data_domain: "Currency Amount"
@@ -11545,8 +11552,8 @@ entities:
         nullable: true
         key: "DD"
         description: "KL TP lưu hành toàn thị trường ngày t = TP niêm yết (HNX listed_securities_list.listed_shares (tạm thay outstanding_shares của BA), StockType = '1' loại TP Chính phủ) + TP riêng lẻ (private_corp_bond_registration, report_month = tháng ngày t) — BA dòng 300; tạm dùng listed_shares (O_PTTT_36)"
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.total_listing_vol"
+        source_atomic_table: "listed_share_info / private_corp_bond_registration"
+        source_atomic_column: "listed_share_info / private_corp_bond_registration.listed_share_quantity / outstanding_bond_quantity"
       - logical_name: "Bond Outstanding Value"
         physical_name: "bond_outstanding_val"
         data_domain: "Currency Amount"
@@ -11563,8 +11570,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Áp lực đáo hạn 12 tháng — tổng dư nợ TP có ngày đáo hạn trong (ngày t, ngày t + 12 tháng], gồm TP niêm yết HNX và riêng lẻ — BA dòng 301; tạm dùng listed_shares (O_PTTT_36)"
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.maturity_dt"
+        source_atomic_table: "security_trading_snapshot / listed_share_info / private_corp_bond_registration"
+        source_atomic_column: "security_trading_snapshot / listed_share_info / private_corp_bond_registration.maturity_dt / listed_share_quantity / outstanding_bond_quantity"
       - logical_name: "Maturity Pressure 12 Months Previous"
         physical_name: "maturity_pressure_12_months_previous"
         data_domain: "Currency Amount"
@@ -11600,7 +11607,7 @@ entities:
         key: "DD"
         description: "Lợi suất trái phiếu bình quân gia quyền theo GTGD ngày t = Σ(YTMi × GTGDi) / ΣGTGDi — BA dòng 305. YTMi = security_trading_snapshot.yield của mã TP (StockType = '1') lấy bản ghi cuối ngày; GTGDi = tổng execution_val của mã TP trong ngày (Market ID = 'HCX', chỉ HNX). INNER JOIN như SQL BA: mã không có YTM hoặc không có giao dịch trong ngày bị loại khỏi cả tử và mẫu"
         source_atomic_table: "security_trading_snapshot / securities_trade"
-        source_atomic_column: "security_trading_snapshot.yield / securities_trade.execution_val"
+        source_atomic_column: "security_trading_snapshot / securities_trade.yield / execution_val"
 
   - id: "DTM-fct_corporate_bond_maturity_wall"
     logical_name: "Fact Corporate Bond Maturity Wall"
@@ -11625,16 +11632,16 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK to Calendar Date Dimension — ngày chốt quý (LISTED: ngày GD cuối quý; PRIVATE: cuối tháng report_month = tháng cuối quý)"
+        description: "FK to Calendar Date Dimension — ngày chốt quý. LISTED: ngày giao dịch cuối cùng của quý trong security_trading_snapshot (BA dòng 309/312); PRIVATE: ngày cuối tháng của report_month = tháng cuối quý (BA dòng 322: MONTH(report_month) = quý × 3)"
         source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
-        source_atomic_column: "security_trading_snapshot.trading_dt / private_corp_bond_offering.report_month"
+        source_atomic_column: "security_trading_snapshot / private_corp_bond_offering.trading_dt / report_month"
       - logical_name: "Securities Dimension Id"
         physical_name: "securities_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
         nullable: true
         key: "FK"
-        description: "FK to Securities Dimension (reuse từ NDTNN) — chỉ luồng LISTED; luồng PRIVATE NULL"
+        description: "FK to Securities Dimension (reuse từ NDTNN) — chỉ luồng LISTED; luồng PRIVATE không có trong securities_dim nên NULL (phân biệt qua bond_flow_code)"
         source_atomic_table: "securities_dim"
         source_atomic_column: "securities_dim.symbol"
       - logical_name: "Ranking Code"
@@ -11645,16 +11652,16 @@ entities:
         key: "DD"
         description: "Xếp hạng tín nhiệm DN phát hành — dùng chung 2 luồng (BA dòng 316/325). LISTED: DN nối theo 3 ký tự đầu mã TP = mã cổ phiếu của DN phát hành (BA nối equity_ticker = symbol không khớp vì mã TP ≠ mã CP — O_PTTT_30); PRIVATE: nối theo tên DN phát hành (issuer_name = pc_nm). Kỳ xếp hạng = năm/tháng của ngày chốt quý"
         source_atomic_table: "pc_bond_evaluation / public_company"
-        source_atomic_column: "pc_bond_evaluation.ranking_code / public_company.equity_ticker_symbol"
+        source_atomic_column: "pc_bond_evaluation / public_company.ranking_code / equity_ticker_symbol"
       - logical_name: "Bond Flow Code"
         physical_name: "bond_flow_code"
         data_domain: "Text"
         data_type: "string"
         nullable: false
         key: "DD"
-        description: "Luồng nguồn của dòng: 'LISTED' (trái phiếu niêm yết — JAD_STOCKINFOR) / 'PRIVATE' (trái phiếu riêng lẻ — HNX BM29 private_corp_bond_offering)"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        description: "Luồng nguồn của dòng: 'LISTED' (trái phiếu niêm yết — HNX listed_securities_list + JAD_STOCKINFOR) / 'PRIVATE' (trái phiếu riêng lẻ — HNX BM29 private_corp_bond_offering)"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Bond Code"
         physical_name: "bond_code"
         data_domain: "Text"
@@ -11663,7 +11670,7 @@ entities:
         key: "DD"
         description: "Mã trái phiếu (grain cùng bond_flow_code và ngày chốt quý). LISTED: symbol; PRIVATE: bond_code. Dùng thay securities_dim_id khi luồng PRIVATE không có trong securities_dim"
         source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
-        source_atomic_column: "security_trading_snapshot.symbol / private_corp_bond_offering.bond_code"
+        source_atomic_column: "security_trading_snapshot / private_corp_bond_offering.symbol / bond_code"
       - logical_name: "Par Value"
         physical_name: "par_val"
         data_domain: "Currency Amount"
@@ -11680,8 +11687,8 @@ entities:
         nullable: true
         key: "DD"
         description: "KL trái phiếu lưu hành tại ngày chốt quý. LISTED: listed_share_info.listed_share_quantity (HNX listed_securities_list.listed_shares (tạm thay outstanding_shares của BA)) tại ngày báo cáo cuối quý, tạm dùng listed_shares (O_PTTT_36); PRIVATE: offering_bond_quantity (BA dòng 320/324)"
-        source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
-        source_atomic_column: "security_trading_snapshot.total_listing_vol / private_corp_bond_offering.offering_bond_quantity"
+        source_atomic_table: "listed_share_info / private_corp_bond_offering"
+        source_atomic_column: "listed_share_info / private_corp_bond_offering.listed_share_quantity / offering_bond_quantity"
       - logical_name: "Bond Outstanding Value"
         physical_name: "bond_outstanding_val"
         data_domain: "Currency Amount"
@@ -11689,8 +11696,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Dư nợ trái phiếu của mã = Mệnh giá × KL lưu hành (BA dòng 309/318/322)"
-        source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
-        source_atomic_column: "security_trading_snapshot.total_listing_vol / private_corp_bond_offering.offering_bond_quantity"
+        source_atomic_table: "listed_share_info / private_corp_bond_offering"
+        source_atomic_column: "listed_share_info / private_corp_bond_offering.outstanding_share_quantity / offering_bond_quantity"
       - logical_name: "Maturity Date"
         physical_name: "maturity_dt"
         data_domain: "Date"
@@ -11699,7 +11706,7 @@ entities:
         key: "DD"
         description: "Ngày đáo hạn trái phiếu — dùng cho lọc kỳ đáo hạn của K_PTTT_178. LISTED: JAD_STOCKINFOR.MaturityDate; PRIVATE: private_corp_bond_offering.maturity_date"
         source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
-        source_atomic_column: "security_trading_snapshot.maturity_dt / private_corp_bond_offering.maturity_date"
+        source_atomic_column: "security_trading_snapshot / private_corp_bond_offering.maturity_dt / maturity_date"
 
   - id: "DTM-corp_bond_industry_dim"
     logical_name: "Corp Bond Industry Dimension"
@@ -11781,8 +11788,8 @@ entities:
         nullable: false
         key: "FK"
         description: "FK to Corp Bond Industry Dimension"
-        source_atomic_table: "public_company"
-        source_atomic_column: "public_company.business_line_level_1_code"
+        source_atomic_table: "public_company / security_trading_snapshot"
+        source_atomic_column: "public_company / security_trading_snapshot.business_line_level_1_code"
       - logical_name: "Bond Outstanding Value"
         physical_name: "bond_outstanding_val"
         data_domain: "Currency Amount"
@@ -11790,17 +11797,17 @@ entities:
         nullable: true
         key: "DD"
         description: "Tổng dư nợ trái phiếu theo ngành TCPH tại ngày t"
-        source_atomic_table: "security_trading_snapshot / public_company"
-        source_atomic_column: "security_trading_snapshot / public_company.total_listing_vol"
+        source_atomic_table: "listed_share_info / public_company"
+        source_atomic_column: "listed_share_info / public_company.listed_share_quantity"
       - logical_name: "Bond Outstanding Value Total"
         physical_name: "bond_outstanding_val_total"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Dư nợ trái phiếu toàn thị trường tại ngày t (tổng tất cả ngành, mẫu số Tỷ trọng)"
-        source_atomic_table: "fct_corporate_bond_sector_snpst"
-        source_atomic_column: "fct_corporate_bond_sector_snpst.bond_outstanding_val"
+        description: "Dư nợ trái phiếu toàn thị trường tại ngày t (mọi mã TP lọc theo loại, kể cả mã chưa khớp được ngành; mẫu số Tỷ trọng)"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.listed_share_quantity"
       - logical_name: "Bond Outstanding Ratio"
         physical_name: "bond_outstanding_ratio"
         data_domain: "Percentage"
@@ -11836,7 +11843,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — mã TCPH (định danh qua mã TP)"
+        description: "PK — mã trái phiếu (symbol); TCPH xác định qua public_company.equity_ticker_symbol = SUBSTR(symbol, 1, 3) (BA cập nhật 2026-10-05; trước đó = symbol)"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.symbol"
       - logical_name: "Snapshot Date"
@@ -11855,8 +11862,8 @@ entities:
         nullable: true
         key: ""
         description: "Dư nợ trái phiếu per TCPH tại ngày t"
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.total_listing_vol"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.listed_share_quantity"
       - logical_name: "Par Value"
         physical_name: "par_val"
         data_domain: "Currency Amount"
@@ -11873,8 +11880,8 @@ entities:
         nullable: true
         key: ""
         description: "KL TP lưu hành per TCPH tại ngày t"
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.total_listing_vol"
+        source_atomic_table: "listed_share_info"
+        source_atomic_column: "listed_share_info.listed_share_quantity"
       - logical_name: "Audit Opinion Text"
         physical_name: "audit_opinion_text"
         data_domain: "Text"
@@ -11882,8 +11889,8 @@ entities:
         nullable: true
         key: ""
         description: "Ý kiến kiểm toán per TCPH"
-        source_atomic_table: "pc_evaluation_detail / pc_evaluation_criterion / pc_evaluation_group / pc_evaluation / pc_evaluation_period"
-        source_atomic_column: "pc_evaluation_detail / pc_evaluation_criterion / pc_evaluation_group / pc_evaluation / pc_evaluation_period.evaluation_result_text"
+        source_atomic_table: "pc_evaluation_detail / pc_evaluation_criterion / pc_evaluation_group / pc_evaluation / pc_evaluation_period / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_evaluation_detail / pc_evaluation_criterion / pc_evaluation_group / pc_evaluation / pc_evaluation_period / public_company / security_trading_snapshot.evaluation_result_text"
       - logical_name: "Ranking Code"
         physical_name: "ranking_code"
         data_domain: "Text"
@@ -11891,8 +11898,8 @@ entities:
         nullable: true
         key: ""
         description: "Xếp hạng tín nhiệm per TCPH"
-        source_atomic_table: "pc_bond_evaluation"
-        source_atomic_column: "pc_bond_evaluation.ranking_code"
+        source_atomic_table: "pc_bond_evaluation / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_bond_evaluation / public_company / security_trading_snapshot.ranking_code"
       - logical_name: "Risk Rating Text"
         physical_name: "risk_rating_text"
         data_domain: "Text"
@@ -11909,8 +11916,8 @@ entities:
         nullable: true
         key: ""
         description: "Tong no phai tra cua TCPH tai ky bao cao gan nhat (BCDKT, row_desc 300 DN/BH - 400 TD)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
       - logical_name: "Owner Equity Ending Amount"
         physical_name: "owner_equity_ending_amt"
         data_domain: "Currency Amount"
@@ -11918,8 +11925,8 @@ entities:
         nullable: true
         key: ""
         description: "VCSH cuoi ky bao cao gan nhat (BCDKT, row_desc 400 DN/BH - 500 TD, col_desc=1 cuoi ky)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
       - logical_name: "Owner Equity Beginning Amount"
         physical_name: "owner_equity_beginning_amt"
         data_domain: "Currency Amount"
@@ -11927,8 +11934,8 @@ entities:
         nullable: true
         key: ""
         description: "VCSH dau ky bao cao gan nhat (BCDKT, row_desc 400 DN/BH - 500 TD, col_desc=2 dau ky)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
       - logical_name: "Owner Equity Average Amount"
         physical_name: "owner_equity_average_amt"
         data_domain: "Currency Amount"
@@ -11936,8 +11943,8 @@ entities:
         nullable: true
         key: ""
         description: "VCSH binh quan = (dau ky + cuoi ky) / 2 - neu dau ky NULL thi lay dung cuoi ky (theo BA note)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
       - logical_name: "Net Profit After Tax Amount"
         physical_name: "net_profit_after_tax_amt"
         data_domain: "Currency Amount"
@@ -11945,8 +11952,8 @@ entities:
         nullable: true
         key: ""
         description: "LNST ky bao cao gan nhat (BCKQKD, row_desc 60 DN/BH - 21 TD)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
       - logical_name: "Debt To Equity Ratio"
         physical_name: "debt_to_equity_ratio"
         data_domain: "Percentage"
@@ -11954,8 +11961,8 @@ entities:
         nullable: true
         key: ""
         description: "He so D/E = Tong no phai tra / VCSH cuoi ky"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
       - logical_name: "ROE Percentage"
         physical_name: "roe_pct"
         data_domain: "Percentage"
@@ -11963,8 +11970,8 @@ entities:
         nullable: true
         key: ""
         description: "ROE = LNST / VCSH binh quan x 100"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
 
   - id: "DTM-fct_cap_grp_snpst"
     logical_name: "Fact Cap Group Snapshot"
@@ -12132,7 +12139,7 @@ entities:
         key: "DD"
         description: "Khối lượng hợp đồng mở (OI) cuối ngày của mã HĐTL (VSDC — BM 2 Báo cáo về khối lượng mở cuối ngày; PTTT Nhóm 26)."
         source_atomic_table: "end_of_day_open_interest / security_trading_snapshot"
-        source_atomic_column: "end_of_day_open_interest.open_interest_quantity"
+        source_atomic_column: "end_of_day_open_interest / security_trading_snapshot.open_interest_quantity"
 
   - id: "DTM-fct_futures_investor_flow_snpst"
     logical_name: "Fact Futures Investor Flow Snapshot"
@@ -12280,8 +12287,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Giá đóng cửa ngày t"
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.close_price"
+        source_atomic_table: "security_trading_snapshot / index_constituent_snapshot"
+        source_atomic_column: "security_trading_snapshot / index_constituent_snapshot.close_price"
       - logical_name: "Close Price Previous Day"
         physical_name: "close_price_previous_day"
         data_domain: "Currency Amount"
@@ -12289,8 +12296,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Giá đóng cửa ngày t-1"
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.close_price"
+        source_atomic_table: "security_trading_snapshot / index_constituent_snapshot"
+        source_atomic_column: "security_trading_snapshot / index_constituent_snapshot.close_price"
       - logical_name: "Price Change Percentage"
         physical_name: "price_change_percentage"
         data_domain: "Percentage"
@@ -12326,7 +12333,7 @@ entities:
         key: "DD"
         description: "Tổng khối lượng cổ phiếu đang lưu hành của các mã thuộc rổ chỉ số tại ngày t (VSDC TT138.2025 Mẫu 01 — PTTT Nhóm 32)."
         source_atomic_table: "listed_share_info / index_constituent_snapshot / market_index_snapshot"
-        source_atomic_column: "listed_share_info.outstanding_share_quantity"
+        source_atomic_column: "listed_share_info / index_constituent_snapshot / market_index_snapshot.outstanding_share_quantity"
       - logical_name: "Net Profit After Tax Amount"
         physical_name: "net_profit_after_tax_amt"
         data_domain: "Currency Amount"
@@ -12393,7 +12400,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "(Sửa 2026-08-11) Tên hành vi vi phạm — đổi INNER JOIN → LEFT JOIN + COALESCE 'Khác', khớp ý định HLD (\"ELSE 'Khác', không loại bỏ\"). Filter Life_Cycle_Status_Code='ACTIVE' giữ trong ON clause của LEFT JOIN (chỉ lookup tên khi Violation Behavior đang ACTIVE) để không loại hẳn dòng không match/INACTIVE khỏi Dimension/Fact — trước đây INNER JOIN làm mất hẳn các dòng này thay vì gộp 'Khác'"
+        description: "Tên hành vi vi phạm — NULL nếu hành vi không ACTIVE/không có; KPI lọc IS NOT NULL (BA 2026-10-01 AND NAME IS NOT NULL, thay COALESCE Khác)"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
@@ -12498,7 +12505,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "(Sửa 2026-08-11) Tên hành vi vi phạm — đổi INNER JOIN → LEFT JOIN + COALESCE 'Khác', khớp SQL BA (LEFT JOIN Violation Behavior, CASE WHEN NAME IS NOT NULL THEN NAME ELSE 'Khác' END). INNER JOIN trước đây làm mất hẳn bản ghi không match Violation Behavior khỏi Dimension/Fact thay vì gộp 'Khác'"
+        description: "Tên hành vi vi phạm — NULL nếu hành vi không ACTIVE/không có; KPI lọc IS NOT NULL (BA 2026-10-01 AND NAME IS NOT NULL, thay COALESCE Khác)"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
@@ -15099,6 +15106,7 @@ entities:
         description: "[MỚI 2026-09-24, TKNB Nhóm 9 HNX12] Mã hệ thống nguồn — Driving: private_corp_bond_offering"
         source_atomic_table: "private_corp_bond_offering"
         source_atomic_column: "private_corp_bond_offering.src_stm_code"
+
   - id: "DTM-fct_private_corporate_bond_international_offering_snpst"
     logical_name: "Fact Private Corporate Bond International Offering Snapshot"
     datamart_table: "fct_private_corporate_bond_international_offering_snpst"
@@ -15184,6 +15192,7 @@ entities:
         description: "[MỚI 2026-09-24, TKNB Nhóm 9 HNX12] Mã hệ thống nguồn"
         source_atomic_table: "private_corp_bond_offering"
         source_atomic_column: "private_corp_bond_offering.src_stm_code"
+
   - id: "DTM-fct_private_corporate_bond_issuance_snpst"
     logical_name: "Fact Private Corporate Bond Issuance Snapshot"
     datamart_table: "fct_private_corporate_bond_issuance_snpst"
@@ -15261,6 +15270,7 @@ entities:
         description: "[MỚI 2026-10-05, TKNB Nhóm 8 HNX11] Mã hệ thống nguồn"
         source_atomic_table: "private_corp_bond_registration"
         source_atomic_column: "private_corp_bond_registration.src_stm_code"
+
   - id: "DTM-fct_security_trading_detail_snpst"
     logical_name: "Fact Security Trading Detail Snapshot"
     datamart_table: "fct_security_trading_detail_snpst"
@@ -15375,7 +15385,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Số lượng lệnh đặt mua = số lệnh MỚI (N) trừ số lệnh HỦY (C) — BA dòng 1612. Rủi ro HNX: `side_ind` của lệnh hủy normalize SPACE (D-08) — Section 5 mục 34"
         source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.side_ind"
+        source_atomic_column: "securities_order.side_ind / order_action_tp_code"
       - logical_name: "Buy Order Volume"
         physical_name: "buy_order_vol"
         data_domain: "Large Counter"
@@ -15384,7 +15394,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Khối lượng đặt mua = tổng Order Volume của lệnh MỚI (N) — BA dòng 1613: sổ lệnh `Order_HOSE`/`Order_HNX` thay vì sổ khớp. HNX map Issue Code → Symbol qua ISIN"
         source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.order_vol"
+        source_atomic_column: "securities_order.order_vol / side_ind / order_action_tp_code"
       - logical_name: "Sell Order Count"
         physical_name: "sell_order_cnt"
         data_domain: "Small Counter"
@@ -15393,7 +15403,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Số lượng lệnh đặt bán = số lệnh MỚI (N) trừ số lệnh HỦY (C) — BA dòng 1614. Rủi ro HNX: `side_ind` của lệnh hủy normalize SPACE (D-08) — Section 5 mục 34"
         source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.side_ind"
+        source_atomic_column: "securities_order.side_ind / order_action_tp_code"
       - logical_name: "Sell Order Volume"
         physical_name: "sell_order_vol"
         data_domain: "Large Counter"
@@ -15402,7 +15412,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Khối lượng đặt bán = tổng Order Volume của lệnh MỚI (N) — BA dòng 1615: sổ lệnh `Order_HOSE`/`Order_HNX` thay vì sổ khớp. HNX map Issue Code → Symbol qua ISIN"
         source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.order_vol"
+        source_atomic_column: "securities_order.order_vol / side_ind / order_action_tp_code"
       - logical_name: "Matched Trading Volume"
         physical_name: "matched_trading_vol"
         data_domain: "Large Counter"
@@ -15411,7 +15421,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KLGD khớp lệnh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code"
       - logical_name: "Matched Trading Value"
         physical_name: "matched_trading_val"
         data_domain: "Currency Amount"
@@ -15420,7 +15430,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GTGD khớp lệnh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code"
       - logical_name: "Negotiated Trading Volume"
         physical_name: "negotiated_trading_vol"
         data_domain: "Large Counter"
@@ -15429,7 +15439,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KLGD thỏa thuận theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code"
       - logical_name: "Negotiated Trading Value"
         physical_name: "negotiated_trading_val"
         data_domain: "Currency Amount"
@@ -15438,7 +15448,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GTGD thỏa thuận theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code"
       - logical_name: "Odd Lot Trading Volume"
         physical_name: "odd_lot_trading_vol"
         data_domain: "Large Counter"
@@ -15447,7 +15457,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KLGD lô lẻ theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code"
       - logical_name: "Odd Lot Trading Value"
         physical_name: "odd_lot_trading_val"
         data_domain: "Currency Amount"
@@ -15456,7 +15466,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GTGD lô lẻ theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code"
       - logical_name: "Total Trading Volume"
         physical_name: "total_trading_vol"
         data_domain: "Large Counter"
@@ -15465,7 +15475,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Tổng KLGD theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code"
       - logical_name: "Total Trading Value"
         physical_name: "total_trading_val"
         data_domain: "Currency Amount"
@@ -15474,7 +15484,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Tổng GTGD theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code"
       - logical_name: "Max Foreign Ownership Ratio"
         physical_name: "max_foreign_ownership_ratio"
         data_domain: "Percentage"
@@ -15483,7 +15493,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Tỷ lệ sở hữu tối đa cho phép của NĐTNN (BA dòng 1626: `uat_vsdc_stg.foreign_investor_info.max_foreign_ownership_ratio`; mapping md Bảng 9). Ngày nối: `ds_snpst_dt` thay `report_date` (Data Modeler xác nhận 2026-10-06)"
         source_atomic_table: "foreign_ownership_info"
-        source_atomic_column: "foreign_ownership_info.max_foreign_ownership_ratio"
+        source_atomic_column: "foreign_ownership_info.max_foreign_ownership_ratio / ticker_symbol"
       - logical_name: "Remaining Foreign Ownership Ratio"
         physical_name: "remaining_foreign_ownership_ratio"
         data_domain: "Percentage"
@@ -15492,7 +15502,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Tỷ lệ còn được phép mua của NĐTNN — Data Modeler xác nhận cột nguồn là `remaining_shares_foreign_can_hold` (mapping md `remaining_foreign_holding_quantity`); quy ra % = số CP còn được mua / tổng CP phát hành × 100 (phép quy đổi do thiết kế suy ra, BA cần xác nhận — Section 5 mục 34)"
         source_atomic_table: "foreign_ownership_info"
-        source_atomic_column: "foreign_ownership_info.remaining_foreign_holding_quantity"
+        source_atomic_column: "foreign_ownership_info.remaining_foreign_holding_quantity / total_issued_share_quantity"
       - logical_name: "Foreign Investor Total Buy Volume"
         physical_name: "foreign_investor_total_buy_vol"
         data_domain: "Large Counter"
@@ -15501,7 +15511,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL mua Tổng của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / buy_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Total Sell Volume"
         physical_name: "foreign_investor_total_sell_vol"
         data_domain: "Large Counter"
@@ -15510,7 +15520,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL bán Tổng của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / sell_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Total Buy Value"
         physical_name: "foreign_investor_total_buy_val"
         data_domain: "Currency Amount"
@@ -15519,7 +15529,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT mua Tổng của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / buy_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Total Sell Value"
         physical_name: "foreign_investor_total_sell_val"
         data_domain: "Currency Amount"
@@ -15528,7 +15538,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT bán Tổng của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / sell_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Negotiated Buy Volume"
         physical_name: "foreign_investor_negotiated_buy_vol"
         data_domain: "Large Counter"
@@ -15537,7 +15547,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL mua thỏa thuận của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / buy_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Negotiated Sell Volume"
         physical_name: "foreign_investor_negotiated_sell_vol"
         data_domain: "Large Counter"
@@ -15546,7 +15556,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL bán thỏa thuận của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / sell_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Negotiated Buy Value"
         physical_name: "foreign_investor_negotiated_buy_val"
         data_domain: "Currency Amount"
@@ -15555,7 +15565,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT mua thỏa thuận của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / buy_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Negotiated Sell Value"
         physical_name: "foreign_investor_negotiated_sell_val"
         data_domain: "Currency Amount"
@@ -15564,7 +15574,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT bán thỏa thuận của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / sell_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Matched Buy Volume"
         physical_name: "foreign_investor_matched_buy_vol"
         data_domain: "Large Counter"
@@ -15573,7 +15583,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL mua khớp lệnh của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / buy_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Matched Sell Volume"
         physical_name: "foreign_investor_matched_sell_vol"
         data_domain: "Large Counter"
@@ -15582,7 +15592,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL bán khớp lệnh của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / sell_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Matched Buy Value"
         physical_name: "foreign_investor_matched_buy_val"
         data_domain: "Currency Amount"
@@ -15591,7 +15601,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT mua khớp lệnh của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / buy_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Matched Sell Value"
         physical_name: "foreign_investor_matched_sell_val"
         data_domain: "Currency Amount"
@@ -15600,7 +15610,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT bán khớp lệnh của NĐTNN của NĐTNN theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / sell_foreign_investor_tp_code"
       - logical_name: "Proprietary Total Buy Volume"
         physical_name: "proprietary_total_buy_vol"
         data_domain: "Large Counter"
@@ -15609,7 +15619,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL mua Tổng của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / buy_client_house_cl_code"
       - logical_name: "Proprietary Total Sell Volume"
         physical_name: "proprietary_total_sell_vol"
         data_domain: "Large Counter"
@@ -15618,7 +15628,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL bán Tổng của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / sell_client_house_cl_code"
       - logical_name: "Proprietary Total Buy Value"
         physical_name: "proprietary_total_buy_val"
         data_domain: "Currency Amount"
@@ -15627,7 +15637,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT mua Tổng của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / buy_client_house_cl_code"
       - logical_name: "Proprietary Total Sell Value"
         physical_name: "proprietary_total_sell_val"
         data_domain: "Currency Amount"
@@ -15636,7 +15646,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT bán Tổng của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / sell_client_house_cl_code"
       - logical_name: "Proprietary Negotiated Buy Volume"
         physical_name: "proprietary_negotiated_buy_vol"
         data_domain: "Large Counter"
@@ -15645,7 +15655,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL mua thỏa thuận của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / buy_client_house_cl_code"
       - logical_name: "Proprietary Negotiated Sell Volume"
         physical_name: "proprietary_negotiated_sell_vol"
         data_domain: "Large Counter"
@@ -15654,7 +15664,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL bán thỏa thuận của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / sell_client_house_cl_code"
       - logical_name: "Proprietary Negotiated Buy Value"
         physical_name: "proprietary_negotiated_buy_val"
         data_domain: "Currency Amount"
@@ -15663,7 +15673,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT mua thỏa thuận của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / buy_client_house_cl_code"
       - logical_name: "Proprietary Negotiated Sell Value"
         physical_name: "proprietary_negotiated_sell_val"
         data_domain: "Currency Amount"
@@ -15672,7 +15682,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT bán thỏa thuận của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / sell_client_house_cl_code"
       - logical_name: "Proprietary Matched Buy Volume"
         physical_name: "proprietary_matched_buy_vol"
         data_domain: "Large Counter"
@@ -15681,7 +15691,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL mua khớp lệnh của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / buy_client_house_cl_code"
       - logical_name: "Proprietary Matched Sell Volume"
         physical_name: "proprietary_matched_sell_vol"
         data_domain: "Large Counter"
@@ -15690,7 +15700,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] KL bán khớp lệnh của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Khối lượng"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / board_tp_code / sell_client_house_cl_code"
       - logical_name: "Proprietary Matched Buy Value"
         physical_name: "proprietary_matched_buy_val"
         data_domain: "Currency Amount"
@@ -15699,7 +15709,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT mua khớp lệnh của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / buy_client_house_cl_code"
       - logical_name: "Proprietary Matched Sell Value"
         physical_name: "proprietary_matched_sell_val"
         data_domain: "Currency Amount"
@@ -15708,7 +15718,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] GT bán khớp lệnh của tự doanh của tự doanh theo mã CK × ngày (BA: HOSE `TRADE_BOOK` + HNX `TRADE_BOOK`; HNX nối mã qua ISIN). Giá trị (VND — đổi Tỷ đồng ở BI)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / board_tp_code / sell_client_house_cl_code"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -15718,6 +15728,7 @@ entities:
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Mã hệ thống nguồn"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.src_stm_code"
+
   - id: "DTM-fct_derivatives_security_detail_snpst"
     logical_name: "Fact Derivatives Security Detail Snapshot"
     datamart_table: "fct_derivatives_security_detail_snpst"
@@ -15760,7 +15771,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] KL hợp đồng đang lưu hành (BA dòng 1658: `uat_vsdc_stg.end_of_day_open_interest` Σ open_interest_volume; mapping md Bảng 6). Ngày nối `ds_snpst_dt` thay `report_date` (Data Modeler xác nhận 2026-10-06). BA ghi 'khi nào có dữ liệu thật thì dùng JOIN' → LEFT JOIN"
         source_atomic_table: "end_of_day_open_interest"
-        source_atomic_column: "end_of_day_open_interest.open_interest_quantity"
+        source_atomic_column: "end_of_day_open_interest.open_interest_quantity / ticker_symbol"
       - logical_name: "Trading Volume"
         physical_name: "trading_vol"
         data_domain: "Large Counter"
@@ -15769,7 +15780,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] Khối lượng giao dịch hợp đồng CKPS trong ngày (HNX, `market_id_code='DVX'`)"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / market_id_code"
       - logical_name: "Trading Value"
         physical_name: "trading_val"
         data_domain: "Currency Amount"
@@ -15778,7 +15789,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] Giá trị giao dịch hợp đồng CKPS = Σ(Trade quantity × Trade price × ContractMultiplier) (BA dòng 1660; thay `execution_val`) — VND, đổi Tỷ đồng ở BI"
         source_atomic_table: "securities_trade / security_trading_snapshot"
-        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol"
+        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol / execution_price / contract_multiplier"
       - logical_name: "Foreign Investor Buy Volume"
         physical_name: "foreign_investor_buy_vol"
         data_domain: "Large Counter"
@@ -15787,7 +15798,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] KL mua của NĐTNN trên hợp đồng CKPS trong ngày. NĐTNN = `IN ('10','20')` theo SQL tham khảo BA (Data Modeler chốt 2026-10-06)."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / buy_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Sell Volume"
         physical_name: "foreign_investor_sell_vol"
         data_domain: "Large Counter"
@@ -15796,7 +15807,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] KL bán của NĐTNN trên hợp đồng CKPS trong ngày. NĐTNN = `IN ('10','20')` theo SQL tham khảo BA (Data Modeler chốt 2026-10-06)."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / sell_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Buy Value"
         physical_name: "foreign_investor_buy_val"
         data_domain: "Currency Amount"
@@ -15805,7 +15816,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] GT mua của NĐTNN trên hợp đồng CKPS trong ngày. NĐTNN = `IN ('10','20')` theo SQL tham khảo BA (Data Modeler chốt 2026-10-06)."
         source_atomic_table: "securities_trade / security_trading_snapshot"
-        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol"
+        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol / execution_price / contract_multiplier / buy_foreign_investor_tp_code"
       - logical_name: "Foreign Investor Sell Value"
         physical_name: "foreign_investor_sell_val"
         data_domain: "Currency Amount"
@@ -15814,7 +15825,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] GT bán của NĐTNN trên hợp đồng CKPS trong ngày. NĐTNN = `IN ('10','20')` theo SQL tham khảo BA (Data Modeler chốt 2026-10-06)."
         source_atomic_table: "securities_trade / security_trading_snapshot"
-        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol"
+        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol / execution_price / contract_multiplier / sell_foreign_investor_tp_code"
       - logical_name: "Proprietary Buy Volume"
         physical_name: "proprietary_buy_vol"
         data_domain: "Large Counter"
@@ -15823,7 +15834,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] KL mua của tự doanh trên hợp đồng CKPS trong ngày. Tự doanh = `client_house_cl_code='30'`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / buy_client_house_cl_code"
       - logical_name: "Proprietary Sell Volume"
         physical_name: "proprietary_sell_vol"
         data_domain: "Large Counter"
@@ -15832,7 +15843,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] KL bán của tự doanh trên hợp đồng CKPS trong ngày. Tự doanh = `client_house_cl_code='30'`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / sell_client_house_cl_code"
       - logical_name: "Proprietary Buy Value"
         physical_name: "proprietary_buy_val"
         data_domain: "Currency Amount"
@@ -15841,7 +15852,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] GT mua của tự doanh trên hợp đồng CKPS trong ngày. Tự doanh = `client_house_cl_code='30'`."
         source_atomic_table: "securities_trade / security_trading_snapshot"
-        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol"
+        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol / execution_price / contract_multiplier / buy_client_house_cl_code"
       - logical_name: "Proprietary Sell Value"
         physical_name: "proprietary_sell_val"
         data_domain: "Currency Amount"
@@ -15850,7 +15861,7 @@ entities:
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] GT bán của tự doanh trên hợp đồng CKPS trong ngày. Tự doanh = `client_house_cl_code='30'`."
         source_atomic_table: "securities_trade / security_trading_snapshot"
-        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol"
+        source_atomic_column: "securities_trade / security_trading_snapshot.execution_vol / execution_price / contract_multiplier / sell_client_house_cl_code"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -15860,6 +15871,7 @@ entities:
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] Mã hệ thống nguồn"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.src_stm_code"
+
   - id: "DTM-fct_market_trading_snpst"
     logical_name: "Fact Market Trading Snapshot"
     datamart_table: "fct_market_trading_snpst"
@@ -15899,7 +15911,7 @@ entities:
         key: "DD"
         description: "Tổng giá trị giao dịch cổ phiếu toàn thị trường (cộng gộp HOSE+HNX+UPCoM) trong ngày"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / market_id_code"
       - logical_name: "Total Trading Volume"
         physical_name: "total_trading_vol"
         data_domain: "Small Counter"
@@ -15908,7 +15920,7 @@ entities:
         key: "DD"
         description: "Tổng khối lượng giao dịch cổ phiếu toàn thị trường trong ngày"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / market_id_code"
       - logical_name: "Matched Trading Value"
         physical_name: "matched_trading_val"
         data_domain: "Currency Amount"
@@ -15917,7 +15929,7 @@ entities:
         key: "DD"
         description: "Giá trị giao dịch khớp lệnh toàn thị trường trong ngày"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / market_id_code / board_tp_code"
       - logical_name: "Matched Trading Volume"
         physical_name: "matched_trading_vol"
         data_domain: "Small Counter"
@@ -15926,7 +15938,7 @@ entities:
         key: "DD"
         description: "Khối lượng giao dịch khớp lệnh toàn thị trường trong ngày"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / market_id_code / board_tp_code"
       - logical_name: "Negotiated Trading Value"
         physical_name: "negotiated_trading_val"
         data_domain: "Currency Amount"
@@ -15935,7 +15947,7 @@ entities:
         key: "DD"
         description: "Giá trị giao dịch thỏa thuận toàn thị trường trong ngày"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / market_id_code / board_tp_code"
       - logical_name: "Negotiated Trading Volume"
         physical_name: "negotiated_trading_vol"
         data_domain: "Small Counter"
@@ -15944,7 +15956,7 @@ entities:
         key: "DD"
         description: "Khối lượng giao dịch thỏa thuận toàn thị trường trong ngày"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / market_id_code / board_tp_code"
       - logical_name: "Odd Lot Trading Value"
         physical_name: "odd_lot_trading_val"
         data_domain: "Currency Amount"
@@ -15953,7 +15965,7 @@ entities:
         key: "DD"
         description: "Giá trị giao dịch lô lẻ toàn thị trường trong ngày"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_column: "securities_trade.execution_val / market_id_code / board_tp_code"
       - logical_name: "Odd Lot Trading Volume"
         physical_name: "odd_lot_trading_vol"
         data_domain: "Small Counter"
@@ -15962,7 +15974,7 @@ entities:
         key: "DD"
         description: "Khối lượng giao dịch lô lẻ toàn thị trường trong ngày"
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_column: "securities_trade.execution_vol / market_id_code / board_tp_code"
       - logical_name: "Market Index Value"
         physical_name: "market_index_val"
         data_domain: "Currency Amount"
@@ -15971,7 +15983,7 @@ entities:
         key: "DD"
         description: "[SỬA 2026-09-23] Giá trị chỉ số của Index Code tại bản ghi cuối cùng trong ngày giao dịch (K_TKNB_1014)."
         source_atomic_table: "market_index_snapshot"
-        source_atomic_column: "market_index_snapshot.market_index_val"
+        source_atomic_column: "market_index_snapshot.market_index_val / index_time"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -16012,8 +16024,8 @@ entities:
         nullable: false
         key: "FK"
         description: "FK tới Index Constituent Dimension (rổ chỉ số mà mã CK đang xét thuộc về)"
-        source_atomic_table: "index_constituent_snapshot"
-        source_atomic_column: "index_constituent_snapshot.index_code"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.security_symbol_code / index_code"
       - logical_name: "Foreign Investor Total Buy Volume"
         physical_name: "foreign_investor_total_buy_vol"
         data_domain: "Small Counter"
@@ -16021,8 +16033,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng mua của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Total Sell Volume"
         physical_name: "foreign_investor_total_sell_vol"
         data_domain: "Small Counter"
@@ -16030,8 +16042,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng bán của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Total Buy Value"
         physical_name: "foreign_investor_total_buy_val"
         data_domain: "Currency Amount"
@@ -16039,8 +16051,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị mua của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Total Sell Value"
         physical_name: "foreign_investor_total_sell_val"
         data_domain: "Currency Amount"
@@ -16048,8 +16060,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị bán của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Negotiated Buy Volume"
         physical_name: "foreign_investor_negotiated_buy_vol"
         data_domain: "Small Counter"
@@ -16057,8 +16069,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng mua thỏa thuận của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Negotiated Sell Volume"
         physical_name: "foreign_investor_negotiated_sell_vol"
         data_domain: "Small Counter"
@@ -16066,8 +16078,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng bán thỏa thuận của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Negotiated Buy Value"
         physical_name: "foreign_investor_negotiated_buy_val"
         data_domain: "Currency Amount"
@@ -16075,8 +16087,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị mua thỏa thuận của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Negotiated Sell Value"
         physical_name: "foreign_investor_negotiated_sell_val"
         data_domain: "Currency Amount"
@@ -16084,8 +16096,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị bán thỏa thuận của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Matched Buy Volume"
         physical_name: "foreign_investor_matched_buy_vol"
         data_domain: "Small Counter"
@@ -16093,8 +16105,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng mua khớp lệnh của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Matched Sell Volume"
         physical_name: "foreign_investor_matched_sell_vol"
         data_domain: "Small Counter"
@@ -16102,8 +16114,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng bán khớp lệnh của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Matched Buy Value"
         physical_name: "foreign_investor_matched_buy_val"
         data_domain: "Currency Amount"
@@ -16111,8 +16123,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị mua khớp lệnh của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Foreign Investor Matched Sell Value"
         physical_name: "foreign_investor_matched_sell_val"
         data_domain: "Currency Amount"
@@ -16120,8 +16132,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị bán khớp lệnh của NĐTNN theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Total Buy Volume"
         physical_name: "proprietary_total_buy_vol"
         data_domain: "Small Counter"
@@ -16129,8 +16141,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng mua của khối tự doanh theo chỉ số trong ngày (chỉ tính khớp lệnh theo quy ước BA)"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Total Sell Volume"
         physical_name: "proprietary_total_sell_vol"
         data_domain: "Small Counter"
@@ -16138,8 +16150,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng bán của khối tự doanh theo chỉ số trong ngày (chỉ tính khớp lệnh theo quy ước BA)"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Total Buy Value"
         physical_name: "proprietary_total_buy_val"
         data_domain: "Currency Amount"
@@ -16147,8 +16159,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị mua của khối tự doanh theo chỉ số trong ngày (chỉ tính khớp lệnh theo quy ước BA)"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Total Sell Value"
         physical_name: "proprietary_total_sell_val"
         data_domain: "Currency Amount"
@@ -16156,8 +16168,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị bán của khối tự doanh theo chỉ số trong ngày (chỉ tính khớp lệnh theo quy ước BA)"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Negotiated Buy Volume"
         physical_name: "proprietary_negotiated_buy_vol"
         data_domain: "Small Counter"
@@ -16165,8 +16177,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng mua thỏa thuận của khối tự doanh theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Negotiated Sell Volume"
         physical_name: "proprietary_negotiated_sell_vol"
         data_domain: "Small Counter"
@@ -16174,8 +16186,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng bán thỏa thuận của khối tự doanh theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Negotiated Buy Value"
         physical_name: "proprietary_negotiated_buy_val"
         data_domain: "Currency Amount"
@@ -16183,8 +16195,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị mua thỏa thuận của khối tự doanh theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Negotiated Sell Value"
         physical_name: "proprietary_negotiated_sell_val"
         data_domain: "Currency Amount"
@@ -16192,8 +16204,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị bán thỏa thuận của khối tự doanh theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Matched Buy Volume"
         physical_name: "proprietary_matched_buy_vol"
         data_domain: "Small Counter"
@@ -16201,8 +16213,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng mua khớp lệnh của khối tự doanh theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Matched Sell Volume"
         physical_name: "proprietary_matched_sell_vol"
         data_domain: "Small Counter"
@@ -16210,8 +16222,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Khối lượng bán khớp lệnh của khối tự doanh theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_vol"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Matched Buy Value"
         physical_name: "proprietary_matched_buy_val"
         data_domain: "Currency Amount"
@@ -16219,8 +16231,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị mua khớp lệnh của khối tự doanh theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Proprietary Matched Sell Value"
         physical_name: "proprietary_matched_sell_val"
         data_domain: "Currency Amount"
@@ -16228,8 +16240,8 @@ entities:
         nullable: false
         key: "DD"
         description: "Giá trị bán khớp lệnh của khối tự doanh theo chỉ số trong ngày"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.execution_val"
+        source_atomic_table: "securities_trade / index_constituent_snapshot"
+        source_atomic_column: "securities_trade / index_constituent_snapshot.execution_val / board_tp_code / .../ index_code"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -16239,6 +16251,7 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.src_stm_code"
+
   - id: "DTM-fct_hose_securities_trade"
     logical_name: "Fact HOSE Securities Trade"
     datamart_table: "fct_hose_securities_trade"
@@ -16666,6 +16679,7 @@ entities:
         description: "Số tham chiếu theo thứ tự đặt bán trong ngày."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_reference_sequence_nbr"
+
   - id: "DTM-fct_hnx_securities_trade"
     logical_name: "Fact HNX Securities Trade"
     datamart_table: "fct_hnx_securities_trade"
@@ -17003,6 +17017,7 @@ entities:
         description: "Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_foreign_investor_tp_code"
+
   - id: "DTM-fct_hnx_securities_order"
     logical_name: "Fact HNX Securities Order"
     datamart_table: "fct_hnx_securities_order"
@@ -17286,6 +17301,7 @@ entities:
         description: "Phân loại loại hình nhà đầu tư nước ngoài."
         source_atomic_table: "securities_order"
         source_atomic_column: "securities_order.foreign_investor_tp_code"
+
   - id: "DTM-fct_hose_securities_order"
     logical_name: "Fact HOSE Securities Order"
     datamart_table: "fct_hose_securities_order"
@@ -17704,6 +17720,7 @@ entities:
         description: "Mã định danh của lệnh đặt trước khi chỉnh sửa."
         source_atomic_table: "securities_order"
         source_atomic_column: "securities_order.original_order_code"
+
   - id: "DTM-investment_fund_dim"
     logical_name: "Investment Fund Dimension"
     datamart_table: "investment_fund_dim"
@@ -17724,8 +17741,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: investment_fund"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Investment Fund Code"
         physical_name: "investment_fund_code"
         data_domain: "Text"
@@ -17958,8 +17975,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -17967,8 +17984,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -17976,8 +17993,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -17985,8 +18002,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-fund_management_company_dim"
     logical_name: "Fund Management Company Dimension"
     datamart_table: "fund_management_company_dim"
@@ -18007,8 +18025,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: fund_management_company"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Fund Management Company Code"
         physical_name: "fmc_code"
         data_domain: "Text"
@@ -18421,8 +18439,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -18430,8 +18448,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -18439,8 +18457,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -18448,8 +18466,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-foreign_fund_management_organization_unit_dim"
     logical_name: "Foreign Fund Management Organization Unit Dimension"
     datamart_table: "foreign_fund_management_organization_unit_dim"
@@ -18470,8 +18489,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: foreign_fm_ou"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Foreign Fund Management Organization Unit Code"
         physical_name: "foreign_fund_management_organization_unit_code"
         data_domain: "Text"
@@ -18659,8 +18678,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -18668,8 +18687,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -18677,8 +18696,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -18686,8 +18705,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-custodian_bank_dim"
     logical_name: "Custodian Bank Dimension"
     datamart_table: "custodian_bank_dim"
@@ -18708,8 +18728,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: custodian_bank"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Custodian Bank Code"
         physical_name: "custodian_bank_code"
         data_domain: "Text"
@@ -18825,8 +18845,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -18834,8 +18854,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -18843,8 +18863,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -18852,8 +18872,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-fct_fund_management_company_snpst"
     logical_name: "Fact Fund Management Company Snapshot"
     datamart_table: "fct_fund_management_company_snpst"
@@ -18878,7 +18899,7 @@ entities:
         key: "FK"
         description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot thị trường)"
         source_atomic_table: "cdr_dt_dim"
-        source_atomic_column: ""
+        source_atomic_column: null
       - logical_name: "Investment Fund Count"
         physical_name: "investment_fund_count"
         data_domain: "Small Counter"
@@ -18942,6 +18963,7 @@ entities:
         description: "Tổng số ngân hàng giám sát tại kỳ (theo Câu lệnh tham khảo BA dòng 4: DEC_DATE <= kỳ báo cáo)"
         source_atomic_table: "custodian_bank"
         source_atomic_column: "custodian_bank.custodian_bank_id"
+
   - id: "DTM-opr_fund_management_company_profile"
     logical_name: "Fund Management Company Profile"
     datamart_table: "opr_fund_management_company_profile"
@@ -19036,8 +19058,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -19045,8 +19067,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -19054,8 +19076,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -19063,8 +19085,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-opr_fund_management_company_fund_list"
     logical_name: "Fund Management Company Fund List"
     datamart_table: "opr_fund_management_company_fund_list"
@@ -19139,8 +19162,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -19148,8 +19171,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -19157,8 +19180,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -19166,8 +19189,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-fct_investment_fund_count_snpst"
     logical_name: "Fact Investment Fund Count Snapshot"
     datamart_table: "fct_investment_fund_count_snpst"
@@ -19189,7 +19213,7 @@ entities:
         key: "FK"
         description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng)"
         source_atomic_table: "cdr_dt_dim"
-        source_atomic_column: ""
+        source_atomic_column: null
       - logical_name: "Fund Type Classification Dimension Id"
         physical_name: "fund_tp_cl_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -19217,6 +19241,7 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.src_stm_code"
+
   - id: "DTM-fct_investment_fund_ccq_snpst"
     logical_name: "Fact Investment Fund CCQ Snapshot"
     datamart_table: "fct_investment_fund_ccq_snpst"
@@ -19238,7 +19263,7 @@ entities:
         key: "FK"
         description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng)"
         source_atomic_table: "cdr_dt_dim"
-        source_atomic_column: ""
+        source_atomic_column: null
       - logical_name: "Fund Type Classification Dimension Id"
         physical_name: "fund_tp_cl_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -19266,6 +19291,7 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.src_stm_code"
+
   - id: "DTM-opr_investment_fund_profile"
     logical_name: "Investment Fund Profile"
     datamart_table: "opr_investment_fund_profile"
@@ -19336,7 +19362,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số lượng thành viên ban đại diện đang hoạt động — literal 'ban đại diện' tạm dùng nhãn HLD, CHƯA xác minh mã FMS_JOB_TYPE vật lý (TBD, cùng gap FMS.STATUS đã ghi ở Nhóm 1)"
+        description: "Số lượng thành viên ban đại diện của quỹ — literal 'ban đại diện' tạm dùng nhãn HLD (tên chức danh cl_fms_job_nm), CHƯA xác minh; Atomic không còn active_status_flag nên không lọc trạng thái"
         source_atomic_table: "investment_fund_representative_board_member"
         source_atomic_column: "investment_fund_representative_board_member.investment_fund_representative_board_member_id"
       - logical_name: "Manager Count"
@@ -19345,7 +19371,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số lượng người điều hành quỹ — literal 'ban điều hành' tạm dùng nhãn HLD, CHƯA xác minh mã FMS_JOB_TYPE vật lý (TBD)"
+        description: "Số lượng người điều hành quỹ — literal 'ban điều hành' tạm dùng nhãn HLD (tên chức danh cl_fms_job_nm qua fmc_employee_x_classification_fms_position_relationship), CHƯA xác minh"
         source_atomic_table: "fmc_employee_x_investment_fund_relationship"
         source_atomic_column: "fmc_employee_x_investment_fund_relationship.fmc_employee_id"
       - logical_name: "Outstanding Unit Quantity"
@@ -19373,8 +19399,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -19382,8 +19408,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -19391,8 +19417,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -19400,8 +19426,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-opr_investment_fund_representative_board_member_list"
     logical_name: "Investment Fund Representative Board Member List"
     datamart_table: "opr_investment_fund_representative_board_member_list"
@@ -19467,8 +19494,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -19476,8 +19503,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -19485,8 +19512,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -19494,8 +19521,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-opr_investment_fund_manager_list"
     logical_name: "Investment Fund Manager List"
     datamart_table: "opr_investment_fund_manager_list"
@@ -19553,8 +19581,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -19562,8 +19590,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -19571,8 +19599,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -19580,8 +19608,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-securities_distribution_agent_dim"
     logical_name: "Securities Distribution Agent Dimension"
     datamart_table: "securities_distribution_agent_dim"
@@ -19602,8 +19631,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: securities_distribution_agent"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Securities Distribution Agent Code"
         physical_name: "securities_distribution_agent_code"
         data_domain: "Text"
@@ -19692,8 +19721,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -19701,8 +19730,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -19710,8 +19739,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -19719,8 +19748,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-fct_fund_distribution_agent_snpst"
     logical_name: "Fact Fund Distribution Agent Snapshot"
     datamart_table: "fct_fund_distribution_agent_snpst"
@@ -19743,7 +19773,7 @@ entities:
         key: "FK"
         description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot quý/năm)"
         source_atomic_table: "cdr_dt_dim"
-        source_atomic_column: ""
+        source_atomic_column: null
       - logical_name: "Distribution Agent Count"
         physical_name: "distribution_agent_count"
         data_domain: "Small Counter"
@@ -19753,6 +19783,7 @@ entities:
         description: "Số lượng ĐLPP đang hoạt động, đã có GCN đăng ký hoạt động phân phối CCQ tính đến kỳ"
         source_atomic_table: "securities_distribution_agent"
         source_atomic_column: "securities_distribution_agent.securities_distribution_agent_id"
+
   - id: "DTM-opr_fund_distribution_agent_profile"
     logical_name: "Fund Distribution Agent Profile"
     datamart_table: "opr_fund_distribution_agent_profile"
@@ -19847,8 +19878,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -19856,8 +19887,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -19865,8 +19896,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -19874,8 +19905,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-fund_distribution_agent_dim"
     logical_name: "Fund Distribution Agent Dimension"
     datamart_table: "fund_distribution_agent_dim"
@@ -19896,8 +19928,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: fund_distribution_agent"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Fund Distribution Agent Code"
         physical_name: "fund_distribution_agent_code"
         data_domain: "Text"
@@ -19977,8 +20009,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -19986,8 +20018,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -19995,8 +20027,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -20004,8 +20036,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-opr_fund_distribution_agent_fund_list"
     logical_name: "Fund Distribution Agent Fund List"
     datamart_table: "opr_fund_distribution_agent_fund_list"
@@ -20063,8 +20096,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -20072,8 +20105,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -20081,8 +20114,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -20090,8 +20123,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-fct_foreign_fund_management_organization_unit_snpst"
     logical_name: "Fact Foreign Fund Management Organization Unit Snapshot"
     datamart_table: "fct_foreign_fund_management_organization_unit_snpst"
@@ -20113,7 +20147,7 @@ entities:
         key: "FK"
         description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng)"
         source_atomic_table: "cdr_dt_dim"
-        source_atomic_column: ""
+        source_atomic_column: null
       - logical_name: "Branch Count"
         physical_name: "branch_count"
         data_domain: "Small Counter"
@@ -20123,6 +20157,7 @@ entities:
         description: "Số Chi nhánh CTQLQ nước ngoài tại VN (branch_tp_code = BRANCH), hiệu lực tại kỳ"
         source_atomic_table: "foreign_fm_ou"
         source_atomic_column: "foreign_fm_ou.foreign_fm_ou_id"
+
   - id: "DTM-foreign_fund_management_organization_unit_staff_dim"
     logical_name: "Foreign Fund Management Organization Unit Staff Dimension"
     datamart_table: "foreign_fund_management_organization_unit_staff_dim"
@@ -20143,8 +20178,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: foreign_fm_ou_staff"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Foreign Fund Management Organization Unit Staff Code"
         physical_name: "foreign_fund_management_organization_unit_staff_code"
         data_domain: "Text"
@@ -20269,8 +20304,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -20278,8 +20313,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -20287,8 +20322,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -20296,8 +20331,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-opr_foreign_fund_management_organization_unit_profile"
     logical_name: "Foreign Fund Management Organization Unit Profile"
     datamart_table: "opr_foreign_fund_management_organization_unit_profile"
@@ -20364,8 +20400,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -20373,8 +20409,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -20382,8 +20418,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -20391,8 +20427,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-opr_fund_management_report_sheet_list"
     logical_name: "Fund Management Report Sheet List"
     datamart_table: "opr_fund_management_report_sheet_list"
@@ -20486,8 +20523,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -20495,8 +20532,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -20504,8 +20541,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -20513,8 +20550,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-opr_public_company_insider_ownership"
     logical_name: "Operational Public Company Insider Ownership"
     datamart_table: "opr_public_company_insider_ownership"
@@ -20639,8 +20677,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -20648,8 +20686,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -20657,8 +20695,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -20666,9 +20704,8 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
-
+        source_atomic_table: null
+        source_atomic_column: null
 
   - id: "DTM-opr_security_index_constituent_ref"
     logical_name: "Operational Security Index Constituent Reference"
@@ -20682,6 +20719,9 @@ entities:
       - "index_constituent_snapshot"
       - "security_trading_snapshot"
       - "market_index_snapshot"
+      - "public_company"
+      - "securities_company"
+      - "cl_business_line"
     modules_using:
       - "GSTT"
     columns:
@@ -20703,15 +20743,24 @@ entities:
         description: "PK (2/2) — Mã chứng khoán thành viên rổ (symbol). Cùng khóa JOIN với security_trading_snpst_dim.symbol và fct_index_constituent_snpst — GSTT dùng làm khóa lookup."
         source_atomic_table: "index_constituent_snapshot"
         source_atomic_column: "index_constituent_snapshot.symbol"
-      - logical_name: "ISIN Code"
-        physical_name: "isin_code"
+      - logical_name: "Index Constituent Snapshot Code"
+        physical_name: "index_constituent_snpst_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "GUID `id` của dòng thành viên rổ ở ngày as-of (BK nguồn JAD_CSIDXINFOR.ID). Chỉ để truy vết về Atomic/nguồn — KHÔNG phải khóa Star Schema; PK nghiệp vụ vẫn là (index_code, symbol)."
+        source_atomic_table: "index_constituent_snapshot"
+        source_atomic_column: "index_constituent_snapshot.index_constituent_snpst_code"
+      - logical_name: "Index Id"
+        physical_name: "index_id"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã quốc tế (ISIN) của mã chứng khoán thành viên rổ — lấy từ bản ghi mới nhất của symbol trong Security Trading Snapshot (cùng quy tắc security_trading_snpst_dim.isin_code). NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.isin_code"
+        description: "ID nội bộ của chỉ số (JAD_CSIDXINFOR.INDEXID)."
+        source_atomic_table: "index_constituent_snapshot"
+        source_atomic_column: "index_constituent_snapshot.index_id"
       - logical_name: "Index Name"
         physical_name: "index_nm"
         data_domain: "Text"
@@ -20727,7 +20776,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã sàn của mã chứng khoán trong rổ (Floor Code của Index Constituent Snapshot) tại ngày as-of."
+        description: "Mã sàn của CHỈ SỐ (Floor Code của Index Constituent Snapshot — nguồn JAD_CSIDXINFOR.FLOORCODE: 02-HNX, 04-UPCOM, 10-HOSE) tại ngày as-of. KHÁC `stock_floor_code` (sàn của mã chứng khoán, nguồn JAD_STOCKINFOR.FLOORCODE)."
         source_atomic_table: "index_constituent_snapshot"
         source_atomic_column: "index_constituent_snapshot.floor_code"
       - logical_name: "Add Date"
@@ -20745,9 +20794,72 @@ entities:
         data_type: "date"
         nullable: false
         key: ""
-        description: "Ngày giao dịch mới nhất của rổ chỉ số — mốc hiệu lực của danh sách thành viên (current-state). Lịch sử thành viên theo ngày tra fct_index_constituent_snpst."
+        description: "Ngày giao dịch (TradingDate) mới nhất của rổ chỉ số — mốc hiệu lực của danh sách thành viên (current-state). Lịch sử thành viên theo ngày tra fct_index_constituent_snpst."
         source_atomic_table: "index_constituent_snapshot"
         source_atomic_column: "index_constituent_snapshot.trading_dt"
+      - logical_name: "ISIN Code"
+        physical_name: "isin_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Mã quốc tế (ISIN) của mã chứng khoán thành viên rổ — lấy từ bản ghi mới nhất của symbol trong Security Trading Snapshot (cùng quy tắc security_trading_snpst_dim.isin_code). NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.isin_code"
+      - logical_name: "Stock Type Code"
+        physical_name: "stock_tp_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Loại chứng khoán THÔ theo sàn (scheme MDDS_STOCK_TYPE) — HNX/UPCOM: 1 Trái phiếu, 2 Cổ phiếu, 3 CCQ, 4 Phái sinh (HĐTL), 5 Chứng quyền, 6 ETF; HOSE: 1 Trái phiếu (kể cả B/D), 2 Cổ phiếu, 3 CCQ/ETF (tách theo Fund Type), 4 Chứng quyền. Dùng phân biệt mã CK thuộc tab nào trên bảng giá; lấy từ bản ghi mới nhất của symbol trong Security Trading Snapshot (cùng quy tắc isin_code). NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.stock_tp_code"
+      - logical_name: "Stock Floor Code"
+        physical_name: "stock_floor_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Mã sàn của MÃ CHỨNG KHOÁN (02-HNX, 04-UPCOM, 10-HOSE, 03-FDS) — lấy từ bản ghi mới nhất của symbol trong Security Trading Snapshot. Khác `floor_code` (sàn của chỉ số). NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.floor_code"
+      - logical_name: "Derivative Product Name"
+        physical_name: "derivative_product_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Loại sản phẩm phái sinh (theo SQL BA): chỉ có giá trị khi sàn của mã CK ∈ {02,04,03}; = 'HĐTL' (nếu Stock Type = 4) nối với chứng khoán cơ sở (underlying_symbol; GB05/GB10 gộp thành 'TPCP'), VD HĐTLVN30, HĐTLTPCP. Điều kiện của BA chỉ xét sàn, không xét Stock Type cho phần underlying — mã không phải HĐTL nhưng có underlying_symbol trên sàn 02/04/03 vẫn ra underlying. NULL nếu rỗng."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.floor_code / stock_tp_code / underlying_symbol"
+      - logical_name: "Security Class Code"
+        physical_name: "security_class_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Mã phân loại chứng khoán (Ma_phan_loai_ma_ck): TRAI_PHIEU / CO_PHIEU / ETF / CHUNG_CHI_QUY / CHUNG_QUYEN / PHAI_SINH / KHAC — dẫn xuất theo sàn mã CK + Stock Type (+ Fund Type cho HOSE), CÙNG quy tắc và giá trị với security_trading_snpst_dim.stock_tp_nm. NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.floor_code / stock_tp_code / fund_tp_code"
+      - logical_name: "Industry Code"
+        physical_name: "industry_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Mã ngành cấp 1 (INDUSTRY_CD) của mã chứng khoán — cùng quy tắc K_GSTT_2 'Ngành' của dashboard: IDS (Public Company; chứng quyền dùng underlying_symbol, trái phiếu dùng 3 ký tự đầu có bộ lọc loại trừ nợ công); mã là CTCK đại chúng không có trong IDS → ngành IDS mã 07000. Lấy theo dữ liệu IDS hiện hành tại ngày ETL (current-state), không theo ds_snpst_dt của ngày giao dịch. NULL nếu không map được."
+        source_atomic_table: "public_company"
+        source_atomic_column: "public_company.business_line_level_1_code"
+      - logical_name: "Industry Name"
+        physical_name: "industry_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Tên ngành cấp 1 (NNKD / INDUSTRY_NAME) của mã chứng khoán — cùng quy tắc và nguồn với Industry Code (K_GSTT_2); tên rỗng coi như NULL."
+        source_atomic_table: "cl_business_line"
+        source_atomic_column: "cl_business_line.cl_business_line_nm"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -20764,8 +20876,8 @@ entities:
         nullable: false
         key: ""
         description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Insert Date"
         physical_name: "ds_rcrd_isrt_dt"
         data_domain: "Date"
@@ -20773,8 +20885,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Update Date"
         physical_name: "ds_rcrd_udt_dt"
         data_domain: "Date"
@@ -20782,8 +20894,8 @@ entities:
         nullable: false
         key: ""
         description: "Ngày update bản ghi gần nhất — audit field SCD4A"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "ETL Process Timestamp"
         physical_name: "ds_etl_pcs_tms"
         data_domain: "Timestamp"
@@ -20791,8 +20903,9 @@ entities:
         nullable: false
         key: ""
         description: "Timestamp xử lý ETL — audit field"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-fct_securities_company_balance_snpst"
     logical_name: "Fact Securities Company Balance Snapshot"
     datamart_table: "fct_securities_company_balance_snpst"
@@ -20826,7 +20939,7 @@ entities:
         key: "FK"
         description: "FK to Securities Company Dimension (reuse QLKD) — CTCK niêm yết nối IDS qua mã chứng khoán (securities_company.securities_code = public_company.equity_ticker_symbol)"
         source_atomic_table: "securities_company / public_company"
-        source_atomic_column: "securities_company.securities_code / public_company.equity_ticker_symbol"
+        source_atomic_column: "securities_company / public_company.securities_code / equity_ticker_symbol"
       - logical_name: "Report Year"
         physical_name: "rpt_year"
         data_domain: "Small Counter"
@@ -20852,8 +20965,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Tổng nợ phải trả của CTCK niêm yết tại quý báo cáo (BCDKT, row_desc 300 DN/BH – 400 TD, col_desc 1) — cùng cách BA dòng 339 Nhóm 21 (O_PTTT_32)"
-        source_atomic_table: "pc_report_submission / fr_value"
-        source_atomic_column: "fr_value.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
       - logical_name: "Owner Equity Amount"
         physical_name: "owner_equity_amt"
         data_domain: "Currency Amount"
@@ -20861,8 +20974,8 @@ entities:
         nullable: true
         key: "DD"
         description: "VCSH của CTCK niêm yết tại quý báo cáo (BCDKT, row_desc 400 DN/BH – 500 TD, col_desc 1) — cùng nguồn IDS với nợ phải trả để D/E cùng tập CTCK"
-        source_atomic_table: "pc_report_submission / fr_value"
-        source_atomic_column: "fr_value.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Text"
@@ -20872,6 +20985,7 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu"
         source_atomic_table: "pc_report_submission"
         source_atomic_column: "pc_report_submission.src_stm_code"
+
   - id: "DTM-fct_securities_company_safety_snpst"
     logical_name: "Fact Securities Company Safety Snapshot"
     datamart_table: "fct_securities_company_safety_snpst"
@@ -20932,7 +21046,7 @@ entities:
         key: "DD"
         description: "Dư nợ margin của CTCK tại tháng báo cáo (VND; BA chia 1e9 khi hiển thị tỷ VND) — ô TS024, BCTHHD_CTCK, sheet II.8 (K_PTTT_58/252)"
         source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report"
-        source_atomic_column: "sc_report_input_value.item_val"
+        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report.item_val"
       - logical_name: "Owner Equity Amount"
         physical_name: "owner_equity_amt"
         data_domain: "Currency Amount"
@@ -20941,7 +21055,7 @@ entities:
         key: "DD"
         description: "VCSH của CTCK — số dư thời điểm của 1 báo cáo được chọn tính đến cuối tháng snapshot (K_PTTT_197/251): BCTCHN ô TS359; BCTCRL (chỉ khi không có BCTCHN cùng kỳ) COALESCE(NULLIF(TS223,0), TS221)"
         source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report"
-        source_atomic_column: "sc_report_input_value.item_val"
+        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report.item_val"
       - logical_name: "Margin To Equity Ratio"
         physical_name: "margin_to_equity_ratio"
         data_domain: "Percentage"
@@ -20959,7 +21073,7 @@ entities:
         key: "DD"
         description: "Tỷ lệ vốn khả dụng của CTCK (%) — ô TS006 'Tỷ lệ vốn khả dụng (6=5/4)', BCTLAT, sheet 06H08 (K_PTTT_202); không chia đơn vị. Mức xếp hạng ATTC (>150 Cao / 120–150 Trung bình / <120 Thấp) tính ở presentation layer, không lưu cột"
         source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report"
-        source_atomic_column: "sc_report_input_value.item_val"
+        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report.item_val"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -20969,6 +21083,7 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu"
         source_atomic_table: "sc_periodic_report"
         source_atomic_column: "sc_periodic_report.src_stm_code"
+
   - id: "DTM-foreign_investor_report_structure_dim"
     logical_name: "Foreign Investor Report Structure Dimension"
     datamart_table: "foreign_investor_report_structure_dim"
@@ -20990,8 +21105,8 @@ entities:
         nullable: false
         key: "PK"
         description: "PK — Driving: fir_structure"
-        source_atomic_table: ""
-        source_atomic_column: ""
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Foreign Investor Report Structure Code"
         physical_name: "fir_structure_code"
         data_domain: "Text"
@@ -21163,6 +21278,7 @@ entities:
         description: "Mã hệ thống nguồn"
         source_atomic_table: "fir_structure"
         source_atomic_column: "fir_structure.src_stm_code"
+
   - id: "DTM-fct_foreign_investor_report_value"
     logical_name: "Fact Foreign Investor Report Value"
     datamart_table: "fct_foreign_investor_report_value"
@@ -21322,6 +21438,7 @@ entities:
         description: "Mã hệ thống nguồn"
         source_atomic_table: "fir_value"
         source_atomic_column: "fir_value.src_stm_code"
+
   - id: "DTM-fct_foreign_investor_capital_flow_snpst"
     logical_name: "Fact Foreign Investor Capital Flow Snapshot"
     datamart_table: "fct_foreign_investor_capital_flow_snpst"
@@ -21390,7 +21507,7 @@ entities:
         key: "DD"
         description: "Quốc tịch NĐTNN (cột 'Quốc tịch' — PLIV-TT51, báo cáo IBOU9 sheet I)"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Investor Name"
         physical_name: "investor_nm"
         data_domain: "Text"
@@ -21399,7 +21516,7 @@ entities:
         key: "DD"
         description: "Tên nhà đầu tư (cột 'Tên nhà đầu tư')"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Capital Flow Net Value"
         physical_name: "capital_flow_net_val"
         data_domain: "Currency Amount"
@@ -21408,7 +21525,7 @@ entities:
         key: "DD"
         description: "Giá trị dòng vốn vào ròng trong kỳ báo cáo (+/-), đơn vị USD (cột 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)')"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -21418,6 +21535,7 @@ entities:
         description: "Mã hệ thống nguồn"
         source_atomic_table: "fir_value"
         source_atomic_column: "fir_value.src_stm_code"
+
   - id: "DTM-fct_foreign_investor_portfolio_report_snpst"
     logical_name: "Fact Foreign Investor Portfolio Report Snapshot"
     datamart_table: "fct_foreign_investor_portfolio_report_snpst"
@@ -21504,7 +21622,7 @@ entities:
         key: "DD"
         description: "Quốc tịch (cột 'Quốc tịch')"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Investor Type Name"
         physical_name: "investor_type_nm"
         data_domain: "Text"
@@ -21513,7 +21631,7 @@ entities:
         key: "DD"
         description: "Loại hình đối với tổ chức (cột 'Loại hình đối với tổ chức')"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Investor Name"
         physical_name: "investor_nm"
         data_domain: "Text"
@@ -21522,7 +21640,7 @@ entities:
         key: "DD"
         description: "Tên khách hàng (cột 'Tên khách hàng')"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Bill Value"
         physical_name: "bill_val"
         data_domain: "Currency Amount"
@@ -21531,7 +21649,7 @@ entities:
         key: "DD"
         description: "Giá trị tín phiếu (cột 'Tín phiếu > Giá trị')"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Bond Value"
         physical_name: "bond_val"
         data_domain: "Currency Amount"
@@ -21540,7 +21658,7 @@ entities:
         key: "DD"
         description: "Giá trị trái phiếu = tổng 3 kỳ hạn còn lại (<12 tháng, 12–24 tháng, >24 tháng)"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Listed Equity Fund Value"
         physical_name: "listed_equity_fund_val"
         data_domain: "Currency Amount"
@@ -21549,7 +21667,7 @@ entities:
         key: "DD"
         description: "Giá trị cổ phiếu niêm yết, chứng chỉ quỹ niêm yết"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Upcom Equity Value"
         physical_name: "upcom_equity_val"
         data_domain: "Currency Amount"
@@ -21558,7 +21676,7 @@ entities:
         key: "DD"
         description: "Giá trị cổ phiếu công ty đại chúng đăng ký giao dịch (UPCoM)"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Capital Contribution Value"
         physical_name: "capital_contribution_val"
         data_domain: "Currency Amount"
@@ -21567,7 +21685,7 @@ entities:
         key: "DD"
         description: "Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Cash Equivalent Value"
         physical_name: "cash_equivalent_val"
         data_domain: "Currency Amount"
@@ -21576,7 +21694,7 @@ entities:
         key: "DD"
         description: "Giá trị tiền và các khoản tương đương tiền"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Total Portfolio Value"
         physical_name: "total_portfolio_val"
         data_domain: "Currency Amount"
@@ -21585,7 +21703,7 @@ entities:
         key: "DD"
         description: "Tổng giá trị danh mục (cột 'Tổng giá trị danh mục > Giá trị') — không gồm dòng tổng (ETL Fact lọc total_row_ind = 0)"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
-        source_atomic_column: "fir_value.val_raw"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Individual Indicator"
         physical_name: "individual_ind"
         data_domain: "Small Counter"
