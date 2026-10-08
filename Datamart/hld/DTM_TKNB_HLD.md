@@ -272,7 +272,7 @@ flowchart LR
 ```
 
 > Nhóm 13 (TTLK01) 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
-> Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) cũng 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
+> Nhóm 19 (BM030b_MSS) cũng 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING). **[SỬA 2026-10-08]** Nhóm 21 (BM030d_MSS) không còn PENDING — Atomic bổ sung `Internal Statistical Report` (ISS.FLAT_REPORT), xem Cụm 21.
 
 ##### Cụm 14: TTLK10 — Danh sách chứng quyền đang lưu hành
 
@@ -429,6 +429,25 @@ flowchart LR
     end
     S1 --> A1
     S2 --> A1
+    A1 --> G1
+```
+
+---
+
+##### Cụm 21: BM030d_MSS — Thống kê giao dịch thị trường trái phiếu doanh nghiệp riêng lẻ (HNX09, nguồn ISS)
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["ISS.FLAT_REPORT (ods.uat_iss_ods.flat_report)"]
+    end
+    subgraph SIL["Atomic"]
+        A1["Internal Statistical Report"]
+    end
+    subgraph GOLD["Datamart"]
+        G1["bm030dmss_otc_corp_bond_trading_rpt"]
+    end
+    S1 --> A1
     A1 --> G1
 ```
 
@@ -2387,36 +2406,29 @@ flowchart LR
 
 #### Nhóm 21 - Thống kê giao dịch thị trường trái phiếu doanh nghiệp riêng lẻ (BM030d_MSS)
 
-**Phân loại:** Báo cáo thống kê định kỳ giao dịch TPDNRL — Giá trị TPDNRL đang lưu hành + GD NĐTNN (Mua/Bán) + GD tự doanh (Mua/Bán).
+**Phân loại:** Báo cáo thống kê định kỳ giao dịch TPDN riêng lẻ (TPDNRL) toàn thị trường theo ngày — Giá trị giao dịch TPDNRL + GD NĐTNN (Mua, Bán) + GD tự doanh (Mua, Bán). Dữ liệu là báo cáo HNX09 do Sở nộp lên hệ thống ISS (thống kê nội bộ UBCKNN), không phải sổ lệnh/khớp.
 
-**Atomic:** Không áp dụng — toàn bộ 7/7 dòng BA có nguồn từ biểu mẫu, không phải Atomic entity thật:
-- Dòng Thời gian + Giá trị TPDNRL: nguồn `HNX.BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành` — biểu mẫu, cùng gap đã ghi nhận ở Nhóm 9 (HNX12, module TKNB dùng BM33/BM34 tương tự nhóm biểu mẫu TPDNRL của HNX).
-- Dòng GD NĐTNN Mua/Bán: nguồn `ISS.FACT_REPORT_DATA`/`ISS.INPUT_REPORT_*` (báo cáo định kỳ dạng JSON theo template — pattern "EAV báo cáo định kỳ", `loai_du_lieu="Chưa có CSDL - Map biểu mẫu"`) hoặc raw `HNX.BM 11_HNX09`. Grep xác nhận không có Atomic entity cho hệ thống `ISS` (2 match tìm được là false positive: `SCMS.BANK.INPUT_REPORT_DATA` chỉ là 1 field trùng tên chuỗi, và `SCMS.FORM_REPORT` là hệ thống SCMS khác, không phải ISS).
-- Dòng GD tự doanh Mua/Bán: nguồn `HNX.BM 11_HNX09_Báo cáo về giao dịch TPDNRL qua hệ thống giao dịch của SGDCK Hà Nội` — cùng biểu mẫu BM11 đã PENDING ở Nhóm 17 (K_TKNB_934, K_TKNB_948).
+**Atomic:**
+- `Internal Statistical Report` (`internal_statistical_report`, nguồn `ISS.FLAT_REPORT` — ODS `uat_iss_ods.flat_report`; **[MỚI 2026-10-08]** Atomic bổ sung entity cell-level 1 ô × 1 lần nộp × 1 kỳ báo cáo, design_status approved) — READY. Trước đây HLD ghi "không có Atomic entity cho hệ thống ISS" (`ISS.FACT_REPORT_DATA`/`INPUT_REPORT_*`) và PENDING toàn bộ; BA đã đổi Bảng nguồn 7/7 dòng sang `uat_iss_ods.flat_report` (báo cáo HNX09).
+- Điều kiện chung (BA dòng 1451): `rpt_code = 'HNX09'`, `dt_tp_code = 'DAILY'` (báo cáo theo ngày), `submission_status_code IN ('SUBMITTED','LATE_SUBMITTED')`, `submit_src_code = 'ICP'` (dữ liệu nguồn từ Sở).
+- Cách đọc chỉ tiêu: mỗi chỉ tiêu = tổng `field_val` (ép `DECIMAL(38,2)`) của các ô có `row_path` đúng chuỗi BA; kỳ báo cáo = `origin_dt_val` (chuỗi `dd/MM/yyyy`, parse sang `report_period_dt`). 5 chỉ tiêu: `GIÁ TRỊ GIAO DỊCH`, `…NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ MUA/BÁN`, `…CỦA KHỐI TỰ DOANH-GIÁ TRỊ MUA/BÁN`.
+- Không dùng phương án "hoặc lấy từ raw HNX BM 11_HNX09" (BA Note dòng 1453/1454) — cùng báo cáo HNX09 nhưng chỉ cần 1 nguồn; chọn `flat_report` vì BA viết SQL tham khảo.
 
 **Mockup:** Báo cáo BM030d_MSS — user cung cấp template thật, cấu trúc: Thời gian × Giá trị TPDNRL × GD NĐTNN (Mua, Bán) × GD tự doanh (Mua, Bán) — khớp đúng 7 dòng BA (2 dòng Thời gian lặp ý nghĩa + 5 chỉ tiêu).
 
-**Kết luận: PENDING TOÀN BỘ báo cáo** — 100% KPI (7/7) không có nguồn CSDL sẵn sàng. Không thiết kế bảng vật lý/erDiagram/Star Schema/Bảng grain ở giai đoạn này (theo checklist Nhóm 100% PENDING).
+**[SỬA 2026-10-08, Atomic bổ sung `Internal Statistical Report`]** Nhóm 21 chuyển từ PENDING 100% sang READY 7/7. Bảng phẳng EAV `bm030dmss_otc_corp_bond_trading_rpt` (cùng cấu trúc với `bm030cmss_corp_bond_trading_rpt`, `bm031cmss_*`), nguồn Atomic duy nhất `Internal Statistical Report`. Bỏ placeholder cũ `mss030d_otc_corp_bond_trading_rpt` và bảng mapping nguồn "Atomic placeholder" (HNX.BM29/BM11 — không còn dùng cho Nhóm này).
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_1046 | Kỳ báo cáo | - | Chiều | TBD — chờ Atomic | [STT=1] Chiều thời gian, mô tả BA "Kỳ báo cáo: Từ ngày... đến ngày...". Map biểu mẫu HNX.BM29. | PENDING |
-| K_TKNB_1047 | Thời gian (ngày giao dịch) | - | Chiều | TBD — chờ Atomic | [STT=2] BA lặp lại "Thời gian" ở dòng riêng (Phân loại=Chỉ tiêu cơ sở), mô tả "Ngày giao dịch" — cùng ý nghĩa Kỳ báo cáo, giữ đúng 2 dòng BA gốc để khớp đối chiếu 1-1. Map biểu mẫu HNX.BM29. | PENDING |
-| K_TKNB_1048 | Giá trị TPDNRL | Tỷ đồng | Cơ sở | TBD — chờ Atomic | [STT=3] Công thức BA: `=Tổng (KL phát hành - Khối lượng còn lưu hành)* Mệnh giá`. Nguồn HNX.BM29 — biểu mẫu chưa có CSDL. Atomic cần bổ sung: entity "OTC Corporate Bond Registration Scale" từ HNX.BM29 (cùng gap đã đề xuất ở Nhóm 9). Mart dự kiến: mss030d_otc_corp_bond_trading_rpt. | PENDING |
-| K_TKNB_1049 | GD NĐTNN Mua | Tỷ đồng | Cơ sở | TBD — chờ Atomic | [STT=4] Nguồn `ISS.FACT_REPORT_DATA` (report_code='HNX09', sheet='Sheet1', hàng "Giá trị giao dịch NĐTNN > Giá trị mua") hoặc raw HNX.BM11. Pattern EAV báo cáo định kỳ — không có Atomic entity cho hệ thống ISS. Atomic cần bổ sung: entity chuẩn hóa báo cáo định kỳ HNX09 (thay EAV report_data JSON). Mart dự kiến: mss030d_otc_corp_bond_trading_rpt. | PENDING |
-| K_TKNB_1050 | GD NĐTNN Bán | Tỷ đồng | Cơ sở | TBD — chờ Atomic | [STT=5] Nguồn `ISS.FACT_REPORT_DATA` (report_code='HNX09', hàng "Giá trị giao dịch NĐTNN > Giá trị bán") hoặc raw HNX.BM11. Cùng gap K_TKNB_1049. Mart dự kiến: mss030d_otc_corp_bond_trading_rpt. | PENDING |
-| K_TKNB_1051 | GD tự doanh Mua | Tỷ đồng | Cơ sở | TBD — chờ Atomic | [STT=6] Nguồn `HNX.BM 11_HNX09` trực tiếp, cột "Giá trị" WHERE "Chỉ tiêu"="Giá trị giao dịch của khối tự doanh - Giá trị mua". Biểu mẫu chưa có CSDL — cùng gap K_TKNB_934/948 (Nhóm 17). Mart dự kiến: mss030d_otc_corp_bond_trading_rpt. | PENDING |
-| K_TKNB_1052 | GD tự doanh Bán | Tỷ đồng | Cơ sở | TBD — chờ Atomic | [STT=7] Nguồn `HNX.BM 11_HNX09` trực tiếp, cột "Giá trị" WHERE "Chỉ tiêu"="Giá trị giao dịch của khối tự doanh - Giá trị bán". Cùng gap K_TKNB_1051. Mart dự kiến: mss030d_otc_corp_bond_trading_rpt. | PENDING |
-
-**Bảng mapping nguồn (Atomic Placeholder):**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| Kỳ báo cáo, Thời gian, Giá trị TPDNRL | HNX.BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành | OTC Corporate Bond Registration Scale | mss030d_otc_corp_bond_trading_rpt |
-| GD NĐTNN Mua/Bán | ISS.FACT_REPORT_DATA (report_code='HNX09') hoặc raw HNX.BM 11_HNX09 | Chuẩn hóa báo cáo định kỳ HNX09 (thay EAV report_data) | mss030d_otc_corp_bond_trading_rpt |
-| GD tự doanh Mua/Bán | HNX.BM 11_HNX09_Báo cáo về giao dịch TPDNRL qua hệ thống giao dịch của SGDCK Hà Nội | Chuẩn hóa báo cáo định kỳ HNX09 (cùng gap Nhóm 17, K_TKNB_934/948) | mss030d_otc_corp_bond_trading_rpt |
+| K_TKNB_1046 | Thời gian (kỳ báo cáo) | - | Chiều | `report_period_dt` = `to_date(origin_dt_val,'dd/MM/yyyy')` (Internal Statistical Report) | [STT=1, item_code=`dim_trade_date_mss030d`] Chiều thời gian, mô tả BA "Kỳ báo cáo: Từ ngày... đến ngày..." — `report_period_dt` = `to_date(origin_dt_val,'dd/MM/yyyy')`; khoảng ngày do BI lọc (BA dòng 1450 — `origin_date_value >= from_date AND <= to_date`). | READY |
+| K_TKNB_1047 | Thời gian | - | Chiều | `report_period_dt` = `to_date(origin_dt_val,'dd/MM/yyyy')` (Internal Statistical Report) | [STT=2, item_code=`dim_trade_date_mss030d`] BA lặp lại "Thời gian" ở dòng riêng (Phân loại=Chỉ tiêu cơ sở), mô tả "Ngày giao dịch" — cùng ý nghĩa K_TKNB_1046, giữ đúng 2 dòng BA gốc để khớp đối chiếu 1-1. | READY |
+| K_TKNB_1048 | Giá trị TPDNRL | Tỷ đồng | Cơ sở | `SUM(CAST(field_val AS DECIMAL(38,2)))` FROM `internal_statistical_report` WHERE `rpt_code = 'HNX09'` AND `dt_tp_code = 'DAILY'` AND `submission_status_code IN ('SUBMITTED','LATE_SUBMITTED')` AND `submit_src_code = 'ICP'` AND `row_path = 'GIÁ TRỊ GIAO DỊCH'` GROUP BY `to_date(origin_dt_val,'dd/MM/yyyy')` | [STT=3, item_code=`otc_corp_bond_trading_value_mss030d`] Nguồn Atomic `Internal Statistical Report` (ISS.FLAT_REPORT, báo cáo HNX09) — tra ô theo `row_path` = 'GIÁ TRỊ GIAO DỊCH'. Atomic READY. Xem Section 5 mục 36 (đơn vị, trùng row_path). | READY |
+| K_TKNB_1049 | GD NĐTNN Mua | Tỷ đồng | Cơ sở | `SUM(CAST(field_val AS DECIMAL(38,2)))` FROM `internal_statistical_report` WHERE `rpt_code = 'HNX09'` AND `dt_tp_code = 'DAILY'` AND `submission_status_code IN ('SUBMITTED','LATE_SUBMITTED')` AND `submit_src_code = 'ICP'` AND `row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ MUA'` GROUP BY `to_date(origin_dt_val,'dd/MM/yyyy')` | [STT=4, item_code=`foreign_investor_buy_value_mss030d`] Nguồn Atomic `Internal Statistical Report` (ISS.FLAT_REPORT, báo cáo HNX09) — tra ô theo `row_path` = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ MUA'. Atomic READY. Xem Section 5 mục 36 (đơn vị, trùng row_path). | READY |
+| K_TKNB_1050 | GD NĐTNN Bán | Tỷ đồng | Cơ sở | `SUM(CAST(field_val AS DECIMAL(38,2)))` FROM `internal_statistical_report` WHERE `rpt_code = 'HNX09'` AND `dt_tp_code = 'DAILY'` AND `submission_status_code IN ('SUBMITTED','LATE_SUBMITTED')` AND `submit_src_code = 'ICP'` AND `row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ BÁN'` GROUP BY `to_date(origin_dt_val,'dd/MM/yyyy')` | [STT=5, item_code=`foreign_investor_sell_value_mss030d`] Nguồn Atomic `Internal Statistical Report` (ISS.FLAT_REPORT, báo cáo HNX09) — tra ô theo `row_path` = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ BÁN'. Atomic READY. Xem Section 5 mục 36 (đơn vị, trùng row_path). | READY |
+| K_TKNB_1051 | GD tự doanh Mua | Tỷ đồng | Cơ sở | `SUM(CAST(field_val AS DECIMAL(38,2)))` FROM `internal_statistical_report` WHERE `rpt_code = 'HNX09'` AND `dt_tp_code = 'DAILY'` AND `submission_status_code IN ('SUBMITTED','LATE_SUBMITTED')` AND `submit_src_code = 'ICP'` AND `row_path = 'GIÁ TRỊ GIAO DỊCH CỦA KHỐI TỰ DOANH-GIÁ TRỊ MUA'` GROUP BY `to_date(origin_dt_val,'dd/MM/yyyy')` | [STT=6, item_code=`proprietary_buy_value_mss030d`] Nguồn Atomic `Internal Statistical Report` (ISS.FLAT_REPORT, báo cáo HNX09) — tra ô theo `row_path` = 'GIÁ TRỊ GIAO DỊCH CỦA KHỐI TỰ DOANH-GIÁ TRỊ MUA'. Atomic READY. Xem Section 5 mục 36 (đơn vị, trùng row_path). | READY |
+| K_TKNB_1052 | GD tự doanh Bán | Tỷ đồng | Cơ sở | `SUM(CAST(field_val AS DECIMAL(38,2)))` FROM `internal_statistical_report` WHERE `rpt_code = 'HNX09'` AND `dt_tp_code = 'DAILY'` AND `submission_status_code IN ('SUBMITTED','LATE_SUBMITTED')` AND `submit_src_code = 'ICP'` AND `row_path = 'GIÁ TRỊ GIAO DỊCH CỦA KHỐI TỰ DOANH-GIÁ TRỊ BÁN'` GROUP BY `to_date(origin_dt_val,'dd/MM/yyyy')` | [STT=7, item_code=`proprietary_sell_value_mss030d`] Nguồn Atomic `Internal Statistical Report` (ISS.FLAT_REPORT, báo cáo HNX09) — tra ô theo `row_path` = 'GIÁ TRỊ GIAO DỊCH CỦA KHỐI TỰ DOANH-GIÁ TRỊ BÁN'. Atomic READY. Xem Section 5 mục 36 (đơn vị, trùng row_path). | READY |
 
 #### Nhóm 22 - Thống kê giao dịch thị trường chứng chỉ quỹ, ETF và CW (BM030e_MSS)
 
@@ -3038,6 +3050,7 @@ graph TB
     OpTK04BTC["Market Summary Report (TK-04.BTC)"]:::oper
     OpNienGiam["Market Annual Report (Niên giám)"]:::oper
     OpMSS030c["Corp Bond Trading Report (BM030c)"]:::oper
+    OpMSS030d["OTC Corp Bond Trading Report (BM030d)"]:::oper
     OpMSS030e["Fund Cert ETF CW Trading Report (BM030e)"]:::oper
     OpMSS031b["Gov Bond Foreign Proprietary Trading Report (BM031b)"]:::oper
     OpMSS031c["Corp Bond Foreign Proprietary Trading Report (BM031c)"]:::oper
@@ -3062,7 +3075,7 @@ graph TB
     DimSecTrading --> FactDerivDetail
 ```
 
-> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 13 (TTLK01), Nhóm 19 (BM030b_MSS) và Nhóm 21 (BM030d_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ. **[MỚI 2026-10-05]** Nhóm 8 (HNX11) không còn PENDING — thiết kế Star Schema dùng chung `Private Corporate Bond Dimension` với Nhóm 9 (graph TB bổ sung `Private Corporate Bond Dimension` + 2 Fact của Nhóm 8/9 — trước đây Nhóm 9 chưa có trong Section 3).
+> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 13 (TTLK01) và Nhóm 19 (BM030b_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ. **[SỬA 2026-10-08]** Nhóm 21 (BM030d_MSS) không còn PENDING — thêm Operational `OTC Corp Bond Trading Report (BM030d)` (nguồn Atomic mới `Internal Statistical Report`) vào graph TB. **[MỚI 2026-10-05]** Nhóm 8 (HNX11) không còn PENDING — thiết kế Star Schema dùng chung `Private Corporate Bond Dimension` với Nhóm 9 (graph TB bổ sung `Private Corporate Bond Dimension` + 2 Fact của Nhóm 8/9 — trước đây Nhóm 9 chưa có trong Section 3).
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 
@@ -3142,6 +3155,7 @@ erDiagram
 | `tk04btc_market_summary_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ gốc (`period_marker` ∈ {Q1, Q2, Q3}, KHÔNG lưu H1/9M — derive lúc đọc theo `measure_type`) | K_TKNB_875–917 (Nhóm 16) | READY (17/43 KPI, +2 — K_TKNB_876/877 sửa 2026-09-16) / PENDING (26/43 KPI — 8 nhóm gap biểu mẫu/entity riêng biệt, xem Bảng mapping) |
 | `tkniengiam_market_annual_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 năm báo cáo (`report_period_dt`) — EAV cơ bản theo năm, không cần `period_marker`/`period_type` | K_TKNB_918–1011 (Nhóm 17) | READY (74/94 KPI, +4 — K_TKNB_923/924/925/926 sửa 2026-09-16) / PENDING (20/94 KPI — 8 nhóm gap biểu mẫu TPCP/TPDNRL, xem Bảng mapping) |
 | `bm030cmss_corp_bond_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm030amss_market_trading_rpt` | K_TKNB_1037–1045 (Nhóm 20) | READY (9/9 KPI) |
+| `bm030dmss_otc_corp_bond_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm030cmss_corp_bond_trading_rpt`; nguồn Atomic `Internal Statistical Report` (ISS.FLAT_REPORT, báo cáo HNX09) | K_TKNB_1046–1052 (Nhóm 21) | READY (7/7 KPI) |
 | `bm030emss_fund_cert_etf_cw_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm030amss_market_trading_rpt`/`bm030cmss_corp_bond_trading_rpt` | K_TKNB_1053–1067 (Nhóm 22) | READY (15/15 KPI) |
 | `bm031bmss_gov_bond_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm031amss_foreign_proprietary_trading_rpt` | K_TKNB_1094–1112 (Nhóm 24) | READY (4/19 KPI) / PENDING (15/19 KPI — biểu mẫu HNX.BM29, khối NĐTNN) |
 | `bm031cmss_corp_bond_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `bm031amss_foreign_proprietary_trading_rpt`/`bm031bmss_gov_bond_foreign_proprietary_trading_rpt` | K_TKNB_1113–1122 (Nhóm 25) | READY (10/10 KPI) |
@@ -3278,6 +3292,15 @@ erDiagram
         float item_value
         string Source_System_Code
     }
+    bm030dmss_otc_corp_bond_trading_rpt {
+        string report_code PK
+        date report_period_dt PK
+        string item_code PK
+        int item_stt
+        string item_unit
+        float item_value
+        string Source_System_Code
+    }
     bm030emss_fund_cert_etf_cw_trading_rpt {
         string report_code PK
         date report_period_dt PK
@@ -3380,6 +3403,7 @@ erDiagram
 | Thống kê giao dịch toàn thị trường cổ phiếu (BM030a_MSS) | bm030amss_market_trading_rpt | **DEPRECATED** | **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Bãi bỏ — qua review phát hiện bảng EAV này gộp sai 2 grain khác nhau ("Loại chỉ số"/"Giá trị chỉ số" grain 1 Trade Date × Market Code, và 8 đo lường GTGD/KLGD grain 1 Trade Date) vào cùng 1 bảng. Thay bằng: reuse `Fact Market Index Snapshot`/`Market Index Dimension` (sở hữu QLKD) cho phần chỉ số + Fact mới `Fact Market Trading Snapshot` (sở hữu TKNB) cho 8 đo lường — xem dòng riêng bên dưới và 3.2/3.4. All-Tier Cleanup Protocol đã thực hiện (xóa Attributes/master registry/model.yaml/Flat Table cũ). |
 | Fact Market Trading Snapshot (phần Nhóm 18) | fct_market_trading_snpst | new | **SỬA 2026-09-23** Mang thêm Chiều Loại chỉ số (FK `index_constituent_dim_id` → `Index Constituent Dimension`, reuse GSTT) + `market_index_val` — grain 1 Trade Date × 1 Index Code; thay cho reuse `fct_market_index_snpst`/`market_index_dim` (QLKD) đã gỡ. **[MỚI 2026-09-22]** Fact mới, sở hữu TKNB — 8 đo lường GTGD/KLGD (Tổng/Khớp lệnh/Thỏa thuận/Lô lẻ × Value/Volume) tách khỏi `bm030amss_market_trading_rpt` cũ, grain 1 Trade Date, không FK Dimension nào ngoài Calendar Date. Phục vụ K_TKNB_1015–1022 (Nhóm 18). |
 | Thống kê giao dịch toàn thị trường trái phiếu doanh nghiệp niêm yết (BM030c_MSS) | bm030cmss_corp_bond_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm030amss_market_trading_rpt` (Nhóm 18, cùng dạng "toàn thị trường theo ngày") dù cùng nguồn Atomic `Securities Trade` và cấu trúc EAV giống hệt, vì đây là báo cáo riêng cho TPDN niêm yết (`market_id_code IN ('BDO','HCX')`) — khác đối tượng chứng khoán với BM030a_MSS (cổ phiếu). Cũng không reuse `hnx07_corp_bond_trading_rpt` (Nhóm 6, TK-HNX07) dù cùng khái niệm TPDN niêm yết và cùng entity nguồn, vì HNX07 chỉ tính riêng sàn HNX (`market_id_code='HCX'`), còn BM030c_MSS cộng gộp cả 2 sàn HOSE+HNX (`market_id_code IN ('BDO','HCX')`) — khác grain/phạm vi tổng hợp. |
+| Thống kê giao dịch thị trường trái phiếu doanh nghiệp riêng lẻ (BM030d_MSS) | bm030dmss_otc_corp_bond_trading_rpt | new | **[MỚI 2026-10-08]** Bảng phẳng EAV theo ngày — không reuse `bm030cmss_corp_bond_trading_rpt` (khác nguồn: `Securities Trade` sổ khớp vs báo cáo HNX09 do Sở nộp trên ISS) và không dùng Fact/Dimension dùng chung (báo cáo mẫu cố định, không khai thác cắt lớp). Nguồn Atomic duy nhất `Internal Statistical Report` (cell-level, tra theo `row_path`). |
 | Thống kê giao dịch thị trường chứng chỉ quỹ, ETF và CW (BM030e_MSS) | bm030emss_fund_cert_etf_cw_trading_rpt | new | Bảng phẳng EAV theo ngày — không reuse `bm030amss_market_trading_rpt`/`bm030cmss_corp_bond_trading_rpt` (Nhóm 18/20, cùng dạng "toàn thị trường theo ngày") dù cùng nguồn Atomic `Securities Trade` và cấu trúc EAV giống hệt, vì đối tượng chứng khoán khác (CCQ/ETF/CW thay vì cổ phiếu/TPDN). Cũng không reuse `hsx04_proprietary_trading_rpt` (Nhóm 12, TK-HSX04) dù cùng dùng `Security Trading Snapshot` để phân loại CCQ/ETF/CW theo `stock_tp_code`/`fund_tp_code`, vì HSX04 chỉ tính GD tự doanh trên riêng sàn HOSE, còn BM030e_MSS tính toàn thị trường (mọi loại NĐT) cộng gộp cả 2 sàn HOSE+HNX — khác phạm vi lọc và grain tổng hợp. |
 | Bảng dữ liệu giao dịch NĐTNN/tự doanh thị trường cổ phiếu (BM031a_MSS) | bm031amss_foreign_proprietary_trading_rpt | **DEPRECATED** | **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Bãi bỏ — qua review phát hiện Detail Mapping trỏ sai `mart_table`/`mart_column` (đã fix tạm ở LLD trước khi đánh giá lại kiến trúc) và bảng EAV không tận dụng được `Index Constituent Dimension` đã có sẵn cross-module. Toàn bộ 24 đo lường cùng grain 1 (Trade Date × Index Code) — thay bằng Fact mới `Fact Foreign Proprietary Trading Index Snapshot` (sở hữu TKNB) + reuse `Index Constituent Dimension` (sở hữu GSTT) — xem dòng riêng bên dưới và 3.2/3.4. All-Tier Cleanup Protocol đã thực hiện. |
 | Fact Foreign Proprietary Trading Index Snapshot | fct_foreign_proprietary_trading_index_snpst | new | **[MỚI 2026-09-22]** Fact mới, sở hữu TKNB — 24 đo lường NĐTNN/tự doanh (Tổng/thỏa thuận/khớp lệnh × Mua/Bán × KL/GT), grain 1 (Trade Date × Index Code) nhất quán suốt Nhóm. Phục vụ K_TKNB_1070–1093 (Nhóm 23). **Ngoại lệ so với quyết định thiết kế TKNB** — cùng lý do ngoại lệ như Fact Market Index Snapshot ở Nhóm 18 (grain mismatch/reuse cơ hội thật, không phải chọn phong cách lưu trữ tùy tiện). |
@@ -3439,3 +3463,4 @@ erDiagram
 33. **[MỚI 2026-10-05] Nhóm 8 (HNX11) — thiết kế Dim/Fact từ `private_corp_bond_offering` + `private_corp_bond_registration`, 5 điểm cần BA/dev xác nhận:** (1) **Trong nước hay quốc tế — ĐÃ XÁC NHẬN 2026-10-06 (Data Modeler): lấy TOÀN THỊ TRƯỜNG.** BA dòng 648 vừa ghi nguồn BM30 (quốc tế) vừa ghi Điều kiện BM27 (trong nước) và SQL không lọc `market_type`; chốt giữ đúng SQL BA — không lọc `market_type`, lấy mọi mã có trong `private_corp_bond_offering`. (2) **`par_value`:** ô Trường nguồn dòng 653 ghi `P.issued_volume * h.par_value`, SQL tham khảo ghi `P.issued_volume * P.par_value` → thiết kế dùng `P.par_value` (cùng dòng đăng ký với khối lượng). (3) **Tránh nhân dòng:** JOIN H–P theo `bond_code + issue_date + maturity_date + report_month` có thể nhân dòng nếu 1 mã có nhiều `market_type` ở H → Fact lấy từ P (1 dòng/mã/tháng, `ds_snpst_dt` mới nhất) và dùng EXISTS trên H. (4) **`report_month`** định dạng MM hay YYYYMM — cùng vấn đề mục 32 (Fact dùng `RIGHT(rpt_month,2)`). (5) **Atomic chỉ có mapping md** (Bảng 15, 16 `mapping_vsdc_ods_atm.md`), chưa có YAML/manifest — Gate 0 WARNING; ô `Loại dữ liệu` BA vẫn ghi "Chưa có CSDL - Map biểu mẫu" như Nhóm 9 (nâng READY theo tiền lệ 2026-09-24).
 34. **[CẬP NHẬT 2026-10-06] Nhóm 28 (BM035_MSS) — thiết kế lại thành Star Schema; điểm đã chốt và điểm còn mở:** **Đã chốt (Data Modeler 2026-10-06):** (a) bỏ bảng EAV, dùng `Fact Security Trading Detail Snapshot` + Dimension GSTT; (b) lệnh hủy HNX: đồng ý giữ thiết kế Mới − Hủy (HNX normalize `side_ind` lệnh hủy = SPACE, D-08 → số lệnh có thể lệch, dev kiểm khi ETL); (c) `ds_snpst_dt` thay `report_date` khi nối `foreign_ownership_info`; (d) K_TKNB_1214 lấy từ `remaining_shares_foreign_can_hold`. **Còn mở:** (1) K_TKNB_1214 quy ra % = `remaining_foreign_holding_quantity / total_issued_share_quantity × 100` do thiết kế suy ra — BA xác nhận (nếu muốn hiển thị số CP thì đổi đơn vị sang CP, bỏ phép chia). (2) **Tập Board ID — ĐÃ CHỐT 2026-10-06 (Data Modeler): theo BA BM035, không sửa.** BM035 giữ thỏa thuận `('T1','T2','T3','T4','TR')` và lô lẻ `('G4')`; `fct_market_trading_snpst`/`fct_foreign_proprietary_trading_index_snpst` (Nhóm 18/23) dùng `('T1','T2','T3','T4','T6','R1')` và lô lẻ `('G4','T4','T6')` — hai bộ chỉ tiêu khác định nghĩa nên tổng theo mã CK của BM035 không cần khớp Nhóm 18/23. (3) Trạng thái GD = `symbol_status_code` (scheme `MDDS_SYMBOL_STATUS`, nguồn lưu string — cần profile giá trị). (4) Nối mã HNX: `security_symbol_code IN (symbol, isin_code)` — HOSE = symbol, HNX = ISIN theo BA (sổ lệnh); chưa kiểm sổ khớp HNX cổ phiếu có lưu ISIN hay ticker. (5) Mã CK không có dòng `security_trading_snapshot` trong ngày thì không có hàng trong Fact dù có giao dịch. (6) `foreign_ownership_info` chỉ có mapping md (Bảng 9) — Gate 0 WARNING.
 35. **[CẬP NHẬT 2026-10-06] Nhóm 29 (BM043_MSS) — thiết kế lại thành Star Schema; điểm đã chốt và điểm còn mở:** **Đã chốt (Data Modeler 2026-10-06):** (a) bỏ bảng EAV, dùng `Fact Derivatives Security Detail Snapshot` + Dimension GSTT (`maturity_dt`, `contract_multiplier`); (b) `ds_snpst_dt` thay `report_date` khi nối `end_of_day_open_interest`; (c) **NĐTNN = `IN ('10','20')` theo SQL tham khảo BA** (cột Điều kiện ghi `<> '00'`). **Đã sửa theo BA 2026-10-05:** thêm K_TKNB_1256 (Kỳ báo cáo — Chiều) và K_TKNB_1257 (Mã CK — Chỉ tiêu cơ sở) → 18/18 dòng BA; 'Thời gian' đổi sang Chỉ tiêu cơ sở; Giá trị = Σ(Trade quantity × Trade price × `ContractMultiplier`). **Còn mở:** (1) Lọc CKPS: BA ghi `FloorCode = '03'` hoặc `Market_ID = 'DVX'`, SQL tham khảo lọc `FloorCode IN ('02','04','03','10')` — thiết kế dùng `floor_code='03'` cho Dimension/Fact và `market_id_code='DVX'` cho Securities Trade. (2) KL hợp đồng lưu hành dùng `end_of_day_open_interest` (chỉ mapping md Bảng 6) — Gate 0 WARNING; Nhóm 3 (VSDC.BM2) và Nhóm 27 (K_TKNB_1178) cùng khái niệm chưa được BA cập nhật. (3) HNX `issue_code` = ISIN → nối `security_symbol_code IN (symbol, isin_code)`. (4) BA ghi 'khi nào có dữ liệu thật thì dùng JOIN' → open interest dùng LEFT JOIN (mã không có open interest vẫn có hàng).
+36. **[MỚI 2026-10-08] Nhóm 21 (BM030d_MSS) — chuyển READY 7/7 từ Atomic `Internal Statistical Report` (ISS.FLAT_REPORT); điểm cần xác nhận:** (1) **Đơn vị `field_val`** của báo cáo HNX09 (VND hay tỷ đồng) chưa xác nhận — BA SQL cộng thẳng `CAST(field_value AS DECIMAL(38,2))` không quy đổi; KPI ghi 'Tỷ đồng' theo mẫu BM030d. (2) **Khớp `row_path` bằng chuỗi chữ hoa đúng nguyên văn BA** (cha-con nối bằng dấu `-`) và SUM KHÔNG lọc `sheet_nm`/`column_path`: nếu biểu mẫu có nhiều cột/sheet cùng `row_path` (VD cột khối lượng và cột giá trị) thì sẽ cộng lẫn — cần profile dữ liệu `uat_iss_ods.flat_report` (HNX09). (3) BA ORDER BY dùng format `'dd/mm/yyyy'` (trong Spark `mm` là phút) — thiết kế dùng `dd/MM/yyyy`. (4) Điều kiện BA `submit_status IN ('SUBMITTED','LATE_SUBMITTED')` + `submit_source = 'ICP'` loại bản nộp lại (`RESUBMITTED`) và quá hạn (`OVERDUE`) — kỳ chỉ có bản nộp lại sẽ không có dữ liệu; chờ BA xác nhận. (5) BA Note dòng 1453/1454 'hoặc lấy từ raw HNX BM 11_HNX09' không dùng; **K_TKNB_934/948 (Nhóm 17) cùng báo cáo HNX09/BM11 vẫn PENDING** vì BA Nhóm 17 chưa đổi nguồn sang `flat_report` — cần BA cập nhật rồi mới chuyển READY. (6) Atomic ghi `isr_code` (BK ghép `report_code‖sheet_nm‖field_code‖row_index‖origin_dt_val`) cần profile NOT NULL — kiểm khi có dữ liệu. (7) BA STT 21 có 2 dòng 'Thời gian' (dòng 1450 Chiều, dòng 1451 Chỉ tiêu cơ sở) → K_TKNB_1046/1047 cùng `item_code = dim_trade_date_mss030d`, giữ 2 dòng BA gốc để khớp 1-1.

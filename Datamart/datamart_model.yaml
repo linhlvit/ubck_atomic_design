@@ -13614,6 +13614,83 @@ entities:
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.src_stm_code"
 
+  - id: "DTM-bm030dmss_otc_corp_bond_trading_rpt"
+    logical_name: "OTC Corp Bond Trading Report (BM030d)"
+    datamart_table: "bm030dmss_otc_corp_bond_trading_rpt"
+    table_type: "operational"
+    module: "TKNB"
+    status: "draft"
+    reuse_status: "new"
+    description: "[MỚI 2026-10-08, Atomic bổ sung Internal Statistical Report] Thống kê giao dịch thị trường TPDN riêng lẻ theo ngày (báo cáo HNX09 trên ISS) — EAV."
+    source_atomic:
+      - "internal_statistical_report"
+    modules_using:
+      - "TKNB"
+    columns:
+      - logical_name: "Report Code"
+        physical_name: "report_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "BK"
+        description: "BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Report Period Date"
+        physical_name: "report_period_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: "BK"
+        description: "BK — kỳ báo cáo (ngày báo cáo HNX09, parse từ chuỗi dd/MM/yyyy của Origin Date Value)"
+        source_atomic_table: "internal_statistical_report"
+        source_atomic_column: "internal_statistical_report.origin_dt_val"
+      - logical_name: "Item Code"
+        physical_name: "item_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM030d_MSS"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item STT"
+        physical_name: "item_stt"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: false
+        key: ""
+        description: "Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item Unit"
+        physical_name: "item_unit"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Đơn vị tính của chỉ tiêu"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item Value"
+        physical_name: "item_value"
+        data_domain: "Currency Amount"
+        data_type: "float"
+        nullable: true
+        key: ""
+        description: "Giá trị chỉ tiêu — populate theo item_code: giá trị giao dịch TPDN riêng lẻ, NĐTNN, tự doanh (báo cáo HNX09, tổng field_val theo row_path)"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu của báo cáo"
+        source_atomic_table: "internal_statistical_report"
+        source_atomic_column: "internal_statistical_report.src_stm_code"
+
   - id: "DTM-bm030emss_fund_cert_etf_cw_trading_rpt"
     logical_name: "Fund Cert ETF CW Trading Report (BM030e)"
     datamart_table: "bm030emss_fund_cert_etf_cw_trading_rpt"
