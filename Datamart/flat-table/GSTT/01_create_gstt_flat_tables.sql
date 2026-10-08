@@ -571,7 +571,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_opr_security_index_constituent_ref_flat
     stock_tp_code               Nullable(String)    COMMENT 'Loại chứng khoán thô theo sàn (HNX/UPCOM 1-6; HOSE 1-4) — phân biệt tab bảng giá',
     stock_floor_code            Nullable(String)    COMMENT 'Mã sàn của MÃ CHỨNG KHOÁN (02/04/10/03) — khác floor_code (sàn của chỉ số)',
     derivative_product_nm       Nullable(String)    COMMENT 'Loại sản phẩm phái sinh (HĐTL + chứng khoán cơ sở; GB05/GB10 → TPCP) — chỉ sàn 02/04/03',
-    security_class_code         Nullable(String)    COMMENT 'Phân loại CK: TRAI_PHIEU/CO_PHIEU/ETF/CHUNG_CHI_QUY/CHUNG_QUYEN/PHAI_SINH/KHAC (cùng quy tắc security_trading_snpst_dim.stock_tp_nm)',
+    security_class_code         Nullable(String)    COMMENT 'Phân loại CK (nhãn tiếng Việt): Trái phiếu/Cổ phiếu/ETF/Chứng chỉ quỹ/Chứng quyền/Phái sinh/Khác (cùng quy tắc security_trading_snpst_dim.stock_tp_nm)',
     industry_code               Nullable(String)    COMMENT 'Mã ngành cấp 1 (INDUSTRY_CD) — quy tắc K_GSTT_2; CTCK đại chúng fallback 07000',
     industry_nm                 Nullable(String)    COMMENT 'Tên ngành cấp 1 (NNKD) — quy tắc K_GSTT_2',
     src_stm_code                String              COMMENT 'Mã hệ thống nguồn — MDDS_JAD_CSIDXINFOR'

@@ -10475,7 +10475,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-30, BA GSTT 2026-09-30 dòng 9] Loại chứng khoán — dẫn xuất theo mã sàn (`10` HOSE; `02` HNX và `04` UPCOM dùng chung bảng mã) + mã loại CK; nhãn trả về theo BA là MÃ (TRAI_PHIEU/CO_PHIEU/ETF/CHUNG_CHI_QUY/CHUNG_QUYEN/PHAI_SINH/KHAC), không còn nhãn tiếng Việt. HOSE: 1 Trái phiếu, 2 Cổ phiếu, 3 tách theo Fund Type (`E`→ETF, `M`→Chứng chỉ quỹ, khác→KHAC), 4 Chứng quyền. HNX/UPCOM: 1 TP, 2 CP, 3 CCQ, 4 Phái sinh, 5 Chứng quyền, 6 ETF; ELSE KHAC."
+        description: "[SỬA 2026-10-08, BA GSTT cập nhật CASE] Loại chứng khoán — dẫn xuất theo mã sàn (`10` HOSE; `02` HNX và `04` UPCOM dùng chung bảng mã) + mã loại CK; nhãn trả về là NHÃN TIẾNG VIỆT (Trái phiếu / Cổ phiếu / ETF / Chứng chỉ quỹ / Chứng quyền / Phái sinh / Khác), thay cho nhãn mã TRAI_PHIEU/CO_PHIEU/… của BA 2026-09-30; mọi nhánh còn lại (kể cả sàn khác 10/02/04, vd 03-FDS, 06-trái phiếu DN) → 'Khác'. HOSE: 1 Trái phiếu, 2 Cổ phiếu, 3 tách theo Fund Type (`E`→ETF, `M`→Chứng chỉ quỹ, khác→Khác), 4 Chứng quyền. HNX/UPCOM: 1 Trái phiếu, 2 Cổ phiếu, 3 Chứng chỉ quỹ, 4 Phái sinh, 5 Chứng quyền, 6 ETF; ELSE Khác. Xem O_GSTT_61."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.floor_code / stock_tp_code / fund_tp_code"
       - logical_name: "Underlying Symbol"
@@ -22844,11 +22844,11 @@ entities:
         source_atomic_column: "security_trading_snapshot.floor_code / stock_tp_code / underlying_symbol"
       - logical_name: "Security Class Code"
         physical_name: "security_class_code"
-        data_domain: "Classification Value"
+        data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã phân loại chứng khoán (Ma_phan_loai_ma_ck): TRAI_PHIEU / CO_PHIEU / ETF / CHUNG_CHI_QUY / CHUNG_QUYEN / PHAI_SINH / KHAC — dẫn xuất theo sàn mã CK + Stock Type (+ Fund Type cho HOSE), CÙNG quy tắc và giá trị với security_trading_snpst_dim.stock_tp_nm. NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
+        description: "Phân loại chứng khoán (Ma_phan_loai_ma_ck): nhãn tiếng Việt Trái phiếu / Cổ phiếu / ETF / Chứng chỉ quỹ / Chứng quyền / Phái sinh / Khác — dẫn xuất theo sàn mã CK + Stock Type (+ Fund Type cho HOSE), CÙNG quy tắc và giá trị với security_trading_snpst_dim.stock_tp_nm. [SỬA 2026-10-08] Đổi từ nhãn mã (TRAI_PHIEU/…/KHAC) sang nhãn tiếng Việt theo BA GSTT cập nhật CASE; tên cột `security_class_code` giữ nguyên (đã giao dev theo v4.39) dù giá trị là nhãn — xem O_GSTT_61. NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.floor_code / stock_tp_code / fund_tp_code"
       - logical_name: "Industry Code"
