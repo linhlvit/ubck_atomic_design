@@ -1,8 +1,10 @@
 # DTM_QLCB_Entities — v2.3
 
-**Phiên bản:** 2.3
-**Ngày:** 24/08/2026
+**Phiên bản:** 2.4
+**Ngày:** 08/10/2026
 **Phạm vi:** Star schema diagram per nhóm báo cáo — QLCB module (Phase 2, dựa trên Section 3/4 của `DTM_QLCB_HLD.md`)
+
+> **Cập nhật v2.4 (2026-10-08):** Atomic TTHC thiết kế lại (09-30/10-01) — `Fact Securities Offering Application Snapshot` driving `ap_document` mới (+ `securities_symbol_code`); `Administrative Procedure Application Status Dimension`/`Application Type Dimension` đọc `cl_value` (không còn `ap_content_item_index`); Status Dimension thêm nhóm `OVERDUE_SUPPLEMENT`; `Operational Securities Offering 360 Profile` thêm `securities_tp_nm`. KPI mới: K_QLCB_70 (Nhóm 4), K_QLCB_71 (Nhóm 6). Xem HLD v2.3.
 
 > **Cập nhật v2.2 (2026-08-24) — đổi nguồn Nhóm 5/6 từ IDS sang TTHC (task Dũng).** `Fact Securities Offering Application Snapshot` được repoint sang `TTHC.DOCUMENT` + `TTHC.CONTENTITEMINDEX` (`reuse_status`: `new` → `partial`), bổ sung 2 Dimension mới `Administrative Procedure Application Status Dimension` / `Administrative Procedure Application Type Dimension`, và thôi dùng `Offering Method Dimension` ở Nhóm 6. Toàn bộ K_QLCB_32–42 **READY (Atomic draft)**.
 
@@ -78,7 +80,7 @@ erDiagram
 
 ### Nhóm 5 — Tỷ lệ xử lý hồ sơ
 
-> **READY (Atomic draft)** — nguồn TTHC. `ap_content_item_index.display_text` đã có từ 2026-08-24 (O_QLCB_10 Closed).
+> **READY (Atomic approved)** — nguồn TTHC (`ap_document` + `cl_value`, Atomic thiết kế lại 2026-09-30/10-01; [SỬA 2026-10-08] thay `ap_content_item_index`).
 
 ```mermaid
 erDiagram
@@ -89,7 +91,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Securities Offering Application Snapshot | Fact Periodic Snapshot | partial | Hồ sơ đăng ký chào bán nộp qua TTHC — đếm theo nhóm trạng thái xử lý (KPI Card + donut). Repoint IDS → TTHC 2026-08-24 | 1 row / hồ sơ TTHC × 1 ngày snapshot | K_QLCB_32–35 |
-| Administrative Procedure Application Status Dimension | Dimension | new | Trạng thái hồ sơ TTHC + nhóm trạng thái gom 4+1 (`REGISTERED`/`IN_PROGRESS`/`APPROVED`/`REJECTED`/`UNDEFINED`) từ 47 giá trị `display_text` | 1 row / trạng thái hồ sơ (content item `TrangThaiHoSo`) | Slicer |
+| Administrative Procedure Application Status Dimension | Dimension | new | Trạng thái hồ sơ TTHC + nhóm trạng thái gom 5+1 (`REGISTERED`/`IN_PROGRESS`/`APPROVED`/`REJECTED`/`OVERDUE_SUPPLEMENT`/`UNDEFINED`) từ 47 giá trị `cl_nm` | 1 row / trạng thái hồ sơ (`cl_value` schema `TrangThaiHoSo`) | Slicer |
 | Calendar Date Dimension | Dimension | reuse | Ngày gửi hồ sơ TTHC (`Submission Date`) — thay cho ngày công văn/ngày cấp giấy chứng nhận của bản IDS | 1 row / ngày (Conformed) | Slicer |
 
 ---
@@ -108,7 +110,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Securities Offering Application Snapshot | Fact Periodic Snapshot | partial | Cùng Fact với Nhóm 5, bổ sung FK `Administrative_Procedure_Application_Type_Dimension_Id` (non-nullable) — phân tích theo hình thức × năm | 1 row / hồ sơ TTHC × 1 ngày snapshot (cùng grain Nhóm 5) | K_QLCB_36–42 |
-| Administrative Procedure Application Type Dimension | Dimension | new | Hình thức chào bán theo TTHC — `display_text` của content item `LoaiHoSo`. **KHÔNG** reuse `Offering Method Dimension` (dimension đó phục vụ K_QLCB_6–19 từ IDS) | 1 row / hình thức chào bán | Slicer |
+| Administrative Procedure Application Type Dimension | Dimension | new | Hình thức chào bán theo TTHC — `cl_nm` của `cl_value` schema `LoaiHoSo`. **KHÔNG** reuse `Offering Method Dimension` (dimension đó phục vụ K_QLCB_6–19 từ IDS) | 1 row / hình thức chào bán | Slicer |
 | Administrative Procedure Application Status Dimension | Dimension | new | Dùng chung với Nhóm 5 — 4 cột số lượng của bảng chi tiết đếm theo `Application Status Group Code` | 1 row / trạng thái hồ sơ | Slicer |
 | Calendar Date Dimension | Dimension | reuse | Năm (GROUP BY từ `Submission Date`) | 1 row / ngày (Conformed) | Slicer |
 

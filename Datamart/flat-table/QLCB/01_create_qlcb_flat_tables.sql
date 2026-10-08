@@ -202,6 +202,7 @@ COMMENT 'Flat table — Fact Securities Offering Result Snapshot × Calendar Dat
 -- 4. FACT: qlcb_fct_securities_offering_application_snpst_flat
 --    Hồ sơ đăng ký chào bán nộp qua TTHC — đếm/phân tích theo nhóm trạng thái xử lý, hình thức, năm
 --    ĐỔI NGUỒN 2026-08-24 (task Dũng): IDS → TTHC. Xem Cụm 3 của DTM_QLCB_HLD.md
+--    [SỬA 2026-10-08] Nguồn Atomic ap_document + cl_value (TTHC thiết kế lại 2026-09-30/10-01); thêm securities_symbol_code, nhóm OVERDUE_SUPPLEMENT
 --    Grain: 1 hồ sơ TTHC × 1 ngày snapshot (ETL full-scan hàng ngày vì Application Status Group Code
 --    phản ánh trạng thái xử lý hiện hành của hồ sơ; Submission Date giữ vai trò Chiều/slicer)
 --    Joins: Calendar Date (snpst_dt_dim_id, submission_dt_dim_id)
@@ -216,6 +217,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_securities_offering_application_snp
     submission_dt_dim_id                 String                  COMMENT 'FK → Calendar Date Dimension (ngày gửi hồ sơ — Chiều/slicer). Thay certificate_dt_dim_id của thiết kế IDS cũ',
     ap_application_status_dim_id          String                  COMMENT 'FK → AP Application Status Dimension. Thay cột application_status_code của thiết kế IDS cũ',
     ap_application_tp_dim_id             String                  COMMENT 'FK → AP Application Type Dimension. Thay offering_method_dim_id — non-nullable vì mỗi hồ sơ TTHC có đúng 1 LoaiHoSo',
+    securities_symbol_code               Nullable(String)        COMMENT '[MỚI 2026-10-08] Mã chứng khoán khai trên Eform hồ sơ (BA STT 6 "Mã chứng khoán") — ap_document.eform_data, NULL khi Eform không có mã',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cdr_dt                         Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -226,7 +228,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_securities_offering_application_snp
     -- From: AP APPLICATION STATUS DIMENSION
     application_status_item_code         String                  COMMENT 'BK — ContentItemId của trạng thái hồ sơ — từ AP Application Status Dimension',
     application_status_nm                Nullable(String)        COMMENT 'Tên trạng thái hồ sơ hiển thị trên TTHC (display_text) — từ AP Application Status Dimension; dùng drill-down xuống trạng thái chi tiết',
-    application_status_group_code        String                  COMMENT 'Nhóm trạng thái gom từ 47 giá trị display_text — REGISTERED/IN_PROGRESS/APPROVED/REJECTED/UNDEFINED. Cột đếm của K_QLCB_32-35 và K_QLCB_38-41',
+    application_status_group_code        String                  COMMENT 'Nhóm trạng thái gom từ 47 giá trị cl_nm — REGISTERED/IN_PROGRESS/APPROVED/REJECTED/OVERDUE_SUPPLEMENT/UNDEFINED ([SỬA 2026-10-08] thêm OVERDUE_SUPPLEMENT). Cột đếm của K_QLCB_32-35 và K_QLCB_38-42, K_QLCB_71',
     application_status_src_stm_code      String                  COMMENT 'Mã hệ thống nguồn — từ AP Application Status Dimension',
 
     -- From: AP APPLICATION TYPE DIMENSION
@@ -257,6 +259,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_fla
     public_company_nm                    Nullable(String)        COMMENT 'Tên doanh nghiệp',
     equity_ticker_symbol                 Nullable(String)        COMMENT 'Mã chứng khoán',
     securities_tp_code                   Nullable(String)        COMMENT '[ĐỔI NGUỒN 2026-09-10] Loại chứng khoán của đợt chào bán/kết quả (nguồn Result, không phải Public Company)',
+    securities_tp_nm                     Nullable(String)        COMMENT '[MỚI 2026-10-08] Tên loại chứng khoán chào bán (lookup SO_SECURITY_TYPE) — BA STT 4/7 "Loại chứng khoán"',
     total_registered_quantity            Nullable(Int64)         COMMENT 'Số lượng cấp phép (bảng cha, tổng toàn hồ sơ)',
     total_expected_amt                   Nullable(Decimal(23,2)) COMMENT 'Giá trị cấp phép (bảng cha)',
     total_successful_quantity            Nullable(Int64)         COMMENT 'Số lượng CK chào bán thành công',

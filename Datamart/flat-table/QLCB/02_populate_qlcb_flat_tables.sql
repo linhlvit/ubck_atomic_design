@@ -214,6 +214,7 @@ SELECT
     f.submission_dt_dim_id,
     f.ap_application_status_dim_id,
     f.ap_application_tp_dim_id,
+    f.securities_symbol_code,
 
     snpst_cal.cdr_dt                    AS snpst_cdr_dt,
 
@@ -254,6 +255,7 @@ SELECT
     o.public_company_nm,
     o.equity_ticker_symbol,
     o.securities_tp_code,
+    o.securities_tp_nm,
     o.total_registered_quantity,
     o.total_expected_amt,
     o.total_successful_quantity,
