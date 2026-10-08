@@ -12385,7 +12385,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng dư nợ cho vay giao dịch ký quỹ toàn hệ thống CTCK (MDₜ) của kỳ báo cáo tháng chứa ngày thống kê — giữ nguyên giá trị cho mọi ngày trong tháng."
+        description: "Tổng dư nợ cho vay giao dịch ký quỹ toàn hệ thống CTCK (MDₜ) của kỳ báo cáo THÁNG gần nhất có dữ liệu TS024 và ≤ tháng của ngày thống kê (kỳ t = MAX(rpt_year*100 + period) trong các kỳ có TS024 khác NULL và ≤ yyyyMM(ngày thống kê)) — carry-forward: giữ nguyên giá trị cho đến khi có báo cáo tháng mới. [SỬA 2026-10-08, BA đã xác nhận] Trước đây chỉ lấy kỳ trùng tháng ngày thống kê nên NULL khi tháng chưa có báo cáo; nay lùi về kỳ gần nhất có dữ liệu (VD ngày 2026-08-24, dữ liệu mới nhất đến T2/2026 → lấy T2/2026 = 0,338434 tỷ đồng). NULL chỉ khi chưa có kỳ nào ≤ tháng ngày thống kê. Phần còn lại giữ nguyên: SUM(item_val) các CTCK ở submission mới nhất theo (ref_tp_code, ref_id), rpt_submission_status_code IN ('1','2'). Xem O_PTTT_37."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.item_val"
       - logical_name: "Index Log Return"
@@ -12466,7 +12466,7 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Margin Tension (%) = Tổng dư nợ margin (tháng chứa ngày t) / Tổng hạn mức margin × 100 (BA dòng 127)."
+        description: "Margin Tension (%) = Tổng dư nợ margin (kỳ báo cáo THÁNG gần nhất ≤ ngày t, carry-forward) / Tổng hạn mức margin × 100 (BA dòng 127). [SỬA 2026-10-08, BA] Không còn NULL khi tháng chưa có báo cáo — xem O_PTTT_37."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.item_val"
       - logical_name: "Margin Tension Status"
@@ -12655,7 +12655,7 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: ""
-        description: "Tỷ lệ bão hòa đòn bẩy (K_PTTT_125) = ABS(Δ dư nợ margin giữa 2 kỳ báo cáo tháng) / GTGD bình quân N phiên × 100."
+        description: "Tỷ lệ bão hòa đòn bẩy (K_PTTT_125) = ABS(Δ dư nợ margin giữa kỳ báo cáo gần nhất và kỳ liền trước — giữ nguyên đến khi có báo cáo mới) / GTGD bình quân N phiên × 100. [SỬA 2026-10-08, BA] Xem O_PTTT_37."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Margin Stress Status"
@@ -12673,7 +12673,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Δ dư nợ margin giữa kỳ báo cáo tháng t và t-1 (K_PTTT_123) — nền tảng tính Margin Stress."
+        description: "Δ dư nợ margin giữa kỳ báo cáo t và kỳ báo cáo liền trước t-1 (K_PTTT_123) — t = kỳ THÁNG gần nhất dùng cho total_margin_balance; t-1 = kỳ THÁNG hợp lệ (TS024 khác NULL) lớn nhất < t (không nhất thiết là tháng liền kề theo lịch). Giữ nguyên giá trị cho đến khi có báo cáo mới; NULL khi chưa có kỳ t-1. [SỬA 2026-10-08, BA/Data Modeler xác nhận cách hiểu] Thay `<cell_id DU_NO_MARGIN>` bằng TS024 (O_PTTT_15 đã hết hiệu lực) và bỏ LAG theo tháng lịch. Nền tảng tính Margin Stress. Xem O_PTTT_37."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.item_val"
       - logical_name: "Correlation Index Interbank Rate"
