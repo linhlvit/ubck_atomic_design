@@ -3,6 +3,7 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.16 (2026-10-09):** Tách `Operational Security Index Constituent Reference` thành 2 bảng: bảng này chỉ còn danh mục chỉ số/thành viên rổ; thêm `Operational Security Reference` (`opr_security_ref`, danh mục mã chứng khoán — 6 cột thuộc tính mã CK chuyển sang, đổi tên `stock_floor_code`→`floor_code`, `security_class_code`→`security_class_nm`). Khớp HLD v4.42, O_GSTT_63.
 **Thay đổi v2.15 (2026-10-06):** Sửa quy tắc chọn Fact nến: lọc theo ngày → bảng 1m (`Fact Instrument Price Intraday`), lọc theo tháng → bảng 1d (`Fact Instrument Price Daily`).
 **Thay đổi v2.14 (2026-10-06):** Đồng bộ LLD/flat sau v4.35: `Fact Security Trading Daily` chỉ còn Nhóm 48; `Fact Instrument Price Intraday`/`Daily` ghi nhận dùng chung Nhóm 3, 10, 12, 14, 20, 47.
 **Thay đổi v2.13 (2026-10-06):** BA cập nhật mapping Dashboard kỹ thuật (Nhóm 3, 10, 12, 14, 20, 47): `Fact Instrument Price Intraday`/`Daily` dùng chung cho OHLC + khối lượng (v4.35); `Fact Security Trading Daily` chỉ còn Nhóm 48.

@@ -22723,14 +22723,11 @@ entities:
     module: "GSTT"
     status: "draft"
     reuse_status: "new"
-    description: "[MỚI 2026-10-06, GSTT — Data Modeler yêu cầu trực tiếp, không qua BA] Bảng tham chiếu mã thuộc rổ chỉ số: Index Code ↔ Symbol ↔ ISIN Code (mã quốc tế) — current-state, 1 dòng / (rổ chỉ số × mã CK thành viên ở ngày giao dịch mới nhất của rổ). Driving Index Constituent Snapshot (MDDS.JAD_CSIDXINFOR), join_atomic Security Trading Snapshot (isin_code) và Market Index Snapshot (index_nm). Phục vụ chiều lọc `Chi_so` của sổ lệnh HNX (K_GSTT_360–361, Nhóm 44/45) — lookup trên flat table, không FK."
+    description: "[MỚI 2026-10-06, GSTT — Data Modeler yêu cầu trực tiếp, không qua BA] Danh mục chỉ số / thành viên rổ: Index Code ↔ Symbol (+ ISIN) — current-state, 1 dòng / (rổ chỉ số × mã CK thành viên ở ngày giao dịch mới nhất của rổ). [SỬA 2026-10-09 v4.42] Tách bảng: các thuộc tính mã chứng khoán (loại CK, sàn, phái sinh, phân loại, ngành) chuyển sang `opr_security_ref`."
     source_atomic:
       - "index_constituent_snapshot"
       - "security_trading_snapshot"
       - "market_index_snapshot"
-      - "public_company"
-      - "securities_company"
-      - "cl_business_line"
     modules_using:
       - "GSTT"
     columns:
@@ -22785,7 +22782,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã sàn của CHỈ SỐ (Floor Code của Index Constituent Snapshot — nguồn JAD_CSIDXINFOR.FLOORCODE: 02-HNX, 04-UPCOM, 10-HOSE) tại ngày as-of. KHÁC `stock_floor_code` (sàn của mã chứng khoán, nguồn JAD_STOCKINFOR.FLOORCODE)."
+        description: "Mã sàn của CHỈ SỐ (Floor Code của Index Constituent Snapshot — nguồn JAD_CSIDXINFOR.FLOORCODE: 02-HNX, 04-UPCOM, 10-HOSE) tại ngày as-of. [SỬA 2026-10-09 v4.42] Sàn của MÃ chứng khoán không còn ở bảng này — xem `opr_security_ref.floor_code`."
         source_atomic_table: "index_constituent_snapshot"
         source_atomic_column: "index_constituent_snapshot.floor_code"
       - logical_name: "Add Date"
@@ -22815,22 +22812,111 @@ entities:
         description: "Mã quốc tế (ISIN) của mã chứng khoán thành viên rổ — lấy từ bản ghi mới nhất của symbol trong Security Trading Snapshot (cùng quy tắc security_trading_snpst_dim.isin_code). NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.isin_code"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu"
+        source_atomic_table: "index_constituent_snapshot"
+        source_atomic_column: "index_constituent_snapshot.src_stm_code"
+      - logical_name: "Record Status"
+        physical_name: "ds_rcrd_st"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Record Insert Date"
+        physical_name: "ds_rcrd_isrt_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: ""
+        description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Record Update Date"
+        physical_name: "ds_rcrd_udt_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: ""
+        description: "Ngày update bản ghi gần nhất — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "ETL Process Timestamp"
+        physical_name: "ds_etl_pcs_tms"
+        data_domain: "Timestamp"
+        data_type: "timestamp"
+        nullable: false
+        key: ""
+        description: "Timestamp xử lý ETL — audit field"
+        source_atomic_table: null
+        source_atomic_column: null
+
+  - id: "DTM-opr_security_ref"
+    logical_name: "Operational Security Reference"
+    datamart_table: "opr_security_ref"
+    table_type: "operational"
+    module: "GSTT"
+    status: "draft"
+    reuse_status: "new"
+    description: "[MỚI 2026-10-09, GSTT — Data Modeler yêu cầu tách từ opr_security_index_constituent_ref] Danh mục mã chứng khoán: ISIN, loại CK, sàn, loại sản phẩm phái sinh, phân loại CK, ngành — current-state, 1 dòng / mã CK (bản ghi mới nhất trong MDDS.JAD_STOCKINFOR). Chưa có KPI BA tham chiếu (O_GSTT_63)."
+    source_atomic:
+      - "security_trading_snapshot"
+      - "public_company"
+      - "securities_company"
+      - "cl_business_line"
+    modules_using:
+      - "GSTT"
+    columns:
+      - logical_name: "Symbol"
+        physical_name: "symbol"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — Mã chứng khoán (JAD_STOCKINFOR.SYMBOL). Driving: security_trading_snapshot, mỗi mã giữ bản ghi mới nhất (current-state). Danh mục TOÀN BỘ mã CK có trong JAD_STOCKINFOR, không giới hạn mã thuộc rổ chỉ số (khác `opr_security_index_constituent_ref`)."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.symbol"
+      - logical_name: "ISIN Code"
+        physical_name: "isin_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Mã quốc tế (ISIN) của mã chứng khoán (JAD_STOCKINFOR.SYMBOLISIN) — bản ghi mới nhất của symbol, cùng quy tắc security_trading_snpst_dim.isin_code."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.isin_code"
+      - logical_name: "As Of Date"
+        physical_name: "as_of_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: ""
+        description: "Ngày giao dịch (TradingDate, dd/MM/yyyy) của bản ghi mới nhất của mã — mốc hiệu lực thông tin mã chứng khoán (current-state)."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.trading_dt"
       - logical_name: "Stock Type Code"
         physical_name: "stock_tp_code"
         data_domain: "Classification Value"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Loại chứng khoán THÔ theo sàn (scheme MDDS_STOCK_TYPE) — HNX/UPCOM: 1 Trái phiếu, 2 Cổ phiếu, 3 CCQ, 4 Phái sinh (HĐTL), 5 Chứng quyền, 6 ETF; HOSE: 1 Trái phiếu (kể cả B/D), 2 Cổ phiếu, 3 CCQ/ETF (tách theo Fund Type), 4 Chứng quyền. Dùng phân biệt mã CK thuộc tab nào trên bảng giá; lấy từ bản ghi mới nhất của symbol trong Security Trading Snapshot (cùng quy tắc isin_code). NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
+        description: "Loại chứng khoán THÔ theo sàn (scheme MDDS_STOCK_TYPE) — HNX/UPCOM: 1 Trái phiếu, 2 Cổ phiếu, 3 CCQ, 4 Phái sinh (HĐTL), 5 Chứng quyền, 6 ETF; HOSE: 1 Trái phiếu (kể cả B/D), 2 Cổ phiếu, 3 CCQ/ETF (tách theo Fund Type), 4 Chứng quyền. Dùng phân biệt mã CK thuộc tab nào trên bảng giá; lấy từ bản ghi mới nhất của symbol trong Security Trading Snapshot."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.stock_tp_code"
-      - logical_name: "Stock Floor Code"
-        physical_name: "stock_floor_code"
+      - logical_name: "Floor Code"
+        physical_name: "floor_code"
         data_domain: "Classification Value"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã sàn của MÃ CHỨNG KHOÁN (02-HNX, 04-UPCOM, 10-HOSE, 03-FDS) — lấy từ bản ghi mới nhất của symbol trong Security Trading Snapshot. Khác `floor_code` (sàn của chỉ số). NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
+        description: "Mã sàn của MÃ CHỨNG KHOÁN (02-HNX, 04-UPCOM, 10-HOSE, 03-FDS; JAD_STOCKINFOR.FLOORCODE) — bản ghi mới nhất của symbol. Đổi tên từ `stock_floor_code` (khi còn nằm ở `opr_security_index_constituent_ref`) vì bảng này không còn cột sàn của chỉ số để phân biệt."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.floor_code"
       - logical_name: "Derivative Product Name"
@@ -22842,13 +22928,13 @@ entities:
         description: "Loại sản phẩm phái sinh (theo SQL BA): chỉ có giá trị khi sàn của mã CK ∈ {02,04,03}; = 'HĐTL' (nếu Stock Type = 4) nối với chứng khoán cơ sở (underlying_symbol; GB05/GB10 gộp thành 'TPCP'), VD HĐTLVN30, HĐTLTPCP. Điều kiện của BA chỉ xét sàn, không xét Stock Type cho phần underlying — mã không phải HĐTL nhưng có underlying_symbol trên sàn 02/04/03 vẫn ra underlying. NULL nếu rỗng."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.floor_code / stock_tp_code / underlying_symbol"
-      - logical_name: "Security Class Code"
-        physical_name: "security_class_code"
+      - logical_name: "Security Class Name"
+        physical_name: "security_class_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Phân loại chứng khoán (Ma_phan_loai_ma_ck): nhãn tiếng Việt Trái phiếu / Cổ phiếu / ETF / Chứng chỉ quỹ / Chứng quyền / Phái sinh / Khác — dẫn xuất theo sàn mã CK + Stock Type (+ Fund Type cho HOSE), CÙNG quy tắc và giá trị với security_trading_snpst_dim.stock_tp_nm. [SỬA 2026-10-08] Đổi từ nhãn mã (TRAI_PHIEU/…/KHAC) sang nhãn tiếng Việt theo BA GSTT cập nhật CASE; tên cột `security_class_code` giữ nguyên (đã giao dev theo v4.39) dù giá trị là nhãn — xem O_GSTT_61. NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR."
+        description: "Phân loại chứng khoán (Ma_phan_loai_ma_ck): nhãn tiếng Việt Trái phiếu / Cổ phiếu / ETF / Chứng chỉ quỹ / Chứng quyền / Phái sinh / Khác — dẫn xuất theo sàn mã CK + Stock Type (+ Fund Type cho HOSE), CÙNG quy tắc và giá trị với security_trading_snpst_dim.stock_tp_nm (O_GSTT_61; mọi nhánh ELSE = 'Khác'). [SỬA 2026-10-09 v4.42] Đổi tên từ `security_class_code` (giá trị vốn là nhãn, không phải mã) khi chuyển sang bảng này."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.floor_code / stock_tp_code / fund_tp_code"
       - logical_name: "Industry Code"
@@ -22876,8 +22962,8 @@ entities:
         nullable: false
         key: ""
         description: "Mã hệ thống nguồn dữ liệu"
-        source_atomic_table: "index_constituent_snapshot"
-        source_atomic_column: "index_constituent_snapshot.src_stm_code"
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.src_stm_code"
       - logical_name: "Record Status"
         physical_name: "ds_rcrd_st"
         data_domain: "Classification Value"

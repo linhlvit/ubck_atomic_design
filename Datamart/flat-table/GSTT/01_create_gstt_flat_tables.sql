@@ -2,7 +2,7 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
--- 11 bảng: 9 fact + 2 operational (opr_security_index_constituent_ref — mới 2026-10-06, bảng tham chiếu Index Code ↔ Symbol ↔ ISIN; opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
+-- 12 bảng: 9 fact + 3 operational (opr_security_ref — mới 2026-10-09, danh mục mã chứng khoán tách từ opr_security_index_constituent_ref; opr_security_index_constituent_ref — mới 2026-10-06, danh mục chỉ số/thành viên rổ Index Code ↔ Symbol ↔ ISIN; opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
 -- Sửa 2026-10-06 (v4.33–v4.36): Nhóm 34 — #3 gstt_fct_instrument_price_intraday_flat (nến phút) và #3a gstt_fct_instrument_price_daily_flat (nến ngày + Doanh thu/LNST) thay gstt_fct_security_trading_intraday_flat; mã CK và chỉ số (BA nguồn JAD_tvhistory1m/1d), dùng chung Nhóm 3, 10, 12, 14, 20, 47 (v4.35); #3b gstt_fct_security_trading_daily_flat chỉ còn Nhóm 48 (K_GSTT_352).
 -- Sửa 2026-09-26: bổ sung bảng #7/#8 (Fact HOSE/HNX Securities Trade — Nhóm 43/44 Data Explorer kết xuất sổ lệnh, có cột PII — O_GSTT_36)
 -- Sửa 2026-09-23: bổ sung bảng #5b (Fact Investor Category Index Trading Snapshot, Nhóm 30/33 —
@@ -554,7 +554,7 @@ COMMENT 'Flat table — Operational Public Company Insider Ownership (current-st
 -- 6c. OPERATIONAL: gstt_opr_security_index_constituent_ref_flat
 --    [MỚI 2026-10-06] Bảng tham chiếu mã thuộc rổ chỉ số — GSTT lookup Index Code ↔ Symbol ↔ ISIN Code (mã quốc tế).
 --    1 row / (rổ chỉ số × mã CK thành viên ở ngày giao dịch mới nhất của rổ), current-state. Phục vụ chiều lọc Chi_so Nhóm 44/45 (K_GSTT_360–361): BI lọc sổ lệnh HNX security_symbol_code IN (symbol, isin_code). Không FK Star Schema.
---    Nguồn Atomic: index_constituent_snapshot (driving) + security_trading_snapshot (isin_code, stock_tp_code, stock_floor_code, derivative_product_nm, security_class_code) + market_index_snapshot (index_nm) + public_company/securities_company/cl_business_line (industry_code, industry_nm — quy tắc K_GSTT_2). [BỔ SUNG 2026-10-08] đủ cột theo JAD_CSIDXInfor + JAD_StockInfor + IDS cho GSTT lookup.
+--    Nguồn Atomic: index_constituent_snapshot (driving) + security_trading_snapshot (isin_code) + market_index_snapshot (index_nm). [SỬA 2026-10-09 v4.42] Các cột loại CK/sàn mã/phái sinh/phân loại/Ngành đã chuyển sang gstt_opr_security_ref_flat (6d).
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_opr_security_index_constituent_ref_flat ON CLUSTER 'my_cluster'
 (
@@ -564,22 +564,43 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_opr_security_index_constituent_ref_flat
     index_constituent_snpst_code String             COMMENT 'GUID id dòng thành viên rổ ở ngày as-of (BK nguồn JAD_CSIDXINFOR.ID) — chỉ để truy vết',
     index_id                    Nullable(String)    COMMENT 'ID nội bộ của chỉ số (JAD_CSIDXINFOR.INDEXID)',
     index_nm                    Nullable(String)    COMMENT 'Tên chuẩn của rổ chỉ số (VN-Index/HNX-Index/VN30...) — NULL nếu thiếu Market Index Snapshot (O_GSTT_3)',
-    floor_code                  Nullable(String)    COMMENT 'Mã sàn của CHỈ SỐ (02-HNX, 04-UPCOM, 10-HOSE) — khác stock_floor_code',
+    floor_code                  Nullable(String)    COMMENT 'Mã sàn của CHỈ SỐ (02-HNX, 04-UPCOM, 10-HOSE) (sàn của mã CK: xem gstt_opr_security_ref_flat.floor_code)',
     add_dt                      Nullable(Date)      COMMENT 'Ngày mã chứng khoán được thêm vào rổ chỉ số',
     as_of_dt                    Date                COMMENT 'Ngày giao dịch (TradingDate) mới nhất của rổ chỉ số — mốc hiệu lực danh sách thành viên',
     isin_code                   Nullable(String)    COMMENT 'Mã quốc tế ISIN của mã chứng khoán — NULL nếu symbol chưa có trong MDDS.JAD_STOCKINFOR',
-    stock_tp_code               Nullable(String)    COMMENT 'Loại chứng khoán thô theo sàn (HNX/UPCOM 1-6; HOSE 1-4) — phân biệt tab bảng giá',
-    stock_floor_code            Nullable(String)    COMMENT 'Mã sàn của MÃ CHỨNG KHOÁN (02/04/10/03) — khác floor_code (sàn của chỉ số)',
-    derivative_product_nm       Nullable(String)    COMMENT 'Loại sản phẩm phái sinh (HĐTL + chứng khoán cơ sở; GB05/GB10 → TPCP) — chỉ sàn 02/04/03',
-    security_class_code         Nullable(String)    COMMENT 'Phân loại CK (nhãn tiếng Việt): Trái phiếu/Cổ phiếu/ETF/Chứng chỉ quỹ/Chứng quyền/Phái sinh/Khác (cùng quy tắc security_trading_snpst_dim.stock_tp_nm)',
-    industry_code               Nullable(String)    COMMENT 'Mã ngành cấp 1 (INDUSTRY_CD) — quy tắc K_GSTT_2; CTCK đại chúng fallback 07000',
-    industry_nm                 Nullable(String)    COMMENT 'Tên ngành cấp 1 (NNKD) — quy tắc K_GSTT_2',
     src_stm_code                String              COMMENT 'Mã hệ thống nguồn — MDDS_JAD_CSIDXINFOR'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (index_code, symbol)
-COMMENT 'Flat table — Operational Security Index Constituent Reference (current-state, 1 row / rổ chỉ số × mã CK thành viên; lookup Index Code ↔ Symbol ↔ ISIN Code)'
+COMMENT 'Flat table — Operational Security Index Constituent Reference (danh mục chỉ số / thành viên rổ, current-state, 1 row / rổ chỉ số × mã CK thành viên; lookup Index Code ↔ Symbol ↔ ISIN Code)'
+;
+
+
+-- ============================================================
+-- 6d. OPERATIONAL: gstt_opr_security_ref_flat
+--    [MỚI 2026-10-09 v4.42] Danh mục mã chứng khoán — tách từ gstt_opr_security_index_constituent_ref_flat theo yêu cầu Data Modeler.
+--    1 row / mã CK (bản ghi mới nhất của symbol trong MDDS.JAD_STOCKINFOR), current-state. Chưa có KPI BA tham chiếu (O_GSTT_63).
+--    Nguồn Atomic: security_trading_snapshot (driving) + public_company/securities_company/cl_business_line (Ngành, quy tắc K_GSTT_2).
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_opr_security_ref_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Operational Security Reference
+    symbol                      String              COMMENT 'PK — mã chứng khoán (JAD_STOCKINFOR.SYMBOL)',
+    isin_code                   Nullable(String)    COMMENT 'Mã quốc tế ISIN của mã chứng khoán',
+    as_of_dt                    Date                COMMENT 'Ngày giao dịch (TradingDate) của bản ghi mới nhất của mã — mốc hiệu lực',
+    stock_tp_code               Nullable(String)    COMMENT 'Loại chứng khoán thô theo sàn (HNX/UPCOM 1-6; HOSE 1-4) — phân biệt tab bảng giá',
+    floor_code                  Nullable(String)    COMMENT 'Mã sàn của MÃ chứng khoán (02-HNX/04-UPCOM/10-HOSE/03-FDS)',
+    derivative_product_nm       Nullable(String)    COMMENT 'Loại sản phẩm phái sinh (HĐTL + chứng khoán cơ sở; GB05/GB10 → TPCP) — chỉ sàn 02/04/03',
+    security_class_nm           Nullable(String)    COMMENT 'Phân loại CK (nhãn tiếng Việt): Trái phiếu/Cổ phiếu/ETF/Chứng chỉ quỹ/Chứng quyền/Phái sinh/Khác (cùng quy tắc security_trading_snpst_dim.stock_tp_nm; O_GSTT_61)',
+    industry_code               Nullable(String)    COMMENT 'Mã ngành cấp 1 (INDUSTRY_CD) — quy tắc K_GSTT_2; CTCK đại chúng fallback 07000',
+    industry_nm                 Nullable(String)    COMMENT 'Tên ngành cấp 1 (NNKD) — quy tắc K_GSTT_2',
+    src_stm_code                String              COMMENT 'Mã hệ thống nguồn — MDDS_JAD_STOCKINFOR'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (symbol)
+COMMENT 'Flat table — Operational Security Reference (danh mục mã chứng khoán, current-state, 1 row / mã CK; ISIN, loại CK, sàn, phái sinh, phân loại, ngành)'
 ;
 
 

@@ -579,15 +579,32 @@ SELECT
     o.add_dt,
     o.as_of_dt,
     o.isin_code,
-    o.stock_tp_code,
-    o.stock_floor_code,
-    o.derivative_product_nm,
-    o.security_class_code,
-    o.industry_code,
-    o.industry_nm,
     o.src_stm_code
 
 FROM datamart.opr_security_index_constituent_ref o
+;
+
+
+-- ============================================================
+-- 6d. OPERATIONAL: gstt_opr_security_ref_flat
+--    [MỚI 2026-10-09 v4.42] Current-state — TRUNCATE + INSERT toàn bộ, không lọc theo ngày chạy ETL (cùng pattern 6b/6c).
+--    Bảng nguồn datamart.opr_security_ref đã giữ bản ghi mới nhất của từng mã.
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.gstt_opr_security_ref_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gstt_opr_security_ref_flat
+SELECT
+    -- From: OPERATIONAL Operational Security Reference
+    o.symbol,
+    o.isin_code,
+    o.as_of_dt,
+    o.stock_tp_code,
+    o.floor_code,
+    o.derivative_product_nm,
+    o.security_class_nm,
+    o.industry_code,
+    o.industry_nm,
+    o.src_stm_code
+FROM datamart.opr_security_ref o
 ;
 
 
