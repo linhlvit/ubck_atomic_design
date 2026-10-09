@@ -378,6 +378,8 @@ JOIN <table_b> ON <table_b>.<fk> = <driving>.<col>
 | Nhiều cols cùng bảng | Atomic entity | atomic_table | `AttrA / AttrB` | `col_a / col_b` |
 | 2 entity khác bảng | `EntityA / EntityB` | `table_a / table_b` | `EntityA.AttrA / EntityB.AttrB` | `table_a.col_a / table_b.col_b` |
 
+> **BẮT BUỘC (A16):** dòng ≥ 2 bảng phải ghi `bảng.cột` cho TỪNG cột, bảng nằm trong `atomic_table`. Ghi cột trần (`close_price / outstanding_share_quantity / val`) bị coi là mơ hồ — `build_model_yaml` chỉ giữ đúng nghĩa khi có tiền tố bảng, và Gate 0 chỉ kiểm chặt được dạng này (`L0-MULTI-TABLE-*`).
+
 **Classification Value (`cv`):**
 
 | Datamart attribute | source_entity | atomic_table | source_attribute | atomic_column |

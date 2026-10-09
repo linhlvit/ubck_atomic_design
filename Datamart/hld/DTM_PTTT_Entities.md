@@ -47,7 +47,7 @@ erDiagram
 | Fact Market Risk Snapshot | fact | new | Chỉ số rủi ro hệ thống tổng hợp theo ngày — Risk Index, Volatility, Z-score, Sentiment, Margin Tension/Stress — grain 1 row/ngày | `market_index_snapshot / securities_trade / security_trading_snapshot / cl_risk_indicator_value / sc_report_input_value / risk_weight_config` |
 | Fact Macro Indicator Snapshot | fact | new | Chỉ tiêu vĩ mô — lãi suất LNH, tỷ giá USD/VND, CPI, GDP, DXY — grain 1 row/chỉ tiêu vĩ mô/kỳ công bố | `cl_risk_indicator / cl_risk_indicator_value` |
 | Fact Sector Risk Snapshot | fact | new | Chỉ số áp lực, thanh khoản và sức khỏe tài chính theo ngành — StressScore, D/E, GTGD ngành — grain 1 row/ngành/ngày | `security_trading_snapshot / securities_trade / public_company` |
-| Fact Order Size Snapshot | fact | new | GTGD và phân loại quy mô lệnh per mã CK theo ngày — grain 1 row/mã CK/order_size_band/ngày | `securities_trade` |
+| Fact Order Size Snapshot | fact | new | GTGD và phân loại quy mô lệnh per mã CK theo ngày — grain 1 row/mã CK/order_size_band/ngày | `security_trading_snapshot` |
 | Fact Investor Flow Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng theo nhóm nhà đầu tư — grain 1 row/nhóm NĐT/ngày | `securities_trade` |
 | Fact Foreign Net Trade Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng NĐTNN per mã CK — grain 1 row/mã CK/ngày | `securities_trade` |
 | Fact Proprietary Net Trade Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng khối tự doanh per mã CK — grain 1 row/mã CK/ngày | `securities_trade` |
@@ -56,11 +56,11 @@ erDiagram
 | Fact Securities Company Safety Snapshot | fact | new | Snapshot an toàn tài chính CTCK theo tháng báo cáo — dư nợ margin, VCSH, tỷ lệ margin/VCSH, tỷ lệ vốn khả dụng (SCMS) — grain 1 CTCK × 1 tháng báo cáo; phục vụ Nhóm 22–25 (Dashboard An toàn CTCK) | `sc_report_input_value / sc_report_input_submission / sc_periodic_report / securities_company` |
 | Fact Corporate Bond Market Snapshot | fact | new | Quy mô thị trường TPDN tổng hợp toàn thị trường theo ngày — grain 1 row/ngày | `security_trading_snapshot / securities_trade` |
 | Fact Corporate Bond Maturity Wall | fact | new | Lịch biểu đáo hạn trái phiếu per mã TP — 2 luồng nguồn (niêm yết JAD_STOCKINFOR / riêng lẻ HNX BM29) — grain 1 row/luồng/mã TP/kỳ (quý) | `security_trading_snapshot / private_corp_bond_offering / pc_bond_evaluation / public_company` |
-| Fact Futures Intraday Snapshot | fact | new | Biến động giá/KLGD trong phiên của HĐTL chỉ số (VN30/VN100) — dùng chung entity equity — grain 1 row/mã HĐTL/mốc thời gian | `security_trading_snapshot / securities_trade` |
+| Fact Futures Intraday Snapshot | fact | new | Biến động giá/KLGD trong phiên của HĐTL chỉ số (VN30/VN100) — dùng chung entity equity — grain 1 row/mã HĐTL/mốc thời gian | `security_trading_snapshot` |
 | Fact Futures Investor Flow Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng NĐTNN + Tự doanh trên HĐTL chỉ số — grain 1 row/nhóm NĐT/mã HĐTL/ngày | `securities_trade / security_trading_snapshot` |
 | Fact Market Statistics Snapshot | fact | new | Bộ chỉ tiêu thống kê theo chỉ số (Data Explorer) — grain 1 row/chỉ số/ngày | `market_index_snapshot / index_constituent_snapshot / security_trading_snapshot / securities_trade` |
 | Operational Corporate Bond Issuer Credit Monitor | operational | new | Danh sách TCPH TPDN kèm chỉ tiêu tín dụng (D/E, ROE) để giám sát rủi ro — grain 1 row/TCPH/kỳ báo cáo | `corporate_bond_trading_snapshot / public_company / pc_bond_evaluation / pc_evaluation_detail` |
-| Fact Cap Group Snapshot | fact | new | **[SỬA 2026-09-21]** GTGD và tỷ trọng thanh khoản theo nhóm vốn hóa (Small/Mid/Large-cap, ngưỡng USD) — mở khóa nhờ ngoại lệ `listed_share_info` (VSDC, đồng bộ Nhóm 7/8) — grain 1 row/nhóm vốn hóa/ngày | `security_trading_snapshot / securities_trade / listed_share_info / cl_risk_indicator_value / status_threshold_config` |
+| Fact Cap Group Snapshot | fact | new | **[SỬA 2026-09-21]** GTGD và tỷ trọng thanh khoản theo nhóm vốn hóa (Small/Mid/Large-cap, ngưỡng USD) — mở khóa nhờ ngoại lệ `listed_share_info` (VSDC, đồng bộ Nhóm 7/8) — grain 1 row/nhóm vốn hóa/ngày | `security_trading_snapshot / listed_share_info / cl_risk_indicator_value` |
 
 ---
 

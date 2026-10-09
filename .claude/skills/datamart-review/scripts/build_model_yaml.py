@@ -87,6 +87,21 @@ def dump_entity(e) -> str:
     return "\n".join(out)
 
 
+def _qualify(atbl, acol):
+    """source_atomic_column của yaml.
+
+    1 bảng: `bảng.cột` (nhiều cột cùng bảng: `bảng.cột1 / cột2`).
+    Nhiều bảng: nếu master đã ghi `bảng.cột / bảng.cột` thì GIỮ NGUYÊN — không ghép thêm tiền tố
+    (bản cũ luôn làm `"%s.%s" % (atbl, acol)` → `a / b.cột_của_a / cột_của_b`, sai nghĩa: trông như
+    mọi cột đều thuộc bảng cuối)."""
+    if not (atbl and acol):
+        return None
+    parts = [x.strip() for x in acol.split(" / ") if x.strip()]
+    if " / " in atbl and parts and all("." in x for x in parts):
+        return " / ".join(parts)
+    return "%s.%s" % (atbl, acol)
+
+
 def build_columns(master_rows, ix, table):
     """Cột của 1 bảng, dedupe theo physical_name (bảng multi-source lặp cột)."""
     out, seen = [], set()
@@ -108,7 +123,7 @@ def build_columns(master_rows, ix, table):
             "key": r[ix["key"]],
             "description": r[ix["description"]],
             "source_atomic_table": atbl or None,
-            "source_atomic_column": ("%s.%s" % (atbl, acol)) if atbl and acol else None,
+            "source_atomic_column": _qualify(atbl, acol),
         })
     return out
 

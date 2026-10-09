@@ -28,6 +28,14 @@ Bổ sung 2026-10-01 (module TT — K_TT_62 từng chiếm 5 dòng Detail Mappin
                               module khác (GSDC, GSTT...) giữ kiểu cũ nên bị bỏ qua, trừ khi thêm `--l18`
                               (khi đó mức WARNING, chỉ để đo mức độ nhân dòng).
 
+Bổ sung 2026-10-09 (review PTTT Nhóm 12 — Fact nối giao dịch HNX bằng symbol, Data Modeler chuyển sang snapshot):
+  D6 [L3-HNX-ISSUE-CODE-JOIN]            `etl_logic` nối `security_trading_snapshot.symbol` với
+                              `securities_trade.security_symbol_code` mà không có nhánh `isin_code` — HNX lưu ISSUE_CODE (ISIN)
+                              ở cột này nên giao dịch HNX bị rơi. WARNING (quy tắc A17, datamart-lld-design).
+  D7 [L3-CUMULATIVE-SNAPSHOT-NOT-DEDUPED] `SUM/AVG(security_trading_snapshot.<cột cộng dồn từ đầu ngày>)` không có điều kiện
+                              `trading_time` — mỗi ngày có nhiều bản ghi intraday, mỗi bản ghi đã là số cộng dồn nên SUM nhiều bản
+                              ghi nhân lặp. Phải lấy bản ghi `trading_time` mới nhất của symbol × trading_dt. WARNING (A18).
+
 Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES) = ERROR; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
@@ -182,6 +190,59 @@ def check_one_row_per_kpi(root: Path, module: str, force: bool = False):
     return out
 
 
+_RE_HNX_JOIN = re.compile(r"security_trading_snapshot\.symbol\s*=\s*securities_trade\.security_symbol_code"
+                          r"|securities_trade\.security_symbol_code\s*=\s*security_trading_snapshot\.symbol")
+_CUMULATIVE_FALLBACK = ("total_trading_vol", "total_trading_val", "pt_total_traded_vol", "pt_total_traded_val")
+
+
+def cumulative_snapshot_cols(root: Path):
+    """Cột của security_trading_snapshot mà Atomic mô tả là số cộng dồn từ đầu ngày (đọc từ YAML, có fallback)."""
+    cols = set()
+    for p in (root / "DataModel" / "Atomic").rglob("dm_atm_security_trading_snapshot-*.yaml"):
+        txt = p.read_text(encoding="utf-8")
+        for m in re.finditer(r"physical_name:\s*(\w+)\n\s*business_meaning:\s*(.*)\n", txt):
+            if re.search(r"từ đầu ngày|cộng dồn|lũy kế|luỹ kế", m.group(2), re.I):
+                cols.add(m.group(1))
+    return cols or set(_CUMULATIVE_FALLBACK)
+
+
+def lint_etl_text(etl: str, cum_cols, desc: str = ""):
+    """D6/D7 trên 1 chuỗi etl_logic. Trả list (level, code, msg_tail)."""
+    out = []
+    reviewed = "HNX-KEY-REVIEWED" in (desc or "") or "HNX-KEY-REVIEWED" in etl  # đã rà: ghi lý do + Open Issue trong description
+    if _RE_HNX_JOIN.search(etl) and "isin_code" not in etl and not reviewed:
+        out.append(("WARNING", "L3-HNX-ISSUE-CODE-JOIN",
+                    "nối security_trading_snapshot.symbol = securities_trade.security_symbol_code không có nhánh isin_code — "
+                    "HNX lưu ISSUE_CODE (ISIN) ở cột này nên giao dịch HNX bị rơi (A17)"))
+    if cum_cols and "trading_time" not in etl:
+        m = re.search(r"\b(?:SUM|AVG)\(\s*security_trading_snapshot\.(" + "|".join(sorted(cum_cols)) + r")\b", etl)
+        if m:
+            out.append(("WARNING", "L3-CUMULATIVE-SNAPSHOT-NOT-DEDUPED",
+                        f"SUM/AVG(security_trading_snapshot.{m.group(1)}) — cột cộng dồn từ đầu ngày nhưng không có điều kiện trading_time "
+                        f"(lấy bản ghi mới nhất của symbol × trading_dt) → nhân lặp các bản ghi intraday (A18)"))
+    return out
+
+
+def check_lld_etl_patterns(root: Path, module: str):
+    out = []
+    d = root / "Datamart" / "lld" / module
+    if not d.exists():
+        r = resolve_module_path(root, module, "attributes")
+        d = Path(r) if r else d
+    if not d.exists():
+        return out
+    cum = cumulative_snapshot_cols(root)
+    for f in sorted(d.glob("*.csv")):
+        try:
+            with open(f, encoding="utf-8-sig", newline="") as fh:
+                for r in csv.DictReader(fh):
+                    for lvl, code, msg in lint_etl_text(r.get("etl_logic") or "", cum, r.get("description") or ""):
+                        out.append((lvl, code, f"{f.name} [{r.get('datamart_table')}.{r.get('datamart_column')}] {msg}"))
+        except Exception:
+            continue
+    return out
+
+
 def check_flat(root: Path, module: str):
     out = []
     d = root / "Datamart" / "flat-table" / module
@@ -203,6 +264,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_derived_inline(root, module)
     issues += check_one_row_per_kpi(root, module, force_l18)
     issues += check_flat(root, module)
+    issues += check_lld_etl_patterns(root, module)
     return issues
 
 

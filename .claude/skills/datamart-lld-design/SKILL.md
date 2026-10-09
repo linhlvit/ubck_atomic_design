@@ -323,6 +323,31 @@ dùng surrogate của Atomic (VD `major_shareholder_ownership_id`). Ghi rõ lý 
 `check_flat_table.py` quét cả dòng comment; `-- ... = :etl_date. Chuỗi …` bị hiểu là tham số lạ →
 Gate 4 FAIL giả. Trong comment viết "ngày chạy ETL" thay cho `:etl_date`. Gate 8 bắt lỗi này.
 
+### A16 — Cột Atomic của dòng NHIỀU bảng phải ghi `bảng.cột` `[L0-MULTI-TABLE-COLUMN-NOT-FOUND]`
+
+Dòng có `atomic_table = a / b / c` mà `atomic_column` chỉ liệt kê tên cột trần (`close_price / outstanding_share_quantity / val`) làm người đọc
+và script KHÔNG biết cột nào thuộc bảng nào (`build_model_yaml` từng sinh `a / b / c.close_price / …` — trông như mọi cột đều của bảng cuối;
+Gate 0 trước 2026-10-09 bỏ qua hẳn mọi dòng nhiều bảng nên cột sai vẫn PASS). Quy ước bắt buộc cho dòng ≥ 2 bảng:
+
+- `source_entity` = `EntityA / EntityB`; `atomic_table` = `table_a / table_b`.
+- `source_attribute` = `EntityA.AttrA / EntityB.AttrB`; `atomic_column` = `table_a.col_a / table_b.col_b` — **mỗi cột kèm bảng chứa nó**, bảng phải nằm trong `atomic_table`.
+- Cột có thật trên bảng đó (grep YAML Atomic hoặc `mapping_*_atm.md` nếu bảng chưa có YAML, VD `listed_share_info`). Gate 0 kiểm chặt từng cặp (`CRITICAL` nếu cột không tồn tại trên bảng khai báo).
+- Chỉ khi nhiều cột CÙNG 1 bảng mới dùng `col_a / col_b` (cột trần).
+
+VD đúng: `atomic_table = security_trading_snapshot / listed_share_info / cl_risk_indicator_value`, `atomic_column = security_trading_snapshot.close_price / listed_share_info.outstanding_share_quantity / cl_risk_indicator_value.val`.
+
+### A17 — Nối `securities_trade` ↔ `security_trading_snapshot`: HNX nối bằng ISIN `[L3-HNX-ISSUE-CODE-JOIN]`
+
+`securities_trade.security_symbol_code` của **HNX là `ISSUE_CODE` (mã quốc tế/ISIN)**, của HOSE mới là mã CK (`symbol`). Nối `security_trading_snapshot.symbol = securities_trade.security_symbol_code` làm rơi toàn bộ giao dịch HNX. Công thức đúng: `(securities_trade.src_stm_code = 'ORDERTRADE_TRADE_BOOK_HOSE' AND security_trading_snapshot.symbol = securities_trade.security_symbol_code) OR (securities_trade.src_stm_code = 'ORDERTRADE_TRADE_BOOK_HNX' AND security_trading_snapshot.isin_code = securities_trade.security_symbol_code)`, kèm lấy bản ghi `trading_time` mới nhất của `symbol × trading_dt` để không nhân dòng. (Phát hiện 2026-10-09; NDTNN đã làm đúng từ 2026-09-18; PTTT còn 10 dòng LLD ở 4 bảng nối bằng `symbol` — `fct_sector_risk_snpst`, `fct_futures_investor_flow_snpst`, `fct_futures_intraday_snpst`, `fct_corporate_bond_market_snpst` — cần rà từng bảng, xem O_PTTT_38.)
+
+Ngoại lệ có truy vết: nếu SQL BA CHÍNH nó nối `Issue_Code = symbol` (VD HĐTL DVX, trái phiếu HCX — mã hợp đồng/trái phiếu có thể trùng `symbol`) và chưa xác nhận được với dữ liệu thật, ghi `[HNX-KEY-REVIEWED <ngày>: <lý do>; O_xxx]` vào `description` của cột và mở Open Issue cho dev xác nhận khóa — D6 sẽ bỏ qua dòng đó. Marker không thay cho xác nhận: đóng Open Issue rồi sửa join hoặc bỏ marker.
+
+### A18 — Chỉ tiêu theo mã CK × ngày: dùng `security_trading_snapshot` cuối ngày, không tổng hợp lại từ `securities_trade` `[L3-CUMULATIVE-SNAPSHOT-NOT-DEDUPED]`
+
+`security_trading_snapshot` (MDDS.JAD_STOCKINFOR) đã có sẵn theo mã × ngày: `close_price`, `average_price` (giá khớp TB), `total_trading_vol`/`total_trading_val` (KL/GTGD **khớp** cộng dồn từ đầu ngày), `pt_total_traded_*` (thỏa thuận, tách riêng), `floor_code`. Khi BA cần GTGD/KL/giá khớp **theo mã CK theo ngày** (hoặc gộp theo nhóm mã/ngành/nhóm vốn hóa), ưu tiên nguồn này thay vì `SUM` lại `securities_trade`: cùng bản ghi với giá đóng cửa, không phải nối ISIN HNX (A17), không nhân dòng. `securities_trade` chỉ dùng khi cần grain giao dịch/lệnh, chiều board, loại NĐT, bên mua/bán… mà snapshot không có (VD NDTNN, Data Explorer sổ lệnh).
+
+**Bắt buộc:** các cột cộng dồn (`total_trading_*`, `pt_total_traded_*`) mỗi ngày có nhiều bản ghi intraday, mỗi bản ghi là số cộng dồn tại thời điểm đó → luôn lấy bản ghi `trading_time` mới nhất của `symbol × trading_dt` (`trading_time = (SELECT MAX(trading_time) … WHERE symbol = … AND trading_dt = …)`) rồi mới `SUM`/`AVG`. `SUM` trên mọi bản ghi sẽ nhân lặp. Gate 8 (D7) cảnh báo khi thiếu điều kiện `trading_time`. Lưu ý đối chiếu: bản ghi cuối ngày của snapshot có thể không phải số chốt của sở — dev đối chiếu với sổ lệnh trước khi chốt (ghi vào Open Issue).
+
 ### Lệnh bổ sung — Gate 8 Design Lint
 
 ```bash

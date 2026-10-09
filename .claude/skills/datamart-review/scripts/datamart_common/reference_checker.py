@@ -186,7 +186,10 @@ def check_module_lld(root: Path, module: str, atomic: Dict[str, Set[str]],
             # Bỏ placeholder không phải tên cột: (hardcode), (null), (derived), N/A...
             acols = [c.strip() for c in acol_raw.split("/")
                      if c.strip() and _RE_IDENT.fullmatch(c.strip())]
-            if atbl and atbl in atomic and acols:
+            if " / " in atbl:
+                for code, sev, msg in check_multi_table_pair(atbl, acol_raw, atomic):
+                    res.issues.append(RefIssue(code, sev, f"{rel} [{owner}]", msg))
+            elif atbl and atbl in atomic and acols:
                 missing = [c for c in acols if c not in atomic[atbl]]
                 if missing:
                     hints = {c: _suggest(c, atomic[atbl]) for c in missing}
@@ -213,6 +216,39 @@ def check_module_lld(root: Path, module: str, atomic: Dict[str, Set[str]],
                         f"etl_logic tham chiếu `{t}.{c}` — cột này KHÔNG tồn tại trên Atomic."
                         + (f" Gợi ý gần nhất: `{near}`." if near else "")))
     return logical_map
+
+
+def check_multi_table_pair(atbl: str, acol_raw: str, atomic: Dict[str, Set[str]]):
+    """Kiểm cặp atomic_table / atomic_column của dòng NHIỀU bảng (`a / b / c`).
+
+    Trước 2026-10-09 Gate 0 BỎ QUA hoàn toàn mọi dòng này (`atbl in atomic` luôn False vì
+    `atbl` là cả chuỗi `a / b`) — cột sai vẫn PASS. Quy ước (phase1_attributes.md):
+      - Ghi `bảng.cột / bảng.cột` (mỗi cột kèm bảng chứa nó) — kiểm CHẶT từng cặp.
+      - Ghi cột trần: không biết cột thuộc bảng nào, chỉ kiểm được "có ở ÍT NHẤT 1 bảng".
+    Trả về list (code, severity, message).
+    """
+    tabs = [x.strip() for x in atbl.split(" / ") if x.strip()]
+    cols = [x.strip() for x in acol_raw.split(" / ") if x.strip()]
+    out = []
+    for col in cols:
+        if "." in col:
+            tb, cl = (x.strip() for x in col.split(".", 1))
+            if tb not in tabs:
+                out.append(("L0-MULTI-TABLE-PAIR-INVALID", "WARNING",
+                            f"atomic_column `{col}`: bảng `{tb}` không nằm trong atomic_table ({' / '.join(tabs)})."))
+            elif tb in atomic and cl not in atomic[tb]:
+                out.append(("L0-ATOMIC-COLUMN-NOT-FOUND", "CRITICAL",
+                            f"Cột Atomic không tồn tại trên `{tb}`: `{cl}`"
+                            + (f" (gợi ý: `{_suggest(cl, atomic[tb])}`)" if _suggest(cl, atomic[tb]) else "")))
+            continue
+        if not _RE_IDENT.fullmatch(col):
+            continue  # placeholder (hardcode)/(null)/...
+        known = [x for x in tabs if x in atomic]
+        if len(known) == len(tabs) and not any(col in atomic[x] for x in known):
+            out.append(("L0-MULTI-TABLE-COLUMN-NOT-FOUND", "WARNING",
+                        f"Cột `{col}` không tồn tại trên bảng Atomic nào trong ({' / '.join(tabs)}) — "
+                        f"ghi `bảng.cột` để chỉ rõ cột thuộc bảng nào."))
+    return out
 
 
 _RE_QUALIFIED = re.compile(r'\b([a-z][a-z0-9_]{2,})\.([a-z][a-z0-9_]{2,})\b')
