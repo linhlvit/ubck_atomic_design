@@ -7,6 +7,8 @@
 -- Bảng đích: datamart.cl_flat
 -- Bảng nguồn: datamart.cl_dim
 -- ETL Strategy: TRUNCATE + INSERT toàn bộ ngày lịch từ datamart.cdr_dt_dim sang ClickHouse datamart.cdr_dt_flat
+-- Lưu ý is_trading_date: flat chỉ sao chép từ datamart.cdr_dt_dim; rule (BA 2026-10-09: ngày có ở CẢ market_index_snapshot VÀ
+--   security_trading_snapshot) áp dụng khi build cdr_dt_dim, KHÔNG tính lại tại bước populate flat này
 -- ============================================================
 
 TRUNCATE TABLE datamart.cdr_dt_flat ON CLUSTER 'my_cluster';

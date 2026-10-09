@@ -95,9 +95,9 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "(Sửa 2026-09-05, partial — thêm từ GSTT, yêu cầu thiết kế trực tiếp từ user) Y nếu ngày lịch này là ngày giao dịch thực tế của thị trường chứng khoán (tồn tại bản ghi trên Market Index Snapshot), N nếu không (cuối tuần/lễ/ngày market không mở cửa). Dùng để lọc \"ngày giao dịch\" (khác Is Weekend/Holiday Flag — không dùng chung lịch nghỉ lễ nhà nước, vì thị trường có thể nghỉ thêm ngày không phải lễ chính thức hoặc ngược lại). \"Ngày giao dịch gần nhất\" = MAX(cdr_dt) WHERE is_trading_date = 'Y' — tính tại tầng BI, dùng làm tham số lọc mặc định cho dashboard/báo cáo giao dịch thị trường (xem GSTT Nhóm 1, K_GSTT_128). ETL: EXISTS(SELECT 1 FROM market_index_snapshot WHERE market_index_snapshot.trading_dt = cdr_dt.cdr_dt) → 'Y' ELSE 'N' — join_atomic khác driving table cdr_dt (partial, không ảnh hưởng cột direct hiện có)"
-        source_atomic_table: "market_index_snapshot"
-        source_atomic_column: "market_index_snapshot.trading_dt"
+        description: "(Sửa 2026-09-05, partial — thêm từ GSTT, yêu cầu thiết kế trực tiếp từ user; [SỬA 2026-10-09, BA đổi rule] điều kiện nguồn xem phần ETL cuối mô tả) Y nếu ngày lịch này là ngày giao dịch thực tế của thị trường chứng khoán (tồn tại bản ghi ở CẢ Market Index Snapshot VÀ Security Trading Snapshot), N nếu không (cuối tuần/lễ/ngày market không mở cửa, hoặc ngày chỉ có ở 1 trong 2 nguồn). Dùng để lọc \"ngày giao dịch\" (khác Is Weekend/Holiday Flag — không dùng chung lịch nghỉ lễ nhà nước, vì thị trường có thể nghỉ thêm ngày không phải lễ chính thức hoặc ngược lại). \"Ngày giao dịch gần nhất\" = MAX(cdr_dt) WHERE is_trading_date = 'Y' — tính tại tầng BI, dùng làm tham số lọc mặc định cho dashboard/báo cáo giao dịch thị trường (xem GSTT Nhóm 1, K_GSTT_128). ETL: EXISTS(SELECT 1 FROM market_index_snapshot WHERE market_index_snapshot.trading_dt = cdr_dt.cdr_dt) AND EXISTS(SELECT 1 FROM security_trading_snapshot WHERE security_trading_snapshot.trading_dt = cdr_dt.cdr_dt) → 'Y' ELSE 'N' — join_atomic khác driving table cdr_dt (partial, không ảnh hưởng cột direct hiện có)"
+        source_atomic_table: "market_index_snapshot / security_trading_snapshot"
+        source_atomic_column: "market_index_snapshot / security_trading_snapshot.trading_dt"
 
   - id: "DTM-securities_practitioner_dim"
     logical_name: "Securities Practitioner Dimension"
