@@ -282,6 +282,16 @@ entities:
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Transaction"
+  atomic_entity: "Securities Company Bank Periodic"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_bank_periodic"
+  description: "Báo cáo định kỳ của ngân hàng lưu ký nộp lên UBCKNN. Ghi nhận kỳ,\
+    \ năm, hạn nộp theo quy định, ngày gửi/duyệt/hủy thực tế và trạng thái xử lý."
+  source_table: "SCMS.BANK_PERIODIC_REPORT"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Transaction"
   atomic_entity: "Securities Company Periodic Report"
   table_type: "Fundamental"
   domain_prefix: "Securities Company"
@@ -290,24 +300,6 @@ entities:
     \ doanh). Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng thái\
     \ xử lý."
   source_table: "SCMS.SC_FIRM_PERIODIC_REPORT"
-  status: "draft"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Transaction"
-  atomic_entity: "Securities Company Bank Periodic"
-  table_type: "Relative"
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_bank_periodic"
-  description: "Báo cáo định kỳ của ngân hàng lưu ký nộp lên UBCKNN. Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày gửi/duyệt/hủy thực tế và trạng thái xử lý."
-  source_table: "SCMS.BANK_PERIODIC_REPORT"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Securities Company Report Deep Config"
-  table_type: "Relative"
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_report_deep_config"
-  description: "Cấu hình sâu của biểu mẫu báo cáo — danh sách và cấu trúc các sheet của biểu mẫu dưới dạng JSON, gắn với 1 biểu mẫu báo cáo (Securities Company Report)."
-  source_table: "SCMS.FORM_REPORT_DEEP_CONFIG"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Status Review"
@@ -570,11 +562,10 @@ entities:
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Classification Securities Company Event Type X Securities Company\
-    \ Report Relationship"
+  atomic_entity: "Securities Company Report X Classification Securities Company Event Type Relationship"
   table_type: "Relative"
   domain_prefix: ""
-  entity_physical_name: "cl_sc_event_type_x_sc_report_relationship"
+  entity_physical_name: "sc_report_x_cl_sc_event_type_relationship"
   description: "Quy định biểu mẫu báo cáo nào bắt buộc nộp cho loại sự kiện nào, trong\
     \ khoảng thời gian nào (APPLICABLE_FROM/APPLICABLE_TO, REQUIRED). Đặt tên theo\
     \ pattern `_x_ Relationship` — tham khảo NHNCK APPLICATION_DECISIONS và tiền lệ\
@@ -841,6 +832,18 @@ entities:
   source_table: "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL"
   status: "draft"
 - bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Documentation"
+  atomic_entity: "Internal Statistical Report"
+  table_type: "Classification"
+  domain_prefix: "Internal Statistical Report"
+  entity_physical_name: "internal_statistical_report"
+  description: "Báo cáo định kỳ ISS (thống kê nội bộ UBCKNN). Grain = 1 ô × 1 lần\
+    \ nộp × 1 kỳ báo cáo. Dữ liệu flatten đến từng ô biểu mẫu (cell-level), hỗ trợ\
+    \ cả 3 layout: MIXED / COLUMN_BASED / ROW_BASED. BK composite: report_code ||\
+    \ sheet_nm || field_code || row_index || origin_dt_val."
+  source_table: "ISS.INTERNAL_STATISTICAL_REPORT"
+  status: "approved"
+- bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
   atomic_entity: "Public Company Report Submission"
   table_type: "Relative"
@@ -887,6 +890,17 @@ entities:
     \ BCV Concept sửa theo tiền lệ IDS (2026-09-15, xem 7e #22) — trước đây dùng term\
     \ tự đặt không có thật trong BCV. Đổi tên từ \"Securities Company Form"
   source_table: "SCMS.FORM_REPORT"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Securities Company Report Deep Config"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_report_deep_config"
+  description: "Cấu hình sâu của biểu mẫu báo cáo — danh sách và cấu trúc các sheet\
+    \ của biểu mẫu dưới dạng JSON, gắn với 1 biểu mẫu báo cáo (Securities Company\
+    \ Report)."
+  source_table: "SCMS.FORM_REPORT_DEEP_CONFIG"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
@@ -2268,9 +2282,9 @@ entities:
   domain_prefix: "Classification"
   entity_physical_name: "cl_securities_company_position"
   description: "Danh mục chức vụ nhân sự CTCK — mã, tên, nhóm chức vụ và các cờ phân\
-    \ loại (người đại diện, thành viên Ban lãnh đạo, giám đốc chi nhánh/PGD/VPĐD). Nâng\
-    \ cấp từ Classification Value (scheme SCMS_POSITION_TYPE) lên entity thật theo\
-    \ yêu cầu Data Modeler (2026-10-08)."
+    \ loại (người đại diện, thành viên Ban lãnh đạo, giám đốc chi nhánh/PGD/VPĐD).\
+    \ Nâng cấp từ Classification Value (scheme SCMS_POSITION_TYPE) lên entity thật\
+    \ theo yêu cầu Data Modeler (2026-10-08)."
   source_table: "SCMS.CAT_POSITION"
   status: "draft"
 - bcv_core_object: ""
@@ -2281,6 +2295,17 @@ entities:
   entity_physical_name: ""
   description: ""
   source_table: "SCMS.CAT_SERVICE"
+  status: "draft"
+- bcv_core_object: "Business Direction"
+  bcv_concept: "[Business Direction] Law"
+  atomic_entity: "Classification THANHTRA Penalty Type"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_thanhtra_penalty_type"
+  description: "Danh mục hình thức xử phạt hành chính được pháp luật quy định, phân\
+    \ loại thành hình phạt chính, hình phạt bổ sung và biện pháp khắc phục, có trạng\
+    \ thái hiệu lực."
+  source_table: "THANHTRA.PENALTY_TYPE"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Classification] Common"
@@ -2768,17 +2793,6 @@ entities:
     \ cho phép 1 hành vi có N hình thức xử phạt bổ sung. Cân nhắc quan hệ với cột\
     \ SU"
   source_table: "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY"
-  status: "draft"
-- bcv_core_object: "Business Direction"
-  bcv_concept: "[Business Direction] Law"
-  atomic_entity: "Penalty Type"
-  table_type: "Classification"
-  domain_prefix: ""
-  entity_physical_name: "penalty_type"
-  description: "Danh mục hình thức xử phạt hành chính được pháp luật quy định, phân\
-    \ loại thành hình phạt chính, hình phạt bổ sung và biện pháp khắc phục, có trạng\
-    \ thái hiệu lực."
-  source_table: "THANHTRA.PENALTY_TYPE"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -3461,6 +3475,18 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
+  atomic_entity: "Violation Behavior X Penalty Type Relationship"
+  table_type: ""
+  domain_prefix: ""
+  entity_physical_name: ""
+  description: "Hình thức xử phạt bổ sung áp dụng cho từng hành vi vi phạm hành chính\
+    \ trong danh mục — entity link/relationship thuần bắc cầu Violation Behavior (T2)\
+    \ và Penalty Type (T1), quan hệ N:N, cross-tier FK bình thường. Bảng nguồn chỉ\
+    \ có 2 FK nghiệp vụ nên PK composite trên 2 FK Id. PRIMARY"
+  source_table: "THANHTRA.PENALTY_TYPE_VIOLATION_BEHAVIOR"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
   atomic_entity: "Violation Case"
   table_type: ""
   domain_prefix: ""
@@ -3504,15 +3530,3 @@ entities:
     \ 7e #18."
   source_table: "IDS.VIOLATION_TEMPLATES"
   status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Documentation"
-  atomic_entity: "Internal Statistical Report"
-  table_type: "Classification"
-  domain_prefix: "Internal Statistical Report"
-  entity_physical_name: "internal_statistical_report"
-  description: "Báo cáo định kỳ ISS (thống kê nội bộ UBCKNN). Grain = 1 ô × 1 lần\
-    \ nộp × 1 kỳ báo cáo. Dữ liệu flatten đến từng ô biểu mẫu (cell-level), hỗ\
-    \ trợ cả 3 layout: MIXED / COLUMN_BASED / ROW_BASED. BK composite: report_code\
-    \ || sheet_nm || field_code || row_index || origin_dt_val."
-  source_table: "ISS.FLAT_REPORT"
-  status: "approved"

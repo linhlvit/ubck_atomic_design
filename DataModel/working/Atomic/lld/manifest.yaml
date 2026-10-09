@@ -458,7 +458,7 @@ entries:
   design_status: approved
 - source_system: THANHTRA
   source_table: PENALTY_TYPE
-  atomic_entity: Penalty Type
+  atomic_entity: Classification THANHTRA Penalty Type
   group: T1
   lld_file: THANHTRA/lld_THANHTRA_PENALTY_TYPE.yaml
   design_status: approved
@@ -683,7 +683,7 @@ entries:
   atomic_entity: Securities Company Organization Unit
   group: T2
   lld_file: SCMS/lld_SCMS_SC_FIRM_REP_OFFICE.yaml
-  design_status: approved
+  design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_REP_OFFICE
   atomic_entity: Involved Party Postal Address
@@ -696,6 +696,12 @@ entries:
   group: T2
   lld_file: SCMS/lld_SCMS_SC_FIRM_REP_OFFICE_IP_Electronic_Address.yaml
   design_status: approved
+- source_system: SCMS
+  source_table: SC_FIRM_REP_OFFICE
+  atomic_entity: Involved Party Alternative Identification
+  group: T2
+  lld_file: SCMS/lld_SCMS_SC_FIRM_REP_OFFICE_IP_Alt_Identification.yaml
+  design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_TRANSACTION_OFFICE
   atomic_entity: Securities Company Organization Unit
@@ -1982,7 +1988,7 @@ entries:
   design_status: draft
 - source_system: SCMS
   source_table: LNK_EVENT_TYPE_FORM
-  atomic_entity: Classification Securities Company Event Type X Securities Company Report Relationship
+  atomic_entity: Securities Company Report X Classification Securities Company Event Type Relationship
   group: T2
   lld_file: SCMS/lld_SCMS_LNK_EVENT_TYPE_FORM.yaml
   design_status: draft
@@ -2826,6 +2832,12 @@ entries:
   group: T6
   lld_file: THANHTRA/lld_THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.yaml
   design_status: draft
+- source_system: THANHTRA
+  source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+  atomic_entity: Violation Behavior X Penalty Type Relationship
+  group: T3
+  lld_file: THANHTRA/lld_THANHTRA_PENALTY_TYPE_VIOLATION_BEHAVIOR.yaml
+  design_status: draft
 - source_system: FIMS
   source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
   atomic_entity: Classification Foreign Investor Reporting Entity
@@ -2899,8 +2911,8 @@ entries:
   lld_file: FMS/lld_FMS_RPT_VALUES.yaml
   design_status: draft
 - source_system: ISS
-  source_table: FLAT_REPORT
+  source_table: INTERNAL_STATISTICAL_REPORT
   atomic_entity: Internal Statistical Report
   group: T1
-  lld_file: ISS/lld_ISS_FLAT_REPORT.yaml
+  lld_file: ISS/lld_ISS_INTERNAL_STATISTICAL_REPORT.yaml
   design_status: approved
