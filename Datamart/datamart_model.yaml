@@ -14614,6 +14614,83 @@ entities:
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.src_stm_code"
 
+  - id: "DTM-hnx06_gov_bond_bidding_rpt"
+    logical_name: "Gov Bond Bidding Report (HNX06)"
+    datamart_table: "hnx06_gov_bond_bidding_rpt"
+    table_type: "operational"
+    module: "TKNB"
+    status: "draft"
+    reuse_status: "new"
+    description: "Thống kê hoạt động đấu thầu trái phiếu Chính phủ theo tháng (HNX) — EAV 1 dòng/1 chỉ tiêu"
+    source_atomic:
+      - "gov_bond_bidding_result"
+    modules_using:
+      - "TKNB"
+    columns:
+      - logical_name: "Report Code"
+        physical_name: "report_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "BK"
+        description: "BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Report Period Date"
+        physical_name: "report_period_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: "BK"
+        description: "BK — kỳ báo cáo"
+        source_atomic_table: "gov_bond_bidding_result"
+        source_atomic_column: "gov_bond_bidding_result.ds_snpst_dt"
+      - logical_name: "Item Code"
+        physical_name: "item_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu HNX06"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item STT"
+        physical_name: "item_stt"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: false
+        key: ""
+        description: "Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item Unit"
+        physical_name: "item_unit"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Đơn vị tính của chỉ tiêu"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item Value"
+        physical_name: "item_value"
+        data_domain: "Currency Amount"
+        data_type: "float"
+        nullable: true
+        key: ""
+        description: "Giá trị chỉ tiêu — populate theo item_code, giá trị/khối lượng giao dịch TPDN niêm yết sàn HNX"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu của báo cáo"
+        source_atomic_table: "gov_bond_bidding_result"
+        source_atomic_column: "gov_bond_bidding_result.src_stm_code"
+
   - id: "DTM-hnx07_corp_bond_trading_rpt"
     logical_name: "Corp Bond Trading Report (HNX07)"
     datamart_table: "hnx07_corp_bond_trading_rpt"
@@ -15258,6 +15335,83 @@ entities:
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.src_stm_code"
 
+  - id: "DTM-bm030bmss_gov_bond_trading_rpt"
+    logical_name: "Gov Bond Trading Report (BM030b)"
+    datamart_table: "bm030bmss_gov_bond_trading_rpt"
+    table_type: "operational"
+    module: "TKNB"
+    status: "draft"
+    reuse_status: "new"
+    description: "Thống kê giao dịch toàn thị trường TPCP theo ngày (sổ lệnh OTC HNX) — EAV 1 dòng/1 chỉ tiêu"
+    source_atomic:
+      - "bond_order_book"
+    modules_using:
+      - "TKNB"
+    columns:
+      - logical_name: "Report Code"
+        physical_name: "report_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "BK"
+        description: "BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Report Period Date"
+        physical_name: "report_period_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: "BK"
+        description: "BK — kỳ báo cáo"
+        source_atomic_table: "bond_order_book"
+        source_atomic_column: "bond_order_book.trading_date"
+      - logical_name: "Item Code"
+        physical_name: "item_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM030b_MSS"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item STT"
+        physical_name: "item_stt"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: false
+        key: ""
+        description: "Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item Unit"
+        physical_name: "item_unit"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Đơn vị tính của chỉ tiêu"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Item Value"
+        physical_name: "item_value"
+        data_domain: "Currency Amount"
+        data_type: "float"
+        nullable: true
+        key: ""
+        description: "Giá trị chỉ tiêu — populate theo item_code, khối lượng/giá trị giao dịch TPDN niêm yết toàn thị trường (cộng gộp HOSE+HNX)"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu của báo cáo"
+        source_atomic_table: "bond_order_book"
+        source_atomic_column: "bond_order_book.src_stm_code"
+
   - id: "DTM-bm030cmss_corp_bond_trading_rpt"
     logical_name: "Corp Bond Trading Report (BM030c)"
     datamart_table: "bm030cmss_corp_bond_trading_rpt"
@@ -15499,7 +15653,7 @@ entities:
     reuse_status: "new"
     description: "Giao dịch NĐTNN/tự doanh thị trường TPCP theo ngày — EAV."
     source_atomic:
-      - "securities_trade"
+      - "bond_order_book"
     modules_using:
       - "TKNB"
     columns:
@@ -15519,8 +15673,8 @@ entities:
         nullable: false
         key: "BK"
         description: "BK — kỳ báo cáo"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.trade_dt"
+        source_atomic_table: "bond_order_book"
+        source_atomic_column: "bond_order_book.trading_date"
       - logical_name: "Item Code"
         physical_name: "item_code"
         data_domain: "Text"
@@ -15564,8 +15718,8 @@ entities:
         nullable: false
         key: ""
         description: "Mã hệ thống nguồn dữ liệu của báo cáo"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.src_stm_code"
+        source_atomic_table: "bond_order_book"
+        source_atomic_column: "bond_order_book.src_stm_code"
 
   - id: "DTM-bm031cmss_corp_bond_foreign_proprietary_trading_rpt"
     logical_name: "Corp Bond Foreign Proprietary Trading Report (BM031c)"
@@ -15722,9 +15876,9 @@ entities:
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.src_stm_code"
 
-  - id: "DTM-bm031fmss_derivatives_foreign_proprietary_trading_rpt"
-    logical_name: "Derivatives Foreign Proprietary Trading Report (BM031f)"
-    datamart_table: "bm031fmss_derivatives_foreign_proprietary_trading_rpt"
+  - id: "DTM-bm030fmss_derivatives_trading_rpt"
+    logical_name: "Derivatives Trading Report (BM030f)"
+    datamart_table: "bm030fmss_derivatives_trading_rpt"
     table_type: "operational"
     module: "TKNB"
     status: "draft"
@@ -15760,7 +15914,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM031f_MSS"
+        description: "PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM030f_MSS"
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Item STT"

@@ -134,6 +134,7 @@ erDiagram
 | 2 | Gov Bond OTC Trading Report (HNX02) | Operational | new | Báo cáo giao dịch trái phiếu Chính phủ OTC trên HNX (7/165 KPI READY — 3/7 loại hình GD) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_109–273 |
 | 3 | Derivative Trading Report (HNX03) | Operational | new | Báo cáo giao dịch thị trường CKPS (HNX) theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_274–286 |
 | 4 | Market Scale Report (HNX04) | Operational | new | Báo cáo tổng hợp quy mô TTCK HNX | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo/1 period_type | K_TKNB_290–471 |
+| 5 | Gov Bond Bidding Report (HNX06) | Operational | new | Thống kê hoạt động đấu thầu trái phiếu Chính phủ theo tháng (HNX) — EAV 1 dòng/1 chỉ tiêu | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_472–496 |
 | 6 | Corp Bond Trading Report (HNX07) | Operational | new | Báo cáo giao dịch TPDN niêm yết trên HNX theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_497–519 |
 | 10 | Stock Trading Report (HSX01) | Operational | new | Báo cáo giao dịch thị trường cổ phiếu HOSE theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_571–695 |
 | 11 | Listing Trading Report (HSX02) | Operational | new | Báo cáo niêm yết và giao dịch chứng khoán HOSE kỳ tháng | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo/1 period_type | K_TKNB_696–792 |
@@ -142,13 +143,14 @@ erDiagram
 | 15 | Offering Result Report (0513.H.UBCK.QG) | Operational | new | Báo cáo kết quả thực hiện phát hành chứng khoán | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_846–874 |
 | 16 | Market Summary Report (TK-04.BTC) | Operational | new | Báo cáo tổng hợp TTCK theo quý/lũy kế | 1 dòng/1 chỉ tiêu/1 kỳ gốc (period_marker) | K_TKNB_875–917 |
 | 17 | Market Annual Report (TK_NienGiam) | Operational | new | Niên giám thống kê thị trường chứng khoán theo năm | 1 dòng/1 chỉ tiêu/1 năm báo cáo | K_TKNB_918–1011 |
+| 19 | Gov Bond Trading Report (BM030b) | Operational | new | Thống kê giao dịch toàn thị trường TPCP theo ngày (sổ lệnh OTC HNX) — EAV 1 dòng/1 chỉ tiêu | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1025–1036 |
 | 20 | Corp Bond Trading Report (BM030c) | Operational | new | Thống kê giao dịch toàn thị trường TPDN niêm yết theo ngày (cộng gộp 2 sàn) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1037–1045 |
 | 21 | OTC Corp Bond Trading Report (BM030d) | Operational | new | Thống kê giao dịch thị trường TPDN riêng lẻ theo ngày (báo cáo HNX09 trên ISS) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1046–1052 |
 | 22 | Fund Cert ETF CW Trading Report (BM030e) | Operational | new | Thống kê giao dịch thị trường CCQ/ETF/CW toàn thị trường theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1053–1067 |
 | 24 | Gov Bond Foreign Proprietary Trading Report (BM031b) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường TPCP theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1094–1112 |
 | 25 | Corp Bond Foreign Proprietary Trading Report (BM031c) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường TPDN niêm yết theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1113–1122 |
 | 26 | Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường CCQ/ETF/CW theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1123–1173 |
-| 27 | Derivatives Foreign Proprietary Trading Report (BM031f) | Operational | new | Thống kê giao dịch thị trường CKPS (NĐTNN/tự doanh) theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1174–1186 |
+| 27 | Derivatives Trading Report (BM030f) | Operational | new | Thống kê giao dịch thị trường CKPS (NĐTNN/tự doanh) theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1174–1186 |
 
 ## Nguồn Atomic theo bảng
 
@@ -168,6 +170,7 @@ erDiagram
 | Gov Bond OTC Trading Report (HNX02) | bond_order_book |
 | Derivative Trading Report (HNX03) | security_trading_snapshot / securities_trade |
 | Market Scale Report (HNX04) | securities_trade / security_trading_snapshot |
+| Gov Bond Bidding Report (HNX06) | gov_bond_bidding_result |
 | Corp Bond Trading Report (HNX07) | securities_trade |
 | Stock Trading Report (HSX01) | market_index_snapshot / securities_trade / security_trading_snapshot |
 | Listing Trading Report (HSX02) | market_index_snapshot / securities_trade / security_trading_snapshot |
@@ -176,10 +179,11 @@ erDiagram
 | Offering Result Report (0513.H.UBCK.QG) | pc_securities_offering_result |
 | Market Summary Report (TK-04.BTC) | securities_trade |
 | Market Annual Report (TK_NienGiam) | market_index_snapshot / securities_trade / security_trading_snapshot / public_company / securities_company / fund_management_company |
+| Gov Bond Trading Report (BM030b) | bond_order_book |
 | Corp Bond Trading Report (BM030c) | securities_trade |
 | OTC Corp Bond Trading Report (BM030d) | internal_statistical_report |
 | Fund Cert ETF CW Trading Report (BM030e) | securities_trade / security_trading_snapshot |
 | Gov Bond Foreign Proprietary Trading Report (BM031b) | securities_trade |
 | Corp Bond Foreign Proprietary Trading Report (BM031c) | securities_trade |
 | Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d) | securities_trade / security_trading_snapshot |
-| Derivatives Foreign Proprietary Trading Report (BM031f) | securities_trade / security_trading_snapshot |
+| Derivatives Trading Report (BM030f) | securities_trade / security_trading_snapshot |

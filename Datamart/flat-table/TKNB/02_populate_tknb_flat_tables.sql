@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — POPULATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 23 bảng — operational: KHÔNG JOIN, KHÔNG lọc ngày; FACT (#13/#16/#23): JOIN dim, lọc :etl_date
+-- 27 bảng — operational: KHÔNG JOIN, KHÔNG lọc ngày; FACT (#13/#16/#23): JOIN dim, lọc :etl_date
 -- ============================================================
 
 -- ============================================================
@@ -71,6 +71,23 @@ SELECT
     o.item_value,
     o.src_stm_code
 FROM datamart.hnx04_market_scale_rpt o
+;
+
+
+-- ============================================================
+-- 6a. OPERATIONAL: hnx06_gov_bond_bidding_rpt
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.tknb_hnx06_gov_bond_bidding_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.tknb_hnx06_gov_bond_bidding_rpt_flat
+SELECT
+    o.report_code,
+    o.report_period_dt,
+    o.item_code,
+    o.item_stt,
+    o.item_unit,
+    o.item_value,
+    o.src_stm_code
+FROM datamart.hnx06_gov_bond_bidding_rpt o
 ;
 
 
@@ -251,6 +268,23 @@ WHERE trade_cal.cdr_dt = :etl_date
 
 
 -- ============================================================
+-- 14a. OPERATIONAL: bm030bmss_gov_bond_trading_rpt
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.tknb_bm030bmss_gov_bond_trading_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.tknb_bm030bmss_gov_bond_trading_rpt_flat
+SELECT
+    o.report_code,
+    o.report_period_dt,
+    o.item_code,
+    o.item_stt,
+    o.item_unit,
+    o.item_value,
+    o.src_stm_code
+FROM datamart.bm030bmss_gov_bond_trading_rpt o
+;
+
+
+-- ============================================================
 -- 14. OPERATIONAL: bm030cmss_corp_bond_trading_rpt
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.tknb_bm030cmss_corp_bond_trading_rpt_flat ON CLUSTER 'my_cluster';
@@ -407,10 +441,10 @@ FROM datamart.bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt o
 
 
 -- ============================================================
--- 20. OPERATIONAL: bm031fmss_derivatives_foreign_proprietary_trading_rpt
+-- 20. OPERATIONAL: bm030fmss_derivatives_trading_rpt
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_bm031fmss_derivatives_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_bm031fmss_derivatives_foreign_proprietary_trading_rpt_flat
+TRUNCATE TABLE IF EXISTS datamart.tknb_bm030fmss_derivatives_trading_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.tknb_bm030fmss_derivatives_trading_rpt_flat
 SELECT
     o.report_code,
     o.report_period_dt,
@@ -419,7 +453,7 @@ SELECT
     o.item_unit,
     o.item_value,
     o.src_stm_code
-FROM datamart.bm031fmss_derivatives_foreign_proprietary_trading_rpt o
+FROM datamart.bm030fmss_derivatives_trading_rpt o
 ;
 
 

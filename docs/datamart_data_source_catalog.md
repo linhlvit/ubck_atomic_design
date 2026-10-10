@@ -535,7 +535,7 @@ Phân hệ TKNB là trung tâm báo cáo thống kê quy chuẩn cấp ngành c�
   - *Báo cáo Sở GDCK TP.HCM (HOSE)*: HSX01 (Cổ phiếu HOSE - 125 KPIs), HSX02 (Niêm yết & GD chứng khoán HOSE - 97 KPIs), HSX04 (Tự doanh CTCK HOSE - 29 KPIs).
   - *Báo cáo Trung tâm Lưu ký Chứng khoán (VSDC)*: TTLK10 (Chứng quyền có bảo đảm CW lưu hành).
   - *Báo cáo UBCK & Bộ Tài Chính*: Biểu 0513.H.UBCK.QG (Kết quả phát hành CK toàn thị trường - 29 KPIs), Biểu TK-04.BTC (Tổng hợp TTCK gửi BTC - 43 KPIs), TK_NienGiam (Niên giám thống kê TTCK hàng năm - 94 KPIs).
-  - *Báo cáo Giám sát MSS*: BM030c (TPDN), BM030e (CCQ, ETF, CW), BM031b (TPCP NĐTNN/Tự doanh), BM031c (TPDN NĐTNN/Tự doanh), BM031d (CCQ/ETF/CW NĐTNN/Tự doanh), BM031f (Phái sinh NĐTNN/Tự doanh).
+  - *Báo cáo Giám sát MSS*: BM030c (TPDN), BM030e (CCQ, ETF, CW), BM031b (TPCP NĐTNN/Tự doanh), BM031c (TPDN NĐTNN/Tự doanh), BM031d (CCQ/ETF/CW NĐTNN/Tự doanh), BM030f (Phái sinh NĐTNN/Tự doanh).
 - **Nhóm Data Explorer (71 KPIs — 41 Nhóm truy xuất):**
   - Hỗ trợ tra cứu chi tiết và trích xuất dữ liệu của 20 biểu mẫu phẳng EAV (`datamart.tknb_*_rpt_flat`) theo kỳ báo cáo, mã báo cáo, mã chỉ tiêu và hệ thống nguồn; Tra cứu chi tiết từng mã CK (BM035_MSS - 53 KPIs) và chi tiết từng mã HĐTL phái sinh (BM043_MSS - 18 KPIs).
 
@@ -557,8 +557,10 @@ Phân hệ TKNB là trung tâm báo cáo thống kê quy chuẩn cấp ngành c�
 | 0513 | Báo cáo kết quả chào bán CK toàn TT | **Báo Cáo** | `datamart.tknb_0513hubckqg_offering_result_rpt_flat` | `datamart.0513hubckqg_offering_result_rpt` | Self-contained (EAV) | ISS / QLCB |
 | TK-04.BTC | Báo cáo tổng hợp TTCK gửi Bộ Tài Chính | **Báo Cáo** | `datamart.tknb_tk04btc_market_summary_rpt_flat` | `datamart.tk04btc_market_summary_rpt` | Self-contained (EAV) | Tổng hợp liên sở |
 | TK_NienGiam | Niên giám thống kê TTCK hàng năm | **Báo Cáo** | `datamart.tknb_tkniengiam_market_annual_rpt_flat` | `datamart.tkniengiam_market_annual_rpt` | Self-contained (EAV) | Niên giám tổng hợp |
+| BM030b | GD TPCP toàn thị trường | **Báo Cáo** | `datamart.tknb_bm030bmss_gov_bond_trading_rpt_flat` | `datamart.bm030bmss_gov_bond_trading_rpt` | Self-contained (EAV) | VSDC/HNX (`bond_order_book`) |
+| HNX06 | Đấu thầu TPCP | **Báo Cáo** | `datamart.tknb_hnx06_gov_bond_bidding_rpt_flat` | `datamart.hnx06_gov_bond_bidding_rpt` | Self-contained (EAV) | VSDC/HNX (`gov_bond_bidding_result`) |
 | BM030c, e | GD TPDN & CCQ/ETF/CW | **Báo Cáo** | `datamart.tknb_bm030cmss_corp_bond_trading_rpt_flat` | `datamart.bm030cmss_corp_bond_trading_rpt` | Self-contained (EAV) | ORDERTRADE, MDDS |
-| BM031b, c, d, f | GD TPCP, TPDN, CCQ, Phái sinh NĐTNN & Tự doanh | **Báo Cáo** | `datamart.tknb_bm031bmss_gov_bond_foreign_proprietary_trading_rpt_flat` đến `bm031fmss_*` | `datamart.bm031bmss_*` đến `bm031fmss_*` | Self-contained (EAV) | ORDERTRADE, MDDS |
+| BM031b, c, d, f | GD TPCP, TPDN, CCQ, Phái sinh NĐTNN & Tự doanh | **Báo Cáo** | `datamart.tknb_bm031bmss_gov_bond_foreign_proprietary_trading_rpt_flat` đến `bm030fmss_*` | `datamart.bm031bmss_*` đến `bm030fmss_*` | Self-contained (EAV) | ORDERTRADE, MDDS |
 | Detail Fact Trade | Tra cứu chi tiết GD mã CK & Phái sinh | Data Explorer | `datamart.tknb_fct_security_trading_detail_snpst_flat` | `datamart.fct_security_trading_detail_snpst` | `security_trading_snapshot_dim` | ORDERTRADE |
 | Fact Corp Bond | Phát hành TPDN quốc tế & riêng lẻ | Data Explorer | `datamart.tknb_fct_private_corporate_bond_issuance_snpst_flat` | `datamart.fct_private_corporate_bond_issuance_snpst` | `private_corporate_bond_dim` | VSDC, HNX |
 

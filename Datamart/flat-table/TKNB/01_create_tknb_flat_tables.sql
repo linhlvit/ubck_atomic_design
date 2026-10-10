@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — CREATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 24 bảng (bảng #13/#16/#23/#24 là FACT, còn lại operational EAV báo cáo phẳng — 1 báo cáo = 1 bảng phẳng)
+-- 27 bảng (bảng #13/#16/#23/#24 là FACT, còn lại operational EAV báo cáo phẳng — 1 báo cáo = 1 bảng phẳng)
 -- Toàn bộ bảng operational — KHÔNG JOIN Calendar Date, KHÔNG JOIN dim nào khác
 -- ============================================================
 
@@ -92,6 +92,28 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(report_period_dt)
 ORDER BY (report_code, report_period_dt, item_code, period_type)
 COMMENT 'Flat table — Market Scale Report (HNX04)'
+;
+
+
+-- ============================================================
+-- 6a. OPERATIONAL: hnx06_gov_bond_bidding_rpt
+--    Gov Bond Bidding Report (HNX06)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_hnx06_gov_bond_bidding_rpt_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Gov Bond Bidding Report (HNX06)
+    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
+    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
+    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu HNX06',
+    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
+    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
+    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, số đợt/loại TP/giá trị gọi thầu/giá trị trúng thầu/số tiền thanh toán trúng thầu theo kỳ hạn',
+    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(report_period_dt)
+ORDER BY (report_code, report_period_dt, item_code)
+COMMENT 'Flat table — Gov Bond Bidding Report (HNX06)'
 ;
 
 
@@ -310,6 +332,28 @@ COMMENT 'Flat table — Fact Market Trading Snapshot × Calendar Date × Index C
 
 
 -- ============================================================
+-- 14a. OPERATIONAL: bm030bmss_gov_bond_trading_rpt
+--    Gov Bond Trading Report (BM030b)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_bm030bmss_gov_bond_trading_rpt_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Gov Bond Trading Report (BM030b)
+    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
+    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
+    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM030b_MSS',
+    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
+    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
+    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, khối lượng/giá trị giao dịch TPCP toàn thị trường theo loại hình (thông thường/mua bán lại) và loại TP',
+    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(report_period_dt)
+ORDER BY (report_code, report_period_dt, item_code)
+COMMENT 'Flat table — Gov Bond Trading Report (BM030b)'
+;
+
+
+-- ============================================================
 -- 14. OPERATIONAL: bm030cmss_corp_bond_trading_rpt
 --    Corp Bond Trading Report (BM030c)
 -- ============================================================
@@ -494,15 +538,15 @@ COMMENT 'Flat table — Fund Cert ETF CW Foreign Proprietary Trading Report (BM0
 
 
 -- ============================================================
--- 20. OPERATIONAL: bm031fmss_derivatives_foreign_proprietary_trading_rpt
---    Derivatives Foreign Proprietary Trading Report (BM031f)
+-- 20. OPERATIONAL: bm030fmss_derivatives_trading_rpt
+--    Derivatives Trading Report (BM030f)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_bm031fmss_derivatives_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.tknb_bm030fmss_derivatives_trading_rpt_flat ON CLUSTER 'my_cluster'
 (
-    -- From: OPERATIONAL Derivatives Foreign Proprietary Trading Report (BM031f)
+    -- From: OPERATIONAL Derivatives Trading Report (BM030f)
     report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
     report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM031f_MSS',
+    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM030f_MSS',
     item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
     item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
     item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, số lượng mã/khối lượng/giá trị giao dịch CKPS toàn thị trường và NĐTNN/tự doanh',
@@ -511,7 +555,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_bm031fmss_derivatives_foreign_proprieta
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(report_period_dt)
 ORDER BY (report_code, report_period_dt, item_code)
-COMMENT 'Flat table — Derivatives Foreign Proprietary Trading Report (BM031f)'
+COMMENT 'Flat table — Derivatives Trading Report (BM030f)'
 ;
 
 
