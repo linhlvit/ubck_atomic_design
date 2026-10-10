@@ -266,8 +266,8 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_instrument_price_intraday_flat ON C
     high_price                       Nullable(Decimal(23,2))  COMMENT 'Giá cao nhất của nến phút',
     low_price                        Nullable(Decimal(23,2))  COMMENT 'Giá thấp nhất của nến phút',
     close_price                      Nullable(Decimal(23,2))  COMMENT 'Giá đóng cửa của nến phút',
-    vol                              Nullable(Int32)          COMMENT 'Khối lượng khớp của nến phút (phát sinh riêng từng phút, không lũy kế)',
-    cumulative_vol_at_time           Nullable(Int32)          COMMENT 'Khối lượng khớp lũy kế từ đầu ngày tại thời điểm nến phút — không phải KL phát sinh riêng tại thời điểm đó',
+    vol                              Nullable(Int64)          COMMENT 'Khối lượng khớp của nến phút (phát sinh riêng từng phút, không lũy kế)',
+    cumulative_vol_at_time           Nullable(Int64)          COMMENT 'Khối lượng khớp lũy kế từ đầu ngày tại thời điểm nến phút — không phải KL phát sinh riêng tại thời điểm đó',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
@@ -305,7 +305,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_instrument_price_daily_flat ON CLUS
     high_price                       Nullable(Decimal(23,2))  COMMENT 'Giá cao nhất của nến ngày',
     low_price                        Nullable(Decimal(23,2))  COMMENT 'Giá thấp nhất của nến ngày',
     close_price                      Nullable(Decimal(23,2))  COMMENT 'Giá đóng cửa của nến ngày',
-    vol                              Nullable(Int32)          COMMENT 'Tổng khối lượng khớp trong ngày (JAD_tvhistory1d) — nguồn K_GSTT_13 Nhóm 34',
+    vol                              Nullable(Int64)          COMMENT 'Tổng khối lượng khớp trong ngày (JAD_tvhistory1d) — nguồn K_GSTT_13 Nhóm 34',
     revenue                          Nullable(Decimal(23,2))  COMMENT 'Doanh thu kỳ BCTC gần nhất đã công bố — NULL với dòng chỉ số',
     net_profit_after_tax             Nullable(Decimal(23,2))  COMMENT 'LNST kỳ BCTC gần nhất đã công bố — NULL với dòng chỉ số',
 
@@ -344,7 +344,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_security_trading_daily_flat ON CLUS
     daily_high_price                    Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất của nến ngày',
     daily_low_price                     Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất của nến ngày',
     daily_close_price                   Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa của nến ngày',
-    daily_vol                           Nullable(Int32)         COMMENT 'Tổng khối lượng khớp trong ngày của nến ngày (nguồn nến TradingView)',
+    daily_vol                           Nullable(Int64)         COMMENT 'Tổng khối lượng khớp trong ngày của nến ngày (nguồn nến TradingView)',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',

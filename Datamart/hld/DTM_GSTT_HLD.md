@@ -1,7 +1,9 @@
-# DTM_GSTT_HLD — v4.43
+# DTM_GSTT_HLD — v4.45
 
-**Phiên bản:** 4.43
+**Phiên bản:** 4.45
 **Ngày cập nhật:** 2026-10-10
+**Thay đổi v4.45 (2026-10-10, rà soát kiểu dữ liệu khối lượng — tránh tràn `int`, Data Modeler yêu cầu):** 37 cột khối lượng đổi `Small Counter`/`int` → `Large Counter`/`bigint` (LLD, `datamart_attributes.csv`, `datamart_model.yaml`, erDiagram): `Fact Stock Portfolio Snapshot` (13 cột `*_vol`), `Fact HOSE/HNX Securities Trade` (`execution_vol`, `buy_order_vol`, `sell_order_vol`), `Fact HOSE Securities Order` (6 cột), `Fact HNX Securities Order` (3 cột), `Fact Index Constituent Snapshot` (`idx_total_matched_vol`, `idx_foreign_net_vol`, `idx_total_negotiated_vol`), `Fact Investor Category Trading Snapshot` (`buy_vol`, `sell_vol`), `Fact Instrument Price Daily.vol`, `Fact Instrument Price Intraday` (`vol`, `cumulative_vol_at_time`), `Fact Security Trading Daily.daily_vol`. Lý do: `int` tối đa 2.147.483.647 — khối lượng tổng hợp theo thị trường/chỉ số/ngày có thể vượt ngưỡng và tràn thành số âm/NULL (kiểu `Small Counter`/`int` lưu kết quả `SUM(execution_vol)` từ nguồn `bigint`). Flat ClickHouse: 4 cột `gstt_fct_instrument_price_intraday_flat.vol`/`cumulative_vol_at_time`, `gstt_fct_instrument_price_daily_flat.vol`, `gstt_fct_security_trading_daily_flat.daily_vol` đổi `Nullable(Int32)` → `Nullable(Int64)` (cần ALTER); các flat còn lại đã Int64. Bảng Datamart (Iceberg) cần ALTER/tạo lại cột sang `bigint`. **Phụ thuộc Atomic:** `securities_trade.execution_vol`, `securities_order.*_vol`, `market_price_snapshot.vol` hiện `int` dù nguồn `bigint` — cần Atomic team đổi sang `bigint`. Công thức KPI không đổi.
+**Thay đổi v4.44 (2026-10-10, sửa kiểu dữ liệu — tràn `int`, Data Modeler yêu cầu):** `Security Trading Snapshot Dimension`: `listed_share_count` đổi `Small Counter`/`int` → `Large Counter`/`bigint` (erDiagram 6 khối, LLD, `datamart_attributes.csv`, `datamart_model.yaml`). Lý do: `int` tối đa 2.147.483.647 mà KL niêm yết của các mã vốn hóa lớn vượt ngưỡng nên tràn thành số âm/NULL; K_GSTT_108 đọc cột này. Flat `gstt_security_trading_snpst_dim_flat` (Int64) không đổi; bảng Datamart (Iceberg) cần ALTER/tạo lại cột sang `bigint`. **Phụ thuộc Atomic:** `security_trading_snapshot.listed_share_count` (MDDS JAD_STOCKINFOR, nguồn `character varying(255)`) hiện vẫn `Small Counter`/`int` — cần Atomic team đổi sang `Large Counter`/`bigint`. Công thức KPI không đổi.
 **Thay đổi v4.43 (2026-10-10, Data Modeler chỉ ra K_GSTT_99 là khối lượng KHÔNG lũy kế):** K_GSTT_99 (Nhóm 34, khối lượng theo từng time trong ngày) đổi từ `Fact Instrument Price Intraday.Cumulative Volume At Time` sang `Fact Instrument Price Intraday.Volume` (`vol` = khối lượng khớp của nến phút, `market_price_snapshot.vol`); Tính chất Phái sinh → Cơ sở. Lý do: thiết kế v4.33 bám Note BA dòng 494 'lũy kế từ đầu ngày' gốc từ trường `totaltrading`, nhưng BA 17:05 đã đổi Trường nguồn sang `volume` và giữ nguyên Note nên Note là tàn dư. Cột `cumulative_vol_at_time` giữ nguyên trong Fact nhưng không còn KPI nào dùng — chờ Data Modeler quyết định bỏ hay giữ. Detail Mapping + `kpi_index.csv` đã đồng bộ.
 **Thay đổi v4.42 (2026-10-09, Data Modeler yêu cầu tách bảng tham chiếu thành 2 bảng flat — danh mục chỉ số và danh mục mã chứng khoán):** `Operational Security Index Constituent Reference` (`opr_security_index_constituent_ref`) chỉ còn là **danh mục chỉ số / thành viên rổ** (grain `index_code × symbol`, nguồn JAD_CSIDXINFOR; giữ `isin_code`, `index_nm`, `floor_code` của chỉ số) — **bỏ 6 cột** `stock_tp_code`, `stock_floor_code`, `derivative_product_nm`, `security_class_code`, `industry_code`, `industry_nm`. Bảng mới **`Operational Security Reference`** (`opr_security_ref`, flat `gstt_opr_security_ref_flat`, nguồn JAD_STOCKINFOR + IDS Ngành) là **danh mục mã chứng khoán**, grain 1 row / mã CK (bản ghi mới nhất trong JAD_STOCKINFOR, không giới hạn mã thuộc rổ), cột: `symbol` (PK), `isin_code`, `as_of_dt`, `stock_tp_code`, `floor_code` (= `stock_floor_code` cũ), `derivative_product_nm`, `security_class_nm` (= `security_class_code` cũ, đổi tên vì giá trị là nhãn), `industry_code`, `industry_nm`. Logic từng cột giữ nguyên v4.39/v4.40/O_GSTT_60/61. KPI K_GSTT_360/361 (`Index Code`) không đổi. Bảng mới chưa có KPI BA tham chiếu (Gate 8 `L2-TABLE-ZERO-USAGE` cảnh báo). Xem O_GSTT_63.
 **Thay đổi v4.41 (2026-10-09, BA đổi rule bảng `cdr_dt_flat` — "Lấy ngày giao dịch có đủ cả ở `jad_stockinfor` và `jad_marketinfor`"):** `Calendar Date Dimension.is_trading_date` (`cdr_dt_dim`, SHARED; flat ClickHouse `datamart.cdr_dt_flat` chỉ sao chép cột này) đổi điều kiện `Y`: trước chỉ cần ngày có bản ghi ở `Market Index Snapshot` (MDDS.JAD_MARKETINFOR); nay phải có bản ghi ở **CẢ HAI** `Market Index Snapshot` (JAD_MARKETINFOR) **VÀ** `Security Trading Snapshot` (MDDS.JAD_STOCKINFOR) — `CASE WHEN EXISTS(market_index_snapshot.trading_dt = cdr_dt) AND EXISTS(security_trading_snapshot.trading_dt = cdr_dt) THEN 'Y' ELSE 'N' END`. Ngày chỉ có ở 1 trong 2 nguồn → `N`. Ảnh hưởng: K_GSTT_128 (Có giao dịch), K_GSTT_129–132 (KLGD/GTGD bình quân tháng/năm lọc `is_trading_date='Y'`), tham số "ngày giao dịch gần nhất" = `MAX(cdr_dt) WHERE is_trading_date='Y'`; cột `is_trading_date` mang sang flat PTTT/QLKD cũng đổi giá trị theo. Không đổi cấu trúc cột/KPI/grain/FK. File BA GSTT hiện hành chưa có dòng nào ghi rule này (yêu cầu truyền miệng từ BA). Xem O_GSTT_62.
@@ -602,7 +604,7 @@ erDiagram
         string Underlying_Symbol
         string ISIN_Code
         string Issuer_Name
-        int Listed_Share_Count
+        bigint Listed_Share_Count
         date First_Trading_Date
         date Last_Trading_Date
         date Issue_Date
@@ -662,11 +664,11 @@ erDiagram
         string Security_Trading_Snapshot_Dimension_Id FK
         string Index_Constituent_Dimension_Id FK
         string Snapshot_Date_Dimension_Id FK
-        int Index_Total_Matched_Volume
+        bigint Index_Total_Matched_Volume
         decimal Index_Total_Matched_Value
-        int Index_Foreign_Net_Volume
+        bigint Index_Foreign_Net_Volume
         decimal Index_Foreign_Net_Value
-        int Index_Total_Negotiated_Volume
+        bigint Index_Total_Negotiated_Volume
         decimal Index_Total_Negotiated_Value
         decimal Index_Market_Cap
         decimal Index_Free_Float_Market_Cap
@@ -676,33 +678,33 @@ erDiagram
         string Public_Company_Dimension_Id FK
         string Securities_Company_Dimension_Id FK
         string Snapshot_Date_Dimension_Id FK
-        int Total_Volume
+        bigint Total_Volume
         decimal Total_Value
-        int Total_Matched_Volume
+        bigint Total_Matched_Volume
         decimal Total_Matched_Value
-        int Total_Derivative_Volume
+        bigint Total_Derivative_Volume
         decimal Total_Derivative_Value
-        int Total_Derivative_Negotiated_Volume
+        bigint Total_Derivative_Negotiated_Volume
         decimal Total_Derivative_Negotiated_Value
-        int Total_Negotiated_Volume
+        bigint Total_Negotiated_Volume
         decimal Total_Negotiated_Value
-        int Foreign_Net_Volume
+        bigint Foreign_Net_Volume
         int Outstanding_Share_Quantity
         decimal Revenue
         decimal Net_Profit_After_Tax
         decimal Net_Profit_After_Tax_TTM
         decimal Owner_Equity
-        int Foreign_Buy_Volume
-        int Foreign_Sell_Volume
+        bigint Foreign_Buy_Volume
+        bigint Foreign_Sell_Volume
         decimal Foreign_Buy_Value
         decimal Foreign_Sell_Value
         decimal Proprietary_Buy_Value
         decimal Proprietary_Sell_Value
-        int Proprietary_Buy_Volume
-        int Proprietary_Sell_Volume
-        int Bond_Trading_Volume
+        bigint Proprietary_Buy_Volume
+        bigint Proprietary_Sell_Volume
+        bigint Bond_Trading_Volume
         decimal Bond_Trading_Value
-        int Bond_Negotiated_Volume
+        bigint Bond_Negotiated_Volume
         decimal Bond_Negotiated_Value
         decimal Close_Price
     }
@@ -853,7 +855,7 @@ erDiagram
         string Underlying_Symbol
         string ISIN_Code
         string Issuer_Name
-        int Listed_Share_Count
+        bigint Listed_Share_Count
         date First_Trading_Date
         date Last_Trading_Date
         date Issue_Date
@@ -890,7 +892,7 @@ erDiagram
         decimal Daily_High_Price
         decimal Daily_Low_Price
         decimal Daily_Close_Price
-        int Daily_Volume
+        bigint Daily_Volume
     }
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Security_Trading_Daily : " "
     Calendar_Date_Dimension ||--o{ Fact_Security_Trading_Daily : " "
@@ -903,7 +905,7 @@ erDiagram
         decimal High_Price
         decimal Low_Price
         decimal Close_Price
-        int Volume
+        bigint Volume
         decimal Revenue
         decimal Net_Profit_After_Tax
     }
@@ -916,8 +918,8 @@ erDiagram
         decimal High_Price
         decimal Low_Price
         decimal Close_Price
-        int Volume
-        int Cumulative_Volume_At_Time
+        bigint Volume
+        bigint Cumulative_Volume_At_Time
     }
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Instrument_Price_Intraday : " "
     Calendar_Date_Dimension ||--o{ Fact_Instrument_Price_Intraday : " "
@@ -2291,7 +2293,7 @@ erDiagram
         string Underlying_Symbol
         string ISIN_Code
         string Issuer_Name
-        int Listed_Share_Count
+        bigint Listed_Share_Count
         date First_Trading_Date
         date Last_Trading_Date
         date Issue_Date
@@ -2397,7 +2399,7 @@ erDiagram
         string Underlying_Symbol
         string ISIN_Code
         string Issuer_Name
-        int Listed_Share_Count
+        bigint Listed_Share_Count
         date First_Trading_Date
         date Last_Trading_Date
         date Issue_Date
@@ -2455,11 +2457,11 @@ erDiagram
         string Security_Trading_Snapshot_Dimension_Id FK
         string Index_Constituent_Dimension_Id FK
         string Snapshot_Date_Dimension_Id FK
-        int Index_Total_Matched_Volume
+        bigint Index_Total_Matched_Volume
         decimal Index_Total_Matched_Value
-        int Index_Foreign_Net_Volume
+        bigint Index_Foreign_Net_Volume
         decimal Index_Foreign_Net_Value
-        int Index_Total_Negotiated_Volume
+        bigint Index_Total_Negotiated_Volume
         decimal Index_Total_Negotiated_Value
         decimal Index_Market_Cap
         decimal Index_Free_Float_Market_Cap
@@ -2780,7 +2782,7 @@ erDiagram
         string Underlying_Symbol
         string ISIN_Code
         string Issuer_Name
-        int Listed_Share_Count
+        bigint Listed_Share_Count
         date First_Trading_Date
         date Last_Trading_Date
         date Issue_Date
@@ -2816,8 +2818,8 @@ erDiagram
         string Investor_Category_Code
         decimal Buy_Value
         decimal Sell_Value
-        int Buy_Volume
-        int Sell_Volume
+        bigint Buy_Volume
+        bigint Sell_Volume
         decimal Matched_Buy_Value
         decimal Matched_Sell_Value
         decimal Negotiated_Buy_Value
@@ -3046,7 +3048,7 @@ erDiagram
         string Underlying_Symbol
         string ISIN_Code
         string Issuer_Name
-        int Listed_Share_Count
+        bigint Listed_Share_Count
         date First_Trading_Date
         date Last_Trading_Date
         date Issue_Date
@@ -3085,8 +3087,8 @@ erDiagram
         decimal High_Price
         decimal Low_Price
         decimal Close_Price
-        int Volume
-        int Cumulative_Volume_At_Time
+        bigint Volume
+        bigint Cumulative_Volume_At_Time
     }
     Fact_Instrument_Price_Daily {
         string Security_Trading_Snapshot_Dimension_Id FK
@@ -3096,7 +3098,7 @@ erDiagram
         decimal High_Price
         decimal Low_Price
         decimal Close_Price
-        int Volume
+        bigint Volume
         decimal Revenue
         decimal Net_Profit_After_Tax
     }
@@ -3801,7 +3803,7 @@ erDiagram
         string Session_Code
         decimal Execution_Price
         decimal Execution_Price_Versus_LTP
-        int Execution_Volume
+        bigint Execution_Volume
         decimal Execution_Value
         decimal Execution_Last_Traded_Price
         string Execution_New_High_Low_Price_Indicator
@@ -3817,7 +3819,7 @@ erDiagram
         string Buy_Investor_Type_Code
         string Buy_Foreign_Investor_Type_Code
         decimal Buy_Order_Price
-        int Buy_Order_Volume
+        bigint Buy_Order_Volume
         string Buy_Trader_Number
         string Buy_Trader_Name
         string Buy_Reference_Sequence_Number
@@ -3833,7 +3835,7 @@ erDiagram
         string Sell_Investor_Type_Code
         string Sell_Foreign_Investor_Type_Code
         decimal Sell_Order_Price
-        int Sell_Order_Volume
+        bigint Sell_Order_Volume
         string Sell_Trader_Number
         string Sell_Trader_Name
         string Sell_Reference_Sequence_Number
@@ -3942,7 +3944,7 @@ erDiagram
         string Securities_Trade_Code
         string Trade_Time
         decimal Execution_Price
-        int Execution_Volume
+        bigint Execution_Volume
         string Session_Code
         string Sell_Order_Action_Type_Code
         string Sell_Broker_Id
@@ -3951,7 +3953,7 @@ erDiagram
         string Sell_Order_Condition_Code
         string Sell_Client_House_Classification_Code
         string Sell_Investor_Type_Code
-        int Sell_Order_Volume
+        bigint Sell_Order_Volume
         decimal Sell_Order_Price
         string Buy_Broker_Id
         string Buy_Order_Action_Type_Code
@@ -3960,7 +3962,7 @@ erDiagram
         string Buy_Order_Condition_Code
         string Buy_Client_House_Classification_Code
         string Buy_Investor_Type_Code
-        int Buy_Order_Volume
+        bigint Buy_Order_Volume
         decimal Buy_Order_Price
         int Message_Sequence_Number
         string Sell_Securities_Order_Code
@@ -4093,15 +4095,15 @@ erDiagram
         string Investor_Type_Code
         date Order_Date
         string Order_Reject_Reason_Code
-        int Order_Volume
+        bigint Order_Volume
         decimal Order_Price
-        int Public_Volume
+        bigint Public_Volume
         decimal Condition_Price
         string Order_Reception_Number
         string Original_Order_Reception_Number
         string Original_Order_Type_Code
         string Session_Code
-        int Remaining_Quantity
+        bigint Remaining_Quantity
         int Message_Sequence_Number
         string Order_Action_Type_Code
         string Quote_Request_Type_Code
@@ -4251,22 +4253,22 @@ erDiagram
         string Foreign_Investor_Type_Code
         string Order_Type_Code
         decimal Order_Price
-        int Order_Volume
+        bigint Order_Volume
         string Order_Condition_Code
         decimal Last_Traded_Price
         decimal Execution_Price
-        int Immediate_Matched_Volume
-        int Matched_Volume
-        int Remaining_Quantity
+        bigint Immediate_Matched_Volume
+        bigint Matched_Volume
+        bigint Remaining_Quantity
         decimal Order_Spread
         decimal Matched_Ratio
         decimal Price_Change_Amount
         int Price_Change_Tick
         string New_High_Low_Price_Indicator
         string Order_Status_Code
-        int Icd_Bug_Quantity
+        bigint Icd_Bug_Quantity
         decimal Expected_Execution_Price
-        int Expected_Execution_Volume
+        bigint Expected_Execution_Volume
         string Short_Sell_Type_Code
         string Trader_Number
         string Trader_Name
