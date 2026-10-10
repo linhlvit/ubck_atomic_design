@@ -1,4 +1,5 @@
 # DTM_VP — HLD Datamart: Thống kê thị trường chứng khoán (VP)
+**Thay đổi 2026-10-10 (rà soát kiểu dữ liệu khối lượng — tránh tràn `int`, Data Modeler yêu cầu):** `fct_derv_tdg_snpst` (`tot_tdg_vol`, `open_interest_qty`, `frgn_buy_vol`, `frgn_sell_vol`, `frgn_net_vol`), `fct_lst_crp_bnd_snpst.tot_tdg_vol`, `fct_lst_crp_bnd_indy_trm_snpst.circ_vol` đổi `Small Counter`/`int` → `Large Counter`/`bigint` trong `datamart_attributes.csv` và `datamart_model.yaml` (VP chưa có file LLD per-table và flat; HLD chỉ có flowchart nên không đổi sơ đồ). Lý do: `int` tối đa 2.147.483.647 — khối lượng tổng hợp theo thị trường/chỉ số/ngày có thể vượt ngưỡng và tràn thành số âm/NULL (kiểu `Small Counter`/`int` lưu kết quả `SUM(execution_vol)` từ nguồn `bigint`). Công thức không đổi.
 
 ---
 
