@@ -1,4 +1,5 @@
 # HLD — Datamart TKNB (Thống kê nội bộ)
+**Thay đổi 2026-10-10 (rà soát kiểu dữ liệu khối lượng — tránh tràn `int`, Data Modeler yêu cầu):** `Fact Market Trading Snapshot` (`total_trading_vol`, `matched_trading_vol`, `negotiated_trading_vol`, `odd_lot_trading_vol`) và `Fact Foreign Proprietary Trading Index Snapshot` (12 cột `*_buy_vol`/`*_sell_vol`) đổi `Small Counter`/`int` → `Large Counter`/`bigint` (LLD, master, yaml, erDiagram). Lý do: `int` tối đa 2.147.483.647 — khối lượng tổng hợp theo thị trường/chỉ số/ngày có thể vượt ngưỡng và tràn thành số âm/NULL (kiểu `Small Counter`/`int` lưu kết quả `SUM(execution_vol)` từ nguồn `bigint`). Flat `tknb_*_flat` đã `Int64`. Bảng Datamart (Iceberg) cần ALTER cột sang `bigint`. Phụ thuộc Atomic: `securities_trade.execution_vol` hiện `int` dù nguồn `bigint`. Công thức KPI không đổi.
 
 ## Ghi chú thiết kế đặc thù module TKNB
 
@@ -2304,13 +2305,13 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         string Index_Constituent_Dimension_Id FK
         decimal Total_Trading_Value
-        int Total_Trading_Volume
+        bigint Total_Trading_Volume
         decimal Matched_Trading_Value
-        int Matched_Trading_Volume
+        bigint Matched_Trading_Volume
         decimal Negotiated_Trading_Value
-        int Negotiated_Trading_Volume
+        bigint Negotiated_Trading_Volume
         decimal Odd_Lot_Trading_Value
-        int Odd_Lot_Trading_Volume
+        bigint Odd_Lot_Trading_Volume
         decimal Market_Index_Value
         string Source_System_Code
     }
@@ -2524,28 +2525,28 @@ erDiagram
     Fact_Foreign_Proprietary_Trading_Index_Snapshot {
         string Snapshot_Date_Dimension_Id FK
         string Index_Constituent_Dimension_Id FK
-        int Foreign_Investor_Total_Buy_Volume
-        int Foreign_Investor_Total_Sell_Volume
+        bigint Foreign_Investor_Total_Buy_Volume
+        bigint Foreign_Investor_Total_Sell_Volume
         decimal Foreign_Investor_Total_Buy_Value
         decimal Foreign_Investor_Total_Sell_Value
-        int Foreign_Investor_Negotiated_Buy_Volume
-        int Foreign_Investor_Negotiated_Sell_Volume
+        bigint Foreign_Investor_Negotiated_Buy_Volume
+        bigint Foreign_Investor_Negotiated_Sell_Volume
         decimal Foreign_Investor_Negotiated_Buy_Value
         decimal Foreign_Investor_Negotiated_Sell_Value
-        int Foreign_Investor_Matched_Buy_Volume
-        int Foreign_Investor_Matched_Sell_Volume
+        bigint Foreign_Investor_Matched_Buy_Volume
+        bigint Foreign_Investor_Matched_Sell_Volume
         decimal Foreign_Investor_Matched_Buy_Value
         decimal Foreign_Investor_Matched_Sell_Value
-        int Proprietary_Total_Buy_Volume
-        int Proprietary_Total_Sell_Volume
+        bigint Proprietary_Total_Buy_Volume
+        bigint Proprietary_Total_Sell_Volume
         decimal Proprietary_Total_Buy_Value
         decimal Proprietary_Total_Sell_Value
-        int Proprietary_Negotiated_Buy_Volume
-        int Proprietary_Negotiated_Sell_Volume
+        bigint Proprietary_Negotiated_Buy_Volume
+        bigint Proprietary_Negotiated_Sell_Volume
         decimal Proprietary_Negotiated_Buy_Value
         decimal Proprietary_Negotiated_Sell_Value
-        int Proprietary_Matched_Buy_Volume
-        int Proprietary_Matched_Sell_Volume
+        bigint Proprietary_Matched_Buy_Volume
+        bigint Proprietary_Matched_Sell_Volume
         decimal Proprietary_Matched_Buy_Value
         decimal Proprietary_Matched_Sell_Value
         string Source_System_Code
