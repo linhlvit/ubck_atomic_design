@@ -2,6 +2,8 @@
 
 **Phiên bản:** 2.8
 **Ngày:** 17/09/2026
+**Thay đổi 2026-10-10 (rà soát kiểu dữ liệu khối lượng — tránh tràn `int`, Data Modeler yêu cầu):** `foreign_investor_trading_detail_rpt.execution_vol` đổi `Small Counter`/`int` → `Large Counter`/`bigint` (LLD, master, yaml; erDiagram vốn ghi `float` nên không đổi). Flat `ndtnn_foreign_investor_trading_detail_rpt_flat` đã `Int64`. Bảng Datamart (Iceberg) cần ALTER cột sang `bigint`. Phụ thuộc Atomic: `securities_trade.execution_vol` hiện `int` dù nguồn `bigint`. Công thức KPI không đổi.
+**Thay đổi 2026-10-10 (sửa kiểu dữ liệu `Securities Dimension` — tràn `int`, Data Modeler yêu cầu):** `listed_share_count` và `total_listing_vol` đổi `Small Counter`/`int` → `Large Counter`/`bigint` (erDiagram 2 khối, LLD, `datamart_attributes.csv`, `datamart_model.yaml`). Lý do: `int` tối đa 2.147.483.647 mà KL niêm yết của các mã vốn hóa lớn vượt ngưỡng nên tràn thành số âm/NULL. Flat `ndtnn_fct_securities_foreign_trading_snpst_flat` đã là `Int64` nên không đổi; bảng Datamart (Iceberg) cần ALTER/tạo lại cột sang `bigint`. **Phụ thuộc Atomic:** nguồn `security_trading_snapshot.listed_share_count`/`total_listing_vol` (MDDS JAD_STOCKINFOR, nguồn `character varying(255)`) và `corporate_bond_trading_snapshot.total_listing_vol` (JAD_CORPBONDINFOR) hiện vẫn là `Small Counter`/`int` — cần Atomic team đổi sang `Large Counter`/`bigint`, nếu chưa thì giá trị vẫn tràn ở tầng Atomic; ETL cần cast chuỗi sang số an toàn (profile giá trị không phải số). Công thức KPI không đổi.
 **Thay đổi 2026-10-09 (BA cập nhật thiết kế NĐTNN — log issue 2026-09-18…10-08; file BA thêm cột `UC` ở index 0 → 32 cột, đã cập nhật `ba_column_profile.yaml`):** Đối chiếu 10 dòng issue của BA với thiết kế. **Đã sửa:** (1) STT 8 (09-18 'thay đổi bảng nguồn') — BA nay đổi hẳn công thức: `K_NDTNN_51` = Σ cổ phiếu NĐTNN nắm giữ ÷ Σ cổ phiếu phát hành theo ngành, lọc `:pdate1`–`:pdate2`, nguồn `Fact Public Company Foreign Ownership Snapshot` (NDTNN; bỏ `Foreign Holding Value` của GSDC); `K_NDTNN_50` thêm 'Chưa phân ngành' — O_NDTNN_41. (2) STT 10 (10-08) — `K_NDTNN_54` lọc `max_foreign_ownership_ratio = 0` (trước `max_foreign_holding_quantity = 0`). (3) stock_type (09-28 `(1,2,3)` → `(1,2,3,6)`) — còn sót `IN ('1','2','3')` ở `Fact Securities Foreign Trading Snapshot` (K_NDTNN_1/2/3) và `Fact Foreign Net Flow Market Index Snapshot` → đã thêm '6' (nhánh CCQ của `Foreign Investor Trading Statistics Rpt` đã `IN ('3','6')` từ 09-28; giá trị '6' vẫn chưa xác nhận dữ liệu — O_NDTNN_35). (4) `K_NDTNN_255` đổi tên 'Trạng thái' theo BA dòng 72. **Đã khớp từ trước, không đổi:** join HNX `isin_code = issue_code` (09-18), bỏ lọc loại NĐT '7000' (09-30, O_NDTNN_36), `securities_dim.symbol` thay mã quốc tế (10-01), 360 profile giữ code trạng thái/quốc tịch/loại NĐT (10-01), tỷ lệ sở hữu = `max_foreign_ownership_ratio` + bỏ điều kiện Top 5 (10-02). Phần còn lại của diff BA (nhãn nguồn STT 9/10, khóa nối `INVESTOR.*` STT 11, `PENALTY_DECISION_SUBJECT` STT 13, `value_raw`/`fir_value` STT 1–7/16, điều kiện `report_code IN ('59WJB','BZ5X4')` STT 17) chỉ làm rõ mapping — thiết kế đã theo.
 **Thay đổi 2026-10-08 (sửa kiểu dữ liệu `Fact Public Company Foreign Ownership Snapshot`, Data Modeler yêu cầu review):** 4 cột `total_issued_share_quantity`, `max_foreign_holding_quantity`, `current_foreign_holding_quantity`, `remaining_foreign_holding_quantity` đổi `Small Counter`/`int` → `Large Counter`/`bigint` theo Atomic `foreign_ownership_info` (VSDC.foreign_investor_info khai BIGINT). Lý do: `int` tối đa 2.147.483.647 nên số CP đã phát hành/room của các mã lớn tràn kiểu và hiển thị số âm. Flat table `ndtnn_fct_public_company_foreign_ownership_snpst_flat` đã là `Int64` từ trước nên không đổi; bảng Datamart (Iceberg) phải ALTER/tạo lại cột sang `bigint`. KPI K_NDTNN_53/54/55/57 không đổi công thức.
 **Thay đổi 2026-10-07 (All-Tier Cleanup — bãi bỏ `Foreign Investor Reporting Entity Dimension`, Data Modeler duyệt):** chiều này 0 KPI dùng (Gate 8) và BA không cần slicer theo đối tượng nộp báo cáo. Gỡ: LLD `foreign_investor_reporting_entity_dim`, master, `datamart_model.yaml`, Entities, FK `Foreign_Investor_Reporting_Entity_Dimension_Id` ở 3 Fact (Report Value, Capital Flow, Portfolio Report), nút/cạnh lineage + ER + bảng grain + Source/Atomic trong các Nhóm, flat (FK + 4 cột denormalize + LEFT JOIN), catalog. Detail Mapping không đổi (0 dòng tham chiếu). Chi tiết: Section 4.
@@ -491,8 +493,8 @@ erDiagram
         string Security_Full_Name
         varchar Stock_Type_Code
         varchar Floor_Code
-        int Listed_Share_Count
-        int Total_Listing_Volume
+        bigint Listed_Share_Count
+        bigint Total_Listing_Volume
         varchar Underlying_Symbol
         string Issuer_Name
         date Listing_Date
@@ -621,8 +623,8 @@ erDiagram
         string Security_Full_Name
         varchar Stock_Type_Code
         varchar Floor_Code
-        int Listed_Share_Count
-        int Total_Listing_Volume
+        bigint Listed_Share_Count
+        bigint Total_Listing_Volume
         varchar Underlying_Symbol
         string Issuer_Name
         date Listing_Date
