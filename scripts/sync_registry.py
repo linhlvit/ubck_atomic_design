@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # PYTHONIOENCODING=utf-8 python scripts/sync_registry.py  (Windows)
 """
-sync_registry.py — Sync BRD/DM/Mapping YAML files → spec-registry/registry.csv
+sync_registry.py — Sync BRD/DM YAML files → spec-registry/registry.csv
 
 Usage:
     python scripts/sync_registry.py              # sync toàn bộ
@@ -9,6 +9,9 @@ Usage:
     python scripts/sync_registry.py --summary      # in tiến độ theo source
 
 Output: spec-registry/registry.csv
+
+Ghi chú: thư mục Mapping/ không còn được sử dụng → script không đọc nó nữa. Hai cột
+mapping_status/mapping_files giữ nguyên giá trị cũ trong registry.csv (như etl/test/deployed).
 """
 
 import argparse
@@ -37,12 +40,12 @@ COLUMNS = [
     "data_volume_hint",
     "refresh_frequency",
     "dm_status",       # none | draft | approved
-    "mapping_status",  # none | done
+    "mapping_status",  # none | done (giữ giá trị cũ — không còn sync từ Mapping/)
     "etl_status",      # none | dev | done
     "test_status",     # none | written | passed
     "deployed",        # yes | no
     "dm_files",        # số DM file cho BRD này
-    "mapping_files",   # số Mapping file cho BRD này
+    "mapping_files",   # số Mapping file (giữ giá trị cũ — không còn sync từ Mapping/)
 ]
 
 
@@ -115,26 +118,6 @@ def index_dm_files():
     return index
 
 
-def index_mapping_files():
-    """Index Mapping YAML: brd_ref → file_count."""
-    index = {}
-    pattern = str(ROOT / "Mapping" / "Atomic" / "**" / "*.yaml")
-    for filepath in glob.glob(pattern, recursive=True):
-        try:
-            with open(filepath, encoding="utf-8") as f:
-                doc = yaml.safe_load(f)
-        except Exception:
-            continue
-        if doc.get("schema_type") != "mapping":
-            continue
-        mapping = doc.get("mapping", {}) or {}
-        brd_ref = mapping.get("brd_ref", "")
-        if not brd_ref:
-            continue
-        index[brd_ref] = index.get(brd_ref, 0) + 1
-    return index
-
-
 def load_existing_registry():
     """Đọc registry.csv hiện có → dict[brd_id] = row (để preserve etl/test/deployed)."""
     existing = {}
@@ -147,8 +130,8 @@ def load_existing_registry():
     return existing
 
 
-def merge_rows(brd_entries, dm_index, map_index, existing):
-    """Merge BRD + DM + Mapping + existing manual fields → final rows."""
+def merge_rows(brd_entries, dm_index, existing):
+    """Merge BRD + DM + existing manual fields → final rows."""
     rows = []
     for brd_id, row in brd_entries.items():
         # Preserve manually-managed fields từ registry cũ
@@ -156,6 +139,9 @@ def merge_rows(brd_entries, dm_index, map_index, existing):
         row["etl_status"] = prev.get("etl_status", "none") or "none"
         row["test_status"] = prev.get("test_status", "none") or "none"
         row["deployed"] = prev.get("deployed", "no") or "no"
+        # Mapping/ không còn dùng → giữ nguyên giá trị cũ, không suy ra từ YAML
+        row["mapping_status"] = prev.get("mapping_status", "none") or "none"
+        row["mapping_files"] = prev.get("mapping_files", 0) or 0
 
         # Cập nhật DM status từ YAML
         if brd_id in dm_index:
@@ -164,14 +150,6 @@ def merge_rows(brd_entries, dm_index, map_index, existing):
         else:
             row["dm_status"] = "none"
             row["dm_files"] = 0
-
-        # Cập nhật Mapping status từ YAML
-        if brd_id in map_index:
-            row["mapping_status"] = "done"
-            row["mapping_files"] = map_index[brd_id]
-        else:
-            row["mapping_status"] = "none"
-            row["mapping_files"] = 0
 
         rows.append(row)
 
@@ -236,7 +214,7 @@ def print_summary(rows):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Sync BRD/DM/Mapping YAML → spec-registry/registry.csv")
+    parser = argparse.ArgumentParser(description="Sync BRD/DM YAML → spec-registry/registry.csv")
     parser.add_argument("--source", help="Chỉ sync 1 source (VD: FIMS)")
     parser.add_argument("--summary", action="store_true", help="In bảng tiến độ sau khi sync")
     args = parser.parse_args()
@@ -250,15 +228,11 @@ def main():
     dm_index = index_dm_files()
     print(f"  → {len(dm_index)} DM brd_ref")
 
-    print("  Index Mapping files...")
-    map_index = index_mapping_files()
-    print(f"  → {len(map_index)} Mapping brd_ref")
-
     print("  Đọc registry hiện tại (preserve etl/test/deployed)...")
     existing = load_existing_registry()
     print(f"  → {len(existing)} dòng hiện có")
 
-    rows = merge_rows(brd_entries, dm_index, map_index, existing)
+    rows = merge_rows(brd_entries, dm_index, existing)
     write_registry(rows)
 
     if args.summary or not args.source:

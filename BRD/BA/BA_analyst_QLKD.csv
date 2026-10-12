@@ -2025,7 +2025,8 @@ WHERE o.ITEM_CATEGORY IN ('CP', 'TP')
 ORDER BY 1;",Done,,,,,Done,Dữ liệu tĩnh,
 13,,Dashboard Giám sát tình hình hoạt động của công ty chứng khoán toàn thị trường >> Biểu đồ Nguồn vốn tăng thêm trong kỳ,Vốn tăng thêm do chào bán ra công chúng,Vốn tăng thêm do chào bán ra công chúng,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, hình thức tăng vốn",SCMS,X,X,X,Done,,DISCLOSURE_SECURITIES_OFFERING,"o.ID, 
 o.ITEM_CATEGORY, 
-o.RESULT_REPORT_DATE, 
+o.DOCUMENT_DATE, 
+o.CREATED_AT,
 o.PROCEEDS_COLLECTED, 
 o.PLAN_JSON ($.loaiChaoBan tại index [0])",,"-- Biểu đồ Nguồn vốn tăng thêm trong kỳ
 SELECT
@@ -2063,18 +2064,18 @@ JOIN (
     SELECT
         o.ID,
         o.ITEM_CATEGORY,
-        o.RESULT_REPORT_DATE,
-        o.PROCEEDS_COLLECTED,        
+        COALESCE(o.DOCUMENT_DATE, o.CREATED_AT) AS ngay_du_lieu,  -- RESULT_REPORT_DATE
+        o.PROCEEDS_COLLECTED, 
         JSON_VALUE(o.PLAN_JSON, '$[0].loaiChaoBan') AS loai_chao_ban  -- Lấy loaiChaoBan từ phần tử đầu tiên [0]
     FROM SCMS_UAT.DISCLOSURE_SECURITIES_OFFERING o
     WHERE o.ITEM_CATEGORY IN ('CP', 'TP')
       AND o.PLAN_JSON IS NOT NULL
-      AND o.RESULT_REPORT_DATE IS NOT NULL      
-) o ON TRUNC(o.RESULT_REPORT_DATE, 'MM') = nd.thang
+      AND o.CREATED_AT IS NOT NULL  
+) o ON TRUNC(o.ngay_du_lieu, 'MM') = nd.thang
 WHERE :p_thang_tu  BETWEEN 1 AND 12
   AND :p_thang_den BETWEEN 1 AND 12
 GROUP BY nd.thang
-ORDER BY nd.thang;",Done,,,,,Done,Dữ liệu tĩnh,
+ORDER BY nd.thang;",Done,Sửa 12/10,,,,Done,Dữ liệu tĩnh,
 13,,Dashboard Giám sát tình hình hoạt động của công ty chứng khoán toàn thị trường >> Biểu đồ Nguồn vốn tăng thêm trong kỳ,Vốn tăng thêm do chào bán riêng lẻ,Vốn tăng thêm do chào bán riêng lẻ,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, hình thức tăng vốn",SCMS,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
 13,,Dashboard Giám sát tình hình hoạt động của công ty chứng khoán toàn thị trường >> Biểu đồ Nguồn vốn tăng thêm trong kỳ,Vốn tăng thêm do chào bán khác,Vốn tăng thêm do chào bán khác,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, hình thức tăng vốn",SCMS,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
 13,,Dashboard Giám sát tình hình hoạt động của công ty chứng khoán toàn thị trường >> Biểu đồ Nguồn vốn tăng thêm trong kỳ,Vốn tăng thêm do phát hành trái phiếu riêng lẻ,Vốn tăng thêm do phát hành trái phiếu riêng lẻ,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, hình thức tăng vốn",SCMS,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
@@ -10237,7 +10238,7 @@ SELECT
     oc.section_id,
     -- MÃ / TÊN CHỈ TIÊU
     oc.FORMULA_TEXT AS ma_ct,
-    oc.catalog_cell_id AS ma_ct_input,	
+    oc.catalog_cell_id AS ma_ct_input,        
     oc.field_of_member AS ten_chi_tieu_output,
     oc.cot_du_lieu_bc,
     m.ROW_NAME AS ten_hang_input,
@@ -12440,12 +12441,12 @@ LEFT JOIN JSON_TABLE (
 WHERE fr.REPORT_CODE = 'BCHDPS'  -- Mã báo cáo
   AND fr.REPORT_TYPE = 'INPUT'
   AND fr.RECORD_STATUS IN (1,2) -- Đúng hạn, Gửi muộn
-  AND jt.sheetCode = '01';",Done,,,,,,Dữ liệu động,
+  AND jt.sheetCode = '01';",Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Kỳ báo cáo,Kỳ báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
-58,,Hoạt động phái sinh >> Tình hình nhân sự,Mã báo cáo,Mã báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
-58,,Hoạt động phái sinh >> Tình hình nhân sự,Tên báo cáo,Tên báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
-58,,Hoạt động phái sinh >> Tình hình nhân sự,Mã sheet,Mã sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
-58,,Hoạt động phái sinh >> Tình hình nhân sự,Tên sheet,Tên sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+58,,Hoạt động phái sinh >> Tình hình nhân sự,Mã báo cáo,Mã báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
+58,,Hoạt động phái sinh >> Tình hình nhân sự,Tên báo cáo,Tên báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
+58,,Hoạt động phái sinh >> Tình hình nhân sự,Mã sheet,Mã sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
+58,,Hoạt động phái sinh >> Tình hình nhân sự,Tên sheet,Tên sheet,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Mã chỉ tiêu,Mã chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"FSS.SCMS_MAP_CT, 
 SCMS_UAT.REPORT_INPUT_SUBMISSION","m.FORM_REPORT_ID
 m.VERSION
@@ -12471,8 +12472,8 @@ FROM FSS.SCMS_MAP_CT m
 	      AND EXISTS (
 	          SELECT 1 FROM SCMS_UAT.REPORT_INPUT_SUBMISSION sub
 	          WHERE sub.FORM_REPORT_ID = m.FORM_REPORT_ID
-	            AND sub.REF_TYPE IS NOT NULL);",Done,,,,,,Dữ liệu động,
-58,,Hoạt động phái sinh >> Tình hình nhân sự,Tên chỉ tiêu,Tên chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+	            AND sub.REF_TYPE IS NOT NULL);",Done,,,,,,Dữ liệu động,P
+58,,Hoạt động phái sinh >> Tình hình nhân sự,Tên chỉ tiêu,Tên chỉ tiêu,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Tên công ty chứng khoán,Tên công ty chứng khoán,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
 SCMS_UAT.FORM_REPORT_DEEP_CONFIG
@@ -12625,59 +12626,59 @@ WHERE p.RECORD_STATUS IN (1, 2)
 --  AND p.REPORT_YEAR = 2024
 AND m.SECTIONID = 'SEC_1'
 ORDER BY c.SHORT_NAME, p.REPORT_PERIOD, p.REPORT_YEAR, p.PERIOD,
-         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu tĩnh,
-58,,Hoạt động phái sinh >> Tình hình nhân sự,Sàn giao dịch,Sàn giao dịch,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu tĩnh,
+         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu tĩnh,P
+58,,Hoạt động phái sinh >> Tình hình nhân sự,Sàn giao dịch,Sàn giao dịch,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu tĩnh,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Ngành nghề,Ngành nghề,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu tĩnh,
 58,,Hoạt động phái sinh >> Tình hình nhân sự,I. Trụ sở chính >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 5 | 2 | TS001",Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 5 | 2 | TS001",Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,I. Trụ sở chính >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 5 | 3 | TS002",Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 5 | 3 | TS002",Data Explorer,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,I. Trụ sở chính >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 5 | 4 | TS003",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 5 | 4 | TS003",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,I. Trụ sở chính >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 5 | 5 | TS004",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 5 | 5 | TS004",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,I. Trụ sở chính >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 5 | 6 | KT001",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 5 | 6 | KT001",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,1. Ban Giám đốc >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 6 | 2 | TS005",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 6 | 2 | TS005",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,1. Ban Giám đốc >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 6 | 3 | TS006",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 6 | 3 | TS006",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,1. Ban Giám đốc >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 6 | 4 | TS007",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 6 | 4 | TS007",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,1. Ban Giám đốc >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 6 | 5 | TS008",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 6 | 5 | TS008",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,1. Ban Giám đốc >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 6 | 6 | KT002",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 6 | 6 | KT002",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,2. Bộ phận môi giới >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 7 | 2 | TS009",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 7 | 2 | TS009",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,2. Bộ phận môi giới >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 7 | 3 | TS010",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 7 | 3 | TS010",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,2. Bộ phận môi giới >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 7 | 4 | TS011",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 7 | 4 | TS011",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,2. Bộ phận môi giới >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 7 | 5 | TS012",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 7 | 5 | TS012",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,2. Bộ phận môi giới >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 7 | 6 | KT003",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 7 | 6 | KT003",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,3. Bộ phận tự doanh >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 8 | 2 | TS013",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 8 | 2 | TS013",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,3. Bộ phận tự doanh >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 8 | 3 | TS014",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 8 | 3 | TS014",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,3. Bộ phận tự doanh >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 8 | 4 | TS015",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 8 | 4 | TS015",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,3. Bộ phận tự doanh >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 8 | 5 | TS016",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 8 | 5 | TS016",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,3. Bộ phận tự doanh >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 8 | 6 | KT004",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 8 | 6 | KT004",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,4. Bộ phận tư vấn đầu tư >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 9 | 2 | TS017",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 9 | 2 | TS017",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,4. Bộ phận tư vấn đầu tư >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 9 | 3 | TS018",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 9 | 3 | TS018",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,4. Bộ phận tư vấn đầu tư >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 9 | 4 | TS019",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 9 | 4 | TS019",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,4. Bộ phận tư vấn đầu tư >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 9 | 5 | TS020",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 9 | 5 | TS020",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,4. Bộ phận tư vấn đầu tư >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_1 | 9 | 6 | KT005",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_1 | 9 | 6 | KT005",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Tổng >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
 BCHDPS | 01 | SEC_2 | 10 | 2 | TS021",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
@@ -12830,27 +12831,27 @@ WHERE p.RECORD_STATUS IN (1, 2)
 --  AND p.REPORT_YEAR = 2024
 AND m.SECTIONID = 'SEC_2'
 ORDER BY c.SHORT_NAME, p.REPORT_PERIOD, p.REPORT_YEAR, p.PERIOD,
-         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu động,
+         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Tổng >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 10 | 3 | TS022",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 10 | 3 | TS022",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Tổng >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 10 | 4 | TS023",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 10 | 4 | TS023",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Tổng >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 10 | 5 | TS024",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 10 | 5 | TS024",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Tổng >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 10 | 6 | KT006",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 10 | 6 | KT006",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Chi tiết >> Đối tượng,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 11 | 1 | KT013",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 11 | 1 | KT013",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Chi tiết >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 11 | 2 | TS025",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 11 | 2 | TS025",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Chi tiết >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 11 | 3 | TS026",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 11 | 3 | TS026",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Chi tiết >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 11 | 4 | TS027",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 11 | 4 | TS027",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Chi tiết >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 11 | 5 | TS028",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 11 | 5 | TS028",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,II. Chi nhánh - Chi tiết >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_2 | 11 | 6 | KT007",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_2 | 11 | 6 | KT007",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Tổng >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
 BCHDPS | 01 | SEC_3 | 12 | 2 | TS029",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
@@ -13002,27 +13003,27 @@ WHERE p.RECORD_STATUS IN (1, 2)
 --  AND p.REPORT_YEAR = 2024
 AND m.SECTIONID = 'SEC_3'
 ORDER BY c.SHORT_NAME, p.REPORT_PERIOD, p.REPORT_YEAR, p.PERIOD,
-         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu động,
+         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Tổng >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 12 | 3 | TS030",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 12 | 3 | TS030",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Tổng >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 12 | 4 | TS031",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 12 | 4 | TS031",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Tổng >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 12 | 5 | TS032",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 12 | 5 | TS032",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Tổng >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 12 | 6 | KT008",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 12 | 6 | KT008",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Chi tiết >> Đối tượng,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 13 | 1 | KT014",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 13 | 1 | KT014",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Chi tiết >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 13 | 2 | TS033",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 13 | 2 | TS033",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Chi tiết >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 13 | 3 | TS034",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 13 | 3 | TS034",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Chi tiết >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 13 | 4 | TS035",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 13 | 4 | TS035",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Chi tiết >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 13 | 5 | TS036",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 13 | 5 | TS036",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,III. Phòng giao dịch - Chi tiết >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_3 | 13 | 6 | KT009",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_3 | 13 | 6 | KT009",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Tổng >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
 BCHDPS | 01 | SEC_4 | 14 | 2 | TS037",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
@@ -13174,27 +13175,27 @@ WHERE p.RECORD_STATUS IN (1, 2)
 --  AND p.REPORT_YEAR = 2024
 AND m.SECTIONID = 'SEC_4'
 ORDER BY c.SHORT_NAME, p.REPORT_PERIOD, p.REPORT_YEAR, p.PERIOD,
-         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu động,
+         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Tổng >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 14 | 3 | TS038",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 14 | 3 | TS038",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Tổng >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 14 | 4 | TS039",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 14 | 4 | TS039",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Tổng >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 14 | 5 | TS040",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 14 | 5 | TS040",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Tổng >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 14 | 6 | KT010",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 14 | 6 | KT010",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Chi tiết >> Đối tượng,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 15 | 1 | KT015",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 15 | 1 | KT015",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Chi tiết >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 15 | 2 | TS041",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 15 | 2 | TS041",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Chi tiết >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 15 | 3 | TS042",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 15 | 3 | TS042",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Chi tiết >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 15 | 4 | TS043",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 15 | 4 | TS043",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Chi tiết >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 15 | 5 | TS044",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 15 | 5 | TS044",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,IV. Bộ phận khác (nếu có) - Chi tiết >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_4 | 15 | 6 | KT011",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_4 | 15 | 6 | KT011",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Tổng >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
 BCHDPS | 01 | SEC_5 | 16 | 2 | TS045",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
@@ -13346,15 +13347,15 @@ WHERE p.RECORD_STATUS IN (1, 2)
 --  AND p.REPORT_YEAR = 2024
 AND m.SECTIONID = 'SEC_5'
 ORDER BY c.SHORT_NAME, p.REPORT_PERIOD, p.REPORT_YEAR, p.PERIOD,
-         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu động,
+         cd.ROW_NO, m.ROWINDEX, m.COLINDEX;",Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Tổng >> Số lượng người có chứng chỉ hành nghề chứng khoán >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_5 | 16 | 3 | TS046",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_5 | 16 | 3 | TS046",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Tổng >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Cuối kỳ,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_5 | 16 | 4 | TS047",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_5 | 16 | 4 | TS047",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Tổng >> Số lượng người có chứng chỉ chuyên môn về chứng khoán phái sinh và thị trường chứng khoán phái sinh >> Tăng/Giảm so với cuối kỳ trước,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_5 | 16 | 5 | TS048",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_5 | 16 | 5 | TS048",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 58,,Hoạt động phái sinh >> Tình hình nhân sự,Tổng >> Ghi chú,"REPORT_CODE | SHEETCODE | SECTIONID | ROWINDEX | COLINDEX | CELLID
-BCHDPS | 01 | SEC_5 | 16 | 6 | KT012",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,
+BCHDPS | 01 | SEC_5 | 16 | 6 | KT012",Data Explorer,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,,X,,Done,,,,,,Done,,,,,,Dữ liệu động,P
 59,Nga,Hoạt động phái sinh >> Số lượng tài khoản giao dịch chứng khoán phái sinh của nhà đầu tư,Loại báo cáo,Loại báo cáo,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT, 
 SCMS_UAT.FORM_REPORT_DEEP_CONFIG","fr.ID, fr.REPORT_CODE, 
 fr.REPORT_NAME, 

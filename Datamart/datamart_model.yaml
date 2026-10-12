@@ -2089,7 +2089,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "BK"
-        description: "Mã hình thức tăng vốn (ETL-derived) — Natural Key. Driving Table: Securities Company Disclosure Securities Offering (sc_disclosure_securities_offering) — nguồn track draft DataModel/working/Atomic/lld/SCMS/lld_SCMS_DISCLOSURE_SECURITIES_OFFERING.yaml, chưa approved."
+        description: "Mã hình thức tăng vốn (ETL-derived) — Natural Key. Driving Table: Securities Company Disclosure Securities Offering (sc_disclosure_securities_offering) — nguồn track draft DataModel/working/Atomic/lld/SCMS/lld_SCMS_DISCLOSURE_SECURITIES_OFFERING.yaml, chưa approved. [SỬA 2026-10-12] so khớp bằng MÃ offering_method (Atomic lưu mã 'CHAO_BAN_RA_CONG_CHUNG'/'CHAO_BAN_RIENG_LE', không lưu chữ) thay LIKE; dòng chưa có mã không phân loại."
         source_atomic_table: "sc_disclosure_securities_offering"
         source_atomic_column: "sc_disclosure_securities_offering.item_category_code / offering_method"
       - logical_name: "Capital Raising Form Name"
@@ -2110,7 +2110,6 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu."
         source_atomic_table: "sc_disclosure_securities_offering"
         source_atomic_column: "sc_disclosure_securities_offering.src_stm_code"
-
   - id: "DTM-fct_securities_company_capital_raising_event"
     logical_name: "Fact Securities Company Capital Raising Event"
     datamart_table: "fct_securities_company_capital_raising_event"
@@ -2130,16 +2129,16 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK tháng của đợt chào bán/phát hành. Driving Table: Securities Company Disclosure Securities Offering (sc_disclosure_securities_offering) — nguồn track draft DataModel/working/Atomic/lld/SCMS/lld_SCMS_DISCLOSURE_SECURITIES_OFFERING.yaml, chưa approved. ETL filter khi populate: Record_Status_Code = '1'. Aggregate SUM theo tháng (TRUNC(Result_Report_Date,'MM')) x Capital_Raising_Form_Code."
+        description: "FK tháng của đợt chào bán/phát hành — trỏ NGÀY ĐẦU THÁNG (TRUNC(ngày,'MM')) để đúng grain 1 tháng x 1 hình thức. Driving Table: Securities Company Disclosure Securities Offering (sc_disclosure_securities_offering) — nguồn track draft DataModel/working/Atomic/lld/SCMS/lld_SCMS_DISCLOSURE_SECURITIES_OFFERING.yaml. ETL filter khi populate: ds_rcrd_st = 'ACTIVE' (SCD4A current-state) AND item_category_code IN ('CP','TP'). Aggregate SUM theo tháng x Capital_Raising_Form_Code. [SỬA 2026-10-12] (1) Trục ngày = document_dt (thay result_rpt_dt — NULL 84/84 dòng CP/TP trên Atomic 12/10). BA đổi ngay_du_lieu = COALESCE(DOCUMENT_DATE, CREATED_AT) (BA STT 13 dòng 78); CREATED_AT thuộc audit block loại khỏi Atomic (quyết định 2026-07) nên chưa có fallback — dữ liệu cho thấy cần created_tms (2/2 dòng có tiền thiếu document_dt), xem O_QLKD_39. (2) Bỏ filter Record_Status_Code = '1' (cột không có trên Atomic; BA không lọc RECORD_STATUS). (3) FK ngày đầu tháng thay vì ngày văn bản (trước đây Fact tách theo ngày, sai grain)."
         source_atomic_table: "sc_disclosure_securities_offering"
-        source_atomic_column: "sc_disclosure_securities_offering.result_rpt_dt"
+        source_atomic_column: "sc_disclosure_securities_offering.document_dt"
       - logical_name: "Offering Form Dimension Id"
         physical_name: "offering_form_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK hình thức tăng vốn — join key là Capital_Raising_Form_Code ETL-derived cùng công thức CASE WHEN đã dùng ở Offering Form Dimension (Item Category Code + Offering Method)."
+        description: "FK hình thức tăng vốn — join key là Capital_Raising_Form_Code ETL-derived cùng công thức CASE WHEN đã dùng ở Offering Form Dimension (Item Category Code + Offering Method). [SỬA 2026-10-12] so khớp bằng MÃ offering_method ('CHAO_BAN_RA_CONG_CHUNG'/'CHAO_BAN_RIENG_LE' — cùng bảng mã loaiChaoBan của BA) thay LIKE chữ tiếng Việt; dòng chưa có mã (NULL/trống) không phân loại (khớp BA)."
         source_atomic_table: "sc_disclosure_securities_offering"
         source_atomic_column: "sc_disclosure_securities_offering.item_category_code / offering_method"
       - logical_name: "Proceeds Collected Amount"
@@ -2148,10 +2147,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Tổng tiền thực tế thu được từ đợt chào bán/phát hành (SUM theo tháng x hình thức tăng vốn)."
+        description: "Tổng tiền thực tế thu được từ đợt chào bán/phát hành (SUM theo tháng x hình thức tăng vốn). Chỉ bản ghi hiện hành của Atomic (ds_rcrd_st = 'ACTIVE', SCD4A)."
         source_atomic_table: "sc_disclosure_securities_offering"
         source_atomic_column: "sc_disclosure_securities_offering.proceeds_collected_amt"
-
   - id: "DTM-fct_market_index_snpst"
     logical_name: "Fact Market Index Snapshot"
     datamart_table: "fct_market_index_snpst"
