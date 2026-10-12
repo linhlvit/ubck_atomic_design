@@ -40156,7 +40156,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.EQUITY_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
@@ -40221,7 +40221,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.BOND_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
@@ -52646,7 +52646,7 @@ attributes:
   atomic_entity: "Security Match Log"
   atomic_attribute: "Match Volume"
   description: "Khối lượng khớp."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -52657,12 +52657,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_match_log"
   atomic_column: "match_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Transaction"
   atomic_entity: "Security Match Log"
   atomic_attribute: "Accumulated Volume"
   description: "Tổng khối lượng khớp lũy kế trong ngày (lô chẵn)."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -52673,7 +52673,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_match_log"
   atomic_column: "accumulated_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Transaction"
   atomic_entity: "Security Match Log"
   atomic_attribute: "Accumulated Value"
@@ -52694,7 +52694,7 @@ attributes:
   atomic_entity: "Security Match Log"
   atomic_attribute: "Total Buy Volume"
   description: "Tổng khối lượng mua chủ động."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -52705,12 +52705,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_match_log"
   atomic_column: "total_buy_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Transaction"
   atomic_entity: "Security Match Log"
   atomic_attribute: "Total Sell Volume"
   description: "Tổng khối lượng bán chủ động."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -52721,7 +52721,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_match_log"
   atomic_column: "total_sell_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Transaction"
   atomic_entity: "Security Match Log"
   atomic_attribute: "Board Id"
@@ -60207,7 +60207,7 @@ attributes:
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "Close Volume"
   description: "Khối lượng đóng cửa."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60218,7 +60218,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "close_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "Price Change"
@@ -60303,7 +60303,7 @@ attributes:
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "Total Trading Volume"
   description: "Tổng khối lượng giao dịch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60314,7 +60314,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "total_trading_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "Total Trading Value"
@@ -60335,7 +60335,7 @@ attributes:
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "Total Listing Volume"
   description: "Khối lượng niêm yết."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60346,12 +60346,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "total_listing_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "Foreign Remain Volume"
   description: "Room NĐTNN còn lại."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60362,12 +60362,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "foreign_remain_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Match Volume"
   description: "Khối lượng thực hiện gần nhất GD thỏa thuận Outright."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60378,7 +60378,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "pt_match_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Match Price"
@@ -60399,7 +60399,7 @@ attributes:
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Total Traded Volume"
   description: "Tổng khối lượng GD thỏa thuận Outright."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60410,7 +60410,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "pt_total_traded_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Total Traded Value"
@@ -60431,7 +60431,7 @@ attributes:
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Best Bid Volume"
   description: "Tổng KL chào mua cao nhất GD thỏa thuận Outright."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60442,7 +60442,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "pt_best_bid_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Best Bid Price"
@@ -60463,7 +60463,7 @@ attributes:
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Best Offer Volume"
   description: "Tổng KL chào bán thấp nhất GD thỏa thuận Outright."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60474,7 +60474,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "pt_best_offer_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Best Offer Price"
@@ -60495,7 +60495,7 @@ attributes:
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Total Bid Volume"
   description: "Tổng KL chào mua GD thỏa thuận Outright."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60506,12 +60506,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "pt_total_bid_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Total Offer Volume"
   description: "Tổng KL chào bán GD thỏa thuận Outright."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60522,12 +60522,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "pt_total_offer_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Max Volume"
   description: "KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60538,7 +60538,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "pt_max_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Max Price"
@@ -60559,7 +60559,7 @@ attributes:
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Min Volume"
   description: "KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -60570,7 +60570,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "corporate_bond_trading_snapshot"
   atomic_column: "pt_min_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
   atomic_attribute: "PT Min Price"
@@ -65095,7 +65095,7 @@ attributes:
   atomic_entity: "Index Constituent Snapshot"
   atomic_attribute: "Total Match Volume"
   description: "Tổng khối lượng khớp lệnh lô chẵn."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -65108,7 +65108,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "index_constituent_snapshot"
   atomic_column: "total_match_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Business Direction"
   atomic_entity: "Inspection Annual Plan"
   atomic_attribute: "Inspection Annual Plan Id"
@@ -67512,7 +67512,7 @@ attributes:
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "Total Volume"
   description: "Tổng khối lượng đã khớp."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -67524,7 +67524,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "market_index_snapshot"
   atomic_column: "total_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Group"
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "Total Value"
@@ -67625,7 +67625,7 @@ attributes:
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "Advances Volume"
   description: "Tổng khối lượng đã khớp của các mã tăng."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -67636,12 +67636,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "market_index_snapshot"
   atomic_column: "advances_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Group"
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "Declines Volume"
   description: "Tổng khối lượng đã khớp của các mã giảm."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -67652,12 +67652,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "market_index_snapshot"
   atomic_column: "declines_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Group"
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "No Change Volume"
   description: "Khối lượng khớp mã không tăng/giảm."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -67668,7 +67668,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "market_index_snapshot"
   atomic_column: "no_change_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Group"
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "Odd Lot Total Value"
@@ -67689,7 +67689,7 @@ attributes:
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "Odd Lot Total Volume"
   description: "Khối lượng khớp lô lẻ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -67700,12 +67700,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "market_index_snapshot"
   atomic_column: "odd_lot_total_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Group"
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "PT Total Volume"
   description: "Tổng khối lượng giao dịch thỏa thuận."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -67716,7 +67716,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "market_index_snapshot"
   atomic_column: "pt_total_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Group"
   atomic_entity: "Market Index Snapshot"
   atomic_attribute: "PT Total Value"
@@ -67968,7 +67968,7 @@ attributes:
   atomic_entity: "Market Price Snapshot"
   atomic_attribute: "Volume"
   description: "Tổng khối lượng khớp trong phút."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -67980,7 +67980,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "market_price_snapshot"
   atomic_column: "vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Market Price Snapshot"
   atomic_attribute: "Market Price Snapshot Id"
@@ -68133,7 +68133,7 @@ attributes:
   atomic_entity: "Market Price Snapshot"
   atomic_attribute: "Volume"
   description: "Tổng khối lượng khớp trong ngày."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   source_system: "MDDS"
@@ -68145,7 +68145,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "market_price_snapshot"
   atomic_column: "vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: null
   atomic_entity: "Member Disclosure Announcement"
   atomic_attribute: "Member Disclosure Announcement Id"
@@ -75799,7 +75799,7 @@ attributes:
   source_system: "IDS"
   source_table: "STOCK_LISTING_HISTORY"
   source_column: "IDS.STOCK_LISTING_HISTORY.EXCHANGE_CD"
-  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
@@ -76235,7 +76235,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TENDER_OFFER"
   source_column: "IDS.COMPANY_TENDER_OFFER.TARGET_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
@@ -87336,7 +87336,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Close Volume"
   description: "Khối lượng khớp gần nhất."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87348,7 +87348,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "close_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Price Change"
@@ -87449,7 +87449,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Bid Volume 1"
   description: "Khối lượng mua top 1."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87460,7 +87460,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "bid_vol_1"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Bid Price 2"
@@ -87481,7 +87481,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Bid Volume 2"
   description: "Khối lượng mua top 2."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87492,7 +87492,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "bid_vol_2"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Bid Price 3"
@@ -87513,7 +87513,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Bid Volume 3"
   description: "Khối lượng mua top 3."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87524,7 +87524,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "bid_vol_3"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Offer Price 1"
@@ -87545,7 +87545,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Offer Volume 1"
   description: "Khối lượng bán top 1."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87556,7 +87556,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "offer_vol_1"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Offer Price 2"
@@ -87577,7 +87577,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Offer Volume 2"
   description: "Khối lượng bán top 2."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87588,7 +87588,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "offer_vol_2"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Offer Price 3"
@@ -87609,7 +87609,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Offer Volume 3"
   description: "Khối lượng bán top 3."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87620,12 +87620,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "offer_vol_3"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Total Trading Volume"
   description: "Tổng khối lượng khớp từ đầu ngày."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87636,7 +87636,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "total_trading_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Total Trading Value"
@@ -87657,7 +87657,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Total Offer Volume"
   description: "Tổng khối lượng dư bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87668,12 +87668,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "total_offer_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Total Bid Volume"
   description: "Tổng khối lượng dư mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87684,12 +87684,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "total_bid_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Foreign Buy Volume"
   description: "Khối lượng NĐTNN mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87700,12 +87700,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "foreign_buy_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Foreign Sell Volume"
   description: "Khối lượng NĐTNN bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87716,12 +87716,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "foreign_sell_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Foreign Remain Volume"
   description: "Room còn lại cho NĐTNN."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87732,12 +87732,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "foreign_remain_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Foreign Room Volume"
   description: "Tổng room NĐTNN."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87748,12 +87748,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "foreign_room_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "PT Match Volume"
   description: "Khối lượng khớp thỏa thuận gần nhất."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87764,7 +87764,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "pt_match_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "PT Match Price"
@@ -87785,7 +87785,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "PT Total Traded Volume"
   description: "Tổng khối lượng khớp thỏa thuận từ đầu ngày."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87796,7 +87796,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "pt_total_traded_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "PT Total Traded Value"
@@ -87850,7 +87850,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Listed Share Count"
   description: "Khối lượng CK niêm yết."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87862,12 +87862,12 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "listed_share_count"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Total Listing Volume"
   description: "Khối lượng CK niêm yết."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -87879,7 +87879,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "security_trading_snapshot"
   atomic_column: "total_listing_vol"
-  data_type: "int"
+  data_type: "bigint"
 - bcv_core_object: "Product"
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Market Id"

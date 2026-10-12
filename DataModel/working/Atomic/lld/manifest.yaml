@@ -491,43 +491,43 @@ entries:
   source_table: JAD_STOCKINFOR
   atomic_entity: Security Trading Snapshot
   group: T1
-  design_status: draft
+  design_status: approved
 - lld_file: MDDS/lld_MDDS_JAD_MARKETINFOR.yaml
   source_system: MDDS
   source_table: JAD_MARKETINFOR
   atomic_entity: Market Index Snapshot
   group: T1
-  design_status: draft
+  design_status: approved
 - lld_file: MDDS/lld_MDDS_JAD_CORPBONDINFOR.yaml
   source_system: MDDS
   source_table: JAD_CORPBONDINFOR
   atomic_entity: Corporate Bond Trading Snapshot
   group: T1
-  design_status: draft
+  design_status: approved
 - lld_file: MDDS/lld_MDDS_JAD_TRANSLOG.yaml
   source_system: MDDS
   source_table: JAD_TRANSLOG
   atomic_entity: Security Match Log
   group: T2
-  design_status: draft
+  design_status: approved
 - lld_file: MDDS/lld_MDDS_JAD_CSIDXINFOR.yaml
   source_system: MDDS
   source_table: JAD_CSIDXINFOR
   atomic_entity: Index Constituent Snapshot
   group: T2
-  design_status: draft
+  design_status: approved
 - lld_file: MDDS/lld_MDDS_JAD_TRADINGVIEWHISTORY1MIN.yaml
   source_system: MDDS
   source_table: JAD_TRADINGVIEWHISTORY1MIN
   atomic_entity: Market Price Snapshot
   group: T2
-  design_status: draft
+  design_status: approved
 - lld_file: MDDS/lld_MDDS_JAD_TRADINGVIEWHISTORY1DAY.yaml
   source_system: MDDS
   source_table: JAD_TRADINGVIEWHISTORY1DAY
   atomic_entity: Market Price Snapshot
   group: T2
-  design_status: draft
+  design_status: approved
 - source_system: ORDERTRADE
   source_table: ORDER_BOOK_HOSE
   atomic_entity: Securities Order
@@ -635,7 +635,7 @@ entries:
   atomic_entity: Securities Company
   group: T1
   lld_file: SCMS/lld_SCMS_SC_FIRM_INFO.yaml
-  design_status: approved
+  design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_INFO
   atomic_entity: Involved Party Postal Address
@@ -653,7 +653,7 @@ entries:
   atomic_entity: Involved Party Alternative Identification
   group: T1
   lld_file: SCMS/lld_SCMS_SC_FIRM_INFO_IP_Alt_Identification.yaml
-  design_status: approved
+  design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_BRANCH
   atomic_entity: Securities Company Organization Unit
@@ -707,7 +707,7 @@ entries:
   atomic_entity: Securities Company Organization Unit
   group: T2
   lld_file: SCMS/lld_SCMS_SC_FIRM_TRANSACTION_OFFICE.yaml
-  design_status: approved
+  design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_TRANSACTION_OFFICE
   atomic_entity: Involved Party Postal Address
@@ -720,6 +720,12 @@ entries:
   group: T2
   lld_file: SCMS/lld_SCMS_SC_FIRM_TRANSACTION_OFFICE_IP_Electronic_Address.yaml
   design_status: approved
+- source_system: SCMS
+  source_table: SC_FIRM_TRANSACTION_OFFICE
+  atomic_entity: Involved Party Alternative Identification
+  group: T2
+  lld_file: SCMS/lld_SCMS_SC_FIRM_TRANSACTION_OFFICE_IP_Alt_Identification.yaml
+  design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_DOMESTIC_REP_OFFICE
   atomic_entity: Securities Company Organization Unit
@@ -740,7 +746,7 @@ entries:
   design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_FOREIGN_REP_OFFICE
-  atomic_entity: Securities Company Organization Unit
+  atomic_entity: Securities Company Foreign Organization Unit
   group: T2
   lld_file: SCMS/lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE.yaml
   design_status: draft
@@ -782,7 +788,7 @@ entries:
   design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_FOREIGN_BRANCH
-  atomic_entity: Securities Company Foreign Branch
+  atomic_entity: Securities Company Foreign Organization Unit
   group: T2
   lld_file: SCMS/lld_SCMS_SC_FIRM_FOREIGN_BRANCH.yaml
   design_status: draft
@@ -877,6 +883,12 @@ entries:
   lld_file: SCMS/lld_SCMS_LNK_SC_FIRM_SERVICE.yaml
   design_status: draft
 - source_system: SCMS
+  source_table: LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE
+  atomic_entity: Securities Company Foreign Organization Unit X Classification Securities Company Firm Service Relationship
+  group: T2
+  lld_file: SCMS/lld_SCMS_LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE.yaml
+  design_status: draft
+- source_system: SCMS
   source_table: LNK_TRANSACTION_OFFICE_SERVICE
   atomic_entity: Securities Company Organization Unit X Classification Securities Company Firm Service Relationship
   group: T2
@@ -887,7 +899,7 @@ entries:
   atomic_entity: Securities Company Senior Personnel
   group: T2
   lld_file: SCMS/lld_SCMS_SC_FIRM_SENIOR_PERSONNEL.yaml
-  design_status: approved
+  design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_SENIOR_PERSONNEL
   atomic_entity: Involved Party Postal Address
@@ -905,7 +917,7 @@ entries:
   atomic_entity: Involved Party Alternative Identification
   group: T2
   lld_file: SCMS/lld_SCMS_SC_FIRM_SENIOR_PERSONNEL_IP_Alt_Identification.yaml
-  design_status: approved
+  design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_LICENSED_PRACTITIONER
   atomic_entity: Securities Company Practitioner
@@ -1196,13 +1208,13 @@ entries:
   design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT
-  atomic_entity: Securities Company Foreign Branch Periodic Report
+  atomic_entity: Securities Company Foreign Organization Unit Periodic Report
   group: T3
   lld_file: SCMS/lld_SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.yaml
   design_status: draft
 - source_system: SCMS
   source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
-  atomic_entity: Securities Company Foreign Representative Office Periodic Report
+  atomic_entity: Securities Company Foreign Organization Unit Periodic Report
   group: T3
   lld_file: SCMS/lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.yaml
   design_status: draft
