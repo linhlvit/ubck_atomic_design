@@ -259,7 +259,7 @@ attributes:
 - attribute_name: "Total Volume"
   physical_name: "total_vol"
   description: "Tổng khối lượng đã khớp."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -268,7 +268,7 @@ attributes:
   comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng CK, cùng pattern với advancesvolumn/declinesvolumn."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Total Value"
   physical_name: "total_val"
   description: "Tổng giá trị đã khớp."
@@ -344,7 +344,7 @@ attributes:
 - attribute_name: "Advances Volume"
   physical_name: "advances_vol"
   description: "Tổng khối lượng đã khớp của các mã tăng."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -352,11 +352,11 @@ attributes:
   - "MDDS.JAD_MARKETINFOR.ADVANCESVOLUMN"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Declines Volume"
   physical_name: "declines_vol"
   description: "Tổng khối lượng đã khớp của các mã giảm."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -364,11 +364,11 @@ attributes:
   - "MDDS.JAD_MARKETINFOR.DECLINESVOLUMN"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "No Change Volume"
   physical_name: "no_change_vol"
   description: "Khối lượng khớp mã không tăng/giảm."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -376,7 +376,7 @@ attributes:
   - "MDDS.JAD_MARKETINFOR.NOCHANGEVOLUMN"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Odd Lot Total Value"
   physical_name: "odd_lot_total_val"
   description: "Giá trị khớp lô lẻ."
@@ -392,7 +392,7 @@ attributes:
 - attribute_name: "Odd Lot Total Volume"
   physical_name: "odd_lot_total_vol"
   description: "Khối lượng khớp lô lẻ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -400,11 +400,11 @@ attributes:
   - "MDDS.JAD_MARKETINFOR.ODDLOTTOTALVOLUME"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "PT Total Volume"
   physical_name: "pt_total_vol"
   description: "Tổng khối lượng giao dịch thỏa thuận."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -412,7 +412,7 @@ attributes:
   - "MDDS.JAD_MARKETINFOR.PT_TOTAL_QTTY"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "PT Total Value"
   physical_name: "pt_total_val"
   description: "Tổng giá trị giao dịch thỏa thuận."

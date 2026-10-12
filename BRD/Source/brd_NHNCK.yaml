@@ -1,27 +1,6 @@
 ﻿source: NHNCK
 description: Quản lý giám sát người hành nghề chứng khoán
 brd_entries:
-- brd_id: BRD-SRC-NHNCK-ACTION_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng ACTION_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký hoạt động của người dùng trên hệ thống
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: System audit log
-    table: ACTION_LOGS
-    related_tables:
-    - table: USERS
-      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-NHNCK-DIGITAL_CERTIFICATES
   brd_name: Design Atomic từ nguồn NHNCK bảng DIGITAL_CERTIFICATES
   type: Theo Source
@@ -134,8 +113,6 @@ brd_entries:
       relation: FK cha — Chức vụ trong tổ chức
     - table: PROFESSIONALS
       relation: FK cha — Thông tin người hành nghề chứng khoán
-    - table: ACTION_LOGS
-      relation: 1-N — Nhật ký hoạt động của người dùng trên hệ thống
     - table: APPLICATIONS
       relation: 1-N — Hồ sơ đăng ký chứng chỉ hành nghề
     - table: APPLICATIONS
@@ -160,18 +137,10 @@ brd_entries:
       relation: 1-N — Tài liệu đính kèm của quyết định
     - table: DIGITAL_CERTIFICATE_USERS
       relation: 1-N — Tài khoản được sử dụng chứng thư số
-    - table: DOCUMENT_SIGN_LOGS
-      relation: 1-N — Nhật ký ký số tài liệu
-    - table: EMAIL_LOGS
-      relation: 1-N — Nhật ký gửi email trong hệ thống
     - table: IDENTITY_INFO_C06_S
       relation: 1-N — IDENTITY_INFO_C06_S
     - table: NOTIFICATIONS
       relation: 1-N — Thông báo trong hệ thống
-    - table: SIGNATURE_LOGS
-      relation: 1-N — Nhật ký ký số hồ sơ/CCHN
-    - table: SMS_LOGS
-      relation: 1-N — Nhật ký gửi SMS trong hệ thống
     - table: SPECIALIZATION_COURSE_DETAILS
       relation: 1-N — Chi tiết người tham gia khóa học chuyên môn
     - table: USER_ROLES
@@ -447,8 +416,6 @@ brd_entries:
       relation: 1-N — Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN
     - table: CERTIFICATE_DOCUMENTS
       relation: 1-N — Tài liệu liên quan của loại chứng chỉ
-    - table: DOCUMENT_SIGN_LOGS
-      relation: 1-N — Nhật ký ký số tài liệu
     - table: PROCEDURE_DOCUMENTS
       relation: 1-N — Liên kết thủ tục hành chính với tài liệu yêu cầu
     notes: null
@@ -549,8 +516,6 @@ brd_entries:
       relation: 1-N — Chứng chỉ hành nghề được cấp
     - table: CERTIFICATE_RECORD_GROUPS
       relation: 1-N — Nhóm chứng chỉ hành nghề
-    - table: CERTIFICATE_RECORD_LOGS
-      relation: 1-N — Nhật ký chứng chỉ hành nghề
     - table: CERTIFICATE_RECORD_STATUS_HISTORIES
       relation: 1-N — Lịch sử trạng thái chứng chỉ hành nghề
     - table: DECISION_DOCUMENTS
@@ -658,8 +623,6 @@ brd_entries:
       relation: 1-N — Thành viên (hồ sơ) trong nhóm xử lý tập thể
     - table: APPLICATION_HISTORIES
       relation: 1-N — Lịch sử xử lý hồ sơ CCHN (chuyển trạng thái)
-    - table: APPLICATION_LOGS
-      relation: 1-N — Nhật ký hoạt động trên hồ sơ CCHN
     - table: APPLICATION_PROFESSIONALS
       relation: 1-N — Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ
     - table: APPLICATION_RE_EXAMS
@@ -672,8 +635,6 @@ brd_entries:
       relation: 1-N — Thông tin bổ sung hồ sơ CCHN
     - table: EXAM_DETAILS
       relation: 1-N — Kết quả các kỳ thi sát hạch
-    - table: SIGNATURE_LOGS
-      relation: 1-N — Nhật ký ký số hồ sơ/CCHN
     - table: VERIFY_APPLICATION_STATUSES
       relation: 1-N — Yêu cầu phê duyệt lãnh đạo cho hồ sơ
     notes: null
@@ -1034,14 +995,10 @@ brd_entries:
       relation: 1-N — Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử
     - table: CERTIFICATE_RECORD_GROUP_MEMBERS
       relation: 1-N — Thành viên trong nhóm chứng chỉ hành nghề
-    - table: CERTIFICATE_RECORD_LOGS
-      relation: 1-N — Nhật ký chứng chỉ hành nghề
     - table: CERTIFICATE_RECORD_STATUS_HISTORIES
       relation: 1-N — Lịch sử trạng thái chứng chỉ hành nghề
     - table: ORGANIZATION_REPORTS
       relation: 1-N — Báo cáo về người hành nghề từ tổ chức
-    - table: SIGNATURE_LOGS
-      relation: 1-N — Nhật ký ký số hồ sơ/CCHN
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1077,29 +1034,6 @@ brd_entries:
       filter_note: null
       filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
       filter_note: Ngày thay đổi trạng thái chứng chi hành nghề được ghi vào hệ thống — append theo CREATED_AT
-- brd_id: BRD-SRC-NHNCK-CERTIFICATE_RECORD_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_RECORD_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký chứng chỉ hành nghề
-    functional_group: UID05 Quản lý chứng chỉ hành nghề
-    scope_status: out_of_scope
-    scope_reason: null
-    table: CERTIFICATE_RECORD_LOGS
-    related_tables:
-    - table: CERTIFICATE_RECORDS
-      relation: FK cha — Chứng chỉ hành nghề được cấp
-    - table: DECISIONS
-      relation: FK cha — Danh mục các quyết định hành chính
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-NHNCK-PROFESSIONALS
   brd_name: Design Atomic từ nguồn NHNCK bảng PROFESSIONALS
   type: Theo Source
@@ -1305,8 +1239,6 @@ brd_entries:
       relation: FK cha — Báo cáo về người hành nghề từ tổ chức
     - table: ORGANIZATION_REPORTS
       relation: 1-N — Báo cáo về người hành nghề từ tổ chức
-    - table: ORGANIZATION_REPORT_LOG_SYNCS
-      relation: 1-N — Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1395,115 +1327,6 @@ brd_entries:
     related_tables:
     - table: CERTIFICATES
       relation: FK cha — Danh mục các loại chứng chỉ hành nghề
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-NHNCK-EMAIL_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng EMAIL_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký gửi email trong hệ thống
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Operational log
-    table: EMAIL_LOGS
-    related_tables:
-    - table: USERS
-      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Nhật ký gửi email trong hệ thống — append theo CREATED_AT
-- brd_id: BRD-SRC-NHNCK-SMS_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng SMS_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký gửi SMS trong hệ thống
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Operational log
-    table: SMS_LOGS
-    related_tables:
-    - table: USERS
-      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Nhật ký gửi SMS trong hệ thống — append theo CREATED_AT
-- brd_id: BRD-SRC-NHNCK-SEND_AND_RECIEVE_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng SEND_AND_RECIEVE_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký gửi nhận dữ liệu tích hợp
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Operational log
-    table: SEND_AND_RECIEVE_LOGS
-    related_tables: null
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-NHNCK-DOCUMENT_SIGN_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng DOCUMENT_SIGN_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký ký số tài liệu
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Operational log
-    table: DOCUMENT_SIGN_LOGS
-    related_tables:
-    - table: DOCUMENTS
-      relation: FK cha — Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
-    - table: USERS
-      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-NHNCK-SIGNATURE_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng SIGNATURE_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký ký số hồ sơ/CCHN
-    functional_group: UID01 Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Operational log
-    table: SIGNATURE_LOGS
-    related_tables:
-    - table: APPLICATIONS
-      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
-    - table: CERTIFICATE_RECORDS
-      relation: FK cha — Chứng chỉ hành nghề được cấp
-    - table: USERS
-      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -2015,27 +1838,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-NHNCK-APPLICATION_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng APPLICATION_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký hoạt động trên hồ sơ CCHN
-    functional_group: UID03 Quản lý hồ sơ
-    scope_status: out_of_scope
-    scope_reason: Operational audit log
-    table: APPLICATION_LOGS
-    related_tables:
-    - table: APPLICATIONS
-      relation: FK cha — Hồ sơ đăng ký chứng chỉ hành nghề
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-NHNCK-APPLICATION_PROFESSIONALS
   brd_name: Design Atomic từ nguồn NHNCK bảng APPLICATION_PROFESSIONALS
   type: Theo Source
@@ -2200,30 +2002,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-NHNCK-ORGANIZATION_REPORT_LOG_SYNCS
-  brd_name: Design Atomic từ nguồn NHNCK bảng ORGANIZATION_REPORT_LOG_SYNCS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
-    functional_group: UID06 Quản lý người hành nghề chứng khoán
-    scope_status: out_of_scope
-    scope_reason: Quyết định Data Modeler (2026-08-14) — hủy thiết kế (đảo lại quyết
-      định in_scope 2026-08-13). Trở về out_of_scope ban đầu (Operational log).
-    table: ORGANIZATION_REPORT_LOG_SYNCS
-    related_tables:
-    - table: ORGANIZATION_REPORT_YEARLYS
-      relation: FK cha — Báo cáo hàng năm của tổ chức về người hành nghề
-    - table: ORGANIZATION_REPORTS
-      relation: FK cha — Báo cáo về người hành nghề từ tổ chức
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-NHNCK-ORGANIZATION_REPORT_YEARLYS
   brd_name: Design Atomic từ nguồn NHNCK bảng ORGANIZATION_REPORT_YEARLYS
   type: Theo Source
@@ -2241,8 +2019,6 @@ brd_entries:
     related_tables:
     - table: ORGANIZATIONS
       relation: FK cha — Thông tin các tổ chức (CTCK, QLQ, Ngân hàng, ...)
-    - table: ORGANIZATION_REPORT_LOG_SYNCS
-      relation: 1-N — Nhật ký đồng bộ dữ liệu báo cáo từ tổ chức
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -2263,27 +2039,6 @@ brd_entries:
     table: POST_CERT_TRAINING_COURSES
     related_tables: null
     notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-NHNCK-CERTIFICATE_CONVERSION_REQUEST_LOGS
-  brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_CONVERSION_REQUEST_LOGS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Nhật ký hành động xử lý yêu cầu chuyển đổi chứng chỉ hành nghề (log theo từng ACTION/DETAIL)
-    functional_group: TBD - cần xác định nhóm chức năng
-    scope_status: out_of_scope
-    scope_reason: Không có nhu cầu khai thác nghiệp vụ trên báo cáo — Quyết định Data
-      Modeler (2026-09-12).
-    table: CERTIFICATE_CONVERSION_REQUEST_LOGS
-    related_tables: null
-    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu.
-      Chốt out_of_scope (2026-09-12) — không có nhu cầu khai thác nghiệp vụ. Xem NHNCK_HLD_Overview.md §7f.
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
