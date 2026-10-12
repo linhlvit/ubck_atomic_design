@@ -371,8 +371,8 @@ COMMENT 'Flat table — Fact Security Trading Daily × Calendar Date Dimension �
 --    nhưng bị bỏ sót khỏi Phase 3 — bổ sung lại cho khớp Attributes/Detail Mapping/HLD
 --    đã có sẵn từ trước, không phải thiết kế mới.
 --    Dòng tiền NĐT nước ngoài theo phút — 1 row / mã CK (Symbol) / Trade Minute
---    Grain: nguồn Securities Trade (per-trade, GROUP BY phút) — khác Fact Security
---    Trading Intraday (nguồn Security Trading Snapshot, per-tick MDDS)
+--    [SỬA 2026-10-12] Nguồn Security Trading Snapshot (MDDS JAD_STOCKINFOR, per-tick): GTNN LŨY KẾ
+--    trong ngày tại cuối phút (snapshot cuối phút, carry-forward) — khớp mapping BA, O_GSTT_41 mục 4
 --    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Security Trading Snapshot Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_foreign_trading_min_snpst_flat ON CLUSTER 'my_cluster'
@@ -380,9 +380,9 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_foreign_trading_min_snpst_flat ON C
     -- From: FACT Foreign Trading Minute Snapshot
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
     snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
-    trade_minute_tms                    Nullable(DateTime)      COMMENT 'Mốc phút xác định grain (DD — grain component), DATE_TRUNC(minute, Trade Timestamp)',
-    foreign_buy_val_at_min              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của NĐT nước ngoài trong phút (K_GSTT_78)',
-    foreign_sell_val_at_min             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của NĐT nước ngoài trong phút (K_GSTT_79)',
+    trade_minute_tms                    Nullable(DateTime)      COMMENT 'Mốc phút xác định grain (DD — grain component), cắt phút của Trading Date + Trading Time snapshot',
+    foreign_buy_val_at_min              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua LŨY KẾ của NĐT nước ngoài đến cuối phút (K_GSTT_78) — không cộng theo thời gian',
+    foreign_sell_val_at_min             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán LŨY KẾ của NĐT nước ngoài đến cuối phút (K_GSTT_79) — không cộng theo thời gian',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',

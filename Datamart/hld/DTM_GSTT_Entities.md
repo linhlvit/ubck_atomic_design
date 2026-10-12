@@ -168,7 +168,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Foreign Trading Minute Snapshot | Fact Snapshot | new | Giá trị mua/bán của NĐT nước ngoài theo phút | 1 row / mã CK (Symbol) / Trade Minute (`trade_minute_tms`) — FK Calendar Date Dimension qua Trade Date | K_GSTT_78–80 |
+| Fact Foreign Trading Minute Snapshot | Fact Snapshot | new | Giá trị mua/bán LŨY KẾ của NĐT nước ngoài đến cuối phút (nguồn Security Trading Snapshot, cập nhật 2026-10-12) | 1 row / mã CK (Symbol) / Trade Minute (`trade_minute_tms`) — FK Calendar Date Dimension qua Trade Date | K_GSTT_78–80, K_GSTT_263–265 |
 | Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
