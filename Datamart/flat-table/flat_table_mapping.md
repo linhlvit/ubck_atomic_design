@@ -1593,7 +1593,7 @@ _Không có dim join (operational / self-contained table)._
 | Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
 |-----------------|----------|-----------|----------|:----:|
 | Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
-| Classification Dimension (scheme FMS_FUND_TYPE) | `datamart.cl_dim` | `fund_tp_cl_dim_id` | `cl_dim_id` | ✗ |
+| Fund Type Dimension | `datamart.fund_type_dim` | `fund_type_id` | `fund_type_id` | ✗ |
 
 **Nhóm KPI**
 
@@ -1619,7 +1619,7 @@ _Không có dim join (operational / self-contained table)._
 | Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
 |-----------------|----------|-----------|----------|:----:|
 | Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
-| Classification Dimension (scheme FMS_FUND_TYPE) | `datamart.cl_dim` | `fund_tp_cl_dim_id` | `cl_dim_id` | ✗ |
+| Fund Type Dimension | `datamart.fund_type_dim` | `fund_type_id` | `fund_type_id` | ✗ |
 
 **Nhóm KPI**
 

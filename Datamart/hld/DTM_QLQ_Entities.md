@@ -64,13 +64,13 @@ erDiagram
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_Count_Snapshot : " "
-    Investment_Fund_Dimension ||--o{ Fact_Investment_Fund_Count_Snapshot : " "
+    Fund_Type_Dimension ||--o{ Fact_Investment_Fund_Count_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Investment Fund Count Snapshot | Fact Snapshot | new | Đếm số quỹ theo loại hình quỹ | 1 loại hình quỹ × 1 tháng | K_QLQ_59–67 (Nhóm 10); K_QLQ_41 (Nhóm 6, reuse) |
-| Investment Fund Dimension | Dimension | new | Quỹ đầu tư (SCD4A) | 1 quỹ (current state) | — |
+| Fund Type Dimension | Dimension | new | Loại hình quỹ (SCD4A) | 1 loại hình quỹ (current state) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
 ---
@@ -80,13 +80,13 @@ erDiagram
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : " "
-    Investment_Fund_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : " "
+    Fund_Type_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Investment Fund CCQ Snapshot | Fact Snapshot | new | Tổng KL CCQ lưu hành theo loại hình quỹ | 1 loại hình quỹ × 1 tháng | K_QLQ_68–76 |
-| Investment Fund Dimension | Dimension | new | Quỹ đầu tư (SCD4A) | 1 quỹ (current state) | — |
+| Fund Type Dimension | Dimension | new | Loại hình quỹ (SCD4A) | 1 loại hình quỹ (current state) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
 ---
@@ -97,7 +97,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Classification Dimension | Dimension | reuse | Loại hình quỹ chi tiết (scheme FMS_FUND_TYPE) | 1 giá trị classification | K_QLQ_80 (DERIVED) |
+| Fund Type Dimension | Dimension | new | Loại hình quỹ chi tiết (nguồn Atomic Classification FMS Fund Type; [SỬA 2026-10-12] thay Classification Dimension scheme FMS_FUND_TYPE) | 1 loại hình quỹ | K_QLQ_80 (DERIVED) |
 | Fact Market Index Snapshot (module GSTT) | Fact Snapshot | reuse | VN-Index — reuse xuyên module, không sinh file LLD cho QLQ | 1 chỉ số × 1 ngày | K_QLQ_78 |
 | Fact Macro Indicator Snapshot (module PTTT) | Fact Snapshot | reuse | Lãi suất liên NH qua đêm (INTERBANK_IR) — reuse xuyên module | 1 chỉ số × 1 kỳ | K_QLQ_79 |
 

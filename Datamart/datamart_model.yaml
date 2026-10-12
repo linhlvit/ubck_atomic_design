@@ -19954,7 +19954,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Loại hình quỹ đầu tư — Classification Value (scheme: FMS_FUND_TYPE)"
+        description: "Loại hình quỹ đầu tư — Classification Value — mã loại hình, join Fund Type Dimension (fund_type_code) để lấy tên [SỬA 2026-10-12] scheme FMS_FUND_TYPE đã tách khỏi cl_value sang Atomic cl_fms_fund_type"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.cl_fms_fund_tp_code"
       - logical_name: "Operation Status Code"
@@ -20164,7 +20164,6 @@ entities:
         description: "Timestamp xử lý ETL — audit field"
         source_atomic_table: null
         source_atomic_column: null
-
   - id: "DTM-fund_management_company_dim"
     logical_name: "Fund Management Company Dimension"
     datamart_table: "fund_management_company_dim"
@@ -21035,6 +21034,101 @@ entities:
         source_atomic_table: null
         source_atomic_column: null
 
+  - id: "DTM-fund_type_dim"
+    logical_name: "Fund Type Dimension"
+    datamart_table: "fund_type_dim"
+    table_type: "dim"
+    module: "QLQ"
+    status: "draft"
+    reuse_status: "new"
+    description: "Loai hinh quy (SCD4A, current-state) - nguon Atomic Classification FMS Fund Type (FMS.FUND_TYPE). Tach khoi Classification Dimension (cl_dim) tu 2026-10-12 vi scheme FMS_FUND_TYPE da chuyen khoi cl_value sang bang Atomic rieng. Dung Nhom 6/10/11 (FK cua Fact Investment Fund Count/CCQ Snapshot)."
+    source_atomic:
+      - "cl_fms_fund_type"
+    modules_using:
+      - "QLQ"
+    columns:
+      - logical_name: "Fund Type Id"
+        physical_name: "fund_type_id"
+        data_domain: "Surrogate Key"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — Driving: cl_fms_fund_type. Khóa thay thế trùng SK Atomic cl_fms_fund_tp_id (cùng cách băm theo scheme FMS_FUND_TYPE + mã)"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Fund Type Code"
+        physical_name: "fund_type_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "BK"
+        description: "Mã loại hình quỹ (BK nguồn FMS.FUND_TYPE.ID — nguồn không có cột mã nghiệp vụ riêng); join anchor cho Fact lookup"
+        source_atomic_table: "cl_fms_fund_type"
+        source_atomic_column: "cl_fms_fund_type.cl_fms_fund_tp_code"
+      - logical_name: "Fund Type Name"
+        physical_name: "fund_type_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Tên loại hình quỹ hiển thị (FMS.FUND_TYPE.ITEM_NAME)"
+        source_atomic_table: "cl_fms_fund_type"
+        source_atomic_column: "cl_fms_fund_type.cl_fms_fund_tp_nm"
+      - logical_name: "Open Fund Indicator"
+        physical_name: "open_fund_indicator"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "Cờ quỹ mở (FMS.FUND_TYPE.IS_OPEN_FUND): 1 = quỹ mở, 0 = không. Giữ int 0/1 như Atomic (cùng quy ước các cột *_indicator từ Atomic *_ind kiểu int)"
+        source_atomic_table: "cl_fms_fund_type"
+        source_atomic_column: "cl_fms_fund_type.open_fund_ind"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu"
+        source_atomic_table: "cl_fms_fund_type"
+        source_atomic_column: "cl_fms_fund_type.src_stm_code"
+      - logical_name: "Record Status"
+        physical_name: "ds_rcrd_st"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Record Insert Date"
+        physical_name: "ds_rcrd_isrt_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: ""
+        description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Record Update Date"
+        physical_name: "ds_rcrd_udt_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: ""
+        description: "Ngày update bản ghi gần nhất — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "ETL Process Timestamp"
+        physical_name: "ds_etl_pcs_tms"
+        data_domain: "Timestamp"
+        data_type: "timestamp"
+        nullable: false
+        key: ""
+        description: "Timestamp xử lý ETL — audit field"
+        source_atomic_table: null
+        source_atomic_column: null
+
   - id: "DTM-fct_fund_management_company_snpst"
     logical_name: "Fact Fund Management Company Snapshot"
     datamart_table: "fct_fund_management_company_snpst"
@@ -21303,7 +21397,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Loại hình quỹ — Classification Value (scheme: FMS_FUND_TYPE)"
+        description: "Loại hình quỹ — Classification Value — mã loại hình, join Fund Type Dimension (fund_type_code) để lấy tên [SỬA 2026-10-12] scheme FMS_FUND_TYPE đã tách khỏi cl_value sang Atomic cl_fms_fund_type"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.cl_fms_fund_tp_code"
       - logical_name: "Source System Code"
@@ -21351,7 +21445,6 @@ entities:
         description: "Timestamp xử lý ETL — audit field"
         source_atomic_table: null
         source_atomic_column: null
-
   - id: "DTM-fct_investment_fund_count_snpst"
     logical_name: "Fact Investment Fund Count Snapshot"
     datamart_table: "fct_investment_fund_count_snpst"
@@ -21374,13 +21467,13 @@ entities:
         description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng)"
         source_atomic_table: "cdr_dt_dim"
         source_atomic_column: null
-      - logical_name: "Fund Type Classification Dimension Id"
-        physical_name: "fund_tp_cl_dim_id"
+      - logical_name: "Fund Type Dimension Id"
+        physical_name: "fund_type_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK -> Classification Dimension (scheme: FMS_FUND_TYPE — loại hình quỹ)"
+        description: "FK -> Fund Type Dimension (loại hình quỹ — nguồn Classification FMS Fund Type, FMS.FUND_TYPE). [SỬA 2026-10-12] thay FK Classification Dimension scheme FMS_FUND_TYPE: scheme đã tách khỏi cl_value sang bảng Atomic riêng cl_fms_fund_type (đồng bộ code dev 2026-10-10)"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.cl_fms_fund_tp_code"
       - logical_name: "Fund Count"
@@ -21401,7 +21494,6 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.src_stm_code"
-
   - id: "DTM-fct_investment_fund_ccq_snpst"
     logical_name: "Fact Investment Fund CCQ Snapshot"
     datamart_table: "fct_investment_fund_ccq_snpst"
@@ -21424,13 +21516,13 @@ entities:
         description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng)"
         source_atomic_table: "cdr_dt_dim"
         source_atomic_column: null
-      - logical_name: "Fund Type Classification Dimension Id"
-        physical_name: "fund_tp_cl_dim_id"
+      - logical_name: "Fund Type Dimension Id"
+        physical_name: "fund_type_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK -> Classification Dimension (scheme: FMS_FUND_TYPE — loại hình quỹ)"
+        description: "FK -> Fund Type Dimension (loại hình quỹ — nguồn Classification FMS Fund Type, FMS.FUND_TYPE). [SỬA 2026-10-12] thay FK Classification Dimension scheme FMS_FUND_TYPE: scheme đã tách khỏi cl_value sang bảng Atomic riêng cl_fms_fund_type (đồng bộ code dev 2026-10-10)"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.cl_fms_fund_tp_code"
       - logical_name: "Outstanding Unit Quantity"
@@ -21451,7 +21543,6 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.src_stm_code"
-
   - id: "DTM-opr_investment_fund_profile"
     logical_name: "Investment Fund Profile"
     datamart_table: "opr_investment_fund_profile"
@@ -21495,7 +21586,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Phân loại quỹ — Classification Value (scheme: FMS_FUND_TYPE)"
+        description: "Phân loại quỹ — Classification Value — mã loại hình, join Fund Type Dimension (fund_type_code) để lấy tên [SỬA 2026-10-12] scheme FMS_FUND_TYPE đã tách khỏi cl_value sang Atomic cl_fms_fund_type"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.cl_fms_fund_tp_code"
       - logical_name: "Fund Management Company Short Name"
@@ -21531,7 +21622,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số lượng người điều hành quỹ — literal 'ban điều hành' tạm dùng nhãn HLD (tên chức danh cl_fms_job_nm qua fmc_employee_x_classification_fms_position_relationship), CHƯA xác minh"
+        description: "Số lượng người điều hành quỹ — literal 'ban điều hành' tạm dùng nhãn HLD (tên chức danh cl_fms_job_nm qua fmc_employee_x_classification_fms_job_relationship), CHƯA xác minh [SỬA 2026-10-12] Atomic đổi tên entity position_relationship → job_relationship (cột cl_fms_position_code → cl_fms_job_code) theo lld_FMS_JOB_TL_PRO.yaml, đồng bộ code dev 2026-10-07"
         source_atomic_table: "fmc_employee_x_investment_fund_relationship"
         source_atomic_column: "fmc_employee_x_investment_fund_relationship.fmc_employee_id"
       - logical_name: "Outstanding Unit Quantity"
@@ -21588,7 +21679,6 @@ entities:
         description: "Timestamp xử lý ETL — audit field"
         source_atomic_table: null
         source_atomic_column: null
-
   - id: "DTM-opr_investment_fund_representative_board_member_list"
     logical_name: "Investment Fund Representative Board Member List"
     datamart_table: "opr_investment_fund_representative_board_member_list"

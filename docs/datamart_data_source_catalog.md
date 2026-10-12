@@ -512,8 +512,8 @@ Phân hệ QLQ quản lý 43+ Công ty quản lý quỹ (CTQLQ) và các quỹ �
 | Nhóm 2 | Hợp đồng ủy thác danh mục đầu tư | Dashboard | `datamart.qlq_fct_fund_management_company_snpst_flat` | `datamart.fct_fund_management_company_snpst` | `fund_management_company_dim` | FMS |
 | Nhóm 3-5 | Danh sách CTQLQ, Quỹ, HĐ UTDM | Báo cáo | `datamart.qlq_opr_fund_management_company_profile_flat` | `datamart.opr_fund_management_company_profile` | `fund_management_company_dim` | FMS |
 | Nhóm 7-9, 12 | Tổng NAV, Phân bổ tài sản & NAV/CCQ | Dashboard | `datamart.qlq_fct_investment_fund_nav_per_ccq_snpst_flat` | `datamart.fct_investment_fund_nav_per_ccq_snpst` | `investment_fund_dim`, `cdr_dt_dim` | FMS (`FUND_NAV`) |
-| Nhóm 10 | Số lượng quỹ theo loại hình | Dashboard | `datamart.qlq_fct_investment_fund_count_snpst_flat` | `datamart.fct_investment_fund_count_snpst` | `investment_fund_dim` | FMS (`FUND`) |
-| Nhóm 11 | Tăng trưởng chứng chỉ quỹ CCQ | Dashboard | `datamart.qlq_fct_investment_fund_ccq_snpst_flat` | `datamart.fct_investment_fund_ccq_snpst` | `investment_fund_dim` | FMS |
+| Nhóm 10 | Số lượng quỹ theo loại hình | Dashboard | `datamart.qlq_fct_investment_fund_count_snpst_flat` | `datamart.fct_investment_fund_count_snpst` | `fund_type_dim` | FMS (`FUND`) |
+| Nhóm 11 | Tăng trưởng chứng chỉ quỹ CCQ | Dashboard | `datamart.qlq_fct_investment_fund_ccq_snpst_flat` | `datamart.fct_investment_fund_ccq_snpst` | `fund_type_dim` | FMS |
 | Nhóm 13-16 | Danh sách Quỹ, Ban đại diện, Điều hành | Báo cáo | `datamart.qlq_opr_investment_fund_profile_flat` | `datamart.opr_investment_fund_profile` | `investment_fund_dim`, `custodian_bank_dim` | FMS |
 | Nhóm 17-21 | Thống kê đại lý phân phối CCQ | Dashboard | `datamart.qlq_fct_fund_distribution_agent_snpst_flat` | `datamart.fct_fund_distribution_agent_snpst` | `fund_management_company_dim` | FMS (`DISTRIBUTION_AGENT`) |
 | Nhóm 22-23 | Danh sách ĐLPP & Quỹ phân phối | Báo cáo | `datamart.qlq_opr_fund_distribution_agent_profile_flat` | `datamart.opr_fund_distribution_agent_profile` | `investment_fund_dim` | FMS |

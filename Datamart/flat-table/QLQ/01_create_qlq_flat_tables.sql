@@ -24,11 +24,11 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_management_company_snpst_flat O
     custodian_bank_count                         Nullable(Int64)         COMMENT 'Tổng số ngân hàng giám sát tại kỳ',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                                        Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension'
+    snpst_cdr_dt                                  Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt))
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt))
 COMMENT 'Flat table — Fact Fund Management Company Snapshot × Calendar Date'
 ;
 
@@ -37,31 +37,28 @@ COMMENT 'Flat table — Fact Fund Management Company Snapshot × Calendar Date'
 -- 2. FACT: qlq_fct_investment_fund_count_snpst_flat
 --    Fact Investment Fund Count Snapshot
 --    Grain: 1 loại hình quỹ × 1 tháng
---    Joins: Calendar Date (snpst_dt_dim_id) × Classification Dimension (fund_tp_cl_dim_id, scheme FMS_FUND_TYPE)
+--    Joins: Calendar Date (snpst_dt_dim_id) × Fund Type Dimension (fund_type_id)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_fct_investment_fund_count_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Investment Fund Count Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot tháng — Calendar Date Dimension',
-    fund_tp_cl_dim_id                String                  COMMENT 'FK loại hình quỹ — Classification Dimension (scheme FMS_FUND_TYPE)',
+    fund_type_id                    String                  COMMENT 'FK loại hình quỹ — Fund Type Dimension',
     fund_count                      Nullable(Int64)         COMMENT 'Số lượng quỹ theo loại hình quỹ, hiệu lực tại kỳ',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension',
+    snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension',
 
-    -- From: CLASSIFICATION DIMENSION (Fund Type)
-    schema_code                     Nullable(String)        COMMENT 'Mã scheme phân loại (FMS_FUND_TYPE) — từ Classification Dimension',
-    schema_nm                       Nullable(String)        COMMENT 'Tên scheme phân loại — từ Classification Dimension',
-    cl_code                         Nullable(String)        COMMENT 'Mã loại hình quỹ — từ Classification Dimension',
-    cl_nm                           Nullable(String)        COMMENT 'Tên loại hình quỹ — từ Classification Dimension',
-    cl_nm_english                   Nullable(String)        COMMENT 'Tên loại hình quỹ (tiếng Anh) — từ Classification Dimension',
-    cl_description                  Nullable(String)        COMMENT 'Diễn giải chi tiết loại hình quỹ — từ Classification Dimension'
+    -- From: FUND TYPE DIMENSION
+    fund_type_code                  Nullable(String)        COMMENT 'Mã loại hình quỹ — từ Fund Type Dimension',
+    fund_type_nm                    Nullable(String)        COMMENT 'Tên loại hình quỹ — từ Fund Type Dimension',
+    open_fund_indicator             Nullable(Int64)         COMMENT 'Cờ quỹ mở (1 = quỹ mở, 0 = không) — từ Fund Type Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), fund_tp_cl_dim_id)
-COMMENT 'Flat table — Fact Investment Fund Count Snapshot × Calendar Date × Classification Dimension'
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), fund_type_id)
+COMMENT 'Flat table — Fact Investment Fund Count Snapshot × Calendar Date × Fund Type Dimension'
 ;
 
 
@@ -69,31 +66,28 @@ COMMENT 'Flat table — Fact Investment Fund Count Snapshot × Calendar Date × 
 -- 3. FACT: qlq_fct_investment_fund_ccq_snpst_flat
 --    Fact Investment Fund CCQ Snapshot
 --    Grain: 1 loại hình quỹ × 1 tháng
---    Joins: Calendar Date (snpst_dt_dim_id) × Classification Dimension (fund_tp_cl_dim_id, scheme FMS_FUND_TYPE)
+--    Joins: Calendar Date (snpst_dt_dim_id) × Fund Type Dimension (fund_type_id)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_fct_investment_fund_ccq_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Investment Fund CCQ Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot tháng — Calendar Date Dimension',
-    fund_tp_cl_dim_id                String                  COMMENT 'FK loại hình quỹ — Classification Dimension (scheme FMS_FUND_TYPE)',
+    fund_type_id                    String                  COMMENT 'FK loại hình quỹ — Fund Type Dimension',
     outstanding_unit_quantity        Nullable(Int64)         COMMENT 'Tổng số lượng CCQ đang lưu hành theo loại hình quỹ, hiệu lực tại kỳ',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension',
+    snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension',
 
-    -- From: CLASSIFICATION DIMENSION (Fund Type)
-    schema_code                     Nullable(String)        COMMENT 'Mã scheme phân loại (FMS_FUND_TYPE) — từ Classification Dimension',
-    schema_nm                       Nullable(String)        COMMENT 'Tên scheme phân loại — từ Classification Dimension',
-    cl_code                         Nullable(String)        COMMENT 'Mã loại hình quỹ — từ Classification Dimension',
-    cl_nm                           Nullable(String)        COMMENT 'Tên loại hình quỹ — từ Classification Dimension',
-    cl_nm_english                   Nullable(String)        COMMENT 'Tên loại hình quỹ (tiếng Anh) — từ Classification Dimension',
-    cl_description                  Nullable(String)        COMMENT 'Diễn giải chi tiết loại hình quỹ — từ Classification Dimension'
+    -- From: FUND TYPE DIMENSION
+    fund_type_code                  Nullable(String)        COMMENT 'Mã loại hình quỹ — từ Fund Type Dimension',
+    fund_type_nm                    Nullable(String)        COMMENT 'Tên loại hình quỹ — từ Fund Type Dimension',
+    open_fund_indicator             Nullable(Int64)         COMMENT 'Cờ quỹ mở (1 = quỹ mở, 0 = không) — từ Fund Type Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), fund_tp_cl_dim_id)
-COMMENT 'Flat table — Fact Investment Fund CCQ Snapshot × Calendar Date × Classification Dimension'
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), fund_type_id)
+COMMENT 'Flat table — Fact Investment Fund CCQ Snapshot × Calendar Date × Fund Type Dimension'
 ;
 
 
@@ -110,11 +104,11 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_distribution_agent_snpst_flat O
     distribution_agent_count        Nullable(Int64)         COMMENT 'Số lượng ĐLPP đang hoạt động, đã có GCN đăng ký hoạt động phân phối CCQ tính đến kỳ',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot quý/năm — từ Calendar Date Dimension'
+    snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot quý/năm — từ Calendar Date Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt))
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt))
 COMMENT 'Flat table — Fact Fund Distribution Agent Snapshot × Calendar Date'
 ;
 
@@ -132,11 +126,11 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_foreign_fund_management_organization
     branch_count                    Nullable(Int64)         COMMENT 'Số Chi nhánh CTQLQ nước ngoài tại VN (branch_tp_code = BRANCH), hiệu lực tại kỳ',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension'
+    snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt))
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt))
 COMMENT 'Flat table — Fact Foreign Fund Management Organization Unit Snapshot × Calendar Date'
 ;
 
@@ -175,7 +169,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_fund_list_fl
     fmc_id                           Nullable(String)        COMMENT 'FK -> Fund Management Company Dimension (CTQLQ sở hữu quỹ)',
     fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ sở hữu quỹ (lookup pair với Fund Management Company Id)',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ',
-    fund_tp_code                     Nullable(String)        COMMENT 'Loại hình quỹ — Classification Value (scheme FMS_FUND_TYPE)',
+    fund_tp_code                     Nullable(String)        COMMENT 'Loại hình quỹ — mã (join Fund Type Dimension.fund_type_code lấy tên)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -194,7 +188,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_profile_flat ON CLUS
     -- From: OPERATIONAL Investment Fund Profile
     investment_fund_code             String                  COMMENT 'PK — mã quỹ (Bảng Tác nghiệp)',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ',
-    fund_tp_code                     Nullable(String)        COMMENT 'Phân loại quỹ — Classification Value (scheme FMS_FUND_TYPE)',
+    fund_tp_code                     Nullable(String)        COMMENT 'Phân loại quỹ — mã loại hình (join Fund Type Dimension.fund_type_code lấy tên)',
     fmc_short_nm                     Nullable(String)        COMMENT 'Tên viết tắt công ty quản lý quỹ',
     custodian_bank_full_nm           Nullable(String)        COMMENT 'Tên ngân hàng giám sát',
     representative_board_member_count Nullable(Int64)        COMMENT 'Số lượng thành viên ban đại diện đang hoạt động',

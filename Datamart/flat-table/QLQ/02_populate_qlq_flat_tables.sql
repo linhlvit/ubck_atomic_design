@@ -20,7 +20,7 @@ SELECT
     f.pending_closure_foreign_fund_management_organization_unit_count,
     f.closed_foreign_fund_management_organization_unit_count,
     f.custodian_bank_count,
-    snpst_cal.cdr_dt              AS cdr_dt
+    snpst_cal.cdr_dt              AS snpst_cdr_dt
 FROM datamart.fct_fund_management_company_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
@@ -35,21 +35,18 @@ TRUNCATE TABLE IF EXISTS datamart.qlq_fct_investment_fund_count_snpst_flat ON CL
 INSERT INTO datamart.qlq_fct_investment_fund_count_snpst_flat
 SELECT
     f.snpst_dt_dim_id,
-    f.fund_tp_cl_dim_id,
+    f.fund_type_id,
     f.fund_count,
     f.src_stm_code,
-    snpst_cal.cdr_dt              AS cdr_dt,
-    fund_tp_dim.schema_code       AS schema_code,
-    fund_tp_dim.schema_nm         AS schema_nm,
-    fund_tp_dim.cl_code           AS cl_code,
-    fund_tp_dim.cl_nm             AS cl_nm,
-    fund_tp_dim.cl_nm_english     AS cl_nm_english,
-    fund_tp_dim.cl_description    AS cl_description
+    snpst_cal.cdr_dt              AS snpst_cdr_dt,
+    fund_type_dim.fund_type_code  AS fund_type_code,
+    fund_type_dim.fund_type_nm    AS fund_type_nm,
+    fund_type_dim.open_fund_indicator AS open_fund_indicator
 FROM datamart.fct_investment_fund_count_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.cl_dim fund_tp_dim
-    ON fund_tp_dim.cl_dim_id = f.fund_tp_cl_dim_id
+LEFT JOIN datamart.fund_type_dim fund_type_dim
+    ON fund_type_dim.fund_type_id = f.fund_type_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
@@ -61,21 +58,18 @@ TRUNCATE TABLE IF EXISTS datamart.qlq_fct_investment_fund_ccq_snpst_flat ON CLUS
 INSERT INTO datamart.qlq_fct_investment_fund_ccq_snpst_flat
 SELECT
     f.snpst_dt_dim_id,
-    f.fund_tp_cl_dim_id,
+    f.fund_type_id,
     f.outstanding_unit_quantity,
     f.src_stm_code,
-    snpst_cal.cdr_dt              AS cdr_dt,
-    fund_tp_dim.schema_code       AS schema_code,
-    fund_tp_dim.schema_nm         AS schema_nm,
-    fund_tp_dim.cl_code           AS cl_code,
-    fund_tp_dim.cl_nm             AS cl_nm,
-    fund_tp_dim.cl_nm_english     AS cl_nm_english,
-    fund_tp_dim.cl_description    AS cl_description
+    snpst_cal.cdr_dt              AS snpst_cdr_dt,
+    fund_type_dim.fund_type_code  AS fund_type_code,
+    fund_type_dim.fund_type_nm    AS fund_type_nm,
+    fund_type_dim.open_fund_indicator AS open_fund_indicator
 FROM datamart.fct_investment_fund_ccq_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.cl_dim fund_tp_dim
-    ON fund_tp_dim.cl_dim_id = f.fund_tp_cl_dim_id
+LEFT JOIN datamart.fund_type_dim fund_type_dim
+    ON fund_type_dim.fund_type_id = f.fund_type_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
@@ -88,7 +82,7 @@ INSERT INTO datamart.qlq_fct_fund_distribution_agent_snpst_flat
 SELECT
     f.snpst_dt_dim_id,
     f.distribution_agent_count,
-    snpst_cal.cdr_dt              AS cdr_dt
+    snpst_cal.cdr_dt              AS snpst_cdr_dt
 FROM datamart.fct_fund_distribution_agent_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
@@ -104,7 +98,7 @@ INSERT INTO datamart.qlq_fct_foreign_fund_management_organization_unit_snpst_fla
 SELECT
     f.snpst_dt_dim_id,
     f.branch_count,
-    snpst_cal.cdr_dt              AS cdr_dt
+    snpst_cal.cdr_dt              AS snpst_cdr_dt
 FROM datamart.fct_foreign_fund_management_organization_unit_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
