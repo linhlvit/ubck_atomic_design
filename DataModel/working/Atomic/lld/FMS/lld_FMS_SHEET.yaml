@@ -157,3 +157,81 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Row Index"
+  physical_name: "row_index"
+  description: "Số thứ tự hàng."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SHEET.ROW_INDEX"
+  comment: "Parsing từ FMS.SHEET.CELLS_META."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Column Index"
+  physical_name: "column_index"
+  description: "Số thứ tự cột."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SHEET.COLUMN_INDEX"
+  comment: "Parsing từ FMS.SHEET.CELLS_META."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Cell Id"
+  physical_name: "cell_id"
+  description: "ID ô của báo cáo."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SHEET.CELL_ID"
+  comment: "Parsing từ FMS.SHEET.CELLS_META. Link với trường TGT_ID của bảng FMS.RPT_VALUES."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Label Name"
+  physical_name: "label_nm"
+  description: "Nhãn hiển thị của ô."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SHEET.LABEL_NM"
+  comment: "Parsing từ FMS.SHEET.DATA_LABEL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Span"
+  physical_name: "row_span"
+  description: "Số hàng được gộp."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SHEET.ROW_SPAN"
+  comment: "Parsing từ FMS.SHEET.MERGE_CELLS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Column Span"
+  physical_name: "column_span"
+  description: "Số cột được gộp."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.SHEET.COLUMN_SPAN"
+  comment: "Parsing từ FMS.SHEET.MERGE_CELLS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

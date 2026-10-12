@@ -3526,3 +3526,14 @@ entities:
   description: "Danh mục dịch vụ chứng khoán được cấp phép cho từng chi nhánh CTCK nước ngoài (FK Securities Company Foreign Organization Unit + Classification Securities Company Firm Service). Đảo ngược quyết định denormalize Array trước đây theo chỉ đạo Data Modeler (2026-10-10) — tách entity `_x_` riêng, mirror pattern LNK_SC_FIRM_SERVICE / LNK_TRANSACTION_OFFICE_SERVICE."
   source_table: "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE"
   status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "fund_distribution_agent_x_investment_fund_x_cl_fms_agency_type_relationship"
+  description: "Quan hệ đại lý phân phối giữ vai trò theo loại đại lý đối với quỹ đầu\
+    \ tư (1 quỹ có thể có nhiều đại lý, mỗi đại lý theo 1 loại đại lý). FK đến Fund\
+    \ Distribution Agent + Investment Fund + Classification FMS Agency Type."
+  source_table: "FMS.FUD_AG_AGT"
+  status: "draft"

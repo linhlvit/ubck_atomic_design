@@ -580,14 +580,6 @@ entries:
   group: Junction
   reason: Pure junction 2 FK (SECURITIES, TL_PROFILES) — không có business attribute.
 - source_system: FMS
-  source_table: FUD_AG_AGT
-  description: Bảng trung gian quỹ, loại đại lý và đại lý phân phối (kèm cấp trên)
-  group: Junction (đang rà soát)
-  reason: '**[CẦN RÀ SOÁT 2026-07-19]** Không có attribute nghiệp vụ ngoài 4 FK. Trước
-    đây "mở rộng STRUCT distribution_agents" — nay AGEN_FUNDS đã có entity Relative
-    riêng (`Fund Distribution Agent X Investment Fund Relationship`, Tier 3, xem 7a/7d)
-    nên STRUCT đó không còn. Chưa quyết định gộp hay tách riêng — xem 7e#19.'
-- source_system: FMS
   source_table: CONFIG
   description: Cấu hình mapping cột nguồn-đích cho ETL/đồng bộ dữ liệu
   group: Operational / System
@@ -1392,12 +1384,6 @@ entries:
   group: Audit Log nguồn
   reason: Cấu trúc OLD_DATA/NEW_DATA JSON + ACTION_TYPE — Audit log kỹ thuật.
 - source_system: SCMS
-  source_table: FORM_REPORT_DEEP_CONFIG
-  description: Cấu hình chi tiết biểu mẫu
-  group: Form Metadata
-  reason: 'Cascade — cần review lý do loại-scope độc lập (FORM_REPORT không còn ngoài
-    scope). Chưa đánh giá lại trong lượt #23.'
-- source_system: SCMS
   source_table: FORM_REPORT_HISTORY
   description: Lịch sử phiên bản biểu mẫu
   group: Form Metadata
@@ -1415,15 +1401,15 @@ entries:
   source_table: FORM_ROW_HEADER
   description: Tiêu đề hàng biểu mẫu
   group: Form Metadata
-  reason: 'Đưa vào scope ở lượt #23 (2026-09-16), sau đó đảo ngược lại ngoài scope
-    cùng ngày theo yêu cầu Data Modeler — bảng phục vụ khai thác báo cáo đầu ra ở
-    hệ thống cũ, hiện không còn cần thiết. Thiết kế LLD/Atomic entity đã tạo (Securities
-    Company Report Row Header) đã bị gỡ bỏ hoàn toàn.'
+  reason: 'Đưa vào scope ở #23 (2026-09-16), đảo ngược lại ngoài scope cùng ngày theo
+    yêu cầu Data Modeler (#24) — bảng phục vụ khai thác báo cáo đầu ra ở hệ thống
+    cũ, hiện không còn cần thiết. Thiết kế `Securities Company Report Row Header`
+    đã bị gỡ bỏ hoàn toàn.'
 - source_system: SCMS
   source_table: FORM_ROW_HEADER_COLUMN
   description: Cột tiêu đề hàng biểu mẫu
   group: Form Metadata
-  reason: Cascade — cùng nhóm với FORM_ROW_HEADER (ngoài scope, xem entry trên).
+  reason: Cascade — cùng nhóm với FORM_ROW_HEADER (ngoài scope, xem dòng trên).
 - source_system: SCMS
   source_table: MEMBER_REPORT
   description: Báo cáo đã nộp của đơn vị thành viên
@@ -1506,11 +1492,6 @@ entries:
   group: Loại sau review
   reason: Không có trong danh sách entity đã review — thông tin điểm nhóm CAMEL có
     thể suy ra từ RISK_SCORING_SC_FIRM_DETAIL group by RISK_INDICATOR_GROUP.
-- source_system: SCMS
-  source_table: BANK_PERIODIC_REPORT
-  description: Báo cáo định kỳ ngân hàng đối tác
-  group: Operational / System
-  reason: Cấu trúc cột chưa đủ rõ để thiết kế entity — cần khảo sát thêm.
 - source_system: SCMS
   source_table: BANK_PERIODIC_REPORT_HISTORY
   description: Lịch sử báo cáo định kỳ ngân hàng
@@ -1889,12 +1870,6 @@ entries:
   description: Phiên bản template biểu mẫu
   group: Form Metadata
   reason: Form Metadata — version control
-- source_system: THANHTRA
-  source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
-  description: Bảng nối nhiều-nhiều giữa loại xử phạt và hành vi vi phạm
-  group: Junction
-  reason: Pure junction không có business attribute — denormalize vào TT Violation
-    Behavior
 - source_system: THANHTRA
   source_table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
   description: Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật

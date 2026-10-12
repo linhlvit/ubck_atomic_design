@@ -91,34 +91,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Organization Unit Id"
-  physical_name: "fmc_ou_id"
-  description: "FK -> BRANCHS: Chi nhánh công tác của người hành nghề."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PROFILES.BRANCH_ID"
-  comment: "FK target: fmc_organization_unit.fmc_ou_id. Hash: hash_id('FMS_BRANCHS',\
-    \ BRANCH_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Fund Management Company Organization Unit Code"
-  physical_name: "fmc_ou_code"
-  description: "Mã chi nhánh công tác."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PROFILES.BRANCH_ID"
-  comment: "Lookup pair: fmc_organization_unit.fmc_ou_code. Pair with Fund Management\
-    \ Company Organization Unit Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Fund Management Company Employee Full Name"
   physical_name: "fmc_employee_full_nm"
   description: "Tên hiển thị chính."
@@ -156,7 +128,6 @@ attributes:
   - "FMS.TL_PROFILES.SEX"
   comment: "SCHEMA_CODE=GENDER"
   classification_context: null
-  etl_derived_value: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Held Unit Quantity"

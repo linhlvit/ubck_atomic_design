@@ -17,7 +17,10 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[MỚI 2026-10-02] Tách DECISION/DECISION_DATE/DECISION_PLACE (số, ngày, nơi ban hành quyết định/giấy phép thành lập hoặc chấp thuận hoạt động đại lý) khỏi Fund Distribution Agent thành giấy tờ định danh loại ESTABLISHMENT_OPERATION_LICENSE theo yêu cầu Data Modeler. 1 block duy nhất."
+  notes: "[MỚI 2026-10-02] Tách DECISION/DECISION_DATE/DECISION_PLACE (số, ngày, nơi\
+    \ ban hành quyết định/giấy phép thành lập hoặc chấp thuận hoạt động đại lý) khỏi\
+    \ Fund Distribution Agent thành giấy tờ định danh loại ESTABLISHMENT_OPERATION_LICENSE\
+    \ theo yêu cầu Data Modeler. 1 block duy nhất."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -28,7 +31,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.AGENCIES.ID"
-  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_AGENCIES', ID)."
+  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Shared\
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_AGENCIES', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -41,7 +45,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.AGENCIES.ID"
-  comment: "Lookup pair: fund_distribution_agent.fund_distribution_agent_code. Pair with Involved Party Id."
+  comment: "Lookup pair: fund_distribution_agent.fund_distribution_agent_code. Pair\
+    \ with Involved Party Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -65,7 +70,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE — tái sử dụng value đã có."
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE — tái\
+    \ sử dụng value đã có."
   classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: "ESTABLISHMENT_OPERATION_LICENSE"
   data_type: "string"

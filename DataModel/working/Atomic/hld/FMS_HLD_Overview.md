@@ -12,6 +12,9 @@
 > - [FMS_HLD_Tier5.md](FMS_HLD_Tier5.md) — Nhóm nghiệp vụ mới (independent): Fund Management Company Insider, Member Inspection Round, Fund Management Company Securities Offering, Pension Service Organization, Pension Fund, Securities Distribution Agent, Member Rating Criterion Group, Custodian Bank Employee, FMC Key Person Related Person, Other Intermediary Organization Unit, Transfer Agent
 > - [FMS_HLD_Tier6.md](FMS_HLD_Tier6.md) — FK đến Tier 5 (và Tier 1/2/3): FMC Insider Related Person, FMC Insider Representative, FMC Insider Shareholding Change Log, Member Inspection Target, FMC Securities Offering Plan, Member Rating Criterion, Member Rating Ranking Criterion Group, Member Disclosure Announcement, Fund Management Conduct Violation
 > - [FMS_HLD_Tier7.md](FMS_HLD_Tier7.md) — FK đến Tier 6 (và Tier 2/5): Member Inspection Penalty Decision, Securities Distribution Agent Personnel, Member Rating Criterion Scale, Member Rating Ranking Criterion
+> - [FMS_HLD_Tier8.md](FMS_HLD_Tier8.md) — Nhóm báo cáo thành viên (Fund Management Report): Fund Management Report, Fund Management Report Sheet, Fund Management Report Period, Fund Management Report Submission, Fund Management Report Value
+>
+> **Ghi chú thiết kế 2026-10-06 (báo cáo thành viên):** Theo yêu cầu Data Modeler, **gỡ 5 bảng RPT_TEMP, SHEET, RPT_PERIOD, RPT_MEMBER, RPT_VALUES khỏi mục 7f** (đảo ngược quyết định review 2026-07-02 "Xử lý luồng khác") và thiết kế thành 5 entity Tier 8 với Domain Prefix `Fund Management Report` (abbr `fmr`) theo mẫu báo cáo IDS: Fund Management Report (RPT_TEMP), Fund Management Report Sheet (SHEET), Fund Management Report Period (RPT_PERIOD), Fund Management Report Submission (RPT_MEMBER), Fund Management Report Value (RPT_VALUES, Table Type Classification). BK của RPT_TEMP/SHEET/RPT_VALUES = hash từ ID; cột NCLOB/CLOB JSON map Text. RPT_MB_HS, RPT_PROCESS, RPT_PD_SHT, RPT_HTORY, SELF_SET_PD, SHEET_CELL_CONFIG và nhóm báo cáo đầu ra (RPT_TP_OUT, SHEET_OUT) vẫn ngoài scope. Xem [FMS_HLD_Tier8.md](FMS_HLD_Tier8.md).
 >
 > **Ghi chú review 2026-07-02:** RPT_PERIOD, RPT_MEMBER, RPT_VALUES, RPT_MB_HS đã loại khỏi scope Atomic — đã xử lý ở luồng khác (xem mục 7f). Bổ sung 58 bảng ngoài scope (xem 7f) và 7 nhóm nghiệp vụ mới ở Tier 5-7 sau khi khảo sát mở rộng BRD/Source/FMS (77→172 bảng). Phát hiện + sửa lỗi mapping: Member Rating Criterion trước đây gán nhầm nguồn FMS.RNK_FACTOR (không có self-ref) — nguồn đúng là FMS.FACTOR (xem Tier1 T1-05, Tier6, Tier7).
 >
@@ -40,6 +43,7 @@
 | 1 | Common | [Common] Organization Legal Structure | Classification | COMPANY_TYPE | Update | Danh mục loại hình doanh nghiệp (công ty cổ phần/TNHH...) kèm danh sách loại đối tượng hệ thống áp dụng | Classification FMS Company Type | Relative | Common — **[MỚI 2026-10-02]** Promote từ Classification Value (scheme `FMS_COMPANY_TYPE`, nay deprecated) lên entity riêng — đảo ngược quyết định 2026-07-24 theo yêu cầu Data Modeler. BCV: `Organization Legal Structure` (Involved Party) — "phân biệt Organization theo hình thức pháp lý" khớp cờ JOINT_STOCK (CP/TNHH); DDL UAT 1 bổ sung cột `CODE`. Surrogate Id hash từ ID nguồn (CODE nullable), Code map từ CODE. FK từ Fund Management Company (SECURITIES.CT_ID, Tier 1). |
 | 1 | Common | [Common] Event Type | Classification | EVENT_TYPE | Update | Danh mục loại sự vụ báo cáo/CBTT (mở rộng — CATEGORY, OBLIGATION_TYPE, DEADLINE_CALC_METHOD, METADATA) | Classification FMS Event Type | Relative | Common — **[MỚI 2026-07-19]** Promote từ Classification Value (scheme `FMS_EVENT_TYPE`, nay deprecated) lên entity riêng, theo quyết định Data Modeler không dùng chung với entity `Classification Event Type` của SCMS (khác cấu trúc: METADATA/BUSINESS_RULE_CONFIG JSON CLOB đặc thù FMS). Giải quyết 7e#16/Tier6 T6-06. FK từ Member Disclosure Announcement (Tier 6), Fund Management Company Organization Unit (BRANCHS), Foreign Fund Management Organization Unit (FOR_BRCH). |
 | 1 | Common | [Common] Fund Management Type | Classification | FUND_TYPE | Update | Danh mục loại quỹ đầu tư (quỹ mở, quỹ đóng, ETF, quỹ thành viên, quỹ bất động sản...) kèm cờ quỹ mở | Classification FMS Fund Type | Relative | Common — **[MỚI 2026-10-02]** Promote từ Classification Value (scheme `FMS_FUND_TYPE`, nay deprecated) lên entity riêng theo yêu cầu Data Modeler. BCV: `Fund Management Type` (Group) — "phân biệt Portfolio đại diện Multiple Owner Investment Product theo chính sách giao dịch đơn vị quỹ" khớp cờ IS_OPEN_FUND (quỹ mở/đóng); không có CODE riêng nên BK = ID nguồn. FK từ Investment Fund (FUNDS.FTYPE_ID, Tier 2). |
+| 1 | Common | [Common] Agent Type | Classification | AGENCY_TYPE | Update | Danh mục loại đại lý quỹ đầu tư | Classification FMS Agency Type | Relative | Common — **[MỚI 2026-10-06]** Promote từ Classification Value (scheme `FMS_AGENCY_TYPE`, nay deprecated) lên entity riêng theo yêu cầu Data Modeler. BCV: `Agent Type` — "phân biệt các Đại lý theo hoạt động cụ thể thực hiện thay mặt người ủy quyền"; chỉ map ID, ITEM_NAME, DESCRIPTION; không có CODE riêng nên BK = ID nguồn. Tiêu thụ: OTHER_AGENT.AGENCY_TYPE_ID (chờ chuyển cặp FK). |
 | 1 | Common | [Common] Position | Classification | JOBS, JOB_TYPE | Update | Danh mục chức danh/vị trí công việc + loại chức danh | Classification FMS Job | Relative | Common — **[MỚI 2026-07-19]** Trước đây chưa khảo sát trong HLD. **[SỬA 2026-10-02]** Đổi tên từ Classification FMS Position; gộp JOB_TYPE vào cùng entity (chỉ map ID, ITEM_NAME, JOB_TYPE_ID / ID, ITEM_NAME). Được FK từ junction Fund Management Company Employee X Classification FMS Job Relationship (Tier 3). |
 | 1 | Common | [Common] Involved Party Life Cycle Status | Classification | STATUS | Update | Danh mục trạng thái hoạt động của thành viên thị trường (tên, loại đối tượng áp dụng, cờ phải nộp báo cáo) | Classification FMS Status | Relative | Common — **[MỚI 2026-10-02]** Promote từ Classification Value (scheme `FMS_OPERATION_STATUS`, nay deprecated) lên entity riêng theo yêu cầu Data Modeler. BCV: không có term trần "Status" trong Common; term gần nhất `Involved Party Life Cycle Status` (Involved Party — "trạng thái tồn tại hiện tại của Involved Party"), phù hợp vì STATUS gán cho thành viên thị trường (công ty QLQ, quỹ, NH lưu ký, đại lý...) theo TYPE_SEC. DDL UAT 1 bổ sung cột `CODE` (BK, nullable/unique) — Code dùng làm BK và hash Id. FK từ Fund Management Company (SECURITIES), Investment Fund (FUNDS), Custodian Bank (BANK_MONI), Foreign Fund Management Organization Unit (FOR_BRCH), Pension Fund (Tier 5). |
 | 1 | Common | [Common] Involved Party Type | Classification | STOCKHOLDER_TYPE | Update | Danh mục loại cổ đông/nhà đầu tư (cá nhân/tổ chức trong nước và nước ngoài) kèm cờ phân biệt quan hệ cá nhân | Classification FMS Stockholder Type | Relative | Common — **[MỚI 2026-10-02]** Promote từ Classification Value (scheme `FMS_STOCKHOLDER_TYPE`, nay deprecated) lên entity riêng theo yêu cầu Data Modeler. BCV: `Involved Party Type` (Involved Party) — "phân biệt Involved Party theo đặc tính vốn có, ví dụ Individual/Organization" khớp cờ PERSONAL_TYPE (1=Cá nhân, 0=Tổ chức); không có CODE riêng nên BK = ID nguồn. FK từ Discretionary Investment Investor (INVES.STO_ID, Tier 2) và Investment Fund Investor Membership (MB_FUND.ST_ID, Tier 3). |
@@ -58,6 +62,7 @@
 | 3 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | JOB_TL_PRO | Update | Chức danh công việc của người hành nghề (junction) | Fund Management Company Employee X Classification FMS Job Relationship | Relative | Individual Employment Status — **[MỚI 2026-07-19]** BCV Concept tạm dùng, cần tra lại trước LLD. Trước đây ở 7f nhóm Junction ("pure junction, không business attribute") — theo quyết định Data Modeler, chuyển vào scope thành entity Relative riêng (không denormalize ARRAY). FK đến Fund Management Company Employee (Tier 2) + Classification FMS Job (Tier 1). |
 | 3 | Involved Party | [Involved Party] Individual Employment Status | Investment Fund | FUND_TL_PRO | Update | Người hành nghề liên quan đến quỹ đầu tư (junction) | Fund Management Company Employee X Investment Fund Relationship | Relative | Individual Employment Status — **[SỬA 2026-08-15]** BCO đổi từ Arrangement sang Involved Party, tái dùng concept từ phía Fund Management Company Employee (khớp với chính entity Investment Fund — đã là BCO Involved Party). Trước đây ở 7f nhóm Junction. FK đến Investment Fund (Tier 2) + Fund Management Company Employee (Tier 2). |
 | 3 | Involved Party | [Involved Party] Organization | Investment Fund | AGEN_FUNDS | Update | Bảng trung gian đại lý và quỹ đầu tư (junction) | Fund Distribution Agent X Investment Fund Relationship | Relative | Organization — **[SỬA 2026-08-15]** BCO đổi từ Arrangement sang Involved Party, tái dùng concept từ phía Fund Distribution Agent (khớp với chính entity Investment Fund — đã là BCO Involved Party). **Đảo ngược quyết định denormalize ARRAY cũ (7d)** — theo quyết định Data Modeler, tạo entity Relative riêng thay vì `distribution_agent_ids ARRAY<STRUCT>` trên Investment Fund. FK đến Investment Fund (Tier 2) + Fund Distribution Agent (Tier 1). Cột `DATA_MIGRATION` (cờ migration kỹ thuật) không map — xem 7e#6. |
+| 3 | Involved Party | [Involved Party] Organization | Investment Fund | FUD_AG_AGT | Update | Bảng trung gian quỹ, loại đại lý và đại lý phân phối | Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship | Relative | Involved Party — **[MỚI 2026-10-12]** Entity Relative riêng, PK composite 3 FK (Investment Fund + Fund Distribution Agent + Classification FMS Agency Type). Tái dùng concept `[Involved Party] Organization` như AGEN_FUNDS. Chỉ map FUD_ID, AG_TY_ID, AGEN_ID. |
 | 4 | Business Activity | [Business Activity] Business Activity | Transaction | MB_CHANGE | Append | Lịch sử thay đổi vốn góp của nhà đầu tư trong quỹ | Investment Fund Investor Capital Change Log | Fact Append | Business Activity — sự kiện thay đổi vốn góp NĐT quỹ. FK đến Investment Fund Investor Membership. Source Mode=Append → Fact Append. BCO điều chỉnh theo review (Transaction → Business Activity). |
 | 4 | Transaction | [Event] Transaction | Transaction | TRANSFER_MBF | Append | Giao dịch mua/bán/chuyển nhượng chứng chỉ quỹ | Investment Fund Certificate Transfer | Fact Append | Transaction — giao dịch CCQ trên thị trường. FK đến Investment Fund + Investment Fund Investor Membership. Source Mode=Append → Fact Append. |
 | 4 | Transaction | [Event] Transaction | Transaction | TRS_FER_INDER | Append | Giao dịch chuyển nhượng cổ phần nội bộ công ty QLQ | Fund Management Company Share Transfer | Fact Append | Transaction — giao dịch chuyển nhượng cổ phần CTQLQ. FK đến Fund Management Company. GAP: mất FK bên mua/bán (INSIDER table ngoài scope — nay đã thiết kế ở Tier 5, xem 7e). Source Mode=Append → Fact Append. |
@@ -85,6 +90,11 @@
 | 7 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | DISTRIBUTOR_PERSONNEL | Update | Nhân sự tại địa điểm giao dịch của Securities Distribution Agent | Securities Distribution Agent Personnel | Fundamental | Individual Employment Status — nhân sự hành nghề tại địa điểm giao dịch. **[CẬP NHẬT REVIEW 2026-07-03]** FK đến Securities Distribution Agent trực tiếp (DISTRIBUTOR_LOCATION không còn là Atomic entity riêng — xem 7f). Tách IP Electronic Address. |
 | 7 | Condition | [Condition] Scoring Criterion | Scoring Criterion | FTOR_SCALE | Update | Thang điểm/khoảng giá trị áp dụng cho từng tiêu chí | Member Rating Criterion Scale | Fundamental | Scoring Criterion — chi tiết ngưỡng quy đổi điểm (from/to value + toán tử so sánh). FK đến Member Rating Criterion. **[CẬP NHẬT REVIEW 2026-07-03]** Table Type = `Fundamental` (đổi từ `Relative`). |
 | 7 | Business Activity | [Business Activity] Business Activity | Business Activity | RNK_FACTOR | Update | Điểm số thực tế theo từng tiêu chí chi tiết của 1 kết quả xếp hạng | Member Rating Ranking Criterion | Fundamental | Business Activity — **sửa lỗi mapping**: RNK_FACTOR không có self-ref, là bảng điểm (SCORE_VALUE, MINUS_SCORE) không phải Member Rating Criterion. FK đến Member Rating (Tier 2) + Member Rating Criterion (Tier 6). Xem Tier1 T1-05. **[CẬP NHẬT REVIEW 2026-07-03]** Table Type = `Fundamental` (đổi từ `Fact Append`). |
+| 8 | Documentation | [Documentation] Form Document | Form Document | RPT_TEMP | Update | Biểu mẫu báo cáo FMS: tên, cơ sở pháp lý, loại báo cáo, cấu hình import/eForm, phiên bản | Fund Management Report | Fundamental | Form Document — biểu mẫu báo cáo có phiên bản, FK duy nhất tới Classification FMS Fund Type. Mẫu theo IDS REPORT_CATALOG/FORMS. Xem Tier 8 mục 6a. |
+| 8 | Documentation | [Documentation] Form Document | Form Document | SHEET | Update | Sheet dữ liệu trong biểu mẫu báo cáo đầu vào: tên, thứ tự, cấu hình ô | Fund Management Report Sheet | Relative | Form Document — sheet là 1 phần bố cục của biểu mẫu; FK RPT_ID. Các cột NCLOB JSON map Text. |
+| 8 | Documentation | [Documentation] Form Document | Form Document | RPT_PERIOD | Update | Cấu hình kỳ báo cáo của biểu mẫu: loại kỳ, hạn nộp, hạn CBTT | Fund Management Report Period | Relative | Form Document (term gần nhất — BCV chưa có term riêng cho lịch nộp báo cáo, xem Tier 8 6f T8-04); FK RPT_ID. |
+| 8 | Documentation | [Documentation] Regulatory Report | Regulatory Report | RPT_MEMBER | Update | Báo cáo của thành viên thị trường (QLQ, QĐT, đại lý...): trạng thái, kỳ, file đính kèm, eForm | Fund Management Report Submission | Relative | Regulatory Report — mỗi dòng = 1 lần nộp báo cáo theo kỳ; 10 FK thành viên/đại lý nullable. |
+| 8 | Documentation | [Documentation] Regulatory Report | Regulatory Report | RPT_VALUES | Update | Giá trị từng ô dữ liệu trong báo cáo: liên kết sheet, kỳ, báo cáo thành viên | Fund Management Report Value | Classification | Regulatory Report — 1 dòng = 1 ô (mirror IDS fr_value/ufr_value); Table Type Classification theo quyết định Data Modeler 2026-10-06. |
 
 ---
 
@@ -165,6 +175,14 @@ graph TD
     RCS["**Member Rating Criterion Scale**\n(T7)"]:::atomic
     MRFS["**Member Rating Ranking Criterion**\n(T7)"]:::atomic
 
+    %% Tier 8
+    FMR["**Fund Management Report**\n(T8)"]:::atomic
+    FMRS["**Fund Management Report Sheet**\n(T8)"]:::atomic
+    FMRP["**Fund Management Report Period**\n(T8)"]:::atomic
+    FMRSUB["**Fund Management Report Submission**\n(T8)"]:::atomic
+    FMRV["**Fund Management Report Value**\n(T8)"]:::pattern
+    CFT["**Classification FMS Fund Type**\n(T1)"]:::pattern
+
     %% Relations
     ADDR -.->|"shared"| FMC
     EADDR -.->|"shared"| FMC
@@ -244,6 +262,26 @@ graph TD
     RCS -->|"Member Rating Criterion FK"| RC
     MRFS -->|"Member Rating FK"| MR
     MRFS -->|"Member Rating Criterion FK"| RC
+    FMR -->|"Fund Type FK"| CFT
+    FMRS -->|"Report FK"| FMR
+    FMRP -->|"Report FK"| FMR
+    FMRSUB -->|"Period FK"| FMRP
+    FMRSUB -->|"Report FK"| FMR
+    FMRSUB -->|"Member FKs (nullable)"| FMC
+    FMRSUB -->|"Member FKs (nullable)"| CB
+    FMRSUB -->|"Member FKs (nullable)"| IF
+    FMRSUB -->|"Member FKs (nullable)"| FFMOU
+    FMRSUB -->|"Agent FKs (nullable)"| SDA
+    FMRSUB -->|"Agent FKs (nullable)"| TA
+    FMRSUB -->|"Agent FKs (nullable)"| PSO
+    FMRSUB -->|"Agent FKs (nullable)"| OIO
+    FMRSUB -->|"Pension Fund FK (nullable)"| PF
+    FMRSUB -->|"Event Type FK"| CET
+    FMRV -->|"Submission FK"| FMRSUB
+    FMRV -->|"Sheet FK"| FMRS
+    FMRV -->|"Report FK"| FMR
+    FMRV -->|"Period FK"| FMRP
+    FMRV -->|"Member FKs (nullable)"| FMC
 
     CBE -->|"Custodian Bank FK"| CB
     ALTID -.->|"shared"| CBE
@@ -285,7 +323,7 @@ graph TD
 | RELATION | Danh mục loại quan hệ cổ đông | Classification Value | Scheme: `FMS_RELATION_TYPE`. Values load từ RELATION.CODE + ITEM_NAME. |
 | ~~STATUS~~ | ~~Danh sách trạng thái hoạt động~~ | — | **[MỚI 2026-10-02]** Promote lên entity riêng `Classification FMS Status` (Tier 1, xem 7a) — scheme `FMS_OPERATION_STATUS` đánh dấu `deprecated` trong `classification_schemes.yaml`. 5 entity tiêu thụ (Fund Management Company, Investment Fund, Custodian Bank, Foreign Fund Management Organization Unit, Pension Fund) đổi sang cặp FK Id + Code. |
 | ~~STOCKHOLDER_TYPE~~ | ~~Danh sách loại hình NĐT/cổ đông~~ | — | **[MỚI 2026-10-02]** Promote lên entity riêng `Classification FMS Stockholder Type` (Tier 1, xem 7a) — scheme `FMS_STOCKHOLDER_TYPE` đánh dấu `deprecated` trong `classification_schemes.yaml`. Consumer INVES (STO_ID) và MB_FUND (ST_ID) đổi sang cặp FK Id + Code. |
-| AGENCY_TYPE | Danh sách loại đại lý quỹ | Classification Value | Scheme: `FMS_AGENCY_TYPE`. Values load từ AGENCY_TYPE. |
+| ~~AGENCY_TYPE~~ | ~~Danh sách loại đại lý quỹ~~ | — | **[MỚI 2026-10-06]** Promote lên entity riêng `Classification FMS Agency Type` (Tier 1, xem 7a) — scheme `FMS_AGENCY_TYPE` đánh dấu `deprecated` trong `classification_schemes.yaml`. Consumer OTHER_AGENT.AGENCY_TYPE_ID (Other Intermediary Organization Unit) chờ chuyển sang cặp FK Id + Code. |
 | ~~COMPANY_TYPE~~ | ~~Danh sách loại hình công ty QLQ (chỉ Code/Name + cờ JOINT_STOCK, không có instance data riêng)~~ | — | **[ĐẢO NGƯỢC 2026-10-02]** Trước đây giữ Classification Value (xác nhận 2026-07-24); theo yêu cầu Data Modeler nay promote lên entity riêng `Classification FMS Company Type` (Tier 1, xem 7a) — scheme `FMS_COMPANY_TYPE` đánh dấu `deprecated`. Consumer SECURITIES.CT_ID đổi sang cặp FK Id + Code. |
 | ~~EVENT_TYPE~~ | ~~Danh mục loại sự vụ báo cáo/CBTT~~ | — | **[MỚI 2026-07-19]** Promote lên entity riêng `Classification FMS Event Type` (Tier 1, xem 7a) — scheme `FMS_EVENT_TYPE` đánh dấu `deprecated` trong `classification_schemes.yaml`. Giải quyết 7e#16/Tier6 T6-06. |
 | PARA_WARN.SYSTEM_OBJECT | Loại đối tượng áp dụng tham số cảnh báo (QLQ/Quỹ/NH LKGS/ĐLPP/ĐLCN...) | Classification Value | Scheme: `FMS_WARNING_SYSTEM_OBJECT_TYPE`. FK từ Member Warning Parameter (Tier 1). Mô tả nguồn chưa liệt kê đủ giá trị (xem Tier1). |
@@ -302,7 +340,7 @@ graph TD
 | FG_BUSINESS | Ngành nghề kinh doanh VPĐD/CN QLQ NN | Foreign Fund Management Organization Unit | Pure junction (FORBRCH_ID + BUSINESS FK) — denormalize thành `business_type_codes ARRAY<string>` trên entity Foreign Fund Management Organization Unit. |
 | FNDSBMN | Bảng trung gian quỹ đầu tư và ngân hàng LKGS | Investment Fund | Junction với attribute tối thiểu (FUND_ID + BANKMONI_ID) — denormalize thành `custodian_banks ARRAY<STRUCT<custodian_bank_id, custodian_bank_code>>` trên Investment Fund. |
 | ~~AGEN_FUNDS~~ | ~~Bảng trung gian đại lý và quỹ đầu tư~~ | — | **[ĐẢO NGƯỢC 2026-07-19]** Theo quyết định Data Modeler, không còn denormalize — chuyển vào scope thành entity Relative riêng `Fund Distribution Agent X Investment Fund Relationship` (Tier 3, xem 7a). Attribute `distribution_agent_ids` ARRAY<STRUCT> xóa khỏi Investment Fund (xem LLD FUNDS). **FUD_AG_AGT (xem dưới) cần rà soát lại** — quyết định cũ nói "mở rộng STRUCT của distribution_agents" nhưng STRUCT đó không còn tồn tại; cần xác nhận FUD_AG_AGT có gộp vào entity Relationship mới này (bổ sung `agent_type_code`/`parent_agent_id`) hay vẫn tách riêng — xem 7e. |
-| FUD_AG_AGT | Bảng trung gian quỹ, loại đại lý và đại lý (kèm đại lý cấp trên) | Fund Distribution Agent X Investment Fund Relationship (đang rà soát) | Junction 4-FK (FUD_ID + AG_TY_ID + AGEN_ID + AGEN_ID_PARENT), không có attribute nghiệp vụ khác. **[CẦN RÀ SOÁT 2026-07-19]** Trước đây "mở rộng STRUCT distribution_agents" — nay AGEN_FUNDS đã có entity riêng, cần xác nhận gộp FUD_AG_AGT vào entity đó (thêm `agent_type_code` + `parent_agent_id`) hay thiết kế riêng trước khi LLD. Chưa quyết — xem 7e. |
+| ~~FUD_AG_AGT~~ | ~~Bảng trung gian quỹ, loại đại lý và đại lý (kèm đại lý cấp trên)~~ | — | **[MỚI 2026-10-12]** Theo quyết định Data Modeler, thiết kế thành entity Relative riêng `Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship` (Tier 3, xem 7a) — không gộp vào AGEN_FUNDS. |
 
 ---
 
@@ -328,8 +366,9 @@ graph TD
 | 16 | — | **[GIẢI QUYẾT 2026-07-19]** ~~EVENT_TYPE có cấu trúc mở rộng (CATEGORY, OBLIGATION_TYPE, DEADLINE_CALC_METHOD, METADATA JSON) hơn danh mục Code+Name thuần — xác nhận xử lý Classification Value mở rộng có đủ hay cần entity riêng.~~ Đã promote lên entity riêng `Classification FMS Event Type` (Tier 1, xem 7a/7c). | Đã cập nhật — xem Tier6 T6-06 (đánh dấu resolved). |
 | 17 | 6 | **[CẬP NHẬT 2026-07-05, ĐÃ RETIER]** Đọc đủ cột VIOLT: ngoài SECURITIES/FUNDS/BANK_MONI/FOR_BRCH/AGENCIES, VIOLT còn FK đến PR_WID (→Member Warning Parameter, Tier 1), CDT_WID (→Member Warning Condition, Tier 2) và DISTRIBUTOR_ID/TRANSFER_AGENT_ID/PENSION_AGENT_ID/PENSION_PROVIDER_ID/OTHER_AGENT_ID/PENSION_FUND_ID (đều Tier 5). **Đã chuyển Fund Management Conduct Violation từ Tier 1 → Tier 6** (xem FMS_HLD_Tier6.md). Còn lại: FIMS đã có entity cùng nghiệp vụ (VIOLT → Market Participant Conduct Violation, Tier 3, Table Type `Fact Append`) — cần xác nhận 2 entity độc lập theo phạm vi nguồn hay trùng nghiệp vụ (liên quan item 14); Table Type hiện gán `Fundamental` cũng cần xem lại (RECOVERY_STATUS gợi ý có update, nhưng cũng có thể là Fact Append như FIMS). | **Phần tier đã xử lý.** Còn lại Table Type + khả năng trùng nghiệp vụ với FIMS — xem Tier6 T6-07. |
 | 18 | 2 | **[MỚI 2026-07-05, ĐÃ GIẢI QUYẾT]** ~~CDT_WARN khai báo Change Mode Append khác Table Type Fundamental~~ — đã đính chính: Source Table Change Mode thực tế = `Update` (đọc nhầm BRD ở lần thiết kế trước), khớp bình thường với Table Type `Fundamental`. | Đã cập nhật 6a/7a — không còn là điểm cần xác nhận. |
-| 19 | 3 | **[MỚI 2026-07-19]** FUD_AG_AGT (4-FK: FUD_ID + AG_TY_ID + AGEN_ID + AGEN_ID_PARENT) trước đây "mở rộng STRUCT distribution_agents" trên Investment Fund (7d cũ) — nay AGEN_FUNDS đã có entity Relative riêng `Fund Distribution Agent X Investment Fund Relationship` (Tier 3). Xác nhận: gộp FUD_AG_AGT vào entity đó (bổ sung `agent_type_code`/`parent_agent_id`) hay thiết kế Relative riêng? | Ảnh hưởng thiết kế LLD cho AGEN_FUNDS/FUD_AG_AGT — chưa quyết, cần xác nhận trước khi thiết kế LLD Tier 3. |
+| 19 | 3 | **[ĐÃ GIẢI QUYẾT 2026-10-12]** FUD_AG_AGT thiết kế thành entity Relative riêng `Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship` (không gộp vào AGEN_FUNDS); chỉ map FUD_ID, AG_TY_ID, AGEN_ID; AGEN_ID_PARENT chưa map. | Còn mở: có map AGEN_ID_PARENT (đại lý cấp trên) sau này không. |
 | 20 | 3 | **[MỚI 2026-07-19, MỘT PHẦN GIẢI QUYẾT 2026-08-15]** BCV Concept của 3 entity Relationship mới đang tạm dùng, chưa tra cứu BCV chính thức. **Đã giải quyết:** Fund Management Company Employee X Investment Fund Relationship (BCO Involved Party, tái dùng `[Involved Party] Individual Employment Status`) và Fund Distribution Agent X Investment Fund Relationship (BCO Involved Party, tái dùng `[Involved Party] Organization`) — cả 2 khớp lại với chính Investment Fund (đã là BCO Involved Party). **Còn tồn:** Fund Management Company Employee X Classification FMS Job Relationship (JOB_TL_PRO) vẫn tạm dùng `[Involved Party] Individual Employment Status` — chưa tra cứu chính thức. | Cần tra `knowledge/` cho JOB_TL_PRO trước khi thiết kế LLD, theo quy tắc bắt buộc tra BCV. |
+| 21 | 8 | **[MỚI 2026-10-06]** Nhóm báo cáo thành viên (RPT_TEMP/SHEET/RPT_PERIOD/RPT_MEMBER/RPT_VALUES) được gỡ khỏi 7f và thiết kế Tier 8 — các điểm mở xem [FMS_HLD_Tier8.md](FMS_HLD_Tier8.md) mục 6f (T8-01…T8-09): RPT_VALUES không có PK, cột NCLOB base64, SF_PD_ID mâu thuẫn DDL, BCV cho Fund Management Report Period, 10 FK nullable đa hướng, AUDIT_FIRM_ID/AUDITOR_ID chưa map, hash SEC_ID/EVENT_TYPE_ID. | Ảnh hưởng LLD/ETL của 5 entity Tier 8. |
 
 ---
 
@@ -368,14 +407,9 @@ graph TD
 | UI Metadata | NOTIFICATION | Thông báo trong hệ thống FMS | Operational/notification data. |
 | UI Metadata | TABSINFO | Thiết lập hiển thị dữ liệu theo tab giao diện | Cấu hình UI — thiết lập hiển thị, không có giá trị nghiệp vụ. |
 | Chưa có cột | STAKE | Danh sách các bên liên quan của công ty QLQ | Chưa có thông tin cột nguồn — chờ thiết kế. |
-| Xử lý luồng khác | RPT_PERIOD | Kỳ báo cáo định kỳ của thành viên thị trường | Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic (quyết định review 2026-07-02). |
-| Xử lý luồng khác | RPT_MEMBER | Báo cáo định kỳ của thành viên thị trường nộp lên UBCK | Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic (quyết định review 2026-07-02). |
-| Xử lý luồng khác | RPT_VALUES | Dữ liệu import báo cáo theo ô dữ liệu (cell) | Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic (quyết định review 2026-07-02). |
 | Xử lý luồng khác | RPT_MB_HS | Lịch sử thay đổi trạng thái báo cáo thành viên | Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic (quyết định review 2026-07-02). |
 | Xử lý luồng khác | RPT_PROCESS | Lịch sử xử lý báo cáo thành viên (comment, file import) | Thuộc luồng xử lý báo cáo định kỳ (RPT_MEMBER) — đã xử lý ở luồng khác. |
 | Xử lý luồng khác | RPT_PD_SHT | Bảng trung gian SHEET và RPT_PERIOD | Thuộc luồng biểu mẫu báo cáo định kỳ — đã xử lý ở luồng khác. |
-| Xử lý luồng khác | RPT_TEMP | Danh mục biểu mẫu báo cáo đầu vào (cơ sở pháp lý, loại báo cáo) | Thuộc luồng biểu mẫu báo cáo định kỳ — đã xử lý ở luồng khác. |
-| Xử lý luồng khác | SHEET | Danh sách sheet trong biểu mẫu báo cáo đầu vào | Thuộc luồng biểu mẫu báo cáo định kỳ — đã xử lý ở luồng khác. |
 | Xử lý luồng khác | RPT_HTORY | Lịch sử thay đổi phiên bản biểu mẫu báo cáo đầu vào | Thuộc luồng biểu mẫu báo cáo định kỳ — đã xử lý ở luồng khác. |
 | Xử lý luồng khác | RPT_TP_OUT | Danh mục biểu mẫu báo cáo tổng hợp đầu ra | Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác. |
 | Xử lý luồng khác | SHEET_OUT | Danh sách sheet trong biểu mẫu báo cáo đầu ra | Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác. |
@@ -442,7 +476,6 @@ graph TD
 | Xử lý luồng khác | AUDITOR | Kiểm toán viên hành nghề trực thuộc công ty kiểm toán | Dữ liệu gốc tại IDS — thu thập tại phân hệ IDS, không thiết kế lại tại FMS (quyết định review 2026-07-03). Cascade drop từ AUDIT_FIRM. |
 | Xử lý luồng khác | AUDIT_FIRM_REMINDER | Văn bản/công văn nhắc nhở công ty kiểm toán hoặc kiểm toán viên | Dữ liệu gốc tại IDS — thu thập tại phân hệ IDS, không thiết kế lại tại FMS (quyết định review 2026-07-03). Cascade drop từ AUDIT_FIRM. |
 | Shared Entity | DISTRIBUTOR_LOCATION | Địa điểm giao dịch/chi nhánh của Securities Distribution Agent | Không thiết kế Atomic entity riêng theo quyết định review 2026-07-03 — ADDRESS/PHONE denormalize vào IP Postal Address + IP Electronic Address gắn với Securities Distribution Agent (cha). ITEM_NAME chờ xác nhận ở LLD (xem Tier6 T6-04). |
-| Junction (đang rà soát) | FUD_AG_AGT | Bảng trung gian quỹ, loại đại lý và đại lý phân phối (kèm cấp trên) | **[CẦN RÀ SOÁT 2026-07-19]** Không có attribute nghiệp vụ ngoài 4 FK. Trước đây "mở rộng STRUCT distribution_agents" — nay AGEN_FUNDS đã có entity Relative riêng (`Fund Distribution Agent X Investment Fund Relationship`, Tier 3, xem 7a/7d) nên STRUCT đó không còn. Chưa quyết định gộp hay tách riêng — xem 7e#19. |
 | Xử lý luồng khác | FUND_REPORT | Báo cáo định kỳ NAV/tổng tài sản/tỷ trọng danh mục của quỹ đầu tư | Cấu trúc kỳ báo cáo (PERIOD_TYPE + PERIOD_REPORT) cùng nhóm với luồng báo cáo định kỳ RPT_* đã xử lý ở luồng khác (quyết định review 2026-07-03). |
 | Xử lý luồng khác | INVES_REPORT | Báo cáo định kỳ quy mô/giá trị danh mục ủy thác của nhà đầu tư ủy thác | Cấu trúc kỳ báo cáo (PERIOD_TYPE + PERIOD_REPORT) cùng nhóm với luồng báo cáo định kỳ RPT_* đã xử lý ở luồng khác (quyết định review 2026-07-03). |
 
@@ -728,3 +761,44 @@ graph TD
 **Tier:** 3 | **Source:** `FMS.AGEN_FUNDS` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Relative
 **Description:** Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. **[ĐẢO NGƯỢC 2026-07-19]** Trước đây denormalize thành `distribution_agent_ids` ARRAY<STRUCT> trên Investment Fund (7d cũ) — theo quyết định Data Modeler, chuyển thành entity Relative riêng. FK đến Fund Distribution Agent (Tier 1) + Investment Fund (Tier 2). Cột `DATA_MIGRATION` (cờ migration kỹ thuật) không map — xem 7e#6. FUD_AG_AGT (mở rộng 4-FK, thêm agent_type/parent_agent) cần rà soát gộp hay tách riêng — xem 7e#19. **[SỬA 2026-08-15]** BCO đổi từ Arrangement sang Involved Party, tên đổi thứ tự đặt Agent lên trước — tái dùng concept từ phía Fund Distribution Agent.
 **Description:** Vi phạm quy định của thành viên thị trường chứng khoán (CTQLQ, quỹ, NH LKGS, VPĐD NN, đại lý phân phối/chuyển nhượng/hưu trí). FK đa hướng đến nhiều entity Tier 1/2/5 (Fund Management Company, Investment Fund, Custodian Bank, Foreign FM Org Unit, Member Warning Parameter, Member Warning Condition, Securities Distribution Agent, Transfer Agent, Pension Service Organization, Other Intermediary Organization Unit, Pension Fund). **[RETIER 2026-07-05]** Chuyển từ Tier 1 lên Tier 6 do FK cao nhất là Tier 5.
+
+### 56. Classification FMS Agency Type
+**Tier:** 1 | **Source:** `FMS.AGENCY_TYPE` | **BCV Concept:** [Common] Agent Type | **BCO:** Common | **Table Type:** Relative
+**Domain Prefix:** Classification
+**Description:** Danh mục loại đại lý quỹ đầu tư (đại lý phân phối, đại lý chuyển nhượng, đại lý khác...), chỉ gồm tên và mô tả. **[MỚI 2026-10-06]** Promote từ Classification Value (scheme `FMS_AGENCY_TYPE`, nay deprecated) lên entity riêng; không có cột CODE nên BK = ID nguồn. Consumer OTHER_AGENT.AGENCY_TYPE_ID (Other Intermediary Organization Unit) chờ chuyển sang cặp FK Id + Code.
+
+
+### 57. Fund Management Report
+**Tier:** 8 | **Source:** `FMS.RPT_TEMP` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
+**Domain Prefix:** Fund Management Report
+**Description:** Biểu mẫu báo cáo mà thành viên thị trường (công ty QLQ, quỹ đầu tư, đại lý...) phải nộp: tên, cơ sở pháp lý, loại báo cáo, phiên bản, cấu hình import/eForm. Entity gốc của nhóm báo cáo; chỉ tham chiếu danh mục Classification FMS Fund Type.
+
+
+### 58. Fund Management Report Sheet
+**Tier:** 8 | **Source:** `FMS.SHEET` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
+**Domain Prefix:** Fund Management Report
+**Description:** Sheet dữ liệu trong biểu mẫu báo cáo đầu vào: tên, thứ tự sheet, cấu hình bố cục ô (JSON lưu dạng chuỗi). Con của Fund Management Report.
+
+
+### 59. Fund Management Report Period
+**Tier:** 8 | **Source:** `FMS.RPT_PERIOD` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
+**Domain Prefix:** Fund Management Report
+**Description:** Cấu hình kỳ báo cáo của biểu mẫu: loại kỳ (ngày/tuần/tháng/quý/bán niên/năm), hạn nộp và hạn công bố thông tin trong kỳ. Con của Fund Management Report.
+
+
+### 60. Fund Management Report Submission
+**Tier:** 8 | **Source:** `FMS.RPT_MEMBER` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Relative
+**Domain Prefix:** Fund Management Report
+**Description:** Báo cáo của thành viên thị trường theo kỳ: biểu mẫu, kỳ, trạng thái, ngày nộp, kết quả xử lý, file đính kèm và dữ liệu eForm; gắn tới thành viên liên quan (công ty QLQ, quỹ, ngân hàng lưu ký, đại lý...) qua các FK nullable.
+
+
+### 61. Fund Management Report Value
+**Tier:** 8 | **Source:** `FMS.RPT_VALUES` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Classification
+**Domain Prefix:** Fund Management Report
+**Description:** Giá trị từng ô dữ liệu trong báo cáo thành viên: gắn với báo cáo, sheet, kỳ và thành viên; 1 dòng = 1 ô (mô hình EAV theo ô, tương tự Financial Report Value của IDS).
+
+
+### 57. Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship
+**Tier:** 3 | **Source:** `FMS.FUD_AG_AGT` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Relative
+**Domain Prefix:** (none)
+**Description:** Quan hệ đại lý phân phối giữ vai trò theo loại đại lý đối với quỹ đầu tư (1 quỹ có thể có nhiều đại lý, mỗi đại lý theo 1 loại đại lý). **[MỚI 2026-10-12]** Entity Relative riêng, PK composite 3 FK; AGEN_ID_PARENT (đại lý cấp trên) không map.

@@ -1,0 +1,111 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "FUD_AG_AGT"
+  atomic_entity: "Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship"
+  entity_physical_name: "fund_distribution_agent_x_investment_fund_x_cl_fms_agency_type_relationship"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  table_type: "Relative"
+  group: "T3"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-12] Theo quyết định Data Modeler, FUD_AG_AGT thiết kế thành entity Relative riêng (không gộp vào AGEN_FUNDS) — giải quyết Overview 7e#19. Bảng \"_x_\" link thuần: PK composite 3 FK Id (Investment Fund Id + Fund Distribution Agent Id + Classification FMS Agency Type Id), không có Id/Code riêng. Chỉ map FUD_ID, AG_TY_ID, AGEN_ID; ID (PK kỹ thuật) và AGEN_ID_PARENT (đại lý cấp trên) document trong pending_design.yaml. Nguồn không có audit fields."
+attributes:
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_FUD_AG_AGT"
+  etl_derived_value: "FMS_FUD_AG_AGT"
+  data_type: "string"
+- attribute_name: "Investment Fund Id"
+  physical_name: "investment_fund_id"
+  description: "FK -> FUNDS: Quỹ đầu tư."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FMS.FUD_AG_AGT.FUD_ID"
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS', FUD_ID). Composite PK cùng Fund Distribution Agent Id và Classification FMS Agency Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Code"
+  physical_name: "investment_fund_code"
+  description: "Mã quỹ đầu tư."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUD_AG_AGT.FUD_ID"
+  comment: "Lookup pair: investment_fund.investment_fund_code. Pair with Investment Fund Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Id"
+  physical_name: "fund_distribution_agent_id"
+  description: "FK -> AGENCIES: Đại lý phân phối liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FMS.FUD_AG_AGT.AGEN_ID"
+  comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS_AGENCIES', AGEN_ID). Composite PK cùng Investment Fund Id và Classification FMS Agency Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Code"
+  physical_name: "fund_distribution_agent_code"
+  description: "Mã đại lý phân phối liên quan."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUD_AG_AGT.AGEN_ID"
+  comment: "Lookup pair: fund_distribution_agent.fund_distribution_agent_code. Pair with Fund Distribution Agent Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Agency Type Id"
+  physical_name: "cl_fms_agency_tp_id"
+  description: "FK -> AGENCY_TYPE: Loại đại lý."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FMS.FUD_AG_AGT.AG_TY_ID"
+  comment: "FK target: cl_fms_agency_type.cl_fms_agency_tp_id. Hash: hash_id('FMS_AGENCY_TYPE', AG_TY_ID). Composite PK cùng Investment Fund Id và Fund Distribution Agent Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Agency Type Code"
+  physical_name: "cl_fms_agency_tp_code"
+  description: "Mã loại đại lý."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUD_AG_AGT.AG_TY_ID"
+  comment: "Lookup pair: cl_fms_agency_type.cl_fms_agency_tp_code. Pair with Classification FMS Agency Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

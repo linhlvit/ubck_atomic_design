@@ -282,6 +282,7 @@ COMPANY_TYPE,SYSTEM_OBJECT,NVARCHAR2,"Danh sách loại đối tượng hệ th�
 COMPANY_TYPE,JOINT_STOCK,NUMBER,"Cờ là công ty cổ phần: 1=Công ty CP, 0=Công ty TNHH",,
 COMPANY_TYPE,DELETED,NUMBER,"Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động",,
 COMPANY_TYPE,DATA_MIGRATION,NUMBER,"Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới",,
+COMPANY_TYPE,CODE,NVARCHAR2,Mã loại hình doanh nghiệp eCAT được phép đồng bộ vào FMS,,
 FUND_TYPE,ID,RAW,Khóa chính của bản ghi (UUID dạng RAW(16)),PK,
 FUND_TYPE,DATE_CREATED,DATE,Thời điểm tạo bản ghi,,
 FUND_TYPE,CREATED_BY,NVARCHAR2,Tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
@@ -346,6 +347,7 @@ STATUS,DESCRIPTION,NVARCHAR2,Mô tả chi tiết,,
 STATUS,ICON,NVARCHAR2,Icon hiển thị trên menu/giao diện (CSS class hoặc URL icon),,
 STATUS,COLOR,NVARCHAR2,"Màu sắc hiển thị của nhóm tiêu chí (mã màu HEX, VD: #FF5733)",,
 STATUS,DELETED,NUMBER,"Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động",,
+STATUS,CODE,NVARCHAR2,Mã trạng thái nghiệp vụ (vd. CTQLQ_HD). Nullable; unique khi có giá trị.,,
 STOCKHOLDER_TYPE,ID,RAW,Khóa chính của bản ghi (UUID dạng RAW(16)),PK,
 STOCKHOLDER_TYPE,DATE_CREATED,DATE,Thời điểm tạo bản ghi,,
 STOCKHOLDER_TYPE,CREATED_BY,NVARCHAR2,Tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
@@ -419,6 +421,9 @@ SECURITIES,DATA_MIGRATION,NUMBER,"Cờ dữ liệu từ hệ thống cũ (legacy
 SECURITIES,ID_DB_OLD,NVARCHAR2,ID trong hệ thống cũ (trước khi migration dữ liệu),,
 SECURITIES,EVENT_TYPE_ID,RAW,FK -> EVENT_TYPE: Loại sự vụ áp dụng,,FK suy luận → EVENT_TYPE.ID
 SECURITIES,BANK_ID,RAW,FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan,,FK suy luận → BANK_MONI.ID
+SECURITIES,PROVINCE_ID,VARCHAR2,Tỉnh/thành phố (PROVINCE.ID) — DDL UAT 1 không có mô tả,,FK suy luận → PROVINCE.ID
+SECURITIES,WARD_ID,VARCHAR2,Xã/phường (WARD.ID) — DDL UAT 1 không có mô tả,,FK suy luận → WARD.ID
+SECURITIES,COUNTRY_ID,VARCHAR2,Quốc gia (ID danh mục quốc gia eCAT) — DDL UAT 1 không có mô tả,,
 SEC_BUP,ID,RAW,Khóa chính của bản ghi (UUID dạng RAW(16)),PK,
 SEC_BUP,DATE_CREATED,DATE,Thời điểm tạo bản ghi,,
 SEC_BUP,CREATED_BY,NVARCHAR2,Tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
@@ -613,6 +618,8 @@ FOR_BRCH,CAPITAL,NUMBER,Vốn điều lệ/vốn góp (đơn vị: VNĐ),,
 FOR_BRCH,DATA_MIGRATION,NUMBER,"Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới",,
 FOR_BRCH,ID_DB_OLD,NVARCHAR2,ID trong hệ thống cũ (trước khi migration dữ liệu),,
 FOR_BRCH,EVENT_TYPE_ID,RAW,FK -> EVENT_TYPE: Loại sự vụ áp dụng,,FK suy luận → EVENT_TYPE.ID
+FOR_BRCH,PROVINCE_ID,VARCHAR2,TVS2601TK-3439: Tỉnh/thành phố (PROVINCE.ID),,FK suy luận → PROVINCE.ID
+FOR_BRCH,WARD_ID,VARCHAR2,TVS2601TK-3439: Xã/phường (WARD.ID),,FK suy luận → WARD.ID
 FG_BR_BUP,ID,RAW,Khóa chính của bản ghi (UUID dạng RAW(16)),PK,
 FG_BR_BUP,FG_HIS_ID,RAW,FK -> backup: ID lịch sử hồ sơ chi nhánh/VPĐD,,
 FG_BR_BUP,BRANCH_FLAG,NUMBER,"Cờ là chi nhánh: 1=Chi nhánh, 0=Văn phòng đại diện",,
@@ -701,6 +708,7 @@ FUNDS,ID_DB_OLD,NVARCHAR2,ID trong hệ thống cũ (trước khi migration dữ
 FUNDS,LISTING_DATE,DATE,Ngày niêm yết CCQ trên sàn giao dịch chứng khoán,,
 FUNDS,NUMBER_FUND_CER_FIRST,NUMBER,Số lượng CCQ phát hành lần đầu tiên,,
 FUNDS,STOCK_EXCHANGE,NVARCHAR2,"Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM",,
+FUNDS,OPEN_FUND_TYPE,VARCHAR2,Phân loại quỹ mở: EQUITY/BOND/BALANCED,,
 FUND_BUP,ID,RAW,Khóa chính của bản ghi (UUID dạng RAW(16)),PK,
 FUND_BUP,FUN_HS_ID,RAW,FK -> FMS backup: ID lịch sử hồ sơ quỹ,,
 FUND_BUP,ITEM_NAME,NVARCHAR2,Tên hiển thị chính,,
@@ -946,6 +954,8 @@ BANK_MONI,DES_CHANGE,NVARCHAR2,Mô tả nội dung thay đổi khi cập nhật 
 BANK_MONI,DATA_MIGRATION,NUMBER,"Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới",,
 BANK_MONI,ID_DB_OLD,NVARCHAR2,ID trong hệ thống cũ (trước khi migration dữ liệu),,
 BANK_MONI,BANK_CODE,VARCHAR2,Mã ngân hàng lưu ký (SWIFT code hoặc mã BIC),,
+BANK_MONI,PROVINCE_ID,VARCHAR2,Tỉnh/thành phố (PROVINCE.ID) — DDL UAT 1 không có mô tả,,FK suy luận → PROVINCE.ID
+BANK_MONI,WARD_ID,VARCHAR2,Xã/phường (WARD.ID) — DDL UAT 1 không có mô tả,,FK suy luận → WARD.ID
 MB_FUND,ID,RAW,Khóa chính của bản ghi (UUID dạng RAW(16)),PK,
 MB_FUND,DATE_CREATED,DATE,Thời điểm tạo bản ghi,,
 MB_FUND,CREATED_BY,NVARCHAR2,Tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
@@ -1090,6 +1100,9 @@ INSIDER,S_WORK_DTE,DATE,Ngày bắt đầu làm việc (khi insider là nhân s�
 INSIDER,EMPLOY_STATUS,NUMBER,"Trạng thái hợp đồng lao động: 1=Còn hiệu lực, 2=Hết hiệu lực, 3=Vô thời hạn",,
 INSIDER,GP_QD_NO,VARCHAR2,Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ,,
 INSIDER,APPROVAL_DATE,DATE,Ngày chấp thuận/phê duyệt của UBCKNN,,
+INSIDER,INSIDER_START_DATE,DATE,Ngày bắt đầu làm cổ đông (TVS2601TK-4003) - kỳ báo cáo lấy từ tháng phát sinh,,
+INSIDER,PROVINCE_ID,VARCHAR2,TVS2601TK-3433: Tỉnh/thành phố (PROVINCE.ID),,FK suy luận → PROVINCE.ID
+INSIDER,WARD_ID,VARCHAR2,TVS2601TK-3433: Xã/phường (WARD.ID),,FK suy luận → WARD.ID
 INSDER_RELA,ID,RAW,Khóa chính của bản ghi (UUID dạng RAW(16)),PK,
 INSDER_RELA,DATE_CREATED,DATE,Thời điểm tạo bản ghi,,
 INSDER_RELA,CREATED_BY,NVARCHAR2,Tài khoản người tạo bản ghi,,FK suy luận → USERS.ID
@@ -1761,6 +1774,7 @@ SHEET,MERGE_CELLS,NCLOB,Cấu hình gộp ô trong sheet (NCLOB: danh sách dả
 SHEET,ROW_HEIGHTS,NCLOB,Chiều cao từng hàng trong sheet (JSON NCLOB),,
 SHEET,COL_WIDTHS,NCLOB,Độ rộng từng cột trong sheet (JSON NCLOB),,
 SHEET,CODE,NVARCHAR2,Mã định danh ngắn gọn,,
+SHEET,IS_ADMIN_REPORT,NUMBER,,,
 SHEET_CELL_CONFIG,ID,RAW,Khóa chính của bản ghi (UUID dạng RAW(16)),PK,
 SHEET_CELL_CONFIG,SHEET_ID,RAW,FK -> SHEET: Sheet biểu mẫu báo cáo,,FK suy luận → SHEET.ID
 SHEET_CELL_CONFIG,ROW_INDEX,NUMBER,Chỉ số hàng của ô trong sheet (bắt đầu từ 0),,

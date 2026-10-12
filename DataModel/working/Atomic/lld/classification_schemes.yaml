@@ -1,4 +1,4 @@
-﻿schema_type: "classification_scheme_registry"
+schema_type: "classification_scheme_registry"
 schema_version: "1.0"
 
 schemes:
@@ -561,8 +561,11 @@ schemes:
       - code: "AUDITOR_CERTIFICATE"
         name: "Chứng chỉ kiểm toán viên (CPA) — bổ sung khi thiết kế IDS.AF_AUDITOR_PROFILES"
         source_table: null
-      - code: "CUSTODIAN_MEMBER_CERT"
+      - code: "CUSTODIAN_MEMBER_CERTIFICATE"
         name: "Chứng nhận thành viên lưu ký"
+        source_table: null
+      - code: "CUSTODY_REGISTRATION_CERTIFICATE"
+        name: "Giấy chứng nhận đăng ký hoạt động lưu ký chứng khoán"
         source_table: null
       - code: "DISTRIBUTION_CERTIFICATE"
         name: "Giấy chứng nhận đăng ký hoạt động phân phối chứng chỉ quỹ — bổ sung khi thiết kế FMS.DISTRIBUTOR_AGENT"
@@ -1850,7 +1853,7 @@ schemes:
     source_type: "source_table"
     source_table: "THANHTRA.PENALTY_TYPE"
     used_in_entities:
-      - "Penalty Type"
+      - "Classification THANHTRA Penalty Type"
     values: []
 
   - scheme_code: "ENTITY_STATUS"
@@ -1858,7 +1861,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: null
     used_in_entities:
-      - "Penalty Type"
+      - "Classification THANHTRA Penalty Type"
       - "Violation Behavior"
     values: []
 
@@ -2591,6 +2594,7 @@ schemes:
       - "Securities Company Foreign Branch Personnel"
       - "Securities Company Foreign Representative Office Personnel"
     values: []
+    deprecated: true
 
   - scheme_code: "SCMS_RELATIONSHIP_TYPE"
     name: "Mối quan hệ (gia đình/sở hữu/quản lý)"
@@ -2708,7 +2712,7 @@ schemes:
       - "Securities Company Alert Indicator"
       - "Securities Company Alert Financial Indicator"
       - "Audit Firm"
-      - "Securities Company Depositary Bank"
+      - "Securities Company Bank"
     values:
       - "0"
       - "1"
@@ -2777,9 +2781,10 @@ schemes:
   - scheme_code: "SCMS_ORG_UNIT_TYPE"
     name: "Loại đơn vị tổ chức trực thuộc CTCK: chi nhánh, phòng GD, VPDD nội địa, VPDD/chi nhánh nước ngoài"
     source_type: "etl_derived"
-    source_table: "SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE, SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
+    source_table: "SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE, SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN, SCMS.SC_FIRM_FOREIGN_BRANCH"
     used_in_entities:
       - "Securities Company Organization Unit"
+      - "Securities Company Foreign Organization Unit"
     values:
       - "BRANCH"
       - "REP_OFFICE"
@@ -2787,6 +2792,7 @@ schemes:
       - "DOMESTIC_REP_OFFICE"
       - "FOREIGN_REP_OFFICE"
       - "FOREIGN_REP_OFFICE_VN"
+      - "FOREIGN_BRANCH"
 
   - scheme_code: "SCMS_DOCUMENT_TYPE"
     name: "Loại văn bản pháp lý VPDD CTCK nước ngoài: GP=Giấy phép, QD=Quyết định, CV=Công văn, TT=Thông tư"
@@ -2941,8 +2947,7 @@ schemes:
     used_in_entities:
       - "Securities Company Periodic Report"
       - "Securities Company Adhoc Report"
-      - "Securities Company Foreign Branch Periodic Report"
-      - "Securities Company Foreign Representative Office Periodic Report"
+      - "Securities Company Bank Periodic"
     values:
       - code: "CHUA_GUI"
         label: "Chưa gửi"
@@ -6671,7 +6676,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.LNK_EVENT_TYPE_FORM.RECORD_STATUS"
     used_in_entities:
-      - "Classification Securities Company Event Type X Securities Company Report Relationship"
+      - "Securities Company Report X Classification Securities Company Event Type Relationship"
     values:
       - code: "ACTIVE"
         label: "Đang hoạt động"
