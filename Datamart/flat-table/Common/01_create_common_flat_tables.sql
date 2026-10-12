@@ -16,8 +16,9 @@
 -- 1. FLAT TABLE: datamart.cdr_dt_flat
 --    Nguồn dữ liệu: datamart.cdr_dt_dim
 --    Grain: Day (1 row / ngày lịch, đầy đủ 365/366 ngày/năm)
---    Cờ is_trading_date: 'Y' nếu là ngày mở cửa giao dịch thị trường CK, 'N' nếu không — rule BA 2026-10-09: ngày phải có bản ghi
---    ở CẢ Market Index Snapshot (JAD_MARKETINFOR) VÀ Security Trading Snapshot (JAD_STOCKINFOR); logic tính tại datamart.cdr_dt_dim.
+--    Cờ is_trading_date: 'Y' nếu là ngày mở cửa giao dịch thị trường CK, 'N' nếu không — rule BA 2026-10-12: ngày có bản ghi
+--    ở ÍT NHẤT MỘT trong 4 nguồn (UNION): Market Index Snapshot (JAD_MARKETINFOR), Security Trading Snapshot (JAD_STOCKINFOR),
+--    Securities Trade nhánh TRADE_BOOK_HOSE / TRADE_BOOK_HNX; logic tính tại datamart.cdr_dt_dim.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.cdr_dt_flat ON CLUSTER 'my_cluster'
 (
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS datamart.cdr_dt_flat ON CLUSTER 'my_cluster'
     day_of_week         Int8                    COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy)',
     is_weekend          String                  COMMENT 'Cờ Y/N — ngày cuối tuần (thứ 7 hoặc CN)',
     holiday_flag        Nullable(String)        COMMENT 'Cờ Y/N — ngày nghỉ lễ nhà nước',
-    is_trading_date     String                  COMMENT 'Cờ Y/N — ngày giao dịch thực tế thị trường chứng khoán (có bản ghi ở cả Market Index Snapshot và Security Trading Snapshot — rule BA 2026-10-09)'
+    is_trading_date     String                  COMMENT 'Cờ Y/N — ngày giao dịch thực tế thị trường chứng khoán (có bản ghi ở ít nhất một nguồn: Market Index Snapshot, Security Trading Snapshot, Securities Trade HOSE/HNX — rule BA 2026-10-12)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYY(cdr_dt)
