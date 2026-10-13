@@ -568,8 +568,7 @@ SELECT
     f.roe_rate,
     f.submission_dt,
     f.submission_status_code,
-    f.src_stm_code,
-    f.etl_process_tms
+    f.src_stm_code
 
 FROM datamart.opr_securities_company_financial_report_hist f
 ;
@@ -598,8 +597,7 @@ SELECT
     f.deriv_advisory_practitioner_cnt,
     f.deriv_proprietary_practitioner_cnt,
     f.submission_dt,
-    f.src_stm_code,
-    f.etl_process_tms
+    f.src_stm_code
 
 FROM datamart.opr_securities_company_practitioner_profile f
 ;

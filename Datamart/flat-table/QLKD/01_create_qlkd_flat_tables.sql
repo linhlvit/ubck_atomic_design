@@ -566,8 +566,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_financial_report
     roe_rate                                     Nullable(Decimal(23,2)) COMMENT 'Tỷ suất sinh lời trên vốn chủ sở hữu ROE (%).',
     submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo.',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái báo cáo: 1=Đã gửi/Đúng hạn, 2=Đã duyệt/Gửi muộn.',
-    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
-    etl_process_tms                              DateTime                COMMENT 'Thời gian xử lý ETL.'
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (fin_rpt_hist_id)
@@ -600,8 +599,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_practitioner_pro
     deriv_advisory_practitioner_cnt              Nullable(Int64)         COMMENT 'Số lượng nhân sự liên quan CK phái sinh — nghiệp vụ tư vấn.',
     deriv_proprietary_practitioner_cnt           Nullable(Int64)         COMMENT 'Số lượng nhân sự liên quan CK phái sinh — nghiệp vụ tự doanh.',
     submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo.',
-    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
-    etl_process_tms                              DateTime                COMMENT 'Thời gian xử lý ETL.'
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (prac_profile_id)
