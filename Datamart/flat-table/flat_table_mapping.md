@@ -1778,7 +1778,7 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 13 — Danh sách các quỹ đầu tư | 8 |
+| Nhóm 13 — Danh sách các quỹ đầu tư | 9 |
 
 ---
 
@@ -1819,6 +1819,26 @@ _Không có dim join (operational / self-contained table, drill-down con của I
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 16 — Danh sách người điều hành quỹ | 1 |
+
+---
+
+### `datamart.qlq_opr_investment_fund_distribution_agent_list_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Investment Fund Distribution Agent List |
+| **Bảng fact/operational** | `datamart.opr_investment_fund_distribution_agent_list` |
+| **PK** | `investment_fund_code, fund_distribution_agent_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table, drill-down con của Investment Fund Profile)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 14 — Danh sách đại lý phân phối | 1 |
 
 ---
 

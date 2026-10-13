@@ -2,7 +2,7 @@
 -- QLQ Flat Tables — POPULATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 14 bảng: 5 fact + 9 operational
+-- 15 bảng: 5 fact + 10 operational
 -- Tham số ETL hàng ngày: :etl_date (không dùng {etl_date}/$etl_date/hardcode)
 -- ============================================================
 
@@ -154,6 +154,7 @@ SELECT
     o.representative_board_member_count,
     o.manager_count,
     o.outstanding_unit_quantity,
+    o.distribution_agent_count,
     o.src_stm_code
 FROM datamart.opr_investment_fund_profile o
 ;
@@ -250,4 +251,17 @@ SELECT
     o.sheet_short_code,
     o.src_stm_code
 FROM datamart.opr_fund_management_report_sheet_list o
+;
+
+-- ============================================================
+-- 15. OPERATIONAL: qlq_opr_investment_fund_distribution_agent_list_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_opr_investment_fund_distribution_agent_list_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_opr_investment_fund_distribution_agent_list_flat
+SELECT
+    o.investment_fund_code,
+    o.fund_distribution_agent_code,
+    o.fund_distribution_agent_full_nm,
+    o.src_stm_code
+FROM datamart.opr_investment_fund_distribution_agent_list o
 ;

@@ -109,11 +109,20 @@ erDiagram
 erDiagram
     Investment_Fund_Profile ||--o{ Investment_Fund_Representative_Board_Member_List : " "
     Investment_Fund_Profile ||--o{ Investment_Fund_Manager_List : " "
+    Investment_Fund_Profile ||--o{ Investment_Fund_Distribution_Agent_List : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Investment Fund Profile | Operational | partial | Hồ sơ quỹ đầu tư | 1 quỹ × 1 tháng slicer | K_QLQ_92-96,98,99,101 |
+| Investment Fund Profile | Operational | partial | Hồ sơ quỹ đầu tư | 1 quỹ × 1 tháng slicer | K_QLQ_92-99,101 |
+
+---
+
+## Nhóm 14 — Danh sách đại lý phân phối (Operational, drill-down từ Nhóm 13)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Investment Fund Distribution Agent List | Operational | new | Bảng con drill-down đại lý phân phối của quỹ (junction FUD_AG_AGT draft — dùng tạm, O_QLQ_9) | 1 đại lý × 1 quỹ | K_QLQ_103 |
 
 ---
 
@@ -226,7 +235,6 @@ erDiagram
 |---|---|---|
 | Fact Discretionary Investment Contract Snapshot (Nhóm 2) | 0/7 KPI READY — BA đổi hẳn nguồn sang engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
 | Fund Management Company Contract List (Nhóm 5) | 0/3 KPI READY — BA (2026-10-05) lấy từ engine báo cáo định kỳ `RPT_*`, chưa có Atomic entity; bảng LLD/flat đã xóa (All-Tier Cleanup) | O_QLQ_15, O_QLQ_25 |
-| Investment Fund Distribution Agent List (Nhóm 14) | 0/1 KPI READY — thiếu attribute FK scheme FMS_AGENCY_TYPE trên `fund_distribution_agent` | O_QLQ_9 |
 | Fund Management Report Data (giá trị ô báo cáo + Kỳ báo cáo — Tab DATA EXPLORER, STT 29–91; thay `Report Pass-through View`) | PENDING — `fmr_value` thiếu TGT_ID/CODE, `fmr_sheet` thiếu DATA_LABEL/CELLS_META, thiếu RECORD_STATUS (O_QLQ_27); STT 33 (từ dòng 10)–91 BA Pending (O_QLQ_26) | O_QLQ_1, O_QLQ_27 |
 | Foreign Fund Management Organization Unit Contract List (popup — Nhóm 27 riêng từ BA 2026-10-05) | 0/3 KPI READY — engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
 | Fund Management Company Staff Trade Report (Nhóm 28) | 1/10 KPI READY (chỉ join-key Chiều) — cầu nối VSDC investor registry chưa có Atomic entity | O_QLQ_11 |

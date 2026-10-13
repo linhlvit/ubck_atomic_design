@@ -2,7 +2,7 @@
 -- QLQ Flat Tables — CREATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 14 bảng: 5 fact + 9 operational
+-- 15 bảng: 5 fact + 10 operational
 -- ============================================================
 
 -- ============================================================
@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_profile_flat ON CLUS
     representative_board_member_count Nullable(Int64)        COMMENT 'Số lượng thành viên ban đại diện đang hoạt động',
     manager_count                    Nullable(Int64)         COMMENT 'Số lượng người điều hành quỹ',
     outstanding_unit_quantity        Nullable(Int64)         COMMENT 'Số lượng CCQ đang lưu hành',
+    distribution_agent_count         Nullable(Int64)         COMMENT 'Số lượng đại lý phân phối của quỹ (loại đại lý phân phối)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -324,4 +325,22 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (fmr_sheet_code)
 COMMENT 'Flat table — Operational Fund Management Report Sheet List'
+;
+
+-- ============================================================
+-- 15. OPERATIONAL: qlq_opr_investment_fund_distribution_agent_list_flat
+--    Operational Investment Fund Distribution Agent List
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_distribution_agent_list_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Investment Fund Distribution Agent List
+    investment_fund_code             String                  COMMENT 'PK (composite) — mã quỹ',
+    fund_distribution_agent_code     String                  COMMENT 'PK (composite) — mã đại lý phân phối',
+    fund_distribution_agent_full_nm  Nullable(String)        COMMENT 'Tên hiển thị chính của đại lý phân phối',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (investment_fund_code, fund_distribution_agent_code)
+COMMENT 'Flat table — Operational Investment Fund Distribution Agent List'
 ;

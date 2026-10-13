@@ -213,7 +213,7 @@ Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 12. 4/15 chỉ tiêu READY (Thời gi
 
 ##### Cụm 8: Danh sách quỹ đầu tư (Tác nghiệp)
 
-Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 13. Bảng flat `Investment Fund Profile` — 8/11 chỉ tiêu READY (Thời gian, Tên quỹ, Phân loại, Công ty quản lý, Ngân hàng giám sát, Số TV BĐD, Số người điều hành, KL CCQ lưu hành); 3 chỉ tiêu PENDING (Số ĐLPP — thiếu attribute AGENCY_TYPE, xem O_QLQ_9; NAV hiện tại/LN YTD — engine báo cáo định kỳ, xem O_QLQ_15). **[CẬP NHẬT 2026-09-26]** Gỡ entity `Investment Fund X Fund Distribution Agent Relationship` (FMS.AGEN_FUNDS) khỏi diagram — Số ĐLPP (K_QLQ_97) hạ về PENDING; KL CCQ lưu hành (K_QLQ_101) không cần entity mới, đã có sẵn trên `Investment Fund`.
+Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 13. Bảng flat `Investment Fund Profile` — 9/11 chỉ tiêu READY (Thời gian, Tên quỹ, Phân loại, Công ty quản lý, Ngân hàng giám sát, Số TV BĐD, Số người điều hành, Số ĐLPP, KL CCQ lưu hành); 2 chỉ tiêu PENDING (NAV hiện tại/LN YTD — engine báo cáo định kỳ, xem O_QLQ_15). **[CẬP NHẬT 2026-10-13]** Số ĐLPP (K_QLQ_97) nâng READY — thêm junction `Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship` (FMS.FUD_AG_AGT, draft, chưa đăng ký manifest — dùng tạm, O_QLQ_9) và `Classification FMS Agency Type` (FMS.AGENCY_TYPE) vào diagram. **[CẬP NHẬT 2026-09-26, lịch sử]** Gỡ entity `Investment Fund X Fund Distribution Agent Relationship` (FMS.AGEN_FUNDS) khỏi diagram — Số ĐLPP (K_QLQ_97) hạ về PENDING; KL CCQ lưu hành (K_QLQ_101) không cần entity mới, đã có sẵn trên `Investment Fund`.
 
 ```mermaid
 flowchart LR
@@ -224,6 +224,8 @@ flowchart LR
         FMS_REPRESENT["FMS.REPRESENT"]
         FMS_FUNDTLPRO["FMS.FUND_TL_PRO"]
         FMS_FUNDTYPE["FMS.FUND_TYPE"]
+        FMS_FUDAGAGT["FMS.FUD_AG_AGT"]
+        FMS_AGENCYTYPE["FMS.AGENCY_TYPE"]
     end
 
     subgraph SIL["Atomic"]
@@ -233,6 +235,8 @@ flowchart LR
         Investment_Fund_Representative_Board_Member["Investment Fund Representative Board Member"]
         Investment_Fund_X_Fund_Management_Company_Employee_Relationship["Investment Fund X Fund Management Company Employee Relationship"]
         Classification_FMS_Fund_Type["Classification FMS Fund Type"]
+        Fund_Distribution_Agent_X_Investment_Fund_X_Classification_FMS_Agency_Type_Relationship["Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship"]
+        Classification_FMS_Agency_Type["Classification FMS Agency Type"]
     end
 
     subgraph GOLD["Datamart"]
@@ -246,19 +250,54 @@ flowchart LR
     FMS_REPRESENT --> Investment_Fund_Representative_Board_Member
     FMS_FUNDTLPRO --> Investment_Fund_X_Fund_Management_Company_Employee_Relationship
     FMS_FUNDTYPE --> Classification_FMS_Fund_Type
+    FMS_FUDAGAGT --> Fund_Distribution_Agent_X_Investment_Fund_X_Classification_FMS_Agency_Type_Relationship
+    FMS_AGENCYTYPE --> Classification_FMS_Agency_Type
 
     Investment_Fund --> inv_fnd_prf
     Fund_Management_Company --> inv_fnd_prf
     Custodian_Bank --> inv_fnd_prf
     Investment_Fund_Representative_Board_Member --> inv_fnd_prf
     Investment_Fund_X_Fund_Management_Company_Employee_Relationship --> inv_fnd_prf
+    Fund_Distribution_Agent_X_Investment_Fund_X_Classification_FMS_Agency_Type_Relationship --> inv_fnd_prf
+    Classification_FMS_Agency_Type --> inv_fnd_prf
     Classification_FMS_Fund_Type --> fund_type_dim
     fund_type_dim --> inv_fnd_prf
 ```
 
 ---
 
-> **[CẬP NHẬT 2026-09-26]** `Investment Fund Distribution Agent List` (Nhóm 14) đã gỡ khỏi Section 1 — K_QLQ_103 hạ về PENDING (cùng gap AGENCY_TYPE với K_QLQ_97/Nhóm 13, xem O_QLQ_9).
+##### Cụm 8b: Drill-down danh sách đại lý phân phối của quỹ (Tác nghiệp)
+
+Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 14. Bảng con drill-down từ Nhóm 13 (K_QLQ_97), 1 chỉ tiêu READY. **[CẬP NHẬT 2026-10-13]** Nâng READY nhờ junction Atomic `Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship` (FMS.FUD_AG_AGT — còn `status: draft`, chưa đăng ký `dm_manifest.yaml`, dùng tạm theo xác nhận Data Modeler, O_QLQ_9). Trước đó (2026-09-26) K_QLQ_103 hạ PENDING vì chưa có nguồn lọc loại đại lý.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_FUDAGAGT["FMS.FUD_AG_AGT"]
+        FMS_AGENCYTYPE["FMS.AGENCY_TYPE"]
+        FMS_AGENCIES["FMS.AGENCIES"]
+    end
+
+    subgraph SIL["Atomic"]
+        Fund_Distribution_Agent_X_Investment_Fund_X_Classification_FMS_Agency_Type_Relationship["Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship"]
+        Classification_FMS_Agency_Type["Classification FMS Agency Type"]
+        Fund_Distribution_Agent["Fund Distribution Agent"]
+    end
+
+    subgraph GOLD["Datamart"]
+        inv_fnd_dist_agt_lst["Investment Fund Distribution Agent List"]
+    end
+
+    FMS_FUDAGAGT --> Fund_Distribution_Agent_X_Investment_Fund_X_Classification_FMS_Agency_Type_Relationship
+    FMS_AGENCYTYPE --> Classification_FMS_Agency_Type
+    FMS_AGENCIES --> Fund_Distribution_Agent
+
+    Fund_Distribution_Agent_X_Investment_Fund_X_Classification_FMS_Agency_Type_Relationship --> inv_fnd_dist_agt_lst
+    Classification_FMS_Agency_Type --> inv_fnd_dist_agt_lst
+    Fund_Distribution_Agent --> inv_fnd_dist_agt_lst
+```
+
+---
 
 ##### Cụm 9: Drill-down danh sách thành viên ban đại diện của quỹ (Tác nghiệp)
 
@@ -503,6 +542,61 @@ flowchart LR
 
 ---
 
+##### Cụm 17: Giá trị ô báo cáo định kỳ — Dashboard RPT (`Fact Fund Management Report Cell Value`)
+
+Phục vụ các chỉ tiêu Dashboard đọc engine báo cáo định kỳ `RPT_*` (BA STT 1–28; đợt này: Nhóm 1, 2, 6, 7 — 15 KPI). Fact EAV mức ô: 1 dòng = 1 ô báo cáo × 1 bản nộp (`fmr_value`), 1 measure `cell_numeric_val` dùng chung; mỗi KPI là bộ lọc (sheet, nhãn dòng, nhãn cột, `record_tp`) trên `Fund Management Report Cell Dimension`. FK: ngày cuối kỳ báo cáo (`cdr_dt_dim`), ô báo cáo, loại hình quỹ (`fund_type_dim`); mã CTQLQ/quỹ là cột suy biến (`fmc_code`, `investment_fund_code`) vì join thẳng Dimension FMC (44 cột) và quỹ (24 cột) vào flat table sẽ trùng 10 tên cột. Nhãn dòng/cột là **giả định** về bố cục ô (O_QLQ_31); kỳ gần nhất ≤ tháng slicer và nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_RPTVALUES["FMS.RPT_VALUES"]
+        FMS_RPTMEMBER["FMS.RPT_MEMBER"]
+        FMS_SHEET["FMS.SHEET"]
+        FMS_RPTTEMP["FMS.RPT_TEMP"]
+        FMS_FUNDS["FMS.FUNDS"]
+        FMS_FUNDTYPE["FMS.FUND_TYPE"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+    end
+
+    subgraph SIL["Atomic"]
+        Fund_Management_Report_Value["Fund Management Report Value"]
+        Fund_Management_Report_Submission["Fund Management Report Submission"]
+        Fund_Management_Report_Sheet["Fund Management Report Sheet"]
+        Fund_Management_Report["Fund Management Report"]
+        Investment_Fund["Investment Fund"]
+        Classification_FMS_Fund_Type["Classification FMS Fund Type"]
+        Calendar_Date["Calendar Date"]
+    end
+
+    subgraph GOLD["Datamart"]
+        fct_fmr_cell_val["Fact Fund Management Report Cell Value"]
+        fmr_cell_dim["Fund Management Report Cell Dimension"]
+        fund_type_dim["Fund Type Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
+    end
+
+    FMS_RPTVALUES --> Fund_Management_Report_Value
+    FMS_RPTMEMBER --> Fund_Management_Report_Submission
+    FMS_SHEET --> Fund_Management_Report_Sheet
+    FMS_RPTTEMP --> Fund_Management_Report
+    FMS_FUNDS --> Investment_Fund
+    FMS_FUNDTYPE --> Classification_FMS_Fund_Type
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
+
+    Fund_Management_Report_Value --> fct_fmr_cell_val
+    Fund_Management_Report_Submission --> fct_fmr_cell_val
+    Investment_Fund --> fct_fmr_cell_val
+    Fund_Management_Report_Sheet --> fmr_cell_dim
+    Fund_Management_Report --> fmr_cell_dim
+    Classification_FMS_Fund_Type --> fund_type_dim
+    Calendar_Date --> cdr_dt_dim
+    fmr_cell_dim --> fct_fmr_cell_val
+    fund_type_dim --> fct_fmr_cell_val
+    cdr_dt_dim --> fct_fmr_cell_val
+```
+
+---
+
 ## Section 2 — Tổng quan báo cáo
 
 ### Tab: TỔNG QUAN CTQLQ
@@ -520,17 +614,21 @@ flowchart LR
 > Atomic: `Custodian Bank` ← FMS.BANK_MONI — READY
 > **[CẬP NHẬT 2026-09-26 — gỡ gating "Dữ liệu động" sai]** Toàn bộ Nhóm này trước đây PENDING chỉ vì áp dụng quy tắc "BA đánh Dữ liệu động → PENDING dù Atomic đã sẵn sàng" — quy tắc này đã bị xác nhận SAI (xem `feedback_ignore_ba_column_z.md`: "Loại dữ liệu" không phải lý do PENDING hợp lệ). Đối chiếu lại BA hiện hành (`BA_analyst_QLQ.csv` dòng 4-14): 6/11 chỉ tiêu có Atomic đầy đủ → nâng READY. K_QLQ_3/4/7 vẫn PENDING — BA hiện hành cho thấy nguồn thật của cả 3 dòng này là engine báo cáo định kỳ EAV `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (K_QLQ_3 BA đã đổi nguồn khỏi giả định cũ "Discretionary Investment Account/FMS.INVES_ACC" — không còn dùng bảng INVES_ACC trực tiếp; xem O_QLQ_15, đã đổi tên khỏi giả định cũ `FMS.FUND_REPORT`). BA note lặp lại nhiều dòng RPT: *"HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo"* — xác nhận đây là chủ đích của BA (không phải có thể lách qua bằng cột trực tiếp trên FUNDS/SECURITIES/INVES_ACC), giữ PENDING đúng.
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_3, K_QLQ_4, K_QLQ_7 (Nhóm 1) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c). K_QLQ_3/4/7 là chỉ tiêu cấp thị trường: cộng giá trị ô của mọi CTQLQ ở kỳ gần nhất của từng CTQLQ.
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_QLQ_1 | Thời gian | — | Chiều | `Snapshot_Date_Dimension_Id` → `cdr_dt_dim` (grain tháng) — lọc theo `fund_management_company.actual_operation_commencement_dt`/`suspension_dt`/`effective_end_dt` khi tính các COUNT bên dưới | Chiều slicer chung cho Nhóm — nay có ý nghĩa vì đã có measure READY đi kèm | READY |
 | K_QLQ_2 | Quỹ đầu tư chứng khoán | Quỹ | Cơ sở | `COUNT(investment_fund.investment_fund_id)` WHERE quỹ đang hoạt động tại tháng snapshot (theo `investment_fund` SCD4A hiệu lực tại kỳ) | Investment Fund đã READY — công thức tương đương K_QLQ_40 (Nhóm 6), 2 dòng BA cùng 1 measure (BA đánh "Trùng"), giữ 1 KPI_ID | READY |
-| K_QLQ_3 | Hợp đồng UTDM | Hợp đồng | Cơ sở | | **Lý do pending:** BA đã đổi nguồn — nay là engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo tình hình hoạt động của CTQLQ >> HDQuanLyDanhMucDauTu_06015 >> Tổng (I+II)), không còn dùng `FMS.INVES_ACC` trực tiếp như thiết kế cũ giả định. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
-| K_QLQ_4 | Tổng AUM quản lý | Nghìn tỷ VND | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (BA note: "HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo"), không phải cột trực tiếp trên FUNDS/SECURITIES. **Atomic cần bổ sung:** như K_QLQ_3. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_QLQ_3 | Hợp đồng UTDM | Hợp đồng | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `HDQuanLyDanhMucDauTu_06015`, dòng "Tổng (I+II)", cột "Số lượng hợp đồng", `record_tp` = '2' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA ghi sheet HDQuanLyDanhMucDauTu_06015 (Mục/Sheet, Điều kiện) nhưng SQL tham khảo của chính BA lấy 'HĐ ủy thác' từ sheet Chung_TinhHinhQLDMDT_06020 mã 180101 — theo các trường khai báo, chờ BA xác nhận (O_QLQ_32) | READY |
+| K_QLQ_4 | Tổng AUM quản lý | Nghìn tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `HDQuanLyQuy_06014`, mã chỉ tiêu `170103`, cột "Tổng", `record_tp` = '2' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Mã chỉ tiêu 170103 theo SQL tham khảo BA. Điều kiện BA ghi nhầm sheet HDQuanLyDanhMucDauTu_06015 — theo Mục/Sheet và SQL (O_QLQ_32) | READY |
 | K_QLQ_5 | CTQLQ đang hoạt động | Công ty | Cơ sở | `COUNT(fund_management_company.fmc_id)` WHERE `fund_management_company.operation_status_code` (JOIN `cl_value` scheme `FMS_OPERATION_STATUS`) = 'Hoạt động' | Xác nhận Atomic có FK Classification Value sẵn trên `fund_management_company` (nguồn `FMS.SECURITIES.STATUS_ID`) — đủ điều kiện READY | READY |
 | K_QLQ_6 | VPĐD QLQ nước ngoài tại VN | Văn phòng | Cơ sở | `COUNT(foreign_fm_ou.foreign_fm_ou_id)` WHERE `foreign_fm_ou.branch_tp_code` = 0 (Branch_Flag) AND hiệu lực tại tháng snapshot | Foreign Fund Management Organization Unit đã READY | READY |
-| K_QLQ_7 | Số lượng hợp đồng tư vấn đầu tư | Hợp đồng | Cơ sở | | **Lý do pending:** BA nay đã bổ sung nguồn (trước đây để trống) — nguồn thật là engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo tình hình hoạt động của CTQLQ >> HDTuVanDauTuCK_06016 >> Tổng (I+II)). **Atomic cần bổ sung:** như K_QLQ_3. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_QLQ_7 | Số lượng hợp đồng tư vấn đầu tư | Hợp đồng | Cơ sở | `SUM(COALESCE(...))` theo từng đối tượng, mã chỉ tiêu ưu tiên: MAX(170308); SUM(170302, 170305); SUM(170303, 170304, 170306, 170307) — sheet `HDTuVanDauTuCK_06016`, cột "Số lượng hợp đồng", `record_tp` = '2' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL tham khảo BA: ưu tiên dòng tổng 170308, không có thì cộng 170302+170305, không có nữa thì cộng 170303+170304+170306+170307 | READY |
 | K_QLQ_8 | VPĐD CTQLQ NN tại VN đang hoạt động | Văn phòng | Cơ sở | `COUNT(foreign_fm_ou.foreign_fm_ou_id)` WHERE `branch_tp_code` = 0 AND `operation_status_code` (JOIN `cl_value` scheme `FMS_OPERATION_STATUS`) = 'Hoạt động' | Cùng Classification Value scheme với K_QLQ_5 | READY |
 | K_QLQ_9 | VPĐD CTQLQ NN tại VN đang chờ đóng cửa | Văn phòng | Cơ sở | `COUNT(foreign_fm_ou.foreign_fm_ou_id)` WHERE `branch_tp_code` = 0 AND `operation_status_code` LIKE '%chờ đóng cửa%' | Cùng Classification Value scheme với K_QLQ_5 | READY |
 | K_QLQ_10 | VPĐD CTQLQ NN tại VN đã đóng cửa | Văn phòng | Cơ sở | `COUNT(foreign_fm_ou.foreign_fm_ou_id)` WHERE `branch_tp_code` = 0 AND `operation_status_code` NOT LIKE '%chờ%' AND `operation_status_code` LIKE '%đóng cửa%'/'%chấm dứt%'/'%giải thể%' | Cùng Classification Value scheme với K_QLQ_5 | READY |
@@ -543,7 +641,7 @@ flowchart LR
 | K_QLQ_2, K_QLQ_40 (Nhóm 6, reuse) | FMS_UAT.FUNDS | Investment Fund | investment_fund |
 | K_QLQ_5, K_QLQ_8, K_QLQ_9, K_QLQ_10 | FMS_UAT.SECURITIES / FMS_UAT.FOR_BRCH | Fund Management Company / Foreign Fund Management Organization Unit | fund_management_company / foreign_fm_ou |
 | K_QLQ_6 | FMS_UAT.FOR_BRCH | Foreign Fund Management Organization Unit | foreign_fm_ou |
-| K_QLQ_3, K_QLQ_4, K_QLQ_7 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_3, K_QLQ_4, K_QLQ_7 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 | K_QLQ_11 | FMS_UAT.BANK_MONI | Custodian Bank | custodian_bank |
 
 ---
@@ -553,23 +651,27 @@ flowchart LR
 > Phân loại: **Phân tích**
 > **[CẬP NHẬT 2026-09-26]** Toàn bộ Nhóm vẫn PENDING, nhưng lý do đã đổi: thiết kế cũ giả định nguồn là `Discretionary Investment Account` (FMS.INVES_ACC, đã READY) và chỉ PENDING vì gating "Dữ liệu động" sai (xem `feedback_ignore_ba_column_z.md`). BA hiện hành (`BA_analyst_QLQ.csv` dòng 15-21) đã đổi nguồn thật sang engine báo cáo định kỳ EAV `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020) cho cả 7/7 chỉ tiêu — không còn dùng `FMS.INVES_ACC` trực tiếp. BA note lặp lại: *"HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo"*. Atomic entity cho engine báo cáo định kỳ FMS chưa tồn tại (xem O_QLQ_15) → giữ PENDING đúng, nhưng vì lý do khác thiết kế cũ.
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_12, K_QLQ_13, K_QLQ_14, K_QLQ_15, K_QLQ_16, K_QLQ_17, K_QLQ_18 (Nhóm 2) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c). Dòng con cá nhân/tổ chức là tỷ lệ của dòng tổng (BA SQL: thang 0–1 hoặc 0–100).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_12 | Thời gian | — | Chiều | | **Lý do pending:** Nhóm không còn measure nào READY. Nguồn thời gian nay là `RPT_MEMBER.PERIOD_TYPE/PERIOD_VALUE/YEAR_VALUE` (engine báo cáo định kỳ), không phải cột ngày trực tiếp. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot` — grain: 1 CTQLQ × 1 tháng. | PENDING |
-| K_QLQ_13 | Số lượng hợp đồng UTDM cá nhân | HĐ | Cơ sở | | **Lý do pending:** BA đã đổi nguồn — nay là engine báo cáo định kỳ (Mapping báo cáo đầu vào: Chung_TinhHinhQLDMDT_06020 >> Tổng số HĐ ủy thác đầu tư đang thực hiện >> Cá nhân), không còn dùng `FMS.INVES_ACC` trực tiếp như thiết kế cũ giả định. **Atomic cần bổ sung:** như K_QLQ_12. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
-| K_QLQ_14 | Giá trị thị trường hợp đồng UTDM cá nhân | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_QLQ_13 — Mapping báo cáo đầu vào: Tổng giá trị thị trường các HĐ ủy thác đầu tư (VND) >> Cá nhân. **Atomic cần bổ sung:** như K_QLQ_12. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
-| K_QLQ_15 | Số lượng hợp đồng UTDM tổ chức | HĐ | Cơ sở | | **Lý do pending:** Tương tự K_QLQ_13, nhánh Tổ chức. **Atomic cần bổ sung:** như K_QLQ_12. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
-| K_QLQ_16 | Giá trị thị trường hợp đồng UTDM tổ chức | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_QLQ_14, nhánh Tổ chức. **Atomic cần bổ sung:** như K_QLQ_12. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
-| K_QLQ_17 | Tổng số lượng hợp đồng UTDM | HĐ | Cơ sở | | **Lý do pending:** BA đã đổi nguồn — Mapping báo cáo đầu vào: Tổng số HĐ ủy thác đầu tư đang thực hiện (không tách cá nhân/tổ chức). **Atomic cần bổ sung:** như K_QLQ_12. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
-| K_QLQ_18 | Tổng giá trị ủy thác | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_QLQ_17 — Mapping báo cáo đầu vào: Tổng giá trị thị trường các HĐ ủy thác đầu tư (VND), không tách cá nhân/tổ chức. **Atomic cần bổ sung:** như K_QLQ_12. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
+| K_QLQ_12 | Thời gian | — | Chiều | `rpt_period_end_dt_dim_id` → `cdr_dt_dim` (ngày cuối kỳ báo cáo; slicer tháng lấy kỳ gần nhất ≤ tháng) | Chiều thời gian của chỉ tiêu RPT (O_QLQ_31, O_QLQ_32) | READY |
+| K_QLQ_13 | Số lượng hợp đồng UTDM cá nhân | HĐ | Cơ sở | `SUM(tỷ lệ × tổng)` — sheet `Chung_TinhHinhQLDMDT_06020`, dòng con mã `180103`, dòng tổng mã `180101`, cột "Kỳ báo cáo", `record_tp` = '2'; thang 0–1 hoặc 0–100, ngoài thang lấy giá trị ô con — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: dòng con là tỷ lệ của dòng tổng (thang 0–1 hoặc 0–100); BA nhánh ELSE trả về dòng tổng (nghi lỗi) — thiết kế lấy giá trị ô con khi không phải tỷ lệ, chờ BA (O_QLQ_32) | READY |
+| K_QLQ_14 | Giá trị thị trường hợp đồng UTDM cá nhân | Tỷ VND | Cơ sở | `SUM(tỷ lệ × tổng)` — sheet `Chung_TinhHinhQLDMDT_06020`, dòng con mã `180112`, dòng tổng mã `180110`, cột "Kỳ báo cáo", `record_tp` = '2'; thang 0–1 hoặc 0–100, ngoài thang lấy giá trị ô con — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: dòng con là tỷ lệ của dòng tổng (thang 0–1 hoặc 0–100); BA nhánh ELSE trả về dòng tổng (nghi lỗi) — thiết kế lấy giá trị ô con khi không phải tỷ lệ, chờ BA (O_QLQ_32) | READY |
+| K_QLQ_15 | Số lượng hợp đồng UTDM tổ chức | HĐ | Cơ sở | `SUM(tỷ lệ × tổng)` — sheet `Chung_TinhHinhQLDMDT_06020`, dòng con mã `180102`, dòng tổng mã `180101`, cột "Kỳ báo cáo", `record_tp` = '2'; thang 0–1 hoặc 0–100, ngoài thang lấy giá trị ô con — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: dòng con là tỷ lệ của dòng tổng (thang 0–1 hoặc 0–100); BA nhánh ELSE trả về dòng tổng (nghi lỗi) — thiết kế lấy giá trị ô con khi không phải tỷ lệ, chờ BA (O_QLQ_32) | READY |
+| K_QLQ_16 | Giá trị thị trường hợp đồng UTDM tổ chức | Tỷ VND | Cơ sở | `SUM(tỷ lệ × tổng)` — sheet `Chung_TinhHinhQLDMDT_06020`, dòng con mã `180111`, dòng tổng mã `180110`, cột "Kỳ báo cáo", `record_tp` = '2'; thang 0–1 hoặc 0–100, ngoài thang lấy giá trị ô con — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: dòng con là tỷ lệ của dòng tổng (thang 0–1 hoặc 0–100); BA nhánh ELSE trả về dòng tổng (nghi lỗi) — thiết kế lấy giá trị ô con khi không phải tỷ lệ, chờ BA (O_QLQ_32) | READY |
+| K_QLQ_17 | Tổng số lượng hợp đồng UTDM | HĐ | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `Chung_TinhHinhQLDMDT_06020`, mã chỉ tiêu `180101`, cột "Kỳ báo cáo", `record_tp` = '2' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_18 | Tổng giá trị ủy thác | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `Chung_TinhHinhQLDMDT_06020`, mã chỉ tiêu `180110`, cột "Kỳ báo cáo", `record_tp` = '2' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| K_QLQ_12–18 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_12, K_QLQ_13, K_QLQ_14, K_QLQ_15, K_QLQ_16, K_QLQ_17, K_QLQ_18 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -583,7 +685,7 @@ flowchart LR
 > - **Nâng READY (5 chỉ tiêu):** K_QLQ_19 (Thời gian), K_QLQ_23 (Số lượng Quỹ), K_QLQ_24 (Xếp loại), K_QLQ_25 (CAMEL), K_QLQ_26 (Vốn điều lệ) — Atomic đã sẵn sàng, không còn blocker thật.
 > - **HẠ xuống PENDING (1 chỉ tiêu, khác hướng thông thường):** K_QLQ_21 (Người đại diện theo pháp luật) — thiết kế cũ giả định READY từ `Fund Management Company Employee.Item_Name` (FMS.TL_PROFILES), nhưng BA hiện hành (dòng 24) đánh **Trạng thái mapping = Pending**, Note: *"Chưa có cách lấy đúng, đang chờ cf từ Tinh Vân"* — BA tự nhận chưa xác định được cột nguồn đáng tin cậy cho "người đại diện theo pháp luật" (khác Director/Deputy Director đã có trên `fund_management_company`, không chắc trùng vai trò pháp lý). Tôn trọng đánh giá của BA, không giữ READY theo giả định cũ.
 > - **Giữ PENDING, sửa lại lý do đúng (5 chỉ tiêu):** K_QLQ_22/27/28/30 dùng engine báo cáo định kỳ EAV `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (không phải giả định cũ `FMS.SECURITIES_REPORT`, entity đó chưa từng tồn tại — xem O_QLQ_15). K_QLQ_29 (CAR) và K_QLQ_31 (Vốn CSH) BA nay **đã cung cấp nguồn** (Báo cáo tỷ lệ an toàn tài chính / Báo cáo tài chính — BangCanDoiKeToan), cũng qua engine RPT, không còn "BA chưa cung cấp Bảng nguồn" như thiết kế cũ.
-> - **[CẬP NHẬT 2026-10-05] HẠ xuống PENDING (1 chỉ tiêu):** K_QLQ_32 (Số lượng hợp đồng UTQLDM) — BA (dòng 35 `BA_analyst_QLQ.csv`) nay lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng số Hợp đồng ủy thác đầu tư đang thực hiện), không còn COUNT `FMS.INVES_ACC`. PENDING [Nhóm 3 - Thiếu nguồn Atomic], O_QLQ_15, O_QLQ_25. Cột `Discretionary_Investment_Account_Count` gỡ khỏi schema.
+> *(Lịch sử — đã thay thế bởi cập nhật 2026-10-13: các cột RPT nay đã vào schema)* - **[CẬP NHẬT 2026-10-05] HẠ xuống PENDING (1 chỉ tiêu):** K_QLQ_32 (Số lượng hợp đồng UTQLDM) — BA (dòng 35 `BA_analyst_QLQ.csv`) nay lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng số Hợp đồng ủy thác đầu tư đang thực hiện), không còn COUNT `FMS.INVES_ACC`. PENDING [Nhóm 3 - Thiếu nguồn Atomic], O_QLQ_15, O_QLQ_25. Cột `Discretionary_Investment_Account_Count` gỡ khỏi schema.
 
 **Mockup:**
 
@@ -593,6 +695,10 @@ flowchart LR
 
 **Source:** `Fund Management Company Profile`
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_22, K_QLQ_27, K_QLQ_28, K_QLQ_29, K_QLQ_30, K_QLQ_31, K_QLQ_32 READY: thêm cột giá trị báo cáo định kỳ vào bảng tác nghiệp `Fund Management Company Profile`. ETL đọc trực tiếp Atomic `fmr_value` + `fmr_submission` và tra `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`) để chọn ô theo sheet, khóa dòng và nhãn cột; lấy kỳ báo cáo mới nhất (`rpt_year`, `period_val`, `submitted_dt` giảm dần) của đối tượng. **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ mới nhất theo thứ tự chuỗi `period_val` trong cùng loại kỳ (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
@@ -600,17 +706,17 @@ flowchart LR
 | K_QLQ_19 | Thời gian | — | Chiều | `Snapshot_Date_Dimension_Id` → `cdr_dt_dim` (grain tháng) — lọc `fund_management_company.actual_operation_commencement_dt` <= cuối tháng AND (`suspension_dt`/`effective_end_dt` IS NULL) | Nay có ý nghĩa vì Nhóm đã có nhiều measure READY | READY |
 | K_QLQ_20 | Tên công ty | — | Cơ sở | `fmc_full_nm`, `fmc_short_nm` ← Fund Management Company | | READY |
 | K_QLQ_21 | Người đại diện theo pháp luật | — | Cơ sở | | **Lý do pending:** BA đánh Trạng thái mapping = Pending (dòng 24 BA), Note: "Chưa có cách lấy đúng, đang chờ cf từ Tinh Vân". Không dùng `fund_management_company.director_full_nm`/`deputy_director_full_nm` thay thế vì chưa xác nhận vai trò Director trùng vai trò pháp lý "Người đại diện theo pháp luật". **Atomic cần bổ sung:** không xác định — chờ BA/Tinh Vân xác nhận cột nguồn đúng. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
-| K_QLQ_22 | Số lượng nhân viên có CCHN | Người | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo tình hình hoạt động của CTQLQ >> CoCauToChuc_06018). **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_QLQ_22 | Số lượng nhân viên có CCHN | Người | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `CoCauToChuc_06018`, mã chỉ tiêu `170515`, cột "Kỳ báo cáo", `record_tp` = '2' → cột `certified_practitioner_staff_count` trên `Fund Management Company Profile` | Cột `certified_practitioner_staff_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
 | K_QLQ_23 | Số lượng Quỹ | Quỹ | Cơ sở | `COUNT(investment_fund.investment_fund_id)` WHERE `investment_fund.fmc_id` = CTQLQ hiện tại AND hiệu lực tại tháng snapshot | Investment Fund đã READY | READY |
 | K_QLQ_24 | Xếp loại | — | Cơ sở | `member_rating.rank_index` WHERE `member_rating.fmc_id` = CTQLQ, lấy kỳ xếp hạng gần nhất (bán niên/năm) tính đến tháng snapshot | Member Rating đã READY — cần xác nhận LLD cách lấy "kỳ gần nhất" (`rating_period_tp_code`/`data_dt` MAX) | READY |
 | K_QLQ_25 | CAMEL | % | Cơ sở | `member_rating.total_score_amt` WHERE `member_rating.fmc_id` = CTQLQ, cùng kỳ xếp hạng với K_QLQ_24 | Member Rating đã READY | READY |
 | K_QLQ_26 | Vốn điều lệ | Tỷ VND | Cơ sở | `fund_management_company.charter_capital_amt` | Fund Management Company đã READY | READY |
-| K_QLQ_27 | AUM | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo tình hình hoạt động của CTQLQ >> HDQuanLyQuy_06014 >> Tổng giá trị tài sản ròng). **Atomic cần bổ sung:** như K_QLQ_22. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
-| K_QLQ_28 | Thị phần | % | Phái sinh | | **Lý do pending:** phụ thuộc K_QLQ_27 (AUM, PENDING) — Thị phần = AUM CTQLQ / Tổng AUM thị trường × 100%. **Atomic cần bổ sung:** như K_QLQ_22. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
-| K_QLQ_29 | CAR (ATTC) | % | Cơ sở | | **Lý do pending:** BA nay đã bổ sung nguồn (trước đây để trống) — nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: Báo cáo tỷ lệ an toàn tài chính >> BangTongHop_06013 >> Tỷ lệ vốn khả dụng). **Atomic cần bổ sung:** như K_QLQ_22. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
-| K_QLQ_30 | Lợi nhuận | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: Báo cáo tài chính >> BCKetQuaHoatDongKinhDoanh >> Lợi nhuận sau thuế TNDN). **Atomic cần bổ sung:** như K_QLQ_22. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
-| K_QLQ_31 | Vốn CSH | Tỷ VND | Cơ sở | | **Lý do pending:** BA nay đã bổ sung nguồn (trước đây để trống) — nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: Báo cáo tài chính >> BangCanDoiKeToan >> B - VỐN CHỦ SỞ HỮU). **Atomic cần bổ sung:** như K_QLQ_22. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
-| K_QLQ_32 | Số lượng hợp đồng UTQLDM | HĐ | Cơ sở | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 35) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng số Hợp đồng ủy thác đầu tư đang thực hiện), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_QLQ_27 | AUM | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `HDQuanLyQuy_06014`, mã chỉ tiêu `170103`, cột "Tổng", `record_tp` = '2' → cột `assets_under_management_amt` trên `Fund Management Company Profile` | Cột `assets_under_management_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_28 | Thị phần | % | Phái sinh | `assets_under_management_amt` × 100 / `SUM(assets_under_management_amt)` toàn thị trường (các CTQLQ) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên cột `assets_under_management_amt` của `Fund Management Company Profile` | READY |
+| K_QLQ_29 | CAR (ATTC) | % | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BangTongHop_06013`, mã chỉ tiêu `4055`, cột "Giá trị rủi ro/ vốn khả dụng", `record_tp` = '2' → cột `capital_adequacy_ratio` trên `Fund Management Company Profile` | Cột `capital_adequacy_ratio` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_30 | Lợi nhuận | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BCKetQuaHoatDongKinhDoanh`, mã chỉ tiêu `60`, cột "Kỳ này", `record_tp` = '2' → cột `net_profit_after_tax_amt` trên `Fund Management Company Profile` | Cột `net_profit_after_tax_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_31 | Vốn CSH | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BangCanDoiKeToan`, mã chỉ tiêu `400`, cột "Số cuối kỳ", `record_tp` = '2' → cột `owner_equity_amt` trên `Fund Management Company Profile` | Cột `owner_equity_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_32 | Số lượng hợp đồng UTQLDM | HĐ | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `Chung_TinhHinhQLDMDT_06020`, mã chỉ tiêu `180101`, cột "Kỳ báo cáo", `record_tp` = '2' → cột `portfolio_management_contract_count` trên `Fund Management Company Profile` | Cột `portfolio_management_contract_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
 
 **Bảng mapping nguồn:**
 
@@ -619,7 +725,7 @@ flowchart LR
 | K_QLQ_20, K_QLQ_26 | FMS_UAT.SECURITIES | Fund Management Company | fund_management_company |
 | K_QLQ_23 | FMS_UAT.FUNDS | Investment Fund | investment_fund |
 | K_QLQ_24, K_QLQ_25 | FMS_UAT."RANK" | Member Rating | member_rating |
-| K_QLQ_22, 27, 28, 29, 30, 31, 32 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_22, K_QLQ_27, K_QLQ_29, K_QLQ_30, K_QLQ_31, K_QLQ_32 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD (K_QLQ_143: FMS_UAT.DISTRIBUTOR_AGENT, FMS_UAT.AGENCIES, FMS_UAT.AGEN_FUNDS) | Fund Management Report Value + Fund Management Report Submission *(cột trên `Fund Management Company Profile`, lookup `fund_management_rpt_cell_dim`)* | fmr_value / fmr_submission |
 | K_QLQ_21 | *(BA Pending — chờ Tinh Vân)* | TBD | TBD |
 
 **Schema bảng tác nghiệp — Fund Management Company Profile:**
@@ -635,11 +741,17 @@ erDiagram
         string Rank_Index
         string Camel_Score
         string Charter_Capital_Amount
+        int Certified_Practitioner_Staff_Count
+        decimal Assets_Under_Management_Amount
+        decimal Capital_Adequacy_Ratio
+        decimal Net_Profit_After_Tax_Amount
+        decimal Owner_Equity_Amount
+        int Portfolio_Management_Contract_Count
         string Source_System_Code
     }
 ```
 
-> 6/13 cột READY đưa vào schema (Tên CT, Số lượng Quỹ, Xếp loại, CAMEL, Vốn điều lệ + Chiều Thời gian) — 7 cột còn lại PENDING (Người đại diện, Số NV CCHN, AUM, Thị phần, CAR, Lợi nhuận, Vốn CSH) và K_QLQ_32 (Số HĐ UTQLDM, hạ PENDING 2026-10-05, O_QLQ_25), sẽ bổ sung vào schema khi chuyển READY. `Legal_Representative_Name` đã gỡ (K_QLQ_21 PENDING).
+> *(Lịch sử — đã thay thế bởi cập nhật 2026-10-13: các cột RPT nay đã vào schema)* 6/13 cột READY đưa vào schema (Tên CT, Số lượng Quỹ, Xếp loại, CAMEL, Vốn điều lệ + Chiều Thời gian) — 7 cột còn lại PENDING (Người đại diện, Số NV CCHN, AUM, Thị phần, CAR, Lợi nhuận, Vốn CSH) và K_QLQ_32 (Số HĐ UTQLDM, hạ PENDING 2026-10-05, O_QLQ_25), sẽ bổ sung vào schema khi chuyển READY. `Legal_Representative_Name` đã gỡ (K_QLQ_21 PENDING).
 
 **Lineage Mart → Báo cáo:**
 
@@ -666,7 +778,7 @@ flowchart LR
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Investment Fund` ← FMS.FUNDS — READY *(K_QLQ_33: Tên quỹ, K_QLQ_34: Loại hình quỹ)*
-> Ghi chú: Popup drill-down khi bấm vào Số lượng Quỹ ở Nhóm 3 — FK về `Fund_Management_Company_Id`. Loại hình quỹ lấy tên qua `Fund Type Dimension` (`fund_type_dim`, nguồn Atomic `Classification FMS Fund Type`) — **[SỬA 2026-10-12]** trước đây reuse `cl_dim` scheme `FMS_FUND_TYPE`, nay scheme đã tách khỏi `cl_value` (O_QLQ_29). **[CẬP NHẬT 2026-10-05]** K_QLQ_35 (Giá trị NAV) hạ PENDING: BA (dòng 38) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)) — thay cho `FMSQLQ.FUNDS.NAV` ghi 2026-09-28. Cột `Net_Asset_Value_Amount` gỡ khỏi schema.
+> *(Lịch sử — đã thay thế bởi cập nhật 2026-10-13: các cột RPT nay đã vào schema)* Ghi chú: Popup drill-down khi bấm vào Số lượng Quỹ ở Nhóm 3 — FK về `Fund_Management_Company_Id`. Loại hình quỹ lấy tên qua `Fund Type Dimension` (`fund_type_dim`, nguồn Atomic `Classification FMS Fund Type`) — **[SỬA 2026-10-12]** trước đây reuse `cl_dim` scheme `FMS_FUND_TYPE`, nay scheme đã tách khỏi `cl_value` (O_QLQ_29). **[CẬP NHẬT 2026-10-05]** K_QLQ_35 (Giá trị NAV) hạ PENDING: BA (dòng 38) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)) — thay cho `FMSQLQ.FUNDS.NAV` ghi 2026-09-28. Cột `Net_Asset_Value_Amount` gỡ khỏi schema.
 
 **Mockup — popup "DANH SÁCH QUỸ":**
 
@@ -676,13 +788,17 @@ flowchart LR
 
 **Source:** `Fund Management Company Fund List`
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_35 READY: thêm cột giá trị báo cáo định kỳ vào bảng tác nghiệp `Fund Management Company Fund List`. ETL đọc trực tiếp Atomic `fmr_value` + `fmr_submission` và tra `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`) để chọn ô theo sheet, khóa dòng và nhãn cột; lấy kỳ báo cáo mới nhất (`rpt_year`, `period_val`, `submitted_dt` giảm dần) của đối tượng. **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ mới nhất theo thứ tự chuỗi `period_val` trong cùng loại kỳ (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_QLQ_33 | Tên quỹ | — | Cơ sở | `investment_fund.investment_fund_full_nm` | | READY |
 | K_QLQ_34 | Loại hình quỹ | — | Cơ sở | `investment_fund.fund_tp_code` JOIN `fund_type_dim` ON `fund_type_code` → `fund_type_nm` | `Fund Type Dimension` (new, thay reuse `cl_dim`) — xem Lớp 2 Reuse Analysis, O_QLQ_29 | READY |
-| K_QLQ_35 | Giá trị NAV của từng quỹ của CTQLQ | Tỷ VND | Cơ sở | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 38) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fund Management Company Fund List`. | PENDING |
+| K_QLQ_35 | Giá trị NAV của từng quỹ của CTQLQ | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' → cột `net_asset_val_amt` trên `Fund Management Company Fund List` | Cột `net_asset_val_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
 
 **Schema bảng con — Fund Management Company Fund List:**
 
@@ -694,6 +810,7 @@ erDiagram
         string Fund_Code
         string Fund_Name
         string Fund_Type_Code
+        decimal Net_Asset_Value_Amount
         string Source_System_Code
     }
 ```
@@ -722,7 +839,7 @@ flowchart LR
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
 | K_QLQ_33, K_QLQ_34 | FMS_UAT.FUNDS, FMS_UAT.FUND_TYPE | Investment Fund | investment_fund |
-| K_QLQ_35 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_35 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' → cột `net_asset_val_amt` trên `Fund Management Company Fund List` | Cột `net_asset_val_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
 
 ---
 
@@ -767,6 +884,10 @@ flowchart LR
 > **[CẬP NHẬT 2026-09-26 — gỡ gating "Dữ liệu động" sai]** 3/5 chỉ tiêu nâng READY (K_QLQ_39/40/41) — Atomic đã sẵn sàng, gating cũ là lý do duy nhất giữ PENDING.
 > **[CẬP NHẬT 2026-10-05 — hạ READY → PENDING, theo BA]** K_QLQ_42/43 (Tổng giá trị NAV; theo loại hình quỹ) — BA (dòng 45–46) nay ghi `Bảng nguồn = FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD`, Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4) (thay cho `FMSQLQ.FUNDS.NAV` ghi 2026-09-28). PENDING [Nhóm 3 - Thiếu nguồn Atomic], O_QLQ_15, O_QLQ_25. Cột `Investment_Fund_NAV_Amount` gỡ khỏi `Fact Fund Management Company Snapshot` và `Fact Investment Fund Count Snapshot`.
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_42, K_QLQ_43 (Nhóm 6) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
@@ -774,15 +895,15 @@ flowchart LR
 | K_QLQ_39 | Thời gian | — | Chiều | `Snapshot_Date_Dimension_Id` → `cdr_dt_dim` (grain tháng) — lọc `investment_fund` hiệu lực tại tháng snapshot | Nay có ý nghĩa vì đã có measure READY đi kèm | READY |
 | K_QLQ_40 | Tổng số lượng QĐT | Quỹ | Cơ sở | `COUNT(investment_fund.investment_fund_id)` WHERE hiệu lực tại tháng snapshot | Trùng với K_QLQ_2 (Nhóm 1) — cùng 1 measure, BA đánh "Trùng", giữ 1 KPI_ID dùng chung | READY |
 | K_QLQ_41 | Số lượng quỹ theo từng loại hình quỹ | Quỹ | Cơ sở | `COUNT(investment_fund.investment_fund_id)` WHERE hiệu lực tại tháng snapshot, GROUP BY `investment_fund.cl_fms_fund_tp_code` → `fund_type_id` (`Fund Type Dimension`) | Investment Fund + Classification FMS Fund Type đã READY | READY |
-| K_QLQ_42 | Tổng giá trị NAV | Tỷ VND | Cơ sở | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 45) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
-| K_QLQ_43 | Tổng giá trị NAV của từng loại hình quỹ | Tỷ VND | Cơ sở | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 46) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_QLQ_42 | Tổng giá trị NAV | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA đánh 'Trùng' với K_QLQ_46 (Nhóm 7) | READY |
+| K_QLQ_43 | Tổng giá trị NAV của từng loại hình quỹ | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất, GROUP BY `Fund Type Dimension` (`fund_type_nm`) | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA đánh 'Trùng' với K_QLQ_49 (Nhóm 7) | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
 | K_QLQ_39, K_QLQ_40, K_QLQ_41 | FMS_UAT.FUNDS, FMS_UAT.FUND_TYPE, FMS_UAT.STATUS | Investment Fund | investment_fund |
-| K_QLQ_42, K_QLQ_43 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_42, K_QLQ_43 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -796,16 +917,20 @@ flowchart LR
 > - **K_QLQ_44 (Thời gian), K_QLQ_45 (Loại hình quỹ):** gỡ gating "Dữ liệu động" sai (xem `feedback_ignore_ba_column_z.md`) — Investment Fund/Classification FMS Fund Type đã sẵn sàng.
 > **[CẬP NHẬT 2026-10-05]** BA (dòng 49–52) ghi `Bảng nguồn = FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` cho K_QLQ_46/48/49 (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)) — thay cho `FMSQLQ.FUND_REPORT` ghi 2026-09-28. Vẫn PENDING [Nhóm 3 - Thiếu nguồn Atomic], O_QLQ_15.
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_46, K_QLQ_48, K_QLQ_49 (Nhóm 7) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c). K_QLQ_48 là chỉ tiêu phái sinh liên module: NAV theo loại hình quỹ chia GDP (`Fact Macro Indicator Snapshot`, PTTT, `GDP_VN`).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_QLQ_44 | Thời gian | — | Chiều | `Snapshot_Date_Dimension_Id` → `cdr_dt_dim` (grain tháng) | Chiều slicer chung cho biểu đồ — phục vụ đường GDP (reuse) và Loại hình quỹ; đường NAV vẫn PENDING | READY |
 | K_QLQ_45 | Loại hình quỹ | — | Chiều | `investment_fund.cl_fms_fund_tp_code` → `Fund Type Dimension` (`fund_type_id`/`fund_type_nm`) | Investment Fund đã READY | READY |
-| K_QLQ_46 | Tổng NAV của quỹ | Tỷ VND | Cơ sở | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 49) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
+| K_QLQ_46 | Tổng NAV của quỹ | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' — chuỗi theo tháng, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ theo tháng (O_QLQ_32) | READY |
 | K_QLQ_47 | GDP | Nghìn tỷ VND | Cơ sở | `cl_risk_indicator_value.val` WHERE `cl_risk_indicator.cl_risk_ind_code = 'GDP_VN'` — **reuse** `Fact Macro Indicator Snapshot` (module PTTT), filter `macro_indicator_code = 'GDP_VN'` | Atomic đã ở track chuẩn (Common/), không phải chỉ Atomic_LinhLV như ghi trước đây. Reuse xuyên module PTTT — xem Section 4 | READY |
-| K_QLQ_48 | Tỷ lệ NAV/GDP | % | Phái sinh | | **Lý do pending:** phụ thuộc K_QLQ_46 (NAV, PENDING) — Tỷ lệ = K_QLQ_46 / K_QLQ_47 × 100%; mẫu số (GDP) đã READY nhưng tử số (NAV) chưa. **Atomic cần bổ sung:** như K_QLQ_46 (engine báo cáo định kỳ `RPT_*`, O_QLQ_15). **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_49 | Tổng NAV của từng loại hình quỹ | Tỷ VND | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 52) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
+| K_QLQ_48 | Tỷ lệ NAV/GDP | % | Phái sinh | `SUM(cell_numeric_val)` của ô — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7', chuỗi theo tháng, GROUP BY `Fund Type Dimension`; chia GDP (`fct_macro_indicator_snpst.indicator_val` WHERE `macro_indicator_code` = 'GDP_VN') | Presentation/Derived reuse (Case 2): không có cột vật lý riêng; NAV từ `Fact Fund Management Report Cell Value`, GDP từ PTTT. NAV theo kỳ báo cáo, GDP theo quý (O_QLQ_32); khóa dòng là giả định (O_QLQ_31) | READY |
+| K_QLQ_49 | Tổng NAV của từng loại hình quỹ | Tỷ VND | Phái sinh | `SUM(cell_numeric_val)` của ô — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' — chuỗi theo tháng, nộp lại lấy `submitted_dt` mới nhất, GROUP BY `Fund Type Dimension` (`fund_type_nm`) | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ theo tháng (O_QLQ_32) | READY |
 
 **Bảng mapping nguồn:**
 
@@ -813,7 +938,7 @@ flowchart LR
 |---|---|---|---|
 | K_QLQ_44, K_QLQ_45 | FMS_UAT.FUNDS, FMS_UAT.FUND_TYPE | Investment Fund | investment_fund |
 | K_QLQ_47 | UAT_MRMS.RISK_INDICATOR, UAT_MRMS.RISK_INDICATOR_VALUE | cl_risk_indicator / cl_risk_indicator_value (reuse `fct_macro_indicator_snpst`, module PTTT) | cl_risk_indicator / cl_risk_indicator_value |
-| K_QLQ_46, K_QLQ_48, K_QLQ_49 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_46, K_QLQ_49, K_QLQ_48 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -822,23 +947,27 @@ flowchart LR
 > Phân loại: **Phân tích**
 > **[CẬP NHẬT 2026-10-05]** BA (dòng 54–59) ghi nguồn engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` cho toàn bộ 6 chỉ tiêu phân bổ tài sản (thay cho `FMSQLQ.FUND_REPORT.PROP_*` ghi trước đây) — PENDING toàn bộ [Nhóm 3 - Thiếu nguồn Atomic], O_QLQ_15. K_QLQ_44 (Thời gian, reuse Nhóm 7) PENDING vì không có measure READY đi kèm.
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_44, K_QLQ_50, K_QLQ_51, K_QLQ_52, K_QLQ_53, K_QLQ_54, K_QLQ_55 (Nhóm 8) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c). Mỗi loại tài sản có 2 mã chỉ tiêu ưu tiên (mã tổng, mã chi tiết) theo SQL BA.
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_44 | Thời gian | — | Chiều | | **Lý do pending:** Reuse KPI_ID từ Nhóm 7 (nay đã READY ở đó vì có Loại hình quỹ/GDP độc lập) — nhưng trong Nhóm 8, không còn measure nào READY đi kèm (toàn bộ 6 chỉ tiêu phân bổ tài sản PENDING) nên Chiều không có ý nghĩa hiển thị độc lập tại Nhóm này. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_50 | Cổ phiếu niêm yết | Tỷ VND | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 54) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư các loại quỹ >> BCDanhMucDauTu >> Cổ phiếu niêm yết, đăng ký giao dịch, chứng chỉ quỹ niêm yết), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_51 | Cổ phiếu chưa niêm yết | Tỷ VND | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 55) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư các loại quỹ >> BCDanhMucDauTu >> Cổ phiếu chưa niêm yết, đăng ký giao dịch, chứng chỉ quỹ không niêm yết), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_52 | Trái phiếu | Tỷ VND | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 56) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư các loại quỹ >> BCDanhMucDauTu >> Trái phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_53 | Tiền | Tỷ VND | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 57) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư các loại quỹ >> BCDanhMucDauTu >> Tiền), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_54 | Các loại chứng khoán khác | Tỷ VND | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 58) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư các loại quỹ >> BCDanhMucDauTu >> Các loại chứng khoán khác), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_55 | Các tài sản khác | Tỷ VND | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 59) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư các loại quỹ >> BCDanhMucDauTu >> Các tài sản khác), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
+| K_QLQ_44 | Thời gian | — | Chiều | `rpt_period_end_dt_dim_id` → `cdr_dt_dim` (ngày cuối kỳ báo cáo; slicer tháng lấy kỳ gần nhất ≤ tháng) | Chiều thời gian của chỉ tiêu RPT (O_QLQ_31, O_QLQ_32) | READY |
+| K_QLQ_50 | Cổ phiếu niêm yết | Tỷ VND | Phái sinh | `SUM(COALESCE(...))` theo từng đối tượng, mã chỉ tiêu ưu tiên: MAX(2247); MAX(2246) — sheet `BCDanhMucDauTu`, cột "Tổng giá trị", `record_tp` = '7' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: ưu tiên mã 2247, không có thì mã 2246 (dòng tổng/dòng chi tiết cùng loại tài sản) | READY |
+| K_QLQ_51 | Cổ phiếu chưa niêm yết | Tỷ VND | Phái sinh | `SUM(COALESCE(...))` theo từng đối tượng, mã chỉ tiêu ưu tiên: MAX(2249); MAX(2248) — sheet `BCDanhMucDauTu`, cột "Tổng giá trị", `record_tp` = '7' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: ưu tiên mã 2249, không có thì mã 2248 (dòng tổng/dòng chi tiết cùng loại tài sản) | READY |
+| K_QLQ_52 | Trái phiếu | Tỷ VND | Phái sinh | `SUM(COALESCE(...))` theo từng đối tượng, mã chỉ tiêu ưu tiên: MAX(2252); MAX(2251) — sheet `BCDanhMucDauTu`, cột "Tổng giá trị", `record_tp` = '7' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: ưu tiên mã 2252, không có thì mã 2251 (dòng tổng/dòng chi tiết cùng loại tài sản) | READY |
+| K_QLQ_53 | Tiền | Tỷ VND | Phái sinh | `SUM(COALESCE(...))` theo từng đối tượng, mã chỉ tiêu ưu tiên: MAX(2262); MAX(2258) — sheet `BCDanhMucDauTu`, cột "Tổng giá trị", `record_tp` = '7' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: ưu tiên mã 2262, không có thì mã 2258 (dòng tổng/dòng chi tiết cùng loại tài sản) | READY |
+| K_QLQ_54 | Các loại chứng khoán khác | Tỷ VND | Phái sinh | `SUM(COALESCE(...))` theo từng đối tượng, mã chỉ tiêu ưu tiên: MAX(2254); MAX(2253) — sheet `BCDanhMucDauTu`, cột "Tổng giá trị", `record_tp` = '7' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: ưu tiên mã 2254, không có thì mã 2253 (dòng tổng/dòng chi tiết cùng loại tài sản) | READY |
+| K_QLQ_55 | Các tài sản khác | Tỷ VND | Phái sinh | `SUM(COALESCE(...))` theo từng đối tượng, mã chỉ tiêu ưu tiên: MAX(2257); MAX(2256) — sheet `BCDanhMucDauTu`, cột "Tổng giá trị", `record_tp` = '7' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). Theo SQL BA: ưu tiên mã 2257, không có thì mã 2256 (dòng tổng/dòng chi tiết cùng loại tài sản) | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| K_QLQ_44, K_QLQ_50–55 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_44, K_QLQ_50, K_QLQ_51, K_QLQ_52, K_QLQ_53, K_QLQ_54, K_QLQ_55 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -847,20 +976,24 @@ flowchart LR
 > Phân loại: **Phân tích**
 > **[CẬP NHẬT 2026-10-05]** BA (dòng 61–63) ghi nguồn engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` cho K_QLQ_56–58 (thay cho `FMSQLQ.FUND_REPORT.NAV` ghi trước đây) — PENDING toàn bộ [Nhóm 3 - Thiếu nguồn Atomic], O_QLQ_15. K_QLQ_44 (Thời gian, reuse Nhóm 7) PENDING vì không có measure READY đi kèm.
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_44, K_QLQ_56, K_QLQ_57, K_QLQ_58 (Nhóm 9) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c). K_QLQ_57/58 là chỉ tiêu phái sinh tăng trưởng NAV theo tháng.
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_44 | Thời gian | — | Chiều | | **Lý do pending:** Reuse KPI_ID từ Nhóm 7 (nay đã READY ở đó) — nhưng trong Nhóm 9 không còn measure nào READY đi kèm. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6) — grain: 1 quỹ × 1 tháng. | PENDING |
-| K_QLQ_56 | NAV của các quỹ ĐTCK | Tỷ VND | Cơ sở | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 61) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_57 | Tăng trưởng NAV từng tháng | % | Phái sinh | | **Lý do pending:** Phụ thuộc K_QLQ_56 (PENDING) — (NAV[T] − NAV[T−1]) / NAV[T−1] × 100%. **Atomic cần bổ sung:** như K_QLQ_56. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
-| K_QLQ_58 | Trung bình tăng trưởng NAV | % | Phái sinh | | **Lý do pending:** Phụ thuộc K_QLQ_57 (PENDING) — AVG(K_QLQ_57) trong khoảng thời gian chọn. **Atomic cần bổ sung:** như K_QLQ_56. **Mart dự kiến:** (chưa có bảng Datamart — thiết kế Fact mới khi có Atomic, xem Cụm 6). | PENDING |
+| K_QLQ_44 | Thời gian | — | Chiều | `rpt_period_end_dt_dim_id` → `cdr_dt_dim` (ngày cuối kỳ báo cáo; slicer tháng lấy kỳ gần nhất ≤ tháng) | Chiều thời gian của chỉ tiêu RPT (O_QLQ_31, O_QLQ_32) | READY |
+| K_QLQ_56 | NAV của các quỹ ĐTCK | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' — chuỗi theo tháng, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ theo tháng (O_QLQ_32) | READY |
+| K_QLQ_57 | Tăng trưởng NAV từng tháng | % | Phái sinh | `(NAV tháng này − NAV tháng trước) × 100 / NAV tháng trước`, NAV = `SUM(cell_numeric_val)` — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7', chuỗi theo tháng | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` (khóa dòng là giả định, O_QLQ_31) | READY |
+| K_QLQ_58 | Trung bình tăng trưởng NAV | % | Phái sinh | `AVG` của tăng trưởng NAV từng tháng trong khoảng tháng đã chọn (`:filter_fr` → `:filter_month`) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| K_QLQ_44, K_QLQ_56, K_QLQ_57, K_QLQ_58 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_44, K_QLQ_56, K_QLQ_57, K_QLQ_58 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -931,6 +1064,10 @@ flowchart LR
 > **[CẬP NHẬT 2026-09-26]** 4/15 chỉ tiêu nâng READY: K_QLQ_77 (Thời gian, trực tiếp `FMS_UAT.FUNDS.ID_DATE`), K_QLQ_80 (Loại hình quỹ chi tiết, `FUND_TYPE.ITEM_NAME`), K_QLQ_78 (VN-Index, reuse GSTT), K_QLQ_79 (Lãi suất liên NH, reuse PTTT).
 > **[CẬP NHẬT 2026-10-05 — hạ READY → PENDING 11/15 chỉ tiêu, theo BA]** K_QLQ_81–91 (NAV/CCQ và 9 phân loại chi tiết) — BA (dòng 84–94) ghi `Bảng nguồn = FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD`, Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu (thay cho `FMSQLQ.FUND_REPORT.NAV_CCQ` ghi 2026-09-28). PENDING [Nhóm 3 - Thiếu nguồn Atomic], O_QLQ_15, O_QLQ_25. `Fact Investment Fund NAV per CCQ Snapshot` đã xóa (0 KPI READY mang measure); K_QLQ_77 gắn `Fact Fund Management Company Snapshot`, K_QLQ_80 là Chiều DERIVED (chưa gắn cột, như K_QLQ_45), K_QLQ_78/79 reuse module GSTT/PTTT. Cột `Investment_Fund_NAV_Per_CCQ_Amount`/`..._Growth_Percentage` gỡ khỏi `Fact Fund Management Company Snapshot`.
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_81, K_QLQ_82, K_QLQ_83, K_QLQ_84, K_QLQ_85, K_QLQ_86, K_QLQ_87, K_QLQ_88, K_QLQ_89, K_QLQ_90, K_QLQ_91 (Nhóm 12) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c). K_QLQ_82–91 là chỉ tiêu phái sinh tăng trưởng NAV/CCQ tháng theo loại hình quỹ chi tiết (K_QLQ_80); quỹ mở tách theo `open_fund_tp_code`.
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
@@ -939,24 +1076,24 @@ flowchart LR
 | K_QLQ_78 | VN-Index | Điểm | Cơ sở | `market_index_snapshot.market_index_val` WHERE `market_index_snapshot.index_nm = 'VNINDEX'` — **reuse** `Fact Market Index Snapshot` (module GSTT) | Reuse xuyên module — xem Section 4 | READY |
 | K_QLQ_79 | Lãi suất liên ngân hàng qua đêm | %/năm | Cơ sở | `cl_risk_indicator_value.val` WHERE `cl_risk_indicator.cl_risk_ind_code = 'INTERBANK_IR'` — **reuse** `Fact Macro Indicator Snapshot` (module PTTT) | Reuse xuyên module — xem Section 4 | READY |
 | K_QLQ_80 | Loại hình quỹ chi tiết | — | Chiều | `FUND_TYPE.ITEM_NAME` (→ `fund_type_dim.fund_type_nm`, `Classification FMS Fund Type`; **[SỬA 2026-10-12]** thay scheme `FMS_FUND_TYPE`) — 9 giá trị chi tiết (Quỹ mở CP/TP/cân bằng tách riêng) | Chiều DERIVED — chưa gắn cột vật lý vì Fact NAV/CCQ đã xóa (O_QLQ_25); gắn vào Fact mới khi NAV/CCQ chuyển READY | READY |
-| K_QLQ_81 | NAV/CCQ | VND/CCQ | Cơ sở | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 85) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
-| K_QLQ_82 | Tỷ lệ tăng trưởng NAV/CCQ | % | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 84) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
-| K_QLQ_83 | Quỹ mở CP | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 86) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
-| K_QLQ_84 | Quỹ mở TP | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 87) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
-| K_QLQ_85 | Quỹ mở cân bằng | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 88) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
-| K_QLQ_86 | Quỹ ETF | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 89) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
-| K_QLQ_87 | Quỹ đóng | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 90) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
-| K_QLQ_88 | Quỹ BĐS | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 91) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
-| K_QLQ_89 | Quỹ thành viên | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 92) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
-| K_QLQ_90 | Quỹ đầu tư công cụ thị trường tiền tệ | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 93) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
-| K_QLQ_91 | Quỹ đầu tư trái phiếu hạ tầng | VND/CCQ | Phái sinh | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 94) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư của các quỹ >> BCTaiSan >> Giá trị tài sản ròng trên một chứng chỉ quỹ/cổ phiếu), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` (đã xóa — thiết kế lại khi có Atomic). | PENDING |
+| K_QLQ_81 | NAV/CCQ | VND/CCQ | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `BCTaiSan`, mã chỉ tiêu `2219`, cột "Kỳ báo cáo", `record_tp` = '7' — chuỗi theo tháng, nộp lại lấy `submitted_dt` mới nhất, GROUP BY `Fund Type Dimension` (`fund_type_nm`) | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ theo tháng (O_QLQ_32). BA SQL cộng (SUM) NAV/CCQ của các quỹ cùng loại hình theo tháng — giữ nguyên theo BA, chờ BA xác nhận có muốn dùng trung bình (O_QLQ_32) | READY |
+| K_QLQ_82 | Tỷ lệ tăng trưởng NAV/CCQ | % | Phái sinh | `(NAV/CCQ tháng này − tháng trước) × 100 / tháng trước` theo `Fund Type Dimension`, NAV/CCQ = `SUM(cell_numeric_val)` — sheet `BCTaiSan`, mã chỉ tiêu `2219`, cột "Kỳ báo cáo", `record_tp` = '7' | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` | READY |
+| K_QLQ_83 | Quỹ mở CP | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ mở CP" (`fund_type_nm` = 'Quỹ mở' và `open_fund_tp_code` tương ứng) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
+| K_QLQ_84 | Quỹ mở TP | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ mở TP" (`fund_type_nm` = 'Quỹ mở' và `open_fund_tp_code` tương ứng) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
+| K_QLQ_85 | Quỹ mở cân bằng | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ mở cân bằng" (`fund_type_nm` = 'Quỹ mở' và `open_fund_tp_code` tương ứng) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
+| K_QLQ_86 | Quỹ ETF | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ ETF" (`fund_type_nm`) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
+| K_QLQ_87 | Quỹ đóng | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ đóng" (`fund_type_nm`) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
+| K_QLQ_88 | Quỹ BĐS | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ BĐS" (`fund_type_nm`) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
+| K_QLQ_89 | Quỹ thành viên | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ thành viên" (`fund_type_nm`) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
+| K_QLQ_90 | Quỹ đầu tư công cụ thị trường tiền tệ | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ đầu tư công cụ thị trường tiền tệ" (`fund_type_nm`) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
+| K_QLQ_91 | Quỹ đầu tư trái phiếu hạ tầng | VND/CCQ | Phái sinh | Như tăng trưởng NAV/CCQ tháng (K_QLQ_82) lọc loại hình quỹ chi tiết "Quỹ đầu tư trái phiếu hạ tầng" (`fund_type_nm`) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên measure `Cell Numeric Value` và cột `open_fund_tp_code`/`fund_type_id` của Fact | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
 | K_QLQ_77, K_QLQ_80 | FMS_UAT.FUNDS, FMS_UAT.FUND_TYPE | Investment Fund | investment_fund |
-| K_QLQ_81-91 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_81, K_QLQ_82, K_QLQ_83, K_QLQ_84, K_QLQ_85, K_QLQ_86, K_QLQ_87, K_QLQ_88, K_QLQ_89, K_QLQ_90, K_QLQ_91 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 | K_QLQ_78 | uat_mdds_stg.jad_marketinfor | market_index_snapshot (reuse `fct_market_index_snpst`, module GSTT) | market_index_snapshot |
 | K_QLQ_79 | UAT_MRMS.RISK_INDICATOR, UAT_MRMS.RISK_INDICATOR_VALUE | cl_risk_indicator / cl_risk_indicator_value (reuse `fct_macro_indicator_snpst`, module PTTT) | cl_risk_indicator / cl_risk_indicator_value |
 
@@ -970,10 +1107,12 @@ flowchart LR
 > Atomic: `Custodian Bank` ← FMS.BANK_MONI — READY *(Ngân hàng giám sát)*
 > Atomic: `Investment Fund Representative Board Member` ← FMS.REPRESENT — READY (`job_title_code` → `cl_fms_position.job_tp_code` → `cl_value` scheme `FMS_JOB_TYPE`, filter 'ban đại diện')
 > Atomic: `Fund Management Company Employee` ← FMS.TL_PROFILES — READY (`job_tp_code` trực tiếp, scheme `FMS_JOB_TYPE`, filter 'ban điều hành')
+> Atomic: `Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship` ← FMS.FUD_AG_AGT + `Classification FMS Agency Type` ← FMS.AGENCY_TYPE — READY có điều kiện *(K_QLQ_97 Số ĐLPP; junction còn `status: draft`, chưa đăng ký `dm_manifest.yaml` — dùng tạm theo xác nhận Data Modeler 2026-10-13, O_QLQ_9)*
 > **[CẬP NHẬT 2026-09-26]**
 > - **K_QLQ_101 (KL CCQ đang lưu hành) nâng READY:** nguồn thật là `FMS_UAT.FUNDS.TOTAL_QTTY` trực tiếp (`investment_fund.total_outstanding_unit_quantity`) — thiết kế cũ ghi nhầm là `NAV_CCQ` và PENDING theo gating "Dữ liệu động" sai; thực tế Atomic đã đủ.
-> - **K_QLQ_97 (Số lượng đại lý phân phối) HẠ xuống PENDING (khác hướng thông thường):** thiết kế cũ đánh READY (COUNT Fund Distribution Agent join AGEN_FUNDS), nhưng BA hiện hành (dòng 102) yêu cầu lọc thêm `AGENCY_TYPE.ITEM_NAME LIKE '%đại lý phân phối%'` — `fund_distribution_agent` (FMS.AGENCIES) **chưa có attribute nào cho scheme `FMS_AGENCY_TYPE`** dù scheme đã đăng ký trong `classification_schemes.yaml` (`used_in_entities: Fund Distribution Agent`) — thiếu FK thật trên entity, khác với `FMS_OPERATION_STATUS`/`FMS_FUND_TYPE`/`FMS_JOB_TYPE` đã wired đầy đủ (xem `feedback_fms_atomic_classification_coverage.md`). Không thể lọc đúng "đại lý phân phối" khỏi các loại đại lý khác trong `AGENCIES` → PENDING thật.
+> - *(Lịch sử — đã thay thế bởi cập nhật 2026-10-13 ngay dưới)* **K_QLQ_97 (Số lượng đại lý phân phối) HẠ xuống PENDING (khác hướng thông thường):** thiết kế cũ đánh READY (COUNT Fund Distribution Agent join AGEN_FUNDS), nhưng BA hiện hành (dòng 102) yêu cầu lọc thêm `AGENCY_TYPE.ITEM_NAME LIKE '%đại lý phân phối%'` — `fund_distribution_agent` (FMS.AGENCIES) **chưa có attribute nào cho scheme `FMS_AGENCY_TYPE`** dù scheme đã đăng ký trong `classification_schemes.yaml` (`used_in_entities: Fund Distribution Agent`) — thiếu FK thật trên entity, khác với `FMS_OPERATION_STATUS`/`FMS_FUND_TYPE`/`FMS_JOB_TYPE` đã wired đầy đủ (xem `feedback_fms_atomic_classification_coverage.md`). Không thể lọc đúng "đại lý phân phối" khỏi các loại đại lý khác trong `AGENCIES` → PENDING thật.
 > - **K_QLQ_102 (Lợi nhuận YTD) giữ PENDING** — 'Chỉ tiêu BC' đúng nghĩa (không có Bảng nguồn cụ thể, đi qua engine báo cáo định kỳ, 2 nhánh BCTC tùy loại hình quỹ: TT 198/2012 cho Quỹ mở/công cụ TT tiền tệ, QĐ 63/2005 cho Quỹ đóng/BĐS/CTĐTCK/thành viên/TP hạ tầng, TT 181/2015 cho Quỹ ETF) — BA note: hiện chỉ có data cho Quỹ BĐS/CTĐTCK, Quỹ mở, Quỹ thành viên.
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_97 (Số lượng đại lý phân phối) READY trở lại: Atomic (commit 3966068f) thêm junction `Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship` (FMS.FUD_AG_AGT: FUD_ID, AG_TY_ID, AGEN_ID) nối quỹ × loại đại lý × đại lý, cùng `Classification FMS Agency Type` (`cl_fms_agency_tp_nm`) — đủ để lọc `AGENCY_TYPE.ITEM_NAME LIKE '%đại lý phân phối%'` đúng BA (dòng 102). Đếm `COUNT(DISTINCT fund_distribution_agent_id)` theo quỹ. **Điều kiện/rủi ro:** junction còn `status: draft` và chưa có trong `dm_manifest.yaml` — dùng tạm theo xác nhận Data Modeler 2026-10-13, kiểm lại khi Atomic đăng ký manifest (O_QLQ_9 — Resolved một phần). ETL Atomic giả định chỉ nạp `DELETED = 0`/`RECORD_STATUS = 1` của AGENCIES/AGENCY_TYPE (O_QLQ_27). Cột mới `distribution_agent_count` trên `Investment Fund Profile`.
 > **[CẬP NHẬT 2026-10-05 — hạ READY → PENDING, theo BA]** K_QLQ_100 (NAV hiện tại) — BA (dòng 105) ghi `Bảng nguồn = FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD`, Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư các loại quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4) (thay cho `FMSQLQ.FUNDS.NAV` ghi 2026-09-28). PENDING [Nhóm 3 - Thiếu nguồn Atomic], O_QLQ_15, O_QLQ_25. Cột `Net_Asset_Value_Amount` gỡ khỏi `Investment Fund Profile`.
 
 **Mockup:**
@@ -984,6 +1123,10 @@ flowchart LR
 
 **Source:** `Investment Fund Profile`
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_100, K_QLQ_102 READY: thêm cột giá trị báo cáo định kỳ vào bảng tác nghiệp `Investment Fund Profile`. ETL đọc trực tiếp Atomic `fmr_value` + `fmr_submission` và tra `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`) để chọn ô theo sheet, khóa dòng và nhãn cột; lấy kỳ báo cáo mới nhất (`rpt_year`, `period_val`, `submitted_dt` giảm dần) của đối tượng. **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ mới nhất theo thứ tự chuỗi `period_val` trong cùng loại kỳ (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
@@ -993,12 +1136,12 @@ flowchart LR
 | K_QLQ_94 | Phân loại | — | Chiều | `investment_fund.cl_fms_fund_tp_code` → `Fund Type Dimension` (`fund_type_id`/`fund_type_nm`) | `Fund Type Dimension` (new, thay reuse `cl_dim`) | READY |
 | K_QLQ_95 | Công ty quản lý | — | Cơ sở | `fund_management_company.fmc_short_nm` JOIN qua `investment_fund.fmc_id` | | READY |
 | K_QLQ_96 | Ngân hàng giám sát | — | Cơ sở | `custodian_bank.custodian_bank_full_nm` JOIN qua `investment_fund.custodian_bank_id` | | READY |
-| K_QLQ_97 | Số lượng đại lý phân phối | Đại lý | Cơ sở | | **Lý do pending:** BA yêu cầu lọc `AGENCY_TYPE.ITEM_NAME LIKE '%đại lý phân phối%'` nhưng `fund_distribution_agent` (FMS.AGENCIES) chưa có FK cho scheme `FMS_AGENCY_TYPE` (scheme đã đăng ký, entity chưa wired). **Atomic cần bổ sung:** thêm attribute FK scheme `FMS_AGENCY_TYPE` lên `fund_distribution_agent` (nguồn `FMS.AGENCIES.AGENCY_TYPE_ID`). **Mart dự kiến:** `Investment Fund Profile`. | PENDING |
+| K_QLQ_97 | Số lượng đại lý phân phối | Đại lý | Cơ sở | `COUNT(DISTINCT fund_distribution_agent_x_investment_fund_x_cl_fms_agency_type_relationship.fund_distribution_agent_id)` WHERE `cl_fms_agency_type.cl_fms_agency_tp_nm` LIKE '%đại lý phân phối%' (không phân biệt hoa thường), GROUP BY quỹ (`investment_fund_id`) | **[NÂNG READY 2026-10-13]** Nguồn junction `FMS.FUD_AG_AGT` + `cl_fms_agency_type`; junction còn draft, chưa đăng ký `dm_manifest.yaml` — dùng tạm (O_QLQ_9). ETL Atomic giả định chỉ nạp bản ghi hiệu lực (DELETED=0, RECORD_STATUS=1) — O_QLQ_27. Cột `Distribution_Agent_Count` trên `Investment Fund Profile` | READY |
 | K_QLQ_98 | Số lượng thành viên ban đại diện | Người | Cơ sở | `COUNT(investment_fund_representative_board_member.investment_fund_representative_board_member_id)` WHERE `job_title_code` (JOIN `cl_fms_position` → `job_tp_code` → `cl_value` scheme `FMS_JOB_TYPE`) = 'ban đại diện' AND `active_status_flag` = 1, GROUP BY `investment_fund_id` | | READY |
 | K_QLQ_99 | Số lượng người điều hành quỹ | Người | Cơ sở | `COUNT(fmc_employee.fmc_employee_id)` WHERE `job_tp_code` (JOIN `cl_value` scheme `FMS_JOB_TYPE`) = 'ban điều hành' AND liên kết tới quỹ qua bảng phụ (FMS.FUND_TL_PRO — cần xác nhận Atomic representation ở LLD), GROUP BY quỹ | Fund Management Company Employee đã READY về entity; liên kết Employee↔Fund qua FUND_TL_PRO cần xác nhận Atomic tại LLD | READY |
-| K_QLQ_100 | NAV hiện tại | Tỷ VND | Cơ sở | | **Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic]: BA (dòng 105) lấy từ engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo về hoạt động đầu tư các loại quỹ >> BCTaiSan >> Tài sản ròng của Quỹ/Công ty đầu tư (I.10-II.4)), chỉ có header `fmr_*` trên Atomic, thiếu cột ô/trạng thái — O_QLQ_27 — xem O_QLQ_15, O_QLQ_25. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Investment Fund Profile`. | PENDING |
+| K_QLQ_100 | NAV hiện tại | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' → cột `net_asset_val_amt` trên `Investment Fund Profile` | Cột `net_asset_val_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
 | K_QLQ_101 | KL CCQ đang lưu hành | CCQ | Phái sinh | `investment_fund.total_outstanding_unit_quantity` | Investment Fund đã READY — nguồn `FMS.FUNDS.TOTAL_QTTY` trực tiếp | READY |
-| K_QLQ_102 | Lợi nhuận YTD | Tỷ VND | Phái sinh | | **Lý do pending:** 'Chỉ tiêu BC' đúng nghĩa — không có Bảng nguồn cụ thể, đi qua engine báo cáo định kỳ, 2 nhánh tùy loại hình quỹ (Mapping báo cáo đầu vào: BCThuNhap "VIII. LỢI NHUẬN KẾ TOÁN SAU THUẾ TNDN" cho Quỹ mở/công cụ TT tiền tệ theo TT 198/2012; BCKetQuaHoatDongKinhDoanh "III. Kết quả hoạt động ròng..." cho Quỹ đóng/BĐS/CTĐTCK/thành viên/TP hạ tầng theo QĐ 63/2005; Quỹ ETF theo TT 181/2015 — BA note hiện chỉ có data cho Quỹ BĐS/CTĐTCK, Quỹ mở, Quỹ thành viên). **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Investment Fund Profile`. | PENDING |
+| K_QLQ_102 | Lợi nhuận YTD | Tỷ VND | Phái sinh | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BCKetQuaHoatDongKinhDoanh hoặc BCThuNhap_06203`, mã chỉ tiêu `41, 50`, cột "lũy kế từ đầu năm đến cuối kỳ báo cáo", `record_tp` = '7' → cột `year_to_dt_profit_amt` trên `Investment Fund Profile` | Cột `year_to_dt_profit_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32). BA có 2 nhánh báo cáo (BCKQHĐKD mã 50 hoặc BCThuNhap mã 41); nhóm quỹ nào dùng nhánh nào theo BA | READY |
 
 **Bảng mapping nguồn:**
 
@@ -1009,8 +1152,8 @@ flowchart LR
 | K_QLQ_96 | FMS_UAT.BANK_MONI | Custodian Bank | custodian_bank |
 | K_QLQ_98 | FMS_UAT.REPRESENT | Investment Fund Representative Board Member | investment_fund_representative_board_member |
 | K_QLQ_99 | FMS_UAT.TL_PROFILES | Fund Management Company Employee | fmc_employee |
-| K_QLQ_97 | FMS_UAT.AGENCIES | Fund Distribution Agent *(thiếu attribute AGENCY_TYPE)* | fund_distribution_agent |
-| K_QLQ_100, K_QLQ_102 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_97 | FMS_UAT.FUD_AG_AGT<br>FMS_UAT.AGENCIES<br>FMS_UAT.AGENCY_TYPE | Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship *(draft, chưa manifest)*<br>Classification FMS Agency Type | fund_distribution_agent_x_investment_fund_x_cl_fms_agency_type_relationship<br>cl_fms_agency_type |
+| K_QLQ_100, K_QLQ_102 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD (K_QLQ_143: FMS_UAT.DISTRIBUTOR_AGENT, FMS_UAT.AGENCIES, FMS_UAT.AGEN_FUNDS) | Fund Management Report Value + Fund Management Report Submission *(cột trên `Investment Fund Profile`, lookup `fund_management_rpt_cell_dim`)* | fmr_value / fmr_submission |
 
 **Schema bảng tác nghiệp — Investment Fund Profile:**
 
@@ -1026,12 +1169,15 @@ erDiagram
         string Custodian_Bank_Name
         int Representative_Count
         int Employee_Count
+        int Distribution_Agent_Count
         bigint Outstanding_Unit_Count
+        decimal Net_Asset_Value_Amount
+        decimal Year_To_Date_Profit_Amount
         string Source_System_Code
     }
 ```
 
-> **[CẬP NHẬT 2026-09-26]** `Distribution_Agent_Count` gỡ khỏi schema (K_QLQ_97 hạ về PENDING); `Outstanding_Unit_Count` thêm vào (K_QLQ_101 lên READY). **[SỬA 2026-10-05]** `Net_Asset_Value_Amount` gỡ khỏi schema (K_QLQ_100 hạ PENDING, O_QLQ_25). `YTD_Profit_Amount` vẫn PENDING (xem Bảng KPI).
+> *(Lịch sử — đã thay thế bởi cập nhật 2026-10-13: các cột RPT nay đã vào schema)* **[SỬA 2026-10-13]** `Distribution_Agent_Count` thêm lại vào schema (K_QLQ_97 READY — junction FUD_AG_AGT, O_QLQ_9). **[CẬP NHẬT 2026-09-26, lịch sử]** `Distribution_Agent_Count` gỡ khỏi schema (K_QLQ_97 hạ về PENDING); `Outstanding_Unit_Count` thêm vào (K_QLQ_101 lên READY). **[SỬA 2026-10-05]** `Net_Asset_Value_Amount` gỡ khỏi schema (K_QLQ_100 hạ PENDING, O_QLQ_25). `YTD_Profit_Amount` vẫn PENDING (xem Bảng KPI).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1041,7 +1187,7 @@ flowchart LR
         G1["Investment Fund Profile"]
     end
     subgraph RPT["Báo cáo"]
-        R1["K_QLQ_92-96,98,99,101: Danh sách các quỹ đầu tư (Nhóm 13)"]
+        R1["K_QLQ_92-99,101: Danh sách các quỹ đầu tư (Nhóm 13)"]
     end
     G1 --> R1
 ```
@@ -1057,7 +1203,11 @@ flowchart LR
 #### Nhóm 14 - Danh sách đại lý phân phối
 
 > Phân loại: **Tác nghiệp**
-> **[CẬP NHẬT 2026-09-26 — HẠ xuống PENDING]** Thiết kế cũ đánh READY, nhưng BA hiện hành (dòng 108) yêu cầu lọc `AGENCY_TYPE.ITEM_NAME LIKE '%đại lý phân phối%'` — cùng gap với K_QLQ_97 (Nhóm 13): `fund_distribution_agent` (FMS.AGENCIES) chưa có attribute cho scheme `FMS_AGENCY_TYPE` (đã đăng ký nhưng chưa wired — xem `feedback_fms_atomic_classification_coverage.md`). Không lọc được đúng "đại lý phân phối" khỏi các loại đại lý khác trong AGENCIES.
+> Atomic: `Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship` ← FMS.FUD_AG_AGT — READY có điều kiện *(K_QLQ_103: quan hệ quỹ × loại đại lý × đại lý; junction còn `status: draft`, chưa đăng ký `dm_manifest.yaml` — dùng tạm theo xác nhận Data Modeler 2026-10-13, O_QLQ_9)*
+> Atomic: `Classification FMS Agency Type` ← FMS.AGENCY_TYPE — READY *(lọc loại 'đại lý phân phối')*
+> Atomic: `Fund Distribution Agent` ← FMS.AGENCIES — READY *(tên đại lý)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_103 READY trở lại nhờ junction FUD_AG_AGT (cùng nguồn với K_QLQ_97, Nhóm 13). Popup drill-down khi bấm vào Số lượng đại lý phân phối: liệt kê tên đại lý của quỹ, lọc `AGENCY_TYPE.ITEM_NAME LIKE '%đại lý phân phối%'` đúng BA (dòng 108), lấy DISTINCT theo cặp (quỹ, đại lý) vì 1 đại lý có thể gắn nhiều dòng loại đại lý. ETL Atomic giả định chỉ nạp bản ghi hiệu lực (`DELETED = 0`, `RECORD_STATUS = 1`) — O_QLQ_27.
+> **[CẬP NHẬT 2026-09-26 — HẠ xuống PENDING, lịch sử]** Khi đó `fund_distribution_agent` chưa có attribute cho scheme `FMS_AGENCY_TYPE` nên không lọc được loại đại lý — đã thay thế bởi cập nhật 2026-10-13.
 
 **Mockup — popup "DANH SÁCH ĐẠI LÝ PHÂN PHỐI":**
 
@@ -1071,13 +1221,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_103 | Danh sách đại lý phân phối | — | Cơ sở | | **Lý do pending:** cùng gap AGENCY_TYPE với K_QLQ_97 (Nhóm 13) — `fund_distribution_agent` chưa có FK scheme `FMS_AGENCY_TYPE`. **Atomic cần bổ sung:** thêm attribute FK scheme `FMS_AGENCY_TYPE` lên `fund_distribution_agent` (nguồn `FMS.AGENCIES.AGENCY_TYPE_ID`). **Mart dự kiến:** `Investment Fund Distribution Agent List`. | PENDING |
-
-**Bảng mapping nguồn:**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
-|---|---|---|---|
-| K_QLQ_103 | FMS_UAT.AGENCIES | Fund Distribution Agent *(thiếu attribute AGENCY_TYPE)* | fund_distribution_agent |
+| K_QLQ_103 | Danh sách đại lý phân phối | — | Cơ sở | `fund_distribution_agent.fund_distribution_agent_full_nm` JOIN qua `fund_distribution_agent_x_investment_fund_x_cl_fms_agency_type_relationship.fund_distribution_agent_id`, chỉ lấy dòng có `cl_fms_agency_type.cl_fms_agency_tp_nm` LIKE '%đại lý phân phối%', DISTINCT theo (quỹ, đại lý) | **[NÂNG READY 2026-10-13]** Popup drill-down từ Số lượng đại lý phân phối (Nhóm 13, K_QLQ_97). Junction FUD_AG_AGT còn draft, chưa đăng ký manifest — dùng tạm (O_QLQ_9) | READY |
 
 **Schema bảng con — Investment Fund Distribution Agent List:**
 
@@ -1091,8 +1235,6 @@ erDiagram
     }
 ```
 
-> Schema dự kiến — chưa hiện thực hóa vì K_QLQ_103 PENDING.
-
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
@@ -1101,9 +1243,9 @@ flowchart LR
         G1["Investment Fund Distribution Agent List"]
     end
     subgraph RPT["Báo cáo"]
-        R1["Danh sách đại lý phân phối (Nhóm 14) — PENDING"]
+        R1["K_QLQ_103: Danh sách đại lý phân phối (Nhóm 14)"]
     end
-    G1 -.-> R1
+    G1 --> R1
 ```
 
 **Bảng grain:**
@@ -1274,16 +1416,20 @@ flowchart LR
 
 **Source:** `Fact Fund Distribution Agent Snapshot` → `Calendar Date Dimension`
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_118, K_QLQ_119, K_QLQ_120, K_QLQ_121 (Nhóm 17) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_QLQ_116 | Thời gian | — | Chiều | `Snapshot_Date_Dimension_Id` → `cdr_dt_dim` (grain quý/năm) — lọc `ip_alternative_identification.identification_issue_dt` WHERE `identification_tp_code = 'OPERATION_LICENSE'` | | READY |
 | K_QLQ_117 | Số lượng Đại lý phân phối | Đại lý | Cơ sở | `COUNT(securities_distribution_agent.securities_distribution_agent_id)` WHERE `active_status_flag` = 1 | | READY |
-| K_QLQ_118 | Số tài khoản | TK | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo hoạt động đại lý phân phối >> TinhHinhGiaoDichCCQ_06268 >> Số lượng tài khoản giao dịch CCQ đã mở trong kỳ). **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 quý/năm. | PENDING |
-| K_QLQ_119 | Số tài khoản lũy kế | TK | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_118, cột "Lũy kế từ đầu năm đến kỳ báo cáo". **Atomic cần bổ sung:** như K_QLQ_118. **Mart dự kiến:** `Fact Fund Distribution Agent Snapshot`. | PENDING |
-| K_QLQ_120 | Giá trị phát hành | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn engine báo cáo định kỳ (Mapping báo cáo đầu vào: TinhHinhGiaoDichCCQ_06268 >> Tổng giá trị CCQ phát hành trong kỳ). **Atomic cần bổ sung:** như K_QLQ_118. **Mart dự kiến:** `Fact Fund Distribution Agent Snapshot`. | PENDING |
-| K_QLQ_121 | Giá trị mua lại | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn engine báo cáo định kỳ (Mapping báo cáo đầu vào: TinhHinhGiaoDichCCQ_06268 >> Tổng giá trị CCQ mua lại trong kỳ). **Atomic cần bổ sung:** như K_QLQ_118. **Mart dự kiến:** `Fact Fund Distribution Agent Snapshot`. | PENDING |
+| K_QLQ_118 | Số tài khoản | TK | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `1`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_119 | Số tài khoản lũy kế | TK | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `1`, cột "Lũy kế từ đầu năm đến kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_120 | Giá trị phát hành | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `5`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_121 | Giá trị mua lại | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `6`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
 
 **Star Schema:**
 
@@ -1339,7 +1485,7 @@ flowchart LR
 |---|---|---|---|
 | K_QLQ_116 | FMS_UAT.DISTRIBUTOR_AGENT | Involved Party Alternative Identification (shared) | ip_alternative_identification |
 | K_QLQ_117 | FMS_UAT.DISTRIBUTOR_AGENT | Securities Distribution Agent | securities_distribution_agent |
-| K_QLQ_118-121 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_118, K_QLQ_119, K_QLQ_120, K_QLQ_121 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -1348,20 +1494,24 @@ flowchart LR
 > Phân loại: **Phân tích**
 > **[CẬP NHẬT 2026-09-26]** Vẫn PENDING toàn bộ, nhưng nay đã có nguồn (trước đây "BA chưa cung cấp"): engine báo cáo định kỳ EAV `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo hoạt động đại lý phân phối >> TinhHinhGiaoDichCCQ_06268) — chưa đủ cột trên Atomic `fmr_*` (TGT_ID, DATA_LABEL/CELLS_META, RECORD_STATUS — xem O_QLQ_27).
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_122, K_QLQ_123, K_QLQ_124, K_QLQ_125 (Nhóm 18) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_122 | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Distribution Agent Account Snapshot` — grain: 1 ĐLPP × 1 quý/năm. | PENDING |
-| K_QLQ_123 | Tổ chức | TK | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: TinhHinhGiaoDichCCQ_06268 >> Số lượng tài khoản của NĐT tổ chức trong nước). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Account Snapshot`. | PENDING |
-| K_QLQ_124 | Cá nhân | TK | Cơ sở | | **Lý do pending:** cùng nguồn, NĐT cá nhân trong nước. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Account Snapshot`. | PENDING |
-| K_QLQ_125 | Nước ngoài | TK | Cơ sở | | **Lý do pending:** cùng nguồn, NĐT nước ngoài. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Account Snapshot`. | PENDING |
+| K_QLQ_122 | Thời gian | — | Chiều | `rpt_period_end_dt_dim_id` → `cdr_dt_dim` (ngày cuối kỳ báo cáo; slicer tháng lấy kỳ gần nhất ≤ tháng) | Chiều thời gian của chỉ tiêu RPT (O_QLQ_31, O_QLQ_32) | READY |
+| K_QLQ_123 | Tổ chức | TK | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `2.1`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_124 | Cá nhân | TK | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `2.2`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_125 | Nước ngoài | TK | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `2.3`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| K_QLQ_122-125 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_122, K_QLQ_123, K_QLQ_124, K_QLQ_125 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -1370,20 +1520,24 @@ flowchart LR
 > Phân loại: **Phân tích**
 > **[CẬP NHẬT 2026-09-26]** Vẫn PENDING toàn bộ, nhưng nay đã có nguồn (trước đây "BA chưa cung cấp"): engine báo cáo định kỳ EAV `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo hoạt động đại lý phân phối >> TinhHinhGiaoDichCCQ_06268) — chưa đủ cột trên Atomic `fmr_*` (TGT_ID, DATA_LABEL/CELLS_META, RECORD_STATUS — xem O_QLQ_27).
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_126, K_QLQ_127, K_QLQ_128, K_QLQ_129 (Nhóm 19) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_126 | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Distribution Agent Holding Snapshot` — grain: 1 ĐLPP × 1 quý/năm. | PENDING |
-| K_QLQ_127 | Tổ chức | TK | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: TinhHinhGiaoDichCCQ_06268 >> Số lượng tài khoản nắm giữ CCQ cuối kỳ của NĐT tổ chức trong nước). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Holding Snapshot`. | PENDING |
-| K_QLQ_128 | Cá nhân | TK | Cơ sở | | **Lý do pending:** cùng nguồn, NĐT cá nhân trong nước. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Holding Snapshot`. | PENDING |
-| K_QLQ_129 | Nước ngoài | TK | Cơ sở | | **Lý do pending:** cùng nguồn, NĐT nước ngoài. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Holding Snapshot`. | PENDING |
+| K_QLQ_126 | Thời gian | — | Chiều | `rpt_period_end_dt_dim_id` → `cdr_dt_dim` (ngày cuối kỳ báo cáo; slicer tháng lấy kỳ gần nhất ≤ tháng) | Chiều thời gian của chỉ tiêu RPT (O_QLQ_31, O_QLQ_32) | READY |
+| K_QLQ_127 | Tổ chức | TK | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `3.1`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_128 | Cá nhân | TK | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `3.2`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_129 | Nước ngoài | TK | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `3.3`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| K_QLQ_126-129 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_126, K_QLQ_127, K_QLQ_128, K_QLQ_129 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -1392,20 +1546,24 @@ flowchart LR
 > Phân loại: **Phân tích**
 > **[CẬP NHẬT 2026-09-26]** Vẫn PENDING toàn bộ, nhưng nay đã có nguồn (trước đây "BA chưa cung cấp"): engine báo cáo định kỳ EAV `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo hoạt động đại lý phân phối >> TinhHinhGiaoDichCCQ_06268) — chưa đủ cột trên Atomic `fmr_*` (TGT_ID, DATA_LABEL/CELLS_META, RECORD_STATUS — xem O_QLQ_27).
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_130, K_QLQ_131, K_QLQ_132, K_QLQ_133 (Nhóm 20) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_130 | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Distribution Agent Certificate Value Snapshot` — grain: 1 ĐLPP × 1 quý/năm. | PENDING |
-| K_QLQ_131 | Tổ chức | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: TinhHinhGiaoDichCCQ_06268 >> Giá trị CCQ nắm giữ bởi NĐT tổ chức trong nước). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Certificate Value Snapshot`. | PENDING |
-| K_QLQ_132 | Cá nhân | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn, NĐT cá nhân trong nước. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Certificate Value Snapshot`. | PENDING |
-| K_QLQ_133 | Nước ngoài | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn, NĐT nước ngoài. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Certificate Value Snapshot`. | PENDING |
+| K_QLQ_130 | Thời gian | — | Chiều | `rpt_period_end_dt_dim_id` → `cdr_dt_dim` (ngày cuối kỳ báo cáo; slicer tháng lấy kỳ gần nhất ≤ tháng) | Chiều thời gian của chỉ tiêu RPT (O_QLQ_31, O_QLQ_32) | READY |
+| K_QLQ_131 | Tổ chức | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `4.1`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_132 | Cá nhân | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `4.2`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_133 | Nước ngoài | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `4.3`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| K_QLQ_130-133 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_130, K_QLQ_131, K_QLQ_132, K_QLQ_133 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -1414,19 +1572,23 @@ flowchart LR
 > Phân loại: **Phân tích**
 > **[CẬP NHẬT 2026-09-26]** Vẫn PENDING toàn bộ, nhưng nay đã có nguồn (trước đây "BA chưa cung cấp"): engine báo cáo định kỳ EAV `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo hoạt động đại lý phân phối >> TinhHinhGiaoDichCCQ_06268) — chưa đủ cột trên Atomic `fmr_*` (TGT_ID, DATA_LABEL/CELLS_META, RECORD_STATUS — xem O_QLQ_27). Cùng nguồn với K_QLQ_120/121 (Nhóm 17) — có thể là cùng measure, cần xác nhận tại LLD.
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_134, K_QLQ_135, K_QLQ_136 (Nhóm 21) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_134 | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Fund Distribution Agent Transaction Snapshot` — grain: 1 ĐLPP × 1 quý/năm. | PENDING |
-| K_QLQ_135 | Giá trị phát hành (PH) | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: TinhHinhGiaoDichCCQ_06268 >> Tổng giá trị CCQ phát hành trong kỳ) — trùng nguồn với K_QLQ_120 (Nhóm 17), cần xác nhận tại LLD có phải cùng measure hay không. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Transaction Snapshot`. | PENDING |
-| K_QLQ_136 | Giá trị mua lại (ML) | Tỷ VND | Cơ sở | | **Lý do pending:** tương tự K_QLQ_135 — trùng nguồn với K_QLQ_121 (Nhóm 17). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Fund Distribution Agent Transaction Snapshot`. | PENDING |
+| K_QLQ_134 | Thời gian | — | Chiều | `rpt_period_end_dt_dim_id` → `cdr_dt_dim` (ngày cuối kỳ báo cáo; slicer tháng lấy kỳ gần nhất ≤ tháng) | Chiều thời gian của chỉ tiêu RPT (O_QLQ_31, O_QLQ_32) | READY |
+| K_QLQ_135 | Giá trị phát hành (PH) | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `5.1, 5.2, 5.3`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA SQL cộng các dòng con 5.1+5.2+5.3 (phát hành theo loại nhà đầu tư) | READY |
+| K_QLQ_136 | Giá trị mua lại (ML) | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `TinhHinhGiaoDichCCQ_06268`, STT `6.1, 6.2, 6.3`, cột "Kỳ báo cáo", `record_tp` = '8' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA SQL cộng các dòng con 6.1+6.2+6.3 (mua lại theo loại nhà đầu tư) | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| K_QLQ_134-136 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_134, K_QLQ_135, K_QLQ_136 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -1447,6 +1609,10 @@ flowchart LR
 
 **Source:** `Fund Distribution Agent Profile`
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_143, K_QLQ_144, K_QLQ_145, K_QLQ_146, K_QLQ_147, K_QLQ_148, K_QLQ_149, K_QLQ_150, K_QLQ_151, K_QLQ_152, K_QLQ_153, K_QLQ_154, K_QLQ_155, K_QLQ_156, K_QLQ_157, K_QLQ_158 READY: thêm cột giá trị báo cáo định kỳ vào bảng tác nghiệp `Fund Distribution Agent Profile`. ETL đọc trực tiếp Atomic `fmr_value` + `fmr_submission` và tra `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`) để chọn ô theo sheet, khóa dòng và nhãn cột; lấy kỳ báo cáo mới nhất (`rpt_year`, `period_val`, `submitted_dt` giảm dần) của đối tượng. **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ mới nhất theo thứ tự chuỗi `period_val` trong cùng loại kỳ (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
@@ -1457,22 +1623,22 @@ flowchart LR
 | K_QLQ_140 | Ngày cấp GP thành lập | — | Cơ sở | `ip_alternative_identification.identification_issue_dt` WHERE `identification_tp_code = 'BUSINESS_LICENSE'` | | READY |
 | K_QLQ_141 | Địa chỉ | — | Cơ sở | `ip_postal_address.adr_val` WHERE `adr_tp_code = 'HEAD_OFFICE'` | | READY |
 | K_QLQ_142 | Tình trạng hoạt động | — | Cơ sở | `securities_distribution_agent.active_status_flag`, `termination_dt` | | READY |
-| K_QLQ_143 | Quỹ đang phân phối | Quỹ | Cơ sở | | **Lý do pending:** công thức cũ ghi JOIN `Investment Fund X Fund Distribution Agent Relationship` (FMS.AGEN_FUNDS), nhưng entity đó chỉ nối tới `Fund Distribution Agent` (FMS.AGENCIES), không có FK tới `Securities Distribution Agent` (FMS.DISTRIBUTOR_AGENT — entity của Nhóm này). **Atomic cần bổ sung:** junction Investment Fund ↔ Securities Distribution Agent (chưa tồn tại — báo Atomic team xác nhận có nguồn thật hay BA đã nhầm 2 loại đại lý). **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_144 | Tài khoản giao dịch | TK | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: TinhHinhGiaoDichCCQ_06268 >> Số lượng tài khoản giao dịch CCQ đã mở trong kỳ) — trùng nguồn K_QLQ_118 (Nhóm 18), cần xác nhận tại LLD. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_145 | Tài khoản giao dịch (YTD) | TK | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_144, cột lũy kế — trùng nguồn K_QLQ_119 (Nhóm 18). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_146 | Tổng số tài khoản giao dịch CCQ - Tổ chức | TK | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Số lượng tài khoản NĐT tổ chức trong nước) — trùng nguồn K_QLQ_123 (Nhóm 18). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_147 | Tổng số tài khoản giao dịch CCQ - Cá nhân | TK | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_146, NĐT cá nhân — trùng K_QLQ_124 (Nhóm 18). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_148 | Tổng số tài khoản giao dịch CCQ - Nước ngoài | TK | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_146, NĐT nước ngoài — trùng K_QLQ_125 (Nhóm 18). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_149 | Số tài khoản nắm giữ CCQ - Tổ chức | TK | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Số lượng TK nắm giữ CCQ cuối kỳ NĐT tổ chức) — trùng K_QLQ_127 (Nhóm 19). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_150 | Số tài khoản nắm giữ CCQ - Cá nhân | TK | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_149, cá nhân — trùng K_QLQ_128 (Nhóm 19). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_151 | Số tài khoản nắm giữ CCQ - Nước ngoài | TK | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_149, nước ngoài — trùng K_QLQ_129 (Nhóm 19). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_152 | Giá trị chứng chỉ quỹ - Tổ chức | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Giá trị CCQ nắm giữ bởi NĐT tổ chức) — trùng K_QLQ_131 (Nhóm 20). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_153 | Giá trị chứng chỉ quỹ - Cá nhân | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_152, cá nhân — trùng K_QLQ_132 (Nhóm 20). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_154 | Giá trị chứng chỉ quỹ - Nước ngoài | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_152, nước ngoài — trùng K_QLQ_133 (Nhóm 20). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_155 | Giá trị phát hành (PH) | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Tổng giá trị CCQ phát hành trong kỳ) — trùng K_QLQ_120 (Nhóm 17)/K_QLQ_135 (Nhóm 21). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_156 | Giá trị phát hành (PH) (YTD) | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_155, cột lũy kế. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_157 | Giá trị mua lại (ML) | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Tổng giá trị CCQ mua lại trong kỳ) — trùng K_QLQ_121 (Nhóm 17)/K_QLQ_136 (Nhóm 21). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
-| K_QLQ_158 | Thị phần (TP) | % | Phái sinh | | **Lý do pending:** phụ thuộc K_QLQ_155/157 (PENDING) — Thị phần = (PH của ĐLPP này + ML của ĐLPP này) / Tổng toàn thị trường × 100%. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_QLQ_143 | Quỹ đang phân phối | Quỹ | Cơ sở | `COUNT(DISTINCT investment_fund_code)` qua `fund_distribution_agent_x_investment_fund_relationship` (FMS.AGEN_FUNDS); ĐLPP (`securities_distribution_agent`) nối đại lý (`fund_distribution_agent`) theo tên rút gọn hoặc tên đầy đủ như SQL BA | Atomic: `Securities Distribution Agent`, `Fund Distribution Agent`, `Fund Distribution Agent X Investment Fund Relationship` (FMS.AGEN_FUNDS). Khóa nối theo tên là khóa của chính BA — mong manh khi đổi tên (O_QLQ_21, O_QLQ_32) | READY |
+| K_QLQ_144 | Tài khoản giao dịch | TK | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `1`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `trading_account_count` trên `Fund Distribution Agent Profile` | Cột `trading_account_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_145 | Tài khoản giao dịch (YTD) | TK | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `1`, cột "Lũy kế từ đầu năm đến kỳ báo cáo", `record_tp` = '8' → cột `trading_account_year_to_dt_count` trên `Fund Distribution Agent Profile` | Cột `trading_account_year_to_dt_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_146 | Tổng số tài khoản giao dịch CCQ - Tổ chức | TK | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `2.1`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `institution_trading_account_count` trên `Fund Distribution Agent Profile` | Cột `institution_trading_account_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_147 | Tổng số tài khoản giao dịch CCQ - Cá nhân | TK | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `2.2`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `individual_trading_account_count` trên `Fund Distribution Agent Profile` | Cột `individual_trading_account_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_148 | Tổng số tài khoản giao dịch CCQ - Nước ngoài | TK | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `2.3`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `foreign_trading_account_count` trên `Fund Distribution Agent Profile` | Cột `foreign_trading_account_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_149 | Số tài khoản nắm giữ CCQ - Tổ chức | TK | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `3.1`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `institution_holding_account_count` trên `Fund Distribution Agent Profile` | Cột `institution_holding_account_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_150 | Số tài khoản nắm giữ CCQ - Cá nhân | TK | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `3.2`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `individual_holding_account_count` trên `Fund Distribution Agent Profile` | Cột `individual_holding_account_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_151 | Số tài khoản nắm giữ CCQ - Nước ngoài | TK | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `3.3`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `foreign_holding_account_count` trên `Fund Distribution Agent Profile` | Cột `foreign_holding_account_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_152 | Giá trị chứng chỉ quỹ - Tổ chức | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `4.1`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `institution_fund_certificate_amt` trên `Fund Distribution Agent Profile` | Cột `institution_fund_certificate_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_153 | Giá trị chứng chỉ quỹ - Cá nhân | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `4.2`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `individual_fund_certificate_amt` trên `Fund Distribution Agent Profile` | Cột `individual_fund_certificate_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_154 | Giá trị chứng chỉ quỹ - Nước ngoài | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `4.3`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `foreign_fund_certificate_amt` trên `Fund Distribution Agent Profile` | Cột `foreign_fund_certificate_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_155 | Giá trị phát hành (PH) | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `5.1, 5.2, 5.3`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `issued_amt` trên `Fund Distribution Agent Profile` | Cột `issued_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_156 | Giá trị phát hành (PH) (YTD) | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `5.1, 5.2, 5.3`, cột "Lũy kế từ đầu năm đến kỳ báo cáo", `record_tp` = '8' → cột `issued_year_to_dt_amt` trên `Fund Distribution Agent Profile` | Cột `issued_year_to_dt_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_157 | Giá trị mua lại (ML) | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `TinhHinhGiaoDichCCQ_06268`, STT `6.1, 6.2, 6.3`, cột "Kỳ báo cáo", `record_tp` = '8' → cột `redeemed_amt` trên `Fund Distribution Agent Profile` | Cột `redeemed_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_158 | Thị phần (TP) | % | Phái sinh | `(issued_amt + redeemed_amt)` × 100 / `SUM(issued_amt + redeemed_amt)` toàn thị trường (các ĐLPP) | Presentation/Derived (Case 2): không có cột vật lý riêng; dựa trên cột `issued_amt`, `redeemed_amt` của `Fund Distribution Agent Profile` | READY |
 
 **Bảng mapping nguồn:**
 
@@ -1481,8 +1647,8 @@ flowchart LR
 | K_QLQ_137, 138, 142 | FMS_UAT.DISTRIBUTOR_AGENT | Securities Distribution Agent | securities_distribution_agent |
 | K_QLQ_139, 140 | FMS_UAT.DISTRIBUTOR_AGENT | Involved Party Alternative Identification (shared) | ip_alternative_identification |
 | K_QLQ_141 | FMS_UAT.DISTRIBUTOR_AGENT | Involved Party Postal Address (shared) | ip_postal_address |
-| K_QLQ_143 | FMS_UAT.AGEN_FUNDS | *(chưa có junction Investment Fund ↔ Securities Distribution Agent)* | TBD |
-| K_QLQ_144-158 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_143 | FMS_UAT.AGEN_FUNDS | *(chưa có junction Investment Fund ↔ Securities Distribution Agent)* | TBD | `COUNT(DISTINCT investment_fund_code)` qua `fund_distribution_agent_x_investment_fund_relationship` (FMS.AGEN_FUNDS); ĐLPP (`securities_distribution_agent`) nối đại lý (`fund_distribution_agent`) theo tên rút gọn hoặc tên đầy đủ như SQL BA | Atomic: `Securities Distribution Agent`, `Fund Distribution Agent`, `Fund Distribution Agent X Investment Fund Relationship` (FMS.AGEN_FUNDS). Khóa nối theo tên là khóa của chính BA — mong manh khi đổi tên (O_QLQ_21, O_QLQ_32) | READY |
+| K_QLQ_143, K_QLQ_144, K_QLQ_145, K_QLQ_146, K_QLQ_147, K_QLQ_148, K_QLQ_149, K_QLQ_150, K_QLQ_151, K_QLQ_152, K_QLQ_153, K_QLQ_154, K_QLQ_155, K_QLQ_156, K_QLQ_157 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD (K_QLQ_143: FMS_UAT.DISTRIBUTOR_AGENT, FMS_UAT.AGENCIES, FMS_UAT.AGEN_FUNDS) | Fund Management Report Value + Fund Management Report Submission *(cột trên `Fund Distribution Agent Profile`, lookup `fund_management_rpt_cell_dim`)* | fmr_value / fmr_submission |
 
 **Schema bảng tác nghiệp — Fund Distribution Agent Profile:**
 
@@ -1496,11 +1662,26 @@ erDiagram
         string Address
         boolean Active_Status_Flag
         date Termination_Date
+        int Distributing_Fund_Count
+        int Trading_Account_Count
+        int Trading_Account_Year_To_Date_Count
+        int Institution_Trading_Account_Count
+        int Individual_Trading_Account_Count
+        int Foreign_Trading_Account_Count
+        int Institution_Holding_Account_Count
+        int Individual_Holding_Account_Count
+        int Foreign_Holding_Account_Count
+        decimal Institution_Fund_Certificate_Amount
+        decimal Individual_Fund_Certificate_Amount
+        decimal Foreign_Fund_Certificate_Amount
+        decimal Issued_Amount
+        decimal Issued_Year_To_Date_Amount
+        decimal Redeemed_Amount
         string Source_System_Code
     }
 ```
 
-> **[SỬA 2026-09-28]** `Distributing_Fund_Count` gỡ khỏi schema (K_QLQ_143 hạ về PENDING — không có junction Atomic tới Securities Distribution Agent).
+> *(Lịch sử — đã thay thế bởi cập nhật 2026-10-13: các cột RPT nay đã vào schema)* **[SỬA 2026-09-28]** `Distributing_Fund_Count` gỡ khỏi schema (K_QLQ_143 hạ về PENDING — không có junction Atomic tới Securities Distribution Agent).
 
 **Lineage Mart → Báo cáo:**
 
@@ -1592,14 +1773,18 @@ flowchart LR
 
 **Source:** `Fact Foreign Fund Management Organization Unit Snapshot` → `Calendar Date Dimension`
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_162, K_QLQ_163 (Nhóm 24) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_QLQ_160 | Thời gian | — | Chiều | `Snapshot_Date_Dimension_Id` → `cdr_dt_dim` (grain tháng) — lọc `COALESCE(foreign_fm_ou.effective_start_dt, ...)` <= cuối tháng | | READY |
 | K_QLQ_161 | Chi nhánh CTQLQ nước ngoài tại Việt Nam | Chi nhánh | Cơ sở | `COUNT(foreign_fm_ou.foreign_fm_ou_id)` WHERE `branch_tp_code` = 1 (Branch_Flag) AND hiệu lực tại tháng snapshot | | READY |
-| K_QLQ_162 | Hợp đồng quản lý danh mục đầu tư | HĐ | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo tình hình quản lý danh mục đầu tư chi nhánh nước ngoài >> Tổng số HĐ ủy thác đầu tư đang thực hiện). **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Snapshot` — grain: 1 CN × 1 tháng. | PENDING |
-| K_QLQ_163 | Giá trị hợp đồng quản lý danh mục đầu tư | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_162 (Tổng giá trị thị trường các danh mục đầu tư). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Snapshot`. | PENDING |
+| K_QLQ_162 | Hợp đồng quản lý danh mục đầu tư | HĐ | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng "Tổng số Hợp đồng ủy thác đầu tư đang thực hiện", cột "Kỳ báo cáo", `record_tp` = '4' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_163 | Giá trị hợp đồng quản lý danh mục đầu tư | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng "Tổng giá trị thị trường các danh mục đầu tư", cột "Kỳ báo cáo", `record_tp` = '4' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
 
 **Star Schema:**
 
@@ -1652,7 +1837,7 @@ flowchart LR
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
 | K_QLQ_160, K_QLQ_161 | FMS_UAT.FOR_BRCH | Foreign Fund Management Organization Unit | foreign_fm_ou |
-| K_QLQ_162, K_QLQ_163 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_162, K_QLQ_163 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -1661,23 +1846,27 @@ flowchart LR
 > Phân loại: **Phân tích**
 > **[CẬP NHẬT 2026-09-26]** Vẫn PENDING toàn bộ, nhưng nay đã có nguồn (trước đây "BA chưa cung cấp"): engine báo cáo định kỳ EAV `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo tình hình quản lý danh mục đầu tư chi nhánh nước ngoài) — chưa đủ cột trên Atomic `fmr_*` (TGT_ID, DATA_LABEL/CELLS_META, RECORD_STATUS — xem O_QLQ_27). Cùng mẫu hình với Nhóm 2 (CTQLQ trong nước).
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_164, K_QLQ_165, K_QLQ_166, K_QLQ_167, K_QLQ_168, K_QLQ_169, K_QLQ_170 (Nhóm 25) READY qua `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, 1 dòng/ô/bản nộp) + `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). Mỗi KPI là bộ lọc (sheet, khóa dòng, nhãn cột, `record_tp`) trên cùng measure `cell_numeric_val`; `record_tp` = 2 (CTQLQ), 4 (chi nhánh CTQLQ NN), 7 (quỹ), 8 (ĐLPP) theo điều kiện BA. Khóa dòng ưu tiên theo cách BA tự ghép trong SQL tham khảo: mã chỉ tiêu (`row_indicator_code`), STT (`row_stt_code`), tên chỉ tiêu (`row_indicator_nm`) hoặc đường dẫn nhãn (`row_label_nm`). **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ gần nhất ≤ tháng slicer (hoặc chuỗi theo tháng), nộp lại lấy `submitted_dt` mới nhất (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c). Nhãn dòng dạng đường dẫn 'cha >> con' lấy từ `row_label_nm`.
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLQ_164 | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot` — grain: 1 CN × 1 tháng. | PENDING |
-| K_QLQ_165 | Số lượng hợp đồng UTQLDM cá nhân | HĐ | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Tổng số HĐ ủy thác đầu tư đang thực hiện >> Cá nhân). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
-| K_QLQ_166 | Giá trị thị trường hợp đồng UTQLDM cá nhân | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_165 (Tổng giá trị thị trường các danh mục đầu tư >> Cá nhân). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
-| K_QLQ_167 | Số lượng hợp đồng UTQLDM tổ chức | HĐ | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_165, nhánh Tổ chức. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
-| K_QLQ_168 | Giá trị thị trường hợp đồng UTQLDM tổ chức | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_166, nhánh Tổ chức. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
-| K_QLQ_169 | Tổng số lượng hợp đồng UTQLDM | HĐ | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Tổng số HĐ ủy thác đầu tư đang thực hiện, không tách cá nhân/tổ chức). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
-| K_QLQ_170 | Tổng giá trị ủy thác | Tỷ VND | Cơ sở | | **Lý do pending:** cùng nguồn K_QLQ_169 (Tổng giá trị thị trường các danh mục đầu tư, không tách cá nhân/tổ chức). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
+| K_QLQ_164 | Thời gian | — | Chiều | `rpt_period_end_dt_dim_id` → `cdr_dt_dim` (ngày cuối kỳ báo cáo; slicer tháng lấy kỳ gần nhất ≤ tháng) | Chiều thời gian của chỉ tiêu RPT (O_QLQ_31, O_QLQ_32) | READY |
+| K_QLQ_165 | Số lượng hợp đồng UTQLDM cá nhân | HĐ | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng "Tổng số Hợp đồng ủy thác đầu tư đang thực hiện >> Cá nhân (%)", cột "Kỳ báo cáo", `record_tp` = '4' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA ghi 'Cá nhân/Tổ chức (%)' — dòng con có thể là tỷ lệ; SQL tham khảo BA hard-code số dòng (rr) và gán nhãn chéo — theo trường Dòng, chờ BA xác nhận (O_QLQ_32) | READY |
+| K_QLQ_166 | Giá trị thị trường hợp đồng UTQLDM cá nhân | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng "Tổng giá trị thị trường các danh mục đầu tư >> Cá nhân (%)", cột "Kỳ báo cáo", `record_tp` = '4' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA ghi 'Cá nhân/Tổ chức (%)' — dòng con có thể là tỷ lệ; SQL tham khảo BA hard-code số dòng (rr) và gán nhãn chéo — theo trường Dòng, chờ BA xác nhận (O_QLQ_32) | READY |
+| K_QLQ_167 | Số lượng hợp đồng UTQLDM tổ chức | HĐ | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng "Tổng số Hợp đồng ủy thác đầu tư đang thực hiện >> Tổ chức (%)", cột "Kỳ báo cáo", `record_tp` = '4' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA ghi 'Cá nhân/Tổ chức (%)' — dòng con có thể là tỷ lệ; SQL tham khảo BA hard-code số dòng (rr) và gán nhãn chéo — theo trường Dòng, chờ BA xác nhận (O_QLQ_32) | READY |
+| K_QLQ_168 | Giá trị thị trường hợp đồng UTQLDM tổ chức | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng "Tổng giá trị thị trường các danh mục đầu tư >> Tổ chức (%)", cột "Kỳ báo cáo", `record_tp` = '4' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32). BA ghi 'Cá nhân/Tổ chức (%)' — dòng con có thể là tỷ lệ; SQL tham khảo BA hard-code số dòng (rr) và gán nhãn chéo — theo trường Dòng, chờ BA xác nhận (O_QLQ_32) | READY |
+| K_QLQ_169 | Tổng số lượng hợp đồng UTQLDM | HĐ | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng "Tổng số Hợp đồng ủy thác đầu tư đang thực hiện", cột "Kỳ báo cáo", `record_tp` = '4' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
+| K_QLQ_170 | Tổng giá trị ủy thác | Tỷ VND | Cơ sở | `SUM(cell_numeric_val)` của ô — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng "Tổng giá trị thị trường các danh mục đầu tư", cột "Kỳ báo cáo", `record_tp` = '4' — kỳ gần nhất ≤ tháng slicer, nộp lại lấy `submitted_dt` mới nhất | RPT — `Fact Fund Management Report Cell Value` (Reuse Case 1: cùng measure `Cell Numeric Value`, khác bộ lọc ô). Đơn vị gốc theo ô, BI chia theo đơn vị hiển thị. Khóa dòng/cột là giả định (O_QLQ_31); kỳ gần nhất ≤ tháng (O_QLQ_32) | READY |
 
 **Bảng mapping nguồn:**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| K_QLQ_164-170 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_164, K_QLQ_165, K_QLQ_166, K_QLQ_167, K_QLQ_168, K_QLQ_169, K_QLQ_170 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Sheet + Fund Management Report + Fund Management Report Submission *(Fact `fct_fund_management_rpt_cell_val`, Dimension `fund_management_rpt_cell_dim`)* | fmr_value / fmr_sheet / fund_management_report / fmr_submission |
 
 ---
 
@@ -1698,6 +1887,10 @@ flowchart LR
 
 **Source:** `Foreign Fund Management Organization Unit Profile`
 
+> Atomic: `Fund Management Report Value` ← FMS.RPT_VALUES (+ `Fund Management Report Submission` ← FMS.RPT_MEMBER, `Fund Management Report Sheet` ← FMS.SHEET, `Fund Management Report` ← FMS.RPT_TEMP) — READY có điều kiện: Atomic (commit 3966068f) đã có `cell_id`, `label_nm`, `row_index`, `column_index`, `row_span`, `column_span` nhưng chưa rõ grain `fmr_sheet` và bố cục nhãn (O_QLQ_31); chưa có `RECORD_STATUS` (O_QLQ_27c)
+> *(Lịch sử — các ghi chú ở trên về việc PENDING do engine báo cáo định kỳ `RPT_*` chưa có Atomic đã được thay thế bởi cập nhật 2026-10-13 dưới đây.)*
+> **[CẬP NHẬT 2026-10-13 — nâng READY]** K_QLQ_174, K_QLQ_175, K_QLQ_176, K_QLQ_177, K_QLQ_178 READY: thêm cột giá trị báo cáo định kỳ vào bảng tác nghiệp `Foreign Fund Management Organization Unit Profile`. ETL đọc trực tiếp Atomic `fmr_value` + `fmr_submission` và tra `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`) để chọn ô theo sheet, khóa dòng và nhãn cột; lấy kỳ báo cáo mới nhất (`rpt_year`, `period_val`, `submitted_dt` giảm dần) của đối tượng. **Giả định:** (1) khóa dòng/nhãn suy từ bố cục ô, chờ dữ liệu mẫu (O_QLQ_31); (2) kỳ mới nhất theo thứ tự chuỗi `period_val` trong cùng loại kỳ (O_QLQ_32); (3) ETL Atomic đã lọc `RECORD_STATUS IN (2,3,5,10)`, `DELETED = 0` (O_QLQ_27c).
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
@@ -1705,11 +1898,11 @@ flowchart LR
 | K_QLQ_171 | Thời gian | — | Chiều | `Snapshot_Date_Dimension_Id` → `cdr_dt_dim` (grain tháng) — lọc `COALESCE(foreign_fm_ou.effective_start_dt, ...)` <= cuối tháng | | READY |
 | K_QLQ_172 | Tên Chi nhánh CTQLQ nước ngoài tại Việt Nam | — | Cơ sở | `foreign_fm_ou.foreign_fm_ou_full_nm`, `foreign_fm_ou_short_nm` | | READY |
 | K_QLQ_173 | Giám đốc chi nhánh | — | Cơ sở | `foreign_fm_ou_staff.foreign_fm_ou_staff_full_nm` WHERE `branch_director_flag` = 1 | | READY |
-| K_QLQ_174 | Số lượng nhân viên có CCHN | Người | Cơ sở | | **Lý do pending:** BA đã đổi nguồn — nay là engine báo cáo định kỳ `FMS_UAT.RPT_TEMP/SHEET/RPT_VALUES/RPT_MEMBER/RPT_PERIOD` (Mapping báo cáo đầu vào: Báo cáo hoạt động của CN CTQLQ NN tại VN >> 1. Cơ cấu tổ chức >> Số nhân viên có CCHN), không còn COUNT trực tiếp `Foreign Fund Management Organization Unit Staff` như thiết kế cũ giả định. **Atomic cần bổ sung:** cột nối giá trị `fmr_value` với ô của sheet — `fmr_value.tgt_id` (RPT_VALUES.TGT_ID) và `fmr_sheet.data_label`/`cells_meta` (nhãn, vị trí dòng–cột) — cùng `record_status` của `fmr_submission` (BA lọc `IN (2,3,5,10)`). Atomic đã có `fmr_*` nhưng chưa đủ cột, xem O_QLQ_27. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
-| K_QLQ_175 | CAR (ATTC) | % | Cơ sở | | **Lý do pending:** nguồn thật là engine báo cáo định kỳ (Mapping báo cáo đầu vào: Báo cáo tỷ lệ an toàn tài chính >> BangTongHop_06013 >> Tỷ lệ vốn khả dụng). **Atomic cần bổ sung:** như K_QLQ_174. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
-| K_QLQ_176 | Lợi nhuận (Tỷ đồng) | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Mapping báo cáo đầu vào: BCKetQuaHoatDongKinhDoanh >> Lợi nhuận sau thuế TNDN). **Atomic cần bổ sung:** như K_QLQ_174. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
-| K_QLQ_177 | Vốn CSH | Tỷ VND | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Mapping báo cáo đầu vào: BangCanDoiKeToan >> B - VỐN CHỦ SỞ HỮU). **Atomic cần bổ sung:** như K_QLQ_174. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
-| K_QLQ_178 | Số lượng hợp đồng UTQLDM | HĐ | Cơ sở | | **Lý do pending:** nguồn engine báo cáo định kỳ (Mapping báo cáo đầu vào: Báo cáo tình hình quản lý danh mục đầu tư chi nhánh nước ngoài >> Tổng số HĐ ủy thác đầu tư đang thực hiện). Khi có nguồn, số này còn dùng để trigger popup Mockup (b) bên dưới. **Atomic cần bổ sung:** như K_QLQ_174. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
+| K_QLQ_174 | Số lượng nhân viên có CCHN | Người | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `II. Các thông tin liên quan nhân sự của chi nhánh`, dòng "Số nhân viên có Chứng chỉ hành nghề, Chứng chỉ quốc tế (nêu rõ loại hình)", cột "Kỳ báo cáo", `record_tp` = '4' → cột `certified_practitioner_staff_count` trên `Foreign Fund Management Organization Unit Profile` | Cột `certified_practitioner_staff_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_175 | CAR (ATTC) | % | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BangTongHop_06013`, dòng chứa "tỷ lệ vốn khả dụng", cột "Giá trị rủi ro/vốn khả dụng", `record_tp` = '4' → cột `capital_adequacy_ratio` trên `Foreign Fund Management Organization Unit Profile` | Cột `capital_adequacy_ratio` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_176 | Lợi nhuận (Tỷ đồng) | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BCKetQuaHoatDongKinhDoanh`, dòng chứa "lợi nhuận sau thuế", cột "Kỳ này", `record_tp` = '4' → cột `net_profit_after_tax_amt` trên `Foreign Fund Management Organization Unit Profile` | Cột `net_profit_after_tax_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_177 | Vốn CSH | Tỷ VND | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BangCanDoiKeToan`, dòng chứa "vốn chủ sở hữu", cột "Số cuối kỳ", `record_tp` = '4' → cột `owner_equity_amt` trên `Foreign Fund Management Organization Unit Profile` | Cột `owner_equity_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_178 | Số lượng hợp đồng UTQLDM | HĐ | Cơ sở | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `I. Thông tin chung về tình hình quản lý danh mục đầu tư`, dòng chứa "số hợp đồng ủy thác", cột "Kỳ báo cáo", `record_tp` = '4' → cột `portfolio_management_contract_count` trên `Foreign Fund Management Organization Unit Profile` | Cột `portfolio_management_contract_count` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
 
 **Bảng mapping nguồn:**
 
@@ -1717,7 +1910,7 @@ flowchart LR
 |---|---|---|---|
 | K_QLQ_171, K_QLQ_172 | FMS_UAT.FOR_BRCH | Foreign Fund Management Organization Unit | foreign_fm_ou |
 | K_QLQ_173 | FMS_UAT.STF_FG_BRCH | Foreign Fund Management Organization Unit Staff | foreign_fm_ou_staff |
-| K_QLQ_174-178 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value |
+| K_QLQ_174, K_QLQ_175, K_QLQ_176, K_QLQ_177, K_QLQ_178 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD (K_QLQ_143: FMS_UAT.DISTRIBUTOR_AGENT, FMS_UAT.AGENCIES, FMS_UAT.AGEN_FUNDS) | Fund Management Report Value + Fund Management Report Submission *(cột trên `Foreign Fund Management Organization Unit Profile`, lookup `fund_management_rpt_cell_dim`)* | fmr_value / fmr_submission |
 
 **Schema bảng tác nghiệp — Foreign Fund Management Organization Unit Profile:**
 
@@ -1728,11 +1921,16 @@ erDiagram
         string Foreign_Fm_Ou_Full_Nm
         string Foreign_Fm_Ou_Short_Nm
         string Director_Name
+        int Certified_Practitioner_Staff_Count
+        decimal Capital_Adequacy_Ratio
+        decimal Net_Profit_After_Tax_Amount
+        decimal Owner_Equity_Amount
+        int Portfolio_Management_Contract_Count
         string Source_System_Code
     }
 ```
 
-> **[CẬP NHẬT 2026-09-26]** `Certified_Staff_Count` gỡ khỏi schema (K_QLQ_174 hạ về PENDING) — chỉ còn 2 cột READY (Tên CN, Giám đốc CN) + Chiều Thời gian.
+> *(Lịch sử — đã thay thế bởi cập nhật 2026-10-13: các cột RPT nay đã vào schema)* **[CẬP NHẬT 2026-09-26]** `Certified_Staff_Count` gỡ khỏi schema (K_QLQ_174 hạ về PENDING) — chỉ còn 2 cột READY (Tên CN, Giám đốc CN) + Chiều Thời gian.
 
 **Lineage Mart → Báo cáo:**
 
@@ -6000,6 +6198,7 @@ graph TB
     OPR_FUND_PRF(["Investment Fund Profile"]):::operational
     OPR_REP_BRD_LST(["Investment Fund Representative Board Member List"]):::operational
     OPR_MGR_LST(["Investment Fund Manager List"]):::operational
+    OPR_DIST_AGT_LST(["Investment Fund Distribution Agent List"]):::operational
     OPR_DIST_PRF(["Fund Distribution Agent Profile"]):::operational
     OPR_DIST_FND_LST(["Fund Distribution Agent Fund List"]):::operational
     OPR_FRGN_PRF(["Foreign Fund Management Organization Unit Profile"]):::operational
@@ -6027,6 +6226,7 @@ graph TB
     DIM_BANK --> OPR_FUND_PRF
     OPR_FUND_PRF --> OPR_REP_BRD_LST
     OPR_FUND_PRF --> OPR_MGR_LST
+    OPR_FUND_PRF --> OPR_DIST_AGT_LST
     DIM_SCR_AGT --> OPR_DIST_PRF
     OPR_DIST_PRF --> OPR_DIST_FND_LST
     DIM_FND_AGT --> OPR_DIST_FND_LST
@@ -6056,15 +6256,16 @@ graph TB
 |---|---|---|---|---|
 | Fund Management Company Profile | Flat chính | 1 CTQLQ × 1 tháng slicer | K_QLQ_19,20,23,24,25,26 (Nhóm 3) | READY (partial — 6/13; K_QLQ_21 Legal Rep hạ về PENDING) |
 | Fund Management Company Fund List | Bảng con drill-down | 1 quỹ × 1 CTQLQ × 1 tháng slicer | K_QLQ_33, 34 (Nhóm 4) | READY (partial — 2/3; K_QLQ_35 NAV hạ PENDING theo BA, O_QLQ_25) |
-| Investment Fund Profile | Flat | 1 quỹ × 1 tháng slicer | K_QLQ_92-96, 98, 99, 101 (Nhóm 13) | READY (partial — 8/11; K_QLQ_97 ĐLPP count, K_QLQ_100 NAV, K_QLQ_102 Lợi nhuận YTD PENDING) |
+| Investment Fund Profile | Flat | 1 quỹ × 1 tháng slicer | K_QLQ_92-99, 101 (Nhóm 13) | READY (partial — 9/11; K_QLQ_97 ĐLPP count nâng READY 2026-10-13 qua junction FUD_AG_AGT draft — O_QLQ_9; K_QLQ_100 NAV, K_QLQ_102 Lợi nhuận YTD PENDING) |
 | Investment Fund Representative Board Member List | Bảng con drill-down | 1 thành viên BĐD × 1 quỹ | K_QLQ_104 (Nhóm 15) | READY |
 | Investment Fund Manager List | Bảng con drill-down | 1 người điều hành × 1 quỹ | K_QLQ_105 (Nhóm 16) | READY |
+| Investment Fund Distribution Agent List | Bảng con drill-down | 1 đại lý phân phối × 1 quỹ | K_QLQ_103 (Nhóm 14) | READY (nâng lại 2026-10-13 qua junction FUD_AG_AGT draft, chưa manifest — dùng tạm, O_QLQ_9) |
 | Fund Distribution Agent Profile | Flat | 1 ĐLPP × 1 tháng slicer | K_QLQ_137–142 (Nhóm 22) | READY (partial — 6/22; nguồn sửa lại thành FMS.DISTRIBUTOR_AGENT; K_QLQ_143 hạ về PENDING — thiếu junction Atomic, xem O_QLQ_21) |
 | Fund Distribution Agent Fund List | Bảng con drill-down | 1 quỹ × 1 ĐLPP | K_QLQ_159 (Nhóm 23) | READY |
 | Foreign Fund Management Organization Unit Profile | Flat | 1 CN × 1 tháng slicer | K_QLQ_171, 172, 173 (Nhóm 26) | READY (partial — 3/8; K_QLQ_174 CCHN count hạ về PENDING) |
 | Fund Management Report Sheet List | Flat | 1 sheet × 1 biểu mẫu báo cáo (current state) | 130 KPI header Nhóm 29–33 (Loại/Mã/Tên báo cáo, Mã/Tên sheet × 26 sheet; xem Detail Mapping) | READY (partial — 130/234 dòng BA Done; 104 dòng Kỳ/Mã chỉ tiêu/Tên chỉ tiêu/Giá trị PENDING, O_QLQ_27) |
 
-> **PENDING toàn bộ, loại khỏi bảng trên:** `Investment Fund Distribution Agent List` (Nhóm 14 — K_QLQ_103 hạ về PENDING cùng gap AGENCY_TYPE với K_QLQ_97, xem O_QLQ_9), `Foreign Fund Management Organization Unit Contract List` (popup — Nhóm 27 riêng, xem O_QLQ_15). `Fund Management Company Contract List` (Nhóm 5 — hạ PENDING toàn bộ theo BA, bảng đã xóa, xem O_QLQ_25).
+> **PENDING toàn bộ, loại khỏi bảng trên:** `Foreign Fund Management Organization Unit Contract List` (popup — Nhóm 27 riêng, xem O_QLQ_15). `Fund Management Company Contract List` (Nhóm 5 — hạ PENDING toàn bộ theo BA, bảng đã xóa, xem O_QLQ_25).
 
 **Bảng Dimension:**
 
@@ -6114,8 +6315,8 @@ graph TB
 | ~~Fund Management Company Contract List~~ | ~~fnd_mgt_co_ctr_lst~~ | **DEPRECATED** | **[SỬA 2026-10-05 — All-Tier Cleanup]** Nhóm 5 — 0/3 KPI READY: BA (dòng 39–41) lấy từ engine báo cáo định kỳ `RPT_*`, chưa có Atomic (O_QLQ_15, O_QLQ_25). Xóa hẳn LLD/master/model.yaml/Entities.csv/flat SQL; thiết kế lại khi có Atomic |
 | Fact Macro Indicator Snapshot (reuse module PTTT) | fct_macro_indicator_snpst | reuse | **[MỚI 2026-09-26]** GDP (K_QLQ_47, Nhóm 7) và Lãi suất liên NH qua đêm (K_QLQ_79, Nhóm 12) — filter `macro_indicator_code IN ('GDP_VN','INTERBANK_IR')`, khớp 100% SQL BA |
 | Fact Market Index Snapshot (reuse module GSTT) | fct_market_index_snpst | reuse | **[MỚI 2026-09-26]** VN-Index (K_QLQ_78, Nhóm 12) — filter `index_nm = 'VNINDEX'` trên `market_index_snapshot`, khớp 100% SQL BA (`indexname = 'VNINDEX'`) |
-| Investment Fund Profile | inv_fnd_prf | new | **[SỬA 2026-10-05]** Module đầu tiên của FMS. 8/11 chỉ tiêu READY (Nhóm 13) — K_QLQ_100 NAV hạ PENDING theo BA (O_QLQ_25) |
-| Investment Fund Distribution Agent List | inv_fnd_dist_agt_lst | new | **[CẬP NHẬT 2026-09-26]** Nhóm 14 — nay **PENDING** (K_QLQ_103 hạ về PENDING, cùng gap AGENCY_TYPE với K_QLQ_97, xem O_QLQ_9); trước đây đánh READY nhầm |
+| Investment Fund Profile | inv_fnd_prf | new | **[SỬA 2026-10-13]** 9/11 chỉ tiêu READY (Nhóm 13) — K_QLQ_97 Số ĐLPP nâng READY qua junction FUD_AG_AGT (draft, O_QLQ_9); K_QLQ_100 NAV hạ PENDING theo BA (O_QLQ_25). Module đầu tiên của FMS |
+| Investment Fund Distribution Agent List | inv_fnd_dist_agt_lst | new | **[CẬP NHẬT 2026-10-13]** Nhóm 14 — nâng lại **READY** (K_QLQ_103) nhờ junction FUD_AG_AGT (draft, chưa manifest — dùng tạm, O_QLQ_9); từ 2026-09-26 đến 2026-10-12 PENDING do chưa có nguồn lọc loại đại lý |
 | Investment Fund Representative Board Member List | inv_fnd_rep_brd_mbr_lst | new | Bảng con drill-down mới (Nhóm 15) — READY |
 | Investment Fund Manager List | inv_fnd_mgr_lst | new | Bảng con drill-down mới (Nhóm 16) — READY |
 | Fund Management Report Sheet List | fmr_sheet_lst | new | **[MỚI 2026-10-06]** Tab DATA EXPLORER Nhóm 29–33 — 130 KPI header (Loại/Mã/Tên báo cáo, Mã/Tên sheet × 26 sheet), nguồn `Fund Management Report` (FMS.RPT_TEMP) + `Fund Management Report Sheet` (FMS.SHEET). Giả định Atomic ETL chỉ nạp bản ghi hiệu lực (RECORD_STATUS/DELETED chưa có trên Atomic — O_QLQ_27(c)) |
@@ -6144,7 +6345,7 @@ graph TB
 | O_QLQ_4 | Vốn CSH — mapping chỉ tiêu BCTC cụ thể | **[CẬP NHẬT 2026-09-26]** BA nay đã cung cấp nguồn cho cả K_QLQ_31 (Nhóm 3, BangCanDoiKeToan) và K_QLQ_177 (Nhóm 26, cùng mẫu báo cáo) — cả 2 đều qua engine báo cáo định kỳ, gộp về O_QLQ_15 | K_QLQ_31, K_QLQ_177 | **Closed — gộp về O_QLQ_15** |
 | O_QLQ_5 | Grain Contract List — 1 INVESACC = 1 HĐUTDM | **[SUPERSEDED 2026-10-05]** BA (dòng 39–41) nay lấy Nhóm 5 từ engine báo cáo định kỳ `RPT_*` — bảng `Fund Management Company Contract List` đã xóa; grain xác định lại khi Atomic có entity cho engine báo cáo | K_QLQ_36–38 | **Closed — superseded (O_QLQ_25)** |
 | O_QLQ_7 | CCQ lưu hành quỹ đóng — nguồn VSDC chưa xác định | **[Closed 2026-09-26]** Giả định gốc sai — BA hiện hành dùng trực tiếp `FMS.FUNDS.TOTAL_QTTY` cho toàn bộ 7 loại hình quỹ (kể cả đóng), không qua VSDC hay FUND_REPORT. Toàn bộ Nhóm 11 (K_QLQ_68-76) đã nâng READY | K_QLQ_70–76 (Nhóm 11) | **Closed** |
-| O_QLQ_9 | Fund Distribution Agent (FMS.AGENCIES) thiếu attribute cho scheme `FMS_AGENCY_TYPE` | **[CẬP NHẬT 2026-10-06]** Atomic (e9378756) đã thêm entity `cl_fms_agency_type` (FMS.AGENCY_TYPE) nhưng **không entity nào tham chiếu nó** (`fund_distribution_agent`/`securities_distribution_agent` không có FK loại đại lý). Liên kết thật quỹ × loại đại lý × đại lý nằm ở junction FMS.FUD_AG_AGT (FUND_ID, AG_TY_ID, AGEN_ID, AGEN_ID_PARENT) — `atomic_out_of_scope.yaml` ghi 'Junction (đang rà soát)', chưa có entity → K_QLQ_97/103 vẫn PENDING. **[MỚI 2026-09-26]** Scheme `FMS_AGENCY_TYPE` đã đăng ký trong `classification_schemes.yaml` (`used_in_entities: Fund Distribution Agent`) nhưng chưa có attribute FK nào wired lên entity `fund_distribution_agent` thật (nguồn dự kiến `FMS.AGENCIES.AGENCY_TYPE_ID`) — khác `FMS_OPERATION_STATUS`/`FMS_FUND_TYPE`/`FMS_JOB_TYPE` đã wired đầy đủ trên các entity khác (xem `feedback_fms_atomic_classification_coverage.md`). Chặn 2 KPI: đếm "đại lý phân phối" cần lọc đúng loại trong AGENCIES (khác đại lý khác) | K_QLQ_97 (Nhóm 13), K_QLQ_103 (Nhóm 14) | Open — cần Atomic team bổ sung attribute |
+| O_QLQ_9 | Fund Distribution Agent (FMS.AGENCIES) thiếu nguồn lọc loại đại lý (scheme `FMS_AGENCY_TYPE`) | **[CẬP NHẬT 2026-10-13 — Resolved một phần, dùng tạm]** Atomic (commit 3966068f) thêm junction `fund_distribution_agent_x_investment_fund_x_cl_fms_agency_type_relationship` (FMS.FUD_AG_AGT, composite PK quỹ × đại lý × loại đại lý) nối `cl_fms_agency_type`. K_QLQ_97 (Nhóm 13) và K_QLQ_103 (Nhóm 14) nâng READY ở grain: 1 quỹ (đếm đại lý — cột `distribution_agent_count` trên `Investment Fund Profile`) và 1 đại lý × 1 quỹ (bảng `opr_investment_fund_distribution_agent_list`). **Điều kiện:** junction còn `status: draft` và chưa đăng ký `dm_manifest.yaml` — Data Modeler xác nhận dùng tạm 2026-10-13; kiểm lại tên/cột khi Atomic đăng ký manifest. **Còn mở:** (i) đăng ký manifest; (ii) ETL Atomic giả định chỉ nạp `DELETED = 0`/`RECORD_STATUS = 1` của AGENCIES/AGENCY_TYPE (O_QLQ_27(c)); (iii) tiêu chí lọc là so khớp chuỗi tên loại `LIKE '%đại lý phân phối%'` đúng BA — nếu Atomic có mã loại đại lý ổn định nên đổi sang so mã. **[Lịch sử 2026-10-06]** Atomic (e9378756) chỉ thêm `cl_fms_agency_type`, chưa entity nào tham chiếu; junction FUD_AG_AGT ghi 'đang rà soát'. | K_QLQ_97 (Nhóm 13), K_QLQ_103 (Nhóm 14) | **Resolved một phần — dùng tạm junction draft, chờ Atomic đăng ký manifest** |
 | O_QLQ_10 | Securities Distribution Agent (FMS.DISTRIBUTOR_AGENT) và Fund Distribution Agent (FMS.AGENCIES) khả năng trùng nghiệp vụ | **[MỚI 2026-09-26]** BA dùng 2 bảng nguồn khác nhau cho khái niệm "Đại lý phân phối" tùy Nhóm: Nhóm 13/14/22(Quỹ đang PP)/23 dùng `FMS.AGENCIES`; Nhóm 17/22(hồ sơ ĐLPP) dùng `FMS.DISTRIBUTOR_AGENT`. Chính ghi chú thiết kế Atomic (`lld_FMS_DISTRIBUTOR_AGENT.yaml`, tag T5-02) tự nghi ngờ 2 bảng này trùng lặp nghiệp vụ, chưa xác nhận. Ảnh hưởng thiết kế: hiện đang giữ 2 Dimension riêng (`Fund Distribution Agent` và `Securities Distribution Agent`) — nếu Atomic xác nhận trùng, cần hợp nhất và sửa lại FK ở nhiều Nhóm | K_QLQ_97,103,143,158,159 (AGENCIES) và K_QLQ_116-121,137-158 (DISTRIBUTOR_AGENT) | Open — cần Atomic team xác nhận |
 | O_QLQ_11 | Báo cáo GD nhân viên CTQLQ — cross-module QLQ × GSGD, sổ lệnh PENDING (VSDC) | **[CẬP NHẬT 2026-09-26; sửa số Nhóm 2026-09-28 — số Nhóm đúng là 27, không phải 28]** `Securities Trade` (`OrderTrade.Trade_HOSE`/`Trade_HNX`) **nay đã READY** ở track chuẩn (`DataModel/working/Atomic/lld/ORDERTRADE/`, `design_status: approved`, thiết kế trong phiên GSTT). Gap thật còn lại là cầu nối định danh nhà đầu tư: BA join `FMS.TL_PROFILES.ID_NO` → bảng đăng ký nhà đầu tư VSDC (`open_investors`/`updated_investors`) → `trading_account_no` → `trade_book`. Bảng cầu nối này được `DataModel/working/Atomic/lld/VSDC/mapping_vsdc_ods_atm.md` ghi rõ "KHÔNG map — xử lý cơ chế riêng" — cần Atomic team thiết kế entity cho cầu nối này (không phải thiết kế lại Securities Trade như ghi trước đây) | K_QLQ_107–115 (Nhóm 27) | Open |
 | O_QLQ_12 | Calendar Date Dimension map từ Atomic `cdr_dt` | Áp dụng cho tất cả KPI dùng chiều thời gian | Tất cả KPI dùng chiều thời gian | Confirmed |
@@ -6163,5 +6364,6 @@ graph TB
 | O_QLQ_27 | **[MỚI 2026-10-06]** Engine báo cáo định kỳ Atomic (`fmr_*`) còn thiếu cột nên chưa nối được giá trị ô, Kỳ báo cáo và các KPI dashboard dùng RPT | (a) `fmr_value` không map `RPT_VALUES.TGT_ID` (khóa nối giá trị ↔ ô: BA join `RPT_VALUES.TGT_ID = CELLS_META.uid`) và `RPT_VALUES.CODE` — cả hai cũng không có trong `pending_design.yaml`; (b) `fmr_sheet` không map `SHEET.DATA_LABEL` (JSON nhãn hàng/cột — nguồn duy nhất của Mã chỉ tiêu/Tên chỉ tiêu) và `SHEET.CELLS_META` (JSON vị trí ô ↔ uid); `SHEET_CELL_CONFIG` (CELL_KEY, ROW_INDEX, COL_INDEX, IDENTIFIER_CODE) thuộc 'xử lý luồng khác' (`atomic_out_of_scope.yaml`) nên cũng không phải phương án sẵn có; (c) không có `RECORD_STATUS` của RPT_MEMBER (BA lọc `IN (2,3,5,10)`), RPT_PERIOD/RPT_TEMP/SHEET (BA lọc `= 1`) và `DELETED` (`pending_design.yaml`: 'ETL lọc DELETED=0 hay thiết kế attribute riêng'). **Giả định thiết kế:** 130 KPI header READY áp giả định Atomic ETL chỉ nạp bản ghi hiệu lực (RECORD_STATUS = 1, DELETED = 0) — cùng cách các Nhóm khác của QLQ xử lý DELETED; Kỳ báo cáo giữ PENDING vì `RECORD_STATUS IN (2,3,5,10)` của báo cáo đã nộp là điều kiện nghiệp vụ, không thể bỏ. Nếu Data Modeler xác nhận Atomic ETL đã lọc đúng trạng thái → nâng 26 KPI Kỳ báo cáo lên READY (bảng giá trị/nộp báo cáo từ `fmr_submission`). Cùng gap này chặn các KPI dashboard RPT liệt kê ở O_QLQ_15 (112 dòng BA Nhóm 1–28 đọc `DATA_LABEL`/`CELLS_META`, 21 dòng đọc `TGT_ID`) **[Rà soát lần 2 — 2026-10-06, đối chiếu BA ↔ Atomic LLD]** Mức độ chặn: (c) `record_status` đứng riêng mở khóa 26 KPI Kỳ báo cáo (Data Explorer) + K_QLQ_12; (a)+(b) cần thêm cho 78 KPI Mã chỉ tiêu/Tên chỉ tiêu/Giá trị (Data Explorer) và 97 dòng Detail Mapping dashboard Nhóm 1–28. Ngoài engine RPT còn: K_QLQ_97/103 chờ junction FMS.FUD_AG_AGT (FUD_ID, AG_TY_ID, AGEN_ID — `atomic_out_of_scope.yaml` ghi 'đang rà soát', O_QLQ_9); K_QLQ_143 là câu hỏi BA/Atomic (AGEN_FUNDS chỉ nối AGENCIES, BA lấy ĐLPP từ DISTRIBUTOR_AGENT — O_QLQ_10/21), không phải thiếu cột; K_QLQ_107–115 chờ cầu nối VSDC (O_QLQ_11). BA conditions `DELETED = 0`/`RECORD_STATUS` ở các bảng FMS khác (FUNDS, SECURITIES, FOR_BRCH, BANK_MONI...) cũng chưa có cột trên Atomic (pending_design: 'ETL lọc DELETED=0 hay thiết kế attribute riêng') — hiện giả định ETL Atomic lọc. Lưu ý đối soát: DDL trong repo (`Source/DDL UAT 1`, 03/09) cũ hơn DDL mà Atomic LLD dùng (LLD tham chiếu `STATUS.CODE`, `COMPANY_TYPE.CODE`, `REPRESENT.JOBS_ID` và bảng PROVINCE/WARD không có trong DDL repo) — chưa kiểm chứng chéo được với DDL 20261006 nên chưa thể xác nhận các cột này tồn tại ở nguồn. **[Đính chính 2026-10-06 — phân biệt BA khai báo và suy luận từ SQL]** `TGT_ID`, `CODE` (RPT_VALUES) và junction `FUD_AG_AGT` chỉ xuất hiện trong cột 'Câu lệnh tham khảo' của BA, KHÔNG nằm trong 'Bảng nguồn'/'Trường nguồn'/'Điều kiện' BA khai báo (theo H10, SQL tham khảo không phải quy tắc chốt) — đây là suy luận kỹ thuật về cách nối ô, không phải yêu cầu BA. Phần BA khai báo thật (BA dòng 6, 7 và 112 dòng dashboard dùng RPT, cột 'Trường nguồn' + 'Điều kiện'): `SHEET.DATA_LABEL`, `SHEET.CELLS_META`, `RECORD_STATUS` và `DELETED` của RPT_TEMP/SHEET/RPT_MEMBER/RPT_PERIOD, cùng địa chỉ nghiệp vụ của ô ('Báo cáo' / 'Mục/Sheet' / 'Dòng' / 'Cột') — các cột này vẫn chưa có trên Atomic. | 104 KPI PENDING của Nhóm 29–33 (26 sheet × Kỳ/Mã chỉ tiêu/Tên chỉ tiêu/Giá trị); toàn bộ KPI dashboard RPT (xem O_QLQ_15) | Open — Atomic team |
 | O_QLQ_28 | **[MỚI 2026-10-06]** Điều kiện tên báo cáo của Data Explorer Nhóm 31 chồng lấn Nhóm 32 | BA Nhóm 31 lọc `lower(RPT_TEMP.ITEM_NAME) LIKE '%an toàn tài chính%'`, Nhóm 32 lọc `LIKE '%an toàn tài chính bất thường%'` — chuỗi của Nhóm 32 chứa chuỗi của Nhóm 31 nên biểu mẫu 'tỷ lệ an toàn tài chính bất thường' thỏa cả hai điều kiện (Nhóm 31 sẽ hiện cả báo cáo bất thường). Thiết kế giữ nguyên điều kiện BA (không tự thêm điều kiện loại trừ); cần BA xác nhận có muốn Nhóm 31 loại trừ `bất thường` | K_QLQ_317–406 (25 KPI header READY mỗi Nhóm 31/32) | Open — chờ BA |
 | O_QLQ_29 | **[MỚI 2026-10-12]** Đồng bộ thiết kế theo code dev (`QLQ_CodeDriftReport_2026-10-10`): `Fund Type Dimension` mới, FK `fund_type_id`, `snpst_cdr_dt` | (1) Atomic tách scheme `FMS_FUND_TYPE` khỏi `cl_value` sang `cl_fms_fund_type` → code dev tạo `fund_type_dim` (SCD4A, PK `fund_type_id` trùng SK Atomic, lọc `ds_rcrd_st='ACTIVE'`), đổi FK 2 Fact và 2 flat; thiết kế đã cập nhật (LLD, master, yaml, Entities, flat 01/02, Detail Mapping, HLD). (2) **Quyết định Data Modeler:** `open_fund_indicator` giữ `Small Counter`/`int` (0/1) theo quy ước các cột `*_indicator` từ Atomic `*_ind` kiểu int, không đổi sang `Indicator` (Y/N) hay `Boolean`; flat ClickHouse `Nullable(Int64)` (đúng ánh xạ `int` → `Int64` của generator) — dev xác nhận kiểu thực tế trong code (Int32/UInt8?). (3) 5 flat Fact đổi `cdr_dt` → `snpst_cdr_dt` (dev xác nhận có chủ đích; snapshot không join `cdr_dt_dim` nên `snpst_dt_dim_id` String `yyyyMMdd` và `snpst_cdr_dt` Date cùng giá trị). Flat QLKD/TT/VP vẫn dùng `cdr_dt` — ngoài phạm vi đợt này, cần rà riêng. (4) Atomic đổi tên `fmc_employee_x_classification_fms_position_relationship` → `..._job_relationship` (`cl_fms_job_code`): `DataModel/working/Atomic/lld` + `hld/atomic_entities.yaml` đã đổi, nhưng `DataModel/Atomic/` (dm_atm yaml + `dm_manifest.yaml`) vẫn tên cũ — Atomic team cần sinh lại. LLD Datamart đã theo tên mới. (5) 4 cột lượng CCQ: LLD `bigint` đúng, code dev còn `CAST AS int` — dev sửa code (`datamart-lakehouse-sync`), không sửa thiết kế. (6) **Giữ nguyên, không sửa thiết kế:** Fact/Opr đọc `dtm_*_dim_hstr` thay vì `atm_*` (quyết định dev 2026-09-29, LLD vẫn ghi entity Atomic nguồn — lineage tương đương); `ck_qlq.yml` `partition_by ds_snpst_dt` là cấu hình loader Spark→ClickHouse, không phải DDL bảng (chưa đối chiếu module khác — cần xác nhận có phản ánh vào flat-table không). (7) Chưa đối chiếu trực tiếp với repo `lakehouse_ubck` (không có trên máy) — kết luận dựa vào báo cáo dev, mới kiểm chứng phần Atomic/LLD/flat phía thiết kế | K_QLQ_34, 41, 45, 59–76, 80, 94 | Mở — chờ dev xác nhận (2), (6), Atomic team (4) |
+| O_QLQ_30 | **[MỚI 2026-10-13]** Atomic (commit 3966068f) xóa 2 entity mà LLD QLQ đang tham chiếu: `member_rating_period` (RATING_PD) và `fmc_employee_x_classification_fms_job_relationship` (JOB_TL_PRO) | Phát hiện bằng quét độc lập etl_logic QLQ ↔ `dm_atm_*.yaml`; Gate 0 không bắt vì không kiểm bảng nằm trong mệnh đề JOIN/subquery. **(a) K_QLQ_24/25 (Xếp loại/CAMEL, Nhóm 3):** BA chọn kỳ xếp hạng gần nhất bằng `RATING_PD.REPORT_YEAR/PERIOD/UPDATE_DATA_RATING`; `member_rating` hiện chỉ còn `m_ember_rating_period_id/code`, không có cột ngày/kỳ nào khác trên Atomic nên không xác định được 'kỳ gần nhất ≤ ngày chạy'. LLD (`opr_fund_management_company_profile`: `rank_index`, `total_score_amt`) vẫn JOIN `member_rating_period.rating_data_update_dt`. **(b) K_QLQ_99 (Nhóm 13, `manager_count`):** BA lọc `JOB_TYPE.ITEM_NAME = 'ban điều hành'` qua `JOB_TL_PRO`; LLD vẫn JOIN `fmc_employee_x_classification_fms_job_relationship`, còn `fmc_employee` không còn FK chức danh. **(c) K_QLQ_105 (Nhóm 16)** vốn **không áp** điều kiện 'ban điều hành' của BA (dòng 110) — thiếu sót có từ trước, cùng nguồn gốc với (b). **Quyết định Data Modeler 2026-10-13:** giữ READY, chờ Atomic khôi phục các nguồn này, không đổi thiết kế. Hệ quả: LLD đang trỏ tới entity không tồn tại trên `DataModel/Atomic/`, nên các cột `rank_index`, `total_score_amt`, `manager_count` chưa có nguồn Atomic thật cho tới khi Atomic khôi phục; nếu Atomic không khôi phục thì phải hạ 4 KPI về PENDING [Nhóm 3 - Thiếu nguồn Atomic]. **(d) [2026-10-13 18:54, commit 3a13d1d4]** `lld_FMS_RANK.yaml` đổi lại `m_ember_rating_period_*` → `member_rating_period_*` nhưng `dm_atm_member_rating` (nguồn Datamart đang theo) vẫn `m_ember_*` và vẫn không có `member_rating_period`; LLD K_QLQ_24/25 giữ `m_ember_rating_period_code` — đổi theo khi `dm_atm` sinh lại. Đã sửa riêng `stock_exchange_code` → `exchange_code` (Atomic đổi tên) ở `fund_management_company_dim.market_code`. | K_QLQ_24, K_QLQ_25, K_QLQ_99, K_QLQ_105 | **Open — chờ Atomic khôi phục RATING_PD/JOB_TL_PRO** |
 
 ---
