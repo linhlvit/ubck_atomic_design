@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_investor_flow_snpst_flat ON CLUSTER
     buy_val                   Nullable(Decimal(23,2)) COMMENT 'GTGD mua theo nhóm NĐT tại ngày t',
     sell_val                  Nullable(Decimal(23,2)) COMMENT 'GTGD bán theo nhóm NĐT tại ngày t',
     net_flow_val              Nullable(Decimal(23,2)) COMMENT 'Dòng tiền ròng theo nhóm NĐT tại ngày t',
-    trading_val_ratio         Nullable(Decimal(5,2))  COMMENT 'Tỷ trọng GTGD nhóm NĐT trên tổng GTGD toàn thị trường',
+    trading_val_ratio         Nullable(Decimal(5,2))  COMMENT 'Tỷ trọng GTGD (mua + bán) của nhóm NĐT trên tổng GTGD của 4 nhóm NĐT loại trừ nhau trong ngày (4 nhóm cộng lại = 100%)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt              Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',

@@ -12841,9 +12841,9 @@ entities:
         data_type: "decimal(5,2)"
         nullable: true
         key: "DD"
-        description: "Tỷ trọng GTGD nhóm NĐT trên tổng GTGD toàn thị trường"
-        source_atomic_table: "fct_market_risk_snpst"
-        source_atomic_column: "fct_market_risk_snpst.total_trading_val_matched"
+        description: "Tỷ trọng GTGD (mua + bán) của nhóm NĐT trên tổng GTGD (mua + bán) của 4 nhóm NĐT loại trừ nhau trong ngày (DOMESTIC_INDIVIDUAL, FOREIGN_INDIVIDUAL, DOMESTIC_INSTITUTION, FOREIGN_INSTITUTION) — 4 nhóm cộng lại = 100%"
+        source_atomic_table: "fct_investor_flow_snpst"
+        source_atomic_column: "fct_investor_flow_snpst.buy_val"
 
   - id: "DTM-industry_dim"
     logical_name: "Industry Dimension"
