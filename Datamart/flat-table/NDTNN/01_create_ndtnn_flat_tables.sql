@@ -270,7 +270,11 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_report_value_flat
     data_tp                                    Nullable(String)           COMMENT 'Kiểu dữ liệu ô — từ Foreign Investor Report Structure Dimension',
 
     -- [MỚI 2026-10-05] đặt CUỐI để khớp ALTER TABLE ADD COLUMN; khóa nghiệp vụ SHEET_ID ‖ INDICATOR_UID (structure_code chỉ duy nhất trong 1 sheet)
-    fir_structure_code                         Nullable(String)           COMMENT 'Mã ô cấu trúc = SHEET_ID ‖ INDICATOR_UID — từ Foreign Investor Report Structure Dimension'
+    fir_structure_code                         Nullable(String)           COMMENT 'Mã ô cấu trúc = SHEET_ID ‖ INDICATOR_UID — từ Foreign Investor Report Structure Dimension',
+
+    -- [MỚI 2026-10-13] Ngày báo cáo (role-playing Calendar Date Dimension, nullable) — đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    rpt_dt_dim_id                              Nullable(String)           COMMENT 'FK to Calendar Date Dimension (Role-Playing: Report Date) — ngày chốt số liệu của báo cáo (FIMS DayReport), khác ngày nộp; NULL khi nguồn không có',
+    rpt_cdr_dt                                 Nullable(Date)             COMMENT 'Ngày báo cáo (ngày chốt số liệu) — từ Calendar Date Dimension (role Report Date)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(submission_cdr_dt))
@@ -297,7 +301,12 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_capital_flow_snps
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
 
     -- From: CALENDAR DATE DIMENSION
-    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension'
+    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+
+    -- [MỚI 2026-10-13] đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    rpt_code                                   Nullable(String)           COMMENT 'Mã báo cáo (IBOU9 — PLIV-TT51, sheet I)',
+    rpt_dt_dim_id                              Nullable(String)           COMMENT 'FK to Calendar Date Dimension (Role-Playing: Report Date) — ngày chốt số liệu của báo cáo (FIMS DayReport), khác ngày snapshot = ngày nộp; NULL khi nguồn không có',
+    rpt_cdr_dt                                 Nullable(Date)             COMMENT 'Ngày báo cáo (ngày chốt số liệu) — từ Calendar Date Dimension (role Report Date)'
 
 )
 ENGINE = ReplicatedReplacingMergeTree()

@@ -284,10 +284,15 @@ SELECT
     str_dim.data_tp,
 
 
-    str_dim.fir_structure_code   -- [MỚI 2026-10-05] cột cuối, khớp ALTER TABLE ADD COLUMN
+    str_dim.fir_structure_code,   -- [MỚI 2026-10-05] khớp ALTER TABLE ADD COLUMN
+
+    f.rpt_dt_dim_id,              -- [MỚI 2026-10-13] ngày báo cáo (role-playing, nullable) — 2 cột cuối khớp ALTER TABLE ADD COLUMN
+    nullIf(rpt_cal.cdr_dt, toDate('1970-01-01')) AS rpt_cdr_dt   -- LEFT JOIN không khớp (DayReport NULL) trả 1970-01-01 khi join_use_nulls=0 → ép về NULL
 FROM datamart.fct_foreign_investor_report_value f
 JOIN datamart.cdr_dt_dim submission_cal
     ON submission_cal.cdr_dt_dim_id = f.submission_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim rpt_cal
+    ON rpt_cal.cdr_dt_dim_id = f.rpt_dt_dim_id
 LEFT JOIN datamart.foreign_investor_report_structure_dim str_dim
     ON str_dim.foreign_investor_report_structure_dim_id = f.foreign_investor_report_structure_dim_id
 WHERE submission_cal.cdr_dt = :etl_date
@@ -311,11 +316,16 @@ SELECT
     f.capital_flow_net_val,
     f.src_stm_code,
 
-    submission_cal.cdr_dt AS snpst_cdr_dt
+    submission_cal.cdr_dt AS snpst_cdr_dt,
 
+    f.rpt_code,                   -- [MỚI 2026-10-13] 3 cột cuối khớp ALTER TABLE ADD COLUMN
+    f.rpt_dt_dim_id,
+    nullIf(rpt_cal.cdr_dt, toDate('1970-01-01')) AS rpt_cdr_dt   -- LEFT JOIN không khớp (DayReport NULL) trả 1970-01-01 khi join_use_nulls=0 → ép về NULL
 FROM datamart.fct_foreign_investor_capital_flow_snpst f
 JOIN datamart.cdr_dt_dim submission_cal
     ON submission_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim rpt_cal
+    ON rpt_cal.cdr_dt_dim_id = f.rpt_dt_dim_id
 WHERE submission_cal.cdr_dt = :etl_date
 ;
 

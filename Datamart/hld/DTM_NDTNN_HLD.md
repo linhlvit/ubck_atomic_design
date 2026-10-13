@@ -2,6 +2,7 @@
 
 **Phiên bản:** 2.8
 **Ngày:** 17/09/2026
+**Thay đổi 2026-10-13 (bổ sung chiều Ngày báo cáo + mã báo cáo cho Data Explorer — Data Modeler yêu cầu):** (1) `Fact Foreign Investor Report Value` thêm FK `rpt_dt_dim_id` (Report Date Dimension Id → Calendar Date Dimension, role-playing, nullable) ← `fir_value.rpt_day` (FIMS `RPTMEMBER.DayReport` — ngày chốt số liệu của báo cáo, khác ngày nộp `submission_dt`). (2) `Fact Foreign Investor Capital Flow Snapshot` thêm `rpt_code` (← `foreign_investor_report.rpt_code`, hằng `IBOU9` theo bộ lọc Fact; đồng bộ với Fact Portfolio Report Snapshot đã có sẵn) và FK `rpt_dt_dim_id` (`MAX(fir_value.rpt_day)` trong pivot). (3) ClickHouse flat: `ndtnn_fct_foreign_investor_report_value_flat` + `rpt_dt_dim_id`, `rpt_cdr_dt`; `ndtnn_fct_foreign_investor_capital_flow_snpst_flat` + `rpt_code`, `rpt_dt_dim_id`, `rpt_cdr_dt` (đặt CUỐI, khớp ALTER TABLE ADD COLUMN; `rpt_dt_dim_id` có trong flat vì Gate 4 yêu cầu flat chứa đủ cột Fact). erDiagram 28 khối Report Value + 2 khối Capital Flow cập nhật. Không đổi KPI/Detail Mapping (chưa KPI nào dùng ngày báo cáo). Giả định chờ dev xác nhận: O_NDTNN_42.
 **Thay đổi 2026-10-10 (rà soát kiểu dữ liệu khối lượng — tránh tràn `int`, Data Modeler yêu cầu):** `foreign_investor_trading_detail_rpt.execution_vol` đổi `Small Counter`/`int` → `Large Counter`/`bigint` (LLD, master, yaml; erDiagram vốn ghi `float` nên không đổi). Flat `ndtnn_foreign_investor_trading_detail_rpt_flat` đã `Int64`. Bảng Datamart (Iceberg) cần ALTER cột sang `bigint`. Phụ thuộc Atomic: `securities_trade.execution_vol` hiện `int` dù nguồn `bigint`. Công thức KPI không đổi.
 **Thay đổi 2026-10-10 (sửa kiểu dữ liệu `Securities Dimension` — tràn `int`, Data Modeler yêu cầu):** `listed_share_count` và `total_listing_vol` đổi `Small Counter`/`int` → `Large Counter`/`bigint` (erDiagram 2 khối, LLD, `datamart_attributes.csv`, `datamart_model.yaml`). Lý do: `int` tối đa 2.147.483.647 mà KL niêm yết của các mã vốn hóa lớn vượt ngưỡng nên tràn thành số âm/NULL. Flat `ndtnn_fct_securities_foreign_trading_snpst_flat` đã là `Int64` nên không đổi; bảng Datamart (Iceberg) cần ALTER/tạo lại cột sang `bigint`. **Phụ thuộc Atomic:** nguồn `security_trading_snapshot.listed_share_count`/`total_listing_vol` (MDDS JAD_STOCKINFOR, nguồn `character varying(255)`) và `corporate_bond_trading_snapshot.total_listing_vol` (JAD_CORPBONDINFOR) — **[CẬP NHẬT 2026-10-12]** Atomic đã đổi cả ba sang `Large Counter`/`bigint` (commit 62975d4d), hết phụ thuộc tràn ở tầng Atomic; ETL Atomic vẫn cần cast chuỗi sang số an toàn (profile giá trị không phải số). Công thức KPI không đổi.
 **Thay đổi 2026-10-09 (BA cập nhật thiết kế NĐTNN — log issue 2026-09-18…10-08; file BA thêm cột `UC` ở index 0 → 32 cột, đã cập nhật `ba_column_profile.yaml`):** Đối chiếu 10 dòng issue của BA với thiết kế. **Đã sửa:** (1) STT 8 (09-18 'thay đổi bảng nguồn') — BA nay đổi hẳn công thức: `K_NDTNN_51` = Σ cổ phiếu NĐTNN nắm giữ ÷ Σ cổ phiếu phát hành theo ngành, lọc `:pdate1`–`:pdate2`, nguồn `Fact Public Company Foreign Ownership Snapshot` (NDTNN; bỏ `Foreign Holding Value` của GSDC); `K_NDTNN_50` thêm 'Chưa phân ngành' — O_NDTNN_41. (2) STT 10 (10-08) — `K_NDTNN_54` lọc `max_foreign_ownership_ratio = 0` (trước `max_foreign_holding_quantity = 0`). (3) stock_type (09-28 `(1,2,3)` → `(1,2,3,6)`) — còn sót `IN ('1','2','3')` ở `Fact Securities Foreign Trading Snapshot` (K_NDTNN_1/2/3) và `Fact Foreign Net Flow Market Index Snapshot` → đã thêm '6' (nhánh CCQ của `Foreign Investor Trading Statistics Rpt` đã `IN ('3','6')` từ 09-28; giá trị '6' vẫn chưa xác nhận dữ liệu — O_NDTNN_35). (4) `K_NDTNN_255` đổi tên 'Trạng thái' theo BA dòng 72. **Đã khớp từ trước, không đổi:** join HNX `isin_code = issue_code` (09-18), bỏ lọc loại NĐT '7000' (09-30, O_NDTNN_36), `securities_dim.symbol` thay mã quốc tế (10-01), 360 profile giữ code trạng thái/quốc tịch/loại NĐT (10-01), tỷ lệ sở hữu = `max_foreign_ownership_ratio` + bỏ điều kiện Top 5 (10-02). Phần còn lại của diff BA (nhãn nguồn STT 9/10, khóa nối `INVESTOR.*` STT 11, `PENALTY_DECISION_SUBJECT` STT 13, `value_raw`/`fir_value` STT 1–7/16, điều kiện `report_code IN ('59WJB','BZ5X4')` STT 17) chỉ làm rõ mapping — thiết kế đã theo.
@@ -418,7 +419,7 @@ flowchart LR
 
 **Trạng thái:** READY — **[THIẾT KẾ 2026-10-02]** BA đã map xong các chỉ tiêu "Dữ liệu động" vào `uat_fims_ods.fir_value` (BA cập nhật 2026-10-02 — trước đó ghi tên ODS cũ `fact_report_cell`) và Atomic FIMS luồng báo cáo động đã thiết kế (`DataModel/Atomic/Documentation/` + `Common/`, approved 2026-10-05: `fir_value`, `fir_structure`, `foreign_investor_report`, `cl_foreign_investor_reporting_entity`; `fir_value` đã bỏ `val_nbr`/`val_string`) — thay thế `Member Regulatory Report`/`Member Report Value`/`Report Template` và các Fact tạm (`Capital Flow Report`, `Portfolio Value Report`, `Registration Report`, `NDTNN Regulatory Report Store`) ở Cụm 1b/3a/5a/7. Ánh xạ cột BA → Atomic: `report_code` → `foreign_investor_report.rpt_code`; `sheet_name` → `sheet_nm`; `row_path`/`column_path`/`section_id` → `fir_structure`; `ngay_nop` → `fir_value.submission_dt`; `value_raw` → `val_raw` (BA còn ghi `value_num`/`value_text` nhưng nguồn dev chỉ có `value_raw` — Datamart ép số/chuỗi từ `val_raw`, O_NDTNN_39); `row_order` → `dynamic_row_order`; `report_log_id` → `rpt_log_id`; `is_total_row`/`is_section_echo`/`is_band_overflow`/`is_static_copy`/`is_template_marker` → `total_row_ind`/`section_echo_ind`/`band_overflow_ind`/`static_copy_ind`/`rpt_marker_ind`; `is_mirror` đã lọc ở bước ODS → ATM.
 
-Kiến trúc 3 Fact: (1) `Fact Foreign Investor Report Value` — EAV, grain 1 ô × 1 lần nộp × 1 dòng động, phục vụ chỉ tiêu 1 ô (Nhóm 1 K_NDTNN_5–7, Nhóm 3, Nhóm 5 K_NDTNN_35 qua cột vật lý dự phòng) và Data Explorer (Nhóm 18–43: metadata báo cáo); (2) `Fact Foreign Investor Capital Flow Snapshot` — pivot 1 dòng báo cáo IBOU9 sheet I (Quốc tịch, Tên nhà đầu tư, GT dòng vốn vào ròng +/-), phục vụ Nhóm 4 (Top 5) và Nhóm 16; (3) `Fact Foreign Investor Portfolio Report Snapshot` — pivot 1 dòng báo cáo PLIII-TT51 (59WJB/BZ5X4 sheet II: quốc tịch, loại hình, tên khách hàng, 6 giá trị tài sản, tổng danh mục, 3 cờ cá nhân/quỹ/tổ chức khác quỹ), phục vụ Nhóm 4, 6, 7, 17. Pivot dùng 5 cờ = 0 (không dòng tổng/echo/overflow/static/marker) theo SQL BA. Các điểm chờ BA/dev xác nhận: xem **O_NDTNN_38**.
+Kiến trúc 3 Fact: (1) `Fact Foreign Investor Report Value` — EAV, grain 1 ô × 1 lần nộp × 1 dòng động, phục vụ chỉ tiêu 1 ô (Nhóm 1 K_NDTNN_5–7, Nhóm 3, Nhóm 5 K_NDTNN_35 qua cột vật lý dự phòng) và Data Explorer (Nhóm 18–43: metadata báo cáo); (2) `Fact Foreign Investor Capital Flow Snapshot` — pivot 1 dòng báo cáo IBOU9 sheet I (Quốc tịch, Tên nhà đầu tư, GT dòng vốn vào ròng +/-), phục vụ Nhóm 4 (Top 5) và Nhóm 16; (3) `Fact Foreign Investor Portfolio Report Snapshot` — pivot 1 dòng báo cáo PLIII-TT51 (59WJB/BZ5X4 sheet II: quốc tịch, loại hình, tên khách hàng, 6 giá trị tài sản, tổng danh mục, 3 cờ cá nhân/quỹ/tổ chức khác quỹ), phục vụ Nhóm 4, 6, 7, 17. Pivot dùng 5 cờ = 0 (không dòng tổng/echo/overflow/static/marker) theo SQL BA. Các điểm chờ BA/dev xác nhận: xem **O_NDTNN_38**. **[BỔ SUNG 2026-10-13]** `Fact Foreign Investor Report Value` và `Fact Foreign Investor Capital Flow Snapshot` có thêm chiều **Ngày báo cáo** (`rpt_dt_dim_id` → `Calendar Date Dimension`, role-playing như `submission_dt_dim_id`; nguồn `fir_value.rpt_day` = FIMS `DayReport`, nullable); Capital Flow thêm `rpt_code` (= `IBOU9`). Xem **O_NDTNN_42**.
 
 ---
 
@@ -462,6 +463,7 @@ Kiến trúc 3 Fact: (1) `Fact Foreign Investor Report Value` — EAV, grain 1 �
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -522,6 +524,7 @@ erDiagram
     Securities_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : "Securities Dimension Id"
     Public_Company_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : "Public Company Dimension Id"
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -717,6 +720,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -744,6 +748,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -834,9 +839,11 @@ erDiagram
     }
     Fact_Foreign_Investor_Capital_Flow_Snapshot {
         string Snapshot_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
         string Period_Value
+        string Report_Code
         string Nationality_Name
         string Investor_Name
         decimal Capital_Flow_Net_Value
@@ -850,6 +857,7 @@ erDiagram
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Report_Snapshot : "Snapshot Date Dimension Id"
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow_Snapshot : "Snapshot Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow_Snapshot : "Report Date Dimension Id"
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -1726,9 +1734,11 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Capital_Flow_Snapshot {
         string Snapshot_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
         string Period_Value
+        string Report_Code
         string Nationality_Name
         string Investor_Name
         decimal Capital_Flow_Net_Value
@@ -1741,6 +1751,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow_Snapshot : "Snapshot Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow_Snapshot : "Report Date Dimension Id"
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -1880,6 +1891,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -1907,6 +1919,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -1961,6 +1974,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -1988,6 +2002,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2042,6 +2057,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2069,6 +2085,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2123,6 +2140,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2150,6 +2168,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2204,6 +2223,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2231,6 +2251,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2285,6 +2306,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2312,6 +2334,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2366,6 +2389,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2393,6 +2417,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2447,6 +2472,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2474,6 +2500,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2528,6 +2555,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2555,6 +2583,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2609,6 +2638,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2636,6 +2666,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2690,6 +2721,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2717,6 +2749,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2771,6 +2804,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2798,6 +2832,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2852,6 +2887,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2879,6 +2915,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -2933,6 +2970,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -2960,6 +2998,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3014,6 +3053,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3041,6 +3081,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3095,6 +3136,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3122,6 +3164,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3176,6 +3219,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3203,6 +3247,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3257,6 +3302,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3284,6 +3330,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3338,6 +3385,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3365,6 +3413,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3419,6 +3468,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3446,6 +3496,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3500,6 +3551,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3527,6 +3579,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3581,6 +3634,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3608,6 +3662,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3662,6 +3717,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3689,6 +3745,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3743,6 +3800,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3770,6 +3828,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3824,6 +3883,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3851,6 +3911,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -3905,6 +3966,7 @@ flowchart LR
 erDiagram
     Fact_Foreign_Investor_Report_Value {
         string Submission_Date_Dimension_Id FK
+        string Report_Date_Dimension_Id FK
         string Foreign_Investor_Report_Structure_Dimension_Id FK
         string Report_Log_Id
         int Dynamic_Row_Order
@@ -3932,6 +3994,7 @@ erDiagram
     }
 
     Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Submission Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Report Date Dimension Id"
     Foreign_Investor_Report_Structure_Dimension ||--o{ Fact_Foreign_Investor_Report_Value : "Foreign Investor Report Structure Dimension Id"
 ```
 
@@ -4117,3 +4180,4 @@ graph TB
 | O_NDTNN_36 | **[MỚI 2026-10-01 — BA cập nhật mapping Nhóm 15 + rà soát Nhóm 11, 13]** (1) **Nhóm 11:** bảng Tác nghiệp chỉ lưu mã (`nationality_code`, `investor_tp_code`, `investor_status_code`) trong khi BA lấy tên (`NATIONAL.Name`, `INVESTORTYPE.Name`, `STATUS.Name`) → thêm `nationality_nm` (Atomic `geographic_area` ECAT_COUNTRY qua `nationality_id`), `investor_tp_nm`, `investor_status_nm` (Atomic `cl_value` scheme FIMS_INVESTOR_TYPE / FIMS_ACTIVITY_STATUS). Tên quốc tịch lấy từ ECAT (sau crosswalk SName) nên có thể khác chính tả `FIMS.NATIONAL.Name` — Atomic Team xác nhận crosswalk và việc `cl_value` đã nạp tên của 2 scheme FIMS. 'Đại diện giao dịch' BA mô tả Tên/CCCD/Trạng thái nhưng Trường nguồn chỉ `INVESTOR.Director` — CCCD không lên Datamart (PII). (2) **Nhóm 13:** SQL BA lấy `PENALTY_DECISION_SUBJECT` làm bảng chính (LEFT JOIN hành vi, loại xử lý) → Operational đổi driving sang `pd_subject` (đối tượng chưa có hành vi vẫn có dòng; PK = `COALESCE(mã hành vi, mã đối tượng)`; `src_stm_code` = THANHTRA_PENALTY_DECISION_SUBJECT; JOIN `penalty_type` đổi LEFT). **Khóa nối NĐTNN ↔ đối tượng xử phạt** (BA SQL chỉ lọc `ISSUED_DATE`): FILTER cũ `investor_compliance_hist_code = :selected_investor` là nhầm (mã hành vi). **Data Modeler xác nhận 2026-10-01: số giấy tờ ĐÃ MASKED** → thêm `subject_id_nbr` (Nhóm 13) và `identification_nbr` (Nhóm 11, Atomic `ip_alternative_identification`) làm khóa nối kỹ thuật, không hiển thị. Giả định cơ chế masking giống nhau ở FIMS và THANHTRA (cùng số giấy tờ → cùng giá trị masked) — Atomic Team xác nhận trước go-live. K_NDTNN_70 'Mức độ' vẫn Out-of-scope (BA tự ghi không có trường). (3) **Nhóm 15:** SQL BA mới — HNX `issue_code` là ISIN nên mã CK lấy qua `JAD_STOCKINFOR.symbolisin` (Atomic `security_trading_snapshot`), INNER JOIN stockinfor (loại giao dịch không có trong stockinfor), điều kiện NĐTNN theo sàn (HOSE `<> '00'`, HNX `IN ('10','20')`), lọc khoảng ngày + 1 tài khoản, gộp theo (tài khoản, mã CK). Bỏ điều kiện `Investor_Type_Code = '7000'` vì SQL không còn dùng — **Data Modeler xác nhận bỏ 2026-10-01**; BA nên sửa Trường nguồn dòng 95–98 cho khớp SQL. KPI: K_NDTNN_59, 62, 66–68, 84–89, 255 | Mở — Atomic Team xác nhận (1) và cơ chế masking (2); (3) **[Đã đóng 2026-10-02]** BA đã sửa Trường nguồn dòng 95–98 (bỏ điều kiện Invest Type = 7000) và bỏ điều kiện khóa PII cứng khỏi SQL dòng 93 |
 | O_NDTNN_40 | **[MỞ 2026-10-07 — đồng bộ Atomic FIMS UAT 20261006]** Atomic bỏ `foreign_investor.investor_tp_code`/`activity_status_code` (scheme deprecated 2026-10-05), thay bằng entity `cl_fims_investor_type`/`cl_fims_status`. Cần dev xác nhận: (1) miền giá trị `investor_tp_code`/`investor_status_code` nay là `FIMS.INVESTORTYPE.SName`/`FIMS.STATUS.Code` — có thể khác giá trị cũ (`InvestorTypeId`/`StatusId` thô) nếu BI hoặc dữ liệu lịch sử đang lọc theo mã; (2) `IP Alternative Identification` FIMS_INVESTOR có 2 loại dòng cho NĐT tổ chức (IdNo; BusinessNumber/BUSINESS_LICENSE) — thiết kế lọc `identification_tp_code <> 'BUSINESS_LICENSE'` để lấy IdNo làm khóa nối Nhóm 13, cần xác nhận IdNo của NĐT tổ chức khớp `pd_subject.subject_id_nbr`; (3) **[Đã sửa 2026-10-07]** cột `custodian_bank_nm` đổi `JOIN` (inner) → `LEFT JOIN` (FK `custodian_bank_id` nullable) để NĐT không có ngân hàng lưu ký không rơi khỏi bảng. | Code = SName/Code của entity phân loại FIMS; IdNo là khóa nối Nhóm 13 | K_NDTNN_58–63, K_NDTNN_66, K_NDTNN_255, `foreign_investor_dim.investor_tp_code` | Open |
 | O_NDTNN_41 | **[MỞ 2026-10-09 — BA đổi SQL STT 8 (Phân ngành)]** (1) Mô tả BA dòng 58 viết tỷ trọng GIÁ TRỊ (Tổng giá trị tài sản NĐTNN theo ngành × 100 / toàn thị trường) nhưng SQL + Trường nguồn là tỷ lệ cổ phiếu (`sum(current_shares_foreign_hold)*100/sum(total_issued_shares)` theo ngành) → thiết kế theo SQL/Trường nguồn. (2) Cộng dồn mọi snapshot trong `:pdate1`–`:pdate2` (Σ/Σ, không trung bình ngày) — giữ đúng SQL BA. (3) `Foreign Holding Value` của `Fact Public Company Foreign Holding Snapshot` (GSDC, thêm 2026-09-18 cho NDTNN) không còn NDTNN dùng — GSDC quyết định giữ/bỏ. (4) `K_NDTNN_54` lọc `max_foreign_ownership_ratio = 0`: xác nhận 0 là kín room và VSDC trả 0 chứ không NULL. Đơn vị: BA (1)(2)(4), Data Modeler (3). | Tỷ trọng theo ngành tính theo SQL BA (tỷ lệ SLCP); Ngành NULL → 'Chưa phân ngành' | K_NDTNN_50, 51, 54 | Open |
+| O_NDTNN_42 | **[MỞ 2026-10-13 — thêm Ngày báo cáo `rpt_dt_dim_id` + `rpt_code`]** (1) Nguồn Ngày báo cáo = `fir_value.rpt_day` (FIMS `RPTMEMBER.DayReport`, DDL ghi 'Ngày chốt số liệu của báo cáo', nullable) — dev xác nhận đây đúng là ngày muốn lọc/phân vùng và cho biết tỷ lệ NULL thực tế (ODS `FIR_VALUE` đã có cột `DAY_REPORT` chưa). (2) NULL → `rpt_dt_dim_id`/`rpt_cdr_dt` NULL (không dòng mặc định -1); flat dùng LEFT JOIN `cdr_dt_dim` nên không mất dòng. (3) `rpt_dt_dim_id`/`rpt_cdr_dt` KHÔNG thay `submission_dt_dim_id`/`snpst_dt_dim_id`: partition và `DELETE … WHERE :etl_date` của flat vẫn theo ngày nộp. (4) Dữ liệu lịch sử: Fact Iceberg + flat ClickHouse đã nạp cần backfill (hoặc chạy lại populate theo từng `:etl_date`), ClickHouse cần `ALTER TABLE … ADD COLUMN`. (5) `Fact Foreign Investor Portfolio Report Snapshot` (cùng nhóm Fact pivot, đã có `rpt_code`) CHƯA thêm `rpt_dt_dim_id` — chưa có yêu cầu; cân nhắc làm đồng bộ. Đơn vị: dev (1)(4), Data Modeler (5). | `rpt_dt_dim_id` = Calendar Date Dimension theo `fir_value.rpt_day`; `rpt_code` Capital Flow = `foreign_investor_report.rpt_code` | `Fact Foreign Investor Report Value`, `Fact Foreign Investor Capital Flow Snapshot` (chưa KPI nào dùng) | Open |
