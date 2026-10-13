@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Foreign Fund Management Organization Unit Staff.
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Foreign Fund Management Organization Unit Staff Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ID
-    comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_STF_FG_BRCH', ID)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_STF_FG_BRCH', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.ID
-    comment: "Lookup pair: foreign_fm_ou_staff.foreign_fm_ou_staff_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FMS.STF_FG_BRCH"
     classification_context: null
     etl_derived_value: null
 

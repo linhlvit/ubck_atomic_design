@@ -1,5 +1,7 @@
 # FMS — HLD Tier 6: Phụ thuộc Tier 5 (và Tier 1/2 đã có)
 
+> **[2026-10-13] TIER NÀY KHÔNG CÒN ENTITY TRONG HLD.** Toàn bộ bảng của tier đã được gỡ thiết kế (không còn LLD trong `lld/FMS`) và chuyển sang mục 7f của `FMS_HLD_Overview.md`. Nội dung bên dưới chỉ để tham khảo lịch sử, không còn hiệu lực; có thể xoá file này.
+
 > **Phụ thuộc Tier 1/2/3:** Fund Management Company, Investment Fund, Foreign Fund Management Organization Unit, Fund Management Company Employee, Member Rating, Foreign Fund Management Organization Unit Staff, Custodian Bank, Member Warning Parameter, Member Warning Condition
 > **Phụ thuộc Tier 5:** Fund Management Company Insider, Member Inspection Round, Fund Management Company Securities Offering, Securities Distribution Agent, Member Rating Criterion Group, Pension Fund, Transfer Agent, Pension Service Organization, Other Intermediary Organization Unit
 >

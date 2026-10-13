@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Investment Fund Representative Board Member.
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Investment Fund Representative Board Member Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: REPRESENT
     source_column: FMS.REPRESENT.ID
-    comment: "FK target: investment_fund_representative_board_member.investment_fund_representative_board_member_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_REPRESENT', ID)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_REPRESENT', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: FMS
     source_table: REPRESENT
     source_column: FMS.REPRESENT.ID
-    comment: "Lookup pair: investment_fund_representative_board_member.investment_fund_representative_board_member_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FMS.REPRESENT"
     classification_context: null
     etl_derived_value: null
 

@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Fund Management Company.
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Fund Management Company Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID
-    comment: "FK target: fund_management_company.fmc_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_SECURITIES', ID)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_SECURITIES', ID)."
     classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: FMS
     source_table: SECURITIES
     source_column: FMS.SECURITIES.ID
-    comment: "Lookup pair: fund_management_company.fmc_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FMS.SECURITIES"
     classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 

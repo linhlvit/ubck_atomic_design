@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Custodian Bank.
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Custodian Bank Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: BANK_MONI
     source_column: FMS.BANK_MONI.ID
-    comment: "FK target: custodian_bank.custodian_bank_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_BANK_MONI', ID)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_BANK_MONI', ID)."
     classification_context: "Source System Code = 'FMS_BANK_MONI' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: FMS
     source_table: BANK_MONI
     source_column: FMS.BANK_MONI.ID
-    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FMS.BANK_MONI"
     classification_context: "Source System Code = 'FMS_BANK_MONI' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 

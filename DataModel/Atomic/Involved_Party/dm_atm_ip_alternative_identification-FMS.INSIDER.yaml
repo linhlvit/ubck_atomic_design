@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Fund Management Company Insider.
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Fund Management Company Insider Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: FMS
     source_table: INSIDER
     source_column: FMS.INSIDER.ID
-    comment: "FK target: fmc_insider.fmc_insider_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS_INSIDER', ID)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_INSIDER', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: FMS
     source_table: INSIDER
     source_column: FMS.INSIDER.ID
-    comment: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FMS.INSIDER"
     classification_context: null
     etl_derived_value: null
 
@@ -80,7 +80,7 @@ attributes:
 
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning: Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp.
+    business_meaning: Số CMND/CCCD/Hộ chiếu.
     data_domain: Text
     data_type: string
     nullable: true

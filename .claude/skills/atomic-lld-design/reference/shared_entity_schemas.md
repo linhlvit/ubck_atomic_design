@@ -2,6 +2,8 @@
 
 Schema shared entity cố định toàn dự án. Bảng nguồn nào map vào shared entity phải dùng đúng tên trường này.
 
+**`Involved Party Id` / `Involved Party Code` KHÔNG phải FK** (sửa 2026-10-13): shared entity SELECT trực tiếp từ bảng gốc, không FK sang entity chính. Comment bắt buộc: Id = `Surrogate Key của shared entity. Hash: hash_id('{SOURCE}_{TABLE}', {BK_COLUMN}).`; Code = `Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ {SOURCE}.{TABLE}`. KHÔNG ghi `FK target:` / `Lookup pair:` cho 2 trường này (chỉ các FK thật như Geographic Area mới dùng).
+
 ## IP Alt Identification
 
 | Trường | Tên chuẩn | Data Domain |

@@ -1,5 +1,7 @@
 # FMS — HLD Tier 7: Phụ thuộc Tier 6 (và Tier 2/5 đã có)
 
+> **[2026-10-13] TIER NÀY KHÔNG CÒN ENTITY TRONG HLD.** Toàn bộ bảng của tier đã được gỡ thiết kế (không còn LLD trong `lld/FMS`) và chuyển sang mục 7f của `FMS_HLD_Overview.md`. Nội dung bên dưới chỉ để tham khảo lịch sử, không còn hiệu lực; có thể xoá file này.
+
 > **Phụ thuộc Tier 2:** Member Rating
 > **Phụ thuộc Tier 5:** Securities Distribution Agent
 > **Phụ thuộc Tier 6:** Member Inspection Target, Member Rating Criterion

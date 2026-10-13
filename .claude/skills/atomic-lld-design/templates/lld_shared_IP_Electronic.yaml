@@ -36,7 +36,7 @@ attributes:
     status: draft
     source_columns:
       - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
-    comment: "FK target: {Parent Entity}.{Parent Entity} Id."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('{SOURCE}_{TABLE}', {BK_COLUMN})."
     classification_context: null
     etl_derived_value: null
 
@@ -49,7 +49,7 @@ attributes:
     status: draft
     source_columns:
       - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
-    comment: "Lookup pair: {Parent Entity}.{Parent Entity} Code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ {SOURCE}.{TABLE}"
     classification_context: null
     etl_derived_value: null
 
