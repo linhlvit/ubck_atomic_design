@@ -78,6 +78,20 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
     etl_derived_value: CURRENT
 
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Giá trị địa chỉ tạm trú/hiện tại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.ADDRESS
+    comment: "Địa chỉ tạm trú/hiện tại (IP_ADDR_TYPE=CURRENT). Cặp với khối CURRENT_COUNTRY_ID/PROVINCE_ID/DISTRICT_ID."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
   - name: Country Id
     physical_name: country_id
     business_meaning: FK đến Geographic Area — quốc gia địa chỉ tạm trú hiện tại.
@@ -185,8 +199,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: PROFESSIONALS
-    source_column: null
-    comment: "ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.PROFESSIONALS.ADDRESS khi PERMANENT_ADDRESS null. ETL xử lý logic này. (2026-07-24: đăng ký lại ADDRESS vào source_columns — post_check_source_coverage phát hiện cột này chưa được ghi nhận dù đã map qua fallback comment.)"
+    source_column: NHNCK.PROFESSIONALS.PERMANENT_ADDRESS
+    comment: "Địa chỉ thường trú. (2026-10-13: bỏ ADDRESS khỏi source_columns — ADDRESS là địa chỉ tạm trú/hiện tại, đã map sang Address Value của khối CURRENT; không còn fallback chéo loại địa chỉ.)"
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 

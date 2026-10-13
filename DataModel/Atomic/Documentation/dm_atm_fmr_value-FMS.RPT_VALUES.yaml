@@ -7,7 +7,7 @@ ldm:
   physical_name: fmr_value
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Regulatory Report"
   table_type: Classification
@@ -63,6 +63,20 @@ attributes:
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'FMS_RPT_VALUES'"
     etl_derived_value: FMS_RPT_VALUES
+
+  - name: Cell Id
+    physical_name: cell_id
+    business_meaning: ID ô của báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_VALUES
+    source_column: FMS.RPT_VALUES.TGT_ID
+    comment: "Link với trường CELL_ID của bảng FMS.SHEET, được parsing từ trường CELLS_META."
+    classification_context: null
+    etl_derived_value: null
 
   - name: Fund Management Report Submission Id
     physical_name: fmr_submission_id
@@ -218,8 +232,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Report Period Type Code
-    physical_name: rpt_period_tp_code
+  - name: Period Type Code
+    physical_name: period_tp_code
     business_meaning: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng."
     data_domain: Classification Value
     data_type: string

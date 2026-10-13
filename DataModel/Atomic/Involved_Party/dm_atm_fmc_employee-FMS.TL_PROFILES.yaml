@@ -92,34 +92,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Fund Management Company Organization Unit Id
-    physical_name: fmc_ou_id
-    business_meaning: "FK -> BRANCHS: Chi nhánh công tác của người hành nghề."
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: TL_PROFILES
-    source_column: FMS.TL_PROFILES.BRANCH_ID
-    comment: "FK target: fmc_organization_unit.fmc_ou_id. Hash: hash_id('FMS_BRANCHS', BRANCH_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Fund Management Company Organization Unit Code
-    physical_name: fmc_ou_code
-    business_meaning: Mã chi nhánh công tác.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FMS
-    source_table: TL_PROFILES
-    source_column: FMS.TL_PROFILES.BRANCH_ID
-    comment: "Lookup pair: fmc_organization_unit.fmc_ou_code. Pair with Fund Management Company Organization Unit Id."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Fund Management Company Employee Full Name
     physical_name: fmc_employee_full_nm
     business_meaning: Tên hiển thị chính.

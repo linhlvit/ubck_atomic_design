@@ -7,7 +7,7 @@ ldm:
   physical_name: fmr_sheet
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Documentation
   bcv_concept: "[Documentation] Form Document"
   table_type: Relative
@@ -159,5 +159,89 @@ attributes:
     source_table: SHEET
     source_column: FMS.SHEET.CODE
     comment: "Cột CODE nguồn giữ dạng Text thường — không phải BK (BK = hash từ ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Index
+    physical_name: row_index
+    business_meaning: Số thứ tự hàng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.ROW_INDEX
+    comment: Parsing từ FMS.SHEET.CELLS_META.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Index
+    physical_name: column_index
+    business_meaning: Số thứ tự cột.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.COLUMN_INDEX
+    comment: Parsing từ FMS.SHEET.CELLS_META.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Cell Id
+    physical_name: cell_id
+    business_meaning: ID ô của báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.CELL_ID
+    comment: Parsing từ FMS.SHEET.CELLS_META. Link với trường TGT_ID của bảng FMS.RPT_VALUES.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Label Name
+    physical_name: label_nm
+    business_meaning: Nhãn hiển thị của ô.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.LABEL_NM
+    comment: Parsing từ FMS.SHEET.DATA_LABEL.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Span
+    physical_name: row_span
+    business_meaning: Số hàng được gộp.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.ROW_SPAN
+    comment: Parsing từ FMS.SHEET.MERGE_CELLS.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Span
+    physical_name: column_span
+    business_meaning: Số cột được gộp.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SHEET
+    source_column: FMS.SHEET.COLUMN_SPAN
+    comment: Parsing từ FMS.SHEET.MERGE_CELLS.
     classification_context: null
     etl_derived_value: null

@@ -22,48 +22,6 @@ ldm:
     brd: BRD-SRC-NHNCK-CERTIFICATE_DEPARTMENTS
 
 attributes:
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: CERTIFICATE_DEPARTMENTS
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_DEPARTMENTS'"
-    etl_derived_value: NHNCK_CERTIFICATE_DEPARTMENTS
-
-  - name: Regulatory Authority Organization Unit Id
-    physical_name: ra_ou_id
-    business_meaning: "FK -> DEPARTMENTS: Phòng ban phụ trách xử lý loại CCHN này."
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: NHNCK
-    source_table: CERTIFICATE_DEPARTMENTS
-    source_column: NHNCK.CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID
-    comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.DEPARTMENTS: CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK_DEPARTMENTS', DEPARTMENT_CODE). Composite PK cùng Securities Practitioner License Certificate Type Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Regulatory Authority Organization Unit Code
-    physical_name: ra_ou_code
-    business_meaning: Mã phòng ban phụ trách (denormalized lookup).
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: CERTIFICATE_DEPARTMENTS
-    source_column: NHNCK.DEPARTMENTS.DEPARTMENT_CODE
-    comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Regulatory Authority Organization Unit Id. Giá trị lấy từ NHNCK.DEPARTMENTS.DEPARTMENT_CODE sau ETL crosswalk — chi tiết xem comment Regulatory Authority Organization Unit Id."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Securities Practitioner License Certificate Type Id
     physical_name: sp_license_certificate_tp_id
     business_meaning: "FK -> CERTIFICATES: Loại CCHN được phòng ban này phụ trách."
@@ -91,3 +49,31 @@ attributes:
     comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code. Pair with Securities Practitioner License Certificate Type Id. Giá trị lấy từ NHNCK.CERTIFICATES.CERTIFICATE_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Certificate Type Id."
     classification_context: null
     etl_derived_value: null
+
+  - name: Department Code
+    physical_name: department_code
+    business_meaning: Mã phòng ban phụ trách (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_DEPARTMENTS
+    source_column: NHNCK.DEPARTMENTS.DEPARTMENT_CODE
+    comment: "Cần ETL crosswalk sang NHNCK.DEPARTMENTS: CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE. SCHEMA_CODE=NHNCK.DEPARTMENTS"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_DEPARTMENTS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_DEPARTMENTS'"
+    etl_derived_value: NHNCK_CERTIFICATE_DEPARTMENTS
