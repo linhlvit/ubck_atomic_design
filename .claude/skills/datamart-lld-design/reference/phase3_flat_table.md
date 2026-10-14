@@ -261,6 +261,8 @@ Mọi sự thay đổi về schema, logic tính toán, hoặc danh mục bảng 
 [PHA 2: Flat Table DDL / DML Synchronization]
   - 01_create_{module}_flat_tables.sql (DDL: thêm/sửa cột + kiểu dữ liệu ClickHouse + COMMENT)
   - 02_populate_{module}_flat_tables.sql (DML: thêm/sửa SELECT projection + JOIN + WHERE :etl_date)
+  - Thêm cột vào bảng flat ĐÃ CÓ: `build_flat_tables.py --module {MODULE} --sync-columns [--apply]` (DDL + DML cùng
+    thứ tự LLD). Bảng mới hoàn toàn: `build_flat_tables.py --module {MODULE}`. Xem A20 trong SKILL.md.
   - flat_table_mapping.md (Cập nhật ánh xạ bảng, FKs, KPI groups)
                       │
                       ▼

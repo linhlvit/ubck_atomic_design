@@ -51,7 +51,7 @@ if sys.platform.startswith("win"):
         except Exception:
             pass
 
-from datamart_common import find_project_root, get_available_modules
+from datamart_common import find_project_root, get_available_modules, resolve_module_path
 
 
 GATE_SPECS = [
@@ -129,6 +129,50 @@ GATE_SPECS = [
 # SKILL.md "Đối chiếu SỐ LƯỢNG BA ↔ HLD" checklist item) and read its per-Nhóm
 # delta table for the specific Nhóm(s) just touched — do not pipe through
 # `tail`/`head` when checking it (see 2026-09-22 GSTT incident note).
+
+
+def _git_lines(root: Path, rev: str, rel: str) -> int:
+    try:
+        out = subprocess.run(["git", "show", f"{rev}:{rel}"], cwd=root, capture_output=True, timeout=60)
+        return out.stdout.count(b"\n") if out.returncode == 0 else -1
+    except Exception:
+        return -1
+
+
+def preflight_integrity(module: str, root: Path) -> Dict[str, Any]:
+    """Pre-flight S1 — Detail Mapping / HLD không bị cắt so với HEAD (cùng ngưỡng 80% với ba_hld_sync_check S1).
+
+    Chạy ĐẦU TIÊN và tính vào kết quả tổng. Lý do: khi Detail Mapping/HLD mất cả Nhóm, Gate 0/1/2/3/5/6 vẫn
+    PASS vì chúng chỉ đối chiếu các dòng CÒN LẠI với nhau (QLQ 2026-10-14: DM 2699→183 dòng, Gate 0/1/2/3/5/6 PASS;
+    GSTT 2026-09-23: 577→101) — trước đây chỉ `ba_hld_sync_check.py` (không nằm trong runner) mới nhìn ra.
+
+    LƯU Ý: không phân biệt được cắt CHỦ Ý với hư hỏng. QLQ 2026-10-14 là cắt chủ ý của user (bỏ Nhóm 29–91)
+    nên Pre-flight FAIL là đúng cho tới khi human commit bản mới (HEAD đổi thì cờ tự hết). FAIL ⇒ đọc MEMORY.md,
+    kiểm mtime, hỏi human — KHÔNG tự khôi phục.
+    """
+    base = {"gate": "Pre-flight", "name": "File Integrity S1 (Detail Mapping/HLD không bị cắt so với HEAD)"}
+    if module.strip().upper() == "COMMON":
+        return {**base, "status": "SKIP", "exit_code": 0, "message": "N/A — Common", "output": ""}
+    problems: List[str] = []
+    lines: List[str] = []
+    for kind, label in (("detail_mapping", "Detail Mapping"), ("hld", "HLD")):
+        p = resolve_module_path(root, module, kind)
+        if not p:
+            continue
+        rel = Path(p).relative_to(root).as_posix()
+        cur = Path(p).read_bytes().count(b"\n")
+        head, prev = _git_lines(root, "HEAD", rel), _git_lines(root, "HEAD~1", rel)
+        lines.append(f"{label}: working={cur} | HEAD={head} | HEAD~1={prev}")
+        if head > 0 and cur < 0.8 * head:
+            problems.append(f"{label} working ({cur}) < 80% HEAD ({head}) — nghi bị cắt/ghi đè. "
+                            f"DỪNG, không ghi thêm; báo human rồi mới khôi phục (có thể phiên khác đang sửa)")
+        elif head > 0 and prev > 0 and head < 0.8 * prev and cur < 0.8 * prev:
+            problems.append(f"{label}: HEAD ({head}) < 80% HEAD~1 ({prev}) — commit gần nhất đã cắt file, "
+                            f"khôi phục từ HEAD~1 trước")
+    if problems:
+        return {**base, "status": "FAIL", "exit_code": 1, "message": " | ".join(problems),
+                "output": "\n".join(lines)}
+    return {**base, "status": "PASS", "exit_code": 0, "output": "\n".join(lines)}
 
 
 def run_gate(
@@ -272,6 +316,10 @@ def main() -> None:
 
     for mod in modules:
         mod_results = []
+        pf = preflight_integrity(mod, root)
+        mod_results.append(pf)
+        if pf["status"] not in ("PASS", "SKIP"):
+            has_fail = True
         for gate_spec in GATE_SPECS:
             r = run_gate(gate_spec, mod, root, strict=args.strict, json_output=args.json_output)
             mod_results.append(r)

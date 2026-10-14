@@ -208,6 +208,26 @@ def patch_dm(path: Path, nhom: str, src: Path) -> Tuple[DesignCsv, DesignCsv]:
     return cur, DesignCsv(header=cur.header, rows=rows, quote_all=cur.quote_all, path=path)
 
 
+SHRINK_MIN_LINES = 50      # file nhỏ hơn ngưỡng này không áp chốt (thay đổi tỉ lệ vô nghĩa)
+SHRINK_RATIO = 0.8         # cùng ngưỡng với S1 của ba_hld_sync_check.py
+
+
+def guard_shrink(label: str, old_n: int, new_n: int, allow: bool) -> None:
+    """Từ chối ghi nếu file co lại > 20% — thay một Nhóm không bao giờ làm mất vài chục % file.
+
+    Sự cố thật: GSTT 2026-09-23, Detail Mapping 577 → 101 dòng do commit của module khác; chỉ phát hiện nhờ
+    S1 chạy sau đó. (Chốt này CHỈ chặn ghi vô ý qua công cụ — nó không phân biệt cắt chủ ý của user, vốn phải
+    đi qua `--allow-shrink` sau khi human xác nhận.)
+    """
+    if allow or old_n < SHRINK_MIN_LINES or new_n >= SHRINK_RATIO * old_n:
+        return
+    raise SystemExit(
+        f"❌ CHỐT CHẶN CO FILE: {label} sẽ giảm {old_n} → {new_n} dòng "
+        f"(< {int(SHRINK_RATIO * 100)}%). Thay 1 Nhóm không được làm mất cỡ này — nghi payload sai "
+        f"Nhóm/thiếu dòng hoặc file đang bị phiên khác sửa. KHÔNG ghi. "
+        f"Nếu thật sự có chủ ý (đã hỏi human): thêm --allow-shrink.")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Ghi khối Nhóm ngược vào HLD / Detail Mapping gốc")
     ap.add_argument("-m", "--module", required=True)
@@ -220,6 +240,8 @@ def main() -> None:
                      help="Bỏ in nguyên văn diff khi ghi thật (chỉ in số dòng thêm/bớt) — "
                           "dùng SAU KHI đã --dry-run và được duyệt trong cùng phiên, tránh "
                           "in lặp 2 lần cùng 1 diff lớn. Không ảnh hưởng --dry-run (vẫn in đủ để duyệt).")
+    ap.add_argument("--allow-shrink", action="store_true",
+                    help="Cho phép ghi dù file co > 20% (chỉ khi human đã duyệt rõ việc xóa/gộp cỡ lớn)")
     ap.add_argument("--root", default=None)
     args = ap.parse_args()
 
@@ -243,6 +265,7 @@ def main() -> None:
                              args.insert_after)
         if not show_diff(old, new, rel, quiet=quiet_effective):
             return
+        guard_shrink(rel, len(old), len(new), args.allow_shrink)   # cả --dry-run: báo sớm, trước khi duyệt
         if args.dry_run:
             print("\nⓘ --dry-run: chưa ghi gì.")
             return
@@ -254,6 +277,7 @@ def main() -> None:
         fmt = lambda t: [",".join(r) for r in t.rows]  # noqa: E731
         if not show_diff(fmt(cur), fmt(new), rel, quiet=quiet_effective):
             return
+        guard_shrink(rel, len(cur.rows), len(new.rows), args.allow_shrink)
         if args.dry_run:
             print("\nⓘ --dry-run: chưa ghi gì.")
             return

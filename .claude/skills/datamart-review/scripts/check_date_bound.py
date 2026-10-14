@@ -12,7 +12,7 @@ Quét `Datamart/lld/{MODULE}/*.csv` (file per-table, cột `etl_logic`), bắt 4
        (không có BETWEEN) → LAG luôn NULL.
 
 Heuristic tĩnh, không thay thế review: có thể báo thừa (VD cell đã bị chặn gián tiếp qua JOIN ngày) hoặc
-sót (điều kiện ngày viết bằng alias). Marker ngoại lệ có truy vết trong cell/description:
+sót (alias của bảng được nhận diện qua `FROM t a`/`t a WHERE`; điều kiện ngày viết bằng tên khác vẫn có thể lọt). Marker ngoại lệ có truy vết trong cell/description:
 `[DATE-BOUND-REVIEWED <ngày>: <lý do>; O_xxx]`.
 
 Cách chạy (từ thư mục gốc repo):
@@ -67,9 +67,23 @@ def load_tables(root):
     return names
 
 
+SQL_KEYWORDS = {'WHERE', 'JOIN', 'ON', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'CROSS', 'GROUP', 'ORDER', 'AND', 'OR',
+                'UNION', 'SELECT', 'AS', 'FROM', 'LIMIT', 'HAVING', 'SET', 'USING', 'WHEN', 'THEN', 'ELSE', 'END',
+                'IN', 'IS', 'NOT', 'NULL', 'BETWEEN', 'LIKE', 'RLIKE', 'WITH', 'OVER', 'PARTITION'}
+
+
+def names_of(text, t):
+    """Tên bảng t + alias của nó trong cell (`FROM t a`, `t AS a`, `t a WHERE`) — điều kiện ngày thường viết theo alias."""
+    out = {t}
+    for m in re.finditer(rf'\b{t}\b(?!\.)\s+(?:AS\s+)?([A-Za-z_]\w*)\b', text, re.I):
+        if m.group(1).upper() not in SQL_KEYWORDS:
+            out.add(m.group(1))
+    return out
+
+
 def bounded(text, t=None):
-    """Có điều kiện ngày trực tiếp (bảng t nếu chỉ định, nếu không thì bất kỳ)."""
-    pre = rf'\b{t}\.' if t else r'\b\w+\.'
+    """Có điều kiện ngày trực tiếp (bảng t hoặc alias của t nếu chỉ định, nếu không thì bất kỳ)."""
+    pre = r'\b(?:' + '|'.join(re.escape(n) for n in sorted(names_of(text, t))) + r')\.' if t else r'\b\w+\.'
     pats = [
         rf'{pre}{DATE_COLS}\s*(=|<=|>=|<|>)\s*[^\s,)]*:etl_date',
         rf'{pre}{DATE_COLS}\s+BETWEEN\b',
@@ -129,7 +143,8 @@ def scan_module(root, module, tables, only=None):
                 continue
             for s in subqueries(L):
                 for t in tables:
-                    if re.search(rf'\b(FROM|JOIN)\s+{t}\b', s, re.I) and not bounded(s):
+                    # `(?!\.)`: loại `EXTRACT(YEAR FROM market_index_snapshot.trading_dt)` — đó là tên cột, không phải bảng
+                    if re.search(rf'\b(FROM|JOIN)\s+{t}\b(?!\.)', s, re.I) and not bounded(s):
                         findings.append(('R3', fname, col, f'subquery trên {t} không có điều kiện ngày bên trong'))
                         break
             outer = L

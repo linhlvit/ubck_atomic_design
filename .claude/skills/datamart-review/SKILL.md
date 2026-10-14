@@ -170,6 +170,10 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
    ```
    Script kiểm 5 mục:
    - **S1:** Detail Mapping và HLD còn nguyên, không bị xóa hay cắt so với HEAD / HEAD~1.
+     (Từ 2026-10-14 `run_quality_gates.py` cũng chạy **Pre-flight S1** đầu tiên, tính vào kết quả tổng — vì các
+     Gate 0–8 chỉ đối chiếu các dòng CÒN LẠI nên KHÔNG tự thấy việc mất cả Nhóm. Pre-flight FAIL ⇒ dừng.
+     **S1 không phân biệt cắt chủ ý với hư hỏng** (QLQ 2026-10-14 là cắt chủ ý của user): đọc lại MEMORY.md, kiểm
+     mtime xem có phiên khác đang ghi, hỏi human — "rà/bổ sung" không phải lệnh khôi phục. Cắt chủ ý hết cờ khi human commit.)
    - **S2:** STT BA bị dùng chung cho 2 màn hình, hoặc dòng bị gán nhầm STT (đối chiếu cột Dashboard).
    - **S3:** số Nhóm HLD / Detail Mapping lệch STT BA, hoặc tên Nhóm lệch tên màn hình.
    - **S4:** dòng BA không ghép được KPI.
@@ -383,3 +387,17 @@ python scripts/run_quality_gates.py --module [MODULE] --strict
 6. **Source Column Existence Check (`L4-FLAT-TABLE-COLUMN-NOT-IN-LLD`):** Mọi tham chiếu `<alias>.<cột>` trong `02_populate_*.sql` phải tồn tại ở bảng nguồn tương ứng (phân giải alias qua `FROM`/`JOIN`, đối chiếu master registry). **[MỚI 2026-09-18]** Bổ sung sau ca NDTNN: `SELECT f.account_holder_nm` từ `foreign_investor_trading_detail_rpt` trong khi bảng đó không có cột này — Gate 4 vẫn PASS vì tiêu chí 1 chỉ soi chiều LLD → DDL, còn cột bịa trong DDL/DML thì không ai kiểm; script chỉ vỡ khi chạy thật. Cố ý KHÔNG kiểm "mọi cột DDL phải có trong LLD bảng gốc" — DDL hợp lệ có cột lấy từ Dimension qua JOIN.
 
 > 🚫 **LỆNH CẤM:** Nghiêm cấm mọi hành vi bỏ qua Gate 4 hoặc phê duyệt bàn giao khi Flat Table SQL chưa được đồng bộ đạt 100% cả 6 tiêu chí trên!
+
+**Gate 4 FAIL không phải "tồn đọng".** Khi review gặp Gate 4 FAIL — đặc biệt `L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING`
+— không ghi nhận như "lỗi có từ trước" rồi đi tiếp. Sửa ngay bằng công cụ, hoặc ghi rõ lý do + chủ xử lý:
+
+```bash
+python scripts/build_flat_tables.py --module [MODULE] --check                     # cột/bảng thiếu (cùng ngữ nghĩa tiêu chí 1)
+python scripts/build_flat_tables.py --module [MODULE] --sync-columns              # dry-run: kế hoạch chèn DDL + DML
+python scripts/build_flat_tables.py --module [MODULE] --sync-columns --apply      # ghi thật, có sao lưu
+```
+
+Sự cố thật (QLQ, 2026-10-14): 29 cột `opr_*` có KPI READY thiếu khỏi flat qua nhiều phiên vì Gate 4 FAIL bị gạt
+sang "tồn đọng" và không có công cụ sửa (xem A20 `datamart-lld-design`). Phân biệt khi đọc kết quả:
+`COVERAGE-MISSING` = cột LLD thiếu ở flat (phải sửa); `COLUMN-DRIFT` = cột ở flat không có trong master (có thể
+là sai tên cột Dimension denormalize — NHNCK, GSDC đang có loại này, cần đối chiếu từng cột, không sửa hàng loạt).

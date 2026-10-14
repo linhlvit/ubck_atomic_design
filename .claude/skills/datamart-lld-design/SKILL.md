@@ -136,6 +136,7 @@ python .claude/skills/datamart-review/scripts/build_registry.py       # -> datam
 python .claude/skills/datamart-review/scripts/build_model_yaml.py     # -> datamart_model.yaml (chỉ khối columns)
 python .claude/skills/datamart-review/scripts/build_kpi_index.py      # -> Datamart/index/kpi_index.csv
 python .claude/skills/datamart-review/scripts/build_flat_tables.py --module {MODULE} --check
+# --check báo thiếu khối bảng + cột LLD thiếu trong flat DDL (cùng ngữ nghĩa Gate 4). Có thiếu -> A20: --sync-columns [--apply]
 ```
 
 - `Datamart/lld/datamart_attributes.csv` và khối `columns` trong `Datamart/datamart_model.yaml`
@@ -278,9 +279,27 @@ Cùng tinh thần H7 bên skill HLD: khóa JOIN giữa 2 entity nguồn (VD `mar
 
 ### A11 — Kiểm toàn vẹn Detail Mapping TRƯỚC khi sửa `[L0-DM-FILE-INTEGRITY]`
 
-Detail Mapping là file lớn, nhiều người cùng sửa. Thực tế đã xảy ra 2 lần trong 1 ngày:
-1. Commit của module khác (`1b7b7011`, TKNB) cắt `DTM_GSTT_Detail_Mapping.csv` từ 577 xuống 101 dòng.
+Detail Mapping là file lớn, nhiều người cùng sửa. Thực tế đã xảy ra:
+1. Commit của module khác (`1b7b7011`, TKNB) cắt `DTM_GSTT_Detail_Mapping.csv` từ 577 xuống 101 dòng — hư hỏng thật.
 2. File bị xóa khỏi working copy giữa phiên.
+3. **QLQ 2026-10-14 — KHÔNG phải hư hỏng:** user chủ động cắt `DTM_QLQ_Detail_Mapping.csv` từ 2699 xuống 183 dòng
+   (bỏ Nhóm 29–91, "không cần quan tâm nhóm dashboard nữa"), phiên khác ghi quyết định vào MEMORY.md. Số liệu y
+   hệt một vụ mất dữ liệu (S1 FAIL, TC5 thiếu 63 Nhóm); một phiên đã "khôi phục" nối lại 2516 dòng và phải hoàn tác.
+   **Bài học: S1 không phân biệt được cắt chủ ý với hư hỏng — người đọc phải phân biệt.**
+
+**Khi S1 báo cắt: dừng ghi, KHÔNG tự khôi phục.** Theo thứ tự:
+1. Đọc lại `MEMORY.md` (đặc biệt mục mới) — phiên song song có thể vừa ghi quyết định cắt/gộp có chủ ý.
+2. `ls -l --time-style=full-iso` DM/HLD/master: mtime vài phút trước ⇒ phiên khác đang ghi cùng working tree.
+3. Hỏi human kèm đường dẫn bản sao lưu đầy đủ gần nhất; chỉ khôi phục sau khi human xác nhận là hư hỏng.
+   "Bổ sung"/"rà" không phải xác nhận khôi phục. Khôi phục = NỐI phần mất vào bản hiện tại (không chép đè bản
+   backup — bản đang có thể chứa sửa hợp lệ sau thời điểm backup).
+Cắt chủ ý được human xác nhận thì cờ S1 hết khi human **commit** bản mới (HEAD đổi) — không cần "sửa" gì.
+
+Chốt chặn hiện có (không thay cho việc tự kiểm đầu phiên):
+- `run_quality_gates.py` có **Pre-flight S1** chạy đầu tiên và tính vào kết quả tổng — file co > 20% so với HEAD là FAIL ngay
+  (kể cả khi cắt chủ ý, cho tới khi commit).
+- `apply_patch.py` **từ chối ghi** (kể cả `--dry-run`) nếu file co > 20%; chỉ vượt được bằng `--allow-shrink` sau khi human duyệt.
+- Script ad-hoc tự viết ghi thẳng Detail Mapping/HLD không có chốt này — tự so số dòng trước/sau và dừng nếu tụt > 20%.
 
 Đầu mỗi phiên sửa LLD, và ngay trước mỗi `apply_patch.py --target dm`, chạy:
 
@@ -432,6 +451,37 @@ python .claude/skills/datamart-review/scripts/check_date_bound.py --module {MODU
 ```
 
 Heuristic tĩnh (R1/R3/R4/R6) — có thể báo thừa hoặc sót (điều kiện viết bằng alias), phải đọc từng phát hiện; **chưa nằm trong `run_quality_gates.py`**.
+
+### A20 — Cột mới ở Fact/Operational phải lên flat DDL + DML TRONG CÙNG LƯỢT `[L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING]`
+
+Mọi đường thêm cột vào bảng Fact/Operational — Phase 1, `apply_kpi_patch.py`, `apply_patch.py`, hay sửa
+tay Attributes CSV — đều kết thúc bằng đồng bộ flat. **Không phụ thuộc có đang ở Phase 3 hay không**:
+Trigger 1 của ma trận đồng bộ (mục Phase 3) chỉ nằm trong Phase 3, nên khi thêm KPI vào Nhóm đã có
+(đúng use case của `apply_kpi_patch.py`) quy tắc đó không được đọc tới.
+
+Sự cố thật (QLQ, phát hiện 2026-10-14): **29 cột** của 5 bảng `opr_*` (VD `assets_under_management_amt`,
+`owner_equity_amt`, `issued_amt`…) có đủ trong LLD per-table, master, model yaml, Detail Mapping và có 29 KPI
+READY tiêu thụ (K_QLQ_22/27/29–32/35/100/102/143–157/174–178), nhưng **không có** trong `01_create`/`02_populate`
+nên dashboard Nhóm 3/4/13/22/26 không đọc được từ flat. Thiếu từ commit `2f62880d`, qua nhiều phiên. Ba lý do:
+1. `build_flat_tables.py` cũ chỉ sinh khối cho **bảng chưa có**; không thêm cột vào bảng đã có — không công cụ nào sửa.
+2. `apply_kpi_patch.py` chỉ patch HLD/Detail Mapping/Attributes, im lặng về flat.
+3. Gate 4 **đã báo FAIL** nhưng bị xếp vào "Gate tồn đọng từ trước" và bỏ qua. Gate FAIL tồn đọng là nợ,
+   không phải trạng thái bình thường.
+
+**Lệnh (chạy ngay sau khi thêm/đổi cột Fact/Operational, trước khi báo kết quả):**
+
+```bash
+python .claude/skills/datamart-review/scripts/build_flat_tables.py --module {MODULE} --sync-columns          # dry-run: in kế hoạch
+python .claude/skills/datamart-review/scripts/build_flat_tables.py --module {MODULE} --sync-columns --apply  # ghi thật + sao lưu
+python .claude/skills/datamart-review/scripts/check_flat_table.py   --module {MODULE} --strict               # Gate 4
+```
+
+- Công cụ chèn đúng thứ tự LLD vào **cả** DDL lẫn DML (SELECT khớp theo vị trí). Cột nào không định vị được
+  (projection phức tạp) được liệt kê để chèn tay — không được bỏ qua.
+- Kiểu ClickHouse theo quy ước sẵn có: `int/bigint→Int64`, `decimal(p,s)→Decimal(p,s)`, `float→Float64`, bọc `Nullable` theo `nullable`.
+- **Gate 4 FAIL không bao giờ là "tồn đọng"**: gặp thì sửa bằng lệnh trên hoặc ghi rõ lý do không sửa được kèm tên chủ xử lý.
+  Chỉ cột Dimension denormalize (`snpst_cdr_dt`, `fund_type_nm`…) mới được phép có ở flat mà không có ở LLD của bảng đó.
+- Phép thử nhanh cho người thiết kế: *"cột có trong Detail Mapping mà không có trong flat DDL?"* — Gate 4 tiêu chí 1 trả lời đúng câu này.
 
 ### Lệnh bổ sung — Gate 8 Design Lint
 
@@ -1551,7 +1601,7 @@ Mọi thay đổi tại tầng LLD (thêm/sửa cột Fact/Dim, sửa logic, th�
 3. **Pha 3 (Quality Gate Review):** Chạy `check_parity.py --strict`, `check_orphan.py --strict`, và đối soát Column Coverage / 1-1 Projection Alignment.
 
 ### Ma trận 4 Trigger và Hành động đồng bộ (Sync Triggers & Actions Matrix)
-- **Trigger 1 (Thêm cột mới vào Fact/Dim):** Thêm dòng vào Attributes module + master `datamart_attributes.csv` + `datamart_model.yaml` → Thêm khai báo cột tương ứng trong DDL `01_create_*.sql` (kiểu ClickHouse, COMMENT) → Bổ sung projection vào `SELECT` của DML `02_populate_*.sql` → Cập nhật `flat_table_mapping.md`.
+- **Trigger 1 (Thêm cột mới vào Fact/Dim):** Thêm dòng vào Attributes module + master `datamart_attributes.csv` + `datamart_model.yaml` → Thêm khai báo cột tương ứng trong DDL `01_create_*.sql` (kiểu ClickHouse, COMMENT) → Bổ sung projection vào `SELECT` của DML `02_populate_*.sql` → Cập nhật `flat_table_mapping.md`. **Dùng `build_flat_tables.py --module {MODULE} --sync-columns [--apply]` cho 2 bước DDL + DML (xem A20) — không chèn tay; quy tắc này áp dụng cả khi KHÔNG ở Phase 3 (VD thêm KPI vào Nhóm đã có).**
 - **Trigger 2 (Sửa công thức / Thay thế cột):** Cập nhật Detail Mapping & Attributes CSV + master `datamart_attributes.csv` → Sửa tên cột/schema trong DDL `01_create_*.sql` → Sửa projection trong DML `02_populate_*.sql` → Ghi log header file SQL (`-- Sửa YYYY-MM-DD: ...`).
 - **Trigger 3 (Thêm bảng Fact/Operational mới):** Tạo file Attributes + cập nhật `datamart_model.yaml` + HLD/Entities → Thêm khối `CREATE TABLE` mới trong DDL `01_create_*.sql` → Thêm khối `DELETE/TRUNCATE` + `INSERT INTO ... SELECT` mới trong DML `02_populate_*.sql` → Thêm mục vào `flat_table_mapping.md`.
 - **Trigger 4 (Bãi bỏ bảng — Deprecation / Cleanup):** Thực thi All-Tier Cleanup Protocol 5 tầng (LLD, master attributes, detail mapping, model.yaml, HLD) → Xóa/comment khối `CREATE TABLE` trong DDL → Xóa khối DML → Dọn sạch mục trong `flat_table_mapping.md`.

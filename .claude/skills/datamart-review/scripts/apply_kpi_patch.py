@@ -286,6 +286,23 @@ def main() -> None:
                 print(f"✅ Đã ghi {rel}: {len(cur.rows)} → {len(new.rows)} dòng. "
                       f"Sao lưu: {b.relative_to(root).as_posix()}")
 
+    # --- Tầng 4 (cảnh báo): flat DDL/DML. Script này KHÔNG tự ghi flat, nhưng không được im lặng bỏ qua:
+    # QLQ 2026-10-14 — 29 cột mới có KPI READY không bao giờ lên flat vì không bước nào nhắc.
+    attr_pairs = [(e.get("row", {}).get("datamart_table", ""), e.get("row", {}).get("datamart_column", ""))
+                  for e in spec.get("attributes", [])]
+    if attr_pairs:
+        import build_flat_tables
+        gap = build_flat_tables.flat_gap(root, args.module, attr_pairs)
+        if gap:
+            print("\n⚠️  FLAT CHƯA ĐỒNG BỘ — cột mới có trong LLD nhưng chưa có trong flat DDL/DML:")
+            for flat, col in gap:
+                print(f"   - {flat}.{col}")
+            print("   → Làm NGAY trong cùng lượt (Gate 4 sẽ FAIL nếu bỏ qua, KHÔNG xếp vào 'tồn đọng'):")
+            print(f"     python .claude/skills/datamart-review/scripts/build_flat_tables.py -m {args.module} --sync-columns"
+                  f"{'' if args.dry_run else ' --apply'}")
+        else:
+            print("\n✓ Flat DDL/DML đã có đủ cột mới (hoặc bảng không có flat).")
+
     if not any_change:
         print("\nⓘ Không có tầng nào thay đổi (hoặc JSON spec rỗng cả 3 khóa).")
         return

@@ -8,11 +8,23 @@ Viết tay sinh ra Gate 4 chỉ để canh lỗi chép tay. Script này biến G
 của generator.
 
 Mặc định chỉ **bổ sung** khối cho bảng chưa có trong file SQL (an toàn với SQL đã curate).
-  --check : chỉ báo cáo thiếu hụt, không ghi (exit 1 nếu thiếu)
+  --check          : chỉ báo cáo thiếu hụt (bảng thiếu khối + cột LLD thiếu trong DDL), không ghi
+                     (exit 1 nếu thiếu). Ngữ nghĩa cột-thiếu GIỐNG HỆT Gate 4 (cột nghiệp vụ trong
+                     LLD per-table, trừ cột kỹ thuật) — hai bên không được lệch nhau.
+  --sync-columns   : với bảng flat ĐÃ CÓ, chèn cột LLD còn thiếu vào CẢ DDL lẫn DML (đúng thứ tự LLD,
+                     vì SELECT của DML khớp theo vị trí). Mặc định chỉ in kế hoạch (exit 1 nếu còn
+                     việc); thêm --apply để ghi (sao lưu vào Datamart/context/.backup/).
+
+Lý do có --sync-columns (QLQ 2026-10-14): 29 cột `opr_*` đã có trong LLD + Detail Mapping + 29 KPI READY
+nhưng không bao giờ lên flat DDL/DML, vì bước "bổ sung khối bảng mới" không thêm cột vào bảng đã tồn
+tại, còn `apply_kpi_patch.py` chỉ patch HLD/DM/Attributes. Gate 4 vẫn báo FAIL qua nhiều phiên nhưng
+bị xếp vào "tồn đọng" vì không có công cụ sửa.
 
 Usage:
     python scripts/build_flat_tables.py --module QLKD --check
     python scripts/build_flat_tables.py --module QLKD
+    python scripts/build_flat_tables.py --module QLQ --sync-columns            # dry-run
+    python scripts/build_flat_tables.py --module QLQ --sync-columns --apply
 """
 from __future__ import annotations
 
@@ -34,6 +46,7 @@ for _s in (sys.stdout, sys.stderr):
 from datamart_common import find_project_root, resolve_entities_csv  # noqa: E402
 from datamart_common.csv_io import read_design_csv  # noqa: E402
 from datamart_common.module_resolver import normalize_module_name  # noqa: E402
+from datamart_flat_table_checker import TECH_AUDIT_COLUMNS  # noqa: E402  (cùng quy tắc loại trừ với Gate 4)
 
 MASTER_REL = "Datamart/lld/datamart_attributes.csv"
 
@@ -45,14 +58,18 @@ def ch_type(dt: str, nullable: bool) -> str:
         base = "Decimal(%s)" % dt[len("decimal("):-1]
     elif dt == "decimal":
         base = "Decimal(23,2)"
-    elif dt == "int":
+    elif dt in ("int", "bigint"):
         base = "Int64"
+    elif dt == "float":
+        base = "Float64"
     elif dt == "date":
         base = "Date"
     elif dt in ("timestamp", "datetime"):
         base = "DateTime"
     elif dt == "boolean":
         base = "UInt8"
+    elif dt == "array<string>":
+        return "Array(String)"  # ClickHouse không cho Nullable(Array)
     else:
         base = "String"
     return "Nullable(%s)" % base if nullable else base
@@ -175,12 +192,167 @@ def gen_blocks(no: int, module: str, tbl: str, ttype: str, dims, cols, desc: str
     return "\n".join(ddl), "\n".join(dml)
 
 
+# --------------------------------------------------------------------------
+# Đồng bộ cột LLD -> flat đã tồn tại (--sync-columns)
+# --------------------------------------------------------------------------
+_DDL_COL = re.compile(r"^\s+([A-Za-z_][A-Za-z0-9_]*)\s+\S")
+# projection đơn giản: [alias.]col [AS name] [,] [-- ghi chú]; biểu thức phức tạp không khớp -> bỏ qua
+_DML_PROJ = re.compile(r"^(\s*)(?:(\w+)\.)?(\w+)(?:\s+AS\s+(\w+))?\s*,?\s*(?:--.*)?$", re.I)
+
+
+def load_lld_business_columns(lld_dir: Path) -> dict:
+    """{datamart_table: [(col, data_type, nullable, description)]} theo LLD per-table, bỏ cột kỹ thuật.
+
+    Cùng nguồn + cùng quy tắc loại trừ (TECH_AUDIT_COLUMNS) với Gate 4 `_check_column_coverage`.
+    """
+    out: dict = {}
+    if not lld_dir.is_dir():
+        return out
+    for f in sorted(lld_dir.glob("*.csv")):
+        t = read_design_csv(f, strict=False)
+        if not t.header or "datamart_table" not in t.ix:
+            continue
+        for r in t.rows:
+            tb = r[t.ix["datamart_table"]].strip()
+            col = r[t.ix["datamart_column"]].strip()
+            if not tb or not col or col.lower() in TECH_AUDIT_COLUMNS:
+                continue
+            bucket = out.setdefault(tb, [])
+            if col not in [c[0] for c in bucket]:
+                bucket.append((col, r[t.ix["data_type"]], r[t.ix["nullable"]].strip().lower() == "true",
+                               " ".join(r[t.ix["description"]].replace("'", "").split())))
+    return out
+
+
+def _flat_block(lines: list, kind: str, flat: str):
+    """(start, end) của khối CREATE (end = dòng ')' đầu cột 0) hoặc INSERT (end = dòng 'FROM' đầu cột 0).
+
+    Neo theo câu lệnh CREATE/INSERT thật, KHÔNG theo lần xuất hiện đầu tiên của tên bảng trong file
+    (tên bảng còn xuất hiện trong comment tiêu đề — cách cũ đọc nhầm khối và báo 94 cột thiếu giả cho QLQ).
+    """
+    if kind == "ddl":
+        s_pat = re.compile(rf"^\s*CREATE TABLE IF NOT EXISTS datamart\.{re.escape(flat)}\b")
+        e_pat = re.compile(r"^\)")
+    else:
+        s_pat = re.compile(rf"^\s*INSERT INTO datamart\.{re.escape(flat)}\b")
+        e_pat = re.compile(r"^FROM\b", re.I)
+    s = next((i for i, ln in enumerate(lines) if s_pat.search(ln)), None)
+    if s is None:
+        return None
+    e = next((i for i in range(s + 1, len(lines)) if e_pat.search(lines[i])), None)
+    return (s, e) if e is not None else None
+
+
+def ddl_columns(lines: list, flat: str):
+    """Tập tên cột của khối CREATE flat; None nếu không có khối."""
+    b = _flat_block(lines, "ddl", flat)
+    if not b:
+        return None
+    return {m.group(1) for ln in lines[b[0] + 1:b[1]]
+            if not ln.strip().startswith("--") and (m := _DDL_COL.match(ln))}
+
+
+def flat_gap(root: Path, module: str, pairs: list) -> list:
+    """[(flat_table, column)] trong `pairs` [(datamart_table, datamart_column)] mà flat DDL của module chưa có.
+
+    Dùng bởi apply_kpi_patch.py để cảnh báo NGAY khi thêm cột. Bảng không có flat (Dimension) hoặc cột
+    kỹ thuật thì bỏ qua.
+    """
+    from datamart_common.module_resolver import strip_accents
+    mod = normalize_module_name(module)
+    ft_root = root / "Datamart" / "flat-table"
+    slug = next((c for c in (mod, strip_accents(mod)) if (ft_root / c).is_dir()), None)
+    if not slug:
+        return []
+    ddl_p = ft_root / slug / f"01_create_{strip_accents(slug).lower()}_flat_tables.sql"
+    if not ddl_p.is_file():
+        return []
+    lines = ddl_p.read_text(encoding="utf-8").split("\n")
+    prefix = strip_accents(mod).lower()
+    gap = []
+    for t, c in pairs:
+        if not t or not c or c.lower() in TECH_AUDIT_COLUMNS:
+            continue
+        have = ddl_columns(lines, f"{prefix}_{t}_flat")
+        if have is not None and c not in have:
+            gap.append((f"{prefix}_{t}_flat", c))
+    return gap
+
+
+def _split_keep_nl(text: str):
+    nl = "\r\n" if "\r\n" in text else "\n"
+    return text.split(nl), nl
+
+
+def sync_columns(ddl_txt: str, dml_txt: str, flat_prefix: str, lld_cols: dict, tables: list):
+    """Chèn cột LLD thiếu vào flat đã có (DDL + DML cùng vị trí). Trả (ddl, dml, added, skipped)."""
+    dl, nl_d = _split_keep_nl(ddl_txt)
+    ml, nl_m = _split_keep_nl(dml_txt)
+    added, skipped = [], []
+    for t in tables:
+        flat = f"{flat_prefix}_{t}_flat"
+        have = ddl_columns(dl, flat)
+        if have is None or _flat_block(ml, "dml", flat) is None:
+            continue
+        cols = lld_cols.get(t, [])
+        order = [c[0] for c in cols]
+        meta = {c[0]: c for c in cols}
+        for c in [x for x in order if x not in have]:
+            i = order.index(c)
+            prev = next((p for p in reversed(order[:i]) if p in have), None)
+            s, e = _flat_block(dl, "ddl", flat)
+            ms, me = _flat_block(ml, "dml", flat)
+
+            # --- vị trí DDL
+            ddl_lines = [(k, _DDL_COL.match(dl[k])) for k in range(s + 1, e) if not dl[k].strip().startswith("--")]
+            ddl_lines = [(k, m.group(1)) for k, m in ddl_lines if m]
+            d_idx = next((k for k, n in ddl_lines if n == prev), None) if prev else (ddl_lines[0][0] if ddl_lines else None)
+            # --- vị trí DML
+            projs = []
+            for k in range(ms + 1, me):
+                m = _DML_PROJ.match(ml[k])
+                if m and not ml[k].strip().startswith("--"):
+                    projs.append((k, m.group(2), m.group(4) or m.group(3)))
+            m_pos = next(((k, a) for k, a, n in projs if n == prev), None) if prev else \
+                ((projs[0][0], projs[0][1]) if projs else None)
+            if d_idx is None or m_pos is None:
+                skipped.append((flat, c, f"không định vị được cột liền trước '{prev}' trong "
+                                         f"{'DDL' if d_idx is None else 'DML'} (projection phức tạp?) — chèn tay"))
+                continue
+            _, dt, nu, de = meta[c]
+            ty = ch_type(dt, nu)
+            alias = m_pos[1]
+            new_d = f"    {c:<44} {ty:<23} COMMENT '{de}'"
+            new_m = f"    {alias + '.' if alias else ''}{c}"
+            if prev:
+                # DDL: chèn SAU cột trước; nếu cột trước là dòng cuối (không dấu phẩy) thì chuyển dấu phẩy xuống
+                tail = not dl[d_idx].rstrip().endswith(",")
+                if tail:
+                    dl[d_idx] = dl[d_idx].rstrip() + ","
+                dl.insert(d_idx + 1, new_d + ("" if tail else ","))
+                tail_m = not re.sub(r"\s*--.*$", "", ml[m_pos[0]]).rstrip().endswith(",")
+                if tail_m:
+                    ml[m_pos[0]] = re.sub(r"(\s*--.*)?$", lambda mm: "," + (mm.group(1) or ""), ml[m_pos[0]].rstrip(), count=1)
+                ml.insert(m_pos[0] + 1, new_m + ("" if tail_m else ","))
+            else:
+                dl.insert(d_idx, new_d + ",")
+                ml.insert(m_pos[0], new_m + ",")
+            have.add(c)
+            added.append((flat, c, prev))
+    return nl_d.join(dl), nl_m.join(ml), added, skipped
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="RFC Đ4 — sinh flat table SQL còn thiếu")
     ap.add_argument("-m", "--module", required=True)
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--sync-columns", action="store_true",
+                    help="chèn cột LLD còn thiếu vào bảng flat ĐÃ CÓ (DDL + DML); mặc định chỉ in kế hoạch")
+    ap.add_argument("--apply", action="store_true", help="chỉ với --sync-columns: ghi thật (có sao lưu)")
     ap.add_argument("--root", default=None)
     args = ap.parse_args()
+    if args.apply and not args.sync_columns:
+        ap.error("--apply chỉ dùng cùng --sync-columns")
 
     root = find_project_root(args.root) if args.root else find_project_root()
     mod = normalize_module_name(args.module)
@@ -215,27 +387,64 @@ def main() -> None:
     mine = [t for t in mine
             if (ents.get(t, ("", []))[0] or "").lower() != "dim" and not t.endswith("_dim")]
 
-    missing = [t for t in mine if f"{strip_accents(mod).lower()}_{t}_flat" not in ddl_txt]
+    prefix = strip_accents(mod).lower()
+    ddl_lines = ddl_txt.split("\n")
+    # khối CREATE thật (không dùng "tên bảng xuất hiện trong file" — comment tiêu đề cũng chứa tên bảng)
+    missing = [t for t in mine if _flat_block(ddl_lines, "ddl", f"{prefix}_{t}_flat") is None]
+    lld_cols = load_lld_business_columns(lld_dir)
     drift = []
     for t in mine:
-        flat = f"{strip_accents(mod).lower()}_{t}_flat"
-        if flat not in ddl_txt:
+        have = ddl_columns(ddl_lines, f"{prefix}_{t}_flat")
+        if have is None:
             continue
-        blk = ddl_txt.split(flat, 1)[1].split("\n;", 1)[0]
-        drift += [(t, c) for c, *_ in cols.get(t, []) if not re.search(rf"^\s+{re.escape(c)}\s", blk, re.M)]
+        drift += [(t, c) for c, *_ in lld_cols.get(t, []) if c not in have]
 
     print(f"=== Flat table coverage: {mod} ===")
     print(f"  Bảng LLD của module : {len(mine)}")
     print(f"  Thiếu khối SQL      : {len(missing)} {missing if missing else ''}")
-    print(f"  Cột thiếu trong DDL : {len(drift)}")
-    for t, c in drift[:20]:
+    print(f"  Cột thiếu trong DDL : {len(drift)}   (cột nghiệp vụ LLD per-table, trừ cột kỹ thuật — như Gate 4)")
+    for t, c in drift[:40]:
         print(f"      - {t}.{c}")
+    if drift:
+        print("  → Sửa: python .claude/skills/datamart-review/scripts/build_flat_tables.py "
+              f"--module {args.module} --sync-columns [--apply]")
+
+    if args.sync_columns:
+        if missing:
+            print(f"\n⚠️  Còn {len(missing)} bảng thiếu khối SQL — chạy KHÔNG kèm --sync-columns để sinh khối trước.")
+        raw_d = ddl_p.read_bytes().decode("utf-8")
+        raw_m = dml_p.read_bytes().decode("utf-8")
+        new_d, new_m, added, skipped = sync_columns(raw_d, raw_m, prefix, lld_cols, mine)
+        print(f"\n=== --sync-columns: {len(added)} cột sẽ chèn, {len(skipped)} cột phải chèn tay ===")
+        for flat, c, prev in added:
+            print(f"  + {flat}.{c}   (sau {prev or '— đầu bảng —'})")
+        for flat, c, why in skipped:
+            print(f"  ! {flat}.{c}: {why}")
+        if not added:
+            sys.exit(1 if (skipped or missing) else 0)
+        if not args.apply:
+            print("\nⓘ dry-run: chưa ghi gì. Duyệt kế hoạch rồi chạy lại với --apply.")
+            sys.exit(1)
+        sys.path.insert(0, str(_script_dir))
+        import apply_patch  # noqa: E402  (dùng chung cơ chế sao lưu)
+        b1, b2 = apply_patch.backup(root, ddl_p), apply_patch.backup(root, dml_p)
+        ddl_p.write_bytes(new_d.encode("utf-8"))
+        dml_p.write_bytes(new_m.encode("utf-8"))
+        left = []
+        chk = new_d.split("\n")
+        for t in mine:
+            have = ddl_columns(chk, f"{prefix}_{t}_flat")
+            if have is not None:
+                left += [(t, c) for c, *_ in lld_cols.get(t, []) if c not in have]
+        print(f"\n✅ Đã ghi DDL + DML. Sao lưu: {b1.relative_to(root).as_posix()}, {b2.relative_to(root).as_posix()}")
+        print("→ Chạy tiếp: check_flat_table.py --module " + args.module + " --strict")
+        sys.exit(1 if (left or skipped) else 0)
 
     if args.check:
         sys.exit(1 if (missing or drift) else 0)
     if not missing:
         print("\n✅ Không có bảng nào thiếu khối SQL."
-              + ("\n⚠️  Còn cột drift — bổ sung thủ công vào đúng khối." if drift else ""))
+              + ("\n⚠️  Còn cột thiếu trong DDL — chạy lại với --sync-columns [--apply]." if drift else ""))
         sys.exit(1 if drift else 0)
 
     no = len(re.findall(r"^CREATE TABLE IF NOT EXISTS", ddl_txt, re.M))

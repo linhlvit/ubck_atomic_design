@@ -95,7 +95,7 @@ nhãn nhỏ):
 python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
 ```
 
-Runner này chạy Gate 0 (Reference Integrity) → Gate 8 (Design Lint). Dán nguyên output vào báo cáo.
+Runner này chạy **Pre-flight S1** (Detail Mapping/HLD co > 20% so với HEAD → FAIL, xem mục S1 bên dưới) rồi Gate 0 (Reference Integrity) → Gate 8 (Design Lint). Dán nguyên output vào báo cáo.
 
 > Khi bổ sung mục mới vào Bước 5B, cập nhật con số ở CẢ 2 nơi (SKILL.md + dòng này). Con số lệch nhau đã từng khiến self-check chạy thiếu mục mà vẫn báo "đã chạy đủ".
 
@@ -119,7 +119,7 @@ Tìm đúng dòng của (các) Nhóm vừa sửa trong bảng delta (`| Nhóm N 
 python .claude/skills/datamart-review/scripts/ba_hld_sync_check.py --module {MODULE} [--nhom N ...]
 ```
 
-- **S1:** Detail Mapping hoặc HLD bị xóa hay bị cắt so với HEAD / HEAD~1 → DỪNG. Hỏi human rồi mới khôi phục.
+- **S1:** Detail Mapping hoặc HLD bị xóa hay bị cắt so với HEAD / HEAD~1 → DỪNG. Hỏi human rồi mới khôi phục. **S1 không phân biệt được cắt CHỦ Ý với hư hỏng.** QLQ 2026-10-14: user chủ động cắt Detail Mapping 2699→183 dòng ("không cần quan tâm nhóm dashboard nữa" — Nhóm 29–91), phiên khác đã ghi vào MEMORY.md; một phiên đọc S1 FAIL rồi "khôi phục" ngay là SAI và phải hoàn tác. Trước khi khôi phục bất cứ thứ gì: (1) đọc lại `MEMORY.md` — phiên song song có thể vừa ghi quyết định, (2) xem `ls -l --time-style=full-iso` (mtime vài phút trước ⇒ phiên khác đang ghi cùng working tree), (3) hỏi human. Cắt chủ ý thì cờ S1/Pre-flight tự hết khi human commit bản mới (HEAD đổi). Hư hỏng thật (GSTT 2026-09-23: 577→101 do commit module khác) thì Gate 0/1/2/3/5/6 vẫn PASS vì chỉ đối chiếu các dòng còn lại. `apply_patch.py` tự từ chối ghi nếu file co > 20% (`--allow-shrink` chỉ khi human duyệt); script ad-hoc tự viết không có chốt này → tự so số dòng trước/sau.
 - **S2/S3:** BA đổi số hoặc tách Nhóm, hoặc 1 STT BA bị dùng chung cho 2 màn hình. Khi đó phải đánh số lại TRƯỚC (xem H6 của `datamart-hld-design`). Kết quả "🟢 Khớp" của progress analyzer lúc này không đáng tin.
 - **S4/S5:** dòng BA không có KPI, hoặc KPI đo sai loại (GT/KL). Xử lý hoặc giải trình **từng dòng**. Δ = 0 không miễn trừ.
 - **Khóa JOIN giữa 2 bảng nguồn và ghi chú "đã lọc sẵn tại ETL" không được chép từ ghi chú cũ.** Phải trích được SQL tham khảo BA, tài liệu cột nguồn, hoặc `etl_logic` thật (xem H7 và A10).
@@ -136,7 +136,7 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 
 ## QUY TẮC CỨNG — TRƯỚC KHI SỬA HÀNG LOẠT / ĐỔI QUY TẮC DÙNG CHUNG (bài học 2026-09-25)
 
-Áp dụng cả khi không gọi Skill. Chi tiết: H10–H13 (`datamart-hld-design`), A12–A15 (`datamart-lld-design`).
+Áp dụng cả khi không gọi Skill. Chi tiết: H10–H13 (`datamart-hld-design`), A12–A15 và A20 (`datamart-lld-design`).
 
 1. **Không kết luận cột Atomic thiếu/rỗng từ YAML LLD.** Đối chiếu `BRD/Source/` của mọi nguồn + hỏi xác nhận dữ liệu vật lý trước khi đổi `etl_logic` hàng loạt (VD `securities_trade.execution_val` HNX có thật dù YAML không khai báo).
 2. **Câu trả lời 1 chữ cho câu hỏi kép** ("có", "ok"): nhắc lại cách hiểu 1 câu trước khi sửa ≥ 5 cột hoặc nhiều module.
@@ -145,6 +145,7 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 5. **PII** (số giấy tờ định danh, số tài khoản…) **đã được mã hóa từ nguồn** (Data Modeler xác nhận 2026-10-14) → lên Datamart như cột thường theo yêu cầu BA. **Không** tự đặt "ngoại lệ PII", không chặn cột, không hạ PENDING vì lý do PII. Chỉ báo user 1 câu nếu dữ liệu mẫu thật sự là plaintext. (Lưu ý riêng: user không được paste PII thật vào Claude — xem hướng dẫn tổ chức.)
 6. **Trước khi báo "thiết kế thiếu X" hoặc đề xuất đổi cách khai thác:** đọc `ghi_chu` Detail Mapping + Ghi chú HLD của đúng KPI đó — có thể đã có quyết định Data Modeler duyệt (VD toggle Khớp lệnh GSTT Nhóm 28/29 = swap KPI sang 153–155/164–166, không dùng CASE tham số).
 7. **Gate 8 (`check_design_lint.py`) nằm trong `run_quality_gates.py`**: bắt dòng bảng KPI sai số ô, bảng 0 KPI dùng (→ All-Tier Cleanup), comment flat SQL dính `:etl_date`, và (module trong `L18_MODULES`, hiện TT) KPI có MEASURE bị nhân thành nhiều dòng Detail Mapping (Quy tắc L18).
+8. **Cột mới ở Fact/Operational phải lên flat DDL + DML trong CÙNG lượt** (A20 `datamart-lld-design`) — áp dụng mọi đường thêm cột (Phase 1, `apply_kpi_patch.py`, sửa tay), kể cả khi không ở Phase 3 và không gọi Skill. Lệnh: `build_flat_tables.py --module {M} --sync-columns [--apply]` rồi `check_flat_table.py --module {M} --strict`. **Gate FAIL không phải "tồn đọng"**: Gate 4 FAIL phải sửa hoặc ghi rõ lý do + chủ xử lý, không được gạt sang "lỗi có từ trước". Sự cố (QLQ, 2026-10-14): 29 cột `opr_*` có KPI READY (VD `assets_under_management_amt`) có trong LLD + Detail Mapping nhưng thiếu ở flat qua nhiều phiên, Gate 4 đã báo FAIL nhưng bị bỏ qua. Phép thử nhanh: *cột có trong Detail Mapping mà không có trong flat DDL?*
 
 ## NGÔN NGỮ
 
