@@ -22,6 +22,26 @@ erDiagram
 
 ---
 
+## Nhóm 1, 2, 6–9, 12, 17–21, 24, 25 — Dashboard RPT: giá trị ô báo cáo định kỳ (Fact Fund Management Report Cell Value)
+
+> **[MỚI 2026-10-14 — bổ sung đăng ký]** Fact và Dimension này đã có LLD/master/model/Detail Mapping và Cụm 17 của HLD từ 2026-10-13 nhưng bị bỏ sót ở Section 3/4, Entities và flat SQL (`check_orphan` báo Nhánh A). Nhãn dòng/cột của Dimension ô là giả định chờ mẫu dữ liệu (O_QLQ_31); nạp tăng dần theo ngày nộp `submitted_dt = :etl_date` (O_QLQ_34).
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Fund_Management_Report_Cell_Value : " "
+    Fund_Management_Report_Cell_Dimension ||--o{ Fact_Fund_Management_Report_Cell_Value : " "
+    Fund_Type_Dimension ||--o{ Fact_Fund_Management_Report_Cell_Value : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Fund Management Report Cell Value | Fact (EAV mức ô) | new | Giá trị ô báo cáo định kỳ `RPT_*`; mỗi KPI là bộ lọc (sheet, nhãn dòng, nhãn cột, `record_tp`) trên Dimension ô | 1 ô báo cáo × 1 bản nộp | 51 KPI READY: K_QLQ_3,4,7 (Nhóm 1); K_QLQ_12–18 (Nhóm 2); K_QLQ_42,43 (Nhóm 6); K_QLQ_46,49 (Nhóm 7); K_QLQ_44,50–55 (Nhóm 8); K_QLQ_44,56 (Nhóm 9); K_QLQ_81 (Nhóm 12); K_QLQ_118–121 (Nhóm 17); K_QLQ_122–125 (Nhóm 18); K_QLQ_126–129 (Nhóm 19); K_QLQ_130–133 (Nhóm 20); K_QLQ_134–136 (Nhóm 21); K_QLQ_162,163 (Nhóm 24); K_QLQ_164–170 (Nhóm 25) |
+| Fund Management Report Cell Dimension | Dimension | new | Ô báo cáo định kỳ — sheet, biểu mẫu, chỉ số dòng/cột, nhãn dòng/cột (SCD4A) | 1 ô × 1 sheet (current state) | — |
+| Fund Type Dimension | Dimension | new | Loại hình quỹ (SCD4A) | 1 loại hình quỹ (current state) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — FK vai trò ngày cuối kỳ báo cáo | 1 ngày | — |
+
+---
+
 ## Nhóm 3 — Danh sách các Công ty quản lý quỹ (Operational)
 
 Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Company, Investment Fund, Member Rating), không qua Dimension riêng.
@@ -37,6 +57,14 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Compan
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fund Management Company Fund List | Operational | new | Bảng con drill-down danh sách quỹ theo CTQLQ | 1 quỹ × 1 CTQLQ × 1 tháng slicer | K_QLQ_33,34 |
+
+---
+
+## Nhóm 5 — Chi tiết các hợp đồng UTDM của CTQLQ (Operational)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fund Management Company Contract List | Operational | new | Bảng con drill-down danh sách hợp đồng UTDM của CTQLQ — đọc engine báo cáo định kỳ `RPT_*` (sheet `@QLDMDT`), PII lưu nguyên văn là ngoại lệ đã duyệt (O_QLQ_33) | 1 hợp đồng UTDM (dòng động `dynamic_row_nbr`) × 1 bản nộp báo cáo của 1 quỹ × 1 kỳ báo cáo | K_QLQ_36,37,38 |
 
 ---
 
@@ -205,6 +233,66 @@ erDiagram
 
 ---
 
+## Nhóm 27 — Chi tiết hợp đồng UTQLDM của CN CTQLQ nước ngoài (Operational)
+
+> **[THIẾT KẾ 2026-10-14]** Nhóm 27 (K_QLQ_179–181) trước đó PENDING; nay READY qua bảng Operational đọc engine báo cáo định kỳ `RPT_*` theo cách của `Fund Management Company Contract List` (Nhóm 5): 1 hợp đồng UTQLDM = 1 dòng động (`dynamic_row_nbr`), `record_tp = 4`. BA để trống tên sheet nên không lọc sheet; dòng hợp đồng nhận diện bằng nhãn cột "Loại" (O_QLQ_37).
+
+```mermaid
+erDiagram
+    Foreign_Fund_Management_Organization_Unit_Contract_List {
+        string Fund_Management_Report_Submission_Code PK
+        int Dynamic_Row_Number PK
+        string Foreign_Fund_Management_Organization_Unit_Code
+        string Record_Type
+        string Period_Type_Code
+        string Period_Value
+        int Report_Year
+        int Version_Number
+        string Customer_Name
+        string Custody_Account_Number
+        decimal Contract_Market_Value_Amount
+        string Source_System_Code
+    }
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Foreign Fund Management Organization Unit Contract List | Operational | new | Danh sách hợp đồng UTQLDM của CN CTQLQ nước ngoài (popup Nhóm 26) | 1 hợp đồng (dòng động) × 1 bản nộp × 1 kỳ báo cáo | K_QLQ_179–181 (Nhóm 27) |
+
+---
+
+## Nhóm 28 — Thống kê giao dịch của nhân viên công ty QLQ (Operational)
+
+> **[THIẾT KẾ 2026-10-14]** Nhóm 28 (K_QLQ_106–115) trước đó PENDING (thiếu cầu nối VSDC investor registry); nay READY qua bảng Operational đọc `securities_trade` (HOSE/HNX), nối nhân viên theo `fmc_employee.securities_trading_account_nbr`. Phạm vi tài khoản có thể hẹp hơn BA (O_QLQ_35/36). Nạp tăng dần `trade_dt = :etl_date`.
+
+```mermaid
+erDiagram
+    Fund_Management_Company_Staff_Trade_Report {
+        string Securities_Trade_Code PK
+        string Trade_Direction_Code PK
+        string FMC_Employee_Code PK
+        date Trade_Date
+        string FMC_Code
+        string Identification_Number
+        string Securities_Account_Number
+        string Securities_Company_Code
+        string Board_Type_Code
+        string Trade_Method_Name
+        string Trade_Direction_Name
+        string Security_Symbol_Code
+        bigint Order_Volume
+        decimal Order_Price
+        decimal Order_Amount
+        string Source_System_Code
+    }
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fund Management Company Staff Trade Report | Operational | new | Giao dịch của nhân viên CTQLQ trên sổ lệnh HOSE/HNX | 1 bên (mua/bán) của 1 giao dịch khớp × 1 nhân viên × 1 ngày | K_QLQ_106–115 (Nhóm 28) |
+
+---
+
 ## Nhóm 29–33 — Data Explorer: danh sách sheet biểu mẫu báo cáo định kỳ (Operational)
 
 > **[MỚI 2026-10-06]** Atomic (commit e9378756) đã có `fund_management_report` (FMS.RPT_TEMP), `fmr_sheet` (FMS.SHEET), `fmr_period`, `fmr_submission`, `fmr_value`. Thiết kế phần **header** của Data Explorer: Loại/Mã/Tên báo cáo + Mã/Tên sheet (5/9 dòng BA mỗi sheet, 26 sheet có BA Done). Kỳ báo cáo, Mã chỉ tiêu, Tên chỉ tiêu, Giá trị vẫn PENDING — xem O_QLQ_27.
@@ -234,7 +322,4 @@ erDiagram
 | Datamart Entity | Lý do PENDING | Issue |
 |---|---|---|
 | Fact Discretionary Investment Contract Snapshot (Nhóm 2) | 0/7 KPI READY — BA đổi hẳn nguồn sang engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
-| Fund Management Company Contract List (Nhóm 5) | 0/3 KPI READY — BA (2026-10-05) lấy từ engine báo cáo định kỳ `RPT_*`, chưa có Atomic entity; bảng LLD/flat đã xóa (All-Tier Cleanup) | O_QLQ_15, O_QLQ_25 |
 | Fund Management Report Data (giá trị ô báo cáo + Kỳ báo cáo — Tab DATA EXPLORER, STT 29–91; thay `Report Pass-through View`) | PENDING — `fmr_value` thiếu TGT_ID/CODE, `fmr_sheet` thiếu DATA_LABEL/CELLS_META, thiếu RECORD_STATUS (O_QLQ_27); STT 33 (từ dòng 10)–91 BA Pending (O_QLQ_26) | O_QLQ_1, O_QLQ_27 |
-| Foreign Fund Management Organization Unit Contract List (popup — Nhóm 27 riêng từ BA 2026-10-05) | 0/3 KPI READY — engine báo cáo định kỳ, chưa có Atomic entity | O_QLQ_15 |
-| Fund Management Company Staff Trade Report (Nhóm 28) | 1/10 KPI READY (chỉ join-key Chiều) — cầu nối VSDC investor registry chưa có Atomic entity | O_QLQ_11 |

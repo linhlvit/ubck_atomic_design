@@ -1546,7 +1546,7 @@ _Không có dim join (operational / self-contained table)._
 
 ## QLQ
 
-**15 bảng flat** (6 fact + 9 operational) · **78 KPI unique** (module sở hữu; ngoài ra reuse thêm 4 KPI qua `Fact Macro Indicator Snapshot`/`Fact Market Index Snapshot` — xem GSTT/PTTT)
+**19 bảng flat** (6 fact + 13 operational) · **78 KPI unique** (module sở hữu; ngoài ra reuse thêm 4 KPI qua `Fact Macro Indicator Snapshot`/`Fact Market Index Snapshot` — xem GSTT/PTTT)
 
 > **[SỬA 2026-09-28]** Thay thế toàn bộ nội dung "## FMS" cũ (11 bảng tưởng tượng, tên vật lý `fms_*`, không khớp thiết kế thật) — bản nháp đó không phản ánh HLD/LLD đã duyệt. QLQ dùng nguồn FMS nhưng tên module Datamart chính thức là **QLQ**.
 
@@ -1702,6 +1702,47 @@ _Không có dim join (operational / self-contained table)._
 
 ---
 
+### `datamart.qlq_fct_fund_management_rpt_cell_val_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Fund Management Report Cell Value |
+| **Bảng fact/operational** | `datamart.fct_fund_management_rpt_cell_val` |
+| **PK** | `—` |
+| **Số dim join** | 3 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `rpt_period_end_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Fund Management Report Cell Dimension | `datamart.fund_management_rpt_cell_dim` | `fund_management_rpt_cell_id` | `fund_management_rpt_cell_id` | ✗ |
+| Fund Type Dimension | `datamart.fund_type_dim` | `fund_type_id` | `fund_type_id` | ✗ |
+
+_Fact EAV mức ô (1 ô báo cáo × 1 bản nộp). Nạp tăng dần theo ngày nộp: `DELETE ... WHERE submitted_dt = :etl_date` rồi `INSERT` (O_QLQ_34) — không lọc theo ngày cuối kỳ vì KPI cần nhiều kỳ/bản nộp (O_QLQ_32). Nhãn dòng/cột của ô là giả định (O_QLQ_31). Bổ sung 2026-10-14 — trước đó bảng bị bỏ sót ở Entities và flat._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 1 — Thống kê chung | 3 |
+| Nhóm 2 — Số liệu hợp đồng uỷ thác danh mục | 7 |
+| Nhóm 6 — Thống kê chung của QĐT | 2 |
+| Nhóm 7 — Biểu đồ Tổng NAV Quỹ và Tỷ lệ NAV/GDP | 2 |
+| Nhóm 8 — Biểu đồ Phân bổ tài sản của Quỹ đầu tư | 7 |
+| Nhóm 9 — Sự biến động về NAV của các Quỹ ĐTCK | 2 |
+| Nhóm 12 — Tỉ lệ tăng trưởng NAV/CCQ một năm theo loại hình quỹ so với VN-Index và Lãi suất liên ngân hàng qua đêm | 1 |
+| Nhóm 17 — Thống kê chung | 4 |
+| Nhóm 18 — Tổng số tài khoản giao dịch chứng chỉ quỹ | 4 |
+| Nhóm 19 — Số tài khoản nắm giữ chứng chỉ quỹ | 4 |
+| Nhóm 20 — Giá trị chứng chỉ quỹ | 4 |
+| Nhóm 21 — Giao dịch thông qua Đại lý phân phối | 3 |
+| Nhóm 24 — Thống kê chung | 2 |
+| Nhóm 25 — Số liệu hợp đồng uỷ thác danh mục | 7 |
+
+---
+
 ### `datamart.qlq_opr_fund_management_company_profile_flat`
 
 | Thuộc tính | Giá trị |
@@ -1749,7 +1790,7 @@ _Không có dim join (operational / self-contained table, drill-down con của F
 | **Loại** | `operational` |
 | **Entity nguồn** | Fund Management Company Contract List |
 | **Bảng fact/operational** | `datamart.opr_fund_management_company_contract_list` |
-| **PK** | `discretionary_investment_account_code` |
+| **PK** | `fmr_submission_code, dynamic_row_nbr` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table, drill-down con của Fund Management Company Profile — popup Nhóm 5)._
@@ -1899,6 +1940,46 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 26 — Danh sách các Chi nhánh CTQLQ nước ngoài tại Việt Nam | 2 |
+
+---
+
+### `datamart.qlq_opr_foreign_fund_management_organization_unit_contract_list_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Foreign Fund Management Organization Unit Contract List |
+| **Bảng fact/operational** | `datamart.opr_foreign_fund_management_organization_unit_contract_list` |
+| **PK** | `fmr_submission_code, dynamic_row_nbr` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table; popup drill-down từ danh sách CN CTQLQ NN — Nhóm 26). Thiết kế 2026-10-14, trước đó PENDING. Tên sheet và bố cục cột là giả định (O_QLQ_37)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 27 — Chi tiết hợp đồng UTQLDM | 3 |
+
+---
+
+### `datamart.qlq_opr_fund_management_company_staff_trade_rpt_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Fund Management Company Staff Trade Report |
+| **Bảng fact/operational** | `datamart.opr_fund_management_company_staff_trade_rpt` |
+| **PK** | `securities_trade_code, trade_direction_code, fmc_employee_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table). Thiết kế 2026-10-14, trước đó PENDING; nối nhân viên qua tài khoản khai ở hồ sơ thay cho cầu nối VSDC (O_QLQ_35/36)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 28 — Thống kê giao dịch của nhân viên công ty QLQ | 10 |
 
 ---
 

@@ -2,7 +2,9 @@
 -- QLQ Flat Tables — POPULATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 15 bảng: 5 fact + 10 operational
+-- 19 bảng: 6 fact + 13 operational
+-- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_opr_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
+-- Sửa 2026-10-14: thêm #17 qlq_fct_fund_management_rpt_cell_val_flat (Dashboard RPT, 51 KPI READY) — bị bỏ sót ở commit 2f62880d
 -- Tham số ETL hàng ngày: :etl_date (không dùng {etl_date}/$etl_date/hardcode)
 -- ============================================================
 
@@ -264,4 +266,141 @@ SELECT
     o.fund_distribution_agent_full_nm,
     o.src_stm_code
 FROM datamart.opr_investment_fund_distribution_agent_list o
+;
+
+-- ============================================================
+-- 16. OPERATIONAL: qlq_opr_fund_management_company_contract_list_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_contract_list_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_opr_fund_management_company_contract_list_flat
+SELECT
+    o.fmr_submission_code,
+    o.dynamic_row_nbr,
+    o.investment_fund_code,
+    o.fmc_code,
+    o.record_tp,
+    o.period_tp_code,
+    o.period_val,
+    o.rpt_year,
+    o.version_nbr,
+    o.customer_nm,
+    o.custody_account_nbr,
+    o.contract_market_val_amt,
+    o.src_stm_code
+FROM datamart.opr_fund_management_company_contract_list o
+;
+
+
+-- ============================================================
+-- 17. FACT: qlq_fct_fund_management_rpt_cell_val_flat
+--    Nạp tăng dần theo ngày nộp: bản nộp có submitted_dt = ngày chạy ETL (khớp cách nạp Fact ở Gold — O_QLQ_34).
+--    Không lọc theo ngày cuối kỳ báo cáo: KPI cần nhiều kỳ và nhiều bản nộp trong cùng bảng (O_QLQ_32).
+-- ============================================================
+DELETE FROM datamart.qlq_fct_fund_management_rpt_cell_val_flat ON CLUSTER 'my_cluster'
+WHERE submitted_dt = :etl_date;
+INSERT INTO datamart.qlq_fct_fund_management_rpt_cell_val_flat
+SELECT
+    f.rpt_period_end_dt_dim_id,
+    f.fund_management_rpt_cell_id,
+    f.fund_type_id,
+    f.open_fund_tp_code,
+    f.fmr_val_code,
+    f.fmc_code,
+    f.investment_fund_code,
+    f.securities_distribution_agent_code,
+    f.foreign_fund_management_organization_unit_code,
+    f.record_tp,
+    f.period_tp_code,
+    f.period_val,
+    f.rpt_year,
+    f.dynamic_row_nbr,
+    f.submitted_dt,
+    f.cell_val,
+    f.cell_numeric_val,
+    f.src_stm_code,
+    rpt_period_end_cal.cdr_dt     AS rpt_period_end_cdr_dt,
+    cell_dim.fmr_sheet_code,
+    cell_dim.cell_id,
+    cell_dim.fmr_code,
+    cell_dim.fmr_nm,
+    cell_dim.fmr_tp_code,
+    cell_dim.rpt_short_code,
+    cell_dim.rpt_group_code,
+    cell_dim.stm_object_tp_code,
+    cell_dim.cl_fms_fund_tp_code,
+    cell_dim.version_nbr,
+    cell_dim.legal_basis,
+    cell_dim.fmr_sheet_nm,
+    cell_dim.sheet_short_code,
+    cell_dim.sheet_index,
+    cell_dim.investment_portfolio_indicator,
+    cell_dim.row_index,
+    cell_dim.column_index,
+    cell_dim.row_span,
+    cell_dim.column_span,
+    cell_dim.label_nm,
+    cell_dim.row_stt_code,
+    cell_dim.row_indicator_code,
+    cell_dim.row_indicator_nm,
+    cell_dim.row_label_nm,
+    cell_dim.column_label_nm,
+    fund_type_dim.fund_type_code,
+    fund_type_dim.fund_type_nm,
+    fund_type_dim.open_fund_indicator
+FROM datamart.fct_fund_management_rpt_cell_val f
+LEFT JOIN datamart.cdr_dt_dim rpt_period_end_cal
+    ON rpt_period_end_cal.cdr_dt_dim_id = f.rpt_period_end_dt_dim_id
+LEFT JOIN datamart.fund_management_rpt_cell_dim cell_dim
+    ON cell_dim.fund_management_rpt_cell_id = f.fund_management_rpt_cell_id AND cell_dim.ds_rcrd_st = 'ACTIVE'
+LEFT JOIN datamart.fund_type_dim fund_type_dim
+    ON fund_type_dim.fund_type_id = f.fund_type_id AND fund_type_dim.ds_rcrd_st = 'ACTIVE'
+WHERE f.submitted_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 18. OPERATIONAL: qlq_opr_foreign_fund_management_organization_unit_contract_list_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_opr_foreign_fund_management_organization_unit_contract_list_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_opr_foreign_fund_management_organization_unit_contract_list_flat
+SELECT
+    o.fmr_submission_code,
+    o.dynamic_row_nbr,
+    o.foreign_fund_management_organization_unit_code,
+    o.record_tp,
+    o.period_tp_code,
+    o.period_val,
+    o.rpt_year,
+    o.version_nbr,
+    o.customer_nm,
+    o.custody_account_nbr,
+    o.contract_market_val_amt,
+    o.src_stm_code
+FROM datamart.opr_foreign_fund_management_organization_unit_contract_list o
+;
+
+
+-- ============================================================
+-- 19. OPERATIONAL: qlq_opr_fund_management_company_staff_trade_rpt_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_opr_fund_management_company_staff_trade_rpt_flat
+SELECT
+    o.securities_trade_code,
+    o.trade_direction_code,
+    o.fmc_employee_code,
+    o.trade_dt,
+    o.fmc_code,
+    o.identification_nbr,
+    o.securities_account_nbr,
+    o.securities_company_code,
+    o.board_tp_code,
+    o.trade_method_nm,
+    o.trade_direction_nm,
+    o.security_symbol_code,
+    o.order_vol,
+    o.order_price,
+    o.order_amt,
+    o.src_stm_code
+FROM datamart.opr_fund_management_company_staff_trade_rpt o
 ;

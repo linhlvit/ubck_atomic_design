@@ -2,7 +2,9 @@
 -- QLQ Flat Tables — CREATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 15 bảng: 5 fact + 10 operational
+-- 19 bảng: 6 fact + 13 operational
+-- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_opr_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
+-- Sửa 2026-10-14: thêm #17 qlq_fct_fund_management_rpt_cell_val_flat (Dashboard RPT, 51 KPI READY) — bị bỏ sót ở commit 2f62880d
 -- ============================================================
 
 -- ============================================================
@@ -343,4 +345,165 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (investment_fund_code, fund_distribution_agent_code)
 COMMENT 'Flat table — Operational Investment Fund Distribution Agent List'
+;
+
+-- ============================================================
+-- 16. OPERATIONAL: qlq_opr_fund_management_company_contract_list_flat
+--    Operational Fund Management Company Contract List
+--    Grain: 1 hợp đồng UTDM (dòng động) × 1 bản nộp báo cáo của 1 quỹ × 1 kỳ báo cáo
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_list_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Fund Management Company Contract List
+    fmr_submission_code      String                  COMMENT 'PK (composite) — mã bản nộp báo cáo',
+    dynamic_row_nbr          Int64                   COMMENT 'PK (composite) — số thứ tự dòng động, mỗi dòng là 1 hợp đồng UTDM',
+    investment_fund_code     Nullable(String)        COMMENT 'Mã quỹ nộp báo cáo (loại đối tượng = 7 theo Điều kiện BA)',
+    fmc_code                 Nullable(String)        COMMENT 'Mã CTQLQ quản lý quỹ nộp báo cáo — khóa lọc danh sách hợp đồng theo CTQLQ',
+    record_tp                Nullable(String)        COMMENT 'Loại đối tượng nộp báo cáo (BA: 7 = Quỹ)',
+    period_tp_code           Nullable(String)        COMMENT 'Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng',
+    period_val               Nullable(String)        COMMENT 'Giá trị kỳ báo cáo dạng chuỗi (số tháng theo SQL BA)',
+    rpt_year                 Nullable(Int64)         COMMENT 'Năm của kỳ báo cáo',
+    version_nbr              Nullable(Int64)         COMMENT 'Số phiên bản biểu mẫu báo cáo — chọn phiên bản mới nhất của kỳ theo BA',
+    customer_nm              Nullable(String)        COMMENT 'Tên khách hàng của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33)',
+    custody_account_nbr      Nullable(String)        COMMENT 'Số tài khoản lưu ký của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33)',
+    contract_market_val_amt  Nullable(Decimal(38,8)) COMMENT 'Giá trị thị trường của hợp đồng UTDM tại thời điểm báo cáo (đơn vị gốc của ô, VND)',
+    src_stm_code             String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (fmr_submission_code, dynamic_row_nbr)
+COMMENT 'Flat table — Operational Fund Management Company Contract List'
+;
+
+
+-- ============================================================
+-- 17. FACT: qlq_fct_fund_management_rpt_cell_val_flat
+--    Fact Fund Management Report Cell Value
+--    Grain: 1 ô báo cáo × 1 bản nộp (fmr_value) — Fact EAV mức ô, Dashboard RPT, 51 KPI READY ở 14 Nhóm (1, 2, 6–9, 12, 17–21, 24, 25)
+--    Joins: Calendar Date (rpt_period_end_dt_dim_id — ngày cuối kỳ báo cáo) + Fund Management Report Cell Dimension
+--           (fund_management_rpt_cell_id) + Fund Type Dimension (fund_type_id)
+--    Nạp tăng dần theo ngày nộp (O_QLQ_34): DELETE đúng ngày nộp rồi INSERT; flat giữ TOÀN BỘ kỳ/bản nộp đã nộp để KPI
+--    chọn kỳ gần nhất ≤ tháng slicer và bản nộp mới nhất (O_QLQ_32). Nhãn dòng/cột của ô là giả định — O_QLQ_31
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_management_rpt_cell_val_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Fund Management Report Cell Value
+    rpt_period_end_dt_dim_id                         Nullable(String)           COMMENT 'FK -> Calendar Date Dimension (vai trò: ngày cuối kỳ báo cáo — suy từ loại kỳ, giá trị kỳ, năm; GIẢ ĐỊNH…',
+    fund_management_rpt_cell_id                      String                     COMMENT 'FK -> Fund Management Report Cell Dimension (ô báo cáo: sheet + cell id)',
+    fund_type_id                                     Nullable(String)           COMMENT 'FK -> Fund Type Dimension (loại hình quỹ của bản nộp thuộc đối tượng quỹ; NULL với bản nộp của đối tượng…',
+    open_fund_tp_code                                Nullable(String)           COMMENT 'Phân loại quỹ mở: EQUITY/BOND/BALANCED (NULL với quỹ không phải quỹ mở hoặc bản nộp của đối tượng khác)',
+    fmr_val_code                                     String                     COMMENT 'Mã giá trị ô báo cáo (RPT_VALUES.ID) — khóa grain của Fact',
+    fmc_code                                         Nullable(String)           COMMENT 'Mã CTQLQ nộp báo cáo (bản nộp thuộc đối tượng CTQLQ)',
+    investment_fund_code                             Nullable(String)           COMMENT 'Mã quỹ nộp báo cáo (bản nộp thuộc đối tượng quỹ)',
+    securities_distribution_agent_code               Nullable(String)           COMMENT 'Mã đại lý phân phối nộp báo cáo (bản nộp thuộc đối tượng ĐLPP)',
+    foreign_fund_management_organization_unit_code   Nullable(String)           COMMENT 'Mã chi nhánh CTQLQ nước ngoài nộp báo cáo (bản nộp thuộc đối tượng chi nhánh NN)',
+    record_tp                                        Nullable(String)           COMMENT 'Loại đối tượng nộp báo cáo — theo điều kiện BA: 2=CTQLQ, 4=Chi nhánh CTQLQ NN, 7=Quỹ, 8=ĐLPP',
+    period_tp_code                                   Nullable(String)           COMMENT 'Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng',
+    period_val                                       Nullable(String)           COMMENT 'Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024)',
+    rpt_year                                         Nullable(Int64)            COMMENT 'Năm của kỳ báo cáo',
+    dynamic_row_nbr                                  Nullable(Int64)            COMMENT 'Số thứ tự hàng động trong sheet báo cáo có số dòng thay đổi (danh sách khách hàng, tài khoản…)',
+    submitted_dt                                     Nullable(Date)             COMMENT 'Ngày thành viên nộp báo cáo — dùng chọn bản nộp mới nhất của kỳ khi có nộp lại',
+    cell_val                                         Nullable(String)           COMMENT 'Giá trị gốc của ô dạng chuỗi',
+    cell_numeric_val                                 Nullable(Decimal(38,8))    COMMENT 'Giá trị số của ô (bỏ ký tự %; NULL nếu ô chứa chữ hoặc không đổi được sang số); đơn vị theo từng ô báo cáo',
+    src_stm_code                                     String                     COMMENT 'Mã hệ thống nguồn dữ liệu',
+
+    -- From: CALENDAR DATE DIMENSION
+    rpt_period_end_cdr_dt                            Nullable(Date)             COMMENT 'Ngày cuối kỳ báo cáo — từ Calendar Date Dimension',
+
+    -- From: FUND MANAGEMENT REPORT CELL DIMENSION
+    fmr_sheet_code                                   Nullable(String)           COMMENT 'Mã sheet biểu mẫu báo cáo (SHEET.ID) — khóa nối với giá trị ô — từ Fund Management Report Cell Dimension',
+    cell_id                                          Nullable(String)           COMMENT 'ID ô báo cáo — khóa nối với giá trị ô (RPT_VALUES.TGT_ID) — từ Fund Management Report Cell Dimension',
+    fmr_code                                         Nullable(String)           COMMENT 'Mã biểu mẫu báo cáo chứa sheet — từ Fund Management Report Cell Dimension',
+    fmr_nm                                           Nullable(String)           COMMENT 'Tên biểu mẫu báo cáo (RPT_TEMP.ITEM_NAME) — từ Fund Management Report Cell Dimension',
+    fmr_tp_code                                      Nullable(String)           COMMENT 'Loại báo cáo (RPT_TEMP.REPORT_TYPE; scheme FMS_REPORT_TYPE) — từ Fund Management Report Cell Dimension',
+    rpt_short_code                                   Nullable(String)           COMMENT 'Mã định danh ngắn của biểu mẫu báo cáo (RPT_TEMP.CODE) — từ Fund Management Report Cell Dimension',
+    rpt_group_code                                   Nullable(String)           COMMENT 'Nhóm báo cáo (RPT_TEMP.REPORT_GROUP) — từ Fund Management Report Cell Dimension',
+    stm_object_tp_code                               Nullable(String)           COMMENT 'Đối tượng hệ thống áp dụng biểu mẫu: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN — từ Fund Management Report Cell Dimension',
+    cl_fms_fund_tp_code                              Nullable(String)           COMMENT 'Loại quỹ đầu tư áp dụng biểu mẫu (RPT_TEMP.FTYPE_ID) — từ Fund Management Report Cell Dimension',
+    version_nbr                                      Nullable(Int64)            COMMENT 'Số phiên bản biểu mẫu báo cáo — từ Fund Management Report Cell Dimension',
+    legal_basis                                      Nullable(String)           COMMENT 'Cơ sở pháp lý của biểu mẫu báo cáo — từ Fund Management Report Cell Dimension',
+    fmr_sheet_nm                                     Nullable(String)           COMMENT 'Tên sheet (SHEET.ITEM_NAME) — BA lọc theo tên sheet — từ Fund Management Report Cell Dimension',
+    sheet_short_code                                 Nullable(String)           COMMENT 'Mã định danh ngắn của sheet (SHEET.CODE) — từ Fund Management Report Cell Dimension',
+    sheet_index                                      Nullable(Int64)            COMMENT 'Thứ tự sheet trong biểu mẫu (bắt đầu từ 0) — từ Fund Management Report Cell Dimension',
+    investment_portfolio_indicator                   Nullable(Int64)            COMMENT 'Cờ sheet là danh mục đầu tư (1=Có, 0=Không) — từ Fund Management Report Cell Dimension',
+    row_index                                        Nullable(Int64)            COMMENT 'Số thứ tự hàng của ô trong sheet — từ Fund Management Report Cell Dimension',
+    column_index                                     Nullable(Int64)            COMMENT 'Số thứ tự cột của ô trong sheet — từ Fund Management Report Cell Dimension',
+    row_span                                         Nullable(Int64)            COMMENT 'Số hàng được gộp của ô — từ Fund Management Report Cell Dimension',
+    column_span                                      Nullable(Int64)            COMMENT 'Số cột được gộp của ô — từ Fund Management Report Cell Dimension',
+    label_nm                                         Nullable(String)           COMMENT 'Nhãn hiển thị của ô (parse từ DATA_LABEL) — từ Fund Management Report Cell Dimension',
+    row_stt_code                                     Nullable(String)           COMMENT 'Số thứ tự dòng chỉ tiêu trong sheet (nhãn ở cột STT cùng dòng) — GIẢ ĐỊNH hàng tiêu đề… — từ Fund Management Report Cell Dimension',
+    row_indicator_code                               Nullable(String)           COMMENT 'Mã chỉ tiêu của dòng (nhãn ở cột Mã chỉ tiêu cùng dòng) — GIẢ ĐỊNH hàng tiêu đề là hàng… — từ Fund Management Report Cell Dimension',
+    row_indicator_nm                                 Nullable(String)           COMMENT 'Tên chỉ tiêu của dòng (nhãn ở cột Chỉ tiêu cùng dòng) — GIẢ ĐỊNH hàng tiêu đề là hàng… — từ Fund Management Report Cell Dimension',
+    row_label_nm                                     Nullable(String)           COMMENT 'Nhãn dòng của ô: nối các nhãn ô bên trái có phạm vi gộp hàng phủ dòng của ô, cách nhau… — từ Fund Management Report Cell Dimension',
+    column_label_nm                                  Nullable(String)           COMMENT 'Nhãn cột của ô: nối các nhãn ô phía trên có phạm vi gộp cột phủ cột của ô, cách nhau… — từ Fund Management Report Cell Dimension',
+
+    -- From: FUND TYPE DIMENSION
+    fund_type_code                                   Nullable(String)           COMMENT 'Mã loại hình quỹ (BK nguồn FMS.FUND_TYPE.ID — nguồn không có cột mã nghiệp vụ riêng);… — từ Fund Type Dimension',
+    fund_type_nm                                     Nullable(String)           COMMENT 'Tên loại hình quỹ hiển thị (FMS.FUND_TYPE.ITEM_NAME) — từ Fund Type Dimension',
+    open_fund_indicator                              Nullable(Int64)            COMMENT 'Cờ quỹ mở (FMS.FUND_TYPE.IS_OPEN_FUND): 1 = quỹ mở, 0 = không. Giữ int 0/1 như Atomic… — từ Fund Type Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(rpt_period_end_cdr_dt))
+ORDER BY (assumeNotNull(rpt_period_end_cdr_dt), fund_management_rpt_cell_id, fmr_val_code)
+COMMENT 'Flat table — Fact Fund Management Report Cell Value × Calendar Date × Fund Management Report Cell Dimension × Fund Type Dimension'
+;
+
+
+-- ============================================================
+-- 18. OPERATIONAL: qlq_opr_foreign_fund_management_organization_unit_contract_list_flat
+--    Operational Foreign Fund Management Organization Unit Contract List
+--    Grain: 1 hợp đồng UTQLDM (dòng động) × 1 bản nộp báo cáo của 1 CN CTQLQ NN × 1 kỳ báo cáo (Nhóm 27)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_organization_unit_contract_list_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Foreign Fund Management Organization Unit Contract List
+    fmr_submission_code                      String                     COMMENT 'PK — Driving: fmr_value (composite cùng Dynamic Row Number; lấy DISTINCT theo bản nộp × dòng động)',
+    dynamic_row_nbr                          Int64                      COMMENT 'PK — Driving: fmr_value (composite cùng Fund Management Report Submission Code); số thứ tự dòng động; mỗi…',
+    foreign_fund_management_organization_unit_code Nullable(String)           COMMENT 'Mã chi nhánh CTQLQ nước ngoài nộp báo cáo (RPT_MEMBER.FR_BR_ID; loại đối tượng = 4 theo Điều kiện BA) —…',
+    record_tp                                Nullable(String)           COMMENT 'Loại đối tượng nộp báo cáo (BA: 4 = Chi nhánh CTQLQ nước ngoài)',
+    period_tp_code                           Nullable(String)           COMMENT 'Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng',
+    period_val                               Nullable(String)           COMMENT 'Giá trị kỳ báo cáo dạng chuỗi (VD: T03/2024, Q1/2024, 2024)',
+    rpt_year                                 Nullable(Int64)            COMMENT 'Năm của kỳ báo cáo',
+    version_nbr                              Nullable(Int64)            COMMENT 'Số phiên bản biểu mẫu báo cáo — chọn phiên bản mới nhất của kỳ theo cách BA xếp hạng',
+    customer_nm                              Nullable(String)           COMMENT 'Tên khách hàng của hợp đồng UTQLDM (K_QLQ_179) — nội dung báo cáo chi nhánh nộp; giá trị đã mã hóa từ nguồn',
+    custody_account_nbr                      Nullable(String)           COMMENT 'Số tài khoản lưu ký của hợp đồng UTQLDM (K_QLQ_180) — giá trị đã mã hóa từ nguồn',
+    contract_market_val_amt                  Nullable(Decimal(38,8))    COMMENT 'Giá trị thị trường của từng hợp đồng UTQLDM (K_QLQ_181) = ô cột Tổng giá trị thị trường tại thời điểm báo…',
+    src_stm_code                             String                     COMMENT 'Mã hệ thống nguồn dữ liệu'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (fmr_submission_code, dynamic_row_nbr)
+COMMENT 'Flat table — Operational Foreign Fund Management Organization Unit Contract List'
+;
+
+
+-- ============================================================
+-- 19. OPERATIONAL: qlq_opr_fund_management_company_staff_trade_rpt_flat
+--    Operational Fund Management Company Staff Trade Report
+--    Grain: 1 bên (mua/bán) của 1 giao dịch khớp × 1 nhân viên CTQLQ × 1 ngày (Nhóm 28)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Fund Management Company Staff Trade Report
+    securities_trade_code                    String                     COMMENT 'PK — Driving: securities_trade (composite cùng Trade Direction Code và FMC Employee Code); mã giao dịch…',
+    trade_direction_code                     String                     COMMENT 'PK — composite; bên của nhân viên trong giao dịch khớp: BUY = bên mua; SELL = bên bán',
+    fmc_employee_code                        String                     COMMENT 'PK — composite; mã nhân viên CTQLQ (FMS.TL_PROFILES.ID) sở hữu tài khoản chứng khoán của bên mua/bán; nối…',
+    trade_dt                                 Date                       COMMENT 'Ngày giao dịch khớp (K_QLQ_109; Độ chi tiết Ngày của báo cáo); nạp tăng dần theo ngày chạy ETL',
+    fmc_code                                 Nullable(String)           COMMENT 'Mã CTQLQ nơi nhân viên làm việc (FMS.TL_PROFILES.SEC_ID) — khóa lọc báo cáo theo CTQLQ',
+    identification_nbr                       Nullable(String)           COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106; FMS.TL_PROFILES.ID_NO; đã mã hóa từ nguồn) — Chiều Mã CCCD của bá',
+    securities_account_nbr                   Nullable(String)           COMMENT 'Số tài khoản giao dịch chứng khoán của nhân viên (K_QLQ_107) — lấy từ sổ lệnh theo bên mua/bán',
+    securities_company_code                  Nullable(String)           COMMENT 'Mã CTCK nơi mở tài khoản (K_QLQ_108) — số hiệu môi giới/thành viên trên sổ lệnh theo bên mua/bán',
+    board_tp_code                            String                     COMMENT 'Mã loại bảng giao dịch của sổ lệnh (G1–G8; T1–T6; R1) — nguồn suy Phương thức giao dịch',
+    trade_method_nm                          Nullable(String)           COMMENT 'Phương thức giao dịch (K_QLQ_110) — ánh xạ Board Type Code sang tên theo SQL BA; HOSE chỉ G1–G4 còn lại là…',
+    trade_direction_nm                       Nullable(String)           COMMENT 'Lệnh mua/bán (K_QLQ_111): Mua hoặc Bán theo bên của nhân viên',
+    security_symbol_code                     String                     COMMENT 'Mã chứng khoán (K_QLQ_112); sàn HOSE là symbol; sàn HNX là ISSUE_CODE theo SQL BA',
+    order_vol                                Nullable(Int64)            COMMENT 'Số lượng chứng khoán của LỆNH (K_QLQ_113) theo bên mua/bán — không phải khối lượng khớp; một lệnh khớp…',
+    order_price                              Nullable(Decimal(23,2))    COMMENT 'Giá của LỆNH (K_QLQ_114) theo bên mua/bán — không phải giá khớp (O_QLQ_36)',
+    order_amt                                Nullable(Decimal(23,2))    COMMENT 'Tổng giá trị (K_QLQ_115) = số lượng lệnh × giá lệnh theo cột Trường nguồn dòng 186 BA; SQL BA nhánh HNX bên',
+    src_stm_code                             String                     COMMENT 'Mã hệ thống nguồn dữ liệu'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(trade_dt)
+ORDER BY (trade_dt, securities_trade_code, trade_direction_code, fmc_employee_code)
+COMMENT 'Flat table — Operational Fund Management Company Staff Trade Report'
 ;
