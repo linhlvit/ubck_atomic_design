@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Major Shareholder"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,12 +18,16 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Quan hệ cổ đông lớn (sở hữu ≥5%) của CTCK. Mỗi dòng = 1 cổ đông lớn × 1\
-    \ CTCK. SHAREHOLDER_ID có trong nguồn nhưng KHÔNG phải FK constraint (key: null,\
-    \ BRD ghi description trống) — chỉ lưu dạng reference, không dùng làm FK đến SC_FIRM_SHAREHOLDER.\
-    \ Địa chỉ tách ra IP Postal Address (ADDRESS). Liên lạc tách ra IP Electronic\
-    \ Address (PHONE, EMAIL). Giấy tờ tách ra IP Alt Identification (IDENTIFICATION_NUMBER).\
-    \ NATIONALITY_ID → pending (CAT_NATIONALITY ngoài scope). Audit: CREATED_AT +\
-    \ LAST_MODIFIED_AT only — bảng nguồn không có CREATED_BY/LAST_MODIFIED_BY."
+    \ CTCK. SHAREHOLDER_ID → FK đến Securities Company Shareholder (SC_FIRM_SHAREHOLDER),\
+    \ hash theo ID (BK của bảng đích). Địa chỉ tách ra IP Postal Address (ADDRESS).\
+    \ Liên lạc tách ra IP Electronic Address (PHONE, EMAIL). Giấy tờ tách ra IP Alt\
+    \ Identification (IDENTIFICATION_NUMBER, ISSUE_DATE, ISSUE_PLACE). NATIONALITY_ID\
+    \ → FK Geographic Area (COUNTRY), crosswalk qua SCMS.CAT_NATIONALITY lấy NATIONALITY_CODE\
+    \ rồi hash_id('ECAT_COUNTRY', code) — CAT_NATIONALITY chỉ là bảng trung gian ETL,\
+    \ sẽ bị loại khỏi thiết kế sau. Audit: CREATED_AT + LAST_MODIFIED_AT only — bảng\
+    \ nguồn không có CREATED_BY/LAST_MODIFIED_BY. Sửa 2026-10-07: SHAREHOLDER_ID thành\
+    \ FK, ISSUE_DATE/ISSUE_PLACE chuyển sang shared entity, NATIONALITY_ID đổi target\
+    \ cl_nationality → geographic_area."
 attributes:
 - attribute_name: "Securities Company Major Shareholder Relation Id"
   physical_name: "sc_major_shareholder_relation_id"
@@ -72,10 +76,10 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác\
-    \ nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp\
-    \ theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ\
-    \ CODE) — đã sửa sang crosswalk 2026-07-27."
+    \ SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.SC_FIRM_INFO_ID\
+    \ để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash\
+    \ trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main\
+    \ (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -94,17 +98,32 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Shareholder Reference Id"
-  physical_name: "shareholder_reference_id"
-  description: "Tham chiếu đến SC_FIRM_SHAREHOLDER.ID (không phải FK constraint)."
+- attribute_name: "Securities Company Shareholder Id"
+  physical_name: "sc_shareholder_id"
+  description: "FK đến Cổ đông CTCK (SC_FIRM_SHAREHOLDER). Mô tả gốc nguồn: Cờ đông\
+    \ ID."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SHAREHOLDER_ID"
+  comment: "FK target: sc_shareholder.sc_shareholder_id. Hash: hash_id('SCMS_SC_FIRM_SHAREHOLDER',\
+    \ SHAREHOLDER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Shareholder Code"
+  physical_name: "sc_shareholder_code"
+  description: "Mã Cổ đông CTCK."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SHAREHOLDER_ID"
-  comment: "NUMBER(10) — lưu dạng Text. Không phải FK constraint (key: null trong\
-    \ BRD). Tham chiếu mềm đến SC_FIRM_SHAREHOLDER để tra cứu."
+  comment: "Lookup pair: sc_shareholder.sc_shareholder_code. Pair with Securities\
+    \ Company Shareholder Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -134,57 +153,35 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Issue Date"
-  physical_name: "issue_dt"
-  description: "Ngày cấp giấy tờ/chứng chỉ định danh."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ISSUE_DATE"
-  comment: "DATE."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-- attribute_name: "Issue Place"
-  physical_name: "issue_place"
-  description: "Nơi cấp giấy tờ/chứng chỉ định danh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ISSUE_PLACE"
-  comment: "VARCHAR2(500)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Classification Nationality Id"
-  physical_name: "cl_nationality_id"
-  description: "FK đến quốc tịch của cổ đông lớn."
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK đến Geographic Area (quốc tịch) của cổ đông lớn."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.NATIONALITY_ID"
-  comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS_CAT_NATIONALITY',\
-    \ NATIONALITY_ID)."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_MAJOR_SHAREHOLDER_RELATION.NATIONALITY_ID\
+    \ = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT_COUNTRY',\
+    \ NATIONALITY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile\
+    \ dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Nationality Code"
-  physical_name: "cl_nationality_code"
-  description: "Mã quốc tịch của cổ đông lớn."
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc tịch của cổ đông lớn (denormalized)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.NATIONALITY_ID"
-  comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with Classification\
-    \ Nationality Id."
+  - "SCMS.CAT_NATIONALITY.NATIONALITY_CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
+    \ Nationality Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau ETL\
+    \ crosswalk — chi tiết xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

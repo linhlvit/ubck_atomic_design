@@ -1,0 +1,100 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE"
+  atomic_entity: "Securities Company Foreign Organization Unit X Classification Securities\
+    \ Company Firm Service Relationship"
+  entity_physical_name: "sc_foreign_ou_x_cl_sc_firm_service_relationship"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Branch"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Danh mục dịch vụ chứng khoán được cấp phép cho từng chi nhánh CTCK nước\
+    \ ngoài (FK Securities Company Foreign Organization Unit + Classification Securities\
+    \ Company Firm Service). Đảo ngược quyết định denormalize Array trên Securities\
+    \ Company Foreign Branch theo yêu cầu Data Modeler 2026-10-10 — tách entity `_x_`\
+    \ riêng, mirror pattern LNK_SC_FIRM_SERVICE / LNK_TRANSACTION_OFFICE_SERVICE (composite\
+    \ PK 2 FK Id, không có Id/Code riêng; PK kỹ thuật ID nguồn không map). Nguồn chỉ\
+    \ có 2 FK + CREATED_AT, không có số giấy phép/ngày hiệu lực như LNK_SC_FIRM_SERVICE."
+attributes:
+- attribute_name: "Securities Company Foreign Organization Unit Id"
+  physical_name: "sc_foreign_ou_id"
+  description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK nước ngoài liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "FK target: sc_foreign_organization_unit.sc_foreign_ou_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+    \ SC_FIRM_FOREIGN_BRANCH_ID). | Composite PK cùng Classification Securities Company\
+    \ Firm Service Id — entity không có Id/Code riêng, business key = cặp (SC_FIRM_FOREIGN_BRANCH_ID,\
+    \ SERVICE_ID) theo pattern _x_ (xem lld_SCMS_LNK_SC_FIRM_SERVICE.yaml)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Foreign Organization Unit Code"
+  physical_name: "sc_foreign_ou_code"
+  description: "Mã chi nhánh CTCK nước ngoài."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "Lookup pair: sc_foreign_organization_unit.sc_foreign_ou_code. Pair with\
+    \ Securities Company Foreign Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Firm Service Id"
+  physical_name: "cl_sc_firm_service_id"
+  description: "FK -> cat_service_legal_capital: Dịch vụ chứng khoán được cấp phép.\
+    \ Mô tả gốc nguồn: Dịch vụ ID."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE.SERVICE_ID"
+  comment: "FK target: cl_securities_company_firm_service.cl_sc_firm_service_id. Hash:\
+    \ hash_id('SCMS_CAT_SERVICE_LEGAL_CAPITAL', SERVICE_ID). | Composite PK cùng Securities\
+    \ Company Foreign Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Firm Service Code"
+  physical_name: "cl_sc_firm_service_code"
+  description: "Mã dịch vụ chứng khoán được cấp phép."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE.SERVICE_ID"
+  comment: "Lookup pair: cl_securities_company_firm_service.cl_sc_firm_service_code.\
+    \ Pair with Classification Securities Company Firm Service Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE"
+  etl_derived_value: "SCMS_LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE"
+  data_type: "string"

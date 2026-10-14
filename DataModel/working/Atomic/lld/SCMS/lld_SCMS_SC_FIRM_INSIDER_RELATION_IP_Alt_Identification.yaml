@@ -21,15 +21,15 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Insider Related Person."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Insider Related Person Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INSIDER_RELATION.ID"
-  comment: "FK target: sc_insider_related_person.sc_insider_related_person_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS_SC_FIRM_INSIDER_RELATION',\
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_INSIDER_RELATION',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -43,8 +43,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INSIDER_RELATION.ID"
-  comment: "Lookup pair: sc_insider_related_person.sc_insider_related_person_code.\
-    \ Pair with Involved Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_INSIDER_RELATION"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -62,15 +61,15 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân: CITIZEN_ID=CCCD/CMND/Hộ chiếu."
+  description: "Loại giấy tờ tùy thân: IDENTIFICATION=CCCD/CMND/Hộ chiếu."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode CITIZEN_ID."
-  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
-  etl_derived_value: "CITIZEN_ID"
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode IDENTIFICATION."
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  etl_derived_value: "IDENTIFICATION"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -82,6 +81,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_INSIDER_RELATION.NATIONAL_ID"
   comment: "VARCHAR2 — cần xác nhận length."
-  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"

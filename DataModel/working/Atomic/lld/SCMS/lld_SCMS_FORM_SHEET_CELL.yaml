@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Form Document"
   table_type: "Relative"
   group: "T4"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -303,8 +303,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Label"
-  physical_name: "label"
+- attribute_name: "Label Name"
+  physical_name: "label_nm"
   description: "Nhãn hiển thị của ô trong biểu mẫu."
   data_domain: "Text"
   nullable: true
@@ -423,18 +423,17 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Filter Id"
-  physical_name: "filter_id"
-  description: "Bộ lọc theo định dạng ký tự — Tổng theo trạng thái/Tổng theo nghiệp\
-    \ vụ (mô tả gốc BRD bị lỗi encoding)."
+- attribute_name: "Filter Code"
+  physical_name: "filter_code"
+  description: "Điều kiện lọc."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.FORM_SHEET_CELL.FILTER_ID"
-  comment: "Mô tả nguồn gốc bị lỗi encoding (dấu ? thay ký tự có dấu) — cần xác nhận\
-    \ lại nội dung với BA. Giữ Text, không có Classification Value quản lý."
+  - "SCMS.CAT_FILTER.CODE"
+  comment: "SCHEMA_CODE=SCMS.CAT_FILTER. Cần ETL crosswalk sang SCMS.CAT_FILTER: FORM_SHEET_CELL.FILTER_ID\
+    \ = CAT_FILTER.ID để xác nhận CODE, sau đó lưu CODE vào cột này. "
   classification_context: null
   etl_derived_value: null
   data_type: "string"

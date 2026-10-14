@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Broker Dealer"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -150,8 +150,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_CODE"
-  comment: "SCHEMA_CODE=SCMS.CAT_COMPANY_TYPE. Cần ETL crosswalk sang SCMS.CAT_COMPANY_TYPE: SC_FIRM_INFO.COMPANY_TYPE_ID = CAT_COMPANY_TYPE.ID\
-    \ để xác nhận COMPANY_TYPE_CODE."
+  comment: "SCHEMA_CODE=SCMS.CAT_COMPANY_TYPE. Cần ETL crosswalk sang SCMS.CAT_COMPANY_TYPE:\
+    \ SC_FIRM_INFO.COMPANY_TYPE_ID = CAT_COMPANY_TYPE.ID để xác nhận COMPANY_TYPE_CODE."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -324,8 +324,21 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Listing Exchange Code"
-  physical_name: "listing_exchange_code"
+- attribute_name: "Trading Registered Indicator"
+  physical_name: "trading_registered_ind"
+  description: "Cờ có đăng ký giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_INFO.TRADING_REGISTERED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Exchange Code"
+  physical_name: "exchange_code"
   description: "Sàn niêm yết (HOSE, HNX, UPCOM)."
   data_domain: "Text"
   nullable: true

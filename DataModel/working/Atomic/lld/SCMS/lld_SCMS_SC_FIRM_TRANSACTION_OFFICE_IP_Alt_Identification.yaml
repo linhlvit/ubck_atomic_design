@@ -1,0 +1,104 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_TRANSACTION_OFFICE"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Alt Identification của Securities Company Organization Unit (Phòng giao\
+    \ dịch). 1 row — DECISION_NUMBER → Identification Number, DECISION_DATE → Identification\
+    \ Issue Date, type hardcode ESTABLISHMENT_OPERATION_LICENSE (Giấy phép thành lập\
+    \ và hoạt động do UBCKNN cấp) theo chỉ định Data Modeler 2026-10-10. Nguồn không\
+    \ có nơi cấp. DECISION_DATE nguồn là TIMESTAMP(6) — ETL cắt về Date. Tạo 2026-10-10."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Organization Unit Id."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.ID"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã Securities Company Organization Unit."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.ID"
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_TRANSACTION_OFFICE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_TRANSACTION_OFFICE"
+  etl_derived_value: "SCMS_SC_FIRM_TRANSACTION_OFFICE"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ: ESTABLISHMENT_OPERATION_LICENSE=Giấy phép thành lập\
+    \ và hoạt động."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode ESTABLISHMENT_OPERATION_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
+  etl_derived_value: "ESTABLISHMENT_OPERATION_LICENSE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số quyết định. Mô tả gốc BRD trống."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.DECISION_NUMBER"
+  comment: "NVARCHAR2(60)."
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày quyết định. Mô tả gốc BRD trống."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_TRANSACTION_OFFICE.DECISION_DATE"
+  comment: "Nguồn TIMESTAMP(6) — ETL cắt phần giờ về Date."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

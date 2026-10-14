@@ -1,0 +1,334 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "BANK_PERIODIC_REPORT"
+  atomic_entity: "Securities Company Bank Periodic"
+  entity_physical_name: "sc_bank_periodic"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Event] Transaction"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Mỗi dòng = 1 lần ngân hàng lưu ký nộp báo cáo định kỳ lên UBCKNN. Grain:\
+    \ (BANK_ID, FORM_REPORT_ID, REPORT_YEAR, PERIOD). Thiết kế theo mẫu lld_SCMS_SC_FIRM_PERIODIC_REPORT.yaml\
+    \ (cùng bộ cột vòng đời nộp báo cáo, thay SC_FIRM_INFO_ID bằng BANK_ID). Trạng\
+    \ thái vòng đời RECORD_STATUS: 0=Chưa gửi, 1=Đã gửi, 2=Đã duyệt, -1=Từ chối, 3=Bị\
+    \ hủy (dùng chung scheme SCMS_REPORT_SUBMISSION_STATUS với báo cáo CTCK, cùng\
+    \ bộ giá trị). Audit CREATED_AT/LAST_MODIFIED_AT loại bỏ theo convention SCMS.\
+    \ APPROVED_BY/SENDER_ID/CANCELLED_BY → pending (SYS_USER out of scope). Tên entity\
+    \ theo chỉ đạo Data Modeler (2026-10-06): 'Securities Company Bank Periodic',\
+    \ chứa trọn tên entity cha 'Securities Company Bank' (sau khi đổi tên từ 'Securities\
+    \ Company Depositary Bank')."
+attributes:
+- attribute_name: "Securities Company Bank Periodic Id"
+  physical_name: "sc_bank_periodic_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.ID"
+  comment: "PK surrogate. Hash: hash_id('SCMS_BANK_PERIODIC_REPORT', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Bank Periodic Code"
+  physical_name: "sc_bank_periodic_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.ID"
+  comment: "BK. NUMBER(19) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_BANK_PERIODIC_REPORT"
+  etl_derived_value: "SCMS_BANK_PERIODIC_REPORT"
+  data_type: "string"
+- attribute_name: "Securities Company Bank Id"
+  physical_name: "sc_bank_id"
+  description: "FK đến ngân hàng lưu ký nộp báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.BANK_ID"
+  comment: "FK target: sc_bank.sc_bank_id. Hash: hash_id('SCMS_BANK', BANK_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Bank Code"
+  physical_name: "sc_bank_code"
+  description: "Mã ngân hàng lưu ký."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.BANK_ID"
+  comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Securities Company Bank Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Id"
+  physical_name: "sc_rpt_id"
+  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.FORM_REPORT_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Code"
+  physical_name: "sc_rpt_code"
+  description: "Mã biểu mẫu báo cáo liên quan (FORM_REPORT)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.FORM_REPORT_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Event Type Id"
+  physical_name: "cl_sc_event_tp_id"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.EVENT_TYPE_ID"
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Event Type Code"
+  physical_name: "cl_sc_event_tp_code"
+  description: "Mã loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.EVENT_TYPE_ID"
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Name"
+  physical_name: "rpt_nm"
+  description: "Tên báo cáo/biểu mẫu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.REPORT_NAME"
+  comment: "NVARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.REPORT_YEAR"
+  comment: "NUMBER(10) — giá trị năm (VD: 2024)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Period"
+  physical_name: "period"
+  description: "Kỳ số (1-4 cho quý, 1-12 cho tháng)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.PERIOD"
+  comment: "NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Quarter"
+  physical_name: "quarter"
+  description: "Quý trong năm (1, 2, 3, 4)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.QUARTER"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng trong năm."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.REPORT_MONTH"
+  comment: "NUMBER(10). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.REPORT_PERIOD"
+  comment: "NVARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value (cùng\
+    \ quyết định với entity báo cáo định kỳ CTCK)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Start Date"
+  physical_name: "start_dt"
+  description: "Ngày bắt đầu kỳ báo cáo hoặc hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "End Date"
+  physical_name: "end_dt"
+  description: "Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Submission Deadline Date"
+  physical_name: "submission_deadline_dt"
+  description: "Hạn nộp báo cáo theo quy định."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.SUBMISSION_DEADLINE"
+  comment: "SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp — ETL\
+    \ dùng SUBMISSION_DEADLINE (DATE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Submission Deadline Timestamp"
+  physical_name: "submission_deadline_tms"
+  description: "Hạn nộp báo cáo theo quy định (có giờ)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT"
+  comment: "TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Overdue Days"
+  physical_name: "overdue_days"
+  description: "Số ngày nộp báo cáo quá hạn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.OVERDUE_DAYS"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Valid Digital Signature Indicator"
+  physical_name: "valid_digital_signature_ind"
+  description: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.VALID_DIGITAL_SIGNATURE"
+  comment: "NUMBER(1). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Valid Data Indicator"
+  physical_name: "valid_data_ind"
+  description: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ; 0=Không hợp\
+    \ lệ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.VALID_DATA"
+  comment: "NUMBER(1). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú của báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.BANK_PERIODIC_REPORT.NOTE"
+  comment: "NCLOB — lưu nguyên dạng text."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

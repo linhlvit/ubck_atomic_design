@@ -74,7 +74,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_RELATED_PERSON.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_RELATED_PERSON.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_INFO.CODE
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
+    comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
     classification_context: null
     etl_derived_value: null
 
@@ -106,20 +106,6 @@ attributes:
     classification_context: SCMS_ENTITY_TYPE
     etl_derived_value: null
 
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: "Trạng thái bản ghi: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_RELATED_PERSON
-    source_column: SCMS.SC_FIRM_RELATED_PERSON.RECORD_STATUS
-    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-    classification_context: SCMS_USAGE_STATUS
-    etl_derived_value: null
-
   - name: Gender Code
     physical_name: gender_code
     business_meaning: "Giới tính: 1=Nam; 2=Nữ."
@@ -130,13 +116,13 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.GENDER
-    comment: "Scheme: SCMS_GENDER. NUMBER(10) — ETL convert sang string."
-    classification_context: SCMS_GENDER
+    comment: "SCHEMA_CODE=GENDER"
+    classification_context: null
     etl_derived_value: null
 
-  - name: Position Id
-    physical_name: position_id
-    business_meaning: FK đến danh mục chức vụ của người liên quan.
+  - name: Classification Securities Company Position Id
+    physical_name: cl_sc_position_id
+    business_meaning: "FK đến danh mục chức vụ CTCK của người liên quan. Mô tả gốc nguồn: Chức vụ ID."
     data_domain: Surrogate Key
     data_type: string
     nullable: true
@@ -144,12 +130,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.POSITION_ID
-    comment: Pending — FK target CAT_POSITION nằm ngoài scope. VARCHAR2(200) — kiểu dữ liệu gốc là string (có thể lưu ID hoặc code).
+    comment: "FK target: cl_securities_company_position.cl_sc_position_id. Cần ETL crosswalk sang SCMS.CAT_POSITION: SC_FIRM_RELATED_PERSON.POSITION_ID = CAT_POSITION.ID để xác nhận POSITION_CODE sau đó hash_id('SCMS_CAT_POSITION', POSITION_CODE) | Nguồn lưu VARCHAR2(800) — ETL cần cast sang number để join CAT_POSITION.ID; cần profile dữ liệu (có thể chứa code hoặc nhiều giá trị)."
     classification_context: null
     etl_derived_value: null
 
-  - name: Position Code
-    physical_name: position_code
+  - name: Classification Securities Company Position Code
+    physical_name: cl_sc_position_code
     business_meaning: Mã chức vụ của người liên quan.
     data_domain: Text
     data_type: string
@@ -157,8 +143,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
-    source_column: SCMS.SC_FIRM_RELATED_PERSON.POSITION_ID
-    comment: Pending — Pair with Position Id.
+    source_column: SCMS.CAT_POSITION.POSITION_CODE
+    comment: "Lookup pair: cl_securities_company_position.cl_sc_position_code. Pair with Classification Securities Company Position Id. Giá trị lấy từ SCMS.CAT_POSITION.POSITION_CODE sau ETL crosswalk — chi tiết xem comment Classification Securities Company Position Id."
     classification_context: null
     etl_derived_value: null
 
@@ -172,7 +158,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.COUNTRY_ID
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_RELATED_PERSON.COUNTRY_ID = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT.COUNTRY', NATIONALITY_CODE) | Cột nguồn tên COUNTRY_ID nhưng crosswalk trỏ tới danh mục quốc tịch (CAT_NATIONALITY) theo xác nhận Data Modeler 2026-07-29 — SCMS không có bảng danh mục quốc gia riêng (CAT_COUNTRY không tồn tại trong khảo sát nguồn). Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_RELATED_PERSON.COUNTRY_ID = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT_COUNTRY', NATIONALITY_CODE) | Cột nguồn tên COUNTRY_ID nhưng crosswalk trỏ tới danh mục quốc tịch (CAT_NATIONALITY) theo xác nhận Data Modeler 2026-07-29 — SCMS không có bảng danh mục quốc gia riêng (CAT_COUNTRY không tồn tại trong khảo sát nguồn). Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -204,8 +190,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Org Name En
-    physical_name: org_nm_en
+  - name: English Name
+    physical_name: english_nm
     business_meaning: Tên tổ chức bằng tiếng Anh.
     data_domain: Text
     data_type: string
@@ -218,8 +204,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Org Short Name
-    physical_name: org_short_nm
+  - name: Short Name
+    physical_name: short_nm
     business_meaning: Tên viết tắt của tổ chức liên quan.
     data_domain: Text
     data_type: string
@@ -243,34 +229,6 @@ attributes:
     source_table: SC_FIRM_RELATED_PERSON
     source_column: SCMS.SC_FIRM_RELATED_PERSON.DATE_OF_BIRTH
     comment: DATE.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Issue Date
-    physical_name: issue_dt
-    business_meaning: Ngày cấp giấy tờ/chứng chỉ định danh.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_RELATED_PERSON
-    source_column: SCMS.SC_FIRM_RELATED_PERSON.ISSUE_DATE
-    comment: DATE.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Issue Place
-    physical_name: issue_place
-    business_meaning: Nơi cấp giấy tờ/chứng chỉ định danh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_RELATED_PERSON
-    source_column: SCMS.SC_FIRM_RELATED_PERSON.ISSUE_PLACE
-    comment: VARCHAR2(500).
     classification_context: null
     etl_derived_value: null
 

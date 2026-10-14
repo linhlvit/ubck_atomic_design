@@ -17,8 +17,10 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Alt Identification của Securities Company (CTCK). ETL tạo tối đa 7 rows\
-    \ per CTCK (skip nếu number NULL): Row 1 OPERATION_LICENSE (BUSINESS_LICENSE_NUMBER\
+  notes: "IP Alt Identification của Securities Company (CTCK). Bổ sung 2026-10-11\
+    \ (SCMS_UAT_schema): CUSTODY_REG_CERT_DECISION_NUMBER/DATE → type CUSTODY_REGISTRATION_CERTIFICATE\
+    \ (GCN đăng ký hoạt động lưu ký chứng khoán; không có nơi cấp). ETL tạo tối đa\
+    \ 7 rows per CTCK (skip nếu number NULL): Row 1 OPERATION_LICENSE (BUSINESS_LICENSE_NUMBER\
     \ + BUSINESS_LICENSE_DATE + BUSINESS_LICENSE_ISSUER); Row 2 BUSINESS_LICENSE (FOUNDATION_LICENSE_NUMBER\
     \ + FOUNDATION_LICENSE_DATE + FOUNDATION_LICENSE_ISSUER — giấy phép thành lập,\
     \ tách biệt với giấy phép thành lập+hoạt động UBCKNN ở Row 1); Row 3 TAX_ID (TAX_CODE);\
@@ -33,18 +35,15 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.ID"
-  comment: "FK target: securities_company.sc_id. Shared entity. Cần ETL crosswalk\
-    \ sang SCMS.SC_FIRM_INFO: SC_FIRM_INFO.ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo ID (ID\
-    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk\
-    \ 2026-07-27."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_INFO', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -57,9 +56,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party Id.\
-    \ Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Involved Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_INFO"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -160,7 +157,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_MEMBER_CERT."
-  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERT"
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERTIFICATE"
   etl_derived_value: "CUSTODIAN_MEMBER_CERT"
   data_type: "string"
 - attribute_name: "Identification Number"
@@ -173,7 +170,7 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_NUMBER"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERT"
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERTIFICATE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -186,6 +183,45 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERT"
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERTIFICATE"
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ: CUSTODY_REGISTRATION_CERTIFICATE=Giấy chứng nhận đăng\
+    \ ký hoạt động lưu ký chứng khoán."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode CUSTODY_REGISTRATION_CERTIFICATE."
+  classification_context: "IP_ALT_ID_TYPE=CUSTODY_REGISTRATION_CERTIFICATE"
+  etl_derived_value: "CUSTODY_REGISTRATION_CERTIFICATE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số quyết định GCN đăng ký hoạt động lưu ký chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_INFO.CUSTODY_REG_CERT_DECISION_NUMBER"
+  comment: "VARCHAR2(800). Mô tả gốc nguồn trống."
+  classification_context: "IP_ALT_ID_TYPE=CUSTODY_REGISTRATION_CERTIFICATE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày quyết định GCN đăng ký hoạt động lưu ký chứng khoán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_INFO.CUSTODY_REG_CERT_DECISION_DATE"
+  comment: "DATE."
+  classification_context: "IP_ALT_ID_TYPE=CUSTODY_REGISTRATION_CERTIFICATE"
   etl_derived_value: null
   data_type: "date"

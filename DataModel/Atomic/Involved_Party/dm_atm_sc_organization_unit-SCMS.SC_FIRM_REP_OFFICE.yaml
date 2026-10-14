@@ -88,7 +88,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_REP_OFFICE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_REP_OFFICE.SC_FIRM_INFO_ID = SC_FIRM_INFO.SC_FIRM_INFO_ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -102,7 +102,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_INFO.CODE
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
+    comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
     classification_context: null
     etl_derived_value: null
 
@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.SC_FIRM_BRANCH_ID
-    comment: "FK target: sc_organization_unit.sc_organization_unit_id. Hash: hash_id('SCMS.SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID)."
+    comment: "FK target: sc_organization_unit.sc_ou_id. Hash: hash_id('SCMS_SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -130,7 +130,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.SC_FIRM_BRANCH_ID
-    comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair with Parent Organization Unit Id."
+    comment: "Lookup pair: sc_organization_unit.sc_ou_code. Pair with Parent Organization Unit Id."
     classification_context: null
     etl_derived_value: null
 
@@ -162,8 +162,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Classification Firm Status Id
-    physical_name: cl_firm_status_id
+  - name: Classification Securities Company Firm Status Id
+    physical_name: cl_sc_firm_status_id
     business_meaning: "Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm ngừng; 4=Đình chỉ."
     data_domain: Surrogate Key
     data_type: string
@@ -172,12 +172,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.REP_OFFICE_STATUS
-    comment: "FK target: cl_firm_status.cl_firm_status_id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', REP_OFFICE_STATUS)."
+    comment: "FK target: cl_securities_company_firm_status.cl_sc_firm_status_id. Cần ETL crosswalk sang SCMS.CAT_SC_FIRM_STATUS: SC_FIRM_REP_OFFICE.REP_OFFICE_STATUS = CAT_SC_FIRM_STATUS.ID để xác nhận SC_FIRM_STATUS_CODE sau đó hash_id('SCMS_CAT_SC_FIRM_STATUS', SC_FIRM_STATUS_CODE) | Trước đây hash trực tiếp theo REP_OFFICE_STATUS (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ SC_FIRM_STATUS_CODE) — đã sửa sang crosswalk 2026-09-16."
     classification_context: null
     etl_derived_value: null
 
-  - name: Classification Firm Status Code
-    physical_name: cl_firm_status_code
+  - name: Classification Securities Company Firm Status Code
+    physical_name: cl_sc_firm_status_code
     business_meaning: "Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm ngừng; 4=Đình chỉ."
     data_domain: Text
     data_type: string
@@ -185,41 +185,27 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.REP_OFFICE_STATUS
-    comment: "Lookup pair: cl_firm_status.cl_firm_status_code. Pair with Classification Firm Status Id."
+    source_column: SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE
+    comment: "Lookup pair: cl_securities_company_firm_status.cl_sc_firm_status_code. Pair with Classification Securities Company Firm Status Id. Giá trị lấy từ SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE sau ETL crosswalk — chi tiết xem comment Classification Securities Company Firm Status Id."
     classification_context: null
     etl_derived_value: null
 
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: "Trạng thái bản ghi kỹ thuật: 1=Còn hiệu lực; 0=Hết hiệu lực."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.RECORD_STATUS
-    comment: "Scheme: SCMS_USAGE_STATUS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Provisional Status Code
-    physical_name: provisional_status_code
+  - name: Provisional Indicator
+    physical_name: provisional_ind
     business_meaning: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
-    data_domain: Classification Value
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.PROVISIONAL
-    comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
-    classification_context: SCMS_PROVISIONAL_STATUS
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
-  - name: Classification Event Type Id
-    physical_name: cl_event_tp_id
+  - name: Classification Securities Company Event Type Id
+    physical_name: cl_sc_event_tp_id
     business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Surrogate Key
     data_type: string
@@ -228,12 +214,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID
-    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: null
     etl_derived_value: null
 
-  - name: Classification Event Type Code
-    physical_name: cl_event_tp_code
+  - name: Classification Securities Company Event Type Code
+    physical_name: cl_sc_event_tp_code
     business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Text
     data_type: string
@@ -242,35 +228,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID
-    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Decision Number
-    physical_name: decision_nbr
-    business_meaning: Số quyết định (trường mới DECISION_NUMBER).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.DECISION_NUMBER
-    comment: "DECISION_NUMBER là cột chuẩn (thay SO_QUYET_DINH — cột tiếng Việt cũ, đã loại bỏ do trùng ý nghĩa, xem pending_design.yaml)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Decision Date
-    physical_name: decision_dt
-    business_meaning: Ngày quyết định (trường mới DECISION_DATE).
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.DECISION_DATE
-    comment: "DECISION_DATE là cột chuẩn (thay NGAY_QUYET_DINH — cột tiếng Việt cũ, đã loại bỏ do trùng ý nghĩa, xem pending_design.yaml)."
+    comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair with Classification Securities Company Event Type Id."
     classification_context: null
     etl_derived_value: null
 
@@ -397,20 +355,6 @@ attributes:
     source_table: SC_FIRM_REP_OFFICE
     source_column: SCMS.SC_FIRM_REP_OFFICE.REPRESENTATIVE_NAME
     comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Representative Id
-    physical_name: representative_id
-    business_meaning: "ID nhân sự người đại diện (liên kết nội bộ SCMS, không phải FK chính thức)."
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_REP_OFFICE
-    source_column: SCMS.SC_FIRM_REP_OFFICE.REPRESENTATIVE_ID
-    comment: Denormalized — không có FK target. Nguồn lưu NUMBER(10) — ETL convert sang string.
     classification_context: null
     etl_derived_value: null
 

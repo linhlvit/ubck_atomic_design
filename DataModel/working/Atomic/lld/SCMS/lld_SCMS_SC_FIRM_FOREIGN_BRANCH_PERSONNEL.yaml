@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Key Personnel"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -20,10 +20,11 @@ metadata:
   notes: "SC_FIRM_FOREIGN_BRANCH_PERSONNEL → Securities Company Foreign Branch Personnel.\
     \ Nhân sự tại chi nhánh CTCK nước ngoài tại Việt Nam. Đưa lại vào scope Tier 2\
     \ sau khi resolve mâu thuẫn Append/SCD4A (SCMS_HLD_Overview.md mục 7e #10) — table_type\
-    \ đổi thành Fundamental. FK đến Securities Company Foreign Branch. Có trường cá\
-    \ nhân (NATIONAL_ID/ISSUE_PLACE/ID_ISSUED_DATE → IP Alt Identification; ADDRESS/PERMANENT_ADDRESS\
-    \ → IP Postal Address; PHONE/EMAIL/DISCLOSURE_EMAIL → IP Electronic Address).\
-    \ Nguồn chỉ có CREATED_AT — không có CREATED_BY/UPDATED_AT/UPDATED_BY (xem pending_design.yaml)."
+    \ đổi thành Fundamental. FK đến Securities Company Foreign Organization Unit.\
+    \ Có trường cá nhân (NATIONAL_ID/ISSUE_PLACE/ID_ISSUED_DATE → IP Alt Identification;\
+    \ ADDRESS/PERMANENT_ADDRESS → IP Postal Address; PHONE/EMAIL/DISCLOSURE_EMAIL\
+    \ → IP Electronic Address). Nguồn chỉ có CREATED_AT — không có CREATED_BY/UPDATED_AT/UPDATED_BY\
+    \ (xem pending_design.yaml)."
 attributes:
 - attribute_name: "Securities Company Foreign Branch Personnel Id"
   physical_name: "sc_foreign_branch_personnel_id"
@@ -83,8 +84,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Securities Company Foreign Branch Id"
-  physical_name: "sc_foreign_branch_id"
+- attribute_name: "Securities Company Foreign Organization Unit Id"
+  physical_name: "sc_foreign_ou_id"
   description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan."
   data_domain: "Surrogate Key"
   nullable: false
@@ -92,13 +93,13 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+  comment: "FK target: sc_foreign_organization_unit.sc_foreign_ou_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
     \ SC_FIRM_FOREIGN_BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Securities Company Foreign Branch Code"
-  physical_name: "sc_foreign_branch_code"
+- attribute_name: "Securities Company Foreign Organization Unit Code"
+  physical_name: "sc_foreign_ou_code"
   description: "Mã chi nhánh CTCK nước ngoài."
   data_domain: "Text"
   nullable: false
@@ -106,8 +107,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with Securities\
-    \ Company Foreign Branch Id."
+  comment: "Lookup pair: sc_foreign_organization_unit.sc_foreign_ou_code. Pair with\
+    \ Securities Company Foreign Organization Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

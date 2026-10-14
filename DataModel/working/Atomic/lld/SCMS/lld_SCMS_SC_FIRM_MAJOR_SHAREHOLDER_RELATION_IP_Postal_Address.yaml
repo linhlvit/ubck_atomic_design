@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -24,15 +24,15 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Major Shareholder Relation."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Major Shareholder Relation Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
-  comment: "FK target: sc_major_shareholder_relation.sc_major_shareholder_relation_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION',\
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -46,8 +46,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
-  comment: "Lookup pair: sc_major_shareholder_relation.sc_major_shareholder_relation_code.\
-    \ Pair with Involved Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -1,0 +1,275 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_securities_company_event_type-SCMS.CAT_EVENT_TYPE
+  logical_name: Classification Securities Company Event Type
+  physical_name: cl_securities_company_event_type
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Event Type"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  description: |
+    Danh mục loại sự kiện/sự vụ nghiệp vụ (thành lập, điều chỉnh vốn, đổi tên...) làm cơ sở xác định nghĩa vụ báo cáo/CBTT của CTCK. Nâng cấp từ Classification Value (scheme SCMS_EVENT_TYPE) lên entity thật. Table Type = Relative (khác 3 entity Classification khác trong nhóm) theo chỉ đạo Data Modeler. Đổi tên 2026-09-16: Classification Event Type → Classification SCMS Event Type → Classification Securities Company Event Type (theo chỉ đạo Data Modeler, đối xứng Classification FMS Event Type).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CAT_EVENT_TYPE
+
+attributes:
+  - name: Classification Securities Company Event Type Id
+    physical_name: cl_sc_event_tp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.ID
+    comment: "PK surrogate. BCV: \"[Common] Event Type\". Danh mục loại sự kiện/sự vụ nghiệp vụ làm cơ sở xác định nghĩa vụ báo cáo/CBTT. Hash: hash_id('SCMS_CAT_EVENT_TYPE', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Event Type Code
+    physical_name: cl_sc_event_tp_code
+    business_meaning: "Mã sự vụ (thành lập, điều chỉnh vốn, thay đổi tên). BK của entity."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE
+    comment: BK chính. Dùng EVENT_TYPE_CODE (mã nghiệp vụ) thay vì ID kỹ thuật — xem pending_design.yaml.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
+    etl_derived_value: SCMS_CAT_EVENT_TYPE
+
+  - name: Classification Securities Company Event Type Name
+    physical_name: cl_sc_event_tp_nm
+    business_meaning: Tên sự vụ/sự kiện.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: License Required Indicator
+    physical_name: license_required_ind
+    business_meaning: "Cờ sự vụ này cần có giấy phép/văn bản chấp thuận: 1=Có, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.REQUIRES_LICENSE
+    comment: NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Disclosure Required Indicator
+    physical_name: disclosure_required_ind
+    business_meaning: Cờ sự vụ này yêu cầu công bố thông tin.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.REQUIRES_DISCLOSURE
+    comment: "Data type nguồn NUMBER không khai báo precision — cần profile trước ETL. Mô tả gốc BRD trống, suy luận từ tên cột theo pattern REQUIRES_*."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Obligation Type Code
+    physical_name: obligation_tp_code
+    business_meaning: "Loại nghĩa vụ áp dụng: 1 = Chỉ báo cáo (không CBTT); 2 = Chỉ CBTT (không báo cáo); 3 = Vừa báo cáo vừa CBTT; 4 = Thay đổi hồ sơ CTCK."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.OBLIGATION_TYPE
+    comment: "SCHEMA_CODE=SCMS.CAT_EVENT_TYPE.OBLIGATION_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Target Entity Code
+    physical_name: target_entity_code
+    business_meaning: Đối tượng áp dụng của loại sự vụ (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.TARGET_ENTITY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Event Category Code
+    physical_name: event_category_code
+    business_meaning: "Phân loại sự vụ. 1-Định kỳ, 2-Bất thường, 3-Theo yêu cầu, 4-Khác"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.EVENT_CATEGORY
+    comment: "SCHEMA_CODE=SCMS.GROUP_EVENT_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Cycle Code
+    physical_name: cycle_code
+    business_meaning: Chu kỳ áp dụng của sự vụ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.CYCLE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Frequency Code
+    physical_name: frequency_code
+    business_meaning: Tần suất áp dụng của sự vụ (mô tả gốc BRD trống).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.FREQUENCY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Cutoff Date
+    physical_name: cutoff_dt
+    business_meaning: Ngày chốt sổ/hạn xử lý liên quan sự vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.CUTOFF_DATE
+    comment: "Nguồn lưu dạng NVARCHAR2(50) — ETL cần cast/parse sang date. Cần validate format và giá trị non-date trước khi ETL."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Method
+    physical_name: submission_method
+    business_meaning: Phương thức nộp/xử lý sự vụ (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.SUBMISSION_METHOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective Date
+    physical_name: effective_dt
+    business_meaning: Ngày văn bản/thay đổi có hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.EFFECTIVE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Expiry Date
+    physical_name: expiry_dt
+    business_meaning: Ngày hết hiệu lực (mô tả gốc BRD trống).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.EXPIRY_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Deadline Calculation Method Code
+    physical_name: deadline_calculation_method_code
+    business_meaning: "Cách tính thời hạn: 1-Theo định kỳ, 2-Theo sự kiện phát sinh."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.DEADLINE_CALCULATION_METHOD
+    comment: "SCHEMA_CODE=SCMS.CAT_EVENT_TYPE.DEADLINE_CALCULATION_METHOD"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Event Group Id
+    physical_name: event_group_id
+    business_meaning: Cột event_group_id (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.EVENT_GROUP_ID
+    comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10). Tên cột gợi ý FK đến 1 bảng nhóm sự kiện, nhưng không có fk_note khai báo và không xác nhận được bảng đích trong scope hiện tại — giữ dạng Text đơn giản (không tạo cặp FK Id+Code). Nếu sau này xác định được bảng đích, cần đổi sang FK chuẩn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_EVENT_TYPE
+    source_column: SCMS.CAT_EVENT_TYPE.NOTE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

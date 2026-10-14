@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -23,15 +23,15 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Foreign Representative Office Personnel."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Foreign Representative Office Personnel Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
-  comment: "FK target: sc_foreign_representative_office_personnel.sc_foreign_representative_office_personnel_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL',\
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -45,8 +45,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
-  comment: "Lookup pair: sc_foreign_representative_office_personnel.sc_foreign_representative_office_personnel_code.\
-    \ Pair with Involved Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

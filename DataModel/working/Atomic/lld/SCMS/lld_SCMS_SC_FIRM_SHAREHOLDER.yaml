@@ -79,10 +79,10 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó\
-    \ hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+    \ SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID = SC_FIRM_INFO.SC_FIRM_INFO_ID để xác nhận\
+    \ CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo\
+    \ SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE)\
+    \ — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -181,9 +181,9 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.CAT_NATIONALITY.NATIONALITY_CODE"
-  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair\
-    \ with Nationality Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau\
-    \ ETL crosswalk — chi tiết xem comment Nationality Id."
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
+    \ Nationality Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau ETL\
+    \ crosswalk — chi tiết xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -385,7 +385,7 @@ attributes:
 - attribute_name: "Shares Held"
   physical_name: "shares_held"
   description: "Số lượng cổ phần đang nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -394,7 +394,7 @@ attributes:
   comment: "NUMBER(38). Không có scale — integer-like. ETL cần long/BigInteger type."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Freely Tradable Shares"
   physical_name: "freely_tradable_shares"
   description: "Số cổ phần tự do giao dịch."
@@ -446,7 +446,7 @@ attributes:
   comment: "NUMBER(10,4). Lưu dạng thập phân (VD: 15.25 = 15.25%)."
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(7,4)"
+  data_type: "decimal(5,2)"
 - attribute_name: "Contributed Capital"
   physical_name: "contributed_capital"
   description: "Vốn góp (đơn vị: đồng)."

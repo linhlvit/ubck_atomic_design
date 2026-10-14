@@ -88,7 +88,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
     source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | NUMBER(19). Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | NUMBER(19). Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -102,7 +102,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
     source_column: SCMS.SC_FIRM_INFO.CODE
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
+    comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
     classification_context: null
     etl_derived_value: null
 
@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
     source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SHAREHOLDER_ID
-    comment: "FK target: sc_shareholder.sc_shareholder_id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', SHAREHOLDER_ID). NUMBER(19) — BRD key:null nhưng HLD diagram xác nhận là FK."
+    comment: "FK target: sc_shareholder.sc_shareholder_id. Hash: hash_id('SCMS_SC_FIRM_SHAREHOLDER', SHAREHOLDER_ID). NUMBER(19) — BRD key:null nhưng HLD diagram xác nhận là FK."
     classification_context: null
     etl_derived_value: null
 
@@ -136,16 +136,16 @@ attributes:
 
   - name: Shareholder Transaction Type Code
     physical_name: shareholder_transaction_tp_code
-    business_meaning: "Loại giao dịch thay đổi sở hữu: TANG_VON=Tăng vốn góp; GIAM_VON=Giảm vốn góp; CHUYEN_NHUONG=Chuyển nhượng cổ phần; TANG_VON_DIEU_LE=Tăng vốn điều lệ."
-    data_domain: Classification Value
+    business_meaning: Loại giao dịch thay đổi sở hữu.
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
     source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.TRANSACTION_TYPE
-    comment: "Scheme: SCMS_SHAREHOLDER_TXN_TYPE. NVARCHAR2(100)."
-    classification_context: SCMS_SHAREHOLDER_TXN_TYPE
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: Data Source

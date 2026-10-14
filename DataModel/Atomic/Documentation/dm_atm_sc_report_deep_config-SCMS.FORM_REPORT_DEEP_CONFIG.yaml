@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_report_deep_config-SCMS.FORM_REPORT_DEEP_CONFIG
+  logical_name: Securities Company Report Deep Config
+  physical_name: sc_report_deep_config
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  description: |
+    Cấu hình sâu của biểu mẫu báo cáo — danh sách và cấu trúc các sheet của biểu mẫu dưới dạng JSON, gắn với 1 biểu mẫu báo cáo (Securities Company Report).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-FORM_REPORT_DEEP_CONFIG
+
+attributes:
+  - name: Securities Company Report Deep Config Id
+    physical_name: sc_rpt_deep_config_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: FORM_REPORT_DEEP_CONFIG
+    source_column: SCMS.FORM_REPORT_DEEP_CONFIG.ID
+    comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('SCMS_FORM_REPORT_DEEP_CONFIG', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Deep Config Code
+    physical_name: sc_rpt_deep_config_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT_DEEP_CONFIG
+    source_column: SCMS.FORM_REPORT_DEEP_CONFIG.ID
+    comment: BK. NUMBER(19) — ETL convert sang string.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT_DEEP_CONFIG
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_FORM_REPORT_DEEP_CONFIG'"
+    etl_derived_value: SCMS_FORM_REPORT_DEEP_CONFIG
+
+  - name: Securities Company Report Id
+    physical_name: sc_rpt_id
+    business_meaning: FK đến biểu mẫu báo cáo được cấu hình (FORM_REPORT).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT_DEEP_CONFIG
+    source_column: SCMS.FORM_REPORT_DEEP_CONFIG.FORM_REPORT_ID
+    comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Report Code
+    physical_name: sc_rpt_code
+    business_meaning: Mã biểu mẫu báo cáo được cấu hình (FORM_REPORT).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT_DEEP_CONFIG
+    source_column: SCMS.FORM_REPORT_DEEP_CONFIG.FORM_REPORT_ID
+    comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Id
+    physical_name: sheet_id
+    business_meaning: "FK -> FORM_SHEET."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT_DEEP_CONFIG
+    source_column: SCMS.FORM_REPORT_DEEP_CONFIG.SHEET_ID
+    comment: Nguồn NCLOB — lưu nguyên dạng text. Cần xác nhận format JSON trước khi denormalize/parse.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Code
+    physical_name: sheet_code
+    business_meaning: Mã sheet.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT_DEEP_CONFIG
+    source_column: SCMS.FORM_REPORT_DEEP_CONFIG.SHEET_CODE
+    comment: Nguồn NCLOB — lưu nguyên dạng text. Cần xác nhận format JSON trước khi denormalize/parse.
+    classification_context: null
+    etl_derived_value: null

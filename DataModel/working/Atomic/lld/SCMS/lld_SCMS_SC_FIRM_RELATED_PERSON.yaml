@@ -21,12 +21,14 @@ metadata:
     \ ở chỗ không gắn SENIOR_PERSONNEL_ID. Địa chỉ tách IP Postal (PERMANENT_ADDRESS=PERMANENT).\
     \ Liên lạc tách IP Electronic (PHONE, EMAIL). Giấy tờ tách IP Alt ID (IDENTIFICATION_NUMBER=NATIONAL_ID).\
     \ LEGAL_REPRESENTATIVE: VARCHAR2(500) nhưng mô tả nguồn ghi '1=Có, 0=Không' —\
-    \ data type không khớp description; lưu dạng Text và ghi chú. POSITION_ID → pending\
-    \ (FK CAT_POSITION ngoài scope). COUNTRY_ID → pending (FK CAT_COUNTRY ngoài scope).\
-    \ Audit: CREATED_AT + CREATED_BY + LAST_MODIFIED_AT (bảng nguồn không có LAST_MODIFIED_BY).\
-    \ Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities Company Id —\
-    \ trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) thay vì CODE của\
-    \ bảng đích."
+    \ data type không khớp description; lưu dạng Text và ghi chú. POSITION_ID → FK\
+    \ Classification Securities Company Position, crosswalk qua CAT_POSITION lấy POSITION_CODE\
+    \ rồi hash_id('SCMS_CAT_POSITION', code). ISSUE_DATE/ISSUE_PLACE chuyển sang IP\
+    \ Alt Identification. Hạ về draft 2026-10-08 để sửa.  COUNTRY_ID → pending (FK\
+    \ CAT_COUNTRY ngoài scope). Audit: CREATED_AT + CREATED_BY + LAST_MODIFIED_AT\
+    \ (bảng nguồn không có LAST_MODIFIED_BY). Hạ về draft (2026-07-27) để sửa lỗi\
+    \ hash-mismatch FK Securities Company Id — trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ (ID kỹ thuật) thay vì CODE của bảng đích."
 attributes:
 - attribute_name: "Securities Company Related Person Id"
   physical_name: "sc_related_person_id"
@@ -111,20 +113,6 @@ attributes:
   classification_context: "SCMS_ENTITY_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết\
-    \ hiệu lực."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.RECORD_STATUS"
-  comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-  classification_context: "SCMS_USAGE_STATUS"
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Gender Code"
   physical_name: "gender_code"
   description: "Giới tính: 1=Nam; 2=Nữ."
@@ -134,34 +122,41 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_RELATED_PERSON.GENDER"
-  comment: "Scheme: SCMS_GENDER. NUMBER(10) — ETL convert sang string."
-  classification_context: "SCMS_GENDER"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Position Id"
-  physical_name: "position_id"
-  description: "FK đến danh mục chức vụ của người liên quan."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.POSITION_ID"
-  comment: "Pending — FK target CAT_POSITION nằm ngoài scope. VARCHAR2(200) — kiểu\
-    \ dữ liệu gốc là string (có thể lưu ID hoặc code)."
+  comment: "SCHEMA_CODE=GENDER"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Position Code"
-  physical_name: "position_code"
+- attribute_name: "Classification Securities Company Position Id"
+  physical_name: "cl_sc_position_id"
+  description: "FK đến danh mục chức vụ CTCK của người liên quan. Mô tả gốc nguồn:\
+    \ Chức vụ ID."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_RELATED_PERSON.POSITION_ID"
+  comment: "FK target: cl_securities_company_position.cl_sc_position_id. Cần ETL crosswalk\
+    \ sang SCMS.CAT_POSITION: SC_FIRM_RELATED_PERSON.POSITION_ID = CAT_POSITION.ID\
+    \ để xác nhận POSITION_CODE sau đó hash_id('SCMS_CAT_POSITION', POSITION_CODE)\
+    \ | Nguồn lưu VARCHAR2(800) — ETL cần cast sang number để join CAT_POSITION.ID;\
+    \ cần profile dữ liệu (có thể chứa code hoặc nhiều giá trị)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Position Code"
+  physical_name: "cl_sc_position_code"
   description: "Mã chức vụ của người liên quan."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.POSITION_ID"
-  comment: "Pending — Pair with Position Id."
+  - "SCMS.CAT_POSITION.POSITION_CODE"
+  comment: "Lookup pair: cl_securities_company_position.cl_sc_position_code. Pair\
+    \ with Classification Securities Company Position Id. Giá trị lấy từ SCMS.CAT_POSITION.POSITION_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company Position\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -212,8 +207,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Org Name En"
-  physical_name: "org_nm_en"
+- attribute_name: "English Name"
+  physical_name: "english_nm"
   description: "Tên tổ chức bằng tiếng Anh."
   data_domain: "Text"
   nullable: true
@@ -225,8 +220,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Org Short Name"
-  physical_name: "org_short_nm"
+- attribute_name: "Short Name"
+  physical_name: "short_nm"
   description: "Tên viết tắt của tổ chức liên quan."
   data_domain: "Text"
   nullable: true
@@ -251,32 +246,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Issue Date"
-  physical_name: "issue_dt"
-  description: "Ngày cấp giấy tờ/chứng chỉ định danh."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.ISSUE_DATE"
-  comment: "DATE."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-- attribute_name: "Issue Place"
-  physical_name: "issue_place"
-  description: "Nơi cấp giấy tờ/chứng chỉ định danh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.ISSUE_PLACE"
-  comment: "VARCHAR2(500)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Representative Title"
   physical_name: "representative_title"
   description: "Chức danh người đại diện."

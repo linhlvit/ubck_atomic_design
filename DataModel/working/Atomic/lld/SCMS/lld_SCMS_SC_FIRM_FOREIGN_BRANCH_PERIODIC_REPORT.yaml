@@ -3,13 +3,13 @@ schema_version: "2.0"
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
-  atomic_entity: "Securities Company Foreign Branch Periodic Report"
-  entity_physical_name: "sc_foreign_branch_periodic_report"
-  bcv_core_object: "Event"
-  bcv_concept: "[Event] Transaction"
+  atomic_entity: "Securities Company Foreign Organization Unit Periodic Report"
+  entity_physical_name: "sc_foreign_organization_unit_periodic_report"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Transaction"
   table_type: "Relative"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,8 +17,12 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Báo cáo định kỳ gửi bởi Chi nhánh nước ngoài của CTCK lên cơ quan quản lý.\
-    \ Mỗi dòng = 1 lần nộp báo cáo theo 1 kỳ/loại báo cáo. FK: SC_FIRM_FOREIGN_BRANCH_ID→Securities\
+  notes: "Securities Company Foreign Organization Unit Periodic Report — gộp SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT\
+    \ và SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT vào cùng 1 entity theo yêu cầu\
+    \ Data Modeler 2026-10-10; đổi BCV Core Object Event → Business Activity (concept\
+    \ [Business Activity] Transaction, cùng Securities Company Periodic Report/Adhoc\
+    \ Report). Báo cáo định kỳ gửi bởi Chi nhánh nước ngoài của CTCK lên cơ quan quản\
+    \ lý. Mỗi dòng = 1 lần nộp báo cáo theo 1 kỳ/loại báo cáo. FK: SC_FIRM_FOREIGN_BRANCH_ID→Securities\
     \ Company Foreign Branch (T2). EVENT_TYPE_ID: FK đến CAT_EVENT_TYPE nằm ngoài\
     \ scope → pending. CANCELLED_BY: FK đến SYS_USER nằm ngoài scope → pending. RECORD_STATUS\
     \ (NUMBER 10): SCMS_REPORT_SUBMISSION_STATUS (0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt;\
@@ -28,8 +32,8 @@ metadata:
     \ niên/Năm). Bảng nguồn không có trường CREATED_AT/BY/LAST_MODIFIED — không có\
     \ audit block chuẩn. Sự kiện thay trạng thái được ghi nhận qua SENT_AT và CANCELLED_AT."
 attributes:
-- attribute_name: "Securities Company Foreign Branch Periodic Report Id"
-  physical_name: "sc_foreign_branch_periodic_rpt_id"
+- attribute_name: "Securities Company Foreign Organization Unit Periodic Report Id"
+  physical_name: "sc_foreign_ou_periodic_rpt_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -40,8 +44,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Securities Company Foreign Branch Periodic Report Code"
-  physical_name: "sc_foreign_branch_periodic_rpt_code"
+- attribute_name: "Securities Company Foreign Organization Unit Periodic Report Code"
+  physical_name: "sc_foreign_ou_periodic_rpt_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -65,8 +69,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
   etl_derived_value: "SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
   data_type: "string"
-- attribute_name: "Securities Company Foreign Branch Id"
-  physical_name: "sc_foreign_branch_id"
+- attribute_name: "Securities Company Foreign Organization Unit Id"
+  physical_name: "sc_foreign_ou_id"
   description: "FK đến Chi nhánh nước ngoài CTCK nộp báo cáo này."
   data_domain: "Surrogate Key"
   nullable: false
@@ -74,13 +78,13 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+  comment: "FK target: sc_foreign_organization_unit.sc_foreign_ou_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
     \ SC_FIRM_FOREIGN_BRANCH_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Securities Company Foreign Branch Code"
-  physical_name: "sc_foreign_branch_code"
+- attribute_name: "Securities Company Foreign Organization Unit Code"
+  physical_name: "sc_foreign_ou_code"
   description: "Mã Chi nhánh nước ngoài CTCK."
   data_domain: "Text"
   nullable: false
@@ -88,8 +92,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with Securities\
-    \ Company Foreign Branch Id."
+  comment: "Lookup pair: sc_foreign_organization_unit.sc_foreign_ou_code. Pair with\
+    \ Securities Company Foreign Organization Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -119,20 +123,6 @@ attributes:
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Report Submission Status Code"
-  physical_name: "rpt_submission_status_code"
-  description: "Trạng thái nộp báo cáo: 0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt; -1=Từ chối;\
-    \ 3=Bị hủy."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.RECORD_STATUS"
-  comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10)."
-  classification_context: "SCMS_REPORT_SUBMISSION_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Name"
@@ -275,7 +265,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.DU_LIEU_EFORM"
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EFORM_DATA"
   comment: "VARCHAR2(4000). DU_LIEU_EFORM = Dữ liệu eForm — mô tả gốc BRD null."
   classification_context: null
   etl_derived_value: null
@@ -332,19 +322,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Attachment Path"
-  physical_name: "attachment_path"
-  description: "Đường dẫn file đính kèm báo cáo trên hệ thống lưu trữ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.ATTACHMENT_PATH"
-  comment: "VARCHAR2(2000). Reference path — không load binary vào Atomic."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Import File Path"
   physical_name: "import_file_path"
   description: "Đường dẫn file import dữ liệu báo cáo trên hệ thống lưu trữ."
@@ -399,59 +376,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-- attribute_name: "Cancelled Timestamp"
-  physical_name: "cancelled_tms"
-  description: "Thời điểm báo cáo bị hủy."
-  data_domain: "Timestamp"
+- attribute_name: "Previous Report Submission Status Code"
+  physical_name: "previous_rpt_submission_status_code"
+  description: "Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống)."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.CANCELLED_AT"
-  comment: "TIMESTAMP(6). NULL nếu không bị hủy."
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.PREVIOUS_SUBMIT_STATUS"
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Cancellation Reason"
-  physical_name: "cancellation_reason"
-  description: "Lý do hủy báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.CANCELLATION_REASON"
-  comment: "VARCHAR2(2000)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Cancelled By IAM User Id"
-  physical_name: "cancelled_by_iam_user_id"
-  description: "FK đến người hủy báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.CANCELLED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID\
-    \ là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Cancelled By IAM User Code"
-  physical_name: "cancelled_by_iam_user_code"
-  description: "Mã người hủy báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.CANCELLED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Cancelled By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk\
-    \ (xem comment Id)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
+  data_type: "int"

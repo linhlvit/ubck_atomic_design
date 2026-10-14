@@ -18,21 +18,22 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Alt Identification của Securities Company Shareholder. 1 row per cổ đông\
-    \ — ID_NUMBER (NVARCHAR2 250) → type NATIONAL_ID (BRD: \"Số CMND (định\
-    \ danh cũ)\" — không phải CCCD/Hộ chiếu hiện hành). Issue Date/Issue Place đã\
-    \ map tại entity chính. Format đồng bộ theo chuẩn NHNCK."
+    \ — ID_NUMBER (NVARCHAR2 250) → type IDENTIFICATION (Số CMND/CCCD/Hộ chiếu/Mã\
+    \ số doanh nghiệp). Issue Date/Issue Place đã map tại entity chính. Format đồng\
+    \ bộ theo chuẩn NHNCK."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Shareholder."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Shareholder Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.ID"
-  comment: "FK target: sc_shareholder.sc_shareholder_id. Shared entity — không có\
-    \ PK surrogate riêng. Hash: hash_id('SCMS_SC_FIRM_SHAREHOLDER', ID)."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_SHAREHOLDER',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45,8 +46,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.ID"
-  comment: "Lookup pair: sc_shareholder.sc_shareholder_code. Pair with Involved Party\
-    \ Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_SHAREHOLDER"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -64,20 +64,20 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân: NATIONAL_ID=CMND."
+  description: "Loại giấy tờ: IDENTIFICATION."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột\
-    \ ID_NUMBER, BRD mô tả \"Số CMND\"."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode IDENTIFICATION — chỉ có 1 cột ID_NUMBER,\
+    \ BRD mô tả Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  etl_derived_value: "IDENTIFICATION"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Số CMND (định danh cũ)."
+  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -85,6 +85,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.ID_NUMBER"
   comment: "NVARCHAR2(250)."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"

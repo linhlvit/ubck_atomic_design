@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Securities Company Senior Personnel.
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Securities Company Senior Personnel Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,8 +32,8 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_SENIOR_PERSONNEL', ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -46,8 +46,8 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_SENIOR_PERSONNEL"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -61,12 +61,12 @@ attributes:
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: SCMS_SC_FIRM_SENIOR_PERSONNEL
 
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning: "Loại giấy tờ tùy thân: LEGACY_NATIONAL_ID=CMND cũ."
+    business_meaning: "Loại giấy tờ tùy thân: IDENTIFICATION."
     data_domain: Classification Value
     data_type: string
     nullable: false
@@ -75,12 +75,12 @@ attributes:
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: null
     comment: "Scheme: IP_ALT_ID_TYPE. ETL tạo row từ ID_NUMBER."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
-    etl_derived_value: LEGACY_NATIONAL_ID
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: IDENTIFICATION
 
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning: Số CMND cũ.
+    business_meaning: Số CMND/CCCD/Hộ chiếu.
     data_domain: Text
     data_type: string
     nullable: true
@@ -89,12 +89,12 @@ attributes:
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID_NUMBER
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Date
     physical_name: identification_issue_dt
-    business_meaning: Ngày cấp CMND cũ.
+    business_meaning: Ngày cấp.
     data_domain: Date
     data_type: date
     nullable: true
@@ -102,13 +102,13 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_DATE
-    comment: Gắn với row LEGACY_NATIONAL_ID (ID_NUMBER). NATIONAL_ID (mới) không có Issue Date riêng trong nguồn — cần xác nhận.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Place
     physical_name: identification_issue_place
-    business_meaning: Nơi cấp CMND cũ.
+    business_meaning: Nơi cấp.
     data_domain: Text
     data_type: string
     nullable: true
@@ -116,13 +116,13 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_PLACE
-    comment: Gắn với row LEGACY_NATIONAL_ID (ID_NUMBER). Cần xác nhận có áp dụng cho NATIONAL_ID không.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu hiện hành."
+    business_meaning: "Loại giấy tờ: PRACTITIONER_LICENSE=Chứng chỉ hành nghề chứng khoán."
     data_domain: Classification Value
     data_type: string
     nullable: false
@@ -130,20 +130,34 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. ETL tạo row từ NATIONAL_ID."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: NATIONAL_ID
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL tạo row từ SECURITIES_LICENSE_NUMBER."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: PRACTITIONER_LICENSE
 
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning: Số CCCD/CMND/Hộ chiếu hiện hành.
+    business_meaning: "Số chứng chỉ hành nghề. Mô tả gốc nguồn: Số Cchn."
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID
-    comment: Không có Issue Date/Place riêng trong nguồn cho NATIONAL_ID — cần xác nhận.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'NATIONAL_ID'"
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SECURITIES_LICENSE_NUMBER
+    comment: VARCHAR2(400).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: "Ngày cấp chứng chỉ hành nghề. Mô tả gốc nguồn: Ngày cấp chứng chỉ hành nghề."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SECURITIES_LICENSE_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'PRACTITIONER_LICENSE'"
     etl_derived_value: null

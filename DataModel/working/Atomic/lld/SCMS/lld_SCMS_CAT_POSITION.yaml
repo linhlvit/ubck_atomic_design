@@ -1,0 +1,168 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "CAT_POSITION"
+  atomic_entity: "Classification Securities Company Position"
+  entity_physical_name: "cl_securities_company_position"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Position"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nâng cấp từ Classification Value (scheme SCMS_POSITION_TYPE, nay deprecated)\
+    \ lên entity thật theo yêu cầu Data Modeler (2026-10-08), cùng pattern Classification\
+    \ Securities Company Firm Status. BCV Core Object gán Common, BCV Concept dùng\
+    \ `[Common] Position` nhất quán Classification FMS Job (BCV term gần nhất `Employment\
+    \ Position Type` id 11300, category Involved Party — không dùng để giữ nhất quán\
+    \ pattern Classification-naming). BK dùng POSITION_CODE; surrogate Id hash trực\
+    \ tiếp từ POSITION_CODE (theo yêu cầu Data Modeler). Chỉ map 8 cột theo chỉ đạo:\
+    \ POSITION_GROUP, POSITION_CODE, POSITION_NAME, NOTE, REPRESENTATIVE, BOARD_MEMBER,\
+    \ BRANCH_DIRECTOR, ECATALOG_ID. Không map ID (PK kỹ thuật), RECORD_STATUS, CREATED_BY,\
+    \ CREATED_AT (audit loại bỏ theo convention SCMS — SYS_USER ngoài phạm vi Atomic)."
+attributes:
+- attribute_name: "Classification Securities Company Position Id"
+  physical_name: "cl_sc_position_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.POSITION_CODE"
+  comment: "PK surrogate. BCV: \"[Common] Position\". Danh mục chức vụ nhân sự CTCK.\
+    \ Hash: hash_id('SCMS_CAT_POSITION', POSITION_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Position Code"
+  physical_name: "cl_sc_position_code"
+  description: "Mã chức vụ. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.POSITION_CODE"
+  comment: "BK chính. Nguồn NVARCHAR2(50) — cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live (Code đóng vai trò BK và là đầu vào hash Id)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_CAT_POSITION"
+  etl_derived_value: "SCMS_CAT_POSITION"
+  data_type: "string"
+- attribute_name: "Classification Securities Company Position Name"
+  physical_name: "cl_sc_position_nm"
+  description: "Tên chức vụ."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.POSITION_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Position Group"
+  physical_name: "position_group"
+  description: "Nhóm chức vụ (Ban lãnh đạo, Giám đốc, Nhân viên)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.POSITION_GROUP"
+  comment: "NVARCHAR2(10). Giữ Text vì nguồn chưa có danh mục giá trị chuẩn — xem\
+    \ điểm cần xác nhận: có đăng ký scheme Classification Value cho nhóm chức vụ không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Representative Indicator"
+  physical_name: "representative_ind"
+  description: "Cờ chức vụ là người đại diện (mô tả gốc nguồn trống): 1=Có, 0=Không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.REPRESENTATIVE"
+  comment: "NUMBER(1). Nguồn không có mô tả cột — ý nghĩa suy từ tên cột, cần Data\
+    \ Modeler xác nhận. Cùng pattern Report Submission Required Indicator của Classification\
+    \ Securities Company Firm Status."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Board Member Indicator"
+  physical_name: "board_member_ind"
+  description: "Cờ chức vụ là thành viên Ban lãnh đạo: 1=Là thành viên Ban lãnh đạo,\
+    \ 0=Không phải."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.BOARD_MEMBER"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Branch Director Indicator"
+  physical_name: "branch_director_ind"
+  description: "Cờ chức vụ là Giám đốc chi nhánh/PGD/VPĐD: 1=Là giám đốc, 0=Không\
+    \ phải."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.BRANCH_DIRECTOR"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Ecatalog Id"
+  physical_name: "ecatalog_id"
+  description: "Mã định danh (UUID) của chức danh tương ứng trong danh mục dùng chung\
+    \ ECAT (mô tả gốc nguồn trống)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_POSITION.ECATALOG_ID"
+  comment: "VARCHAR2(36). Giữ dạng Text denormalized, không tạo cặp FK Id+Code — chưa\
+    \ xác nhận crosswalk sang ECAT POSITION (hash ECAT theo Code, không theo ID nguồn)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

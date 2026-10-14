@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Business Activity"
   table_type: "Fact Append"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -97,11 +97,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Profile Change Entity Type Code"
-  physical_name: "profile_change_entity_tp_code"
-  description: "Loại đối tượng bị thay đổi: CTCK=Công ty chứng khoán; CHI_NHANH=Chi\
-    \ nhánh; PHONG_GIAO_DICH=Phòng giao dịch; VPDD=Văn phòng đại diện; NHAN_SU=Nhân\
-    \ sự; CO_DONG=Cổ đông."
+- attribute_name: "Organization Unit Type Code"
+  physical_name: "ou_tp_code"
+  description: "Loại đối tượng bị thay đổi."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
@@ -112,10 +110,25 @@ attributes:
   classification_context: "SCMS_PROFILE_CHANGE_ENTITY_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Entity Id"
-  physical_name: "entity_id"
-  description: "ID của đối tượng bị thay đổi (polymorphic — trỏ đến bảng khác nhau\
-    \ tuỳ theo ENTITY_TYPE)."
+- attribute_name: "Securities Company Organization Unit Id"
+  physical_name: "sc_ou_id"
+  description: "ID của đối tượng bị thay đổi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_ID"
+  comment: "Xử lí Case when ENTITY_TYPE = CN then hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)\
+    \  when ENTITY_TYPE = PGD then hash_id('SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)\
+    \  when ENTITY_TYPE = TRU_SO_CHINH then hash_id('SC_FIRM_INFO', ENTITY_ID)  when\
+    \ ENTITY_TYPE = VPDD then hash_id('SC_FIRM_REP_OFFICE', ENTITY_ID)  else NULL"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Organization Unit Code"
+  physical_name: "sc_ou_code"
+  description: "Mã của đối tượng bị thay đổi."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -127,182 +140,237 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Securities Company Event Type Id"
-  physical_name: "cl_sc_event_tp_id"
-  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (loại thay đổi hồ sơ)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Classification Securities Company Event Type Code"
-  physical_name: "cl_sc_event_tp_code"
-  description: "Mã loại sự vụ/sự kiện nghiệp vụ."
+- attribute_name: "Establishment Operation License Number"
+  physical_name: "establishment_operation_license_nbr"
+  description: "Giấy phép thành lập và hoạt động do UBCKNN cấp."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
-  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id."
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.ESTABLISHMENT_OPERATION_LICENSE_NUMBER"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Name"
-  physical_name: "event_tp_nm"
-  description: "Tên loại sự vụ/sự kiện nghiệp vụ (denormalized snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_NAME"
-  comment: "NVARCHAR2(1000). Snapshot denormalized — lưu tên lúc ghi nhận thay đổi."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Subject Display Name"
-  physical_name: "subject_display_nm"
-  description: "Tên hiển thị của đối tượng bị thay đổi (chuỗi mô tả ngắn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.SUBJECT_DISPLAY_NAME"
-  comment: "NVARCHAR2(500). Mô tả gốc BRD null — tên đối tượng thay đổi lúc ghi nhận."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Before Info"
-  physical_name: "before_info"
-  description: "Thông tin hồ sơ trước khi thay đổi (dạng văn bản)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.BEFORE_INFO"
-  comment: "NCLOB. Snapshot trạng thái trước thay đổi — lưu dạng text. Cần xác nhận\
-    \ giới hạn độ dài khi load vào Atomic Delta table."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "After Info"
-  physical_name: "after_info"
-  description: "Thông tin hồ sơ sau khi thay đổi (dạng văn bản)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.AFTER_INFO"
-  comment: "NCLOB. Snapshot trạng thái sau thay đổi — lưu dạng text. AFTER_DATA_JSON\
-    \ (NCLOB JSON) đã được loại trừ khỏi Atomic."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Document Reference Number"
-  physical_name: "document_reference_nbr"
-  description: "Số giấy phép/quyết định/công văn liên quan đến thay đổi hồ sơ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.SO_GP_QD_CV"
-  comment: "NVARCHAR2(500). SO_GP_QD_CV = Số Giấy Phép/Quyết Định/Công Văn."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Effective Date"
-  physical_name: "effective_dt"
-  description: "Ngày văn bản/thay đổi có hiệu lực."
+- attribute_name: "Establishment Operation License Date"
+  physical_name: "establishment_operation_license_dt"
+  description: "Ngày cấp giấy phép thành lập và hoạt động do UBCKNN cấp."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.EFFECTIVE_DATE"
-  comment: "DATE."
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.ESTABLISHMENT_OPERATION_LICENSE_DATE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Approval Document Indicator"
-  physical_name: "approval_document_ind"
-  description: "Cờ có văn bản chấp thuận: 1=Có; 0=Không."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.CO_VB_CHAP_THUAN"
-  comment: "NUMBER(1). CO_VB_CHAP_THUAN = Có Văn Bản Chấp Thuận. ETL: 1→true, 0/null→false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Performer Name"
-  physical_name: "performer_nm"
-  description: "Tên người thực hiện thay đổi (denormalized snapshot)."
+- attribute_name: "Securities Company Name"
+  physical_name: "sc_nm"
+  description: "Tên công ty chứng khoán."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.PERFORMER_NAME"
-  comment: "NVARCHAR2(255). Snapshot tên tại thời điểm thay đổi — không update khi\
-    \ người dùng đổi tên."
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.TENCTCK"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Execution Timestamp"
-  physical_name: "execution_tms"
-  description: "Thời điểm thực hiện thay đổi hồ sơ."
-  data_domain: "Timestamp"
+- attribute_name: "Organization Unit Name"
+  physical_name: "ou_nm"
+  description: "Tên chi nhánh/phòng giao dịch/trụ sở chính."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.EXECUTION_TIME"
-  comment: "TIMESTAMP(6). Timestamp sự kiện thay đổi — bảng nguồn không có CREATED_AT/LAST_MODIFIED_AT\
-    \ riêng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Performed By IAM User Id"
-  physical_name: "performed_by_iam_user_id"
-  description: "FK đến người thực hiện thay đổi hồ sơ."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.PERFORMED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(19) trong khi IAM.USERS.ID\
-    \ là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.TENDAYDU"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Performed By IAM User Code"
-  physical_name: "performed_by_iam_user_code"
-  description: "Mã người thực hiện thay đổi hồ sơ."
+- attribute_name: "Organization Unit Address"
+  physical_name: "ou_adr"
+  description: "Địa chỉ chi nhánh/phòng giao dịch/trụ sở chính."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_PROFILE_CHANGE.PERFORMED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Performed By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk\
-    \ (xem comment Id)."
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.DIACHI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Phone"
+  physical_name: "phone"
+  description: "Số điện thoại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.PHONE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Website"
+  physical_name: "website"
+  description: "Website."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.WEBSITE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Director Name"
+  physical_name: "director_nm"
+  description: "Tên giám đốc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.GIAMDOC"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Firm Service Name"
+  physical_name: "cl_sc_firm_service_nm"
+  description: "Ngành nghề kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Operational Status"
+  physical_name: "operational_status"
+  description: "Trạng thái hoạt động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.TENTRANGTHAI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Firm Service Authorized Name"
+  physical_name: "cl_sc_firm_service_authorized_nm"
+  description: "Ngành nghề kinh doanh được uỷ quyền."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHUYQUYEN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Name"
+  physical_name: "province_nm"
+  description: "Ngành nghề kinh doanh được uỷ quyền."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.TENTINHTHANH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Branch Name"
+  physical_name: "branch_nm"
+  description: "Tên chi nhánh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.CTCKCHINHANHTEN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Securities Company Firm Service Support Name"
+  physical_name: "cl_sc_firm_service_support_nm"
+  description: "Ngành nghề kinh doanh được hỗ trợ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHUYQUYEN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Exchange Code"
+  physical_name: "exchange_code"
+  description: "Sàn niêm yết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.SANNIEMYET"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ticker Symbol"
+  physical_name: "ticker_symbol"
+  description: "Mã chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.MACHUNGKHOAN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Capital Amount"
+  physical_name: "legal_capital_amt"
+  description: "Vốn điều lệ."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.VONDIEULE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Classification Securities Company Firm Service Incur Name"
+  physical_name: "cl_sc_firm_service_incur_nm"
+  description: "Ngành nghề kinh doanh phát sinh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHPHAISINH"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -1,0 +1,294 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  atomic_entity: "Securities Company Alert Indicator"
+  entity_physical_name: "sc_alert_indicator"
+  bcv_core_object: "Event"
+  bcv_concept: "[Event] Alert Indicator"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "BCV Term: Alert Indicator. Bảng master định nghĩa chỉ tiêu cảnh báo — không\
+    \ lưu kết quả. BRD có trường trùng lặp: ALERT_CODE/INDICATOR_CODE, ALERT_NAME/INDICATOR_NAME,\
+    \ SEVERITY_LEVEL/SEVERITY — xem comment từng trường. LEGAL_REFERENCE_ID và INDICATOR_TYPE_ID\
+    \ không có FK target trong BRD. BK/Id hash key đổi từ ALERT_CODE sang INDICATOR_CODE\
+    \ theo yêu cầu tường minh Data Modeler (2026-09-18) — đảo ngược quyết định 2026-07-15.\
+    \ Đã gộp attribute 'Indicator Code' (trường thứ cấp cũ) vào Securities Company\
+    \ Alert Indicator Code (nay chính thức map từ INDICATOR_CODE); ALERT_CODE lùi\
+    \ về vai trò denormalized thứ cấp (attribute 'Alert Code'). Consumer đã đồng bộ\
+    \ crosswalk sang INDICATOR_CODE: lld_SCMS_ALERT_INDICATOR_CONDITION.yaml, lld_SCMS_ALERT_RUN.yaml,\
+    \ lld_SCMS_SC_FIRM_ALERT_VIOLATION.yaml."
+attributes:
+- attribute_name: "Securities Company Alert Indicator Id"
+  physical_name: "sc_alert_ind_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo tài\
+    \ chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE). Đổi hash\
+    \ key từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu tường minh Data Modeler (2026-09-18)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Code"
+  physical_name: "sc_alert_ind_code"
+  description: "Mã chỉ tiêu. BK của entity — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
+  comment: "BK chính (đổi từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu Data Modeler,\
+    \ 2026-09-18 — xem Securities Company Alert Indicator Id). Trước đây map nhầm\
+    \ từ ID kỹ thuật (PK nguồn), không khớp hash key thực tế của Id — đã sửa cùng\
+    \ lượt. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_ALERT_INDICATOR"
+  etl_derived_value: "SCMS_ALERT_INDICATOR"
+  data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Name"
+  physical_name: "sc_alert_ind_nm"
+  description: "Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.INDICATOR_NAME"
+  comment: "BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt với\
+    \ team nguồn. Giữ cả 2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Code"
+  physical_name: "alert_code"
+  description: "Mã chỉ tiêu cảnh báo (trường thứ cấp, có thể trùng với Indicator Code)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.ALERT_CODE"
+  comment: "Không còn là BK của entity — BK đã đổi sang INDICATOR_CODE (Securities\
+    \ Company Alert Indicator Code) theo yêu cầu Data Modeler 2026-09-18. Giữ lại\
+    \ làm trường denormalized thứ cấp, bảo toàn dữ liệu nguồn. BRD có cả ALERT_CODE\
+    \ và INDICATOR_CODE — cần xác nhận sự khác biệt với team nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Name"
+  physical_name: "alert_nm"
+  description: "Tên chỉ tiêu cảnh báo (tên chính)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.ALERT_NAME"
+  comment: "Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Indicator Type Code"
+  physical_name: "alert_ind_tp_code"
+  description: "Loại chỉ tiêu cảnh báo: 0-Tính theo công thức BC; 1-NHNCK (legacy\
+    \ LOAI_CHI_TIEU_CB)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE"
+  comment: "SCHEMA_CODE=SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Indicator Type Id"
+  physical_name: "ind_tp_id"
+  description: "ID loại chỉ tiêu (nguồn không khai báo FK target)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.INDICATOR_TYPE_ID"
+  comment: "FK target chưa xác định trong BRD — lưu dạng text denormalized. Nguồn\
+    \ lưu NUMBER(10) — ETL convert sang string. Đã review 2026-07-10 — giữ nguyên\
+    \ map 1:1 dạng Text, KHÔNG tạo FK do tài liệu BRD không đủ thông tin xác định\
+    \ target. Sẽ đánh giá lại khi có thêm tài liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Reference"
+  physical_name: "legal_reference"
+  description: "Tham chiếu văn bản pháp luật liên quan (denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Reference Id"
+  physical_name: "legal_reference_id"
+  description: "ID văn bản pháp luật tham chiếu (nguồn không khai báo FK target)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE_ID"
+  comment: "BRD ghi chú 'Chưa liên kết đến bảng khác' — lưu dạng text denormalized.\
+    \ Nguồn lưu NUMBER(10) — ETL convert sang string. Đã review 2026-07-10 — giữ nguyên\
+    \ map 1:1 dạng Text, KHÔNG tạo FK do tài liệu BRD không đủ thông tin xác định\
+    \ target. Sẽ đánh giá lại khi có thêm tài liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Severity Level"
+  physical_name: "severity_level"
+  description: "Mức độ cảnh báo: Cấp 1, 2 hoặc 3."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.SEVERITY_LEVEL"
+  comment: "NUMBER(3). BRD có cả SEVERITY_LEVEL và SEVERITY — dùng SEVERITY_LEVEL\
+    \ là trường chính (NUMBER(3), mô tả rõ Cấp 1/2/3)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Severity Code"
+  physical_name: "severity_code"
+  description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.SEVERITY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Lower Threshold"
+  physical_name: "lower_threshold"
+  description: "Ngưỡng cảnh báo dưới."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LOWER_THRESHOLD"
+  comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau (Triệu đồng/Phần\
+    \ trăm/Số lượng)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Upper Threshold"
+  physical_name: "upper_threshold"
+  description: "Ngưỡng cảnh báo trên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.UPPER_THRESHOLD"
+  comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau. Xem Lower\
+    \ Threshold."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Unit"
+  physical_name: "unit"
+  description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.UNIT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Default Value"
+  physical_name: "default_val"
+  description: "Giá trị mặc định của ô khi khởi tạo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.DEFAULT_VALUE"
+  comment: "Nguồn lưu NUMBER — ETL convert sang string để đồng nhất."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Weight"
+  physical_name: "weight"
+  description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.WEIGHT"
+  comment: "NUMBER(38,2) — trọng số phần trăm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"

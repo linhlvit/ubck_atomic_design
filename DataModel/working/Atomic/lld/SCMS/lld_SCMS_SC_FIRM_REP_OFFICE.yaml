@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Representative Office"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -21,10 +21,12 @@ metadata:
     \ Unit Type Code hardcode: REP_OFFICE. FULL_NAME + OFFICE_NAME là 2 tên (cần xác\
     \ nhận có trùng không). SO_QUYET_DINH/NGAY_QUYET_DINH là cột quyết định tên cũ\
     \ (Vietnamese) — map vào Decision Number/Decision Date; DECISION_NUMBER/DECISION_DATE\
-    \ là cột tên mới. FORM_DATA_JSON loại khỏi scope. ADDRESS/PHONE/FAX → shared entities\
-    \ (IP Postal + IP Electronic). SC_FIRM_REP_OFFICE_ID là self-ref FK. Hạ về draft\
-    \ (2026-07-27) để sửa lỗi hash-mismatch FK Securities Company Id — trước đây hash\
-    \ trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) thay vì CODE của bảng đích."
+    \ → IP Alt Identification (Identification Number / Identification Issue Date,\
+    \ type ESTABLISHMENT_DECISION), chuyển 2026-10-08. FORM_DATA_JSON loại khỏi scope.\
+    \ ADDRESS/PHONE/FAX → shared entities (IP Postal + IP Electronic). SC_FIRM_REP_OFFICE_ID\
+    \ là self-ref FK. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities\
+    \ Company Id — trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) thay\
+    \ vì CODE của bảng đích."
 attributes:
 - attribute_name: "Securities Company Organization Unit Id"
   physical_name: "sc_ou_id"
@@ -87,10 +89,10 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ SC_FIRM_REP_OFFICE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó\
-    \ hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+    \ SC_FIRM_REP_OFFICE.SC_FIRM_INFO_ID = SC_FIRM_INFO.SC_FIRM_INFO_ID để xác nhận\
+    \ CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo\
+    \ SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE)\
+    \ — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -212,7 +214,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Classification Securities Company Event Type Id"
   physical_name: "cl_sc_event_tp_id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
@@ -241,34 +243,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Decision Number"
-  physical_name: "decision_nbr"
-  description: "Số quyết định (trường mới DECISION_NUMBER)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_REP_OFFICE.DECISION_NUMBER"
-  comment: "DECISION_NUMBER là cột chuẩn (thay SO_QUYET_DINH — cột tiếng Việt cũ,\
-    \ đã loại bỏ do trùng ý nghĩa, xem pending_design.yaml)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Decision Date"
-  physical_name: "decision_dt"
-  description: "Ngày quyết định (trường mới DECISION_DATE)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_REP_OFFICE.DECISION_DATE"
-  comment: "DECISION_DATE là cột chuẩn (thay NGAY_QUYET_DINH — cột tiếng Việt cũ,\
-    \ đã loại bỏ do trùng ý nghĩa, xem pending_design.yaml)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Document Number"
   physical_name: "document_nbr"
   description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
@@ -383,21 +357,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.REPRESENTATIVE_NAME"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Representative Id"
-  physical_name: "representative_id"
-  description: "ID nhân sự người đại diện (liên kết nội bộ SCMS, không phải FK chính\
-    \ thức)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_REP_OFFICE.REPRESENTATIVE_ID"
-  comment: "Denormalized — không có FK target. Nguồn lưu NUMBER(10) — ETL convert\
-    \ sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Securities Company Senior Personnel (Involved Party).
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Securities Company Senior Personnel Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_SENIOR_PERSONNEL', ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SENIOR_PERSONNEL
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_SENIOR_PERSONNEL"
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 

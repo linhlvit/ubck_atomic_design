@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Branch"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -87,9 +87,10 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_BRANCH.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ SC_FIRM_BRANCH.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO',\
-    \ CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai\
-    \ lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+    \ SC_FIRM_BRANCH.SC_FIRM_INFO_ID = SC_FIRM_INFO.SC_FIRM_INFO_ID để xác nhận CODE\
+    \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
+    \ crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -163,20 +164,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Organization Unit Legacy Name"
-  physical_name: "ou_legacy_nm"
-  description: "Tên chi nhánh (trường cũ BRANCH_NAME — có thể trùng với FULL_NAME)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_BRANCH.BRANCH_NAME"
-  comment: "Trường legacy — cần xác nhận với team SCMS xem BRANCH_NAME và FULL_NAME\
-    \ có cùng nội dung không."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Organization Unit English Name"
   physical_name: "ou_english_nm"
   description: "Tên chi nhánh bằng tiếng Anh."
@@ -236,32 +223,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Decision Number"
-  physical_name: "decision_nbr"
-  description: "Số quyết định cấp phép/chấp thuận chi nhánh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_BRANCH.DECISION_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Decision Date"
-  physical_name: "decision_dt"
-  description: "Ngày ban hành quyết định."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_BRANCH.DECISION_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Valid Dossier Date"
   physical_name: "valid_dossier_dt"
   description: "Ngày hồ sơ hợp lệ (ngày tiếp nhận hồ sơ hợp lệ)."

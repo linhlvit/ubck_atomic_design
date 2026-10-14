@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,39 +17,39 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Alt Identification của Securities Company Depositary Bank. ETL tạo tối\
-    \ đa 4 rows per ngân hàng (skip nếu number NULL): Row 1 ENTERPRISE_CODE (ENTERPRISE_CODE\
+  notes: "IP Alt Identification của Securities Company Bank. ETL tạo tối đa 4 rows\
+    \ per ngân hàng (skip nếu number NULL): Row 1 BUSINESS_LICENSE (BUSINESS_LICENSE\
     \ — không có ngày/nơi cấp); Row 2 TAX_ID (TAX_CODE — không có ngày/nơi cấp); Row\
-    \ 3 ESTABLISHMENT_OPERATION_LICENSE (ESTABLISHMENT_OPERATION_LICENSE_NUMBER + LICENSE_ISSUE_DATE + LICENSE_ISSUER);\
-    \ Row 4 BUSINESS_LICENSE (BUSINESS_REG_CERT_NUMBER + BUSINESS_REG_CERT_DATE —\
-    \ giấy chứng nhận đăng ký kinh doanh). Mỗi loại là 1 block riêng — KHÔNG dùng\
-    \ pivot gộp chung 1 attribute (sửa 2026-07-24, xem consolidation review)."
+    \ 3 ESTABLISHMENT_OPERATION_LICENSE (ESTABLISHMENT_OPERATION_LICENSE_NUMBER +\
+    \ LICENSE_ISSUE_DATE + LICENSE_ISSUER); Row 4 BUSINESS_LICENSE (BUSINESS_REG_CERT_NUMBER\
+    \ + BUSINESS_REG_CERT_DATE — giấy chứng nhận đăng ký kinh doanh). Mỗi loại là\
+    \ 1 block riêng — KHÔNG dùng pivot gộp chung 1 attribute (sửa 2026-07-24, xem\
+    \ consolidation review)."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Depositary Bank."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Bank Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.BANK.ID"
-  comment: "FK target: sc_depositary_bank.sc_depositary_bank_id. Shared entity. Hash:\
-    \ hash_id('SCMS_BANK', ID)."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_BANK', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
-  description: "Mã Securities Company Depositary Bank."
+  description: "Mã Securities Company Bank."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.BANK.ID"
-  comment: "Lookup pair: sc_depositary_bank.sc_depositary_bank_code. Pair with Involved\
-    \ Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.BANK"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -73,9 +73,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ENTERPRISE_CODE."
-  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
-  etl_derived_value: "ENTERPRISE_CODE"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: "BUSINESS_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -87,7 +87,7 @@ attributes:
   source_columns:
   - "SCMS.BANK.ENTERPRISE_CODE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Type Code"
@@ -135,7 +135,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.BANK.ESTABLISHMENT_OPERATION_LICENSE_NUMBER"
+  - "SCMS.BANK.OPERATION_LICENSE_NUMBER"
   comment: null
   classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
@@ -166,41 +166,3 @@ attributes:
   classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh — giấy chứng nhận đăng ký kinh doanh."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-  etl_derived_value: "BUSINESS_LICENSE"
-  data_type: "string"
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số giấy chứng nhận đăng ký kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.BANK.BUSINESS_REG_CERT_NUMBER"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp giấy chứng nhận đăng ký kinh doanh."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.BANK.BUSINESS_REG_CERT_DATE"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-  etl_derived_value: null
-  data_type: "date"

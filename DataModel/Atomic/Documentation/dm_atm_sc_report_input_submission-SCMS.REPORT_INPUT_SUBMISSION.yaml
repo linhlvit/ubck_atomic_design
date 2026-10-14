@@ -74,7 +74,7 @@ attributes:
     source_system: SCMS
     source_table: REPORT_INPUT_SUBMISSION
     source_column: SCMS.REPORT_INPUT_SUBMISSION.FORM_REPORT_ID
-    comment: "FK target: sc_report.sc_report_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+    comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: SCMS
     source_table: REPORT_INPUT_SUBMISSION
     source_column: SCMS.REPORT_INPUT_SUBMISSION.FORM_REPORT_ID
-    comment: "Lookup pair: sc_report.sc_report_code. Pair with Securities Company Report Id."
+    comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report Id."
     classification_context: null
     etl_derived_value: null
 
@@ -130,7 +130,7 @@ attributes:
     source_system: SCMS
     source_table: REPORT_INPUT_SUBMISSION
     source_column: SCMS.REPORT_INPUT_SUBMISSION.FORM_VERSION_ID
-    comment: "FK target: sc_report.sc_report_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_VERSION_ID)."
+    comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_VERSION_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -144,6 +144,20 @@ attributes:
     source_system: SCMS
     source_table: REPORT_INPUT_SUBMISSION
     source_column: SCMS.REPORT_INPUT_SUBMISSION.FORM_VERSION_ID
-    comment: "Lookup pair: sc_report.sc_report_code. Pair with Securities Company Report Id."
+    comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Year
+    physical_name: period_year
+    business_meaning: Năm báo cáo vi phạm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_INPUT_SUBMISSION
+    source_column: IDS.REPORT_INPUT_SUBMISSION.PERIOD_YEAR
+    comment: null
     classification_context: null
     etl_derived_value: null

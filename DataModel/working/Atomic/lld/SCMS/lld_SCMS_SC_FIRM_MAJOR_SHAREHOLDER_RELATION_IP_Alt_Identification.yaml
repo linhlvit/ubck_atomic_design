@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -20,19 +20,21 @@ metadata:
   notes: "IP Alt Identification của Securities Company Major Shareholder Relation.\
     \ 1 row — IDENTIFICATION_NUMBER → type NATIONAL_ID (CCCD/CMND/Hộ chiếu cho cá\
     \ nhân; Mã đăng ký kinh doanh cho tổ chức tuỳ INDIVIDUAL). Cần xác nhận: khi INDIVIDUAL=0\
-    \ thì type có nên khác đi không? Format đồng bộ theo chuẩn NHNCK."
+    \ thì type có nên khác đi không? Format đồng bộ theo chuẩn NHNCK. Bổ sung 2026-10-07:\
+    \ ISSUE_DATE → Identification Issue Date, ISSUE_PLACE → Identification Issue Place\
+    \ (chuyển từ entity chính)."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Major Shareholder Relation."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Major Shareholder Relation Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
-  comment: "FK target: sc_major_shareholder_relation.sc_major_shareholder_relation_id.\
-    \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION',\
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -46,8 +48,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
-  comment: "Lookup pair: sc_major_shareholder_relation.sc_major_shareholder_relation_code.\
-    \ Pair with Involved Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -89,5 +90,31 @@ attributes:
   comment: "VARCHAR2 — cần profile length. Mô tả gốc BRD: 'Số CMND/Căn cước công dân/Giấy\
     \ phép đăng ký kinh doanh'."
   classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy tờ định danh. Mô tả gốc nguồn: Ngày Cap."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ISSUE_DATE"
+  comment: "DATE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Nơi cấp giấy tờ định danh. Mô tả gốc nguồn: Nội Cap."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ISSUE_PLACE"
+  comment: "VARCHAR2(2000)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

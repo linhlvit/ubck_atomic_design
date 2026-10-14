@@ -27,9 +27,9 @@ metadata:
     \ (tên cũ trước 2026-09-18: LAST_MODIFIED_AT/LAST_MODIFIED_BY), và LAST_MODIFIED_AT/LAST_MODIFIED_BY\
     \ hiện tại (tên cũ trước 2026-09-18: NGAY_SUA/NGUOI_SUA_ID — trước đây map thành\
     \ Legacy Updated Date/Legacy Updated By Id, đã xóa khỏi LLD theo quyết định Data\
-    \ Modeler 2026-09-18 khi DDL UAT đổi tên 2 cột này thành LAST_MODIFIED_AT/LAST_MODIFIED_BY canonical).\
-    \ SU_VU (DDL cũ) đổi tên thành MATTER trong DDL UAT mới — cùng cột, đã cập nhật\
-    \ source_columns 2026-09-18. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
+    \ Modeler 2026-09-18 khi DDL UAT đổi tên 2 cột này thành LAST_MODIFIED_AT/LAST_MODIFIED_BY\
+    \ canonical). SU_VU (DDL cũ) đổi tên thành MATTER trong DDL UAT mới — cùng cột,\
+    \ đã cập nhật source_columns 2026-09-18. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
     \ FK Securities Company Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì\
     \ CODE của bảng đích."
 attributes:
@@ -127,19 +127,6 @@ attributes:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Admin Procedure Id"
-  physical_name: "admin_procedure_id"
-  description: "FK đến thủ tục hành chính liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.ADMIN_PROC_ID"
-  comment: "Pending — FK target phân hệ TTHC nằm ngoài scope. NUMBER(10)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -354,7 +341,7 @@ attributes:
 - attribute_name: "Quantity"
   physical_name: "quantity"
   description: "Số lượng chứng khoán (nghĩa gốc trống)."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -364,11 +351,11 @@ attributes:
     \ phù hợp nếu vượt 2B; ETL cần validate."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Offered Quantity"
   physical_name: "offered_quantity"
   description: "Số lượng chứng khoán dự kiến chào bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -378,11 +365,11 @@ attributes:
     \ Small Counter. Tạm dùng Small Counter với ETL note."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Total Offered Quantity"
   physical_name: "total_offered_quantity"
   description: "Tổng số lượng chứng khoán chào bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -391,11 +378,11 @@ attributes:
   comment: "NUMBER(19)."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Total Offered Completed"
   physical_name: "total_offered_completed"
   description: "Tổng số lượng chứng khoán đã chào bán hoàn thành."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -404,7 +391,7 @@ attributes:
   comment: "NUMBER(19). Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Item Value Amount"
   physical_name: "item_val_amt"
   description: "Giá trị mặt hàng chào bán."

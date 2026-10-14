@@ -1,0 +1,387 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_profile_change-SCMS.SC_FIRM_PROFILE_CHANGE
+  logical_name: Securities Company Profile Change
+  physical_name: sc_profile_change
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Sự kiện thay đổi thông tin hồ sơ của CTCK hoặc đơn vị trực thuộc. Mỗi dòng = 1 lần thay đổi insert-only với đối tượng thay đổi, giá trị trước/sau và số văn bản chấp thuận.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_PROFILE_CHANGE
+
+attributes:
+  - name: Securities Company Profile Change Id
+    physical_name: sc_profile_change_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: null
+    comment: PK surrogate.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Profile Change Code
+    physical_name: sc_profile_change_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.ID
+    comment: BK. NUMBER(19) — ETL convert sang string.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PROFILE_CHANGE'"
+    etl_derived_value: SCMS_SC_FIRM_PROFILE_CHANGE
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán liên quan đến thay đổi hồ sơ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.sc_id. NUMBER(19). Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_PROFILE_CHANGE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_INFO.CODE
+    comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Organization Unit Type Code
+    physical_name: ou_tp_code
+    business_meaning: Loại đối tượng bị thay đổi.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_TYPE
+    comment: "Scheme: SCMS_PROFILE_CHANGE_ENTITY_TYPE. NVARCHAR2(20)."
+    classification_context: SCMS_PROFILE_CHANGE_ENTITY_TYPE
+    etl_derived_value: null
+
+  - name: Securities Company Organization Unit Id
+    physical_name: sc_ou_id
+    business_meaning: ID của đối tượng bị thay đổi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_ID
+    comment: "Xử lí Case when ENTITY_TYPE = CN then hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)  when ENTITY_TYPE = PGD then hash_id('SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)  when ENTITY_TYPE = TRU_SO_CHINH then hash_id('SC_FIRM_INFO', ENTITY_ID)  when ENTITY_TYPE = VPDD then hash_id('SC_FIRM_REP_OFFICE', ENTITY_ID)  else NULL"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Organization Unit Code
+    physical_name: sc_ou_code
+    business_meaning: Mã của đối tượng bị thay đổi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_ID
+    comment: "NUMBER(19) — lưu dạng Text. FK polymorphic: không resolve vì mỗi giá trị ENTITY_TYPE trỏ đến bảng khác nhau. Dùng kết hợp ENTITY_TYPE để interpret."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Establishment Operation License Number
+    physical_name: establishment_operation_license_nbr
+    business_meaning: Giấy phép thành lập và hoạt động do UBCKNN cấp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.ESTABLISHMENT_OPERATION_LICENSE_NUMBER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Establishment Operation License Date
+    physical_name: establishment_operation_license_dt
+    business_meaning: Ngày cấp giấy phép thành lập và hoạt động do UBCKNN cấp.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.ESTABLISHMENT_OPERATION_LICENSE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Name
+    physical_name: sc_nm
+    business_meaning: Tên công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.TENCTCK
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Organization Unit Name
+    physical_name: ou_nm
+    business_meaning: Tên chi nhánh/phòng giao dịch/trụ sở chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.TENDAYDU
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Organization Unit Address
+    physical_name: ou_adr
+    business_meaning: Địa chỉ chi nhánh/phòng giao dịch/trụ sở chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.DIACHI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Phone
+    physical_name: phone
+    business_meaning: Số điện thoại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.PHONE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Website
+    physical_name: website
+    business_meaning: Website.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.WEBSITE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Director Name
+    physical_name: director_nm
+    business_meaning: Tên giám đốc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.GIAMDOC
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Name
+    physical_name: cl_sc_firm_service_nm
+    business_meaning: Ngành nghề kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Operational Status
+    physical_name: operational_status
+    business_meaning: Trạng thái hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.TENTRANGTHAI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Authorized Name
+    physical_name: cl_sc_firm_service_authorized_nm
+    business_meaning: Ngành nghề kinh doanh được uỷ quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHUYQUYEN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Province Name
+    physical_name: province_nm
+    business_meaning: Ngành nghề kinh doanh được uỷ quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.TENTINHTHANH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Branch Name
+    physical_name: branch_nm
+    business_meaning: Tên chi nhánh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.CTCKCHINHANHTEN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Support Name
+    physical_name: cl_sc_firm_service_support_nm
+    business_meaning: Ngành nghề kinh doanh được hỗ trợ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHUYQUYEN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Exchange Code
+    physical_name: exchange_code
+    business_meaning: Sàn niêm yết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.SANNIEMYET
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Ticker Symbol
+    physical_name: ticker_symbol
+    business_meaning: Mã chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.MACHUNGKHOAN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Capital Amount
+    physical_name: legal_capital_amt
+    business_meaning: Vốn điều lệ.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.VONDIEULE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification Securities Company Firm Service Incur Name
+    physical_name: cl_sc_firm_service_incur_nm
+    business_meaning: Ngành nghề kinh doanh phát sinh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    source_column: SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHPHAISINH
+    comment: null
+    classification_context: null
+    etl_derived_value: null

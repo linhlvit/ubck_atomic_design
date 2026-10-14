@@ -25,15 +25,16 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Organization Unit (VPDD CTCK nội địa)."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Organization Unit Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.ID"
-  comment: "FK target: sc_organization_unit.sc_ou_id. Shared entity — không có PK\
-    \ surrogate riêng. Hash: hash_id('SCMS_SC_FIRM_REP_OFFICE', ID)."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_SC_FIRM_REP_OFFICE',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -46,8 +47,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.ID"
-  comment: "Lookup pair: sc_organization_unit.sc_ou_code. Pair with Involved Party\
-    \ Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.SC_FIRM_REP_OFFICE"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

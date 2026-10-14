@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -23,29 +23,28 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Depositary Bank (Involved Party)."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Bank Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.BANK.ID"
-  comment: "FK target: sc_depositary_bank.sc_depositary_bank_id. Shared entity — không\
-    \ có PK surrogate riêng. Hash: hash_id('SCMS_BANK', ID)."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('SCMS_BANK', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
-  description: "Mã Securities Company Depositary Bank."
+  description: "Mã Securities Company Bank."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.BANK.ID"
-  comment: "Lookup pair: sc_depositary_bank.sc_depositary_bank_code. Pair with Involved\
-    \ Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ SCMS.BANK"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

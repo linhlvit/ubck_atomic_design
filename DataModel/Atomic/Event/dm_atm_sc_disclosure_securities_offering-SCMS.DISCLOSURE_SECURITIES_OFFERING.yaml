@@ -74,7 +74,7 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -88,12 +88,12 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.SC_FIRM_INFO.CODE
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
+    comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment Securities Company Id."
     classification_context: null
     etl_derived_value: null
 
-  - name: Classification Event Type Id
-    physical_name: cl_event_tp_id
+  - name: Classification Securities Company Event Type Id
+    physical_name: cl_sc_event_tp_id
     business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Surrogate Key
     data_type: string
@@ -102,12 +102,12 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
-    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: null
     etl_derived_value: null
 
-  - name: Classification Event Type Code
-    physical_name: cl_event_tp_code
+  - name: Classification Securities Company Event Type Code
+    physical_name: cl_sc_event_tp_code
     business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Text
     data_type: string
@@ -116,77 +116,49 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
-    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
+    comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair with Classification Securities Company Event Type Id."
     classification_context: null
     etl_derived_value: null
 
-  - name: Admin Procedure Id
-    physical_name: admin_procedure_id
-    business_meaning: FK đến thủ tục hành chính liên quan.
+  - name: Offering Type Code
+    physical_name: offering_tp_code
+    business_meaning: Loại chào bán.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Type Code
+    physical_name: securities_tp_code
+    business_meaning: Loại chứng khoán.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
-    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ADMIN_PROC_ID
-    comment: Pending — FK target phân hệ TTHC nằm ngoài scope. NUMBER(10).
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Offering Type Code
-    physical_name: offering_tp_code
-    business_meaning: "Loại chào bán: 1=Công chúng; 2=CP thường; 3=Trả cổ tức CP; 4=CTLC>100 NLĐ; 5=CTLC<100 NLĐ; 6=Đấu giá; 7=Riêng lẻ; 8=Khác; 9=CP hoán đổi; 10=CB cổ đông lớn."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: DISCLOSURE_SECURITIES_OFFERING
-    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_TYPE
-    comment: "Scheme: SCMS_OFFERING_TYPE. NUMBER(10) với values 1-10."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Securities Type Code
-    physical_name: securities_tp_code
-    business_meaning: "Loại chứng khoán: CP_THUONG=Cổ phiếu phổ thông; CP_UU_DAI=Cổ phiếu ưu đãi; TP=Trái phiếu; CW=Chứng quyền có bảo đảm."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SECURITIES_TYPE
-    comment: "Scheme: SCMS_SECURITIES_TYPE. VARCHAR2(50)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: "Trạng thái bản ghi chào bán: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: DISCLOSURE_SECURITIES_OFFERING
-    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS
-    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Data Source Code
     physical_name: data_src_code
-    business_meaning: "Nguồn gốc dữ liệu: Đồng bộ tự động/Nhập tay/Cổng báo cáo."
-    data_domain: Classification Value
+    business_meaning: Nguồn gốc dữ liệu.
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DATA_SOURCE
-    comment: "Scheme: SCMS_DATA_SOURCE. VARCHAR2(50)."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -218,17 +190,17 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: SU VU
-    physical_name: su_vu
+  - name: MATTER
+    physical_name: matter
     business_meaning: "Tên sự vụ áp dụng (VD: Chào bán riêng lẻ; Chào bán ra công chúng)."
-    data_domain: Text
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
-    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SU_VU
-    comment: NUMBER — lưu dạng số nhưng mô tả cho thấy đây là ID sự vụ. Pending — cần xác nhận FK target.
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.MATTER
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -375,8 +347,8 @@ attributes:
   - name: Quantity
     physical_name: quantity
     business_meaning: Số lượng chứng khoán (nghĩa gốc trống).
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -389,8 +361,8 @@ attributes:
   - name: Offered Quantity
     physical_name: offered_quantity
     business_meaning: Số lượng chứng khoán dự kiến chào bán.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -403,8 +375,8 @@ attributes:
   - name: Total Offered Quantity
     physical_name: total_offered_quantity
     business_meaning: Tổng số lượng chứng khoán chào bán.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -417,8 +389,8 @@ attributes:
   - name: Total Offered Completed
     physical_name: total_offered_completed
     business_meaning: Tổng số lượng chứng khoán đã chào bán hoàn thành.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -498,8 +470,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Valid Date
-    physical_name: valid_dt
+  - name: Valid Timestamp
+    physical_name: valid_tms
     business_meaning: Ngày có hiệu lực.
     data_domain: Timestamp
     data_type: timestamp
@@ -512,8 +484,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Offering Date
-    physical_name: offering_dt
+  - name: Offering Timestamp
+    physical_name: offering_tms
     business_meaning: Ngày chào bán.
     data_domain: Timestamp
     data_type: timestamp
@@ -666,8 +638,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Disclosure Date
-    physical_name: disclosure_dt
+  - name: Disclosure Timestamp
+    physical_name: disclosure_tms
     business_meaning: Ngày công bố thông tin chào bán.
     data_domain: Timestamp
     data_type: timestamp
@@ -724,15 +696,15 @@ attributes:
 
   - name: Bond Type Code
     physical_name: bond_tp_code
-    business_meaning: "Loại trái phiếu: CO_BAO_DAM=Có bảo đảm; KHONG_BAO_DAM=Không bảo đảm; CHUYEN_DOI=Chuyển đổi."
-    data_domain: Classification Value
+    business_meaning: Loại trái phiếu.
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_TYPE
-    comment: "Scheme: SCMS_BOND_TYPE. NVARCHAR2(80). Chỉ populate khi SECURITIES_TYPE=TP."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -822,15 +794,15 @@ attributes:
 
   - name: Covered Warrant Type Code
     physical_name: covered_warrant_tp_code
-    business_meaning: "Loại chứng quyền có bảo đảm: CW_MUA=Chứng quyền mua; CW_BAN=Chứng quyền bán."
-    data_domain: Classification Value
+    business_meaning: Loại chứng quyền có bảo đảm.
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COVERED_WARRANT_TYPE
-    comment: "Scheme: SCMS_COVERED_WARRANT_TYPE. NVARCHAR2(30). Chỉ populate khi SECURITIES_TYPE=CW."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -1139,61 +1111,5 @@ attributes:
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ERROR_DESCRIPTION
     comment: NVARCHAR2(1000). Mô tả gốc BRD trống.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Legacy Filename
-    physical_name: legacy_filename
-    business_meaning: Tên file đính kèm từ hệ thống cũ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: DISCLOSURE_SECURITIES_OFFERING
-    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.LEGACY_FILENAME
-    comment: VARCHAR2(1000 BYTE). LEGACY_FILEDATA (BLOB) excluded. LEGACY_ROWTEXT (VARCHAR2 40) — reference legacy.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Legacy Row Text
-    physical_name: legacy_row_text
-    business_meaning: Chuỗi tham chiếu bản ghi từ hệ thống cũ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: DISCLOSURE_SECURITIES_OFFERING
-    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.LEGACY_ROWTEXT
-    comment: VARCHAR2(40 BYTE). Mô tả gốc BRD trống.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Legacy Updated Date
-    physical_name: legacy_updated_dt
-    business_meaning: Ngày cập nhật từ hệ thống cũ (NGAY_SUA).
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: DISCLOSURE_SECURITIES_OFFERING
-    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.NGAY_SUA
-    comment: TIMESTAMP(6). Legacy audit duplicate của LAST_MODIFIED_AT. ETL dùng LAST_MODIFIED_AT làm canonical.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Legacy Updated By Id
-    physical_name: legacy_updated_by_id
-    business_meaning: ID người cập nhật từ hệ thống cũ (NGUOI_SUA_ID).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: DISCLOSURE_SECURITIES_OFFERING
-    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.NGUOI_SUA_ID
-    comment: NUMBER(10) — ETL convert sang string. Legacy audit duplicate của LAST_MODIFIED_BY.
     classification_context: null
     etl_derived_value: null
