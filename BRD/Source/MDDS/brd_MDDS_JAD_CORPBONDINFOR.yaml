@@ -1,220 +1,266 @@
 schema_type: brd_source_columns
+schema_version: '1.0'
 source: MDDS
 table: JAD_CORPBONDINFOR
-bronze_table: JAD_CORPBONDINFOR
-description: "Snapshot bảng giá TPDN: giá, order book thỏa thuận Outright (PT_*), đặc thù bond (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát hành/đáo hạn)"
-scope_status: in_scope
-
+brd_ref: BRD-SRC-MDDS-JAD_CORPBONDINFOR
 columns:
-  - name: KID
-    data_type: "guid"
-    nullable: true
-    description: "ID mã do jadapter sinh"
-  - name: SYMBOL
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã chứng khoán trái phiếu"
-  - name: FULLNAME
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Tên đầy đủ của trái phiếu"
-  - name: TRADINGDATE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Ngày giao dịch format dd/mm/yyyy"
-  - name: FLOORCODE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Mã sàn: 06 (corp-bond HNX)"
-  - name: STOCKTYPE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Loại CK: 12 (trái phiếu DN)"
-  - name: CEILING
-    data_type: "single precision"
-    nullable: true
-    description: "Giá trần khớp lệnh"
-  - name: FLOOR
-    data_type: "single precision"
-    nullable: true
-    description: "Giá sàn khớp lệnh"
-  - name: REFERENCE
-    data_type: "single precision"
-    nullable: true
-    description: "Giá tham chiếu"
-  - name: CLOSEPRICE
-    data_type: "single precision"
-    nullable: true
-    description: "Giá đóng cửa ngày"
-  - name: CLOSEVOL
-    data_type: "single precision"
-    nullable: true
-    description: "KL đóng cửa"
-  - name: CHANGE
-    data_type: "single precision"
-    nullable: true
-    description: "Thay đổi giá khớp gần nhất so với giá tham chiếu"
-  - name: TOTALTRADING
-    data_type: double precision
-    nullable: true
-    description: "Tổng khối lượng giao dịch"
-  - name: TOTALTRADINGVALUE
-    data_type: double precision
-    nullable: true
-    description: "Tổng giá trị giao dịch"
-  - name: AVERAGEPRICE
-    data_type: "single precision"
-    nullable: true
-    description: "Giá trung bình"
-  - name: OPEN
-    data_type: "single precision"
-    nullable: true
-    description: "Giá mở cửa"
-  - name: HIGH
-    data_type: "single precision"
-    nullable: true
-    description: "Giá thực hiện cao nhất GD khớp lệnh"
-  - name: LOW
-    data_type: "single precision"
-    nullable: true
-    description: "Giá thực hiện thấp nhất GD khớp lệnh"
-  - name: FOREIGNREMAIN
-    data_type: "single precision"
-    nullable: true
-    description: "Room NĐTNN còn lại"
-  - name: PT_MATCH_QTTY
-    data_type: double precision
-    nullable: true
-    description: "Khối lượng thực hiện gần nhất GD thỏa thuận Outright"
-  - name: PT_MATCH_PRICE
-    data_type: double precision
-    nullable: true
-    description: "Giá thực hiện gần nhất GD thỏa thuận Outright"
-  - name: PT_TOTAL_TRADED_QTTY
-    data_type: double precision
-    nullable: true
-    description: "Tổng khối lượng GD thỏa thuận Outright"
-  - name: PT_TOTAL_TRADED_VALUE
-    data_type: double precision
-    nullable: true
-    description: "Tổng giá trị GD thỏa thuận Outright"
-  - name: TRADINGSESSIONID
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Trạng thái phiên giao dịch HNX"
-  - name: ISSUERNAME
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Tên tổ chức phát hành"
-  - name: MATURITYDATE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Ngày đáo hạn trái phiếu"
-  - name: TOTALLISTINGQTTY
-    data_type: double precision
-    nullable: true
-    description: "Khối lượng niêm yết"
-  - name: BOND_PERIOD
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Kỳ hạn trái phiếu"
-  - name: PERIOD_UNIT
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm)"
-  - name: PERIOD_REMAIN
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Kỳ hạn còn lại tính bằng ngày"
-  - name: INTEREST_TYPE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác)"
-  - name: INTEREST_PERIOD
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Kỳ hạn trả lãi"
-  - name: INTEREST_PERIOD_UNIT
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Đơn vị kỳ hạn trả lãi"
-  - name: INTEREST_COUPON_TYPE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon"
-  - name: INTERESTRATE_TYPE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Loại lãi suất: Cố định/Thả nổi/Khác"
-  - name: INTEREST_PAYMENT_TYPE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Phương thức trả lãi"
-  - name: INTEREST_RATE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Lãi suất danh nghĩa"
-  - name: PT_BESTBIDQTTY
-    data_type: double precision
-    nullable: true
-    description: "Tổng KL chào mua cao nhất GD thỏa thuận Outright"
-  - name: PT_BESTBIDPRICE
-    data_type: double precision
-    nullable: true
-    description: "Giá chào mua cao nhất GD thỏa thuận Outright"
-  - name: PT_BESTOFFERQTTY
-    data_type: double precision
-    nullable: true
-    description: "Tổng KL chào bán thấp nhất GD thỏa thuận Outright"
-  - name: PT_BESTOFFERPRICE
-    data_type: double precision
-    nullable: true
-    description: "Giá chào bán thấp nhất GD thỏa thuận Outright"
-  - name: PT_TOTALBIDQTTY
-    data_type: double precision
-    nullable: true
-    description: "Tổng KL chào mua GD thỏa thuận Outright"
-  - name: PT_TOTALOFFERQTTY
-    data_type: double precision
-    nullable: true
-    description: "Tổng KL chào bán GD thỏa thuận Outright"
-  - name: PT_MAXQTTY
-    data_type: double precision
-    nullable: true
-    description: "KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright"
-  - name: PT_MAXPRICE
-    data_type: double precision
-    nullable: true
-    description: "Giá thực hiện cao nhất GD thỏa thuận Outright"
-  - name: PT_MINQTTY
-    data_type: double precision
-    nullable: true
-    description: "KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright"
-  - name: PT_MINPRICE
-    data_type: double precision
-    nullable: true
-    description: "Giá thực hiện thấp nhất GD thỏa thuận Outright"
-  - name: ISSUEDATE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Ngày phát hành trái phiếu"
-  - name: CHARACTERISTICS
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Đặc điểm trái phiếu"
-  - name: SECURITYTRADINGSTATUS
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn chế)"
-  - name: TRADSESSTATUS
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Trạng thái phiên giao dịch"
-  - name: PARVALUE
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Mệnh giá trái phiếu"
-  - name: TRADINGTIME
-    data_type: "character varying(255)"
-    nullable: false
-    description: "Thời gian giao dịch"
+- name: SYMBOL
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã chứng khoán
+  key: PK
+  fk_note: null
+- name: BOND_PERIOD
+  data_type: VARCHAR2(255 CHAR)
+  description: Kỳ hạn trái phiếu
+  key: null
+  fk_note: null
+- name: FLOORCODE
+  data_type: VARCHAR2(255 CHAR)
+  description: '6'
+  key: null
+  fk_note: null
+- name: FULLNAME
+  data_type: VARCHAR2(255 CHAR)
+  description: Tên đầy đủ của chứng khoán
+  key: null
+  fk_note: null
+- name: INTERESTRATE_TYPE
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Loại lãi suất: 1: Cố định 2: Thả nổi'
+  key: null
+  fk_note: null
+- name: INTEREST_COUPON_TYPE
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Kiểu trả lãi: 1: Standard Coupon 2: Long Coupon 3: Short Coupon 4: Khác'
+  key: null
+  fk_note: null
+- name: INTEREST_PAYMENT_TYPE
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Phương thức trả lãi: 1: Định kỳ - Cuối kỳ 2: Định kỳ - Đầu kỳ'
+  key: null
+  fk_note: null
+- name: INTEREST_PERIOD
+  data_type: VARCHAR2(255 CHAR)
+  description: Kỳ hạn trả lãi
+  key: null
+  fk_note: null
+- name: INTEREST_PERIOD_UNIT
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Đơn vi kỳ hạn trả lãi 1: Ngày 2: Tuần 3: Tháng 4: Năm'
+  key: null
+  fk_note: null
+- name: INTEREST_RATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Lãi suất danh nghĩa
+  key: null
+  fk_note: null
+- name: INTEREST_TYPE
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Loại hình trả lãi: 1: Coupon 2: Zero Coupon'
+  key: null
+  fk_note: null
+- name: ISSUEDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày phát hành
+  key: null
+  fk_note: null
+- name: ISSUERNAME
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã Tổ chức phát hành
+  key: null
+  fk_note: null
+- name: MATURITYDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày đáo hạn
+  key: null
+  fk_note: null
+- name: PERIOD_REMAIN
+  data_type: VARCHAR2(255 CHAR)
+  description: Kỳ hạn còn lại (tính bằng ngày, được tính toán lại hàng ngày)
+  key: null
+  fk_note: null
+- name: PERIOD_UNIT
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Đơn vi kỳ hạn trái phiếu 1: Ngày 2: Tuần 3: Tháng 4: Năm'
+  key: null
+  fk_note: null
+- name: PT_BESTBIDPRICE
+  data_type: FLOAT(53)
+  description: Giá chào mua cao nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_BESTBIDQTTY
+  data_type: FLOAT(53)
+  description: Tổng khối lượng chào mua cao nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_BESTOFFERPRICE
+  data_type: FLOAT(53)
+  description: Giá chào bán thấp nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_BESTOFFERQTTY
+  data_type: FLOAT(53)
+  description: Tổng khối lượng chào bán thấp nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_MATCH_PRICE
+  data_type: FLOAT(53)
+  description: Khối lượng thực hiện gần nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_MATCH_QTTY
+  data_type: FLOAT(53)
+  description: Khối lượng thực hiện gần nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_MAXPRICE
+  data_type: FLOAT(53)
+  description: Giá thực hiện cao nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_MAXQTTY
+  data_type: FLOAT(53)
+  description: Tổng khối lượng thực hiện tương ứng với giá cao nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_MINPRICE
+  data_type: FLOAT(53)
+  description: Giá thực hiện thấp nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_MINQTTY
+  data_type: FLOAT(53)
+  description: Tổng khối lượng thực hiện tương ứng với giá thấp nhất của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_TOTAL_TRADED_QTTY
+  data_type: FLOAT(53)
+  description: Tổng khối lượng giao dịch của lệnh thoả thuận Outright
+  key: null
+  fk_note: null
+- name: PT_TOTAL_TRADED_VALUE
+  data_type: FLOAT(53)
+  description: Tổng giá trị giao dịch thoả thuận Outright
+  key: null
+  fk_note: null
+- name: PT_TOTALBIDQTTY
+  data_type: FLOAT(53)
+  description: Tổng khối lượng chào mua của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: PT_TOTALOFFERQTTY
+  data_type: FLOAT(53)
+  description: Tổng khối lượng chào bán của giao dịch thỏa thuận Outright
+  key: null
+  fk_note: null
+- name: STOCKTYPE
+  data_type: VARCHAR2(255 CHAR)
+  description: '12'
+  key: null
+  fk_note: null
+- name: TOTALLISTINGQTTY
+  data_type: FLOAT(53)
+  description: Khối lượng niêm yết
+  key: null
+  fk_note: null
+- name: AVERAGEPRICE
+  data_type: FLOAT(24)
+  description: Giá trung bình
+  key: null
+  fk_note: null
+- name: CEILING
+  data_type: FLOAT(24)
+  description: Giá trần GD khớp lệnh
+  key: null
+  fk_note: null
+- name: CHANGE
+  data_type: FLOAT(24)
+  description: Trường này là thể hiện sự thay đổi của giá khớp gần nhất (giá thị trường) so với giá  tham chiếu ngày hôm đó, là trường +/- trên bảng giá
+  key: null
+  fk_note: null
+- name: CHARACTERISTICS
+  data_type: VARCHAR2(255 CHAR)
+  description: Đặc điểm của trái phiếu
+  key: null
+  fk_note: null
+- name: CLOSEPRICE
+  data_type: FLOAT(24)
+  description: Giá đóng cửa ngày
+  key: null
+  fk_note: null
+- name: CLOSEVOL
+  data_type: FLOAT(24)
+  description: KL đóng cửa
+  key: null
+  fk_note: null
+- name: FLOOR
+  data_type: FLOAT(24)
+  description: Giá sàn GD khớp lệnh
+  key: null
+  fk_note: null
+- name: FOREIGNREMAIN
+  data_type: FLOAT(24)
+  description: '- Số lượng còn lại mà nhà đầu tư nước ngoài được phép mua.  - Cập nhật ngay sau khi có giao dịch liên quan đến nhà đầu tư nước ngoài.  Của cả 2 hình thức GD.'
+  key: null
+  fk_note: null
+- name: HIGH
+  data_type: FLOAT(24)
+  description: Giá thực hiện cao nhất của GD khớp lệnh
+  key: null
+  fk_note: null
+- name: LOW
+  data_type: FLOAT(24)
+  description: Giá thực hiện thấp nhất của GD khớp lệnh
+  key: null
+  fk_note: null
+- name: OPEN
+  data_type: FLOAT(24)
+  description: Giá mở cửa
+  key: null
+  fk_note: null
+- name: PARVALUE
+  data_type: VARCHAR2(255 CHAR)
+  description: Mệnh giá trái phiếu
+  key: null
+  fk_note: null
+- name: REFERENCE
+  data_type: FLOAT(24)
+  description: Giá tham chiếu
+  key: null
+  fk_note: null
+- name: SECURITYTRADINGSTATUS
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Trạng thái trái phiếu: 0: Bình thường 1: Tạm ngừng giao dịch do ngày nghỉ 10: Tạm ngừng giao dịch 2: Ngừng giao dịch 11: Hạn chế giao dịch 25: Giao dịch đặc biệt'
+  key: null
+  fk_note: null
+- name: TOTALTRADING
+  data_type: FLOAT(53)
+  description: Tổng giao dịch
+  key: null
+  fk_note: null
+- name: TOTALTRADINGVALUE
+  data_type: FLOAT(53)
+  description: Tổng giá trị giao dịch
+  key: null
+  fk_note: null
+- name: TRADSESSTATUS
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Trạng thái giao dịch: = 1 Đang nhận lệnh = 2 Tạm dừng giao dịch = 13 Kết thúc nhận lệnh của ngày giao dịch hiện tại = 90 Thị trường đang ở trạng thái chờ nhận lệnh. = 97 Đóng cửa thị trường.'
+  key: null
+  fk_note: null
+- name: TRADINGSESSIONID
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã trạng thái giao dịch. Theo quy định kết cấu phiên của HNX
+  key: null
+  fk_note: null
+- name: TRADINGTIME
+  data_type: VARCHAR2(255 CHAR)
+  description: ''
+  key: null
+  fk_note: null
+- name: TRADINGDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày giao dịch format dd/mm/yyyy
+  key: null
+  fk_note: null

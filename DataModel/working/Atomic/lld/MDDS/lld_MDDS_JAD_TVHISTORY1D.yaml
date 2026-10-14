@@ -2,7 +2,7 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "MDDS"
-  source_table: "JAD_TRADINGVIEWHISTORY1MIN"
+  source_table: "JAD_TVHISTORY1D"
   atomic_entity: "Market Price Snapshot"
   entity_physical_name: "market_price_snapshot"
   bcv_core_object: "Product"
@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Nến giá OHLCV theo resolution phút, phục vụ biểu đồ TradingView. Gộp với JAD_TRADINGVIEWHISTORY1DAY thành 1 entity Market Price Snapshot (HLD D-06) — phân biệt nguồn qua src_stm_code, phân biệt resolution qua period_minute (có giá trị ⇔ nguồn 1MIN, null ⇔ nguồn 1DAY). Symbol dùng chung cho cả CK và index, không có FK constraint tường minh (xem HLD Tier 2 T2-04)."
+  notes: "Nến giá OHLCV theo resolution ngày, phục vụ biểu đồ TradingView. Gộp với JAD_TVHISTORY1M thành 1 entity Market Price Snapshot (HLD D-06) — phân biệt nguồn qua src_stm_code. Không có cột minute (period_minute sẽ null cho bản ghi từ nguồn này — union tại bước Entity Consolidation). Symbol dùng chung cho cả CK và index, không có FK constraint tường minh (xem HLD Tier 2 T2-04). Thiết kế lại 2026-10-13 từ DDL UAT 1 (ubck_all_jad_tables_ddl.sql); khối lượng (Volume) dùng Large Counter (bigint). Bảng nguồn đổi tên từ JAD_TVHISTORY1D."
 attributes:
 - attribute_name: "Market Price Snapshot Id"
   physical_name: "market_price_snpst_id"
@@ -39,7 +39,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.ID"
+  - "MDDS.JAD_TVHISTORY1D.ID"
   comment: "BK chính. PK nguồn id — unique per cây nến."
   classification_context: null
   etl_derived_value: null
@@ -53,18 +53,70 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=MDDS_JAD_TRADINGVIEWHISTORY1MIN"
-  etl_derived_value: "MDDS_JAD_TRADINGVIEWHISTORY1MIN"
+  classification_context: "SOURCE_SYSTEM=MDDS_JAD_TVHISTORY1D"
+  etl_derived_value: "MDDS_JAD_TVHISTORY1D"
   data_type: "string"
-- attribute_name: "Symbol"
-  physical_name: "symbol"
-  description: "Mã (gồm cả chứng khoán và index)."
-  data_domain: "Text"
+- attribute_name: "Close Price"
+  physical_name: "close_price"
+  description: "Giá đóng cửa trong ngày."
+  data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.SYMBOL"
+  - "MDDS.JAD_TVHISTORY1D.CLOSE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "High Price"
+  physical_name: "high_price"
+  description: "Giá cao nhất trong ngày."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_TVHISTORY1D.HIGH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Low Price"
+  physical_name: "low_price"
+  description: "Giá thấp nhất trong ngày."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_TVHISTORY1D.LOW"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Open Price"
+  physical_name: "open_price"
+  description: "Giá mở cửa trong ngày."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_TVHISTORY1D.OPEN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Ticker Symbol"
+  physical_name: "ticker_symbol"
+  description: "Mã (gồm cả chứng khoán và index)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_TVHISTORY1D.SYMBOL"
   comment: "Dùng chung cho mã chứng khoán và mã chỉ số — không có cột phân loại instrument, không có FK constraint tường minh tới security_trading_snapshot/market_index_snapshot. Xem HLD Tier 2 T2-04."
   classification_context: null
   etl_derived_value: null
@@ -73,90 +125,25 @@ attributes:
   physical_name: "trading_dt"
   description: "Ngày tính toán (dd/MM/yyyy)."
   data_domain: "Date"
-  nullable: false
+  nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.TRADINGDATE"
-  comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Cần validate format nhất quán."
+  - "MDDS.JAD_TVHISTORY1D.TRADINGDATE"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date. Cần validate format nhất quán (dd/MM/yyyy)."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Processing Time"
-  physical_name: "processing_time"
-  description: "Giờ tính toán (HH:mm)."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.MINUTE"
-  comment: "Chỉ có ở JAD_TRADINGVIEWHISTORY1MIN — JAD_TRADINGVIEWHISTORY1DAY không có cột này. Ở mức entity gộp Market Price Snapshot, trường này nullable (null ⇔ bản ghi từ nguồn 1DAY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Open Price"
-  physical_name: "open_price"
-  description: "Giá mở cửa trong phút."
-  data_domain: "Currency Amount"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.OPEN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(23,2)"
-- attribute_name: "High Price"
-  physical_name: "high_price"
-  description: "Giá cao nhất trong phút."
-  data_domain: "Currency Amount"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.HIGH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(23,2)"
-- attribute_name: "Low Price"
-  physical_name: "low_price"
-  description: "Giá thấp nhất trong phút."
-  data_domain: "Currency Amount"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.LOW"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(23,2)"
-- attribute_name: "Close Price"
-  physical_name: "close_price"
-  description: "Giá đóng cửa trong phút."
-  data_domain: "Currency Amount"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.CLOSE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(23,2)"
 - attribute_name: "Volume"
   physical_name: "vol"
-  description: "Tổng khối lượng khớp trong phút."
+  description: "Tổng khối lượng khớp trong ngày."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "MDDS.JAD_TRADINGVIEWHISTORY1MIN.VOLUME"
-  comment: "Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất dữ liệu."
+  - "MDDS.JAD_TVHISTORY1D.VOLUME"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"

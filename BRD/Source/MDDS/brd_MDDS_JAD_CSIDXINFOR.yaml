@@ -1,40 +1,56 @@
 schema_type: brd_source_columns
+schema_version: '1.0'
 source: MDDS
 table: JAD_CSIDXINFOR
-bronze_table: JAD_CSIDXINFOR
-description: "Thành phần rổ chỉ số: cặp (IndexCode × Symbol) với khối lượng và ngày vào rổ theo ngày giao dịch"
-scope_status: in_scope
-
+brd_ref: BRD-SRC-MDDS-JAD_CSIDXINFOR
 columns:
-  - name: ID
-    data_type: "character varying(255)"
-    nullable: false
-    description: "GUID — PK của bảng"
-  - name: INDEXCODE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã chỉ số (FK đến MarketInfor / IDXInfor)"
-  - name: SYMBOL
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã chứng khoán trong rổ (FK đến StockInfor)"
-  - name: TOTALQTTY
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Tổng khối lượng khớp lệnh lô chẵn"
-  - name: ADDDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày thêm vào chỉ số"
-  - name: INDEXID
-    data_type: int
-    nullable: true
-    description: "ID nội bộ của chỉ số"
-  - name: FLOORCODE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã sở giao dịch CK"
-  - name: TRADINGDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày giao dịch dạng dd/MM/yyyy"
+- name: ID
+  data_type: VARCHAR2(255 CHAR)
+  description: guid
+  key: PK
+  fk_note: null
+- name: ADDDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày thêm vào chỉ số
+  key: null
+  fk_note: null
+- name: FLOORCODE
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã sở GD CK
+  key: null
+  fk_note: null
+- name: INDEXCODE
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã chỉ số
+  key: null
+  fk_note: null
+- name: INDEXID
+  data_type: NUMBER(10,0)
+  description: ''
+  key: null
+  fk_note: null
+- name: STOCKNO
+  data_type: VARCHAR2(255 CHAR)
+  description: ''
+  key: null
+  fk_note: null
+- name: SYMBOL
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã chứng khoán
+  key: null
+  fk_note: null
+- name: TOTALQTTY
+  data_type: VARCHAR2(255 CHAR)
+  description: Tổng khối lượng khớp lệnh (Lô chẵn)
+  key: null
+  fk_note: null
+- name: TRADINGDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Thời gian theo dạng ngày (dd/MM/yyyy)
+  key: null
+  fk_note: null
+- name: WEIGHTED
+  data_type: VARCHAR2(255 CHAR)
+  description: ''
+  key: null
+  fk_note: null

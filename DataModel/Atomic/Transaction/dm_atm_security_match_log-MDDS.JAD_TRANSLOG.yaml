@@ -38,15 +38,15 @@ attributes:
 
   - name: Security Match Log Code
     physical_name: security_match_log_code
-    business_meaning: ID unique cho từng lần khớp — PK bảng nguồn. BK.
+    business_meaning: Bản ghi log khớp lệnh — PK bảng nguồn (KID).
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.ID
-    comment: BK chính. PK nguồn Id — unique per lần khớp lệnh.
+    source_column: MDDS.JAD_TRANSLOG.KID
+    comment: BK chính. PK nguồn KID — unique per lần khớp lệnh. DDL UAT 1 dùng KID (tài liệu cũ ghi ID).
     classification_context: null
     etl_derived_value: null
 
@@ -60,78 +60,22 @@ attributes:
     source_system: MDDS
     source_table: JAD_TRANSLOG
     source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'MDDS_JAD_TRANSLOG'"
     etl_derived_value: MDDS_JAD_TRANSLOG
 
-  - name: Symbol
-    physical_name: symbol
-    business_meaning: Mã chứng khoán.
+  - name: Board Id
+    physical_name: board_id
+    business_meaning: "Board của mã, mặc định G1."
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.SYMBOL
-    comment: "Denormalized join key với Security Trading Snapshot — D-02 quyết định không tạo FK surrogate."
+    source_column: MDDS.JAD_TRANSLOG.BOARDID
+    comment: null
     classification_context: null
-    etl_derived_value: null
-
-  - name: Trading Date
-    physical_name: trading_dt
-    business_meaning: Ngày giao dịch.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.TRADINGDATE
-    comment: Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join key với Security Trading Snapshot.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Match Time
-    physical_name: match_time
-    business_meaning: Thời gian khớp.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.FORMATTEDTIME
-    comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Sequence Message
-    physical_name: sequence_message
-    business_meaning: Sequence tín hiệu của sở.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.SEQUENCEMSG
-    comment: Metadata kỹ thuật từ Sở — giữ để traceability và deduplication.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Trade Direction Code
-    physical_name: trade_direction_code
-    business_meaning: Chiều mua/bán chủ động.
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.LASTCOLOR
-    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
-    classification_context: MDDS_TRADE_DIRECTION
     etl_derived_value: null
 
   - name: Change Color Code
@@ -148,30 +92,16 @@ attributes:
     classification_context: MDDS_PRICE_CHANGE_COLOR
     etl_derived_value: null
 
-  - name: Match Price
-    physical_name: match_price
-    business_meaning: Giá khớp.
+  - name: Accumulated Value
+    physical_name: accumulated_val
+    business_meaning: Tổng giá trị khớp lũy kế trong ngày (lô chẵn).
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: false
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.FORMATTEDMATCHPRICE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Match Volume
-    physical_name: match_vol
-    business_meaning: Khối lượng khớp.
-    data_domain: Large Counter
-    data_type: bigint
-    nullable: false
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.FORMATTEDVOL
+    source_column: MDDS.JAD_TRANSLOG.FORMATTEDACCVAL
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -190,17 +120,101 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Accumulated Value
-    physical_name: accumulated_val
-    business_meaning: Tổng giá trị khớp lũy kế trong ngày (lô chẵn).
+  - name: Price Change
+    physical_name: price_change
+    business_meaning: Mức thay đổi giá so với giá tham chiếu tại lần khớp.
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: false
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.FORMATTEDACCVAL
+    source_column: MDDS.JAD_TRANSLOG.FORMATTEDCHANGEVALUE
+    comment: "Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Match Price
+    physical_name: match_price
+    business_meaning: Giá khớp.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: JAD_TRANSLOG
+    source_column: MDDS.JAD_TRANSLOG.FORMATTEDMATCHPRICE
     comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Match Time
+    physical_name: match_time
+    business_meaning: Thời gian khớp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: JAD_TRANSLOG
+    source_column: MDDS.JAD_TRANSLOG.FORMATTEDTIME
+    comment: Cần profile trước khi convert sang Timestamp.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Match Volume
+    physical_name: match_vol
+    business_meaning: Khối lượng khớp.
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: false
+    is_primary_key: false
+    source_system: MDDS
+    source_table: JAD_TRANSLOG
+    source_column: MDDS.JAD_TRANSLOG.FORMATTEDVOL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Trade Direction Code
+    physical_name: trade_direction_code
+    business_meaning: Chiều mua/bán chủ động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: JAD_TRANSLOG
+    source_column: MDDS.JAD_TRANSLOG.LASTCOLOR
+    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
+    classification_context: MDDS_TRADE_DIRECTION
+    etl_derived_value: null
+
+  - name: Sequence Message
+    physical_name: sequence_message
+    business_meaning: Sequence tín hiệu của sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: JAD_TRANSLOG
+    source_column: MDDS.JAD_TRANSLOG.SEQUENCEMSG
+    comment: Metadata kỹ thuật từ Sở — giữ để traceability và deduplication.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Symbol
+    physical_name: symbol
+    business_meaning: Mã chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: JAD_TRANSLOG
+    source_column: MDDS.JAD_TRANSLOG.SYMBOL
+    comment: "Denormalized join key với Security Trading Snapshot — D-02 quyết định không tạo FK surrogate."
     classification_context: null
     etl_derived_value: null
 
@@ -232,16 +246,16 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Board Id
-    physical_name: board_id
-    business_meaning: "Board của mã, mặc định G1."
-    data_domain: Text
-    data_type: string
+  - name: Trading Date
+    physical_name: trading_dt
+    business_meaning: Ngày giao dịch.
+    data_domain: Date
+    data_type: date
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_TRANSLOG
-    source_column: MDDS.JAD_TRANSLOG.BOARDID
-    comment: null
+    source_column: MDDS.JAD_TRANSLOG.TRADINGDATE
+    comment: Denormalized join key với Security Trading Snapshot. Nguồn lưu dạng string — ETL cần parse sang date. Cần validate format nhất quán (dd/MM/yyyy).
     classification_context: null
     etl_derived_value: null

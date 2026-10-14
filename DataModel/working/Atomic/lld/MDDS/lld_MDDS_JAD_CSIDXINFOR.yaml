@@ -15,13 +15,9 @@ metadata:
   designed_at: null
   reviewed_by: null
   reviewed_at: null
-  approved_by: "Chien Nguyen"
-  approved_at: "2026-07-03"
-  notes: "Snapshot thành phần rổ chỉ số theo ngày giao dịch. Grain = 1 cặp (index_code,\
-    \ symbol, trading_date). Tier 2: FK đến Security Trading Snapshot (symbol) và\
-    \ Market Index Snapshot (indexcode). Quyết định D-03: Fact Snapshot thay vì Relative\
-    \ — insert-only per ngày. TC-02 ngoại lệ multi-parent: 2 FK bình đẳng không bắt\
-    \ buộc embed tên cha."
+  approved_by: null
+  approved_at: null
+  notes: "Snapshot thành phần rổ chỉ số theo ngày giao dịch. Grain = 1 cặp (index_code, symbol, trading_date). Tier 2: FK đến Security Trading Snapshot (symbol) và Market Index Snapshot (indexcode). Quyết định D-03: Fact Snapshot thay vì Relative — insert-only per ngày. TC-02 ngoại lệ multi-parent: 2 FK bình đẳng không bắt buộc embed tên cha. Thiết kế lại 2026-10-13 từ DDL UAT 1 (ubck_all_jad_tables_ddl.sql); khối lượng (Volume) dùng Large Counter (bigint)."
 attributes:
 - attribute_name: "Index Constituent Snapshot Id"
   physical_name: "index_constituent_snpst_id"
@@ -31,8 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot thành phần rổ chỉ số\
-    \ tại 1 ngày."
+  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot thành phần rổ chỉ số tại 1 ngày."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -57,66 +52,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=MDDS.JAD_CSIDXINFOR"
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=MDDS_JAD_CSIDXINFOR"
   etl_derived_value: "MDDS_JAD_CSIDXINFOR"
   data_type: "string"
-- attribute_name: "Index Code"
-  physical_name: "index_code"
-  description: "Mã chỉ số (FK đến MarketInfor / IDXInfor)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_CSIDXINFOR.INDEXCODE"
-  comment: "Denormalized join key với Market Index Snapshot. D-02 pattern: không tạo\
-    \ FK surrogate ở Atomic — join tại Gold layer qua index_code."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Index Id"
-  physical_name: "index_id"
-  description: "ID nội bộ của chỉ số."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_CSIDXINFOR.INDEXID"
-  comment: "Nguồn lưu dạng int — ETL cần convert sang string. Giữ nguyên leading zeros\
-    \ nếu có."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Symbol"
-  physical_name: "symbol"
-  description: "Mã chứng khoán trong rổ (FK đến StockInfor)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_CSIDXINFOR.SYMBOL"
-  comment: "Denormalized join key với Security Trading Snapshot. Join tại Gold layer\
-    \ qua (symbol, trading_date)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Trading Date"
-  physical_name: "trading_dt"
-  description: "Ngày giao dịch dạng dd/MM/yyyy."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "MDDS.JAD_CSIDXINFOR.TRADINGDATE"
-  comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Grain key:\
-    \ mỗi ngày 1 snapshot."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Add Date"
   physical_name: "add_dt"
   description: "Ngày thêm vào chỉ số."
@@ -126,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_CSIDXINFOR.ADDDATE"
-  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date. Cần validate format nhất quán (dd/MM/yyyy)."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -143,6 +82,58 @@ attributes:
   classification_context: "MDDS_FLOOR_CODE"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Index Code"
+  physical_name: "index_code"
+  description: "Mã chỉ số (FK đến MarketInfor / IDXInfor)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_CSIDXINFOR.INDEXCODE"
+  comment: "Denormalized join key với Market Index Snapshot. D-02 pattern: không tạo FK surrogate ở Atomic — join tại Gold layer qua index_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Index Id"
+  physical_name: "index_id"
+  description: "ID nội bộ của chỉ số."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_CSIDXINFOR.INDEXID"
+  comment: "Giữ nguyên leading zeros nếu có. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Stock Number"
+  physical_name: "stock_nbr"
+  description: "Số hiệu mã chứng khoán trong rổ chỉ số."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_CSIDXINFOR.STOCKNO"
+  comment: " Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ticker Symbol"
+  physical_name: "ticker_symbol"
+  description: "Mã chứng khoán trong rổ (FK đến StockInfor)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_CSIDXINFOR.SYMBOL"
+  comment: "Denormalized join key với Security Trading Snapshot. Join tại Gold layer qua (symbol, trading_date)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Total Match Volume"
   physical_name: "total_match_vol"
   description: "Tổng khối lượng khớp lệnh lô chẵn."
@@ -152,9 +143,33 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_CSIDXINFOR.TOTALQTTY"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate\
-    \ không có giá trị non-numeric. HLD note T2-03: cân nhắc bỏ nếu trùng StockInfor.totaltrading,\
-    \ giữ nguyên theo nguyên tắc mapping 1-1."
+  comment: "HLD note T2-03: cân nhắc bỏ nếu trùng StockInfor.totaltrading, giữ nguyên theo nguyên tắc mapping 1-1. Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
+- attribute_name: "Trading Date"
+  physical_name: "trading_dt"
+  description: "Ngày giao dịch dạng dd/MM/yyyy."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_CSIDXINFOR.TRADINGDATE"
+  comment: "Grain key: mỗi ngày 1 snapshot. Nguồn lưu dạng string — ETL cần parse sang date. Cần validate format nhất quán (dd/MM/yyyy)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Constituent Weight Percentage"
+  physical_name: "constituent_weight_percentage"
+  description: "Tỷ trọng của mã trong rổ chỉ số."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "MDDS.JAD_CSIDXINFOR.WEIGHTED"
+  comment: "Mô tả bảng nguồn ghi nhận có tỷ trọng (weight) trong rổ; cột WEIGHTED không có comment riêng — cần xác nhận đơn vị (%/hệ số). Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang decimal(5,2). Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"

@@ -1,308 +1,436 @@
 schema_type: brd_source_columns
+schema_version: '1.0'
 source: MDDS
 table: JAD_STOCKINFOR
-bronze_table: JAD_STOCKINFOR
-description: "Snapshot bảng giá đa loại instrument tại một thời điểm — giá, sổ lệnh, tổng tích lũy, NĐTNN, đặc thù derivative/warrant/bond"
-scope_status: in_scope
-
+brd_ref: BRD-SRC-MDDS-JAD_STOCKINFOR
 columns:
-  - name: HISTORYID
-    data_type: "character varying(255)"
-    nullable: false
-    description: "ID unique cho từng dòng lịch sử — PK"
-  - name: KID
-    data_type: "character varying(255)"
-    nullable: true
-    description: "ID của mã do jadapter tự sinh"
-  - name: SYMBOL
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã chứng khoán"
-  - name: STOCKID
-    data_type: "character varying(255)"
-    nullable: true
-    description: "ID của chứng khoán trong hệ thống Sở"
-  - name: FULLNAME
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Tên chứng khoán (tiếng Việt)"
-  - name: TRADINGDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày giao dịch format dd/mm/yyyy"
-  - name: FLOORCODE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond"
-  - name: STOCKTYPE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...)"
-  - name: CEILING
-    data_type: double precision
-    nullable: true
-    description: "Giá trần"
-  - name: FLOOR
-    data_type: double precision
-    nullable: true
-    description: "Giá sàn"
-  - name: REFERENCE
-    data_type: double precision
-    nullable: true
-    description: "Giá tham chiếu"
-  - name: BIDPRICE3
-    data_type: double precision
-    nullable: true
-    description: "Giá mua top 3"
-  - name: BIDVOL3
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng mua top 3"
-  - name: BIDPRICE2
-    data_type: double precision
-    nullable: true
-    description: "Giá mua top 2"
-  - name: BIDVOL2
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng mua top 2"
-  - name: BIDPRICE1
-    data_type: double precision
-    nullable: true
-    description: "Giá mua top 1"
-  - name: BIDVOL1
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng mua top 1"
-  - name: CLOSEPRICE
-    data_type: double precision
-    nullable: true
-    description: "Giá khớp gần nhất"
-  - name: CLOSEVOL
-    data_type: bigint
-    nullable: true
-    description: "KL khớp gần nhất"
-  - name: CHANGE
-    data_type: double precision
-    nullable: true
-    description: "Thay đổi giữa giá khớp gần nhất và giá tham chiếu"
-  - name: OFFERPRICE1
-    data_type: double precision
-    nullable: true
-    description: "Giá bán top 1"
-  - name: OFFERVOL1
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng bán top 1"
-  - name: OFFERPRICE2
-    data_type: double precision
-    nullable: true
-    description: "Giá bán top 2"
-  - name: OFFERVOL2
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng bán top 2"
-  - name: OFFERPRICE3
-    data_type: double precision
-    nullable: true
-    description: "Giá bán top 3"
-  - name: OFFERVOL3
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng bán top 3"
-  - name: TOTALTRADING
-    data_type: bigint
-    nullable: true
-    description: "Tổng khối lượng khớp từ đầu ngày"
-  - name: TOTALTRADINGVALUE
-    data_type: double precision
-    nullable: true
-    description: "Tổng giá trị khớp từ đầu ngày"
-  - name: AVERAGEPRICE
-    data_type: double precision
-    nullable: true
-    description: "Giá khớp trung bình"
-  - name: OPEN
-    data_type: double precision
-    nullable: true
-    description: "Giá mở cửa"
-  - name: HIGH
-    data_type: double precision
-    nullable: true
-    description: "Giá khớp cao nhất tính đến thời điểm"
-  - name: LOW
-    data_type: double precision
-    nullable: true
-    description: "Giá khớp thấp nhất tính đến thời điểm"
-  - name: FOREIGNBUY
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng NĐTNN mua"
-  - name: FOREIGNSELL
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng NĐTNN bán"
-  - name: FOREIGNREMAIN
-    data_type: bigint
-    nullable: true
-    description: "Room còn lại cho NĐTNN"
-  - name: FOREIGNROOM
-    data_type: bigint
-    nullable: true
-    description: "Tổng room NĐTNN"
-  - name: TOTAL_OFFER_QTTY
-    data_type: bigint
-    nullable: true
-    description: "Tổng khối lượng dư bán"
-  - name: TOTAL_BID_QTTY
-    data_type: bigint
-    nullable: true
-    description: "Tổng khối lượng dư mua"
-  - name: PT_MATCH_QTTY
-    data_type: bigint
-    nullable: true
-    description: "Khối lượng khớp thỏa thuận gần nhất"
-  - name: PT_MATCH_PRICE
-    data_type: bigint
-    nullable: true
-    description: "Giá khớp thỏa thuận gần nhất"
-  - name: PT_TOTAL_TRADED_QTTY
-    data_type: bigint
-    nullable: true
-    description: "Tổng khối lượng khớp thỏa thuận từ đầu ngày"
-  - name: PT_TOTAL_TRADED_VALUE
-    data_type: double precision
-    nullable: true
-    description: "Tổng giá trị khớp thỏa thuận từ đầu ngày"
-  - name: STATUS
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Trạng thái sự kiện quyền của CK"
-  - name: TRADINGSESSIONID
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Trạng thái phiên tại thời điểm"
-  - name: OPENINTEREST
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Khối lượng mở OI — dành cho phái sinh"
-  - name: FIRSTTRADINGDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày giao dịch đầu tiên — dành cho phái sinh/CW"
-  - name: LASTTRADINGDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày giao dịch cuối cùng — dành cho phái sinh/CW"
-  - name: UNDERLYINGSYMBOL
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Chứng khoán cơ sở — dành cho CW/phái sinh"
-  - name: ISSUERNAME
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Tổ chức phát hành"
-  - name: COVEREDWARRANTTYPE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Kiểu chứng quyền"
-  - name: MATURITYDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày đáo hạn"
-  - name: EXERCISEPRICE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Giá thực hiện CW"
-  - name: EXERCISERATIO
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Tỉ lệ thực hiện CW"
-  - name: LISTEDSHARE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Khối lượng CK niêm yết"
-  - name: FUNDTYPE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Loại quỹ — FSS quy định"
-  - name: TOTALLISTINGQTTY
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Khối lượng CK niêm yết"
-  - name: SYMBOLSTATUSCODE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Trạng thái mã CK"
-  - name: SYMBOLISIN
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã ISIN của CK"
-  - name: MARKETID
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã sàn theo Sở"
-  - name: BOARDID
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Board của mã CK (mặc định G1)"
-  - name: PRODUCTGRPID
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã sản phẩm của CK theo Sở"
-  - name: PRODUCTID
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào"
-  - name: LASTCOLOR
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Chiều mua/bán chủ động gần nhất"
-  - name: TRADINGTIME
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Thời gian"
-  - name: COUPONRATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Lãi suất trái phiếu"
-  - name: YIELD
-    data_type: "character varying(255)"
-    nullable: true
-    description: "YTM"
-  - name: ISSUEDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày phát hành"
-  - name: SETTLEMENTPRICE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL"
-  - name: MATURITYMONTHYEAR
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Năm tháng đáo hạn HĐTL"
-  - name: LISTINGDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày niêm yết sản phẩm phái sinh"
-  - name: CONTRACTMULTIPLIER
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Hệ số nhân HĐTL"
-  - name: PUTORCALL
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Loại quyền phái sinh: P/C"
-  - name: EXERCISESTYLE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Kiểu thực hiện phái sinh: A/E/B/Z"
-  - name: FOREIGNBUYVAL
-    data_type: double precision
-    nullable: true
-    description: "Giá trị NĐTNN mua"
-  - name: FOREIGNSELLVAL
-    data_type: double precision
-    nullable: true
-    description: "Giá trị NĐTNN bán"
+- name: HISTORYID
+  data_type: VARCHAR2(255 CHAR)
+  description: id cho từng dòng
+  key: PK
+  fk_note: null
+- name: COVEREDWARRANTTYPE
+  data_type: VARCHAR2(255 CHAR)
+  description: Kiểu CW
+  key: null
+  fk_note: null
+- name: EXERCISEPRICE
+  data_type: VARCHAR2(255 CHAR)
+  description: Giá thực hiện CW
+  key: null
+  fk_note: null
+- name: EXERCISERATIO
+  data_type: VARCHAR2(255 CHAR)
+  description: Tỉ lệ thực hiện CW
+  key: null
+  fk_note: null
+- name: FLOORCODE
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Mã sàn: 02-hnx,04-upcom,10-hose, 03 FDS (phái sinh), 06 corp-bond'
+  key: null
+  fk_note: null
+- name: FULLNAME
+  data_type: VARCHAR2(255 CHAR)
+  description: Tên chứng khoán (Tiếng Việt)
+  key: null
+  fk_note: null
+- name: FUNDTYPE
+  data_type: VARCHAR2(255 CHAR)
+  description: Loại quỹ - Do FSS quy định
+  key: null
+  fk_note: null
+- name: ISSUERNAME
+  data_type: VARCHAR2(255 CHAR)
+  description: Tổ chức phát hành
+  key: null
+  fk_note: null
+- name: LISTEDSHARE
+  data_type: VARCHAR2(255 CHAR)
+  description: Khối lượng chứng khoán niêm yết
+  key: null
+  fk_note: null
+- name: MATURITYDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày đáo hạn
+  key: null
+  fk_note: null
+- name: PRIOR_PRICE
+  data_type: FLOAT(53)
+  description: ''
+  key: null
+  fk_note: null
+- name: PT_MATCH_PRICE
+  data_type: NUMBER(19,0)
+  description: Giá khớp thỏa thuận gần nhất
+  key: null
+  fk_note: null
+- name: PT_MATCH_QTTY
+  data_type: NUMBER(19,0)
+  description: Khối lượng khớp thỏa thuận gần nhất
+  key: null
+  fk_note: null
+- name: PT_TOTAL_TRADED_QTTY
+  data_type: NUMBER(19,0)
+  description: Tổng khối lượng khớp thỏa thuận từ đầu ngày
+  key: null
+  fk_note: null
+- name: PT_TOTAL_TRADED_VALUE
+  data_type: FLOAT(53)
+  description: Tổng giá trị khớp thỏa thuận từ đầu ngày
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: VARCHAR2(255 CHAR)
+  description: Trạng thái sự kiện quyền của CK
+  key: null
+  fk_note: null
+- name: STOCKID
+  data_type: VARCHAR2(255 CHAR)
+  description: ID của chứng khoán trong hệ thống Sở
+  key: null
+  fk_note: null
+- name: STOCKTYPE
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Loại chứng khoán Đối với HNX: {"BO", "1"}, {"ST", "2"}, {"MF", "3"}, {"FU", "4"}, {"OP", "5"}, {"EF", "6"} --> 1 = Trái phiếu; 2 = Cổ phiếu; 3 = Chứng chỉ quỹ; 4 = Futures (Phái sinh - Hợp đồng tương lai); 5 = Options (Phái sinh - Hợp đồng quyền chọn); 6 = ETF BO, ST… đối chiếu với trường  SECURITYTYPE msg SI, DI Đối với HOSE:   B- 1: Trái phiếu   S- 2: Cổ phiếu   U- 3: Chứng chỉ quỹ"   D- 1: Trái phiếu chuyển đổi   E- 3: Chứng chỉ quỹ   W- 4: Chứng quyền Trường này dùng để phân biết mã chứng khoán thuộc tab nào trên bảng giá.'
+  key: null
+  fk_note: null
+- name: TOTAL_BID_QTTY
+  data_type: NUMBER(19,0)
+  description: Tổng khối lượng dư mua
+  key: null
+  fk_note: null
+- name: TOTAL_OFFER_QTTY
+  data_type: NUMBER(19,0)
+  description: Tổng khối lượng dư bán
+  key: null
+  fk_note: null
+- name: TOTALLISTINGQTTY
+  data_type: VARCHAR2(255 CHAR)
+  description: Khối lượng chứng khoán niêm yết
+  key: null
+  fk_note: null
+- name: AVERAGEPRICE
+  data_type: FLOAT(53)
+  description: Giá khớp trung bình
+  key: null
+  fk_note: null
+- name: BIDPRICE1
+  data_type: FLOAT(53)
+  description: Giá mua top 1
+  key: null
+  fk_note: null
+- name: BIDPRICE2
+  data_type: FLOAT(53)
+  description: Giá mua top 2
+  key: null
+  fk_note: null
+- name: BIDPRICE3
+  data_type: FLOAT(53)
+  description: Giá mua top 3
+  key: null
+  fk_note: null
+- name: BIDVOL1
+  data_type: NUMBER(19,0)
+  description: Khối lượng mua top 1
+  key: null
+  fk_note: null
+- name: BIDVOL2
+  data_type: NUMBER(19,0)
+  description: Khối lượng mua top 2
+  key: null
+  fk_note: null
+- name: BIDVOL3
+  data_type: NUMBER(19,0)
+  description: Khối lượng mua top 3
+  key: null
+  fk_note: null
+- name: BOARDID
+  data_type: VARCHAR2(255 CHAR)
+  description: board của mã chứng khoán Hiện tại ck đang chia theo nhiều board, nhưng cơ sở mặc định là board G1
+  key: null
+  fk_note: null
+- name: CEILING
+  data_type: FLOAT(53)
+  description: Giá trần
+  key: null
+  fk_note: null
+- name: CHANGE
+  data_type: FLOAT(53)
+  description: Thay đổi giữa giá khớp gần nhất và giá tham chiếu (+/-)
+  key: null
+  fk_note: null
+- name: CLOSEPRICE
+  data_type: FLOAT(53)
+  description: Giá khớp gần nhất
+  key: null
+  fk_note: null
+- name: CLOSEVOL
+  data_type: NUMBER(19,0)
+  description: KL khớp gần nhất
+  key: null
+  fk_note: null
+- name: CONTRACTMULTIPLIER
+  data_type: VARCHAR2(255 CHAR)
+  description: Hệ số nhân
+  key: null
+  fk_note: null
+- name: COUPONRATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Lãi suất trái phiếu
+  key: null
+  fk_note: null
+- name: EXERCISESTYLE
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Kiểu thực hiện của CK phái sinh: A/E/B/Z'
+  key: null
+  fk_note: null
+- name: FIRSTTRADINGDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày giao dịch đầu tiên
+  key: null
+  fk_note: null
+- name: FLOOR
+  data_type: FLOAT(53)
+  description: Giá sàn
+  key: null
+  fk_note: null
+- name: FOREIGNBUY
+  data_type: NUMBER(19,0)
+  description: Khối lượng NĐT NN mua
+  key: null
+  fk_note: null
+- name: FOREIGNBUYVAL
+  data_type: FLOAT(53)
+  description: Giá trị NĐTNN mua
+  key: null
+  fk_note: null
+- name: FOREIGNREMAIN
+  data_type: NUMBER(19,0)
+  description: Room còn lại cho NĐT NN
+  key: null
+  fk_note: null
+- name: FOREIGNROOM
+  data_type: NUMBER(19,0)
+  description: Tổng room của NĐT NN
+  key: null
+  fk_note: null
+- name: FOREIGNSELL
+  data_type: NUMBER(19,0)
+  description: Khối lượng NĐT NN bán
+  key: null
+  fk_note: null
+- name: FOREIGNSELLVAL
+  data_type: FLOAT(53)
+  description: Giá trị NĐTNN bán
+  key: null
+  fk_note: null
+- name: HIGH
+  data_type: FLOAT(53)
+  description: Giá khớp cao nhất tính đến thời điểm hiện tại
+  key: null
+  fk_note: null
+- name: ISSUEDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày phát hành
+  key: null
+  fk_note: null
+- name: KID
+  data_type: VARCHAR2(255 CHAR)
+  description: ID của mã do jadapter tự sinh
+  key: null
+  fk_note: null
+- name: LASTCOLOR
+  data_type: VARCHAR2(255 CHAR)
+  description: Chiều mua/bán chủ động gần nhất
+  key: null
+  fk_note: null
+- name: LASTTRADINGDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày giao dịch cuối cùng
+  key: null
+  fk_note: null
+- name: LISTINGDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày niêm yết sản phẩm phái sinh
+  key: null
+  fk_note: null
+- name: LOW
+  data_type: FLOAT(53)
+  description: Giá khớp thấp nhất tính đến thời điểm hiện tại
+  key: null
+  fk_note: null
+- name: MARKETID
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã sàn - theo bộ thông tin của Sở
+  key: null
+  fk_note: null
+- name: MATURITYMONTHYEAR
+  data_type: VARCHAR2(255 CHAR)
+  description: Năm tháng đáo hạn
+  key: null
+  fk_note: null
+- name: OFFERPRICE1
+  data_type: FLOAT(53)
+  description: Giá bán top 1
+  key: null
+  fk_note: null
+- name: OFFERPRICE2
+  data_type: FLOAT(53)
+  description: Giá bán top 2
+  key: null
+  fk_note: null
+- name: OFFERPRICE3
+  data_type: FLOAT(53)
+  description: Giá bán top 3
+  key: null
+  fk_note: null
+- name: OFFERVOL1
+  data_type: NUMBER(19,0)
+  description: Khối lượng bán top 1
+  key: null
+  fk_note: null
+- name: OFFERVOL2
+  data_type: NUMBER(19,0)
+  description: Khối lượng bán top 2
+  key: null
+  fk_note: null
+- name: OFFERVOL3
+  data_type: NUMBER(19,0)
+  description: Khối lượng bán top 3
+  key: null
+  fk_note: null
+- name: OPEN
+  data_type: FLOAT(53)
+  description: Giá mở cửa
+  key: null
+  fk_note: null
+- name: OPENINTEREST
+  data_type: VARCHAR2(255 CHAR)
+  description: Khối lượng mở (OI) của mã PS
+  key: null
+  fk_note: null
+- name: OPENINTERESTCHANGE
+  data_type: VARCHAR2(255 CHAR)
+  description: ''
+  key: null
+  fk_note: null
+- name: PRICEONE
+  data_type: VARCHAR2(255 CHAR)
+  description: ''
+  key: null
+  fk_note: null
+- name: PRICETWO
+  data_type: VARCHAR2(255 CHAR)
+  description: ''
+  key: null
+  fk_note: null
+- name: PRODUCTGRPID
+  data_type: VARCHAR2(255 CHAR)
+  description: Theo trường của Sở, mô tả mã sản phẩm của CK
+  key: null
+  fk_note: null
+- name: PRODUCTID
+  data_type: VARCHAR2(255 CHAR)
+  description: Theo tag 20003 của sở, chủ yếu để xác định CK thuộc bộ sp nào
+  key: null
+  fk_note: null
+- name: PUTORCALL
+  data_type: VARCHAR2(255 CHAR)
+  description: 'Loại quyền của CK phái sinh: P/C'
+  key: null
+  fk_note: null
+- name: REFERENCE
+  data_type: FLOAT(53)
+  description: Giá tham chiếu
+  key: null
+  fk_note: null
+- name: SEQUENCE
+  data_type: NUMBER(19,0)
+  description: ''
+  key: null
+  fk_note: null
+- name: SETTLEMENTPRICE
+  data_type: VARCHAR2(255 CHAR)
+  description: Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL
+  key: null
+  fk_note: null
+- name: SYMBOL
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã chứng khoán
+  key: null
+  fk_note: null
+- name: SYMBOLISIN
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã ISIN của CK
+  key: null
+  fk_note: null
+- name: SYMBOLSTATUSCODE
+  data_type: VARCHAR2(255 CHAR)
+  description: Trạng thái mã CK, ghép của 3 tag 30635|30636|30637
+  key: null
+  fk_note: null
+- name: TOTALBUYVOL
+  data_type: NUMBER(19,0)
+  description: ''
+  key: null
+  fk_note: null
+- name: TOTALSELLVOL
+  data_type: NUMBER(19,0)
+  description: ''
+  key: null
+  fk_note: null
+- name: TOTALTRADING
+  data_type: NUMBER(19,0)
+  description: Tổng khối lượng khớp từ đầu ngày
+  key: null
+  fk_note: null
+- name: TOTALTRADINGVALUE
+  data_type: FLOAT(53)
+  description: Tổng giá trị khớp từ đầu ngày
+  key: null
+  fk_note: null
+- name: TRADINGSESSIONID
+  data_type: VARCHAR2(255 CHAR)
+  description: Sessionid tại thời điểm (1 dạng trạng thái phiên mà Mã đang được áp)
+  key: null
+  fk_note: null
+- name: TRADINGTIME
+  data_type: VARCHAR2(255 CHAR)
+  description: Thời gian
+  key: null
+  fk_note: null
+- name: TRADINGDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày giao dịch format dd/mm/yyyy
+  key: null
+  fk_note: null
+- name: UNDERLYINGSYMBOL
+  data_type: VARCHAR2(255 CHAR)
+  description: Chứng khoán cơ sở
+  key: null
+  fk_note: null
+- name: YIELD
+  data_type: VARCHAR2(255 CHAR)
+  description: YTM
+  key: null
+  fk_note: null
+- name: OPEN_M1
+  data_type: FLOAT(53)
+  description: ''
+  key: null
+  fk_note: null
+- name: HIGH_M1
+  data_type: FLOAT(53)
+  description: ''
+  key: null
+  fk_note: null
+- name: LOW_M1
+  data_type: FLOAT(53)
+  description: ''
+  key: null
+  fk_note: null
+- name: VWAP
+  data_type: FLOAT(126)
+  description: ''
+  key: null
+  fk_note: null

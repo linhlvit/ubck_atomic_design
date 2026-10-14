@@ -1,64 +1,81 @@
 schema_type: brd_source_columns
+schema_version: '1.0'
 source: MDDS
 table: JAD_TRANSLOG
-bronze_table: JAD_TRANSLOG
-description: "Log tick-by-tick từng lần khớp lệnh cổ phiếu: giá khớp, KL khớp, chiều chủ động, tích lũy KL/GT"
-scope_status: in_scope
-
+brd_ref: BRD-SRC-MDDS-JAD_TRANSLOG
 columns:
-  - name: ID
-    data_type: "character varying(255)"
-    nullable: false
-    description: "ID unique cho từng lần khớp — PK"
-  - name: SEQUENCEMSG
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Sequence tín hiệu của sở"
-  - name: TRADINGDATE
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Ngày giao dịch"
-  - name: SYMBOL
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Mã chứng khoán"
-  - name: FORMATTEDTIME
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Thời gian khớp"
-  - name: LASTCOLOR
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Chiều mua/bán chủ động"
-  - name: FORMATTEDMATCHPRICE
-    data_type: "double precision"
-    nullable: false
-    description: "Giá khớp"
-  - name: CHANGECOLOR
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Indicator tăng/giảm so với giá tham chiếu"
-  - name: FORMATTEDVOL
-    data_type: "bigint"
-    nullable: false
-    description: "Khối lượng khớp"
-  - name: FORMATTEDACCVOL
-    data_type: "bigint"
-    nullable: false
-    description: "Tổng khối lượng khớp lũy kế trong ngày (lô chẵn)"
-  - name: FORMATTEDACCVAL
-    data_type: "double precision"
-    nullable: false
-    description: "Tổng giá trị khớp lũy kế trong ngày (lô chẵn)"
-  - name: TOTALBUYVOL
-    data_type: "bigint"
-    nullable: false
-    description: "Tổng khối lượng mua chủ động"
-  - name: TOTALSELLVOL
-    data_type: "bigint"
-    nullable: false
-    description: "Tổng khối lượng bán chủ động"
-  - name: BOARDID
-    data_type: "character varying(255)"
-    nullable: true
-    description: "Board của mã, mặc định G1"
+- name: KID
+  data_type: VARCHAR2(255 CHAR)
+  description: ''
+  key: PK
+  fk_note: null
+- name: BOARDID
+  data_type: VARCHAR2(255 CHAR)
+  description: Board của mã, bảng này mặc định = G1
+  key: null
+  fk_note: null
+- name: CHANGECOLOR
+  data_type: VARCHAR2(255 CHAR)
+  description: Indicator tăng/giảm
+  key: null
+  fk_note: null
+- name: FORMATTEDACCVAL
+  data_type: FLOAT(53)
+  description: Tổng giá trị khớp lũy kế của mã trong ngày (chỉ tính lô chẵn)
+  key: null
+  fk_note: null
+- name: FORMATTEDACCVOL
+  data_type: NUMBER(19,0)
+  description: Tổng khối lượng khớp lũy kế của mã trong ngày (chỉ tính lô chẵn)
+  key: null
+  fk_note: null
+- name: FORMATTEDCHANGEVALUE
+  data_type: FLOAT(53)
+  description: ''
+  key: null
+  fk_note: null
+- name: FORMATTEDMATCHPRICE
+  data_type: FLOAT(53)
+  description: Giá trị khớp
+  key: null
+  fk_note: null
+- name: FORMATTEDTIME
+  data_type: VARCHAR2(255 CHAR)
+  description: Thời gian khớp
+  key: null
+  fk_note: null
+- name: FORMATTEDVOL
+  data_type: NUMBER(19,0)
+  description: Khối lượng khớp
+  key: null
+  fk_note: null
+- name: LASTCOLOR
+  data_type: VARCHAR2(255 CHAR)
+  description: Chiều mua/bán chủ động
+  key: null
+  fk_note: null
+- name: SEQUENCEMSG
+  data_type: VARCHAR2(255 CHAR)
+  description: Sequence tín hiệu của sở
+  key: null
+  fk_note: null
+- name: SYMBOL
+  data_type: VARCHAR2(255 CHAR)
+  description: Mã chứng khoán
+  key: null
+  fk_note: null
+- name: TOTALBUYVOL
+  data_type: NUMBER(19,0)
+  description: Tổng khối lượng mua chủ động
+  key: null
+  fk_note: null
+- name: TOTALSELLVOL
+  data_type: NUMBER(19,0)
+  description: Tổng khối lượng bán chủ động
+  key: null
+  fk_note: null
+- name: TRADINGDATE
+  data_type: VARCHAR2(255 CHAR)
+  description: Ngày giao dịch
+  key: null
+  fk_note: null

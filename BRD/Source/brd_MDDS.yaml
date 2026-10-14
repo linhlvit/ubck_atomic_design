@@ -13,9 +13,7 @@ brd_entries:
       scope_status: in_scope
       scope_reason: null
       table: JAD_MARKETINFOR
-      related_tables:
-        - table: JAD_IDXINFOR
-          relation: "Tham chiếu — chi tiết chỉ số thị trường"
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
@@ -36,8 +34,6 @@ brd_entries:
       scope_reason: null
       table: JAD_CSIDXINFOR
       related_tables:
-        - table: JAD_IDXINFOR
-          relation: "FK — chỉ số cha của constituent"
         - table: JAD_STOCKINFOR
           relation: "FK — mã chứng khoán trong rổ"
       notes: null
@@ -87,7 +83,7 @@ brd_entries:
       related_tables:
         - table: JAD_STOCKINFOR
           relation: "FK cha — mã chứng khoán được khớp lệnh"
-      notes: null
+      notes: "DDL UAT 1: PK = KID (tài liệu cũ ghi ID)."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -107,10 +103,8 @@ brd_entries:
       scope_status: in_scope
       scope_reason: null
       table: JAD_CORPBONDINFOR
-      related_tables:
-        - table: JAD_CORPBONDMATCH
-          relation: "1-N — log khớp lệnh tick-by-tick TPDN"
-      notes: null
+      related_tables: null
+      notes: "DDL UAT 1: PK = SYMBOL (không còn cột KID như tài liệu cũ)."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -119,8 +113,8 @@ brd_entries:
         filter_note: "Snapshot EOD theo ngày giao dịch — append 1 batch mỗi ngày"
 
   # UID-04 — Thống kê lịch sử TradingView (OHLCV)
-  - brd_id: BRD-SRC-MDDS-JAD_TRADINGVIEWHISTORY1MIN
-    brd_name: "Design Atomic từ nguồn MDDS bảng TradingViewHistory1Min"
+  - brd_id: BRD-SRC-MDDS-JAD_TVHISTORY1M
+    brd_name: "Design Atomic từ nguồn MDDS bảng TVHistory1M"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
@@ -129,13 +123,13 @@ brd_entries:
       functional_group: "UID-04 Thống kê lịch sử TradingView"
       scope_status: in_scope
       scope_reason: null
-      table: JAD_TRADINGVIEWHISTORY1MIN
+      table: JAD_TVHISTORY1M
       related_tables:
         - table: JAD_STOCKINFOR
           relation: "Tham chiếu suy luận — symbol khi là mã chứng khoán"
         - table: JAD_MARKETINFOR
           relation: "Tham chiếu suy luận — symbol khi là mã index"
-      notes: "symbol dùng chung cho cả chứng khoán và index — không tách được FK constraint tường minh, cần làm rõ với nguồn"
+      notes: "symbol dùng chung cho cả chứng khoán và index — không tách được FK constraint tường minh, cần làm rõ với nguồn. DDL UAT 1 đổi tên từ JAD_TRADINGVIEWHISTORY1MIN."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -143,8 +137,8 @@ brd_entries:
         filter_logic: "TRADINGDATE = {etl_date}"
         filter_note: "Cây nến OHLCV theo phút — append theo ngày giao dịch"
 
-  - brd_id: BRD-SRC-MDDS-JAD_TRADINGVIEWHISTORY1DAY
-    brd_name: "Design Atomic từ nguồn MDDS bảng TradingViewHistory1Day"
+  - brd_id: BRD-SRC-MDDS-JAD_TVHISTORY1D
+    brd_name: "Design Atomic từ nguồn MDDS bảng TVHistory1D"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
@@ -153,17 +147,16 @@ brd_entries:
       functional_group: "UID-04 Thống kê lịch sử TradingView"
       scope_status: in_scope
       scope_reason: null
-      table: JAD_TRADINGVIEWHISTORY1DAY
+      table: JAD_TVHISTORY1D
       related_tables:
         - table: JAD_STOCKINFOR
           relation: "Tham chiếu suy luận — symbol khi là mã chứng khoán"
         - table: JAD_MARKETINFOR
           relation: "Tham chiếu suy luận — symbol khi là mã index"
-      notes: "symbol dùng chung cho cả chứng khoán và index — không tách được FK constraint tường minh, cần làm rõ với nguồn"
+      notes: "symbol dùng chung cho cả chứng khoán và index — không tách được FK constraint tường minh, cần làm rõ với nguồn. DDL UAT 1 đổi tên từ JAD_TRADINGVIEWHISTORY1DAY."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
         filter_logic: "TRADINGDATE = {etl_date}"
         filter_note: "Cây nến OHLCV theo ngày — append theo ngày giao dịch"
-
