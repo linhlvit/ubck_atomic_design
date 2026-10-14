@@ -3,7 +3,7 @@
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
 -- 19 bảng: 6 fact + 13 operational
--- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_opr_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
+-- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
 -- Sửa 2026-10-14: thêm #17 qlq_fct_fund_management_rpt_cell_val_flat (Dashboard RPT, 51 KPI READY) — bị bỏ sót ở commit 2f62880d
 -- Tham số ETL hàng ngày: :etl_date (không dùng {etl_date}/$etl_date/hardcode)
 -- ============================================================
@@ -121,6 +121,12 @@ SELECT
     o.rank_index,
     o.total_score_amt,
     o.charter_capital_amt,
+    o.certified_practitioner_staff_count,
+    o.assets_under_management_amt,
+    o.capital_adequacy_ratio,
+    o.net_profit_after_tax_amt,
+    o.owner_equity_amt,
+    o.portfolio_management_contract_count,
     o.src_stm_code
 FROM datamart.opr_fund_management_company_profile o
 ;
@@ -137,6 +143,7 @@ SELECT
     o.fmc_code,
     o.investment_fund_full_nm,
     o.fund_tp_code,
+    o.net_asset_val_amt,
     o.src_stm_code
 FROM datamart.opr_fund_management_company_fund_list o
 ;
@@ -157,6 +164,8 @@ SELECT
     o.manager_count,
     o.outstanding_unit_quantity,
     o.distribution_agent_count,
+    o.net_asset_val_amt,
+    o.year_to_dt_profit_amt,
     o.src_stm_code
 FROM datamart.opr_investment_fund_profile o
 ;
@@ -204,6 +213,21 @@ SELECT
     o.address,
     o.active_status_flag,
     o.termination_dt,
+    o.distributing_fund_count,
+    o.trading_account_count,
+    o.trading_account_year_to_dt_count,
+    o.institution_trading_account_count,
+    o.individual_trading_account_count,
+    o.foreign_trading_account_count,
+    o.institution_holding_account_count,
+    o.individual_holding_account_count,
+    o.foreign_holding_account_count,
+    o.institution_fund_certificate_amt,
+    o.individual_fund_certificate_amt,
+    o.foreign_fund_certificate_amt,
+    o.issued_amt,
+    o.issued_year_to_dt_amt,
+    o.redeemed_amt,
     o.src_stm_code
 FROM datamart.opr_fund_distribution_agent_profile o
 ;
@@ -233,6 +257,11 @@ SELECT
     o.foreign_fund_management_organization_unit_full_nm,
     o.foreign_fund_management_organization_unit_short_nm,
     o.director_full_nm,
+    o.certified_practitioner_staff_count,
+    o.capital_adequacy_ratio,
+    o.net_profit_after_tax_amt,
+    o.owner_equity_amt,
+    o.portfolio_management_contract_count,
     o.src_stm_code
 FROM datamart.opr_foreign_fund_management_organization_unit_profile o
 ;
@@ -381,10 +410,10 @@ FROM datamart.opr_foreign_fund_management_organization_unit_contract_list o
 
 
 -- ============================================================
--- 19. OPERATIONAL: qlq_opr_fund_management_company_staff_trade_rpt_flat
+-- 19. FACT (report): qlq_fund_management_company_staff_trade_rpt_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlq_opr_fund_management_company_staff_trade_rpt_flat
+TRUNCATE TABLE IF EXISTS datamart.qlq_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_fund_management_company_staff_trade_rpt_flat
 SELECT
     o.securities_trade_code,
     o.trade_direction_code,
@@ -402,5 +431,5 @@ SELECT
     o.order_price,
     o.order_amt,
     o.src_stm_code
-FROM datamart.opr_fund_management_company_staff_trade_rpt o
+FROM datamart.fund_management_company_staff_trade_rpt o
 ;

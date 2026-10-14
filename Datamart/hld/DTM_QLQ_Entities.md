@@ -261,17 +261,17 @@ erDiagram
 
 ---
 
-## Nhóm 28 — Thống kê giao dịch của nhân viên công ty QLQ (Operational)
+## Nhóm 28 — Thống kê giao dịch của nhân viên công ty QLQ (Fact báo cáo — append)
 
-> **[THIẾT KẾ 2026-10-14]** Nhóm 28 (K_QLQ_106–115) trước đó PENDING (thiếu cầu nối VSDC investor registry); nay READY qua bảng Operational đọc `securities_trade` (HOSE/HNX), nối nhân viên theo `fmc_employee.securities_trading_account_nbr`. Phạm vi tài khoản có thể hẹp hơn BA (O_QLQ_35/36). Nạp tăng dần `trade_dt = :etl_date`.
+> **[THIẾT KẾ 2026-10-14]** Nhóm 28 (K_QLQ_106–115) trước đó PENDING (thiếu cầu nối VSDC investor registry); nay READY qua bảng Fact dạng report (`_rpt`, append) đọc `securities_trade` (HOSE/HNX), nối nhân viên theo `fmc_employee.securities_trading_account_nbr`. Phạm vi tài khoản có thể hẹp hơn BA (O_QLQ_35/36). Nạp append theo ngày `trade_dt = :etl_date`. **[SỬA 2026-10-14 — O_QLQ_38]** Đổi từ Operational (SCD4A) sang Fact report: `securities_trade` là bảng event nên bộ lọc `trade_dt = :etl_date` làm mọi giao dịch ngày trước thành INACTIVE và `_hstr` phình dần.
 
 ```mermaid
 erDiagram
     Fund_Management_Company_Staff_Trade_Report {
-        string Securities_Trade_Code PK
-        string Trade_Direction_Code PK
-        string FMC_Employee_Code PK
         date Trade_Date
+        string Securities_Trade_Code
+        string Trade_Direction_Code
+        string FMC_Employee_Code
         string FMC_Code
         string Identification_Number
         string Securities_Account_Number
@@ -289,7 +289,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Company Staff Trade Report | Operational | new | Giao dịch của nhân viên CTQLQ trên sổ lệnh HOSE/HNX | 1 bên (mua/bán) của 1 giao dịch khớp × 1 nhân viên × 1 ngày | K_QLQ_106–115 (Nhóm 28) |
+| Fund Management Company Staff Trade Report | Fact (report) | new | Giao dịch của nhân viên CTQLQ trên sổ lệnh HOSE/HNX | 1 bên (mua/bán) của 1 giao dịch khớp × 1 nhân viên × 1 ngày | K_QLQ_106–115 (Nhóm 28) |
 
 ---
 

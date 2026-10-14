@@ -1546,7 +1546,7 @@ _Không có dim join (operational / self-contained table)._
 
 ## QLQ
 
-**19 bảng flat** (6 fact + 13 operational) · **78 KPI unique** (module sở hữu; ngoài ra reuse thêm 4 KPI qua `Fact Macro Indicator Snapshot`/`Fact Market Index Snapshot` — xem GSTT/PTTT)
+**19 bảng flat** (7 fact + 12 operational) · **78 KPI unique** (module sở hữu; ngoài ra reuse thêm 4 KPI qua `Fact Macro Indicator Snapshot`/`Fact Market Index Snapshot` — xem GSTT/PTTT)
 
 > **[SỬA 2026-09-28]** Thay thế toàn bộ nội dung "## FMS" cũ (11 bảng tưởng tượng, tên vật lý `fms_*`, không khớp thiết kế thật) — bản nháp đó không phản ánh HLD/LLD đã duyệt. QLQ dùng nguồn FMS nhưng tên module Datamart chính thức là **QLQ**.
 
@@ -1963,17 +1963,17 @@ _Không có dim join (operational / self-contained table; popup drill-down từ 
 
 ---
 
-### `datamart.qlq_opr_fund_management_company_staff_trade_rpt_flat`
+### `datamart.qlq_fund_management_company_staff_trade_rpt_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
-| **Loại** | `operational` |
+| **Loại** | `fact` (report — append) |
 | **Entity nguồn** | Fund Management Company Staff Trade Report |
-| **Bảng fact/operational** | `datamart.opr_fund_management_company_staff_trade_rpt` |
-| **PK** | `securities_trade_code, trade_direction_code, fmc_employee_code` |
+| **Bảng fact/operational** | `datamart.fund_management_company_staff_trade_rpt` |
+| **Grain (DD)** | `trade_dt, securities_trade_code, trade_direction_code, fmc_employee_code` |
 | **Số dim join** | 0 |
 
-_Không có dim join (operational / self-contained table). Thiết kế 2026-10-14, trước đó PENDING; nối nhân viên qua tài khoản khai ở hồ sơ thay cho cầu nối VSDC (O_QLQ_35/36)._
+_Không có dim join (fact report / self-contained table). Thiết kế 2026-10-14, trước đó PENDING; nối nhân viên qua tài khoản khai ở hồ sơ thay cho cầu nối VSDC (O_QLQ_35/36). Đổi Operational (SCD4A) → Fact report append cùng ngày (O_QLQ_38)._
 
 **Nhóm KPI**
 

@@ -2,8 +2,8 @@
 -- QLQ Flat Tables — CREATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 19 bảng: 6 fact + 13 operational
--- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_opr_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
+-- 19 bảng: 7 fact + 12 operational
+-- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
 -- Sửa 2026-10-14: thêm #17 qlq_fct_fund_management_rpt_cell_val_flat (Dashboard RPT, 51 KPI READY) — bị bỏ sót ở commit 2f62880d
 -- ============================================================
 
@@ -151,6 +151,12 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat
     rank_index                      Nullable(Int64)         COMMENT 'Thứ hạng xếp loại (1=Tốt nhất) tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
     total_score_amt                  Nullable(Int64)         COMMENT 'Tổng điểm CAMEL tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
     charter_capital_amt              Nullable(Decimal(23,2)) COMMENT 'Vốn điều lệ/vốn góp (VNĐ)',
+    certified_practitioner_staff_count Nullable(Int64)         COMMENT 'Số lượng nhân viên có chứng chỉ hành nghề của CTQLQ (báo cáo kỳ mới nhất)',
+    assets_under_management_amt      Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị tài sản ròng đang quản lý (AUM) của CTQLQ (báo cáo kỳ mới nhất)',
+    capital_adequacy_ratio           Nullable(Decimal(9,2))  COMMENT 'Tỷ lệ an toàn tài chính (tỷ lệ vốn khả dụng) của CTQLQ (báo cáo kỳ mới nhất)',
+    net_profit_after_tax_amt         Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế TNDN lũy kế theo báo cáo tài chính gần nhất của CTQLQ',
+    owner_equity_amt                 Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu theo báo cáo tài chính gần nhất của CTQLQ',
+    portfolio_management_contract_count Nullable(Int64)         COMMENT 'Số lượng hợp đồng ủy thác quản lý danh mục đang thực hiện của CTQLQ (báo cáo kỳ mới nhất)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -172,6 +178,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_fund_list_fl
     fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ sở hữu quỹ (lookup pair với Fund Management Company Id)',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ',
     fund_tp_code                     Nullable(String)        COMMENT 'Loại hình quỹ — mã (join Fund Type Dimension.fund_type_code lấy tên)',
+    net_asset_val_amt                Nullable(Decimal(23,2)) COMMENT 'Giá trị tài sản ròng (NAV) của quỹ theo báo cáo kỳ mới nhất',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -197,6 +204,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_profile_flat ON CLUS
     manager_count                    Nullable(Int64)         COMMENT 'Số lượng người điều hành quỹ',
     outstanding_unit_quantity        Nullable(Int64)         COMMENT 'Số lượng CCQ đang lưu hành',
     distribution_agent_count         Nullable(Int64)         COMMENT 'Số lượng đại lý phân phối của quỹ (loại đại lý phân phối)',
+    net_asset_val_amt                Nullable(Decimal(23,2)) COMMENT 'Giá trị tài sản ròng (NAV) hiện tại của quỹ theo báo cáo kỳ mới nhất',
+    year_to_dt_profit_amt            Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận lũy kế từ đầu năm của quỹ (BCKQHĐKD mã 50 hoặc BCThuNhap mã 41, cột lũy kế từ đầu năm đến cuối kỳ báo cáo)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -259,6 +268,21 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_distribution_agent_profile_flat
     address                          Nullable(String)        COMMENT 'Địa chỉ trụ sở chính',
     active_status_flag               Nullable(Int64)         COMMENT 'Trạng thái hoạt động (1=Đang hoạt động, 0=Ngừng hoạt động)',
     termination_dt                   Nullable(Date)           COMMENT 'Ngày chấm dứt hoạt động',
+    distributing_fund_count          Nullable(Int64)         COMMENT 'Số quỹ đang phân phối của ĐLPP (nối ĐLPP với đại lý theo tên rút gọn hoặc tên đầy đủ như SQL BA, rồi theo quan hệ đại lý–quỹ)',
+    trading_account_count            Nullable(Int64)         COMMENT 'Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở trong kỳ',
+    trading_account_year_to_dt_count Nullable(Int64)         COMMENT 'Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở lũy kế từ đầu năm',
+    institution_trading_account_count Nullable(Int64)         COMMENT 'Số tài khoản giao dịch CCQ của nhà đầu tư tổ chức trong nước',
+    individual_trading_account_count Nullable(Int64)         COMMENT 'Số tài khoản giao dịch CCQ của nhà đầu tư cá nhân trong nước',
+    foreign_trading_account_count    Nullable(Int64)         COMMENT 'Số tài khoản giao dịch CCQ của nhà đầu tư nước ngoài',
+    institution_holding_account_count Nullable(Int64)         COMMENT 'Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư tổ chức trong nước',
+    individual_holding_account_count Nullable(Int64)         COMMENT 'Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư cá nhân trong nước',
+    foreign_holding_account_count    Nullable(Int64)         COMMENT 'Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư nước ngoài',
+    institution_fund_certificate_amt Nullable(Decimal(23,2)) COMMENT 'Giá trị CCQ nắm giữ bởi nhà đầu tư tổ chức trong nước',
+    individual_fund_certificate_amt  Nullable(Decimal(23,2)) COMMENT 'Giá trị CCQ nắm giữ bởi nhà đầu tư cá nhân trong nước',
+    foreign_fund_certificate_amt     Nullable(Decimal(23,2)) COMMENT 'Giá trị CCQ nắm giữ bởi nhà đầu tư nước ngoài',
+    issued_amt                       Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị CCQ phát hành trong kỳ (cộng các dòng con 5.1–5.3)',
+    issued_year_to_dt_amt            Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị CCQ phát hành lũy kế từ đầu năm (cộng các dòng con 5.1–5.3)',
+    redeemed_amt                     Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị CCQ mua lại trong kỳ (cộng các dòng con 6.1–6.3)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -298,6 +322,11 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_organization
     foreign_fund_management_organization_unit_full_nm Nullable(String) COMMENT 'Tên hiển thị chính của CN',
     foreign_fund_management_organization_unit_short_nm Nullable(String) COMMENT 'Tên viết tắt của CN',
     director_full_nm                 Nullable(String)        COMMENT 'Tên Giám đốc chi nhánh',
+    certified_practitioner_staff_count Nullable(Int64)         COMMENT 'Số lượng nhân viên có chứng chỉ hành nghề/chứng chỉ quốc tế của chi nhánh (báo cáo kỳ mới nhất)',
+    capital_adequacy_ratio           Nullable(Decimal(9,2))  COMMENT 'Tỷ lệ an toàn tài chính (tỷ lệ vốn khả dụng) của chi nhánh (báo cáo kỳ mới nhất)',
+    net_profit_after_tax_amt         Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế TNDN theo báo cáo tài chính gần nhất của chi nhánh',
+    owner_equity_amt                 Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu theo báo cáo tài chính gần nhất của chi nhánh',
+    portfolio_management_contract_count Nullable(Int64)         COMMENT 'Số lượng hợp đồng ủy thác quản lý danh mục của chi nhánh (báo cáo kỳ mới nhất)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -478,17 +507,18 @@ COMMENT 'Flat table — Operational Foreign Fund Management Organization Unit Co
 
 
 -- ============================================================
--- 19. OPERATIONAL: qlq_opr_fund_management_company_staff_trade_rpt_flat
---    Operational Fund Management Company Staff Trade Report
+-- 19. FACT (report): qlq_fund_management_company_staff_trade_rpt_flat
+--    Fund Management Company Staff Trade Report
 --    Grain: 1 bên (mua/bán) của 1 giao dịch khớp × 1 nhân viên CTQLQ × 1 ngày (Nhóm 28)
+--    [SỬA 2026-10-14 — O_QLQ_38] Operational (SCD4A) -> Fact report append, partition theo trade_dt
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlq_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster'
 (
-    -- From: OPERATIONAL Fund Management Company Staff Trade Report
-    securities_trade_code                    String                     COMMENT 'PK — Driving: securities_trade (composite cùng Trade Direction Code và FMC Employee Code); mã giao dịch…',
-    trade_direction_code                     String                     COMMENT 'PK — composite; bên của nhân viên trong giao dịch khớp: BUY = bên mua; SELL = bên bán',
-    fmc_employee_code                        String                     COMMENT 'PK — composite; mã nhân viên CTQLQ (FMS.TL_PROFILES.ID) sở hữu tài khoản chứng khoán của bên mua/bán; nối…',
-    trade_dt                                 Date                       COMMENT 'Ngày giao dịch khớp (K_QLQ_109; Độ chi tiết Ngày của báo cáo); nạp tăng dần theo ngày chạy ETL',
+    -- From: FACT (report) Fund Management Company Staff Trade Report
+    securities_trade_code                    String                     COMMENT 'Grain (2/4) — Driving: securities_trade; mã giao dịch khớp trong sổ lệnh (cùng Trade Date, Trade Direction Code…',
+    trade_direction_code                     String                     COMMENT 'Grain (3/4) — bên của nhân viên trong giao dịch khớp: BUY = bên mua; SELL = bên bán',
+    fmc_employee_code                        String                     COMMENT 'Grain (4/4) — mã nhân viên CTQLQ (FMS.TL_PROFILES.ID) sở hữu tài khoản chứng khoán của bên mua/bán; nối…',
+    trade_dt                                 Date                       COMMENT 'Grain (1/4) — Ngày giao dịch khớp (K_QLQ_109; Độ chi tiết Ngày của báo cáo); cột partition; nạp append theo ngày chạy ETL',
     fmc_code                                 Nullable(String)           COMMENT 'Mã CTQLQ nơi nhân viên làm việc (FMS.TL_PROFILES.SEC_ID) — khóa lọc báo cáo theo CTQLQ',
     identification_nbr                       Nullable(String)           COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106; FMS.TL_PROFILES.ID_NO; đã mã hóa từ nguồn) — Chiều Mã CCCD của bá',
     securities_account_nbr                   Nullable(String)           COMMENT 'Số tài khoản giao dịch chứng khoán của nhân viên (K_QLQ_107) — lấy từ sổ lệnh theo bên mua/bán',
@@ -505,5 +535,5 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_staff_trade_
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(trade_dt)
 ORDER BY (trade_dt, securities_trade_code, trade_direction_code, fmc_employee_code)
-COMMENT 'Flat table — Operational Fund Management Company Staff Trade Report'
+COMMENT 'Flat table — Fund Management Company Staff Trade Report (Fact report, append)'
 ;
