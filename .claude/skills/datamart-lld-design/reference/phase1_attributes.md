@@ -202,7 +202,7 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 |---|---|---|
 | `direct` | Map thẳng 1 Atomic col **có trong driving table** | `atomic_table.atomic_column` |
 | `computed` | Arithmetic từ nhiều Atomic cols | `atomic_table.col_a * atomic_table.col_b` |
-| `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = atomic_table.date_col` |
+| `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = atomic_table.date_col` — **khi driving là Fact Snapshot/Fact Append phải thêm `AND atomic_table.date_col = :etl_date`** (A19-R1, xem mục "Giới hạn ngày") |
 | `lookup_dim` | FK → SCD4A Dimension qua BK (current state, không dùng date range) | `LOOKUP dim ON dim.bk_col = driving.bk_col` |
 | `join_atomic` | Cột từ Atomic table **khác** driving table | `JOIN atomic_b ON atomic_b.fk_col = driving.join_col → atomic_b.target_col` |
 | `pivot` | ETL fanout 1 row thành nhiều rows theo branch key | Xem mục Pivot bên dưới |
@@ -242,12 +242,12 @@ Nếu logic tính toán (`computed`) sử dụng cột từ bảng **khác** dri
 
 | Logic | atomic_table | etl_logic_type đúng |
 |---|---|---|
-| `YEAR({etl_date}) - scr_prac.brth_yr` | `scr_prac` (= driving) | `computed` |
+| `YEAR(:etl_date) - scr_prac.brth_yr` | `scr_prac` (= driving) | `computed` |
 | `EXISTS (SELECT 1 FROM scr_prac_license_ctf_doc WHERE ...)` | `scr_prac_license_ctf_doc` (≠ driving) | `join_atomic` |
 | `CASE WHEN scr_prac_license_ap.ap_tp_code IN (...) THEN ...` | `scr_prac_license_ap` (≠ driving) | `join_atomic` |
 
 **Quy tắc bắt buộc `table_name.column_name`:** Mọi column reference trong `etl_logic` phải có đủ prefix.
-Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), ETL runtime parameter (`{etl_date}`), keyword `NULL`.
+Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), ETL runtime parameter (`:etl_date` — không dùng `{etl_date}`), keyword `NULL`.
 
 **Quy tắc bắt buộc thứ tự JOIN clause trước, giá trị sau `→` (bài học module TT, 2026-07-21):**
 Khi `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` và có JOIN clause, `etl_logic` phải viết theo đúng thứ tự:
@@ -286,6 +286,29 @@ Xem ví dụ đầy đủ trong [`examples/etl_logic_wrong.md`](../examples/etl_
      ```sql
      INNER JOIN pc_share_statistics_hstr ON pc_share_statistics_hstr.pc_id = public_company.pc_id AND pc_share_statistics_hstr.ds_snpst_dt = security_trading_snapshot.trading_dt AND pc_share_statistics_hstr.ds_rcrd_st = 'ACTIVE' → pc_share_statistics_hstr.total_outstanding_share_quantity
      ```
+
+---
+
+## Giới hạn ngày cho bảng Fact Snapshot / Fact Append (A19)
+
+> **Nguy cơ:** `etl_logic` đọc bảng Atomic snapshot/event mà không khóa ngày → mỗi lần chạy quét toàn bộ lịch sử (hàng trăm triệu dòng tick/giao dịch),
+> nhân dòng khi join, và "bản ghi mới nhất" bị tính lại trên mọi ngày. Gate 0–8 không bắt được — dùng `check_date_bound.py` (TC12).
+
+**Bảng snapshot/event và cột ngày:** `trading_dt` (`security_trading_snapshot`, `market_price_snapshot`, `index_constituent_snapshot`, `market_index_snapshot`,
+`corporate_bond_trading_snapshot`, `security_match_log`), `trade_dt` (`securities_trade`, `securities_order`), `ds_snpst_dt` (History `*_hstr`, `listed_share_info`).
+
+| Tình huống trong `etl_logic` | Mẫu đúng | Mẫu SAI |
+|---|---|---|
+| Driving Fact snapshot/event (dòng `lookup_date`) | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = T.trade_dt AND T.trade_dt = :etl_date AND T.src_stm_code = '…'` | chỉ có `T.src_stm_code = '…'` |
+| Bảng snapshot/event join thêm | `INNER JOIN T2 ON T2.trade_dt = D.trading_dt AND …` (nối ngày vào driving đã khóa) | `ON T2.security_symbol_code = D.symbol` (thiếu ngày) |
+| Subquery / CTE | `(SELECT … FROM T WHERE T.src_stm_code = '…' AND T.trading_dt = :etl_date)` | `(SELECT … FROM T WHERE T.src_stm_code = '…')` rồi mới JOIN theo (mã, ngày) |
+| Dimension/Operational current-state (SCD4A upsert) | `… WHERE T.src_stm_code = '…' AND T.trading_dt = :etl_date AND row_number() over (partition by T.symbol order by T.trading_time desc, T.sequence desc) = 1` | `row_number() over (partition by T.symbol order by T.trading_dt desc, …) = 1` trên toàn lịch sử |
+| Bảng TRUNCATE+INSERT, grain "mới nhất" | cửa sổ lookback `T.trading_dt BETWEEN :etl_date − N AND :etl_date` + `MAX`/`row_number` trong cửa sổ; ghi N ở `description`; hỏi Data Modeler | `= :etl_date` (rỗng khi chạy ngày nghỉ) hoặc `MAX(trading_dt)` toàn lịch sử |
+| As-of tới bảng History (VD số CP lưu hành ≤ ngày) | thêm cận dưới `H.ds_snpst_dt >= :etl_date − N`, hoặc marker `[DATE-BOUND-REVIEWED <ngày>: <lý do>; O_xxx]` nếu BA/Data Modeler chấp nhận không cận dưới | `H.ds_snpst_dt <= D.trading_dt` hoặc `= (SELECT MAX(...) <= ...)` không có cận dưới và không ghi ngoại lệ |
+| Giá trị kỳ trước (LAG) | cột kỳ trước có sẵn ở nguồn (`market_index_snapshot.prior_index`), hoặc cửa sổ `[phiên T−k, :etl_date]`, hoặc lấy từ Fact kỳ trước | `LAG(...) OVER (ORDER BY T.trading_dt)` trên bảng đã khóa `= :etl_date` (luôn NULL) |
+
+**Tham số:** chỉ dùng `:etl_date` (xem mục "ETL runtime parameter"). Cấm `{{ var("etl_date") }}`, `{etl_date}`, `$etl_date`, hardcode ngày.
+**Backfill:** vì khóa `= :etl_date`, nạp lịch sử = chạy lặp từng ngày; Dimension SCD4A giữ bản ghi của ngày trước nên không cần quét lại toàn lịch sử.
 
 ---
 
@@ -432,13 +455,18 @@ JOIN <table_b> ON <table_b>.<fk> = <driving>.<col>
 
 | Loại Fact / Vai trò ngày | datamart_attribute (Logical) | datamart_column (Physical) | data_domain | data_type | key | description | etl_logic | etl_logic_type |
 |---|---|---|---|---|---|---|---|---|
-| **Fact Snapshot (kỳ snapshot)** | `Snapshot Date Dimension Id` | `snpst_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày snapshot | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.ds_snpst_dt` | `lookup_date` |
+| **Fact Snapshot (kỳ snapshot)** | `Snapshot Date Dimension Id` | `snpst_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày snapshot | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.ds_snpst_dt AND driving.ds_snpst_dt = :etl_date` | `lookup_date` |
 | **Ngày phát hành / cấp** | `Issue Date Dimension Id` | `issue_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày cấp/phát hành | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.issue_dt` | `lookup_date` |
-| **Ngày giao dịch** | `Trade Date Dimension Id` | `trade_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày giao dịch | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.trading_dt` | `lookup_date` |
+| **Ngày giao dịch** | `Trade Date Dimension Id` | `trade_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày giao dịch | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.trading_dt AND driving.trading_dt = :etl_date` (securities_trade/order: `driving.trade_dt`) | `lookup_date` |
 | **Ngày đánh giá** | `Evaluation Date Dimension Id` | `evaluation_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày đánh giá | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.evaluation_dt` | `lookup_date` |
 | **Ngày hiệu lực** | `Effective Date Dimension Id` | `effective_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày hiệu lực | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.effective_dt` | `lookup_date` |
 | **Ngày nộp hồ sơ / báo cáo** | `Submission Date Dimension Id` | `submission_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày nộp | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.submission_dt` | `lookup_date` |
 | **Ngày vi phạm / quyết định** | `Decision Date Dimension Id` | `decision_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày quyết định | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.decision_dt` | `lookup_date` |
 | **Ngày sự kiện** | `Event Date Dimension Id` | `evnt_dt_dim_id` | `Surrogate Dimension Key` | `string` | `FK` | FK tới Calendar Date Dimension — ngày sự kiện | `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = driving.event_dt` | `lookup_date` |
+
+> **Điều kiện ngày (A19, bắt buộc):** khi `driving` là bảng Atomic Fact Snapshot / Fact Append (hoặc History `ds_snpst_dt`), MỌI dòng `lookup_date` trong bảng trên phải kèm
+> `AND driving.<cột ngày> = :etl_date` (xem mục "Giới hạn ngày cho bảng Fact Snapshot / Fact Append"). Các vai trò ngày còn lại (`issue_dt`, `evaluation_dt`, `effective_dt`…) chỉ thêm điều kiện
+> này khi driving là snapshot/event; nếu driving là Fundamental/Relative (current-state) thì không áp dụng.
+> **Mẫu cũ không có điều kiện ngày đã gây lỗi thật** (4 fact trade/order GSTT đọc toàn lịch sử, 2026-10-14) — không copy mẫu `lookup_date` từ file khác mà chưa kiểm cột ngày.
 
 > **Bài học GSDC (2026-09-08):** Bảng `fct_public_company_listing_info_snpst` từng bị reviewer Đức reject vì đặt tên cột FK ngày snapshot là `cdr_dt_dim_id`. Đã sửa thành `snpst_dt_dim_id` (Snapshot Date Dimension Id).

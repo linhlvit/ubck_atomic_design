@@ -40,6 +40,22 @@
 
 **Đặc điểm:** `source_entity/atomic_table/atomic_column` phản ánh join key từ driving table (`rpt_impr_val.rpt_dt`), không phải Calendar Date Dimension.
 
+> ⚠️ Mẫu trên chỉ đúng khi driving KHÔNG phải bảng Atomic snapshot/event (VD Fundamental/Relative). Nếu driving là Fact Snapshot / Fact Append / History `ds_snpst_dt` → xem mục kế tiếp (A19).
+
+### `lookup_date` — driving là bảng Atomic snapshot/event (PHẢI khóa ngày, A19-R1)
+
+```csv
+"Fact HOSE Securities Trade","fct_hose_securities_trade","Trade Date Dimension Id","trade_dt_dim_id","false","Surrogate Dimension Key","string","FK",
+"FK tới Calendar Date Dimension theo ngày giao dịch",
+"LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = securities_trade.trade_dt AND securities_trade.trade_dt = :etl_date AND securities_trade.src_stm_code = 'ORDERTRADE_TRADE_BOOK_HOSE'","lookup_date","Securities Trade","securities_trade","Trade Date","trade_dt"
+
+"Fact Instrument Price Daily","fct_instrument_price_daily","Trade Date Dimension Id","trade_dt_dim_id","false","Surrogate Dimension Key","string","FK",
+"FK tới Calendar Date Dimension theo ngày giao dịch",
+"LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = market_price_snapshot.trading_dt AND market_price_snapshot.trading_dt = :etl_date AND market_price_snapshot.src_stm_code = 'MDDS_JAD_TRADINGVIEWHISTORY1DAY'","lookup_date","Market Price Snapshot","market_price_snapshot","Trading Date","trading_dt"
+```
+
+**Đặc điểm:** điều kiện `<driving>.<cột ngày> = :etl_date` nằm NGAY trong dòng `lookup_date` — đây là nơi khai báo phạm vi nạp của cả bảng; các cột `direct` khác của bảng không lặp lại. Bảng Atomic snapshot/event khác trong cùng bảng Datamart nối ngày vào driving (`securities_trade.trade_dt = security_trading_snapshot.trading_dt`) hoặc tự khóa ngày; subquery khóa ngày bên trong. Xem `etl_logic_wrong.md` — SAI 11.
+
 ---
 
 ## `lookup_dim` — FK → SCD4A Dimension qua BK (current state)

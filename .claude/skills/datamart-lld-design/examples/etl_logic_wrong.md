@@ -213,7 +213,7 @@ etl_logic      = INNER JOIN pc_securities_offering ON pc_securities_offering.pc_
 
 ```csv
 ❌ Sai — Fact Snapshot nhưng đặt tên generic theo tên Dimension:
-"Fact Public Company Listing Info Snapshot","fct_public_company_listing_info_snpst","Calendar Date Dimension Id","cdr_dt_dim_id","false","Surrogate Dimension Key","string","FK","FK tới Calendar Date Dimension theo ngày snapshot","LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = listed_security_info_snapshot.ds_snpst_dt WHERE listed_security_info_snapshot.src_stm_code = 'VSDC_LISTED_SECURITY_INFO_SNAPSHOT'","lookup_date","Listed Security Info Snapshot","listed_security_info_snapshot","Snapshot Date","ds_snpst_dt"
+"Fact Public Company Listing Info Snapshot","fct_public_company_listing_info_snpst","Calendar Date Dimension Id","cdr_dt_dim_id","false","Surrogate Dimension Key","string","FK","FK tới Calendar Date Dimension theo ngày snapshot","LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = listed_security_info_snapshot.ds_snpst_dt AND listed_security_info_snapshot.ds_snpst_dt = :etl_date WHERE listed_security_info_snapshot.src_stm_code = 'VSDC_LISTED_SECURITY_INFO_SNAPSHOT'","lookup_date","Listed Security Info Snapshot","listed_security_info_snapshot","Snapshot Date","ds_snpst_dt"
 
 Vấn đề:
 1. `Calendar Date Dimension Id` (cdr_dt_dim_id) chỉ là PK của chính bảng Dimension `cdr_dt_dim`.
@@ -221,6 +221,46 @@ Vấn đề:
 3. Đặt cdr_dt_dim_id làm mất ngữ nghĩa vai trò ngày, vi phạm chuẩn Kimball và bị reviewer reject.
 
 ✅ Đúng:
-"Fact Public Company Listing Info Snapshot","fct_public_company_listing_info_snpst","Snapshot Date Dimension Id","snpst_dt_dim_id","false","Surrogate Dimension Key","string","FK","FK tới Calendar Date Dimension theo ngày snapshot","LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = listed_security_info_snapshot.ds_snpst_dt WHERE listed_security_info_snapshot.src_stm_code = 'VSDC_LISTED_SECURITY_INFO_SNAPSHOT'","lookup_date","Listed Security Info Snapshot","listed_security_info_snapshot","Snapshot Date","ds_snpst_dt"
+"Fact Public Company Listing Info Snapshot","fct_public_company_listing_info_snpst","Snapshot Date Dimension Id","snpst_dt_dim_id","false","Surrogate Dimension Key","string","FK","FK tới Calendar Date Dimension theo ngày snapshot","LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = listed_security_info_snapshot.ds_snpst_dt AND listed_security_info_snapshot.ds_snpst_dt = :etl_date WHERE listed_security_info_snapshot.src_stm_code = 'VSDC_LISTED_SECURITY_INFO_SNAPSHOT'","lookup_date","Listed Security Info Snapshot","listed_security_info_snapshot","Snapshot Date","ds_snpst_dt"
 ```
 
+
+---
+
+## SAI 11 — Bảng Atomic snapshot/event KHÔNG có giới hạn ngày (bài học GSTT 2026-10-14, A19)
+
+Cả 4 pattern dưới đây đều qua Gate 0–8 nhưng mỗi lần chạy quét TOÀN BỘ lịch sử `securities_trade`/`security_trading_snapshot`/`market_index_snapshot`.
+
+```csv
+❌ SAI 11a — lookup_date của Fact event chỉ lọc nguồn, không khóa ngày (fct_hose_securities_trade, 46 cột đọc toàn lịch sử sổ lệnh):
+"LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = securities_trade.trade_dt AND securities_trade.src_stm_code = 'ORDERTRADE_TRADE_BOOK_HOSE'","lookup_date","Securities Trade","securities_trade","Trade Date","trade_dt"
+✅ Đúng:
+"LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = securities_trade.trade_dt AND securities_trade.trade_dt = :etl_date AND securities_trade.src_stm_code = 'ORDERTRADE_TRADE_BOOK_HOSE'","lookup_date","Securities Trade","securities_trade","Trade Date","trade_dt"
+```
+
+```text
+❌ SAI 11b — subquery quét toàn lịch sử rồi mới join theo (mã, ngày); outer JOIN có nối ngày nhưng KHÔNG cứu được subquery:
+   LEFT JOIN (SELECT market_index_snapshot.market_code, market_index_snapshot.trading_dt, market_index_snapshot.market_index_val,
+              ROW_NUMBER() OVER (PARTITION BY market_index_snapshot.market_id, market_index_snapshot.market_code, market_index_snapshot.trading_dt
+                                 ORDER BY market_index_snapshot.index_time DESC, market_index_snapshot.sequence DESC) AS rn
+              FROM market_index_snapshot WHERE market_index_snapshot.src_stm_code = 'MDDS_JAD_MARKETINFOR') market_index_snapshot_last
+     ON market_index_snapshot_last.trading_dt = index_constituent_snapshot.trading_dt AND market_index_snapshot_last.rn = 1
+✅ Đúng — khóa ngày BÊN TRONG subquery:
+   ... FROM market_index_snapshot WHERE market_index_snapshot.src_stm_code = 'MDDS_JAD_MARKETINFOR' AND market_index_snapshot.trading_dt = :etl_date) market_index_snapshot_last ...
+
+❌ SAI 11c — Dimension current-state "bản ghi mới nhất" chạy trên toàn lịch sử tick (32 cột security_trading_snpst_dim):
+   security_trading_snapshot.symbol WHERE security_trading_snapshot.src_stm_code = 'MDDS_JAD_STOCKINFOR'
+     AND row_number() over (partition by security_trading_snapshot.symbol order by security_trading_snapshot.trading_dt desc, security_trading_snapshot.trading_time desc, security_trading_snapshot.sequence desc) = 1
+✅ Đúng (SCD4A incremental — bản ghi của ngày trước vẫn còn trong Dimension):
+   security_trading_snapshot.symbol WHERE security_trading_snapshot.src_stm_code = 'MDDS_JAD_STOCKINFOR' AND security_trading_snapshot.trading_dt = :etl_date
+     AND row_number() over (partition by security_trading_snapshot.symbol order by security_trading_snapshot.trading_dt desc, security_trading_snapshot.trading_time desc, security_trading_snapshot.sequence desc) = 1
+   (Bảng Operational TRUNCATE+INSERT với grain "ngày giao dịch mới nhất": KHÔNG dùng `= :etl_date` — dùng cửa sổ lookback + hỏi Data Modeler, xem A19-R5.)
+
+❌ SAI 11d — LAG liên ngày trên bảng đã khóa 1 ngày → prior_market_cap luôn NULL:
+   [lookup_date: ... security_trading_snapshot.trading_dt = :etl_date]  +  LAG(security_trading_snapshot.close_price * listed_share_info.outstanding_share_quantity) OVER (PARTITION BY security_trading_snapshot.symbol ORDER BY security_trading_snapshot.trading_dt)
+✅ Đúng — một trong 3 cách (xem A19-R6): mở cửa sổ [phiên T−k, :etl_date] ở dòng khóa ngày; hoặc đọc cột kỳ trước có sẵn ở nguồn (market_index_snapshot.prior_index); hoặc lấy từ chính Fact ở kỳ trước.
+```
+
+**Vấn đề chung:** điều kiện ngày chỉ nằm ở "outer" hoặc chỉ là `<= :etl_date` không chặn dưới thì engine vẫn phải đọc/tổng hợp mọi ngày trước đó. Mẫu dbt tương đương cũng sai:
+`FROM {{ ref('atm_market_index_snapshot') }} WHERE market_code = 'HOSE' AND trading_dt <= to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')` → phải là `= :etl_date` hoặc `BETWEEN (:etl_date − N) AND :etl_date`.
+Tự kiểm: `python .claude/skills/datamart-review/scripts/check_date_bound.py --module {MODULE} --file {mart_table}` (TC12).

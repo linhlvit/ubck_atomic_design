@@ -30,6 +30,7 @@ description: |
   - [`examples/etl_logic_correct.md`](examples/etl_logic_correct.md) — ví dụ đại diện mỗi etl_logic_type
   - [`examples/etl_logic_wrong.md`](examples/etl_logic_wrong.md) — pattern sai etl_logic
   - [`examples/key_constraints.md`](examples/key_constraints.md) — ràng buộc key × bảng type + ví dụ vi phạm
+- **Script tự kiểm (ngoài `run_quality_gates.py`):** `.claude/skills/datamart-review/scripts/check_date_bound.py` — giới hạn ngày bảng snapshot/event (A19, TC12)
 
 ## Điều kiện tiên quyết
 
@@ -312,11 +313,16 @@ Trước khi sửa hàng loạt vì "cột không tồn tại/rỗng":
 Đã hiểu "4 có" thành "HNX bị rỗng" trong khi ý là "có giá trị". Trước khi thực hiện thay đổi lớn
 (≥ 5 cột hoặc nhiều module), nhắc lại cách hiểu bằng 1 câu và chờ xác nhận.
 
-### A14 — PII không lên Datamart; grain key dùng surrogate Atomic `[L2-PII-IN-MART]`
+### A14 — PII đã mã hóa từ nguồn: lên Datamart như cột thường; KHÔNG chặn, KHÔNG "ngoại lệ", KHÔNG hạ PENDING `[process]`
 
-Số giấy tờ định danh (CMND/CCCD/hộ chiếu — `identification_nbr`), số tài khoản thô… chỉ được dùng trong
-`etl_logic` để JOIN, **không** tạo cột Datamart/flat table (NĐ 13/2023). Khi cần phân biệt từng chủ thể,
-dùng surrogate của Atomic (VD `major_shareholder_ownership_id`). Ghi rõ lý do trong `description`.
+Số giấy tờ định danh (CMND/CCCD/hộ chiếu — `identification_nbr`), số tài khoản… **đã được mã hóa từ nguồn**
+(Data Modeler xác nhận 2026-10-14). Vì vậy: khi BA yêu cầu hiển thị/lọc theo các trường này thì tạo cột Datamart/flat
+table bình thường (map từ `ip_alternative_identification.identification_nbr`, `*_account_nbr`…).
+- **Cấm** tự đặt "ngoại lệ quy tắc PII", cấm chặn cột, cấm đánh PENDING hoặc "không xuất cột" với lý do PII/NĐ 13/2023.
+- Quy tắc cũ "PII chỉ dùng để JOIN, không thành cột" (A14 trước 2026-10-14, `[L2-PII-IN-MART]`) **đã bãi bỏ**.
+- Khi nghiệp vụ không cần hiển thị giá trị mà chỉ cần phân biệt chủ thể, vẫn ưu tiên surrogate của Atomic làm grain key
+  (VD `major_shareholder_ownership_id`) — đây là lựa chọn thiết kế, không phải ràng buộc PII.
+- Chỉ báo user **1 câu** nếu dữ liệu mẫu thật sự cho thấy cột là plaintext; không tự chặn.
 
 ### A15 — Comment trong flat SQL không viết `:etl_date` dính dấu câu `[L4-FLAT-COMMENT-PARAM]`
 
@@ -348,7 +354,84 @@ Ngoại lệ có truy vết: nếu SQL BA CHÍNH nó nối `Issue_Code = symbol`
 
 **Bắt buộc:** các cột cộng dồn (`total_trading_*`, `pt_total_traded_*`) mỗi ngày có nhiều bản ghi intraday, mỗi bản ghi là số cộng dồn tại thời điểm đó → luôn lấy bản tin cuối ngày của `symbol × trading_dt` (`ROW_NUMBER() OVER (PARTITION BY symbol, trading_dt ORDER BY trading_time DESC, sequence DESC) = 1`) rồi mới `SUM`/`AVG`. `SUM` trên mọi bản ghi sẽ nhân lặp. Gate 8 (D7) cảnh báo khi thiếu điều kiện `trading_time`.
 
-**Quy tắc chọn bản tin MDDS (O_GSTT_64, 2026-10-13):** MDDS gửi nhiều bản tin trùng đúng `trading_time` (`JAD_STOCKINFOR`) / `index_time` (`JAD_MARKETINFOR`) nhưng khác giá, nên chỉ `MAX(trading_time)`/`ORDER BY trading_time DESC` cho kết quả ngẫu nhiên khi trùng — luôn thêm `sequence DESC` làm tiêu chí phụ. Cuối ngày theo mã: `PARTITION BY symbol, trading_dt ORDER BY trading_time DESC, sequence DESC`; current-state theo mã (Dimension/Operational): `PARTITION BY symbol ORDER BY trading_dt DESC, trading_time DESC, sequence DESC` (`trading_time` là giờ trong ngày, không chứa ngày nên phải có `trading_dt DESC` đứng đầu); chỉ số: `PARTITION BY market_id, market_code, trading_dt ORDER BY index_time DESC, sequence DESC`; theo phút: `MAX_BY(val, STRUCT(trading_time, sequence))`. Join `security_trading_snapshot` theo (mã, ngày) chỉ để tra thuộc tính phải lọc `rn = 1` như trên, nếu không sẽ nhân dòng Fact. `security_trading_snapshot.sequence` chờ Atomic bổ sung (Gate 0 báo `L0-ATOMIC-COLUMN-NOT-FOUND` cho đến khi có). Lưu ý đối chiếu: bản ghi cuối ngày của snapshot có thể không phải số chốt của sở — dev đối chiếu với sổ lệnh trước khi chốt (ghi vào Open Issue).
+**Quy tắc chọn bản tin MDDS (O_GSTT_64, 2026-10-13):** MDDS gửi nhiều bản tin trùng đúng `trading_time` (`JAD_STOCKINFOR`) / `index_time` (`JAD_MARKETINFOR`) nhưng khác giá, nên chỉ `MAX(trading_time)`/`ORDER BY trading_time DESC` cho kết quả ngẫu nhiên khi trùng — luôn thêm `sequence DESC` làm tiêu chí phụ. Cuối ngày theo mã: `PARTITION BY symbol, trading_dt ORDER BY trading_time DESC, sequence DESC`; current-state theo mã (Dimension/Operational): `PARTITION BY symbol ORDER BY trading_dt DESC, trading_time DESC, sequence DESC` (`trading_time` là giờ trong ngày, không chứa ngày nên phải có `trading_dt DESC` đứng đầu) — **luôn kèm giới hạn ngày theo A19-R5** (`trading_dt = :etl_date` hoặc cửa sổ lookback), cấm chạy `ROW_NUMBER` này trên toàn lịch sử tick; chỉ số: `PARTITION BY market_id, market_code, trading_dt ORDER BY index_time DESC, sequence DESC`; theo phút: `MAX_BY(val, STRUCT(trading_time, sequence))`. Join `security_trading_snapshot` theo (mã, ngày) chỉ để tra thuộc tính phải lọc `rn = 1` như trên, nếu không sẽ nhân dòng Fact. `security_trading_snapshot.sequence` chờ Atomic bổ sung (Gate 0 báo `L0-ATOMIC-COLUMN-NOT-FOUND` cho đến khi có). Lưu ý đối chiếu: bản ghi cuối ngày của snapshot có thể không phải số chốt của sở — dev đối chiếu với sổ lệnh trước khi chốt (ghi vào Open Issue).
+
+### A19 — Bảng Atomic snapshot/event: MỌI tham chiếu phải có giới hạn ngày tường minh `[L2-DATE-BOUND-MISSING]`
+
+> **Nguồn gốc (rà soát GSTT 2026-10-14):** 55 cell / 8 bảng Datamart đọc `securities_trade`, `securities_order`,
+> `security_trading_snapshot`, `index_constituent_snapshot`, `market_index_snapshot` mà **không có điều kiện ngày**
+> (hoặc chỉ có `trading_dt <= :etl_date` không chặn dưới) → mỗi lần chạy quét TOÀN BỘ lịch sử, bảng Fact event
+> HLD ghi "append theo ngày" nhưng etl_logic không thể hiện. Không Gate nào bắt được (Gate 0–8 đều không đọc điều kiện ngày).
+> **Gốc rễ nằm ở chính skill này:** các mẫu `lookup_date` trước đây KHÔNG có điều kiện ngày (đã sửa 2026-10-14),
+> nên thiết kế đúng theo mẫu vẫn sai. Mẫu lỗi điển hình (dbt):
+> `FROM {{ ref('atm_market_index_snapshot') }} WHERE market_code = 'HOSE' AND trading_dt <= to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')`
+> — chỉ chặn trên, không chặn dưới.
+
+**Phạm vi — thế nào là bảng "snapshot/event":** Atomic có `table_type` = `Fact Snapshot` hoặc `Fact Append` trong
+`DataModel/Atomic/dm_manifest.yaml`, cộng mọi bảng lưu theo kỳ có cột `ds_snpst_dt` (History companion `*_hstr`, VSDC ODS
+như `listed_share_info`). Lưu ý: `securities_trade`/`securities_order` có thể không còn entry trong manifest (Atomic Team
+gỡ YAML 2026-10-14) nhưng vẫn là bảng event — kiểm theo `table_type` ở YAML/mapping md, không theo việc có mặt trong manifest.
+Bảng `Fundamental`/`Relative` (SCD4A/SCD2 current-state) **không** thuộc A19 — chúng lọc bằng `ds_rcrd_st = 'ACTIVE'`.
+
+| Bảng Atomic | Cột ngày phải khóa |
+|---|---|
+| `security_trading_snapshot`, `market_price_snapshot`, `index_constituent_snapshot`, `market_index_snapshot`, `corporate_bond_trading_snapshot`, `security_match_log` | `trading_dt` |
+| `securities_trade`, `securities_order` | `trade_dt` (sổ lệnh còn có `order_dt` — vẫn khóa theo `trade_dt`) |
+| History `*_hstr`, `listed_share_info` | `ds_snpst_dt` |
+| Bảng khác | tra YAML Atomic: cột kiểu `Date` đóng vai ngày sự kiện/snapshot |
+
+**6 quy tắc bắt buộc:**
+
+- **R1 — Driving phải khóa ngày.** Dòng `lookup_date` (`snpst_dt_dim_id` / `<role>_dt_dim_id`) của Fact có Driving là snapshot/event
+  PHẢI chứa `<driving>.<cột ngày> = :etl_date` (hoặc `BETWEEN`), không chỉ `src_stm_code`. Dimension/Operational dựng từ snapshot
+  cũng phải khóa ngày ở mỗi cell có `WHERE` (xem R5).
+- **R2 — Bảng join thêm:** hoặc nối ngày bằng bằng với bảng đã bị khóa (`securities_trade.trade_dt = security_trading_snapshot.trading_dt`),
+  hoặc tự có điều kiện ngày. Nối chỉ theo mã (symbol/ISIN) mà thiếu ngày = quét toàn lịch sử và nhân dòng.
+- **R3 — Subquery/CTE/derived table phải khóa ngày BÊN TRONG**, kể cả khi outer JOIN đã nối ngày — không dựa vào optimizer đẩy
+  điều kiện xuống. Điều kiện viết theo alias của chính subquery (`ics2.trading_dt = :etl_date`). Cấm `GROUP BY`/`ROW_NUMBER` trên toàn lịch sử rồi mới JOIN.
+- **R4 — Cấm "mới nhất/as-of" không chặn dưới.** Cấm `MAX(trading_dt)`, `ROW_NUMBER() ... ORDER BY trading_dt DESC = 1`, `ds_snpst_dt <= X`
+  chạy trên toàn lịch sử. Dùng `= :etl_date`, hoặc cửa sổ `BETWEEN (:etl_date − N) AND :etl_date` với N ghi rõ trong `description`
+  (N theo phiên giao dịch → `cdr_dt_dim.is_trading_date`). As-of tới bảng History (VD `listed_share_info` lấy kỳ gần nhất ≤ ngày) cũng cần cận dưới,
+  hoặc ghi ngoại lệ có truy vết (xem dưới).
+- **R5 — Dimension/Operational dựng từ snapshot (current-state).** Nạp incremental `= :etl_date` (SCD4A upsert: bản ghi của ngày trước vẫn còn;
+  lần nạp đầu/backfill phải chạy từng ngày). Nếu bảng nạp kiểu `TRUNCATE + INSERT` và grain là "bản ghi mới nhất / ngày giao dịch mới nhất"
+  thì `= :etl_date` làm bảng RỖNG khi ETL chạy vào ngày không có bản tin → dùng cửa sổ lookback bó theo R4, ghi N, và hỏi Data Modeler (A13)
+  — grain "mới nhất" thường là quyết định đã duyệt ở HLD, không tự đổi sang `= :etl_date`.
+- **R6 — LAG/LEAD/window liên ngày.** Bảng đã khóa `= :etl_date` chỉ còn 1 ngày → `LAG(...) OVER (ORDER BY trading_dt)` luôn NULL. Muốn giá trị kỳ trước phải
+  (a) mở cửa sổ ở dòng khóa ngày: `BETWEEN <phiên T−k> AND :etl_date`, hoặc (b) đọc cột kỳ trước có sẵn ở nguồn (VD `market_index_snapshot.prior_index`),
+  hoặc (c) lấy từ chính Fact ở kỳ trước. Cấm khai LAG liên ngày mà vẫn khóa 1 ngày. LAG trong cùng ngày (`ORDER BY index_time`) không bị ảnh hưởng.
+
+```text
+❌ SAI — lookup_date chỉ lọc nguồn, không khóa ngày (4 fact trade/order GSTT, sửa 2026-10-14):
+   LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = securities_trade.trade_dt AND securities_trade.src_stm_code = 'ORDERTRADE_TRADE_BOOK_HOSE'
+✅ ĐÚNG:
+   LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = securities_trade.trade_dt AND securities_trade.trade_dt = :etl_date AND securities_trade.src_stm_code = 'ORDERTRADE_TRADE_BOOK_HOSE'
+
+❌ SAI — subquery quét toàn lịch sử rồi mới join theo (mã, ngày):
+   LEFT JOIN (SELECT m.market_code, m.trading_dt, m.market_index_val, ROW_NUMBER() OVER (...) rn FROM market_index_snapshot m WHERE m.src_stm_code = 'MDDS_JAD_MARKETINFOR') ...
+✅ ĐÚNG:  ... WHERE m.src_stm_code = 'MDDS_JAD_MARKETINFOR' AND m.trading_dt = :etl_date) ...
+
+❌ SAI — Dimension "mới nhất" trên toàn lịch sử tick:
+   security_trading_snapshot.symbol WHERE security_trading_snapshot.src_stm_code = 'MDDS_JAD_STOCKINFOR' AND row_number() over (partition by security_trading_snapshot.symbol order by security_trading_snapshot.trading_dt desc, ...) = 1
+✅ ĐÚNG:  ... src_stm_code = 'MDDS_JAD_STOCKINFOR' AND security_trading_snapshot.trading_dt = :etl_date AND row_number() over (...) = 1
+
+❌ SAI — LAG liên ngày trên bảng đã khóa 1 ngày (prior_market_cap luôn NULL):
+   LAG(security_trading_snapshot.close_price * ...) OVER (PARTITION BY symbol ORDER BY security_trading_snapshot.trading_dt)   -- với lookup_date: ... trading_dt = :etl_date
+```
+
+**Ngoại lệ có truy vết:** chỉ khi BA/Data Modeler chấp nhận as-of không cận dưới (VD số CP lưu hành lấy kỳ VSDC gần nhất ≤ ngày, SQL BA cũng không có cận dưới)
+hoặc grain "mới nhất" đã duyệt, ghi `[DATE-BOUND-REVIEWED <ngày>: <lý do>; O_xxx]` vào `description` của cột và mở Open Issue. `check_date_bound.py` bỏ qua dòng có marker.
+Marker không thay cho quyết định: đóng Open Issue rồi bổ sung cận dưới hoặc xóa marker.
+
+**Phạm vi Phase 2 (Detail Mapping):** A19 ràng buộc `etl_logic` Phase 1. Với `logic` KPI aggregate nhiều ngày trên `fct_*_snpst`: xem mục "Mốc ngày của KPI" trong Checklist Phase 2.
+
+**Tự kiểm (TC12, bắt buộc sau mỗi file Fact/Dimension/Operational đọc bảng snapshot/event):**
+
+```bash
+python .claude/skills/datamart-review/scripts/check_date_bound.py --module {MODULE} --file {mart_table}
+```
+
+Heuristic tĩnh (R1/R3/R4/R6) — có thể báo thừa hoặc sót (điều kiện viết bằng alias), phải đọc từng phát hiện; **chưa nằm trong `run_quality_gates.py`**.
 
 ### Lệnh bổ sung — Gate 8 Design Lint
 
@@ -359,6 +442,7 @@ python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MOD
 Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: dòng bảng KPI HLD sai số ô (H13), bảng Datamart
 0 KPI dùng (H12), comment flat SQL dính `:etl_date` (A15), KPI có MEASURE bị nhân dòng (L18, D5 — chỉ ép với
 module trong `L18_MODULES` của `check_design_lint.py`; thiết kế module mới theo L18 thì thêm module vào tập đó).
+**Gate 8 KHÔNG kiểm A19 (giới hạn ngày)** — chạy tay `check_date_bound.py` (TC12); `run_quality_gates.py` PASS không có nghĩa etl_logic đã khóa ngày.
 
 ---
 
@@ -597,6 +681,11 @@ Bắt buộc xác định Driving Table trước khi điền `etl_logic`:
 
 Ghi rõ Driving Table trong `description` của row PK/BK.
 
+**Giới hạn ngày của Driving Table (A19 — bắt buộc khi Driving là Fact Snapshot / Fact Append):** dòng `lookup_date`
+(`snpst_dt_dim_id` / `<role>_dt_dim_id`) phải mang điều kiện `<driving>.<cột ngày> = :etl_date`; mọi bảng Atomic snapshot/event khác
+trong cùng bảng Datamart phải nối ngày vào Driving hoặc tự khóa ngày; subquery khóa ngày bên trong; cấm "bản ghi mới nhất" trên toàn lịch sử.
+Quyết định giới hạn ngày ngay ở bước này (không để Phase 3 / flat SQL "gánh" — flat chỉ lọc Gold, không cứu được Atomic→Gold).
+
 **Driving Table khi Fact không có join key chung (No Driving Table):**
 Fact dùng pattern CROSS JOIN scalar subquery (mỗi measure aggregate độc lập từ 1 Atomic table) — không có driving table. Không thêm `src_stm_code` cho loại bảng này.
 
@@ -809,7 +898,7 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
-**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy **đủ 10 testcase**: TC1, TC2, TC2b, TC3 (gồm sub-check TC3b), TC4 (gồm sub-check A/B/C/D), TC5, TC6, TC7, TC8, TC9 — báo kết quả đủ 10 dòng PASS/FAIL, không gộp, không bỏ mục:
+**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy **đủ 12 testcase**: TC1, TC2, TC2b, TC3 (gồm sub-check TC3b), TC4 (gồm sub-check A/B/C/D), TC5, TC6, TC7, TC8, TC9, TC10, TC11, TC12 — báo kết quả đủ 12 dòng PASS/FAIL, không gộp, không bỏ mục:
 
 **TC1 — Số cột khớp HLD:**
 - Đếm số attribute trong file CSV vừa sinh (theo `datamart_attribute` unique, không đếm multi-source row).
@@ -876,7 +965,7 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 
 **TC3 — Đầy đủ prefix table_name.column_name + thứ tự JOIN đúng:**
 - Kiểm tra mọi column reference trong `etl_logic` có dạng `<table>.<col>`.
-- Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), NULL, ETL runtime parameter (`{etl_date}`).
+- Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), NULL, ETL runtime parameter (`:etl_date` — không dùng `{etl_date}`).
 - **Sub-check thứ tự JOIN (bắt buộc):** Với mọi row có `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` mà `etl_logic` chứa từ khóa `JOIN`: kiểm tra `etl_logic` có chứa dấu `→` (hoặc `->`), và toàn bộ JOIN clause phải nằm TRƯỚC dấu `→`, cột giá trị nằm SAU. Vi phạm khi: (a) có `JOIN` nhưng không có `→`/`->`, hoặc (b) cột giá trị xuất hiện trước từ khóa `JOIN` đầu tiên trong chuỗi.
 - Báo: `✅ TC3 PASS` hoặc `❌ TC3 FAIL: [danh sách etl_logic thiếu prefix hoặc sai thứ tự JOIN — ghi rõ loại lỗi]`.
 - Nếu FAIL → sửa trước khi trình bày.
@@ -1190,7 +1279,18 @@ Nếu FAIL → sửa trước khi trình bày.
   ```
 - Báo: `✅ TC11 PASS: Lọc SCD4A đầy đủ` hoặc `❌ TC11 FAIL: [danh sách cột/biểu thức thiếu filter ds_rcrd_st='ACTIVE']`.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 11 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8, TC9, TC10, TC11) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+**TC12 — Giới hạn ngày bảng Atomic snapshot/event (A19, bắt buộc dùng Bash tool):**
+- Mục đích: không để `etl_logic` đọc `securities_trade`/`securities_order`/`*_snapshot`/History trên toàn lịch sử (bài học GSTT 2026-10-14: 55 cell / 8 bảng).
+- Áp dụng cho file có `atomic_table` hoặc `etl_logic` chứa bảng Atomic snapshot/event/History. File chỉ đọc Fundamental/Relative: ghi `⏭ TC12 N/A`.
+- Chạy:
+  ```bash
+  python .claude/skills/datamart-review/scripts/check_date_bound.py --module {MODULE} --file {mart_table}
+  ```
+- Đọc từng phát hiện, phân loại: sửa (R1 thiếu khóa ngày ở dòng lookup_date; R3 subquery chưa khóa ngày bên trong; R4 "mới nhất" toàn lịch sử; R6 LAG liên ngày trên bảng khóa 1 ngày)
+  / báo thừa (đã chặn gián tiếp, ghi lý do) / ngoại lệ có truy vết (`[DATE-BOUND-REVIEWED ...]` + Open Issue).
+- Báo: `✅ TC12 PASS: 0 phát hiện` hoặc `❌ TC12 FAIL: [file/cột/mã R1–R6]`. Không được báo PASS khi còn phát hiện chưa phân loại.
+
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 12 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8, TC9, TC10, TC11, TC12) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
 
 ### Checklist Phase 1
 
@@ -1240,6 +1340,11 @@ ATTRIBUTES CHECK:
 □ Mọi Operational dùng trường _code làm PK duy nhất — không tạo surrogate key (_id)
 □ Fact KHÔNG có dòng key = PK (dù có cột surrogate id kỹ thuật — để key trống)
 □ Fact TUYỆT ĐỐI KHÔNG có cột cdr_dt_dim_id (Calendar Date Dimension Id) — FK tới Calendar Date Dimension phải đặt theo vai trò nghiệp vụ (Snapshot Date Dimension Id → snpst_dt_dim_id; Fact khác dùng <Role> Date Dimension Id → <role>_dt_dim_id)
+□ A19-R1: Driving là Fact Snapshot/Fact Append → dòng lookup_date có `<driving>.<cột ngày> = :etl_date` (không chỉ `src_stm_code`)
+□ A19-R2/R3: bảng snapshot/event join thêm nối ngày vào Driving hoặc tự khóa ngày; mọi subquery/CTE khóa ngày BÊN TRONG (theo alias)
+□ A19-R4/R5: không có `MAX(trading_dt)` / `ROW_NUMBER ... ORDER BY trading_dt DESC = 1` / `<=` không chặn dưới trên toàn lịch sử; Dimension/Operational current-state khóa `= :etl_date` hoặc lookback có N ghi rõ (bảng TRUNCATE+INSERT: hỏi Data Modeler)
+□ A19-R6: LAG/LEAD liên ngày có cửa sổ [phiên T−k, :etl_date] hoặc đọc cột kỳ trước có sẵn — không để LAG trên bảng khóa 1 ngày
+□ TC12 (`check_date_bound.py --module {MODULE} --file {mart_table}`) đã chạy, mọi phát hiện đã phân loại
 □ Không thiết kế Effective Date / Expiry Date / Population Date
 □ Mọi bảng dim/operational có attribute src_stm_code (cuối danh sách)
 □ src_stm_code: mọi bảng (kể cả single-source) → luôn có WHERE filter trong etl_logic (forward-compatibility)
@@ -1324,6 +1429,12 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ Bám sát Câu lệnh tham khảo (Quy tắc L17):
   - Mọi điều kiện WHERE trong SQL tham khảo (sàn, loại CK, loại bảng lệnh, loại NĐT, cờ hiệu lực...) PHẢI nằm trong `WHERE` của `logic` dòng MEASURE (KPI không có MEASURE: sinh dòng `column_role = FILTER`) HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact.
   - Số đo trong `mart_column` và `logic` phải bám sát biểu thức `SELECT` trong SQL tham khảo: phân biệt rạch ròi Khớp lệnh (`total_matched_*`) vs Thỏa thuận (`total_negotiated_*`) vs Tổng (`total_*`); Mua vs Bán vs Ròng; Rolling window...
+□ Mốc ngày của KPI (A19, phạm vi Phase 2) — KPI trên `fct_*_snpst`/fact event mà BA lọc theo Từ ngày–Đến ngày hoặc ngày tra cứu:
+  - Flow (KL/GT/tổng khoảng) → `SUM(...) WHERE cdr_dt_dim.cdr_dt BETWEEN :from_date AND :to_date`.
+  - Stock / giá tại Đến ngày (VCSH, số CP lưu hành, LNST kỳ gần nhất, giá đóng cửa) → as-of Đến ngày (`argMax(..., cdr_dt_dim.cdr_dt)`, cận trên `:to_date`); CẤM `SUM` Stock qua nhiều ngày (cộng lặp ×N).
+  - Cửa sổ N phiên (`ROWS BETWEEN`) → ghi trong `ghi_chu` rằng truy vấn phải nạp thêm N phiên TRƯỚC Từ ngày, nếu không window chỉ thấy 1 ngày.
+  - Giá/Thay đổi/% thay đổi đọc từ Dimension current-state (`*_dim.close_price`, `.price_change`…) KHÔNG phải giá "tại Đến ngày" — dùng cột Fact theo ngày; đọc `ghi_chu` + Open Issue của KPI trước khi chọn (GSTT: O_GSTT_65).
+  - Dùng tham số đã có trong module (`:from_date`, `:to_date`, `:p_date`); chưa có chuẩn chung → không tự đặt tên mới, mở Open Issue.
 □ Không bỏ qua dòng Phân loại = Chiều
 □ Không bỏ qua dòng Trạng thái = Doing
 □ Không bỏ qua chiều lặp lại giữa các nhóm — nhóm đang xử lý có đủ SLICER/FILTER explicit (không dùng shorthand "xem nhóm X")
