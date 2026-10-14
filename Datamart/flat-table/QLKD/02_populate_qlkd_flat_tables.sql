@@ -308,7 +308,6 @@ SELECT
     o.decision_dt,
     o.director_nm,
     o.cl_firm_status_code,
-    o.record_status_code,
     o.business_line_nm_list,
     o.src_stm_code
 

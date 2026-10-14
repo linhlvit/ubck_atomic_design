@@ -279,7 +279,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_uni
     decision_dt                     Nullable(Date)          COMMENT 'Ngày thành lập',
     director_nm                     Nullable(String)        COMMENT 'Giám đốc/Trưởng đơn vị — BRANCH dùng Director Name, TRANSACTION_OFFICE/REP_OFFICE dùng Representative Name',
     cl_firm_status_code             Nullable(String)        COMMENT 'Trạng thái pháp lý đơn vị',
-    record_status_code              Nullable(String)        COMMENT 'Trạng thái bản ghi của đơn vị: 1=Đang hoạt động; 0=Ngừng hoạt động.',
     business_line_nm_list           Nullable(String)        COMMENT 'Danh sách tên nghiệp vụ kinh doanh chứng khoán được cấp phép cho đơn vị, nối bằng dấu phẩy (VPĐD = NULL)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)'
 )

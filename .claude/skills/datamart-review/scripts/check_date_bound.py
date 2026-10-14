@@ -38,7 +38,9 @@ except ImportError:  # pragma: no cover
 csv.field_size_limit(10**9)
 sys.stdout.reconfigure(encoding='utf-8')
 
-DATE_COLS = r'(?:trading_dt|trade_dt|order_dt|ds_snpst_dt)'
+# processing_dt: ngày xử lý cảnh báo của sc_alert_violation (SCMS) — bảng snapshot/event có cột ngày khác tên chuẩn (QLKD 2026-10-14: nếu thiếu,
+# R1 báo thừa dù dòng lookup_date đã khóa `processing_dt = :etl_date`).
+DATE_COLS = r'(?:trading_dt|trade_dt|order_dt|ds_snpst_dt|processing_dt)'
 MARKER = 'DATE-BOUND-REVIEWED'
 # Bảng snapshot/event/History không (hoặc không còn) nằm trong dm_manifest.yaml — bổ sung tay khi gặp.
 #  - listed_share_info: VSDC ODS, chỉ có mapping md, có ds_snpst_dt.

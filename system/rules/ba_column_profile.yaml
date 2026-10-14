@@ -137,14 +137,17 @@ modules:
     note: "Trùng tên cột 'Kết quả' ở index 26 và 29."
 
   PTTT:
-    expect_columns: 27
+    expect_columns: 28
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
     note: "[CẬP NHẬT 2026-09-21, xác minh trực tiếp qua header sống] File thực tế có 27 cột (trước khai 26) — có
       THÊM 1 cột cuối (index 26, sau 'Loại dữ liệu') tên rỗng, ngoài cột tên rỗng đã biết ở index 20 (giữa
       'Note' và 'Kết quả Test'). Parser phải chịu được cả 2 header rỗng. Không phải lỗi ragged row — cột cuối
       hiếm khi có dữ liệu (VD dòng STT=1 'KL CK lưu hành tại ngày' có ghi chú bổ sung ở đây), nhưng vẫn là
-      cột hợp lệ trên mọi dòng của file, không phải phần tràn do dấu phẩy không escape."
+      cột hợp lệ trên mọi dòng của file, không phải phần tràn do dấu phẩy không escape.
+      [CẬP NHẬT 2026-10-14, xác minh qua header sống] BA thêm cột ĐẦU 'Usecase' (index 0, tên dashboard nhóm lớn,
+      VD 'Dashboard phân tích thanh khoản và đòn bẩy thị trường') nên toàn bộ index cũ dịch +1 → 28 cột; STT nay ở index 1.
+      Parser tra cột theo TÊN nên không ảnh hưởng; cột Usecase được GIỮ trong lát cắt (không nằm trong `drop`)."
 
   QLCB:
     expect_columns: 25
@@ -153,7 +156,7 @@ modules:
     expect_header_contains: ["STT", "Mã dashboard/BC", "Dashboard/báo cáo", "Trạng thái mapping"]
 
   QLKD:
-    expect_columns: 27
+    expect_columns: 28
     ma_column: "PIC"
     sql_columns: ["Câu lệnh tham khảo (SIT)"]
     expect_header_contains:
@@ -168,6 +171,10 @@ modules:
       và đổi tên "Câu lệnh update (SIT)" thành "Câu lệnh tham khảo (SIT)" — nay là cột S
       (index 18), bản sống DUY NHẤT. Từ đó QLKD KHÔNG còn khớp drop_rules nữa.
       Cột `Mã` được đặt tên là `PIC`; cột `Trạng thái` (index 19) KHÁC `Trạng thái mapping` (13).
+      [CẬP NHẬT 2026-10-14, xác minh qua header sống] BA thêm cột ĐẦU 'UC' (index 0, tên usecase/dashboard nhóm lớn,
+      VD 'Khai thác Dashboard tổng quan...') nên toàn bộ index cũ dịch +1 → 28 cột; STT nay ở index 1, PIC index 2,
+      'Câu lệnh tham khảo (SIT)' index 19. Parser tra cột theo TÊN nên không ảnh hưởng; các số index trong ghi chú
+      2026-09-18 ở trên là index CŨ (trước khi thêm UC).
 
   TKNB:
     expect_columns: 29
