@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_market_risk_snpst_flat ON CLUSTER '
     corr_index_dxy                              Nullable(Decimal(5,4))  COMMENT 'Tương quan 30 phiên VN-Index & return DXY Index',
     total_market_cap_vsdc                       Nullable(Decimal(23,2)) COMMENT 'Tổng vốn hóa thị trường ngày t theo nguồn VSDC',
     total_market_cap_vsdc_average_n_days        Nullable(Decimal(23,2)) COMMENT 'Vốn hóa thị trường bình quân N phiên (VSDC)',
-    turnover_velocity_index                     Nullable(Decimal(8,4))  COMMENT 'Tốc độ vòng quay thị trường (TVI)',
+    turnover_velocity_index                     Nullable(Decimal(18,10)) COMMENT 'Tốc độ vòng quay thị trường (TVI) — tại ngày',
     turnover_velocity_status                    Nullable(String)        COMMENT 'Phân loại TVI (Cold/Healthy/Overheated)',
 
     -- From: CALENDAR DATE DIMENSION

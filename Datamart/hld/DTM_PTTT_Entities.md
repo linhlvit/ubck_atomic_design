@@ -47,7 +47,7 @@ erDiagram
 | Fact Market Risk Snapshot | fact | new | Chỉ số rủi ro hệ thống tổng hợp theo ngày — Risk Index, Volatility, Z-score, Sentiment, Margin Tension/Stress — grain 1 row/ngày | `market_index_snapshot / securities_trade / security_trading_snapshot / cl_risk_indicator_value / sc_report_input_value / risk_weight_config` |
 | Fact Macro Indicator Snapshot | fact | new | Chỉ tiêu vĩ mô — lãi suất LNH, tỷ giá USD/VND, CPI, GDP, DXY — grain 1 row/chỉ tiêu vĩ mô/kỳ công bố | `cl_risk_indicator / cl_risk_indicator_value` |
 | Fact Sector Risk Snapshot | fact | new | Chỉ số áp lực, thanh khoản và sức khỏe tài chính theo ngành — StressScore, D/E, GTGD ngành — grain 1 row/ngành/ngày | `security_trading_snapshot / securities_trade / public_company` |
-| Fact Order Size Snapshot | fact | new | GTGD và phân loại quy mô lệnh per mã CK theo ngày — grain 1 row/mã CK/order_size_band/ngày | `security_trading_snapshot` |
+| Fact Order Size Snapshot | fact | new | GTGD và phân loại quy mô lệnh theo từng giao dịch khớp, tổng hợp per mã CK/band/ngày — grain 1 row/mã CK/order_size_band/ngày | `securities_trade / security_trading_snapshot` |
 | Fact Investor Flow Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng theo nhóm nhà đầu tư — grain 1 row/nhóm NĐT/ngày | `securities_trade` |
 | Fact Foreign Net Trade Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng NĐTNN per mã CK — grain 1 row/mã CK/ngày | `securities_trade` |
 | Fact Proprietary Net Trade Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng khối tự doanh per mã CK — grain 1 row/mã CK/ngày | `securities_trade` |
