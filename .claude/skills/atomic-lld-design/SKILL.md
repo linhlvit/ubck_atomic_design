@@ -379,7 +379,7 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   | Case | source_columns | Hash comment |
   |---|---|---|
   | FK bình thường | `[SRC.TABLE.FK_COL]` | `Hash: hash_id('SRC_TARGET_TABLE', FK_COL).` |
-  | Shared entity (IP sub-table, dùng PK parent) | `[SRC.PARENT_TABLE.ID]` | `Hash: hash_id('SRC_PARENT_TABLE', ID).` |
+  | Shared entity (IP sub-table, dùng PK parent) | `[SRC.PARENT_TABLE.ID]` | `Surrogate Key của shared entity. Hash: hash_id('SRC_PARENT_TABLE', ID).` (KHÔNG ghi `FK target:` — không phải FK) |
   | FK luôn NULL | `[]` (rỗng) | Không thêm hash, không ghi lý do NULL — để `comment: null`. |
 
   **Literal đầu vào của `hash_id()` luôn dùng gạch dưới** (`SRC_TARGET_TABLE`, không phải
@@ -389,7 +389,7 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
 
   Ví dụ:
   - Normal: `"FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK_PROFESSIONALS', PROFESSIONAL_ID)."`
-  - Shared entity: `"FK target: securities_organization_reference.securities_organization_reference_id. Shared entity. Hash: hash_id('NHNCK_ORGANIZATIONS', ID)."`
+  - Shared entity: `"Surrogate Key của shared entity. Hash: hash_id('NHNCK_ORGANIZATIONS', ORGANIZATION_CODE)." (ip_id không phải FK)`
   - Always null: `comment: null` (source_columns rỗng → không giữ lại "FK target:"/"Lookup pair:" hay lý do NULL nào trong comment, kể cả khi lý do đó đúng và ngắn gọn).
 
   **FK cần crosswalk sang bảng danh mục nguồn để lấy Code (không hash trực tiếp theo ID kỹ

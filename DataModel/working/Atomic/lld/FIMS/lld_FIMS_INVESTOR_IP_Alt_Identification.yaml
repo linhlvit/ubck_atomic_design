@@ -21,16 +21,15 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Foreign Investor (Involved Party)."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Foreign Investor Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.TransactionCode"
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS_INVESTOR',\
-    \ TransactionCode)."
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
@@ -42,9 +41,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.TransactionCode"
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved\
-    \ Party Id."
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Source System Code"
@@ -61,20 +59,17 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân,\
-    \ Giấy phép/Mã số DN với NĐT tổ chức)."
+  description: "Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân)."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.ObjectType"
-  comment: "Scheme: IP_ALT_ID_TYPE. (source) — type xác định tại ETL dựa theo ObjectType\
-    \ (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE),\
-    \ không có cột type riêng biệt trong nguồn. Cần profile dữ liệu để xác nhận loại\
-    \ giấy tờ thực tế của NĐT cá nhân (nguồn không phân biệt CMND cũ/CCCD/Hộ chiếu)."
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
+  comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — Lọc ObjectType = 1\
+    \ (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE)."
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  etl_derived_value: "IDENTIFICATION"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -86,7 +81,7 @@ attributes:
   source_columns:
   - "FIMS.INVESTOR.IdNo"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -99,7 +94,7 @@ attributes:
   source_columns:
   - "FIMS.INVESTOR.IdDate"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Issue Place"
@@ -112,7 +107,7 @@ attributes:
   source_columns:
   - "FIMS.INVESTOR.IdAdd"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Type Code"
@@ -123,7 +118,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE cho BusinessNumber (chỉ áp dụng NĐT tổ chức, ObjectType=2) — mã gần nhất trong scheme hiện có, cần Data Modeler xác nhận."
+  comment: "Scheme: IP_ALT_ID_TYPE. BUSINESS_LICENSE — Lọc ObjectType = 2\
+    \ (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → BUSINESS_LICENSE)."
   classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: "BUSINESS_LICENSE"
   data_type: "string"
@@ -136,7 +132,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.BusinessNumber"
-  comment: "Chỉ áp dụng NĐT tổ chức (Lọc ObjectType=2)."
+  comment: "Chỉ áp dụng NĐT tổ chức."
   classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "string"

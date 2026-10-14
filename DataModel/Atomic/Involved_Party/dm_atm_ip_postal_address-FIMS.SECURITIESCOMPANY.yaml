@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Securities Company (Involved Party).
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Securities Company Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: FIMS
     source_table: SECURITIESCOMPANY
     source_column: FIMS.SECURITIESCOMPANY.Id
-    comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
     classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: FIMS
     source_table: SECURITIESCOMPANY
     source_column: FIMS.SECURITIESCOMPANY.Id
-    comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY"
     classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null
 

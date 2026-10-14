@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Securities Company (Involved Party).
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Securities Company Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: FIMS
     source_table: SECURITIESCOMPANY
     source_column: FIMS.SECURITIESCOMPANY.Id
-    comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
     classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: FIMS
     source_table: SECURITIESCOMPANY
     source_column: FIMS.SECURITIESCOMPANY.Id
-    comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY"
     classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
@@ -150,7 +150,7 @@ attributes:
 
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning: Loại giấy tờ — số CMND/CCCD/Hộ chiếu/Giấy phép.
+    business_meaning: Loại giấy tờ — Giấy phép thành lập và hoạt động do UBCKNN cấp.
     data_domain: Classification Value
     data_type: string
     nullable: false
@@ -158,13 +158,13 @@ attributes:
     source_system: FIMS
     source_table: SECURITIESCOMPANY
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION."
-    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'IDENTIFICATION'"
-    etl_derived_value: IDENTIFICATION
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE."
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
+    etl_derived_value: ESTABLISHMENT_OPERATION_LICENSE
 
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
+    business_meaning: Số giấy phép thành lập và hoạt động do UBCKNN cấp.
     data_domain: Text
     data_type: string
     nullable: true
@@ -173,12 +173,12 @@ attributes:
     source_table: SECURITIESCOMPANY
     source_column: FIMS.SECURITIESCOMPANY.IdNo
     comment: BK của shared entity cùng với Involved Party Id + Identification Type Code.
-    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'IDENTIFICATION'"
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Issue Date
     physical_name: identification_issue_dt
-    business_meaning: Ngày cấp giấy tờ định danh.
+    business_meaning: Ngày cấp giấy tờ.
     data_domain: Date
     data_type: date
     nullable: true
@@ -187,12 +187,12 @@ attributes:
     source_table: SECURITIESCOMPANY
     source_column: FIMS.SECURITIESCOMPANY.IdDate
     comment: null
-    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'IDENTIFICATION'"
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Issue Place
     physical_name: identification_issue_place
-    business_meaning: Nơi cấp giấy tờ định danh.
+    business_meaning: Nơi cấp giấy tờ.
     data_domain: Text
     data_type: string
     nullable: true
@@ -201,5 +201,5 @@ attributes:
     source_table: SECURITIESCOMPANY
     source_column: FIMS.SECURITIESCOMPANY.IdAdd
     comment: null
-    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'IDENTIFICATION'"
+    classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
     etl_derived_value: null

@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Foreign Investor (Involved Party).
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Foreign Investor Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.TransactionCode
-    comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
     classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.TransactionCode
-    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
     classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 

@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-FIMS-INVESTOR
 
 attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Foreign Investor (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.TransactionCode
-    comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Foreign Investor.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.TransactionCode
-    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -61,64 +33,8 @@ attributes:
     source_table: INVESTOR
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: FIMS_INVESTOR
-
-  - name: Identification Type Code
-    physical_name: identification_tp_code
-    business_meaning: "Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân, Giấy phép/Mã số DN với NĐT tổ chức)."
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.ObjectType
-    comment: "Scheme: IP_ALT_ID_TYPE. (source) — type xác định tại ETL dựa theo ObjectType (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE), không có cột type riêng biệt trong nguồn. Cần profile dữ liệu để xác nhận loại giấy tờ thực tế của NĐT cá nhân (nguồn không phân biệt CMND cũ/CCCD/Hộ chiếu)."
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Identification Number
-    physical_name: identification_nbr
-    business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.IdNo
-    comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Identification Issue Date
-    physical_name: identification_issue_dt
-    business_meaning: Ngày cấp giấy tờ định danh.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.IdDate
-    comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Nơi cấp giấy tờ định danh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FIMS
-    source_table: INVESTOR
-    source_column: FIMS.INVESTOR.IdAdd
-    comment: null
-    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
 
   - name: Identification Type Code
     physical_name: identification_tp_code
@@ -130,7 +46,7 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE cho BusinessNumber (chỉ áp dụng NĐT tổ chức, ObjectType=2) — mã gần nhất trong scheme hiện có, cần Data Modeler xác nhận."
+    comment: "Scheme: IP_ALT_ID_TYPE. BUSINESS_LICENSE — Lọc ObjectType = 2 (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → BUSINESS_LICENSE)."
     classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: BUSINESS_LICENSE
 
@@ -144,6 +60,90 @@ attributes:
     source_system: FIMS
     source_table: INVESTOR
     source_column: FIMS.INVESTOR.BusinessNumber
-    comment: "Chỉ áp dụng NĐT tổ chức (Lọc ObjectType=2)."
+    comment: Chỉ áp dụng NĐT tổ chức.
     classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Foreign Investor Id.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.TransactionCode
+    comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Foreign Investor.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.TransactionCode
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.ObjectType
+    comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — Lọc ObjectType = 1 (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: IDENTIFICATION
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.IdNo
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp giấy tờ định danh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.IdDate
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'IDENTIFICATION'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identification_issue_place
+    business_meaning: Nơi cấp giấy tờ định danh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.IdAdd
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null

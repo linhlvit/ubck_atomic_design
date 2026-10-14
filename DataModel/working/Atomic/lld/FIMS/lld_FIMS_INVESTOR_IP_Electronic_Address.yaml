@@ -21,15 +21,14 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Foreign Investor (Involved Party)."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Foreign Investor Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.TransactionCode"
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS_INVESTOR',\
-    \ TransactionCode)."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -42,8 +41,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.TransactionCode"
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved\
-    \ Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

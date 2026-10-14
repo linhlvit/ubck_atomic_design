@@ -2,19 +2,6 @@ schema_type: "atomic_entities"
 schema_version: "1.0"
 entities:
 - bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Trading Account Arrangement"
-  atomic_entity: "Account Investor"
-  table_type: "Fundamental"
-  domain_prefix: "Account Investor"
-  entity_physical_name: "account_investor"
-  description: "Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD\
-    \ (nguồn gốc VSDC). Gộp thông tin cơ bản (định danh, loại hình NĐT, trạng thái,\
-    \ người/ngày nhận ủy quyền) và thông tin mở rộng liên hệ/ngân hàng vào 1 entity\
-    \ duy nhất. Số CCCD (Identity Number) denormalized text — entity Individual (nguồn\
-    \ NHNCK.IDENTITY_INFO_C06S) đã gỡ bỏ khỏi scope (2026-09-12), không còn FK target."
-  source_table: "GSGD.INVESTOR_ACCOUNT"
-  status: "approved"
-- bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Investment Account"
   atomic_entity: "Discretionary Investment Account"
   table_type: "Relative"
@@ -25,19 +12,6 @@ entities:
     \ thái."
   source_table: "FMS.INVES_ACC"
   status: "approved"
-- bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Investment Account"
-  atomic_entity: "Foreign Investor Securities Account"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "foreign_investor_securities_account"
-  description: "Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài mở tại công\
-    \ ty chứng khoán. Ghi nhận số tài khoản, nơi mở, số lượng và tỷ lệ sở hữu chứng\
-    \ khoán hiện tại (từ CATEGORIESSTOCK — cùng grain Investor × Securities Company).\
-    \ FK đến Foreign Investor và Market Participant Organization (SECURITIESCOMPANY).\
-    \ Table"
-  source_table: "FIMS.SECURITIESACCOUNT"
-  status: "draft"
 - bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Ownership"
   atomic_entity: "Public Company Share Statistics"
@@ -67,29 +41,6 @@ entities:
   description: "Tỷ lệ vốn nhà nước tại CTĐC và cơ quan đại diện phần vốn nhà nước:\
     \ tỷ lệ sở hữu, ngày hiệu lực."
   source_table: "IDS.STATE_CAPITAL"
-  status: "draft"
-- bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Authority Arrangement"
-  atomic_entity: "Trading Authorization"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "trading_authorization"
-  description: "Thỏa thuận ủy quyền giao dịch — nhà đầu tư nước ngoài ủy quyền cho\
-    \ đại diện giao dịch tại thành viên thị trường hành động thay mặt. Ghi nhận phạm\
-    \ vi ủy quyền, thời hạn và người được ủy quyền (Trading Representative). FK đến\
-    \ Foreign Investor, Market Participant Organization và Trading Representative.\
-    \ BCO đổi từ Documentation"
-  source_table: "FIMS.TRADINGAUTHORIZATION"
-  status: "draft"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Business Review"
-  atomic_entity: "Citizen Reception"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "citizen_reception"
-  description: "Ghi nhận buổi tiếp công dân tại UBCKNN: ngày tiếp, cán bộ tiếp, loại\
-    \ đối tượng, nội dung tóm tắt, liên kết hồ sơ đơn thư nếu có."
-  source_table: "THANHTRA.CITIZEN_RECEPTION"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -165,16 +116,6 @@ entities:
     \ điểm, thứ hạng và loại xếp hạng. Mỗi dòng = 1 kết quả per CTQLQ per kỳ, insert-only."
   source_table: "FMS.RANK"
   status: "approved"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Assessment Period"
-  atomic_entity: "Member Rating Period"
-  table_type: "Fundamental"
-  domain_prefix: "M"
-  entity_physical_name: "member_rating_period"
-  description: "Kỳ thời gian định kỳ (giữa năm/cuối năm) để đánh giá và xếp loại công\
-    \ ty quản lý quỹ. Master entity được FK từ Member Rating (Tier 2)."
-  source_table: "FMS.RATING_PD"
-  status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Evaluation"
   atomic_entity: "Public Company Bond Evaluation"
@@ -292,6 +233,17 @@ entities:
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Transaction"
+  atomic_entity: "Securities Company Foreign Organization Unit Periodic Report"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_foreign_organization_unit_periodic_report"
+  description: "Báo cáo định kỳ do chi nhánh và văn phòng đại diện CTCK nước ngoài\
+    \ nộp lên UBCKNN. Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và\
+    \ trạng thái xử lý."
+  source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Transaction"
   atomic_entity: "Securities Company Periodic Report"
   table_type: "Fundamental"
   domain_prefix: "Securities Company"
@@ -369,46 +321,6 @@ entities:
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
-  atomic_entity: "Security Measure Decision"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "sm_decision"
-  description: "Quyết định áp dụng biện pháp ngăn chặn/khẩn cấp hành chính (cấm đảm\
-    \ nhiệm chức vụ, đình chỉ hoạt động, phong tỏa tài khoản), độc lập với hồ sơ VPHC."
-  source_table: "THANHTRA.SECURITY_MEASURE_DECISION"
-  status: "draft"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Conduct Violation"
-  atomic_entity: "Security Measure Decision Recipient"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "sm_decision_recipient"
-  description: "Danh sách đơn vị nhận bản sao quyết định biện pháp ngăn chặn: công\
-    \ ty chứng khoán, quản lý quỹ, sở giao dịch, VSDC, ban nghiệp vụ UBCKNN."
-  source_table: "THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT"
-  status: "draft"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Conduct Violation"
-  atomic_entity: "Security Measure Decision Subject"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "sm_decision_subject"
-  description: "Đối tượng bị áp dụng biện pháp ngăn chặn trong quyết định: thông tin\
-    \ định danh nhúng (loại, tên, số giấy tờ)."
-  source_table: "THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT"
-  status: "draft"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Business Review"
-  atomic_entity: "Security Measure Execution"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "sm_execution"
-  description: "Theo dõi kết quả thực thi quyết định biện pháp ngăn chặn: người báo\
-    \ cáo, ngày báo cáo, kết quả (đã thực hiện đầy đủ/đang thực hiện/chưa thực hiện)."
-  source_table: "THANHTRA.SECURITY_MEASURE_EXECUTION"
-  status: "draft"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Conduct Violation"
   atomic_entity: "Violation Behavior"
   table_type: "Fundamental"
   domain_prefix: ""
@@ -419,10 +331,10 @@ entities:
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
-  atomic_entity: "Violation Record Behavior"
+  atomic_entity: "Violation Record X Violation Behavior Relationship"
   table_type: "Fundamental"
   domain_prefix: ""
-  entity_physical_name: "violation_record_behavior"
+  entity_physical_name: "violation_record_x_violation_behavior_relationship"
   description: "Từng hành vi vi phạm cụ thể được ghi nhận trong biên bản: liên kết\
     \ danh mục hành vi, mô tả chi tiết (thời gian, địa điểm), căn cứ pháp lý áp dụng."
   source_table: "THANHTRA.VIOLATION_RECORD_BEHAVIOR"
@@ -437,7 +349,7 @@ entities:
     \ nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm. Bao gồm cả theo dõi vi phạm\
     \ nộp báo cáo qua module HTE (nguồn HTE_VIOLATION_REPORT). Đổi tên từ \"Public\
     \ Company Violation Report\" (2026-08-05, theo yêu cầu tường minh Data Modeler)."
-  source_table: "IDS.VIOLATION_REPORT, IDS.HTE_VIOLATION_REPORT"
+  source_table: "IDS.VIOLATION_REPORT"
   status: "draft"
 - bcv_core_object: "Communication"
   bcv_concept: "[Communication] Information Request"
@@ -449,27 +361,6 @@ entities:
     \ đến 1 doanh nghiệp, kèm trạng thái phản hồi WebService."
   source_table: "KNT.INFO_REQUEST_DETAIL"
   status: "draft"
-- bcv_core_object: "Communication"
-  bcv_concept: "[Communication] Feedback"
-  atomic_entity: "Petition Document"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "petition_document"
-  description: "Văn bản phát sinh trong quá trình xử lý đơn thư (8 loại), từ tờ trình\
-    \ phân loại, phiếu đề xuất thụ lý đến công văn trả lời nhà đầu tư."
-  source_table: "THANHTRA.PETITION_DOCUMENT"
-  status: "draft"
-- bcv_core_object: "Communication"
-  bcv_concept: "[Communication] Financial Market Order"
-  atomic_entity: "Securities Order"
-  table_type: "Fact Append"
-  domain_prefix: ""
-  entity_physical_name: "securities_order"
-  description: "Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE và\
-    \ HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp ORDER_BOOK_HOSE + ORDER_BOOK_HNX,\
-    \ phân biệt qua market_id_code và src_stm_code."
-  source_table: "ORDERTRADE.ORDER_BOOK_HOSE, ORDERTRADE.ORDER_BOOK_HNX"
-  status: "approved"
 - bcv_core_object: "Communication"
   bcv_concept: "[Communication] Notification"
   atomic_entity: "Securities Practitioner License Application Result Notification"
@@ -548,31 +439,6 @@ entities:
     \ nộp. Nguồn ODS từ JOIN TTHC.DOCUMENT + TTHC.CONTENTITEMINDEX, lọc ContentType\
     \ = 'HoSoTTHC'."
   source_table: "TTHC.AP_DOCUMENT"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Documentation"
-  atomic_entity: "Administrative Procedure Document Postal Receipt"
-  table_type: "Fundamental"
-  domain_prefix: "Administrative Procedure"
-  entity_physical_name: "ap_document_postal_receipt"
-  description: "Documentation — thông tin nhận kết quả hồ sơ qua bưu chính. Chỉ tồn\
-    \ tại khi return_method_code = 2 trên hồ sơ cha. FK ho_so_id không unique (cho\
-    \ phép 1-N về sau dù thực tế 1-1)."
-  source_table: "TTHC.AP_DOCUMENT_POSTAL_RECEIPT"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Securities Company Report X Classification Securities Company Event Type Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "sc_report_x_cl_sc_event_type_relationship"
-  description: "Quy định biểu mẫu báo cáo nào bắt buộc nộp cho loại sự kiện nào, trong\
-    \ khoảng thời gian nào (APPLICABLE_FROM/APPLICABLE_TO, REQUIRED). Đặt tên theo\
-    \ pattern `_x_ Relationship` — tham khảo NHNCK APPLICATION_DECISIONS và tiền lệ\
-    \ SCMS LNK_SC_FIRM_SERVICE — vì có attribute nghiệp vụ thật, không phải pure junction\
-    \ thuần. Tên đổi theo cascade khi parent Classification Securities Company Event\
-    \ Type đổi tên 2026-09-16."
-  source_table: "SCMS.LNK_EVENT_TYPE_FORM"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -822,16 +688,6 @@ entities:
   source_table: "FMS.RPT_VALUES"
   status: "approved"
 - bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Inspection Conclusion Remedial"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "inspection_conclusion_remedial"
-  description: "Từng biện pháp khắc phục yêu cầu trong kết luận thanh tra: nội dung\
-    \ chi tiết từng kiến nghị cần thực hiện."
-  source_table: "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL"
-  status: "draft"
-- bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Documentation"
   atomic_entity: "Internal Statistical Report"
   table_type: "Classification"
@@ -935,6 +791,21 @@ entities:
     \ liệu, định dạng hiển thị. Đảo ngược quyết định loại-scope trước đây (cascade\
     \ từ FORM_REPORT) — xem 7e #23."
   source_table: "SCMS.FORM_SHEET_COLUMN"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Securities Company Report X Classification Securities Company Event\
+    \ Type Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "sc_report_x_cl_sc_event_type_relationship"
+  description: "Quy định biểu mẫu báo cáo nào bắt buộc nộp cho loại sự kiện nào, trong\
+    \ khoảng thời gian nào (APPLICABLE_FROM/APPLICABLE_TO, REQUIRED). Đặt tên theo\
+    \ pattern `_x_ Relationship` — tham khảo NHNCK APPLICATION_DECISIONS và tiền lệ\
+    \ SCMS LNK_SC_FIRM_SERVICE — vì có attribute nghiệp vụ thật, không phải pure junction\
+    \ thuần. Tên đổi theo cascade khi parent Classification Securities Company Event\
+    \ Type đổi tên 2026-09-16."
+  source_table: "SCMS.LNK_EVENT_TYPE_FORM"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
@@ -1223,16 +1094,6 @@ entities:
   source_table: "THANHTRA.PENALTY_DECISION_VIOLATION_RECORD"
   status: "draft"
 - bcv_core_object: "Event"
-  bcv_concept: "[Event] Event"
-  atomic_entity: "Proactive Notice Recipient"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "proactive_notice_recipient"
-  description: "Danh sách công ty nhận thông báo chủ động: mã công ty và loại người\
-    \ nhận, theo dõi phạm vi phát hành thông báo."
-  source_table: "THANHTRA.PROACTIVE_NOTICE_RECIPIENT"
-  status: "draft"
-- bcv_core_object: "Event"
   bcv_concept: "[Event] Period"
   atomic_entity: "Public Company Evaluation Period"
   table_type: "Fundamental"
@@ -1405,6 +1266,18 @@ entities:
   source_table: "FMS.AGEN_FUNDS"
   status: "approved"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Fund Distribution Agent X Investment Fund X Classification FMS Agency\
+    \ Type Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "fund_distribution_agent_x_investment_fund_x_cl_fms_agency_type_relationship"
+  description: "Quan hệ đại lý phân phối giữ vai trò theo loại đại lý đối với quỹ\
+    \ đầu tư (1 quỹ có thể có nhiều đại lý, mỗi đại lý theo 1 loại đại lý). FK đến\
+    \ Fund Distribution Agent + Investment Fund + Classification FMS Agency Type."
+  source_table: "FMS.FUD_AG_AGT"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Portfolio Fund Management Company"
   atomic_entity: "Fund Management Company"
   table_type: "Fundamental"
@@ -1428,17 +1301,6 @@ entities:
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
-  atomic_entity: "Fund Management Company Employee X Classification FMS Job Relationship"
-  table_type: "Relative"
-  domain_prefix: "Fund Management Company"
-  entity_physical_name: "fmc_employee_x_classification_fms_job_relationship"
-  description: "Quan hệ gán chức danh/vị trí công việc cho nhân sự chủ chốt công ty\
-    \ QLQ (1 nhân sự có thể giữ nhiều chức danh). FK đến Fund Management Company Employee\
-    \ + Classification FMS Job."
-  source_table: "FMS.JOB_TL_PRO"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Individual Employment Status"
   atomic_entity: "Fund Management Company Employee X Investment Fund Relationship"
   table_type: "Relative"
   domain_prefix: ""
@@ -1458,15 +1320,6 @@ entities:
   source_table: "FMS.INSIDER"
   status: "approved"
 - bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Organization"
-  atomic_entity: "Fund Management Company Organization Unit"
-  table_type: "Fundamental"
-  domain_prefix: "Fund Management Company"
-  entity_physical_name: "fmc_organization_unit"
-  description: "Chi nhánh/VPĐD trực thuộc Fund Management Company trong nước."
-  source_table: "FMS.BRANCHS"
-  status: "draft"
-- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   atomic_entity: "Identity and Access Management User"
   table_type: "Fundamental"
@@ -1476,6 +1329,18 @@ entities:
     \ gia) có tài khoản đăng nhập hệ thống nghiệp vụ, tích hợp Keycloak. Lưu thông\
     \ tin danh tính, tổ chức, chứng chỉ hành nghề và người đại diện."
   source_table: "IAM.USERS"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Identity and Access Management User X Classification FIMS Report\
+    \ Event Type"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "identity_and_access_management_user_x_cl_fims_report_event_type"
+  description: "Quan hệ giữa người dùng hệ thống IAM và loại sự vụ báo cáo FIMS —\
+    \ xác định người dùng nào được gán loại sự vụ nào. Entity link thuần, khóa chính\
+    \ là cặp (User Id, Report Event Type Id)."
+  source_table: "FIMS.USER_EVENT_TYPE"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Funds"
@@ -1509,19 +1374,17 @@ entities:
     \ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ\
     \ 1 nguồn."
   source_table: "NHNCK.PROFESSIONALS, IAM.USERS, SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO,\
-    \ SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE,\
-    \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN, SCMS.SC_FIRM_FOREIGN_BRANCH, SCMS.AUDITOR,\
-    \ SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
-    \ SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER, SCMS.SC_FIRM_SHAREHOLDER,\
-    \ SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_OWNERSHIP_RELATION, SCMS.SC_FIRM_RELATED_PERSON,\
-    \ SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE,\
-    \ SCMS.SC_FIRM_SHAREHOLDER_RELATION, FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES,\
-    \ FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.FUNDS, FMS.INVES, FMS.STF_FG_BRCH, FMS.REPRESENT,\
-    \ FMS.MB_FUND, FMS.INSIDER, FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT,\
-    \ FMS.BANK_EMPLOY, FMS.TL_PRO_RELA, FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA,\
-    \ FMS.INSDER_RPRST, IDS.COMPANY_PROFILES, IDS.AF_PROFILES, IDS.AF_AUDITOR_PROFILES,\
-    \ IDS.IDENTITY, FIMS.INVESTOR, FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, FIMS.TRADINGREPRESENTATIVE,\
-    \ KNT.TAX_REG_REPRESENTATIVE"
+    \ SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE, SCMS.SC_FIRM_TRANSACTION_OFFICE,\
+    \ SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_BRANCH,\
+    \ SCMS.AUDITOR, SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
+    \ SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION,\
+    \ SCMS.SC_FIRM_OWNERSHIP_RELATION, SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION,\
+    \ SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE, SCMS.SC_FIRM_SHAREHOLDER_RELATION,\
+    \ FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES,\
+    \ FMS.FUNDS, FMS.INVES, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT,\
+    \ IDS.COMPANY_PROFILES, IDS.AF_PROFILES, IDS.AF_AUDITOR_PROFILES, IDS.IDENTITY,\
+    \ FIMS.INVESTOR, FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, KNT.TAX_REG_REPRESENTATIVE,\
+    \ IDS.COMPANY_RELATIONSHIP"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -1535,15 +1398,12 @@ entities:
     \ SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE,\
     \ SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_BRANCH,\
     \ SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
-    \ SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER, SCMS.SC_FIRM_SHAREHOLDER,\
-    \ SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION,\
-    \ FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES, FMS.BRANCHS, FMS.FOR_BRCH, FMS.TL_PROFILES,\
-    \ FMS.AGENCIES_BRA, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.INSIDER, FMS.PENSION_AGENT,\
-    \ FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.OTHER_AGENT, FMS.TRANSFER_AGENT,\
-    \ FMS.DISTRIBUTOR_LOCATION, FMS.DISTRIBUTOR_PERSONNEL, IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES,\
+    \ SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION,\
+    \ SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, FMS.SECURITIES,\
+    \ FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.STF_FG_BRCH,\
+    \ FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT, IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES,\
     \ IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.LEGAL_REPRESENTATIVE, FIMS.INVESTOR,\
-    \ FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REGISTRATION_INFO,\
-    \ KNT.TAX_REG_REPRESENTATIVE"
+    \ FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, KNT.TAX_REGISTRATION_INFO, KNT.TAX_REG_REPRESENTATIVE"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -1556,16 +1416,13 @@ entities:
   source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS, IAM.USERS,\
     \ SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE,\
     \ SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE,\
-    \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN, SCMS.SC_FIRM_FOREIGN_BRANCH, SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL,\
-    \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL, SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER,\
-    \ SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_OWNERSHIP_RELATION,\
-    \ SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, FMS.SECURITIES,\
-    \ FMS.BANK_MONI, FMS.AGENCIES, FMS.BRANCHS, FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.INVES,\
-    \ FMS.AGENCIES_BRA, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.MB_FUND, FMS.INSIDER,\
-    \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.TL_PRO_RELA,\
-    \ FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA, FMS.DISTRIBUTOR_LOCATION,\
+    \ SCMS.SC_FIRM_FOREIGN_BRANCH, SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
+    \ SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION,\
+    \ SCMS.SC_FIRM_OWNERSHIP_RELATION, SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION,\
+    \ FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES,\
+    \ FMS.INVES, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT,\
     \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, IDS.AF_PROFILES, FIMS.INVESTOR, FIMS.BANKMONI,\
-    \ FIMS.SECURITIESCOMPANY, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REGISTRATION_INFO"
+    \ FIMS.SECURITIESCOMPANY, KNT.TAX_REGISTRATION_INFO, IDS.COMPANY_RELATIONSHIP"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
@@ -1636,6 +1493,33 @@ entities:
   source_table: "SCMS.BANK"
   status: "draft"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Branch"
+  atomic_entity: "Securities Company Foreign Organization Unit"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_foreign_organization_unit"
+  description: "Đơn vị tổ chức nước ngoài trực thuộc CTCK hoạt động tại Việt Nam:\
+    \ chi nhánh CTCK nước ngoài (SC_FIRM_FOREIGN_BRANCH, org_unit_type_code = FOREIGN_BRANCH)\
+    \ và văn phòng đại diện CTCK nước ngoài (SC_FIRM_FOREIGN_REP_OFFICE, org_unit_type_code\
+    \ = FOREIGN_REP_OFFICE). Ghi nhận thông tin công ty mẹ, quốc gia, vốn được cấp,\
+    \ số giấy phép, thời hạn hoạt động và trạng thái pháp lý."
+  source_table: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_BRANCH"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Branch"
+  atomic_entity: "Securities Company Foreign Organization Unit X Classification Securities\
+    \ Company Firm Service Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "sc_foreign_ou_x_cl_sc_firm_service_relationship"
+  description: "Danh mục dịch vụ chứng khoán được cấp phép cho từng chi nhánh CTCK\
+    \ nước ngoài (FK Securities Company Foreign Organization Unit + Classification\
+    \ Securities Company Firm Service). Đảo ngược quyết định denormalize Array trước\
+    \ đây theo chỉ đạo Data Modeler (2026-10-10) — tách entity `_x_` riêng, mirror\
+    \ pattern LNK_SC_FIRM_SERVICE / LNK_TRANSACTION_OFFICE_SERVICE."
+  source_table: "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Insider"
   atomic_entity: "Securities Company Insider Related Person"
   table_type: "Fundamental"
@@ -1656,7 +1540,7 @@ entities:
     \ động riêng do UBCKNN cấp. Ghi nhận mã, địa chỉ, ngày thành lập và trạng thái\
     \ pháp lý. org_unit_type_code = BRANCH."
   source_table: "SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE, SCMS.SC_FIRM_TRANSACTION_OFFICE,\
-    \ SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
+    \ SCMS.SC_FIRM_DOMESTIC_REP_OFFICE"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Connected Person"
@@ -1789,17 +1673,6 @@ entities:
     \ thân."
   source_table: "NHNCK.PROFESSIONAL_RELATIONSHIPS"
   status: "approved"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Registered Representative"
-  atomic_entity: "Trading Representative"
-  table_type: "Fundamental"
-  domain_prefix: ""
-  entity_physical_name: "trading_representative"
-  description: "Cá nhân đại diện giao dịch cho nhà đầu tư nước ngoài tại công ty chứng\
-    \ khoán. Ghi nhận thông tin nhân thân, quốc tịch, địa chỉ, liên lạc và trạng thái\
-    \ hoạt động. Được tham chiếu từ Member Periodic Report và Trading Authorization."
-  source_table: "FIMS.TRADINGREPRESENTATIVE"
-  status: "draft"
 - bcv_core_object: "Location"
   bcv_concept: "[Location] Geographic Area"
   atomic_entity: "Geographic Area"
@@ -1835,17 +1708,6 @@ entities:
     \ cấp CCHN (Transaction). Có lifecycle riêng qua trạng thái thanh toán. Phân biệt\
     \ với Examination Assessment Fee (Condition)."
   source_table: "NHNCK.APPLICATION_FEES"
-  status: "approved"
-- bcv_core_object: "Transaction"
-  bcv_concept: "[Transaction] Financial Market Transaction"
-  atomic_entity: "Securities Trade"
-  table_type: "Fact Append"
-  domain_prefix: ""
-  entity_physical_name: "securities_trade"
-  description: "Từng lần khớp lệnh thành công trên HOSE và HNX. Mỗi dòng = 1 Trade\
-    \ ID. Lưu đồng thời thông tin bên mua và bên bán trong cùng 1 row. FK-BK về Securities\
-    \ Order qua buy/sell_scr_ordr_code."
-  source_table: "ORDERTRADE.TRADE_BOOK_HOSE, ORDERTRADE.TRADE_BOOK_HNX"
   status: "approved"
 - bcv_core_object: "Transaction"
   bcv_concept: "[Transaction] Financial Market Transaction"
@@ -1993,44 +1855,6 @@ entities:
     \ theo yêu cầu Data Modeler — chỉ giữ 2 cặp FK Id/Code như các entity link khác."
   source_table: "NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS"
   status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Citizen Reception Participant"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Người tham gia buổi tiếp công dân: RECEIVER (người tiếp, tối thiểu\
-    \ 2 người) hoặc COORDINATOR (đơn vị phối hợp, không bắt buộc). Bảng mới (DDL UAT\
-    \ 2026-09) thay thế cột RECEIVER_ID/RECEIVER_NAME (nay DEPRECATED) trên Citizen\
-    \ Reception. Kế thừa BCV Concept của entity cha vì là chi tiết 1-N của cùng hoạt\
-    \ động, k"
-  source_table: "THANHTRA.CITIZEN_RECEPTION_PARTICIPANT"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Citizen Reception Subject"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Chi tiết đối tượng được tiếp: cá nhân (1 dòng), đoàn đông người (nhiều\
-    \ dòng, mỗi dòng 1 người đại diện), hoặc tổ chức (1 dòng). Bảng mới (DDL UAT 2026-09)\
-    \ thay thế cột SUBJECT_NAME (nay DEPRECATED) trên Citizen Reception. Không tách\
-    \ IP Postal Address dù có ADDRESS — snapshot tại thời điểm tiếp, không phải hồ\
-    \ sơ I"
-  source_table: "THANHTRA.CITIZEN_RECEPTION_SUBJECT"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Citizen Reception X Petition Relationship"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Liên kết 1 buổi tiếp công dân với nhiều đơn thư (trường hợp đoàn đông\
-    \ người, mỗi người nộp 1 đơn riêng) — entity link/relationship thuần bắc cầu 2\
-    \ domain (Citizen Reception + Petition) nên không mang domain prefix riêng. Bảng\
-    \ mới (DDL UAT 2026-09) thay thế cột PETITION_ID (nay DEPRECA"
-  source_table: "THANHTRA.CITIZEN_RECEPTION_PETITION_LINK"
-  status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Industry Classification"
   atomic_entity: "Classification Business Line"
@@ -2047,15 +1871,6 @@ entities:
     \ và ECAT.BUSINESS_LINE_LEVEL_1/2 xác nhận cùng 1 concept nghiệp vụ, xem IDS_HLD_Tier1.md\
     \ T1-13 / IDS_HLD_Overview.md mục 7e #12."
   source_table: "ECAT.BUSINESS_LINE_LEVEL_1, ECAT.BUSINESS_LINE_LEVEL_2"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Classification Business Transaction"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "SCMS.CAT_BUSINESS_LINE"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Organization Legal Structure"
@@ -2080,6 +1895,17 @@ entities:
     \ lên entity riêng; Id hash từ SNAME, Code map từ SNAME. Được tham chiếu bởi Foreign\
     \ Investor."
   source_table: "FIMS.INVESTORTYPE"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Event Type"
+  atomic_entity: "Classification FIMS Report Event Type"
+  table_type: "Relative"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_fims_report_event_type"
+  description: "Danh mục loại sự vụ/nghĩa vụ báo cáo của thành viên thị trường (FIMS)\
+    \ gồm mã và tên sự vụ. Thiết kế dạng Classification; Id hash từ EVENT_CODE, Code\
+    \ map từ cột EVENT_CODE."
+  source_table: "FIMS.RPT_EVENT_TYPE"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Involved Party Life Cycle Status"
@@ -2199,17 +2025,6 @@ entities:
   source_table: "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY"
   status: "approved"
 - bcv_core_object: "Common"
-  bcv_concept: "[Common] Nationality"
-  atomic_entity: "Classification Nationality"
-  table_type: "Classification"
-  domain_prefix: "Classification"
-  entity_physical_name: "cl_nationality"
-  description: "Danh mục quốc tịch dùng cho nhân sự, cổ đông, người liên quan của\
-    \ CTCK. Nâng cấp từ Classification Value (scheme SCMS_NATIONALITY) lên entity\
-    \ thật. Xem 7e #11."
-  source_table: "SCMS.CAT_NATIONALITY"
-  status: "draft"
-- bcv_core_object: "Common"
   bcv_concept: "[Common] Classification"
   atomic_entity: "Classification Risk Indicator"
   table_type: "Classification"
@@ -2287,15 +2102,6 @@ entities:
     \ theo yêu cầu Data Modeler (2026-10-08)."
   source_table: "SCMS.CAT_POSITION"
   status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Classification Service"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "SCMS.CAT_SERVICE"
-  status: "draft"
 - bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Law"
   atomic_entity: "Classification THANHTRA Penalty Type"
@@ -2332,16 +2138,6 @@ entities:
     \ thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát\
     \ hành/đáo hạn)."
   source_table: "MDDS.JAD_CORPBONDINFOR"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Custodian Bank Employee"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Nhân sự giữ vị trí tại ngân hàng lưu ký giám sát (LKGS), có chứng\
-    \ chỉ hành nghề/pháp lý/kiểm toán. FK đến Custodian Bank."
-  source_table: "FMS.BANK_EMPLOY"
   status: "draft"
 - bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Business Plan"
@@ -2383,106 +2179,6 @@ entities:
   description: "Danh sách thành viên đoàn kiểm tra: ID người dùng, tên và vai trò\
     \ trong đoàn (trưởng đoàn, kiểm tra viên, thư ký...)."
   source_table: "THANHTRA.EXAMINATION_TEAM_MEMBER"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Distribution Agent Organization Unit"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Chi nhánh hoặc phòng giao dịch của đại lý phân phối quỹ. FK đến Fund\
-    \ Distribution Agent. Ghi nhận tên và địa chỉ."
-  source_table: "FMS.AGENCIES_BRA"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Company Employee Related Person"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Người có quan hệ gia đình hoặc liên quan với nhân sự chủ chốt công\
-    \ ty QLQ (vợ/chồng, con...). FK đến Fund Management Company Employee + RELATION.\
-    \ Cùng pattern Fund Management Company Insider Related Person."
-  source_table: "FMS.TL_PRO_RELA"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Company Insider Related Person"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Người có quan hệ gia đình hoặc liên quan với cổ đông nội bộ công ty\
-    \ QLQ (vợ/chồng, con...). FK đến Fund Management Company Insider. Table Type điều\
-    \ chỉnh theo review 2026-07-03: `Fundamental` (thay cho `Relative`)."
-  source_table: "FMS.INSDER_RELA"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Company Insider Representative"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Người đại diện theo ủy quyền của cổ đông nội bộ, có thời hạn và tỷ\
-    \ lệ đại diện. FK đến Fund Management Company Insider. Table Type điều chỉnh theo\
-    \ review 2026-07-03: `Fundamental` (thay cho `Relative`)."
-  source_table: "FMS.INSDER_RPRST"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Company Insider Shareholding Change Log"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Giao dịch chuyển nhượng cổ phần/CCQ của cổ đông nội bộ (mua/bán/đăng\
-    \ ký), ghi nhận tỷ lệ và vốn góp trước/sau giao dịch. FK đến Fund Management Company\
-    \ Insider. Mỗi dòng = 1 giao dịch, insert-only."
-  source_table: "FMS.INSID_CHANGE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Company Securities Offering"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Đợt chào bán cổ phần hoặc trái phiếu (ra công chúng/riêng lẻ) của\
-    \ công ty QLQ. Ghi nhận kế hoạch và kết quả thực tế chào bán, văn bản chấp thuận\
-    \ UBCKNN."
-  source_table: "FMS.OFFERING"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Company Securities Offering Plan"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Kế hoạch phân bổ chào bán theo nhóm đối tượng/phương thức, kèm kết\
-    \ quả thực tế. FK đến Fund Management Company Securities Offering. Table Type\
-    \ điều chỉnh theo review 2026-07-03: `Fundamental` (thay cho `Relative`)."
-  source_table: "FMS.OFFERING_PLAN"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Company Share Transfer"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Giao dịch chuyển nhượng cổ phần nội bộ công ty QLQ. FK đến Fund Management\
-    \ Company. GAP: mất FK bên mua/bán do INSIDER ngoài scope (nay có thể lấp qua\
-    \ Fund Management Company Insider, Tier 5). Mỗi dòng = 1 giao dịch, insert-only."
-  source_table: "FMS.TRS_FER_INDER"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Conduct Violation"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Vi phạm quy định của thành viên thị trường (đa hướng). FK đầy đủ đến\
-    \ Fund Management Company, Investment Fund, Custodian Bank, Foreign Fund Management\
-    \ Organization Unit, Member Warning Parameter, Member Warning Condition, Securities\
-    \ Distribution Agent, Transfer Agent, Pension Service Organization, Other Intermediary\
-    \ Organizati"
-  source_table: "FMS.VIOLT"
   status: "draft"
 - bcv_core_object: "Group"
   bcv_concept: "[Group] Share Index"
@@ -2527,39 +2223,6 @@ entities:
     \ trong đoàn (trưởng đoàn, thanh tra viên, thư ký...)."
   source_table: "THANHTRA.INSPECTION_TEAM_MEMBER"
   status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Investment Fund Certificate Transfer"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Giao dịch mua, bán hoặc chuyển nhượng chứng chỉ quỹ trên thị trường.\
-    \ FK đến Investment Fund và Investment Fund Investor Membership. Mỗi dòng = 1\
-    \ giao dịch, insert-only."
-  source_table: "FMS.TRANSFER_MBF"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Investment Fund Investor Capital Change Log"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Sự kiện thay đổi vốn góp của nhà đầu tư trong quỹ (nộp thêm/rút bớt/chuyển\
-    \ nhượng). FK đến Investment Fund Investor Membership. Mỗi dòng = 1 sự kiện, insert-only.\
-    \ BCO điều chỉnh theo review: `Business Activity` (thay cho `Transaction`)."
-  source_table: "FMS.MB_CHANGE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Investment Fund Investor Membership"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Quan hệ thành viên của nhà đầu tư trong quỹ đầu tư — NĐT nắm giữ CCQ.\
-    \ FK đến Investment Fund. Grain = 1 NĐT per quỹ. Table Type điều chỉnh theo review:\
-    \ `Fundamental` (thay cho `Relative`)."
-  source_table: "FMS.MB_FUND"
-  status: "draft"
 - bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Law"
   atomic_entity: "Legal Document"
@@ -2601,174 +2264,7 @@ entities:
   description: "Nến giá OHLCV (mở/cao/thấp/đóng cửa, khối lượng khớp) của một mã (chứng\
     \ khoán hoặc chỉ số) theo kỳ phút hoặc ngày, phục vụ biểu đồ TradingView. Gộp\
     \ từ 2 bảng nguồn cấu trúc gần như giống hệt nhau, phân biệt qua src_stm_code."
-  source_table: "MDDS.JAD_TRADINGVIEWHISTORY1MIN, MDDS.JAD_TRADINGVIEWHISTORY1DAY"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Disclosure Announcement"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Công bố thông tin (CBTT)/thông báo của thành viên thị trường — định\
-    \ kỳ, bất thường, theo yêu cầu. FK đa hướng nullable đến Fund Management Company,\
-    \ Investment Fund, Fund Management Company Employee, Foreign Fund Management Organization\
-    \ Unit, Foreign FM Org Unit Staff, Pension Fund. Mỗi dòng = 1 lần công bố, insert-only."
-  source_table: "FMS.ANNOUNCE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Inspection Penalty Decision"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Quyết định xử phạt vi phạm hành chính phát sinh từ đợt thanh tra,\
-    \ gắn với đối tượng cụ thể. FK đến Member Inspection Round và Member Inspection\
-    \ Target. Table Type điều chỉnh theo review 2026-07-03: `Fundamental` (thay cho\
-    \ `Fact Append`)."
-  source_table: "FMS.INSPECTION_PENALTY_DECISION"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Inspection Round"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Đợt thanh tra/kiểm tra định kỳ hoặc đột xuất do UBCKNN tổ chức đối\
-    \ với thành viên thị trường (QLQ/Quỹ/NH LKGS/ĐLPP/Khác — polymorphic)."
-  source_table: "FMS.INSPECTION_ROUND"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Inspection Target"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Đối tượng cụ thể chịu thanh tra trong 1 đợt (FK đa hình theo loại\
-    \ đối tượng). FK đến Member Inspection Round."
-  source_table: "FMS.INSPECTION_TARGET"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Rating Criterion"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Tiêu chí chấm điểm xếp hạng thành viên thị trường, cấu trúc cây self-referencing\
-    \ cha/con, thuộc 1 Member Rating Criterion Group. **Sửa lỗi mapping:** nguồn đúng\
-    \ là FMS.FACTOR (không phải FMS.RNK_FACTOR như thiết kế trước — xem Tier1 T1-05)."
-  source_table: "FMS.FACTOR"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Rating Criterion Group"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Nhóm tiêu chí chấm điểm xếp hạng công ty QLQ (VD: nhóm Quản trị, nhóm\
-    \ Tài chính). Là cấp nhóm cha của Member Rating Criterion."
-  source_table: "FMS.GRP_FACTOR"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Rating Criterion Scale"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Thang điểm/khoảng giá trị áp dụng cho từng tiêu chí chấm điểm (ngưỡng\
-    \ from/to + điểm quy đổi). FK đến Member Rating Criterion. Table Type điều chỉnh\
-    \ theo review 2026-07-03: `Fundamental` (thay cho `Relative`)."
-  source_table: "FMS.FTOR_SCALE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Rating Ranking Criterion"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Điểm số thực tế của 1 kết quả xếp hạng theo từng tiêu chí chi tiết.\
-    \ **Sửa lỗi mapping:** FMS.RNK_FACTOR không có self-ref, là bảng điểm (SCORE_VALUE/MINUS_SCORE)\
-    \ chứ không phải Member Rating Criterion — xem Tier1 T1-05. FK đến Member Rating\
-    \ và Member Rating Criterion. Table Type điều chỉnh theo review 2026-07-03: `Fundame"
-  source_table: "FMS.RNK_FACTOR"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Rating Ranking Criterion Group"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Điểm số breakdown của 1 kết quả xếp hạng (Member Rating) theo từng\
-    \ nhóm tiêu chí (Member Rating Criterion Group). Table Type điều chỉnh theo review\
-    \ 2026-07-03: `Fundamental` (thay cho `Fact Append`)."
-  source_table: "FMS.RNK_GR_FTOR"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Warning Condition"
-  table_type: ""
-  domain_prefix: "Member Warning"
-  entity_physical_name: ""
-  description: "Điều kiện cảnh báo cụ thể xác định ngưỡng vi phạm cho 1 hoặc 2 Member\
-    \ Warning Parameter (so sánh kép) — ngưỡng tối thiểu/tối đa, kỳ lấy dữ liệu, số\
-    \ ngày vi phạm liên tiếp. FK đến Member Warning Parameter. Cấu trúc gần giống\
-    \ FIMS.CDTWARN nhưng là entity riêng của FMS."
-  source_table: "FMS.CDT_WARN"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Member Warning Parameter"
-  table_type: ""
-  domain_prefix: "Member Warning"
-  entity_physical_name: ""
-  description: "Tham số cảnh báo giám sát định nghĩa chỉ tiêu theo dõi kèm công thức\
-    \ tính cho từng loại đối tượng thị trường (QLQ/Quỹ/NH LKGS/ĐLPP/ĐLCN). Cấu trúc\
-    \ gần giống FIMS.PARAWARN nhưng là entity riêng của FMS. Là nền tảng cho Member\
-    \ Warning Condition (Tier 2)."
-  source_table: "FMS.PARA_WARN"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Notification"
-  table_type: ""
-  domain_prefix: "Notification"
-  entity_physical_name: ""
-  description: "Instance thông báo công bố thông tin đã được tạo ra trong hệ thống:\
-    \ gắn với form CBTT, trạng thái gửi, thời gian gửi. Đổi tên từ \"Disclosure Notification\"\
-    \ (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e #18."
-  source_table: "IDS.NOTIFICATIONS"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Notification Recipient"
-  table_type: ""
-  domain_prefix: "Notification"
-  entity_physical_name: ""
-  description: "Chi tiết người nhận của một thông báo CBTT: tài khoản nhận, loại đối\
-    \ tượng, công ty liên quan, địa chỉ email và điện thoại. Đổi tên từ \"Disclosure\
-    \ Form Definition Notification Recipient\" (2026-08-05, theo yêu cầu tường minh\
-    \ Data Modeler) — xem 7e #18."
-  source_table: "IDS.NOTIFICATIONS_DTL"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Official Letter Administrative Violation Process"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Công văn chính thức phát sinh trong quy trình xử lý VPHC (8 loại từ\
-    \ thông báo vi phạm đến đôn đốc khắc phục), sử dụng biểu mẫu chuẩn, liên kết với\
-    \ hồ sơ VPHC/biên bản/quyết định."
-  source_table: "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Other Intermediary Organization Unit"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Đại lý/tổ chức trung gian khác tham gia thị trường quỹ, không thuộc\
-    \ phân phối/chuyển nhượng/hưu trí cụ thể. FK đến AGENCY_TYPE."
-  source_table: "FMS.OTHER_AGENT"
+  source_table: "MDDS.JAD_TVHISTORY1M, MDDS.JAD_TVHISTORY1D"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -2796,29 +2292,6 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Pension Fund"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Quỹ hưu trí bổ sung tự nguyện do công ty QLQ quản lý, có ngân hàng\
-    \ lưu ký và ngân hàng giám sát riêng biệt. FK đến Fund Management Company và Custodian\
-    \ Bank. BCO điều chỉnh theo review 2026-07-03: `Involved Party` (thay cho `Group`),\
-    \ nhất quán với Investment Fund."
-  source_table: "FMS.PENSION_FUND"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Pension Service Organization"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Tổ chức đóng vai trò đại lý phân phối hoặc nhà cung cấp dịch vụ hưu\
-    \ trí bổ sung tự nguyện. Gộp từ 2 bảng nguồn cấu trúc giống nhau, phân biệt vai\
-    \ trò bằng Classification Value."
-  source_table: "FMS.PENSION_AGENT, FMS.PENSION_PROVIDER"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
   atomic_entity: "Petition"
   table_type: ""
   domain_prefix: ""
@@ -2826,41 +2299,6 @@ entities:
   description: "Hồ sơ đơn thư gửi đến UBCKNN từ công dân hoặc tổ chức, gồm phản ánh\
     \ kiến nghị, khiếu nại và tố cáo, với khả năng nhận diện đơn trùng qua self-reference."
   source_table: "THANHTRA.PETITION"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Petition Target"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Danh sách đối tượng được đề cập trong đơn thư (1 đơn - nhiều đối tượng,\
-    \ có thể thuộc loại khác nhau: công ty chứng khoán, công ty quản lý quỹ, công\
-    \ ty đại chúng, khác). Bảng mới (DDL UAT 2026-09) thay thế cột TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME\
-    \ (nay DEPRECATED) trên Petition. Polymorphic reference — giữ pattern đã dùng\
-    \ ở Inspecti"
-  source_table: "THANHTRA.PETITION_TARGET"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Petition X Regulatory Authority Organization Unit Relationship"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Danh sách đơn vị nội bộ UBCKNN được chuyển xử lý đơn thư (1 đơn -\
-    \ nhiều đơn vị) — entity link bắc cầu Petition (Communication) và Regulatory Authority\
-    \ Organization Unit (Involved Party, entity đã có ở nguồn NHNCK). Bảng mới (DDL\
-    \ UAT 2026-09) thay thế cột INTERNAL_TRANSFER_UNIT_ID/NAME (nay DEPRECATE"
-  source_table: "THANHTRA.PETITION_INTERNAL_TRANSFER_UNIT"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Proactive Notice"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Thông báo chủ động phát đi từ thanh tra UBCKNN (không gắn với hồ sơ\
-    \ cụ thể), dùng để cảnh báo, nhắc nhở hoặc hướng dẫn các đơn vị được giám sát."
-  source_table: "THANHTRA.PROACTIVE_NOTICE"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -3056,18 +2494,6 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Securities Company Business Transaction Relationship"
-  table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: ""
-  description: "Ghi nhận CTCK được cấp phép hoạt động nghiệp vụ kinh doanh chứng khoán\
-    \ nào (FK Securities Company + Classification Securities Company Firm Service),\
-    \ kèm trạng thái liên kết (RECORD_STATUS). BCV Concept `[Event] Party Registration`\
-    \ — cùng pattern với Securities Company Licensed Service. Có PK ri"
-  source_table: "SCMS.LNK_SC_FIRM_BUSINESS_LINE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
   atomic_entity: "Securities Company Complaint Petition"
   table_type: ""
   domain_prefix: ""
@@ -3096,24 +2522,6 @@ entities:
   entity_physical_name: ""
   description: ""
   source_table: "SCMS.DISCLOSURE_SHAREHOLDER"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Branch"
-  atomic_entity: "Securities Company Foreign Organization Unit"
-  table_type: "Relative"
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_foreign_organization_unit"
-  description: "Đơn vị tổ chức nước ngoài trực thuộc CTCK hoạt động tại Việt Nam: chi nhánh CTCK nước ngoài (SC_FIRM_FOREIGN_BRANCH, org_unit_type_code = FOREIGN_BRANCH) và văn phòng đại diện CTCK nước ngoài (SC_FIRM_FOREIGN_REP_OFFICE, org_unit_type_code = FOREIGN_REP_OFFICE). Ghi nhận thông tin công ty mẹ, quốc gia, vốn được cấp, số giấy phép, thời hạn hoạt động và trạng thái pháp lý."
-  source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH, SCMS.SC_FIRM_FOREIGN_REP_OFFICE"
-  status: "draft"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Transaction"
-  atomic_entity: "Securities Company Foreign Organization Unit Periodic Report"
-  table_type: "Relative"
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_foreign_organization_unit_periodic_report"
-  description: "Báo cáo định kỳ do chi nhánh và văn phòng đại diện CTCK nước ngoài nộp lên UBCKNN. Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng thái xử lý."
-  source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -3187,29 +2595,6 @@ entities:
   description: "Quan hệ sở hữu của CTCK với các tổ chức khác (công ty mẹ, công ty\
     \ con, liên kết). Ghi nhận loại quan hệ và tỷ lệ sở hữu theo từng mối liên kết."
   source_table: "SCMS.SC_FIRM_OWNERSHIP_RELATION"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Company Practitioner"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Người hành nghề chứng khoán đang công tác tại CTCK. Shared entity\
-    \ extend source_table vào Securities Practitioner từ NHNCK. Ghi nhận số CCHN,\
-    \ loại CCHN, ngày bổ nhiệm và đơn vị công tác."
-  source_table: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Company Practitioner Business Transaction Relationship"
-  table_type: ""
-  domain_prefix: "Securities Company Practitioner"
-  entity_physical_name: ""
-  description: "Ghi nhận người hành nghề chứng khoán (Securities Company Practitioner)\
-    \ được phép thực hiện nghiệp vụ kinh doanh chứng khoán nào (FK Securities Company\
-    \ Practitioner + Classification Securities Company Firm Service). Bảng nguồn chỉ\
-    \ có 2 cột FK, không có attribute riêng — theo yê"
-  source_table: "SCMS.LNK_PRACTITIONER_BUSINESS_LINE"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -3306,69 +2691,6 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Securities Company Risk Indicator"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Chỉ tiêu đánh giá rủi ro CTCK theo phương pháp CAMEL. Danh mục master\
-    \ định nghĩa tên, nhóm, trọng số, công thức tính và loại kỳ đánh giá cho từng\
-    \ chỉ tiêu."
-  source_table: "SCMS.RISK_INDICATOR"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Company Risk Indicator Group"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Nhóm chỉ tiêu đánh giá rủi ro CTCK theo phương pháp CAMEL (C=Vốn,\
-    \ A=Tài sản, M=Quản lý, E=Thu nhập, L=Thanh khoản). Ghi nhận mã nhóm, tên và trọng\
-    \ số nhóm."
-  source_table: "SCMS.RISK_INDICATOR_GROUP"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Company Risk Indicator Scoring Scale"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Thang điểm đánh giá rủi ro quy định cho từng chỉ tiêu rủi ro. Định\
-    \ nghĩa các mức điểm theo khoảng giá trị (min/max) và điều kiện áp dụng từng mức."
-  source_table: "SCMS.RISK_SCORING_SCALE"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Company Risk Reporting Period"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Kỳ đánh giá rủi ro CTCK (quý hoặc năm). Ghi nhận mã kỳ, giá trị kỳ\
-    \ (VD: 2024-Q1), ngày bắt đầu, ngày kết thúc và loại kỳ đánh giá."
-  source_table: "SCMS.RISK_REPORTING_PERIOD"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Company Risk Scoring Detail"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Chi tiết điểm rủi ro từng chỉ tiêu cho từng CTCK theo từng kỳ đánh\
-    \ giá. Grain: 1 chỉ tiêu × 1 CTCK × 1 kỳ. Ghi nhận điểm, giá trị thực tế và thang\
-    \ điểm áp dụng."
-  source_table: "SCMS.RISK_SCORING_SC_FIRM_DETAIL"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Company Risk Summary"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Tổng hợp điểm rủi ro của CTCK theo kỳ đánh giá. Grain: 1 CTCK × 1\
-    \ kỳ. Ghi nhận tổng điểm CAMEL, xếp hạng rủi ro và ngày tính điểm."
-  source_table: "SCMS.RISK_SUMMARY"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
   atomic_entity: "Securities Company Shareholder Transfer"
   table_type: ""
   domain_prefix: ""
@@ -3377,17 +2699,6 @@ entities:
     \ 1 giao dịch insert-only. Ghi nhận bên chuyển nhượng, bên nhận, số cổ phần và\
     \ ngày thực hiện."
   source_table: "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Securities Distribution Agent Personnel"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Nhân sự hành nghề tại địa điểm giao dịch của Securities Distribution\
-    \ Agent. FK đến Securities Distribution Agent trực tiếp — theo review 2026-07-03,\
-    \ DISTRIBUTOR_LOCATION không còn là Atomic entity riêng."
-  source_table: "FMS.DISTRIBUTOR_PERSONNEL"
   status: "draft"
 - bcv_core_object: "Group"
   bcv_concept: "[Group] Group"
@@ -3452,16 +2763,6 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Transfer Agent"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: "Đại lý chuyển nhượng quyền sở hữu chứng chỉ quỹ (VSDC, ngân hàng thương\
-    \ mại hoặc tổ chức khác)."
-  source_table: "FMS.TRANSFER_AGENT"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
   atomic_entity: "Violation Behavior X Penalty Type Relationship"
   table_type: ""
   domain_prefix: ""
@@ -3495,18 +2796,6 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Violation Report Penalty Config"
-  table_type: ""
-  domain_prefix: "Violation Report"
-  entity_physical_name: ""
-  description: "Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm nộp báo cáo: số ngày\
-    \ quá hạn (cố định/tối thiểu/tối đa), mã khoản quy định, hình thức xử phạt, thời\
-    \ gian hiệu lực. Đổi tên từ \"Public Company Violation Penalty Config\" (2026-08-05,\
-    \ theo yêu cầu tường minh Data Modeler) — xem 7e #18."
-  source_table: "IDS.VIOLATION_PENALTY_CONFIG"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
   atomic_entity: "Violation Report Template"
   table_type: ""
   domain_prefix: "Violation Report"
@@ -3516,24 +2805,4 @@ entities:
     \ Violation Template\" (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem\
     \ 7e #18."
   source_table: "IDS.VIOLATION_TEMPLATES"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Branch"
-  atomic_entity: "Securities Company Foreign Organization Unit X Classification Securities Company Firm Service Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "sc_foreign_ou_x_cl_sc_firm_service_relationship"
-  description: "Danh mục dịch vụ chứng khoán được cấp phép cho từng chi nhánh CTCK nước ngoài (FK Securities Company Foreign Organization Unit + Classification Securities Company Firm Service). Đảo ngược quyết định denormalize Array trước đây theo chỉ đạo Data Modeler (2026-10-10) — tách entity `_x_` riêng, mirror pattern LNK_SC_FIRM_SERVICE / LNK_TRANSACTION_OFFICE_SERVICE."
-  source_table: "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Organization"
-  atomic_entity: "Fund Distribution Agent X Investment Fund X Classification FMS Agency Type Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "fund_distribution_agent_x_investment_fund_x_cl_fms_agency_type_relationship"
-  description: "Quan hệ đại lý phân phối giữ vai trò theo loại đại lý đối với quỹ đầu\
-    \ tư (1 quỹ có thể có nhiều đại lý, mỗi đại lý theo 1 loại đại lý). FK đến Fund\
-    \ Distribution Agent + Investment Fund + Classification FMS Agency Type."
-  source_table: "FMS.FUD_AG_AGT"
   status: "draft"

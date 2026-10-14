@@ -17,18 +17,18 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "3 block giấy tờ: IDENTIFICATION (IdNo/IdDate/IdAdd), BUSINESS_LICENSE (RegNo/RegDate/RegAdd), CUSTODIAN_MEMBER_CERT (DepCert). Loại BUSINESS_LICENSE cho RegNo là đề xuất — cần Data Modeler xác nhận (xem điểm cần xác nhận T1-11 FIMS_HLD_Tier1)."
+  notes: "3 block giấy tờ: ESTABLISHMENT_OPERATION_LICENSE (IdNo/IdDate/IdAdd), BUSINESS_LICENSE (RegNo/RegDate/RegAdd), CUSTODIAN_MEMBER_CERT (DepCert). Loại BUSINESS_LICENSE cho RegNo là đề xuất — cần Data Modeler xác nhận (xem điểm cần xác nhận T1-11 FIMS_HLD_Tier1)."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company (Involved Party)."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Securities Company Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns:
   - "FIMS.SECURITIESCOMPANY.Id"
-  comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -41,7 +41,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.SECURITIESCOMPANY.Id"
-  comment: "Lookup pair: securities_company.sc_code. Pair with Involved Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -59,19 +59,19 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ — số CMND/CCCD/Hộ chiếu/Giấy phép."
+  description: "Loại giấy tờ — Giấy phép thành lập và hoạt động do UBCKNN cấp."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION."
-  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
-  etl_derived_value: "IDENTIFICATION"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ESTABLISHMENT_OPERATION_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
+  etl_derived_value: "ESTABLISHMENT_OPERATION_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Số CMND/CCCD/Hộ chiếu/Giấy phép."
+  description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -79,12 +79,12 @@ attributes:
   source_columns:
   - "FIMS.SECURITIESCOMPANY.IdNo"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type Code."
-  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
-  description: "Ngày cấp giấy tờ định danh."
+  description: "Ngày cấp giấy tờ."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
@@ -92,12 +92,12 @@ attributes:
   source_columns:
   - "FIMS.SECURITIESCOMPANY.IdDate"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
-  description: "Nơi cấp giấy tờ định danh."
+  description: "Nơi cấp giấy tờ."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -105,7 +105,7 @@ attributes:
   source_columns:
   - "FIMS.SECURITIESCOMPANY.IdAdd"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  classification_context: "IP_ALT_ID_TYPE=ESTABLISHMENT_OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Type Code"

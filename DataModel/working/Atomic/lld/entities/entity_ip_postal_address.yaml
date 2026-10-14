@@ -146,9 +146,18 @@ sources:
 - source_system: "IDS"
   source_table: "LEGAL_ENTITIES"
   lld_file: "IDS/lld_IDS_LEGAL_ENTITIES_IP_Postal_Address.yaml"
+- source_system: "IDS"
+  source_table: "AF_PROFILES"
+  lld_file: "IDS/lld_IDS_AF_PROFILES_IP_Postal_Address.yaml"
 - source_system: "FIMS"
   source_table: "INVESTOR"
   lld_file: "FIMS/lld_FIMS_INVESTOR_IP_Postal_Address.yaml"
+- source_system: "FIMS"
+  source_table: "BANKMONI"
+  lld_file: "FIMS/lld_FIMS_BANKMONI_IP_Postal_Address.yaml"
+- source_system: "FIMS"
+  source_table: "SECURITIESCOMPANY"
+  lld_file: "FIMS/lld_FIMS_SECURITIESCOMPANY_IP_Postal_Address.yaml"
 - source_system: "FIMS"
   source_table: "TRADINGREPRESENTATIVE"
   lld_file: "FIMS/lld_FIMS_TRADINGREPRESENTATIVE_IP_Postal_Address.yaml"
@@ -156,8 +165,12 @@ sources:
   source_table: "TAX_REGISTRATION_INFO"
   lld_file: "KNT/lld_KNT_TAX_REGISTRATION_INFO_IP_Postal_Address.yaml"
 consolidation_notes:
-- "⚠️ FIMS.INVESTOR: thiếu attribute 'Involved Party Id' — đặt nullable=true"
-- "⚠️ FIMS.INVESTOR: thiếu attribute 'Involved Party Code' — đặt nullable=true"
+- "⚠️ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: thiếu attribute 'Involved Party Id' — đặt\
+  \ nullable=true"
+- "⚠️ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: thiếu attribute 'Involved Party Code' —\
+  \ đặt nullable=true"
+- "⚠️ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: thiếu attribute 'Source System Code' — đặt\
+  \ nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=HEAD_OFFICE)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=PERMANENT)\
@@ -172,15 +185,13 @@ consolidation_notes:
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=FOREIGN_REP_OFFICE)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=PARENT_ADDRESS)\
-  \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=FOREIGN_BRANCH)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=HOME) — đặt\
-  \ nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=HOUSEHOLD_REGISTRY)\
-  \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=REGISTERED)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=DISTRIBUTION_AGENT)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=PARENT_ADDRESS)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=ADDRESS)\
   \ — đặt nullable=true"
@@ -190,29 +201,20 @@ consolidation_notes:
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ADDR_TYPE=HEAD_OFFICE)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ADDR_TYPE=PERMANENT)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ADDR_TYPE=PERMANENT)\
-  \ — đặt nullable=true"
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Company Organization Unit (VPDD CTCK NN — phiên\
-    \ bản đăng ký tại VN)."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Foreign Representative Office Personnel Id."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: ra_organization_unit.ra_ou_id. Shared entity — không có PK\
-    \ surrogate riêng. Nguồn IP Postal Address chính là NHNCK.UNITS (cùng dòng dữ\
-    \ liệu với Regulatory Authority Organization Unit, không cần crosswalk qua bảng\
-    \ khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK.UNITS', UNIT_CODE) | Trước\
-    \ đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
-    \ từ UNIT_CODE) — đã sửa 2026-07-27."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('NHNCK_UNITS', UNIT_CODE)."
   classification_context: null
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: "NHNCK.UNITS.ID"
-    NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ID"
+    NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
     IAM.USERS: "IAM.USERS.ID"
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.ID"
@@ -223,12 +225,12 @@ attributes:
     SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.SC_FIRM_TRANSACTION_OFFICE.ID"
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.ID"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.ID"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
     SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.ID"
     SCMS.SC_FIRM_INSIDER_RELATION: "SCMS.SC_FIRM_INSIDER_RELATION.ID"
     SCMS.SC_FIRM_OWNERSHIP_RELATION: "SCMS.SC_FIRM_OWNERSHIP_RELATION.ID"
@@ -237,26 +239,29 @@ attributes:
     FMS.SECURITIES: "FMS.SECURITIES.ID"
     FMS.BANK_MONI: "FMS.BANK_MONI.ID"
     FMS.AGENCIES: "FMS.AGENCIES.ID"
-    FMS.BRANCHS: "FMS.BRANCHS.ID"
+    FMS.BRANCHS: null
     FMS.FOR_BRCH: "FMS.FOR_BRCH.ID"
     FMS.TL_PROFILES: "FMS.TL_PROFILES.ID"
     FMS.INVES: "FMS.INVES.ID"
-    FMS.AGENCIES_BRA: "FMS.AGENCIES_BRA.ID"
+    FMS.AGENCIES_BRA: null
     FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ID"
     FMS.REPRESENT: "FMS.REPRESENT.ID"
-    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.MB_FUND: null
     FMS.INSIDER: "FMS.INSIDER.ID"
-    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
-    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
     FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.ID"
-    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID"
-    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.ID"
-    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
-    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID"
-    FMS.DISTRIBUTOR_LOCATION: "FMS.DISTRIBUTOR_LOCATION.DISTRIBUTOR_AGENT_ID"
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.ID"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ID"
+    IDS.AF_PROFILES: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
 - attribute_name: "Involved Party Code"
@@ -265,15 +270,14 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Code. Pair with Involved Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ NHNCK.UNITS"
   classification_context: null
   etl_derived_value: null
   source_mappings:
     NHNCK.UNITS: "NHNCK.UNITS.UNIT_CODE"
-    NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ID"
+    NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
-    IAM.USERS: "IAM.USERS.ID"
+    IAM.USERS: "IAM.USERS.USERNAME"
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.CODE"
     SCMS.BANK: "SCMS.BANK.ID"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CODE"
@@ -282,12 +286,12 @@ attributes:
     SCMS.SC_FIRM_TRANSACTION_OFFICE: "SCMS.SC_FIRM_TRANSACTION_OFFICE.ID"
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.ID"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.ID"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
     SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.ID"
     SCMS.SC_FIRM_INSIDER_RELATION: "SCMS.SC_FIRM_INSIDER_RELATION.ID"
     SCMS.SC_FIRM_OWNERSHIP_RELATION: "SCMS.SC_FIRM_OWNERSHIP_RELATION.ID"
@@ -296,33 +300,36 @@ attributes:
     FMS.SECURITIES: "FMS.SECURITIES.ID"
     FMS.BANK_MONI: "FMS.BANK_MONI.ID"
     FMS.AGENCIES: "FMS.AGENCIES.ID"
-    FMS.BRANCHS: "FMS.BRANCHS.ID"
+    FMS.BRANCHS: null
     FMS.FOR_BRCH: "FMS.FOR_BRCH.ID"
     FMS.TL_PROFILES: "FMS.TL_PROFILES.ID"
     FMS.INVES: "FMS.INVES.ID"
-    FMS.AGENCIES_BRA: "FMS.AGENCIES_BRA.ID"
+    FMS.AGENCIES_BRA: null
     FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ID"
     FMS.REPRESENT: "FMS.REPRESENT.ID"
-    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.MB_FUND: null
     FMS.INSIDER: "FMS.INSIDER.ID"
-    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
-    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
     FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.ID"
-    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID"
-    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.ID"
-    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
-    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID"
-    FMS.DISTRIBUTOR_LOCATION: "FMS.DISTRIBUTOR_LOCATION.DISTRIBUTOR_AGENT_ID"
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.ID"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ID"
+    IDS.AF_PROFILES: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
-  nullable: false
+  nullable: true
   is_primary_key: false
   comment: null
   classification_context: "SOURCE_SYSTEM=..."
@@ -373,12 +380,15 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
-  description: "Loại địa chỉ — trụ sở chính."
+  description: "Loại địa chỉ — trụ sở/văn phòng."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
@@ -431,7 +441,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -469,27 +482,30 @@ attributes:
     SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
     FMS.SECURITIES: "FMS.SECURITIES.ADDRESS"
     FMS.BANK_MONI: "FMS.BANK_MONI.ADDRESS"
-    FMS.AGENCIES: "FMS.AGENCIES.ADDRESS"
+    FMS.AGENCIES: null
     FMS.BRANCHS: null
     FMS.FOR_BRCH: null
     FMS.TL_PROFILES: null
     FMS.INVES: null
-    FMS.AGENCIES_BRA: "FMS.AGENCIES_BRA.ADDRESS"
+    FMS.AGENCIES_BRA: null
     FMS.STF_FG_BRCH: null
     FMS.REPRESENT: null
     FMS.MB_FUND: null
     FMS.INSIDER: null
-    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
-    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
     FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.ADDRESS"
     FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.ADDRESS"
-    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
     FMS.INSDER_RELA: null
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.HEAD_OFFICE_ADDR"
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: "IDS.AF_PROFILES.ADDRESS"
     FIMS.INVESTOR: "FIMS.INVESTOR.Address"
+    FIMS.BANKMONI: "FIMS.BANKMONI.Address"
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Address"
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.HQ_ADDRESS"
 - attribute_name: "Address Type Code"
@@ -547,19 +563,21 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
-  description: "Địa chỉ chi tiết thường trú (số nhà, đường, phường/xã theo C06)."
+  description: "Địa chỉ trụ sở chính/văn phòng của nhân sự cấp cao."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.PROFESSIONALS.ADDRESS khi\
-    \ PERMANENT_ADDRESS null. ETL xử lý logic này. (2026-07-24: đăng ký lại ADDRESS\
-    \ vào source_columns — post_check_source_coverage phát hiện cột này chưa được\
-    \ ghi nhận dù đã map qua fallback comment.)"
+  comment: "Địa chỉ thường trú. (2026-10-13: bỏ ADDRESS khỏi source_columns — ADDRESS\
+    \ là địa chỉ tạm trú/hiện tại, đã map sang Address Value của khối CURRENT; không\
+    \ còn fallback chéo loại địa chỉ.)"
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
@@ -579,9 +597,9 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.PERMANENT_ADDRESS"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.PERMANENT_ADDRESS"
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DIACHITHUONGTRU"
-    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.HOUSEHOLD_REGISTRATION"
     SCMS.SC_FIRM_INSIDER_RELATION: "SCMS.SC_FIRM_INSIDER_RELATION.PERMANENT_ADDRESS"
     SCMS.SC_FIRM_OWNERSHIP_RELATION: null
     SCMS.SC_FIRM_RELATED_PERSON: "SCMS.SC_FIRM_RELATED_PERSON.PERMANENT_ADDRESS"
@@ -608,8 +626,11 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ADDRESS"
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Country Id"
   physical_name: "country_id"
@@ -619,7 +640,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PERMANENT_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
@@ -669,18 +690,21 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Country Code"
   physical_name: "country_code"
-  description: "Mã quốc gia địa chỉ thường trú (theo C06)."
+  description: "Mã quốc gia."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country Id.\
-    \ Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk (nguồn NHNCK.PROFESSIONALS)\
-    \ — chi tiết xem comment Country Id."
+    \ Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk — chi tiết xem\
+    \ comment Country Id."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
@@ -729,7 +753,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
@@ -740,7 +767,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.PERMANENT_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -792,18 +819,21 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
-  description: "Mã tỉnh/thành phố địa chỉ thường trú (theo C06)."
+  description: "Mã tỉnh/thành."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-    \ Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk (nguồn NHNCK.PROFESSIONALS)\
-    \ — chi tiết xem comment Province Id."
+    \ Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
@@ -852,7 +882,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
@@ -863,7 +896,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.PERMANENT_DISTRICT_ID\
-    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = DISTRICTS.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng\
@@ -917,18 +950,21 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
   physical_name: "district_code"
-  description: "Mã quận/huyện địa chỉ thường trú (theo C06)."
+  description: "Mã quận/huyện."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair with District\
-    \ Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk (nguồn NHNCK.PROFESSIONALS)\
-    \ — chi tiết xem comment District Id."
+    \ Id. Giá trị lấy từ NHNCK.DISTRICTS.DISTRICT_CODE sau ETL crosswalk — chi tiết\
+    \ xem comment District Id."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   source_mappings:
@@ -977,7 +1013,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -1037,7 +1076,71 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ hiện tại (nơi ở hiện tại)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Địa chỉ tạm trú/hiện tại (IP_ADDR_TYPE=CURRENT). Cặp với khối CURRENT_COUNTRY_ID/PROVINCE_ID/DISTRICT_ID."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ADDRESS"
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ADDRESS"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.CURRENT_ADDRESS"
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ADDRESS"
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: "FMS.TL_PROFILES.CURRENT_ADD"
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Country Id"
@@ -1048,7 +1151,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.CURRENT_COUNTRY_ID\
-    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT_COUNTRY', COUNTRY_CODE)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
@@ -1098,16 +1201,19 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Country Code"
   physical_name: "country_code"
-  description: "Mã quốc gia địa chỉ tạm trú (theo C06)."
+  description: "Mã quốc gia địa chỉ tạm trú."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Country Id. Giá trị lấy từ NHNCK.COUNTRIES.COUNTRY_CODE sau ETL crosswalk —\
     \ chi tiết xem comment Country Id."
   classification_context: "IP_ADDR_TYPE=CURRENT"
@@ -1158,7 +1264,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
@@ -1169,7 +1278,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang NHNCK.PROVINCES: PROFESSIONALS.CURRENT_PROVINCE_ID\
-    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = PROVINCES.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | NHNCK.PROVINCES ngừng thiết kế Atomic entity riêng — chỉ dùng\
     \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
     \ trước go-live."
@@ -1221,16 +1330,19 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
-  description: "Mã tỉnh/thành phố địa chỉ tạm trú (theo C06)."
+  description: "Mã tỉnh/thành địa chỉ tạm trú."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Province Id. Giá trị lấy từ NHNCK.PROVINCES.PROVINCE_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=CURRENT"
@@ -1281,7 +1393,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
@@ -1293,7 +1408,7 @@ attributes:
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD', ĐỔI TARGET — xem District Id khối PERMANENT ở trên). Cần ETL\
     \ crosswalk sang NHNCK.DISTRICTS: PROFESSIONALS.CURRENT_DISTRICT_ID = DISTRICTS.ID\
-    \ để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD', DISTRICT_CODE)\
+    \ để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD', DISTRICT_CODE)\
     \ | NHNCK.DISTRICTS ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk.\
     \ Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=CURRENT"
@@ -1344,12 +1459,15 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
   physical_name: "district_code"
-  description: "Mã quận/huyện địa chỉ tạm trú (theo C06)."
+  description: "Mã quận/huyện địa chỉ tạm trú."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -1404,7 +1522,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
@@ -1415,7 +1536,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_INFO.PROVINCE_ID\
-    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
     \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
     \ ECAT — cần profile dữ liệu trước go-live."
@@ -1445,8 +1566,8 @@ attributes:
     SCMS.SC_FIRM_OWNERSHIP_RELATION: null
     SCMS.SC_FIRM_RELATED_PERSON: null
     SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
+    FMS.SECURITIES: "FMS.SECURITIES.PROVINCE_ID"
+    FMS.BANK_MONI: "FMS.BANK_MONI.PROVINCE_ID"
     FMS.AGENCIES: null
     FMS.BRANCHS: null
     FMS.FOR_BRCH: null
@@ -1467,7 +1588,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.PROVINCE_ID"
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
@@ -1476,7 +1600,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE sau ETL crosswalk\
     \ — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
@@ -1505,8 +1629,8 @@ attributes:
     SCMS.SC_FIRM_OWNERSHIP_RELATION: null
     SCMS.SC_FIRM_RELATED_PERSON: null
     SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
+    FMS.SECURITIES: "FMS.PROVINCE.CODE"
+    FMS.BANK_MONI: "FMS.PROVINCE.CODE"
     FMS.AGENCIES: null
     FMS.BRANCHS: null
     FMS.FOR_BRCH: null
@@ -1527,7 +1651,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: "IDS.PROVINCES.PROVINCE_CD"
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
@@ -1538,7 +1665,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_INFO.DISTRICT_ID\
-    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
@@ -1592,7 +1719,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
@@ -1601,7 +1731,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT\
     \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
     \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
@@ -1652,77 +1782,21 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "District Name"
-  physical_name: "district_nm"
-  description: "Tên quận/huyện (denormalized để tiện query mà không cần join CAT_DISTRICT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm),\
-    \ không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id."
-  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.DISTRICT_ID"
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
-  description: "FK đến Geographic Area cấp phường/xã."
+  description: "FK đến Geographic Area — xã/phường trụ sở."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_INFO.WARD_ID = CAT_WARD.ID\
-    \ để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE) | SCMS.CAT_WARD\
+    \ để xác nhận WARD_CODE sau đó hash_id('ECAT_WARD_NEW', WARD_CODE) | SCMS.CAT_WARD\
     \ ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ\
     \ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
@@ -1751,8 +1825,8 @@ attributes:
     SCMS.SC_FIRM_OWNERSHIP_RELATION: null
     SCMS.SC_FIRM_RELATED_PERSON: null
     SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
+    FMS.SECURITIES: "FMS.SECURITIES.WARD_ID"
+    FMS.BANK_MONI: "FMS.BANK_MONI.WARD_ID"
     FMS.AGENCIES: null
     FMS.BRANCHS: null
     FMS.FOR_BRCH: null
@@ -1773,7 +1847,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Code"
@@ -1782,7 +1859,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
     \ Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau ETL crosswalk — chi tiết\
     \ xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
@@ -1811,8 +1888,8 @@ attributes:
     SCMS.SC_FIRM_OWNERSHIP_RELATION: null
     SCMS.SC_FIRM_RELATED_PERSON: null
     SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
+    FMS.SECURITIES: "FMS.WARD.CODE"
+    FMS.BANK_MONI: "FMS.WARD.CODE"
     FMS.AGENCIES: null
     FMS.BRANCHS: null
     FMS.FOR_BRCH: null
@@ -1833,66 +1910,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Ward Name"
-  physical_name: "ward_nm"
-  description: "Tên phường/xã (denormalized để tiện query mà không cần join CAT_WARD)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu dự phòng\
-    \ để tránh join nhiều tầng."
-  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.WARD_ID"
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -1951,7 +1972,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -1990,7 +2014,7 @@ attributes:
     FMS.SECURITIES: null
     FMS.BANK_MONI: null
     FMS.AGENCIES: null
-    FMS.BRANCHS: "FMS.BRANCHS.ADDRESS"
+    FMS.BRANCHS: null
     FMS.FOR_BRCH: null
     FMS.TL_PROFILES: null
     FMS.INVES: null
@@ -2009,7 +2033,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
@@ -2020,7 +2047,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_BRANCH.PROVINCE_ID\
-    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
     \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
     \ ECAT — cần profile dữ liệu trước go-live."
@@ -2072,7 +2099,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
@@ -2081,7 +2111,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_PROVINCE). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE\
     \ sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=BRANCH"
@@ -2132,7 +2162,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
@@ -2143,7 +2176,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_BRANCH.DISTRICT_ID\
-    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
@@ -2197,7 +2230,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
@@ -2206,7 +2242,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT\
     \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
     \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=BRANCH"
@@ -2257,65 +2293,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "District Name"
-  physical_name: "district_nm"
-  description: "Tên Quận/Huyện (denormalized text, không có FK riêng)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Text gốc từ bảng nguồn (không phải ETL lookup). Dùng khi District Id NULL."
-  classification_context: "IP_ADDR_TYPE=BRANCH"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.DISTRICT_NAME"
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Id"
@@ -2326,7 +2307,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_BRANCH.WARD_ID = CAT_WARD.ID\
-    \ để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE) | SCMS.CAT_WARD\
+    \ để xác nhận WARD_CODE sau đó hash_id('ECAT_WARD_NEW', WARD_CODE) | SCMS.CAT_WARD\
     \ ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ\
     \ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=BRANCH"
@@ -2377,7 +2358,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Code"
@@ -2386,7 +2370,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau\
     \ ETL crosswalk — chi tiết xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=BRANCH"
@@ -2437,65 +2421,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Ward Name"
-  physical_name: "ward_nm"
-  description: "Tên Phường/Xã (denormalized text)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Text gốc từ bảng nguồn (không phải ETL lookup). Dùng khi Ward Id NULL."
-  classification_context: "IP_ADDR_TYPE=BRANCH"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.WARD_NAME"
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -2554,7 +2483,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -2612,7 +2544,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
@@ -2623,7 +2558,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_REP_OFFICE.PROVINCE_ID\
-    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
     \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
     \ ECAT — cần profile dữ liệu trước go-live."
@@ -2675,7 +2610,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
@@ -2684,7 +2622,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_PROVINCE). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE\
     \ sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
@@ -2735,7 +2673,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
@@ -2746,7 +2687,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_REP_OFFICE.DISTRICT_ID\
-    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
@@ -2800,7 +2741,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
@@ -2809,7 +2753,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT\
     \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
     \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
@@ -2860,7 +2804,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Id"
@@ -2871,7 +2818,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_REP_OFFICE.WARD_ID\
-    \ = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE)\
+    \ = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT_WARD_NEW', WARD_CODE)\
     \ | SCMS.CAT_WARD ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT —\
     \ cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
@@ -2922,7 +2869,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Code"
@@ -2931,7 +2881,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau\
     \ ETL crosswalk — chi tiết xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=REP_OFFICE"
@@ -2982,7 +2932,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -3042,7 +2995,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -3097,10 +3053,13 @@ attributes:
     FMS.OTHER_AGENT: null
     FMS.TRANSFER_AGENT: null
     FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: "FMS.DISTRIBUTOR_LOCATION.ADDRESS"
+    FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.TRADING_OFFICE_ADDR"
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
@@ -3111,7 +3070,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'PROVINCE'). Cần ETL crosswalk sang SCMS.CAT_PROVINCE: SC_FIRM_TRANSACTION_OFFICE.PROVINCE_ID\
-    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT.PROVINCE_NEW',\
+    \ = CAT_PROVINCE.ID để xác nhận PROVINCE_CODE sau đó hash_id('ECAT_PROVINCE_NEW',\
     \ PROVINCE_CODE) | SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng,\
     \ chỉ là ý định extend chưa triển khai. Chưa xác nhận value set khớp danh mục\
     \ ECAT — cần profile dữ liệu trước go-live."
@@ -3163,7 +3122,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
@@ -3172,7 +3134,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_PROVINCE). Pair with Province Id. Giá trị lấy từ SCMS.CAT_PROVINCE.PROVINCE_CODE\
     \ sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
@@ -3223,7 +3185,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
@@ -3234,7 +3199,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area_old.geographic_area_old_id (geographic_area_old_tp_code\
     \ = 'DISTRICT_OLD'). Cần ETL crosswalk sang SCMS.CAT_DISTRICT: SC_FIRM_TRANSACTION_OFFICE.DISTRICT_ID\
-    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT.DISTRICT_OLD',\
+    \ = CAT_DISTRICT.ID để xác nhận DISTRICT_CODE sau đó hash_id('ECAT_DISTRICT_OLD',\
     \ DISTRICT_CODE) | ĐỔI TARGET — không còn Geographic Area: cấp quận/huyện đã bị\
     \ loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn\
     \ lưu ở Geographic Area Old. SCMS.CAT_DISTRICT ngừng thiết kế — chưa từng là entity\
@@ -3288,7 +3253,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
@@ -3297,7 +3265,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
+  comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT\
     \ — ĐỔI TARGET, xem District Id). Pair with District Id. Giá trị lấy từ SCMS.CAT_DISTRICT.DISTRICT_CODE\
     \ sau ETL crosswalk — chi tiết xem comment District Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
@@ -3348,7 +3316,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Id"
@@ -3359,7 +3330,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'WARD'). Cần ETL crosswalk sang SCMS.CAT_WARD: SC_FIRM_TRANSACTION_OFFICE.WARD_ID\
-    \ = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT.WARD_NEW', WARD_CODE)\
+    \ = CAT_WARD.ID để xác nhận WARD_CODE sau đó hash_id('ECAT_WARD_NEW', WARD_CODE)\
     \ | SCMS.CAT_WARD ngừng thiết kế. Chưa xác nhận value set khớp danh mục ECAT —\
     \ cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
@@ -3410,7 +3381,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Code"
@@ -3419,7 +3393,7 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT — không\
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không\
     \ còn CAT_WARD). Pair with Ward Id. Giá trị lấy từ SCMS.CAT_WARD.WARD_CODE sau\
     \ ETL crosswalk — chi tiết xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
@@ -3470,7 +3444,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -3531,7 +3508,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -3556,64 +3536,6 @@ attributes:
     SCMS.SC_FIRM_TRANSACTION_OFFICE: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.ADDRESS"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_ADDRESS"
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Address Type Code"
-  physical_name: "adr_tp_code"
-  description: "Loại địa chỉ: PARENT_ADDRESS=Địa chỉ công ty mẹ nước ngoài."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ ADDRESS (công ty mẹ)."
-  classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
-  etl_derived_value: "PARENT_ADDRESS"
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
@@ -3647,65 +3569,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Address Value"
-  physical_name: "adr_val"
-  description: "Địa chỉ công ty mẹ nước ngoài."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Không có Province/District/Ward FK."
-  classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ADDRESS"
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: "FMS.FOR_BRCH.PARENT_ADDRESS"
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -3766,7 +3633,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -3824,298 +3694,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Address Value"
-  physical_name: "adr_val"
-  description: "Địa chỉ chi tiết tạm trú (theo C06)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Không có cột địa lý (Province/District/Ward) trong BRD."
-  classification_context: "IP_ADDR_TYPE=CURRENT"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ADDRESS"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.CURRENT_ADDRESS"
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ADDRESS"
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: "FMS.TL_PROFILES.CURRENT_ADD"
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Address Type Code"
-  physical_name: "adr_tp_code"
-  description: "Loại địa chỉ: HOME=Địa chỉ cá nhân nhân sự cấp cao."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ADDR_TYPE. ETL hardcode HOME — SC_FIRM_SENIOR_PERSONNEL có\
-    \ 1 cột ADDRESS là địa chỉ cá nhân."
-  classification_context: "IP_ADDR_TYPE=HOME"
-  etl_derived_value: "HOME"
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Address Value"
-  physical_name: "adr_val"
-  description: "Địa chỉ trụ sở chính/văn phòng của nhân sự cấp cao."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Không có Province/District/Ward FK."
-  classification_context: "IP_ADDR_TYPE=HOME"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ADDRESS"
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Address Type Code"
-  physical_name: "adr_tp_code"
-  description: "Loại địa chỉ: HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ HOKHAUTHUONGTRU."
-  classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
-  etl_derived_value: "HOUSEHOLD_REGISTRY"
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Address Value"
-  physical_name: "adr_val"
-  description: "Địa chỉ hộ khẩu của cổ đông."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "NVARCHAR2. Không có cột địa lý (Province/District/Ward)."
-  classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.HOKHAUTHUONGTRU"
-    SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.HOUSEHOLD_REGISTRATION"
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -4174,7 +3756,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -4232,7 +3817,639 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Country Id"
+  physical_name: "country_id"
+  description: "FK đến Geographic Area — quốc gia trụ sở."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang ECAT.COUNTRY: SECURITIES.COUNTRY_ID = COUNTRY.ID\
+    \ để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE) | FMS không có bảng danh\
+    \ mục quốc gia nội bộ (COUNTRY_ID VARCHAR2(256) là ID danh mục eCAT) — giả định\
+    \ COUNTRY_ID = ECAT.COUNTRY.ID, cần profile dữ liệu xác nhận. Chưa xác nhận value\
+    \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: "FMS.SECURITIES.COUNTRY_ID"
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Country Code"
+  physical_name: "country_code"
+  description: "Mã quốc gia."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country Id.\
+    \ Giá trị lấy từ ECAT.COUNTRY.CODE sau ETL crosswalk — chi tiết xem comment Country\
+    \ Id."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: "ECAT.COUNTRY.CODE"
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — đại lý phân phối."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=DISTRIBUTION_AGENT"
+  etl_derived_value: "DISTRIBUTION_AGENT"
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ đại lý phân phối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=DISTRIBUTION_AGENT"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: "FMS.AGENCIES.ADDRESS"
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — công ty mẹ nước ngoài."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
+  etl_derived_value: "PARENT_ADDRESS"
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ công ty mẹ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: "FMS.FOR_BRCH.PARENT_ADDRESS"
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Province Id"
+  physical_name: "province_id"
+  description: "FK đến Geographic Area — tỉnh/thành phố chi nhánh/VPĐD tại Việt Nam."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang FMS.PROVINCE: FOR_BRCH.PROVINCE_ID = PROVINCE.ID\
+    \ để xác nhận CODE sau đó hash_id('ECAT_PROVINCE_NEW', CODE) | FMS.PROVINCE (đồng\
+    \ bộ từ eCAT DMDC province-news) ngừng thiết kế Atomic entity riêng — chỉ dùng\
+    \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
+    \ trước go-live."
+  classification_context: "IP_ADDR_TYPE=FOREIGN_BRANCH"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: "FMS.FOR_BRCH.PROVINCE_ID"
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành phố."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
+    \ Id. Giá trị lấy từ FMS.PROVINCE.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Province Id."
+  classification_context: "IP_ADDR_TYPE=FOREIGN_BRANCH"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: "FMS.PROVINCE.CODE"
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Ward Id"
+  physical_name: "ward_id"
+  description: "FK đến Geographic Area — xã/phường chi nhánh/VPĐD tại Việt Nam."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'WARD'). Cần ETL crosswalk sang FMS.WARD: FOR_BRCH.WARD_ID = WARD.ID để xác\
+    \ nhận CODE sau đó hash_id('ECAT_WARD_NEW', CODE) | FMS.WARD (đồng bộ từ eCAT\
+    \ DMDC ward-news) ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk.\
+    \ Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=FOREIGN_BRANCH"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: "FMS.FOR_BRCH.WARD_ID"
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Ward Code"
+  physical_name: "ward_code"
+  description: "Mã xã/phường."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id.\
+    \ Giá trị lấy từ FMS.WARD.CODE sau ETL crosswalk — chi tiết xem comment Ward Id."
+  classification_context: "IP_ADDR_TYPE=FOREIGN_BRANCH"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: "FMS.WARD.CODE"
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -4290,7 +4507,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -4336,19 +4556,22 @@ attributes:
     FMS.AGENCIES_BRA: null
     FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ADDRESS"
     FMS.REPRESENT: "FMS.REPRESENT.ADDRESS"
-    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.MB_FUND: null
     FMS.INSIDER: "FMS.INSIDER.ADDRESS"
     FMS.PENSION_AGENT: null
     FMS.PENSION_PROVIDER: null
     FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ADDRESS"
+    FMS.TL_PRO_RELA: null
     FMS.OTHER_AGENT: null
     FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: "FMS.INSDER_RELA.ADDRESS"
+    FMS.INSDER_RELA: null
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ADDRESS"
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
@@ -4406,7 +4629,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
@@ -4464,17 +4690,276 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_ADDRESS_DESC"
+- attribute_name: "Province Id"
+  physical_name: "province_id"
+  description: "FK đến Geographic Area — tỉnh/thành phố (TVS2601TK-3433)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang FMS.PROVINCE: INSIDER.PROVINCE_ID = PROVINCE.ID\
+    \ để xác nhận CODE sau đó hash_id('ECAT_PROVINCE_NEW', CODE) | FMS.PROVINCE (đồng\
+    \ bộ từ eCAT DMDC province-news) ngừng thiết kế Atomic entity riêng — chỉ dùng\
+    \ để crosswalk. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
+    \ trước go-live."
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: "FMS.INSIDER.PROVINCE_ID"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành phố."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
+    \ Id. Giá trị lấy từ FMS.PROVINCE.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Province Id."
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: "FMS.PROVINCE.CODE"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Ward Id"
+  physical_name: "ward_id"
+  description: "FK đến Geographic Area — xã/phường (TVS2601TK-3433)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'WARD'). Cần ETL crosswalk sang FMS.WARD: INSIDER.WARD_ID = WARD.ID để xác\
+    \ nhận CODE sau đó hash_id('ECAT_WARD_NEW', CODE) | FMS.WARD (đồng bộ từ eCAT\
+    \ DMDC ward-news) ngừng thiết kế Atomic entity riêng — chỉ dùng để crosswalk.\
+    \ Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: "FMS.INSIDER.WARD_ID"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Ward Code"
+  physical_name: "ward_code"
+  description: "Mã xã/phường."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id.\
+    \ Giá trị lấy từ FMS.WARD.CODE sau ETL crosswalk — chi tiết xem comment Ward Id."
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: "FMS.WARD.CODE"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Foreign Investor (Involved Party)."
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Securities Company Id."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: true
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS.INVESTOR',\
-    \ TransactionCode)."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -4523,17 +5008,19 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
+    FIMS.BANKMONI: "FIMS.BANKMONI.Id"
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Id"
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
-  description: "Mã Foreign Investor."
+  description: "Mã Securities Company."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved\
-    \ Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   source_mappings:
@@ -4582,126 +5069,11 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
+    FIMS.BANKMONI: "FIMS.BANKMONI.Id"
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Id"
     FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến Trading Representative (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: true
-  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
-    \ ID)."
-  classification_context: "IP_ADDR_TYPE=PERMANENT"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
-    KNT.TAX_REGISTRATION_INFO: null
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã Trading Representative."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
-    \ with Involved Party Id."
-  classification_context: "IP_ADDR_TYPE=PERMANENT"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.INVES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
     KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
@@ -4759,7 +5131,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_CODE"
 - attribute_name: "Province Name"
@@ -4817,7 +5192,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME"
 - attribute_name: "District Code"
@@ -4875,7 +5253,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_CODE"
 - attribute_name: "District Name"
@@ -4933,7 +5314,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME"
 - attribute_name: "Ward Code"
@@ -4991,7 +5375,10 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_CODE"
 - attribute_name: "Ward Name"
@@ -5049,6 +5436,9 @@ attributes:
     FMS.DISTRIBUTOR_LOCATION: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
     FIMS.INVESTOR: null
+    FIMS.BANKMONI: null
+    FIMS.SECURITIESCOMPANY: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME"

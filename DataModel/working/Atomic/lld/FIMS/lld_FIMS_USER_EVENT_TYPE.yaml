@@ -1,0 +1,85 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "USER_EVENT_TYPE"
+  atomic_entity: "Identity and Access Management User X Classification FIMS Report Event Type"
+  entity_physical_name: "identity_and_access_management_user_x_cl_fims_report_event_type"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-10-13"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-13] Pure link giữa người dùng (IAM.USERS) và loại sự vụ báo cáo (Classification FIMS Report Event Type). Theo pattern entity link `_x_`: không có cặp Id/Code riêng, PK = composite 2 FK Id; tên vật lý do Data Modeler chỉ định (không có hậu tố _relationship). Nguồn chỉ có 2 cột (SsoUserId, EventTypeId, cùng là PK) — map đủ cả 2. BCV: không có term riêng cho quan hệ User-Event Type — Core Object theo vế Involved Party, cần Data Modeler xác nhận. Bảng chưa có file BRD per-table và chưa có entry trong brd_FIMS.yaml — cấu trúc cột lấy từ Source/DDL UAT 1/FIMS_UAT_schema.txt."
+attributes:
+- attribute_name: "Identity and Access Management User Id"
+  physical_name: "identity_and_access_management_user_id"
+  description: "FK -> IAM.USERS: Người dùng hệ thống (ID người dùng trong hệ thống SSO)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FIMS.USER_EVENT_TYPE.SsoUserId"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: USER_EVENT_TYPE.SsoUserId = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identity and Access Management User Code"
+  physical_name: "identity_and_access_management_user_code"
+  description: "Username đăng nhập của người dùng (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.USERNAME"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Identity and Access Management User Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Identity and Access Management User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FIMS Report Event Type Id"
+  physical_name: "cl_fims_rpt_event_tp_id"
+  description: "FK -> RPT_EVENT_TYPE: Loại sự vụ báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FIMS.USER_EVENT_TYPE.EventTypeId"
+  comment: "FK target: cl_fims_report_event_type.cl_fims_rpt_event_tp_id. Cần ETL crosswalk sang FIMS.RPT_EVENT_TYPE: USER_EVENT_TYPE.EventTypeId = RPT_EVENT_TYPE.ID để xác nhận EVENT_CODE sau đó hash_id('FIMS_RPT_EVENT_TYPE', EVENT_CODE). Composite PK cùng Identity and Access Management User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FIMS Report Event Type Code"
+  physical_name: "cl_fims_rpt_event_tp_code"
+  description: "Mã loại sự vụ báo cáo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.RPT_EVENT_TYPE.EVENT_CODE"
+  comment: "Lookup pair: cl_fims_report_event_type.cl_fims_rpt_event_tp_code. Pair with Classification FIMS Report Event Type Id. Giá trị lấy từ FIMS.RPT_EVENT_TYPE.EVENT_CODE sau ETL crosswalk — chi tiết xem comment Classification FIMS Report Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FIMS_USER_EVENT_TYPE"
+  etl_derived_value: "FIMS_USER_EVENT_TYPE"
+  data_type: "string"

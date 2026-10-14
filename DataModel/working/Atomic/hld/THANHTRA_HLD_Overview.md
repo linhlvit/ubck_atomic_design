@@ -354,7 +354,7 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 
 ### 27. Violation Record X Violation Behavior Relationship
 **Tier:** 4 | **Source:** `VIOLATION_RECORD_BEHAVIOR` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Relative
-**Description:** Entity link/relationship thuần liên kết biên bản VPHC (Violation Record) với danh mục hành vi vi phạm (Violation Behavior). [SỬA 2026-09-22] Đổi từ Fundamental "Violation Record Behavior" — DESCRIPTION/LEGAL_BASIS bỏ khỏi thiết kế (pattern "_x_", đồng nhất NHNCK.APPLICATION_DECISIONS), PK composite trên 2 FK Id, không có Id/Code riêng của entity.
+**Description:** Entity link/relationship thuần liên kết biên bản VPHC (Violation Record) với danh mục hành vi vi phạm (Violation Behavior). [SỬA 2026-09-22] Đổi từ Fundamental "Violation Record X Violation Behavior Relationship" — DESCRIPTION/LEGAL_BASIS bỏ khỏi thiết kế (pattern "_x_", đồng nhất NHNCK.APPLICATION_DECISIONS), PK composite trên 2 FK Id, không có Id/Code riêng của entity.
 
 ### 28. Examination Result Notice Remedial
 **Tier:** 4 | **Source:** `EXAMINATION_RESULT_NOTICE_REMEDIAL` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
