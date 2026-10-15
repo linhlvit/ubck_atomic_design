@@ -825,7 +825,7 @@ entities:
       - "ip_alternative_identification"
       - "sc_shareholder"
       - "securities_company"
-      - "investment_account"
+      - "discretionary_investment_account"
       - "major_shareholder"
     modules_using:
       - "NHNCK"
@@ -891,8 +891,8 @@ entities:
         nullable: true
         key: ""
         description: "Số tài khoản giao dịch chứng khoán cá nhân của NHN — xem Vấn đề mở O_NHNCK_33 (Atomic DDL trực tiếp, chưa có YAML LLD chính thức)"
-        source_atomic_table: "investment_account"
-        source_atomic_column: "investment_account.investment_account_nbr"
+        source_atomic_table: "discretionary_investment_account"
+        source_atomic_column: "discretionary_investment_account.investment_account_nbr"
       - logical_name: "Account Holder Name"
         physical_name: "account_holder_nm"
         data_domain: "Text"
@@ -900,8 +900,8 @@ entities:
         nullable: true
         key: ""
         description: "Tên chủ tài khoản giao dịch chứng khoán của NHN — xem ghi chú Account Number"
-        source_atomic_table: "investment_account"
-        source_atomic_column: "investment_account.investor_nm"
+        source_atomic_table: "discretionary_investment_account"
+        source_atomic_column: "discretionary_investment_account.investor_nm"
       - logical_name: "Main Held Securities Code"
         physical_name: "main_held_securities_code"
         data_domain: "Text"
