@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_360_profile_flat 
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
     investor_status_code            Nullable(String)        COMMENT 'Trạng thái hoạt động NĐTNN (proxy hiển thị ở thẻ Đại diện giao dịch)',
     investor_status_nm              Nullable(String)        COMMENT 'Tên trạng thái NĐTNN (K_NDTNN_255, BA STATUS.Name)',
-    identification_nbr              Nullable(String)        COMMENT 'Số giấy tờ ĐÃ MASKED — khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13), không hiển thị'
+    identification_nbr              Array(String)           COMMENT 'Mảng số giấy tờ ĐÃ MASKED (IdNo + giấy tờ khác như BusinessNumber, groupUniqArray) — khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13, has()), không hiển thị'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (investor_code)

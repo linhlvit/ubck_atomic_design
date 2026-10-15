@@ -10168,10 +10168,10 @@ entities:
       - logical_name: "Identification Number"
         physical_name: "identification_nbr"
         data_domain: "Text"
-        data_type: "string"
+        data_type: "array<string>"
         nullable: true
         key: ""
-        description: "Số giấy tờ định danh của NĐT — giá trị ĐÃ MASKED/mã hóa từ nguồn (Data Modeler xác nhận 2026-10-01), dùng làm khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13); không hiển thị. [SỬA 2026-10-07, đồng bộ Atomic FIMS UAT 20261006] `IP Alternative Identification` của FIMS_INVESTOR nay có thêm dòng BusinessNumber (loại BUSINESS_LICENSE, chỉ NĐT tổ chức) bên cạnh dòng IdNo — chỉ lấy dòng IdNo (loại ≠ BUSINESS_LICENSE) để không nhân dòng NĐT tổ chức và giữ nguyên khóa nối Nhóm 13 (O_NDTNN_40)."
+        description: "Số giấy tờ định danh của NĐT — giá trị ĐÃ MASKED/mã hóa từ nguồn (Data Modeler xác nhận 2026-10-01), dùng làm khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13); không hiển thị. [SỬA 2026-10-15, Data Modeler] Lấy CẢ giấy tờ khác của NĐTNN tổ chức: bỏ điều kiện loại ≠ BUSINESS_LICENSE (bản 2026-10-07 chỉ lấy IdNo), gom mọi giấy tờ (IdNo, BusinessNumber…) vào MẢNG bằng groupUniqArray để giữ 1 dòng/NĐT (PK investor_code); khóa nối Nhóm 13 dùng has() thay cho '='. (O_NDTNN_40)"
         source_atomic_table: "ip_alternative_identification"
         source_atomic_column: "ip_alternative_identification.identification_nbr"
 
