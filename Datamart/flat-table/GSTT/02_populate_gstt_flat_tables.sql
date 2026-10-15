@@ -67,6 +67,8 @@ SELECT
     f.owner_equity_average_4_quarter,
     f.foreign_buy_derivative_vol,
     f.foreign_sell_derivative_vol,
+    f.securities_company_net_profit_after_tax_ttm,
+    f.securities_company_owner_equity,
     cal_fr.cdr_dt                                  AS fr_period_end_dt,
     f.foreign_buy_vol,
     f.foreign_sell_vol,
