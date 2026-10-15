@@ -105,10 +105,18 @@ modules:
       sửa lại profile — dừng và hỏi Data Modeler trước (giống lần 2026-09-26 gây lệch).
 
   GSTT:
-    expect_columns: 27
+    expect_columns: 26
+    ma_column: null
     sql_columns: ["Câu lệnh tham khảo", "Câu lệnh màn"]
-    expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo", "Câu lệnh màn"]
-    note: "Có 'Câu lệnh tham khảo' nhưng KHÔNG có 'Câu lệnh update (SIT)' -> drop_rules không áp dụng."
+    expect_header_contains: ["STT", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo", "Câu lệnh màn"]
+    note: >-
+      Có 'Câu lệnh tham khảo' nhưng KHÔNG có 'Câu lệnh update (SIT)' -> drop_rules không áp dụng.
+      [CẬP NHẬT 2026-10-15 lần 2, xác minh qua header sống: 844 dòng đều 26 cột, delimiter ',', header dòng 1,
+      legend dòng 2] File BA hiện KHÔNG còn cột 'Mã' (bản HEAD có 'Mã' rỗng 806/806 dòng, nên bỏ đi không đổi khóa Nhóm)
+      và KHÔNG còn cột 'Usecase' (BA thêm 'Usecase' ở index 0 trong lần cập nhật sáng 2026-10-15 rồi Data Modeler yêu cầu
+      bỏ vì không liên quan thiết kế) → 26 cột, STT về index 0. `ma_column: null` = file KHÔNG có cột Mã (parser không
+      được rơi sang alias 'ma' vì alias khớp substring → nhận nhầm 'Trạng thái mapping'). 2 dòng Nhóm 35 'Tên người
+      nội bộ'/'Ngày cập nhật' vẫn thiếu STT như trước (nhóm '?').
 
   "GSĐC":
     aliases: [GSDC]
