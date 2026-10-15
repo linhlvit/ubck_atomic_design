@@ -2,7 +2,7 @@
 -- QLCB Flat Tables — CREATE
 -- Module: Quản lý Chào bán (QLCB)
 -- Generated: Phase 3 LLD Datamart
--- 5 bảng: 4 fact (snapshot) + 1 operational
+-- 5 bảng: 3 fact (snapshot) + 1 fact phẳng (fct_tthc_ap_document) + 1 operational
 -- ============================================================
 
 
@@ -199,47 +199,28 @@ COMMENT 'Flat table — Fact Securities Offering Result Snapshot × Calendar Dat
 
 
 -- ============================================================
--- 4. FACT: qlcb_fct_securities_offering_application_snpst_flat
---    Hồ sơ đăng ký chào bán nộp qua TTHC — đếm/phân tích theo nhóm trạng thái xử lý, hình thức, năm
---    ĐỔI NGUỒN 2026-08-24 (task Dũng): IDS → TTHC. Xem Cụm 3 của DTM_QLCB_HLD.md
---    [SỬA 2026-10-08] Nguồn Atomic ap_document + cl_value (TTHC thiết kế lại 2026-09-30/10-01); thêm securities_symbol_code, nhóm OVERDUE_SUPPLEMENT
---    Grain: 1 hồ sơ TTHC × 1 ngày snapshot (ETL full-scan hàng ngày vì Application Status Group Code
---    phản ánh trạng thái xử lý hiện hành của hồ sơ; Submission Date giữ vai trò Chiều/slicer)
---    Joins: Calendar Date (snpst_dt_dim_id, submission_dt_dim_id)
---           × AP Application Status Dimension × AP Application Type Dimension
---    Mọi FK non-nullable (grain 1 hồ sơ, lookup 1:1) → dùng INNER JOIN toàn bộ, không LEFT JOIN
+-- 4. FACT (PHẲNG): qlcb_fct_tthc_ap_document_flat
+--    Hồ sơ đăng ký chào bán nộp qua TTHC — đếm/phân tích theo nhóm trạng thái xử lý, hình thức, tổ chức, mã CK
+--    [SỬA 2026-10-15] Fact phẳng theo SQL dbt dtm_fct_tthc_ap_document — thay 2 Dimension (trạng thái, hình thức)
+--    + Fact snapshot cũ. Tên nhóm trạng thái / hình thức / người nộp lưu sẵn trên Fact (denormalized) nên flat table
+--    là bản sao 1-1 của Fact: KHÔNG còn JOIN Calendar Date / Dimension, KHÔNG còn cột ngày snapshot.
+--    Grain: 1 hồ sơ TTHC tại ngày chạy ETL (snapshot Atomic ACTIVE của ngày chạy; cơ quan xử lý
+--    'Ban Quản lý chào bán chứng khoán'; trạng thái thuộc 5 nhóm — hồ sơ ngoài 5 nhóm bị loại khỏi Fact)
+--    Nạp lại theo ngày chạy (trạng thái hiện hành) — xem O_QLCB_26 DTM_QLCB_HLD.md
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_securities_offering_application_snpst_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_tthc_ap_document_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT Securities Offering Application Snapshot
-    application_item_code                String                  COMMENT 'Degenerate Dimension — BK hồ sơ TTHC (ContentItemId của content item HoSoTTHC); grain đếm đơn nhất, COUNT không cần DISTINCT',
-    snpst_dt_dim_id                      String                  COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
-    submission_dt_dim_id                 String                  COMMENT 'FK → Calendar Date Dimension (ngày gửi hồ sơ — Chiều/slicer). Thay certificate_dt_dim_id của thiết kế IDS cũ',
-    ap_application_status_dim_id          String                  COMMENT 'FK → AP Application Status Dimension. Thay cột application_status_code của thiết kế IDS cũ',
-    ap_application_tp_dim_id             String                  COMMENT 'FK → AP Application Type Dimension. Thay offering_method_dim_id — non-nullable vì mỗi hồ sơ TTHC có đúng 1 LoaiHoSo',
-    securities_symbol_code               Nullable(String)        COMMENT '[MỚI 2026-10-08] Mã chứng khoán khai trên Eform hồ sơ (BA STT 6 "Mã chứng khoán") — ap_document.eform_data, NULL khi Eform không có mã',
-
-    -- From: CALENDAR DATE DIMENSION (Snapshot Date)
-    snpst_cdr_dt                         Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
-
-    -- From: CALENDAR DATE DIMENSION (Submission Date)
-    cdr_dt                               Nullable(Date)          COMMENT 'Ngày gửi hồ sơ — từ Calendar Date Dimension (Chiều/slicer; K_QLCB_37 GROUP BY năm của cột này)',
-
-    -- From: AP APPLICATION STATUS DIMENSION
-    application_status_item_code         String                  COMMENT 'BK — ContentItemId của trạng thái hồ sơ — từ AP Application Status Dimension',
-    application_status_nm                Nullable(String)        COMMENT 'Tên trạng thái hồ sơ hiển thị trên TTHC (display_text) — từ AP Application Status Dimension; dùng drill-down xuống trạng thái chi tiết',
-    application_status_group_code        String                  COMMENT 'Nhóm trạng thái gom từ 47 giá trị cl_nm — REGISTERED/IN_PROGRESS/APPROVED/REJECTED/OVERDUE_SUPPLEMENT/UNDEFINED ([SỬA 2026-10-08] thêm OVERDUE_SUPPLEMENT). Cột đếm của K_QLCB_32-35 và K_QLCB_38-42, K_QLCB_71',
-    application_status_src_stm_code      String                  COMMENT 'Mã hệ thống nguồn — từ AP Application Status Dimension',
-
-    -- From: AP APPLICATION TYPE DIMENSION
-    application_tp_item_code             String                  COMMENT 'BK — ContentItemId của hình thức chào bán — từ AP Application Type Dimension',
-    application_tp_nm                    Nullable(String)        COMMENT 'Tên hình thức chào bán/phát hành (display_text của LoaiHoSo) — từ AP Application Type Dimension; chiều hiển thị của K_QLCB_36',
-    application_tp_src_stm_code          String                  COMMENT 'Mã hệ thống nguồn — từ AP Application Type Dimension'
+    -- From: FACT TTHC AP Document
+    ap_document_code                     String                  COMMENT 'Degenerate Dimension — BK hồ sơ TTHC (ap_document.ap_document_code); grain đếm đơn nhất, COUNT không cần DISTINCT',
+    ap_document_applicant_nm             Nullable(String)        COMMENT 'Tên tổ chức/cá nhân đăng ký (K_QLCB_66) — ap_document_applicant.display_nm; NULL với hồ sơ schema mới (O_QLCB_24)',
+    securities_code                      Nullable(String)        COMMENT 'Mã chứng khoán trên hồ sơ (K_QLCB_67) — ap_document.securities_code; NULL với loại hồ sơ không có mã',
+    offering_method_nm                   Nullable(String)        COMMENT 'Hình thức chào bán (K_QLCB_36) — tên loại hồ sơ TTHC.DOCUMENT_TYPE (cl_nm); chiều hiển thị',
+    submission_dt                        Nullable(Date)          COMMENT 'Ngày gửi hồ sơ (K_QLCB_37) — CAST(submission_tms AS DATE); cột ngày thường, không còn FK Calendar Date',
+    document_status_group_nm             String                  COMMENT 'Nhóm trạng thái xử lý — 5 giá trị tiếng Việt: Hồ sơ đăng ký / Hồ sơ đang xử lý / Hồ sơ đã được chấp thuận / Hồ sơ bị từ chối / Hồ sơ quá hạn bổ sung. Cột đếm của K_QLCB_32-35, K_QLCB_38-42, K_QLCB_71'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), application_item_code)
-COMMENT 'Flat table — Fact Securities Offering Application Snapshot × Calendar Date Dimension × AP Application Status Dimension × AP Application Type Dimension'
+ORDER BY (ap_document_code)
+COMMENT 'Flat table — Fact TTHC AP Document (Fact phẳng, không JOIN Dimension)'
 ;
 
 

@@ -801,7 +801,7 @@ _Không có dim join — nhưng (Sửa 2026-07-22) LEFT JOIN thêm Practitioner 
 
 ## QLCB
 
-**5 bảng flat** · **64 KPI unique**
+**5 bảng flat** · **70 KPI unique**
 
 ---
 
@@ -882,30 +882,24 @@ _Không có dim join — nhưng (Sửa 2026-07-22) LEFT JOIN thêm Practitioner 
 
 ---
 
-### `datamart.qlcb_fct_securities_offering_application_snpst_flat`
+### `datamart.qlcb_fct_tthc_ap_document_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `fact` |
-| **Entity nguồn** | Fact Securities Offering Application Snapshot |
-| **Bảng fact/operational** | `datamart.fct_securities_offering_application_snpst` |
+| **Entity nguồn** | Fact TTHC AP Document |
+| **Bảng fact/operational** | `datamart.fct_tthc_ap_document` |
 | **PK** | `—` |
-| **Số dim join** | 3 |
+| **Số dim join** | 0 |
 
-**Joins (FK → PK)**
-
-| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
-|-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id`, `submission_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
-| Administrative Procedure Application Status Dimension | `datamart.ap_application_status_dim` | `ap_application_status_dim_id` | `ap_application_status_dim_id` | ✗ |
-| Administrative Procedure Application Type Dimension | `datamart.ap_application_tp_dim` | `ap_application_tp_dim_id` | `ap_application_tp_dim_id` | ✗ |
+_Không có dim join (Fact phẳng — tên nhóm trạng thái/hình thức/người nộp lưu sẵn trên Fact; nạp TRUNCATE + INSERT)._
 
 **Nhóm KPI**
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 5 — Tỷ lệ xử lý hồ sơ | 4 |
-| Nhóm 6 — Bảng Chi tiết hồ sơ chào bán & phát hành | 7 |
+| Nhóm 6 — Bảng Chi tiết hồ sơ chào bán & phát hành | 10 |
 
 ---
 

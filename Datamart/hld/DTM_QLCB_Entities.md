@@ -1,8 +1,10 @@
-# DTM_QLCB_Entities — v2.3
+# DTM_QLCB_Entities — v2.5
 
-**Phiên bản:** 2.4
-**Ngày:** 08/10/2026
+**Phiên bản:** 2.5
+**Ngày:** 15/10/2026
 **Phạm vi:** Star schema diagram per nhóm báo cáo — QLCB module (Phase 2, dựa trên Section 3/4 của `DTM_QLCB_HLD.md`)
+
+> **Cập nhật v2.5 (2026-10-15) — Fact phẳng `Fact TTHC AP Document` (SQL dbt `dtm_fct_tthc_ap_document`, Data Modeler):** thay 3 entity (`Fact Securities Offering Application Snapshot`, `Administrative Procedure Application Status Dimension`, `Administrative Procedure Application Type Dimension`) bằng **1 Fact phẳng** `Fact TTHC AP Document` (`fct_tthc_ap_document`, 6 cột, không FK Dimension, không Calendar Date). Nhóm trạng thái là tên tiếng Việt (5 nhóm, bỏ `UNDEFINED`). CSV 10 → 8 dòng. Xem O_QLCB_26.
 
 > **Cập nhật v2.4 (2026-10-08):** Atomic TTHC thiết kế lại (09-30/10-01) — `Fact Securities Offering Application Snapshot` driving `ap_document` mới (+ `securities_symbol_code`); `Administrative Procedure Application Status Dimension`/`Application Type Dimension` đọc `cl_value` (không còn `ap_content_item_index`); Status Dimension thêm nhóm `OVERDUE_SUPPLEMENT`; `Operational Securities Offering 360 Profile` thêm `securities_tp_nm`. KPI mới: K_QLCB_70 (Nhóm 4), K_QLCB_71 (Nhóm 6). Xem HLD v2.3.
 
@@ -18,13 +20,13 @@
 
 ```mermaid
 erDiagram
-    Public_Company_Dimension ||--o{ Fact_Securities_Offering : " "
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering : " "
+    Public_Company_Dimension ||--o{ Fact_Securities_Offering_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Offering | Fact Event | new | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ | 1 row / hồ sơ chào bán | K_QLCB_1–5 |
+| Fact Securities Offering Snapshot | Fact Event | new | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ | 1 row / hồ sơ chào bán | K_QLCB_1–5 |
 | Public Company Dimension | Dimension | reuse | Mã CK, tên DN, sàn, ngành (reuse `public_company_dim`, module GSDC) | 1 row / công ty đại chúng | Slicer Ngành |
 | Calendar Date Dimension | Dimension | reuse | Ngày công văn UBCKNN | 1 row / ngày (Conformed) | Slicer Ngày |
 
@@ -34,14 +36,14 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Public_Company_Dimension ||--o{ Fact_Securities_Offering_Plan : " "
-    Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Plan : " "
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Plan : " "
+    Public_Company_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
+    Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Offering Plan | Fact Event | new | Giá trị cấp phép theo loại hình chào bán | 1 row / đợt × 1 loại hình kế hoạch | K_QLCB_6–12 |
+| Fact Securities Offering Plan Snapshot | Fact Event | new | Giá trị cấp phép theo loại hình chào bán | 1 row / đợt × 1 loại hình kế hoạch | K_QLCB_6–12 |
 | Offering Method Dimension | Dimension | new | Hình thức chào bán (ETL-derived DISTINCT từ `offering_method_code`) | 1 row / mã hình thức | Slicer Loại hình |
 | Public Company Dimension | Dimension | reuse | Mã CK, tên DN (reuse `public_company_dim`) | 1 row / công ty đại chúng | Slicer |
 | Calendar Date Dimension | Dimension | reuse | Ngày công văn UBCKNN | 1 row / ngày (Conformed) | Slicer |
@@ -52,14 +54,14 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Public_Company_Dimension ||--o{ Fact_Securities_Offering_Result : " "
-    Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Result : " "
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Result : " "
+    Public_Company_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
+    Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Offering Result | Fact Event | new | Giá trị huy động theo loại hình chào bán | 1 row / đợt × 1 loại hình kết quả | K_QLCB_13–19 |
+| Fact Securities Offering Result Snapshot | Fact Event | new | Giá trị huy động theo loại hình chào bán | 1 row / đợt × 1 loại hình kết quả | K_QLCB_13–19 |
 | Offering Method Dimension | Dimension | new | Hình thức chào bán (reuse từ Nhóm 2, cùng scheme) | 1 row / mã hình thức | Slicer |
 | Public Company Dimension | Dimension | reuse | Mã CK, tên DN (reuse `public_company_dim`) | 1 row / công ty đại chúng | Slicer |
 | Calendar Date Dimension | Dimension | reuse | Ngày công văn UBCKNN | 1 row / ngày (Conformed) | Slicer |
@@ -80,39 +82,45 @@ erDiagram
 
 ### Nhóm 5 — Tỷ lệ xử lý hồ sơ
 
-> **READY (Atomic approved)** — nguồn TTHC (`ap_document` + `cl_value`, Atomic thiết kế lại 2026-09-30/10-01; [SỬA 2026-10-08] thay `ap_content_item_index`).
+> **READY (Atomic draft)** — nguồn TTHC (`ap_document` + `ap_document_applicant` + `cl_value`). **[SỬA 2026-10-15]** Fact phẳng, không Dimension.
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
-    Administrative_Procedure_Application_Status_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
+    Fact_TTHC_AP_Document {
+        string Administrative_Procedure_Document_Code
+        string Administrative_Procedure_Document_Applicant_Name
+        string Securities_Code
+        string Offering_Method_Name
+        date Submission_Date
+        string Document_Status_Group_Name
+    }
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Offering Application Snapshot | Fact Periodic Snapshot | partial | Hồ sơ đăng ký chào bán nộp qua TTHC — đếm theo nhóm trạng thái xử lý (KPI Card + donut). Repoint IDS → TTHC 2026-08-24 | 1 row / hồ sơ TTHC × 1 ngày snapshot | K_QLCB_32–35 |
-| Administrative Procedure Application Status Dimension | Dimension | new | Trạng thái hồ sơ TTHC + nhóm trạng thái gom 5+1 (`REGISTERED`/`IN_PROGRESS`/`APPROVED`/`REJECTED`/`OVERDUE_SUPPLEMENT`/`UNDEFINED`) từ 47 giá trị `cl_nm` | 1 row / trạng thái hồ sơ (`cl_value` schema `TrangThaiHoSo`) | Slicer |
-| Calendar Date Dimension | Dimension | reuse | Ngày gửi hồ sơ TTHC (`Submission Date`) — thay cho ngày công văn/ngày cấp giấy chứng nhận của bản IDS | 1 row / ngày (Conformed) | Slicer |
+| Fact TTHC AP Document | Fact Event (phẳng) | new | Hồ sơ đăng ký chào bán nộp qua TTHC — đếm theo nhóm trạng thái xử lý (KPI Card + donut). Fact phẳng theo SQL dbt `dtm_fct_tthc_ap_document` (2026-10-15), thay 2 Dimension + Fact snapshot cũ | 1 row / hồ sơ TTHC tại ngày chạy ETL | K_QLCB_32–35 |
 
 ---
 
 ### Nhóm 6 — Bảng Chi tiết hồ sơ chào bán & phát hành
 
-> **READY (Atomic draft)** — cùng nguồn/điều kiện với Nhóm 5 (O_QLCB_10 Closed).
+> **READY (Atomic draft)** — cùng Fact phẳng với Nhóm 5.
 
 ```mermaid
 erDiagram
-    Administrative_Procedure_Application_Type_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
-    Administrative_Procedure_Application_Status_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Application_Snapshot : " "
+    Fact_TTHC_AP_Document {
+        string Administrative_Procedure_Document_Code
+        string Administrative_Procedure_Document_Applicant_Name
+        string Securities_Code
+        string Offering_Method_Name
+        date Submission_Date
+        string Document_Status_Group_Name
+    }
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Offering Application Snapshot | Fact Periodic Snapshot | partial | Cùng Fact với Nhóm 5, bổ sung FK `Administrative_Procedure_Application_Type_Dimension_Id` (non-nullable) — phân tích theo hình thức × năm | 1 row / hồ sơ TTHC × 1 ngày snapshot (cùng grain Nhóm 5) | K_QLCB_36–42 |
-| Administrative Procedure Application Type Dimension | Dimension | new | Hình thức chào bán theo TTHC — `cl_nm` của `cl_value` schema `LoaiHoSo`. **KHÔNG** reuse `Offering Method Dimension` (dimension đó phục vụ K_QLCB_6–19 từ IDS) | 1 row / hình thức chào bán | Slicer |
-| Administrative Procedure Application Status Dimension | Dimension | new | Dùng chung với Nhóm 5 — 4 cột số lượng của bảng chi tiết đếm theo `Application Status Group Code` | 1 row / trạng thái hồ sơ | Slicer |
-| Calendar Date Dimension | Dimension | reuse | Năm (GROUP BY từ `Submission Date`) | 1 row / ngày (Conformed) | Slicer |
+| Fact TTHC AP Document | Fact Event (phẳng) | new | Cùng Fact với Nhóm 5 — phân tích theo hình thức × tổ chức/cá nhân × mã chứng khoán, 4 cột số lượng theo nhóm trạng thái + tổng. Hình thức chào bán là cột tên (`offering_method_nm`), **KHÔNG** reuse `Offering Method Dimension` (khác nguồn — O_QLCB_13) | 1 row / hồ sơ TTHC (cùng grain Nhóm 5) | K_QLCB_36–42, 66, 67, 71 |
 
 ---
 
@@ -148,8 +156,8 @@ erDiagram
 
 ## Bảng PENDING (không thiết kế trong Phase 2)
 
-**Cập nhật 2026-08-24 (v2.3):** không còn bảng nào PENDING toàn bộ. 3 bảng của Nhóm 5/6 từng bị loại ở v2.2 (`Fact Securities Offering Application Snapshot`, `Administrative Procedure Application Status Dimension`, `Administrative Procedure Application Type Dimension`) đã trở lại `DTM_QLCB_Entities.csv` sau khi Atomic bổ sung `ap_content_item_index.display_text` — xem O_QLCB_10 (Closed) trong Section 5 của `DTM_QLCB_HLD.md`.
+**Cập nhật 2026-10-15 (v2.5):** không còn bảng nào PENDING toàn bộ. 3 bảng cũ của Nhóm 5/6 (`Fact Securities Offering Application Snapshot`, `Administrative Procedure Application Status Dimension`, `Administrative Procedure Application Type Dimension`) đã được thay bằng 1 Fact phẳng `Fact TTHC AP Document` — xem O_QLCB_26 trong Section 5 của `DTM_QLCB_HLD.md`.
 
 Toàn bộ 10 Nhóm của module QLCB đều READY (Atomic draft). O_QLCB_9 và O_QLCB_15 là vấn đề quy trình aggregate/manifest bên Atomic, không phải PENDING dữ liệu và không block Phase LLD.
 
-> **Ghi chú lệch tên tồn đọng (không sửa trong lượt này):** `DTM_QLCB_Entities.csv` đang dùng tên Fact **không có** hậu tố `Snapshot` cho 3 Fact của Nhóm 1–3 (`Fact Securities Offering`, `Fact Securities Offering Plan`, `Fact Securities Offering Result`) trong khi HLD Section 3 và `datamart_model.yaml` đều dùng `... Snapshot`. Dòng Nhóm 5/6 mới thêm đã dùng đúng tên có `Snapshot`. Rule Phase 2 yêu cầu `datamart_entity` khớp HLD → 3 dòng Nhóm 1–3 cần đổi tên, tách task riêng cùng với #10 (chiều "Ngành" Nhóm 2/3 + `K_QLCB_65` thừa ở Nhóm 7).
+> **Ghi chú lệch tên tồn đọng (không sửa trong lượt này):** `DTM_QLCB_Entities.csv` đang dùng tên Fact **không có** hậu tố `Snapshot` cho 3 Fact của Nhóm 1–3 (`Fact Securities Offering`, `Fact Securities Offering Plan`, `Fact Securities Offering Result`) trong khi HLD Section 3 và `datamart_model.yaml` đều dùng `... Snapshot`. Dòng Fact phẳng Nhóm 5/6 (`Fact TTHC AP Document`) không dùng hậu tố `Snapshot` vì không còn là snapshot theo ngày. Rule Phase 2 yêu cầu `datamart_entity` khớp HLD → 3 dòng Nhóm 1–3 cần đổi tên, tách task riêng cùng với #10 (chiều "Ngành" Nhóm 2/3 + `K_QLCB_65` thừa ở Nhóm 7).
