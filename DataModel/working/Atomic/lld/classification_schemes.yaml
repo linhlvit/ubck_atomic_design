@@ -4750,43 +4750,6 @@ schemes:
         name: "Sở giao dịch chứng khoán (STOCKEXCHANGE)"
         source_table: "FIMS.STOCKEXCHANGE"
 
-  - scheme_code: "FIMS_REPORTING_OBLIGATION_CATEGORY"
-    name: "Phân loại nghĩa vụ của loại sự vụ: 1=Báo cáo, 2=CBTT, 3=Hồ sơ, 4=Khác"
-    source_type: "etl_derived"
-    source_table: "FIMS.RPT_EVENT_TYPE"
-    used_in_entities:
-      - "Reporting Obligation Type"
-    values:
-      - code: "REPORT"
-        name: "Báo cáo"
-        source_value: "1"
-      - code: "DISCLOSURE"
-        name: "Công bố thông tin"
-        source_value: "2"
-      - code: "DOCUMENT"
-        name: "Hồ sơ"
-        source_value: "3"
-      - code: "OTHER"
-        name: "Khác"
-        source_value: "4"
-
-  - scheme_code: "FIMS_REPORTING_EVENT_CATEGORY"
-    name: "Phân loại sự vụ: 1=Định kỳ, 2=Bất thường, 3=Theo yêu cầu"
-    source_type: "etl_derived"
-    source_table: "FIMS.RPT_EVENT_TYPE"
-    used_in_entities:
-      - "Reporting Obligation Type"
-    values:
-      - code: "PERIODIC"
-        name: "Định kỳ"
-        source_value: "1"
-      - code: "ADHOC"
-        name: "Bất thường"
-        source_value: "2"
-      - code: "ON_REQUEST"
-        name: "Theo yêu cầu"
-        source_value: "3"
-
   - scheme_code: "FIMS_REPORT_SUBMISSION_STATUS"
     name: "Trạng thái nộp báo cáo của thành viên thị trường"
     source_type: "etl_derived"

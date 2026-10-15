@@ -7,14 +7,14 @@ ldm:
   physical_name: sc_ou_x_cl_sc_firm_service_relationship
   layer: Atomic
   version: "1.0"
-  status: approved
+  status: draft
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Branch"
   table_type: Relative
   etl_pattern: SCD2
   source: SCMS
   description: |
-    Danh mục dịch vụ chứng khoán được cấp phép cho từng phòng giao dịch CTCK (FK Securities Company Organization Unit + Classification Securities Company Firm Service). Đảo ngược quyết định denormalize ARRAY trước đây (7d cũ) theo chỉ đạo Data Modeler (2026-09-23) — tách entity `_x_` riêng, mirror pattern #58 `Securities Company X Classification Securities Company Firm Service Relationship` (LNK_SC_FIRM_SERVICE), chỉ khác entity cha. PK composite (Securities Company Organization Unit Id + Classification Securities Company Firm Service Id) — không tạo Id/Code riêng cho entity. Bảng nguồn chỉ có 2 FK + RECORD_STATUS + CREATED_AT — không có business attribute riêng; khác #58 nên ID/CREATED_AT/RECORD_STATUS không map, nhất quán với lld_SCMS_LNK_SC_FIRM_SERVICE.yaml (không khai báo ds_* field).
+    Danh mục dịch vụ chứng khoán được cấp phép cho từng phòng giao dịch CTCK (FK Securities Company Organization Unit + Classification Securities Company Firm Service). Đảo ngược quyết định denormalize ARRAY trước đây (7d cũ) theo chỉ đạo Data Modeler (2026-09-23) — tách entity `_x_` riêng, mirror p
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn

@@ -20,7 +20,7 @@ columns:
     key: null
     fk_note: null
   - name: SECURITIES_LICENSE_NUMBER
-    data_type: VARCHAR2(100)
+    data_type: NVARCHAR2(200)
     description: "Số chứng chỉ hành nghề chứng khoán (CCHN)"
     key: null
     fk_note: null
@@ -244,6 +244,11 @@ columns:
     description: "FK -> cat_business_line: Nghiệp vụ kinh doanh liên quan"
     key: null
     fk_note: null
+  - name: LABOR_CONTRACT_TERMINATION_REPORT
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null
   - name: BUSINESS_DIVISION_ID
     data_type: NUMBER(10,0)
     description: "Cột business_division_id — xem thêm tài liệu đặc tả SCMS"
@@ -372,5 +377,10 @@ columns:
   - name: VERIFICATION_STATUS
     data_type: NUMBER(10,0)
     description: "Trang thai xac minh CCHN voi he thong: 0 = Cho xac minh; 1 = Khop (xac minh thanh cong); 2 = Khong khop"
+    key: null
+    fk_note: null
+  - name: MISMATCH_REASON
+    data_type: NVARCHAR2(2000)
+    description: null
     key: null
     fk_note: null

@@ -1,55 +1,60 @@
 schema_type: brd_source_columns
 schema_version: '1.0'
 source: SCMS
-table: flyway_schema_history
-brd_ref: BRD-SRC-SCMS-flyway_schema_history
+table: CAT_AUDIT_OPINION_TYPE
+brd_ref: BRD-SRC-SCMS-CAT_AUDIT_OPINION_TYPE
 columns:
-  - name: installed_rank
-    data_type: NUMBER
+  - name: ID
+    data_type: NUMBER(19,0)
     description: null
     key: PK
     fk_note: null
-  - name: version
-    data_type: VARCHAR2(50)
+  - name: CODE
+    data_type: NVARCHAR2(100)
     description: null
     key: null
     fk_note: null
-  - name: description
-    data_type: VARCHAR2(200)
+  - name: NAME
+    data_type: NVARCHAR2(1000)
     description: null
     key: null
     fk_note: null
-  - name: type
-    data_type: VARCHAR2(20)
+  - name: DESCRIPTION
+    data_type: NVARCHAR2(2000)
     description: null
     key: null
     fk_note: null
-  - name: script
-    data_type: VARCHAR2(1000)
+  - name: SORT_ORDER
+    data_type: NUMBER(4,0)
     description: null
     key: null
     fk_note: null
-  - name: checksum
-    data_type: NUMBER
+  - name: CREATED_BY
+    data_type: NUMBER(19,0)
     description: null
     key: null
     fk_note: null
-  - name: installed_by
-    data_type: VARCHAR2(100)
-    description: null
-    key: null
-    fk_note: null
-  - name: installed_on
+  - name: CREATED_AT
     data_type: TIMESTAMP(6)
     description: null
     key: null
     fk_note: null
-  - name: execution_time
-    data_type: NUMBER
+  - name: UPDATED_BY
+    data_type: NUMBER(19,0)
     description: null
     key: null
     fk_note: null
-  - name: success
+  - name: UPDATED_AT
+    data_type: TIMESTAMP(6)
+    description: null
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: RECORD_STATUS
     data_type: NUMBER(1,0)
     description: null
     key: null

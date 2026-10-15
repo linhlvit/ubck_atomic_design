@@ -194,6 +194,11 @@ columns:
     description: "Trang thai giao dich dien tu: HOAT_DONG = Dang hoat dong; TAM_NGUNG = Tam ngung; DINH_CHI = Dinh chi hoat dong"
     key: null
     fk_note: null
+  - name: ELECTRONIC_TRADING_DECISION_NUMBER
+    data_type: NVARCHAR2(100)
+    description: null
+    key: null
+    fk_note: null
   - name: ELECTRONIC_TRADING_DECISION_DATE
     data_type: DATE
     description: null
@@ -254,6 +259,11 @@ columns:
     description: "Ngày đăng ký là công ty đại chúng với UBCKNN"
     key: null
     fk_note: null
+  - name: PUBLIC_COMPANY_DECISION_NUMBER
+    data_type: NVARCHAR2(400)
+    description: null
+    key: null
+    fk_note: null
   - name: SYNCED_FROM_ADMIN_PROC
     data_type: NUMBER(1,0)
     description: "Co dong bo tu TTHC (Thu tuc hanh chinh): 1 = Da dong bo; 0 = Chua dong bo"
@@ -301,6 +311,11 @@ columns:
     fk_note: null
   - name: OWNERSHIP_LIMIT_FROM_DATE
     data_type: DATE
+    description: null
+    key: null
+    fk_note: null
+  - name: FOREIGN_INVESTOR_OWNERSHIP_LIMIT
+    data_type: NUMBER(9,4)
     description: null
     key: null
     fk_note: null
@@ -369,8 +384,18 @@ columns:
     description: null
     key: null
     fk_note: null
+  - name: PUBLIC_COMPANY_END_DECISION_NUMBER
+    data_type: VARCHAR2(800)
+    description: null
+    key: null
+    fk_note: null
   - name: FORM_DATA_JSON
     data_type: NCLOB
+    description: null
+    key: null
+    fk_note: null
+  - name: CUSTODIAN_MEMBERSHIP_REVOCATION_DECISION
+    data_type: VARCHAR2(200)
     description: null
     key: null
     fk_note: null
@@ -382,5 +407,25 @@ columns:
   - name: LAST_MODIFIED_BY_ALT
     data_type: NUMBER(19,0)
     description: null
+    key: null
+    fk_note: null
+  - name: TRADING_REGISTERED
+    data_type: NUMBER(1,0)
+    description: null
+    key: null
+    fk_note: null
+  - name: CUSTODY_REG_CERT_DECISION_NUMBER
+    data_type: VARCHAR2(800)
+    description: null
+    key: null
+    fk_note: null
+  - name: CUSTODY_REG_CERT_DECISION_DATE
+    data_type: DATE
+    description: null
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "0:active, 1:soft-deleted"
     key: null
     fk_note: null

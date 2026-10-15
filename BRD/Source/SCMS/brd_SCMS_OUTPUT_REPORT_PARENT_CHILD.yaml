@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: SCMS
+table: OUTPUT_REPORT_PARENT_CHILD
+brd_ref: BRD-SRC-SCMS-OUTPUT_REPORT_PARENT_CHILD
+columns:
+  - name: ID
+    data_type: NUMBER(19,0)
+    description: null
+    key: PK
+    fk_note: null
+  - name: PARENT_REPORT_ID
+    data_type: NUMBER(19,0)
+    description: null
+    key: FK
+    fk_note: "FK → OUTPUT_REPORT_PARENT.ID"
+  - name: FORM_REPORT_ID
+    data_type: NUMBER(19,0)
+    description: null
+    key: FK
+    fk_note: "FK → FORM_REPORT.ID"
+  - name: SORT_ORDER
+    data_type: NUMBER(10,0)
+    description: null
+    key: null
+    fk_note: null
