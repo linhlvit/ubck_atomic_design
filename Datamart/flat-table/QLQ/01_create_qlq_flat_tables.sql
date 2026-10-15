@@ -509,13 +509,32 @@ COMMENT 'Flat table — Operational Foreign Fund Management Organization Unit Co
 -- ============================================================
 -- 19. FACT (report): qlq_fund_management_company_staff_trade_rpt_flat
 --    Fund Management Company Staff Trade Report
---    Grain: 1 bên (mua/bán) của 1 giao dịch khớp × 1 nhân viên CTQLQ × 1 ngày (Nhóm 28)
+--    Grain: 1 dòng khử trùng (UNION của BA) của nhân viên CTQLQ × ngày × tài khoản × bên mua/bán × mã CK × phương thức × CTCK × số lượng lệnh × giá lệnh (Nhóm 28)
 --    [SỬA 2026-10-14 — O_QLQ_38] Operational (SCD4A) -> Fact report append, partition theo trade_dt
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT (report) Fund Management Company Staff Trade Report
-    securities_trade_code                    String                     COMMENT 'Grain (2/4) — Driving: securities_trade; mã giao dịch khớp trong sổ lệnh (cùng Trade Date, Trade Direction Code…',
+    fmc_employee_code                        String                     COMMENT 'Grain (1/6) — mã nhân viên CTQLQ (FMS.TL_PROFILES.ID) có CCCD trùng CCCD chủ tài khoản (`discretionary_investment_account.identification_nbr`) của số tài khoản mua/bán trên sổ lệnh — nối CCCD → tài khoản theo BA dòng 177 (thay đường tài khoản khai ở hồ sơ, O_QLQ_35)',
+    trade_dt                                 Date                       COMMENT 'Grain (2/6) — Ngày giao dịch (K_QLQ_109; Độ chi tiết ''Ngày'' của báo cáo); cột partition; nạp append theo ngày chạy ETL (O_QLQ_34; O_QLQ_38)',
+    securities_account_nbr                   String                     COMMENT 'Grain (3/6) — Số tài khoản giao dịch chứng khoán (K_QLQ_107) lấy từ sổ lệnh theo bên mua/bán; thuộc nhân viên qua CCCD → discretionary_investment_account (O_QLQ_35)',
+    trade_direction_code                     String                     COMMENT 'Grain (4/6) — bên của nhân viên trong giao dịch: BUY = bên mua; SELL = bên bán',
+    security_symbol_code                     String                     COMMENT 'Grain (5/6) — Mã chứng khoán (K_QLQ_112); sàn HOSE là symbol; sàn HNX là ISSUE_CODE theo SQL BA',
+    trade_method_nm                          String                     COMMENT 'Grain (6/6) — Phương thức giao dịch (K_QLQ_110) — ánh xạ Board Type Code sang tên theo SQL BA; HOSE chỉ G1–G4 còn lại là "Khác"; HNX thêm G7 G8 T1 T2 T3 T4 T6 R1 (O_QLQ_36)',
+    fmc_code                                 Nullable(String)           COMMENT 'Mã CTQLQ nơi nhân viên làm việc (FMS.TL_PROFILES.SEC_ID) — khóa lọc báo cáo theo CTQLQ',
+    identification_nbr                       Nullable(String)           COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106; FMS.TL_PROFILES.ID_NO; đã mã hóa từ nguồn) — Chiều ''Mã CCCD'' của báo cáo; cũng là khóa nối sang tài khoản chứng khoán (`discretionary_investment_account.identification_nbr`)',
+    securities_company_code                  Nullable(String)           COMMENT 'Mã CTCK nơi mở tài khoản (K_QLQ_108) — số hiệu môi giới/thành viên trên sổ lệnh theo bên mua/bán. Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
+    trade_direction_nm                       Nullable(String)           COMMENT 'Lệnh mua/bán (K_QLQ_111): "Mua" hoặc "Bán" theo bên của nhân viên',
+    order_vol                                Nullable(Int64)            COMMENT 'Số lượng chứng khoán của LỆNH (K_QLQ_113) theo bên mua/bán — không phải khối lượng khớp. Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
+    order_price                              Nullable(Decimal(23,2))    COMMENT 'Giá của LỆNH (K_QLQ_114) theo bên mua/bán — không phải giá khớp (O_QLQ_36). Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
+    order_amt                                Nullable(Decimal(23,2))    COMMENT 'Tổng giá trị (K_QLQ_115) = số lượng lệnh × giá lệnh theo cột "Trường nguồn" dòng 186 BA; SQL BA nhánh HNX bên bán dùng trade_quantity × trade_price lệch cột (O_QLQ_36). Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
+    src_stm_code                             String                     COMMENT 'Mã hệ thống nguồn dữ liệu'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(trade_dt)
+ORDER BY (trade_dt, fmc_employee_code, securities_account_nbr, trade_direction_code, security_symbol_code, trade_method_nm, assumeNotNull(securities_company_code), assumeNotNull(order_vol), assumeNotNull(order_price))
+COMMENT 'Flat table — Fund Management Company Staff Trade Report (Fact report, append, khử trùng như UNION của BA)'
+; mã giao dịch khớp trong sổ lệnh (cùng Trade Date, Trade Direction Code…',
     trade_direction_code                     String                     COMMENT 'Grain (3/4) — bên của nhân viên trong giao dịch khớp: BUY = bên mua; SELL = bên bán',
     fmc_employee_code                        String                     COMMENT 'Grain (4/4) — mã nhân viên CTQLQ (FMS.TL_PROFILES.ID) sở hữu tài khoản chứng khoán của bên mua/bán; nối…',
     trade_dt                                 Date                       COMMENT 'Grain (1/4) — Ngày giao dịch khớp (K_QLQ_109; Độ chi tiết Ngày của báo cáo); cột partition; nạp append theo ngày chạy ETL',

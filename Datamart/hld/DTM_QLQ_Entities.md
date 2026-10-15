@@ -263,7 +263,7 @@ erDiagram
 
 ## Nhóm 28 — Thống kê giao dịch của nhân viên công ty QLQ (Fact báo cáo — append)
 
-> **[THIẾT KẾ 2026-10-14]** Nhóm 28 (K_QLQ_106–115) trước đó PENDING (thiếu cầu nối VSDC investor registry); nay READY qua bảng Fact dạng report (`_rpt`, append) đọc `securities_trade` (HOSE/HNX), nối nhân viên theo `fmc_employee.securities_trading_account_nbr`. Phạm vi tài khoản có thể hẹp hơn BA (O_QLQ_35/36). Nạp append theo ngày `trade_dt = :etl_date`. **[SỬA 2026-10-14 — O_QLQ_38]** Đổi từ Operational (SCD4A) sang Fact report: `securities_trade` là bảng event nên bộ lọc `trade_dt = :etl_date` làm mọi giao dịch ngày trước thành INACTIVE và `_hstr` phình dần.
+> **[THIẾT KẾ 2026-10-14]** Nhóm 28 (K_QLQ_106–115) trước đó PENDING (thiếu cầu nối VSDC investor registry); nay READY qua bảng Fact dạng report (`_rpt`, append) đọc `securities_trade` (HOSE/HNX), nối nhân viên theo `fmc_employee.securities_trading_account_nbr`. Phạm vi tài khoản có thể hẹp hơn BA (O_QLQ_35/36). **[SỬA 2026-10-15 — làm theo BA]** nay nối qua CCCD → `discretionary_investment_account` → `securities_trade` và khử trùng như UNION của BA (O_QLQ_35/36/39). Nạp append theo ngày `trade_dt = :etl_date`. **[SỬA 2026-10-14 — O_QLQ_38]** Đổi từ Operational (SCD4A) sang Fact report: `securities_trade` là bảng event nên bộ lọc `trade_dt = :etl_date` làm mọi giao dịch ngày trước thành INACTIVE và `_hstr` phình dần.
 
 ```mermaid
 erDiagram
@@ -289,7 +289,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Company Staff Trade Report | Fact (report) | new | Giao dịch của nhân viên CTQLQ trên sổ lệnh HOSE/HNX | 1 bên (mua/bán) của 1 giao dịch khớp × 1 nhân viên × 1 ngày | K_QLQ_106–115 (Nhóm 28) |
+| Fund Management Company Staff Trade Report | Fact (report) | new | Giao dịch của nhân viên CTQLQ trên sổ lệnh HOSE/HNX | 1 dòng khử trùng (như UNION của BA) × nhân viên × ngày × tài khoản × bên mua/bán × mã CK × phương thức × CTCK × số lượng lệnh × giá lệnh | K_QLQ_106–115 (Nhóm 28) |
 
 ---
 

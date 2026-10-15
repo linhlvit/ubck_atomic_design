@@ -1970,10 +1970,10 @@ _Không có dim join (operational / self-contained table; popup drill-down từ 
 | **Loại** | `fact` (report — append) |
 | **Entity nguồn** | Fund Management Company Staff Trade Report |
 | **Bảng fact/operational** | `datamart.fund_management_company_staff_trade_rpt` |
-| **Grain (DD)** | `trade_dt, securities_trade_code, trade_direction_code, fmc_employee_code` |
+| **Grain (DD)** | `fmc_employee_code, trade_dt, securities_account_nbr, trade_direction_code, security_symbol_code, trade_method_nm` (khử trùng thêm theo `securities_company_code, order_vol, order_price` như UNION của BA) |
 | **Số dim join** | 0 |
 
-_Không có dim join (fact report / self-contained table). Thiết kế 2026-10-14, trước đó PENDING; nối nhân viên qua tài khoản khai ở hồ sơ thay cho cầu nối VSDC (O_QLQ_35/36). Đổi Operational (SCD4A) → Fact report append cùng ngày (O_QLQ_38)._
+_Không có dim join (fact report / self-contained table). Thiết kế 2026-10-14, trước đó PENDING; **[SỬA 2026-10-15 — làm theo BA]** nối nhân viên qua CCCD → `discretionary_investment_account` (O_QLQ_35/36/39). Đổi Operational (SCD4A) → Fact report append cùng ngày (O_QLQ_38)._
 
 **Nhóm KPI**
 

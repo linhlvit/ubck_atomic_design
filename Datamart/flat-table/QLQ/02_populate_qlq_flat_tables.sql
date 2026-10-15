@@ -415,18 +415,16 @@ FROM datamart.opr_foreign_fund_management_organization_unit_contract_list o
 TRUNCATE TABLE IF EXISTS datamart.qlq_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_fund_management_company_staff_trade_rpt_flat
 SELECT
-    o.securities_trade_code,
-    o.trade_direction_code,
     o.fmc_employee_code,
     o.trade_dt,
+    o.securities_account_nbr,
+    o.trade_direction_code,
+    o.security_symbol_code,
+    o.trade_method_nm,
     o.fmc_code,
     o.identification_nbr,
-    o.securities_account_nbr,
     o.securities_company_code,
-    o.board_tp_code,
-    o.trade_method_nm,
     o.trade_direction_nm,
-    o.security_symbol_code,
     o.order_vol,
     o.order_price,
     o.order_amt,
