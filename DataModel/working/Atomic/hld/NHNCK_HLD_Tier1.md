@@ -60,17 +60,12 @@ graph TD
     CLVALUE["**Classification Value**\n[Classification] Common\nDEPARTMENTS + POSITIONS + ..."]:::atomic
     SECORG["**Securities Organization Reference**\n[Involved Party] Organization\nORGANIZATIONS"]:::atomic
     DECISION["**Securities Practitioner License Decision Document**\n[Documentation] Gov. Registration Document\nDECISIONS"]:::atomic
-    OFFICER["**Identity and Access Management User** (pending)\nnguồn IAM.USERS — thay Regulatory\nAuthority Officer đã loại khỏi scope"]:::atomic
     CERTTYPE["**Securities Practitioner License Certificate Type**\n[Documentation] Gov. Registration Document\nCERTIFICATES"]:::atomic
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
     ALTID["IP Alt Identification"]:::shared
 
     ORGUNIT -->|"Parent Organization Unit FK (self-ref)"| ORGUNIT
-    OFFICER -->|"Organization Unit FK (UNIT_ID)"| ORGUNIT
-    OFFICER -->|"Department Organization Unit FK (DEPARTMENT_ID)"| ORGUNIT
-    DECISION -->|"Created By Officer FK"| OFFICER
-    SECORG -->|"Created By Officer FK"| OFFICER
     SECORG -->|"Parent Organization FK (self-ref)"| SECORG
     ADDR -.->|"shared"| SECORG
     EADDR -.->|"shared"| SECORG
@@ -86,7 +81,6 @@ graph TD
 | POSITIONS | Danh mục chức vụ | NHNCK.POSITIONS | Chỉ có Code + Name → Classification Value (cl_value). Không tạo Atomic entity riêng. **Đưa vào scope, thiết kế xong (2026-09-11)** — xem `lld_NHNCK_POSITIONS.yaml`. |
 | DEPARTMENTS | Danh mục phòng ban thuộc UBCKNN | NHNCK.DEPARTMENTS | **[SỬA 2026-09-11]** Trước đây gộp chung Atomic entity Regulatory Authority Organization Unit với UNITS — theo yêu cầu Data Modeler, tách ra map trực tiếp vào Classification Value (cl_value), mirror pattern APPLICATION_STATUSES. UNIT_ID (quan hệ cha) không còn map được — xem `pending_design.yaml`. Xem `lld_NHNCK_DEPARTMENTS.yaml`. |
 | EDUCATION_LEVELS | Danh mục trình độ học vấn | NHNCK.EDUCATION_LEVELS | Classification Value (cl_value). Không có cột CODE riêng — cl_code = LEVEL_NAME. **Đưa vào scope, thiết kế xong (2026-09-11)** — xem `lld_NHNCK_EDUCATION_LEVELS.yaml`. |
-| CERTIFICATES | Danh mục loại chứng chỉ hành nghề | CERTIFICATE_TYPE | Classification Value — chỉ có CERTIFICATE_CODE + CERTIFICATE_NAME + metadata vận hành. |
 | APPLICATION_SOURCES | Hình thức nộp hồ sơ | APPLICATION_SOURCE | Classification Value. |
 | APPLICATION_STATUSES | Danh mục trạng thái hồ sơ đăng ký CCHN | APPLICATION_STATUS | Classification Value. Từng nâng cấp thành entity thật Classification Application Status (2026-07-09) — revert lại 2026-08-20. Xem Overview.md 5c/7c. |
 | DOCUMENTS | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | DOCUMENT_TYPE | Classification Value. Từng nâng cấp thành entity thật Classification Document (2026-07-09) — revert lại 2026-08-20. Xem Overview.md 5d/7c. |
@@ -104,7 +98,7 @@ Không có bảng nào trong Tier 1 chưa đủ thông tin cột.
 
 | # | Câu hỏi | Ảnh hưởng |
 |---|---|---|
-| 1 | `DECISIONS.CREATED_BY` là FK thực đến USERS. | **Xác nhận.** FK thực → thiết kế giữ Created By Officer FK trên entity License Decision Document. |
+| 1 | `DECISIONS.CREATED_BY` là FK thực đến USERS. | **Không map sang Atomic** — CREATED_BY là audit kỹ thuật, LLD `lld_NHNCK_DECISIONS.yaml` không có Created By Officer FK. |
 | 2 | `ORGANIZATIONS` có bao gồm cả UBCKNN không? | **Xác nhận: không bao gồm.** ORGANIZATIONS chỉ chứa tổ chức tham gia TTCK bên ngoài → không có overlap với Regulatory Authority Organization Unit. |
 | 3 | `ORGANIZATIONS.ORGANIZATION_TYPE_ID` tự tham chiếu — là loại hình tổ chức (Classification Value) hay FK entity khác? | **Xác nhận: Classification Value.** Xử lý thành ORGANIZATION_TYPE_CODE trên Atomic, không tạo FK entity riêng. |
 | 4 | `APPLICATION_STATUSES`, `DOCUMENTS`, `SPECIALIZATIONS` — nâng cấp từ Classification Value (scheme) lên Atomic entity thật (`table_type: Relative`). BCV Concept gán `Common` theo quy tắc mặc định của skill, không map term cụ thể trong `knowledge/terms.csv`. | **Data Modeler review lại nếu tìm được term BCV chuyên biệt hơn.** Không chặn thiết kế — Common là fallback hợp lệ cho `table_type: Relative`. |

@@ -24,7 +24,7 @@ ldm:
 attributes:
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Securities Organization Reference.
+    business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá trị với Securities Organization Reference Id.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
@@ -32,7 +32,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
-    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK_ORGANIZATIONS', ORGANIZATION_CODE)."
+    comment: "Surrogate Key của shared entity. Hash: hash_id('NHNCK_ORGANIZATIONS', ORGANIZATION_CODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -46,7 +46,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.ORGANIZATION_CODE
-    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Involved Party Id."
+    comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ NHNCK.ORGANIZATIONS"
     classification_context: null
     etl_derived_value: null
 

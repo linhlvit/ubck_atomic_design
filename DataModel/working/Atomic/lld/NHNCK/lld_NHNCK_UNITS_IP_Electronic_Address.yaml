@@ -17,18 +17,21 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Involved Party Id\" — trước đây hash trực tiếp theo ID (ID kỹ thuật) thay vì Code của bảng đích (UNIT_CODE)."
+  notes: "Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Involved Party Id\"\
+    \ — trước đây hash trực tiếp theo ID (ID kỹ thuật) thay vì Code của bảng đích\
+    \ (UNIT_CODE)."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Regulatory Authority Organization Unit"
+  description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
+    \ Regulatory Authority Organization Unit Id."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.UNITS.ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id. Shared entity — không có PK surrogate riêng. Nguồn IP Electronic Address chính là NHNCK.UNITS (cùng dòng dữ liệu với Regulatory Authority Organization Unit, không cần crosswalk qua bảng khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK_UNITS', UNIT_CODE) | Trước đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ UNIT_CODE) — đã sửa 2026-07-27."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('NHNCK_UNITS', UNIT_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -41,7 +44,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Involved Party Id."
+  comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ NHNCK.UNITS"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

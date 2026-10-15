@@ -6,9 +6,9 @@
 >
 > **File chi tiết theo tầng:**
 > - [NHNCK_HLD_Tier1.md](NHNCK_HLD_Tier1.md) — Reference Data: Regulatory Authority Organization Unit, Securities Organization Reference, License Decision Document, Securities Practitioner License Certificate Type (Geographic Area đã chuyển sang nguồn ECAT — xem mục 7f)
-> - [NHNCK_HLD_Tier2.md](NHNCK_HLD_Tier2.md) — Securities Practitioner, Securities Practitioner Reason Change History, Professional Training Class, Qualification Examination Assessment, Organization Annual Report, License Application Group, License Certificate Group, License Decision Document Attachment
-> - [NHNCK_HLD_Tier3.md](NHNCK_HLD_Tier3.md) — License Certificate Document, License Application, Employment Status, Related Party, Violation, Organization Employment Report, Training Class Enrollment, Examination Assessment Result, Examination Assessment Fee
-> - [NHNCK_HLD_Tier4.md](NHNCK_HLD_Tier4.md) — License Application sub-entities (×3), License Certificate Status Change History, License Application/Certificate Group Member, License Application Status Review
+> - [NHNCK_HLD_Tier2.md](NHNCK_HLD_Tier2.md) — Securities Practitioner, Securities Practitioner Reason Change History, Professional Training Class, Qualification Examination Assessment, Organization Annual Report, License Application Group, License Certificate Group, License Decision Document Attachment, Organization Unit X License Certificate Type Relationship, License Certificate Type X Classification Specialization Relationship, Post Certification Training Course
+> - [NHNCK_HLD_Tier3.md](NHNCK_HLD_Tier3.md) — License Certificate Document, License Application, Employment Status, Related Party, Violation, Organization Employment Report, Training Class Enrollment, Examination Assessment Result, Examination Assessment Fee, Post Certification Training Result
+> - [NHNCK_HLD_Tier4.md](NHNCK_HLD_Tier4.md) — License Application sub-entities (×3), License Certificate Status Change History, License Application/Certificate Group Member, License Application Status Review, License Application Result Notification, License Decision Document X License Application Relationship
 
 ---
 
@@ -33,11 +33,11 @@
 | 2 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISION_DOCUMENTS | Update | Văn bản/tài liệu ký số của quyết định hành chính | Securities Practitioner License Decision Document Attachment | Fundamental | Government Registration Document — tái dùng concept entity cha License Decision Document. Có metadata ký số (SIGNED_BY/SIGNED_DATE) — vượt điều kiện loại trừ File Attachment. Quyết định Data Modeler (2026-08-13) — đảo out_of_scope (Sub-process). |
 | 2 | Involved Party | [Involved Party] Organization | Organization | CERTIFICATE_DEPARTMENTS | Update | Liên kết phòng ban phụ trách với loại chứng chỉ hành nghề | Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship | Relative | Organization — tái dùng concept entity cha Regulatory Authority Organization Unit. Pure junction 2 FK (CERTIFICATE_ID, DEPARTMENT_ID), không attribute nghiệp vụ riêng. Quyết định Data Modeler (2026-08-15) — đảo out_of_scope (Application Config). **[SỬA 2026-09-11]** DEPARTMENTS tách sang Classification Value — FK Department đổi từ cặp Id/Code sang 1 trường Department Code (Classification Value). |
 | 2 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATE_SPECIALIZATIONS | Update | Liên kết chuyên môn yêu cầu với loại chứng chỉ hành nghề | Securities Practitioner License Certificate Type X Classification Specialization Relationship | Relative | Government Registration Document — tái dùng concept entity cha License Certificate Type. Có 3 attribute nghiệp vụ riêng (SORT_ORDER/DOCUMENT_TYPE/IS_REQUIRED) ngoài 2 FK. Quyết định Data Modeler (2026-08-15) — đảo out_of_scope (Application Config). |
-| 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATE_RECORDS | Update | Chứng chỉ hành nghề được cấp cho người hành nghề | Securities Practitioner License Certificate Document | Fundamental | Government Registration Document — FK đến Practitioner (Tier 2), Decision ×3 (Tier 1), Officer (Tier 1). |
+| 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATE_RECORDS | Update | Chứng chỉ hành nghề được cấp cho người hành nghề | Securities Practitioner License Certificate Document | Fundamental | Government Registration Document — FK đến Practitioner (Tier 2), Decision ×3 (Tier 1), Certificate Type (Tier 1). |
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | APPLICATIONS | Update | Hồ sơ đăng ký chứng chỉ hành nghề chứng khoán | Securities Practitioner License Application | Fundamental | Government Registration Document — FK đến Practitioner (Tier 2), Certificate Document (Tier 3), Examination Assessment (Tier 2), Officer ×2 (Tier 1). |
 | 3 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | PROFESSIONAL_WORK_HISTORIES | Update | Lịch sử làm việc của người hành nghề tại các tổ chức | Securities Practitioner Employment Status | Fundamental | Individual Employment Status — FK đến Practitioner (Tier 2), Organization (Tier 1). |
 | 3 | Involved Party | [Involved Party] Involved Party Relationship | Relationship | PROFESSIONAL_RELATIONSHIPS | Update | Thông tin quan hệ gia đình/xã hội của người hành nghề | Securities Practitioner Related Party | Fundamental | Involved Party Relationship — FK đến Practitioner (Tier 2). |
-| 3 | Business Activity | [Business Activity] Conduct Violation | Conduct Violation | VIOLATIONS | Update | Vi phạm của người hành nghề kèm quyết định xử lý | Securities Practitioner Violation | Fundamental | Conduct Violation — FK đến Practitioner (Tier 2), Decision (Tier 1), Officer (Tier 1). |
+| 3 | Business Activity | [Business Activity] Conduct Violation | Conduct Violation | VIOLATIONS | Update | Vi phạm của người hành nghề kèm quyết định xử lý | Securities Practitioner Violation | Fundamental | Conduct Violation — FK đến Practitioner (Tier 2), Decision (Tier 1). |
 | 3 | Documentation | [Documentation] Employer Registration | Employer Registration | ORGANIZATION_REPORTS | Update | Báo cáo của tổ chức về tình trạng làm việc của người hành nghề | Securities Practitioner Organization Employment Report | Fact Append | Employer Registration — FK đến Practitioner (Tier 2), Organization (Tier 1), Certificate Document (Tier 3), self-ref. Mỗi báo cáo là sự kiện nộp — insert-only. |
 | 3 | Business Activity | [Business Activity] Business Activity | Business Activity | SPECIALIZATION_COURSE_DETAILS | Update | Chi tiết người tham gia khóa học + kết quả | Securities Practitioner Professional Training Class Enrollment | Fundamental | Business Activity — FK đến Training Class (Tier 2) + Practitioner (Tier 2). |
 | 3 | Communication | [Communication] Assessment | Assessment | EXAM_DETAILS | Update | Kết quả thi sát hạch của từng thí sinh | Securities Practitioner Qualification Examination Assessment Result | Fundamental | Assessment — FK đến Examination Assessment (Tier 2), Practitioner (Tier 2), License Application (Tier 3, nullable). |
@@ -50,6 +50,8 @@
 | 4 | Group | [Group] Group | Group | APPLICATION_GROUP_MEMBERS | Update | Thành viên (hồ sơ CCHN) trong 1 nhóm xử lý tập thể | Application Group X Securities Practitioner License Application Relationship | Relative | Group — quan hệ (STATUS/NOTES/ORDER_INDEX riêng của quan hệ). FK đến License Application Group (Tier 2), License Application (Tier 3). Đổi tên pattern link/relationship `_x_` + Table Type Fundamental → Relative (2026-08-14, lần 2). BCV Concept `[Group] Group` → `[Documentation] Gov. Registration Document` (2026-08-14) → trở lại `[Group] Group` (2026-08-15). |
 | 4 | Group | [Group] Group | Group | CERTIFICATE_RECORD_GROUP_MEMBERS | Update | CCHN là thành viên trong 1 nhóm cấp/thu hồi tập thể | Certificate Group X Securities Practitioner License Certificate Document Relationship | Relative | Group — chỉ giữ 2 FK Id/Code (License Certificate Document + Certificate Group); ADDED_DATE/ADDED_BY/STATUS/IS_REISSUE/REVOCATION_REASON/ORDER_INDEX bỏ khỏi thiết kế theo yêu cầu Data Modeler. Đổi tên pattern link/relationship `_x_` + Table Type Fundamental → Relative + BCV Concept `[Group] Group` → `[Documentation] Gov. Registration Document` (2026-08-14) → trở lại `[Group] Group` (2026-08-15). |
 | 4 | Business Activity | [Business Activity] Status Review | Status Review | VERIFY_APPLICATION_STATUSES | Update | Kết quả thẩm định/phê duyệt hồ sơ CCHN tại từng cấp xét duyệt | Securities Practitioner License Application Status Review | Fundamental | Status Review — FK đến License Application (Tier 3), Officer (Tier 1); trạng thái hồ sơ dùng Classification Value (scheme APPLICATION_STATUS, xem 7c) thay vì FK Tier 1. Quyết định Data Modeler (2026-08-13) — đảo out_of_scope (Source Process Log). |
+| 4 | Communication | [Communication] Notification | Notification | MCDT_RESULT_OUTBOX | Update | Outbox đẩy kết quả xử lý hồ sơ CCHN ra Cổng Dịch vụ công quốc gia (MCĐT) | Securities Practitioner License Application Result Notification | Relative | Bảng mới trong DDL (2026-09-10). BCV term "Notification" (Communication, terms.csv id 8536). Cấu trúc trường: APPLICATION_ID (FK), SENDER_IDENTITY (denormalized), STATUS (Classification Value — value set chưa xác nhận qua DDL), ATTEMPTS, NEXT_RETRY_AT, LAST_ERROR. Quyết định Data Modeler: thiết kế theo SCD2 (Table Type Relative) để lưu lịch sử thay đổi trạng thái gửi thay vì overwrite. |
+| 4 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | APPLICATION_DECISIONS | Update | Liên kết hồ sơ CCHN với quyết định hành chính tương ứng | Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship | Relative | (1) Term candidate: tái dùng `[Documentation] Gov. Registration Document` từ entity cha Tier 1 `Securities Practitioner License Decision Document` — 1 quyết định bao gồm nhiều hồ sơ CCHN, đặt Decision lên trước tên entity. (2) Cấu trúc trường: ID (kỹ thuật, không map), APPLICATION_ID (FK), DECISION_ID (FK) — pure junction 2 FK, không attribute riêng nào khác → theo pattern entity link "_x_" (rule 3e), PK composite 2 FK Id, không có Id/Code riêng của entity. (3) **[MỚI 2026-09-12]** Data Modeler quyết định thiết kế thành entity Relative riêng (không denormalize ARRAY trên DECISIONS) (mirror `APPLICATION_GROUP_MEMBERS`/`FMS.JOB_TL_PRO`). |
 
 ---
 
@@ -64,6 +66,7 @@ graph TD
     %% Tier 1
     ORGUNIT["**Regulatory Authority Organization Unit**"]:::atomic
     SECORG["**Securities Organization Reference**"]:::atomic
+    CERTTYPE["**Securities Practitioner License Certificate Type**"]:::atomic
     DECISION["**Securities Practitioner License Decision Document**"]:::atomic
     OFFICER["**Identity and Access Management User**\n(pending — xem IAM, thay Regulatory\nAuthority Officer đã loại khỏi scope)"]:::atomic
     %% Shared
@@ -80,6 +83,8 @@ graph TD
     APPGROUP["**License Application Group**"]:::atomic
     CERTGROUP["**License Certificate Group**"]:::atomic
     DECDOC["**License Decision Document Attachment**"]:::atomic
+    CERTDEPT["**Organization Unit X License Certificate Type Relationship**"]:::atomic
+    CERTSPEC["**License Certificate Type X Classification Specialization Relationship**"]:::atomic
 
     %% Tier 3
     CERTDOC["**License Certificate Document**"]:::atomic
@@ -101,25 +106,26 @@ graph TD
     APPGRPMEM["**License Application X Application Group**"]:::atomic
     CERTGRPMEM["**License Certificate Document X Certificate Group**"]:::atomic
     APPSTREV["**License Application Status Review**"]:::atomic
+    APPRESNOTIF["**License Application Result Notification**"]:::atomic
+    DECAPPREL["**License Decision Document X License Application Relationship**"]:::atomic
 
     %% Tier 1
     ORGUNIT -->|self-ref| ORGUNIT
-    OFFICER -->|Organization Unit FK| ORGUNIT
-    OFFICER -->|Department Organization Unit FK| ORGUNIT
-    DECISION -->|Created By Officer FK| OFFICER
     SECORG -->|self-ref| SECORG
-    SECORG -->|Created By Officer FK| OFFICER
     ADDR -.->|shared| SECORG
     EADDR -.->|shared| SECORG
     ALTID -.->|shared| SECORG
 
     %% Tier 2
+    PRAC -->|Securities Organization FK| SECORG
+    PRAC -->|IAM User FK| OFFICER
+    CERTDEPT -->|Certificate Type FK| CERTTYPE
+    CERTSPEC -->|Certificate Type FK| CERTTYPE
     ADDR -.->|shared| PRAC
     EADDR -.->|shared| PRAC
     ALTID -.->|shared| PRAC
     EXAM -->|Decision FK| DECISION
-    EXAM -->|Created By Officer FK| OFFICER
-    EXAM -->|Updated By Officer FK| OFFICER
+    EXAM -->|Result Updater Officer FK| OFFICER
     ANNUALRPT -->|Organization FK| SECORG
     APPGROUP -->|Decision FK| DECISION
     APPGROUP -->|Submitted By Officer FK| OFFICER
@@ -128,9 +134,11 @@ graph TD
 
     %% Tier 3
     CERTDOC -->|Practitioner FK| PRAC
+    CERTDOC -->|Certificate Type FK| CERTTYPE
     CERTDOC -->|Issuance/Revocation/Cancellation Decision FK| DECISION
-    CERTDOC -->|Created By Officer FK| OFFICER
     APP -->|Practitioner FK| PRAC
+    APP -->|Certificate Type FK + Previous Certificate Type FK| CERTTYPE
+    APP -->|Info Verify Officer FK| OFFICER
     APP -->|Certificate Document FK| CERTDOC
     APP -->|Examination Assessment FK| EXAM
     APP -->|Assignee Officer FK| OFFICER
@@ -139,17 +147,20 @@ graph TD
     RELP -->|Practitioner FK| PRAC
     VIO -.->|Practitioner FK| PRAC
     VIO -.->|Decision FK| DECISION
-    VIO -.->|Created By Officer FK| OFFICER
     EMPRPT -.->|Practitioner FK| PRAC
     EMPRPT -.->|Organization FK| SECORG
     EMPRPT -.->|Certificate Document FK| CERTDOC
+    EMPRPT -.->|Certificate Type FK| CERTTYPE
     EMPRPT -.->|self-ref| EMPRPT
     ENROLL -->|Training Class FK| TRAINCLASS
     ENROLL -->|Practitioner FK| PRAC
+    ENROLL -->|Assignee Officer FK| OFFICER
     EXAMRES -->|Examination Assessment FK| EXAM
     EXAMRES -->|Practitioner FK| PRAC
+    EXAMRES -->|Certificate Type FK| CERTTYPE
     EXAMRES -->|License Application FK| APP
     EXAMFEE -->|Examination Assessment FK| EXAM
+    EXAMFEE -->|Certificate Type FK| CERTTYPE
     PCTRESULT -->|Practitioner FK| PRAC
     PCTRESULT -->|Training Course FK| PCTCOURSE
 
@@ -157,7 +168,9 @@ graph TD
     APPTRAIN -->|License Application FK| APP
     APPTRAIN -->|Appraised By Officer FK| OFFICER
     APPFEE -->|License Application FK| APP
+    APPFEE -->|Practitioner FK| PRAC
     APPREEX -->|License Application FK| APP
+    APPREEX -->|Re-Exam License Application FK nullable| APP
     APPREEX -->|Examination Assessment Result FK| EXAMRES
     CERTSTHIST -->|Certificate Document FK| CERTDOC
     CERTSTHIST -->|Decision FK| DECISION
@@ -167,6 +180,9 @@ graph TD
     CERTGRPMEM -->|License Certificate Document FK| CERTDOC
     APPSTREV -->|License Application FK| APP
     APPSTREV -->|Verified By Officer FK| OFFICER
+    APPRESNOTIF -->|License Application FK| APP
+    DECAPPREL -->|License Decision Document FK| DECISION
+    DECAPPREL -->|License Application FK| APP
 ```
 
 ---
@@ -177,37 +193,12 @@ graph TD
 |---|---|---|---|
 | EDUCATION_LEVELS | Danh mục trình độ học vấn | Classification Value | Scheme: NHNCK.EDUCATION_LEVELS. Không có cột CODE riêng — cl_code = LEVEL_NAME. **Đưa vào scope, thiết kế xong (2026-09-11).** |
 | DEPARTMENTS | Danh mục phòng ban thuộc UBCKNN | Classification Value | Scheme: NHNCK.DEPARTMENTS. **[SỬA 2026-09-11]** Tách khỏi entity Regulatory Authority Organization Unit (trước đây dùng chung với UNITS) theo yêu cầu Data Modeler. |
-| CERTIFICATES | Danh mục loại chứng chỉ hành nghề | Classification Value | Scheme: CERTIFICATE_TYPE. Chỉ có CERTIFICATE_CODE + CERTIFICATE_NAME + metadata vận hành. |
 | APPLICATION_SOURCES | Hình thức nộp hồ sơ | Classification Value | Scheme: APPLICATION_SOURCE. |
 | APPLICATION_STATUSES | Danh mục trạng thái hồ sơ đăng ký CCHN | Classification Value | Scheme: APPLICATION_STATUS. Từng nâng cấp thành entity thật Classification Application Status (2026-07-09) — revert lại 2026-08-20. Xem 5c. |
 | DOCUMENTS | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | Classification Value | Scheme: DOCUMENT_TYPE. Từng nâng cấp thành entity thật Classification Document (2026-07-09) — revert lại 2026-08-20. Xem 5d. |
 | SPECIALIZATIONS | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | Classification Value | Scheme: SPECIALIZATION. Từng nâng cấp thành entity thật Classification Specialization (2026-07-09) — revert lại 2026-08-20. Xem 5e. |
 | POSITIONS | Danh mục chức vụ | Classification Value | Scheme: NHNCK.POSITIONS. BCV: Employment Position Type — reference data set, không phải entity. **Đưa vào scope, thiết kế xong (2026-09-11).** |
 | BANKS | Danh mục ngân hàng (dùng cho nộp phí thi) | Classification Value | Scheme: BANK. FK từ EXAM_SESSIONS.BANK_ID — chỉ có mã + tên. |
-
----
-
-#### 7d. Junction Tables
-
-**[ĐẢO NGƯỢC 2026-09-12]** `APPLICATION_DECISIONS` không còn ở bảng này — theo
-yêu cầu Data Modeler, bảng này nay được thiết kế thành entity Atomic riêng
-`Securities Practitioner License Decision Document X Securities Practitioner
-License Application Relationship` (pattern link/relationship `_x_`, PK
-composite 2 FK, mirror `APPLICATION_GROUP_MEMBERS`/`FMS.JOB_TL_PRO`) thay vì
-denormalize ARRAY như quyết định cũ dưới đây. Xem mục `## Entities` và
-`NHNCK_HLD_Tier4.md` 6a/6b/6c.
-
-Không còn bảng nào khác thuộc nhóm Junction Tables (pure junction,
-denormalize ARRAY) trong scope hiện tại.
-
-<details>
-<summary>Quyết định cũ (2026-08-xx, đã đảo ngược — giữ lại để tham khảo lịch sử)</summary>
-
-| Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
-|---|---|---|---|
-| APPLICATION_DECISIONS | Liên kết hồ sơ CCHN với quyết định tương ứng (APPLICATION_ID + DECISION_ID) | Securities Practitioner License Decision Document | Pure junction — không tạo Atomic entity. Xác định bên Many: 1 quyết định bao gồm nhiều hồ sơ CCHN → denormalize thành `ARRAY<STRUCT<application_id BIGINT, application_code STRING>>` trên entity DECISIONS. |
-
-</details>
 
 ---
 
@@ -504,7 +495,7 @@ denormalize ARRAY) trong scope hiện tại.
 **Domain Prefix:** Securities Practitioner
 **Description:** Outbox đẩy kết quả xử lý hồ sơ đăng ký CCHN ra Cổng Dịch vụ công quốc gia (MCĐT) — trạng thái gửi, số lần thử lại, thời điểm thử lại tiếp theo, lỗi gần nhất. Thiết kế SCD2 theo quyết định Data Modeler để lưu lịch sử thay đổi trạng thái gửi thay vì overwrite. FK đến Securities Practitioner License Application. Bảng mới trong DDL (2026-09-10).
 
-### 36. Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship — MỚI (2026-09-12), ĐẢO NGƯỢC QUYẾT ĐỊNH §7d
+### 36. Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship — MỚI (2026-09-12)
 **Tier:** 4 | **Source:** `APPLICATION_DECISIONS` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** (none)
-**Description:** Quan hệ giữa 1 quyết định hành chính (License Decision Document, Tier 1) và 1 hồ sơ CCHN (License Application, Tier 3) — pure junction 2 FK (APPLICATION_ID, DECISION_ID), không có attribute nghiệp vụ nào khác. Tái dùng BCV concept của entity cha License Decision Document. Đảo lại quyết định "denormalize thành ARRAY<STRUCT> trên DECISIONS" đã ghi ở §7d trước đó (2026-08-xx) theo yêu cầu Data Modeler (2026-09-12) — thiết kế thành entity link/relationship "_x_" riêng, PK composite 2 FK Id (Decision Document Id + Application Id), theo đúng pattern đã dùng cho `Application Group X Securities Practitioner License Application Relationship` / `Certificate Group X Securities Practitioner License Certificate Document Relationship` (rule 3e, skill atomic-lld-design). ID kỹ thuật nguồn không map — xem `pending_design.yaml`.
+**Description:** Quan hệ giữa 1 quyết định hành chính (License Decision Document, Tier 1) và 1 hồ sơ CCHN (License Application, Tier 3) — pure junction 2 FK (APPLICATION_ID, DECISION_ID), không có attribute nghiệp vụ nào khác. Tái dùng BCV concept của entity cha License Decision Document. Theo yêu cầu Data Modeler (2026-09-12) — thiết kế thành entity link/relationship "_x_" riêng, PK composite 2 FK Id (Decision Document Id + Application Id), theo đúng pattern đã dùng cho `Application Group X Securities Practitioner License Application Relationship` / `Certificate Group X Securities Practitioner License Certificate Document Relationship` (rule 3e, skill atomic-lld-design). ID kỹ thuật nguồn không map — xem `pending_design.yaml`.
