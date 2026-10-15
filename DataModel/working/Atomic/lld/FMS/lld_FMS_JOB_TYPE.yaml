@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[MỚI 2026-10-02] Bảng danh mục loại chức danh, gộp (denormalize) vào entity Classification FMS Job cùng nguồn JOBS (JOBS.JOB_TYPE_ID = JOB_TYPE.ID). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME; RECORD_STATUS, DISPLAY_ON_MEMBER_PROFILE, PUBLISHED, DELETED, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Không phải entity có Id/Code riêng — chỉ bổ sung thuộc tính loại chức danh cho entity Classification FMS Job."
+  notes: "[MỚI 2026-10-02] Bảng danh mục loại chức danh, gộp (denormalize) vào entity Classification FMS Job cùng nguồn JOBS (JOBS.JOB_TYPE_ID = JOB_TYPE.ID). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME; RECORD_STATUS, DISPLAY_ON_MEMBER_PROFILE, PUBLISHED, DELETED, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Không phải entity có Id/Code riêng — chỉ bổ sung thuộc tính loại chức danh cho entity Classification FMS Job. [SỬA 2026-10-15] Theo DDL UAT 1 JOB_TYPE có thêm cột CODE — map thành Job Type Ecat Code (thuộc tính thường). Theo quyết định Data Modeler vẫn giữ BK/hash Id từ ID nguồn (không đổi sang CODE)."
 attributes:
 - attribute_name: "Classification FMS Job Id"
   physical_name: "cl_fms_job_id"
@@ -66,6 +66,19 @@ attributes:
   source_columns:
   - "FMS.JOB_TYPE.ITEM_NAME"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Job Type Code"
+  physical_name: "job_tp_code"
+  description: "Mã loại chức vụ eCAT dùng làm khóa đồng bộ FMS."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.JOB_TYPE.CODE"
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Bổ sung theo DDL UAT 1 (2026-10-15). Không phải BK của entity (BK vẫn là ID nguồn)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

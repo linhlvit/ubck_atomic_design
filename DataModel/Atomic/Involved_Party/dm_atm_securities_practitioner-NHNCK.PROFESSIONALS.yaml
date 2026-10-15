@@ -539,3 +539,59 @@ attributes:
     comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.STATUS"
     classification_context: null
     etl_derived_value: null
+
+  - name: Previous Practice Status Code
+    physical_name: previous_practice_status_code
+    business_meaning: Trạng thái hành nghề trước đó (trước khi thay đổi/tạm đình chỉ) — cùng danh mục với Practice Status Code.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PREVIOUS_STATUS_WORK
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Start Date
+    physical_name: suspension_start_dt
+    business_meaning: Ngày bắt đầu tạm đình chỉ hành nghề.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.SUSPENSION_START_DATE
+    comment: "Bổ sung theo DDL UAT 1 (2026-10-15) — DDL chưa có comment, mô tả suy theo tên cột, cần xác nhận với nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension End Date
+    physical_name: suspension_end_dt
+    business_meaning: Ngày kết thúc tạm đình chỉ hành nghề.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.SUSPENSION_END_DATE
+    comment: "Bổ sung theo DDL UAT 1 (2026-10-15) — DDL chưa có comment, mô tả suy theo tên cột, cần xác nhận với nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension File Path
+    physical_name: suspension_file_path
+    business_meaning: Đường dẫn file đính kèm của quyết định tạm đình chỉ hành nghề.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.SUSPENSION_FILE_PATH
+    comment: "Bổ sung theo DDL UAT 1 (2026-10-15) — DDL chưa có comment, mô tả suy theo tên cột, cần xác nhận với nguồn. Pattern giống Payment Evidence File Path (APPLICATION_FEES)."
+    classification_context: null
+    etl_derived_value: null

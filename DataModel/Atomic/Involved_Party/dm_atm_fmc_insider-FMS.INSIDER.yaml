@@ -130,7 +130,7 @@ attributes:
     source_system: FMS
     source_table: INSIDER
     source_column: FMS.INSIDER.NAT_ID
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INSIDER.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME)."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INSIDER.NAT_ID = NATIONAL.ID để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -143,8 +143,8 @@ attributes:
     is_primary_key: false
     source_system: FMS
     source_table: INSIDER
-    source_column: FMS.NATIONAL.SNAME
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Nationality Id. Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality Id."
+    source_column: FMS.NATIONAL.CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Nationality Id. Giá trị lấy từ FMS.NATIONAL.CODE sau ETL crosswalk — chi tiết xem comment Nationality Id."
     classification_context: null
     etl_derived_value: null
 

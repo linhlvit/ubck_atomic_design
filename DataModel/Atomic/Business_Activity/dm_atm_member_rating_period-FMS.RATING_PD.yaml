@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-member_rating_period-FMS.RATING_PD
+  logical_name: Member Rating Period
+  physical_name: member_rating_period
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Assessment Period"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Kỳ đánh giá xếp loại của công ty QLQ. Ghi nhận năm báo cáo, loại kỳ (giữa năm/cuối năm) và cờ kỳ đã kết thúc/phê duyệt. Mỗi dòng = 1 kỳ đánh giá.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-RATING_PD
+
+attributes:
+  - name: Member Rating Period Id
+    physical_name: member_rating_period_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: RATING_PD
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Assessment Period\". Kỳ đánh giá xếp loại công ty QLQ, được FK từ Member Rating (Tier 2)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Member Rating Period Code
+    physical_name: member_rating_period_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATING_PD
+    source_column: FMS.RATING_PD.ID
+    comment: BK chính. PK nguồn.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATING_PD
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_RATING_PD'"
+    etl_derived_value: FMS_RATING_PD
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo (định dạng YYYY).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATING_PD
+    source_column: FMS.RATING_PD.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Rating Period Type Code
+    physical_name: rating_period_tp_code
+    business_meaning: "Kỳ đánh giá trong năm: 1=Giữa năm, 0=Cuối năm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATING_PD
+    source_column: FMS.RATING_PD.PERIOD
+    comment: "SCHEMA_CODE=FMS.RATING_PD.PERIOD_TYPE."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Rating Finalized Flag
+    physical_name: rating_finalized_flag
+    business_meaning: "Cờ kỳ đánh giá đã kết thúc/phê duyệt: 1=Đã kết thúc, 0=Đang mở."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RATING_PD
+    source_column: FMS.RATING_PD.RATING_FINALIZED
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: null
+    etl_derived_value: null

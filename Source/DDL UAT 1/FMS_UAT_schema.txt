@@ -515,6 +515,9 @@ ISSUER                        NCLOB               YES                           
 RECORD_TYPE                   NUMBER(1,0)         NO                                       Loại/phân loại của bản ghi
 RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
+ACCOUNT_HOLDER_NAME           NVARCHAR2(1000)     YES                                      Ten chu tai khoan chung thu so (IAM accountHolderName)
+VALID_FROM                    DATE                YES                                      Ngay hieu luc CTS (IAM validFrom, dong ho UTC)
+VALID_TO                      DATE                YES                                      Ngay het han CTS (IAM validTo, dong ho UTC)
 
 
 BANG: CHART_OUT
@@ -699,6 +702,7 @@ DATE_CREATED                  TIMESTAMP(6)        YES
 CREATED_BY                    VARCHAR2(100)       YES                                      
 DATE_MODIFIED                 TIMESTAMP(6)        YES                                      
 MODIFY_BY                     VARCHAR2(100)       YES                                      
+CERT_TYPE                     NUMBER(1,0)         YES                                      Loại CCHN: 1=Phân tích tài chính, 2=Môi giới chứng khoán, 3=Quản lý quỹ (TVS2601TK-4546)
 
 
 BANG: DISTRIBUTOR_PERSONNEL_HISTORY
@@ -1629,6 +1633,33 @@ CREATED_BY                    VARCHAR2(100)       YES                           
 DATE_MODIFIED                 TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi lần cuối
 MODIFY_BY                     VARCHAR2(100)       YES                                      Tài khoản người cập nhật bản ghi lần cuối
 DATA_SOURCE                   VARCHAR2(80)        YES                                      Nguon du lieu: FMS = dot kiem tra nhap tai FMS, THANHTRA = dong bo tu phan he Thanh tra (TVS2601TK-3987)
+THANH_TRA_EXTERNAL_ID         VARCHAR2(400)       YES                                      externalId đoàn kiểm tra trên Thanh tra (TT-FMS-12), dạng exam-{uuid}
+
+
+BANG: INSPECTION_STANDALONE_PENALTY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            RAW(16)             NO      PK                               
+TARGET_ID                     RAW(16)             NO                                       
+EXTERNAL_ID                   VARCHAR2(100)       YES                                      
+PENALTY_DECISION_NO           VARCHAR2(2000)      NO                                       
+PENALTY_DECISION_DATE         DATE                YES                                      
+VIOLATION_BEHAVIOR            VARCHAR2(2000)      YES                                      
+LEGAL_BASIS                   VARCHAR2(2000)      YES                                      
+PENALTY_FORM                  VARCHAR2(500)       YES                                      
+PENALTY_AMOUNT                NUMBER(38,0)        YES                                      
+ADDITIONAL_PENALTY_FORM       VARCHAR2(500)       YES                                      
+REMEDY_MEASURE                VARCHAR2(2000)      YES                                      
+EXECUTION_STATUS              VARCHAR2(500)       YES                                      
+REMEDY_STATUS                 VARCHAR2(500)       YES                                      
+DATA_SOURCE                   VARCHAR2(20)        YES                                      
+DELETED                       NUMBER(1,0)         YES                                      
+DATE_CREATED                  TIMESTAMP(6)        YES                                      
+CREATED_BY                    VARCHAR2(100)       YES                                      
+DATE_MODIFIED                 TIMESTAMP(6)        YES                                      
+MODIFY_BY                     VARCHAR2(100)       YES                                      
 
 
 BANG: INSPECTION_TARGET
@@ -1733,6 +1764,7 @@ RECORD_STATUS                 NUMBER(1,0)         NO                            
 SYSTEM_OBJECT                 NVARCHAR2(1000)     YES                                      Đối tượng hệ thống: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN...
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
+CODE                          NVARCHAR2(100)      YES                                      Mã chức vụ eCAT dùng làm khóa đồng bộ FMS
 
 
 BANG: JOB_STF_FG_BRCH
@@ -1770,6 +1802,7 @@ RECORD_STATUS                 NUMBER(1,0)         NO                            
 DISPLAY_ON_MEMBER_PROFILE     NUMBER(1,0)         NO                                       Cờ hiển thị chức danh trên hồ sơ thành viên: 1=Hiển thị, 0=Ẩn
 PUBLISHED                     NUMBER(1,0)         NO                                       Cờ đã công bố/xuất bản: 1=Đã công bố, 0=Chưa
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
+CODE                          NVARCHAR2(100)      YES                                      Mã loại chức vụ eCAT dùng làm khóa đồng bộ FMS
 
 
 BANG: LOCATION
@@ -1887,6 +1920,7 @@ DESCRIPTION                   NVARCHAR2(1000)     YES                           
 RECORD_STATUS                 NUMBER(1,0)         NO                                       Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
 DATA_MIGRATION                NUMBER(1,0)         YES                                      Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới
+CODE                          NVARCHAR2(100)      YES                                      Mã quốc gia eCAT dùng làm khóa đồng bộ FMS
 
 
 BANG: NHNCK_PAPER_CERT_NOTICE
@@ -1911,6 +1945,9 @@ DATE_MODIFIED                 TIMESTAMP(6)        YES
 MODIFY_BY                     VARCHAR2(100)       YES                                      
 ID                            RAW(16)             NO      PK                               
 SEC_ID                        RAW(16)             YES                                      
+REQUEST_ID                    VARCHAR2(100)       YES                                      requestId của F-02 tương ứng (deep-link)
+ORGANIZATION_REPORT_ID        NUMBER(19,0)        YES                                      Correlation id BC ký kết/chấm dứt phía NHNCK
+REPORT_KIND                   VARCHAR2(30)        YES                                      
 
 
 BANG: NHNCK_PRACTICE_CONFIRM_REQ
@@ -1944,6 +1981,21 @@ DATE_MODIFIED                 TIMESTAMP(6)        YES
 MODIFY_BY                     VARCHAR2(100)       YES                                      
 ID                            RAW(16)             NO      PK                               
 SEC_ID                        RAW(16)             YES                                      
+CONFIRM_PARTIES               VARCHAR2(100)       YES                                      ORGANIZATION,COMMITTEE — bên được xác nhận (F-02 confirmParties)
+ORGANIZATION_REPORT_ID        NUMBER(19,0)        YES                                      Correlation id BC ký kết/chấm dứt phía NHNCK
+REPORT_KIND                   VARCHAR2(30)        YES                                      HIRE (ký kết) | TERMINATION (chấm dứt)
+HIRE_DATE                     TIMESTAMP(6)        YES                                      
+TERMINATION_DATE              TIMESTAMP(6)        YES                                      
+ORG_CONFIRM_STATUS            VARCHAR2(30)        YES                                      PENDING | RESPONDED | NOT_REQUIRED — phía CT QLQ
+ORG_RESULT_CODE               VARCHAR2(40)        YES                                      
+ORG_REASON_TEXT               VARCHAR2(2000)      YES                                      
+ORG_RESPONDED_BY              VARCHAR2(200)       YES                                      
+ORG_RESPONDED_AT              TIMESTAMP(6)        YES                                      
+COMMITTEE_CONFIRM_STATUS      VARCHAR2(30)        YES                                      PENDING | RESPONDED | NOT_REQUIRED — phía Ủy ban
+COMMITTEE_RESULT_CODE         VARCHAR2(40)        YES                                      
+COMMITTEE_REASON_TEXT         VARCHAR2(2000)      YES                                      
+COMMITTEE_RESPONDED_BY        VARCHAR2(200)       YES                                      
+COMMITTEE_RESPONDED_AT        TIMESTAMP(6)        YES                                      
 
 
 BANG: NHN_ORG_WARNING_SNAPSHOT
@@ -2621,6 +2673,7 @@ DEADLINE_SEND                 TIMESTAMP(6) WITH TIME ZONEYES                    
 EFORM_DATA_JSON               CLOB                YES                                      Dữ liệu người dùng nhập trên bản khai trực tuyến eForm (JSON CLOB)
 AUDIT_FIRM_ID                 RAW(16)             YES                                      FK -> AUDIT_FIRM: Công ty kiểm toán
 AUDITOR_ID                    RAW(16)             YES                                      FK -> AUDITOR: Kiểm toán viên
+CBTT_DATE                     DATE                YES                                      Ngày công bố thông tin (TVS2601TK-4236), không bắt buộc
 
 
 BANG: RPT_OUT_GROUP

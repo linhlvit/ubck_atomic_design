@@ -77,3 +77,17 @@ attributes:
     comment: null
     classification_context: null
     etl_derived_value: null
+
+  - name: Job Type Ecat Code
+    physical_name: job_tp_ecat_code
+    business_meaning: Mã loại chức vụ eCAT dùng làm khóa đồng bộ FMS.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOB_TYPE
+    source_column: FMS.JOB_TYPE.CODE
+    comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Bổ sung theo DDL UAT 1 (2026-10-15). Không phải BK của entity (BK vẫn là ID nguồn)."
+    classification_context: null
+    etl_derived_value: null

@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Tách IP Postal Address (2 loại: FOREIGN_BRANCH + PARENT_ADDRESS) + IP Electronic Address + IP Alt Identification (BUSINESS_LICENSE + OPERATING_LICENSE + TAX_ID). NAT_ID là UUID FK thực sự đến FMS.NATIONAL — resolve bằng join NAT_ID → FMS.NATIONAL.ID để lấy SNAME, rồi hash_id('ECAT_COUNTRY', SNAME) cho FK pair Country of Registration Id/Code đến Geographic Area (theo yêu cầu Data Modeler 2026-07-24). Business Registration Number (REG_NO) đẩy ra IP Alt Identification (IP_ALT_ID_TYPE=BUSINESS_LICENSE) thay vì denormalized trên entity chính — theo yêu cầu Data Modeler (2026-07-24). CREATED_BY, MODIFY_BY, FILE_DATA, DELETED, DATA_MIGRATION, ID_DB_OLD document trong pending_design.yaml."
+  notes: "Tách IP Postal Address (2 loại: FOREIGN_BRANCH + PARENT_ADDRESS) + IP Electronic Address + IP Alt Identification (BUSINESS_LICENSE + OPERATING_LICENSE + TAX_ID). NAT_ID là UUID FK thực sự đến FMS.NATIONAL — resolve bằng join NAT_ID → FMS.NATIONAL.ID để lấy CODE, rồi hash_id('ECAT_COUNTRY', CODE) cho FK pair Country of Registration Id/Code đến Geographic Area (theo yêu cầu Data Modeler 2026-07-24). Business Registration Number (REG_NO) đẩy ra IP Alt Identification (IP_ALT_ID_TYPE=BUSINESS_LICENSE) thay vì denormalized trên entity chính — theo yêu cầu Data Modeler (2026-07-24). CREATED_BY, MODIFY_BY, FILE_DATA, DELETED, DATA_MIGRATION, ID_DB_OLD document trong pending_design.yaml. [SỬA 2026-10-15] FK quốc gia/quốc tịch đến FMS.NATIONAL nay crosswalk lấy CODE thay vì SNAME: hash_id(ECAT_COUNTRY, CODE) — FMS.NATIONAL có thêm cột CODE (mã quốc gia eCAT dùng làm khóa đồng bộ FMS) theo DDL UAT 1."
 attributes:
 - attribute_name: "Foreign Fund Management Organization Unit Id"
   physical_name: "foreign_fm_ou_id"
@@ -91,20 +91,20 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.FOR_BRCH.NAT_ID"
-  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: FOR_BRCH.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: FOR_BRCH.NAT_ID = NATIONAL.ID để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Country of Registration Code"
   physical_name: "country_of_registration_code"
-  description: "Mã quốc gia/quốc tịch (SNAME từ FMS.NATIONAL)."
+  description: "Mã quốc gia/quốc tịch (CODE từ FMS.NATIONAL)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.NATIONAL.SNAME"
-  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country of Registration Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Country of Registration Id."
+  - "FMS.NATIONAL.CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country of Registration Id. Giá trị lấy từ CODE (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.CODE sau ETL crosswalk — chi tiết xem comment Country of Registration Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -24,7 +24,7 @@ metadata:
     \ 2026-10-06: BK = hash từ ID (RAW(16)), các cột NCLOB/CLOB JSON map Text (string).\
     \ CREATED_BY/MODIFY_BY/DELETED document trong pending_design.yaml. AUDIT_FIRM_ID/AUDITOR_ID\
     \ (AUDIT_FIRM, AUDITOR ngoài scope Atomic — thông tin kiểm toán lấy từ IDS) và\
-    \ ID_DB_OLD document trong pending_design.yaml."
+    \ ID_DB_OLD document trong pending_design.yaml. [SỬA 2026-10-15] Bổ sung Information Disclosure Date (CBTT_DATE, map 1:1) theo DDL UAT 1."
 attributes:
 - attribute_name: "Fund Management Report Submission Id"
   physical_name: "fmr_submission_id"
@@ -436,3 +436,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
+- attribute_name: "Information Disclosure Date"
+  physical_name: "information_disclosure_dt"
+  description: "Ngày công bố thông tin (TVS2601TK-4236), không bắt buộc."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RPT_MEMBER.CBTT_DATE"
+  comment: "BCV: không có term riêng — CBTT = Công bố thông tin, đặt tên theo nghĩa nghiệp vụ. Bổ sung theo DDL UAT 1 (2026-10-15)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

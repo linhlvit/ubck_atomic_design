@@ -130,21 +130,21 @@ attributes:
     source_system: FMS
     source_table: STF_FG_BRCH
     source_column: FMS.STF_FG_BRCH.NAT_ID
-    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: STF_FG_BRCH.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: STF_FG_BRCH.NAT_ID = NATIONAL.ID để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: null
     etl_derived_value: null
 
   - name: Nationality Code
     physical_name: nationality_code
-    business_meaning: Mã quốc gia/quốc tịch (SNAME từ FMS.NATIONAL).
+    business_meaning: Mã quốc gia/quốc tịch (CODE từ FMS.NATIONAL).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FMS
     source_table: STF_FG_BRCH
-    source_column: FMS.NATIONAL.SNAME
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality Id."
+    source_column: FMS.NATIONAL.CODE
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ CODE (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID). Giá trị lấy từ FMS.NATIONAL.CODE sau ETL crosswalk — chi tiết xem comment Nationality Id."
     classification_context: null
     etl_derived_value: null
 

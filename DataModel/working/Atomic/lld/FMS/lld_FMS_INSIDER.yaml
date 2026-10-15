@@ -19,7 +19,7 @@ metadata:
   approved_at: null
   notes: "[SỬA 2026-10-02] S_ID là FK đến STOCKHOLDER_TYPE (Stockholder Type Id/Code), không phải Fund Management Company — T5-04 hết hiệu lực. Tách IP Postal Address + IP Electronic\
     \ Address + IP Alt Identification (NATIONAL_ID mặc định — có BIRTH nên nghiêng\
-    \ cá nhân). CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml."
+    \ cá nhân). CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml. [SỬA 2026-10-15] FK quốc gia/quốc tịch đến FMS.NATIONAL nay crosswalk lấy CODE thay vì SNAME: hash_id(ECAT_COUNTRY, CODE) — FMS.NATIONAL có thêm cột CODE (mã quốc gia eCAT dùng làm khóa đồng bộ FMS) theo DDL UAT 1."
 attributes:
 - attribute_name: "Fund Management Company Insider Id"
   physical_name: "fmc_insider_id"
@@ -124,7 +124,7 @@ attributes:
   - "FMS.INSIDER.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INSIDER.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME)."
+    \ để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -136,9 +136,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.NATIONAL.SNAME"
+  - "FMS.NATIONAL.CODE"
   comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
-    \ Nationality Id. Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết\
+    \ Nationality Id. Giá trị lấy từ FMS.NATIONAL.CODE sau ETL crosswalk — chi tiết\
     \ xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null

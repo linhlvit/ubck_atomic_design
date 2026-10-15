@@ -609,3 +609,31 @@ attributes:
     comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Bổ sung theo DDL mới (2026-09-10)."
     classification_context: null
     etl_derived_value: null
+
+  - name: Receive Channel Code
+    physical_name: receive_channel_code
+    business_meaning: Mã kênh tiếp nhận hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATIONS
+    source_column: NHNCK.APPLICATIONS.RECEIVE_CHANNEL_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Receive Channel Name
+    physical_name: receive_channel_nm
+    business_meaning: "Tên kênh tiếp nhận hồ sơ (denormalized, đi cặp với Receive Channel Code)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATIONS
+    source_column: NHNCK.APPLICATIONS.RECEIVE_CHANNEL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
