@@ -606,6 +606,7 @@ INSERT INTO datamart.gstt_opr_security_ref_flat
 SELECT
     -- From: OPERATIONAL Operational Security Reference
     o.symbol,
+    o.security_full_nm,
     o.isin_code,
     o.as_of_dt,
     o.stock_tp_code,

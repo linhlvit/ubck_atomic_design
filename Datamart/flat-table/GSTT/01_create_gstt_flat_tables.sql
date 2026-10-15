@@ -598,6 +598,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_opr_security_ref_flat ON CLUSTER 'my_cl
 (
     -- From: OPERATIONAL Operational Security Reference
     symbol                      String              COMMENT 'PK — mã chứng khoán (JAD_STOCKINFOR.SYMBOL)',
+    security_full_nm            Nullable(String)    COMMENT 'Tên đầy đủ chứng khoán (tiếng Việt) — security_full_nm của bản ghi mới nhất của mã (JAD_STOCKINFOR)',
     isin_code                   Nullable(String)    COMMENT 'Mã quốc tế ISIN của mã chứng khoán',
     as_of_dt                    Date                COMMENT 'Ngày giao dịch (TradingDate) của bản ghi mới nhất của mã — mốc hiệu lực',
     stock_tp_code               Nullable(String)    COMMENT 'Loại chứng khoán thô theo sàn (HNX/UPCOM 1-6; HOSE 1-4) — phân biệt tab bảng giá',
@@ -611,7 +612,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_opr_security_ref_flat ON CLUSTER 'my_cl
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (symbol)
-COMMENT 'Flat table — Operational Security Reference (danh mục mã chứng khoán, current-state, 1 row / mã CK; ISIN, loại CK, sàn, phái sinh, phân loại, ngành)'
+COMMENT 'Flat table — Operational Security Reference (danh mục mã chứng khoán, current-state, 1 row / mã CK; tên CK, ISIN, loại CK, sàn, phái sinh, phân loại, ngành)'
 ;
 
 

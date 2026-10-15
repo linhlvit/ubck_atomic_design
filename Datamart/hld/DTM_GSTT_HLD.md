@@ -446,7 +446,7 @@ flowchart LR
     A3dD --> opr_security_ref
 ```
 
-> **[MỚI 2026-10-09 v4.42, Data Modeler yêu cầu tách từ `Operational Security Index Constituent Reference`]** Danh mục mã chứng khoán theo đặc tả `ref_flat` (JAD_StockInfor + IDS Ngành). Grain: 1 row / `symbol` — bản ghi mới nhất của mã trong `Security Trading Snapshot` (`src_stm_code = 'MDDS_JAD_STOCKINFOR'`, `row_number() over (partition by symbol order by trading_time desc) = 1`), KHÔNG giới hạn mã thuộc rổ chỉ số. Cột: `isin_code`, `as_of_dt` (`trading_dt`), `stock_tp_code`, `floor_code`, `derivative_product_nm` (CASE sàn ∈ {02,04,03}: `HĐTL` + chứng khoán cơ sở, GB05/GB10 → TPCP), `security_class_nm` (CASE nhãn tiếng Việt, ELSE 'Khác' — O_GSTT_61), `industry_code`/`industry_nm` (quy tắc K_GSTT_2, current-state — O_GSTT_60). Flat: `gstt_opr_security_ref_flat` (TRUNCATE + INSERT). Chưa có KPI BA tham chiếu — xem O_GSTT_63.
+> **[MỚI 2026-10-09 v4.42, Data Modeler yêu cầu tách từ `Operational Security Index Constituent Reference`]** Danh mục mã chứng khoán theo đặc tả `ref_flat` (JAD_StockInfor + IDS Ngành). Grain: 1 row / `symbol` — bản ghi mới nhất của mã trong `Security Trading Snapshot` (`src_stm_code = 'MDDS_JAD_STOCKINFOR'`, `row_number() over (partition by symbol order by trading_time desc) = 1`), KHÔNG giới hạn mã thuộc rổ chỉ số. Cột: `security_full_nm` (tên chứng khoán tiếng Việt — thêm 2026-10-15, theo yêu cầu Data Modeler), `isin_code`, `as_of_dt` (`trading_dt`), `stock_tp_code`, `floor_code`, `derivative_product_nm` (CASE sàn ∈ {02,04,03}: `HĐTL` + chứng khoán cơ sở, GB05/GB10 → TPCP), `security_class_nm` (CASE nhãn tiếng Việt, ELSE 'Khác' — O_GSTT_61), `industry_code`/`industry_nm` (quy tắc K_GSTT_2, current-state — O_GSTT_60). Flat: `gstt_opr_security_ref_flat` (TRUNCATE + INSERT). Chưa có KPI BA tham chiếu — xem O_GSTT_63.
 
 ##### Cụm 4a: Kết xuất sổ lệnh HOSE (`Fact HOSE Securities Trade`)
 
@@ -4586,7 +4586,7 @@ graph TB
 |---|---|---|---|
 | Operational Public Company Insider Ownership | 1 row / (công ty đại chúng × người nội bộ có vai trò `NNB` còn hiệu lực) — trạng thái hiện hành tại ngày ETL (ngày hiệu lực rỗng = không giới hạn) | K_GSTT_354–358 (Nhóm 35) | READY (mới 2026-10-01) |
 | Operational Security Index Constituent Reference | 1 row / (rổ chỉ số × mã CK thành viên ở ngày giao dịch mới nhất của rổ) — current-state; danh mục chỉ số; lookup `index_code` ↔ `symbol` ↔ `isin_code` | K_GSTT_360 (Nhóm 44), K_GSTT_361 (Nhóm 45) — chiều lọc Chỉ số (O_GSTT_56/57) | READY (mới 2026-10-06) |
-| Operational Security Reference | 1 row / mã CK (bản ghi mới nhất trong JAD_STOCKINFOR) — current-state; danh mục mã chứng khoán (ISIN, loại CK, sàn, phái sinh, phân loại, ngành) | Chưa có KPI BA (O_GSTT_63) | Mới 2026-10-09 |
+| Operational Security Reference | 1 row / mã CK (bản ghi mới nhất trong JAD_STOCKINFOR) — current-state; danh mục mã chứng khoán (tên CK, ISIN, loại CK, sàn, phái sinh, phân loại, ngành) | Chưa có KPI BA (O_GSTT_63) | Mới 2026-10-09 |
 
 ### 3.4 Bảng Dimension (chỉ liệt kê Dimension)
 
