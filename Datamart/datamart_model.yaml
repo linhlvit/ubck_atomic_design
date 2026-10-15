@@ -11860,7 +11860,7 @@ entities:
     description: "[MỚI 2026-09-21, theo yêu cầu Data Modeler] Giá trị mua/bán theo Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách khớp lệnh/thỏa thuận — grain 1 row/mã CK/ngày/Phân loại NĐT. Tách khỏi Fact Stock Portfolio Snapshot để có cột vật lý Investor Category Code thay vì 4 cụm cột cố định + CASE WHEN"
     source_atomic:
       - "securities_trade"
-      - "investment_account"
+      - "discretionary_investment_account"
     modules_using:
       - "GSTT"
     columns:
@@ -11888,16 +11888,16 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — không phải FK sang Dimension riêng (Classification Value chuẩn, 1 trường Code). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
-        source_atomic_table: "securities_trade / investment_account"
-        source_atomic_column: "securities_trade / investment_account.buy_account_nbr / sell_account_nbr / investment_account_tp_code"
+        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — không phải FK sang Dimension riêng (Classification Value chuẩn, 1 trường Code). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        source_atomic_table: "securities_trade / discretionary_investment_account"
+        source_atomic_column: "securities_trade / discretionary_investment_account.buy_account_nbr / sell_account_nbr / investment_account_tp_code"
       - logical_name: "Buy Value"
         physical_name: "buy_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Buy Volume"
@@ -11906,7 +11906,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua theo Phân loại NĐT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Khối lượng mua theo Phân loại NĐT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Sell Value"
@@ -11915,7 +11915,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Sell Volume"
@@ -11924,7 +11924,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán theo Phân loại NĐT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Khối lượng bán theo Phân loại NĐT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Matched Buy Value"
@@ -11933,7 +11933,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Matched Sell Value"
@@ -11942,7 +11942,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Buy Value"
@@ -11951,7 +11951,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Sell Value"
@@ -11960,7 +11960,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
 
@@ -11977,7 +11977,7 @@ entities:
       - "security_trading_snapshot"
       - "securities_trade"
       - "market_index_snapshot"
-      - "investment_account"
+      - "discretionary_investment_account"
     modules_using:
       - "GSTT"
     columns:
@@ -12005,16 +12005,16 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — Classification Value chuẩn, 1 trường Code. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
-        source_atomic_table: "securities_trade / investment_account"
-        source_atomic_column: "securities_trade / investment_account.buy_account_nbr / sell_account_nbr / investment_account_tp_code"
+        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — Classification Value chuẩn, 1 trường Code. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        source_atomic_table: "securities_trade / discretionary_investment_account"
+        source_atomic_column: "securities_trade / discretionary_investment_account.buy_account_nbr / sell_account_nbr / investment_account_tp_code"
       - logical_name: "Buy Value"
         physical_name: "buy_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Sell Value"
@@ -12023,7 +12023,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Matched Buy Value"
@@ -12032,7 +12032,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Matched Sell Value"
@@ -12041,7 +12041,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Buy Value"
@@ -12050,7 +12050,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Sell Value"
@@ -12059,7 +12059,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Market Index Value"
