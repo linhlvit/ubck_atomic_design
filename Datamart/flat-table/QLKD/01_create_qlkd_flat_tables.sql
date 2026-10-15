@@ -496,17 +496,9 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
     sc_dim_src_stm_code                          Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu. — từ Securities Company Dimension',
 
     -- From: REPORT INDICATOR DIMENSION
-    cell_id                                      Nullable(String)        COMMENT 'Mã ô dữ liệu (cell_id) trong cấu trúc eForm động (ví dụ: TS007, TS141, TS273...). — từ Report Indicator Dimension',
-    indicator_code                               Nullable(String)        COMMENT 'Mã chỉ tiêu tài chính hoặc nghiệp vụ chuẩn hóa. — từ Report Indicator Dimension',
-    indicator_nm                                 Nullable(String)        COMMENT 'Tên chỉ tiêu tài chính hoặc nghiệp vụ. — từ Report Indicator Dimension',
-    indicator_group_nm                           Nullable(String)        COMMENT 'Nhóm chỉ tiêu (Cơ cấu tài sản, Cơ cấu nguồn vốn, Vốn chủ sở hữu, Doanh thu & LNST, An toàn tài chính...). — từ Report Indicator Dimension',
-    statement_tp_code                            Nullable(String)        COMMENT 'Loại báo cáo tài chính (CDKT, KQKD, LCTT, ATTC). — từ Report Indicator Dimension',
-    unit_of_measure                              Nullable(String)        COMMENT 'Đơn vị tính (VND, TY_DONG, PERCENT, COUNT). — từ Report Indicator Dimension',
-    ri_dim_src_stm_code                          Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu. — từ Report Indicator Dimension',
-    row_is_current                               Nullable(String)        COMMENT 'Cờ hiệu lực hiện tại theo SCD4A. — từ Report Indicator Dimension',
-    row_start_dt                                 Nullable(Date)          COMMENT 'Ngày bắt đầu hiệu lực của bản ghi theo SCD4A. — từ Report Indicator Dimension',
-    row_end_dt                                   Nullable(Date)          COMMENT 'Ngày kết thúc hiệu lực của bản ghi theo SCD4A. — từ Report Indicator Dimension',
-    etl_process_tms                              Nullable(DateTime)      COMMENT 'Thời gian xử lý ETL. — từ Report Indicator Dimension'
+    sheet_id                                     Nullable(String)        COMMENT 'Sheet trong biểu mẫu eForm động (sheet_id gốc eForm, chưa có mã sheet — O_QLKD_42) — từ Report Indicator Dimension',
+    cell_id                                      Nullable(String)        COMMENT 'Mã ô dữ liệu (cell_id) trong sheet eForm động — chỉ có nghĩa cùng rpt_code + sheet_id — từ Report Indicator Dimension',
+    ri_dim_src_stm_code                          Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu. — từ Report Indicator Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -539,8 +531,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_report_data_flat
     submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo.',
     submission_deadline_dt                       Nullable(Date)          COMMENT 'Hạn nộp báo cáo định kỳ theo quy định.',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo định kỳ.',
-    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
-    etl_process_tms                              DateTime                COMMENT 'Thời gian xử lý ETL.'
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (rpt_cell_val_id)

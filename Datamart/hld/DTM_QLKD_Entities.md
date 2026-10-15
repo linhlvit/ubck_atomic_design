@@ -63,7 +63,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Securities Company Financial Structure Snapshot | Fact Snapshot | new | Cơ cấu tài sản, nguồn vốn và các chỉ tiêu tài chính định kỳ toàn thị trường và từng CTCK | 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu tài chính | K_QLKD_41–52 |
-| Report Indicator Dimension | Dimension | new | Danh mục chỉ tiêu tài chính báo cáo (cell coordinates & standardized indicator codes) | 1 chỉ tiêu (SCD4A) | — |
+| Report Indicator Dimension | Dimension | new | Tọa độ ô báo cáo eForm (mã biểu mẫu, sheet, ô) — thiết kế lại 2026-10-15 (O_QLKD_42) | 1 ô duy nhất (rpt_code × sheet_id × cell_id) | — |
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Snapshot Date / Period End Date) | 1 ngày | — |
 
@@ -97,7 +97,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Securities Company Financial Structure Snapshot | Fact Snapshot | reuse (Nhóm 8/9) | Chỉ tiêu tài chính giám sát: VCSH, vốn đầu tư CSH, tỷ lệ an toàn tài chính, doanh thu, lợi nhuận, margin, CFO, thị phần | 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu tài chính | K_QLKD_59–65, 73–87, 92–99 |
-| Report Indicator Dimension | Dimension | reuse (Nhóm 8/9) | Danh mục chỉ tiêu tài chính báo cáo | 1 chỉ tiêu (SCD4A) | — |
+| Report Indicator Dimension | Dimension | reuse (Nhóm 8/9) | Tọa độ ô báo cáo eForm | 1 ô (rpt_code × sheet_id × cell_id) | — |
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 

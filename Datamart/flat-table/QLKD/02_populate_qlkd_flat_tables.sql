@@ -500,17 +500,9 @@ SELECT
     sc_dim.src_stm_code AS sc_dim_src_stm_code,
 
     -- From: REPORT INDICATOR DIMENSION
+    ri_dim.sheet_id AS sheet_id,
     ri_dim.cell_id AS cell_id,
-    ri_dim.indicator_code AS indicator_code,
-    ri_dim.indicator_nm AS indicator_nm,
-    ri_dim.indicator_group_nm AS indicator_group_nm,
-    ri_dim.statement_tp_code AS statement_tp_code,
-    ri_dim.unit_of_measure AS unit_of_measure,
-    ri_dim.src_stm_code AS ri_dim_src_stm_code,
-    ri_dim.row_is_current AS row_is_current,
-    ri_dim.row_start_dt AS row_start_dt,
-    ri_dim.row_end_dt AS row_end_dt,
-    ri_dim.etl_process_tms AS etl_process_tms
+    ri_dim.src_stm_code AS ri_dim_src_stm_code
 
 FROM datamart.fct_securities_company_financial_structure_snpst f
 JOIN datamart.cdr_dt_dim cal
@@ -545,8 +537,7 @@ SELECT
     f.submission_dt,
     f.submission_deadline_dt,
     f.submission_status_code,
-    f.src_stm_code,
-    f.etl_process_tms
+    f.src_stm_code
 
 FROM datamart.opr_securities_company_report_data f
 ;

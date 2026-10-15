@@ -2622,8 +2622,8 @@ entities:
     description: "Lịch sử tuân thủ & vi phạm CTCK — quyết định xử phạt hành chính, thanh tra/kiểm tra. Grain: nhánh Admin Penalty Decision = 1 CTCK x 1 quyết định xử phạt; nhánh Inspection/Examination = 1 hành vi vi phạm x 1 đối tượng bị xử phạt. Multi-source tách bộ (Admin Penalty Decision/Inspection/Examination) — 3 file LLD riêng, UNION về 1 schema cột đích thống nhất (PK chung compliance_event_code). Chỉ giữ KPI READY (K_QLKD_188, 197-203) — không có Periodic Report (Nhóm 38/39 phần PENDING gating dữ liệu động). Nguồn Atomic track draft chưa approved. GAP: sc_code cho nhánh Inspection/Examination chưa có FK surrogate chính thức, chỉ text-match qua Inspection/Examination Team Target.target_reference_id."
     source_atomic:
       - "sc_administrative_penalty_decision"
-      - "penalty_decision_subject"
-      - "penalty_decision"
+      - "pd_subject"
+      - "pd"
       - "pd_subject_behavior"
       - "violation_behavior"
       - "penalty_type"
@@ -2631,6 +2631,7 @@ entities:
       - "inspection_team_target"
       - "examination_team"
       - "examination_team_target"
+      - "ip_alternative_identification"
     modules_using:
       - "QLKD"
     columns:
@@ -3132,8 +3133,8 @@ entities:
     reuse_status: "new"
     description: "Lịch sử vi phạm & xử phạt hành chính cá nhân — schema THANHTRA, filter Subject Type = INDIVIDUAL. Grain 1 quyết định xử phạt x 1 cá nhân. Nguồn Atomic track draft chưa approved."
     source_atomic:
-      - "penalty_decision_subject"
-      - "penalty_decision"
+      - "pd_subject"
+      - "pd"
       - "pd_subject_behavior"
       - "violation_behavior"
       - "penalty_type"
@@ -3148,8 +3149,8 @@ entities:
         nullable: false
         key: "PK"
         description: "Mã quyết định xử phạt cá nhân — PK duy nhất (Bảng Tác nghiệp). Driving Table: Penalty Decision Subject (penalty_decision_subject) — nguồn track draft DataModel/working/Atomic/lld/THANHTRA/lld_THANHTRA_PENALTY_DECISION_SUBJECT.yaml, chưa approved. Filter: subject_tp_code = 'INDIVIDUAL' (khác Nhóm 8 dùng ORGANIZATION)."
-        source_atomic_table: "penalty_decision_subject"
-        source_atomic_column: "penalty_decision_subject.pd_code"
+        source_atomic_table: "pd_subject"
+        source_atomic_column: "pd_subject.pd_code"
       - logical_name: "Identification Number"
         physical_name: "identification_nbr"
         data_domain: "Text"
@@ -3157,8 +3158,8 @@ entities:
         nullable: true
         key: ""
         description: "Số định danh cá nhân bị xử phạt — merge key với Operational Individual Profile (ETL, không phải FK Atomic)."
-        source_atomic_table: "penalty_decision_subject"
-        source_atomic_column: "penalty_decision_subject.subject_id_nbr"
+        source_atomic_table: "pd_subject"
+        source_atomic_column: "pd_subject.subject_id_nbr"
       - logical_name: "Decision Number"
         physical_name: "decision_nbr"
         data_domain: "Text"
@@ -3166,8 +3167,8 @@ entities:
         nullable: true
         key: ""
         description: "Số quyết định xử phạt."
-        source_atomic_table: "penalty_decision"
-        source_atomic_column: "penalty_decision.decision_nbr"
+        source_atomic_table: "pd"
+        source_atomic_column: "pd.decision_nbr"
       - logical_name: "Issued Date"
         physical_name: "issued_dt"
         data_domain: "Date"
@@ -3175,8 +3176,8 @@ entities:
         nullable: true
         key: ""
         description: "Ngày ban hành quyết định xử phạt."
-        source_atomic_table: "penalty_decision"
-        source_atomic_column: "penalty_decision.issued_dt"
+        source_atomic_table: "pd"
+        source_atomic_column: "pd.issued_dt"
       - logical_name: "Violation Behavior Name"
         physical_name: "violation_behavior_nm"
         data_domain: "Text"
@@ -3211,8 +3212,8 @@ entities:
         nullable: false
         key: ""
         description: "Mã hệ thống nguồn dữ liệu."
-        source_atomic_table: "penalty_decision_subject"
-        source_atomic_column: "penalty_decision_subject.src_stm_code"
+        source_atomic_table: "pd_subject"
+        source_atomic_column: "pd_subject.src_stm_code"
 
   - id: "DTM-public_company_dim"
     logical_name: "Public Company Dimension"
@@ -16191,9 +16192,9 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK chỉ tiêu báo cáo — lookup qua Report Indicator Dimension theo cell_id."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: "sc_report_input_value.cell_id"
+        description: "FK tọa độ ô báo cáo — lookup Report Indicator Dimension theo (rpt_code, sheet_id, cell_id) [SỬA 2026-10-15: trước chỉ theo cell_id nên TS001 của các sheet khác nhau bị gộp]."
+        source_atomic_table: "sc_report_input_value / sc_report"
+        source_atomic_column: "sc_report_input_value.cell_id / sc_report_input_value.sheet_id / sc_report.rpt_code"
       - logical_name: "Report Year"
         physical_name: "rpt_year"
         data_domain: "Small Counter"
@@ -16227,7 +16228,7 @@ entities:
         data_type: "decimal"
         nullable: true
         key: ""
-        description: "Giá trị chỉ tiêu tài chính (chuyển đổi từ text item_val sang số)."
+        description: "Giá trị chỉ tiêu tài chính (chuyển đổi từ text cell_val sang số)."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Report Code"
@@ -16274,7 +16275,7 @@ entities:
     module: "QLKD"
     status: "draft"
     reuse_status: "new"
-    description: "Chiều chỉ tiêu báo cáo tài chính và hoạt động của CTCK — mã chỉ tiêu, tên chỉ tiêu, nhóm báo cáo, cell ID tương ứng. SCD4A."
+    description: "Chiều tọa độ ô báo cáo eForm động (mã biểu mẫu × sheet × ô) — thiết kế lại 2026-10-15, không gán tên/nhóm/đơn vị chỉ tiêu theo cell_id (O_QLKD_42)"
     source_atomic:
       - "sc_report_input_value"
     modules_using:
@@ -16286,108 +16287,45 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "Khóa chính chiều chỉ tiêu báo cáo."
+        description: "Khóa chính chiều tọa độ ô báo cáo — hash của (mã biểu mẫu, sheet, ô)."
+        source_atomic_table: "sc_report_input_value / sc_report"
+        source_atomic_column: "sc_report.rpt_code / sc_report_input_value.sheet_id / sc_report_input_value.cell_id"
+      - logical_name: "Report Code"
+        physical_name: "rpt_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "NK"
+        description: "Mã biểu mẫu báo cáo (VD BCTHHD_CTCK, BCTCRLCTCK, BCTCHN) — qua submission → sc_report."
+        source_atomic_table: "sc_report"
+        source_atomic_column: "sc_report.rpt_code"
+      - logical_name: "Sheet Id"
+        physical_name: "sheet_id"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "NK"
+        description: "Định danh sheet GỐC của eForm động (`sc_report_input_value.sheet_id`, chưa phải mã sheet TTC_T/TTC_Q/II.8 — mã sheet nằm ngoài Atomic, O_QLKD_34/42) — rỗng '' nếu nguồn NULL."
         source_atomic_table: "sc_report_input_value"
-        source_atomic_column: "sc_report_input_value.cell_id"
+        source_atomic_column: "sc_report_input_value.sheet_id"
       - logical_name: "Cell Id"
         physical_name: "cell_id"
         data_domain: "Text"
         data_type: "string"
         nullable: false
         key: "NK"
-        description: "Mã ô dữ liệu (cell_id) trong cấu trúc eForm động (ví dụ: TS007, TS141, TS273...)."
+        description: "Mã ô dữ liệu (cell_id) trong sheet eForm động (VD TS001, TS007, TS141…). Chỉ có nghĩa khi đi cùng rpt_code + sheet_id."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_id"
-      - logical_name: "Indicator Code"
-        physical_name: "indicator_code"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: "NK"
-        description: "Mã chỉ tiêu tài chính hoặc nghiệp vụ chuẩn hóa."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
-      - logical_name: "Indicator Name"
-        physical_name: "indicator_nm"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Tên chỉ tiêu tài chính hoặc nghiệp vụ."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
-      - logical_name: "Indicator Group Name"
-        physical_name: "indicator_group_nm"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: true
-        key: ""
-        description: "Nhóm chỉ tiêu (Cơ cấu tài sản, Cơ cấu nguồn vốn, Vốn chủ sở hữu, Doanh thu & LNST, An toàn tài chính...)."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
-      - logical_name: "Statement Type Code"
-        physical_name: "statement_tp_code"
-        data_domain: "Classification Value"
-        data_type: "string"
-        nullable: true
-        key: ""
-        description: "Loại báo cáo tài chính (CDKT, KQKD, LCTT, ATTC)."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
-      - logical_name: "Unit Of Measure"
-        physical_name: "unit_of_measure"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: true
-        key: ""
-        description: "Đơn vị tính (VND, TY_DONG, PERCENT, COUNT)."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu."
+        description: "Mã hệ thống nguồn dữ liệu. Chiều TỌA ĐỘ ô eForm động: 1 dòng = 1 ô duy nhất theo (mã biểu mẫu, sheet, ô). Atomic `sc_report_input_value.sheet_id/cell_id` KHÔNG có FK sang family FORM_SHEET* và cùng `cell_id` mang nghĩa khác nhau giữa biểu mẫu/sheet (VD TS001: 'Tổng số người lao động' ở BCTHHD_CTCK/TTC_T, 'Vốn điều lệ' ở TTC_Q) — nên chiều KHÔNG gán tên/nhóm/đơn vị chỉ tiêu theo cell_id; ngữ nghĩa chỉ tiêu nằm ở bộ lọc rpt_code + sheet_id + cell_id trong Detail Mapping (O_QLKD_42). Thiết kế lại 2026-10-15."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.src_stm_code"
-      - logical_name: "Row Is Current"
-        physical_name: "row_is_current"
-        data_domain: "Indicator"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Cờ hiệu lực hiện tại theo SCD4A."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
-      - logical_name: "Row Start Date"
-        physical_name: "row_start_dt"
-        data_domain: "Date"
-        data_type: "date"
-        nullable: false
-        key: ""
-        description: "Ngày bắt đầu hiệu lực của bản ghi theo SCD4A."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
-      - logical_name: "Row End Date"
-        physical_name: "row_end_dt"
-        data_domain: "Date"
-        data_type: "date"
-        nullable: true
-        key: ""
-        description: "Ngày kết thúc hiệu lực của bản ghi theo SCD4A."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
-      - logical_name: "Etl Process Timestamp"
-        physical_name: "etl_process_tms"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời gian xử lý ETL."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
 
   - id: "DTM-opr_securities_company_report_data"
     logical_name: "Securities Company Report Data"
@@ -16503,7 +16441,7 @@ entities:
         key: ""
         description: "Số thứ tự dòng dữ liệu (đối với bảng động/lưới)."
         source_atomic_table: "sc_report_input_value"
-        source_atomic_column: "sc_report_input_value.row_no"
+        source_atomic_column: "sc_report_input_value.row_index"
       - logical_name: "Item Value"
         physical_name: "item_val"
         data_domain: "Text"
@@ -16512,7 +16450,7 @@ entities:
         key: ""
         description: "Giá trị ô dữ liệu nhập vào (dạng văn bản gốc)."
         source_atomic_table: "sc_report_input_value"
-        source_atomic_column: "sc_report_input_value.item_val"
+        source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Submission Date"
         physical_name: "submission_dt"
         data_domain: "Date"
@@ -16549,15 +16487,6 @@ entities:
         description: "Trạng thái nộp báo cáo định kỳ."
         source_atomic_table: "sc_periodic_report"
         source_atomic_column: "sc_periodic_report.rpt_submission_status_code"
-      - logical_name: "Etl Process Timestamp"
-        physical_name: "etl_process_tms"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời gian xử lý ETL."
-        source_atomic_table: "sc_report_input_value"
-        source_atomic_column: null
 
   - id: "DTM-report_structure_dim"
     logical_name: "Report Structure Dimension"
@@ -16693,7 +16622,7 @@ entities:
         key: ""
         description: "Nhãn hiển thị của ô trong biểu mẫu."
         source_atomic_table: "sc_report_sheet_cell"
-        source_atomic_column: "sc_report_sheet_cell.label"
+        source_atomic_column: "sc_report_sheet_cell.label_nm"
       - logical_name: "Unit Of Measure"
         physical_name: "unit_of_measure"
         data_domain: "Text"
@@ -16730,42 +16659,6 @@ entities:
         description: "Mã hệ thống nguồn dữ liệu."
         source_atomic_table: "sc_report_sheet_cell"
         source_atomic_column: "sc_report_sheet_cell.src_stm_code"
-      - logical_name: "Row Is Current"
-        physical_name: "row_is_current"
-        data_domain: "Indicator"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Cờ hiệu lực hiện tại theo SCD4A."
-        source_atomic_table: "sc_report_sheet_cell"
-        source_atomic_column: null
-      - logical_name: "Row Start Date"
-        physical_name: "row_start_dt"
-        data_domain: "Date"
-        data_type: "date"
-        nullable: false
-        key: ""
-        description: "Ngày bắt đầu hiệu lực của bản ghi theo SCD4A."
-        source_atomic_table: "sc_report_sheet_cell"
-        source_atomic_column: null
-      - logical_name: "Row End Date"
-        physical_name: "row_end_dt"
-        data_domain: "Date"
-        data_type: "date"
-        nullable: true
-        key: ""
-        description: "Ngày kết thúc hiệu lực của bản ghi theo SCD4A."
-        source_atomic_table: "sc_report_sheet_cell"
-        source_atomic_column: null
-      - logical_name: "Etl Process Timestamp"
-        physical_name: "etl_process_tms"
-        data_domain: "Timestamp"
-        data_type: "timestamp"
-        nullable: false
-        key: ""
-        description: "Thời gian xử lý ETL."
-        source_atomic_table: "sc_report_sheet_cell"
-        source_atomic_column: null
 
   - id: "DTM-opr_securities_company_financial_report_hist"
     logical_name: "Securities Company Financial Report History"
