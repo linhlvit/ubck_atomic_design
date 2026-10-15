@@ -8,10 +8,11 @@ description: |
   Sử dụng khi: cần xuất tài liệu PTTK (Phần 3.1 Phân hệ ETL) hoặc TKCSLD
   (Phần 3 Kho Dữ liệu OLAP) cho một module Datamart (TT/NHNCK/NDTNN/QLCB/...).
 
-  Yêu cầu: HLD + Entities.csv + Attributes.csv của module đã được duyệt.
-  Input: Datamart/hld/DTM_{MODULE}_HLD.md
-         Datamart/hld/DTM_{MODULE}_Entities.csv
-         Datamart/lld/DTM_{MODULE}_Attributes.csv
+  Yêu cầu: HLD + Entities.csv + LLD per-table của module đã được duyệt.
+  Input: Datamart/hld/DTM_{MODULE}_HLD.md            (PTTK — lời dẫn + flowchart, LLM viết)
+         Datamart/hld/DTM_{MODULE}_Entities.csv       (TKCSLD — script đọc)
+         Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv     (TKCSLD — script đọc)
+  TKCSLD sinh 100% bằng render_datamart_md.py (0 token LLM cho bảng/ERD).
   Output: docs/output/datamart/{MODULE}/DTM_{MODULE}_PTTK.md   (Phase 1)
           docs/output/datamart/{MODULE}/DTM_{MODULE}_TKCSLD.md  (Phase 1)
           docs/output/datamart/{MODULE}/DTM_{MODULE}_PTTK.docx  (Phase 3)
@@ -26,7 +27,8 @@ description: |
 
 - **Scripts:**
   - `.claude/skills/datamart-gen-docs/scripts/build_docx.py` — Phase 3: convert MD → DOCX (python-docx + mmdc)
-  - `.claude/skills/datamart-gen-docs/scripts/clean_description.py` — helper regex strip C.5
+  - `.claude/skills/datamart-gen-docs/scripts/render_datamart_md.py` — **Phase 1 TKCSLD: sinh toàn bộ ERD + bảng 8/12 cột bằng code** (2026-10-15)
+  - `.claude/skills/datamart-gen-docs/scripts/clean_description.py` — C.5: `clean()` + `find_leaks()` (dùng chung với Gate 8 luật D8 `L2-DESC-DOC-LEAK`)
 - **Reference:**
   - `reference/data_domain_mapping.md` — C.2: Data Domain → kiểu dữ liệu
   - `reference/column_rules.md` — C.4: quy tắc P/F Key, Nullable, Unique, ETL Rules
@@ -36,7 +38,8 @@ description: |
 
 - [ ] `Datamart/hld/DTM_{MODULE}_HLD.md` tồn tại và có Section 1 — Data Lineage
 - [ ] `Datamart/hld/DTM_{MODULE}_Entities.csv` tồn tại
-- [ ] `Datamart/lld/DTM_{MODULE}_Attributes.csv` tồn tại
+- [ ] `Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv` (LLD per-table) tồn tại — file LLD per-table `Datamart/lld/{MODULE}/DTM_*.csv` cũ KHÔNG còn dùng
+- [ ] `python .claude/skills/datamart-gen-docs/scripts/render_datamart_md.py -m {MODULE} --report-only` → 0 lỗi chặn (thực thể thiếu LLD / mô tả rò rỉ)
 - [ ] `DataModel/working/Atomic/aggregate/atomic_attributes.yaml` tồn tại — dùng để lookup `source_system` cho cột Hệ thống nguồn trong bảng Physical
 - [ ] Python deps: `python -c "import docx"` OK — cài: `pip install python-docx`
 - [ ] mmdc (chỉ cần cho Phase 3 DOCX): `npm install -g @mermaid-js/mermaid-cli`
@@ -64,24 +67,17 @@ Phase 3:   Claude chạy build_docx.py → gen DOCX tổng
 
 ## PHASE 1 — GEN MARKDOWN
 
-### Bước 1: Đọc input
+### Bước 1: Đọc input (CHỈ cho PTTK)
 
-```python
-# Đọc 4 file theo thứ tự:
-hld          = "Datamart/hld/DTM_{MODULE}_HLD.md"
-ents         = "Datamart/hld/DTM_{MODULE}_Entities.csv"
-attrs        = "Datamart/lld/DTM_{MODULE}_Attributes.csv"
-atomic_attrs = "DataModel/working/Atomic/aggregate/atomic_attributes.yaml"   # lookup source_system cho bảng Physical
+TKCSLD không cần đọc gì — script tự đọc (Bước 3). Cho PTTK, đọc HLD theo lát cắt (KHÔNG Read nguyên file —
+hook `dm_guard` sẽ chặn):
 
-# Đọc rule transform tên (luôn dùng version mới nhất):
-rule  = "system/rules/rule_transform_logical_name.csv"  # hoặc version mới nhất có trong project
+```bash
+python .claude/skills/datamart-review/scripts/ctx_slice.py -m {MODULE} --sections 1 --print   # Data Lineage + Cụm
 ```
 
-Sau khi đọc:
-- Từ `Entities.csv`: xây dict `{gold_entity → {gold_table, table_type, description, FKs}}`
-- Từ `Attributes.csv`: xây dict `{gold_entity → [danh sách attributes]}`
-- Từ `HLD.md`: xác định danh sách Cụm (Section 1), Staging sources, diagram mermaid từng cụm
-- Từ `atomic_attrs`: xây dict `{(atomic_table, atomic_column) → source_system}` để lookup Hệ thống nguồn
+- Từ Section 1 HLD: danh sách Cụm, Staging sources, flowchart từng cụm
+- Từ `Entities.csv` (nhỏ, Read được): tên logical/physical của bảng Gold cho node Datamart
 
 ### Bước 2: Gen `DTM_{MODULE}_PTTK.md`
 
@@ -104,39 +100,24 @@ Tuân thủ **PHẦN B** của instruction bên dưới. Thứ tự output:
 
 **Tra số thứ tự X:** Hỏi người dùng module này là số mấy trong tài liệu PTTK tổng (3.1.1, 3.1.2, ...) nếu chưa có thông tin. Default X=1.
 
-### Bước 3: Gen `DTM_{MODULE}_TKCSLD.md`
+### Bước 3: Sinh `DTM_{MODULE}_TKCSLD.md` bằng script (KHÔNG tự gõ bảng)
 
-Tuân thủ **PHẦN C** của instruction bên dưới. Thứ tự output:
-
+```bash
+# 1) báo cáo chất lượng trước — lỗi chặn phải xử lý (thực thể thiếu LLD, mô tả rò rỉ)
+python .claude/skills/datamart-gen-docs/scripts/render_datamart_md.py -m {MODULE} --report-only
+# 2) sinh — nếu DTM_{MODULE}_TKCSLD.md đã có, script ghi DTM_{MODULE}_TKCSLD.rendered.md để so sánh;
+#    chỉ thêm --overwrite khi Data Modeler đồng ý thay bản cũ (bản cũ được sao lưu .bak-<ts>)
+python .claude/skills/datamart-gen-docs/scripts/render_datamart_md.py -m {MODULE} [--overwrite] [--with-tech-cols]
 ```
-# 3. KHO DỮ LIỆU (OLAP) — [Tên module tiếng Việt]
 
-## 3.1 Mô hình dữ liệu mức High Level / Conceptual
-### 3.1.1 Sơ đồ ERD
-(mermaid erDiagram — chỉ tên thực thể + quan hệ)
-### 3.1.2 Danh sách thực thể
-(bảng 4 cột từ Entities.csv)
+Script code hóa toàn bộ PHẦN C (C.4 P/F Key/Nullable/Unique, C.5 clean mô tả, C.6 ERD 3 tầng, C.7–C.9 bảng).
+Tên bảng/cột lấy đúng từ LLD per-table (nguồn sự thật) — tài liệu cũ còn tên viết tắt kiểu `fnd_mgt_co_dim`
+sẽ được thay bằng tên LLD hiện hành. Lineage mart→mart ghi `DTM.{bảng}` / Hệ thống nguồn `Datamart`.
 
-## 3.2 Mô hình dữ liệu mức Logic
-### 3.2.1 Sơ đồ ERD
-(mermaid erDiagram — alias logical, có trường gold_attribute)
-### 3.2.2 Danh sách các bảng và thuộc tính
-#### 3.2.2.1 Bảng [gold_entity]
-(bảng 8 cột)
-...
-
-## 3.3 Mô hình dữ liệu mức vật lý
-### 3.3.1 Sơ đồ ERD
-(mermaid erDiagram — alias physical, có trường gold_column)
-### 3.3.2 Danh sách bảng Dimension
-#### 3.3.2.1 Bảng [gold_entity] ([gold_table])
-(metadata + bảng 11 cột)
-...
-### 3.3.3 Danh sách bảng Detail Fact
-...
-### 3.3.4 Danh sách bảng tác nghiệp (Operational)
-...
-```
+**LLM KHÔNG sửa tay bảng/ERD trong file sinh ra.** Sai ở đâu → sửa LLD/Entities (qua apply_patch.py / per-table CSV)
+rồi sinh lại. Cảnh báo `MÔ TẢ RỖNG SAU CLEAN` = mô tả LLD toàn ghi chú kỹ thuật → Data Modeler viết lại mô tả
+nghiệp vụ trong LLD; cảnh báo `LINEAGE` = bảng nguồn không có trong `atomic_attributes.yaml` (VD Atomic đã xóa LLD
+`securities_trade`) → báo Atomic team, không tự điền.
 
 ### Bước 4: Lưu file
 
@@ -161,9 +142,7 @@ Sau khi gen xong Phase 1:
 - [ ] Tên module tiếng Việt đúng
 - [ ] Diagram PTTK: Staging/Atomic/Datamart subgraph đúng; **tất cả node** (Staging/Atomic/Datamart) dùng `ID["label"]` syntax — Staging: node ID không dấu chấm; Atomic: ID có `_`, label bỏ `_`; Datamart: ID = tên physical, label = tên logical từ Entities.csv
 - [ ] TKCSLD: 3 ERD đúng tầng (Conceptual/Logic/Physical)
-- [ ] Bảng thuộc tính: 8 cột (Logic), 12 cột (Physical)
-- [ ] Cột Mô tả: thuần tiếng Việt, không còn tham chiếu nguồn
-- [ ] ETL Rules = `etl_logic` từ Attributes.csv; nếu Generated → `ETL sinh tự động`
+- [ ] TKCSLD sinh bằng `render_datamart_md.py` (không sửa tay); `--report-only` 0 lỗi chặn; cảnh báo MÔ TẢ RỖNG / LINEAGE đã báo Data Modeler
 
 ---
 
@@ -264,7 +243,7 @@ npm install -g @mermaid-js/mermaid-cli
 |---|---|
 | `DTM_{MODULE}_HLD.md` | Nguồn chính cho PTTK — cấu trúc cụm, diagram, mô tả nghiệp vụ |
 | `DTM_{MODULE}_Entities.csv` | Danh sách bảng — loại bảng, mô tả, quan hệ FK |
-| `DTM_{MODULE}_Attributes.csv` | Chi tiết từng trường — tên logical, tên physical, kiểu dữ liệu, key, mô tả, nguồn |
+| LLD per-table `Datamart/lld/{MODULE}/DTM_*.csv` | Chi tiết từng trường — tên logical, tên physical, kiểu dữ liệu, key, mô tả, nguồn |
 | `rule_transform_logical_name_v<version>.csv` | Dictionary transform tên — luôn dùng file có version mới nhất |
 
 **Tên module tiếng Việt:** xem `reference/module_names_vi.md`
@@ -447,7 +426,7 @@ Bảng CV: `Classification Value (tên_scheme)` — mô tả: "Bảng code value
 
 #### C.2 Mapping Data Domain → Kiểu dữ liệu
 
-Xem `reference/data_domain_mapping.md`. Lấy thẳng từ cột `data_type` trong Attributes.csv; chỉ fallback sang bảng mapping nếu `data_type` trống.
+Xem `reference/data_domain_mapping.md`. Lấy thẳng từ cột `data_type` trong LLD per-table; chỉ fallback sang bảng mapping nếu `data_type` trống.
 
 #### C.3 Cấu trúc cột file Attributes
 
@@ -478,8 +457,8 @@ Xem `reference/column_rules.md` để biết chi tiết. Tóm tắt:
 | Giá trị mặc định | Luôn để trống |
 | Hệ thống nguồn | Lookup `(atomic_table, atomic_column)` → `source_system` từ `DataModel/working/Atomic/aggregate/atomic_attributes.yaml`; các trường kỹ thuật SCD4A / audit hoặc `source_entity=Generated`/rỗng → trống |
 | Schema.Table | `ATM.{atomic_table}` (schema cố định `ATM` = Atomic); các trường kỹ thuật SCD4A / audit hoặc `atomic_table` trống → trống |
-| Source Field Name | `atomic_column` từ `DTM_{MODULE}_Attributes.csv`; các trường kỹ thuật SCD4A / audit hoặc `atomic_column` trống → trống |
-| ETL Rules | `etl_logic` từ `DTM_{MODULE}_Attributes.csv`; các trường kỹ thuật SCD4A / audit hoặc `source_entity=Generated`/rỗng → `ETL sinh tự động` |
+| Source Field Name | `atomic_column` từ LLD per-table `Datamart/lld/{MODULE}/DTM_*.csv`; các trường kỹ thuật SCD4A / audit hoặc `atomic_column` trống → trống |
+| ETL Rules | `etl_logic` từ LLD per-table `Datamart/lld/{MODULE}/DTM_*.csv`; các trường kỹ thuật SCD4A / audit hoặc `source_entity=Generated`/rỗng → `ETL sinh tự động` |
 
 **Bộ 5 trường kỹ thuật SCD4A:** `ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms`, `ds_snpst_dt` (và các trường audit legacy: `eff_dt`, `expr_dt`, `ppl_dt`)
 
@@ -574,9 +553,9 @@ Theo sau heading là metadata bảng:
 
 - Dùng `gold_column` (= `datamart_column`) cho tên trường
 - **Hệ thống nguồn**: lookup `source_system` từ `atomic_attributes.csv` qua key `(atomic_table, atomic_column)`
-- **Schema.Table**: `ATM.{atomic_table}` — schema `ATM` là cố định, `atomic_table` từ `DTM_{MODULE}_Attributes.csv`
-- **Source Field Name**: `atomic_column` từ `DTM_{MODULE}_Attributes.csv`
-- **ETL Rules**: `etl_logic` từ `DTM_{MODULE}_Attributes.csv`
+- **Schema.Table**: `ATM.{atomic_table}` (bảng Atomic) hoặc `DTM.{bảng}` (lineage mart→mart) — `atomic_table` từ LLD per-table `Datamart/lld/{MODULE}/DTM_*.csv`
+- **Source Field Name**: `atomic_column` từ LLD per-table `Datamart/lld/{MODULE}/DTM_*.csv`
+- **ETL Rules**: `etl_logic` từ LLD per-table `Datamart/lld/{MODULE}/DTM_*.csv`
 - Thứ tự bảng: Dimension → Fact → Operational
 
 ---
@@ -613,7 +592,7 @@ Theo sau heading là metadata bảng:
 - [ ] Bảng Physical: dùng `gold_column`, 12 cột (thêm Hệ thống nguồn, Schema.Table, Source Field Name, ETL Rules)
 - [ ] Cột Mô tả: thuần tiếng Việt, đã loại bỏ tham chiếu nguồn, open issue, ghi chú kỹ thuật
 - [ ] Schema.Table = `ATM.{atomic_table}` (prefix `ATM` cố định)
-- [ ] ETL Rules = `etl_logic` từ Attributes.csv; Generated/rỗng → `ETL sinh tự động`
+- [ ] ETL Rules = `etl_logic` từ LLD per-table; Generated/rỗng → `ETL sinh tự động`
 - [ ] Cột Giá trị mặc định: để trống hoàn toàn
 - [ ] DD key → cột P/F Key để trống
 - [ ] Các trường kỹ thuật SCD4A / audit: Hệ thống nguồn/Schema.Table/Source Field Name trống, ETL Rules = `ETL sinh tự động`
@@ -631,7 +610,7 @@ Theo sau heading là metadata bảng:
 | Lỗi | Nguyên nhân | Fix |
 |---|---|---|
 | `FileNotFoundError: DTM_{MODULE}_HLD.md` | File chưa tạo | Báo người dùng — phải hoàn thành HLD trước. STOP. |
-| `FileNotFoundError: DTM_{MODULE}_Attributes.csv` | File chưa có | Kiểm tra `Datamart/lld/` — đúng tên file? |
+| `THIẾU LLD thực thể '…'` (render_datamart_md.py) | Entities.csv có thực thể nhưng không có file LLD per-table | Thiết kế LLD Phase 1 cho bảng đó, hoặc bỏ thực thể khỏi Entities (hỏi Data Modeler) |
 | Mô tả tiếng Việt bị vỡ encoding | CSV không UTF-8 BOM | Mở CSV và re-save với UTF-8 BOM |
 | mmdc không tìm thấy | Chưa cài | `npm install -g @mermaid-js/mermaid-cli` |
 | ERD quá phức tạp, mermaid báo lỗi | Quá nhiều bảng/trường | Tách ERD thành 2 diagram hoặc giảm bớt trường hiển thị |

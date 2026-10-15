@@ -30,7 +30,7 @@ for _s in (sys.stdout, sys.stderr):
         pass
 
 from datamart_common import find_project_root, get_available_modules, resolve_module_path  # noqa: E402
-from datamart_common.csv_io import DesignCsv, read_design_csv, write_design_csv  # noqa: E402
+from datamart_common.csv_io import DesignCsv, guard_shrink, read_design_csv, write_design_csv  # noqa: E402
 from datamart_common.module_resolver import normalize_module_name  # noqa: E402
 
 OUT_REL = "Datamart/index/kpi_index.csv"
@@ -84,6 +84,8 @@ def scan_dm(path: Path):
 def main() -> None:
     ap = argparse.ArgumentParser(description="RFC Đ7 — sinh chỉ mục KPI")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--allow-shrink", action="store_true",
+                    help="Cho phép ghi dù chỉ mục co > 20%% (VD human chủ động cắt nhóm dashboard)")
     ap.add_argument("--root", default=None)
     args = ap.parse_args()
 
@@ -111,6 +113,8 @@ def main() -> None:
         print(f"❌ kpi_index.csv lệch — chạy: python scripts/build_kpi_index.py")
         sys.exit(1)
 
+    old_n = len(read_design_csv(out_p, strict=False).rows) if out_p.is_file() else 0
+    guard_shrink(OUT_REL, old_n, len(rows), args.allow_shrink)
     write_design_csv(out_p, new, quote_all=False)
     nready = sum(1 for r in rows if r[5] == "READY")
     npend = sum(1 for r in rows if r[5] == "PENDING")

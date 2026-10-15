@@ -7,9 +7,17 @@ Master registry trở thành **output sinh ra**, không sửa tay nữa — nh�
 luôn PASS thay vì phải canh gác việc quên đồng bộ thủ công.
 
 Usage:
-    python scripts/build_registry.py             # sinh lại toàn bộ
-    python scripts/build_registry.py --check     # chỉ kiểm tra, không ghi (dùng trong CI)
-Exit: 0 khớp / 1 lệch (ở chế độ --check) hoặc lỗi cấu trúc
+    python scripts/build_registry.py             # sinh lại toàn bộ (bị chặn nếu mất trọn bảng)
+    python scripts/build_registry.py --check     # chỉ kiểm tra, không ghi (dùng trong CI / Gate 9)
+    python scripts/build_registry.py --allow-drop  # chỉ khi human đã duyệt bỏ các bảng được liệt kê
+Exit: 0 khớp / 1 lệch (ở chế độ --check) hoặc lỗi cấu trúc / bị chốt chặn
+
+CHỐT CHẶN MẤT BẢNG (2026-10-15)
+    "build_registry làm rơi bảng `_rpt`" (2026-09-29) KHÔNG phải lỗi tìm file: commit 63feed11
+    xóa 20 file LLD per-module `_rpt` của TKNB trong khi HLD/flat/model/Detail Mapping vẫn dùng,
+    còn VP `fct_derv_*`… chưa từng có file per-module. Master giữ dòng mồ côi; sinh lại từ
+    per-module thì đúng hợp đồng nhưng xóa trọn các bảng đó. Vì vậy: bảng có trong master mà
+    không còn file per-module → từ chối ghi, liệt kê bảng, chờ human quyết (khôi phục file / bỏ bảng).
 """
 from __future__ import annotations
 
@@ -31,6 +39,9 @@ from datamart_common import find_project_root  # noqa: E402
 from datamart_common.csv_io import (  # noqa: E402
     CsvStructureError,
     DesignCsv,
+    dropped_groups,
+    guard_no_drop,
+    guard_shrink,
     read_design_csv,
     write_design_csv,
 )
@@ -76,6 +87,8 @@ def collect(root: Path):
 def main() -> None:
     ap = argparse.ArgumentParser(description="RFC Đ3 — sinh master registry từ LLD per-module")
     ap.add_argument("--check", action="store_true", help="Chỉ so sánh, không ghi")
+    ap.add_argument("--allow-drop", action="store_true",
+                    help="Cho phép xóa trọn bảng không còn file per-module (chỉ khi human đã duyệt)")
     ap.add_argument("--root", default=None)
     args = ap.parse_args()
 
@@ -95,20 +108,37 @@ def main() -> None:
     new = DesignCsv(header=header, rows=rows, quote_all=False, path=master_path)
 
     old_rows = []
+    old_header = header
     if master_path.is_file():
         try:
-            old_rows = read_design_csv(master_path, strict=False).rows
+            old = read_design_csv(master_path, strict=False)
+            old_rows, old_header = old.rows, old.header or header
         except Exception:
             old_rows = []
+
+    tix = header.index("datamart_table")
+    dropped = dropped_groups(old_rows, rows, old_header.index("datamart_table"))
 
     if args.check:
         if old_rows == rows:
             print(f"✅ Master registry khớp với LLD per-module ({len(rows)} dòng).")
             sys.exit(0)
-        print(f"❌ Master registry LỆCH: hiện có {len(old_rows)} dòng, sinh ra {len(rows)} dòng.")
-        print("   Chạy: python scripts/build_registry.py")
+        old_set, new_set = set(map(tuple, old_rows)), set(map(tuple, rows))
+        print(f"❌ Master registry LỆCH: hiện có {len(old_rows)} dòng, sinh ra {len(rows)} dòng "
+              f"(chỉ ở master: {len(old_set - new_set)}, chỉ ở per-module: {len(new_set - old_set)}).")
+        if dropped:
+            print(f"   ⚠ {len(dropped)} bảng có trong master nhưng KHÔNG còn file LLD per-module "
+                  f"(sinh lại sẽ xóa trọn — cần human quyết khôi phục file hay bỏ bảng):")
+            for t, n in sorted(dropped.items()):
+                print(f"     - {t} ({n} dòng)")
+        changed = sorted({r[tix] for r in (new_set - old_set)} - set(dropped))
+        if changed:
+            print(f"   Bảng có dòng mới/đổi ở per-module chưa lên master: {', '.join(changed[:15])}")
+        print("   Chạy: python scripts/build_registry.py  (bị chặn nếu còn bảng mất file per-module)")
         sys.exit(1)
 
+    guard_no_drop(MASTER_REL, dropped, args.allow_drop)
+    guard_shrink(MASTER_REL, len(old_rows), len(rows), args.allow_drop, flag="--allow-drop")
     write_design_csv(master_path, new, quote_all=False)
     print(f"✅ Đã sinh {MASTER_REL}: {len(rows)} dòng "
           f"(trước: {len(old_rows)}), từ {len(set(r[new.ix['datamart_table']] for r in rows))} bảng.")

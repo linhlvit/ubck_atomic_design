@@ -34,7 +34,9 @@ Luôn để **trống hoàn toàn** — không điền bất kỳ giá trị nà
 Các trường kỹ thuật SCD4A / audit (xem bên dưới) → **để trống**
 `source_entity` = `Generated` hoặc rỗng → **để trống**
 Còn lại:
-- **Schema.Table**: `ATM.{atomic_table}` (schema cố định `ATM` = Atomic)
+- **Schema.Table**: `ATM.{atomic_table}` (schema cố định `ATM` = Atomic). Nếu `atomic_table` là bảng Datamart
+  (lineage mart→mart, VD Fact 2 tầng hoặc FK lookup `cdr_dt_dim`) → `DTM.{bảng}`, Hệ thống nguồn = `Datamart`
+  (schema `DTM` = bảng Datamart trên MinIO — Data Modeler xác nhận 2026-10-15; KHÔNG dùng `datamart`, đó là schema flat table trên ClickHouse).
 - **Source Field Name**: lấy `atomic_column` từ Attributes.csv
 
 ## Cột Hệ thống nguồn

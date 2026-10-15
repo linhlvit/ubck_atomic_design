@@ -11,7 +11,7 @@ VÌ SAO
 AN TOÀN
     - `--dry-run` in diff, không ghi gì.
     - Mỗi lần ghi thật đều sao lưu vào `Datamart/context/.backup/` kèm dấu thời gian.
-    - Ghi CSV qua `csv_io.write_design_csv` (giữ QUOTE_ALL + UTF-8 BOM + đọc lại xác minh).
+    - Ghi CSV qua `csv_io.write_design_csv` (giữ kiểu quote + BOM sẵn có của file + đọc lại xác minh).
     - Chèn Nhóm mới vào Detail Mapping đặt đúng vị trí theo SỐ nhóm tăng dần để không
       phá TC6 (`lld_selfcheck.py --tc 6`).
 
@@ -48,7 +48,12 @@ for _s in (sys.stdout, sys.stderr):
         pass
 
 from datamart_common import find_project_root, resolve_module_path  # noqa: E402
-from datamart_common.csv_io import DesignCsv, read_design_csv, write_design_csv  # noqa: E402
+from datamart_common.csv_io import (  # noqa: E402
+    DesignCsv,
+    guard_shrink,
+    read_design_csv,
+    write_design_csv,
+)
 
 BACKUP_REL = "Datamart/context/.backup"
 _RE_NHOM_NUM = re.compile(r"(?:Nhóm|Nhom|Group)\s*(\d+)", re.IGNORECASE)
@@ -208,24 +213,7 @@ def patch_dm(path: Path, nhom: str, src: Path) -> Tuple[DesignCsv, DesignCsv]:
     return cur, DesignCsv(header=cur.header, rows=rows, quote_all=cur.quote_all, path=path)
 
 
-SHRINK_MIN_LINES = 50      # file nhỏ hơn ngưỡng này không áp chốt (thay đổi tỉ lệ vô nghĩa)
-SHRINK_RATIO = 0.8         # cùng ngưỡng với S1 của ba_hld_sync_check.py
-
-
-def guard_shrink(label: str, old_n: int, new_n: int, allow: bool) -> None:
-    """Từ chối ghi nếu file co lại > 20% — thay một Nhóm không bao giờ làm mất vài chục % file.
-
-    Sự cố thật: GSTT 2026-09-23, Detail Mapping 577 → 101 dòng do commit của module khác; chỉ phát hiện nhờ
-    S1 chạy sau đó. (Chốt này CHỈ chặn ghi vô ý qua công cụ — nó không phân biệt cắt chủ ý của user, vốn phải
-    đi qua `--allow-shrink` sau khi human xác nhận.)
-    """
-    if allow or old_n < SHRINK_MIN_LINES or new_n >= SHRINK_RATIO * old_n:
-        return
-    raise SystemExit(
-        f"❌ CHỐT CHẶN CO FILE: {label} sẽ giảm {old_n} → {new_n} dòng "
-        f"(< {int(SHRINK_RATIO * 100)}%). Thay 1 Nhóm không được làm mất cỡ này — nghi payload sai "
-        f"Nhóm/thiếu dòng hoặc file đang bị phiên khác sửa. KHÔNG ghi. "
-        f"Nếu thật sự có chủ ý (đã hỏi human): thêm --allow-shrink.")
+# Chốt co file dùng chung — xem datamart_common/csv_io.guard_shrink
 
 
 def main() -> None:
@@ -241,7 +229,7 @@ def main() -> None:
                           "dùng SAU KHI đã --dry-run và được duyệt trong cùng phiên, tránh "
                           "in lặp 2 lần cùng 1 diff lớn. Không ảnh hưởng --dry-run (vẫn in đủ để duyệt).")
     ap.add_argument("--allow-shrink", action="store_true",
-                    help="Cho phép ghi dù file co > 20% (chỉ khi human đã duyệt rõ việc xóa/gộp cỡ lớn)")
+                    help="Cho phép ghi dù file co > 20%% (chỉ khi human đã duyệt rõ việc xóa/gộp cỡ lớn)")
     ap.add_argument("--root", default=None)
     args = ap.parse_args()
 

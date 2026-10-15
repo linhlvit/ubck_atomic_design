@@ -133,6 +133,8 @@ def main() -> None:
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--include-shared", action="store_true",
                     help="Đồng bộ cả entity module=SHARED (mặc định bỏ qua)")
+    ap.add_argument("--allow-shrink", action="store_true",
+                    help="Cho phép ghi dù có entity bị bớt cột (chỉ khi human đã duyệt)")
     ap.add_argument("--root", default=None)
     args = ap.parse_args()
 
@@ -165,6 +167,16 @@ def main() -> None:
         for t, a, b in changed[:25]:
             print(f"   {t:55} {a} -> {b} cột")
         print("   Chạy: python scripts/build_model_yaml.py")
+        sys.exit(1)
+
+    # Chốt chặn: master registry là nguồn — nếu master vừa bị sinh lại thiếu (xem build_registry.py,
+    # CHỐT CHẶN MẤT BẢNG) thì entity sẽ bị bớt cột. Không ghi khi có entity co cột mà chưa được duyệt.
+    shrunk = [(t, a, b) for t, a, b in changed if b < a]
+    if shrunk and not args.allow_shrink:
+        print(f"❌ CHỐT CHẶN: {len(shrunk)} entity sẽ BỚT cột — KHÔNG ghi:")
+        for t, a, b in shrunk[:25]:
+            print(f"   {t:55} {a} -> {b} cột")
+        print("   Kiểm tra master registry / LLD per-module trước. Có chủ ý (đã hỏi human): --allow-shrink.")
         sys.exit(1)
 
     hdr = raw[:raw.index("\nentities:") + len("\nentities:")]

@@ -95,7 +95,7 @@ nhãn nhỏ):
 python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
 ```
 
-Runner này chạy **Pre-flight S1** (Detail Mapping/HLD co > 20% so với HEAD → FAIL, xem mục S1 bên dưới) rồi Gate 0 (Reference Integrity) → Gate 8 (Design Lint). Dán nguyên output vào báo cáo.
+Runner này chạy **Pre-flight S1** (Detail Mapping/HLD co > 20% so với HEAD → FAIL, xem mục S1 bên dưới) rồi Gate 0 (Reference Integrity) → Gate 8 (Design Lint) → Gate 9 (Derived Freshness: flat thiếu cột = FAIL; master registry/kpi_index/model.yaml lệch = WARN, chỉ `--check`, không tự sinh lại). Thêm `--nhom N1 N2 …` để bật **Gate 10** — tự chạy `ba_hld_sync_check.py --nhom` và in **nguyên** dòng delta của đúng các Nhóm đó từ `datamart_progress_analyzer.py` (thay cho 2 lệnh chạy riêng bên dưới; vẫn phải đọc từng dòng 🔴/🟡). Dán nguyên output vào báo cáo.
 
 > Khi bổ sung mục mới vào Bước 5B, cập nhật con số ở CẢ 2 nơi (SKILL.md + dòng này). Con số lệch nhau đã từng khiến self-check chạy thiếu mục mà vẫn báo "đã chạy đủ".
 
@@ -146,6 +146,22 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 6. **Trước khi báo "thiết kế thiếu X" hoặc đề xuất đổi cách khai thác:** đọc `ghi_chu` Detail Mapping + Ghi chú HLD của đúng KPI đó — có thể đã có quyết định Data Modeler duyệt (VD toggle Khớp lệnh GSTT Nhóm 28/29 = swap KPI sang 153–155/164–166, không dùng CASE tham số).
 7. **Gate 8 (`check_design_lint.py`) nằm trong `run_quality_gates.py`**: bắt dòng bảng KPI sai số ô, bảng 0 KPI dùng (→ All-Tier Cleanup), comment flat SQL dính `:etl_date`, và (module trong `L18_MODULES`, hiện TT) KPI có MEASURE bị nhân thành nhiều dòng Detail Mapping (Quy tắc L18).
 8. **Cột mới ở Fact/Operational phải lên flat DDL + DML trong CÙNG lượt** (A20 `datamart-lld-design`) — áp dụng mọi đường thêm cột (Phase 1, `apply_kpi_patch.py`, sửa tay), kể cả khi không ở Phase 3 và không gọi Skill. Lệnh: `build_flat_tables.py --module {M} --sync-columns [--apply]` rồi `check_flat_table.py --module {M} --strict`. **Gate FAIL không phải "tồn đọng"**: Gate 4 FAIL phải sửa hoặc ghi rõ lý do + chủ xử lý, không được gạt sang "lỗi có từ trước". Sự cố (QLQ, 2026-10-14): 29 cột `opr_*` có KPI READY (VD `assets_under_management_amt`) có trong LLD + Detail Mapping nhưng thiếu ở flat qua nhiều phiên, Gate 4 đã báo FAIL nhưng bị bỏ qua. Phép thử nhanh: *cột có trong Detail Mapping mà không có trong flat DDL?*
+
+## CHỐT CHẶN MÁY (2026-10-15) — hook `dm_guard` + chốt ghi file
+
+Một số quy tắc cứng ở trên giờ được **máy** cưỡng chế, không chỉ dựa vào agent nhớ:
+
+- **Hook PreToolUse `.claude/hooks/dm_guard.py`** (khai trong `.claude/settings.json`):
+  R1 chặn Read nguyên file BA/HLD/Detail Mapping/master registry (cửa sổ `limit ≤ 300` vẫn được);
+  R2 chặn Edit/Write file đã có thuộc 4 nhóm đó (→ `apply_patch.py` / `apply_kpi_patch.py`);
+  R3 chặn `| tail` / `| head` sau gate/analyzer/apply_patch; R4 hỏi lại trước `git checkout --/restore/reset --hard/stash`
+  chạm file thiết kế; R5 hỏi lại khi dùng `--allow-shrink` / `--allow-drop` / `--fix-order`.
+  Bị chặn = đổi cách làm, KHÔNG tìm cách lách (VD `cat` file lớn qua Bash). Human tắt tạm: `DM_GUARD=off`.
+- **Chốt ghi dùng chung** `datamart_common/csv_io.py`: `guard_shrink` (co > 20%), `guard_no_drop` (mất trọn bảng);
+  `write_design_csv` giữ nguyên BOM sẵn có của file. `build_registry.py` / `build_model_yaml.py` / `build_kpi_index.py`
+  đều đã gắn chốt — vẫn `--check` trước khi ghi thật.
+- **Tài liệu TKCSLD** sinh bằng `datamart-gen-docs/scripts/render_datamart_md.py` (không gõ tay bảng/ERD);
+  Gate 8 luật D8 `L2-DESC-DOC-LEAK` chặn mô tả LLD còn rò rỉ ghi chú nội bộ ra tài liệu.
 
 ## NGÔN NGỮ
 

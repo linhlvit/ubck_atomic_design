@@ -531,7 +531,10 @@ def parse_ba_file(
         )
     idx = {
         "stt": _col_idx(col_map, "stt", (profile or {}).get("stt_column")),
-        "ma": _col_idx(col_map, "ma", (profile or {}).get("ma_column")),
+        # `ma_column: null` trong profile = file BA KHÔNG có cột Mã. Không rơi sang COLUMN_ALIASES vì
+        # alias "ma" khớp substring (`a in col_name`) nên sẽ nhận nhầm "Trạng thái mapping" làm Mã.
+        "ma": (None if ((profile or {}).get("_found") and (profile or {}).get("ma_column", "") is None)
+               else _col_idx(col_map, "ma", (profile or {}).get("ma_column"))),
         "dashboard": _col_idx(col_map, "dashboard", (profile or {}).get("dashboard_column")),
         "name": _col_idx(col_map, "name", (profile or {}).get("name_column")),
         "description": _col_idx(col_map, "description"),

@@ -124,20 +124,28 @@ Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay b
 python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
 ```
 
-Chạy đủ Gate 0 → Gate 8. **Không được tuyên bố hoàn thành khi chưa dán output của lệnh này.**
+Chạy đủ Pre-flight + Gate 0 → Gate 9 (thêm `--nhom N …` để bật Gate 10 cho các Nhóm vừa sửa).
+**Không được tuyên bố hoàn thành khi chưa dán output của lệnh này.**
 Nếu chỉ sửa 1 file, vẫn chạy toàn bộ — các lỗi dưới đây là lỗi *liên file*, sửa cục bộ không thấy.
 
 ### Artifact sinh tự động — KHÔNG sửa tay (RFC Đ3/Đ4/Đ7)
 
-Sau khi sửa file LLD per-module (`Datamart/lld/{MODULE}/*.csv`), chạy đúng thứ tự:
+Sau khi sửa file LLD per-module (`Datamart/lld/{MODULE}/*.csv`), **luôn `--check` trước** (Gate 9 cũng chạy đúng
+các lệnh này, chỉ đọc):
 
 ```bash
-python .claude/skills/datamart-review/scripts/build_registry.py       # -> datamart_attributes.csv
-python .claude/skills/datamart-review/scripts/build_model_yaml.py     # -> datamart_model.yaml (chỉ khối columns)
-python .claude/skills/datamart-review/scripts/build_kpi_index.py      # -> Datamart/index/kpi_index.csv
+python .claude/skills/datamart-review/scripts/build_registry.py --check     # datamart_attributes.csv
+python .claude/skills/datamart-review/scripts/build_model_yaml.py --check   # datamart_model.yaml (khối columns)
+python .claude/skills/datamart-review/scripts/build_kpi_index.py --check    # Datamart/index/kpi_index.csv
 python .claude/skills/datamart-review/scripts/build_flat_tables.py --module {MODULE} --check
 # --check báo thiếu khối bảng + cột LLD thiếu trong flat DDL (cùng ngữ nghĩa Gate 4). Có thiếu -> A20: --sync-columns [--apply]
 ```
+
+Ghi thật (bỏ `--check`) chỉ khi `--check` cho thấy phần lệch **chỉ** thuộc bảng vừa sửa. Từ 2026-10-15 cả 3
+script có chốt chặn: `build_registry` từ chối nếu sinh lại sẽ xóa trọn bảng có trong master nhưng mất file LLD
+per-module (2026-10-15: 26 bảng TKNB `_rpt`/VP `fct_derv_*` đang ở tình trạng này — chờ human quyết khôi phục
+file hay bỏ bảng), `build_model_yaml` từ chối khi entity bị bớt cột, `build_kpi_index` từ chối khi co > 20%.
+`--allow-drop` / `--allow-shrink` chỉ dùng khi human đã duyệt (hook `dm_guard` sẽ hỏi lại).
 
 - `Datamart/lld/datamart_attributes.csv` và khối `columns` trong `Datamart/datamart_model.yaml`
   là **output sinh ra** — sửa tay sẽ bị ghi đè ở lần build kế tiếp. Nguồn sự thật là file LLD per-module.

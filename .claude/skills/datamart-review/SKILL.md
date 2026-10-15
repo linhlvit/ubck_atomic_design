@@ -80,7 +80,7 @@ Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay b
 | **Bảo Vệ Master Registry & Parity etl_logic** | `reference/technical_review_rules.md` (Mục 9) | `python scripts/check_parity.py --module [M] --strict` |
 | **Quy Tắc Kỹ Thuật Sâu Lớp 1–4 & Gate 4 SQL** | `reference/technical_review_rules.md` | `python scripts/check_flat_table.py --module [M] --strict` |
 | **Linter Detail Mapping (L4, L15, L16, L17)** | `reference/technical_review_rules.md` (Mục 8B) | `python scripts/datamart_ba_cross_checker.py --module [M]` |
-| **Bộ Điều Phối Chất Lượng 8 Gate Hợp Nhất** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict]` |
+| **Bộ Điều Phối Chất Lượng Hợp Nhất (Pre-flight + Gate 0–10)** | `reference/technical_review_rules.md` (Mục 14) | `python scripts/run_quality_gates.py --module [M] [--strict] [--nhom N …]` — Gate 9 freshness (chỉ --check), Gate 10 BA↔HLD theo Nhóm |
 | **Reference Integrity (Gate 0)** | mục A1–A4 trong `datamart-lld-design/SKILL.md` | `python scripts/check_references.py --module [M] --strict` |
 | **Cấu trúc HLD Bước 5B (Gate 5)** | Bước 5B trong `datamart-hld-design/SKILL.md` | `python scripts/check_hld_5b.py --module [M]` |
 | **LLD Self-Check TC4–TC7 (Gate 7)** | TC4/TC5/TC6/TC7 trong `datamart-lld-design/SKILL.md` | `python scripts/lld_selfcheck.py --module [M]` |
@@ -254,6 +254,31 @@ Khi người dùng yêu cầu điều tra một lỗi cụ thể (sai số liệ
 ---
 
 ## 7. GIAI ĐOẠN 2: BƯỚC 1 & 2 — MICRO-REVIEW CHI TIẾT TỪNG NHÓM (4 LỚP CHUẨN)
+
+### Bước 0-SUB: Review nhiều Nhóm → 1 sub-agent / 1 Nhóm (Map-Reduce, bổ sung 2026-10-15)
+
+Khi micro-review **≥ 3 Nhóm** (hoặc đã chạm ngưỡng số Nhóm/phiên trong CLAUDE.md), agent chính KHÔNG tự đọc lần lượt
+từng Nhóm vào cùng 1 ngữ cảnh. Đơn vị là **Nhóm** (BA tổ chức theo Nhóm STT; 1 bảng phục vụ nhiều Nhóm) —
+KHÔNG chia theo bảng.
+
+1. **Map — mỗi Nhóm 1 sub-agent (Agent tool), CHỈ ĐỌC.** Prompt của sub-agent phải tự chứa đủ (sub-agent không
+   tự nạp SKILL.md): module, số Nhóm, 3 lệnh lát cắt, và đường dẫn các file rule cần đọc:
+   ```
+   ba_slice.py -m {M} --nhom {N} --print [--with-sql]
+   ctx_slice.py -m {M} --nhom {N} --print
+   đọc: datamart-review/reference/kpi_reconciliation_rules.md, reference/role_playing_date_fk_guide.md,
+        phase2_detail_mapping.md (thư mục reference của skill datamart-lld-design — khi có Detail Mapping)
+   ```
+   Sub-agent trả về **JSON**: `{nhom, findings:[{kpi_id, layer, severity, evidence_ba, evidence_design, fix}],
+   patch_spec?}` — `patch_spec` theo định dạng `apply_kpi_patch.py --json` (thêm 1 KPI) hoặc khối CSV/MD cho
+   `apply_patch.py` (thay nguyên Nhóm). Sub-agent **KHÔNG được ghi file thiết kế** (hook `dm_guard` chặn Edit/Write
+   file lớn; lệnh `apply_patch` không có `--dry-run` cũng không được chạy).
+2. **Reduce — agent chính ghi TUẦN TỰ.** Gộp findings, trình human duyệt; với mỗi patch: `--dry-run` → duyệt →
+   ghi thật `--quiet`. Không bao giờ để 2 sub-agent cùng ghi 1 file Detail Mapping/HLD (ghi đè lẫn nhau).
+3. **Gate sau khi ghi:** `run_quality_gates.py -m {M} --strict --nhom {N1} {N2} …` (Gate 10 in nguyên dòng delta
+   của đúng các Nhóm vừa sửa).
+
+Ngân sách: Nhóm nặng nhất toàn repo ~66K token → mỗi sub-agent vừa 1 Nhóm; KHÔNG hứa "< 8K token".
 
 ### Bước 1: Đọc BA Nhóm N
 - **KHÔNG Read thẳng file BA và KHÔNG dò delimiter nữa.** Dùng `python .claude/skills/datamart-review/scripts/ba_slice.py --module [M] --nhom [N] --print`.

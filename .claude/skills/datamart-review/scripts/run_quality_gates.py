@@ -14,6 +14,13 @@ Gates:
   Gate 6 (Context Budget):     ctx_budget.py --all-steps --strict
   Gate 7 (LLD Self-Check):     lld_selfcheck.py
   Gate 8 (Design Lint):        check_design_lint.py --strict  [MỚI 2026-09-25]
+  Gate 9 (Derived Freshness):  build_flat_tables.py -m M --check (FAIL) +
+                               build_registry/build_kpi_index/build_model_yaml --check (WARN — toàn cục)
+                               [MỚI 2026-10-15] — chỉ ĐỌC, không bao giờ tự sinh lại file.
+  Gate 10 (BA ↔ HLD theo Nhóm): chỉ chạy khi có --nhom N…: ba_hld_sync_check.py --nhom +
+                               dòng delta của đúng Nhóm đó từ datamart_progress_analyzer.py
+                               (in nguyên dòng, không cắt tail/head). WARN, không FAIL — delta có
+                               thể đã giải trình trong Ghi chú HLD; người chạy phải đọc từng dòng.
 
 Exit Code:
   0 on PASS (all gates pass or skip)
@@ -24,6 +31,7 @@ Usage:
     python scripts/run_quality_gates.py -m Common
     python scripts/run_quality_gates.py -m ALL --strict
     python scripts/run_quality_gates.py -m GSTT --json
+    python scripts/run_quality_gates.py -m GSTT --strict --nhom 28 29   # sau khi sửa Nhóm 28, 29
 """
 from __future__ import annotations
 
@@ -121,14 +129,100 @@ GATE_SPECS = [
 ]
 
 # NOTE: datamart_progress_analyzer.py (BA <-> HLD count reconciliation) is
-# deliberately NOT wired in here as an auto-gate. Its exit code is 1 whenever
+# deliberately NOT wired in as a module-wide FAIL gate. Its exit code is 1 whenever
 # ANY delta exists, including deltas that are legitimate and already explained
-# in the HLD Ghi chú (derived/reuse KPIs, per-Nhom whitelisted exceptions) —
-# wiring it in unconditionally would turn this runner red for most modules,
-# not just genuine gaps. Run it as a separate, explicit step instead (see
-# SKILL.md "Đối chiếu SỐ LƯỢNG BA ↔ HLD" checklist item) and read its per-Nhóm
-# delta table for the specific Nhóm(s) just touched — do not pipe through
-# `tail`/`head` when checking it (see 2026-09-22 GSTT incident note).
+# in the HLD Ghi chú (derived/reuse KPIs, per-Nhom whitelisted exceptions).
+# Since 2026-10-15 it IS wired in as Gate 10 (WARN) scoped to the Nhóm passed via
+# --nhom: the runner extracts exactly those rows from the delta table and prints
+# them in full, so the GSTT 2026-09-22 failure mode (`| tail -30` hid the 🔴 row)
+# cannot recur when the runner is used.
+
+_RE_DELTA_ROW = r"^\| Nhóm {n} \|"
+
+
+def _run_capture(cmd: List[str], timeout: int = 180) -> subprocess.CompletedProcess:
+    return subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace", timeout=timeout)
+
+
+_GLOBAL_FRESHNESS_CACHE: Dict[str, Any] = {}
+
+
+def derived_freshness(module: str, root: Path) -> Dict[str, Any]:
+    """Gate 9 — các file SINH RA còn khớp nguồn không. Chỉ chạy `--check`, không ghi.
+
+    - FAIL: flat table của module thiếu khối SQL / thiếu cột (build_flat_tables --check, = A20).
+    - WARN: master registry / kpi_index / datamart_model.yaml lệch (toàn cục, có thể do module khác).
+      KHÔNG tự chạy build_* để "sửa" — build_registry từng xóa trọn 26 bảng có trong master nhưng
+      mất file LLD per-module; nay đã có chốt chặn, nhưng quyết định khôi phục/bỏ bảng là của human.
+    """
+    base = {"gate": "Gate 9", "name": "Derived Freshness (flat / registry / kpi_index / model.yaml)"}
+    out_lines: List[str] = []
+    status = "PASS"
+    msgs: List[str] = []
+
+    if module.strip().upper() != "COMMON":
+        r = _run_capture([sys.executable, str(_script_dir / "build_flat_tables.py"), "-m", module,
+                          "--check", "--root", str(root)])
+        out_lines.append("[flat] " + r.stdout.strip())
+        if r.returncode != 0:
+            status = "FAIL"
+            msgs.append(f"flat table {module} thiếu khối/cột — chạy build_flat_tables.py -m {module} "
+                        f"--sync-columns rồi --apply (A20)")
+
+    if not _GLOBAL_FRESHNESS_CACHE:
+        for script in ("build_registry.py", "build_kpi_index.py", "build_model_yaml.py"):
+            r = _run_capture([sys.executable, str(_script_dir / script), "--check", "--root", str(root)])
+            _GLOBAL_FRESHNESS_CACHE[script] = (r.returncode, r.stdout.strip())
+    for script, (rc, text) in _GLOBAL_FRESHNESS_CACHE.items():
+        first = text.splitlines()[0] if text else ""
+        out_lines.append(f"[{script}] {text}")
+        if rc != 0:
+            if status == "PASS":
+                status = "WARN"
+            msgs.append(f"{script}: {first}")
+
+    res = {**base, "status": status, "exit_code": 0 if status == "PASS" else 1,
+           "output": "\n".join(out_lines)}
+    if msgs:
+        res["message"] = " | ".join(msgs)
+    return res
+
+
+def ba_hld_by_nhom(module: str, root: Path, nhoms: List[str]) -> Dict[str, Any]:
+    """Gate 10 — BA ↔ HLD ↔ DM cho đúng các Nhóm vừa sửa (CLAUDE.md: 2 bước bắt buộc chạy riêng)."""
+    import re
+    base = {"gate": "Gate 10", "name": f"BA ↔ HLD ↔ DM theo Nhóm ({', '.join(nhoms)})"}
+    lines: List[str] = []
+    warn: List[str] = []
+
+    r = _run_capture([sys.executable, str(_script_dir / "ba_hld_sync_check.py"), "-m", module, "--nhom", *nhoms])
+    lines.append("── ba_hld_sync_check.py ──")
+    lines.append(r.stdout.strip())
+    if r.returncode != 0 or re.search(r"TỔNG: [1-9]\d* lỗi", r.stdout):
+        warn.append("ba_hld_sync_check có lỗi — đọc mục S1–S5 ở output")
+
+    r = _run_capture([sys.executable, str(_script_dir / "datamart_progress_analyzer.py"), "--module", module,
+                      "--root", str(root)])
+    lines.append("── datamart_progress_analyzer.py (đúng dòng các Nhóm yêu cầu, không cắt) ──")
+    text = r.stdout.splitlines()
+    hdr = next((l for l in text if l.startswith("| Nhóm | ")), None)
+    if hdr:
+        lines.append(hdr)
+    for n in nhoms:
+        rows = [l for l in text if re.match(_RE_DELTA_ROW.format(n=re.escape(n)), l)]
+        if not rows:
+            lines.append(f"| Nhóm {n} | (không có dòng trong bảng delta — kiểm tra số Nhóm / S3) |")
+            warn.append(f"Nhóm {n} không có trong bảng delta")
+        for row in rows:
+            lines.append(row)
+            if "🔴" in row or "🟡" in row:
+                warn.append(f"Nhóm {n} lệch số lượng — xác nhận đã giải trình trong Ghi chú HLD")
+
+    status = "WARN" if warn else "PASS"
+    res = {**base, "status": status, "exit_code": 0 if status == "PASS" else 1, "output": "\n".join(lines)}
+    if warn:
+        res["message"] = " | ".join(warn)
+    return res
 
 
 def _git_lines(root: Path, rev: str, rel: str) -> int:
@@ -265,10 +359,14 @@ def print_summary(results: List[Dict[str, Any]], module: str) -> None:
         if r["status"] == "SKIP" and r.get("message"):
             status_disp = f"SKIP ({r['message']})"
         print(f"  {icon} {r['gate']} — {r['name']}: {status_disp}")
-        if r["status"] not in ("PASS", "SKIP"):
+        if r["status"] not in ("PASS", "SKIP", "WARN"):
             all_pass = False
-            if r.get("message"):
-                print(f"     ↳ {r['message']}")
+        if r["status"] not in ("PASS", "SKIP") and r.get("message"):
+            print(f"     ↳ {r['message']}")
+        # Gate 10 phải in NGUYÊN chi tiết — đây là chỗ GSTT 2026-09-22 bị bỏ lỡ do chỉ xem `tail`.
+        if r["gate"] == "Gate 10" and r.get("output"):
+            for line in r["output"].splitlines():
+                print(f"       {line}")
 
     print(f"\n{'─'*70}")
     overall = "✅ ALL GATES PASSED" if all_pass else "❌ ONE OR MORE GATES FAILED"
@@ -278,7 +376,18 @@ def print_summary(results: List[Dict[str, Any]], module: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Unified Datamart Quality Gate Runner (Gate 0-5)",
+        description="Unified Datamart Quality Gate Runner (Pre-flight + Gate 0-10)",
+    )
+    parser.add_argument(
+        "--nhom",
+        nargs="+",
+        default=None,
+        help="Các Nhóm vừa sửa — bật Gate 10 (BA ↔ HLD ↔ DM theo Nhóm, in nguyên dòng delta)",
+    )
+    parser.add_argument(
+        "--skip-freshness",
+        action="store_true",
+        help="Bỏ Gate 9 (Derived Freshness) — chỉ dùng khi chạy lặp nhiều lần trong 1 phiên",
     )
     parser.add_argument(
         "-m", "--module",
@@ -320,13 +429,19 @@ def main() -> None:
         mod_results.append(pf)
         if pf["status"] not in ("PASS", "SKIP"):
             has_fail = True
-        for gate_spec in GATE_SPECS:
-            r = run_gate(gate_spec, mod, root, strict=args.strict, json_output=args.json_output)
+        extra = []
+        if not args.skip_freshness:
+            extra.append(lambda m=mod: derived_freshness(m, root))
+        if args.nhom and mod.strip().upper() != "COMMON":
+            extra.append(lambda m=mod: ba_hld_by_nhom(m, root, [str(n) for n in args.nhom]))
+        results_iter = [run_gate(g, mod, root, strict=args.strict, json_output=args.json_output)
+                        for g in GATE_SPECS] + [f() for f in extra]
+        for r in results_iter:
             mod_results.append(r)
-            if r["status"] not in ("PASS", "SKIP"):
-                has_fail = True
-            elif r["status"] == "WARN":
+            if r["status"] == "WARN":
                 has_warning = True
+            elif r["status"] not in ("PASS", "SKIP"):
+                has_fail = True
         all_results[mod] = mod_results
 
     if args.json_output:

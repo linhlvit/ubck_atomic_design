@@ -36,6 +36,12 @@ Bổ sung 2026-10-09 (review PTTT Nhóm 12 — Fact nối giao dịch HNX bằng
                               `trading_time` — mỗi ngày có nhiều bản ghi intraday, mỗi bản ghi đã là số cộng dồn nên SUM nhiều bản
                               ghi nhân lặp. Phải lấy bản ghi `trading_time` mới nhất của symbol × trading_dt. WARNING (A18).
 
+Bổ sung 2026-10-15 (đánh giá Harness v2.0 — tài liệu TKCSLD sinh bằng render_datamart_md.py):
+  D8 [L2-DESC-DOC-LEAK]      Mô tả cột LLD sau clean_description.clean() còn mã KPI/O_, [SỬA …], ghi chú BA/quy trình
+                              → lọt vào tài liệu gửi UBCKNN. ERROR. Định nghĩa rò rỉ dùng chung với renderer.
+  D9 [L2-LINEAGE-SLASH-PAIR] source_entity↔atomic_table hoặc source_attribute↔atomic_column lệch số phần tử '/'.
+                              WARNING (đo 2026-10-15: 78 dòng toàn repo).
+
 Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES) = ERROR; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
@@ -243,6 +249,54 @@ def check_lld_etl_patterns(root: Path, module: str):
     return out
 
 
+def _clean_desc_fns():
+    """clean()/find_leaks() dùng CHUNG với render_datamart_md.py — 1 định nghĩa 'rò rỉ' cho cả Gate lẫn tài liệu."""
+    p = _script_dir.parent.parent / "datamart-gen-docs" / "scripts"
+    if str(p) not in sys.path:
+        sys.path.insert(0, str(p))
+    try:
+        from clean_description import clean, find_leaks  # noqa: E402
+        return clean, find_leaks
+    except Exception:
+        return None, None
+
+
+def check_lld_desc_and_lineage(root: Path, module: str):
+    """D8 [L2-DESC-DOC-LEAK] (ERROR): mô tả cột SAU clean_description vẫn còn mã KPI/O_, [SỬA …], ghi chú BA/
+           quy trình → sẽ lọt vào tài liệu TKCSLD gửi UBCKNN (đo 2026-10-15: bản clean cũ để lọt 238/2449 dòng).
+       D9 [L2-LINEAGE-SLASH-PAIR] (WARNING): số phần tử tách bởi '/' lệch theo CẶP — source_entity↔atomic_table
+           hoặc source_attribute↔atomic_column. (So 4 cột cùng lúc là sai: 1 entity thường đi với nhiều attribute.)
+    """
+    out = []
+    clean, find_leaks = _clean_desc_fns()
+    d = root / "Datamart" / "lld" / module
+    if not d.exists():
+        r = resolve_module_path(root, module, "attributes")   # GSĐC → GSDC, NĐTNN → NDTNN
+        d = Path(r) if r else d
+    if not d.exists():
+        return out
+    n = lambda v: len([x for x in (v or "").split("/") if x.strip()])  # noqa: E731
+    for f in sorted(d.glob("*.csv")):
+        try:
+            with open(f, encoding="utf-8-sig", newline="") as fh:
+                rows = list(csv.DictReader(fh))
+        except Exception:
+            continue
+        for r in rows:
+            where = f"{f.name} [{r.get('datamart_table')}.{r.get('datamart_column')}]"
+            if clean:
+                leaks = find_leaks(clean(r.get("description") or ""))
+                if leaks:
+                    out.append(("ERROR", "L2-DESC-DOC-LEAK",
+                                f"{where} mô tả sau clean còn {leaks} — chuyển ghi chú sang ghi_chu Detail Mapping / HLD"))
+            se, at = n(r.get("source_entity")), n(r.get("atomic_table"))
+            sa, ac = n(r.get("source_attribute")), n(r.get("atomic_column"))
+            if (se and at and se != at) or (sa and ac and sa != ac):
+                out.append(("WARNING", "L2-LINEAGE-SLASH-PAIR",
+                            f"{where} entity/table {se}/{at}, attribute/column {sa}/{ac} — lineage lệch cặp"))
+    return out
+
+
 def check_flat(root: Path, module: str):
     out = []
     d = root / "Datamart" / "flat-table" / module
@@ -265,6 +319,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_one_row_per_kpi(root, module, force_l18)
     issues += check_flat(root, module)
     issues += check_lld_etl_patterns(root, module)
+    issues += check_lld_desc_and_lineage(root, module)
     return issues
 
 
