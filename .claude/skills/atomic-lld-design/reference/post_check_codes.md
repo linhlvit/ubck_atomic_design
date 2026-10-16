@@ -35,7 +35,7 @@ python DataModel/working/Atomic/lld/scripts/post_check_source_coverage.py --sour
 python DataModel/working/Atomic/lld/scripts/post_check_source_coverage.py --table CTCK_THONG_TIN
 ```
 
-Script đọc `Source/{SOURCE}_Columns.csv`, so sánh với `atomic_attributes.yaml`, báo cáo cột chưa map. Bỏ qua group=pending trong manifest và bỏ qua cột kỹ thuật/audit tự động.
+Script đọc cột nguồn từ `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml` (`columns[].name`; không còn dùng `Source/{SOURCE}_Columns.csv`), so sánh với `atomic_attributes.yaml`, báo cáo cột chưa map. Bỏ qua group=pending trong manifest và bỏ qua cột kỹ thuật/audit tự động.
 
 | Loại cột báo cáo | Nguyên nhân phổ biến | Hành động |
 |---|---|---|

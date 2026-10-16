@@ -143,7 +143,7 @@ Table audit_firm_ip_postal_address [note: 'Involved Party Postal Address'] {
   street_addr varchar [note: 'Địa chỉ trụ sở chính/văn phòng.']
 }
 
-Table bank [note: 'Securities Company Depositary Bank'] {
+Table bank [note: 'Securities Company Bank'] {
   scr_co_dpst_bnk_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
   scr_co_dpst_bnk_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
   src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
@@ -174,16 +174,16 @@ Table bank [note: 'Securities Company Depositary Bank'] {
 }
 
 Table bank_ip_electronic_address [note: 'Involved Party Electronic Address'] {
-  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Depositary Bank (Involved Party).']
-  ip_code varchar [not null, note: 'Mã Securities Company Depositary Bank.']
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Bank (Involved Party).']
+  ip_code varchar [not null, note: 'Mã Securities Company Bank.']
   addr_type_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE, FAX, EMAIL, WEBSITE.']
   src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
   elec_addr varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại/fax/email/website tuỳ loại).']
 }
 
 Table bank_ip_postal_address [note: 'Involved Party Postal Address'] {
-  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Depositary Bank (Involved Party).']
-  ip_code varchar [not null, note: 'Mã Securities Company Depositary Bank.']
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Bank (Involved Party).']
+  ip_code varchar [not null, note: 'Mã Securities Company Bank.']
   addr_type_code varchar [primary key, not null, note: 'Loại địa chỉ.']
   src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
   street_addr varchar [note: 'Địa chỉ trụ sở chính/văn phòng.']
@@ -1753,7 +1753,7 @@ Table sc_firm_foreign_rep_office_vn_ip_alt_identification [note: 'IP Alt Identif
 
 Table sc_firm_info_ip_alt_identification [note: 'IP Alt Identification'] {
   ip_id varchar [primary key, not null, note: 'FK đến Securities Company.']
-  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh: OPERATION_LICENSE; ESTABLISHMENT_LICENSE; TAX_CODE; ENTERPRISE_CODE; CERTIFICATE; CUSTODIAN_CERT; CUSTODIAN_MEMBER_CERT.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh: OPERATION_LICENSE; ESTABLISHMENT_LICENSE; TAX_CODE; ENTERPRISE_CODE; CERTIFICATE; CUSTODIAN_CERT; CUSTODIAN_MEMBER_CERTIFICATE.']
   src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
   id_nbr varchar [note: 'Số giấy tờ định danh của CTCK theo từng loại.']
   issue_dt date [note: 'Ngày cấp giấy tờ (áp dụng cho các loại có ngày cấp).']
@@ -1785,7 +1785,7 @@ Table audit_firm_ip_alt_identification [note: 'IP Alt Identification'] {
 }
 
 Table bank_ip_alt_identification [note: 'IP Alt Identification'] {
-  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Depositary Bank.']
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Bank.']
   id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh tổ chức: ENTERPRISE_CODE=Mã số doanh nghiệp; TAX_CODE=Mã số thuế; OPERATION_LICENSE=Giấy phép hoạt động ngân hàng; BIZ_REG_CERT=Giấy chứng nhận đăng ký kinh doanh.']
   src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
   id_nbr varchar [note: 'Số giấy tờ định danh của ngân hàng theo từng loại.']

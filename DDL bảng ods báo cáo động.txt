@@ -1,0 +1,248 @@
+*** Bảng nguồn báo cáo động FIMS
+-- uat_fims_ods.dim_indicator definition
+
+CREATE TABLE iceberg.uat_fims_ods.dim_indicator (
+  indicator_uid STRING,
+  sheet_id STRING,
+  rpt_id STRING,
+  report_code STRING,
+  report_name STRING,
+  legal_basis STRING,
+  sheet_name STRING,
+  sheet_row INT,
+  sheet_col INT,
+  format_data_type STRING,
+  row_path STRING,
+  column_path STRING,
+  section_id STRING,
+  section_type STRING,
+  is_dynamic_slot INT,
+  is_group_last_band INT,
+  is_total_row INT,
+  is_ordinal_col INT,
+  mirror_of_uid STRING,
+  item_id STRING,
+  sort_order BIGINT,
+  is_excluded_by_config INT,
+  override_source STRING,
+  _source_system STRING,
+  _loaded_at TIMESTAMP)
+USING iceberg
+LOCATION 's3a://ods/uat_FIMS_ods.db/dim_indicator'
+TBLPROPERTIES (
+  'current-snapshot-id' = '6785869842819197179',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.format.default' = 'parquet',
+  'write.parquet.compression-codec' = 'zstd');
+
+
+-- uat_fims_ods.dim_object definition
+
+CREATE TABLE iceberg.uat_fims_ods.dim_object (
+  object_type INT,
+  object_type_name STRING,
+  object_id STRING,
+  object_code STRING,
+  object_name STRING,
+  object_short_name STRING,
+  source_table STRING,
+  _source_system STRING,
+  _loaded_at TIMESTAMP)
+USING iceberg
+LOCATION 's3a://ods/uat_FIMS_ods.db/dim_object'
+TBLPROPERTIES (
+  'current-snapshot-id' = '4955218442667050994',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.format.default' = 'parquet',
+  'write.parquet.compression-codec' = 'zstd');
+
+
+-- uat_fims_ods.dim_report_template definition
+
+CREATE TABLE iceberg.uat_fims_ods.dim_report_template (
+  rpt_id STRING,
+  report_code STRING,
+  report_name STRING,
+  legal_basis STRING,
+  template_status INT,
+  is_need_import INT,
+  system_objects STRING,
+  sheet_id STRING,
+  sheet_code STRING,
+  sheet_name STRING,
+  sheet_index INT,
+  _source_system STRING,
+  _loaded_at TIMESTAMP)
+USING iceberg
+LOCATION 's3a://ods/uat_FIMS_ods.db/dim_report_template'
+TBLPROPERTIES (
+  'current-snapshot-id' = '3674358849169565901',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.format.default' = 'parquet',
+  'write.parquet.compression-codec' = 'zstd');
+
+
+-- uat_fims_ods.fact_report_cell definition
+
+CREATE TABLE iceberg.uat_fims_ods.fact_report_cell (
+  report_log_id STRING,
+  rpt_id STRING,
+  report_code STRING,
+  report_name STRING,
+  legal_basis STRING,
+  sheet_id STRING,
+  sheet_name STRING,
+  sheet_index INT,
+  template_status INT,
+  object_type INT,
+  object_type_name STRING,
+  object_id STRING,
+  object_code STRING,
+  object_name STRING,
+  prd_id STRING,
+  period_type STRING,
+  period_value STRING,
+  year_value INT,
+  day_report DATE,
+  han_nop TIMESTAMP,
+  late_status STRING,
+  late_status_code INT,
+  late_duration DOUBLE,
+  indicator_uid STRING,
+  item_id STRING,
+  row_path STRING,
+  column_path STRING,
+  sheet_row INT,
+  sheet_col INT,
+  section_id STRING,
+  section_type STRING,
+  is_total_row INT,
+  is_ordinal_col INT,
+  is_mirror INT,
+  is_section_echo INT,
+  is_band_overflow INT,
+  is_static_copy INT,
+  is_template_marker INT,
+  is_dynamic INT,
+  row_order INT,
+  entity_code STRING,
+  indicator_code STRING,
+  is_label_col INT,
+  value_raw STRING,
+  value_num DOUBLE,
+  value_text STRING,
+  format_data_type STRING,
+  ngay_nop DATE,
+  _source_system STRING,
+  _loaded_at TIMESTAMP)
+USING iceberg
+PARTITIONED BY (ngay_nop)
+LOCATION 's3a://ods/uat_FIMS_ods.db/fact_report_cell'
+TBLPROPERTIES (
+  'current-snapshot-id' = '7298242924110636122',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.format.default' = 'parquet',
+  'write.parquet.compression-codec' = 'zstd');
+
+*** Bảng nguồn báo cáo động FMS
+-- 1. Danh mục chỉ tiêu / ô báo cáo
+CREATE TABLE IF NOT EXISTS uat_fms_ods.ods_fms_item_list (
+    item_id         STRING,
+    report_code     STRING,
+    report_name     STRING,
+    sheet_name      STRING,
+    column_path     STRING,
+    row_path        STRING,
+    uid_cell        STRING,
+    _row            INT,
+    _col            INT,
+    legal_basis     STRING,
+    is_label_col    INT,
+    label_item_id   STRING,
+    _source_system  STRING,
+    _loaded_at      TIMESTAMP
+) USING ICEBERG
+TBLPROPERTIES ('write.format.default' = 'parquet');
+
+-- 2. Lịch sử nộp báo cáo
+CREATE TABLE IF NOT EXISTS uat_fms_ods.ods_fms_report_history (
+    report_log_id   STRING,
+    report_code     STRING,
+    audit           INT,
+    object_id       STRING,
+    object_name     STRING,
+    object_type     STRING,
+    late_status     STRING,
+    late_duration   DOUBLE,
+    han_nop         TIMESTAMP,
+    period_type     STRING,
+    period_value    STRING,
+    ngay_nop        DATE,
+    _source_system  STRING,
+    _loaded_at      TIMESTAMP
+) USING ICEBERG
+PARTITIONED BY (ngay_nop)
+TBLPROPERTIES ('write.format.default' = 'parquet');
+
+-- 3. Giá trị chỉ tiêu
+CREATE TABLE IF NOT EXISTS uat_fms_ods.ods_fms_item_value (
+    item_id          STRING,
+    report_log_id    STRING,
+    row_order        INT,
+    row_path         STRING,
+    entity_code      STRING,
+    is_label_col     INT,
+    value            STRING,
+    gia_tri_tich_luy DOUBLE,
+    acc_value        STRING,
+    is_dynamic       INT,
+    kieu_dl          STRING,
+    ngay_nop         DATE,
+    _source_system   STRING,
+    _loaded_at       TIMESTAMP
+) USING ICEBERG
+PARTITIONED BY (ngay_nop)
+TBLPROPERTIES ('write.format.default' = 'parquet');
+
+*** Bảng uploadfile
+CREATE TABLE WEIGHT_CONFIG (
+    ID                      NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    -- Lưu nguyên văn giá trị cột "Chỉ tiêu đầu ra" của file import, không resolve qua mã
+    OUTPUT_INDICATOR_CODE   VARCHAR2(255)   NOT NULL,
+    INPUT_INDICATOR_CODE    VARCHAR2(50)    NOT NULL,
+    INPUT_INDICATOR_NAME    VARCHAR2(255),
+    WEIGHT                  NUMBER          NOT NULL,
+    EFFECTIVE_DATE          DATE            NOT NULL,
+    END_DATE                DATE,
+    -- 1 = đang active (END_DATE IS NULL), 0 = đã bị đóng bởi bản ghi mới hơn
+    RECORD_STATUS           NUMBER(1)       DEFAULT 1 NOT NULL,
+    CREATED_AT              DATE            DEFAULT SYSDATE NOT NULL,
+    CREATEDBY               VARCHAR2(100),
+    UPLOAD_HISTORY_ID       NUMBER,
+	
+    CONSTRAINT FK_WEIGHT_CONFIG_HISTORY
+        FOREIGN KEY (UPLOAD_HISTORY_ID) REFERENCES upload_history(id)
+);
+
+CREATE TABLE THRESHOLD_CONFIG (
+    ID                  NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    INDICATOR_CODE      VARCHAR2(255)   NOT NULL,
+    INDICATOR_NAME      VARCHAR2(255),
+    VALUE_FROM          NUMBER,
+    VALUE_TO            NUMBER,
+    STATUS              VARCHAR2(100),
+    EFFECTIVE_DATE      DATE            NOT NULL,
+    END_DATE            DATE,
+    -- 1 = đang active (END_DATE IS NULL), 0 = đã bị đóng bởi bản ghi mới hơn
+    RECORD_STATUS       NUMBER(1)       DEFAULT 1 NOT NULL,
+    CREATED_AT          DATE            DEFAULT SYSDATE NOT NULL,
+    CREATEDBY           VARCHAR2(100),
+    UPLOAD_HISTORY_ID   NUMBER,
+	
+    CONSTRAINT FK_THRESHOLD_CONFIG_HISTORY
+        FOREIGN KEY (UPLOAD_HISTORY_ID) REFERENCES upload_history(id)
+);

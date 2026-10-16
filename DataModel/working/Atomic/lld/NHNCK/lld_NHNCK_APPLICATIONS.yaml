@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-07-24) để bổ sung Public Service Portal Content Item Code (MCDT_CONTENT_ITEM_ID) — gap thật do post_check_source_coverage phát hiện. STATUS_ID đã map đúng (FK Classification Application Status, không thuộc nhóm RECORD_STATUS/STATUS generic bị loại trừ). ID không map — xem pending_design.yaml (PK kỹ thuật, BK dùng Application Code). Cần review/approve lại. Hạ lại về draft (2026-08-15) để sửa lỗi hash-mismatch trên 2 cặp FK Securities Practitioner License Certificate Document Id / Previous...Id — trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID/PREVIOUS_CERTIFICATE_RECORD_ID (ID kỹ thuật) thay vì Code của bảng đích (nay đổi từ ID sang CERTIFICATE_NUMBER, đồng bộ với đổi BK trên lld_NHNCK_CERTIFICATE_RECORDS.yaml). Cập nhật 2026-08-20: STATUS_ID đổi từ cặp FK Id+Code (Classification Application Status) sang 1 trường Classification Value \"Application Status Code\" (scheme APPLICATION_STATUS) — do NHNCK.APPLICATION_STATUSES revert về Classification Value, không còn là Atomic entity riêng. Hạ về draft (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: bổ sung \"Re Exam Subject\" (RE_EXAM_SUBJECT, map 1:1). MCDT_PERSONAL_SNAPSHOT (NCLOB) không map — không có ý nghĩa nghiệp vụ khai thác, xem pending_design.yaml."
+  notes: "Hạ về draft (2026-07-24) để bổ sung Public Service Portal Content Item Code (MCDT_CONTENT_ITEM_ID) — gap thật do post_check_source_coverage phát hiện. STATUS_ID đã map đúng (FK Classification Application Status, không thuộc nhóm RECORD_STATUS/STATUS generic bị loại trừ). ID không map — xem pending_design.yaml (PK kỹ thuật, BK dùng Application Code). Cần review/approve lại. Hạ lại về draft (2026-08-15) để sửa lỗi hash-mismatch trên 2 cặp FK Securities Practitioner License Certificate Document Id / Previous...Id — trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID/PREVIOUS_CERTIFICATE_RECORD_ID (ID kỹ thuật) thay vì Code của bảng đích (nay đổi từ ID sang CERTIFICATE_NUMBER, đồng bộ với đổi BK trên lld_NHNCK_CERTIFICATE_RECORDS.yaml). Cập nhật 2026-08-20: STATUS_ID đổi từ cặp FK Id+Code (Classification Application Status) sang 1 trường Classification Value \"Application Status Code\" (scheme APPLICATION_STATUS) — do NHNCK.APPLICATION_STATUSES revert về Classification Value, không còn là Atomic entity riêng. Hạ về draft (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: bổ sung \"Re Exam Subject\" (RE_EXAM_SUBJECT, map 1:1). MCDT_PERSONAL_SNAPSHOT (NCLOB) không map — không có ý nghĩa nghiệp vụ khai thác, xem pending_design.yaml. Hạ về draft (2026-10-15, được phép sửa file approved) theo DDL UAT 1 NHNCK_UAT_schema.txt: bổ sung \"Receive Channel Code\" (RECEIVE_CHANNEL_CODE, Classification Value, scheme mới APPLICATION_RECEIVE_CHANNEL — values chưa có, cần profile) và \"Receive Channel Name\" (RECEIVE_CHANNEL, Text denormalized đi cặp với Code). Cần xác nhận: kênh tiếp nhận hồ sơ có cùng value set với TTHC.RECEPTION_CHANNEL (ap_document.reception_channel_code) không — nếu cùng thì gộp scheme + đổi tên attribute thành Reception Channel Code."
 attributes:
 - attribute_name: "Securities Practitioner License Application Id"
   physical_name: "sp_license_application_id"
@@ -560,6 +560,32 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATIONS.RE_EXAM_SUBJECT"
   comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Bổ sung theo DDL mới (2026-09-10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Receive Channel Code"
+  physical_name: "receive_channel_code"
+  description: "Mã kênh tiếp nhận hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.RECEIVE_CHANNEL_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Receive Channel Name"
+  physical_name: "receive_channel_nm"
+  description: "Tên kênh tiếp nhận hồ sơ (denormalized, đi cặp với Receive Channel Code)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.RECEIVE_CHANNEL"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

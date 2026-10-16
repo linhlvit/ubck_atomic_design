@@ -1,19 +1,15 @@
 ---
 name: source-survey
 description: |
-  Khảo sát cấu trúc CSDL nguồn qua MCP Oracle, xuất 2 file CSV chuẩn
-  (Source/{SOURCE}_Tables.csv và Source/{SOURCE}_Columns.csv), tạo ER Diagram
-  HTML tương tác, và sinh BRD Source YAML (BRD/Source/brd_{SOURCE}.yaml +
-  BRD/Source/{SOURCE}/ columns files).
-  Sử dụng khi: cần khảo sát source mới, cập nhật CSV sau khi schema thay đổi,
-  tạo lại ER diagram cho source đã có, hoặc đối chiếu CSV tài liệu thiết kế
-  với CSDL thực tế (chế độ reconcile).
-  Yêu cầu: MCP server tương ứng với CSDL nguồn đã được cấu hình và kết nối.
-  Mỗi CSDL nguồn có 1 MCP server riêng — schema được hardcode trong script MCP,
-  không cần truyền thêm tham số SCHEMA.
-  Chế độ reconcile: đã có sẵn {SOURCE}_Tables.csv + {SOURCE}_Columns.csv từ
-  tài liệu thiết kế — chỉ chạy Giai đoạn 1 + 1b để đối chiếu, không ghi đè CSV.
-  Lưu ý: scope_status KHÔNG được đánh trong skill này — tất cả bảng khởi tạo với
+  Khảo sát cấu trúc CSDL nguồn từ file schema (Source/DDL UAT*/*_schema.txt, tra qua
+  cột schema_file trong Source/source_systems.csv), sinh BRD Source YAML
+  (BRD/Source/brd_{SOURCE}.yaml + BRD/Source/{SOURCE}/ columns files) và tạo ER Diagram
+  HTML tương tác. Không còn dùng Source/{SOURCE}_Tables.csv / {SOURCE}_Columns.csv.
+  Sử dụng khi: cần khảo sát source mới, cập nhật BRD sau khi schema UAT thay đổi
+  (chế độ reconcile), gợi ý FK/mô tả còn thiếu, hoặc tạo lại ER diagram cho source đã có.
+  Yêu cầu: file schema của source đã có trong Source/ và đã khai ở source_systems.csv.
+  Parser dùng chung: scripts/schema_reader.py.
+  Lưu ý: scope_status KHÔNG được đánh trong skill này — bảng mới khởi tạo với
   scope_status: pending. Việc đánh in_scope do skill atomic-lld-design thực hiện sau LLD.
 ---
 
@@ -21,183 +17,161 @@ description: |
 
 Đọc file này TRƯỚC KHI bắt đầu. Skill này thực thi đủ các giai đoạn theo thứ tự, tuỳ theo MODE.
 
-## MCP Server theo CSDL nguồn
+## Nguồn sự thật
 
-Mỗi CSDL nguồn có 1 MCP server riêng, cấu hình trong `.claude/settings.json`:
+| Thông tin | Nơi lưu |
+|---|---|
+| Cấu trúc CSDL nguồn (bảng, cột, kiểu, null, PK, FK ở DB, comment) | File schema `Source/DDL UAT*/…_schema.txt` — **chỉ đọc, không sửa** |
+| Ánh xạ SOURCE → file schema | `Source/source_systems.csv`, cột `schema_file` (đường dẫn **tính từ `Source/`**) |
+| Danh sách bảng, ý nghĩa bảng, phạm vi thiết kế | `BRD/Source/brd_{SOURCE}.yaml` — `content.table_meaning`, `content.scope_status` |
+| Cột đã duyệt: mô tả, FK | `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml` |
 
-| SOURCE | MCP Server | Script |
+`Source/{SOURCE}_Tables.csv` và `{SOURCE}_Columns.csv` **không còn là đầu vào**. Không tạo mới, không đọc.
+Danh sách bảng cần thiết kế = các entry có `content.scope_status: in_scope` trong `brd_{SOURCE}.yaml`
+(`pending` = chưa thiết kế, `out_of_scope` = loại).
+
+Source không có `schema_file` (hiện: DCST, GSGD, MDDS; IAM/ORDERTRADE chưa có dòng trong
+`source_systems.csv`) → skill này không chạy được cho source đó; YAML là bản gốc, sửa tay.
+
+## Parser: `scripts/schema_reader.py`
+
+```bash
+python scripts/schema_reader.py --source NHNCK                     # tóm tắt: số bảng/cột/FK, WARN
+python scripts/schema_reader.py --source NHNCK --table APPLICATIONS  # chi tiết 1 bảng
+python scripts/schema_reader.py --source NHNCK --infer-fk          # FK gợi ý (inferred)
+python scripts/schema_reader.py --source NHNCK --missing-desc      # bảng/cột thiếu mô tả
+python scripts/schema_reader.py --source NHNCK --json              # toàn bộ (tables + fks + warnings)
+```
+
+Dùng như thư viện trong script tạm: `from schema_reader import load_source, db_fks, infer_fks, missing_descriptions`
+(thêm `scripts/` vào `sys.path`). Script tạm để ở scratchpad, không commit vào repo.
+
+**Đọc `warnings` trong output trước khi làm tiếp.** Trường hợp đã gặp: file `GMS_IDS_UAT_schema.txt` khai báo 13 bảng
+2 lần (VD `USERS`); parser giữ khối nhiều cột hơn — người thiết kế phải xác nhận khối nào đúng.
+Có nhiều file cùng source (VD `SCMS_UAT_schema.txt` và `SCMS_UAT_schema_20261015.txt`) → chỉ file khai ở
+`schema_file` được dùng; hỏi người dùng nếu không chắc file nào là bản chuẩn.
+
+## Quy tắc nguồn gốc dữ liệu (provenance) — BẮT BUỘC
+
+Mỗi giá trị có thể là `curated` / `schema` / `db` / `inferred`. Trường nguồn gốc là tuỳ chọn trong YAML
+(`schemas/brd_source.schema.json`, `schemas/brd_source_columns.schema.json`):
+
+| Giá trị | Trường nguồn gốc | Ý nghĩa |
 |---|---|---|
-| `THANHTRA` | `oracle-thanhtra` | `~/.claude/oracle_mcp_server.py` |
-| `NHNCK` | `oracle-nhnck` | `~/.claude/oracle_mcp_nhnck.py` |
+| Mô tả bảng | `content.table_meaning_src` | `schema` / `inferred` / (vắng = `curated`) |
+| Mô tả cột | `columns[].description_src` | `schema` / `inferred` / (vắng = `curated`) |
+| FK | `columns[].fk_src` | `db` / `inferred` / (vắng = `curated`) |
 
-Khi thêm source mới: tạo script MCP mới (copy từ script hiện có, đổi connection info + tên server),
-sau đó thêm entry vào `mcpServers` trong `.claude/settings.json`. Schema tự xác định theo
-user đang login — các script dùng `user_*` views, không cần truyền `SCHEMA` riêng.
+**Vắng trường = `curated`** — toàn bộ YAML đã có từ trước coi là đã duyệt, không cần migrate.
 
-**Trước khi bắt đầu:** xác nhận MCP server của source đang làm đã kết nối thành công
-bằng cách gọi thử `list_tables` qua tool `mcp__{MCP_SERVER}__list_tables`.
+Độ ưu tiên khi ghi/cập nhật (cao → thấp):
 
-**Fallback nếu MCP không load** (tool không xuất hiện trong deferred tools hoặc lỗi `ModuleNotFoundError: oracledb`):
-1. Cài module nếu thiếu: `/opt/homebrew/bin/python3.12 -m pip install oracledb --break-system-packages`
-2. Query trực tiếp qua Python — lấy connection info từ script `~/.claude/oracle_mcp_{source}.py` (biến `ORACLE_DSN`, `ORACLE_USER`, `ORACLE_PASSWORD`), rồi chạy các query của Giai đoạn 1 bằng `oracledb.connect(...)` thay vì qua MCP tool.
+| Thông tin | Thứ tự |
+|---|---|
+| Kiểu dữ liệu, PK | Luôn lấy từ schema, ghi đè |
+| FK (`key`, `fk_note`) | `curated` > `db` (cột "Lien ket" trong schema) > `inferred` |
+| Mô tả bảng / cột | `curated` > `schema` (comment trong file) > `inferred` > để trống |
+
+- Giá trị `curated` **không bao giờ bị ghi đè** khi chạy lại.
+- Giá trị `schema` / `db` / `inferred` được tính lại mỗi lần chạy. `inferred` bị thay nếu sau đó schema có giá trị thật.
+- Khi data_type của schema khác YAML hiện có → cập nhật theo schema và nêu số cột đổi trong báo cáo (không im lặng).
+- Không bịa: mô tả `inferred` chỉ dựa trên tên bảng/cột/kiểu/FK, không suy diễn nghiệp vụ cụ thể.
 
 ## Đầu vào cần xác nhận với người dùng
 
 | Tham số | Mô tả | Ví dụ |
 |---|---|---|
-| `SOURCE` | Tên source system viết HOA | `THANHTRA`, `NHNCK`, `FIMS` |
-| `MCP_SERVER` | Tên MCP server tương ứng | `oracle-thanhtra`, `oracle-nhnck` |
-| `MODE` | Chế độ chạy (tuỳ chọn, mặc định `full`) | `full` / `reconcile` |
+| `SOURCE` | Tên source system viết HOA, phải có `schema_file` | `THANHTRA`, `NHNCK`, `FIMS` |
+| `MODE` | Chế độ chạy (tuỳ chọn, mặc định tự chọn theo bên dưới) | `full` / `reconcile` |
+
+Chọn MODE: nếu `BRD/Source/brd_{SOURCE}.yaml` **chưa tồn tại** → `full`. Đã tồn tại → `reconcile`
+(hỏi xác nhận trước khi chạy `full` đè lên YAML đã có).
 
 ---
 
 ## Luồng thực thi theo MODE
 
-| MODE | Giai đoạn chạy | Ghi đè CSV gốc |
+| MODE | Giai đoạn chạy | Ghi YAML |
 |---|---|---|
-| `full` (mặc định) | 1 → 2 → 3 → 4 | Có (tạo mới hoàn toàn) |
-| `reconcile` | 1 → 1b → 4 | Không — chỉ cập nhật cột Ghi chú và tạo Reconcile file |
-
-Giai đoạn 4 (sinh BRD YAML) luôn chạy ở cả hai mode sau khi có CSV hoàn chỉnh.
-
-Nếu người dùng đã có CSV tài liệu thiết kế và chỉ muốn đối chiếu → hỏi xác nhận
-MODE trước khi chạy, tránh ghi đè dữ liệu tài liệu.
+| `full` (source mới) | 1 → 2 → 4 → 3 | Tạo mới toàn bộ |
+| `reconcile` (YAML đã có) | 1 → 1b → 2 → 4 → (3 nếu cần) | Chỉ thêm bảng/cột mới + cập nhật theo bảng ưu tiên ở trên; **không xoá** |
 
 ---
 
-## Giai đoạn 1 — Khảo sát CSDL qua MCP Oracle
+## Giai đoạn 1 — Đọc schema
 
-Dùng tool `mcp__{MCP_SERVER}__query_oracle` để chạy các query bên dưới.
-Các query dùng `user_*` views — tự giới hạn trong schema của user đang login,
-không cần truyền `owner` hay `SCHEMA`.
+1. Tra `schema_file` của SOURCE trong `Source/source_systems.csv`; mở file bằng `schema_reader.py --source {SOURCE}` để xem tóm tắt + warnings.
+2. Báo người dùng: số bảng, số cột, số FK (DB), số FK gợi ý (inferred), số bảng/cột thiếu mô tả, các WARN.
+3. Với bảng hệ thống/không liên quan nghiệp vụ (`flyway_schema_history`, `DYNAMIC*`, bảng `*_BK*`/`*_BAK_*`, `*_CLONE`) → **hỏi người dùng** có đưa vào BRD không (nếu đưa: `scope_status: pending`, về sau chuyển `out_of_scope` ở HLD/LLD).
 
-### Bước 1.1 — Liệt kê bảng + comment
-
-```sql
-SELECT t.table_name, c.comments
-FROM user_tables t
-LEFT JOIN user_tab_comments c ON c.table_name = t.table_name
-ORDER BY t.table_name
-```
-
-### Bước 1.2 — Lấy cột + comment + data type
-
-```sql
-SELECT c.table_name, c.column_name, c.data_type,
-       c.data_length, c.data_precision, c.data_scale,
-       c.nullable, cc.comments
-FROM user_tab_columns c
-LEFT JOIN user_col_comments cc
-  ON cc.table_name = c.table_name AND cc.column_name = c.column_name
-ORDER BY c.table_name, c.column_id
-```
-
-⚠ Nếu kết quả quá lớn (MCP lưu vào file): đọc file bằng `python3 -c "import json; ..."`.
-
-### Bước 1.3 — Lấy PK + FK constraints
-
-```sql
-SELECT ac.table_name, acc.column_name,
-       ac.constraint_type,
-       ac.r_constraint_name,
-       rc.table_name  AS ref_table,
-       rcc.column_name AS ref_col
-FROM user_constraints ac
-JOIN user_cons_columns acc
-  ON acc.constraint_name = ac.constraint_name AND acc.position = 1
-LEFT JOIN user_constraints rc
-  ON rc.constraint_name = ac.r_constraint_name
-LEFT JOIN user_cons_columns rcc
-  ON rcc.constraint_name = rc.constraint_name AND rcc.position = 1
-WHERE ac.constraint_type IN ('P','R')
-ORDER BY ac.table_name, acc.column_name
-```
+Tên Oracle không phân biệt hoa/thường: luôn so sánh `.upper()` (cả tên bảng lẫn tên cột).
 
 ---
 
-## Giai đoạn 1b — Đối chiếu CSV tài liệu thiết kế vs. CSDL *(chỉ chạy khi MODE=reconcile)*
+## Giai đoạn 1b — Đối chiếu schema vs BRD YAML *(chỉ chạy khi MODE=reconcile)*
 
-Điều kiện: đã có `Source/{SOURCE}_Tables.csv` và `Source/{SOURCE}_Columns.csv`
-từ tài liệu thiết kế. Mục tiêu: nhận diện chênh lệch trước khi thiết kế LLD,
-**không ghi đè file gốc**.
+Mục tiêu: nhận diện chênh lệch giữa file schema mới và YAML hiện có, **không ghi đè giá trị curated**.
 
 ### Bước 1b.1 — Đối chiếu danh sách bảng
 
-**Oracle không phân biệt hoa/thường cho tên object** — luôn normalize `.upper()` trước khi so sánh,
-cả tên bảng lẫn tên cột. Không báo mismatch chỉ vì `flyway_schema_history` vs `FLYWAY_SCHEMA_HISTORY`.
+So sánh tên bảng trong schema với `content.table` của `brd_{SOURCE}.yaml` (sau `.upper()`):
 
-So sánh (sau khi đã `.upper()` cả hai phía):
-- Bảng có trong CSV nhưng **không có trên DB** → ghi nhận `only_in_doc`
-- Bảng có trên DB nhưng **không có trong CSV** → ghi nhận `only_in_db`
-- Bảng khớp → `matched`
+| Phân loại | Xử lý |
+|---|---|
+| `only_in_schema` | Bảng mới — thêm entry (`scope_status: pending`) + file cột ở Giai đoạn 4 |
+| `only_in_yaml` | Bảng bị bỏ/đổi tên trên schema — **không xoá**, chỉ báo cáo (nghi đổi tên: gợi ý bảng `only_in_schema` có cột trùng ≥ 80%) |
+| `matched` | Đối chiếu cột ở bước 1b.2 |
 
-### Bước 1b.2 — Đối chiếu FK constraints
+### Bước 1b.2 — Đối chiếu cột và FK (với bảng `matched`)
 
-Với mỗi bảng `matched`, so sánh FK:
+| Trường hợp | Xử lý |
+|---|---|
+| Cột chỉ có trong schema | Thêm vào file cột (thứ tự theo schema) |
+| Cột chỉ có trong YAML | Báo cáo (nghi đổi tên/bỏ cột); không xoá |
+| `data_type` khác | Cập nhật theo schema, ghi vào báo cáo |
+| FK `db` trùng `fk_note` curated | Giữ curated (không đổi `fk_src`) |
+| FK `db` khác `fk_note` curated (ref khác) | **Conflict** — giữ curated, ghi vào báo cáo để người thiết kế quyết |
+| FK `db` mà YAML chưa có FK | Thêm: `key: FK`, `fk_note: "FK → T.C"`, `fk_src: db` |
+| Cột có FK `inferred` mà YAML chưa có FK | Thêm theo Giai đoạn 2 |
 
-| Trường hợp | Phân loại | Xử lý |
-|---|---|---|
-| FK trong CSV + có DB constraint khớp ref_table | `confirmed` | Cập nhật ghi chú CSV: "FK đã xác nhận qua khảo sát DB" |
-| FK trong CSV + **không có** DB constraint | `doc_only` | Ghi nhận — thường là intentional (app-level FK) |
-| FK trong CSV + có DB constraint nhưng **ref_table khác** | `conflict` | Ghi vào Reconcile Issues |
-| FK có DB constraint + **không có** trong CSV | `db_only` | Ghi nhận — bổ sung vào CSV nếu không xung đột |
+### Bước 1b.3 — Báo cáo cho người thiết kế
 
-### Bước 1b.3 — Cập nhật CSV (không xung đột)
-
-Chỉ cập nhật cột **Ghi chú (FK suy luận)** trong `{SOURCE}_Columns.csv`:
-- `confirmed`: đổi "FK suy luận" → "FK đã xác nhận qua khảo sát DB"
-- `db_only` rõ ràng: thêm dòng cột mới với ghi chú "Phát hiện qua khảo sát DB"
-- **Không** thay đổi cột Khóa, Mô tả, hoặc bất kỳ thông tin nào từ tài liệu thiết kế
-
-### Bước 1b.4 — Xuất báo cáo đối chiếu
-
-Xuất `Source/{SOURCE}_Reconcile_Issues.csv` cho các trường hợp cần làm rõ:
-
-```
-STT,Bảng,Cột,Loại vấn đề,Mô tả trong tài liệu thiết kế,Thực tế trên CSDL,Câu hỏi cần làm rõ,Trạng thái
-```
-
-- Chỉ ghi nhận `conflict` và `only_in_doc` / `only_in_db` đáng chú ý
-- Mỗi issue kèm câu hỏi cụ thể soạn sẵn để làm rõ với nguồn
-- Trạng thái mặc định: `Chờ xác nhận`
-
-### Bước 1b.5 — Tóm tắt báo cáo cho người thiết kế
-
-Trình bày ngắn gọn:
-1. Số bảng: matched / only_in_doc / only_in_db
-2. FK confirmed / doc_only / db_only / conflict
-3. Danh sách issue đã ghi vào Reconcile file
-4. Khuyến nghị: điểm nào cần làm rõ với nguồn trước khi bắt đầu LLD
+Trình bày ngắn: (1) bảng matched / only_in_schema / only_in_yaml; (2) cột thêm / cột chỉ có ở YAML / đổi kiểu;
+(3) FK mới từ DB / conflict; (4) khuyến nghị điểm cần làm rõ trước LLD.
+Không tạo file `*_Reconcile_Issues.csv` mới (đã bỏ); nếu người dùng cần lưu, ghi vào `Datamart/context/` hoặc scratchpad.
 
 ---
 
-## Giai đoạn 2 — Xuất 2 file CSV
+## Giai đoạn 2 — Suy luận FK và mô tả
 
-Dùng Python script để tổng hợp kết quả từ Giai đoạn 1.
+Chạy cho cột/bảng mà schema **không có** thông tin. Mọi giá trị suy luận phải gắn cờ `inferred`.
 
-### `Source/{SOURCE}_Tables.csv`
+### 2.1 — Gợi ý FK (script, xác định được)
 
-```
-STT,Tên bảng,Ý nghĩa bảng
-1,TABLE_NAME,"Comment từ Oracle (để trống nếu null)"
-```
+Lấy từ `schema_reader.infer_fks(doc)` (hoặc `--infer-fk`). Quy tắc của hàm:
 
-- Encoding: `utf-8-sig` (BOM, để Excel mở đúng tiếng Việt)
-- Thứ tự: theo `table_name` alphabetical hoặc theo `object_id` nếu có
-- Bỏ qua bảng hệ thống: `flyway_schema_history`, `DYNAMIC*` nếu không liên quan nghiệp vụ (hỏi người dùng)
+- Chỉ xét cột có hậu tố `_ID` (hoặc `Id` kiểu PascalCase), chưa có FK ở DB, không phải PK đơn của chính bảng.
+- Phần gốc (`stem`) phải **khớp tên một bảng có trong schema** (số ít / số nhiều: `S`, `ES`, `IES`).
+- Bỏ dần từ đầu của stem (`PREVIOUS_CERTIFICATE_ID` → `CERTIFICATES`) → `confidence: medium`; khớp đuôi tên bảng có tiền tố (`COMPANY_TYPE_ID` → `CAT_COMPANY_TYPE`) → `medium`; khớp nguyên stem → `high`.
+- Chỉ gợi ý khi khớp **duy nhất**; mơ hồ hoặc không khớp thì bỏ qua — **người thiết kế bổ sung ở LLD**, skill không cố đoán thêm.
+- Bảng đích phải có PK; cột đích = PK đơn (hoặc cột `ID`). Không tự khớp với chính bảng.
 
-### `Source/{SOURCE}_Columns.csv`
+Ghi vào file cột: `key: FK` (hoặc `PK/FK`), `fk_note: "FK → T.C"`, `fk_src: inferred`. Báo người dùng số FK inferred theo mức tin cậy để duyệt.
+FK `inferred` **chưa chắc đúng** — skill `atomic-lld-design` không được coi là đã xác nhận khi lập hash comment (xem lưu ý cuối file).
 
-```
-Tên bảng,Tên trường,Mô tả,Khóa,Ghi chú (FK suy luận)
-TABLE_NAME,COL_NAME,"Comment Oracle",PK,
-TABLE_NAME,FK_COL,"Comment Oracle",FK,FK → REF_TABLE.REF_COL
-```
+### 2.2 — Suy luận mô tả (2 bước, có duyệt)
 
-- Cột **Khóa**: `PK` / `FK` / (trống)
-- Cột **Ghi chú**: `FK → REF_TABLE.REF_COL` cho FK columns
-- Một cột có thể vừa PK vừa FK → ghi `PK` ưu tiên, FK note vào Ghi chú
-- Mô tả: lấy từ Oracle column comment; để trống nếu null (không bịa)
+1. **Lúc sinh YAML (Giai đoạn 4):**
+   - Có comment trong schema → `description` = comment, `description_src: schema`.
+   - Cột không có comment → `description: null`, **chưa suy luận** (không gắn `description_src`).
+   - Bảng không có comment → `table_meaning: null` (nguồn không cung cấp; không bắt buộc, không suy luận lúc sinh YAML).
+2. **Bước riêng "Đề xuất mô tả"** (chạy khi người dùng yêu cầu, sau khi sinh YAML):
+   - Lấy danh sách bằng `schema_reader.py --source {SOURCE} --missing-desc` (hoặc quét YAML có `description: null`/`""`).
+   - Soạn mô tả tiếng Việt ngắn dựa **chỉ** trên tên bảng, tên cột, kiểu dữ liệu, FK (VD `STATUS_ID` FK → `APPLICATION_STATUSES`: "Trạng thái hồ sơ" — được; thêm quy tắc nghiệp vụ không có trong tên — không được).
+   - Ghi `description_src: inferred`, rồi trình bảng đề xuất theo từng bảng để Data Modeler duyệt hàng loạt.
+   - Bảng nhiều cột (>30 cột thiếu mô tả): làm từng bảng, không dồn cả schema vào 1 lượt.
+   - Khi người thiết kế duyệt → **xoá** `description_src` (thành `curated`); sửa lại → ghi giá trị mới và xoá `description_src`.
+   - Chưa duyệt thì giữ `inferred`; LLD coi đây là gợi ý, không phải căn cứ chính.
 
 ---
 
@@ -205,11 +179,11 @@ TABLE_NAME,FK_COL,"Comment Oracle",FK,FK → REF_TABLE.REF_COL
 
 Dùng Python script sinh file `docs/output/{SOURCE}/{SOURCE}_ER_Diagram.html`.
 
-**Lưu ý:** Giai đoạn 3 chạy **sau** Giai đoạn 4 (đã có `brd_{SOURCE}.yaml` hoàn chỉnh). Mọi thông tin cần thiết lấy từ YAML — không đọc BRD Excel thêm.
+**Lưu ý:** Giai đoạn 3 chạy **sau** Giai đoạn 4 (đã có YAML hoàn chỉnh). Mọi thông tin lấy từ YAML — không đọc file schema hay CSV nữa.
 
 ### 3.1 — Nguồn dữ liệu cho diagram
 
-Đọc `BRD/Source/brd_{SOURCE}.yaml` để lấy:
+Đọc `BRD/Source/brd_{SOURCE}.yaml` (bảng, nhóm, scope) và `BRD/Source/{SOURCE}/brd_{SOURCE}_*.yaml` (cột, PK/FK):
 
 - **Badge in-scope (BRD)**: bảng có `scope_status: in_scope` → `"brd": true` trong data JS
 - **Nhóm nghiệp vụ**: lấy từ `functional_group` của mỗi entry → dùng làm `group` trong data JS
@@ -257,10 +231,12 @@ for meta in table_meta.values():
     }
   ],
   "fks": [
-    {"ft": "FROM_TABLE", "fc": "FROM_COL", "tt": "TO_TABLE", "tc": "TO_COL"}
+    {"ft": "FROM_TABLE", "fc": "FROM_COL", "tt": "TO_TABLE", "tc": "TO_COL", "inferred": false}
   ]
 }
 ```
+
+`inferred: true` khi `fk_src: inferred` — vẽ đường FK nét đứt để phân biệt với FK đã xác nhận (`db`/`curated`).
 
 ### 3.3 — Tính năng bắt buộc của HTML
 
@@ -292,35 +268,64 @@ for meta in table_meta.values():
 
 ## Giai đoạn 4 — Sinh BRD Source YAML
 
-Sau khi có CSV hoàn chỉnh (`Source/{SOURCE}_Tables.csv` và `Source/{SOURCE}_Columns.csv`),
-sinh 2 loại file YAML theo schema `schemas/brd_source.schema.json` và `schemas/brd_source_columns.schema.json`.
+Sinh 2 loại file YAML theo schema `schemas/brd_source.schema.json` và `schemas/brd_source_columns.schema.json`
+bằng **`scripts/gen_brd_source.py`** — script làm trọn Giai đoạn 1b + 2.1 + 4 (không viết script tạm):
+
+```bash
+python scripts/gen_brd_source.py --source NHNCK                     # chạy thử: chỉ in báo cáo
+python scripts/gen_brd_source.py --source NHNCK --exclude "*_BK*,*_BAK_*" --apply
+python scripts/gen_brd_source.py --source XXX --description "Mô tả source" --apply   # source mới
+```
+
+Script mặc định **chạy thử**; luôn chạy thử trước, đọc báo cáo với người dùng, rồi mới `--apply`. Việc script làm:
+
+| Việc | Chi tiết |
+|---|---|
+| Đối chiếu (1b) | Bảng khớp / mới / chỉ có ở YAML; cột mới / chỉ có ở YAML; đổi kiểu; FK conflict; gợi ý đổi tên bảng (≥ 80% cột trùng) |
+| Bảng mới | Thêm entry `scope_status: pending`, `functional_group: CHƯA PHÂN NHÓM` (**người thiết kế điền sau**), `table_meaning` từ comment schema (không có thì `null`), `ingestion` theo quy tắc 4.1 |
+| Cột | Thêm cột mới; cập nhật PK/`data_type`; FK `curated > db > inferred`; mô tả lấy từ comment schema khi cột chưa có |
+| `related_tables` | Chỉ thêm quan hệ còn thiếu từ FK; không xoá |
+| An toàn | Không xoá bảng/cột/entry; không ghi đè curated; chỉ ghi khi không phát sinh lỗi JSON schema **mới**; entry không đổi giữ nguyên từng byte; chạy lại lần 2 phải báo "không có thay đổi" |
+
+Script **không** làm: chọn bảng loại khỏi BRD (dùng `--exclude`, script cảnh báo bảng nghi backup/hệ thống), điền
+`functional_group`, duyệt mô tả/FK `inferred`, đề xuất mô tả cột (bước 2.2.2), rebuild `_summary.csv` (4.3).
+
+`data_type` luôn lấy **đúng chuỗi trong file schema** (quyết định của Data Modeler), kể cả khi khác bản YAML cũ
+(VD `NVARCHAR2(50 CHAR)` → `NVARCHAR2(100)`); báo cáo chỉ nêu số cột bị đổi.
+
+Các điều sau vẫn đúng khi sửa YAML bằng tay hoặc mở rộng script: ghi file theo cách giữ nguyên entry/cột `curated`,
+không dựng lại cả file từ đầu khi MODE=reconcile.
 
 ### 4.1 — File tổng hợp: `BRD/Source/brd_{SOURCE}.yaml`
 
-Mỗi bảng trong `{SOURCE}_Tables.csv` → 1 entry trong `brd_entries`. Cần điền đầy đủ:
+Mỗi bảng trong schema (đã qua bước hỏi ở Giai đoạn 1) → 1 entry trong `brd_entries`. Entry đã có thì giữ nguyên
+các trường curated; chỉ bổ sung các trường còn thiếu. Cần điền đầy đủ:
 
 **`brd_id`:** `BRD-SRC-{SOURCE}-{TABLE_NAME}` — tên bảng theo convention nguồn (Oracle = UPPER_SNAKE_CASE).
+
+**`content.table_meaning`:** comment bảng trong schema (`table_meaning_src: schema`); nếu nguồn không có → `null`.
+Không có rule bắt buộc `table_meaning` / `description` cột (nhiều nguồn không cung cấp); bổ sung sau theo 2.2 khi cần.
 
 **`functional_group`:**
 Suy luận từ tên bảng + mô tả. Hỏi người dùng xác nhận nhóm chức năng nếu không rõ.
 
 **`scope_status` và `scope_reason`:**
-Tất cả bảng được khởi tạo với `scope_status: pending` và `scope_reason: null`.
+Bảng mới luôn khởi tạo với `scope_status: pending` và `scope_reason: null`.
 Không suy luận in_scope/out_of_scope tại đây — scope sẽ được cập nhật tự động bởi
-skill `atomic-lld-design` sau khi thiết kế LLD xong.
+skill `atomic-lld-design` sau khi thiết kế LLD xong. **Không đổi `scope_status` của entry đã có.**
 
-**`related_tables`** — điền cho **tất cả bảng** (kể cả out_of_scope), dựa trên FK trong `{SOURCE}_Columns.csv`:
-- Cột "Khóa" = `FK`, cột "Ghi chú" = `FK → TargetTable.TargetCol`
+**`related_tables`** — điền cho **tất cả bảng** (kể cả out_of_scope), dựa trên FK (`db` + `inferred`) của file cột:
 - Bảng hiện tại có FK trỏ ra ngoài: `relation: "FK cha — <ý nghĩa bảng cha>"`
 - Bảng khác có FK trỏ vào bảng này: `relation: "1-N — <ý nghĩa bảng con>"`
 - Không có FK cả 2 chiều → `related_tables: null`
 - Tên bảng trong `related_tables[].table` phải theo convention nguồn (Oracle = UPPER_SNAKE_CASE)
+- Entry đã có: chỉ **thêm** quan hệ còn thiếu, không xoá quan hệ đã có.
 
 **`ingestion`** — điền cho **tất cả bảng** (kể cả out_of_scope):
 
 Xác định `data_change_mode` theo 2 bước:
 
-*Bước 1 — Pattern matching trên tên cột* (từ `{SOURCE}_Columns.csv`):
+*Bước 1 — Pattern matching trên tên cột* (từ schema):
 
 | Nhóm keyword (kiểm tra tên cột, case-insensitive, bỏ `_`) | Kết quả |
 |---|---|
@@ -333,9 +338,11 @@ Xác định `data_change_mode` theo 2 bước:
 - Bảng danh mục/link table không có timestamp → `Update`
 - Không xác định được → `Update` (safe default)
 
-⚠ **Luôn đọc từ CSV hiện tại** — không dùng kết quả cache từ lần chạy trước. Tên cột có thể đã thay đổi (PascalCase → UPPER_SNAKE_CASE) dẫn đến sai kết quả pattern matching.
+⚠ **Luôn đọc tên cột từ schema hiện tại** — không dùng kết quả cache từ lần chạy trước. Tên cột có thể đã thay đổi (PascalCase → UPPER_SNAKE_CASE) dẫn đến sai kết quả pattern matching.
 
 **Lý do quy tắc:** `UpdatedAt` tồn tại → DB track thay đổi sau insert → Append sẽ bỏ sót. Chỉ có `CreatedAt` → row không thay đổi sau tạo → Append an toàn.
+
+Entry đã có `ingestion`: không ghi đè (đã duyệt).
 
 **Lưu ý Oracle UPPER_SNAKE_CASE:**
 - `filter_logic` dùng tên cột lowercase với đủ 2 điều kiện: `created_at >= {etl_date} AND created_at < {etl_date} + 1` (tên cột có thể khác `created_at`, VD: `update_dt`, `append_at`; không phải `CreatedAt`)
@@ -353,20 +360,25 @@ table: {TABLE_NAME}
 brd_ref: BRD-SRC-{SOURCE}-{TABLE_NAME}
 columns:
   - name: COL_NAME
-    data_type: VARCHAR2(100)   # hoặc NUMBER, DATE, v.v.
-    description: "Mô tả từ CSV"
+    data_type: VARCHAR2(100)   # lấy từ schema
+    description: "Mô tả"       # null nếu chưa có (xem 2.2)
+    description_src: schema    # tuỳ chọn: schema | inferred; vắng = curated
     key: PK                    # PK / FK / PK/FK / null
     fk_note: "FK → REF_TABLE.REF_COL"  # null nếu không có
+    fk_src: db                 # tuỳ chọn: db | inferred; vắng = curated
 ```
 
-Cột `key`: đúng enum `PK` / `FK` / `PK/FK` / `null` — không ghi giá trị khác.
+- Cột `key`: đúng enum `PK` / `FK` / `PK/FK` / `null` — không ghi giá trị khác.
+- Một cột vừa PK vừa FK → `key: PK/FK`, `fk_note` ghi FK.
+- `fk_note` (và `key: FK`) lấy từ cột "Lien ket" của schema (`fk_src: db`) hoặc gợi ý Giai đoạn 2.1 (`fk_src: inferred`).
+- File đã có: thêm cột mới, cập nhật `data_type` khi khác; **giữ nguyên** `description`/`fk_note` curated. Không xoá cột chỉ có ở YAML.
 
 ### 4.3 — Cập nhật `BRD/Source/_summary.csv`
 
 Sau khi sinh xong YAML, chạy script có sẵn để rebuild summary:
 
 ```bash
-/opt/homebrew/bin/python3.12 scripts/generate_brd_summary.py
+python scripts/generate_brd_summary.py
 ```
 
 Script này scan toàn bộ `BRD/Source/brd_*.yaml` và ghi lại `_summary.csv` từ đầu.
@@ -374,35 +386,45 @@ Script này scan toàn bộ `BRD/Source/brd_*.yaml` và ghi lại `_summary.csv`
 ### 4.4 — Kiểm tra sau khi sinh
 
 ```bash
-# 1. Số entries đúng với số bảng trong Tables.csv
+# 1. Số entries đúng với số bảng trong schema (cộng bảng only_in_yaml giữ lại, trừ bảng người dùng loại)
 grep "brd_id:" BRD/Source/brd_{SOURCE}.yaml | wc -l
+python scripts/schema_reader.py --source {SOURCE}      # dòng "Bảng: N"
 
 # 2. Không còn PascalCase trong cột table (với Oracle source)
-grep "^  table:" BRD/Source/brd_{SOURCE}.yaml | grep "[A-Z][a-z]"  # → 0 kết quả
+grep "^    table:" BRD/Source/brd_{SOURCE}.yaml | grep "[A-Z][a-z]"  # → 0 kết quả
 
 # 3. Tất cả bảng đều có ingestion (kể cả out_of_scope)
-python3 -c "
+python -c "
 import yaml
-doc = yaml.safe_load(open('BRD/Source/brd_{SOURCE}.yaml'))
-missing = [e['brd_id'] for e in doc['brd_entries']
-           if 'ingestion' not in e['content']]
+doc = yaml.safe_load(open('BRD/Source/brd_{SOURCE}.yaml', encoding='utf-8'))
+missing = [e['brd_id'] for e in doc['brd_entries'] if 'ingestion' not in e['content']]
 print('Missing ingestion:', missing)
 "
 
-# 4. Số columns files = tổng số bảng (Tables.csv)
+# 4. Mỗi bảng có đúng 1 file cột
 ls BRD/Source/{SOURCE}/ | wc -l
+
+# 5. Validate theo JSON schema (cả file tổng hợp lẫn file cột)
+python -c "
+import json, glob, yaml, jsonschema
+s1 = json.load(open('schemas/brd_source.schema.json', encoding='utf-8'))
+s2 = json.load(open('schemas/brd_source_columns.schema.json', encoding='utf-8'))
+jsonschema.validate(yaml.safe_load(open('BRD/Source/brd_{SOURCE}.yaml', encoding='utf-8')), s1)
+for p in glob.glob('BRD/Source/{SOURCE}/*.yaml'):
+    jsonschema.validate(yaml.safe_load(open(p, encoding='utf-8')), s2)
+print('schema OK')
+"
 ```
 
 ---
 
-## Lưu ý khi áp dụng cho source mới
+## Lưu ý
 
-- **Thêm source mới**: tạo script MCP mới tại `~/.claude/oracle_mcp_{source}.py`
-  (copy từ script hiện có, đổi `ORACLE_USER`, `ORACLE_PASSWORD`, `ORACLE_DSN` nếu cần,
-  đổi tên `Server("oracle-{source}")`), sau đó thêm entry vào `mcpServers` trong
-  `.claude/settings.json` và restart session để kích hoạt
-- **Xác nhận kết nối** trước khi chạy: gọi `mcp__{MCP_SERVER}__list_tables` — nếu trả về
-  danh sách bảng là kết nối thành công
-- Sau khi xuất CSV, xác nhận số bảng/cột hợp lý với người dùng trước khi tạo diagram
-- Nếu đã có CSV từ tài liệu thiết kế → ưu tiên dùng `MODE=reconcile` thay vì `full`,
-  để không mất thông tin mô tả đã được dịch/bổ sung thủ công trong CSV gốc
+- **Thêm source mới:** đặt file schema vào `Source/DDL UAT*/`, thêm dòng vào `Source/source_systems.csv`
+  (`source_system,description,schema_file`) rồi chạy MODE=full. Không cần MCP hay CSV trung gian.
+- **Cập nhật khi schema UAT đổi:** thay file schema, cập nhật `schema_file` nếu đổi tên, chạy MODE=reconcile.
+- Các skill/script hạ nguồn đọc cột nguồn từ `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml`,
+  không từ `Source/*_Columns.csv`.
+- **FK `fk_src: inferred` chưa xác nhận:** `atomic-lld-design` (Bước 5, hash comment) cần người thiết kế
+  xác nhận FK này trước khi dùng `FK_SOURCE`. Người thiết kế được phép bổ sung/sửa FK ở bước LLD; khi sửa thì
+  xoá `fk_src` (thành `curated`).

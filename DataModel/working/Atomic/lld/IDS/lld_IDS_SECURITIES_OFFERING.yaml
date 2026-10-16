@@ -17,7 +17,15 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định. Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv). BK đổi sang APPLICATION_CD (2026-08-14): Public Company Securities Offering Code nay map từ APPLICATION_CD thay vì ID kỹ thuật (đúng rule 3e); loại bỏ attribute Application Code trùng lặp — xem pending_design.yaml. 3 FK con (COMPANY_DATA, SECURITIES_OFFERING_PLAN, SECURITIES_OFFERING_RESULT) đã sửa sang crosswalk hash theo APPLICATION_CD. design_status: draft, cần review/approve lại."
+  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ\
+    \ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định.\
+    \ Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment\
+    \ Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv).\
+    \ BK đổi sang APPLICATION_CD (2026-08-14): Public Company Securities Offering\
+    \ Code nay map từ APPLICATION_CD thay vì ID kỹ thuật (đúng rule 3e); loại bỏ attribute\
+    \ Application Code trùng lặp — xem pending_design.yaml. 3 FK con (COMPANY_DATA,\
+    \ SECURITIES_OFFERING_PLAN, SECURITIES_OFFERING_RESULT) đã sửa sang crosswalk\
+    \ hash theo APPLICATION_CD. design_status: draft, cần review/approve lại."
 attributes:
 - attribute_name: "Public Company Securities Offering Id"
   physical_name: "pc_securities_offering_id"
@@ -27,7 +35,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('IDS_SECURITIES_OFFERING', APPLICATION_CD). BCV: \"[Business Activity] Business Activity\"."
+  comment: "PK surrogate. Hash: hash_id('IDS_SECURITIES_OFFERING', APPLICATION_CD).\
+    \ BCV: \"[Business Activity] Business Activity\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -40,7 +49,9 @@ attributes:
   status: "pending"
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPLICATION_CD"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang APPLICATION_CD theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live (APPLICATION_CD hiện không khai báo NOT NULL trong nguồn)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang APPLICATION_CD\
+    \ theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live (APPLICATION_CD hiện không khai báo NOT NULL trong nguồn)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -65,7 +76,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPLICANT_TYPE_FLG"
-  comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE'). Xử lý CASE WHEN dựa trên giá trị của APPLICANT_TYPE_FLG (1-TC, 2-CN)."
+  comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE').\
+    \ Xử lý CASE WHEN dựa trên giá trị của APPLICANT_TYPE_FLG (1-TC, 2-CN)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -124,7 +136,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Administrative Procedure Code"
-  physical_name: "administrative_procedure_code"
+  physical_name: "ap_code"
   description: "Thủ tục hành chính áp dụng."
   data_domain: "Classification Value"
   nullable: true
@@ -132,7 +144,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_ADMINISTRATIVE_PROCEDURE')."
+  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_PROCEDURE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -145,7 +158,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
+  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

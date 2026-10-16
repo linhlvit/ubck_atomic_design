@@ -117,7 +117,10 @@ Rule này áp dụng **bất kể** có gọi qua Skill tool đầy đủ từ �
 
 1. **HLD Overview** (`{SOURCE}_HLD_Overview.md`) → tổng quan entity, quan hệ, BCV Concept đã thống nhất.
 2. **HLD Tier tương ứng** (`{SOURCE}_HLD_Tier{N}.md`) → chi tiết entity và quan hệ Tier đang thiết kế.
-3. **Source columns** (`Source/{SOURCE}_Tables.csv`, `{SOURCE}_Columns.csv`) → cột, data type, mô tả gốc.
+3. **Source columns** (`BRD/Source/brd_{SOURCE}.yaml` cho bảng/`table_meaning`/`scope_status`;
+   `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml` cho cột) → cột, data type, mô tả gốc, PK/FK. Không còn dùng `Source/{SOURCE}_Tables.csv` / `_Columns.csv`.
+   **Cờ nguồn gốc** (tuỳ chọn, vắng = đã duyệt/curated): `description_src: inferred` = mô tả gợi ý chưa duyệt — không dùng làm căn cứ
+   duy nhất để đặt tên/BCV, đối chiếu thêm HLD/nghiệp vụ; `fk_src: inferred` = FK chỉ gợi ý theo tên cột — xem quy tắc ở Bước 5.
    Ghi nhận data type của từng cột nguồn — dùng ở Bước 3b để review conversion risk và ghi chú khi data type nguồn không khai báo rõ ràng.
 4. **Tất cả file LLD đã có** trong cùng source system (`DataModel/working/Atomic/lld/{SOURCE}/`):
    - Entity đã thiết kế và cấu trúc attribute.
@@ -374,7 +377,12 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
 
   **Hash comment — bắt buộc bổ sung cho ETL:** ETL hash surrogate Id từ 2 input:
   `(source_system_code, business_key)`. FK_SOURCE = source table của **target entity**,
-  xác định từ `Source/{SOURCE}_Columns.csv` cột "Ghi chú (FK suy luận)".
+  xác định từ `fk_note` ("FK → TABLE.COL") của cột trong `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml`.
+
+  **FK `fk_src: inferred` chưa được xác nhận:** trước khi dùng `fk_note` làm FK_SOURCE, Data Modeler phải xác nhận FK đó đúng
+  (gợi ý chỉ dựa trên tên cột khớp tên bảng). Đúng → xoá `fk_src` khỏi cột trong YAML (thành curated). Sai → sửa/xoá `key`, `fk_note`, `fk_src`.
+  Cột nguồn là FK nghiệp vụ nhưng YAML chưa có `fk_note` (schema/gợi ý bỏ sót) → Data Modeler bổ sung `key`/`fk_note` vào YAML
+  (không ghi `fk_src`) ngay trong lượt LLD này, rồi mới ghi hash comment. Không tự đoán FK_SOURCE nếu YAML chưa có.
 
   | Case | source_columns | Hash comment |
   |---|---|---|
@@ -522,7 +530,7 @@ Trước khi xuất file:
 - [ ] **Conversion risk:** Mọi attribute có Data Domain không khớp tự nhiên với data type nguồn (ví dụ: nguồn `string` → domain `Small Counter`) đã có comment ghi chú conversion risk chưa? Nếu data type nguồn không khai báo → đã ghi "cần profile" trong comment?
 - [ ] **Domain mới:** Nếu có attribute dùng tag `[PROPOSE NEW DOMAIN]` → đã tách thành điểm cần xác nhận riêng để reviewer quyết định bổ sung vào `reference/data_domains.md`?
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
-- [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC_TARGET_TABLE', COL).` (gạch dưới, FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, `comment: null` (không ghi lý do NULL).
+- [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC_TARGET_TABLE', COL).` (gạch dưới, FK_SOURCE tra từ `fk_note` trong `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml`; FK `fk_src: inferred` đã được Data Modeler xác nhận). FK với `source_columns: []` → không thêm hash, `comment: null` (không ghi lý do NULL).
 - [ ] **FK cần crosswalk qua bảng danh mục** (xem Bước 5): Nếu `COL` dùng trong `hash_id()` là ID kỹ thuật của bảng đích chứ không phải Code thật (đối chiếu `"{Entity} Code"` attribute của chính entity đích) → phải dùng cú pháp `FK target: {entity}.{attribute} (...). Cần ETL crosswalk sang ...` (physical_name viết thường), KHÔNG hash trực tiếp theo ID kỹ thuật.
 - [ ] **Code đi kèm Id crosswalk** (xem Bước 5): Khi Id là case crosswalk, Code's `source_columns` phải là `{SOURCE_SYSTEM}.{LOOKUP_TABLE}.{CODE_COLUMN}` (cột Code thật ở bảng danh mục, lấy đúng từ comment crosswalk của Id) — KHÔNG lặp lại `{SOURCE_TABLE}.{FK_COLUMN}` (ID kỹ thuật) giống Id.
 - [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.

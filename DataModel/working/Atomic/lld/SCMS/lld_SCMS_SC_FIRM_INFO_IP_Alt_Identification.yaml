@@ -26,7 +26,7 @@ metadata:
     \ tách biệt với giấy phép thành lập+hoạt động UBCKNN ở Row 1); Row 3 TAX_ID (TAX_CODE);\
     \ Row 4 ENTERPRISE_CODE (ENTERPRISE_CODE); Row 5 CERTIFICATE (CERTIFICATE_NUMBER\
     \ — generic, chưa rõ loại chứng nhận, cần profile thêm); Row 6 CUSTODIAN_CERT\
-    \ (CUSTODIAN_CERT_NUMBER + CUSTODIAN_CERT_DATE); Row 7 CUSTODIAN_MEMBER_CERT (CUSTODIAN_MEMBER_CERT_NUMBER\
+    \ (CUSTODIAN_CERT_NUMBER + CUSTODIAN_CERT_DATE); Row 7 CUSTODIAN_MEMBER_CERTIFICATE (CUSTODIAN_MEMBER_CERT_NUMBER\
     \ + CUSTODIAN_MEMBER_CERT_DATE). Mỗi loại là 1 block riêng — KHÔNG dùng pivot\
     \ gộp chung 1 attribute (sửa 2026-07-24). Các trường giữ lại ở bảng chính: biz_license\
     \ (file path), fndtn_license_file_path, dcsn_nbr, license_expiry_dt, termntn_dcsn_nbr,\
@@ -156,9 +156,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_MEMBER_CERT."
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_MEMBER_CERTIFICATE."
   classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERTIFICATE"
-  etl_derived_value: "CUSTODIAN_MEMBER_CERT"
+  etl_derived_value: "CUSTODIAN_MEMBER_CERTIFICATE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"

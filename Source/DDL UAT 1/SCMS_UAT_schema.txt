@@ -1,25 +1,6 @@
 DATA DICTIONARY - SCHEMA: SCMS_UAT
-Tong so bang: 191 | Materialized View: 0
+Tong so bang: 157 | Materialized View: 0
 ==============================================================================================================
-
-BANG: ALERT_API_SOURCE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(19,0)        NO      PK                               
-API_CODE                      VARCHAR2(200)       NO                                       
-NAME                          VARCHAR2(2000)      NO                                       
-URL_ENDPOINT                  VARCHAR2(4000)      NO                                       
-HTTP_METHOD                   VARCHAR2(40)        YES                                      
-RESPONSE_SCHEMA               CLOB                YES                                      
-RESULT_TYPE                   NUMBER(1,0)         YES                                      
-STATUS                        NUMBER(1,0)         NO                                       
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-CREATED_BY                    NUMBER(19,0)        YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      
-LAST_MODIFIED_BY              NUMBER(19,0)        YES                                      
-
 
 BANG: ALERT_FINANCIAL_INDICATOR
 Mo ta: 
@@ -1059,10 +1040,6 @@ SENT_AT                       TIMESTAMP(6)        YES
 LEGACY_FILENAME               VARCHAR2(1020)      YES                                      
 LEGACY_FILEDATA               BLOB                YES                                      
 LEGACY_ROWTEXT                VARCHAR2(40)        YES                                      
-SUBJECT_NAME                  NVARCHAR2(1000)     YES                                      
-SUBJECT_TYPE                  VARCHAR2(80)        YES                                      
-IDENTIFICATION_NUMBER         VARCHAR2(400)       YES                                      
-POSITION_TITLE                NVARCHAR2(500)      YES                                      
 EVENT_DATE                    TIMESTAMP(6)        YES                                      
 DISCLOSURE_DEADLINE           TIMESTAMP(6)        YES                                      
 DISCLOSURE_PERSON_NAME        NVARCHAR2(500)      YES                                      
@@ -1964,6 +1941,7 @@ CREATED_AT                    TIMESTAMP(6)        YES
 CREATED_BY                    NUMBER(19,0)        YES                                      
 UPDATED_AT                    TIMESTAMP(6)        YES                                      
 UPDATED_BY                    NUMBER(19,0)        YES                                      
+IS_VISIBLE                    NUMBER(1,0)         YES                                      1:Hiển thị (disable), 0:Không hiển thị (ẩn + dùng DEFAULT_VALUE), NULL:không khóa (không có default)
 
 
 BANG: OUTPUT_REPORT_PARENT
@@ -2012,6 +1990,7 @@ CREATED_AT                    TIMESTAMP(6)        YES
 CREATED_BY                    NUMBER(19,0)        YES                                      
 UPDATED_AT                    TIMESTAMP(6)        YES                                      
 UPDATED_BY                    NUMBER(19,0)        YES                                      
+ALLOW_SELECT                  NUMBER(1,0)         NO                                       1:Chọn 1, 2:Chọn nhiều (chỉ F-ENTITY; mặc định 2)
 
 
 BANG: PERMISSION_DATA
@@ -2372,38 +2351,6 @@ SC_FIRM_INFO_ID               NUMBER              YES
 RISK_REPORTING_PERIOD_ID      NUMBER              YES                                      
 
 
-BANG: SCMS_ECAT_WORKING_CALENDAR_CONFLICT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(19,0)        NO      PK                               
-SYNC_RUN_ID                   NUMBER(19,0)        YES                                      
-CALENDAR_DATE                 DATE                NO                                       
-ECAT_CODE                     VARCHAR2(100)       YES                                      
-CONFLICT_TYPE                 VARCHAR2(50)        YES                                      
-
-
-BANG: SCMS_ECAT_WORKING_CALENDAR_SYNC_RUN
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(19,0)        NO      PK                               
-STARTED_AT                    TIMESTAMP(6)        NO                                       
-FINISHED_AT                   TIMESTAMP(6)        YES                                      
-SUCCESS                       NUMBER(1,0)         NO                                       
-DRY_RUN                       NUMBER(1,0)         NO                                       
-FETCHED                       NUMBER(10,0)        YES                                      
-SKIPPED                       NUMBER(10,0)        YES                                      
-BASE_DAYS_ENSURED             NUMBER(10,0)        YES                                      
-DAYS_UPDATED                  NUMBER(10,0)        YES                                      
-CONFLICTS                     NUMBER(10,0)        YES                                      
-WINDOW_FROM                   DATE                YES                                      
-WINDOW_TO                     DATE                YES                                      
-ERROR_MESSAGE                 VARCHAR2(4000)      YES                                      
-
-
 BANG: SCMS_ECAT_WORKING_SCHEDULE
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -2428,16 +2375,6 @@ NAME                          VARCHAR2(256)       NO      PK
 LOCK_UNTIL                    TIMESTAMP(3)        YES                                      
 LOCKED_AT                     TIMESTAMP(3)        YES                                      
 LOCKED_BY                     VARCHAR2(1020)      YES                                      
-
-
-BANG: SCMS_SYSTEM_PARAM
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-CODE                          VARCHAR2(400)       NO      PK                               
-ITEM_VALUE                    VARCHAR2(4000)      YES                                      
-DESCRIPTION                   NVARCHAR2(1000)     YES                                      
 
 
 BANG: SCMS_WORKING_DAY
@@ -2651,6 +2588,13 @@ BRANCH_ALLOCATED_CAPITAL      NUMBER(22,4)        YES
 MATTER_ID                     NUMBER(19,0)        YES                                      
 FORM_DATA_JSON                NCLOB               YES                                      
 DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
+DIRECTOR_NATIONALITY_ID       NUMBER(19,0)        YES                                      
+DIRECTOR_DATE_OF_BIRTH        DATE                YES                                      
+DIRECTOR_ID_NUMBER            VARCHAR2(50)        YES                                      
+DIRECTOR_ID_ISSUE_DATE        DATE                YES                                      
+DIRECTOR_ID_ISSUE_PLACE       VARCHAR2(255)       YES                                      
+DIRECTOR_LICENSE_NUMBER       VARCHAR2(100)       YES                                      
+DIRECTOR_LICENSE_DATE         DATE                YES                                      
 
 
 BANG: SC_FIRM_COMPLAINT_PETITION
@@ -3125,6 +3069,9 @@ TRADING_REGISTERED            NUMBER(1,0)         YES
 CUSTODY_REG_CERT_DECISION_NUMBERVARCHAR2(800)       YES                                      
 CUSTODY_REG_CERT_DECISION_DATEDATE                YES                                      
 DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
+BUSINESS_REG_CERT_NUMBER      VARCHAR2(800)       YES                                      
+BUSINESS_REG_CERT_DATE        DATE                YES                                      
+BUSINESS_REG_CERT_ISSUER      VARCHAR2(800)       YES                                      
 
 
 BANG: SC_FIRM_INSIDER_RELATION
@@ -3328,6 +3275,8 @@ SHARES_COUNT                  NUMBER(19,0)        YES
 OWNERSHIP_RATIO               NUMBER(12,4)        YES                                      
 CONTRIBUTED_CAPITAL           NUMBER(22,4)        YES                                      
 DELETED                       NUMBER(1,0)         NO                                       0:active, 1:soft-deleted
+CREATED_BY                    NUMBER(19,0)        YES                                      Nguoi tao (QT_NGUOI_DUNG.ID)
+LAST_MODIFIED_BY              NUMBER(19,0)        YES                                      Nguoi cap nhat gan nhat (QT_NGUOI_DUNG.ID)
 
 
 BANG: SC_FIRM_OWNERSHIP_RELATION
@@ -3654,6 +3603,7 @@ OWNERSHIP_RATIO_DATE          DATE                YES
 DISCLOSURE_EFFECTIVE_DATE     DATE                YES                                      
 DISCLOSURE_AUTHORIZATION_DOC_NUMBERVARCHAR2(1020)      YES                                      
 OWNERSHIP_RATIO               NUMBER(10,4)        YES                                      Ty le nam giu (%) — nhap thu cong, khong bat buoc
+SYNC_SOURCE                   VARCHAR2(30)        YES                                      CN_PROFILE = stub Giam doc CN
 
 
 BANG: SC_FIRM_SERVICE

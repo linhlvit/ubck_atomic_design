@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: GMS_AUDIT_UAT
-Tong so bang: 49 | Materialized View: 0
+Tong so bang: 50 | Materialized View: 0
 ==============================================================================================================
 
 BANG: AF_APPROVAL
@@ -24,6 +24,23 @@ UPDATED_DATE                  DATE                YES                           
 DELETE_FLG                    NUMBER(1,0)         YES                                      
 AFFILIATION_END_DATE          DATE                YES                                      Ngày kiểm toán viên không còn thuộc công ty kiểm toán nữa
 AFFILIATION_NO                VARCHAR2(80)        YES                                      Số văn bản giảm
+AFFILIATION_CHANGE_REASON     VARCHAR2(4000)      YES                                      Lý do thay đổi/giảm chấp thuận
+
+
+BANG: AF_AUDITOR_PRACTICE_HISTORY
+Mo ta: Quản lý thông tin lịch sử hành nghề của kiểm toán viên
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(10,0)        NO      PK                               Khóa chính
+AF_AUDITOR_PROFILE_ID         NUMBER(10,0)        YES                                      Link đến bảng AF_AUDITOR_PROFILES
+PRACTICE_FROM_DATE            DATE                NO                                       Hành nghề từ ngày
+PRACTICE_TO_DATE              DATE                YES                                      Hành nghề đến ngày
+PRACTICE_ORGANIZATION_ID      NUMBER(10,0)        NO                                       Nơi hành nghề, link tới bảng AF_PROFILES, lưu ID
+CREATED_BY                    VARCHAR2(120)       YES                                      Người tạo
+CREATED_DATE                  DATE                YES                                      Ngày tạo
+UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
+UPDATED_DATE                  DATE                YES                                      Ngày sửa
 
 
 BANG: AF_AUDITOR_PROFILES
@@ -102,6 +119,7 @@ CREATED_DATE                  DATE                YES                           
 UPDATED_BY                    VARCHAR2(120)       YES                                      Người sửa
 UPDATED_DATE                  DATE                YES                                      Ngày sửa
 DELETE_FLG                    NUMBER(1,0)         YES                                      Soft delete - 0: Active, 1: Deleted
+AUDIT_TECHNICAL_RESULT_CD     VARCHAR2(400)       YES                                      Kết quả kiểm tra kỹ thuật (Tốt; Đạt; Không đạt; Kém): LOOKUP_VALUES LOOKUP_GROUP = 'AF_SYSTEM_RESULT'
 
 
 BANG: AF_LEGAL_REPRESENTATIVE
@@ -256,6 +274,13 @@ LD_DOCUMENT_DATE              DATE                YES                           
 LD_VIOLATION_CONTENT          VARCHAR2(1024)      YES                                      Nội dung vi phạm (Lãnh đạo)
 LD_EFFECTIVE_FROM_DATE        DATE                YES                                      Từ ngày (Lãnh đạo)
 LD_EFFECTIVE_TO_DATE          DATE                YES                                      Đến ngày (Lãnh đạo)
+INSPECTION_UNIT               VARCHAR2(400)       YES                                      
+INSPECTION_TYPE               VARCHAR2(400)       YES                                      
+INSPECTION_OTHER_UNIT         VARCHAR2(1020)      YES                                      
+CONSIDER_NEXT_YEAR_PROCESSING VARCHAR2(400)       YES                                      
+OTHER_PROCESSING              VARCHAR2(2048)      YES                                      
+LD_CONSIDER_NEXT_YEAR_PROCESSINGVARCHAR2(400)       YES                                      
+LD_OTHER_PROCESSING           VARCHAR2(2048)      YES                                      
 
 
 BANG: AF_WARNING
@@ -548,6 +573,7 @@ UPDATED_BY                    VARCHAR2(120)       YES                           
 UPDATED_DATE                  DATE                YES                                      Ngày sửa
 DELETE_FLG                    NUMBER(1,0)         YES                                      Cờ kích hoạt (1 - active, 0 - deleted soft delete)
 SYSTEM_CD                     VARCHAR2(80)        YES                                      
+ACTIVE_FLG                    NUMBER(1,0)         YES                                      Trạng thái (1: Đang hoạt động, 0: Dừng hoạt động)
 
 
 BANG: FILES

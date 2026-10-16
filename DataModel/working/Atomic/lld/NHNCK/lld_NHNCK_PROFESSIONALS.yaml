@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-07-24) để bổ sung các trường nghiệp vụ chưa thiết kế (phát hiện qua post_check_source_coverage.py): AVATAR, PLACE_OF_BIRTH_COUNTRY/PROVINCE/DISTRICT_ID, SSO_SYNCED, SSO_USER_ID. CURRENT_COUNTRY/PROVINCE/DISTRICT_ID bổ sung vào lld_NHNCK_PROFESSIONALS_IP_Postal_Address.yaml (khối địa chỉ tạm trú, mirror pattern Individual/IDENTITY_INFO_C06S). STATUS (nguồn) nay đã map thành \"Status Code\" (2026-08-18) — chính sách cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột mang tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng nên map Classification Value (khác với Practice Status Code/STATUS_WORK và Account Status Code/STATUS_ACCOUNT đã map riêng). USERNAME/PASSWORD KHÔNG map — dữ liệu xác thực, không thiết kế Atomic (xem pending_design.yaml). IDENTITY_NUMBER/IDENTITY_ISSUE_DATE/IDENTITY_ISSUE_PLACE/IDENTITY_TYPE/PERMANENT_ADDRESS/ADDRESS ĐÃ map đúng (xem lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml / _IP_Postal_Address.yaml) — post_check_source_coverage.py báo sai \"chưa map\" do 2 lỗi công cụ đã biết trong aggregate_atomic.py (dedup context rỗng cho shared entity dùng chung tên với source khác có addr_type; và source_columns nhiều giá trị bị nối chuỗi thay vì tách dòng riêng) — không phải gap thiết kế thật, không cần sửa LLD. Bổ sung (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: \"Previous Identity Issue Date\" / \"Previous Identity Issue Place\" (PREVIOUS_IDENTITY_ISSUE_DATE/PLACE) — thêm trên chính entity này, đi cạnh \"Previous Identity Number\" đã có sẵn (không tách IP Alt Identification, giữ nhất quán với vị trí hiện tại của Previous Identity Number). PASSPORT_NUMBER/PASSPORT_ISSUE_DATE/PASSPORT_ISSUE_PLACE (hộ chiếu — 1 loại giấy tờ định danh mới) map sang lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml (xem file đó). PROFESSIONALS không có cột TAX_CODE trong DDL — không áp dụng."
+  notes: "Hạ về draft (2026-07-24) để bổ sung các trường nghiệp vụ chưa thiết kế (phát hiện qua post_check_source_coverage.py): AVATAR, PLACE_OF_BIRTH_COUNTRY/PROVINCE/DISTRICT_ID, SSO_SYNCED, SSO_USER_ID. CURRENT_COUNTRY/PROVINCE/DISTRICT_ID bổ sung vào lld_NHNCK_PROFESSIONALS_IP_Postal_Address.yaml (khối địa chỉ tạm trú, mirror pattern Individual/IDENTITY_INFO_C06S). STATUS (nguồn) nay đã map thành \"Status Code\" (2026-08-18) — chính sách cũ (2026-07-07) không map RECORD_TYPE/RECORD_STATUS chỉ áp dụng cho cột mang tính kỹ thuật thuần túy; cột STATUS này mang ý nghĩa nghiệp vụ rõ ràng nên map Classification Value (khác với Practice Status Code/STATUS_WORK và Account Status Code/STATUS_ACCOUNT đã map riêng). USERNAME/PASSWORD KHÔNG map — dữ liệu xác thực, không thiết kế Atomic (xem pending_design.yaml). IDENTITY_NUMBER/IDENTITY_ISSUE_DATE/IDENTITY_ISSUE_PLACE/IDENTITY_TYPE/PERMANENT_ADDRESS/ADDRESS ĐÃ map đúng (xem lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml / _IP_Postal_Address.yaml) — post_check_source_coverage.py báo sai \"chưa map\" do 2 lỗi công cụ đã biết trong aggregate_atomic.py (dedup context rỗng cho shared entity dùng chung tên với source khác có addr_type; và source_columns nhiều giá trị bị nối chuỗi thay vì tách dòng riêng) — không phải gap thiết kế thật, không cần sửa LLD. Bổ sung (2026-09-10) theo DDL mới NHNCK_UAT_schema.txt: \"Previous Identity Issue Date\" / \"Previous Identity Issue Place\" (PREVIOUS_IDENTITY_ISSUE_DATE/PLACE) — thêm trên chính entity này, đi cạnh \"Previous Identity Number\" đã có sẵn (không tách IP Alt Identification, giữ nhất quán với vị trí hiện tại của Previous Identity Number). PASSPORT_NUMBER/PASSPORT_ISSUE_DATE/PASSPORT_ISSUE_PLACE (hộ chiếu — 1 loại giấy tờ định danh mới) map sang lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml (xem file đó). PROFESSIONALS không có cột TAX_CODE trong DDL — không áp dụng. Hạ về draft (2026-10-15, được phép sửa file approved) theo DDL UAT 1 NHNCK_UAT_schema.txt: bổ sung \"Previous Practice Status Code\" (PREVIOUS_STATUS_WORK, NUMBER(4,0) — cùng value set STATUS_WORK, scheme PRACTITIONER_PRACTICE_STATUS), \"Suspension Start Date\" / \"Suspension End Date\" / \"Suspension File Path\" (SUSPENSION_START_DATE/END_DATE/FILE_PATH — thông tin tạm đình chỉ hành nghề). Cần xác nhận: ý nghĩa PREVIOUS_STATUS_WORK (trạng thái trước khi bị tạm đình chỉ?) và value set trùng STATUS_WORK; SUSPENSION_FILE_PATH là đường dẫn file QĐ tạm đình chỉ."
 attributes:
 - attribute_name: "Securities Practitioner Id"
   physical_name: "sp_id"
@@ -495,6 +495,58 @@ attributes:
   source_columns:
   - "NHNCK.PROFESSIONALS.STATUS"
   comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.STATUS"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Previous Practice Status Code"
+  physical_name: "previous_practice_status_code"
+  description: "Trạng thái hành nghề trước đó (trước khi thay đổi/tạm đình chỉ) — cùng danh mục với Practice Status Code."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PREVIOUS_STATUS_WORK"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Suspension Start Date"
+  physical_name: "suspension_start_dt"
+  description: "Ngày bắt đầu tạm đình chỉ hành nghề."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.SUSPENSION_START_DATE"
+  comment: "Bổ sung theo DDL UAT 1 (2026-10-15) — DDL chưa có comment, mô tả suy theo tên cột, cần xác nhận với nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Suspension End Date"
+  physical_name: "suspension_end_dt"
+  description: "Ngày kết thúc tạm đình chỉ hành nghề."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.SUSPENSION_END_DATE"
+  comment: "Bổ sung theo DDL UAT 1 (2026-10-15) — DDL chưa có comment, mô tả suy theo tên cột, cần xác nhận với nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Suspension File Path"
+  physical_name: "suspension_file_path"
+  description: "Đường dẫn file đính kèm của quyết định tạm đình chỉ hành nghề."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.SUSPENSION_FILE_PATH"
+  comment: "Bổ sung theo DDL UAT 1 (2026-10-15) — DDL chưa có comment, mô tả suy theo tên cột, cần xác nhận với nguồn. Pattern giống Payment Evidence File Path (APPLICATION_FEES)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
