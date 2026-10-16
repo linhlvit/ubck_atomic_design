@@ -1536,6 +1536,34 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm DE-1 — STT 139 — Báo cáo tỷ lệ an toàn tài chính - Chi nh | 3 |
 | Nhóm DE-1 — STT 140 — Báo cáo tình hình hoạt động quý/năm - VP | 52 |
 
+
+### `datamart.qlkd_securities_service_cl_dim_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `dimension_filter` (ngoại lệ Phase 3 — flat cho Dimension theo yêu cầu Data Modeler 2026-10-16, cùng tiền lệ `Common/cl_flat`) |
+| **Entity nguồn** | Securities Service Classification Dimension (`datamart.securities_service_cl_dim`, Atomic `cl_securities_company_firm_service` ← SCMS.CAT_SERVICE_LEGAL_CAPITAL) |
+| **Bảng ClickHouse** | `datamart.qlkd_securities_service_cl_dim_flat` |
+| **PK** | `securities_service_cl_dim_id` |
+| **BK** | `cl_sc_firm_service_code` |
+| **Grain** | 1 dòng / dịch vụ - nghiệp vụ kinh doanh chứng khoán |
+| **Nạp dữ liệu** | `TRUNCATE` + `INSERT` toàn bộ từ `datamart.securities_service_cl_dim`, không lọc ngày, không phân vùng |
+| **Mục đích khai thác** | Danh mục cho bộ lọc: `catalog_tp` (NGHIEP_VU / DICH_VU) → `catalog_code` (nhóm) → `application_tp_code` (cơ sở / phái sinh) → mã/tên dịch vụ. JOIN fact flat #6 (`qlkd_fct_securities_company_service_assignment_snpst_flat`) qua `securities_service_cl_dim_id`; JOIN flat #20 (`qlkd_opr_securities_company_organization_unit_service_flat`) qua `cl_sc_firm_service_code` / `catalog_code` |
+
+**Cấu trúc cột** (9 cột, khớp 1-1 với `DTM_QLKD_securities_service_cl_dim_SCMS_CAT_SERVICE_LEGAL_CAPITAL.csv`)
+
+| Cột | Kiểu | Mô tả |
+|-----|------|-------|
+| `securities_service_cl_dim_id` | `String` | PK — Surrogate Key; khóa JOIN với fact flat #6 |
+| `cl_sc_firm_service_code` | `String` | BK — Mã dịch vụ/nghiệp vụ — giá trị lọc |
+| `cl_sc_firm_service_nm` | `String` | Tên dịch vụ/nghiệp vụ — nhãn hiển thị bộ lọc |
+| `description` | `Nullable(String)` | Mô tả chi tiết dịch vụ/nghiệp vụ |
+| `catalog_tp` | `Nullable(String)` | Loại danh mục: NGHIEP_VU / DICH_VU — bộ lọc cấp 1 |
+| `catalog_code` | `Nullable(String)` | Mã danh mục chi tiết (MG/BLPH/TVDT/TD/02/01/04/MGPS/TVDTPS/TDPS) |
+| `application_tp_code` | `Nullable(String)` | Cơ sở / phái sinh — chỉ có ý nghĩa với NGHIEP_VU |
+| `legal_capital_amt` | `Nullable(Decimal(23,2))` | Vốn pháp định tối thiểu |
+| `src_stm_code` | `String` | Mã hệ thống nguồn |
+
 ---
 
 ## QLQ

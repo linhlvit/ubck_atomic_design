@@ -84,14 +84,14 @@ SELECT
     ROUND(
         CASE
             WHEN b2.tong_ctck = 0 OR b2.tong_ctck IS NULL THEN NULL
-            ELSE b1.tong_ctck / b2.tong_ctck * 100  -- So sánh cùng kỳ năm trước
+            ELSE (b1.tong_ctck - b2.tong_ctck) / b2.tong_ctck * 100  -- So sánh cùng kỳ năm trước
         END
-    , 2) AS ty_le_so_sanh_cung_ky
+    , 2) AS so_sanh_cung_ky
 FROM base b1
 LEFT JOIN base b2
     ON b2.ngay = ADD_MONTHS(b1.ngay, -12)
-WHERE b1.ngay = DATE '2022-08-04' -- Test
-ORDER BY b1.ngay;",Done,Thay Schema,,,,Done,Dữ liệu tĩnh,
+WHERE b1.ngay = DATE '2026-10-15' -- Test
+ORDER BY b1.ngay;",Done,Update: 16/10,,,,Done,Dữ liệu tĩnh,
 Khai thác Dashboard tổng quan công ty chứng khoán toàn thị trường,1,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Các chỉ tiêu thống kê chung,Số lượng CTCK đã bị thu hồi,Số lượng CTCK đã bị thu hồi,Dashboard,Chỉ tiêu cơ sở,TB,"ngày, trạng thái CTCK",SCMS,X,X,,Done,,"SC_FIRM_INFO
 CAT_SC_FIRM_STATUS","c.ID,
 c.RECORD_STATUS,
@@ -3217,7 +3217,7 @@ SELECT
 FROM ctck_data d
 JOIN SCMS_UAT.SC_FIRM_INFO c ON c.ID = d.SC_FIRM_INFO_ID
 WHERE c.SHORT_NAME = 'SSI'  -- Thay tên CTCK
-ORDER BY d.REPORT_YEAR, d.PERIOD, c.SHORT_NAME;",Done,Update: 17/9,,,,Done,Dữ liệu động,
+ORDER BY d.REPORT_YEAR, d.PERIOD, c.SHORT_NAME;",Done,,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,19,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ Thống kê chung,Dư nợ margin,Tổng dư nợ margin thông tin tại tháng đã chọn,Dashboard,Chỉ tiêu cơ sở,TB,CTCK,SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
 SCMS_UAT.SC_FIRM_PERIODIC_REPORT
@@ -3305,7 +3305,7 @@ WHERE 1 = 1
   AND c.SHORT_NAME = 'SSI'  -- Thay tên CTCK
   AND p.REPORT_PERIOD = 'THANG'
 GROUP BY c.SHORT_NAME, p.REPORT_YEAR, p.PERIOD
-ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,Update: 17/9,,,,Done,Dữ liệu động,
+ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,19,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ Thống kê chung,Tỷ lệ ATTC,Tỷ lệ ATTC tại tháng đã chọn,Dashboard,Chỉ tiêu cơ sở,TB,CTCK,SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
 SCMS_UAT.SC_FIRM_PERIODIC_REPORT
@@ -3393,7 +3393,7 @@ WHERE 1 = 1
   AND c.SHORT_NAME = 'SSI'  -- Thay tên CTCK
   AND p.REPORT_PERIOD = 'THANG'
 GROUP BY c.SHORT_NAME, p.REPORT_YEAR, p.PERIOD
-ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,Update: 17/9,,,,Done,Dữ liệu động,
+ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,19,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ Thống kê chung,Số nhân viên,Số nhân viên làm việc tại tháng đã chọn,Dashboard,Chỉ tiêu cơ sở,TB,CTCK,SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
 SCMS_UAT.SC_FIRM_PERIODIC_REPORT
@@ -3481,7 +3481,7 @@ WHERE 1 = 1
   AND c.SHORT_NAME = 'SSI'  -- Thay tên CTCK
   AND p.REPORT_PERIOD = 'THANG'
 GROUP BY c.SHORT_NAME, p.REPORT_YEAR, p.PERIOD
-ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,Update: 17/9,,,,Done,Dữ liệu động,
+ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,19,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ Thống kê chung,Vốn điều lệ,Vốn điều lệ của CTCK tại tháng đã chọn,Dashboard,Chỉ tiêu cơ sở,TB,CTCK,SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT
 SCMS_UAT.REPORT_INPUT_SUBMISSION
 SCMS_UAT.SC_FIRM_PERIODIC_REPORT
@@ -3569,99 +3569,176 @@ WHERE 1 = 1
   AND c.SHORT_NAME = 'SSI'  -- Thay tên CTCK
   AND p.REPORT_PERIOD = 'QUY'
 GROUP BY c.SHORT_NAME, p.REPORT_YEAR, p.PERIOD
-ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,Update: 17/9,,,,Done,Dữ liệu động,
-Khai thác Dashboard tổng quan 360 của công ty chứng khoán,20,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ Biến động vốn CSH,Chỉ tiêu vốn CSH trên BCTC,Tổng Chỉ tiêu vốn CSH trên BCTC theo từng kỳ quý,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT, 
-SCMS_UAT.FORM_REPORT_DEEP_CONFIG, 
-SCMS_UAT.REPORT_INPUT_SUBMISSION, 
-SCMS_UAT.REPORT_INPUT_CELL_VALUE, 
-SCMS_UAT.SC_FIRM_PERIODIC_REPORT, 
-SCMS_UAT.SC_FIRM_INFO","fr.ID, 
-fr.REPORT_CODE, 
-fr.REPORT_TYPE, 
-fr.RECORD_STATUS, 
-dc.FORM_REPORT_ID, 
-dc.SHEETS_JSON, 
-sub.ID, 
-sub.FORM_REPORT_ID, 
-sub.REF_TYPE, 
-sub.REF_ID, 
-civ.REPORT_INPUT_SUBMISSION_ID, 
-civ.CELL_ID, 
-civ.ITEM_VALUE, 
-civ.SHEET_ID, 
-p.ID, 
-p.SC_FIRM_INFO_ID, 
-p.REPORT_PERIOD, 
-p.PERIOD,
-p.REPORT_YEAR,
-p.RECORD_STATUS, 
-c.ID, 
-c.SHORT_NAME",,"-- Biểu đồ Biến động vốn CSH
+ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,,,,,Done,Dữ liệu động,
+Khai thác Dashboard tổng quan 360 của công ty chứng khoán,20,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ Biến động vốn CSH,Chỉ tiêu vốn CSH trên BCTC,Tổng Chỉ tiêu vốn CSH trên BCTC theo từng kỳ quý,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT
+SCMS_UAT.REPORT_INPUT_SUBMISSION
+SCMS_UAT.SC_FIRM_PERIODIC_REPORT
+SCMS_UAT.FORM_REPORT_DEEP_CONFIG
+SCMS_UAT.REPORT_INPUT_CELL_VALUE
+SCMS_UAT.SC_FIRM_INFO","fr.ID
+fr.REPORT_CODE
+fr.REPORT_TYPE
+sub.ID
+sub.FORM_REPORT_ID
+sub.REF_TYPE
+sub.REF_ID
+p.ID
+p.REPORT_PERIOD
+p.RECORD_STATUS
+p.REPORT_YEAR
+p.PERIOD
+p.SC_FIRM_INFO_ID
+dc.FORM_REPORT_ID
+dc.SHEETS_JSON
+civ.REPORT_INPUT_SUBMISSION_ID
+civ.CELL_ID
+civ.ITEM_VALUE
+civ.SHEET_ID
+c.ID
+c.SHORT_NAME",,"-- Biểu đồ Biến động vốn CSH
 -- Chỉ tiêu vốn CSH trên BCTC
-WITH input_form AS (
+WITH
+input_form_hn AS (
     SELECT fr.ID AS form_report_id
     FROM SCMS_UAT.FORM_REPORT fr
-    WHERE fr.REPORT_CODE = 'BCTCRL'  -- Báo cáo tài chính
+    WHERE fr.REPORT_CODE = 'BCTCHN'
       AND fr.REPORT_TYPE = 'INPUT'
       AND EXISTS (
           SELECT 1
           FROM SCMS_UAT.REPORT_INPUT_SUBMISSION sub
           JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p ON p.ID = sub.REF_ID
           WHERE sub.FORM_REPORT_ID = fr.ID
-            AND sub.REF_TYPE IS NOT NULL  -- Lọc ra ID có dữ liệu nộp báo cáo
-            AND p.REPORT_PERIOD = 'QUY'   -- Lọc ra ID có dữ liệu nộp theo kỳ Quý
+            AND sub.REF_TYPE IS NOT NULL
+            AND p.REPORT_PERIOD = 'QUY'
       )
-    ORDER BY fr.VERSION DESC
-    FETCH FIRST 1 ROW ONLY   
 ),
-sheet AS (
+input_form_rl AS (
+    SELECT fr.ID AS form_report_id
+    FROM SCMS_UAT.FORM_REPORT fr
+    WHERE fr.REPORT_CODE = 'BCTCRL'
+      AND fr.REPORT_TYPE = 'INPUT'
+      AND EXISTS (
+          SELECT 1
+          FROM SCMS_UAT.REPORT_INPUT_SUBMISSION sub
+          JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p ON p.ID = sub.REF_ID
+          WHERE sub.FORM_REPORT_ID = fr.ID
+            AND sub.REF_TYPE IS NOT NULL
+            AND p.REPORT_PERIOD = 'QUY'
+      )
+),
+sheet_hn AS (
     SELECT jt.sheetId
     FROM SCMS_UAT.FORM_REPORT_DEEP_CONFIG dc
     LEFT JOIN JSON_TABLE(
-            dc.SHEETS_JSON, '$[*]'
-            COLUMNS (
-                sheetId   VARCHAR2(200) PATH '$.sheetId',
-                sheetCode VARCHAR2(100) PATH '$.sheetCode'
-            )
-         ) jt ON 1 = 1
-    WHERE dc.FORM_REPORT_ID = (SELECT form_report_id FROM input_form)
-      AND jt.sheetCode = '06608'  -- Báo cáo tình hình tài chính riêng
+        dc.SHEETS_JSON, '$[*]'
+        COLUMNS (sheetId VARCHAR2(200) PATH '$.sheetId', sheetCode VARCHAR2(100) PATH '$.sheetCode')
+    ) jt ON 1 = 1
+    WHERE dc.FORM_REPORT_ID IN (SELECT form_report_id FROM input_form_hn)
+      AND jt.sheetCode = '06620'-- BÁO CÁO TÌNH HÌNH TÀI CHÍNH HỢP NHẤT
 ),
-latest_submission AS (   -- Lấy submission mới nhất theo từng slot đã nộp
-    SELECT sub.ID, sub.REF_TYPE, sub.REF_ID
-    FROM SCMS_UAT.REPORT_INPUT_SUBMISSION sub
-    WHERE sub.FORM_REPORT_ID = (SELECT form_report_id FROM input_form)
-      AND sub.REF_TYPE IS NOT NULL
-      AND sub.ID = (
-            SELECT MAX(s2.ID) FROM SCMS_UAT.REPORT_INPUT_SUBMISSION s2
-            WHERE s2.REF_TYPE = sub.REF_TYPE AND s2.REF_ID = sub.REF_ID
-          )
+sheet_rl AS (
+    SELECT jt.sheetId
+    FROM SCMS_UAT.FORM_REPORT_DEEP_CONFIG dc
+    LEFT JOIN JSON_TABLE(
+        dc.SHEETS_JSON, '$[*]'
+        COLUMNS (sheetId VARCHAR2(200) PATH '$.sheetId', sheetCode VARCHAR2(100) PATH '$.sheetCode')
+    ) jt ON 1 = 1
+    WHERE dc.FORM_REPORT_ID IN (SELECT form_report_id FROM input_form_rl)
+      AND jt.sheetCode = '06608' -- BÁO CÁO TÌNH HÌNH TÀI CHÍNH RIÊNG
 ),
-cell_data AS (
+latest_submission_hn AS (
+    SELECT ID, REF_TYPE, REF_ID
+    FROM (
+        SELECT sub.ID, sub.REF_TYPE, sub.REF_ID,
+               ROW_NUMBER() OVER (PARTITION BY sub.REF_TYPE, sub.REF_ID ORDER BY sub.ID DESC) AS rn
+        FROM SCMS_UAT.REPORT_INPUT_SUBMISSION sub
+        WHERE sub.FORM_REPORT_ID IN (SELECT form_report_id FROM input_form_hn)
+          AND sub.REF_TYPE IS NOT NULL
+    ) WHERE rn = 1
+),
+latest_submission_rl AS (
+    SELECT ID, REF_TYPE, REF_ID
+    FROM (
+        SELECT sub.ID, sub.REF_TYPE, sub.REF_ID,
+               ROW_NUMBER() OVER (PARTITION BY sub.REF_TYPE, sub.REF_ID ORDER BY sub.ID DESC) AS rn
+        FROM SCMS_UAT.REPORT_INPUT_SUBMISSION sub
+        WHERE sub.FORM_REPORT_ID IN (SELECT form_report_id FROM input_form_rl)
+          AND sub.REF_TYPE IS NOT NULL
+    ) WHERE rn = 1
+),
+cell_data_hn AS (
     SELECT
         civ.REPORT_INPUT_SUBMISSION_ID,
         civ.CELL_ID,
         TO_NUMBER(CAST(civ.ITEM_VALUE AS VARCHAR2(4000)) DEFAULT NULL ON CONVERSION ERROR) AS numeric_value
     FROM SCMS_UAT.REPORT_INPUT_CELL_VALUE civ
-    WHERE civ.SHEET_ID IN (SELECT sheetId FROM sheet)
-      AND civ.CELL_ID = 'TS225'  -- I. Vốn chủ sở hữu
+    WHERE civ.SHEET_ID IN (SELECT sheetId FROM sheet_hn)
+      AND civ.REPORT_INPUT_SUBMISSION_ID IN (SELECT ID FROM latest_submission_hn)
+      AND civ.CELL_ID = 'TS359'  -- VỐN CHỦ SỞ HỮU (400 = 410 + 420)
+),
+cell_data_rl AS (
+    SELECT
+        civ.REPORT_INPUT_SUBMISSION_ID,
+        civ.CELL_ID,
+        TO_NUMBER(CAST(civ.ITEM_VALUE AS VARCHAR2(4000)) DEFAULT NULL ON CONVERSION ERROR) AS numeric_value
+    FROM SCMS_UAT.REPORT_INPUT_CELL_VALUE civ
+    WHERE civ.SHEET_ID IN (SELECT sheetId FROM sheet_rl)
+      AND civ.REPORT_INPUT_SUBMISSION_ID IN (SELECT ID FROM latest_submission_rl)
+      AND civ.CELL_ID IN ('TS223','TS221')  -- VỐN CHỦ SỞ HỮU (400 = 410 + 420)
+),
+-- CTCK đã nộp BCTCHN theo từng kỳ
+ctck_co_hn AS (
+    SELECT DISTINCT p.SC_FIRM_INFO_ID, p.REPORT_YEAR, p.PERIOD
+    FROM latest_submission_hn sub
+    JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p ON p.ID = sub.REF_ID
+    WHERE p.RECORD_STATUS IN (1, 2)
+      AND p.REPORT_PERIOD = 'QUY'
+),
+-- Tính từng CTCK trước khi cộng tổng
+ctck_data AS (
+    -- BCTCHN
+    SELECT
+        p.SC_FIRM_INFO_ID, p.REPORT_YEAR, p.PERIOD,
+                'BCTCHN' AS loai_bc_nop,
+                SUM(CASE WHEN cd.CELL_ID = 'TS359' THEN cd.numeric_value ELSE 0 END) AS von_csh
+    FROM latest_submission_hn sub
+    JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p ON p.ID = sub.REF_ID
+    JOIN cell_data_hn cd ON cd.REPORT_INPUT_SUBMISSION_ID = sub.ID
+    WHERE p.RECORD_STATUS IN (1, 2)
+      AND p.REPORT_PERIOD = 'QUY'
+    GROUP BY p.SC_FIRM_INFO_ID, p.REPORT_YEAR, p.PERIOD
+
+    UNION ALL
+
+    -- BCTCRL: chỉ CTCK không nộp BCTCHN cùng kỳ
+    SELECT
+        p.SC_FIRM_INFO_ID, p.REPORT_YEAR, p.PERIOD,
+                'BCTCRL' AS loai_bc_nop,
+        COALESCE(
+            NULLIF(SUM(CASE WHEN cd.CELL_ID = 'TS223' THEN cd.numeric_value ELSE 0 END), 0),
+            SUM(CASE WHEN cd.CELL_ID = 'TS221' THEN cd.numeric_value ELSE 0 END)
+        ) AS von_csh
+    FROM latest_submission_rl sub
+    JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p ON p.ID = sub.REF_ID
+    JOIN cell_data_rl cd ON cd.REPORT_INPUT_SUBMISSION_ID = sub.ID
+    LEFT JOIN ctck_co_hn hn ON hn.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
+                            AND hn.REPORT_YEAR = p.REPORT_YEAR
+                            AND hn.PERIOD = p.PERIOD
+    WHERE p.RECORD_STATUS IN (1, 2)
+      AND p.REPORT_PERIOD = 'QUY'
+      AND hn.SC_FIRM_INFO_ID IS NULL
+    GROUP BY p.SC_FIRM_INFO_ID, p.REPORT_YEAR, p.PERIOD
 )
+-- Cộng tổng toàn thị trường
 SELECT
     c.SHORT_NAME AS ten_ctck,
-    'Q' || p.PERIOD || '/' || p.REPORT_YEAR AS quy_du_lieu,
-    SUM(CASE WHEN cd.CELL_ID = 'TS225' THEN cd.numeric_value ELSE 0 END) AS von_csh
-FROM latest_submission sub
-JOIN SCMS_UAT.SC_FIRM_PERIODIC_REPORT p
-     ON p.ID = sub.REF_ID 
---     AND sub.REF_TYPE = 'BAO_CAO_DINH_KY'
-JOIN SCMS_UAT.SC_FIRM_INFO c ON c.ID = p.SC_FIRM_INFO_ID
-JOIN cell_data cd ON cd.REPORT_INPUT_SUBMISSION_ID = sub.ID
-WHERE 1 = 1
-  AND p.RECORD_STATUS IN (1,2) -- Đúng hạn, Gửi muộn
-  AND c.SHORT_NAME = 'SSI'  -- Thay tên CTCK
-  AND p.REPORT_PERIOD = 'QUY'
-GROUP BY c.SHORT_NAME, p.REPORT_YEAR, p.PERIOD
-ORDER BY p.REPORT_YEAR, p.PERIOD;",Done,Update: 17/9,,,,Done,Dữ liệu động,
+        d.loai_bc_nop AS loai_bao_cao,
+    'Q' || d.PERIOD || '/' || d.REPORT_YEAR AS quy_du_lieu,
+        d.von_csh / 1000000000 AS von_csh
+FROM ctck_data d
+JOIN SCMS_UAT.SC_FIRM_INFO c ON c.ID = d.SC_FIRM_INFO_ID
+WHERE c.SHORT_NAME = 'SSI'  -- Thay tên CTCK
+ORDER BY d.REPORT_YEAR, d.PERIOD, c.SHORT_NAME;",Done,Update: 16/10,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,21,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ cơ cấu tổng tài sản CTCK,Chiều thời gian theo quý,Chiều thời gian theo quý,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,SC_FIRM_PERIODIC_REPORT,"PERIOD
 REPORT_YEAR
 REPORT_PERIOD
@@ -3676,7 +3753,7 @@ SELECT quy_nam FROM (
       AND p.REPORT_YEAR IS NOT NULL
       AND p.PERIOD      IS NOT NULL
 )
-ORDER BY REPORT_YEAR, PERIOD;",Done,Map lại theo JSON,,,,Done,Dữ liệu động,
+ORDER BY REPORT_YEAR, PERIOD;",Done,,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,21,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ cơ cấu tổng tài sản CTCK,Tiền và tương đương tiền,Tiền và tương đương tiền,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT, 
 SCMS_UAT.FORM_REPORT_DEEP_CONFIG, 
 SCMS_UAT.REPORT_INPUT_SUBMISSION, 
@@ -3869,7 +3946,7 @@ SELECT
 FROM ctck_data d
 JOIN SCMS_UAT.SC_FIRM_INFO c ON c.ID = d.SC_FIRM_INFO_ID
 WHERE c.SHORT_NAME = 'SSI'  -- Thay tên CTCK
-ORDER BY d.REPORT_YEAR, d.PERIOD, c.SHORT_NAME;",Done,Update: 17/9,,,,Done,Dữ liệu động,
+ORDER BY d.REPORT_YEAR, d.PERIOD, c.SHORT_NAME;",Done,,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,21,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ cơ cấu tổng tài sản CTCK,Tài sản tài chính ghi nhận thông qua lãi/lỗ,Tài sản tài chính ghi nhận thông qua lãi/lỗ,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,21,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ cơ cấu tổng tài sản CTCK,Các khoản đầu tư nắm giữ đến ngày đáo hạn,Các khoản đầu tư nắm giữ đến ngày đáo hạn,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,Done,Dữ liệu động,
 Khai thác Dashboard tổng quan 360 của công ty chứng khoán,21,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tổng quan 360 của CTCK >> Biểu đồ cơ cấu tổng tài sản CTCK,Tài sản tài chính sẵn sàng để bán,Chỉ tiêu Tài sản tài chính sẵn sàng để bán trên toàn thị trường,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,Done,Dữ liệu động,

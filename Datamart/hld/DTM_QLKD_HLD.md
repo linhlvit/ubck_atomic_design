@@ -2,6 +2,7 @@
 **Module:** QLKD — Quản lý kinh doanh (Hoạt động CTCK)
 **Phạm vi hiện tại:** Tab TỔNG QUAN + Tab GIÁM SÁT + Tab HỒ SƠ CTCK 360 + Tab TRA CỨU CÁ NHÂN + Tab DATA EXPLORER
 **Phiên bản:** 5.0 — 17/09/2026 (Unblock downstream Datamart sau khi xác nhận REPORT_CELL_VALUE = REPORT_INPUT_CELL_VALUE / sc_report_input_value; nâng READY cho Cụm 4, Cụm 5, Cụm 6, Cụm 15; thiết kế Fact Securities Company Financial Structure Snapshot, Report Indicator Dimension, Securities Company Report Data, Securities Company Financial Report History, Securities Company Practitioner Profile; Close O_QLKD_23)
+**Cập nhật 16/10/2026 (BA đổi mapping Nhóm 1 dòng 7 + Nhóm 20 dòng 117; rà soát cột ngày toàn QLKD — O_QLKD_44):** (1) `K_QLKD_3` (Nhóm 1) đổi từ so sánh theo năm sang so sánh THEO NGÀY (cùng ngày 12 tháng trước), công thức % tăng trưởng, ROUND 2. (2) `K_QLKD_107` (Nhóm 20) theo SQL BA mới: ưu tiên BCTCHN (ô TS359), CTCK không nộp BCTCHN cùng kỳ mới lấy BCTCRL (TS223 → TS221); `K_QLKD_4265` ở Nhóm 20 thành thuộc tính hiển thị loại BCTC; viết lại khối HLD Nhóm 20 (bỏ nội dung PENDING cũ). (3) Rà cột ngày: sửa flat #4 (`toStartOfMonth`) và flat #16 (TRUNCATE + INSERT) vì điều kiện `cdr_dt = ngày ETL` không khớp ngữ nghĩa ngày của Fact; thêm `cdr_dt_dim.year` cho chiều quý/tháng của K_QLKD_86/92/108/127/130; sửa logic K_QLKD_193. Còn mở: `end_dt` NULL — xem O_QLKD_44. **Cập nhật 16/10/2026 (b) — rà trục 'Chiều thời gian theo ngày' (O_QLKD_45):** BA định nghĩa trục là lịch liên tục từ ngày sớm nhất đến nay, chỉ tiêu tính as-of từng ngày; Nhóm 1–4 trước đây map trục sang ngày snapshot ETL. Sửa: K_QLKD_2/14/20/25 → `Calendar Date Dimension.cdr_dt` (date-spine); Nhóm 1 K_QLKD_4–11 thêm điều kiện ngày cấp phép + snapshot mới nhất; Nhóm 2–4 thêm điều kiện hiệu lực Start/End Date + snapshot mới nhất; K_QLKD_155 (Nhóm 31) về trục lịch; Nhóm 42 thêm trục (reuse K_QLKD_203); HLD K_QLKD_218 hết placeholder.
 **Cập nhật 02/10/2026:** BA mới 178 STT — đánh số lại Nhóm 41a–d → 41–44; thiết kế lại Data Explorer (STT 45–178, `Report Structure Dimension`, K_QLKD_5000–13040); sửa `rpt_code` (sc_report.rpt_code); O_QLKD_35–38.
 **Cập nhật 12/10/2026:** Thiết kế lại Nhóm 13 (QLKD) theo BA STT 13 dòng 78 (Note "Sửa 12/10") và dữ liệu Atomic thực tế: trục ngày `result_rpt_dt` (NULL 100%) → `document_dt`, FK ngày đầu tháng; phân loại hình thức bằng MÃ `offering_method` thay LIKE; filter `ds_rcrd_st='ACTIVE'` thay `Record_Status_Code='1'`. Atomic còn thiếu `created_tms`; `offering_tp_code` (Loại chào bán) NULL 100% — O_QLKD_39.
 **Cập nhật 13/10/2026 (dev rà LLD/flat QLKD):** (1) bỏ cột `etl_process_tms` khỏi `opr_securities_company_financial_report_hist` và `opr_securities_company_practitioner_profile` (LLD, `datamart_model.yaml`, 2 flat); (2) `opr_securities_company_organization_unit_profile` nối địa chỉ bằng `LEFT JOIN` và tách `business_lines` bằng `LATERAL VIEW OUTER EXPLODE` (đơn vị chưa có địa chỉ/nghiệp vụ vẫn có dòng, đúng SQL BA Nhóm 37); (3) mô tả khóa join `sc_report_input_value` → `sc_report_input_submission` → `sc_periodic_report` → `securities_company` cho `opr_securities_company_report_data`, `opr_securities_company_financial_report_hist`, `opr_securities_company_practitioner_profile`. Không đổi KPI, grain, FK. Chi tiết và việc chờ dev/Atomic: **O_QLKD_40**.
@@ -792,6 +793,8 @@ flowchart LR
 
 **Ghi chú UI:** Banner tổng số CTCK hiển thị K_QLKD_4 + K_QLKD_3 (YoY%). Có nút expand → hiển thị 7 thẻ trạng thái con (K_QLKD_5–11). K_QLKD_5–11 là **filter GROUP BY** trên `Company_Status_Code` của cùng 1 snapshot — không phải measure độc lập.
 
+> **[SỬA 2026-10-16 — rà trục 'Chiều thời gian theo ngày', O_QLKD_45]** BA định nghĩa trục ngày là LỊCH LIÊN TỤC từ ngày sớm nhất đến nay (`CONNECT BY ... <= SYSDATE`), mỗi chỉ tiêu tính as-of từng ngày (ngày cấp phép `<= ngày`). `K_QLKD_2` trước đây map `snpst_dt_dim_id` (ngày ETL) nên trục chỉ có các ngày ETL đã chạy và `K_QLKD_4–11` thiếu điều kiện ngày cấp phép. Nay: `K_QLKD_2` = `Calendar Date Dimension.cdr_dt` (date-spine, không join snapshot); `K_QLKD_4–11` thêm FILTER `license_issue_cdr_dt <= cdr_dt_dim.cdr_dt` và FILTER snapshot mới nhất (BA dùng trạng thái hiện hành — nếu gộp nhiều snapshot, CTCK đổi trạng thái bị đếm ở nhiều nhóm).
+
 **Mockup:**
 
 ```
@@ -818,16 +821,16 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Nguồn | Trạng thái |
 |---|---|---|---|---|---|
 | K_QLKD_1 | Chiều Trạng thái công ty | — | Chiều | `Classification Securities Company Firm Status Name` (SCMS.DM_TRANG_THAI_CTCK) — derive 7 nhóm trạng thái bằng CASE/LIKE | READY — xem **O_QLKD_24** (BA liệt kê thêm trường `APPLICABLE_ENTITY`/`RECORD_STATUS` chưa filter) |
-| K_QLKD_2 | Chiều thời gian theo ngày | — | Chiều | `Calendar Date Dimension`, xác định từ `Involved Party Alternative Identification.Identification Issue Date` (SC_FIRM_INFO.BUSINESS_LICENSE_DATE, filter OPERATION_LICENSE) | READY — xem **O_QLKD_25** (BA đổi `Loại dữ liệu` → Dữ liệu động + thêm nguồn `SC_FIRM_PERIODIC_REPORT.END_DATE`, chưa rõ ý nghĩa, SQL chưa đổi) |
-| K_QLKD_3 | So sánh cùng kỳ năm trước — tổng CTCK | % | Phái sinh | (K_QLKD_4[Year=Y] − K_QLKD_4[Year=Y−1]) / K_QLKD_4[Year=Y−1] × 100% | READY |
-| K_QLKD_4 | Tổng số CTCK được cấp phép | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE License_Issue_Date <= selected_date | READY |
-| K_QLKD_5 | Số CTCK hoạt động bình thường | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = ACTIVE | READY |
-| K_QLKD_6 | Số CTCK bị thu hồi | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = REVOKED | READY |
-| K_QLKD_7 | Số CTCK thuộc diện cảnh báo | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = WARNING | READY |
-| K_QLKD_8 | Số CTCK thuộc diện kiểm soát | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = CONTROLLED | READY |
-| K_QLKD_9 | Số CTCK thuộc diện kiểm soát đặc biệt | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = SPECIAL_CONTROLLED | READY |
-| K_QLKD_10 | Số CTCK đình chỉ hoạt động | CTCK | Cơ sở | COUNT WHERE Company_Status_Code = SUSPENDED | READY |
-| K_QLKD_11 | Số CTCK trạng thái khác | CTCK | Cơ sở | COUNT WHERE Company_Status_Code NOT IN (ACTIVE, REVOKED, WARNING, CONTROLLED, SPECIAL_CONTROLLED, SUSPENDED) | READY |
+| K_QLKD_2 | Chiều thời gian theo ngày | — | Chiều | `Calendar Date Dimension` — **trục lịch liên tục (date-spine)** từ `LEAST(MIN(License_Issue_Date), MIN(Periodic_Report.End_Date))` đến ngày hiện tại (BA dòng 5); KHÔNG join snapshot Fact — mỗi ngày trên trục là ngày báo cáo, các KPI tính as-of ngày đó | READY — xem **O_QLKD_25**; **[SỬA 2026-10-16]** trước đây map ngày snapshot, xem **O_QLKD_45** |
+| K_QLKD_3 | So sánh cùng kỳ năm trước — tổng CTCK | % | Phái sinh | ROUND((K_QLKD_4[D] − K_QLKD_4[D − 12 tháng]) / K_QLKD_4[D − 12 tháng] × 100, 2); NULL nếu K_QLKD_4[D − 12 tháng] = 0 hoặc NULL — D = ngày trên trục (K_QLKD_2), K_QLKD_4[X] = COUNT(DISTINCT CTCK) có License_Issue_Date <= X, snapshot mới nhất | READY — **[SỬA 2026-10-16]** BA STT 1 dòng 7 (Update 16/10): so sánh THEO NGÀY, % tăng trưởng thay cho tỷ lệ b1/b2*100 — xem **O_QLKD_44** |
+| K_QLKD_4 | Tổng số CTCK được cấp phép | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2), snapshot mới nhất | READY |
+| K_QLKD_5 | Số CTCK hoạt động bình thường | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code = ACTIVE, snapshot mới nhất | READY |
+| K_QLKD_6 | Số CTCK bị thu hồi | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code = REVOKED, snapshot mới nhất | READY |
+| K_QLKD_7 | Số CTCK thuộc diện cảnh báo | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code = WARNING, snapshot mới nhất | READY |
+| K_QLKD_8 | Số CTCK thuộc diện kiểm soát | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code = CONTROLLED, snapshot mới nhất | READY |
+| K_QLKD_9 | Số CTCK thuộc diện kiểm soát đặc biệt | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code = SPECIAL_CONTROLLED, snapshot mới nhất | READY |
+| K_QLKD_10 | Số CTCK đình chỉ hoạt động | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code = SUSPENDED, snapshot mới nhất | READY |
+| K_QLKD_11 | Số CTCK trạng thái khác | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code NOT IN (ACTIVE, REVOKED, WARNING, CONTROLLED, SPECIAL_CONTROLLED, SUSPENDED), snapshot mới nhất | READY |
 | K_QLKD_12 | Số tài khoản có phát sinh giao dịch | Cơ sở | Cơ sở | READY [SỬA 2026-09-18] — đồng bộ theo Detail Mapping: nguồn Atomic đã verify tồn tại (Gate 0 PASS), mapping mart_table/mart_column đã đầy đủ. Ghi chú PENDING cũ không còn đúng. | READY |
 | K_QLKD_13 | Số dư tiền gửi giao dịch | Cơ sở | Cơ sở | READY [SỬA 2026-09-18] — đồng bộ theo Detail Mapping: nguồn Atomic đã verify tồn tại (Gate 0 PASS), mapping mart_table/mart_column đã đầy đủ. Ghi chú PENDING cũ không còn đúng. | READY |
 
@@ -913,6 +916,8 @@ flowchart LR
 
 **KPI liên quan:** K_QLKD_14–19 (2 Chiều: Chiều thời gian theo ngày, Chiều nghiệp vụ kinh doanh chứng khoán; 4 Cơ sở: theo nghiệp vụ môi giới/bảo lãnh/tư vấn/tự doanh)
 
+> **[SỬA 2026-10-16 — rà trục 'Chiều thời gian theo ngày', O_QLKD_45]** Trục ngày của BA là LỊCH LIÊN TỤC từ `MIN(START_DATE)` đến nay, mỗi chỉ tiêu đếm CTCK có giấy phép dịch vụ HIỆU LỰC tại từng ngày (`START_DATE <= ngày` và `END_DATE` NULL hoặc `> ngày`). `K_QLKD_14` nay là `Calendar Date Dimension.cdr_dt` (không join snapshot); mỗi KPI đo có thêm 2 FILTER: hiệu lực theo Start/End Date (NULL Start Date tính là đã hiệu lực — BA `NVL(START_DATE, ngay)`) và snapshot mới nhất. Fact giữ mọi giấy phép nên tính lùi được các ngày quá khứ.
+
 **Mockup:**
 ```
 BIỂU ĐỒ NGHIỆP VỤ — Số CTCK theo nghiệp vụ kinh doanh chứng khoán
@@ -929,9 +934,9 @@ BIỂU ĐỒ NGHIỆP VỤ — Số CTCK theo nghiệp vụ kinh doanh chứng k
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLKD_14 | Chiều thời gian theo ngày | — | Chiều | `Calendar Date Dimension` (reuse cdr_dt_dim) — Snapshot Date = ngày ETL chạy | — | READY |
+| K_QLKD_14 | Chiều thời gian theo ngày | — | Chiều | `Calendar Date Dimension` — **trục lịch liên tục (date-spine)** từ `MIN(Start_Date)` của giấy phép dịch vụ đến ngày hiện tại (BA dòng 17); KHÔNG join snapshot Fact | **[SỬA 2026-10-16]** trước đây Snapshot Date = ngày ETL chạy — O_QLKD_45 | READY |
 | K_QLKD_15 | Chiều nghiệp vụ kinh doanh chứng khoán | — | Chiều | `Classification Securities Company Firm Service Name` WHERE `Catalog Code` IN ('MG','BLPH','TVDT','TD') | — | READY |
-| K_QLKD_16 | Số CTCK theo nghiệp vụ môi giới | CTCK | Cơ sở | `COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Catalog_Code='MG' AND Start_Date <= D AND (End_Date IS NULL OR End_Date > D)` | — | READY |
+| K_QLKD_16 | Số CTCK theo nghiệp vụ môi giới | CTCK | Cơ sở | `COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Catalog_Code='MG' AND (Start_Date IS NULL OR Start_Date <= D) AND (End_Date IS NULL OR End_Date > D), D = ngày trên trục, snapshot mới nhất` | — | READY |
 | K_QLKD_17 | Số CTCK theo nghiệp vụ bảo lãnh | CTCK | Cơ sở | Tương tự K_QLKD_16, `Catalog_Code='BLPH'` | — | READY |
 | K_QLKD_18 | Số CTCK theo nghiệp vụ tư vấn | CTCK | Cơ sở | Tương tự K_QLKD_16, `Catalog_Code='TVDT'` | — | READY |
 | K_QLKD_19 | Số CTCK theo nghiệp vụ tự doanh | CTCK | Cơ sở | Tương tự K_QLKD_16, `Catalog_Code='TD'` | — | READY |
@@ -1027,6 +1032,8 @@ flowchart LR
 
 **KPI liên quan:** K_QLKD_20–24 (2 Chiều: Chiều thời gian theo ngày, Chiều dịch vụ kinh doanh chứng khoán; 3 Cơ sở: theo dịch vụ giao dịch ký quỹ/ứng trước tiền bán/lưu ký)
 
+> **[SỬA 2026-10-16 — rà trục 'Chiều thời gian theo ngày', O_QLKD_45]** Trục ngày của BA là LỊCH LIÊN TỤC từ `MIN(START_DATE)` đến nay, mỗi chỉ tiêu đếm CTCK có giấy phép dịch vụ HIỆU LỰC tại từng ngày (`START_DATE <= ngày` và `END_DATE` NULL hoặc `> ngày`). `K_QLKD_20` nay là `Calendar Date Dimension.cdr_dt` (không join snapshot); mỗi KPI đo có thêm 2 FILTER: hiệu lực theo Start/End Date (NULL Start Date tính là đã hiệu lực — BA `NVL(START_DATE, ngay)`) và snapshot mới nhất. Fact giữ mọi giấy phép nên tính lùi được các ngày quá khứ.
+
 **Mockup:**
 ```
 BIỂU ĐỒ DỊCH VỤ — Số CTCK theo dịch vụ được đăng ký
@@ -1042,9 +1049,9 @@ BIỂU ĐỒ DỊCH VỤ — Số CTCK theo dịch vụ được đăng ký
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLKD_20 | Chiều thời gian theo ngày | — | Chiều | Reuse từ Nhóm 2 (K_QLKD_14) — `Calendar Date Dimension` (reuse cdr_dt_dim), Snapshot Date = ngày ETL chạy | — | READY |
+| K_QLKD_20 | Chiều thời gian theo ngày | — | Chiều | `Calendar Date Dimension` — **trục lịch liên tục (date-spine)** từ `MIN(Start_Date)` của giấy phép dịch vụ đến ngày hiện tại (BA dòng 23); KHÔNG join snapshot Fact | **[SỬA 2026-10-16]** trước đây Snapshot Date = ngày ETL chạy — O_QLKD_45 | READY |
 | K_QLKD_21 | Chiều dịch vụ kinh doanh chứng khoán | — | Chiều | `Classification Securities Company Firm Service Name` WHERE `Catalog Code` IN ('02','01','04') | — | READY |
-| K_QLKD_22 | Số CTCK theo dịch vụ giao dịch ký quỹ | CTCK | Cơ sở | `COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Catalog_Code='02' AND Start_Date <= D AND (End_Date IS NULL OR End_Date > D)` | — | READY |
+| K_QLKD_22 | Số CTCK theo dịch vụ giao dịch ký quỹ | CTCK | Cơ sở | `COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Catalog_Code='02' AND (Start_Date IS NULL OR Start_Date <= D) AND (End_Date IS NULL OR End_Date > D), D = ngày trên trục, snapshot mới nhất` | — | READY |
 | K_QLKD_23 | Số CTCK theo dịch vụ ứng trước tiền bán | CTCK | Cơ sở | Tương tự K_QLKD_22, `Catalog_Code='01'` | O_QLKD_21 Closed — đủ danh mục | READY |
 | K_QLKD_24 | Số CTCK theo dịch vụ lưu ký | CTCK | Cơ sở | Tương tự K_QLKD_22, `Catalog_Code='04'` | O_QLKD_21 Closed — đủ danh mục | READY |
 
@@ -1089,6 +1096,8 @@ flowchart LR
 
 **KPI liên quan:** K_QLKD_25–29 (2 Chiều: Chiều thời gian theo ngày, Chiều dịch vụ phái sinh; 3 Cơ sở: theo dịch vụ môi giới/tư vấn/tự doanh phái sinh)
 
+> **[SỬA 2026-10-16 — rà trục 'Chiều thời gian theo ngày', O_QLKD_45]** Trục ngày của BA là LỊCH LIÊN TỤC từ `MIN(START_DATE)` đến nay, mỗi chỉ tiêu đếm CTCK có giấy phép dịch vụ HIỆU LỰC tại từng ngày (`START_DATE <= ngày` và `END_DATE` NULL hoặc `> ngày`). `K_QLKD_25` nay là `Calendar Date Dimension.cdr_dt` (không join snapshot); mỗi KPI đo có thêm 2 FILTER: hiệu lực theo Start/End Date (NULL Start Date tính là đã hiệu lực — BA `NVL(START_DATE, ngay)`) và snapshot mới nhất. Fact giữ mọi giấy phép nên tính lùi được các ngày quá khứ.
+
 **Mockup:**
 ```
 BIỂU ĐỒ DỊCH VỤ PHÁI SINH — Số CTCK theo dịch vụ CKPS
@@ -1104,9 +1113,9 @@ BIỂU ĐỒ DỊCH VỤ PHÁI SINH — Số CTCK theo dịch vụ CKPS
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLKD_25 | Chiều thời gian theo ngày | — | Chiều | Reuse từ Nhóm 2 (K_QLKD_14) — `Calendar Date Dimension` (reuse cdr_dt_dim), Snapshot Date = ngày ETL chạy | — | READY |
+| K_QLKD_25 | Chiều thời gian theo ngày | — | Chiều | `Calendar Date Dimension` — **trục lịch liên tục (date-spine)** từ `MIN(Start_Date)` của giấy phép dịch vụ đến ngày hiện tại (BA dòng 28); KHÔNG join snapshot Fact | **[SỬA 2026-10-16]** trước đây Snapshot Date = ngày ETL chạy — O_QLKD_45 | READY |
 | K_QLKD_26 | Chiều dịch vụ phái sinh | — | Chiều | `Classification Securities Company Firm Service Name` WHERE `Catalog Code` IN ('MGPS','TVDTPS','TDPS') | — | READY |
-| K_QLKD_27 | Số CTCK phái sinh dịch vụ môi giới | CTCK | Cơ sở | `COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Catalog_Code='MGPS' AND Start_Date <= D AND (End_Date IS NULL OR End_Date > D)` | — | READY |
+| K_QLKD_27 | Số CTCK phái sinh dịch vụ môi giới | CTCK | Cơ sở | `COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Catalog_Code='MGPS' AND (Start_Date IS NULL OR Start_Date <= D) AND (End_Date IS NULL OR End_Date > D), D = ngày trên trục, snapshot mới nhất` | — | READY |
 | K_QLKD_28 | Số CTCK phái sinh dịch vụ tư vấn | CTCK | Cơ sở | Tương tự K_QLKD_27, `Catalog_Code='TVDTPS'` | — | READY |
 | K_QLKD_29 | Số CTCK phái sinh dịch vụ tự doanh | CTCK | Cơ sở | Tương tự K_QLKD_27, `Catalog_Code='TDPS'` | — | READY |
 
@@ -1784,7 +1793,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLKD_86 | Chiều thời gian theo Tháng | — | Chiều | `Calendar Date Dimension.Month` (`cdr_dt_dim.month`) | **[SỬA 2026-09-19]** Cột "Công thức" trước đây vẫn ghi "TBD — chờ Atomic" dù Trạng thái đã READY từ 2026-09-18 — Detail Mapping đã có logic thật, nay đồng bộ ngược lại | READY |
+| K_QLKD_86 | Chiều thời gian theo Tháng | — | Chiều | `Calendar Date Dimension.Year` + `Calendar Date Dimension.Month` (`cdr_dt_dim.year`, `cdr_dt_dim.month`) | **[SỬA 2026-09-19]** Cột "Công thức" trước đây vẫn ghi "TBD — chờ Atomic" dù Trạng thái đã READY từ 2026-09-18 — Detail Mapping đã có logic thật, nay đồng bộ ngược lại **[SỬA 2026-10-16 — rà cột ngày]** Thêm `Year`: Month đơn lẻ (1-12) gộp mọi năm. O_QLKD_44 | READY |
 | K_QLKD_87 | Tổng dư nợ margin — toàn TT | Tỷ VNĐ | Cơ sở | `SUM(Fact Securities Company Financial Structure Snapshot.Indicator Val Amt) WHERE Cell Id IN ('TS151','TS017') / 1000000000` | **[SỬA 2026-09-19]** Cùng lý do K_QLKD_86 — công thức thật đã có sẵn ở Detail Mapping, nay đồng bộ ngược lại | READY |
 | K_QLKD_88 | Chỉ số VN-Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HOSE'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt = LAST_DAY(:pmonth)` — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
 | K_QLKD_89 | Chỉ số HNX Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HNX'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt = LAST_DAY(:pmonth)` — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
@@ -1983,34 +1992,29 @@ flowchart LR
 
 #### Nhóm 20 - Biến động vốn CSH (STT 20)
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_23):** Dòng BA (STT 20: "Chỉ tiêu vốn CSH trên BCTC" — hiển thị theo năm/quý toàn thị trường trong SQL tham khảo, nhưng mockup 360 thể hiện line chart per CTCK) là `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn: `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='BCTCR'`, LIKE `'%I. Vốn chủ sở hữu%'` trên `ROW_NAME`) — cùng pattern Nhóm 8/9/15/18/21/22. Chung gap **O_QLKD_23**.
+> **[SỬA 2026-10-16 — BA STT 20 dòng 117, Update 16/10]** BA đổi mapping "Chỉ tiêu vốn CSH trên BCTC" (Chỉ tiêu cơ sở, Đánh giá TB, Độ chi tiết Ngày/CTCK, Dữ liệu động). Nguồn nay: `SCMS_UAT.FORM_REPORT`, `REPORT_INPUT_SUBMISSION`, `SC_FIRM_PERIODIC_REPORT`, `FORM_REPORT_DEEP_CONFIG`, `REPORT_INPUT_CELL_VALUE`, `SC_FIRM_INFO` (bản 13/07 dùng `MEMBER_REPORT`/`REPORT_CELL_VALUE` mã `BCTCRLCTCK` đã bị thay). **Quy tắc BA:** (1) CTCK nộp BCTCHN (hợp nhất) trong kỳ → lấy ô `TS359` (VỐN CHỦ SỞ HỮU, sheet `06620`); (2) chỉ CTCK KHÔNG nộp BCTCHN cùng kỳ mới lấy BCTCRL (riêng lẻ): `COALESCE(NULLIF(TS223, 0), TS221)` (sheet `06608`); (3) kỳ `QUY`, `RECORD_STATUS IN (1,2)`, bản nộp mới nhất theo (`REF_TYPE`, `REF_ID`); (4) chia `1.000.000.000` (tỷ VNĐ); (5) đầu ra gồm `ten_ctck` (SHORT_NAME), `loai_bao_cao` (BCTCHN/BCTCRL đã dùng), `quy_du_lieu` = `'Q' || PERIOD || '/' || REPORT_YEAR`, `von_csh`. SQL BA nay có điều kiện `c.SHORT_NAME = '<CTCK>'` → lọc per CTCK (xác nhận câu hỏi cũ về mockup 360 line chart per CTCK).
 
-**KPI liên quan:** K_QLKD_107 (Biến động vốn CSH theo quý)
+**KPI liên quan:** K_QLKD_107 (Biến động vốn CSH theo quý — MEASURE kèm 4 FILTER), K_QLKD_4265 (Loại BCTC — DERIVED hiển thị `loai_bao_cao`).
 
-> **Ghi chú thiết kế:** SQL tham khảo BA cho STT 20 không JOIN `SC_FIRM_INFO` (SUM toàn thị trường theo năm/quý, không filter per CTCK) — khác Nhóm 21/22 (có JOIN `SC_FIRM_INFO` filter per CTCK). Cần xác nhận thêm với BA liệu STT 20 có thực sự cần lọc per CTCK khi lên UI 360 (mockup hiện tại đang set line chart "per CTCK") hay chỉ là dòng tham khảo chưa cập nhật đủ điều kiện lọc. BA STT 20 không có dòng Chiều riêng — chỉ 1 chỉ tiêu cơ sở.
+> **Ghi chú thiết kế (sửa 2026-10-16):** Đọc `Fact Securities Company Financial Structure Snapshot` (grain CTCK × ô báo cáo × kỳ × biểu mẫu, đã khử trùng bản nộp mới nhất ở ETL). Công thức K_QLKD_107 = `CASE WHEN COUNT(rpt_code = 'BCTCHN') > 0 THEN SUM(TS359 của BCTCHN) ELSE COALESCE(NULLIF(SUM(TS223), 0), SUM(TS221)) của BCTCRL END / 1e9` GROUP BY (CTCK, `rpt_year`, `period_nbr`) — nhãn quý lấy từ `rpt_year` + `period_nbr`. "Có BCTCHN cùng kỳ" xét theo dòng Fact (xấp xỉ `ctck_co_hn` của BA vốn xét bản nộp). Cột ngày: `snpst_dt_dim_id` = ngày kết thúc kỳ báo cáo (`end_dt`), KHÔNG phải ngày ETL — flat #16 vì vậy nạp lại toàn bộ (xem Cụm rà cột ngày 16/10, O_QLKD_44). BA STT 20 không có dòng Chiều riêng — chỉ 1 chỉ tiêu cơ sở.
 
-**Lý do pending:**
-1. `Loại dữ liệu = Dữ liệu động` — gating độc lập với trạng thái Atomic.
-2. Chung gap Atomic `REPORT_CELL_VALUE` với Nhóm 8/9/11/12/14/15/16/17/18/21/22 — xem O_QLKD_23.
-3. SQL tham khảo BA (STT 20) thiếu điều kiện filter per CTCK (`SC_FIRM_INFO`/`SHORT_NAME`) dù mockup 360 yêu cầu xem theo từng CTCK — cần xác nhận lại với BA khi Atomic sẵn sàng.
+**Trạng thái:** READY (Atomic `sc_report_input_value`, `sc_report_input_submission`, `sc_periodic_report` đã có; không còn gap `REPORT_CELL_VALUE` như bản 13/07). **Giới hạn còn lại:** chưa lọc được theo mã sheet `06620`/`06608` vì `sheet_id` là id gốc eForm (chờ Atomic `sc_report_deep_config` duyệt — O_QLKD_34, O_QLKD_42, AQ-03); ô `TS359`/`TS223`/`TS221` chỉ lọc theo `rpt_code` + `cell_id`.
 
-**Atomic cần bổ sung:** Entity Atomic cho `SSC_SCMS.REPORT_CELL_VALUE` (xem O_QLKD_23) — dùng `ROW_NAME` LIKE `'%I. Vốn chủ sở hữu%'` (`REPORT_CODE='BCTCRLCTCK'` sheet `BCTCR`).
+**Bảng mapping nguồn:**
 
-**Mart dự kiến khi Atomic sẵn sàng:** Dùng chung `Fact Securities Company Financial Structure Snapshot` với Nhóm 21/22, filter theo CTCK + toàn bộ lịch sử quý từ ngày thành lập.
-
-**Bảng mapping nguồn (Atomic Placeholder):**
-
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
-| Biến động vốn CSH theo quý — per CTCK | SSC_SCMS.MEMBER_REPORT, SSC_SCMS.FORM_REPORT, SSC_SCMS.REPORT_CELL_VALUE | Member Report Indicator Value (mới, xem O_QLKD_23) | TBD |
+| Biến động vốn CSH theo quý — per CTCK | SCMS_UAT.FORM_REPORT, REPORT_INPUT_SUBMISSION, SC_FIRM_PERIODIC_REPORT, FORM_REPORT_DEEP_CONFIG, REPORT_INPUT_CELL_VALUE, SC_FIRM_INFO | Securities Company Report Input Value / Submission / Periodic Report | sc_report_input_value / sc_report_input_submission / sc_periodic_report |
 
-**Bảng KPI PENDING:**
+**Bảng KPI:**
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
 | K_QLKD_107 | Biến động vốn CSH theo quý — per CTCK | Cơ sở | READY |
 | K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
 
+> **[SỬA 2026-10-16, riêng Nhóm 20]** `K_QLKD_4265` ở Nhóm này là thuộc tính hiển thị `loai_bao_cao` (BA tự chọn BCTCHN, fallback BCTCRL), KHÔNG dùng làm slicer.
+>
 > **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
 
 ---
@@ -2903,6 +2907,7 @@ TÀI KHOẢN   3
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
+| K_QLKD_203 | Chiều thời gian theo Ngày (reuse từ Nhóm 41) | Chiều | Chiều | Date-spine — `Calendar Date Dimension` (BA dòng 230, Trùng; SQL giống Nhóm 41) |
 | K_QLKD_210 | Số tổ chức cá nhân tham gia — per cá nhân | Tổ chức | Cơ sở | COUNT DISTINCT `Securities Company Id` từ `Securities Company Insider Related Person` WHERE `Identification Number` (qua `Involved Party Alternative Identification`) = cá nhân được chọn |
 | K_QLKD_211 | Danh sách vai trò tại tổ chức — per cá nhân | Attribute | Cơ sở | Lookup `Securities Company Insider Related Person` WHERE `Identification Number` = cá nhân được chọn: `Securities Company Code` (tên tổ chức), `Representative Position` (vai trò), `Shares Count` (số CP nắm giữ) |
 | K_QLKD_206 | Người có liên quan >> Tên người có liên quan | Attribute | Cơ sở | Reuse từ Nhóm 41 — Lookup `Operational Individual Related Party Network` (r) WHERE `r.Securities Company Senior Personnel Id = sp.Securities Company Senior Personnel Id` (sp = cá nhân được chọn trên `Operational Individual Profile`; không self-join, không điều kiện `!= Id` — theo BA STT 41 `JOIN SC_FIRM_SENIOR_PERSONNEL sp ON sp.ID = r.SENIOR_PERSONNEL_ID`): `Full Name` |
@@ -2997,7 +3002,7 @@ NGÀY QĐ      SỐ QĐ             NỘI DUNG VI PHẠM             HÌNH THỨ
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
-| K_QLKD_218 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine — `SYSDATE` placeholder | READY |
+| K_QLKD_218 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine từ `MIN(ISSUED_DATE)` (THANHTRA.PENALTY_DECISION, BA dòng 239) đến `SYSDATE` — `Calendar Date Dimension` | READY |
 | K_QLKD_219 | Ngày ban hành quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.ISSUED_DATE` WHERE `Penalty Decision Subject.SUBJECT_TYPE = 'INDIVIDUAL'` AND filter theo cá nhân được chọn | READY |
 | K_QLKD_220 | Số quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.DECISION_NUMBER` | READY |
 | K_QLKD_221 | Nội dung vi phạm | Attribute | Cơ sở | `Penalty Decision Subject Behavior.DESCRIPTION` (hành vi vi phạm cụ thể) | READY |
@@ -3448,3 +3453,5 @@ graph TB
 | O_QLKD_41 | **Nhóm 32–35, 37 — Atomic xoá `sc_organization_unit.decision_dt` và `record_status_code` (commit `dc0ce1db`, 14/10/2026):** (1) `DECISION_DATE` (trục ngày "Chiều thời gian theo Ngày", filter `decision_dt <= ngày`) đã chuyển sang `ip_alternative_identification.identification_issue_dt` (`identification_tp_code = 'ESTABLISHMENT_OPERATION_LICENSE'`): **PGD và VPĐD** Atomic map đúng `DECISION_DATE`; **chi nhánh** (`SC_FIRM_BRANCH`) Atomic chỉ map `LICENSE_DATE`, không có `DECISION_DATE`. (2) `RECORD_STATUS` (SQL BA lọc `= 1` cho CN/PGD/VPĐD) không còn trên Atomic và Atomic ghi rõ nó khác `BRANCH_STATUS` nên không thay bằng `cl_sc_firm_status_code`. (3) Cột Mart `decision_dt` nullable: đơn vị chưa có bản ghi định danh sẽ NULL và rơi vào partition mặc định của flat (`PARTITION BY toYYYYMM(assumeNotNull(decision_dt))`). | (1) Data Modeler chọn thay thế (14/10/2026): chi nhánh dùng `LICENSE_DATE` qua `ip_alternative_identification` cho tới khi BA/Atomic xác nhận `DECISION_DATE` của chi nhánh. (2) Bỏ lọc `RECORD_STATUS = 1` và cột `record_status_code` (giả định Atomic chỉ nạp bản ghi hiệu lực, như O_QLKD_32 (1)). **Cần Atomic/BA xác nhận:** chi nhánh `DECISION_DATE` hay `LICENSE_DATE`; Atomic có nạp cả bản ghi `RECORD_STATUS = 0` không (nếu có, số CN/PGD/VPĐD bị đếm dư). | K_QLKD_162–164, 166–177, 181–185 **[Cập nhật 2026-10-15]** BRD `SC_FIRM_BRANCH` có `DECISION_DATE` nhưng Atomic chỉ map `LICENSE_DATE`; Atomic chưa xác nhận lọc `RECORD_STATUS` — yêu cầu gửi Atomic tại AQ-05 (`docs/atomic_request_QLKD_2026-10-15.md`). | **Mở — đã đổi thiết kế theo cột thay thế (14/10/2026); chờ xác nhận chi nhánh và RECORD_STATUS** |
 | O_QLKD_42 | **[MỚI 2026-10-15] Thiết kế lại `report_indicator_dim` (QLKD) — chiều tọa độ ô eForm** | Rà mapping `DTM_QLKD_report_indicator_dim_SCMS_REPORT_INPUT_CELL_VALUE.csv` phát hiện: (1) 5 cột `indicator_code`, `indicator_nm`, `indicator_group_nm`, `statement_tp_code`, `unit_of_measure` chỉ ghi 'ETL mapping từ cell_id/cấu hình biểu mẫu', không có nguồn Atomic (giá trị CDKT/KQKD/LCTT/ATTC, TY_DONG… do tự đặt); (2) cùng `cell_id` mang nghĩa khác nhau giữa sheet (O_QLKD_34 (3)) và Atomic `sc_report_input_value.cell_id/sheet_id` không FK sang `FORM_SHEET*` nên không thể suy tên/nhóm/đơn vị từ `cell_id`; (3) 4 cột SCD giả (`row_is_current='Y'`, `row_start_dt=CURRENT_DATE`, `row_end_dt=NULL`, `etl_process_tms`) là hằng số. **Đã sửa:** dim còn 5 cột — `report_indicator_dim_id` (hash `rpt_code`+`sheet_id`+`cell_id`), `rpt_code` (qua submission → `sc_report`), `sheet_id`, `cell_id`, `src_stm_code` (`SELECT DISTINCT` từ `sc_report_input_value`); bỏ 5 cột tự đặt + 4 cột SCD; Fact `report_indicator_dim_id` tra theo (`rpt_code`, `sheet_id`, `cell_id`); flat Fact bỏ 9 cột dim, thêm `sheet_id`. **Còn mở:** (a) `sheet_id` là id gốc eForm, chưa phải mã sheet (TTC_T/TTC_Q/II.8) — chờ Atomic cung cấp ánh xạ sheetId ↔ sheetCode (O_QLKD_34 (a)) mới lọc được KPI theo sheet; (b) tên/nhóm/đơn vị chỉ tiêu cần BA cung cấp bảng ánh xạ (rpt_code, sheet, cell) nếu BI cần hiển thị; (c) KPI cũ lọc `cell_id IN (...)` chưa thêm `rpt_code`/sheet (Nhóm 8–18, 102–106) | K_QLKD_41–65, 87, 102–106 **[Cập nhật 2026-10-15]** (a) Atomic đã có `sc_report_deep_config` (`sheet_id` → `sheet_code`, draft); khi được duyệt, thêm `sheet_code` vào `report_indicator_dim` (AQ-03). Chi tiết yêu cầu gửi Atomic: `docs/atomic_request_QLKD_2026-10-15.md`. | **Open — chờ Atomic (mã sheet) và BA (bảng ánh xạ chỉ tiêu)** |
 | O_QLKD_43 | **[MỚI 2026-10-15] Rà soát LLD QLKD — mapping viết theo tên cột NGUỒN thay vì tên Atomic** | **Đã sửa:** (1) `sc_report_input_value.row_no`/`item_val` → `row_index`/`cell_val` (report_data); (2) `sc_report_sheet_cell.label` → `label_nm` (report_structure_dim.cell_label); (3) bảng THANHTRA: `penalty_decision_subject` → `pd_subject` (tên Atomic), bỏ điều kiện `*.deleted = 0` (Atomic không có cột `deleted`, bản ghi xóa đã loại ở Atomic) ở opr_individual_violation_hist và opr_securities_company_compliance_hist (Examination/Inspection); (4) bỏ cột kỹ thuật giả: 4 cột SCD của `report_structure_dim` (`row_is_current`, `row_start_dt`, `row_end_dt`, `etl_process_tms`) và `etl_process_tms` của `opr_securities_company_report_data` (cùng O_QLKD_40); (5) Detail Mapping `tinh_chat = Deprecated` → `Phái sinh`. **Đính chính 2026-10-15 (sau kiểm lại Atomic):** (a) mã số thuế CTCK KHÔNG thiếu — nằm ở `ip_alternative_identification` (`src_stm_code = 'SCMS_SC_FIRM_INFO'`, `identification_tp_code = 'TAX_ID'`); đã sửa join `sc_code` nhánh Examination/Inspection; (b) entity xử phạt có tên vật lý `pd` (có `decision_nbr`, `issued_dt`), không phải `penalty_decision`; đã sửa. **Còn thiếu/chưa xác nhận ở Atomic:** soft-delete `deleted` của 6 entity THANHTRA (Datamart đã bỏ điều kiện `deleted = 0` theo giả định Atomic đã lọc) và các điểm AQ-01…AQ-06 (phạm vi Dashboard). Chi tiết yêu cầu gửi Atomic: `docs/atomic_request_QLKD_2026-10-15.md`. **Còn lại ở Datamart:** 8 cột khóa PK `Generated` trống `etl_logic` (cần công thức hash BK). Đơn vị: Atomic Team (soft-delete), Data Modeler (PK hash) | K_QLKD (Nhóm 40 Lịch sử tuân thủ, hồ sơ 360, Nhóm 48) | **Open — chờ Atomic** |
+| O_QLKD_44 | **[MỚI 2026-10-16] BA cập nhật mapping Nhóm 1 (dòng 7) và Nhóm 20 (dòng 117) + rà soát cột ngày toàn QLKD** (1) **Nhóm 1 dòng 7 (`K_QLKD_3`):** BA đổi SQL — so sánh theo NGÀY (`b2.ngay = ADD_MONTHS(b1.ngay, -12)`), công thức từ tỷ lệ `b1/b2*100` sang % tăng trưởng `(b1-b2)/b2*100`, ROUND 2, alias `so_sanh_cung_ky`; DM/HLD K_3 đổi từ `snpst yr=:Y` vs `:Y-1` sang theo ngày. (2) **Nhóm 20 dòng 117 (`K_QLKD_107`, `K_QLKD_4265`):** BA đổi nguồn/SQL — ưu tiên BCTCHN ô `TS359` (sheet 06620); CTCK không nộp BCTCHN cùng kỳ mới lấy BCTCRL `COALESCE(NULLIF(TS223,0), TS221)` (sheet 06608); đầu ra thêm `loai_bao_cao`. DM K_107 = MEASURE + 4 FILTER (kỳ QUY, status 1/2, rpt_code, cell_id); K_4265 ở Nhóm 20 → DERIVED hiển thị loại BCTC (không còn slicer). Cùng quy tắc với `K_QLKD_102` (Nhóm 19, O_QLKD_34) nhưng K_102 CHƯA sửa. Nhóm 19/21: BA chỉ xóa ghi chú 'Update: 17/9' — không đổi mapping. (3) **Rà cột ngày — đã sửa:** (a) flat #4 (`..._capital_raising_event_flat`) DELETE/WHERE `cdr_dt = ngày ETL` nhưng `cdr_dt` là NGÀY ĐẦU THÁNG (LLD: FK = `TRUNC(document_dt,'MM')`, Fact chỉ tính lại tháng hiện tại) → `toStartOfMonth(:etl_date)`; (b) flat #16 (`..._financial_structure_snpst_flat`) lọc `cal.cdr_dt = ngày ETL` nhưng `cdr_dt` = ngày kết thúc kỳ báo cáo (Fact không giới hạn theo ngày chạy) → flat gần như rỗng; đổi sang TRUNCATE + INSERT toàn bộ; (c) 'Chiều thời gian theo quý/tháng' dùng `cdr_dt_dim.quarter`/`.month` đơn lẻ (1–4 / 1–12, gộp mọi năm) ở K_QLKD_86 (Nhóm 16), 92 (17), 108 (21, 22), 127 (24, 25), 130 (26, 27) → thêm `cdr_dt_dim.year`; (d) K_QLKD_193 (Nhóm 39) logic trỏ bảng Atomic → đổi sang cột mart `opr_securities_company_report_data.submission_dt`. (4) **Chưa sửa tại thời điểm viết — (a) đã xử lý ở O_QLKD_45, (b) còn chờ dev:** (a) Nhóm 1: DM K_QLKD_4–11 thiếu điều kiện `license_issue_dt <= ngày chọn` dù HLD ghi là điều kiện KPI; K_QLKD_2 map `snpst_dt_dim_id` (ngày ETL) trong khi trục ngày BA là lịch liên tục từ ngày cấp phép sớm nhất đến nay — K_QLKD_3 vì vậy được viết tự chứa điều kiện ngày cấp phép; (b) `snpst_dt_dim_id` của Fact BCTC = `sc_periodic_report.end_dt` — nếu `end_dt` NULL thì `JOIN cdr_dt_dim` ở flat #16 loại dòng (chưa kiểm dữ liệu thật, cần dev xác nhận). | Mục (1)–(3) đã áp; mục (4a) đã xử lý ở O_QLKD_45 (16/10), mục (4b) chờ dev xác nhận. | K_QLKD_3, K_QLKD_107, K_QLKD_4265, K_QLKD_86, K_QLKD_92, K_QLKD_108, K_QLKD_127, K_QLKD_130, K_QLKD_193; K_QLKD_2, K_QLKD_4–11 (mục 4a) | **Open — mục (4b) chờ dev xác nhận** |
+| O_QLKD_45 | **[MỚI 2026-10-16] Rà soát 'Chiều thời gian theo ngày' — trục lịch (date-spine) và điều kiện as-of** (Data Modeler: 'chưa đúng, ví dụ Nhóm 2') Mọi Nhóm BA có dòng 'Chiều thời gian theo ngày' đều định nghĩa trục là LỊCH LIÊN TỤC từ ngày sớm nhất đến nay (`CONNECT BY ... <= SYSDATE`) và tính từng chỉ tiêu as-of từng ngày. DM Nhóm 1–4 lại map trục sang ngày snapshot ETL (`snpst_dt_dim_id`) nên trục chỉ có các ngày ETL đã chạy; Nhóm 1 (K_QLKD_4–11) thiếu điều kiện ngày cấp phép; Nhóm 2–4 (10 KPI đếm) thiếu điều kiện hiệu lực Start/End Date (HLD có ghi nhưng Detail Mapping không có). **Đã sửa:** (1) K_QLKD_2/14/20/25 → `Calendar Date Dimension.cdr_dt` (date-spine, cùng khuôn Nhóm 32–35 K_QLKD_161); (2) Nhóm 1: K_QLKD_4–11 thêm FILTER `license_issue_cdr_dt <= cdr_dt_dim.cdr_dt` và FILTER snapshot mới nhất (BA dùng trạng thái hiện hành), K_QLKD_3 dùng trục thay tham số `:D`; (3) Nhóm 2–4: K_QLKD_16–19, 22–24, 27–29 thêm FILTER hiệu lực `(start_dt IS NULL OR start_dt <= ngày) AND (end_dt IS NULL OR end_dt > ngày)` (BA `NVL(START_DATE, ngay)`) và FILTER snapshot mới nhất — Fact giữ mọi giấy phép nên tính lùi được các ngày quá khứ; (4) Nhóm 31: K_QLKD_155 từ `work_start_dt` (thuộc tính nhân sự) → trục lịch; (5) Nhóm 42 thiếu trục ngày (BA dòng 230) → reuse K_QLKD_203; (6) HLD Nhóm 44 K_QLKD_218 bỏ 'placeholder' (date-spine từ MIN(ISSUED_DATE)). **Không sửa có chủ đích:** Nhóm 5–7 (K_QLKD_30) — BA ghi 'SCMS không lưu chỉ tiêu này' (trạng thái duy trì điều kiện do ETL tính theo ngày) nên trục = ngày snapshot; Nhóm 10, 28–30, 32–36, 38–41, 43–44 trục đã là `cdr_dt_dim.cdr_dt`. **Chưa kiểm sâu:** điều kiện as-of của các chỉ tiêu đo ở Nhóm 10 và 28–44 (BA có `<= nd.ngay` ở nhiều dòng) — mới rà mapping trục, chưa rà từng chỉ tiêu. Flat: không đổi DDL/DML — flat #1 đã có `license_issue_cdr_dt`, flat #6 có `start_dt`/`end_dt`; dev dùng `datamart.cdr_dt_flat` làm trục và đọc snapshot mới nhất (MAX(cdr_dt)). | Snapshot mới nhất = trạng thái hiện hành (BA dùng RECORD_STATUS hiện tại, không lưu lịch sử trạng thái). | K_QLKD_2, 3, 4–11, 14, 16–19, 20, 22–24, 25, 27–29, 155, 203 (Nhóm 42), 218 | **Open — chờ rà as-of các chỉ tiêu đo Nhóm 10, 28–44** |

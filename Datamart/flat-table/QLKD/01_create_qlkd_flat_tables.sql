@@ -2,7 +2,7 @@
 -- QLKD Flat Tables — CREATE
 -- Module: Quản lý kinh doanh (Hoạt động CTCK) — QLKD
 -- Generated: Phase 3 LLD Datamart
--- 15 bảng: 6 fact + 9 operational
+-- 22 bảng flat: 7 fact + 14 operational + 1 dimension bộ lọc (khối 21)
 -- ============================================================
 
 -- ============================================================
@@ -622,4 +622,61 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_uni
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (organization_unit_service_id)
 COMMENT 'Flat table — opr_securities_company_organization_unit_service — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ============================================================
+-- 21. DIMENSION (bộ lọc): qlkd_securities_service_cl_dim_flat
+--     Securities Service Classification Dimension — danh mục dịch vụ/nghiệp vụ kinh doanh chứng khoán của CTCK
+--     Nguồn: datamart.securities_service_cl_dim (Atomic cl_securities_company_firm_service ← SCMS.CAT_SERVICE_LEGAL_CAPITAL)
+--     Grain: 1 row / dịch vụ - nghiệp vụ kinh doanh chứng khoán (BK: cl_sc_firm_service_code)
+--     Mục đích: bảng danh mục phục vụ BỘ LỌC cho dev — chọn Loại danh mục (catalog_tp: NGHIEP_VU/DICH_VU) → Nhóm (catalog_code) →
+--               Loại nghiệp vụ cơ sở/phái sinh (application_tp_code) → mã/tên dịch vụ. JOIN với flat #6
+--               (qlkd_fct_securities_company_service_assignment_snpst_flat) qua securities_service_cl_dim_id, hoặc với flat #20
+--               (qlkd_opr_securities_company_organization_unit_service_flat) qua cl_sc_firm_service_code / catalog_code.
+--     Ngoại lệ Phase 3: flat cho Dimension (mặc định chỉ fact/operational) — theo yêu cầu Data Modeler 2026-10-16, cùng tiền lệ Common/cl_flat.
+--     Không phân vùng theo ngày (bảng danh mục, nạp lại toàn bộ mỗi lần ETL).
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_service_cl_dim_flat ON CLUSTER 'my_cluster'
+(
+    -- From: DIMENSION Securities Service Classification Dimension
+    securities_service_cl_dim_id       String                  COMMENT 'PK — Surrogate Key từ datamart.securities_service_cl_dim; khóa JOIN với FK securities_service_cl_dim_id của flat #6',
+    cl_sc_firm_service_code            String                  COMMENT 'BK — Mã dịch vụ/nghiệp vụ kinh doanh chứng khoán — giá trị lọc',
+    cl_sc_firm_service_nm              String                  COMMENT 'Tên dịch vụ/nghiệp vụ kinh doanh chứng khoán — nhãn hiển thị của bộ lọc',
+    description                        Nullable(String)        COMMENT 'Mô tả chi tiết dịch vụ/nghiệp vụ.',
+    catalog_tp                         Nullable(String)        COMMENT 'Loại danh mục: nghiệp vụ (NGHIEP_VU) hay dịch vụ (DICH_VU) — bộ lọc cấp 1.',
+    catalog_code                       Nullable(String)        COMMENT 'Mã danh mục chi tiết — dùng lọc nhóm dịch vụ/nghiệp vụ trên báo cáo (VD: MG/BLPH/TVDT/TD/02/01/04/MGPS/TVDTPS/TDPS).',
+    application_tp_code                Nullable(String)        COMMENT 'Loại nghiệp vụ kinh doanh: cơ sở hoặc phái sinh — chỉ có ý nghĩa với danh mục nghiệp vụ (catalog_tp = NGHIEP_VU).',
+    legal_capital_amt                  Nullable(Decimal(23,2)) COMMENT 'Vốn pháp định tối thiểu theo quy định cho tổ hợp dịch vụ/nghiệp vụ này.',
+    src_stm_code                       String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (cl_sc_firm_service_code, securities_service_cl_dim_id)
+COMMENT 'Flat table — Securities Service Classification Dimension (bộ lọc dịch vụ/nghiệp vụ kinh doanh chứng khoán CTCK; 1 dòng / dịch vụ-nghiệp vụ)'
+;
+
+
+-- ==========================================================
+-- 22. OPERATIONAL: qlkd_opr_securities_company_organization_unit_list_flat
+--    Operational Securities Company Organization Unit List — Nhóm 37 (Danh sách CN, PGD, VPĐD) dạng bảng phẳng
+--    Grain: 1 đơn vị (CN/PGD/VPĐD) x 1 CTCK; đã kèm sc_short_nm (lọc theo CTCK) và ou_tp_nm (nhãn loại đơn vị) nên không cần JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_unit_list_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_SECURITIES_COMPANY_ORGANIZATION_UNIT_LIST
+    sc_ou_code                                   String                  COMMENT 'Mã đơn vị trực thuộc CTCK (chi nhánh, phòng giao dịch, văn phòng đại diện) — khóa chính duy nhất của bảng tác ',
+    sc_code                                      String                  COMMENT 'Mã CTCK sở hữu đơn vị.',
+    sc_short_nm                                  Nullable(String)        COMMENT 'Tên viết tắt CTCK — dùng làm bộ lọc theo CTCK của màn danh sách (BA lọc theo SHORT_NAME).',
+    ou_tp_code                                   String                  COMMENT 'Loại đơn vị: BRANCH = chi nhánh; TRANSACTION_OFFICE = phòng giao dịch; REP_OFFICE = văn phòng đại diện.',
+    ou_tp_nm                                     Nullable(String)        COMMENT 'Tên loại đơn vị hiển thị trên danh sách: Chi nhánh / Phòng giao dịch / Văn phòng đại diện.',
+    ou_nm                                        Nullable(String)        COMMENT 'Tên đơn vị.',
+    adr_val                                      Nullable(String)        COMMENT 'Địa chỉ đơn vị.',
+    business_line_nm_list                        Nullable(String)        COMMENT 'Danh sách tên nghiệp vụ kinh doanh chứng khoán được cấp phép cho đơn vị, nối bằng dấu phẩy, sắp theo tên. Chi ',
+    decision_dt                                  Nullable(Date)          COMMENT 'Ngày thành lập đơn vị (ngày quyết định của phòng giao dịch / văn phòng đại diện; chi nhánh dùng ngày cấp giấy ',
+    representative_nm                            Nullable(String)        COMMENT 'Giám đốc chi nhánh / người đại diện phòng giao dịch / Trưởng văn phòng đại diện.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu (SCMS_SC_FIRM_BRANCH, SCMS_SC_FIRM_TRANSACTION_OFFICE hoặc SCMS_SC_FIRM_REP_OFFICE).'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (sc_code, sc_ou_code)
+COMMENT 'Flat table — Danh sách CN/PGD/VPĐD của CTCK (Nhóm 37), bảng phẳng lọc theo CTCK'
 ;

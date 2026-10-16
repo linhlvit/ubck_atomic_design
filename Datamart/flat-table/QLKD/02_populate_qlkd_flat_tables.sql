@@ -2,7 +2,7 @@
 -- QLKD Flat Tables — POPULATE
 -- Module: Quản lý kinh doanh (Hoạt động CTCK) — QLKD
 -- Generated: Phase 3 LLD Datamart
--- 15 bảng: 6 fact + 9 operational
+-- 22 bảng flat: 7 fact + 14 operational + 1 dimension bộ lọc (khối 21)
 -- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date
 -- ============================================================
 
@@ -133,12 +133,13 @@ WHERE cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 4. FACT: qlkd_fct_securities_company_capital_raising_event_flat
---    Grain Event theo ngày phát sinh (cdr_dt = ngày sự kiện chào bán/phát hành).
---    [SỬA 2026-09-18] DELETE đúng ngày :etl_date rồi INSERT lại — bỏ DELETE theo
---    tháng (toYYYYMM) vì projection lưu cdr_dt ở grain ngày, không phải grain tháng.
+--    Grain Event theo THÁNG: cdr_dt = ngày đầu tháng của tháng chào bán/phát hành (FK event_dt_dim_id = TRUNC(document_dt, 'MM')).
+--    [SỬA 2026-10-16 — rà cột ngày] Fact chỉ tính lại THÁNG HIỆN TẠI mỗi lần ETL (LLD: TRUNC(document_dt, 'MM') = TRUNC(ngày ETL, 'MM')),
+--    nên flat DELETE + INSERT đúng ngày đầu tháng của ngày ETL (toStartOfMonth). Trước đây so cdr_dt với ngày ETL nguyên ngày → chỉ khớp khi
+--    ETL chạy vào mùng 1: flat gần như rỗng, và DELETE không xóa gì nên chạy lại bị nhân đôi dòng.
 -- ============================================================
 DELETE FROM datamart.qlkd_fct_securities_company_capital_raising_event_flat ON CLUSTER 'my_cluster'
-WHERE cdr_dt = :etl_date;
+WHERE cdr_dt IN (toStartOfMonth(:etl_date));
 INSERT INTO datamart.qlkd_fct_securities_company_capital_raising_event_flat
 SELECT
     -- From: FACT Fact Securities Company Capital Raising Event
@@ -159,7 +160,7 @@ JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.event_dt_dim_id
 LEFT JOIN datamart.offering_form_dim offer_dim
     ON offer_dim.offering_form_dim_id = f.offering_form_dim_id
-WHERE cal.cdr_dt = :etl_date
+WHERE cal.cdr_dt IN (toStartOfMonth(:etl_date))
 ;
 
 
@@ -460,8 +461,11 @@ FROM datamart.opr_individual_violation_hist o
 -- ============================================================
 -- 16. FACT: qlkd_fct_securities_company_financial_structure_snpst_flat
 -- ============================================================
-DELETE FROM datamart.qlkd_fct_securities_company_financial_structure_snpst_flat ON CLUSTER 'my_cluster'
-WHERE cdr_dt = :etl_date;
+--    Grain: 1 CTCK x 1 ô báo cáo x 1 kỳ x 1 biểu mẫu; cdr_dt = NGÀY KẾT THÚC KỲ báo cáo (end_dt), KHÔNG phải ngày ETL.
+--    [SỬA 2026-10-16 — rà cột ngày] Fact ETL không giới hạn theo ngày chạy (nạp mọi kỳ, khử trùng bản nộp mới nhất; kỳ cũ có thể được nộp/nộp lại về sau)
+--    nên flat TRUNCATE + INSERT toàn bộ, cùng cách các Fact báo cáo ở QLQ/PTTT. Trước đây DELETE/WHERE cdr_dt bằng ngày ETL chỉ khớp khi ngày ETL
+--    trùng đúng ngày kết thúc kỳ → flat gần như rỗng.
+TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_fct_securities_company_financial_structure_snpst_flat
 SELECT
     -- From: FCT_SECURITIES_COMPANY_FINANCIAL_STRUCTURE_SNPST
@@ -511,7 +515,6 @@ LEFT JOIN datamart.securities_company_dim sc_dim
     ON sc_dim.securities_company_dim_id = f.securities_company_dim_id
 LEFT JOIN datamart.report_indicator_dim ri_dim
     ON ri_dim.report_indicator_dim_id = f.report_indicator_dim_id
-WHERE cal.cdr_dt = :etl_date
 ;
 
 
@@ -615,4 +618,52 @@ SELECT
     f.src_stm_code
 
 FROM datamart.opr_securities_company_organization_unit_service f
+;
+
+
+-- ============================================================
+-- 21. DIMENSION (bộ lọc): qlkd_securities_service_cl_dim_flat
+--     Bảng danh mục (không có ngày snapshot) — TRUNCATE + INSERT toàn bộ từ datamart.securities_service_cl_dim, không lọc ngày.
+--     Không lọc ds_rcrd_st: cùng quy ước JOIN svc_dim ở khối 6 (dimension LLD không khai báo cột audit SCD4A).
+--     Thứ tự cột SELECT khớp 1-1 với CREATE TABLE ở file 01 (9 cột).
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.qlkd_securities_service_cl_dim_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_securities_service_cl_dim_flat
+SELECT
+    -- From: DIMENSION Securities Service Classification Dimension
+    d.securities_service_cl_dim_id,
+    d.cl_sc_firm_service_code,
+    d.cl_sc_firm_service_nm,
+    d.description,
+    d.catalog_tp,
+    d.catalog_code,
+    d.application_tp_code,
+    d.legal_capital_amt,
+    d.src_stm_code
+
+FROM datamart.securities_service_cl_dim d
+;
+
+
+-- ==========================================================
+-- 22. OPERATIONAL: qlkd_opr_securities_company_organization_unit_list_flat
+--     Bảng danh sách (không có ngày snapshot) — TRUNCATE + INSERT toàn bộ từ datamart.opr_securities_company_organization_unit_list.
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_organization_unit_list_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_securities_company_organization_unit_list_flat
+SELECT
+    -- From: OPR_SECURITIES_COMPANY_ORGANIZATION_UNIT_LIST
+    f.sc_ou_code,
+    f.sc_code,
+    f.sc_short_nm,
+    f.ou_tp_code,
+    f.ou_tp_nm,
+    f.ou_nm,
+    f.adr_val,
+    f.business_line_nm_list,
+    f.decision_dt,
+    f.representative_nm,
+    f.src_stm_code
+
+FROM datamart.opr_securities_company_organization_unit_list f
 ;
