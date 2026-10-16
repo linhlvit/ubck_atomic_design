@@ -14602,6 +14602,7 @@ entities:
     description: "Biến động giá/KLGD trong phiên của HĐTL chỉ số (VN30/VN100) — dùng chung entity equity. Grain: 1 row/mã HĐTL/ngày."
     source_atomic:
       - "security_trading_snapshot"
+      - "securities_trade"
     modules_using:
       - "PTTT"
     columns:
@@ -14674,9 +14675,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KLGD HĐTL ngày t [SỬA 2026-10-09, Data Modeler] Nguồn: security_trading_snapshot.total_trading_vol (KL khớp cộng dồn từ đầu ngày của chính mã HĐTL, bản ghi trading_time mới nhất) thay SUM(securities_trade.execution_vol) nối bằng symbol (market_id_code = 'DVX')."
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.total_trading_vol"
+        description: "KLGD HĐTL ngày t = tổng khối lượng các giao dịch của mã HĐTL trong ngày theo sổ lệnh HNX (thị trường phái sinh, Market ID DVX), gồm khớp lệnh và thỏa thuận; mã HĐTL và thuộc tính hợp đồng lấy từ bản ghi cuối ngày của thông tin thị trường (MDDS). Mã HĐTL không có giao dịch trong ngày = 0."
+        source_atomic_table: "securities_trade"
+        source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Total Trading Volume Matched Average 50 Days"
         physical_name: "total_trading_vol_matched_average_50_days"
         data_domain: "Small Counter"
