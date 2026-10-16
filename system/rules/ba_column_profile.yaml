@@ -105,7 +105,7 @@ modules:
       sửa lại profile — dừng và hỏi Data Modeler trước (giống lần 2026-09-26 gây lệch).
 
   GSTT:
-    expect_columns: 26
+    expect_columns: 27
     ma_column: null
     sql_columns: ["Câu lệnh tham khảo", "Câu lệnh màn"]
     expect_header_contains: ["STT", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo", "Câu lệnh màn"]
@@ -117,6 +117,10 @@ modules:
       bỏ vì không liên quan thiết kế) → 26 cột, STT về index 0. `ma_column: null` = file KHÔNG có cột Mã (parser không
       được rơi sang alias 'ma' vì alias khớp substring → nhận nhầm 'Trạng thái mapping'). 2 dòng Nhóm 35 'Tên người
       nội bộ'/'Ngày cập nhật' vẫn thiếu STT như trước (nhóm '?').
+      [CẬP NHẬT 2026-10-16 14:44, xác minh qua header sống: 904 dòng đều 27 cột, delimiter ',', header dòng 1, legend
+      dòng 2] BA THÊM LẠI cột 'Usecase' ở index 0 (842 dòng có giá trị, 24 usecase khác nhau) → 27 cột, STT về index 1.
+      Parser tra cột theo TÊN nên không đổi hành vi; cột Usecase được GIỮ trong lát cắt. File BA nay 904 dòng (trước 844)
+      và có 61 dòng STT rỗng (trước 2) — cần rà các dòng mới.
 
   "GSĐC":
     aliases: [GSDC]
