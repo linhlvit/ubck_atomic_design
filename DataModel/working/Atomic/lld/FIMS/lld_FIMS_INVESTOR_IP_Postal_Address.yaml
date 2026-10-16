@@ -6,7 +6,7 @@ metadata:
   atomic_entity: "Involved Party Postal Address"
   entity_physical_name: "ip_postal_address"
   bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Postal Address"
+  bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T1"
   design_status: "approved"
@@ -69,6 +69,58 @@ attributes:
     \ hardcode HEAD_OFFICE."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: "HEAD_OFFICE"
+  data_type: "string"
+- attribute_name: "Province Id"
+  physical_name: "province_id"
+  description: "FK đến Geographic Area cấp Tỉnh/Thành phố."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.ProvinceId"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.ProvinceId = PROVINCE_NEW.Id để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW', Code) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã Tỉnh/Thành phố (Code của Geographic Area)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.PROVINCE_NEW.Code"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id. Giá trị lấy từ FIMS.PROVINCE_NEW.Code sau ETL crosswalk — chi tiết xem comment Province Id."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ward Id"
+  physical_name: "ward_id"
+  description: "FK đến Geographic Area cấp Phường/Xã."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.WardId"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WardId = WARD_NEW.Id để xác nhận Code sau đó hash_id('ECAT_WARD_NEW', Code) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ward Code"
+  physical_name: "ward_code"
+  description: "Mã Phường/Xã (Code của Geographic Area)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.WARD_NEW.Code"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id. Giá trị lấy từ FIMS.WARD_NEW.Code sau ETL crosswalk — chi tiết xem comment Ward Id."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
   data_type: "string"
 - attribute_name: "Address Value"
   physical_name: "adr_val"

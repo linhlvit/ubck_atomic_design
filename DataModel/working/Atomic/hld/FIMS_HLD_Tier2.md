@@ -360,7 +360,6 @@ erDiagram
 | TLPROFILES.SystemObject | Loại tổ chức thành viên (1–7) | `FIMS_SYSTEM_OBJECT_TYPE` | etl_derived | Dùng để xác định FK đúng trong ETL đa hướng |
 | TLPROFILES.DegreeId → DEGREE | Trình độ học vấn nhân sự | `FIMS_DEGREE` | source_table | |
 | TLPROFILES.Sex | Giới tính nhân sự | `INDIVIDUAL_GENDER` | modeler_defined | Dùng shared scheme (0=Nam, 1=Nữ — cần profile) |
-| TLPROFILES.JobTypes → TLPROJOB | Chức vụ nhân sự (denormalize từ junction TLPROJOB) | `FIMS_JOB_TYPE` | source_table | ARRAY trong `job_type_codes` |
 | RPTMEMBER.Status | Trạng thái nộp báo cáo (1–5) | `FIMS_REPORT_SUBMISSION_STATUS` | etl_derived | Giá trị 1–5 ánh xạ thành code |
 | RPTMEMBER.ReportTypeId → REPORTTYPE | Loại báo cáo | `FIMS_REPORT_TYPE` | source_table | |
 | CDTWARN.Status | Cờ kích hoạt điều kiện cảnh báo (1=active, 0=inactive) | `FIMS_ACTIVITY_STATUS` | etl_derived | Boolean → map ACTIVE/INACTIVE |
