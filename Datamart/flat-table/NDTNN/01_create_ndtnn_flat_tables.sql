@@ -4,6 +4,8 @@
 -- Generated: Phase 3 LLD Datamart
 -- 7 bảng: 5 fact + 2 operational
 -- (Nhóm 5 dùng Fact riêng fct_foreign_net_flow_market_index_snpst từ 2026-09-24 — không còn reuse Fact Market Index Snapshot của QLKD)
+-- Sửa 2026-10-16: ndtnn_foreign_investor_trading_statistics_rpt_flat thêm giá trị security_tp_group = 'WARRANT' (chỉ đổi COMMENT, không đổi cột);
+--   ndtnn_fct_securities_foreign_trading_snpst_flat không đổi cấu trúc (stock_tp_code đã có để BI lọc cổ phiếu '2')
 -- ============================================================
 
 -- ============================================================
@@ -82,7 +84,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_foreign_investor_trading_statistics_rp
 (
     -- From: FACT Foreign Investor Trading Statistics Report
     report_dt                       Date                    COMMENT 'Ngày báo cáo',
-    security_tp_group               String                  COMMENT 'Nhóm loại CK — Classification Value nội bộ Datamart: STOCK/BOND/FUND_CERT/TOTAL',
+    security_tp_group               String                  COMMENT 'Nhóm loại CK — Classification Value nội bộ Datamart: STOCK/BOND/FUND_CERT/WARRANT/TOTAL',
     buy_val                         Decimal(23,2)            COMMENT 'GT NĐTNN mua chứng khoán',
     sell_val                        Decimal(23,2)            COMMENT 'GT NĐTNN bán chứng khoán',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
@@ -343,6 +345,8 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_portfolio_report_
     individual_ind                             Nullable(Int32)            COMMENT '1 = nhà đầu tư cá nhân (BA: row_path = B-Cá nhân)',
     fund_ind                                   Nullable(Int32)            COMMENT '1 = tổ chức là quỹ (BA: row_path = A-Tổ chức AND loại hình LIKE %Quỹ% AND NOT LIKE %Không phải quỹ%)',
     non_fund_org_ind                           Nullable(Int32)            COMMENT '1 = tổ chức khác quỹ (BA: A-Tổ chức AND loại hình LIKE Công ty/Ngân hàng/Tổ chức/Không phải quỹ/Các loại khác). Điều kiện của BA KHÔNG loại ',
+    foreign_bank_branch_ind                      Nullable(Int64)         COMMENT '1 = chi nhánh ngân hàng nước ngoài (BA Mã 47 — chưa có SQL; GIẢ ĐỊNH: A-Tổ chức AND loại hình LIKE %Ngân hàng%). Tập con của non_fund_org_ind — xem O_NDTNN_46',
+    transaction_cd                               Nullable(String)        COMMENT 'Mã số giao dịch chứng khoán của NĐT trong báo cáo — 6 ký tự cuối, in hoa (BA Nhóm 12 Mã 74: SUBSTR(UPPER(TRIM(value_raw)), -6), cột Mã số giao dịch chứng khoán). column_path theo SQL BA, chờ xác nhận — O_NDTNN_47',
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
 
     -- From: CALENDAR DATE DIMENSION

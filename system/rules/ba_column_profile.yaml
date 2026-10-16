@@ -132,7 +132,7 @@ modules:
     expect_columns: 32
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
-    note: "Trùng tên cột 'Note' ở index 20 và 31. [2026-10-09] BA thêm cột UC (Use case) ở index 0 → 32 cột, STT lùi sang index 1."
+    note: "Trùng tên cột 'Note' ở index 19 và 31. [2026-10-16, xác minh qua header sống] BA bỏ cột UC (Use case) ở index 0 → STT về index 0 (bản 2026-10-09 có UC, STT ở index 1); vẫn đủ 32 cột vì có 1 cột tên rỗng ở index 26 (giữa 'Kết quả SIT' và 'Báo cáo'). Parser theo tên cột nên không đổi hành vi."
 
   NHNCK:
     expect_columns: 31

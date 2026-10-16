@@ -357,6 +357,8 @@ SELECT
     f.individual_ind,
     f.fund_ind,
     f.non_fund_org_ind,
+    f.foreign_bank_branch_ind,
+    f.transaction_cd,
     f.src_stm_code,
 
     submission_cal.cdr_dt AS snpst_cdr_dt

@@ -35,10 +35,11 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Giá trị mua/bán ròng, Top ngành/mã | 1 row = 1 mã CK × 1 ngày | K_NDTNN_8-17,158-159 (+ reuse 1-4,19) |
+| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Giá trị mua/bán ròng, Top ngành/mã | 1 row = 1 mã CK × 1 ngày | K_NDTNN_4,8-19,259-261 |
 | Securities Dimension | Dimension | new | Danh mục mã chứng khoán | 1 row / mã CK (SCD4A) | — |
 | Public Company Dimension | Dimension | partial | Công ty đại chúng + nhóm ngành — bảng dùng chung GSDC/QLCB, NDTNN chỉ thêm 1 cột delta (Classification Business Line Name) | 1 row / công ty đại chúng (SCD2) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
+| Foreign Investor Trading Detail Report | Fact (report) | new | Top NĐTNN mua/bán ròng (dùng lại từ Nhóm 15, nối Securities Dimension theo Symbol) | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) | K_NDTNN_262-264 |
 
 ---
 
@@ -76,17 +77,18 @@ erDiagram
 
 ---
 
-### Nhóm 12 — Biến động tài sản (K_NDTNN_64 READY)
+### Nhóm 12 — Biến động tài sản (K_NDTNN_64–65 READY)
 
 #### Star schema
 
-*Không có relationship line — reuse trực tiếp Foreign Investor Dimension, không qua Fact*
+*[SỬA 2026-10-16] `Fact Foreign Investor Portfolio Report Snapshot` → `Calendar Date Dimension` (FK Snapshot Date Dimension Id). K_NDTNN_64 (tên + MSGD) và K_NDTNN_65 đều lấy từ Fact báo cáo động; không còn `Foreign Investor Dimension`.*
 
 #### Bảng entity
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Foreign Investor Dimension | Dimension | new | Thông tin định danh NĐT nước ngoài | 1 row / NĐT NN (SCD4A current-state) | K_NDTNN_64 |
+| Fact Foreign Investor Portfolio Report Snapshot | Fact | new (Cụm báo cáo động FIMS) | Danh mục NĐTNN theo từng nhà đầu tư trong báo cáo PLIII-TT51 — slicer tên + MSGD (`transaction_cd`) | 1 row = 1 dòng báo cáo 59WJB/BZ5X4 sheet II | K_NDTNN_64-65 |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 
 ---
 
@@ -114,7 +116,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Foreign Investor Trading Statistics Report | Fact (report) | new | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo 4 nhóm loại CK | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND/FUND_CERT/TOTAL) | K_NDTNN_72-83 |
+| Foreign Investor Trading Statistics Report | Fact (report) | new | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo 5 nhóm loại CK | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND/FUND_CERT/WARRANT/TOTAL) | K_NDTNN_72-83,256-258 |
 
 ---
 
@@ -128,7 +130,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Foreign Investor Trading Detail Report | Fact (report) | new | Báo cáo chi tiết giao dịch NĐTNN theo tài khoản | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) | K_NDTNN_84-89 |
+| Foreign Investor Trading Detail Report | Fact (report) | new | Báo cáo chi tiết giao dịch NĐTNN theo tài khoản | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) | K_NDTNN_84-89,262-264 |
 
 ---
 
@@ -165,7 +167,7 @@ erDiagram
 
 ### Cụm báo cáo động FIMS (Nhóm 1 K_NDTNN_5–7, 3, 4, 5, 6, 7, 16–43) — thiết kế 2026-10-02
 
-Nguồn Atomic: `fir_value`, `fir_structure`, `foreign_investor_report` (FIMS luồng báo cáo động). Nhóm 12 (K_NDTNN_64/65) thiết kế theo SQL hiện có của BA (đang Doing).
+Nguồn Atomic: `fir_value`, `fir_structure`, `foreign_investor_report` (FIMS luồng báo cáo động). Nhóm 12 (K_NDTNN_64/65) thiết kế theo SQL của BA (đang Doing); từ 2026-10-16 cả 2 KPI lấy từ Fact báo cáo, không qua Foreign Investor Dimension.
 
 #### Bảng entity
 
@@ -174,7 +176,7 @@ Nguồn Atomic: `fir_value`, `fir_structure`, `foreign_investor_report` (FIMS lu
 | Foreign Investor Report Structure Dimension | Dimension | new | Cấu trúc báo cáo động FIMS — 1 ô template (báo cáo/sheet/dòng/cột/section) | 1 row = 1 ô template trong 1 sheet | Nhóm 18–43 (metadata); chiều lọc cell của Nhóm 1/3/5 |
 | Fact Foreign Investor Report Value | Fact | new | Giá trị ô báo cáo động FIMS (EAV) — chỉ tiêu 1 ô (Nhóm 1/3/5) và Data Explorer (Nhóm 18–43) | 1 row = 1 ô × 1 lần nộp × 1 dòng động | K_NDTNN_5-7, 20-22, 35, 90, 95, 99-254 |
 | Fact Foreign Investor Capital Flow Snapshot | Fact | new | Dòng vốn ròng theo quốc tịch / nhà đầu tư — pivot 1 dòng báo cáo PLIV-TT51 (IBOU9, sheet I) | 1 row = 1 dòng báo cáo IBOU9 sheet I (1 lần nộp × section × dòng động) | K_NDTNN_29-32, 91-94 |
-| Fact Foreign Investor Portfolio Report Snapshot | Fact | new | Danh mục NĐTNN theo loại tài sản — pivot 1 dòng báo cáo PLIII-TT51 (59WJB/BZ5X4, sheet II) | 1 row = 1 dòng báo cáo 59WJB/BZ5X4 sheet II (1 lần nộp × section × dòng động) | K_NDTNN_23-24, 37-49, 96-98 |
+| Fact Foreign Investor Portfolio Report Snapshot | Fact | new | Danh mục NĐTNN theo loại tài sản — pivot 1 dòng báo cáo PLIII-TT51 (59WJB/BZ5X4, sheet II) | 1 row = 1 dòng báo cáo 59WJB/BZ5X4 sheet II (1 lần nộp × section × dòng động) | K_NDTNN_23-24, 37-49, 64-65, 96-98, 265 |
 
 ---
 
@@ -184,6 +186,7 @@ Nguồn Atomic: `fir_value`, `fir_structure`, `foreign_investor_report` (FIMS lu
 |---|---|
 | Geographic Area Dimension | Bãi bỏ 2026-10-02 — chiều quốc gia là cột `nationality_nm` trên Fact báo cáo động (Cụm 12) |
 | Asset Category Dimension | Bãi bỏ 2026-10-02 — loại tài sản là 6 cột giá trị trên `Fact Foreign Investor Portfolio Report Snapshot` |
+| Foreign Investor Dimension | Bãi bỏ 2026-10-16 (All-Tier Cleanup, Data Modeler duyệt) — BA Nhóm 12 đổi nguồn 'Thông tin nhà đầu tư' sang báo cáo PLIII-TT51; K_NDTNN_64 dùng cột `transaction_cd` trên `Fact Foreign Investor Portfolio Report Snapshot`, bảng không còn KPI nào dùng (O_NDTNN_47) |
 
 ## Bảng PENDING (không thiết kế trong Phase 2)
 
