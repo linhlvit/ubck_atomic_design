@@ -3,6 +3,7 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.18 (2026-10-16, đồng bộ HLD v4.53):** Bổ sung `Operational Trading Liquidity Explorer` — bảng Operational (phẳng) riêng cho Data Explorer Nhóm 37 (grain mã CK × chỉ số × ngày, không Dimension, NĐT pivot thành cột; O_GSTT_72). Các Fact/Dimension khác không đổi.
 **Thay đổi v2.17 (2026-10-15, đồng bộ HLD v4.49):** `Fact Investor Category Trading Snapshot`/`Fact Investor Category Index Trading Snapshot` thêm nguồn Atomic `Discretionary Investment Account` (phân loại NĐT theo số tài khoản + VSDC `open_investors`, O_GSTT_66/67); `Fact Stock Portfolio Snapshot` thêm 2 cột `foreign_buy/sell_derivative_vol` (K_GSTT_374/375); `Fact Index Constituent Snapshot` thêm 4 cột `idx_foreign_buy/sell_vol/val` (K_GSTT_370–373); `Fact Major Shareholder Ownership Snapshot` thêm 5 cột 1:1 đầu/cuối kỳ (K_GSTT_364–369, O_GSTT_68). Không thêm/bớt bảng.
 **Thay đổi v2.16 (2026-10-09):** Tách `Operational Security Index Constituent Reference` thành 2 bảng: bảng này chỉ còn danh mục chỉ số/thành viên rổ; thêm `Operational Security Reference` (`opr_security_ref`, danh mục mã chứng khoán — 6 cột thuộc tính mã CK chuyển sang, đổi tên `stock_floor_code`→`floor_code`, `security_class_code`→`security_class_nm`). Khớp HLD v4.42, O_GSTT_63.
 **Thay đổi v2.15 (2026-10-06):** Sửa quy tắc chọn Fact nến: lọc theo ngày → bảng 1m (`Fact Instrument Price Intraday`), lọc theo tháng → bảng 1d (`Fact Instrument Price Daily`).
@@ -208,6 +209,16 @@ erDiagram
 | Fact Investor Category Index Trading Snapshot | Fact Snapshot | new | GT mua/bán theo Phân loại NĐT theo rổ chỉ số + điểm/thay đổi/% thay đổi chỉ số. **[SỬA 2026-10-15]** Phân loại theo số tài khoản + Atomic `Discretionary Investment Account` (cùng quy tắc Fact cấp Mã CK) | 1 row / Index Code / ngày giao dịch / Phân loại NĐT | K_GSTT_85, 35, 38, 39, 161–169 |
 | Index Constituent Dimension | Dimension | reuse | Mô tả rổ chỉ số — đã thiết kế ở Nhóm 1 | 1 row / Index Code (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---
+
+## Operational Trading Liquidity Explorer (phục vụ Nhóm 37)
+
+**[MỚI 2026-10-16, theo yêu cầu Data Modeler]** Bảng phẳng cho Data Explorer "Giao dịch & thanh khoản" — gộp trên 1 bảng các chiều (mã CK, sàn, ngành, ngày, chỉ số), chỉ tiêu cấp mã CK (giá, KL/GT, NĐT nước ngoài/tự doanh/cá nhân/tổ chức trong nước, P/E–P/B–EPS–vốn hóa), chỉ tiêu cấp chỉ số (điểm, tăng/giảm, KLGD/GTGD/vốn hóa/P/E/P/B của rổ) và cơ cấu NĐT của rổ — **không FK Dimension**, không vẽ quan hệ. Phân loại NĐT **pivot thành cột** (4 nhóm × mua/bán × KL/GT); tách dòng theo nhóm NĐT làm ở tầng BI. Fan-out theo rổ chỉ số có chủ đích: mỗi mã CK 1 dòng 'không theo rổ' (`index_code = ''`) + 1 dòng mỗi rổ mã CK thuộc về — **truy vấn không chọn chiều Chỉ số phải lọc `index_code = ''`**; cột cấp chỉ số lặp lại trên mỗi mã CK của rổ nên gộp bằng MAX theo (chỉ số, ngày). Xem O_GSTT_72.
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Operational Trading Liquidity Explorer | Operational (phẳng) | new | Data Explorer Nhóm 37 — chiều + chỉ tiêu cấp mã CK/cấp chỉ số/cơ cấu NĐT trên 1 bảng phẳng, không Dimension | 1 row / mã CK / chỉ số (hoặc 'không theo rổ') / ngày giao dịch | K_GSTT_1–4, 7, 9–14, 17–19, 27–29, 35, 38–44, 47–48, 51–52, 54, 57–61, 70–77, 82–85, 90–92, 114–119, 122, 124–125, 146–147, 149–150, 161–163, 170–174, 180, 376–381 |
 
 ---
 

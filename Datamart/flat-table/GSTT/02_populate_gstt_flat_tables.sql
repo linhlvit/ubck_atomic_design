@@ -874,3 +874,96 @@ JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.trade_dt_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;
+
+
+-- ==========================================================
+-- 18. OPERATIONAL: gstt_opr_trading_liquidity_explorer_flat
+--    [MỚI 2026-10-16] DELETE-scoped theo trade_dt = :etl_date (1 dòng / mã CK / chỉ số hoặc không theo rổ / ngày)
+-- ==========================================================
+DELETE FROM datamart.gstt_opr_trading_liquidity_explorer_flat ON CLUSTER 'my_cluster'
+WHERE trade_dt = :etl_date;
+INSERT INTO datamart.gstt_opr_trading_liquidity_explorer_flat
+SELECT
+    -- From: FCT_TRADING_LIQUIDITY_EXPLORER_SNPST
+    f.trade_dt,
+    f.symbol,
+    f.index_code,
+    f.floor_code,
+    f.stock_tp_nm,
+    f.business_line_level_1_code,
+    f.classification_business_line_nm,
+    f.reference_price,
+    f.close_price,
+    f.open_price,
+    f.high_price,
+    f.low_price,
+    f.price_change,
+    f.total_vol,
+    f.total_val,
+    f.total_matched_vol,
+    f.total_matched_val,
+    f.total_negotiated_vol,
+    f.total_negotiated_val,
+    f.foreign_buy_vol,
+    f.foreign_sell_vol,
+    f.foreign_buy_val,
+    f.foreign_sell_val,
+    f.proprietary_buy_vol,
+    f.proprietary_sell_vol,
+    f.proprietary_buy_val,
+    f.proprietary_sell_val,
+    f.domestic_individual_buy_val,
+    f.domestic_individual_buy_vol,
+    f.domestic_individual_sell_val,
+    f.domestic_individual_sell_vol,
+    f.domestic_institution_buy_val,
+    f.domestic_institution_buy_vol,
+    f.domestic_institution_sell_val,
+    f.domestic_institution_sell_vol,
+    f.outstanding_share_quantity,
+    f.net_profit_after_tax_ttm,
+    f.securities_company_net_profit_after_tax_ttm,
+    f.owner_equity,
+    f.securities_company_owner_equity,
+    f.prior_market_cap,
+    f.prior_free_float_market_cap,
+    f.market_index_val,
+    f.index_change,
+    f.index_percent_change,
+    f.prior_index,
+    f.advances_count,
+    f.declines_count,
+    f.no_change_count,
+    f.ceiling_count,
+    f.floor_count,
+    f.idx_total_matched_vol,
+    f.idx_total_matched_val,
+    f.idx_total_negotiated_vol,
+    f.idx_total_negotiated_val,
+    f.idx_market_cap,
+    f.idx_free_float_market_cap,
+    f.idx_pe,
+    f.idx_pb,
+    f.idx_prior_market_cap,
+    f.idx_prior_free_float_market_cap,
+    f.idx_foreign_buy_val,
+    f.idx_foreign_buy_vol,
+    f.idx_foreign_sell_val,
+    f.idx_foreign_sell_vol,
+    f.idx_proprietary_buy_val,
+    f.idx_proprietary_buy_vol,
+    f.idx_proprietary_sell_val,
+    f.idx_proprietary_sell_vol,
+    f.idx_domestic_individual_buy_val,
+    f.idx_domestic_individual_buy_vol,
+    f.idx_domestic_individual_sell_val,
+    f.idx_domestic_individual_sell_vol,
+    f.idx_domestic_institution_buy_val,
+    f.idx_domestic_institution_buy_vol,
+    f.idx_domestic_institution_sell_val,
+    f.idx_domestic_institution_sell_vol,
+    f.src_stm_code
+
+FROM datamart.opr_trading_liquidity_explorer f
+WHERE f.trade_dt = :etl_date
+;

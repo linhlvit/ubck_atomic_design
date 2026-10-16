@@ -2,6 +2,7 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
+-- Sửa 2026-10-16: bổ sung bảng #18 gstt_opr_trading_liquidity_explorer_flat (Fact phẳng Data Explorer Nhóm 37 — O_GSTT_72)
 -- 12 bảng: 9 fact + 3 operational (opr_security_ref — mới 2026-10-09, danh mục mã chứng khoán tách từ opr_security_index_constituent_ref; opr_security_index_constituent_ref — mới 2026-10-06, danh mục chỉ số/thành viên rổ Index Code ↔ Symbol ↔ ISIN; opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
 -- Sửa 2026-10-06 (v4.33–v4.36): Nhóm 34 — #3 gstt_fct_instrument_price_intraday_flat (nến phút) và #3a gstt_fct_instrument_price_daily_flat (nến ngày + Doanh thu/LNST) thay gstt_fct_security_trading_intraday_flat; mã CK và chỉ số (BA nguồn JAD_tvhistory1m/1d), dùng chung Nhóm 3, 10, 12, 14, 20, 47 (v4.35); #3b gstt_fct_security_trading_daily_flat chỉ còn Nhóm 48 (K_GSTT_352).
 -- Sửa 2026-09-26: bổ sung bảng #7/#8 (Fact HOSE/HNX Securities Trade — Nhóm 43/44 Data Explorer kết xuất sổ lệnh, có cột PII — O_GSTT_36)
@@ -870,4 +871,99 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), securities_order_code)
 COMMENT 'Flat table — fct_hose_securities_order — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 18. OPERATIONAL: gstt_opr_trading_liquidity_explorer_flat
+--    [MỚI 2026-10-16] Operational Trading Liquidity Explorer — bảng phẳng Data Explorer Nhóm 37 (O_GSTT_72)
+--    Grain: 1 dòng / mã CK / chỉ số (hoặc dòng 'không theo rổ': index_code = '') / ngày giao dịch; không JOIN dimension.
+--    Truy vấn KHÔNG chọn chiều Chỉ số phải lọc index_code = ''; cột idx_* / điểm chỉ số lặp lại trên mỗi mã CK của rổ → gộp MAX theo (index_code, trade_dt)
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_opr_trading_liquidity_explorer_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_TRADING_LIQUIDITY_EXPLORER_SNPST
+    trade_dt                                     Date                    COMMENT 'Ngày giao dịch (ngày bản tin cuối ngày của mã chứng khoán) — một chiều của grain, lọc/nhóm theo ngày của Data ',
+    symbol                                       String                  COMMENT 'Mã chứng khoán — một chiều của grain (1 dòng / mã CK / chỉ số / ngày).',
+    index_code                                   String                  COMMENT 'Mã chỉ số (rổ) mà mã chứng khoán thuộc về trong ngày; chuỗi rỗng () = dòng không theo rổ dùng cho truy vấn khô',
+    floor_code                                   Nullable(String)        COMMENT 'Mã sàn giao dịch của mã chứng khoán (HOSE/HNX/UPCOM/...) — chiều Sàn của Data Explorer.',
+    stock_tp_nm                                  Nullable(String)        COMMENT 'Loại chứng khoán hiển thị (nhãn tiếng Việt, VD Cổ phiếu / Trái phiếu / Chứng chỉ quỹ), dẫn xuất theo mã sàn và mã loại chứng khoán — chiều Phân loại mã chứng khoán của Data Explorer.',
+    business_line_level_1_code                   Nullable(String)        COMMENT 'Mã ngành cấp 1 của doanh nghiệp phát hành mã chứng khoán (chiều Ngành). Công ty chứng khoán đại chúng không có',
+    classification_business_line_nm              Nullable(String)        COMMENT 'Tên ngành cấp 1 hiển thị (chiều Ngành). Công ty chứng khoán đại chúng không có ngành trong IDS thì dùng tên ng',
+    reference_price                              Nullable(Decimal(23,2)) COMMENT 'Giá tham chiếu của mã chứng khoán trong ngày.',
+    close_price                                  Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa của mã chứng khoán trong ngày.',
+    open_price                                   Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa của mã chứng khoán trong ngày.',
+    high_price                                   Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất của mã chứng khoán trong ngày.',
+    low_price                                    Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất của mã chứng khoán trong ngày.',
+    price_change                                 Nullable(Decimal(23,2)) COMMENT 'Mức thay đổi giá so với giá tham chiếu (+/-) trong ngày.',
+    total_vol                                    Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch trong ngày của mã chứng khoán (gộp khớp lệnh và thỏa thuận).',
+    total_val                                    Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch trong ngày của mã chứng khoán (gộp khớp lệnh và thỏa thuận).',
+    total_matched_vol                            Nullable(Int64)         COMMENT 'Khối lượng khớp lệnh thuần trong ngày của mã chứng khoán (loại giao dịch thỏa thuận).',
+    total_matched_val                            Nullable(Decimal(23,2)) COMMENT 'Giá trị khớp lệnh thuần trong ngày của mã chứng khoán (loại giao dịch thỏa thuận).',
+    total_negotiated_vol                         Nullable(Int64)         COMMENT 'Khối lượng giao dịch thỏa thuận trong ngày của mã chứng khoán.',
+    total_negotiated_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch thỏa thuận trong ngày của mã chứng khoán.',
+    foreign_buy_vol                              Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản mua IN (F,E).',
+    foreign_sell_vol                             Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản bán IN (F,E).',
+    foreign_buy_val                              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản mua IN (F,E).',
+    foreign_sell_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản bán IN (F,E).',
+    proprietary_buy_vol                          Nullable(Int64)         COMMENT 'Khối lượng mua tự doanh trong ngày — ký tự thứ 4 của số tài khoản mua IN (P,E).',
+    proprietary_sell_vol                         Nullable(Int64)         COMMENT 'Khối lượng bán tự doanh trong ngày — ký tự thứ 4 của số tài khoản bán IN (P,E).',
+    proprietary_buy_val                          Nullable(Decimal(23,2)) COMMENT 'Giá trị mua tự doanh trong ngày — ký tự thứ 4 của số tài khoản mua IN (P,E).',
+    proprietary_sell_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị bán tự doanh trong ngày — ký tự thứ 4 của số tài khoản bán IN (P,E).',
+    domestic_individual_buy_val                  Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại 3) trong ngày — gồm khớp lệnh và thỏa thuận; phâ',
+    domestic_individual_buy_vol                  Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư cá nhân trong nước (tài khoản loại 3) trong ngày — gồm khớp lệnh và thỏa thuận; ',
+    domestic_individual_sell_val                 Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại 3) trong ngày — gồm khớp lệnh và thỏa thuận; phâ',
+    domestic_individual_sell_vol                 Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư cá nhân trong nước (tài khoản loại 3) trong ngày — gồm khớp lệnh và thỏa thuận; ',
+    domestic_institution_buy_val                 Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong ngày — gồm khớp lệnh và thỏa thuận; phâ',
+    domestic_institution_buy_vol                 Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong ngày — gồm khớp lệnh và thỏa thuận; ',
+    domestic_institution_sell_val                Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong ngày — gồm khớp lệnh và thỏa thuận; phâ',
+    domestic_institution_sell_vol                Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong ngày — gồm khớp lệnh và thỏa thuận; ',
+    outstanding_share_quantity                   Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành của mã chứng khoán tại ngày giao dịch — dùng tính vốn hóa, EPS, P/E, P/B.',
+    net_profit_after_tax_ttm                     Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế 4 quý gần nhất (TTM) của doanh nghiệp phát hành theo báo cáo tài chính đã duyệt — dùng tính',
+    securities_company_net_profit_after_tax_ttm  Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế 4 quý gần nhất (TTM) của công ty chứng khoán đại chúng theo báo cáo nghiệp vụ — dự phòng ch',
+    owner_equity                                 Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu của doanh nghiệp phát hành tại kỳ báo cáo gần nhất theo báo cáo tài chính đã duyệt — dùng tính ',
+    securities_company_owner_equity              Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu của công ty chứng khoán đại chúng theo báo cáo nghiệp vụ — dự phòng cho P/B khi mã không có báo',
+    prior_market_cap                             Nullable(Decimal(23,2)) COMMENT 'Vốn hóa thị trường của mã chứng khoán ở phiên giao dịch trước (giá đóng cửa × số cổ phiếu đang lưu hành) — dùn',
+    prior_free_float_market_cap                  Nullable(Decimal(23,2)) COMMENT 'Vốn hóa tự do chuyển nhượng của mã chứng khoán ở phiên giao dịch trước (giá đóng cửa × số cổ phiếu tự do chuyể',
+    market_index_val                             Nullable(Decimal(23,2)) COMMENT 'Điểm đóng cửa của chỉ số trong ngày. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng không theo',
+    index_change                                 Nullable(Decimal(23,2)) COMMENT 'Thay đổi điểm của chỉ số so với phiên trước. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng kh',
+    index_percent_change                         Nullable(Decimal(5,2))  COMMENT 'Phần trăm thay đổi của chỉ số so với phiên trước. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dò',
+    prior_index                                  Nullable(Decimal(23,2)) COMMENT 'Điểm chỉ số phiên trước. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng không theo rổ.',
+    advances_count                               Nullable(Int64)         COMMENT 'Số mã tăng giá trong rổ chỉ số. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng không theo rổ.',
+    declines_count                               Nullable(Int64)         COMMENT 'Số mã giảm giá trong rổ chỉ số. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng không theo rổ.',
+    no_change_count                              Nullable(Int64)         COMMENT 'Số mã đứng giá trong rổ chỉ số. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng không theo rổ.',
+    ceiling_count                                Nullable(Int64)         COMMENT 'Số mã tăng trần trong rổ chỉ số. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng không theo rổ.',
+    floor_count                                  Nullable(Int64)         COMMENT 'Số mã giảm sàn trong rổ chỉ số. Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng không theo rổ.',
+    idx_total_matched_vol                        Nullable(Int64)         COMMENT 'Tổng khối lượng khớp lệnh thuần (loại thỏa thuận) của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại t',
+    idx_total_matched_val                        Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị khớp lệnh thuần (loại thỏa thuận) của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên',
+    idx_total_negotiated_vol                     Nullable(Int64)         COMMENT 'Tổng khối lượng giao dịch thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK',
+    idx_total_negotiated_val                     Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK củ',
+    idx_market_cap                               Nullable(Decimal(23,2)) COMMENT 'Vốn hóa thị trường của rổ chỉ số = tổng (giá đóng cửa × số cổ phiếu đang lưu hành) của các mã thành viên. Lặp ',
+    idx_free_float_market_cap                    Nullable(Decimal(23,2)) COMMENT 'Vốn hóa tự do chuyển nhượng của rổ chỉ số = tổng (giá đóng cửa × số cổ phiếu tự do chuyển nhượng) của các mã t',
+    idx_pe                                       Nullable(Decimal(10,2)) COMMENT 'P/E của rổ chỉ số = tổng vốn hóa các mã thành viên / tổng LNST TTM, làm tròn 2 chữ số. Lặp lại trên mỗi mã CK ',
+    idx_pb                                       Nullable(Decimal(10,2)) COMMENT 'P/B của rổ chỉ số = tổng vốn hóa các mã thành viên / tổng vốn chủ sở hữu, làm tròn 2 chữ số. Lặp lại trên mỗi ',
+    idx_prior_market_cap                         Nullable(Decimal(23,2)) COMMENT 'Vốn hóa thị trường của rổ chỉ số ở phiên giao dịch trước — dùng tính điểm đóng góp vào chỉ số. Lặp lại trên mỗ',
+    idx_prior_free_float_market_cap              Nullable(Decimal(23,2)) COMMENT 'Vốn hóa tự do chuyển nhượng của rổ chỉ số ở phiên giao dịch trước — dùng tính điểm đóng góp vào chỉ số. Lặp lạ',
+    idx_foreign_buy_val                          Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN (F,E), gồm khớp l',
+    idx_foreign_buy_vol                          Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN (F,E), gồm khớ',
+    idx_foreign_sell_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN (F,E), gồm khớp l',
+    idx_foreign_sell_vol                         Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN (F,E), gồm khớ',
+    idx_proprietary_buy_val                      Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của tự doanh (ký tự thứ 4 của số TK IN (P,E)) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và t',
+    idx_proprietary_buy_vol                      Nullable(Int64)         COMMENT 'Khối lượng mua của tự doanh (ký tự thứ 4 của số TK IN (P,E)) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh v',
+    idx_proprietary_sell_val                     Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của tự doanh (ký tự thứ 4 của số TK IN (P,E)) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và t',
+    idx_proprietary_sell_vol                     Nullable(Int64)         COMMENT 'Khối lượng bán của tự doanh (ký tự thứ 4 của số TK IN (P,E)) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh v',
+    idx_domestic_individual_buy_val              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại 3) trong toàn rổ chỉ số, theo ngày — gồm khớp lệ',
+    idx_domestic_individual_buy_vol              Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư cá nhân trong nước (tài khoản loại 3) trong toàn rổ chỉ số, theo ngày — gồm khớp',
+    idx_domestic_individual_sell_val             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại 3) trong toàn rổ chỉ số, theo ngày — gồm khớp lệ',
+    idx_domestic_individual_sell_vol             Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư cá nhân trong nước (tài khoản loại 3) trong toàn rổ chỉ số, theo ngày — gồm khớp',
+    idx_domestic_institution_buy_val             Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong toàn rổ chỉ số, theo ngày — gồm khớp lệ',
+    idx_domestic_institution_buy_vol             Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong toàn rổ chỉ số, theo ngày — gồm khớp',
+    idx_domestic_institution_sell_val            Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong toàn rổ chỉ số, theo ngày — gồm khớp lệ',
+    idx_domestic_institution_sell_vol            Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong toàn rổ chỉ số, theo ngày — gồm khớp',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(trade_dt)
+ORDER BY (trade_dt, symbol, index_code)
+COMMENT 'Flat table — Operational Trading Liquidity Explorer (Data Explorer Nhóm 37; 1 dòng / mã CK / chỉ số hoặc không theo rổ / ngày; không Dimension)'
 ;
