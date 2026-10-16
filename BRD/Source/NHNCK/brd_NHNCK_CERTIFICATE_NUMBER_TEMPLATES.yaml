@@ -10,15 +10,16 @@ columns:
   key: PK
   fk_note: null
 - name: CODE
-  data_type: NVARCHAR2(10 CHAR)
+  data_type: NVARCHAR2(20)
   description: Mã định danh ngắn gọn (đợt thi, chuyên ngành, template số...)
   key: null
   fk_note: null
 - name: CERTIFICATE_ID
   data_type: NUMBER(10,0)
   description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → CERTIFICATES.ID
+  fk_src: inferred
 - name: TYPE
   data_type: NUMBER(10,0)
   description: Loại/phân loại của bản ghi
@@ -30,7 +31,7 @@ columns:
   key: null
   fk_note: null
 - name: NAME
-  data_type: NVARCHAR2(200 CHAR)
+  data_type: NVARCHAR2(400)
   description: Tên hiển thị chính
   key: null
   fk_note: null

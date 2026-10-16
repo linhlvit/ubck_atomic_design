@@ -12,8 +12,9 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+  fk_src: inferred
 - name: CERTIFICATE_ID
   data_type: NUMBER(10,0)
   description: 'FK -> CERTIFICATES: Loại chứng chỉ hành nghề'
@@ -30,7 +31,7 @@ columns:
   key: null
   fk_note: null
 - name: EXAM_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số báo danh thi sát hạch
   key: null
   fk_note: null
@@ -60,7 +61,7 @@ columns:
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Ghi chú bổ sung
   key: null
   fk_note: null

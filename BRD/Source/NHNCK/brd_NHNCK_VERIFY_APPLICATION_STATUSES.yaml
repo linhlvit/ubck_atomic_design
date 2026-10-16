@@ -12,8 +12,9 @@ columns:
 - name: APPLICATION_ID
   data_type: NUMBER(10,0)
   description: 'FK -> APPLICATIONS: Hồ sơ CCHN liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → APPLICATIONS.ID
+  fk_src: inferred
 - name: STATUS_ID
   data_type: NUMBER(10,0)
   description: 'FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại'
@@ -50,7 +51,7 @@ columns:
   key: null
   fk_note: null
 - name: OVERVIEW_FILE_PATH
-  data_type: NVARCHAR2(200 CHAR)
+  data_type: NVARCHAR2(400)
   description: Đường dẫn file tài liệu tổng quan thẩm định hồ sơ
   key: null
   fk_note: null

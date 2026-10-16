@@ -17,15 +17,16 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+  fk_src: inferred
 - name: EXAM_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số báo danh thi sát hạch
   key: null
   fk_note: null
 - name: FULL_NAME
-  data_type: NVARCHAR2(255 CHAR)
+  data_type: NVARCHAR2(510)
   description: Họ và tên đầy đủ của người hành nghề
   key: null
   fk_note: null
@@ -50,7 +51,7 @@ columns:
   key: FK
   fk_note: FK → DISTRICTS.ID
 - name: PLACE_OF_BIRTH
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Nơi sinh của người hành nghề
   key: null
   fk_note: null
@@ -60,7 +61,7 @@ columns:
   key: null
   fk_note: null
 - name: IDENTITY_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số CMND/CCCD/Hộ chiếu của người hành nghề
   key: null
   fk_note: null
@@ -70,7 +71,7 @@ columns:
   key: null
   fk_note: null
 - name: IDENTITY_ISSUE_PLACE
-  data_type: NVARCHAR2(255 CHAR)
+  data_type: NVARCHAR2(510)
   description: Nơi cấp CMND/CCCD/Hộ chiếu
   key: null
   fk_note: null
@@ -95,7 +96,7 @@ columns:
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(500 CHAR)
+  data_type: NVARCHAR2(1000)
   description: Mô tả chi tiết
   key: null
   fk_note: null
@@ -115,7 +116,7 @@ columns:
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Ghi chú bổ sung
   key: null
   fk_note: null

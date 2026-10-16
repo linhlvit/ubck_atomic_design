@@ -17,20 +17,21 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+  fk_src: inferred
 - name: FEE_TYPE
   data_type: NUMBER(10,0)
   description: 'Loại phí: 1=Phí thi, 2=Phí phúc khảo, 3=Phí cấp chứng chỉ'
   key: null
   fk_note: null
 - name: CONTENT
-  data_type: NVARCHAR2(255 CHAR)
+  data_type: NVARCHAR2(510)
   description: Nội dung của thông báo/thư điện tử/bổ sung hồ sơ
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(255 CHAR)
+  data_type: NVARCHAR2(510)
   description: Ghi chú bổ sung
   key: null
   fk_note: null
@@ -60,7 +61,7 @@ columns:
   key: null
   fk_note: null
 - name: FILE_PATH
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
   key: null
   fk_note: null

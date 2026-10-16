@@ -12,15 +12,16 @@ columns:
 - name: ORGANIZATION_ID
   data_type: NUMBER(10,0)
   description: 'FK -> ORGANIZATIONS: Tổ chức kinh doanh CK sử dụng NHNCK'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → ORGANIZATIONS.ID
+  fk_src: inferred
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
   key: FK
   fk_note: FK → PROFESSIONALS.ID
 - name: UNIT_NAME
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Tên đơn vị nội bộ UBCKNN
   key: null
   fk_note: null
@@ -35,7 +36,7 @@ columns:
   key: null
   fk_note: null
 - name: WORKPLACE
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Nơi làm việc hiện tại (tên tổ chức kinh doanh CK)
   key: null
   fk_note: null
@@ -45,17 +46,17 @@ columns:
   key: FK
   fk_note: FK → POSITIONS.ID
 - name: POSITION_NAME
-  data_type: NVARCHAR2(500 CHAR)
+  data_type: NVARCHAR2(1000)
   description: Tên chức vụ tại thời điểm công tác (snapshot)
   key: null
   fk_note: null
 - name: AWARDS
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Khen thưởng đã nhận
   key: null
   fk_note: null
 - name: DISCIPLINES
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Thông tin kỷ luật của NHNCK tại tổ chức (NCLOB)
   key: null
   fk_note: null

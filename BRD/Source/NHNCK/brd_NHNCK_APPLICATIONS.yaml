@@ -12,8 +12,9 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+  fk_src: inferred
 - name: STATUS_ID
   data_type: NUMBER(10,0)
   description: 'FK -> APPLICATION_STATUSES: Trạng thái hồ sơ hiện tại'
@@ -27,8 +28,9 @@ columns:
 - name: CERTIFICATE_RECORD_ID
   data_type: NUMBER(10,0)
   description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORDS.ID
+  fk_src: inferred
 - name: PREVIOUS_CERTIFICATE_ID
   data_type: NUMBER(10,0)
   description: 'FK -> CERTIFICATES: Loại CCHN cũ (khi cấp lại)'
@@ -37,8 +39,9 @@ columns:
 - name: EXAM_SESSION_ID
   data_type: NUMBER(10,0)
   description: 'FK -> EXAM_SESSIONS: Đợt thi sát hạch liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → EXAM_SESSIONS.ID
+  fk_src: inferred
 - name: REGISTRATION_TYPE
   data_type: NUMBER(10,0)
   description: 'Nguồn tiếp nhận hồ sơ: 0=MCĐT/cổng DVC, 1=Nhập tay (MANUAL)'
@@ -50,12 +53,12 @@ columns:
   key: null
   fk_note: null
 - name: APPLICATION_CODE
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Mã hồ sơ (mã định danh duy nhất do hệ thống sinh)
   key: null
   fk_note: null
 - name: TITLE
-  data_type: NVARCHAR2(255 CHAR)
+  data_type: NVARCHAR2(510)
   description: Tiêu đề/tên hồ sơ hoặc nhóm
   key: null
   fk_note: null
@@ -80,7 +83,7 @@ columns:
   key: null
   fk_note: null
 - name: CERTIFICATE_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số CCHN cấp cho NHNCK
   key: null
   fk_note: null
@@ -90,7 +93,7 @@ columns:
   key: null
   fk_note: null
 - name: PREVIOUS_CERTIFICATE_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số CCHN cũ (trước khi cấp lại)
   key: null
   fk_note: null
@@ -100,7 +103,7 @@ columns:
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Ghi chú bổ sung
   key: null
   fk_note: null
@@ -130,7 +133,7 @@ columns:
   key: null
   fk_note: null
 - name: CERTIFICATE_RECEIPT_ADDRESS
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Địa chỉ nhận CCHN qua bưu điện
   key: null
   fk_note: null
@@ -145,12 +148,12 @@ columns:
   key: null
   fk_note: null
 - name: CERTIFICATE_RECEIPT_PHONE
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Số điện thoại liên lạc khi nhận CCHN
   key: null
   fk_note: null
 - name: REISSUE_HSM
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Thông tin HSM (Hardware Security Module) khi cấp CCHN điện tử
   key: null
   fk_note: null
@@ -185,22 +188,23 @@ columns:
   key: null
   fk_note: null
 - name: RE_EXAM_SUBJECT
-  data_type: NVARCHAR2(500 CHAR)
+  data_type: NVARCHAR2(1000)
   description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null
 - name: PREVIOUS_CERTIFICATE_RECORD_ID
   data_type: NUMBER(10,0)
   description: TBD - cần bổ sung mô tả
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → CERTIFICATE_RECORDS.ID
+  fk_src: inferred
 - name: RECEIVE_CHANNEL
-  data_type: NVARCHAR2(255 CHAR)
+  data_type: NVARCHAR2(510)
   description: TBD - cần bổ sung mô tả (DDL UAT 1 chưa có comment)
   key: null
   fk_note: null
 - name: RECEIVE_CHANNEL_CODE
-  data_type: NVARCHAR2(20 CHAR)
+  data_type: NVARCHAR2(40)
   description: TBD - cần bổ sung mô tả (DDL UAT 1 chưa có comment)
   key: null
   fk_note: null

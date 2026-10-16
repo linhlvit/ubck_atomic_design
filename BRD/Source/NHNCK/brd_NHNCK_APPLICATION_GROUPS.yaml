@@ -10,12 +10,12 @@ columns:
   key: PK
   fk_note: null
 - name: GROUP_NAME
-  data_type: NVARCHAR2(255 CHAR)
+  data_type: NVARCHAR2(510)
   description: Tên nhóm hồ sơ/CCHN (do cán bộ đặt khi tạo nhóm xử lý)
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(1000 CHAR)
+  data_type: NVARCHAR2(2000)
   description: Mô tả chi tiết
   key: null
   fk_note: null
@@ -27,8 +27,9 @@ columns:
 - name: DECISION_ID
   data_type: NUMBER(10,0)
   description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → DECISIONS.ID
+  fk_src: inferred
 - name: GROUP_CREATED_DATE
   data_type: DATE
   description: Ngày tạo nhóm hồ sơ/CCHN
@@ -40,7 +41,7 @@ columns:
   key: null
   fk_note: null
 - name: NOTES
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Ghi chú bổ sung
   key: null
   fk_note: null

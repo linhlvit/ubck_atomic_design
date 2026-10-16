@@ -17,8 +17,9 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+  fk_src: inferred
 - name: CERTIFICATE_RECORD_ID
   data_type: NUMBER(10,0)
   description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
@@ -30,12 +31,12 @@ columns:
   key: FK
   fk_note: FK → COUNTRIES.ID
 - name: ARCHIVE_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số lưu trữ vật lý của bản CCHN trong kho lưu trữ
   key: null
   fk_note: null
 - name: CERTIFICATE_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số CCHN cấp cho NHNCK
   key: null
   fk_note: null
@@ -50,27 +51,27 @@ columns:
   key: null
   fk_note: null
 - name: RECIPIENT
-  data_type: NVARCHAR2(500 CHAR)
+  data_type: NVARCHAR2(1000)
   description: Họ tên người đến nhận CCHN (có thể là ủy quyền)
   key: null
   fk_note: null
 - name: IDENTITY_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số CMND/CCCD/Hộ chiếu của người hành nghề
   key: null
   fk_note: null
 - name: INTRODUCTION_LETTER_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số công văn giới thiệu (khi nhận thay)
   key: null
   fk_note: null
 - name: INTRODUCTION_LETTER
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Thông tin công văn giới thiệu (tên đơn vị, ngày ký)
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Ghi chú bổ sung
   key: null
   fk_note: null

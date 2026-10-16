@@ -17,8 +17,9 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+  fk_src: inferred
 - name: ISSUE_DECISION_ID
   data_type: NUMBER(10,0)
   description: 'FK -> DECISIONS: Quyết định cấp CCHN'
@@ -30,7 +31,7 @@ columns:
   key: FK
   fk_note: FK → DECISIONS.ID
 - name: CERTIFICATE_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số CCHN cấp cho NHNCK
   key: null
   fk_note: null
@@ -45,7 +46,7 @@ columns:
   key: null
   fk_note: null
 - name: REVOCATION_REASON
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Lý do thu hồi CCHN
   key: null
   fk_note: null
@@ -55,7 +56,7 @@ columns:
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Mô tả chi tiết
   key: null
   fk_note: null
@@ -75,7 +76,7 @@ columns:
   key: null
   fk_note: null
 - name: PROFESSIONAL_FULL_NAME
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Họ tên người hành nghề tại thời điểm cấp CCHN (snapshot)
   key: null
   fk_note: null
@@ -90,7 +91,7 @@ columns:
   key: null
   fk_note: null
 - name: CER_PATH
-  data_type: VARCHAR2(500 CHAR)
+  data_type: VARCHAR2(2000)
   description: Đường dẫn file chứng chỉ số dùng để ký
   key: null
   fk_note: null

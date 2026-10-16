@@ -147,6 +147,11 @@ brd_entries:
       relation: 1-N — Phân quyền người dùng theo vai trò
     - table: VERIFY_APPLICATION_STATUSES
       relation: 1-N — Yêu cầu phê duyệt lãnh đạo cho hồ sơ
+    - table: CERTIFICATE_RECORD_STATUS_HISTORIES
+      relation: 1-N — Lịch sử trạng thái chứng chỉ hành nghề
+    - table: VERIFY_CERTIFICATE_CONVERSION_STATUSES
+      relation: 1-N — Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái chứng
+        chỉ (lý do thẩm định theo từng cấp xét duyệt)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1022,16 +1027,13 @@ brd_entries:
       relation: FK cha — Chứng chỉ hành nghề được cấp
     - table: DECISIONS
       relation: FK cha — Danh mục các quyết định hành chính
-    notes: Data Modeler xác nhận (2026-07-24) đưa vào scope Atomic dạng Fact Append —
-      bảng có cột OLD_STATUS/NEW_STATUS tường minh. Đồng thời sửa data_change_mode
-      Update → Append (khảo sát cũ ghi nhầm — bảng lưu 1 dòng/1 lần đổi trạng thái,
-      insert-only).
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
+    notes: Data Modeler xác nhận (2026-07-24) đưa vào scope Atomic dạng Fact Append — bảng có cột OLD_STATUS/NEW_STATUS tường minh. Đồng thời sửa data_change_mode Update → Append (khảo sát cũ ghi nhầm — bảng lưu 1 dòng/1 lần đổi trạng thái, insert-only).
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: null
-      filter_note: null
       filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
       filter_note: Ngày thay đổi trạng thái chứng chi hành nghề được ghi vào hệ thống — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-PROFESSIONALS
@@ -1098,6 +1100,9 @@ brd_entries:
       relation: 1-N — Thông tin người dùng hệ thống (cán bộ UBCKNN)
     - table: VIOLATIONS
       relation: 1-N — Thông tin vi phạm của người hành nghề
+    - table: POST_CERT_TRAINING_RESULTS
+      relation: 1-N — Kết quả tham gia khóa đào tạo sau cấp CCHN của người hành nghề (số
+        giờ đào tạo, kết quả phân loại)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1558,7 +1563,9 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: null
     table: LEGAL_DOCUMENTS
-    related_tables: null
+    related_tables:
+    - table: PROCEDURE_DOCUMENTS
+      relation: 1-N — Liên kết thủ tục hành chính với tài liệu yêu cầu
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1605,6 +1612,8 @@ brd_entries:
       relation: FK cha — Thủ tục hành chính cấp CCHN
     - table: DOCUMENTS
       relation: FK cha — Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ
+    - table: LEGAL_DOCUMENTS
+      relation: FK cha — Văn bản pháp lý về hành nghề chứng khoán
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1972,6 +1981,12 @@ brd_entries:
       relation: FK cha — Chứng chỉ hành nghề được cấp
     - table: USERS
       relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
+    - table: CONVERSION_PRACTICE_HISTORY_CONFIRMS
+      relation: 1-N — Theo dõi tích hợp luồng xác nhận quá trình hành nghề khi chuyển
+        đổi CCHN
+    - table: VERIFY_CERTIFICATE_CONVERSION_STATUSES
+      relation: 1-N — Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái chứng
+        chỉ (lý do thẩm định theo từng cấp xét duyệt)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -2037,7 +2052,10 @@ brd_entries:
     scope_status: in_scope
     scope_reason: null
     table: POST_CERT_TRAINING_COURSES
-    related_tables: null
+    related_tables:
+    - table: POST_CERT_TRAINING_RESULTS
+      relation: 1-N — Kết quả tham gia khóa đào tạo sau cấp CCHN của người hành nghề
+        (số giờ đào tạo, kết quả phân loại)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -2102,20 +2120,14 @@ brd_entries:
     table_meaning: Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái chứng chỉ (lý do thẩm định theo từng cấp xét duyệt)
     functional_group: UID05 Quản lý chứng chỉ hành nghề
     scope_status: out_of_scope
-    scope_reason: Không có nhu cầu khai thác nghiệp vụ trên báo cáo — Quyết định Data
-      Modeler (2026-09-12), chốt out_of_scope thay vì tiếp tục chờ bảng cha.
+    scope_reason: Không có nhu cầu khai thác nghiệp vụ trên báo cáo — Quyết định Data Modeler (2026-09-12), chốt out_of_scope thay vì tiếp tục chờ bảng cha.
     table: VERIFY_CERTIFICATE_CONVERSION_STATUSES
     related_tables:
     - table: CERTIFICATE_CONVERSION_REQUESTS
-      relation: FK cha — Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử (hiện out_of_scope,
-        xem 7e)
-    notes: Bảng phát hiện qua đối chiếu DDL UAT ngày 2026-07-15. Ý nghĩa nghiệp vụ đã
-      xác nhận (2026-08-13) qua đối chiếu cấu trúc cột với VERIFY_APPLICATION_STATUSES
-      — cấu trúc đối xứng hoàn toàn (TARGET_STATUS/PREV_STATUS + 4 trường lý do theo cấp
-      xét duyệt + VERIFIED_BY). Người thiết kế quyết định (2026-08-14) tạm dừng thiết kế
-      Atomic entity — chờ CERTIFICATE_CONVERSION_REQUESTS (bảng cha) được đưa vào scope
-      trước. Chốt lại (2026-09-12) — không có nhu cầu khai thác nghiệp vụ, không chờ bảng
-      cha nữa.
+      relation: FK cha — Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử (hiện out_of_scope, xem 7e)
+    - table: USERS
+      relation: FK cha — Thông tin người dùng hệ thống (cán bộ UBCKNN)
+    notes: Bảng phát hiện qua đối chiếu DDL UAT ngày 2026-07-15. Ý nghĩa nghiệp vụ đã xác nhận (2026-08-13) qua đối chiếu cấu trúc cột với VERIFY_APPLICATION_STATUSES — cấu trúc đối xứng hoàn toàn (TARGET_STATUS/PREV_STATUS + 4 trường lý do theo cấp xét duyệt + VERIFIED_BY). Người thiết kế quyết định (2026-08-14) tạm dừng thiết kế Atomic entity — chờ CERTIFICATE_CONVERSION_REQUESTS (bảng cha) được đưa vào scope trước. Chốt lại (2026-09-12) — không có nhu cầu khai thác nghiệp vụ, không chờ bảng cha nữa.
     data_volume_hint: null
     refresh_frequency: null
     ingestion:

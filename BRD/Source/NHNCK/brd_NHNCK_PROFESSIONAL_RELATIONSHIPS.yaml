@@ -12,15 +12,16 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+  fk_src: inferred
 - name: RELATIONSHIP_TYPE
   data_type: NUMBER(10,0)
   description: 'Loại quan hệ gia đình: 1=Chồng/vợ, 2=Con, 3=Bố, 4=Mẹ, 5=Ông, 6=Bà'
   key: null
   fk_note: null
 - name: FULL_NAME
-  data_type: NVARCHAR2(500 CHAR)
+  data_type: NVARCHAR2(1000)
   description: Họ và tên đầy đủ của người hành nghề
   key: null
   fk_note: null
@@ -30,22 +31,22 @@ columns:
   key: null
   fk_note: null
 - name: ADDRESS
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Địa chỉ trụ sở tổ chức (NCLOB)
   key: null
   fk_note: null
 - name: OCCUPATION
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Nghề nghiệp của thành viên gia đình
   key: null
   fk_note: null
 - name: WORKPLACE
-  data_type: NVARCHAR2(2000 CHAR)
+  data_type: NVARCHAR2(4000)
   description: Nơi làm việc hiện tại (tên tổ chức kinh doanh CK)
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Ghi chú bổ sung
   key: null
   fk_note: null
@@ -57,10 +58,11 @@ columns:
 - name: COUNTRY_ID
   data_type: NUMBER(10,0)
   description: 'FK -> COUNTRIES: Quốc gia liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → COUNTRIES.ID
+  fk_src: inferred
 - name: IDENTITY_ID
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số CMND/CCCD của thành viên gia đình
   key: null
   fk_note: null

@@ -12,15 +12,17 @@ columns:
 - name: DIGITAL_CERTIFICATE_ID
   data_type: NUMBER(10,0)
   description: 'FK -> DIGITAL_CERTIFICATES: Chứng thư số liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → DIGITAL_CERTIFICATES.ID
+  fk_src: inferred
 - name: USER_ID
   data_type: NUMBER(10,0)
   description: 'FK -> USERS: Người dùng liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → USERS.ID
+  fk_src: inferred
 - name: ROLE
-  data_type: VARCHAR2(50 CHAR)
+  data_type: VARCHAR2(200)
   description: 'Vai trò sử dụng chứng thư số: SIGN=Ký số, ENCRYPT=Mã hóa'
   key: null
   fk_note: null
@@ -30,7 +32,7 @@ columns:
   key: null
   fk_note: null
 - name: NOTES
-  data_type: NVARCHAR2(500 CHAR)
+  data_type: NVARCHAR2(1000)
   description: Ghi chú bổ sung
   key: null
   fk_note: null

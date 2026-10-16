@@ -12,10 +12,11 @@ columns:
 - name: PROFESSIONAL_ID
   data_type: NUMBER(10,0)
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → PROFESSIONALS.ID
+  fk_src: inferred
 - name: FULL_NAME
-  data_type: NVARCHAR2(255 CHAR)
+  data_type: NVARCHAR2(510)
   description: Họ và tên đầy đủ của người hành nghề
   key: null
   fk_note: null
@@ -25,12 +26,12 @@ columns:
   key: null
   fk_note: null
 - name: IDENTITY_NUMBER
-  data_type: NVARCHAR2(50 CHAR)
+  data_type: NVARCHAR2(100)
   description: Số CMND/CCCD/Hộ chiếu của người hành nghề
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024 CHAR)
+  data_type: NVARCHAR2(2048)
   description: Ghi chú bổ sung
   key: null
   fk_note: null
@@ -47,8 +48,9 @@ columns:
 - name: DECISION_ID
   data_type: NUMBER(10,0)
   description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → DECISIONS.ID
+  fk_src: inferred
 - name: TYPE
   data_type: NUMBER(10,0)
   description: Loại/phân loại của bản ghi
