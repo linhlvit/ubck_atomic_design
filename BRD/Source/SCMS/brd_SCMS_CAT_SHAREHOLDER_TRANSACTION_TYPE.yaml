@@ -4,48 +4,48 @@ source: SCMS
 table: CAT_SHAREHOLDER_TRANSACTION_TYPE
 brd_ref: BRD-SRC-SCMS-CAT_SHAREHOLDER_TRANSACTION_TYPE
 columns:
-  - name: ID
-    data_type: NUMBER(10,0)
-    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: null
-    fk_note: null
-  - name: TRANSACTION_TYPE_CODE
-    data_type: NVARCHAR2(50)
-    description: "Cột transaction_type_code — xem thêm tài liệu đặc tả SCMS"
-    key: null
-    fk_note: null
-  - name: TYPE_NAME
-    data_type: NVARCHAR2(250)
-    description: "Cột type_name — xem thêm tài liệu đặc tả SCMS"
-    key: null
-    fk_note: null
-  - name: FULL_NAME
-    data_type: NVARCHAR2(250)
-    description: null
-    key: null
-    fk_note: null
-  - name: NOTE
-    data_type: NVARCHAR2(1000)
-    description: "Ghi chú bổ sung, không bắt buộc"
-    key: null
-    fk_note: null
-  - name: CREATED_BY
-    data_type: NUMBER(10,0)
-    description: "ID tài khoản người dùng tạo bản ghi"
-    key: null
-    fk_note: null
-  - name: CREATED_AT
-    data_type: TIMESTAMP(6)
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
-    key: null
-    fk_note: null
-  - name: RECORD_STATUS
-    data_type: NUMBER(1,0)
-    description: "Trang thai ban ghi loai giao dich co dong: 1 = Dang su dung; 0 = Ngung su dung"
-    key: null
-    fk_note: null
-  - name: ECATALOG_ID
-    data_type: VARCHAR2(36)
-    description: null
-    key: null
-    fk_note: null
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (ID tự tăng hoặc UUID)
+  key: null
+  fk_note: null
+- name: TRANSACTION_TYPE_CODE
+  data_type: NVARCHAR2(100)
+  description: Cột transaction_type_code — xem thêm tài liệu đặc tả SCMS
+  key: null
+  fk_note: null
+- name: TYPE_NAME
+  data_type: NVARCHAR2(500)
+  description: Cột type_name — xem thêm tài liệu đặc tả SCMS
+  key: null
+  fk_note: null
+- name: FULL_NAME
+  data_type: NVARCHAR2(500)
+  description: null
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: NVARCHAR2(2000)
+  description: Ghi chú bổ sung, không bắt buộc
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NUMBER(10,0)
+  description: ID tài khoản người dùng tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(1,0)
+  description: 'Trang thai ban ghi loai giao dich co dong: 1 = Dang su dung; 0 = Ngung su dung'
+  key: null
+  fk_note: null
+- name: ECATALOG_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: null
+  fk_note: null

@@ -71,8 +71,8 @@
           "description": "Kiểu dữ liệu nguồn (VD: RAW(16), NVARCHAR2(150), NUMBER(22), DATE)"
         },
         "description": {
-          "type": "string",
-          "description": "Mô tả ý nghĩa cột (tiếng Việt)"
+          "type": ["string", "null"],
+          "description": "Mô tả ý nghĩa cột (tiếng Việt). null = chưa có mô tả (schema nguồn không có comment, chưa suy luận)"
         },
         "key": {
           "oneOf": [
@@ -101,6 +101,16 @@
               "description": "Ghi chú FK — mối quan hệ nếu là FK (VD: 'FK → SECURITIES.Id')"
             }
           ]
+        },
+        "description_src": {
+          "type": "string",
+          "enum": ["schema", "inferred", "curated"],
+          "description": "Nguồn gốc của description. Vắng mặt = curated (đã duyệt, không ghi đè khi chạy lại). schema = lấy từ comment CSDL nguồn. inferred = suy luận từ tên cột/bảng, chờ Data Modeler duyệt."
+        },
+        "fk_src": {
+          "type": "string",
+          "enum": ["db", "inferred", "curated"],
+          "description": "Nguồn gốc của fk_note. Vắng mặt = curated. db = ràng buộc FK khai báo ở CSDL nguồn. inferred = gợi ý theo tên cột khớp tên bảng, chờ duyệt ở LLD."
         }
       }
     }

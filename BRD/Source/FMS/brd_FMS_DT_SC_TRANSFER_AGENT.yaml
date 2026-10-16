@@ -6,11 +6,12 @@ brd_ref: BRD-SRC-FMS-DT_SC_TRANSFER_AGENT
 columns:
 - name: DTS_ID
   data_type: RAW(16)
-  description: "FK -> DT_SCOPE: Cấu hình phân quyền dữ liệu của người dùng"
+  description: 'FK -> DT_SCOPE: Cấu hình phân quyền dữ liệu của người dùng'
   key: PK
   fk_note: null
 - name: TRANSFER_AGENT_ID
   data_type: RAW(16)
-  description: "FK -> TRANSFER_AGENT: Đại lý chuyển nhượng liên quan"
-  key: PK
-  fk_note: null
+  description: 'FK -> TRANSFER_AGENT: Đại lý chuyển nhượng liên quan'
+  key: PK/FK
+  fk_note: FK → TRANSFER_AGENT.ID
+  fk_src: inferred

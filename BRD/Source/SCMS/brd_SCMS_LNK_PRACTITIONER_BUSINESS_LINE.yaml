@@ -4,13 +4,14 @@ source: SCMS
 table: LNK_PRACTITIONER_BUSINESS_LINE
 brd_ref: BRD-SRC-SCMS-LNK_PRACTITIONER_BUSINESS_LINE
 columns:
-  - name: LICENSED_PRACTITIONER_ID
-    data_type: NUMBER(10,0)
-    description: null
-    key: null
-    fk_note: null
-  - name: BUSINESS_LINE_ID
-    data_type: NUMBER(10,0)
-    description: null
-    key: null
-    fk_note: null
+- name: LICENSED_PRACTITIONER_ID
+  data_type: NUMBER(10,0)
+  description: null
+  key: FK
+  fk_note: FK → SC_FIRM_LICENSED_PRACTITIONER.ID
+  fk_src: inferred
+- name: BUSINESS_LINE_ID
+  data_type: NUMBER(10,0)
+  description: null
+  key: null
+  fk_note: null

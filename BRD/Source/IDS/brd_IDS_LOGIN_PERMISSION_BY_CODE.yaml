@@ -4,48 +4,50 @@ source: IDS
 table: LOGIN_PERMISSION_BY_CODE
 brd_ref: BRD-SRC-IDS-LOGIN_PERMISSION_BY_CODE
 columns:
-  - name: ID
-    data_type: NUMBER(10,0)
-    description: "Khóa chính của bảng"
-    key: PK
-    fk_note: null
-  - name: LOGIN_ID
-    data_type: NUMBER(10,0)
-    description: "ID của tài khoản sử dụng"
-    key: null
-    fk_note: null
-  - name: LOGIN_NAME
-    data_type: VARCHAR2(200)
-    description: "User name"
-    key: null
-    fk_note: null
-  - name: COMPANY_PROFILE_ID
-    data_type: NUMBER(10,0)
-    description: "ID hồ sơ được phân quyền"
-    key: null
-    fk_note: null
-  - name: CREATED_BY
-    data_type: VARCHAR2(200)
-    description: "Người tạo"
-    key: null
-    fk_note: null
-  - name: CREATED_DATE
-    data_type: DATE
-    description: "Ngày tạo"
-    key: null
-    fk_note: null
-  - name: UPDATED_BY
-    data_type: VARCHAR2(200)
-    description: "Người cập nhật"
-    key: null
-    fk_note: null
-  - name: UPDATED_DATE
-    data_type: DATE
-    description: "Ngày cập nhật"
-    key: null
-    fk_note: null
-  - name: AF_PROFILE_ID
-    data_type: NUMBER(10,0)
-    description: "ID hồ sơ công ty kiểm toán được phân quyền (FK -> AF_PROFILES.ID)"
-    key: null
-    fk_note: null
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bảng
+  key: PK
+  fk_note: null
+- name: LOGIN_ID
+  data_type: NUMBER(10,0)
+  description: ID của tài khoản sử dụng
+  key: FK
+  fk_note: FK → LOGINS.ID
+  fk_src: inferred
+- name: LOGIN_NAME
+  data_type: VARCHAR2(200)
+  description: User name
+  key: null
+  fk_note: null
+- name: COMPANY_PROFILE_ID
+  data_type: NUMBER(10,0)
+  description: ID hồ sơ được phân quyền
+  key: FK
+  fk_note: FK → COMPANY_PROFILES.ID
+  fk_src: inferred
+- name: CREATED_BY
+  data_type: VARCHAR2(200)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(200)
+  description: Người cập nhật
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày cập nhật
+  key: null
+  fk_note: null
+- name: AF_PROFILE_ID
+  data_type: NUMBER(10,0)
+  description: ID hồ sơ công ty kiểm toán được phân quyền (FK -> AF_PROFILES.ID)
+  key: null
+  fk_note: null

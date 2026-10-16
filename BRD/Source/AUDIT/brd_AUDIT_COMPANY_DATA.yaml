@@ -1,0 +1,206 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: COMPANY_DATA
+brd_ref: BRD-SRC-AUDIT-COMPANY_DATA
+columns:
+- name: ID
+  data_type: NUMBER(19,0)
+  description: Khóa chính
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: COMPANY_PROFILE_ID
+  data_type: NUMBER(10,0)
+  description: ID Hồ sơ doanh nghiệp
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DOC_TITLE
+  data_type: VARCHAR2(512)
+  description: Mô tả tiêu đề tin/hồ sơ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: FORM_ID
+  data_type: NUMBER(19,0)
+  description: ID form
+  description_src: schema
+  key: FK
+  fk_note: FK → FORMS.ID
+  fk_src: inferred
+- name: NEWS_STATUS_CD
+  data_type: VARCHAR2(255)
+  description: 'Trạng thái (Chờ duyệt; Đã duyệt; Từ chối; Đóng quy trình): LOOKUP_VALUES,
+    LOOKUP_GROUP = "NEWS_APPROVAL_STATUS"'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: NUMBER(4,0)
+  description: Năm báo cáo tài chính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REPORT_QUARTER
+  data_type: NUMBER(1,0)
+  description: Quý báo cáo tài chính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REPORT_MONTH
+  data_type: NUMBER(2,0)
+  description: Tháng báo cáo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PARENT_ID
+  data_type: NUMBER(19,0)
+  description: là parent id của company_data
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DOC_NO
+  data_type: VARCHAR2(1000)
+  description: Số công văn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DOC_DATE
+  data_type: DATE
+  description: Ngày công văn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DOC_SUMMARY
+  data_type: VARCHAR2(4000)
+  description: Trích yếu
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DOC_SIGN_DATE
+  data_type: DATE
+  description: Ngày ký văn bản
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SUBMISSION_DATE
+  data_type: DATE
+  description: Ngày gửi duyệt (submit to worklist)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: APPROVAL_DATE
+  data_type: DATE
+  description: Ngày phê duyệt
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REJECTION_DATE
+  data_type: DATE
+  description: Ngày từ chối
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SUBMISSION_DEADLINE_DATE
+  data_type: DATE
+  description: Ngày gửi tin (deadline) - chạy job hàng ngày, hoặc khi gửi tin thì
+    tính ngay
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OVERDUE_DAYS
+  data_type: NUMBER(38,0)
+  description: 'Thời gian quá hạn (theo ngày): = SUBMISSION_DATE - SUBMISSION_DEADLINE_DATE
+    (=0 - Đúng hạn, >0 - Quá hạn x ngày)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REF_ID
+  data_type: NUMBER(10,0)
+  description: Id của company_data, dùng trong trường hợp có tin đính chính - Luôn
+    Lưu id của tin gốc
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DIGITAL_SIGNATURE_FLG
+  data_type: NUMBER(2,0)
+  description: File đính kèm có chữ ký số hay ko (1 - có, 0 - không có)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: Người tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(255)
+  description: Người sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: NEWS_TYPE_CD
+  data_type: VARCHAR2(200)
+  description: 'Loại báo cáo (Báo cáo tài chính; Báo cáo định kỳ khác; Báo cáo bất
+    thường 24h...): LOOKUP_VALUES, LOOKUP_GROUP = "NEWS_TYPE". Note: select * from
+    LOOKUP_VALUES where LOOKUP_GROUP=''NEWS_TYPE'''
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REJECT_REASON
+  data_type: VARCHAR2(4000)
+  description: Lý do từ chối/gửi lại tin từ chuyên viên/lãnh đạo HNX (nullable, latest
+    only)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVIEW_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày chuyên viên trình phê duyệt (transition SUBMITTED → REVIEWED)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SEND_BACK_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày chuyên viên gửi lại tin yêu cầu bổ sung (transition SUBMITTED
+    → NOT_APPROVED)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LINK_ID
+  data_type: NUMBER
+  description: Id link giữa tin tiếng anh và tin tiếng việt
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LANGUAGE_CD
+  data_type: VARCHAR2(80)
+  description: Mã ngôn ngữ (VI - Tiếng việt, EN - Tiếng Anh)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ALERT_AUDIT
+  data_type: VARCHAR2(4000)
+  description: Noi dung canh bao kiem toan tu dong
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SYSTEM_CD
+  data_type: VARCHAR2(80)
+  description: null
+  key: null
+  fk_note: null

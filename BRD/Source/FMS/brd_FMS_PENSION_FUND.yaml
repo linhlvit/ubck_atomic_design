@@ -6,86 +6,87 @@ brd_ref: BRD-SRC-FMS-PENSION_FUND
 columns:
 - name: ID
   data_type: RAW(16)
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  description: Khóa chính của bản ghi (UUID dạng RAW(16))
   key: PK
   fk_note: null
 - name: SEC_ID
   data_type: RAW(16)
-  description: "FK -> SECURITIES: Công ty QLQ liên quan"
+  description: 'FK -> SECURITIES: Công ty QLQ liên quan'
   key: FK
   fk_note: null
 - name: BUSINESS_CERT_NO
   data_type: VARCHAR2(200)
-  description: "Số GCN thành lập quỹ hưu trí"
+  description: Số GCN thành lập quỹ hưu trí
   key: null
   fk_note: null
 - name: ITEM_NAME
   data_type: VARCHAR2(1000)
-  description: "Tên hiển thị chính"
+  description: Tên hiển thị chính
   key: null
   fk_note: null
 - name: NAME_EN
   data_type: VARCHAR2(1000)
-  description: "Tên tiếng Anh"
+  description: Tên tiếng Anh
   key: null
   fk_note: null
 - name: SHORT_NAME
   data_type: VARCHAR2(50)
-  description: "Tên viết tắt"
+  description: Tên viết tắt
   key: null
   fk_note: null
 - name: CUSTODIAN_BANK_ID
   data_type: RAW(16)
-  description: "FK -> BANK_MONI: Ngân hàng lưu ký của quỹ hưu trí"
+  description: 'FK -> BANK_MONI: Ngân hàng lưu ký của quỹ hưu trí'
   key: FK
   fk_note: null
 - name: SUPERVISOR_BANK_ID
   data_type: RAW(16)
-  description: "FK -> BANK_MONI: Ngân hàng giám sát của quỹ hưu trí"
+  description: 'FK -> BANK_MONI: Ngân hàng giám sát của quỹ hưu trí'
   key: FK
   fk_note: null
 - name: STATUS_ID
   data_type: RAW(16)
-  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)"
+  description: 'FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)'
   key: FK
-  fk_note: null
+  fk_note: FK → STATUS.ID
+  fk_src: inferred
 - name: NOTE
   data_type: VARCHAR2(2000)
-  description: "Ghi chú bổ sung"
+  description: Ghi chú bổ sung
   key: null
   fk_note: null
 - name: FILE_NAME
   data_type: VARCHAR2(1000)
-  description: "Tên file hoặc danh sách tên file đính kèm"
+  description: Tên file hoặc danh sách tên file đính kèm
   key: null
   fk_note: null
 - name: FILE_DATA
   data_type: NCLOB
-  description: "Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)"
+  description: Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)
   key: null
   fk_note: null
 - name: DELETED
   data_type: NUMBER(1,0)
-  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  description: 'Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động'
   key: null
   fk_note: null
 - name: DATE_CREATED
   data_type: TIMESTAMP(6)
-  description: "Thời điểm tạo bản ghi"
+  description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: VARCHAR2(200)
-  description: "Tài khoản người tạo bản ghi"
+  description: Tài khoản người tạo bản ghi
   key: null
   fk_note: null
 - name: DATE_MODIFIED
   data_type: TIMESTAMP(6)
-  description: "Thời điểm cập nhật bản ghi lần cuối"
+  description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: MODIFY_BY
   data_type: VARCHAR2(200)
-  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  description: Tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: null

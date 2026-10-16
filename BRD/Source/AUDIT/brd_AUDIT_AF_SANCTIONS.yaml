@@ -1,0 +1,77 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: AF_SANCTIONS
+brd_ref: BRD-SRC-AUDIT-AF_SANCTIONS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: AF_PROFILE_ID
+  data_type: NUMBER(10,0)
+  description: Link đến bảng AF_PROFILES
+  description_src: schema
+  key: FK
+  fk_note: FK → AF_PROFILES.ID
+  fk_src: inferred
+- name: SANCTION_AUTHORITY_CD
+  data_type: VARCHAR2(400)
+  description: Đơn vị xử phạt (BTC hay UB)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DECISION_NO
+  data_type: VARCHAR2(72)
+  description: Số quyết định xử phạt
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DECISION_DATE
+  data_type: DATE
+  description: Ngày quyết định xử phạt
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ATTACHMENT_FILE_URL
+  data_type: VARCHAR2(1020)
+  description: File đính kèm (đường link)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(120)
+  description: Người tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(120)
+  description: Người sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DELETE_FLG
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: SANCTION_CONTENT
+  data_type: CLOB
+  description: null
+  key: null
+  fk_note: null

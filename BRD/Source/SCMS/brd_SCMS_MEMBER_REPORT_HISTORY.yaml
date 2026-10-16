@@ -4,123 +4,126 @@ source: SCMS
 table: MEMBER_REPORT_HISTORY
 brd_ref: BRD-SRC-SCMS-MEMBER_REPORT_HISTORY
 columns:
-  - name: ID
-    data_type: NUMBER(10,0)
-    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: null
-    fk_note: null
-  - name: MEMBER_REPORT_ID
-    data_type: NUMBER(10,0)
-    description: "FK -> member_report: Báo cáo thành viên liên quan"
-    key: null
-    fk_note: null
-  - name: SC_FIRM_INFO_ID
-    data_type: NUMBER(10,0)
-    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: null
-    fk_note: null
-  - name: FORM_REPORT_ID
-    data_type: NUMBER(10,0)
-    description: "FK -> form_report: Biểu mẫu báo cáo liên quan"
-    key: null
-    fk_note: null
-  - name: FORM_PERIODIC_REPORT_ID
-    data_type: NUMBER(10,0)
-    description: "FK -> form_report_periodic: Lịch kỳ biểu mẫu liên quan"
-    key: null
-    fk_note: null
-  - name: USER_ID
-    data_type: NUMBER(10,0)
-    description: "FK -> sys_user: Người dùng liên quan"
-    key: null
-    fk_note: null
-  - name: DESCRIPTION
-    data_type: NVARCHAR2(2000)
-    description: "Mô tả chi tiết nội dung/mục đích của bản ghi"
-    key: null
-    fk_note: null
-  - name: REASON
-    data_type: NVARCHAR2(2000)
-    description: null
-    key: null
-    fk_note: null
-  - name: SUBMISSION_TIME
-    data_type: NVARCHAR2(200)
-    description: null
-    key: null
-    fk_note: null
-  - name: RESUBMISSION_REASON
-    data_type: NVARCHAR2(2000)
-    description: null
-    key: null
-    fk_note: null
-  - name: ATTACHMENT_PATH
-    data_type: NVARCHAR2(2000)
-    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ"
-    key: null
-    fk_note: null
-  - name: DATA_DATE
-    data_type: TIMESTAMP(6)
-    description: null
-    key: null
-    fk_note: null
-  - name: SENT_AT
-    data_type: TIMESTAMP(6)
-    description: "Thời điểm gửi thông báo/tin nhắn"
-    key: null
-    fk_note: null
-  - name: CREATED_AT
-    data_type: TIMESTAMP(6)
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)"
-    key: null
-    fk_note: null
-  - name: RECORD_STATUS
-    data_type: NUMBER
-    description: "Trang thai lich su bao cao thanh vien (tham chieu MEMBER_REPORT.RECORD_STATUS): 1 = Chua gui; 2 = Da gui; 3 = Gui muon; 4 = Bi huy; 5 = Yeu cau gui lai; 6 = Yeu cau huy"
-    key: null
-    fk_note: null
-  - name: VERSION
-    data_type: NUMBER
-    description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking"
-    key: null
-    fk_note: null
-  - name: REPORT_CANCELLED
-    data_type: NUMBER
-    description: "Co huy bao cao tai thoi diem ghi lich su: 1 = Bi huy; 2 = De nghi huy"
-    key: null
-    fk_note: null
-  - name: OLD_DATA
-    data_type: NVARCHAR2(2000)
-    description: "Dữ liệu cũ trước khi thay đổi (JSON hoặc văn bản)"
-    key: null
-    fk_note: null
-  - name: NEW_DATA
-    data_type: NVARCHAR2(2000)
-    description: "Dữ liệu mới sau khi thay đổi (JSON hoặc văn bản)"
-    key: null
-    fk_note: null
-  - name: ACTION
-    data_type: VARCHAR2(100)
-    description: null
-    key: null
-    fk_note: null
-  - name: IP_ADDRESS
-    data_type: VARCHAR2(50)
-    description: "Địa chỉ IP đăng nhập"
-    key: null
-    fk_note: null
-  - name: PERFORMED_AT
-    data_type: TIMESTAMP(6)
-    description: null
-    key: null
-    fk_note: null
-  - name: PERFORMED_BY
-    data_type: NUMBER(10,0)
-    description: "FK -> sys_user: Người thực hiện"
-    key: null
-    fk_note: null
-  - name: PERFORMER_NAME
-    data_type: VARCHAR2(200)
-    description: "Tên người thực hiện"
-    key: null
-    fk_note: null
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính của bản ghi (ID tự tăng hoặc UUID)
+  key: null
+  fk_note: null
+- name: MEMBER_REPORT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> member_report: Báo cáo thành viên liên quan'
+  key: FK
+  fk_note: FK → MEMBER_REPORT.ID
+  fk_src: inferred
+- name: SC_FIRM_INFO_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> sc_firm_info: Công ty chứng khoán liên quan'
+  key: FK
+  fk_note: FK → SC_FIRM_INFO.ID
+  fk_src: inferred
+- name: FORM_REPORT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> form_report: Biểu mẫu báo cáo liên quan'
+  key: FK
+  fk_note: FK → FORM_REPORT.ID
+  fk_src: inferred
+- name: FORM_PERIODIC_REPORT_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> form_report_periodic: Lịch kỳ biểu mẫu liên quan'
+  key: null
+  fk_note: null
+- name: USER_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> sys_user: Người dùng liên quan'
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(4000)
+  description: Mô tả chi tiết nội dung/mục đích của bản ghi
+  key: null
+  fk_note: null
+- name: REASON
+  data_type: NVARCHAR2(4000)
+  description: null
+  key: null
+  fk_note: null
+- name: SUBMISSION_TIME
+  data_type: NVARCHAR2(400)
+  description: null
+  key: null
+  fk_note: null
+- name: RESUBMISSION_REASON
+  data_type: NVARCHAR2(4000)
+  description: null
+  key: null
+  fk_note: null
+- name: ATTACHMENT_PATH
+  data_type: NVARCHAR2(4000)
+  description: Đường dẫn file đính kèm trên hệ thống lưu trữ
+  key: null
+  fk_note: null
+- name: DATA_DATE
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: SENT_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm gửi thông báo/tin nhắn
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER
+  description: 'Trang thai lich su bao cao thanh vien (tham chieu MEMBER_REPORT.RECORD_STATUS): 1 = Chua gui; 2 = Da gui; 3 = Gui muon; 4 = Bi huy; 5 = Yeu cau gui lai; 6 = Yeu cau huy'
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER
+  description: Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking
+  key: null
+  fk_note: null
+- name: REPORT_CANCELLED
+  data_type: NUMBER
+  description: 'Co huy bao cao tai thoi diem ghi lich su: 1 = Bi huy; 2 = De nghi huy'
+  key: null
+  fk_note: null
+- name: OLD_DATA
+  data_type: NVARCHAR2(4000)
+  description: Dữ liệu cũ trước khi thay đổi (JSON hoặc văn bản)
+  key: null
+  fk_note: null
+- name: NEW_DATA
+  data_type: NVARCHAR2(4000)
+  description: Dữ liệu mới sau khi thay đổi (JSON hoặc văn bản)
+  key: null
+  fk_note: null
+- name: ACTION
+  data_type: VARCHAR2(400)
+  description: null
+  key: null
+  fk_note: null
+- name: IP_ADDRESS
+  data_type: VARCHAR2(200)
+  description: Địa chỉ IP đăng nhập
+  key: null
+  fk_note: null
+- name: PERFORMED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: PERFORMED_BY
+  data_type: NUMBER(10,0)
+  description: 'FK -> sys_user: Người thực hiện'
+  key: null
+  fk_note: null
+- name: PERFORMER_NAME
+  data_type: VARCHAR2(800)
+  description: Tên người thực hiện
+  key: null
+  fk_note: null

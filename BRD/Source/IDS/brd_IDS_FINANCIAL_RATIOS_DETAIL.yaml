@@ -1,0 +1,1106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: FINANCIAL_RATIOS_DETAIL
+brd_ref: BRD-SRC-IDS-FINANCIAL_RATIOS_DETAIL
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính - ID bản ghi (dùng để join sang LOOKUP_KEY_FINANCIALS)
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: COMPANY_CATEGORY
+  data_type: VARCHAR2(255)
+  description: 'Loại hình công ty (VD: công ty đại chúng, CTCK, NHTM...)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: STOCK_CODE
+  data_type: VARCHAR2(40)
+  description: Mã chứng khoán / mã công ty
+  description_src: schema
+  key: null
+  fk_note: null
+- name: YEAR
+  data_type: NUMBER(4,0)
+  description: Năm báo cáo tài chính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: QUARTER
+  data_type: NUMBER(1,0)
+  description: 'Số thứ tự trong kỳ: 1..4 khi REPORTING_PERIOD_CD=''QUAR''; 1..2 khi
+    ''HALF''; NULL/1 khi ''YEAR'''
+  description_src: schema
+  key: null
+  fk_note: null
+- name: STOCK_EXCHANGE
+  data_type: VARCHAR2(255)
+  description: Sàn niêm yết (HOSE, HNX, UPCoM...)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CATEGORIES_ID
+  data_type: NUMBER(19,0)
+  description: ID danh mục ngành nghề
+  description_src: schema
+  key: FK
+  fk_note: FK → CATEGORIES.ID
+  fk_src: inferred
+- name: REPORT_CATALOG_ID
+  data_type: NUMBER(19,0)
+  description: FK sang REPORT_CATALOG.ID - xác định tổ hợp (REPORT_CD, REPORT_YEAR,
+    STMT, PERIOD, ENT, CONSOLIDATED)
+  description_src: schema
+  key: FK
+  fk_note: FK → REPORT_CATALOG.ID
+  fk_src: db
+- name: FINANCIAL_STATEMENT_CD
+  data_type: VARCHAR2(3)
+  description: 'Loại BCTC: HN=hợp nhất, ME=công ty mẹ, RI=riêng, TH=tổng hợp (denormalize
+    từ REPORT_CATALOG)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REPORTING_PERIOD_CD
+  data_type: VARCHAR2(4)
+  description: 'Kỳ báo cáo: QUAR=quý, HALF=bán niên, YEAR=năm (denormalize từ REPORT_CATALOG)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ENTERPRISE_TYPE_CD
+  data_type: VARCHAR2(2)
+  description: 'Loại doanh nghiệp: BH=bảo hiểm, DN=doanh nghiệp thường, TD=tổ chức
+    tín dụng (denormalize từ REPORT_CATALOG)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CONSOLIDATED_FLG
+  data_type: NUMBER(1,0)
+  description: 'Cờ hợp nhất: 0=không hợp nhất, 1=hợp nhất (denormalize từ REPORT_CATALOG)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CALCULATION_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Cờ tính toán dữ liệu: 0=chưa tính sang LOOKUP_KEY_FINANCIALS, 1=đã
+    tính'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CURRENT_ASSET
+  data_type: NUMBER(30,3)
+  description: Tài sản ngắn hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CASH_AND_CASH_EQUIVALENTS
+  data_type: NUMBER(30,3)
+  description: Tiền và các khoản tương đương tiền
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SHORT_INVESTMENTS
+  data_type: NUMBER(30,3)
+  description: Đầu tư tài chính ngắn hạn (tổng)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SHORT_INVESTMENT
+  data_type: NUMBER(30,3)
+  description: Đầu tư tài chính ngắn hạn (chi tiết, không kể dự phòng)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PROVISION_SHORT_INVESTMENT
+  data_type: NUMBER(30,3)
+  description: Dự phòng giảm giá đầu tư ngắn hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SHORT_RECEIVABLES
+  data_type: NUMBER(30,3)
+  description: Các khoản phải thu ngắn hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SHORT_TRADE_RECEIVABLES
+  data_type: NUMBER(30,3)
+  description: Phải thu thương mại ngắn hạn (khách hàng)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SHORT_PROVI_BAD_RECEIVABLES
+  data_type: NUMBER(30,3)
+  description: Dự phòng phải thu ngắn hạn khó đòi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: RECEIVABLES_SCHEDULE
+  data_type: NUMBER(30,3)
+  description: Phải thu theo tiến độ (hợp đồng xây dựng)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INVENTORY
+  data_type: NUMBER(30,3)
+  description: Hàng tồn kho (tổng)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INVENTORY_141
+  data_type: NUMBER(30,3)
+  description: Hàng tồn kho theo TK141 (tạm ứng liên quan tồn kho)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PROVISION_DEVALUATION_STOCK
+  data_type: NUMBER(30,3)
+  description: Dự phòng giảm giá hàng tồn kho
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LONGTERM_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản dài hạn (tổng)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LONG_RECEIVABLES
+  data_type: NUMBER(30,3)
+  description: Các khoản phải thu dài hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LONG_TRADE_RECEIVABLES
+  data_type: NUMBER(30,3)
+  description: Phải thu thương mại dài hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LONG_PROVI_BAD_RECEIVABLES
+  data_type: NUMBER(30,3)
+  description: Dự phòng phải thu dài hạn khó đòi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: FIXED_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản cố định (tổng, gồm HH+VH+TC)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: FIXED_ASSET
+  data_type: NUMBER(30,3)
+  description: Tài sản cố định (giá trị còn lại)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TANGIBLE_FIXED_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản cố định hữu hình
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACCUMULATED_DEPRECIATION
+  data_type: NUMBER(30,3)
+  description: Khấu hao lũy kế tài sản cố định hữu hình
+  description_src: schema
+  key: null
+  fk_note: null
+- name: FINANCE_LEASE_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản thuê tài chính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACCUM_DEPRE_FINANCE_LEASE
+  data_type: NUMBER(30,3)
+  description: Khấu hao lũy kế tài sản thuê tài chính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACCUMULATED_AMORTIZATION
+  data_type: NUMBER(30,3)
+  description: Khấu hao lũy kế tài sản cố định vô hình
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REAL_ESTATE_INVESTMENT
+  data_type: NUMBER(30,3)
+  description: Bất động sản đầu tư
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LONG_INVESTMENTS
+  data_type: NUMBER(30,3)
+  description: Đầu tư tài chính dài hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PROVISION_LONG_INVESTMENT
+  data_type: NUMBER(30,3)
+  description: Dự phòng giảm giá đầu tư dài hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OTHER_LONG_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản dài hạn khác
+  description_src: schema
+  key: null
+  fk_note: null
+- name: FLOATING_ASSET
+  data_type: NUMBER(30,3)
+  description: Tài sản lưu động
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TOTAL_ASSET
+  data_type: NUMBER(30,3)
+  description: Tổng cộng tài sản
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TOTAL_LIABILITY
+  data_type: NUMBER(30,3)
+  description: Tổng nợ phải trả
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SHORTTERM_BORROWINGS
+  data_type: NUMBER(30,3)
+  description: Nợ ngắn hạn (vay và các khoản phải trả ngắn hạn)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SHORT_PROVISION_PAYABLE
+  data_type: NUMBER(30,3)
+  description: Dự phòng phải trả ngắn hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LONGTERM_LIABILITIES
+  data_type: NUMBER(30,3)
+  description: Nợ dài hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LONG_PROVISION_PAYABLE
+  data_type: NUMBER(30,3)
+  description: Dự phòng phải trả dài hạn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CONVERTIBLE_BONDS
+  data_type: NUMBER(30,3)
+  description: Trái phiếu chuyển đổi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TAX_PAYABLES_GOVERNMENT
+  data_type: NUMBER(30,3)
+  description: Thuế và các khoản phải nộp Nhà nước
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OWNER_CAPITAL
+  data_type: NUMBER(30,3)
+  description: Vốn chủ sở hữu
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OWNER_S_EQUITY
+  data_type: NUMBER(30,3)
+  description: Vốn chủ sở hữu (bao gồm lợi ích cổ đông thiểu số nếu có)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OWNER_EQUITY
+  data_type: NUMBER(30,3)
+  description: Vốn chủ sở hữu (nguồn vốn CSH thuần)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: HOLDER_OWNER_CAPITAL
+  data_type: NUMBER(30,3)
+  description: Vốn chủ sở hữu thuộc cổ đông công ty mẹ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PAIDIN_CAPITAL
+  data_type: NUMBER(30,3)
+  description: Vốn góp của chủ sở hữu (vốn điều lệ đã góp)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AFTER_TAX_RETAIN_EARNINGS
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận sau thuế chưa phân phối
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OTHER_FUNDS
+  data_type: NUMBER(30,3)
+  description: Các quỹ khác thuộc vốn chủ sở hữu
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TOTAL_CAPITAL
+  data_type: NUMBER(30,3)
+  description: Tổng cộng nguồn vốn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LEGAL_CAPITAL
+  data_type: NUMBER(30,3)
+  description: Vốn pháp định (áp dụng CTCK, ngân hàng)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: STATE_ONWED_PERCENTAGE
+  data_type: NUMBER(30,3)
+  description: Tỷ lệ sở hữu Nhà nước
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE
+  data_type: NUMBER(30,3)
+  description: Doanh thu bán hàng và cung cấp dịch vụ (tổng)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ALLOWANCE_IN_REVENUE
+  data_type: NUMBER(30,3)
+  description: Các khoản giảm trừ doanh thu
+  description_src: schema
+  key: null
+  fk_note: null
+- name: GROSS_REVENUE
+  data_type: NUMBER(30,3)
+  description: Doanh thu thuần về bán hàng và cung cấp dịch vụ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CURRENT_REVENUE
+  data_type: NUMBER(30,3)
+  description: Doanh thu kỳ hiện tại (dùng tính growth)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OTHER_REVENUE
+  data_type: NUMBER(30,3)
+  description: Doanh thu khác
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE_SECURITY_BROKE_ACT
+  data_type: NUMBER(30,3)
+  description: Doanh thu hoạt động môi giới chứng khoán (CTCK)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE_SECURITY_INVEST_JOIN
+  data_type: NUMBER(30,3)
+  description: Doanh thu hoạt động tự doanh chứng khoán
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE_SECURITY_UNDERWRITING
+  data_type: NUMBER(30,3)
+  description: Doanh thu hoạt động bảo lãnh phát hành chứng khoán
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE_SECURITY_ISSU_AGENCY
+  data_type: NUMBER(30,3)
+  description: Doanh thu đại lý phát hành chứng khoán
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE_SECURITY_CONSUL_ACT
+  data_type: NUMBER(30,3)
+  description: Doanh thu tư vấn đầu tư chứng khoán
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE_SECURITY_DEPOSITORY
+  data_type: NUMBER(30,3)
+  description: Doanh thu lưu ký chứng khoán
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE_ACTION_COMMISSION
+  data_type: NUMBER(30,3)
+  description: Doanh thu hoa hồng đại lý
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REVENUE_ASSETS_LEASING
+  data_type: NUMBER(30,3)
+  description: Doanh thu cho thuê tài sản
+  description_src: schema
+  key: null
+  fk_note: null
+- name: COST_OF_GOOD_SOLD
+  data_type: NUMBER(30,3)
+  description: Giá vốn hàng bán
+  description_src: schema
+  key: null
+  fk_note: null
+- name: GROSS_PROFIT
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận gộp về bán hàng và cung cấp dịch vụ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: GROSS_PROFIT_BEFORE_TAX
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận gộp trước thuế
+  description_src: schema
+  key: null
+  fk_note: null
+- name: FINANCIAL_ACTIVITIES_INCOME
+  data_type: NUMBER(30,3)
+  description: Doanh thu hoạt động tài chính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: FINANCIAL_EXPENSES
+  data_type: NUMBER(30,3)
+  description: Chi phí hoạt động tài chính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: COST_OF_BORROWING
+  data_type: NUMBER(30,3)
+  description: Chi phí đi vay (thành phần của chi phí tài chính)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SELLING_EXPENSES
+  data_type: NUMBER(30,3)
+  description: Chi phí bán hàng
+  description_src: schema
+  key: null
+  fk_note: null
+- name: GEN_AND_ADMIN_EXPENSES
+  data_type: NUMBER(30,3)
+  description: Chi phí quản lý doanh nghiệp
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OPERATING_EXPENCE
+  data_type: NUMBER(30,3)
+  description: Chi phí hoạt động (áp dụng ngành đặc thù CTCK/NHTM)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OTHER_EXPENSES
+  data_type: NUMBER(30,3)
+  description: Chi phí khác
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OPERATING_INCOME
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận thuần từ hoạt động kinh doanh
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OTHER_EARNINGS
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận khác (thu nhập khác - chi phí khác)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: GAIN_LOSS_JOINT_VENTURE_CO
+  data_type: NUMBER(30,3)
+  description: Lãi/lỗ trong công ty liên doanh, liên kết
+  description_src: schema
+  key: null
+  fk_note: null
+- name: BEFORE_TAX_INCOME
+  data_type: NUMBER(30,3)
+  description: Tổng lợi nhuận kế toán trước thuế
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EARN_BEFORE_TAX
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận trước thuế (giá trị tổng hợp)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: BEFORE_TAX_INTEREST
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận trước thuế cộng chi phí lãi vay (EBIT)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CURR_BI_CHARGE
+  data_type: NUMBER(30,3)
+  description: Chi phí thuế TNDN kỳ hiện tại
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PROFIT_AFTER_TAX_BI
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận sau thuế TNDN (chi tiết theo cấu phần)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AFTER_TAX_INCOME
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận sau thuế TNDN
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AFTER_TAX_INCOME_HOLDER
+  data_type: NUMBER(30,3)
+  description: LNST thuộc về cổ đông công ty mẹ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AFTER_TAX_INCOME_MINORITY
+  data_type: NUMBER(30,3)
+  description: LNST thuộc về cổ đông không kiểm soát (thiểu số)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACCRUED_INCOME
+  data_type: NUMBER(30,3)
+  description: Thu nhập trích trước / thu nhập chờ phân bổ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INTEREST
+  data_type: NUMBER(30,3)
+  description: Chi phí lãi vay trong kỳ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PAYABLE_INTEREST
+  data_type: NUMBER(30,3)
+  description: Lãi vay phải trả (dùng cho hệ số thanh toán lãi vay)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DIVIDEND
+  data_type: NUMBER(30,3)
+  description: Cổ tức trong kỳ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EPS
+  data_type: NUMBER(30,3)
+  description: Thu nhập trên mỗi cổ phiếu (Earnings Per Share)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CURRENT_MARKET_PRICE
+  data_type: NUMBER(30,3)
+  description: Giá thị trường hiện tại của cổ phiếu
+  description_src: schema
+  key: null
+  fk_note: null
+- name: MARKET_PRICE
+  data_type: NUMBER(30,3)
+  description: Giá thị trường (tham chiếu)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: BOOK_PRICE
+  data_type: NUMBER(30,3)
+  description: Giá trị sổ sách của cổ phiếu
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EARN_PER_LATEST_COMMON_SHARE
+  data_type: NUMBER(30,3)
+  description: Thu nhập trên mỗi cổ phiếu phổ thông gần nhất
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CUR_MAR_PRICE_OF_COMMON_SHARE
+  data_type: NUMBER(30,3)
+  description: Giá thị trường hiện tại của cổ phiếu phổ thông
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INTEREST_PER_COMMON_SHARE
+  data_type: NUMBER(30,3)
+  description: Lãi trên mỗi cổ phiếu phổ thông
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DIVIDEND_PER_SHARE_EACH_YEAR
+  data_type: NUMBER(30,3)
+  description: Cổ tức trên mỗi cổ phiếu theo năm
+  description_src: schema
+  key: null
+  fk_note: null
+- name: NUMBER_OF_OUTSTANDING_SHARES
+  data_type: NUMBER(30,3)
+  description: Số cổ phiếu đang lưu hành cuối kỳ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVE_NUMBER_OF_FLOATING_STOCK
+  data_type: NUMBER(30,3)
+  description: Số cổ phiếu tự do chuyển nhượng bình quân
+  description_src: schema
+  key: null
+  fk_note: null
+- name: WEIGHT_AVE_OF_SHARES_OUTSTAND
+  data_type: NUMBER(30,3)
+  description: Bình quân gia quyền số cổ phiếu đang lưu hành trong kỳ (dùng tính EPS/BV)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CASH_FLOW_FROM_OPERATION
+  data_type: NUMBER(30,3)
+  description: Lưu chuyển tiền thuần từ hoạt động kinh doanh
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TOTAL_CASH_FLOW_FROM_OPERATION
+  data_type: NUMBER(30,3)
+  description: Tổng lưu chuyển tiền từ HĐKD lũy kế
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CASH_FLOW_FROM_INVESTMENT_TT
+  data_type: NUMBER(30,3)
+  description: Lưu chuyển tiền thuần từ hoạt động đầu tư (phương pháp trực tiếp)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CASH_FLOW_FROM_FINANCIAL_TT
+  data_type: NUMBER(30,3)
+  description: Lưu chuyển tiền thuần từ hoạt động tài chính (phương pháp trực tiếp)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OPERATING_CASHFLOW
+  data_type: NUMBER(30,3)
+  description: Dòng tiền thuần từ hoạt động (tổng hợp)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: WARNING_CASHFLOW_FROM_OPERA
+  data_type: NUMBER(30,3)
+  description: Cờ cảnh báo dòng tiền từ HĐKD âm liên tiếp
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OUTSTANDING_CREDIT
+  data_type: NUMBER(30,3)
+  description: Dư nợ tín dụng (NHTM)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OPEN_OUTSTANDING_CREDIT
+  data_type: NUMBER(30,3)
+  description: Dư nợ tín dụng đầu kỳ (NHTM)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CLOSE_OUTSTANDING_CREDIT
+  data_type: NUMBER(30,3)
+  description: Dư nợ tín dụng cuối kỳ (NHTM)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CAPITAL_MOBILIZATION
+  data_type: NUMBER(30,3)
+  description: Vốn huy động (NHTM)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OPEN_DEPOSIT
+  data_type: NUMBER(30,3)
+  description: Số dư tiền gửi đầu kỳ (NHTM)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CLOSE_DEPOSIT
+  data_type: NUMBER(30,3)
+  description: Số dư tiền gửi cuối kỳ (NHTM)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INVESTMENT_INTEREST
+  data_type: NUMBER(30,3)
+  description: Thu nhập lãi từ đầu tư (NHTM/CTCK)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVER_EARNING_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản sinh lãi bình quân (NHTM, tính NIM)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TOTAL_BAD_RESERVE
+  data_type: NUMBER(30,3)
+  description: Tổng dự phòng nợ xấu
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TOTAL_RESERVE
+  data_type: NUMBER(30,3)
+  description: Tổng dự phòng
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVAILABLE_CAPITAL_RATIO
+  data_type: NUMBER(30,3)
+  description: Tỷ lệ vốn khả dụng (CTCK)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVERAGE_RECEIVABLE
+  data_type: NUMBER(30,3)
+  description: Bình quân các khoản phải thu (đầu + cuối kỳ)/2
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVARAGE_INVENTORY
+  data_type: NUMBER(30,3)
+  description: Bình quân hàng tồn kho (đầu + cuối kỳ)/2
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVERAGE_PAYABLE
+  data_type: NUMBER(30,3)
+  description: Bình quân các khoản phải trả
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TOTAL_AVERAGE_ASSET
+  data_type: NUMBER(30,3)
+  description: Tổng tài sản bình quân trong kỳ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TOTAL_AVERAGE_FIXED_ASSET
+  data_type: NUMBER(30,3)
+  description: Tài sản cố định bình quân trong kỳ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVERAGE_OWNER_CAPITAL
+  data_type: NUMBER(30,3)
+  description: Vốn chủ sở hữu bình quân trong kỳ
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVERAGE_FLOATING_CAPITAL
+  data_type: NUMBER(30,3)
+  description: Vốn lưu động bình quân
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVG_CURRENT_ASSET
+  data_type: NUMBER(30,3)
+  description: Bình quân tài sản ngắn hạn (đầu + cuối kỳ)/2
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AVG_SHORTERM_BORROWINGS
+  data_type: NUMBER(30,3)
+  description: Bình quân nợ ngắn hạn (đầu + cuối kỳ)/2
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CURRENT_AVERAGE_NOPAT
+  data_type: NUMBER(30,3)
+  description: NOPAT bình quân kỳ hiện tại
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREVIOUS_AVERAGE_NOPAT
+  data_type: NUMBER(30,3)
+  description: NOPAT bình quân kỳ trước
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ADJUSTED_PREVIOUS_AVE_NOPAT
+  data_type: NUMBER(30,3)
+  description: NOPAT bình quân kỳ trước đã điều chỉnh
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREVIOUS_REVENUE
+  data_type: NUMBER(30,3)
+  description: Doanh thu kỳ trước (dùng tính SALE_GROWTH_RATE)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_GROSS_REVENUE
+  data_type: NUMBER(30,3)
+  description: Doanh thu thuần kỳ trước (dùng tính SALE_GROWTH)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_GROSS_PROFIT
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận gộp kỳ trước
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_AFTER_TAX_INCOME
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận sau thuế kỳ trước (dùng tính AFTER_TAX_INCOME_GROWTH)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_EPS
+  data_type: NUMBER(30,3)
+  description: EPS kỳ trước (dùng tính EPS_GROWTH)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_OWNER_CAPITAL
+  data_type: NUMBER(30,3)
+  description: Vốn CSH kỳ trước (dùng tính OWNER_S_EQUITY_GROWTH)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_CASH_AND_CASH_EQUIV
+  data_type: NUMBER(30,3)
+  description: Tiền và tương đương tiền kỳ trước (dùng tính CASH_GROWTH)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_CURRENT_ASSET
+  data_type: NUMBER(30,3)
+  description: Tài sản ngắn hạn kỳ trước
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_TOTAL_ASSET
+  data_type: NUMBER(30,3)
+  description: Tổng tài sản kỳ trước (dùng tính AQI, TATA)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_LONG_INVESTMENTS
+  data_type: NUMBER(30,3)
+  description: Đầu tư dài hạn kỳ trước (dùng tính AQI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_SHORT_TRADE_RECEIVABLES
+  data_type: NUMBER(30,3)
+  description: Phải thu thương mại ngắn hạn kỳ trước (DRSI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_LONG_TRADE_RECEIVABLES
+  data_type: NUMBER(30,3)
+  description: Phải thu thương mại dài hạn kỳ trước (DRSI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_RECEIVABLES_SCHEDULE
+  data_type: NUMBER(30,3)
+  description: Phải thu theo tiến độ kỳ trước
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_TANGIBLE_FIXED_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản cố định hữu hình kỳ trước (DEPI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_FINANCE_LEASE_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản thuê tài chính kỳ trước (DEPI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_ACCUMULATED_DEPRECIATION
+  data_type: NUMBER(30,3)
+  description: Khấu hao lũy kế TSCĐ HH kỳ trước (DEPI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_ACCUM_DEPRE_FINANCE_LEASE
+  data_type: NUMBER(30,3)
+  description: Khấu hao lũy kế TSCĐ thuê TC kỳ trước (DEPI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_ACCUMULATED_AMORTIZATION
+  data_type: NUMBER(30,3)
+  description: Khấu hao lũy kế TSCĐ vô hình kỳ trước
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_SELLING_EXPENSES
+  data_type: NUMBER(30,3)
+  description: Chi phí bán hàng kỳ trước (SGAI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_GEN_AND_ADMIN_EXPENSES
+  data_type: NUMBER(30,3)
+  description: Chi phí QLDN kỳ trước (SGAI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_CONVERTIBLE_BONDS
+  data_type: NUMBER(30,3)
+  description: Trái phiếu chuyển đổi kỳ trước (LVGI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_TAX_PAYABLES_GOVERNMENT
+  data_type: NUMBER(30,3)
+  description: Thuế phải nộp NN kỳ trước (LVGI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_SHORTTERM_BORROWINGS
+  data_type: NUMBER(30,3)
+  description: Nợ ngắn hạn kỳ trước (LVGI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_LONGTERM_LIABILITIES
+  data_type: NUMBER(30,3)
+  description: Nợ dài hạn kỳ trước (LVGI)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: BEF_OPERATING_INCOME
+  data_type: NUMBER(30,3)
+  description: Lợi nhuận HĐKD kỳ trước (tính GROWTH_AFTAX_INC_RATE_OPERA)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DRSI
+  data_type: NUMBER(30,3)
+  description: 'Beneish M-Score - DRSI: Days Sales in Receivables Index'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: GMI
+  data_type: NUMBER(30,3)
+  description: 'Beneish M-Score - GMI: Gross Margin Index'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AQI
+  data_type: NUMBER(30,3)
+  description: 'Beneish M-Score - AQI: Asset Quality Index'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SGI
+  data_type: NUMBER(30,3)
+  description: 'Beneish M-Score - SGI: Sales Growth Index'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DEPI
+  data_type: NUMBER(30,3)
+  description: 'Beneish M-Score - DEPI: Depreciation Index'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SGAI
+  data_type: NUMBER(30,3)
+  description: 'Beneish M-Score - SGAI: Sales, General & Admin Expenses Index'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LVGI
+  data_type: NUMBER(30,3)
+  description: 'Beneish M-Score - LVGI: Leverage Index'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TATA
+  data_type: NUMBER(30,3)
+  description: 'Beneish M-Score - TATA: Total Accruals to Total Assets'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATE_BY
+  data_type: VARCHAR2(255)
+  description: Người/tài khoản tạo bản ghi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATE_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATE_BY
+  data_type: VARCHAR2(255)
+  description: Người/tài khoản cập nhật gần nhất
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATE_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật gần nhất
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACCUM_DEPRE_TANGIBLE
+  data_type: NUMBER(30,3)
+  description: Khấu hao lũy kế TSCĐ hữu hình (BCĐKT mã 223) - số cuối kỳ (B0), phục
+    vụ M-Score
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_ACCUM_DEPRE_TANGIBLE
+  data_type: NUMBER(30,3)
+  description: Khấu hao lũy kế TSCĐ hữu hình - số đầu kỳ (B1), phục vụ M-Score
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TRADE_PAYABLES
+  data_type: NUMBER(30,3)
+  description: Phải trả người bán ngắn hạn - số cuối kỳ (DN mã 311, BH mã 312)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_TRADE_PAYABLES
+  data_type: NUMBER(30,3)
+  description: Phải trả người bán ngắn hạn - số đầu năm (dùng tính AVERAGE_PAYABLE)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LONG_TRADE_PAYABLES
+  data_type: NUMBER(30,3)
+  description: Phải trả người bán dài hạn - số cuối kỳ (mã 331)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_LONG_TRADE_PAYABLES
+  data_type: NUMBER(30,3)
+  description: Phải trả người bán dài hạn - số đầu năm (dùng tính AVERAGE_PAYABLE)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_INVENTORY
+  data_type: NUMBER(30,3)
+  description: Hàng tồn kho - số đầu năm (mã 140, dùng tính AVARAGE_INVENTORY)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_FIXED_ASSETS
+  data_type: NUMBER(30,3)
+  description: Tài sản cố định - số đầu năm (mã 220, dùng tính TOTAL_AVERAGE_FIXED_ASSET)
+  description_src: schema
+  key: null
+  fk_note: null

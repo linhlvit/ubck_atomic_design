@@ -5,22 +5,22 @@ table: SECURITIESACCOUNTHIS
 brd_ref: BRD-SRC-FIMS-SECURITIESACCOUNTHIS
 columns:
 - name: Id
-  data_type: "NUMBER(18,2)"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  data_type: NUMBER(18,2)
+  description: Khóa chính của bản ghi (ID số tự tăng)
   key: PK
   fk_note: null
 - name: SecId
-  data_type: "NUMBER(18,2)"
-  description: "FK -> SECURITIESCOMPANY: Công ty CK liên quan"
+  data_type: NUMBER(18,2)
+  description: 'FK -> SECURITIESCOMPANY: Công ty CK liên quan'
   key: FK
-  fk_note: "FK → SECURITIESCOMPANY.Id"
+  fk_note: FK → SECURITIESCOMPANY.Id
 - name: InvesId
-  data_type: "NUMBER(18,2)"
-  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán"
+  data_type: NUMBER(18,2)
+  description: 'FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán'
   key: FK
-  fk_note: "FK → INVESTORHIS.Id"
+  fk_note: FK → INVESTORHIS.Id
 - name: Account
-  data_type: "NVARCHAR2(50 CHAR)"
-  description: "Số tài khoản chứng khoán"
+  data_type: NVARCHAR2(100)
+  description: Số tài khoản chứng khoán
   key: null
   fk_note: null

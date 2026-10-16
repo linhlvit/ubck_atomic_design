@@ -1,0 +1,125 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: VIOLATION_REPORT
+brd_ref: BRD-SRC-AUDIT-VIOLATION_REPORT
+columns:
+- name: ID
+  data_type: NUMBER(38,0)
+  description: null
+  key: PK
+  fk_note: null
+- name: COMPANY_PROFILE_ID
+  data_type: NUMBER(38,0)
+  description: COMPANY_PROFILE_ID
+  description_src: schema
+  key: null
+  fk_note: null
+- name: VIOLATION_TEMPLATE_ID
+  data_type: NUMBER(38,0)
+  description: null
+  key: FK
+  fk_note: FK → VIOLATION_TEMPLATES.ID
+  fk_src: inferred
+- name: FORM_ID
+  data_type: NUMBER(38,0)
+  description: FORM_ID
+  description_src: schema
+  key: FK
+  fk_note: FK → FORMS.ID
+  fk_src: inferred
+- name: FORM_CD
+  data_type: VARCHAR2(255)
+  description: Mã mẫu báo cáo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PERIOD_NAME
+  data_type: VARCHAR2(255)
+  description: Kỳ tính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PERIOD_QUARTER
+  data_type: NUMBER
+  description: quý 1234 - năm 5 - bán niên 6
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PERIOD_YEAR
+  data_type: NUMBER
+  description: Năm
+  description_src: schema
+  key: null
+  fk_note: null
+- name: BASE_COLUMN
+  data_type: VARCHAR2(255)
+  description: Cột căn cứ để tính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: BASE_DATE
+  data_type: DATE
+  description: Ngày chốt sổ kỳ báo cáo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DEADLINE_DATE
+  data_type: DATE
+  description: Hạn chót cần nộp báo cáo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACTUAL_SUBMIT_DATE
+  data_type: DATE
+  description: Ngày công ty nộp thực tế
+  description_src: schema
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: VARCHAR2(50)
+  description: Trạng thái gửi báo cáo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời gian tạo bản ghi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(500)
+  description: Người tạo bản ghi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời gian cập nhật bản ghi lần cuối
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(500)
+  description: Người cập nhật bản ghi lần cuối
+  description_src: schema
+  key: null
+  fk_note: null
+- name: COMPANY_DATA_ID
+  data_type: NUMBER(19,0)
+  description: null
+  key: FK
+  fk_note: FK → COMPANY_DATA.ID
+  fk_src: inferred
+- name: LANGUAGE_CD
+  data_type: VARCHAR2(200)
+  description: null
+  key: null
+  fk_note: null
+- name: ORIGINAL_DEADLINE
+  data_type: DATE
+  description: Hạn nộp báo cao chưa gồm gia hạn
+  description_src: schema
+  key: null
+  fk_note: null

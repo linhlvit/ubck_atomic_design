@@ -1,0 +1,48 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: COMPANY_CHANGE_ROLE_HIS
+brd_ref: BRD-SRC-AUDIT-COMPANY_CHANGE_ROLE_HIS
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: null
+  key: PK
+  fk_note: null
+- name: USERNAME
+  data_type: VARCHAR2(40)
+  description: null
+  key: null
+  fk_note: null
+- name: AF_PROFILE_ID
+  data_type: NUMBER(10,0)
+  description: null
+  key: FK
+  fk_note: FK → AF_PROFILES.ID
+  fk_src: inferred
+- name: MNGT_START_DATE
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: MNGT_END_DATE
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: CHANGE_REASON
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CHANGED_DATE
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: LOGIN_ID
+  data_type: NUMBER(10,0)
+  description: null
+  key: FK
+  fk_note: FK → LOGINS.ID
+  fk_src: inferred

@@ -9,17 +9,17 @@ Logic:
      lên Atomic (bỏ qua group=pending).
   2. Đọc atomic_attributes.yaml → tập hợp cột đã map:
        source_column = "SOURCE.table.column" → (source_system, source_table, column)
-  3. Đọc Source/<SOURCE>_Columns.csv → tất cả cột của từng bảng nguồn.
+  3. Đọc BRD/Source/<SOURCE>/brd_<SOURCE>_<TABLE>.yaml → tất cả cột của từng bảng nguồn.
   4. Đọc pending_design.yaml → tập hợp cột đang chờ thiết kế (pending).
   5. Với mỗi (source_system, source_table) đã thiết kế:
-       - Lấy danh sách cột từ Columns file
+       - Lấy danh sách cột từ file YAML cột của bảng
        - Trừ đi cột đã map trong atomic_attributes
        - Trừ đi cột trong pending_design.yaml → in vào section [PENDING] riêng
        - Báo cáo cột còn thiếu (unmapped và không pending)
 
   CHECK B — source_column trong Atomic trỏ đến cột không tồn tại trong nguồn:
   6. Với mỗi source_column trong atomic_attributes.yaml (đủ 3 phần):
-       - Kiểm tra (source_system, source_table, column) có trong SOURCE_Columns.csv không
+       - Kiểm tra (source_system, source_table, column) có trong BRD/Source/<SOURCE>/*.yaml không
        - Nếu không → báo lỗi ghost mapping
 
 Cột bỏ qua (không cần map):
@@ -50,7 +50,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-s
 SCRIPT_DIR    = Path(__file__).parent
 LLD_DIR       = SCRIPT_DIR.parent
 ROOT          = LLD_DIR.parent.parent.parent.parent
-SOURCE_DIR    = ROOT / "Source"
+SOURCE_DIR    = ROOT / "BRD" / "Source"   # BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml
 YAML_MANIFEST = LLD_DIR / "manifest.yaml"
 ATTRS_FILE    = LLD_DIR.parent / "aggregate" / "atomic_attributes.yaml"
 PENDING_FILE  = LLD_DIR / "pending_design.yaml"
@@ -157,34 +157,50 @@ def load_mapped_columns():
     return mapped
 
 
+try:
+    _YamlLoader = yaml.CSafeLoader
+except AttributeError:
+    _YamlLoader = yaml.SafeLoader
+
+
+def _iter_source_tables(source_system=None):
+    """Yield (source_system, table, [column]) từ BRD/Source/{SOURCE}/brd_{SOURCE}_*.yaml."""
+    if source_system:
+        dirs = [SOURCE_DIR / source_system]
+    else:
+        dirs = sorted(d for d in SOURCE_DIR.iterdir() if d.is_dir())
+    for d in dirs:
+        if not d.is_dir():
+            continue
+        for path in sorted(d.glob("brd_*.yaml")):
+            with open(path, encoding="utf-8") as f:
+                doc = yaml.load(f, Loader=_YamlLoader)
+            if not isinstance(doc, dict) or doc.get("schema_type") != "brd_source_columns":
+                continue
+            cols = [str(c.get("name", "")).strip() for c in doc.get("columns") or []]
+            yield (doc.get("source") or d.name), str(doc.get("table", "")).strip(), [c for c in cols if c]
+
+
 def load_source_columns(source_system):
-    """Trả về dict: source_table → list[column_upper]."""
-    path = SOURCE_DIR / f"{source_system}_Columns.csv"
-    if not path.exists():
-        return None
+    """Trả về dict: source_table → list[column]; None nếu source chưa có file cột YAML."""
     result = defaultdict(list)
-    with open(path, encoding="utf-8-sig", newline="") as f:
-        for row in csv.DictReader(f):
-            table = row.get("Tên bảng", "").strip()
-            col   = row.get("Tên trường", "").strip()
-            if table and col:
-                result[table].append(col)
-    return result
+    for _ss, table, cols in _iter_source_tables(source_system):
+        if table:
+            result[table].extend(cols)
+    return result or None
 
 
 def load_all_source_columns():
-    """Trả về set (source_system, source_table, column_upper) từ tất cả *_Columns.csv."""
+    """Trả về (set (source_system, source_table, column_upper), dict (ss, st) → set column_upper)
+    từ tất cả BRD/Source/*/brd_*_*.yaml."""
     known = set()
     known_tables: dict[tuple, set] = defaultdict(set)  # (ss, st) → set of col_upper
-    for path in SOURCE_DIR.glob("*_Columns.csv"):
-        ss = path.stem.replace("_Columns", "")
-        with open(path, encoding="utf-8-sig", newline="") as f:
-            for row in csv.DictReader(f):
-                table = row.get("Tên bảng", "").strip()
-                col   = row.get("Tên trường", "").strip()
-                if table and col:
-                    known.add((ss, table, col.upper()))
-                    known_tables[(ss, table)].add(col.upper())
+    for ss, table, cols in _iter_source_tables():
+        if not table:
+            continue
+        for col in cols:
+            known.add((ss, table, col.upper()))
+            known_tables[(ss, table)].add(col.upper())
     return known, known_tables
 
 
@@ -232,7 +248,7 @@ def main():
     for ss in sorted(by_source):
         src_cols = load_source_columns(ss)
         if src_cols is None:
-            print(f"\n[WARN] Không tìm thấy Source/{ss}_Columns.csv — bỏ qua {ss}")
+            print(f"\n[WARN] Không tìm thấy BRD/Source/{ss}/brd_{ss}_*.yaml — bỏ qua {ss}")
             continue
 
         source_unmapped = []
@@ -240,7 +256,7 @@ def main():
 
         for st in sorted(by_source[ss]):
             if st not in src_cols:
-                source_unmapped.append(f"  [WARN] Bảng '{st}' không có trong {ss}_Columns.csv")
+                source_unmapped.append(f"  [WARN] Bảng '{st}' không có file cột trong BRD/Source/{ss}/")
                 continue
 
             all_cols = src_cols[st]
@@ -297,13 +313,14 @@ def main():
 
     ghost_by_source: dict[str, list] = defaultdict(list)
     seen_ghost: set = set()
+    known_sources = {k[0] for k in known_cols}  # source có file cột YAML
     for ss, st, col, ent, attr in atomic_src_rows:
         key = (ss, st, col.upper())
         if key in seen_ghost:
             continue
         seen_ghost.add(key)
         # Nếu source file không tồn tại → không thể kiểm tra, bỏ qua
-        if not (SOURCE_DIR / f"{ss}_Columns.csv").exists():
+        if ss not in known_sources:
             continue
         if key not in known_cols:
             # Phân biệt: bảng tồn tại nhưng cột không tồn tại vs bảng không tồn tại
@@ -313,7 +330,7 @@ def main():
                 )
             else:
                 ghost_by_source[ss].append(
-                    f"  {ss}.{st}.{col}  →  {ent}.{attr}  [bảng '{st}' không có trong Columns file]"
+                    f"  {ss}.{st}.{col}  →  {ent}.{attr}  [bảng '{st}' không có trong BRD/Source/{ss}/]"
                 )
 
     total_ghost = sum(len(v) for v in ghost_by_source.values())

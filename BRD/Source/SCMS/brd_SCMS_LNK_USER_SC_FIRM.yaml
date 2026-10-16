@@ -4,13 +4,14 @@ source: SCMS
 table: LNK_USER_SC_FIRM
 brd_ref: BRD-SRC-SCMS-LNK_USER_SC_FIRM
 columns:
-  - name: USER_ID
-    data_type: NUMBER(10,0)
-    description: "FK -> sys_user: Người dùng liên quan"
-    key: null
-    fk_note: null
-  - name: SC_FIRM_ID
-    data_type: NUMBER(10,0)
-    description: "FK -> sc_firm_info: Công ty chứng khoán liên quan"
-    key: null
-    fk_note: null
+- name: USER_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> sys_user: Người dùng liên quan'
+  key: null
+  fk_note: null
+- name: SC_FIRM_ID
+  data_type: NUMBER(10,0)
+  description: 'FK -> sc_firm_info: Công ty chứng khoán liên quan'
+  key: FK
+  fk_note: FK → RISK_REPORTING_PERIOD_SC_FIRM.ID
+  fk_src: inferred

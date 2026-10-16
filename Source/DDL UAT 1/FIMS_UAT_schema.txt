@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: FIMS_UAT
-Tong so bang: 105 | Materialized View: 0
+Tong so bang: 98 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ANNOUNCE
@@ -13,7 +13,7 @@ DateCreated                   DATE                YES                           
 CreatedBy                     NVARCHAR2(200)      YES                                      Tài khoản người dùng tạo bản ghi
 DateModified                  DATE                YES                                      Thời điểm cập nhật lần cuối
 ModifyBy                      NVARCHAR2(200)      YES                                      Tài khoản người dùng cập nhật lần cuối
-InRepId                       NUMBER(18,2)        NO      FK     INFODISCREPRES.Id         FK -> INFODISCREPRES: Đối tượng gửi báo cáo thực hiện CBTT này
+InRepId                       NUMBER(18,2)        YES     FK     INFODISCREPRES.Id         FK -> INFODISCREPRES: Đối tượng gửi báo cáo thực hiện CBTT này
 YearValue                     NUMBER(18,2)        NO                                       Năm của kỳ CBTT/báo cáo
 PeriodValue                   NVARCHAR2(4000)     YES                                      Giá trị kỳ báo cáo cụ thể (VD: 2024-Q1, 2024-03)
 PeriodType                    NUMBER(18,2)        NO                                       Loại kỳ báo cáo (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm
@@ -39,8 +39,7 @@ InvestorId                    NUMBER(18,0)        YES                           
 RptMemberId                   NUMBER(18,0)        YES                                      FK -> RPTMEMBER: Báo cáo thành viên liên quan đến CBTT này
 IncidentMatterType            NUMBER(18,0)        YES                                      Loại sự cố/sự vụ phát sinh (dùng khi CBTT là báo cáo sự vụ)
 RPT_EVENT_TYPE_ID             NUMBER(18,0)        YES                                      FK -> RPT_EVENT_TYPE: Sự vụ/báo cáo sự vụ liên quan đến bản CBTT này (nếu có)
-EformSubmissionJson           NCLOB               YES                                      Dữ liệu eform đã điền (JSON) khi NĐT nộp báo cáo qua form động
-EFORMSUBMISSIONJSON           NCLOB               YES                                      
+EformSubmissionJson           NCLOB               YES                                      Dữ liệu eform đã điền (JSON) khi NĐT nộp báo cáo qua form động                                    
 
 
 BANG: ANNOUNCEINVES
@@ -106,6 +105,7 @@ StockCenId                    NUMBER(18,0)        YES                           
 BranchsId                     NUMBER(18,0)        YES                                      FK -> BRANCHS: Chi nhánh QLQ NN liên quan
 IsTradingRep                  NUMBER(1,0)         NO                                       Cờ là đại diện giao dịch: 1=Đại diện giao dịch, 0=Đại diện CBTT
 ImportFileName                VARCHAR2(4000)      YES                                      Tên file Excel dùng để import danh sách NĐT NN ủy quyền
+TradingRepresentativeId       NUMBER(18,0)        YES                                      
 
 
 BANG: AUTHOANNOUNCEHIS
@@ -137,6 +137,7 @@ StockCenId                    NUMBER(18,0)        YES                           
 BranchsId                     NUMBER(18,0)        YES                                      FK -> BRANCHS: Chi nhánh QLQ NN liên quan
 IsTradingRep                  NUMBER(1,0)         NO                                       Cờ là đại diện giao dịch: 1=Đại diện giao dịch, 0=Đại diện CBTT
 ImportFileName                VARCHAR2(4000)      YES                                      Tên file Excel dùng để import danh sách NĐT NN ủy quyền
+TradingRepresentativeId       NUMBER(18,0)        YES                                      
 
 
 BANG: BANKMONI
@@ -515,95 +516,6 @@ FileData                      NCLOB               YES                           
 SystemObjects                 NVARCHAR2(4000)     NO                                       Danh sách loại đối tượng áp dụng tài liệu (JSON/CSV)
 Description                   NVARCHAR2(4000)     YES                                      Mô tả chi tiết / ghi chú bổ sung
 Status                        NUMBER(1,0)         NO                                       Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
-
-
-BANG: DYNAMICCOLUMNS
-Mo ta: Cấu hình cột động trong bảng dữ liệu tích hợp (dùng cho module dynamic table FIMS)
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính của bản ghi
-TABLECONFIGID                 NUMBER              NO      FK     DYNAMICTABLES.ID          FK -> DYNAMICTABLES: Bảng động chứa cột này
-COLUMNNAME                    VARCHAR2(255)       NO                                       Tên cột trong bảng động (tương ứng tên field trong DB)
-DATATYPE                      VARCHAR2(100)       NO                                       Kiểu dữ liệu của cột động: TEXT/NUMBER/DATE/BOOLEAN
-ISNULLABLE                    NUMBER(1,0)         NO                                       Cờ cột được phép NULL: 1=Có thể NULL, 0=Bắt buộc có giá trị
-ISPRIMARYKEY                  NUMBER(1,0)         NO                                       Cờ cột là khóa chính của bảng động: 1=Khóa chính, 0=Không
-DEFAULTVALUE                  VARCHAR2(500)       YES                                      Giá trị mặc định của cột động khi không có dữ liệu
-ORDERINDEX                    NUMBER              NO                                       Số thứ tự hiển thị của cột trong bảng động
-DESCRIPTION                   CLOB                YES                                      Mô tả/ghi chú về đại diện giao dịch
-CREATEDAT                     TIMESTAMP(6)        NO                                       Thời điểm tạo cấu hình bảng/kết nối động
-
-
-BANG: DYNAMICCONNECTIONS
-Mo ta: Cấu hình kết nối dữ liệu động từ nguồn bên ngoài (API, DB) vào bảng dữ liệu FIMS
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính của bản ghi
-TABLENAME                     VARCHAR2(255)       NO                                       Tên bảng trong DB hoặc tên bảng động
-SCHEMANAME                    VARCHAR2(255)       YES                                      Tên schema DB chứa bảng động (Oracle schema name)
-CONNECTIONNAME                VARCHAR2(255)       NO                                       Tên định danh kết nối dữ liệu động
-MAPPINGCONFIG                 CLOB                NO                                       Cấu hình ánh xạ field từ response API vào cột bảng động (JSON)
-SOURCEAPIURL                  VARCHAR2(1000)      YES                                      URL endpoint API nguồn dữ liệu động
-HTTPMETHOD                    VARCHAR2(10)        YES                                      Phương thức HTTP gọi API nguồn: GET/POST/PUT/DELETE
-RESPONSETYPE                  VARCHAR2(50)        YES                                      Kiểu response từ API nguồn: JSON/XML/CSV
-CUSTOMHEADERS                 CLOB                YES                                      Header HTTP tùy chỉnh khi gọi API nguồn dữ liệu động (JSON)
-REQUESTBODYTEMPLATE           CLOB                YES                                      Template body request gửi đến API nguồn (JSON template)
-DESCRIPTION                   CLOB                YES                                      Mô tả/ghi chú về đại diện giao dịch
-ISACTIVE                      NUMBER(1,0)         NO                                       Cờ kết nối đang hoạt động: 1=Đang dùng, 0=Vô hiệu
-CREATEDAT                     TIMESTAMP(6)        NO                                       Thời điểm tạo cấu hình bảng/kết nối động
-UPDATEDAT                     TIMESTAMP(6)        YES                                      Thời điểm cập nhật cấu hình bảng/kết nối động lần cuối
-CREATEDBY                     VARCHAR2(255)       YES                                      Tài khoản người dùng tạo bản ghi
-SOURCEDATAPATH                VARCHAR2(500)       YES                                      Đường dẫn JSON path lấy dữ liệu từ response API (VD: $.data.items)
-POSTPROCESSHANDLER            VARCHAR2(500)       YES                                      Tên handler xử lý sau khi nhận dữ liệu (class/function name)
-POSTPROCESSSCRIPT             CLOB                YES                                      Script xử lý/transform dữ liệu sau khi nhận từ API nguồn
-
-
-BANG: DYNAMICTABLES
-Mo ta: Cấu hình bảng dữ liệu động: định nghĩa bảng tích hợp dữ liệu từ nhiều nguồn khác nhau
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính của bản ghi
-TABLENAME                     VARCHAR2(255)       NO                                       Tên bảng trong DB hoặc tên bảng động
-SCHEMANAME                    VARCHAR2(255)       YES                                      Tên schema DB chứa bảng động (Oracle schema name)
-DESCRIPTION                   CLOB                YES                                      Mô tả/ghi chú về đại diện giao dịch
-CREATEDAT                     TIMESTAMP(6)        NO                                       Thời điểm tạo cấu hình bảng/kết nối động
-UPDATEDAT                     TIMESTAMP(6)        YES                                      Thời điểm cập nhật cấu hình bảng/kết nối động lần cuối
-CREATEDBY                     VARCHAR2(255)       YES                                      Tài khoản người dùng tạo bản ghi
-
-
-BANG: FORM_SCHEMAS
-Mo ta: Cấu hình form động AMIS
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               UUID form
-MODULE_ID                     VARCHAR2(36)        NO      FK     MODULES.ID                FK -> modules.id
-FORM_CODE                     VARCHAR2(100)       YES                                      Mã form nghiệp vụ
-FORM_NAME                     VARCHAR2(255)       YES                                      Tên hiển thị form
-SCHEMA_JSON                   CLOB                NO                                       JSON cấu hình kéo thả AMIS
-VERSION                       NUMBER              YES                                      Version hiện tại
-STATUS                        NUMBER(1,0)         YES                                      1=Active, 0=Inactive
-IS_PUBLISHED                  NUMBER(1,0)         YES                                      1=Đã publish
-CREATED_AT                    TIMESTAMP(6)        YES                                      Ngày tạo
-CREATED_BY                    VARCHAR2(50)        YES                                      User tạo
-UPDATED_AT                    TIMESTAMP(6)        YES                                      Ngày cập nhật
-UPDATED_BY                    VARCHAR2(50)        YES                                      User cập nhật
-
-
-BANG: FORM_SCHEMA_VERSIONS
-Mo ta: Lịch sử version form
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               UUID version
-FORM_SCHEMA_ID                VARCHAR2(36)        YES     FK     FORM_SCHEMAS.ID           FK form_schemas
-VERSION                       NUMBER              YES                                      Số version
-SCHEMA_JSON                   CLOB                YES                                      Snapshot JSON
-CHANGE_LOG                    VARCHAR2(500)       YES                                      Mô tả thay đổi
-CREATED_AT                    TIMESTAMP(6)        YES                                      Thời điểm tạo
-CREATED_BY                    VARCHAR2(50)        YES                                      User thao tác
 
 
 BANG: FUNDCOMBUSINES
@@ -1846,26 +1758,6 @@ SystemObject                  NUMBER(18,2)        NO                            
 FileData                      NCLOB               YES                                      Nội dung file đính kèm (BLOB/CLOB)
 
 
-BANG: TLPROJOB
-Mo ta: Bảng "TLPROJOB" (entity TLProfileJob). [Cần BA xác nhận]
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JobId                         NUMBER(18,2)        NO      PK                               FK -> JOBTYPE: Loại công việc/chức danh của người hành nghề
-TLProId                       NUMBER(18,2)        NO      PK     TLPROFILES.Id             FK -> TLPROFILES: Người hành nghề chứng khoán
-SystemObject                  NUMBER(18,2)        NO                                       Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN
-
-
-BANG: TLPROSTOCKH
-Mo ta: Bảng "TLPROSTOCKH" (entity TlProStockH). [Cần BA xác nhận]
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-TlProId                       NUMBER(18,2)        NO      PK     TLPROFILES.Id             FK -> TLPROFILES: Người hành nghề chứng khoán
-StockId                       NUMBER(18,2)        NO      PK     STOCKHOLDERTYPE.Id        FK -> STOCKEXCHANGE: Sở GD liên kết với người hành nghề
-SystemObject                  NUMBER(18,2)        NO                                       Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN
-
-
 BANG: TRADINGAUTHORIZATION
 Mo ta: Bảng "TRADINGAUTHORIZATION" (entity TradingAuthorization). [Cần BA xác nhận]
 --------------------------------------------------------------------------------------------------------------
@@ -1998,7 +1890,8 @@ Mo ta: Phân quyền khai thác mẫu báo cáo đầu vào theo user
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 RptTemId                      NUMBER(18,0)        NO      PK                               ID mẫu báo cáo đầu vào (RPTTEMP.Id)
-SsoUserId                     NVARCHAR2(72)       NO      PK                               ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)
+SsoUserId                     NVARCHAR2(72)       YES                                      ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)
+UserId                        NUMBER(18,0)        NO      PK                               
 
 
 BANG: USERRPTO
@@ -2007,7 +1900,8 @@ Mo ta: Bảng "USERRPTO" (entity UserRptO). [Cần BA xác nhận]
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 TpOutId                       NUMBER(18,2)        NO      PK                               FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra người dùng được phép khai thác
-SsoUserId                     NVARCHAR2(72)       NO      PK                               ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)
+SsoUserId                     NVARCHAR2(72)       YES                                      ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)
+UserId                        NUMBER(18,0)        NO      PK                               
 
 
 BANG: USERS
@@ -2053,6 +1947,7 @@ PhoneNumber                   NVARCHAR2(4000)     YES                           
 InvestorId                    NUMBER(18,0)        YES                                      FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng
 TradingRepresentativeId       NUMBER(18,0)        YES                                      FK -> TRADINGREPRESENTATIVE: Đại diện giao dịch liên kết với tài khoản người dùng
 SSO_USER_ID                   VARCHAR2(36)        YES                                      
+DepartmentName                NVARCHAR2(510)      YES                                      Ban chuyên môn (IAM departmentName) — đồng bộ JIT/manual sync
 
 
 BANG: USERSESSIONS
@@ -2085,7 +1980,7 @@ Mo ta: Phân quyền truy cập dữ liệu theo đối tượng gửi BC
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 Id                            NUMBER(18,0)        NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-UserId                        NUMBER(18,0)        YES                                      ID người dùng được phân quyền
+UserId                        NUMBER(18,0)        NO                                       ID người dùng được phân quyền
 SystemObject                  NUMBER(18,0)        NO                                       Loại dữ liệu: 1=QLQ, 2=CtyCK, 3=NH Lưu ký, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN
 MemberId                      NUMBER(18,0)        NO                                       ID thành viên tương ứng với SystemObject
 DateCreated                   TIMESTAMP(6)        YES                                      Thời điểm tạo bản ghi
@@ -2104,8 +1999,9 @@ Mo ta:
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-SsoUserId                     NVARCHAR2(72)       NO      PK                               
+SsoUserId                     NVARCHAR2(72)       NO                                       
 EventTypeId                   NUMBER(18,0)        NO      PK     RPT_EVENT_TYPE.ID         
+UserId                        NUMBER(18,0)        NO      PK                               
 
 
 BANG: VIOLATIONTYPE

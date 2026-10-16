@@ -98,9 +98,13 @@
       ],
       "properties": {
         "table_meaning": {
+          "type": ["string", "null"],
+          "description": "Ý nghĩa/mô tả ngắn của bảng nguồn (comment CSDL nguồn). null = nguồn không cung cấp mô tả, chưa bổ sung"
+        },
+        "table_meaning_src": {
           "type": "string",
-          "minLength": 1,
-          "description": "Ý nghĩa/mô tả ngắn của bảng nguồn (từ Tables.csv)"
+          "enum": ["schema", "inferred", "curated"],
+          "description": "Nguồn gốc của table_meaning. Vắng mặt = curated (không ghi đè khi chạy lại)."
         },
         "functional_group": {
           "type": "string",
@@ -110,10 +114,11 @@
         "scope_status": {
           "type": "string",
           "enum": [
+            "pending",
             "in_scope",
             "out_of_scope"
           ],
-          "description": "Trạng thái scope — in_scope (thiết kế Atomic) hay out_of_scope (không thiết kế)"
+          "description": "Trạng thái scope — pending (chưa thiết kế, mặc định khi khảo sát), in_scope (thiết kế Atomic) hay out_of_scope (không thiết kế)"
         },
         "scope_reason": {
           "oneOf": [

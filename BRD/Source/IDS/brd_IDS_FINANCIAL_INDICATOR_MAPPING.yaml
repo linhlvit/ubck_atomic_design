@@ -1,0 +1,88 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: FINANCIAL_INDICATOR_MAPPING
+brd_ref: BRD-SRC-IDS-FINANCIAL_INDICATOR_MAPPING
+columns:
+- name: ID
+  data_type: NUMBER(19,0)
+  description: Khóa chính
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: NUMBER(4,0)
+  description: Năm áp dụng bộ khai báo (khớp REPORT_CATALOG.REPORT_YEAR)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REPORT_CD
+  data_type: VARCHAR2(50)
+  description: 'Mã báo cáo composite: ''BASE_<họ>_<loại>'' (VD BASE_BCDKT_DN, BASE_BCLCTT_GT_TD)
+    = bản khai chung; hoặc mã catalog đầy đủ = bản khai riêng đè base'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ROW_DESC
+  data_type: VARCHAR2(120)
+  description: Mã số kế toán của chỉ tiêu (khớp RROW.ROW_DESC), VD 270/300/440/01/20
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INDICATOR_DESC_VI
+  data_type: VARCHAR2(500)
+  description: Mô tả tiếng Việt của chỉ tiêu (nên khớp RROW.ROW_NAME_VI) — giúp người
+    khai/đọc mapping
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TARGET_COLUMN
+  data_type: VARCHAR2(64)
+  description: Tên cột đích trong FINANCIAL_RATIOS_DETAIL nhận giá trị SỐ CUỐI KỲ
+    (cột đầu tiên theo COL_INDEX)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PREV_TARGET_COLUMN
+  data_type: VARCHAR2(64)
+  description: Tên cột đích trong FRD nhận giá trị SỐ ĐẦU NĂM / CÙNG KỲ NĂM TRƯỚC
+    (cột thứ hai theo COL_INDEX). Null nếu không dùng.
+  description_src: schema
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: VARCHAR2(1000)
+  description: Ghi chú tự do
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACTIVE_FLG
+  data_type: NUMBER(1,0)
+  description: 'Cờ hiệu lực: 1=áp dụng, 0=bỏ qua'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: Người/tài khoản tạo bản ghi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(255)
+  description: Người/tài khoản cập nhật gần nhất
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật gần nhất
+  description_src: schema
+  key: null
+  fk_note: null

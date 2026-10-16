@@ -5,17 +5,19 @@ table: USER_EVENT_TYPE
 brd_ref: BRD-SRC-FIMS-USER_EVENT_TYPE
 columns:
 - name: SsoUserId
-  data_type: "NVARCHAR2(72)"
+  data_type: NVARCHAR2(72)
   description: null
-  key: PK
+  key: null
   fk_note: null
 - name: EventTypeId
-  data_type: "NUMBER(18,0)"
-  description: null
+  data_type: NUMBER(18,0)
+  description: RPT_EVENT_TYPE.ID
+  description_src: schema
   key: PK
-  fk_note: "FK → RPT_EVENT_TYPE.ID"
+  fk_note: FK → RPT_EVENT_TYPE.ID
 - name: UserId
-  data_type: "NUMBER(18,0)"
+  data_type: NUMBER(18,0)
   description: null
-  key: PK
-  fk_note: null
+  key: PK/FK
+  fk_note: FK → USERS.Id
+  fk_src: inferred

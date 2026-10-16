@@ -1,0 +1,100 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: ALERT_TEMPLATE_AUDIT_DTL
+brd_ref: BRD-SRC-AUDIT-ALERT_TEMPLATE_AUDIT_DTL
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: ID_HDR
+  data_type: NUMBER(10,0)
+  description: ID BẢNG ALERT_TEMPLATE_AUDIT_HDR
+  description_src: schema
+  key: FK
+  fk_note: FK → ALERT_TEMPLATE_AUDIT_HDR.ID
+  fk_src: db
+- name: FORM_ID
+  data_type: NUMBER(10,0)
+  description: ID BẢNG FORMS
+  description_src: schema
+  key: FK
+  fk_note: FK → FORMS.ID
+  fk_src: inferred
+- name: EXPECTED_FORM_ID
+  data_type: NUMBER(10,0)
+  description: ID BẢNG FORMS. ID của biểu mẫu vế phải
+  description_src: schema
+  key: FK
+  fk_note: FK → FORMS.ID
+  fk_src: inferred
+- name: CONDITION_TYPE
+  data_type: VARCHAR2(1020)
+  description: Lưu EQUAL;NOT EQUAL dùng để so sánh ACTUAL và EXPECTED
+  description_src: schema
+  key: null
+  fk_note: null
+- name: COMPARE_TYPE
+  data_type: VARCHAR2(1020)
+  description: Lưu VALUE; FIELD Quyết định dùng cột EXPECTED_FIELD hay EXPECTED_VALUE
+    nào để so sánh với ACTUAL_FIELD
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACTUAL_FIELD
+  data_type: NUMBER
+  description: ID field vế trái (năm nay)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EXPECTED_FIELD
+  data_type: NUMBER
+  description: ID field vế phải (năm trước)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EXPECTED_VALUE
+  data_type: VARCHAR2(1020)
+  description: Giá trị vế phải
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACTUAL_TIME_OFFSET
+  data_type: NUMBER
+  description: 'Mốc thời gian vế trái: 0 - Năm nay, -1- Năm trước'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EXPECTED_TIME_OFFSET
+  data_type: NUMBER
+  description: 'Mốc thời gian vế phải: 0 - Năm nay, 1- Năm trước'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(1020)
+  description: Người tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(1020)
+  description: Người sửa
+  description_src: schema
+  key: null
+  fk_note: null

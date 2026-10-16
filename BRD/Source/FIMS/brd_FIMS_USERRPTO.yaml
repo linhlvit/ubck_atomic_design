@@ -5,17 +5,18 @@ table: USERRPTO
 brd_ref: BRD-SRC-FIMS-USERRPTO
 columns:
 - name: TpOutId
-  data_type: "NUMBER(18,2)"
-  description: "FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra người dùng được phép khai thác"
+  data_type: NUMBER(18,2)
+  description: 'FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra người dùng được phép khai thác'
   key: PK
   fk_note: null
 - name: SsoUserId
-  data_type: "NVARCHAR2(36 CHAR)"
-  description: "ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)"
-  key: PK
+  data_type: NVARCHAR2(72)
+  description: ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)
+  key: null
   fk_note: null
 - name: UserId
-  data_type: "NUMBER(18,0)"
+  data_type: NUMBER(18,0)
   description: null
-  key: PK
-  fk_note: null
+  key: PK/FK
+  fk_note: FK → USERS.Id
+  fk_src: inferred

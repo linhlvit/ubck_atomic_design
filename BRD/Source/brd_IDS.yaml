@@ -64,20 +64,28 @@ brd_entries:
       relation: 1-N — Gia hạn báo cáo
     - table: VIOLATION_REPORT
       relation: 1-N — Hạn nộp báo cáo vi phạm
-    - table: NOTIFICATIONS_DTL
-      relation: 1-N — Chi tiết thông báo
-    - table: SMS_LOG
-      relation: 1-N — Log SMS
     - table: LOGIN_PERMISSION_BY_CODE
       relation: 1-N — Phân quyền theo mã công ty
-    - table: HTE_VIOLATION_REPORT
-      relation: 1-N — Báo cáo vi phạm HTE
     - table: DATA
       relation: 1-N — Dữ liệu báo cáo tài chính
+    - table: BOND_LISTING
+      relation: 1-N — Bảng bond listing
+    - table: BOND_LISTING_HISTORY_TMP
+      relation: 1-N — Bảng bond listing history tmp
+    - table: CAPITAL_INCREASE_PLAN
+      relation: 1-N — Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6)
+    - table: POSITIONS
+      relation: 1-N — Bảng positions
+    - table: REP_DATA
+      relation: 1-N — Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
+    - table: TENDER_OFFER
+      relation: 1-N — Lưu thông tin phương án chào mua công khai (Public Tender Offer)
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-CATEGORIES
   content:
     table: CATEGORIES
@@ -90,6 +98,14 @@ brd_entries:
       relation: FK cha — Danh mục cha (cấu trúc phân cấp)
     - table: COMPANY_PROFILES
       relation: 1-N — Công ty đại chúng thuộc ngành
+    - table: FINANCIAL_RATIOS_DETAIL
+      relation: 1-N — Bảng chi tiết số liệu tài chính của công ty đại chúng theo kỳ
+        (năm/quý). Là dữ liệu đầu vào phục vụ tính các chỉ số/tỷ số tài chính lưu
+        trong bảng LOOKUP_KEY_FINANCIALS. Khóa nghiệp vụ (STOCK_CODE, YEAR, QUARTER).
+    - table: LOOKUP_KEY_FINANCIALS
+      relation: 1-N — Bảng lưu kết quả tính các chỉ số/tỷ số tài chính theo công ty
+        và kỳ (năm/quý). Materialize từ FINANCIAL_RATIOS_DETAIL, quan hệ 1-1 qua ID.
+        Phục vụ tra cứu nhanh (lookup) cho các báo cáo phân tích.
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -108,6 +124,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Bảng giới hạn tỷ lệ sở hữu nước ngoài
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-LEGAL_REPRESENTATIVE
   content:
     table: LEGAL_REPRESENTATIVE
@@ -122,6 +140,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Bảng người đại diện pháp luật
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-STATE_CAPITAL
   content:
     table: STATE_CAPITAL
@@ -136,6 +156,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Bảng thông tin vốn nhà nước
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COMPANY_RELATIONSHIP
   content:
     table: COMPANY_RELATIONSHIP
@@ -150,6 +172,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Thông tin quan hệ công ty
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-CAPITAL_MOBILIZATION
   content:
     table: CAPITAL_MOBILIZATION
@@ -188,6 +212,14 @@ brd_entries:
     related_tables:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
+    - table: COMPANY_DATA
+      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: USERS
+      relation: FK cha — Bảng users
+    - table: COMPANY_TENDER_OFFER_RESULT
+      relation: 1-N — Bảng company tender offer result
+    - table: DOSSIER_APPRAISAL_RESULT
+      relation: 1-N — Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -206,6 +238,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu thông tin về cổ phiếu quỹ
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COMPANY_TREASURY_SHARES
   content:
     table: COMPANY_TREASURY_SHARES
@@ -216,10 +250,23 @@ brd_entries:
     related_tables:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
+    - table: COMPANY_DATA
+      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: USERS
+      relation: FK cha — Bảng users
+    - table: LEGAL_ENTITIES
+      relation: FK cha — Bảng legal entities
+    - table: DOSSIER_APPRAISAL_RESULT
+      relation: 1-N — Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
+    - table: TREASURY_SHARE_TRANS_RESULT
+      relation: 1-N — Lưu thông tin kết quả giao dịch cổ phiếu quỹ (Treasury Share Transaction
+        Result)
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-TREASURY_SHARE_TRANS_RESULT
   content:
     table: TREASURY_SHARE_TRANS_RESULT
@@ -230,10 +277,17 @@ brd_entries:
     related_tables:
     - table: COMPANY_TREASURY_SHARES
       relation: FK cha — Đợt mua/bán cổ phiếu quỹ
+    - table: COMPANY_DATA
+      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: USERS
+      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu thông tin kết quả giao dịch cổ phiếu quỹ (Treasury Share Transaction
+      Result)
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COMPANY_INSPECTION
   content:
     table: COMPANY_INSPECTION
@@ -278,6 +332,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lịch sử thay đổi thông tin quản lý công ty
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-LOGINS
   content:
     table: LOGINS
@@ -290,16 +346,14 @@ brd_entries:
       relation: 1-N — Hồ sơ công ty của tài khoản
     - table: COMPANY_CHANGE_ROLE_HIS
       relation: 1-N — Lịch sử quản lý liên kết với login
-    - table: NOTIFICATIONS
-      relation: 1-N — Thông báo do login quản lý
-    - table: NOTIFICATIONS_DTL
-      relation: 1-N — Chi tiết đối tượng nhận thông báo
     - table: LOGIN_PERMISSION_BY_CODE
       relation: 1-N — Phân quyền theo mã công ty
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Bảng tài khoản đăng nhập
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COUNTRIES
   content:
     table: COUNTRIES
@@ -349,7 +403,9 @@ brd_entries:
     functional_group: system
     scope_status: pending
     scope_reason: null
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Append
       filter_logic: created_date >= {etl_date} AND created_date < {etl_date} + 1
@@ -368,8 +424,14 @@ brd_entries:
       relation: 1-N — Cột báo cáo
     - table: DATA
       relation: 1-N — Dữ liệu báo cáo
-    - table: INTG_FINANCIAL_STATEMENT
-      relation: 1-N — Mapping chỉ tiêu BCTC
+    - table: FINANCIAL_RATIOS_DETAIL
+      relation: 1-N — Bảng chi tiết số liệu tài chính của công ty đại chúng theo kỳ
+        (năm/quý). Là dữ liệu đầu vào phục vụ tính các chỉ số/tỷ số tài chính lưu
+        trong bảng LOOKUP_KEY_FINANCIALS. Khóa nghiệp vụ (STOCK_CODE, YEAR, QUARTER).
+    - table: LOOKUP_KEY_FINANCIALS
+      relation: 1-N — Bảng lưu kết quả tính các chỉ số/tỷ số tài chính theo công ty
+        và kỳ (năm/quý). Materialize từ FINANCIAL_RATIOS_DETAIL, quan hệ 1-1 qua ID.
+        Phục vụ tra cứu nhanh (lookup) cho các báo cáo phân tích.
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -400,8 +462,8 @@ brd_entries:
       relation: 1-N — Dòng trong sub form
     - table: REP_COLUMN
       relation: 1-N — Cột trong sub form
-    - table: INTG_REPORT_FIELD
-      relation: 1-N — Ràng buộc chỉ tiêu
+    - table: REP_DATA
+      relation: 1-N — Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -416,6 +478,8 @@ brd_entries:
     related_tables:
     - table: REP_FORMS
       relation: FK cha — Sub form báo cáo
+    - table: REP_DATA
+      relation: 1-N — Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -430,24 +494,6 @@ brd_entries:
     related_tables:
     - table: REP_FORMS
       relation: FK cha — Sub form báo cáo
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-NOTIFICATIONS
-  content:
-    table: NOTIFICATIONS
-    description: Lưu thông tin về notifications
-    functional_group: notification
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: FORMS
-      relation: FK cha — Form liên kết
-    - table: LOGINS
-      relation: FK cha — Người quản lý thông báo
-    - table: NOTIFICATIONS_DTL
-      relation: 1-N — Chi tiết đối tượng nhận
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -468,16 +514,14 @@ brd_entries:
       relation: 1-N — Giá trị dữ liệu nhập vào
     - table: COMPANY_DATA
       relation: 1-N — Dữ liệu hồ sơ công ty
-    - table: NOTIFICATIONS
-      relation: 1-N — Thông báo liên kết form
-    - table: INTG_REPORT_CONFIG
-      relation: 1-N — Cấu hình báo cáo đẩy lên
-    - table: INTG_REPORT_FIELD
-      relation: 1-N — Ràng buộc chỉ tiêu báo cáo
     - table: VIOLATION_TEMPLATES
       relation: 1-N — Mẫu vi phạm
     - table: VIOLATION_REPORT
       relation: 1-N — Báo cáo vi phạm
+    - table: ALERT_TEMPLATE_AUDIT_DTL
+      relation: 1-N — Danh sách rule cấu hình cảnh báo
+    - table: DYNAMIC_REPORT_TEMPLATES
+      relation: 1-N — Mẫu báo cáo động — header
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -496,8 +540,8 @@ brd_entries:
       relation: 1-N — Lịch sử cấu hình trường
     - table: DATA_VALUES
       relation: 1-N — Giá trị dữ liệu
-    - table: INTG_REPORT_FIELD
-      relation: 1-N — Ràng buộc chỉ tiêu tích hợp
+    - table: DYNAMIC_REPORT_TEMPLATE_FIELDS
+      relation: 1-N — Chỉ tiêu thuộc mẫu báo cáo động
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -514,6 +558,8 @@ brd_entries:
       relation: FK cha — Trường dữ liệu
     - table: FORMS
       relation: FK cha — Mẫu báo cáo
+    - table: DATA_VALUES
+      relation: 1-N — Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -541,7 +587,9 @@ brd_entries:
     functional_group: master_data
     scope_status: pending
     scope_reason: null
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: 1-N — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -582,6 +630,8 @@ brd_entries:
     related_tables:
     - table: LEGAL_ENTITIES
       relation: FK cha — Cổ đông
+    - table: COMPANY_PROFILES
+      relation: FK cha — Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -628,34 +678,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-SMS_LOG
-  content:
-    table: SMS_LOG
-    description: Lưu trữ log gửi SMS
-    functional_group: notification
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: COMPANY_PROFILES
-      relation: FK cha — Hồ sơ công ty đại chúng
-    - table: FORMS
-      relation: FK cha — Mẫu báo cáo
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-SYS_PARAMETERS
-  content:
-    table: SYS_PARAMETERS
-    description: Lưu trữ cấu hình tham số hệ thống
-    functional_group: master_data
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-IDS-REPORT_EXTENSIONS
   content:
     table: REPORT_EXTENSIONS
@@ -684,10 +706,35 @@ brd_entries:
       relation: FK cha — Mẫu báo cáo
     - table: DATA_VALUES
       relation: 1-N — Giá trị dữ liệu nhập vào
+    - table: CAPITAL_INCREASE_PLAN
+      relation: 1-N — Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6)
+    - table: SECURITIES_OFFERING
+      relation: FK cha — Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
+    - table: LEGAL_ENTITIES
+      relation: FK cha — Bảng legal entities
+    - table: COMPANY_TENDER_OFFER
+      relation: FK cha — Bảng company tender offer
+    - table: COMPANY_TREASURY_SHARES
+      relation: FK cha — Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
+    - table: USERS
+      relation: FK cha — Bảng users
+    - table: SECURITIES_OFFERING_RESULT
+      relation: FK cha — Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
+    - table: TREASURY_SHARE_TRANS_RESULT
+      relation: FK cha — Lưu thông tin kết quả giao dịch cổ phiếu quỹ (Treasury Share
+        Transaction Result)
+    - table: COMPANY_TENDER_OFFER_RESULT
+      relation: FK cha — Bảng company tender offer result
+    - table: REP_DATA
+      relation: 1-N — Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
+    - table: VIOLATION_REPORT
+      relation: 1-N — Bảng violation report
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-DATA
   content:
     table: DATA
@@ -704,6 +751,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu trữ dữ liệu của hàng và cột của báo cáo tài chính
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-DATA_VALUES
   content:
     table: DATA_VALUES
@@ -718,10 +767,14 @@ brd_entries:
       relation: FK cha — Mẫu báo cáo
     - table: FIELDS
       relation: FK cha — Trường dữ liệu
+    - table: FORM_FIELDS
+      relation: FK cha — Bảng form fields
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-BOND_LISTING_HISTORY
   content:
     table: BOND_LISTING_HISTORY
@@ -732,6 +785,8 @@ brd_entries:
     related_tables:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
+    - table: BOND_LISTING
+      relation: FK cha — Bảng bond listing
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -796,6 +851,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu thông tin về số CP sau mỗi đợt mua/ bán
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-EVALUATIONS
   content:
     table: EVALUATIONS
@@ -806,6 +863,8 @@ brd_entries:
     related_tables:
     - table: EVALUATION_DETAILS
       relation: 1-N — Chi tiết đánh giá theo chỉ tiêu
+    - table: EVALUATION_PERIODS
+      relation: FK cha — Bảng evaluation periods
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -861,7 +920,9 @@ brd_entries:
     functional_group: evaluation
     scope_status: in_scope
     scope_reason: null
-    related_tables: null
+    related_tables:
+    - table: EVALUATION_CRITERIA
+      relation: 1-N — Bảng evaluation criteria
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -873,7 +934,9 @@ brd_entries:
     functional_group: evaluation
     scope_status: in_scope
     scope_reason: null
-    related_tables: null
+    related_tables:
+    - table: EVALUATIONS
+      relation: 1-N — Bảng evaluations
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -890,129 +953,11 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-HISTORY_CHANGE_LOG
-  content:
-    table: HISTORY_CHANGE_LOG
-    description: Lưu trữ dữ liệu lịch sử thay đổi từng trường của các object trong hệ thống khi được cấu hình.
-    functional_group: document
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: changed_at >= {etl_date} AND changed_at < {etl_date} + 1
-      filter_note: null
 - brd_id: BRD-SRC-IDS-HOLIDAY_CALENDAR
   content:
     table: HOLIDAY_CALENDAR
     description: Lưu trữ dữ liệu ngày nghỉ.
     functional_group: master_data
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTEGRATION_JOB_DEFINITION
-  content:
-    table: INTEGRATION_JOB_DEFINITION
-    description: Định nghĩa job inbound — JOB_CODE khớp REST path + JobHandler bean trong DIS
-    functional_group: integration
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTEGRATION_SYNC_LOG
-  content:
-    table: INTEGRATION_SYNC_LOG
-    description: Job-level log cho mỗi lần xử lý tích hợp (Quartz job, Kafka message, outbound)
-    functional_group: integration
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTG_FINANCIAL_STATEMENT
-  content:
-    table: INTG_FINANCIAL_STATEMENT
-    description: Cấu hình mapping chỉ tiêu BCTC của IDS với Chỉ tiêu của Sở
-    functional_group: integration
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: REPORT_CATALOG
-      relation: FK cha — Mẫu biểu báo cáo tài chính
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTG_FORM_MAPPING
-  content:
-    table: INTG_FORM_MAPPING
-    description: Cấu hình mapping Form ID của Sở với Form ID của IDS
-    functional_group: integration
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTG_IMPORT_DATA_LOG
-  content:
-    table: INTG_IMPORT_DATA_LOG
-    description: Lưu thông tin log import dữ liệu của Sở vào IDS
-    functional_group: integration
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTG_REPORT_CONFIG
-  content:
-    table: INTG_REPORT_CONFIG
-    description: Lưu thông tin cấu hình mẫu báo cáo cần đẩy lên IDS
-    functional_group: integration
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: FORMS
-      relation: FK cha — Mẫu báo cáo
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTG_REPORT_FIELD
-  content:
-    table: INTG_REPORT_FIELD
-    description: Cấu hình ràng buộc chỉ tiêu của từng báo cáo
-    functional_group: integration
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: FORMS
-      relation: FK cha — Mẫu báo cáo
-    - table: FIELDS
-      relation: FK cha — Trường dữ liệu
-    - table: REP_FORMS
-      relation: FK cha — Sub form báo cáo
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTG_SIGNATURE_CONFIG
-  content:
-    table: INTG_SIGNATURE_CONFIG
-    description: Cấu hình master cho các lịch trình và chữ ký chứng khoán (HNX, HOSE)
-    functional_group: integration
     scope_status: pending
     scope_reason: null
     related_tables: null
@@ -1044,6 +989,12 @@ brd_entries:
       relation: 1-N — Sở hữu cổ phần
     - table: SECURITIES_OFFERING
       relation: 1-N — Hồ sơ chào bán phát hành
+    - table: COMPANY_DATA
+      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: COMPANY_TREASURY_SHARES
+      relation: 1-N — Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
+    - table: REP_DATA
+      relation: 1-N — Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1056,24 +1007,6 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-NOTIFICATIONS_DTL
-  content:
-    table: NOTIFICATIONS_DTL
-    description: Lưu trữ đối tượng gửi thông báo chi tiết.
-    functional_group: notification
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: NOTIFICATIONS
-      relation: FK cha — Thông báo
-    - table: LOGINS
-      relation: FK cha — Tài khoản đăng nhập
-    - table: COMPANY_PROFILES
-      relation: FK cha — Hồ sơ công ty đại chúng
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1122,10 +1055,18 @@ brd_entries:
       relation: 1-N — Phương án chào bán
     - table: SECURITIES_OFFERING_RESULT
       relation: 1-N — Kết quả chào bán
+    - table: COMPANY_DATA
+      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: DOSSIER_APPRAISAL_RESULT
+      relation: 1-N — Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
+    - table: USERS
+      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-SECURITIES_OFFERING_PLAN
   content:
     table: SECURITIES_OFFERING_PLAN
@@ -1140,6 +1081,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-SECURITIES_OFFERING_RESULT
   content:
     table: SECURITIES_OFFERING_RESULT
@@ -1150,10 +1093,16 @@ brd_entries:
     related_tables:
     - table: SECURITIES_OFFERING
       relation: FK cha — Hồ sơ chào bán phát hành
+    - table: COMPANY_DATA
+      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: USERS
+      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-STOCK_LISTING_HISTORY
   content:
     table: STOCK_LISTING_HISTORY
@@ -1167,18 +1116,6 @@ brd_entries:
     ingestion:
       data_change_mode: Update
       filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-UBCK_SYNC_ITEM_LOG
-  content:
-    table: UBCK_SYNC_ITEM_LOG
-    description: Log per-record cho job UBCK (CSDLTT) liên kết INTEGRATION_SYNC_LOG qua CORRELATION_ID
-    functional_group: integration
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
       filter_note: null
 - brd_id: BRD-SRC-IDS-VIOLATION_PENALTY_CONFIG
   content:
@@ -1194,6 +1131,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Bảng cấu hình các mức phạt/xử lý khi vi phạm
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-VIOLATION_REPORT
   content:
     table: VIOLATION_REPORT
@@ -1208,6 +1147,8 @@ brd_entries:
       relation: FK cha — Mẫu báo cáo
     - table: VIOLATION_TEMPLATES
       relation: FK cha — Mẫu vi phạm
+    - table: COMPANY_DATA
+      relation: FK cha — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1226,12 +1167,12 @@ brd_entries:
       relation: 1-N — Cấu hình mức phạt
     - table: VIOLATION_REPORT
       relation: 1-N — Báo cáo vi phạm
-    - table: HTE_VIOLATION_REPORT
-      relation: 1-N — Báo cáo vi phạm HTE
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Bảng lưu trữ thông tin cấu hình mẫu vi phạm
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-WARDS
   content:
     table: WARDS
@@ -1260,206 +1201,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-AF_PROFILES
-  content:
-    table: AF_PROFILES
-    description: Bảng lưu thông tin công ty kiểm toán
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: "Đảo ngược quyết định out_of_scope 2026-07-24 (2026-09-04) — HLD Overview/Tier1\
-      \ vẫn mô tả AF_PROFILES là entity Tier 1 chính thức (Audit Firm) và 9/10 bảng\
-      \ AF_* còn lại đều có FK Audit Firm Id/Code trỏ tới entity này. Xác nhận tường\
-      \ minh của Data Modeler: giữ trong scope, phục hồi lld_IDS_AF_PROFILES.yaml\
-      \ (+ 3 shared entity) theo DDL GMS_AUDIT_UAT_schema.txt."
-    related_tables:
-    - table: AF_LEGAL_REPRESENTATIVE
-      relation: 1-N — Người đại diện pháp luật của công ty kiểm toán
-    - table: AF_APPROVAL
-      relation: 1-N — Quyết định chấp thuận
-    - table: AF_AUDITOR_PROFILES
-      relation: 1-N — Kiểm toán viên
-    - table: AF_WARNING
-      relation: 1-N — Nhắc nhở
-    - table: AF_SANCTIONS
-      relation: 1-N — Xử phạt
-    - table: AF_INSPECTION
-      relation: 1-N — Kiểm tra
-    - table: AF_STATUS_HISTORY
-      relation: 1-N — Lịch sử trạng thái
-    - table: AF_SUSPENSION
-      relation: 1-N — Đình chỉ
-    - table: AF_TECHNICAL_AUDIT
-      relation: 1-N — Kiểm tra hồ sơ kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_LEGAL_REPRESENTATIVE
-  content:
-    table: AF_LEGAL_REPRESENTATIVE
-    description: Bảng Người đại diện theo pháp luật
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_APPROVAL
-  content:
-    table: AF_APPROVAL
-    description: Bảng lưu thông tin quyết định chấp thuận
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán
-    - table: AF_AUDITOR_PROFILES
-      relation: FK cha — Kiểm toán viên
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_AUDITOR_PROFILES
-  content:
-    table: AF_AUDITOR_PROFILES
-    description: Lưu thông tin chung kiểm toán viên
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán
-    - table: AF_APPROVAL
-      relation: 1-N — Quyết định chấp thuận kiểm toán viên
-    - table: AF_WARNING
-      relation: 1-N — Nhắc nhở kiểm toán viên
-    - table: AF_AUDITOR_STATUS_HISTORY
-      relation: 1-N — Lịch sử trạng thái kiểm toán viên
-    - table: AF_SUSPENSION
-      relation: 1-N — Đình chỉ kiểm toán viên
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_WARNING
-  content:
-    table: AF_WARNING
-    description: Bảng lưu thông tin nhắc nhở
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán
-    - table: AF_AUDITOR_PROFILES
-      relation: FK cha — Kiểm toán viên
-    - table: AF_INSPECTION
-      relation: FK cha — Đợt kiểm tra
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_SANCTIONS
-  content:
-    table: AF_SANCTIONS
-    description: Bảng lưu thông tin xử phạt
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_AUDITOR_STATUS_HISTORY
-  content:
-    table: AF_AUDITOR_STATUS_HISTORY
-    description: null
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_AUDITOR_PROFILES
-      relation: FK cha — Kiểm toán viên
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_INSPECTION
-  content:
-    table: AF_INSPECTION
-    description: Bảng lưu thông tin kiểm tra công ty kiểm toán
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán được kiểm tra
-    - table: AF_WARNING
-      relation: 1-N — Nhắc nhở sau kiểm tra
-    - table: AF_SUSPENSION
-      relation: 1-N — Đình chỉ sau kiểm tra
-    - table: AF_TECHNICAL_AUDIT
-      relation: 1-N — Kiểm tra hồ sơ kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_STATUS_HISTORY
-  content:
-    table: AF_STATUS_HISTORY
-    description: Bảng lưu lịch sử trạng thái
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_SUSPENSION
-  content:
-    table: AF_SUSPENSION
-    description: Bảng lưu thông tin đình chỉ
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán
-    - table: AF_AUDITOR_PROFILES
-      relation: FK cha — Kiểm toán viên
-    - table: AF_INSPECTION
-      relation: FK cha — Đợt kiểm tra
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-AF_TECHNICAL_AUDIT
-  content:
-    table: AF_TECHNICAL_AUDIT
-    description: Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
-    functional_group: audit_firm
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: AF_PROFILES
-      relation: FK cha — Công ty kiểm toán
-    - table: AF_INSPECTION
-      relation: FK cha — Đợt kiểm tra
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-IDS-LOGIN_PERMISSION_BY_CODE
   content:
     table: LOGIN_PERMISSION_BY_CODE
@@ -1476,60 +1217,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-FIELDS_MGR
-  content:
-    table: FIELDS_MGR
-    description: Bảng lưu trữ field dạng quản lý (fields_mgr)
-    functional_group: reporting
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-HTE_VIOLATION_REPORT
-  content:
-    table: HTE_VIOLATION_REPORT
-    description: Bảng vi phạm nộp báo cáo (hte_violation_report)
-    functional_group: inspection_penalty
-    scope_status: in_scope
-    scope_reason: null
-    related_tables:
-    - table: COMPANY_PROFILES
-      relation: FK cha — Hồ sơ công ty đại chúng
-    - table: FORMS
-      relation: FK cha — Mẫu báo cáo
-    - table: VIOLATION_TEMPLATES
-      relation: FK cha — Mẫu vi phạm
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-MIGRATION_EXECUTIONS
-  content:
-    table: MIGRATION_EXECUTIONS
-    description: Bảng lịch sử thực thi migration
-    functional_group: system
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-MIGRATION_LOGS
-  content:
-    table: MIGRATION_LOGS
-    description: Bảng log chi tiết migration
-    functional_group: system
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: timestamp >= {etl_date} AND timestamp < {etl_date} + 1
-      filter_note: null
+    table_meaning: Bảng LOGIN_PERMISSION_BY_CODE
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-ALERT_TEMPLATE_AUDIT_DTL
   content:
     table: ALERT_TEMPLATE_AUDIT_DTL
@@ -1540,10 +1229,14 @@ brd_entries:
     related_tables:
     - table: ALERT_TEMPLATE_AUDIT_HDR
       relation: FK cha — Danh sách mẫu template cảnh báo
+    - table: FORMS
+      relation: FK cha — Bảng forms
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Danh sách rule cấu hình cảnh báo
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-ALERT_TEMPLATE_AUDIT_HDR
   content:
     table: ALERT_TEMPLATE_AUDIT_HDR
@@ -1558,202 +1251,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_APPROVAL
-  content:
-    table: BK_AF_APPROVAL
-    description: Bảng lưu thông tin quyết định chấp thuận
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_AUDITOR_PROFILES
-      relation: FK cha — Lưu thông tin chung kiểm toán viên
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_AUDITOR_PROFILES
-  content:
-    table: BK_AF_AUDITOR_PROFILES
-    description: Lưu thông tin chung kiểm toán viên
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_APPROVAL
-      relation: 1-N — Bảng lưu thông tin quyết định chấp thuận
-    - table: BK_AF_AUDITOR_STATUS_HISTORY
-      relation: '1-N — '
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    - table: BK_AF_SUSPENSION
-      relation: 1-N — Bảng lưu thông tin đình chỉ
-    - table: BK_AF_WARNING
-      relation: 1-N — Bảng lưu thông tin nhắc nhở
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_AUDITOR_STATUS_HISTORY
-  content:
-    table: BK_AF_AUDITOR_STATUS_HISTORY
-    description: null
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_AUDITOR_PROFILES
-      relation: FK cha — Lưu thông tin chung kiểm toán viên
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_INSPECTION
-  content:
-    table: BK_AF_INSPECTION
-    description: Bảng lưu thông tin kiểm tra công ty kiểm toán
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    - table: BK_AF_SUSPENSION
-      relation: 1-N — Bảng lưu thông tin đình chỉ
-    - table: BK_AF_TECHNICAL_AUDIT
-      relation: 1-N — Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
-    - table: BK_AF_WARNING
-      relation: 1-N — Bảng lưu thông tin nhắc nhở
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_LEGAL_REPRESENTATIVE
-  content:
-    table: BK_AF_LEGAL_REPRESENTATIVE
-    description: Bảng Người đại diện theo pháp luật
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_PROFILES
-  content:
-    table: BK_AF_PROFILES
-    description: Bảng lưu thông tin công ty kiểm toán
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_APPROVAL
-      relation: 1-N — Bảng lưu thông tin quyết định chấp thuận
-    - table: BK_AF_AUDITOR_PROFILES
-      relation: 1-N — Lưu thông tin chung kiểm toán viên
-    - table: BK_AF_INSPECTION
-      relation: 1-N — Bảng lưu thông tin kiểm tra công ty kiểm toán
-    - table: BK_AF_LEGAL_REPRESENTATIVE
-      relation: 1-N — Bảng Người đại diện theo pháp luật
-    - table: BK_AF_SANCTIONS
-      relation: 1-N — Bảng lưu thông tin xử phạt
-    - table: BK_AF_STATUS_HISTORY
-      relation: 1-N — Bảng lưu lịch sử trạng thái
-    - table: BK_AF_SUSPENSION
-      relation: 1-N — Bảng lưu thông tin đình chỉ
-    - table: BK_AF_TECHNICAL_AUDIT
-      relation: 1-N — Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
-    - table: BK_AF_WARNING
-      relation: 1-N — Bảng lưu thông tin nhắc nhở
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_SANCTIONS
-  content:
-    table: BK_AF_SANCTIONS
-    description: Bảng lưu thông tin xử phạt
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_STATUS_HISTORY
-  content:
-    table: BK_AF_STATUS_HISTORY
-    description: Bảng lưu lịch sử trạng thái
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_SUSPENSION
-  content:
-    table: BK_AF_SUSPENSION
-    description: Bảng lưu thông tin đình chỉ
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_AUDITOR_PROFILES
-      relation: FK cha — Lưu thông tin chung kiểm toán viên
-    - table: BK_AF_INSPECTION
-      relation: FK cha — Bảng lưu thông tin kiểm tra công ty kiểm toán
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_TECHNICAL_AUDIT
-  content:
-    table: BK_AF_TECHNICAL_AUDIT
-    description: Bảng lưu thông tin kiểm tra hồ sơ kiểm toán
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_INSPECTION
-      relation: FK cha — Bảng lưu thông tin kiểm tra công ty kiểm toán
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-BK_AF_WARNING
-  content:
-    table: BK_AF_WARNING
-    description: Bảng lưu thông tin nhắc nhở
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: BK_AF_AUDITOR_PROFILES
-      relation: FK cha — Lưu thông tin chung kiểm toán viên
-    - table: BK_AF_INSPECTION
-      relation: FK cha — Bảng lưu thông tin kiểm tra công ty kiểm toán
-    - table: BK_AF_PROFILES
-      relation: FK cha — Bảng lưu thông tin công ty kiểm toán
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+    table_meaning: Danh sách mẫu template cảnh báo
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COMPANY_TENDER_OFFER_RESULT
   content:
     table: COMPANY_TENDER_OFFER_RESULT
@@ -1764,6 +1263,10 @@ brd_entries:
     related_tables:
     - table: COMPANY_TENDER_OFFER
       relation: FK cha — Lưu thông tin phương án về quá trình chào mua công khai
+    - table: COMPANY_DATA
+      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: USERS
+      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1811,11 +1314,15 @@ brd_entries:
     functional_group: unclassified_pending
     scope_status: pending
     scope_reason: null
-    related_tables: null
+    related_tables:
+    - table: FORMS
+      relation: FK cha — Bảng forms
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Mẫu báo cáo động — header
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-DYNAMIC_REPORT_TEMPLATE_FIELDS
   content:
     table: DYNAMIC_REPORT_TEMPLATE_FIELDS
@@ -1823,23 +1330,15 @@ brd_entries:
     functional_group: unclassified_pending
     scope_status: pending
     scope_reason: null
-    related_tables: null
+    related_tables:
+    - table: FIELDS
+      relation: FK cha — Bảng fields
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-EVALUATION_ERROR_LOG
-  content:
-    table: EVALUATION_ERROR_LOG
-    description: Nhật ký lỗi phát sinh trong quá trình đánh giá, xếp hạng công ty đại chúng
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+    table_meaning: Chỉ tiêu thuộc mẫu báo cáo động
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-EVALUATION_LEVEL_SCORE
   content:
     table: EVALUATION_LEVEL_SCORE
@@ -1852,202 +1351,8 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-HTE_INTG_API_LOG
-  content:
-    table: HTE_INTG_API_LOG
-    description: Log gọi API tích hợp module HTE
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-HTE_INTG_IMPORT_DATA_LOG
-  content:
-    table: HTE_INTG_IMPORT_DATA_LOG
-    description: Log import dữ liệu tích hợp module HTE
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-HTE_NOTIFICATIONS_DTL
-  content:
-    table: HTE_NOTIFICATIONS_DTL
-    description: Đối tượng gửi thông báo chi tiết module HTE
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-INTG_API_LOG
-  content:
-    table: INTG_API_LOG
-    description: Log gọi API tích hợp giữa IDS và các hệ thống ngoài
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_BLOB_TRIGGERS
-  content:
-    table: QRTZ_BLOB_TRIGGERS
-    description: Quartz - Blob Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_CALENDARS
-  content:
-    table: QRTZ_CALENDARS
-    description: Quartz - Calendar (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_CRON_TRIGGERS
-  content:
-    table: QRTZ_CRON_TRIGGERS
-    description: Quartz - Cron Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_FIRED_TRIGGERS
-  content:
-    table: QRTZ_FIRED_TRIGGERS
-    description: Quartz - Trigger đã được kích hoạt (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_JOB_DETAILS
-  content:
-    table: QRTZ_JOB_DETAILS
-    description: Quartz - Thông tin chi tiết Job (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: QRTZ_TRIGGERS
-      relation: '1-N — '
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_LOCKS
-  content:
-    table: QRTZ_LOCKS
-    description: Quartz - Lock cho cluster (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_PAUSED_TRIGGER_GRPS
-  content:
-    table: QRTZ_PAUSED_TRIGGER_GRPS
-    description: Quartz - Nhóm Trigger bị tạm dừng (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_SCHEDULER_STATE
-  content:
-    table: QRTZ_SCHEDULER_STATE
-    description: Quartz - Trạng thái Scheduler (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_SIMPLE_TRIGGERS
-  content:
-    table: QRTZ_SIMPLE_TRIGGERS
-    description: Quartz - Simple Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_SIMPROP_TRIGGERS
-  content:
-    table: QRTZ_SIMPROP_TRIGGERS
-    description: Quartz - Simple Property Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-QRTZ_TRIGGERS
-  content:
-    table: QRTZ_TRIGGERS
-    description: Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: QRTZ_JOB_DETAILS
-      relation: 'FK cha — '
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-RCOL_MGR
-  content:
-    table: RCOL_MGR
-    description: Danh mục cột báo cáo tài chính (phiên bản quản lý - song song với RCOL)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+    table_meaning: Cấu hình điểm áp dụng chung cho tất cả chỉ tiêu theo mức đánh giá
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-REP_DATA
   content:
     table: REP_DATA
@@ -2058,22 +1363,20 @@ brd_entries:
     related_tables:
     - table: COMPANY_PROFILES
       relation: FK cha — Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
+    - table: LEGAL_ENTITIES
+      relation: FK cha — Bảng legal entities
+    - table: COMPANY_DATA
+      relation: FK cha — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: REP_FORMS
+      relation: FK cha — Bảng rep forms
+    - table: REP_ROW
+      relation: FK cha — Bảng rep row
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-RROW_MGR
-  content:
-    table: RROW_MGR
-    description: Danh mục hàng báo cáo tài chính (phiên bản quản lý - song song với RROW)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+    table_meaning: Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-TENDER_OFFER
   content:
     table: TENDER_OFFER
@@ -2081,11 +1384,20 @@ brd_entries:
     functional_group: unclassified_pending
     scope_status: pending
     scope_reason: null
-    related_tables: null
+    related_tables:
+    - table: COMPANY_PROFILES
+      relation: FK cha — Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
+    - table: USERS
+      relation: FK cha — Bảng users
+    - table: TENDER_OFFER_RESULT
+      relation: 1-N — Lưu thông tin kết quả chào mua công khai (Public Tender Offer
+        Result)
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+    table_meaning: Lưu thông tin phương án chào mua công khai (Public Tender Offer)
+    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-TENDER_OFFER_RESULT
   content:
     table: TENDER_OFFER_RESULT
@@ -2093,19 +1405,315 @@ brd_entries:
     functional_group: unclassified_pending
     scope_status: pending
     scope_reason: null
-    related_tables: null
+    related_tables:
+    - table: TENDER_OFFER
+      relation: FK cha — Lưu thông tin phương án chào mua công khai (Public Tender
+        Offer)
+    - table: USERS
+      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-IDS-REPORT_CATALOG_MGR
+    table_meaning: Lưu thông tin kết quả chào mua công khai (Public Tender Offer Result)
+    table_meaning_src: schema
+- brd_id: BRD-SRC-IDS-APPRAISAL_CRITERIA
+  brd_name: Design Atomic từ nguồn IDS bảng APPRAISAL_CRITERIA
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
   content:
-    table: REPORT_CATALOG_MGR
-    description: Danh mục mẫu báo cáo tài chính (phiên bản quản lý - song song với REPORT_CATALOG)
-    functional_group: unclassified_pending
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
+    table: APPRAISAL_CRITERIA
+    related_tables:
+    - table: DOSSIER_APPRAISAL_RESULT
+      relation: 1-N — Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BOND_COLLATERAL
+  brd_name: Design Atomic từ nguồn IDS bảng BOND_COLLATERAL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Tài sản bảo đảm trái phiếu
+    table_meaning_src: schema
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: BOND_COLLATERAL
     related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BOND_LISTING
+  brd_name: Design Atomic từ nguồn IDS bảng BOND_LISTING
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: BOND_LISTING
+    related_tables:
+    - table: COMPANY_PROFILES
+      relation: FK cha — Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
+    - table: BOND_LISTING_HISTORY
+      relation: 1-N — Bảng bond listing history
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BOND_LISTING_HISTORY_TMP
+  brd_name: Design Atomic từ nguồn IDS bảng BOND_LISTING_HISTORY_TMP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: BOND_LISTING_HISTORY_TMP
+    related_tables:
+    - table: COMPANY_PROFILES
+      relation: FK cha — Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-BOND_PAYMENT_STATUS
+  brd_name: Design Atomic từ nguồn IDS bảng BOND_PAYMENT_STATUS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Trạng thái thanh toán gốc/lãi trái phiếu
+    table_meaning_src: schema
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: BOND_PAYMENT_STATUS
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-CAPITAL_INCREASE_DETAIL
+  brd_name: Design Atomic từ nguồn IDS bảng CAPITAL_INCREASE_DETAIL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Chi tiết từng hình thức chào bán/phát hành trong kế hoạch tăng
+      vốn (5.3.2.6)
+    table_meaning_src: schema
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CAPITAL_INCREASE_DETAIL
+    related_tables:
+    - table: CAPITAL_INCREASE_PLAN
+      relation: FK cha — Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6)
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-CAPITAL_INCREASE_PLAN
+  brd_name: Design Atomic từ nguồn IDS bảng CAPITAL_INCREASE_PLAN
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6)
+    table_meaning_src: schema
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CAPITAL_INCREASE_PLAN
+    related_tables:
+    - table: CAPITAL_INCREASE_DETAIL
+      relation: 1-N — Chi tiết từng hình thức chào bán/phát hành trong kế hoạch tăng
+        vốn (5.3.2.6)
+    - table: COMPANY_DATA
+      relation: FK cha — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: COMPANY_PROFILES
+      relation: FK cha — Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-DOSSIER_APPRAISAL_RESULT
+  brd_name: Design Atomic từ nguồn IDS bảng DOSSIER_APPRAISAL_RESULT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
+    table_meaning_src: schema
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DOSSIER_APPRAISAL_RESULT
+    related_tables:
+    - table: SECURITIES_OFFERING
+      relation: FK cha — Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
+    - table: COMPANY_TENDER_OFFER
+      relation: FK cha — Bảng company tender offer
+    - table: COMPANY_TREASURY_SHARES
+      relation: FK cha — Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
+    - table: APPRAISAL_CRITERIA
+      relation: FK cha — Bảng appraisal criteria
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-FINANCIAL_INDICATOR_MAPPING
+  brd_name: Design Atomic từ nguồn IDS bảng FINANCIAL_INDICATOR_MAPPING
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng khai báo ánh xạ MÃ SỐ KẾ TOÁN (RROW.ROW_DESC) của chỉ tiêu
+      BCTC sang cột đích của FINANCIAL_RATIOS_DETAIL. Khai theo REPORT_YEAR + REPORT_CD;
+      REPORT_CD dạng 'BASE_<họ>_<loại>' là bản khai chung, bản khai theo REPORT_CD
+      cụ thể đè base khi trùng ROW_DESC.
+    table_meaning_src: schema
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: FINANCIAL_INDICATOR_MAPPING
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-FINANCIAL_RATIOS_DETAIL
+  brd_name: Design Atomic từ nguồn IDS bảng FINANCIAL_RATIOS_DETAIL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng chi tiết số liệu tài chính của công ty đại chúng theo kỳ (năm/quý).
+      Là dữ liệu đầu vào phục vụ tính các chỉ số/tỷ số tài chính lưu trong bảng LOOKUP_KEY_FINANCIALS.
+      Khóa nghiệp vụ (STOCK_CODE, YEAR, QUARTER).
+    table_meaning_src: schema
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: FINANCIAL_RATIOS_DETAIL
+    related_tables:
+    - table: CATEGORIES
+      relation: FK cha — Bảng categories
+    - table: REPORT_CATALOG
+      relation: FK cha — Bảng report catalog
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-LOOKUP_KEY_FINANCIALS
+  brd_name: Design Atomic từ nguồn IDS bảng LOOKUP_KEY_FINANCIALS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng lưu kết quả tính các chỉ số/tỷ số tài chính theo công ty và
+      kỳ (năm/quý). Materialize từ FINANCIAL_RATIOS_DETAIL, quan hệ 1-1 qua ID. Phục
+      vụ tra cứu nhanh (lookup) cho các báo cáo phân tích.
+    table_meaning_src: schema
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: LOOKUP_KEY_FINANCIALS
+    related_tables:
+    - table: CATEGORIES
+      relation: FK cha — Bảng categories
+    - table: REPORT_CATALOG
+      relation: FK cha — Bảng report catalog
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IDS-USERS
+  brd_name: Design Atomic từ nguồn IDS bảng USERS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: USERS
+    related_tables:
+    - table: COMPANY_DATA
+      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
+    - table: COMPANY_TENDER_OFFER
+      relation: 1-N — Bảng company tender offer
+    - table: COMPANY_TENDER_OFFER_RESULT
+      relation: 1-N — Bảng company tender offer result
+    - table: COMPANY_TREASURY_SHARES
+      relation: 1-N — Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
+    - table: SECURITIES_OFFERING
+      relation: 1-N — Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
+    - table: SECURITIES_OFFERING_RESULT
+      relation: 1-N — Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
+    - table: TENDER_OFFER
+      relation: 1-N — Lưu thông tin phương án chào mua công khai (Public Tender Offer)
+    - table: TENDER_OFFER_RESULT
+      relation: 1-N — Lưu thông tin kết quả chào mua công khai (Public Tender Offer
+        Result)
+    - table: TREASURY_SHARE_TRANS_RESULT
+      relation: 1-N — Lưu thông tin kết quả giao dịch cổ phiếu quỹ (Treasury Share
+        Transaction Result)
+    - table: DEPARTMENTS
+      relation: FK cha — Bảng departments
+    - table: USER_AUDIT_LOG
+      relation: 1-N — Bảng user audit log
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
     ingestion:
       data_change_mode: Update
       filter_logic: null

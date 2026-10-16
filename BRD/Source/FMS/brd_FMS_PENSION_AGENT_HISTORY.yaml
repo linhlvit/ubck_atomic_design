@@ -6,71 +6,72 @@ brd_ref: BRD-SRC-FMS-PENSION_AGENT_HISTORY
 columns:
 - name: ID
   data_type: RAW(16)
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  description: Khóa chính của bản ghi (UUID dạng RAW(16))
   key: PK
   fk_note: null
 - name: PENSION_AGENT_ID
   data_type: RAW(16)
-  description: "FK -> PENSION_AGENT: Đại lý hưu trí liên quan"
+  description: 'FK -> PENSION_AGENT: Đại lý hưu trí liên quan'
   key: FK
-  fk_note: "FK → PENSION_AGENT.ID"
+  fk_note: FK → PENSION_AGENT.ID
 - name: EVENT_NAME
   data_type: VARCHAR2(500)
-  description: "Dữ liệu lịch sử cột EVENT_NAME tại thời điểm backup"
+  description: Dữ liệu lịch sử cột EVENT_NAME tại thời điểm backup
   key: null
   fk_note: null
 - name: LICENSE_AMENDMENT_NO
   data_type: VARCHAR2(200)
-  description: "Dữ liệu lịch sử cột LICENSE_AMENDMENT_NO tại thời điểm backup"
+  description: Dữ liệu lịch sử cột LICENSE_AMENDMENT_NO tại thời điểm backup
   key: null
   fk_note: null
 - name: APPROVAL_DATE
   data_type: DATE
-  description: "Ngày chấp thuận/phê duyệt của UBCKNN"
+  description: Ngày chấp thuận/phê duyệt của UBCKNN
   key: null
   fk_note: null
 - name: AMENDMENT_REASON
   data_type: VARCHAR2(2000)
-  description: "Dữ liệu lịch sử cột AMENDMENT_REASON tại thời điểm backup"
+  description: Dữ liệu lịch sử cột AMENDMENT_REASON tại thời điểm backup
   key: null
   fk_note: null
 - name: CHANGE_DETAIL
   data_type: CLOB
-  description: "Dữ liệu lịch sử cột CHANGE_DETAIL tại thời điểm backup"
+  description: Dữ liệu lịch sử cột CHANGE_DETAIL tại thời điểm backup
   key: null
   fk_note: null
 - name: DATE_CREATED
   data_type: TIMESTAMP(6)
-  description: "Thời điểm tạo bản ghi"
+  description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: VARCHAR2(200)
-  description: "Tài khoản người tạo bản ghi"
+  description: Tài khoản người tạo bản ghi
   key: null
   fk_note: null
 - name: DATE_MODIFIED
   data_type: TIMESTAMP(6)
-  description: "Thời điểm cập nhật bản ghi lần cuối"
+  description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: MODIFY_BY
   data_type: VARCHAR2(200)
-  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  description: Tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: EVENT_PAYLOAD
   data_type: CLOB
-  description: "JSON giá trị các trường bổ sung theo cấu hình sự vụ (NCLOB)"
+  description: JSON giá trị các trường bổ sung theo cấu hình sự vụ (NCLOB)
   key: null
   fk_note: null
 - name: EVENT_TYPE_ID
   data_type: RAW(16)
-  description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng"
+  description: 'FK -> EVENT_TYPE: Loại sự vụ áp dụng'
   key: FK
-  fk_note: null
+  fk_note: FK → EVENT_TYPE.ID
+  fk_src: inferred
 - name: SNAPSHOT_AFTER
   data_type: CLOB
-  description: "JSON array [{field, label, value}] — snapshot đầy đủ hồ sơ sau thay đổi (write-time)"
+  description: JSON array [{field, label, value}] — snapshot đầy đủ hồ sơ sau thay đổi (write-time)
   key: null
   fk_note: null

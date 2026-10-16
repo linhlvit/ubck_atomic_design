@@ -6,11 +6,13 @@ brd_ref: BRD-SRC-FMS-GROUP_USERS
 columns:
 - name: GROUPS_ID
   data_type: RAW(16)
-  description: "FK -> GROUPS: Nhóm người dùng"
-  key: PK
-  fk_note: null
+  description: 'FK -> GROUPS: Nhóm người dùng'
+  key: PK/FK
+  fk_note: FK → GROUPS.ID
+  fk_src: inferred
 - name: USERS_ID
   data_type: RAW(16)
-  description: "FK -> USERS: Tài khoản người dùng sở hữu token"
-  key: PK
-  fk_note: null
+  description: 'FK -> USERS: Tài khoản người dùng sở hữu token'
+  key: PK/FK
+  fk_note: FK → USERS.ID
+  fk_src: inferred

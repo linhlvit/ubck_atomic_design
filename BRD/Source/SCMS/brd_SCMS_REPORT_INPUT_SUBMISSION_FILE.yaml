@@ -4,33 +4,33 @@ source: SCMS
 table: REPORT_INPUT_SUBMISSION_FILE
 brd_ref: BRD-SRC-SCMS-REPORT_INPUT_SUBMISSION_FILE
 columns:
-  - name: ID
-    data_type: NUMBER(19,0)
-    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
-    fk_note: null
-  - name: REPORT_INPUT_SUBMISSION_ID
-    data_type: NUMBER(19,0)
-    description: "FK -> report_input_submission: Phiên gửi báo cáo liên quan"
-    key: FK
-    fk_note: "FK → REPORT_INPUT_SUBMISSION.ID"
-  - name: RECORD_TYPE
-    data_type: NVARCHAR2(32)
-    description: "Loai file dinh kem phien gui: MAIN = File bao cao chinh; ATTACHMENT = File dinh kem phu; SIGNATURE = File chu ky so"
-    key: null
-    fk_note: null
-  - name: PATH_URL
-    data_type: NVARCHAR2(2000)
-    description: null
-    key: null
-    fk_note: null
-  - name: ORIGINAL_FILE_NAME
-    data_type: NVARCHAR2(1000)
-    description: null
-    key: null
-    fk_note: null
-  - name: REF_TYPE
-    data_type: VARCHAR2(64)
-    description: null
-    key: null
-    fk_note: null
+- name: ID
+  data_type: NUMBER(19,0)
+  description: Khóa chính của bản ghi (ID tự tăng hoặc UUID)
+  key: PK
+  fk_note: null
+- name: REPORT_INPUT_SUBMISSION_ID
+  data_type: NUMBER(19,0)
+  description: 'FK -> report_input_submission: Phiên gửi báo cáo liên quan'
+  key: FK
+  fk_note: FK → REPORT_INPUT_SUBMISSION.ID
+- name: RECORD_TYPE
+  data_type: NVARCHAR2(64)
+  description: 'Loai file dinh kem phien gui: MAIN = File bao cao chinh; ATTACHMENT = File dinh kem phu; SIGNATURE = File chu ky so'
+  key: null
+  fk_note: null
+- name: PATH_URL
+  data_type: NVARCHAR2(4000)
+  description: null
+  key: null
+  fk_note: null
+- name: ORIGINAL_FILE_NAME
+  data_type: NVARCHAR2(1000)
+  description: null
+  key: null
+  fk_note: null
+- name: REF_TYPE
+  data_type: VARCHAR2(64)
+  description: null
+  key: null
+  fk_note: null

@@ -1,0 +1,217 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: AF_TECHNICAL_AUDIT
+brd_ref: BRD-SRC-AUDIT-AF_TECHNICAL_AUDIT
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: AF_PROFILE_ID
+  data_type: NUMBER(10,0)
+  description: Link đến bảng AF_PROFILES
+  description_src: schema
+  key: FK
+  fk_note: FK → AF_PROFILES.ID
+  fk_src: inferred
+- name: AF_INSPECTION_ID
+  data_type: NUMBER(10,0)
+  description: Link đến bảng AF_INSPECTION
+  description_src: schema
+  key: FK
+  fk_note: FK → AF_INSPECTION.ID
+  fk_src: inferred
+- name: INSPECTION_ENTITY_FILES
+  data_type: VARCHAR2(4000)
+  description: Tên hồ sơ kiểm tra (chọn MCK hoặc nhập tay)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INSPECTION_YEAR
+  data_type: VARCHAR2(16)
+  description: Năm kiểm tra
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SIGNING_AUDITOR_NAME
+  data_type: VARCHAR2(400)
+  description: Kiểm toán viên ký BCTC (chọn từ danh sách KTV)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LEGAL_REPRESENTATIVE_NAME
+  data_type: VARCHAR2(400)
+  description: Lãnh đạo ký BCTC (chọn từ danh sách KTV)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INSPECTION_RESULT_CD
+  data_type: VARCHAR2(400)
+  description: Kết quả kiểm tra (Tốt; Đạt; Không đạt; Kém)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: AUDIT_ACTION_CD
+  data_type: VARCHAR2(400)
+  description: Hình thức quyết định (Quyết định đình chỉ; Công văn nhắc nhở)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACTION_TYPE_CD
+  data_type: VARCHAR2(400)
+  description: Hình thức xử lý (Sau kiểm tra, Qua công tác giám sát)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DOCUMENT_NO
+  data_type: VARCHAR2(72)
+  description: Số văn bản
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DOCUMENT_DATE
+  data_type: DATE
+  description: Ngày văn bản
+  description_src: schema
+  key: null
+  fk_note: null
+- name: VIOLATION_CONTENT
+  data_type: VARCHAR2(2048)
+  description: Nội dung vi phạm
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EFFECTIVE_FROM_DATE
+  data_type: DATE
+  description: Thời gian hiệu lực - Từ ngày
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EFFECTIVE_TO_DATE
+  data_type: DATE
+  description: Thời gian hiệu lực - Đến ngày
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(120)
+  description: Người tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(120)
+  description: Người sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DELETE_FLG
+  data_type: NUMBER(1,0)
+  description: 'Soft delete flag - 0: Active, 1: Deleted'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REASON
+  data_type: VARCHAR2(512)
+  description: Lý do (KTV)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LD_INSPECTION_RESULT_CD
+  data_type: VARCHAR2(100)
+  description: Kết quả kiểm tra (Lãnh đạo)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LD_AUDIT_ACTION_CD
+  data_type: VARCHAR2(100)
+  description: Hình thức xử lý (Lãnh đạo)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LD_REASON
+  data_type: VARCHAR2(512)
+  description: Lý do (Lãnh đạo)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LD_DOCUMENT_NO
+  data_type: VARCHAR2(18)
+  description: Số văn bản (Lãnh đạo)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LD_DOCUMENT_DATE
+  data_type: DATE
+  description: Ngày văn bản (Lãnh đạo)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LD_VIOLATION_CONTENT
+  data_type: VARCHAR2(1024)
+  description: Nội dung vi phạm (Lãnh đạo)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LD_EFFECTIVE_FROM_DATE
+  data_type: DATE
+  description: Từ ngày (Lãnh đạo)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: LD_EFFECTIVE_TO_DATE
+  data_type: DATE
+  description: Đến ngày (Lãnh đạo)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: INSPECTION_UNIT
+  data_type: VARCHAR2(400)
+  description: null
+  key: null
+  fk_note: null
+- name: INSPECTION_TYPE
+  data_type: VARCHAR2(400)
+  description: null
+  key: null
+  fk_note: null
+- name: INSPECTION_OTHER_UNIT
+  data_type: VARCHAR2(1020)
+  description: null
+  key: null
+  fk_note: null
+- name: CONSIDER_NEXT_YEAR_PROCESSING
+  data_type: VARCHAR2(400)
+  description: null
+  key: null
+  fk_note: null
+- name: OTHER_PROCESSING
+  data_type: VARCHAR2(2048)
+  description: null
+  key: null
+  fk_note: null
+- name: LD_CONSIDER_NEXT_YEAR_PROCESSING
+  data_type: VARCHAR2(400)
+  description: null
+  key: null
+  fk_note: null
+- name: LD_OTHER_PROCESSING
+  data_type: VARCHAR2(2048)
+  description: null
+  key: null
+  fk_note: null

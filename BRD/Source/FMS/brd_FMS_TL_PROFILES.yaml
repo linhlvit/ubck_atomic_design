@@ -6,321 +6,322 @@ brd_ref: BRD-SRC-FMS-TL_PROFILES
 columns:
 - name: ID
   data_type: RAW(16)
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  description: Khóa chính của bản ghi (UUID dạng RAW(16))
   key: PK
   fk_note: null
 - name: DATE_CREATED
   data_type: DATE
-  description: "Thời điểm tạo bản ghi"
+  description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: NVARCHAR2(200)
-  description: "Tài khoản người tạo bản ghi"
+  description: Tài khoản người tạo bản ghi
   key: null
   fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
-  description: "Thời điểm cập nhật bản ghi lần cuối"
+  description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: MODIFY_BY
   data_type: NVARCHAR2(200)
-  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  description: Tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: SEC_ID
   data_type: RAW(16)
-  description: "FK -> SECURITIES: Công ty QLQ liên quan"
+  description: 'FK -> SECURITIES: Công ty QLQ liên quan'
   key: FK
-  fk_note: "FK → SECURITIES.ID"
+  fk_note: FK → SECURITIES.ID
 - name: BRANCH_ID
   data_type: RAW(16)
-  description: "FK -> BRANCHS: Chi nhánh công tác của người hành nghề"
+  description: 'FK -> BRANCHS: Chi nhánh công tác của người hành nghề'
   key: FK
-  fk_note: "FK → BRANCHS.ID"
+  fk_note: FK → BRANCHS.ID
 - name: NAT_ID
   data_type: RAW(16)
-  description: "FK -> NATIONAL: Quốc gia/quốc tịch"
+  description: 'FK -> NATIONAL: Quốc gia/quốc tịch'
   key: FK
-  fk_note: "FK → NATIONAL.ID"
+  fk_note: FK → NATIONAL.ID
 - name: ITEM_NAME
   data_type: NVARCHAR2(2000)
-  description: "Tên hiển thị chính"
+  description: Tên hiển thị chính
   key: null
   fk_note: null
 - name: SEX
   data_type: NVARCHAR2(2)
-  description: "Giới tính: 1=Nam, 0=Nữ (hoặc chuỗi Nam/Nữ tùy bảng)"
+  description: 'Giới tính: 1=Nam, 0=Nữ (hoặc chuỗi Nam/Nữ tùy bảng)'
   key: null
   fk_note: null
 - name: ID_NO
   data_type: NVARCHAR2(100)
-  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
+  description: Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp
   key: null
   fk_note: null
 - name: ID_DATE
   data_type: DATE
-  description: "Ngày cấp CMND/CCCD/Hộ chiếu"
+  description: Ngày cấp CMND/CCCD/Hộ chiếu
   key: null
   fk_note: null
 - name: QTTY
   data_type: NUMBER(18,2)
-  description: "Số lượng CCQ/cổ phiếu nắm giữ"
+  description: Số lượng CCQ/cổ phiếu nắm giữ
   key: null
   fk_note: null
 - name: RECORD_STATUS
   data_type: NUMBER(18,2)
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực'
   key: null
   fk_note: null
 - name: ID_ADD
   data_type: NVARCHAR2(400)
-  description: "Nơi cấp CMND/CCCD/Hộ chiếu"
+  description: Nơi cấp CMND/CCCD/Hộ chiếu
   key: null
   fk_note: null
 - name: DESCRIPTION
   data_type: NVARCHAR2(2000)
-  description: "Mô tả chi tiết"
+  description: Mô tả chi tiết
   key: null
   fk_note: null
 - name: CUST_TYPE
   data_type: NVARCHAR2(4)
-  description: "Loại nhân sự tùy biến (phân loại theo đặc thù tổ chức)"
+  description: Loại nhân sự tùy biến (phân loại theo đặc thù tổ chức)
   key: null
   fk_note: null
 - name: JOBFR_DATE
   data_type: DATE
-  description: "Ngày bắt đầu hành nghề"
+  description: Ngày bắt đầu hành nghề
   key: null
   fk_note: null
 - name: JOBCLOSE_DATE
   data_type: DATE
-  description: "Ngày kết thúc hành nghề"
+  description: Ngày kết thúc hành nghề
   key: null
   fk_note: null
 - name: CERT_NO
   data_type: NVARCHAR2(200)
-  description: "Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư"
+  description: Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư
   key: null
   fk_note: null
 - name: CERT_DATE
   data_type: DATE
-  description: "Ngày cấp chứng chỉ hành nghề"
+  description: Ngày cấp chứng chỉ hành nghề
   key: null
   fk_note: null
 - name: ADDRESS
   data_type: NVARCHAR2(2000)
-  description: "Địa chỉ trụ sở"
+  description: Địa chỉ trụ sở
   key: null
   fk_note: null
 - name: TELEPHONE
   data_type: NVARCHAR2(60)
-  description: "Số điện thoại"
+  description: Số điện thoại
   key: null
   fk_note: null
 - name: FAX
   data_type: NVARCHAR2(60)
-  description: "Số fax"
+  description: Số fax
   key: null
   fk_note: null
 - name: EMAIL
   data_type: NVARCHAR2(200)
-  description: "Địa chỉ email"
+  description: Địa chỉ email
   key: null
   fk_note: null
 - name: DELETED
   data_type: NUMBER(1,0)
-  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  description: 'Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động'
   key: null
   fk_note: null
 - name: SHORT_NAME
   data_type: NVARCHAR2(60)
-  description: "Tên viết tắt"
+  description: Tên viết tắt
   key: null
   fk_note: null
 - name: ISR
   data_type: NUMBER(1,0)
-  description: "Tỷ lệ nắm giữ cổ phần (%) của người hành nghề"
+  description: Tỷ lệ nắm giữ cổ phần (%) của người hành nghề
   key: null
   fk_note: null
 - name: ISP
   data_type: NUMBER(1,0)
-  description: "Số lượng cổ phiếu/CCQ nắm giữ của người hành nghề"
+  description: Số lượng cổ phiếu/CCQ nắm giữ của người hành nghề
   key: null
   fk_note: null
 - name: CURRENT_ADD
   data_type: NVARCHAR2(2000)
-  description: "Địa chỉ hiện tại (nơi ở hiện tại)"
+  description: Địa chỉ hiện tại (nơi ở hiện tại)
   key: null
   fk_note: null
 - name: EDUCATION
   data_type: NVARCHAR2(2000)
-  description: "Trình độ học vấn (cử nhân, thạc sĩ, tiến sĩ...)"
+  description: Trình độ học vấn (cử nhân, thạc sĩ, tiến sĩ...)
   key: null
   fk_note: null
 - name: QUALYFICATION
   data_type: NVARCHAR2(2000)
-  description: "Trình độ chuyên môn/bằng cấp chuyên ngành"
+  description: Trình độ chuyên môn/bằng cấp chuyên ngành
   key: null
   fk_note: null
 - name: JOB_TYPE
   data_type: NUMBER(1,0)
-  description: "Loại hành nghề: 1=Quản lý quỹ, 2=Phân tích đầu tư..."
+  description: 'Loại hành nghề: 1=Quản lý quỹ, 2=Phân tích đầu tư...'
   key: null
   fk_note: null
 - name: POLITICS
   data_type: NUMBER(1,0)
-  description: "Thông tin chính trị của người hành nghề (nếu có)"
+  description: Thông tin chính trị của người hành nghề (nếu có)
   key: null
   fk_note: null
 - name: BIRTH
   data_type: DATE
-  description: "Ngày sinh"
+  description: Ngày sinh
   key: null
   fk_note: null
 - name: PLACE_OF_BIRTH
   data_type: NVARCHAR2(2000)
-  description: "Nơi sinh"
+  description: Nơi sinh
   key: null
   fk_note: null
 - name: CERT_TYPE
   data_type: NVARCHAR2(2000)
-  description: "Loại chứng chỉ hành nghề: quản lý quỹ, phân tích đầu tư..."
+  description: 'Loại chứng chỉ hành nghề: quản lý quỹ, phân tích đầu tư...'
   key: null
   fk_note: null
 - name: ISD
   data_type: NVARCHAR2(2)
-  description: "Mã chứng khoán liên quan đến người hành nghề"
+  description: Mã chứng khoán liên quan đến người hành nghề
   key: null
   fk_note: null
 - name: ISI
   data_type: NUMBER(1,0)
-  description: "Số hiệu định danh nội bộ của người hành nghề"
+  description: Số hiệu định danh nội bộ của người hành nghề
   key: null
   fk_note: null
 - name: HOST_OFFICE
   data_type: NUMBER(1,0)
-  description: "Cờ là trụ sở chính: 1=Trụ sở chính, 0=Chi nhánh/VPĐD"
+  description: 'Cờ là trụ sở chính: 1=Trụ sở chính, 0=Chi nhánh/VPĐD'
   key: null
   fk_note: null
 - name: FILE_NAME
   data_type: NVARCHAR2(2000)
-  description: "Tên file hoặc danh sách tên file đính kèm"
+  description: Tên file hoặc danh sách tên file đính kèm
   key: null
   fk_note: null
 - name: FILE_DATA
   data_type: NCLOB
-  description: "Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)"
+  description: Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)
   key: null
   fk_note: null
 - name: RECORD_TYPE
   data_type: NVARCHAR2(4)
-  description: "Loại/phân loại của bản ghi"
+  description: Loại/phân loại của bản ghi
   key: null
   fk_note: null
 - name: MOV_DATE
   data_type: DATE
-  description: "Ngày điều chuyển/luân chuyển công tác"
+  description: Ngày điều chuyển/luân chuyển công tác
   key: null
   fk_note: null
 - name: ADD_WORK
   data_type: NVARCHAR2(1000)
-  description: "Địa chỉ cơ quan/nơi làm việc"
+  description: Địa chỉ cơ quan/nơi làm việc
   key: null
   fk_note: null
 - name: EMPLOYED
   data_type: NVARCHAR2(2)
-  description: "Cờ đang có hợp đồng lao động hiệu lực: Y=Còn HĐLĐ, N=Không"
+  description: 'Cờ đang có hợp đồng lao động hiệu lực: Y=Còn HĐLĐ, N=Không'
   key: null
   fk_note: null
 - name: POSIT_JOB
   data_type: NVARCHAR2(400)
-  description: "Vị trí công việc tại tổ chức hiện tại"
+  description: Vị trí công việc tại tổ chức hiện tại
   key: null
   fk_note: null
 - name: TIME_WORK
   data_type: NVARCHAR2(200)
-  description: "Thời gian công tác/kinh nghiệm làm việc"
+  description: Thời gian công tác/kinh nghiệm làm việc
   key: null
   fk_note: null
 - name: PROFESSION
   data_type: NVARCHAR2(600)
-  description: "Ngành nghề/chuyên ngành đào tạo"
+  description: Ngành nghề/chuyên ngành đào tạo
   key: null
   fk_note: null
 - name: CDY_ACC
   data_type: NVARCHAR2(40)
-  description: "Tài khoản giao dịch chứng khoán của người hành nghề"
+  description: Tài khoản giao dịch chứng khoán của người hành nghề
   key: null
   fk_note: null
 - name: PL_EMAIL
   data_type: NVARCHAR2(120)
-  description: "Email cá nhân/đăng nhập của người hành nghề"
+  description: Email cá nhân/đăng nhập của người hành nghề
   key: null
   fk_note: null
 - name: SWORK_DTE
   data_type: DATE
-  description: "Ngày bắt đầu làm việc tại tổ chức hiện tại"
+  description: Ngày bắt đầu làm việc tại tổ chức hiện tại
   key: null
   fk_note: null
 - name: FWORK_DTE
   data_type: DATE
-  description: "Ngày kết thúc làm việc tại tổ chức hiện tại"
+  description: Ngày kết thúc làm việc tại tổ chức hiện tại
   key: null
   fk_note: null
 - name: FN_TYPE
   data_type: NVARCHAR2(2)
-  description: "Loại chức năng/vai trò của người hành nghề"
+  description: Loại chức năng/vai trò của người hành nghề
   key: null
   fk_note: null
 - name: DEPARTMENT
   data_type: NVARCHAR2(600)
-  description: "Phòng/ban công tác của người hành nghề"
+  description: Phòng/ban công tác của người hành nghề
   key: null
   fk_note: null
 - name: CELL_PHONE
   data_type: NVARCHAR2(60)
-  description: "Số điện thoại di động"
+  description: Số điện thoại di động
   key: null
   fk_note: null
 - name: CERTIFIED
   data_type: NUMBER(1,0)
-  description: "Cờ có chứng chỉ hành nghề hợp lệ: 1=Có CCHN, 0=Không"
+  description: 'Cờ có chứng chỉ hành nghề hợp lệ: 1=Có CCHN, 0=Không'
   key: null
   fk_note: null
 - name: INSDER_ID
   data_type: RAW(16)
-  description: "FK -> INSIDER: Cổ đông nội bộ liên kết với người hành nghề"
+  description: 'FK -> INSIDER: Cổ đông nội bộ liên kết với người hành nghề'
   key: FK
-  fk_note: "FK → INSIDER.ID"
+  fk_note: FK → INSIDER.ID
 - name: BUSI_ID
   data_type: RAW(16)
-  description: "FK -> BUSINESS: Lĩnh vực hoạt động liên quan"
+  description: 'FK -> BUSINESS: Lĩnh vực hoạt động liên quan'
   key: FK
-  fk_note: "FK → BUSINESS.ID"
+  fk_note: FK → BUSINESS.ID
 - name: CONFIRM_STATUS
   data_type: NUMBER(18,2)
-  description: "Trạng thái xác nhận thông tin: 1=Đã xác nhận, 0=Chưa xác nhận"
+  description: 'Trạng thái xác nhận thông tin: 1=Đã xác nhận, 0=Chưa xác nhận'
   key: null
   fk_note: null
 - name: DATA_MIGRATION
   data_type: NUMBER(1,0)
-  description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
+  description: 'Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới'
   key: null
   fk_note: null
 - name: EVENT_TYPE_ID
   data_type: RAW(16)
-  description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng"
+  description: 'FK -> EVENT_TYPE: Loại sự vụ áp dụng'
   key: FK
-  fk_note: null
+  fk_note: FK → EVENT_TYPE.ID
+  fk_src: inferred
 - name: EDIT_REASON
   data_type: VARCHAR2(2000)
-  description: "Lý do sửa đổi thông tin người hành nghề"
+  description: Lý do sửa đổi thông tin người hành nghề
   key: null
   fk_note: null
 - name: EVENT_PAYLOAD
   data_type: NCLOB
-  description: "JSON giá trị các trường bổ sung theo cấu hình sự vụ (NCLOB)"
+  description: JSON giá trị các trường bổ sung theo cấu hình sự vụ (NCLOB)
   key: null
   fk_note: null

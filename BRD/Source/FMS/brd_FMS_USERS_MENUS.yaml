@@ -6,11 +6,13 @@ brd_ref: BRD-SRC-FMS-USERS_MENUS
 columns:
 - name: USERS_ID
   data_type: RAW(16)
-  description: "FK -> USERS: Tài khoản người dùng sở hữu token"
-  key: PK
-  fk_note: null
+  description: 'FK -> USERS: Tài khoản người dùng sở hữu token'
+  key: PK/FK
+  fk_note: FK → USERS.ID
+  fk_src: inferred
 - name: MENUS_ID
   data_type: RAW(16)
-  description: "FK -> MENUS: Menu/chức năng hệ thống"
-  key: PK
-  fk_note: null
+  description: 'FK -> MENUS: Menu/chức năng hệ thống'
+  key: PK/FK
+  fk_note: FK → MENUS.ID
+  fk_src: inferred

@@ -6,71 +6,72 @@ brd_ref: BRD-SRC-FMS-TL_PRO_RELA
 columns:
 - name: ID
   data_type: RAW(16)
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  description: Khóa chính của bản ghi (UUID dạng RAW(16))
   key: PK
   fk_note: null
 - name: TLPRO_ID
   data_type: RAW(16)
-  description: "FK -> TL_PROFILES: Người hành nghề liên quan"
+  description: 'FK -> TL_PROFILES: Người hành nghề liên quan'
   key: FK
   fk_note: null
 - name: RELA_ID
   data_type: RAW(16)
-  description: "FK -> RELATION: Loại quan hệ"
+  description: 'FK -> RELATION: Loại quan hệ'
   key: FK
-  fk_note: null
+  fk_note: FK → INSDER_RELA.ID
+  fk_src: inferred
 - name: ITEM_NAME
   data_type: VARCHAR2(200)
-  description: "Tên hiển thị chính"
+  description: Tên hiển thị chính
   key: null
   fk_note: null
 - name: ID_NO
   data_type: VARCHAR2(100)
-  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
+  description: Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp
   key: null
   fk_note: null
 - name: ID_DATE
   data_type: DATE
-  description: "Ngày cấp CMND/CCCD/Hộ chiếu"
+  description: Ngày cấp CMND/CCCD/Hộ chiếu
   key: null
   fk_note: null
 - name: ID_PLACE
   data_type: VARCHAR2(200)
-  description: "Nơi cấp giấy tờ định danh"
+  description: Nơi cấp giấy tờ định danh
   key: null
   fk_note: null
 - name: DELETED
   data_type: NUMBER(1,0)
-  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  description: 'Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động'
   key: null
   fk_note: null
 - name: ADDRESS
   data_type: VARCHAR2(500)
-  description: "Địa chỉ trụ sở"
+  description: Địa chỉ trụ sở
   key: null
   fk_note: null
 - name: DESCRIPTION
   data_type: VARCHAR2(1000)
-  description: "Mô tả chi tiết"
+  description: Mô tả chi tiết
   key: null
   fk_note: null
 - name: DATE_CREATED
   data_type: TIMESTAMP(6)
-  description: "Thời điểm tạo bản ghi"
+  description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: VARCHAR2(100)
-  description: "Tài khoản người tạo bản ghi"
+  description: Tài khoản người tạo bản ghi
   key: null
   fk_note: null
 - name: DATE_MODIFIED
   data_type: TIMESTAMP(6)
-  description: "Thời điểm cập nhật bản ghi lần cuối"
+  description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: MODIFY_BY
   data_type: VARCHAR2(100)
-  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  description: Tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: null

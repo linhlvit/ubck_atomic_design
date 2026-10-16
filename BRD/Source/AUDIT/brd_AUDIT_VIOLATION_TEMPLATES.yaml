@@ -1,0 +1,155 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: VIOLATION_TEMPLATES
+brd_ref: BRD-SRC-AUDIT-VIOLATION_TEMPLATES
+columns:
+- name: ID
+  data_type: NUMBER(38,0)
+  description: Khóa chính - ID tự tăng
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: FORM_ID
+  data_type: NUMBER(38,0)
+  description: null
+  key: FK
+  fk_note: FK → FORMS.ID
+  fk_src: inferred
+- name: VIOLATION_CD
+  data_type: VARCHAR2(255)
+  description: Mã vi phạm
+  description_src: schema
+  key: null
+  fk_note: null
+- name: VIOLATION_NAME_VI
+  data_type: VARCHAR2(255)
+  description: Tên vi phạm (Tiếng Việt)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: VIOLATION_NAME_EN
+  data_type: VARCHAR2(255)
+  description: Tên vi phạm (Tiếng Anh)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: VIOLATION_TYPE_CD
+  data_type: VARCHAR2(255)
+  description: Mã loại vi phạm VIOLATION_TYPE
+  description_src: schema
+  key: null
+  fk_note: null
+- name: VIOLATION_SUBTYPE_CD
+  data_type: VARCHAR2(255)
+  description: Mã nhóm/loại vi phạm chi tiết VIOLATION_SUBTYPE
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REPORT_TYPE_CD
+  data_type: VARCHAR2(255)
+  description: Mã loại báo cáo REPORT_TYPE
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REPORT_SCOPE_CD
+  data_type: VARCHAR2(255)
+  description: Mã phạm vi báo cáo REPORT_SCOPE
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE_CD
+  data_type: VARCHAR2(255)
+  description: Mã loại kỳ báo cáo (Năm, Bán niên, Quý...) REPORT_PERIOD_TYPE
+  description_src: schema
+  key: null
+  fk_note: null
+- name: VIOLATION_TRIGGER_POINT_CD
+  data_type: VARCHAR2(255)
+  description: Mã thời điểm/hành động kích hoạt vi phạm VIOLATION_TRIGGER_POINT
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OFFSET_DAYS
+  data_type: NUMBER
+  description: Số ngày bù/chênh lệch để tính hạn (Deadline)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: VIOLATION_TRIGGER_POINT_CD_EX
+  data_type: VARCHAR2(255)
+  description: Mốc chặn
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OFFSET_DAYS_EX
+  data_type: NUMBER
+  description: Thời hạn tối đa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DAY_TYPE_CD
+  data_type: VARCHAR2(255)
+  description: Mã loại ngày (Ngày làm việc, Ngày thường...) DAY_TYPE
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EFFECTIVE_START_DATE
+  data_type: DATE
+  description: Ngày bắt đầu có hiệu lực
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EFFECTIVE_END_DATE
+  data_type: DATE
+  description: Ngày kết thúc hiệu lực
+  description_src: schema
+  key: null
+  fk_note: null
+- name: ACTIVE_FLG
+  data_type: NUMBER(1,0)
+  description: 'Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DELETE_FLG
+  data_type: NUMBER(1,0)
+  description: 'Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: OFFSET_DAYS_CONDITION
+  data_type: NUMBER
+  description: Số ngày cộng thêm khi có điều kiện
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời gian tạo bản ghi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(500)
+  description: Người tạo bản ghi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời gian cập nhật bản ghi lần cuối
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(500)
+  description: Người cập nhật bản ghi lần cuối
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CONDITION_FIELD_CD
+  data_type: VARCHAR2(1000)
+  description: null
+  key: null
+  fk_note: null

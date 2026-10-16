@@ -1,0 +1,78 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IDS
+table: DOSSIER_APPRAISAL_RESULT
+brd_ref: BRD-SRC-IDS-DOSSIER_APPRAISAL_RESULT
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: SECURITIES_OFFERING_ID
+  data_type: NUMBER(10,0)
+  description: Khóa link đến bảng SECURITIES_OFFERING (CBPH)
+  description_src: schema
+  key: FK
+  fk_note: FK → SECURITIES_OFFERING.ID
+  fk_src: db
+- name: COMPANY_TENDER_OFFER_ID
+  data_type: NUMBER(10,0)
+  description: Khóa link đến bảng COMPANY_TENDER_OFFER (CMCK)
+  description_src: schema
+  key: FK
+  fk_note: FK → COMPANY_TENDER_OFFER.ID
+  fk_src: inferred
+- name: COMPANY_TREASURY_SHARE_ID
+  data_type: NUMBER(10,0)
+  description: KHÓA link đến bảng COMPANY_TREASURY_SHARES (CPQ)
+  description_src: schema
+  key: FK
+  fk_note: FK → COMPANY_TREASURY_SHARES.ID
+  fk_src: db
+- name: APPRAISAL_CRITERIA_ID
+  data_type: NUMBER(10,0)
+  description: Khóa ngoại link đến ID của bảng APPRAISAL_CRITERIA
+  description_src: schema
+  key: FK
+  fk_note: FK → APPRAISAL_CRITERIA.ID
+  fk_src: db
+- name: RESULT_STATUS_CD
+  data_type: VARCHAR2(100)
+  description: Kết quả thẩm định (1- Đạt/Passed; 2- Không đạt/Failed; 3 - Tham khảo/Reference;
+    4 - N/A). Sử dụng lookup_group = RESULT_STATUS
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(30)
+  description: Người tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(30)
+  description: Người sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: EXPLANATION
+  data_type: CLOB
+  description: 'Diễn giải (Lưu text, các con số thực tế tính toán được như: Lợi nhuận
+    sau thuế: -12.220.000)'
+  description_src: schema
+  key: null
+  fk_note: null

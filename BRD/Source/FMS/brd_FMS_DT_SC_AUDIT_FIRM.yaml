@@ -6,11 +6,12 @@ brd_ref: BRD-SRC-FMS-DT_SC_AUDIT_FIRM
 columns:
 - name: DTS_ID
   data_type: RAW(16)
-  description: "FK -> DT_SCOPE: Cấu hình phân quyền dữ liệu của người dùng"
+  description: 'FK -> DT_SCOPE: Cấu hình phân quyền dữ liệu của người dùng'
   key: PK
   fk_note: null
 - name: AUDIT_FIRM_ID
   data_type: RAW(16)
-  description: "FK -> AUDIT_FIRM: Công ty kiểm toán"
-  key: PK
-  fk_note: null
+  description: 'FK -> AUDIT_FIRM: Công ty kiểm toán'
+  key: PK/FK
+  fk_note: FK → AUDIT_FIRM.ID
+  fk_src: inferred

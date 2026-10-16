@@ -4,68 +4,99 @@ source: IDS
 table: CAPITAL_MOBILIZATION
 brd_ref: BRD-SRC-IDS-CAPITAL_MOBILIZATION
 columns:
-  - name: ID
-    data_type: NUMBER(19,0)
-    description: "Khóa chính"
-    key: PK
-    fk_note: null
-  - name: COMPANY_PROFILE_ID
-    data_type: NUMBER(19,0)
-    description: "Khóa link đến bảng COMPANY_PROFILES"
-    key: null
-    fk_note: null
-  - name: REPORT_YEAR
-    data_type: VARCHAR2(16)
-    description: "Năm điều chỉnh vốn góp"
-    key: null
-    fk_note: null
-  - name: PAID_IN_CAPITAL_EOY
-    data_type: NUMBER
-    description: "Vốn điều lệ thực góp (tính đến thời điểm cuối năm)"
-    key: null
-    fk_note: null
-  - name: CAPITAL_INCREASE_COUNT
-    data_type: NUMBER(19,0)
-    description: "Số đợt tăng vốn trong năm"
-    key: null
-    fk_note: null
-  - name: CAPITAL_INCREASE_METHOD
-    data_type: VARCHAR2(1020)
-    description: "Hình thức tăng vốn"
-    key: null
-    fk_note: null
-  - name: AUDIT_FIRM_NAME_VI
-    data_type: VARCHAR2(2400)
-    description: "Tên công ty kiểm toán (tiếng Việt)"
-    key: null
-    fk_note: null
-  - name: AUDIT_FIRM_NAME_EN
-    data_type: VARCHAR2(2400)
-    description: "Tên công ty kiểm toán (tiếng Anh)"
-    key: null
-    fk_note: null
-  - name: DELETE_FLG
-    data_type: NUMBER(1,0)
-    description: "Ghi nhận bản ghi đã xóa hay không"
-    key: null
-    fk_note: null
-  - name: CREATED_BY
-    data_type: VARCHAR2(120)
-    description: "Người tạo"
-    key: null
-    fk_note: null
-  - name: CREATED_DATE
-    data_type: DATE
-    description: "Ngày tạo"
-    key: null
-    fk_note: null
-  - name: UPDATED_BY
-    data_type: VARCHAR2(120)
-    description: "Người sửa"
-    key: null
-    fk_note: null
-  - name: UPDATED_DATE
-    data_type: DATE
-    description: "Ngày sửa"
-    key: null
-    fk_note: null
+- name: ID
+  data_type: NUMBER(19,0)
+  description: Khóa chính
+  key: PK
+  fk_note: null
+- name: COMPANY_PROFILE_ID
+  data_type: NUMBER(19,0)
+  description: Khóa link đến bảng COMPANY_PROFILES
+  key: FK
+  fk_note: FK → COMPANY_PROFILES.ID
+  fk_src: inferred
+- name: REPORT_YEAR
+  data_type: VARCHAR2(16)
+  description: Năm điều chỉnh vốn góp
+  key: null
+  fk_note: null
+- name: PAID_IN_CAPITAL_EOY
+  data_type: NUMBER
+  description: Vốn điều lệ thực góp (tính đến thời điểm cuối năm)
+  key: null
+  fk_note: null
+- name: CAPITAL_INCREASE_COUNT
+  data_type: NUMBER(19,0)
+  description: Số đợt tăng vốn trong năm
+  key: null
+  fk_note: null
+- name: CAPITAL_INCREASE_METHOD
+  data_type: VARCHAR2(1020)
+  description: Hình thức tăng vốn
+  key: null
+  fk_note: null
+- name: AUDIT_FIRM_NAME_VI
+  data_type: VARCHAR2(2400)
+  description: Tên công ty kiểm toán (tiếng Việt)
+  key: null
+  fk_note: null
+- name: AUDIT_FIRM_NAME_EN
+  data_type: VARCHAR2(2400)
+  description: Tên công ty kiểm toán (tiếng Anh)
+  key: null
+  fk_note: null
+- name: DELETE_FLG
+  data_type: NUMBER(1,0)
+  description: Ghi nhận bản ghi đã xóa hay không
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(120)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(120)
+  description: Người sửa
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: CHANGE_DATE
+  data_type: DATE
+  description: Thời gian tăng/giảm vốn (định dạng ngày/tháng/năm)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CHANGE_TYPE
+  data_type: NUMBER(1,0)
+  description: 'Phân loại (1: Tăng; 0: Giảm)'
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CAPITAL_BEFORE_CHANGE
+  data_type: NUMBER(24,0)
+  description: Vốn điều lệ trước tăng/giảm
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CHANGE_AMOUNT
+  data_type: NUMBER(24,0)
+  description: Vốn điều lệ tăng / giảm
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CAPITAL_AFTER_CHANGE
+  data_type: NUMBER(24,0)
+  description: Vốn điều lệ sau tăng/ giảm
+  description_src: schema
+  key: null
+  fk_note: null

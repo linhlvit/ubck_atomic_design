@@ -4,33 +4,35 @@ source: SCMS
 table: ALERT_VIOLATION_SNAPSHOT
 brd_ref: BRD-SRC-SCMS-ALERT_VIOLATION_SNAPSHOT
 columns:
-  - name: ID
-    data_type: NUMBER(19,0)
-    description: null
-    key: PK
-    fk_note: null
-  - name: SC_FIRM_ALERT_VIOLATION_ID
-    data_type: NUMBER(19,0)
-    description: null
-    key: null
-    fk_note: null
-  - name: ALERT_RUN_ID
-    data_type: NUMBER(19,0)
-    description: null
-    key: null
-    fk_note: null
-  - name: FORMULA_SNAPSHOT
-    data_type: CLOB
-    description: null
-    key: null
-    fk_note: null
-  - name: CONDITION_SNAPSHOT
-    data_type: VARCHAR2(4000)
-    description: null
-    key: null
-    fk_note: null
-  - name: CREATED_AT
-    data_type: TIMESTAMP(6)
-    description: null
-    key: null
-    fk_note: null
+- name: ID
+  data_type: NUMBER(19,0)
+  description: null
+  key: PK
+  fk_note: null
+- name: SC_FIRM_ALERT_VIOLATION_ID
+  data_type: NUMBER(19,0)
+  description: null
+  key: FK
+  fk_note: FK → SC_FIRM_ALERT_VIOLATION.ID
+  fk_src: inferred
+- name: ALERT_RUN_ID
+  data_type: NUMBER(19,0)
+  description: null
+  key: FK
+  fk_note: FK → ALERT_RUN.ID
+  fk_src: inferred
+- name: FORMULA_SNAPSHOT
+  data_type: CLOB
+  description: null
+  key: null
+  fk_note: null
+- name: CONDITION_SNAPSHOT
+  data_type: VARCHAR2(4000)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null

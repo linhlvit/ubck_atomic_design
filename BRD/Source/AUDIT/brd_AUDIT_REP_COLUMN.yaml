@@ -1,0 +1,102 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: REP_COLUMN
+brd_ref: BRD-SRC-AUDIT-REP_COLUMN
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: COL_NAME_VI
+  data_type: VARCHAR2(1020)
+  description: Tên cột (tiếng Việt)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: COL_NAME_EN
+  data_type: VARCHAR2(1020)
+  description: Tên cột (tiếng Anh)
+  description_src: schema
+  key: null
+  fk_note: null
+- name: REP_FORM_ID
+  data_type: NUMBER(10,0)
+  description: ID của form chứa cột
+  description_src: schema
+  key: FK
+  fk_note: FK → REP_FORMS.ID
+  fk_src: db
+- name: COL_INDEX
+  data_type: NUMBER(3,0)
+  description: Thứ tự cột
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DUPLICATE_COL_FLG
+  data_type: NUMBER(1,0)
+  description: Có cho phép nhân đôi cột hay không
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DATA_TYPE_CD
+  data_type: VARCHAR2(400)
+  description: Kiểu dữ liệu, lookup group RF_C_DATA_TYPE
+  description_src: schema
+  key: null
+  fk_note: null
+- name: COL_FORMULA
+  data_type: VARCHAR2(4000)
+  description: Công thức tính
+  description_src: schema
+  key: null
+  fk_note: null
+- name: COL_CD
+  data_type: VARCHAR2(120)
+  description: Lưu mã tự sinh của chỉ tiêu cột
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(120)
+  description: Người tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(120)
+  description: Người cập nhật
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày cập nhật
+  description_src: schema
+  key: null
+  fk_note: null
+- name: COL_DESCRIPTION
+  data_type: VARCHAR2(1020)
+  description: Mô tả
+  description_src: schema
+  key: null
+  fk_note: null
+- name: DELETE_FLG
+  data_type: NUMBER(1,0)
+  description: Xóa mềm
+  description_src: schema
+  key: null
+  fk_note: null
+- name: SYSTEM_CD
+  data_type: VARCHAR2(20)
+  description: null
+  key: null
+  fk_note: null

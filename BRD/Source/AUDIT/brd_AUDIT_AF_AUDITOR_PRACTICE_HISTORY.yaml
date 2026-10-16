@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: AF_AUDITOR_PRACTICE_HISTORY
+brd_ref: BRD-SRC-AUDIT-AF_AUDITOR_PRACTICE_HISTORY
+columns:
+- name: ID
+  data_type: NUMBER(10,0)
+  description: Khóa chính
+  description_src: schema
+  key: PK
+  fk_note: null
+- name: AF_AUDITOR_PROFILE_ID
+  data_type: NUMBER(10,0)
+  description: Link đến bảng AF_AUDITOR_PROFILES
+  description_src: schema
+  key: FK
+  fk_note: FK → AF_AUDITOR_PROFILES.ID
+  fk_src: inferred
+- name: PRACTICE_FROM_DATE
+  data_type: DATE
+  description: Hành nghề từ ngày
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PRACTICE_TO_DATE
+  data_type: DATE
+  description: Hành nghề đến ngày
+  description_src: schema
+  key: null
+  fk_note: null
+- name: PRACTICE_ORGANIZATION_ID
+  data_type: NUMBER(10,0)
+  description: Nơi hành nghề, link tới bảng AF_PROFILES, lưu ID
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(120)
+  description: Người tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(120)
+  description: Người sửa
+  description_src: schema
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày sửa
+  description_src: schema
+  key: null
+  fk_note: null

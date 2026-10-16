@@ -1,0 +1,97 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: AUDIT
+table: NOTIFICATIONS_RESULT
+brd_ref: BRD-SRC-AUDIT-NOTIFICATIONS_RESULT
+columns:
+- name: ID
+  data_type: NUMBER(19,0)
+  description: null
+  key: PK
+  fk_note: null
+- name: NOTIFICATION_ID
+  data_type: NUMBER(19,0)
+  description: Nullable — luồng add-noti (gửi trực tiếp từ COMPANY_DATA) không gắn
+    với NOTIFICATIONS nào
+  description_src: schema
+  key: FK
+  fk_note: FK → NOTIFICATIONS.ID
+  fk_src: inferred
+- name: LOGIN_ID
+  data_type: NUMBER(19,0)
+  description: null
+  key: FK
+  fk_note: FK → LOGINS.ID
+  fk_src: inferred
+- name: NOTI_CATEGORY_CD
+  data_type: VARCHAR2(80)
+  description: Copy từ NOTIFICATIONS.NOTI_CATEGORY_CD tại thời điểm gửi
+  description_src: schema
+  key: null
+  fk_note: null
+- name: FORM_ID
+  data_type: NUMBER(19,0)
+  description: Copy từ NOTIFICATIONS.FORM_ID hoặc COMPANY_DATA.FORM_ID tại thời điểm
+    gửi
+  description_src: schema
+  key: FK
+  fk_note: FK → FORMS.ID
+  fk_src: inferred
+- name: COMPANY_DATA_ID
+  data_type: NUMBER(19,0)
+  description: null
+  key: FK
+  fk_note: FK → COMPANY_DATA.ID
+  fk_src: inferred
+- name: COMPANY_PROFILE_ID
+  data_type: NUMBER(19,0)
+  description: Copy từ NOTIFICATIONS_DTL.COMPANY_PROFILE_ID hoặc COMPANY_DATA.COMPANY_PROFILE_ID
+    của người nhận — dùng để lọc/phân quyền theo công ty
+  description_src: schema
+  key: null
+  fk_note: null
+- name: TITLE
+  data_type: VARCHAR2(1020)
+  description: null
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: VARCHAR2(4000)
+  description: null
+  key: null
+  fk_note: null
+- name: SENT_DATE
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: READ_FLG
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: READ_DATE
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: CHAR(30)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: CHAR(30)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null

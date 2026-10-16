@@ -5,17 +5,18 @@ table: USERRPTI
 brd_ref: BRD-SRC-FIMS-USERRPTI
 columns:
 - name: RptTemId
-  data_type: "NUMBER(18,0)"
-  description: "ID mẫu báo cáo đầu vào (RPTTEMP.Id)"
+  data_type: NUMBER(18,0)
+  description: ID mẫu báo cáo đầu vào (RPTTEMP.Id)
   key: PK
   fk_note: null
 - name: SsoUserId
-  data_type: "NVARCHAR2(36 CHAR)"
-  description: "ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)"
-  key: PK
+  data_type: NVARCHAR2(72)
+  description: ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)
+  key: null
   fk_note: null
 - name: UserId
-  data_type: "NUMBER(18,0)"
+  data_type: NUMBER(18,0)
   description: null
-  key: PK
-  fk_note: null
+  key: PK/FK
+  fk_note: FK → USERS.Id
+  fk_src: inferred

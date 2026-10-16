@@ -6,206 +6,214 @@ brd_ref: BRD-SRC-FMS-RPT_MEMBER
 columns:
 - name: ID
   data_type: RAW(16)
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  description: Khóa chính của bản ghi (UUID dạng RAW(16))
   key: PK
   fk_note: null
 - name: DATE_CREATED
   data_type: DATE
-  description: "Thời điểm tạo bản ghi"
+  description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: NVARCHAR2(200)
-  description: "Tài khoản người tạo bản ghi"
+  description: Tài khoản người tạo bản ghi
   key: null
   fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
-  description: "Thời điểm cập nhật bản ghi lần cuối"
+  description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: MODIFY_BY
   data_type: NVARCHAR2(200)
-  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  description: Tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: PRD_ID
   data_type: RAW(16)
-  description: "FK -> RPT_PERIOD: Kỳ báo cáo"
+  description: 'FK -> RPT_PERIOD: Kỳ báo cáo'
   key: FK
-  fk_note: "FK → RPT_PERIOD.ID"
+  fk_note: FK → RPT_PERIOD.ID
 - name: RPT_NAME
   data_type: NVARCHAR2(4000)
-  description: "Tên báo cáo"
+  description: Tên báo cáo
   key: null
   fk_note: null
 - name: REPORT_TYPE
   data_type: NUMBER(18,2)
-  description: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường, 3=Báo cáo theo yêu cầu, 4=Báo cáo khác"
+  description: 'Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường, 3=Báo cáo theo yêu cầu, 4=Báo cáo khác'
   key: null
   fk_note: null
 - name: RECORD_STATUS
   data_type: NUMBER(10,0)
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực'
   key: null
   fk_note: null
 - name: IMPORTED
   data_type: NUMBER(1,0)
-  description: "Cờ đã import dữ liệu: 1=Đã import, 0=Chưa import"
+  description: 'Cờ đã import dữ liệu: 1=Đã import, 0=Chưa import'
   key: null
   fk_note: null
 - name: DATE_SUBMITTED
   data_type: DATE
-  description: "Ngày thành viên nộp/gửi báo cáo"
+  description: Ngày thành viên nộp/gửi báo cáo
   key: null
   fk_note: null
 - name: FILE_DATA
   data_type: NCLOB
-  description: "Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)"
+  description: Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)
   key: null
   fk_note: null
 - name: CONTENT_SUMMARY
   data_type: NVARCHAR2(4000)
-  description: "Nội dung trích yếu của báo cáo (bắt buộc khi là báo cáo CBTT)"
+  description: Nội dung trích yếu của báo cáo (bắt buộc khi là báo cáo CBTT)
   key: null
   fk_note: null
 - name: NOTE
   data_type: NVARCHAR2(4000)
-  description: "Ghi chú bổ sung"
+  description: Ghi chú bổ sung
   key: null
   fk_note: null
 - name: BKM_ID
   data_type: RAW(16)
-  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo"
+  description: 'FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo'
   key: FK
-  fk_note: "FK → BANK_MONI.ID"
+  fk_note: FK → BANK_MONI.ID
 - name: FND_ID
   data_type: RAW(16)
-  description: "FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo"
+  description: 'FK -> FUNDS: Quỹ đầu tư liên quan đến báo cáo'
   key: FK
-  fk_note: "FK → FUNDS.ID"
+  fk_note: FK → FUNDS.ID
 - name: FR_BR_ID
   data_type: RAW(16)
-  description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo"
+  description: 'FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo'
   key: FK
-  fk_note: "FK → FOR_BRCH.ID"
+  fk_note: FK → FOR_BRCH.ID
 - name: SEC_ID
   data_type: RAW(16)
-  description: "FK -> SECURITIES: Công ty QLQ liên quan"
+  description: 'FK -> SECURITIES: Công ty QLQ liên quan'
   key: FK
-  fk_note: "FK → SECURITIES.ID"
+  fk_note: FK → SECURITIES.ID
 - name: RECORD_TYPE
   data_type: NUMBER(38,0)
-  description: "Loại/phân loại của bản ghi"
+  description: Loại/phân loại của bản ghi
   key: null
   fk_note: null
 - name: FILE_IMPORT
   data_type: NCLOB
-  description: "Dữ liệu file import báo cáo (NCLOB)"
+  description: Dữ liệu file import báo cáo (NCLOB)
   key: null
   fk_note: null
 - name: DAY_REPORT
   data_type: DATE
-  description: "Ngày lập báo cáo (kỳ ngày)"
+  description: Ngày lập báo cáo (kỳ ngày)
   key: null
   fk_note: null
 - name: PERIOD_VALUE
   data_type: NVARCHAR2(4000)
-  description: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)"
+  description: 'Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)'
   key: null
   fk_note: null
 - name: YEAR_VALUE
   data_type: NUMBER(18,2)
-  description: "Năm của kỳ báo cáo (định dạng YYYY)"
+  description: Năm của kỳ báo cáo (định dạng YYYY)
   key: null
   fk_note: null
 - name: RPT_ID
   data_type: RAW(16)
-  description: "FK -> RPT_TEMP: Biểu mẫu báo cáo"
+  description: 'FK -> RPT_TEMP: Biểu mẫu báo cáo'
   key: FK
-  fk_note: "FK → RPT_TEMP.ID"
+  fk_note: FK → RPT_TEMP.ID
 - name: DELETED
   data_type: NUMBER(1,0)
-  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  description: 'Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động'
   key: null
   fk_note: null
 - name: ID_DB_OLD
   data_type: NVARCHAR2(200)
-  description: "ID trong hệ thống cũ (trước khi migration dữ liệu)"
+  description: ID trong hệ thống cũ (trước khi migration dữ liệu)
   key: null
   fk_note: null
 - name: PERIOD_TYPE
   data_type: NUMBER(38,0)
-  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
+  description: 'Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng'
   key: null
   fk_note: null
 - name: DISTRIBUTOR_ID
   data_type: RAW(16)
-  description: "FK -> DISTRIBUTOR_AGENT: Đại lý phân phối liên quan"
+  description: 'FK -> DISTRIBUTOR_AGENT: Đại lý phân phối liên quan'
   key: FK
   fk_note: null
 - name: TRANSFER_AGENT_ID
   data_type: RAW(16)
-  description: "FK -> TRANSFER_AGENT: Đại lý chuyển nhượng liên quan"
+  description: 'FK -> TRANSFER_AGENT: Đại lý chuyển nhượng liên quan'
   key: FK
-  fk_note: null
+  fk_note: FK → TRANSFER_AGENT.ID
+  fk_src: inferred
 - name: PENSION_AGENT_ID
   data_type: RAW(16)
-  description: "FK -> PENSION_AGENT: Đại lý hưu trí liên quan"
+  description: 'FK -> PENSION_AGENT: Đại lý hưu trí liên quan'
   key: FK
-  fk_note: null
+  fk_note: FK → PENSION_AGENT.ID
+  fk_src: inferred
 - name: PENSION_PROVIDER_ID
   data_type: RAW(16)
-  description: "FK -> PENSION_PROVIDER: Tổ chức cung cấp dịch vụ hưu trí"
+  description: 'FK -> PENSION_PROVIDER: Tổ chức cung cấp dịch vụ hưu trí'
   key: FK
-  fk_note: null
+  fk_note: FK → PENSION_PROVIDER.ID
+  fk_src: inferred
 - name: OTHER_AGENT_ID
   data_type: RAW(16)
-  description: "FK -> OTHER_AGENT: Đại lý khác liên quan"
+  description: 'FK -> OTHER_AGENT: Đại lý khác liên quan'
   key: FK
-  fk_note: null
+  fk_note: FK → OTHER_AGENT.ID
+  fk_src: inferred
 - name: PENSION_FUND_ID
   data_type: RAW(16)
-  description: "FK -> PENSION_FUND: Quỹ hưu trí liên quan"
+  description: 'FK -> PENSION_FUND: Quỹ hưu trí liên quan'
   key: FK
-  fk_note: null
+  fk_note: FK → PENSION_FUND.ID
+  fk_src: inferred
 - name: MEMBER_NAME
   data_type: VARCHAR2(500)
-  description: "Tên thành viên gửi báo cáo (snapshot tại thời điểm nộp)"
+  description: Tên thành viên gửi báo cáo (snapshot tại thời điểm nộp)
   key: null
   fk_note: null
 - name: APPROVAL_ACTION
   data_type: NUMBER(1,0)
-  description: "Kết quả xử lý báo cáo: 1=Chấp thuận, 2=Từ chối"
+  description: 'Kết quả xử lý báo cáo: 1=Chấp thuận, 2=Từ chối'
   key: null
   fk_note: null
 - name: EVENT_TYPE_ID
   data_type: RAW(16)
-  description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng"
+  description: 'FK -> EVENT_TYPE: Loại sự vụ áp dụng'
   key: FK
-  fk_note: null
+  fk_note: FK → EVENT_TYPE.ID
+  fk_src: inferred
 - name: DEADLINE_SEND
   data_type: TIMESTAMP(6) WITH TIME ZONE
-  description: "Hạn nộp báo cáo (UTC): job tính theo cuối ngày 23:59:00 UTC"
+  description: 'Hạn nộp báo cáo (UTC): job tính theo cuối ngày 23:59:00 UTC'
   key: null
   fk_note: null
 - name: EFORM_DATA_JSON
   data_type: CLOB
-  description: "Dữ liệu người dùng nhập trên bản khai trực tuyến eForm (JSON CLOB)"
+  description: Dữ liệu người dùng nhập trên bản khai trực tuyến eForm (JSON CLOB)
   key: null
   fk_note: null
 - name: AUDIT_FIRM_ID
   data_type: RAW(16)
-  description: "FK -> AUDIT_FIRM: Công ty kiểm toán"
+  description: 'FK -> AUDIT_FIRM: Công ty kiểm toán'
   key: FK
-  fk_note: null
+  fk_note: FK → AUDIT_FIRM.ID
+  fk_src: inferred
 - name: AUDITOR_ID
   data_type: RAW(16)
-  description: "FK -> AUDITOR: Kiểm toán viên"
+  description: 'FK -> AUDITOR: Kiểm toán viên'
   key: FK
-  fk_note: null
+  fk_note: FK → AUDITOR.ID
+  fk_src: inferred
 - name: CBTT_DATE
   data_type: DATE
-  description: "Ngày công bố thông tin (TVS2601TK-4236), không bắt buộc"
+  description: Ngày công bố thông tin (TVS2601TK-4236), không bắt buộc
   key: null
   fk_note: null

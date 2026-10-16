@@ -6,66 +6,67 @@ brd_ref: BRD-SRC-FMS-DISTRIBUTOR_PERSONNEL_HISTORY
 columns:
 - name: ID
   data_type: RAW(16)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: PK
   fk_note: null
 - name: DISTRIBUTOR_PERSONNEL_ID
   data_type: RAW(16)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: FK
-  fk_note: "FK → DISTRIBUTOR_PERSONNEL.ID"
+  fk_note: FK → DISTRIBUTOR_PERSONNEL.ID
 - name: DISTRIBUTOR_AGENT_ID
   data_type: RAW(16)
-  description: "TBD - cần bổ sung mô tả"
-  key: null
-  fk_note: null
+  description: TBD - cần bổ sung mô tả
+  key: FK
+  fk_note: FK → DISTRIBUTOR_AGENT.ID
+  fk_src: inferred
 - name: EVENT_TYPE
   data_type: VARCHAR2(500)
-  description: "Sự vụ — bắt buộc khi cập nhật hồ sơ nhân sự"
+  description: Sự vụ — bắt buộc khi cập nhật hồ sơ nhân sự
   key: null
   fk_note: null
 - name: ADJUSTED_CERT_NO
   data_type: VARCHAR2(200)
-  description: "Số GCN điều chỉnh"
+  description: Số GCN điều chỉnh
   key: null
   fk_note: null
 - name: APPROVAL_DATE
   data_type: DATE
-  description: "Ngày chấp thuận sửa đổi"
+  description: Ngày chấp thuận sửa đổi
   key: null
   fk_note: null
 - name: ADJUSTMENT_REASON
   data_type: VARCHAR2(2000)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null
 - name: CHANGE_DETAIL
   data_type: CLOB
-  description: "JSON array [{field, label, oldValue, newValue}] — diff write-time"
+  description: JSON array [{field, label, oldValue, newValue}] — diff write-time
   key: null
   fk_note: null
 - name: DATE_CREATED
   data_type: TIMESTAMP(6)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: VARCHAR2(100)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null
 - name: DATE_MODIFIED
   data_type: TIMESTAMP(6)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null
 - name: MODIFY_BY
   data_type: VARCHAR2(100)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null
 - name: SNAPSHOT_AFTER
   data_type: CLOB
-  description: "JSON array [{field, label, value}] — snapshot đầy đủ hồ sơ nhân sự sau thay đổi (write-time)"
+  description: JSON array [{field, label, value}] — snapshot đầy đủ hồ sơ nhân sự sau thay đổi (write-time)
   key: null
   fk_note: null

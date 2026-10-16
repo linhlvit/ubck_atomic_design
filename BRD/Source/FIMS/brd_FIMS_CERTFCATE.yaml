@@ -5,92 +5,92 @@ table: CERTFCATE
 brd_ref: BRD-SRC-FIMS-CERTFCATE
 columns:
 - name: Id
-  data_type: "NUMBER(18,2)"
-  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  data_type: NUMBER(18,2)
+  description: Khóa chính của bản ghi (ID số tự tăng)
   key: PK
   fk_note: null
 - name: UserId
-  data_type: "NUMBER(18,2)"
-  description: "FK -> USERS: Người thực hiện thao tác xử lý báo cáo"
+  data_type: NUMBER(18,2)
+  description: 'FK -> USERS: Người thực hiện thao tác xử lý báo cáo'
   key: FK
-  fk_note: "FK → USERS.Id"
+  fk_note: FK → USERS.Id
 - name: Keys
-  data_type: "NCLOB"
-  description: "Dữ liệu khóa công khai của chứng thư số"
+  data_type: NCLOB
+  description: Dữ liệu khóa công khai của chứng thư số
   key: null
   fk_note: null
 - name: Serial
-  data_type: "NCLOB"
-  description: "Số serial của chứng thư số"
+  data_type: NCLOB
+  description: Số serial của chứng thư số
   key: null
   fk_note: null
 - name: Subject
-  data_type: "NCLOB"
-  description: "Subject DN (Distinguished Name) của chứng thư số"
+  data_type: NCLOB
+  description: Subject DN (Distinguished Name) của chứng thư số
   key: null
   fk_note: null
 - name: Issuer
-  data_type: "NCLOB"
-  description: "Tổ chức cấp chứng thư số (CA: BKAV, VNPT, VIETTEL...)"
+  data_type: NCLOB
+  description: 'Tổ chức cấp chứng thư số (CA: BKAV, VNPT, VIETTEL...)'
   key: null
   fk_note: null
 - name: Type
-  data_type: "NUMBER(1,0)"
-  description: "Loại chủ thể: 1/true=Tổ chức (Organization), 0/false=Cá nhân (Individual)"
+  data_type: NUMBER(1,0)
+  description: 'Loại chủ thể: 1/true=Tổ chức (Organization), 0/false=Cá nhân (Individual)'
   key: null
   fk_note: null
 - name: Status
-  data_type: "NUMBER(1,0)"
-  description: "Trạng thái chứng thư số: 1/true=Chấp nhận/Hợp lệ, 0/false=Từ chối/Không hợp lệ"
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái chứng thư số: 1/true=Chấp nhận/Hợp lệ, 0/false=Từ chối/Không hợp lệ'
   key: null
   fk_note: null
 - name: IsDataMigration
-  data_type: "NUMBER(1,0)"
-  description: "Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không"
+  data_type: NUMBER(1,0)
+  description: 'Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không'
   key: null
   fk_note: null
 - name: IdOld
-  data_type: "NVARCHAR2(2000 CHAR)"
-  description: "ID trạng thái trong hệ thống cũ"
+  data_type: NVARCHAR2(4000)
+  description: ID trạng thái trong hệ thống cũ
   key: null
   fk_note: null
 - name: ssoId
-  data_type: "NVARCHAR2(128)"
+  data_type: NVARCHAR2(128)
   description: null
   key: null
   fk_note: null
 - name: stableId
-  data_type: "NVARCHAR2(128)"
+  data_type: NVARCHAR2(128)
   description: null
   key: null
   fk_note: null
 - name: SsoUserId
-  data_type: "NVARCHAR2(128)"
+  data_type: NVARCHAR2(128)
   description: null
   key: null
   fk_note: null
 - name: DateCreated
-  data_type: "DATE"
+  data_type: DATE
   description: null
   key: null
   fk_note: null
 - name: CreatedBy
-  data_type: "NVARCHAR2(400)"
+  data_type: NVARCHAR2(400)
   description: null
   key: null
   fk_note: null
 - name: AccountHolderName
-  data_type: "NVARCHAR2(1000)"
-  description: "Tên chủ tài khoản chứng thư số (IAM accountHolderName)"
+  data_type: NVARCHAR2(1000)
+  description: Tên chủ tài khoản chứng thư số (IAM accountHolderName)
   key: null
   fk_note: null
 - name: ValidFrom
-  data_type: "DATE"
-  description: "Ngày hiệu lực CTS (IAM validFrom)"
+  data_type: DATE
+  description: Ngày hiệu lực CTS (IAM validFrom)
   key: null
   fk_note: null
 - name: ValidTo
-  data_type: "DATE"
-  description: "Ngày hết hạn CTS (IAM validTo)"
+  data_type: DATE
+  description: Ngày hết hạn CTS (IAM validTo)
   key: null
   fk_note: null

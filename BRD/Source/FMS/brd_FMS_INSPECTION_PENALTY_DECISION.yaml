@@ -6,96 +6,98 @@ brd_ref: BRD-SRC-FMS-INSPECTION_PENALTY_DECISION
 columns:
 - name: ID
   data_type: RAW(16)
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  description: Khóa chính của bản ghi (UUID dạng RAW(16))
   key: PK
   fk_note: null
 - name: DELETED
   data_type: NUMBER(1,0)
-  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  description: 'Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động'
   key: null
   fk_note: null
 - name: INSPECTION_ROUND_ID
   data_type: RAW(16)
-  description: "FK -> INSPECTION_ROUND: Đợt thanh tra"
+  description: 'FK -> INSPECTION_ROUND: Đợt thanh tra'
   key: FK
-  fk_note: null
+  fk_note: FK → INSPECTION_ROUND.ID
+  fk_src: inferred
 - name: TARGET_ID
   data_type: RAW(16)
-  description: "FK -> INSPECTION_TARGET: Đối tượng thanh tra chịu quyết định xử phạt"
+  description: 'FK -> INSPECTION_TARGET: Đối tượng thanh tra chịu quyết định xử phạt'
   key: FK
-  fk_note: null
+  fk_note: FK → INSPECTION_TARGET.ID
+  fk_src: inferred
 - name: PENALTY_DECISION_NO
   data_type: VARCHAR2(2000)
-  description: "Số quyết định xử phạt vi phạm hành chính"
+  description: Số quyết định xử phạt vi phạm hành chính
   key: null
   fk_note: null
 - name: PENALTY_DECISION_DATE
   data_type: DATE
-  description: "Ngày ban hành quyết định xử phạt"
+  description: Ngày ban hành quyết định xử phạt
   key: null
   fk_note: null
 - name: VIOLATION_BEHAVIOR
   data_type: VARCHAR2(2000)
-  description: "Hành vi vi phạm bị xử phạt (mô tả chi tiết)"
+  description: Hành vi vi phạm bị xử phạt (mô tả chi tiết)
   key: null
   fk_note: null
 - name: PENALTY_FORM
   data_type: VARCHAR2(500)
-  description: "Hình thức phạt chính: cảnh cáo, phạt tiền, đình chỉ..."
+  description: 'Hình thức phạt chính: cảnh cáo, phạt tiền, đình chỉ...'
   key: null
   fk_note: null
 - name: PENALTY_AMOUNT
   data_type: NUMBER(38,0)
-  description: "Số tiền phạt vi phạm hành chính (đơn vị: VNĐ)"
+  description: 'Số tiền phạt vi phạm hành chính (đơn vị: VNĐ)'
   key: null
   fk_note: null
 - name: ADDITIONAL_PENALTY_FORM
   data_type: VARCHAR2(500)
-  description: "Hình thức phạt bổ sung: đình chỉ hoạt động, tước giấy phép..."
+  description: 'Hình thức phạt bổ sung: đình chỉ hoạt động, tước giấy phép...'
   key: null
   fk_note: null
 - name: REMEDY_MEASURE
   data_type: VARCHAR2(2000)
-  description: "Biện pháp khắc phục hậu quả bắt buộc thực hiện"
+  description: Biện pháp khắc phục hậu quả bắt buộc thực hiện
   key: null
   fk_note: null
 - name: EXECUTION_STATUS
   data_type: VARCHAR2(500)
-  description: "Trạng thái thi hành quyết định xử phạt: PENDING, EXECUTING, DONE"
+  description: 'Trạng thái thi hành quyết định xử phạt: PENDING, EXECUTING, DONE'
   key: null
   fk_note: null
 - name: REMEDY_STATUS
   data_type: VARCHAR2(500)
-  description: "Trạng thái thực hiện biện pháp khắc phục: PENDING, DONE, OVERDUE"
+  description: 'Trạng thái thực hiện biện pháp khắc phục: PENDING, DONE, OVERDUE'
   key: null
   fk_note: null
 - name: DATE_CREATED
   data_type: TIMESTAMP(6)
-  description: "Thời điểm tạo bản ghi"
+  description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: VARCHAR2(100)
-  description: "Tài khoản người tạo bản ghi"
+  description: Tài khoản người tạo bản ghi
   key: null
   fk_note: null
 - name: DATE_MODIFIED
   data_type: TIMESTAMP(6)
-  description: "Thời điểm cập nhật bản ghi lần cuối"
+  description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: MODIFY_BY
   data_type: VARCHAR2(100)
-  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  description: Tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: EXTERNAL_ID
   data_type: VARCHAR2(100)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null
 - name: DATA_SOURCE
   data_type: VARCHAR2(20)
-  description: "TBD - cần bổ sung mô tả"
+  description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null

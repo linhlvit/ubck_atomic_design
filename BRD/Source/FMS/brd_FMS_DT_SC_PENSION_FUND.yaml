@@ -6,11 +6,12 @@ brd_ref: BRD-SRC-FMS-DT_SC_PENSION_FUND
 columns:
 - name: DTS_ID
   data_type: RAW(16)
-  description: "FK -> DT_SCOPE: Cấu hình phân quyền dữ liệu của người dùng"
+  description: 'FK -> DT_SCOPE: Cấu hình phân quyền dữ liệu của người dùng'
   key: PK
   fk_note: null
 - name: PENSION_FUND_ID
   data_type: RAW(16)
-  description: "FK -> PENSION_FUND: Quỹ hưu trí liên quan"
-  key: PK
-  fk_note: null
+  description: 'FK -> PENSION_FUND: Quỹ hưu trí liên quan'
+  key: PK/FK
+  fk_note: FK → PENSION_FUND.ID
+  fk_src: inferred

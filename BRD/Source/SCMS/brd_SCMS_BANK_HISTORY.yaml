@@ -4,78 +4,78 @@ source: SCMS
 table: BANK_HISTORY
 brd_ref: BRD-SRC-SCMS-BANK_HISTORY
 columns:
-  - name: ID
-    data_type: NUMBER
-    description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    key: PK
-    fk_note: null
-  - name: BANK_ID
-    data_type: NUMBER
-    description: "FK -> bank: Ngân hàng liên quan"
-    key: FK
-    fk_note: "FK → BANK.ID"
-  - name: PERFORMED_AT
-    data_type: TIMESTAMP(6)
-    description: null
-    key: null
-    fk_note: null
-  - name: MATTER_CODE
-    data_type: VARCHAR2(64)
-    description: null
-    key: null
-    fk_note: null
-  - name: EVENT_TYPE_NAME
-    data_type: NVARCHAR2(500)
-    description: "Ten loai su vu/su kien (luu tru truc tiep, khong FK)"
-    key: null
-    fk_note: null
-  - name: CONTENT_BEFORE
-    data_type: NCLOB
-    description: null
-    key: null
-    fk_note: null
-  - name: CONTENT_AFTER
-    data_type: NCLOB
-    description: null
-    key: null
-    fk_note: null
-  - name: DOCUMENT_NUMBER
-    data_type: NVARCHAR2(200)
-    description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)"
-    key: null
-    fk_note: null
-  - name: EFFECTIVE_DATE
-    data_type: DATE
-    description: "Ngày văn bản/thay đổi có hiệu lực"
-    key: null
-    fk_note: null
-  - name: DOCUMENT_FILE_NAME
-    data_type: NVARCHAR2(1000)
-    description: null
-    key: null
-    fk_note: null
-  - name: DOCUMENT_FILE_PATH
-    data_type: VARCHAR2(500)
-    description: null
-    key: null
-    fk_note: null
-  - name: PERFORMED_BY
-    data_type: NUMBER
-    description: "FK -> sys_user: Người thực hiện"
-    key: null
-    fk_note: null
-  - name: PERFORMER_NAME
-    data_type: NVARCHAR2(255)
-    description: "Tên người thực hiện"
-    key: null
-    fk_note: null
-  - name: SNAPSHOT_AFTER_JSON
-    data_type: NCLOB
-    description: null
-    key: null
-    fk_note: null
-  - name: MATTER_ID
-    data_type: NUMBER(19,0)
-    description: null
-    key: null
-    fk_note: null
+- name: ID
+  data_type: NUMBER
+  description: Khóa chính của bản ghi (ID tự tăng hoặc UUID)
+  key: PK
+  fk_note: null
+- name: BANK_ID
+  data_type: NUMBER
+  description: 'FK -> bank: Ngân hàng liên quan'
+  key: FK
+  fk_note: FK → BANK.ID
+- name: PERFORMED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: MATTER_CODE
+  data_type: VARCHAR2(64)
+  description: null
+  key: null
+  fk_note: null
+- name: EVENT_TYPE_NAME
+  data_type: NVARCHAR2(1000)
+  description: Ten loai su vu/su kien (luu tru truc tiep, khong FK)
+  key: null
+  fk_note: null
+- name: CONTENT_BEFORE
+  data_type: NCLOB
+  description: null
+  key: null
+  fk_note: null
+- name: CONTENT_AFTER
+  data_type: NCLOB
+  description: null
+  key: null
+  fk_note: null
+- name: DOCUMENT_NUMBER
+  data_type: NVARCHAR2(400)
+  description: Số văn bản pháp lý (QĐ/GP/CV/Thông tư)
+  key: null
+  fk_note: null
+- name: EFFECTIVE_DATE
+  data_type: DATE
+  description: Ngày văn bản/thay đổi có hiệu lực
+  key: null
+  fk_note: null
+- name: DOCUMENT_FILE_NAME
+  data_type: NVARCHAR2(1000)
+  description: null
+  key: null
+  fk_note: null
+- name: DOCUMENT_FILE_PATH
+  data_type: VARCHAR2(500)
+  description: null
+  key: null
+  fk_note: null
+- name: PERFORMED_BY
+  data_type: NUMBER
+  description: 'FK -> sys_user: Người thực hiện'
+  key: null
+  fk_note: null
+- name: PERFORMER_NAME
+  data_type: NVARCHAR2(510)
+  description: Tên người thực hiện
+  key: null
+  fk_note: null
+- name: SNAPSHOT_AFTER_JSON
+  data_type: NCLOB
+  description: null
+  key: null
+  fk_note: null
+- name: MATTER_ID
+  data_type: NUMBER(19,0)
+  description: null
+  key: null
+  fk_note: null

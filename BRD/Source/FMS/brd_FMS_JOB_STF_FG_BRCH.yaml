@@ -6,16 +6,18 @@ brd_ref: BRD-SRC-FMS-JOB_STF_FG_BRCH
 columns:
 - name: JOB_ID
   data_type: RAW(16)
-  description: "TBD - cần bổ sung mô tả"
-  key: PK
-  fk_note: null
+  description: TBD - cần bổ sung mô tả
+  key: PK/FK
+  fk_note: FK → JOBS.ID
+  fk_src: inferred
 - name: STF_FG_BRCH_ID
   data_type: RAW(16)
-  description: "TBD - cần bổ sung mô tả"
-  key: PK
-  fk_note: null
+  description: TBD - cần bổ sung mô tả
+  key: PK/FK
+  fk_note: FK → STF_FG_BRCH.ID
+  fk_src: inferred
 - name: IS_MAIN
   data_type: NUMBER(1,0)
-  description: "1 = chức vụ đầu (đồng bộ STF_FG_BRCH.JOBS_ID); 0 = chức vụ bổ sung"
+  description: 1 = chức vụ đầu (đồng bộ STF_FG_BRCH.JOBS_ID); 0 = chức vụ bổ sung
   key: null
   fk_note: null
