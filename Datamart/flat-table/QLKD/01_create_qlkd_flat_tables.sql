@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_capital_raising_
     cdr_dt                          Nullable(Date)          COMMENT 'FK tháng của đợt chào bán/phát hành (Result Report Date) — từ Calendar Date Dimension',
 
     -- From: OFFERING FORM DIMENSION
-    capital_raising_form_code       Nullable(String)        COMMENT 'Mã hình thức tăng vốn — ETL-derived CASE WHEN Item Category Code + Offering Method — từ Offering Form Dimension',
+    capital_raising_form_code       Nullable(String)        COMMENT 'Mã hình thức tăng vốn — ETL-derived CASE WHEN Item Category Code + Offering Type Code (dự phòng Offering Method) — từ Offering Form Dimension',
     capital_raising_form_nm         Nullable(String)        COMMENT 'Tên hình thức tăng vốn (5 nhóm) — từ Offering Form Dimension',
     offering_form_src_stm_code      Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Offering Form Dimension'
 )
