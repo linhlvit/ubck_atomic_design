@@ -864,37 +864,6 @@ DTS_ID                        RAW(16)             NO      PK     DT_SCOPE.ID    
 TRANSFER_AGENT_ID             RAW(16)             NO      PK     TRANSFER_AGENT.ID         FK -> TRANSFER_AGENT: Đại lý chuyển nhượng liên quan
 
 
-BANG: DYNAMIC_COLUMNS
-Mo ta: Cấu hình cột của bảng dữ liệu động FMS: kiểu dữ liệu, nullable, khóa chính, giá trị mặc định
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-TABLECONFIGID                 NUMBER              NO      FK     DYNAMIC_TABLES.ID         FK -> DYNAMIC_TABLES: Bảng động chứa cột này
-COLUMNNAME                    VARCHAR2(255)       NO                                       Tên cột trong bảng dữ liệu động
-DATATYPE                      VARCHAR2(100)       NO                                       Kiểu dữ liệu Oracle của cột động (VARCHAR2, NUMBER, DATE...)
-ISNULLABLE                    NUMBER(1,0)         NO                                       Cờ cột chấp nhận NULL: 1=Nullable, 0=NOT NULL
-ISPRIMARYKEY                  NUMBER(1,0)         NO                                       Cờ cột là khóa chính: 1=PK, 0=Không phải PK
-DEFAULTVALUE                  VARCHAR2(500)       YES                                      Giá trị mặc định của cột dữ liệu động
-ORDERINDEX                    NUMBER              NO                                       Thứ tự hiển thị của cột trong bảng động
-DESCRIPTION                   CLOB                YES                                      Mô tả chi tiết
-CREATEDAT                     TIMESTAMP(6)        NO                                       Thời điểm tạo bảng/cột dữ liệu động
-
-
-BANG: DYNAMIC_TABLES
-Mo ta: Cấu hình bảng dữ liệu động FMS: tên bảng, schema, mô tả
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (UUID dạng RAW(16))
-TABLENAME                     VARCHAR2(255)       NO                                       Tên bảng dữ liệu động trong Oracle
-SCHEMANAME                    VARCHAR2(255)       YES                                      Tên schema Oracle chứa bảng động
-DESCRIPTION                   CLOB                YES                                      Mô tả chi tiết
-CREATEDAT                     TIMESTAMP(6)        NO                                       Thời điểm tạo bảng/cột dữ liệu động
-UPDATEDAT                     TIMESTAMP(6)        YES                                      Thời điểm cập nhật bảng/cột dữ liệu động
-CREATEDBY                     VARCHAR2(255)       YES                                      Tài khoản tạo bảng/cột dữ liệu động
-
-
 BANG: EVENT_TYPE
 Mo ta: Danh mục loại sự vụ FMS: mã sự vụ, phân loại (định kỳ/bất thường/theo yêu cầu), nghĩa vụ báo cáo/CBTT, cách tính thời hạn, cấu hình nghiệp vụ JSON
 --------------------------------------------------------------------------------------------------------------

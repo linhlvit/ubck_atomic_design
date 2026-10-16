@@ -157,7 +157,7 @@ ID                            NUMBER(10,0)        NO      PK                    
 BOND_LISTING_ID               NUMBER(10,0)        YES                                      ID trái phiếu
 REMAINING_TENOR               NUMBER(10,0)        YES                                      Kỳ hạn còn lại
 ISSUANCE_QTY                  NUMBER(19,0)        YES                                      Khối lượng phát hành
-REPURCHASE_CONVERSION_SWAP_QTYNUMBER(19,0)        YES                                      KL mua lại/chuyển đổi/hoán đổi
+REPURCHASE_CONVERSION_SWAP_QTY NUMBER(19,0)        YES                                      KL mua lại/chuyển đổi/hoán đổi
 REGISTERED_TRADING_QTY        NUMBER(19,0)        YES                                      Khối lượng đăng ký giao dịch
 OUTSTANDING_QTY               NUMBER(19,0)        YES                                      Khối lượng còn lưu hành
 FIRST_TRADING_DATE            DATE                YES                                      Ngày giao dịch đầu tiên
@@ -861,38 +861,6 @@ UPDATED_DATE                  DATE                NO                            
 COMPANY_PROFILE_ID            NUMBER(10,0)        NO                                       ID Hồ sơ doanh nghiệp
 
 
-BANG: DATABASECHANGELOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(1020)      NO      PK                               
-AUTHOR                        VARCHAR2(1020)      NO                                       
-FILENAME                      VARCHAR2(1020)      NO                                       
-DATEEXECUTED                  TIMESTAMP(6)        NO                                       
-ORDEREXECUTED                 NUMBER              NO                                       
-EXECTYPE                      VARCHAR2(40)        NO                                       
-MD5SUM                        VARCHAR2(140)       YES                                      
-DESCRIPTION                   VARCHAR2(1020)      YES                                      
-COMMENTS                      VARCHAR2(1020)      YES                                      
-TAG                           VARCHAR2(1020)      YES                                      
-LIQUIBASE                     VARCHAR2(80)        YES                                      
-CONTEXTS                      VARCHAR2(1020)      YES                                      
-LABELS                        VARCHAR2(1020)      YES                                      
-DEPLOYMENT_ID                 VARCHAR2(40)        YES                                      
-
-
-BANG: DATABASECHANGELOGLOCK
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-LOCKED                        NUMBER(1,0)         NO                                       
-LOCKGRANTED                   TIMESTAMP(6)        YES                                      
-LOCKEDBY                      VARCHAR2(1020)      YES                                      
-
-
 BANG: DATA_TYPES
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -934,23 +902,6 @@ UPDATED_BY                    VARCHAR2(120)       YES                           
 UPDATED_DATE                  DATE                YES                                      Ngày sửa
 
 
-BANG: DBTOOLS$MCP_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-MCP_CLIENT                    VARCHAR2(200)       NO                                       
-MODEL                         VARCHAR2(200)       YES                                      
-END_POINT_TYPE                VARCHAR2(12)        YES                                      
-END_POINT_NAME                VARCHAR2(100)       NO                                       
-LOG_MESSAGE                   CLOB                YES                                      
-CREATED_ON                    TIMESTAMP(6)        NO                                       
-CREATED_BY                    VARCHAR2(100)       NO                                       
-UPDATED_ON                    TIMESTAMP(6)        YES                                      
-UPDATED_BY                    VARCHAR2(100)       YES                                      
-
-
 BANG: DEPARTMENTS
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -977,7 +928,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            NUMBER(10,0)        NO      PK                               Khóa chính
 SECURITIES_OFFERING_ID        NUMBER(10,0)        YES     FK     SECURITIES_OFFERING.ID    Khóa link đến bảng SECURITIES_OFFERING (CBPH)
 COMPANY_TENDER_OFFER_ID       NUMBER(10,0)        YES                                      Khóa link đến bảng COMPANY_TENDER_OFFER (CMCK)
-COMPANY_TREASURY_SHARE_ID     NUMBER(10,0)        YES     FK     COMPANY_TREASURY_SHARES.IDKhóa link đến bảng COMPANY_TREASURY_SHARES (CPQ)
+COMPANY_TREASURY_SHARE_ID     NUMBER(10,0)        YES     FK     COMPANY_TREASURY_SHARES.ID Khóa link đến bảng COMPANY_TREASURY_SHARES (CPQ)
 APPRAISAL_CRITERIA_ID         NUMBER(10,0)        YES     FK     APPRAISAL_CRITERIA.ID     Khóa ngoại link đến ID của bảng APPRAISAL_CRITERIA
 RESULT_STATUS_CD              VARCHAR2(100)       YES                                      Kết quả thẩm định (1- Đạt/Passed; 2- Không đạt/Failed; 3 - Tham khảo/Reference; 4 - N/A). Sử dụng lookup_group = RESULT_STATUS
 CREATED_BY                    VARCHAR2(30)        NO                                       Người tạo
@@ -2550,24 +2501,6 @@ CREATED_DATE                  TIMESTAMP(6)        YES
 UPDATED_BY                    VARCHAR2(255)       YES                                      
 UPDATED_DATE                  TIMESTAMP(6)        YES                                      
 DEPARTMENT_ID                 NUMBER(19,0)        YES                                      Foreign key trỏ tới bảng DEPARTMENTS trong masterdata-service
-
-
-BANG: USER_AUDIT_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER(19,0)        NO      PK                               Khóa chính
-USER_ID                       VARCHAR2(160)       NO                                       User ID
-USER_NAME                     VARCHAR2(200)       NO                                       Tên người dùng
-USER_AGENT                    VARCHAR2(2000)      NO                                       Thông tin agent lấy từ request header
-CLIENT_IP                     VARCHAR2(180)       NO                                       IP của người dùng
-HTTP_METHOD                   VARCHAR2(40)        NO                                       HTTP method
-QUERY_PARAMS                  CLOB                YES                                      Tham số (đối với method GET)
-REQUEST_BODY                  CLOB                YES                                      Body khi call api
-SOURCE_SERVICE                VARCHAR2(400)       NO                                       Tên service chứa api
-CREATED_DATE                  DATE                NO                                       Ngày người dùng thao tác (datetime)
-REQUEST_URI                   VARCHAR2(2000)      YES                                      Request URI path (ví dụ: /api/v1/masterdata/fields)
 
 
 BANG: VIOLATION_PENALTY_CONFIG

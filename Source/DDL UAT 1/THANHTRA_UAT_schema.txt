@@ -208,6 +208,7 @@ CREATED_BY                    VARCHAR2(400)       NO                            
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
+REPORT_DATE                   DATE                YES                                      Ngày báo cáo (người dùng nhập); hiển thị cột Ngày BC trên danh sách
 
 
 BANG: CITIZEN_COMPLAINT_REPORT_OUTLINE
@@ -390,7 +391,7 @@ FILE_SIZE                     NUMBER(19,0)        YES                           
 SORT_ORDER                    NUMBER(5,0)         NO                                       Thứ tự hiển thị
 CREATED_AT                    DATE                NO                                       Thời điểm tạo bản ghi
 LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật gần nhất
-CREATED_BY                    VARCHAR2(400)       NO                                       ID người dùng tạo bản ghi
+CREATED_BY                    VARCHAR2(400)       YES                                      ID người dùng tạo bản ghi
 LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
@@ -433,14 +434,14 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
 TEMPLATE_ID                   VARCHAR2(144)       NO      FK     DOCUMENT_TEMPLATE.ID      FK -> document_template
-KEY_DEFINITION_ID             VARCHAR2(144)       NO      FK     DOCUMENT_TEMPLATE_KEY_DEFINITION.IDFK -> document_template_key_definition
+KEY_DEFINITION_ID             VARCHAR2(144)       NO      FK     DOCUMENT_TEMPLATE_KEY_DEFINITION.ID FK -> document_template_key_definition
 CREATED_AT                    DATE                NO                                       Thời điểm tạo bản ghi
 CREATED_BY                    VARCHAR2(800)       NO                                       ID người dùng tạo bản ghi
 LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      Thời điểm cập nhật gần nhất
 LAST_MODIFIED_BY              VARCHAR2(200)       YES                                      ID người dùng cập nhật gần nhất
 VERSION                       NUMBER(10,0)        NO                                       Số phiên bản bản ghi (optimistic locking)
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa
-TEMPLATE_VERSION_ID           VARCHAR2(144)       YES     FK     DOCUMENT_TEMPLATE_VERSION.IDFK -> document_template_version: phiên bản file mẫu áp dụng key này
+TEMPLATE_VERSION_ID           VARCHAR2(144)       YES     FK     DOCUMENT_TEMPLATE_VERSION.ID FK -> document_template_version: phiên bản file mẫu áp dụng key này
 
 
 BANG: DOCUMENT_TEMPLATE_KEY_DEFINITION
@@ -509,7 +510,7 @@ Mo ta: Đối tượng dự kiến kiểm tra trong kế hoạch hàng năm
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-EXAMINATION_ANNUAL_PLAN_ID    VARCHAR2(144)       NO      FK     EXAMINATION_ANNUAL_PLAN.IDFK -> examination_annual_plan
+EXAMINATION_ANNUAL_PLAN_ID    VARCHAR2(144)       NO      FK     EXAMINATION_ANNUAL_PLAN.ID FK -> examination_annual_plan
 TARGET_TYPE                   VARCHAR2(200)       NO                                       Loại đối tượng: SECURITIES_COMPANY (CTCK), FUND_MANAGEMENT_COMPANY (CTQLQ), PUBLIC_COMPANY (CTĐC)
 TARGET_REFERENCE_ID           VARCHAR2(144)       YES                                      ID tham chiếu đối tượng trong hệ thống nguồn (IDS/SCMS/FMS)
 TARGET_NAME                   VARCHAR2(2000)      NO                                       Tên đối tượng kiểm tra
@@ -558,7 +559,7 @@ Mo ta: Danh sách biện pháp khắc phục trong thông báo kết quả kiể
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-EXAMINATION_RESULT_NOTICE_ID  VARCHAR2(144)       NO      FK     EXAMINATION_RESULT_NOTICE.IDFK -> examination_result_notice
+EXAMINATION_RESULT_NOTICE_ID  VARCHAR2(144)       NO      FK     EXAMINATION_RESULT_NOTICE.ID FK -> examination_result_notice
 DESCRIPTION                   CLOB                NO                                       Nội dung biện pháp khắc phục sau kiểm tra
 SORT_ORDER                    NUMBER(5,0)         NO                                       Thứ tự hiển thị biện pháp khắc phục
 CREATED_AT                    DATE                NO                                       Thời điểm tạo bản ghi
@@ -576,7 +577,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
 CODE                          VARCHAR2(200)       NO                                       Mã hồ sơ đoàn kiểm tra tự sinh: HSKT-YYYY-XXX
-EXAMINATION_ANNUAL_PLAN_ID    VARCHAR2(144)       YES     FK     EXAMINATION_ANNUAL_PLAN.IDFK -> examination_annual_plan (chỉ có khi form_type=PERIODIC)
+EXAMINATION_ANNUAL_PLAN_ID    VARCHAR2(144)       YES     FK     EXAMINATION_ANNUAL_PLAN.ID FK -> examination_annual_plan (chỉ có khi form_type=PERIODIC)
 UNIT_ID                       VARCHAR2(144)       NO                                       Đơn vị kiểm tra (tự động gán theo Ban của người dùng)
 UNIT_NAME                     VARCHAR2(800)       NO                                       Tên đơn vị chủ trì kiểm tra (tự động gán theo Ban của người dùng đăng nhập)
 PLAN_YEAR                     NUMBER(4,0)         NO                                       Năm kiểm tra
@@ -1078,7 +1079,7 @@ Mo ta: Hành vi vi phạm theo từng đối tượng trong QĐ xử phạt, kè
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-PENALTY_DECISION_SUBJECT_ID   VARCHAR2(144)       NO      FK     PENALTY_DECISION_SUBJECT.IDFK -> penalty_decision_subject
+PENALTY_DECISION_SUBJECT_ID   VARCHAR2(144)       NO      FK     PENALTY_DECISION_SUBJECT.ID FK -> penalty_decision_subject
 VIOLATION_BEHAVIOR_ID         VARCHAR2(144)       NO      FK     VIOLATION_BEHAVIOR.ID     FK -> violation_behavior: hành vi vi phạm được chọn
 PENALTY_TYPE_ID               VARCHAR2(144)       NO      FK     PENALTY_TYPE.ID           FK -> penalty_type: hình thức xử phạt áp dụng
 DESCRIPTION                   CLOB                NO                                       Mô tả chi tiết hành vi vi phạm (bao gồm thời gian, địa điểm vi phạm)
@@ -1104,7 +1105,7 @@ Mo ta: Hình thức xử phạt bổ sung theo hành vi trên QĐ xử phạt VP
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               
-PENALTY_DECISION_SUBJECT_BEHAVIOR_IDVARCHAR2(144)       NO      FK     PENALTY_DECISION_SUBJECT_BEHAVIOR.ID
+PENALTY_DECISION_SUBJECT_BEHAVIOR_ID VARCHAR2(144)       NO      FK     PENALTY_DECISION_SUBJECT_BEHAVIOR.ID
 PENALTY_TYPE_ID               VARCHAR2(144)       NO      FK     PENALTY_TYPE.ID           
 CREATED_AT                    DATE                NO                                       
 LAST_MODIFIED_AT              DATE                YES                                      
@@ -1406,7 +1407,7 @@ Mo ta: Tổ chức nhận QĐ biện pháp phòng ngừa, ngăn chặn - theo d�
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-SECURITY_MEASURE_DECISION_ID  VARCHAR2(144)       NO      FK     SECURITY_MEASURE_DECISION.IDFK -> security_measure_decision
+SECURITY_MEASURE_DECISION_ID  VARCHAR2(144)       NO      FK     SECURITY_MEASURE_DECISION.ID FK -> security_measure_decision
 RECIPIENT_TYPE                VARCHAR2(200)       NO                                       Loại tổ chức nhận: SECURITIES_COMPANY (CTCK → SCMS), FUND_MANAGEMENT_COMPANY (CT QLQ → FMS), STOCK_EXCHANGE (Sở GDCK), VSDC. Không còn hỗ trợ SSC_DEPARTMENT (Ban nghiệp vụ UBCKNN — theo yêu cầu 21/08/2026, bỏ khỏi luồng gửi liên thông)
 RECIPIENT_NAME                VARCHAR2(2000)      NO                                       Tên tổ chức nhận quyết định (CTCK, CT QLQ, Sở GDCK, VSDC, Ban UBCKNN)
 RECIPIENT_REFERENCE_ID        VARCHAR2(144)       YES                                      ID tham chiếu tổ chức nhận trong hệ thống nguồn
@@ -1431,7 +1432,7 @@ Mo ta: Đối tượng bị áp dụng biện pháp phòng ngừa, ngăn chặn
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-SECURITY_MEASURE_DECISION_ID  VARCHAR2(144)       NO      FK     SECURITY_MEASURE_DECISION.IDFK -> security_measure_decision
+SECURITY_MEASURE_DECISION_ID  VARCHAR2(144)       NO      FK     SECURITY_MEASURE_DECISION.ID FK -> security_measure_decision
 SUBJECT_TYPE                  VARCHAR2(200)       NO                                       Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)
 SUBJECT_NAME                  VARCHAR2(2000)      NO                                       Tên đối tượng bị áp dụng biện pháp (cá nhân hoặc tổ chức)
 SUBJECT_ID_NUMBER             VARCHAR2(200)       YES                                      Số CCCD/CMND (cá nhân) hoặc Mã số doanh nghiệp (tổ chức)
@@ -1452,7 +1453,7 @@ Mo ta: Tình hình thực hiện QĐ biện pháp phòng ngừa, ngăn chặn do
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(144)       NO      PK                               Khóa chính UUID
-SECURITY_MEASURE_DECISION_ID  VARCHAR2(144)       NO      FK     SECURITY_MEASURE_DECISION.IDFK -> security_measure_decision
+SECURITY_MEASURE_DECISION_ID  VARCHAR2(144)       NO      FK     SECURITY_MEASURE_DECISION.ID FK -> security_measure_decision
 REPORTER_NAME                 VARCHAR2(2000)      NO                                       Tên tổ chức/cá nhân báo cáo tình hình thực hiện quyết định
 REPORT_DATE                   DATE                NO                                       Ngày báo cáo tình hình thực hiện
 CONTENT                       CLOB                NO                                       Nội dung tóm tắt báo cáo tình hình thực hiện quyết định
