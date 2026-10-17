@@ -14657,9 +14657,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Giá tham chiếu ngày t (Ptc — giá đóng cửa ngày t-1 theo quy tắc khớp lệnh)"
+        description: "Giá tham chiếu ngày t (Ptc) theo bản tin thị trường — mẫu số của tỷ lệ thay đổi giá; không phải giá đóng cửa phiên liền trước (xem Close Price Previous Day)"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.reference_price"
+      - logical_name: "Close Price Previous Day"
+        physical_name: "close_price_previous_day"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Giá đóng cửa HĐTL của phiên giao dịch liền trước ngày t (Pt-1), cùng mã hợp đồng, lấy bản ghi cuối phiên đó. Phiên liền trước = ngày giao dịch gần nhất trước ngày t của cùng cơ sở (VN30/VN100), tìm trong cửa sổ 15 ngày lịch (đủ phủ kỳ nghỉ Tết). NULL nếu mã không có bản ghi ở phiên đó (VD hợp đồng mới niêm yết). Khác giá tham chiếu (Ptc) của ngày t."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.close_price"
       - logical_name: "Price Change Percentage"
         physical_name: "price_change_percentage"
         data_domain: "Percentage"
@@ -14675,7 +14684,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KLGD HĐTL ngày t = tổng khối lượng các giao dịch của mã HĐTL trong ngày theo sổ lệnh HNX (thị trường phái sinh, Market ID DVX), gồm khớp lệnh và thỏa thuận; mã HĐTL và thuộc tính hợp đồng lấy từ bản ghi cuối ngày của thông tin thị trường (MDDS). Mã HĐTL không có giao dịch trong ngày = 0."
+        description: "KLGD HĐTL ngày t = tổng khối lượng các giao dịch của mã HĐTL trong ngày theo sổ lệnh HNX (thị trường phái sinh, Market ID DVX), gồm khớp lệnh và thỏa thuận; mã HĐTL và thuộc tính hợp đồng lấy từ bản ghi cuối ngày của thông tin thị trường (MDDS). Mã HĐTL không có giao dịch trong ngày = 0. Nối sổ lệnh với danh sách hợp đồng bằng mã ISIN của hợp đồng (Issue Code của sổ lệnh = ISIN của thông tin thị trường), không nối bằng mã giao dịch."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Total Trading Volume Matched Average 50 Days"

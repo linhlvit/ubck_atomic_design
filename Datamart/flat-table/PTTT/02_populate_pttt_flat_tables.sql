@@ -312,6 +312,7 @@ SELECT
     f.maturity_month_year,
     f.close_price,
     f.reference_price,
+    f.close_price_previous_day,
     f.price_change_percentage,
     f.total_trading_vol_matched,
     f.total_trading_vol_matched_average_50_days,

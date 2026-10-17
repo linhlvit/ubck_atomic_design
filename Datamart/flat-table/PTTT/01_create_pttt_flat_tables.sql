@@ -370,6 +370,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_futures_intraday_snpst_flat ON CLUS
     maturity_month_year                          Nullable(String)        COMMENT 'Tháng đáo hạn hợp đồng',
     close_price                                  Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa HĐTL ngày t',
     reference_price                              Nullable(Decimal(23,2)) COMMENT 'Giá tham chiếu ngày t',
+    close_price_previous_day                     Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa HĐTL phiên giao dịch liền trước ngày t (Pt-1)',
     price_change_percentage                      Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ thay đổi giá HĐTL',
     total_trading_vol_matched                    Nullable(Decimal(23,2)) COMMENT 'KLGD HĐTL ngày t',
     total_trading_vol_matched_average_50_days    Nullable(Decimal(23,2)) COMMENT 'KLGD HĐTL trung bình 50 phiên',
