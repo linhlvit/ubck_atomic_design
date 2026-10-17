@@ -1,0 +1,111 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: REPORT_COMPARISON_HEADER
+brd_ref: BRD-SRC-KNT-REPORT_COMPARISON_HEADER
+columns:
+- name: ID
+  data_type: NUMBER
+  description: Khóa chính header đối chiếu BCTC
+  key: PK
+  fk_note: null
+- name: TAX_CODE
+  data_type: VARCHAR2(100)
+  description: Mã số thuế doanh nghiệp
+  key: null
+  fk_note: null
+- name: DECLARATION_PERIOD
+  data_type: VARCHAR2(100)
+  description: Kỳ khai / kỳ BC đã map (khóa)
+  key: null
+  fk_note: null
+- name: DECLARATION_CODE
+  data_type: VARCHAR2(50)
+  description: Mã tờ khai (khóa)
+  key: null
+  fk_note: null
+- name: TAX_REPORT_ID
+  data_type: NUMBER
+  description: -> tax_report (phía Cục thuế)
+  key: FK
+  fk_note: FK → TAX_REPORT.ID
+  fk_src: inferred
+- name: SSC_REPORT_ID
+  data_type: NUMBER
+  description: -> ssc_report (phía UBCKNN)
+  key: FK
+  fk_note: FK → SSC_REPORT.ID
+  fk_src: inferred
+- name: TAX_MSG_PACKET_ID
+  data_type: NUMBER
+  description: -> msg_packet của tax_report
+  key: FK
+  fk_note: FK → MSG_PACKET.ID
+  fk_src: inferred
+- name: SSC_MSG_PACKET_ID
+  data_type: NUMBER
+  description: -> msg_packet của ssc_report
+  key: FK
+  fk_note: FK → MSG_PACKET.ID
+  fk_src: inferred
+- name: TAX_PACKET_CODE
+  data_type: VARCHAR2(200)
+  description: Mã gói tin phía Cục thuế
+  key: null
+  fk_note: null
+- name: SSC_PACKET_CODE
+  data_type: VARCHAR2(200)
+  description: Mã gói tin phía UBCKNN
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_NAME
+  data_type: VARCHAR2(500)
+  description: Đối tượng nộp thuế (ưu tiên TAX)
+  key: null
+  fk_note: null
+- name: REPORT_NAME
+  data_type: VARCHAR2(500)
+  description: Tên báo cáo (ưu tiên SSC)
+  key: null
+  fk_note: null
+- name: TAX_AUDIT_STATUS
+  data_type: VARCHAR2(200)
+  description: Trạng thái kiểm toán phía Cục thuế
+  key: null
+  fk_note: null
+- name: SSC_AUDIT_STATUS
+  data_type: NUMBER
+  description: Trạng thái kiểm toán phía UBCKNN
+  key: null
+  fk_note: null
+- name: TAX_RECEIVED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tiếp nhận gói tin Cục thuế
+  key: null
+  fk_note: null
+- name: SSC_RECEIVED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tiếp nhận gói tin UBCKNN
+  key: null
+  fk_note: null
+- name: DIFF_FLAG
+  data_type: NUMBER(1,0)
+  description: 0 = không lệch chỉ tiêu / thiếu một phía; 1 = lệch và đủ hai header
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: SOURCE_NOTIFY_FLAG
+  data_type: NUMBER(1,0)
+  description: 0 = chưa đẩy thông báo lệch BCTC cho phân hệ nguồn; 1 = đã đẩy thông
+    báo
+  key: null
+  fk_note: null

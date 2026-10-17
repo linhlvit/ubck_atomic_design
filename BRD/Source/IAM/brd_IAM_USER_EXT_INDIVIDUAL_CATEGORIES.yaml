@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IAM
+table: USER_EXT_INDIVIDUAL_CATEGORIES
+brd_ref: BRD-SRC-IAM-USER_EXT_INDIVIDUAL_CATEGORIES
+columns:
+- name: USER_ID
+  data_type: VARCHAR2(144)
+  description: FK tới users.id
+  key: PK
+  fk_note: null
+- name: CATEGORY_CODE
+  data_type: VARCHAR2(200)
+  description: Mã danh mục Cá nhân bên ngoài
+  key: PK
+  fk_note: null
+- name: IS_REQUIRED
+  data_type: NUMBER(1,0)
+  description: Danh mục có bắt buộc với user hay không (1=bắt buộc, 0=không)
+  key: null
+  fk_note: null

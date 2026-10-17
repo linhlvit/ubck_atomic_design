@@ -4960,18 +4960,18 @@ schemes:
       - "Geographic Area Old"
     values: []
 
-  - scheme_code: "GSGD_COMPANY_EVENT_TYPE"
+  - scheme_code: "TMS_COMPANY_EVENT_TYPE"
     name: "Loại sự kiện tổ chức niêm yết — GSGD (cần profile, cột free text)"
     source_type: "source_table"
-    source_table: "GSGD.COMPANY_EVENT.EVENT_TYPE"
+    source_table: "TMS.COMPANY_EVENT.EVENT_TYPE"
     used_in_entities:
       - "Listed Company Corporate Event"
     values: []
 
-  - scheme_code: "GSGD_SECURITIES_GROUP_TYPE"
+  - scheme_code: "TMS_SECURITIES_GROUP_TYPE"
     name: "Loại nhóm chứng khoán — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.SECURITIES_GROUP.GROUP_TYPE"
+    source_table: "TMS.SECURITIES_GROUP.GROUP_TYPE"
     used_in_entities:
       - "Securities Watchlist Group"
     values:
@@ -4982,10 +4982,10 @@ schemes:
         label: "Theo ngành"
         source_value: "2"
 
-  - scheme_code: "GSGD_GROUP_STATUS"
+  - scheme_code: "TMS_GROUP_STATUS"
     name: "Trạng thái nhóm chứng khoán — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.SECURITIES_GROUP.STATUS"
+    source_table: "TMS.SECURITIES_GROUP.STATUS"
     used_in_entities:
       - "Securities Watchlist Group"
     values:
@@ -4999,10 +4999,10 @@ schemes:
         label: "Từ chối"
         source_value: "3"
 
-  - scheme_code: "GSGD_CASE_TYPE"
+  - scheme_code: "TMS_CASE_TYPE"
     name: "Loại vụ việc giám sát / loại quy trình xử lý — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.CASE_FILE.CASE_FILE_TYPE, GSGD.CASE_FILE_WORKFLOW.WORKFLOW_TYPE"
+    source_table: "TMS.CASE_FILE.CASE_FILE_TYPE, TMS.CASE_FILE_WORKFLOW.WORKFLOW_TYPE"
     used_in_entities:
       - "Market Surveillance Case"
       - "Market Surveillance Case Workflow Step"
@@ -5020,10 +5020,10 @@ schemes:
         label: "Liên thị trường"
         source_value: "4"
 
-  - scheme_code: "GSGD_INFORMATION_SOURCE"
+  - scheme_code: "TMS_INFORMATION_SOURCE"
     name: "Nguồn thông tin vụ việc giám sát — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.CASE_FILE.INFORMATION_SOURCE"
+    source_table: "TMS.CASE_FILE.INFORMATION_SOURCE"
     used_in_entities:
       - "Market Surveillance Case"
     values:
@@ -5037,10 +5037,10 @@ schemes:
         label: "Nguồn dữ liệu xác nhận từ CTCK"
         source_value: "3"
 
-  - scheme_code: "GSGD_CASE_STATUS"
+  - scheme_code: "TMS_CASE_STATUS"
     name: "Trạng thái vụ việc giám sát — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.CASE_FILE.CASE_FILE_STATUS"
+    source_table: "TMS.CASE_FILE.CASE_FILE_STATUS"
     used_in_entities:
       - "Market Surveillance Case"
     values:
@@ -5066,10 +5066,10 @@ schemes:
         label: "Đã đóng hồ sơ"
         source_value: "6"
 
-  - scheme_code: "GSGD_FINANCIAL_SERVICE_TYPE"
+  - scheme_code: "TMS_FINANCIAL_SERVICE_TYPE"
     name: "Loại dịch vụ tài chính đăng ký trên tài khoản — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.ACCOUNT_FINANCIAL_SERVICE.SERVICE_TYPE"
+    source_table: "TMS.ACCOUNT_FINANCIAL_SERVICE.SERVICE_TYPE"
     used_in_entities:
       - "Account Investor Financial Service"
     values:
@@ -5083,10 +5083,10 @@ schemes:
         label: "Hợp đồng tài chính khác"
         source_value: "3"
 
-  - scheme_code: "GSGD_ACCOUNT_GROUP_TYPE"
+  - scheme_code: "TMS_ACCOUNT_GROUP_TYPE"
     name: "Loại nhóm tài khoản giám sát — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.ACCOUNT_GROUP.GROUP_TYPE"
+    source_table: "TMS.ACCOUNT_GROUP.GROUP_TYPE"
     used_in_entities:
       - "Account Investor Group"
     values:
@@ -5097,19 +5097,19 @@ schemes:
         label: "Nghi vấn"
         source_value: "2"
 
-  - scheme_code: "GSGD_ACCOUNT_RELATION_TYPE"
+  - scheme_code: "TMS_ACCOUNT_RELATION_TYPE"
     name: "Loại quan hệ giữa các tài khoản (Danh tính/IP/MAC/Tiền) — GSGD (FK suy luận → CATEGORY_ITEM, ngoài phạm vi task)"
     source_type: "modeler_defined"
-    source_table: "GSGD.ACCOUNT_GROUP.RELATION_TYPE_ID, GSGD.ACCOUNT_RELATIONSHIP.CATEGORY_ITEM_ID"
+    source_table: "TMS.ACCOUNT_GROUP.RELATION_TYPE_ID, TMS.ACCOUNT_RELATIONSHIP.CATEGORY_ITEM_ID"
     used_in_entities:
       - "Account Investor Group"
       - "Account Investor Relationship"
     values: []
 
-  - scheme_code: "GSGD_FILE_TYPE"
+  - scheme_code: "TMS_FILE_TYPE"
     name: "Loại file đính kèm vụ việc — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.CASE_ATTACH_FILE.FILE_TYPE"
+    source_table: "TMS.CASE_ATTACH_FILE.FILE_TYPE"
     used_in_entities:
       - "Market Surveillance Case Document Attachment"
     values:
@@ -5123,10 +5123,10 @@ schemes:
         label: "PDF"
         source_value: "PDF"
 
-  - scheme_code: "GSGD_FILE_GROUP"
+  - scheme_code: "TMS_FILE_GROUP"
     name: "Nhóm file đính kèm vụ việc — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.CASE_ATTACH_FILE.FILE_GROUP"
+    source_table: "TMS.CASE_ATTACH_FILE.FILE_GROUP"
     used_in_entities:
       - "Market Surveillance Case Document Attachment"
     values:
@@ -5137,10 +5137,10 @@ schemes:
         label: "Danh sách tài khoản nghi vấn"
         source_value: "2"
 
-  - scheme_code: "GSGD_APPROVAL_STEP_CODE"
+  - scheme_code: "TMS_APPROVAL_STEP_CODE"
     name: "Mã bước duyệt vụ việc — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.CASE_APPROVAL_STEP.STEP_CODE"
+    source_table: "TMS.CASE_APPROVAL_STEP.STEP_CODE"
     used_in_entities:
       - "Market Surveillance Case Approval Step Log"
     values:
@@ -5157,10 +5157,10 @@ schemes:
         label: "Chuyên viên xử lý"
         source_value: "4"
 
-  - scheme_code: "GSGD_APPROVAL_STEP_STATUS"
+  - scheme_code: "TMS_APPROVAL_STEP_STATUS"
     name: "Trạng thái bước duyệt/quy trình vụ việc — GSGD (CASE_APPROVAL_STEP có 4 giá trị, CASE_FILE_WORKFLOW chỉ có 3 — cần profile riêng nếu khác nhau thật)"
     source_type: "source_table"
-    source_table: "GSGD.CASE_APPROVAL_STEP.STATUS, GSGD.CASE_FILE_WORKFLOW.STATUS"
+    source_table: "TMS.CASE_APPROVAL_STEP.STATUS, TMS.CASE_FILE_WORKFLOW.STATUS"
     used_in_entities:
       - "Market Surveillance Case Approval Step Log"
       - "Market Surveillance Case Workflow Step"
@@ -5178,10 +5178,10 @@ schemes:
         label: "Từ chối (chỉ CASE_APPROVAL_STEP)"
         source_value: "3"
 
-  - scheme_code: "GSGD_ACCOUNT_STATUS"
+  - scheme_code: "TMS_ACCOUNT_STATUS"
     name: "Trạng thái tài khoản trong nhóm giám sát — GSGD (cần profile)"
     source_type: "modeler_defined"
-    source_table: "GSGD.ACCOUNT_GROUP_MEMBER.STATUS"
+    source_table: "TMS.ACCOUNT_GROUP_MEMBER.STATUS"
     used_in_entities:
       - "Account Investor Group Member"
     values: []
@@ -5714,6 +5714,30 @@ schemes:
     name: "Loại hành động xử lý sau kiểm tra hồ sơ kiểm toán — AUDIT"
     source_type: "source_table"
     source_table: "AUDIT.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD"
+    used_in_entities:
+      - "Audit Firm Technical Audit"
+    values: []
+
+  - scheme_code: "AUDIT_AF_TECHNICAL_AUDIT_INSPECTION_UNIT"
+    name: "Đơn vị thực hiện kiểm tra hồ sơ kiểm toán — AUDIT"
+    source_type: "modeler_defined"
+    source_table: "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_UNIT"
+    used_in_entities:
+      - "Audit Firm Technical Audit"
+    values: []
+
+  - scheme_code: "AUDIT_AF_TECHNICAL_AUDIT_INSPECTION_TYPE"
+    name: "Hình thức kiểm tra hồ sơ kiểm toán — AUDIT"
+    source_type: "modeler_defined"
+    source_table: "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_TYPE"
+    used_in_entities:
+      - "Audit Firm Technical Audit"
+    values: []
+
+  - scheme_code: "AUDIT_AF_TECHNICAL_AUDIT_CONSIDER_NEXT_YEAR_PROCESSING"
+    name: "Hình thức xử lý xem xét ở năm kiểm tra tiếp theo — AUDIT"
+    source_type: "modeler_defined"
+    source_table: "AUDIT.AF_TECHNICAL_AUDIT.CONSIDER_NEXT_YEAR_PROCESSING"
     used_in_entities:
       - "Audit Firm Technical Audit"
     values: []

@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Inspection"
   table_type: "Fact Append"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -389,3 +389,94 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
+- attribute_name: "Inspection Unit Code"
+  physical_name: "inspection_unit_code"
+  description: "Đơn vị thực hiện kiểm tra."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_UNIT"
+  comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_UNIT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_UNIT')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Type Code"
+  physical_name: "inspection_tp_code"
+  description: "Hình thức kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Other Unit Name"
+  physical_name: "inspection_other_unit_nm"
+  description: "Tên đơn vị kiểm tra khác (nhập tay khi Inspection Unit Code chọn Khác)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_OTHER_UNIT"
+  comment: "Nguồn không có mô tả cột, mô tả suy từ tên cột; cần xác nhận. Nguồn VARCHAR2(1020)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Consider Next Year Processing Code"
+  physical_name: "consider_next_year_processing_code"
+  description: "Hình thức xử lý xem xét ở năm kiểm tra tiếp theo (KTV)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_TECHNICAL_AUDIT.CONSIDER_NEXT_YEAR_PROCESSING"
+  comment: "SCHEMA_CODE=AUDIT.AF_NEXT_YEAR_PROCESSING. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_NEXT_YEAR_PROCESSING')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Processing Description"
+  physical_name: "other_processing_description"
+  description: "Nội dung xử lý khác (KTV)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_TECHNICAL_AUDIT.OTHER_PROCESSING"
+  comment: "Nguồn không có mô tả cột, mô tả suy từ tên cột; cần xác nhận. Nguồn VARCHAR2(2048)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leadership Consider Next Year Processing Code"
+  physical_name: "leadership_consider_next_year_processing_code"
+  description: "Hình thức xử lý xem xét ở năm kiểm tra tiếp theo (Lãnh đạo)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_TECHNICAL_AUDIT.LD_CONSIDER_NEXT_YEAR_PROCESSING"
+  comment: "SCHEMA_CODE=AUDIT.AF_NEXT_YEAR_PROCESSING. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_NEXT_YEAR_PROCESSING')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Leadership Other Processing Description"
+  physical_name: "leadership_other_processing_description"
+  description: "Nội dung xử lý khác (Lãnh đạo)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_TECHNICAL_AUDIT.LD_OTHER_PROCESSING"
+  comment: "Nguồn không có mô tả cột, mô tả suy từ tên cột; cần xác nhận. Nguồn VARCHAR2(2048)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

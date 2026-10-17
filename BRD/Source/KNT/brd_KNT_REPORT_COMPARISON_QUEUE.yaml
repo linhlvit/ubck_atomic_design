@@ -5,82 +5,85 @@ table: REPORT_COMPARISON_QUEUE
 brd_ref: BRD-SRC-KNT-REPORT_COMPARISON_QUEUE
 columns:
 - name: ID
-  data_type: "NUMBER"
+  data_type: NUMBER
   description: null
   key: PK
   fk_note: null
 - name: ACTION_TYPE
-  data_type: "CHAR(1)"
+  data_type: CHAR(1)
   description: null
   key: null
   fk_note: null
 - name: SSC_REPORT_DETAIL_ID
-  data_type: "NUMBER"
+  data_type: NUMBER
   description: null
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → SSC_REPORT_DETAIL.ID
+  fk_src: inferred
 - name: SSC_REPORT_ID
-  data_type: "NUMBER"
+  data_type: NUMBER
   description: null
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → SSC_REPORT.ID
+  fk_src: inferred
 - name: STATUS
-  data_type: "CHAR(1)"
+  data_type: CHAR(1)
   description: null
   key: null
   fk_note: null
 - name: RETRY_COUNT
-  data_type: "NUMBER"
+  data_type: NUMBER
   description: null
   key: null
   fk_note: null
 - name: WORKER_ID
-  data_type: "VARCHAR2(64)"
+  data_type: VARCHAR2(64)
   description: null
   key: null
   fk_note: null
 - name: AVAILABLE_AT
-  data_type: "TIMESTAMP(6)"
+  data_type: TIMESTAMP(6)
   description: null
   key: null
   fk_note: null
 - name: STARTED_AT
-  data_type: "TIMESTAMP(6)"
+  data_type: TIMESTAMP(6)
   description: null
   key: null
   fk_note: null
 - name: FINISHED_AT
-  data_type: "TIMESTAMP(6)"
+  data_type: TIMESTAMP(6)
   description: null
   key: null
   fk_note: null
 - name: ERROR_MESSAGE
-  data_type: "VARCHAR2(2000)"
+  data_type: VARCHAR2(2000)
   description: null
   key: null
   fk_note: null
 - name: CREATED_AT
-  data_type: "TIMESTAMP(6)"
+  data_type: TIMESTAMP(6)
   description: null
   key: null
   fk_note: null
 - name: SOURCE_SYSTEM
-  data_type: "CHAR(1)"
+  data_type: CHAR(1)
   description: null
   key: null
   fk_note: null
 - name: DETAIL_ID
-  data_type: "NUMBER"
+  data_type: NUMBER
   description: null
   key: null
   fk_note: null
 - name: HEADER_ID
-  data_type: "NUMBER"
+  data_type: NUMBER
   description: null
-  key: null
-  fk_note: null
+  key: FK
+  fk_note: FK → REPORT_COMPARISON_HEADER.ID
+  fk_src: inferred
 - name: LEGACY_CREATED_AT
-  data_type: "DATE"
+  data_type: DATE
   description: null
   key: null
   fk_note: null

@@ -2314,6 +2314,13 @@ entries:
     action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_AUDIT_AF_AUDITOR_STATUS_HISTORY.yaml."
 
   - source_system: "AUDIT"
+    source_table: "AF_AUDITOR_PRACTICE_HISTORY"
+    source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
+    description: "Audit block created/updated by-at"
+    reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
+    action: "Excluded — khong thiet ke Created/Updated Timestamp va Created/Updated By User Id/Code trong lld_AUDIT_AF_AUDITOR_PRACTICE_HISTORY.yaml (mirror cac bang AF_* khac)."
+
+  - source_system: "AUDIT"
     source_table: "AF_INSPECTION"
     source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
     description: "Audit block created/updated by-at"

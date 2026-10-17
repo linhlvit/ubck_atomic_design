@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_ENFORCEMENT_LIST
+brd_ref: BRD-SRC-KNT-TAX_ENFORCEMENT_LIST
+columns:
+- name: ID
+  data_type: NUMBER
+  description: PK
+  key: PK
+  fk_note: null
+- name: TAXPAYER_TAX_CODE
+  data_type: VARCHAR2(50)
+  description: MST → taxpayer_tax_code
+  key: null
+  fk_note: null
+- name: DECISION_NUMBER
+  data_type: VARCHAR2(100)
+  description: SO_QD → decision_number
+  key: null
+  fk_note: null
+- name: DECISION_DATE
+  data_type: DATE
+  description: NGAY_QD → decision_date
+  key: null
+  fk_note: null
+- name: YEAR
+  data_type: NUMBER(4,0)
+  description: Nam tach tu NGAY_QD (phuc vu match MST + ky/nam phia UB)
+  key: null
+  fk_note: null
+- name: TAX_AUTHORITY_CODE
+  data_type: VARCHAR2(50)
+  description: MA_CQT → tax_authority_code
+  key: null
+  fk_note: null
+- name: DETAIL_SYNC_FLAG
+  data_type: NUMBER(1,0)
+  description: 0=chua dong bo DETAIL; 1=da dong bo DETAIL
+  key: null
+  fk_note: null

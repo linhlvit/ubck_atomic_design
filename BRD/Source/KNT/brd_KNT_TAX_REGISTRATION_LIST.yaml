@@ -1,0 +1,32 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_REGISTRATION_LIST
+brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_LIST
+columns:
+- name: ID
+  data_type: NUMBER
+  description: PK
+  key: PK
+  fk_note: null
+- name: TAX_CODE
+  data_type: VARCHAR2(50)
+  description: MST → tax_code
+  key: null
+  fk_note: null
+- name: CHANGE_DATE
+  data_type: DATE
+  description: NGAY_TDOI → change_date
+  key: null
+  fk_note: null
+- name: YEAR
+  data_type: NUMBER(4,0)
+  description: Nam tach tu NGAY_TDOI
+  key: null
+  fk_note: null
+- name: DETAIL_SYNC_FLAG
+  data_type: NUMBER(1,0)
+  description: 0=chua dong bo DETAIL; 1=da dong bo DETAIL; 2=API OK nhung khong luu
+    duoc du lieu DKT
+  key: null
+  fk_note: null

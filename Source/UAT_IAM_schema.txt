@@ -1,0 +1,364 @@
+DATA DICTIONARY - SCHEMA: UAT_IAM
+Tong so bang: 20 | Materialized View: 0
+==============================================================================================================
+
+BANG: GROUPS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CODE                          VARCHAR2(400)       NO                                       
+NAME                          VARCHAR2(1020)      NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(1020)      YES                                      
+UPDATED_BY_ID                 VARCHAR2(1020)      YES                                      
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who created this record (max 255 characters)
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who last updated this record (max 255 characters)
+VERSION                       NUMBER(10,0)        NO                                       
+DELETE_REASON                 VARCHAR2(1020)      YES                                      Lý do xóa nhóm
+DESCRIPTION                   CLOB                YES                                      Thông tin mô tả nhóm
+
+
+BANG: GROUP_ROLE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+GROUP_ID                      VARCHAR2(144)       NO      PK                               Link đến bảng groups
+ROLE_ID                       VARCHAR2(144)       NO      PK                               Link đến bảng role
+
+
+BANG: MODULE
+Mo ta: Danh sách phân hệ trong hệ thống
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CODE                          VARCHAR2(200)       NO                                       Mã phân hệ (IAM, HRM, CRM,...)
+NAME                          VARCHAR2(1020)      NO                                       Tên phân hệ
+DESCRIPTION                   VARCHAR2(4000)      YES                                      
+STATUS                        NUMBER(1,0)         NO                                       Trạng thái: 1 - ACTIVE / 0 - INACTIVE
+VERSION                       NUMBER(10,0)        NO                                       Optimistic locking version control
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+EXPORT_FILE_NAME              VARCHAR2(1020)      YES                                      
+
+
+BANG: PERMISSION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CODE                          VARCHAR2(1020)      NO                                       
+NAME                          VARCHAR2(1020)      NO                                       
+DESCRIPTION                   CLOB                YES                                      
+ENDPOINT                      VARCHAR2(1020)      NO                                       
+METHOD                        VARCHAR2(40)        NO                                       
+STATUS                        NUMBER(1,0)         NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(1020)      YES                                      
+UPDATED_BY_ID                 VARCHAR2(1020)      YES                                      
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who created this record (max 255 characters)
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who last updated this record (max 255 characters)
+SYSTEM                        VARCHAR2(200)       YES                                      System code (SYSTEM_ADMIN, EFF, E_CHECKLIST, etc.)
+RESOURCE_ID                   VARCHAR2(144)       YES                                      FK to resources table
+VERSION                       NUMBER(10,0)        NO                                       Optimistic locking version control
+IS_SHARED                     NUMBER(1,0)         NO                                       Flag indicating if permission is shared (1=shared, 0=not shared)
+DELETE_REASON                 VARCHAR2(255)       YES                                      
+
+
+BANG: PERMISSION_DEPENDENCY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+PERMISSION_ID                 VARCHAR2(144)       NO                                       
+DEPENDS_ON_PERMISSION_ID      VARCHAR2(144)       NO                                       
+DEPENDENCY_TYPE               VARCHAR2(200)       YES                                      
+DESCRIPTION                   CLOB                YES                                      
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who created this record (max 255 characters)
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who last updated this record (max 255 characters)
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+VERSION                       NUMBER(10,0)        NO                                       Optimistic locking version control
+
+
+BANG: REPRESENTATIVE_POSITIONS
+Mo ta: Danh sách chức vụ người đại diện của user (STOCK_EXCHANGE_VSDC, EXTERNAL_ORGANIZATION)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+USER_ID                       VARCHAR2(144)       NO      PK                               FK tới users.id
+POSITION_ID                   VARCHAR2(144)       NO      PK                               ID chức vụ - STOCK_EXCHANGE_VSDC: position (Cơ cấu tổ chức), EXTERNAL_ORGANIZATION: enterprise_position (Doanh nghiệp)
+
+
+BANG: RESOURCES
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CODE                          VARCHAR2(1020)      NO                                       
+NAME                          VARCHAR2(1020)      NO                                       
+DESCRIPTION                   CLOB                YES                                      
+STATUS                        NUMBER(1,0)         NO                                       
+DELETED                       NUMBER(1,0)         YES                                      
+MODULE_ID                     VARCHAR2(144)       YES                                      
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who created this record (max 255 characters)
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who last updated this record (max 255 characters)
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+VERSION                       NUMBER(10,0)        NO                                       Optimistic locking version control
+DELETE_REASON                 VARCHAR2(255)       YES                                      
+
+
+BANG: ROLE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CODE                          VARCHAR2(200)       NO                                       
+NAME                          VARCHAR2(1020)      NO                                       Tên vai trò (tối đa 255 ký tự)
+DESCRIPTION                   CLOB                YES                                      
+STATUS                        NUMBER(1,0)         NO                                       
+MODULE_ID                     VARCHAR2(144)       YES                                      Link đến bảng module
+DELETED                       NUMBER(1,0)         NO                                       
+REASON                        VARCHAR2(4000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(1020)      YES                                      
+UPDATED_BY_ID                 VARCHAR2(1020)      YES                                      
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who created this record (max 255 characters)
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who last updated this record (max 255 characters)
+VERSION                       NUMBER(10,0)        NO                                       Optimistic locking version control
+DELETE_REASON                 VARCHAR2(255)       YES                                      
+
+
+BANG: ROLE_PERMISSION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ROLE_ID                       VARCHAR2(144)       NO      PK                               
+PERMISSION_ID                 VARCHAR2(144)       NO      PK                               
+
+
+BANG: USERS
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+FULL_NAME                     VARCHAR2(1020)      NO                                       
+USERNAME                      VARCHAR2(1020)      YES                                      
+STATUS                        NUMBER(1,0)         NO                                       
+DATE_OF_BIRTH                 DATE                YES                                      
+EMAIL                         VARCHAR2(1020)      YES                                      
+PHONE                         VARCHAR2(1020)      YES                                      
+ADDRESS                       VARCHAR2(4000)      YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(1020)      YES                                      
+UPDATED_BY_ID                 VARCHAR2(1020)      YES                                      
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who created this record (max 255 characters)
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who last updated this record (max 255 characters)
+DELETED                       NUMBER(1,0)         YES                                      
+AVATAR_PATH                   VARCHAR2(1020)      YES                                      
+KEY_CLOAK_ID                  VARCHAR2(1020)      YES                                      
+DELETE_REASON                 VARCHAR2(1020)      YES                                      
+COUNT_LOGIN_FALSE             NUMBER(1,0)         NO                                       
+EXPIRE_LOCK_USER              TIMESTAMP(6)        YES                                      
+LAST_LOGIN                    TIMESTAMP(6)        YES                                      
+IS_SUPER_ADMIN                NUMBER(1,0)         NO                                       Flag indicating if user is super admin with all permissions
+VERSION                       NUMBER(10,0)        NO                                       Optimistic locking version control
+USER_TYPE                     NUMBER(1,0)         YES                                      Loại người dùng: 1=INTERNAL_UBCK, 2=STOCK_EXCHANGE_VSDC, 3=EXTERNAL_ORGANIZATION, 4=EXTERNAL_INDIVIDUAL, 5.LDAP
+CITIZEN_ID_NUMBER             VARCHAR2(1020)      YES                                      Số CCCD/CMND của người dùng
+TAX_ID_NUMBER                 VARCHAR2(1020)      YES                                      Mã số thuế (cho tổ chức hoặc cá nhân)
+ORGANIZATION_CODE             VARCHAR2(1020)      YES                                      Mã đơn vị (HOSE, HNX, CTY...)
+ORGANIZATION_NAME             VARCHAR2(1020)      YES                                      Tên đơn vị/tổ chức
+GENDER                        NUMBER(1,0)         YES                                      Giới tính: 1=MALE, 2=FEMALE, 3=OTHER
+DEPARTMENT_ID                 VARCHAR2(144)       YES                                      ID đơn vị phòng ban (FK to department table)
+POSITION_ID                   VARCHAR2(144)       YES                                      ID chức vụ (FK to position table)
+REPRESENTATIVE_NAME           VARCHAR2(1020)      YES                                      Họ tên người đại diện
+REPRESENTATIVE_CITIZEN_ID     VARCHAR2(1020)      YES                                      Số CCCD/CMND người đại diện
+REPRESENTATIVE_PHONE          VARCHAR2(1020)      YES                                      Số điện thoại người đại diện
+REPRESENTATIVE_EMAIL          VARCHAR2(1020)      YES                                      Email người đại diện
+CODE                          VARCHAR2(1020)      YES                                      Mã người dùng tự sinh theo format ND-{SEQ}
+PRACTICE_CERTIFICATE_TYPE_ID  VARCHAR2(144)       YES                                      ID loại chứng chỉ hành nghề (FK to practice_certificate_type table) - cho External Individual
+DIAL_NUMBER                   VARCHAR2(16)        YES                                      Số máy lẻ (2-4 chữ số) - cho Nội bộ UBCK, Cá nhân bên ngoài
+OFFICE_PHONE                  VARCHAR2(44)        YES                                      Số máy bàn (10-11 chữ số, bắt đầu 02x) - cho Sở và VSDC, Tổ chức bên ngoài
+STOCK_CODE                    VARCHAR2(40)        YES                                      Mã chứng khoán (3 ký tự chữ hoa) - cho Tổ chức bên ngoài
+USER_SUB_TYPE                 VARCHAR2(200)       YES                                      Mã phân loại người dùng (code từ bảng user_sub_type) - cho Sở và VSDC, Tổ chức bên ngoài, Cá nhân bên ngoài
+STATUS_REASON                 VARCHAR2(1020)      YES                                      Lý do chuyển đổi trạng thái người dùng (ACTIVE/INACTIVE)
+PREFIX_USERNAME               NUMBER(1,0)         YES                                      Tiền tố username khi tạo trên Keycloak: 1=LOCAL (local_), 2=LDAP (ldap_)
+REQUIRE_PROFILE_UPDATE        NUMBER(1,0)         NO                                       Bắt user cập nhật thông tin ở lần đăng nhập đầu: 1=phải cập nhật, 0=đã cập nhật
+MEMBER_ID                     VARCHAR2(1020)      YES                                      ID định danh thành viên (lưu nguyên, không xử lý nghiệp vụ)
+MEMBER_NAME                   VARCHAR2(1020)      YES                                      Tên thành viên tương ứng member_id
+EXT_INDIVIDUAL_MEMBER_ID      VARCHAR2(1020)      YES                                      ID thành viên của Cá nhân bên ngoài (lưu nguyên, không xử lý nghiệp vụ)
+EXT_INDIVIDUAL_MEMBER_NAME    VARCHAR2(1020)      YES                                      Tên thành viên tương ứng ext_individual_member_id
+ORGANIZATION_NAME_EDITABLE    NUMBER(1,0)         NO                                       Tên đơn vị (Tổ chức bên ngoài) có cho sửa không: 1=nhập tay/enable, 0=từ CSDLTT/disable
+TAX_ID_NUMBER_EDITABLE        NUMBER(1,0)         NO                                       MST (Tổ chức bên ngoài) có cho sửa không: 1=nhập tay/enable, 0=từ CSDLTT/disable
+CITIZEN_ID_EDITABLE           NUMBER(1,0)         NO                                       Mã định danh cá nhân (Cá nhân bên ngoài) có cho sửa không: 1=nhập tay/enable, 0=từ CSDLTT/disable
+SECURITIES_COMPANY_CODE       VARCHAR2(400)       YES                                      Mã công ty chứng khoán (Tổ chức bên ngoài), null nếu không có
+REQUIRE_UPDATE_PASSWORD       NUMBER(1,0)         NO                                       Bắt user đổi mật khẩu ở lần đăng nhập đầu: 1=phải đổi, 0=đã đổi
+
+
+BANG: USER_EXT_INDIVIDUAL_CATEGORIES
+Mo ta: Danh mục Cá nhân bên ngoài gán cho user
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+USER_ID                       VARCHAR2(144)       NO      PK                               FK tới users.id
+CATEGORY_CODE                 VARCHAR2(200)       NO      PK                               Mã danh mục Cá nhân bên ngoài
+IS_REQUIRED                   NUMBER(1,0)         YES                                      Danh mục có bắt buộc với user hay không (1=bắt buộc, 0=không)
+
+
+BANG: USER_GROUP
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+GROUP_ID                      VARCHAR2(144)       NO      PK                               Link đến bảng groups
+USER_ID                       VARCHAR2(144)       NO      PK                               Link đến bảng users
+
+
+BANG: USER_OBJECT_TYPE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CODE                          VARCHAR2(200)       NO                                       
+NAME                          VARCHAR2(1020)      NO                                       
+USER_TYPE                     NUMBER(2,0)         NO                                       
+PARTNER_CODE                  VARCHAR2(200)       YES                                      
+PARTNER_NAME                  VARCHAR2(1020)      YES                                      
+MODULE_CODE                   VARCHAR2(200)       YES                                      
+MODULE_NAME                   VARCHAR2(2000)      YES                                      
+DESCRIPTION                   VARCHAR2(4000)      YES                                      
+DISPLAY_ORDER                 NUMBER(5,0)         NO                                       
+STATUS                        NUMBER(2,0)         NO                                       
+DELETED                       NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(1020)      YES                                      
+UPDATED_BY_ID                 VARCHAR2(1020)      YES                                      
+CREATED_BY_NAME               VARCHAR2(1000)      YES                                      
+UPDATED_BY_NAME               VARCHAR2(1000)      YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+
+
+BANG: USER_OBJECT_TYPE_ASSIGNMENTS
+Mo ta: Loại đối tượng người dùng gán cho user (Tổ chức/Cá nhân bên ngoài)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+USER_ID                       VARCHAR2(144)       NO      PK                               FK tới users.id
+OBJECT_TYPE_CODE              VARCHAR2(200)       NO      PK                               Mã loại đối tượng, tham chiếu user_object_type.code theo userType của user
+IS_REQUIRED                   NUMBER(1,0)         YES                                      Loại đối tượng có bắt buộc với user hay không (1=bắt buộc, 0=không)
+
+
+BANG: USER_ORGANIZATION
+Mo ta: Mapping giữa user và organization (external)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+USER_ID                       VARCHAR2(144)       NO      PK                               ID của user
+ORGANIZATION_ID               VARCHAR2(144)       NO      PK                               ID organization từ hệ thống ngoài
+
+
+BANG: USER_POSITIONS
+Mo ta: Danh sách chức vụ của cá nhân bên ngoài (chọn nhiều)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+USER_ID                       VARCHAR2(144)       NO      PK                               FK tới users.id
+POSITION_ID                   VARCHAR2(144)       NO      PK                               ID chức vụ (enterprise position - DMDTDC Doanh nghiệp)
+
+
+BANG: USER_ROLE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+USER_ID                       VARCHAR2(144)       NO      PK                               
+ROLE_ID                       VARCHAR2(144)       NO      PK                               
+
+
+BANG: USER_SUB_TYPES
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CODE                          VARCHAR2(400)       NO                                       
+NAME                          VARCHAR2(1020)      YES                                      
+PARENT_SUB_TYPES              VARCHAR2(400)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(1020)      YES                                      
+UPDATED_BY_ID                 VARCHAR2(1020)      YES                                      
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who created this record (max 255 characters)
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who last updated this record (max 255 characters)
+VERSION                       NUMBER(10,0)        NO                                       
+
+
+BANG: USER_VERIFICATION_CODE
+Mo ta: Verification codes for profile update feature
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               Primary key - UUID v7
+USERNAME                      VARCHAR2(1020)      NO                                       Username of the user
+EMAIL                         VARCHAR2(1020)      NO                                       Email of the user
+CODE_HASH                     VARCHAR2(1020)      NO                                       BCrypt hashed verification code
+EXPIRED_AT                    TIMESTAMP(6)        NO                                       Code expiration time (5 minutes from creation)
+VERIFIED_AT                   TIMESTAMP(6)        YES                                      Time when code was successfully verified (NULL if not yet verified)
+USED_AT                       TIMESTAMP(6)        YES                                      Time when code was used for profile update (NULL if not yet used)
+RESEND_COUNT                  NUMBER(10,0)        NO                                       Number of times code was resent (max 3 in 10 minutes)
+FIRST_SENT_AT                 TIMESTAMP(6)        NO                                       Time of first send (for 10-minute window calculation)
+LOCKED_UNTIL                  TIMESTAMP(6)        YES                                      Lock time if exceeded 3 resends (5 minutes lock)
+ATTEMPT_COUNT                 NUMBER(10,0)        NO                                       Number of failed verification attempts (max 3)
+CREATED_IP                    VARCHAR2(180)       YES                                      Client IP address when creating code
+CREATED_AT                    TIMESTAMP(6)        YES                                      Record creation timestamp
+UPDATED_AT                    TIMESTAMP(6)        YES                                      Record last update timestamp
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      ID of user who created this record
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who created this record (max 255 characters)
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      ID of user who last updated this record
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Name of user who last updated this record (max 255 characters)
+DELETED                       NUMBER(1,0)         NO                                       Soft delete flag (0=active, 1=deleted)
+
+
+BANG: VERIFICATION_CONFIG
+Mo ta: Bảng cấu hình xác thực thay đổi thông tin
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               Primary key - UUID v7
+CONFIG_KEY                    VARCHAR2(400)       NO                                       Khóa cấu hình (unique)
+CONFIG_VALUE                  VARCHAR2(2000)      YES                                      Giá trị cấu hình
+CONFIG_UNIT                   VARCHAR2(200)       YES                                      Đơn vị (MINUTES, SECONDS, TIMES...)
+DESCRIPTION                   VARCHAR2(2000)      YES                                      Mô tả cấu hình
+DISPLAY_ORDER                 NUMBER              YES                                      Thứ tự hiển thị
+CREATED_AT                    TIMESTAMP(6)        YES                                      Thời gian tạo
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      ID người tạo
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người tạo
+UPDATED_AT                    TIMESTAMP(6)        YES                                      Thời gian cập nhật
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      ID người cập nhật
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người cập nhật
+DELETED                       NUMBER(1,0)         YES                                      
+VERSION                       NUMBER              NO                                       
+

@@ -50,7 +50,7 @@ def map_source_module(nguon: str) -> str:
     if any(x in n for x in ("Sổ lệnh", "MSS")):
         return "MDDS"
     if any(x in n for x in ("MDDS", "Thông tin thị trường", "IDXInfor",
-                             "MarketInfor", "StockInfor", "GSGD")):
+                             "MarketInfor", "StockInfor", "TMS")):
         return "MDDS"
     if any(x in n for x in ("RISK_INDICATOR", "MRMS")):
         return "MRMS"

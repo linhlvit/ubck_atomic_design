@@ -1,27 +1,387 @@
 schema_type: brd_source
 schema_version: '1.0'
 source: IAM
-description: "Quản lý danh tính và phân quyền người dùng hệ thống (Identity and Access Management)"
+description: Quản lý danh tính và phân quyền người dùng hệ thống (Identity and Access Management)
 brd_entries:
-
-  - brd_id: BRD-SRC-IAM-USERS
-    brd_name: "Design Atomic từ nguồn IAM bảng USERS"
-    type: Theo Source
-    ba_email: nguyet.do@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Người dùng hệ thống"
-      functional_group: "Quản lý người dùng"
-      scope_status: in_scope
-      scope_reason: null
-      table: USERS
-      related_tables:
-        - table: USERS
-          relation: "FK tự tham chiếu — CREATED_BY_ID và UPDATED_BY_ID trỏ về chính bảng USERS (audit người tạo/cập nhật)"
-      notes: "Self-referencing FK trên CREATED_BY_ID và UPDATED_BY_ID. Keycloak integration qua KEY_CLOAK_ID. Hỗ trợ nhiều loại người dùng (USER_TYPE) và phân loại con (USER_SUB_TYPE)."
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
+- brd_id: BRD-SRC-IAM-USERS
+  brd_name: Design Atomic từ nguồn IAM bảng USERS
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Người dùng hệ thống
+    functional_group: Quản lý người dùng
+    scope_status: in_scope
+    scope_reason: null
+    table: USERS
+    related_tables:
+    - table: USERS
+      relation: FK tự tham chiếu — CREATED_BY_ID và UPDATED_BY_ID trỏ về chính bảng USERS (audit người tạo/cập nhật)
+    notes: Self-referencing FK trên CREATED_BY_ID và UPDATED_BY_ID. Keycloak integration qua KEY_CLOAK_ID. Hỗ trợ nhiều loại người dùng (USER_TYPE) và phân loại con (USER_SUB_TYPE).
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-GROUPS
+  brd_name: Design Atomic từ nguồn IAM bảng GROUPS
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: GROUPS
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-GROUP_ROLE
+  brd_name: Design Atomic từ nguồn IAM bảng GROUP_ROLE
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: GROUP_ROLE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-MODULE
+  brd_name: Design Atomic từ nguồn IAM bảng MODULE
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh sách phân hệ trong hệ thống
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: MODULE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-PERMISSION
+  brd_name: Design Atomic từ nguồn IAM bảng PERMISSION
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: PERMISSION
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-PERMISSION_DEPENDENCY
+  brd_name: Design Atomic từ nguồn IAM bảng PERMISSION_DEPENDENCY
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: PERMISSION_DEPENDENCY
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-REPRESENTATIVE_POSITIONS
+  brd_name: Design Atomic từ nguồn IAM bảng REPRESENTATIVE_POSITIONS
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh sách chức vụ người đại diện của user (STOCK_EXCHANGE_VSDC, EXTERNAL_ORGANIZATION)
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: REPRESENTATIVE_POSITIONS
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-RESOURCES
+  brd_name: Design Atomic từ nguồn IAM bảng RESOURCES
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: RESOURCES
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-ROLE
+  brd_name: Design Atomic từ nguồn IAM bảng ROLE
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: ROLE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-ROLE_PERMISSION
+  brd_name: Design Atomic từ nguồn IAM bảng ROLE_PERMISSION
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: ROLE_PERMISSION
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_EXT_INDIVIDUAL_CATEGORIES
+  brd_name: Design Atomic từ nguồn IAM bảng USER_EXT_INDIVIDUAL_CATEGORIES
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục Cá nhân bên ngoài gán cho user
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_EXT_INDIVIDUAL_CATEGORIES
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_GROUP
+  brd_name: Design Atomic từ nguồn IAM bảng USER_GROUP
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_GROUP
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_OBJECT_TYPE
+  brd_name: Design Atomic từ nguồn IAM bảng USER_OBJECT_TYPE
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_OBJECT_TYPE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_OBJECT_TYPE_ASSIGNMENTS
+  brd_name: Design Atomic từ nguồn IAM bảng USER_OBJECT_TYPE_ASSIGNMENTS
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Loại đối tượng người dùng gán cho user (Tổ chức/Cá nhân bên ngoài)
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_OBJECT_TYPE_ASSIGNMENTS
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_ORGANIZATION
+  brd_name: Design Atomic từ nguồn IAM bảng USER_ORGANIZATION
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Mapping giữa user và organization (external)
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_ORGANIZATION
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_POSITIONS
+  brd_name: Design Atomic từ nguồn IAM bảng USER_POSITIONS
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh sách chức vụ của cá nhân bên ngoài (chọn nhiều)
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_POSITIONS
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_ROLE
+  brd_name: Design Atomic từ nguồn IAM bảng USER_ROLE
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_ROLE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_SUB_TYPES
+  brd_name: Design Atomic từ nguồn IAM bảng USER_SUB_TYPES
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_SUB_TYPES
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-USER_VERIFICATION_CODE
+  brd_name: Design Atomic từ nguồn IAM bảng USER_VERIFICATION_CODE
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Verification codes for profile update feature
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: USER_VERIFICATION_CODE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-IAM-VERIFICATION_CONFIG
+  brd_name: Design Atomic từ nguồn IAM bảng VERIFICATION_CONFIG
+  type: Theo Source
+  ba_email: nguyet.do@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng cấu hình xác thực thay đổi thông tin
+    functional_group: null
+    scope_status: pending
+    scope_reason: null
+    table: VERIFICATION_CONFIG
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null

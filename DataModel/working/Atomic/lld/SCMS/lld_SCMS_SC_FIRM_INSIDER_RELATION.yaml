@@ -28,7 +28,7 @@ metadata:
     \ đích. Hạ về draft lần 2 (2026-09-18): đổi FK target NATIONALITY_ID từ cl_nationality\
     \ sang geographic_area (type=COUNTRY), crosswalk qua SCMS.CAT_NATIONALITY để lấy\
     \ NATIONALITY_CODE trước khi hash_id('ECAT_COUNTRY', ...) — nhất quán với pattern\
-    \ Nationality dùng ở NHNCK/FMS/GSGD (Geographic Area, không phải Classification\
+    \ Nationality dùng ở NHNCK/FMS (Geographic Area, không phải Classification\
     \ riêng)."
 attributes:
 - attribute_name: "Securities Company Insider Related Person Id"
@@ -380,3 +380,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Source Record Insert Timestamp"
+  physical_name: "src_rcrd_isrt_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại hệ thống nguồn."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_INSIDER_RELATION.CREATED_AT"
+  comment: "TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột nguồn CREATED_AT)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

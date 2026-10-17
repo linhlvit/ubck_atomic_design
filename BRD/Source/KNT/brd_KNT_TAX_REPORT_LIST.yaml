@@ -1,0 +1,52 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_REPORT_LIST
+brd_ref: BRD-SRC-KNT-TAX_REPORT_LIST
+columns:
+- name: ID
+  data_type: NUMBER
+  description: PK
+  key: PK
+  fk_note: null
+- name: TAX_CODE
+  data_type: VARCHAR2(20)
+  description: MST → tax_code
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_NAME
+  data_type: VARCHAR2(500)
+  description: TEN_NNT → representative_name
+  key: null
+  fk_note: null
+- name: REPORT_PERIOD
+  data_type: NUMBER(4,0)
+  description: KY_BC (nam ky bao cao) → report_period
+  key: null
+  fk_note: null
+- name: SUBMISSION_DATE
+  data_type: DATE
+  description: NGAY_NOP → submission_date
+  key: null
+  fk_note: null
+- name: REPORT_QUARTER
+  data_type: NUMBER(2,0)
+  description: QUY_BC → report_quarter (0 = khong theo quy)
+  key: null
+  fk_note: null
+- name: IS_CONSOLIDATED
+  data_type: NUMBER(1,0)
+  description: IS_HOP_NHAT → is_consolidated (0/1)
+  key: null
+  fk_note: null
+- name: REPORT_SET_ID
+  data_type: VARCHAR2(50)
+  description: ID_DN_BO_BC → report_set_id (ma bo bao cao)
+  key: null
+  fk_note: null
+- name: DETAIL_SYNC_FLAG
+  data_type: NUMBER(1,0)
+  description: 0=chua dong bo DETAIL; 1=da dong bo DETAIL; 2=API DETAIL OK nhung BCTC_SL_*
+    rong
+  key: null
+  fk_note: null

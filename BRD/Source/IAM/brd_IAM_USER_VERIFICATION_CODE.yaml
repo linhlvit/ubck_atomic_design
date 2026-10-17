@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: IAM
+table: USER_VERIFICATION_CODE
+brd_ref: BRD-SRC-IAM-USER_VERIFICATION_CODE
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Primary key - UUID v7
+  key: PK
+  fk_note: null
+- name: USERNAME
+  data_type: VARCHAR2(1020)
+  description: Username of the user
+  key: null
+  fk_note: null
+- name: EMAIL
+  data_type: VARCHAR2(1020)
+  description: Email of the user
+  key: null
+  fk_note: null
+- name: CODE_HASH
+  data_type: VARCHAR2(1020)
+  description: BCrypt hashed verification code
+  key: null
+  fk_note: null
+- name: EXPIRED_AT
+  data_type: TIMESTAMP(6)
+  description: Code expiration time (5 minutes from creation)
+  key: null
+  fk_note: null
+- name: VERIFIED_AT
+  data_type: TIMESTAMP(6)
+  description: Time when code was successfully verified (NULL if not yet verified)
+  key: null
+  fk_note: null
+- name: USED_AT
+  data_type: TIMESTAMP(6)
+  description: Time when code was used for profile update (NULL if not yet used)
+  key: null
+  fk_note: null
+- name: RESEND_COUNT
+  data_type: NUMBER(10,0)
+  description: Number of times code was resent (max 3 in 10 minutes)
+  key: null
+  fk_note: null
+- name: FIRST_SENT_AT
+  data_type: TIMESTAMP(6)
+  description: Time of first send (for 10-minute window calculation)
+  key: null
+  fk_note: null
+- name: LOCKED_UNTIL
+  data_type: TIMESTAMP(6)
+  description: Lock time if exceeded 3 resends (5 minutes lock)
+  key: null
+  fk_note: null
+- name: ATTEMPT_COUNT
+  data_type: NUMBER(10,0)
+  description: Number of failed verification attempts (max 3)
+  key: null
+  fk_note: null
+- name: CREATED_IP
+  data_type: VARCHAR2(180)
+  description: Client IP address when creating code
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Record creation timestamp
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Record last update timestamp
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: ID of user who created this record
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Name of user who created this record (max 255 characters)
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: ID of user who last updated this record
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Name of user who last updated this record (max 255 characters)
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: Soft delete flag (0=active, 1=deleted)
+  key: null
+  fk_note: null
