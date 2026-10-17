@@ -6,6 +6,7 @@
 -- (Nhóm 5 dùng Fact riêng fct_foreign_net_flow_market_index_snpst từ 2026-09-24 — không còn reuse Fact Market Index Snapshot của QLKD)
 -- Sửa 2026-10-16: ndtnn_foreign_investor_trading_statistics_rpt_flat thêm giá trị security_tp_group = 'WARRANT' (chỉ đổi COMMENT, không đổi cột);
 --   ndtnn_fct_securities_foreign_trading_snpst_flat không đổi cấu trúc (stock_tp_code đã có để BI lọc cổ phiếu '2')
+-- Sửa 2026-10-17: ndtnn_fct_securities_foreign_trading_snpst_flat không đổi cấu trúc (Fact bỏ trái phiếu, stock_tp_code còn '2','3','6','4'); ndtnn_foreign_investor_trading_detail_rpt_flat chỉ đổi COMMENT report_dt (Ngày giao dịch — K_NDTNN_266)
 -- ============================================================
 
 -- ============================================================
@@ -103,7 +104,7 @@ COMMENT 'Flat table — Foreign Investor Trading Statistics Report (denormalize,
 CREATE TABLE IF NOT EXISTS datamart.ndtnn_foreign_investor_trading_detail_rpt_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Foreign Investor Trading Detail Report
-    report_dt                       Date                    COMMENT 'Ngày báo cáo',
+    report_dt                       Date                    COMMENT 'Ngày giao dịch (Ngày báo cáo)',
     account_nbr                     String                  COMMENT 'Tài khoản giao dịch NĐTNN',
     symbol                          String                  COMMENT 'Mã CK — denormalize text trực tiếp',
     trade_direction_code            String                  COMMENT 'Chiều mua/bán (BUY/SELL)',

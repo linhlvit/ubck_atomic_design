@@ -82,15 +82,11 @@ TRADE_BOOK_HOSE
 
 HNX:
  TRADE_BOOK_HNX
-OUTRIGHT_ORDER_BOOK
-REPO_ORDER_BOOK
-REPO2_ORDER_BOOK
+
 
 MDDS: 
 jad_stockinfor  
 
-TKNB:
-flat_report
 ","TRADE_BOOK_HNX:
 - Trade price
 - Trade quantity
@@ -127,7 +123,7 @@ stockinfor AS
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
                         AND js.tradingdate BETWEEN :pdat1 AND :pdat2
-                        AND js.stocktype IN (1,2,3,4,6)
+                        AND js.stocktype IN (2,3,4,6)
         ) t
         WHERE t.rn = 1
 )
@@ -176,18 +172,6 @@ stockinfor AS
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
         ) x
 )
--- 5. Trái phiếu DN niêm yết: stocktype = 1 ; HOSE market_id = 'BDO' ; HNX market_id = 'HCX'
-, cte_tpdn_niemyet AS
-(
-        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM (
-                SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 1 AND market_id = 'BDO'
-                UNION ALL
-                SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
-                WHERE stocktype = 1 AND market_id = 'HCX'
-        ) x
-)
 -- 6. CCQ: stocktype IN (3,6)
 --    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
 , cte_ccq AS
@@ -208,63 +192,9 @@ stockinfor AS
         FROM hose_tb
         WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
 )
--- 8. TP DN riêng lẻ: báo cáo HNX09
-, cte_tpdn_riengle AS
-(
-        SELECT
-                SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ MUA' THEN fr.field_value END) AS gtri_ndtnn_mua
-                , SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ BÁN' THEN fr.field_value END) AS gtri_ndtnn_ban
-                , SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH' THEN fr.field_value END) AS tong_gtri
-        FROM uat_iss_ods.flat_report fr
-        WHERE fr.report_code = 'HNX09'
-                AND fr.submit_status IN ('SUBMITTED', 'LATE_SUBMITTED')
-                -- TODO: bổ sung điều kiện kỳ báo cáo, ví dụ:
-                -- AND fr.<cột_ngày_báo_cáo> BETWEEN :pdat1 AND :pdat2
-)
--- 9. TP chính phủ: Outright + Repo + Repo2
-, tpcp_raw AS
-(
-        SELECT
-                CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
-                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
-                , a.trading_value AS gtri
-        FROM uat_hnx_stg.OUTRIGHT_ORDER_BOOK a
-        WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
-        UNION ALL
-        SELECT
-                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , r.first_settlement_value
-        FROM uat_hnx_stg.REPO_ORDER_BOOK r
-        WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
-        UNION ALL
-        SELECT
-                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , r.first_settlement_value
-        FROM uat_hnx_stg.REPO2_ORDER_BOOK r
-        WHERE r.trading_date BETWEEN :pdat1 AND :pdat2
-)
-, cte_tpcp AS
-(
-        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM tpcp_raw
-)
--- 10. Trái phiếu = TP DN niêm yết + TP DN riêng lẻ + TP chính phủ
-, cte_trai_phieu AS
-(
-        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_niemyet
-        UNION ALL
-        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_riengle
-        UNION ALL
-        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpcp
-)
--- 11. Hợp nhất 4 loại chứng khoán
 , cte_all AS
 (
         SELECT 1 AS stt, 'Cổ phiếu' AS loai_ck, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cophieu
-        UNION ALL
-        SELECT 2, 'Trái phiếu', SUM(gtri_ndtnn_mua), SUM(gtri_ndtnn_ban) FROM cte_trai_phieu
         UNION ALL
         SELECT 3, 'Chứng quyền', gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cw
         UNION ALL
@@ -282,15 +212,10 @@ TRADE_BOOK_HOSE
 
 HNX:
  TRADE_BOOK_HNX
-OUTRIGHT_ORDER_BOOK
-REPO_ORDER_BOOK
-REPO2_ORDER_BOOK
 
 MDDS: 
 jad_stockinfor  
 
-TKNB:
-flat_report
 ","TRADE_BOOK_HNX:
 - Trade price
 - Trade quantity
@@ -313,15 +238,10 @@ TRADE_BOOK_HOSE
 
 HNX:
  TRADE_BOOK_HNX
-OUTRIGHT_ORDER_BOOK
-REPO_ORDER_BOOK
-REPO2_ORDER_BOOK
 
 MDDS: 
 jad_stockinfor  
 
-TKNB:
-flat_report
 ","TRADE_BOOK_HNX:
 - Trade price
 - Trade quantity
@@ -645,78 +565,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id in ('UPX', 'STX')","WITH
-stockinfor AS 
-(
-        SELECT
-                symbol
-                , symbolisin 
-                , tradingdate 
-                , stocktype 
-                , ds_etl_pcs_tms 
-        FROM (
-                SELECT
-                        js.symbol
-                        , js.symbolisin 
-                        , js.tradingdate 
-                        , js.stocktype 
-                        , js.ds_etl_pcs_tms
-                        , ROW_NUMBER() OVER (
-                                PARTITION BY js.tradingdate, js.sequence 
-                                ORDER BY js.tradingtime DESC
-                        ) AS rn
-                FROM uat_mdds_stg.jad_stockinfor js 
-                WHERE 1=1
-                        AND js.tradingdate BETWEEN :pdat1 AND :pdat2  AND js.stocktype = 2 
-        ) t
-        WHERE t.rn = 1
-)
-,cte as 
-(
-select
-        tb.trade_date as ngay_gd,
-        tb.symbol as ma_ck,
-          SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
-        SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban
-FROM
-        uat_hose_stg.trade_book tb
-join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
-        --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by ngay_gd,ma_ck
-union all
-select
-        to_date(trade_date, 'yyyy-MM-dd') as ngay_gd,
-        js.symbol as ma_ck,
-    SUM(CASE WHEN SUBSTRING(tb.buy_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
-    SUM(CASE WHEN SUBSTRING(tb.sell_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban
-FROM
-        uat_hnx_stg.trade_book tb 
-join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
-WHERE
-        tb.trade_date BETWEEN :pdatee1 AND :pdatee2 and tb.market_id in ('UPX', 'STX')
---        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
-group by ngay_gd,ma_ck
-)
---tỷ lệ tham gia
-select 
-        ma_ck, 
-        sum(gtri_ndtnn_mua) - sum(gtri_ndtnn_ban) as luy_ke
-FROM cte t
-LEFT JOIN uat_ids_stg.company_profiles cp 
-       ON t.ma_ck = cp.equity_ticker 
-      AND cp.ds_snpst_dt = to_date('2026-09-02') and cp.DELETE_FLG = 0
-LEFT JOIN uat_ids_stg.categories c 
-       ON cp.category_l1_id = c.id
-       AND c.ds_snpst_dt = to_date('2026-09-02')
-GROUP BY ma_ck
-having luy_ke < 0
-order by luy_ke asc
-limit 5
-;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
+        and market_id in ('UPX', 'STX')",,,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
 2,14,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã bán ròng,"Top 5 mã cổ phiếu có giá trị bán ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK",Dashboard,Chỉ tiêu,Trùng,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
@@ -741,7 +590,114 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id in ('UPX', 'STX')",,,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
+        and market_id in ('UPX', 'STX')","WITH
+-- 1. Thông tin chứng khoán: lấy bản ghi mới nhất mỗi (symbol, tradingdate)
+stockinfor AS
+(
+        SELECT symbol, symbolisin, tradingdate, stocktype, floorcode, ds_etl_pcs_tms
+        FROM (
+                SELECT
+                        js.symbol
+                        , js.symbolisin
+                        , js.tradingdate
+                        , js.stocktype
+                        , js.floorcode
+                        , js.ds_etl_pcs_tms
+                        , ROW_NUMBER() OVER (
+                                PARTITION BY js.symbol, js.tradingdate
+                                ORDER BY js.tradingtime DESC
+                        ) AS rn
+                FROM uat_mdds_stg.jad_stockinfor js
+                WHERE 1=1
+                        AND js.tradingdate BETWEEN :pdat1 AND :pdat2
+                        AND js.stocktype IN (2,3,4,6)
+        ) t
+        WHERE t.rn = 1
+)
+-- 2. Base HOSE: quét trade_book 1 lần, gắn stocktype/floorcode, tách sẵn giá trị mua/bán NĐTNN
+, hose_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.symbol 
+                , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+                , tb.Execution_Value AS gtri
+        FROM uat_hose_stg.trade_book tb
+        JOIN stockinfor js
+                ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+                AND tb.market_id IN ('STO', 'BDO')
+)
+-- 3. Base HNX
+, hnx_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , js.symbol 
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+)
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+, cte_cophieu AS
+(
+        SELECT ma_ck, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM (
+                SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype = 2 AND market_id = 'STO'
+                UNION ALL
+                SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
+        ) x
+)
+-- 6. CCQ: stocktype IN (3,6)
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+, cte_ccq AS
+(
+        SELECT  ma_ck,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM (
+                SELECT symbol ma_ck,gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype IN (3,6) 
+                UNION ALL
+                SELECT symbol ma_ck,gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype IN (3,6) 
+        ) x
+        group by ma_ck, gtri_ndtnn_mua,gtri_ndtnn_ban
+)
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+, cte_cw AS
+(
+        SELECT symbol ma_ck,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM hose_tb
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        GROUP BY ma_ck
+)
+, cte_all AS
+(
+        SELECT ma_ck,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cophieu
+        UNION ALL
+        SELECT ma_ck,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cw
+        UNION ALL
+        SELECT ma_ck,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_ccq
+)
+SELECT
+         ma_ck,
+        , sum(gtri_ndtnn_mua) - sum(gtri_ndtnn_ban) AS gtri_mua_ban_rong
+FROM cte_all
+group by ma_ck
+having gtri_mua_ban_rong < 0
+ORDER BY gtri_mua_ban_rong asc;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
 2,15,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã mua ròng,"Top 5 mã cổ phiếu có giá trị mua ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK",Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
@@ -767,77 +723,113 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')","WITH
-stockinfor AS 
+-- 1. Thông tin chứng khoán: lấy bản ghi mới nhất mỗi (symbol, tradingdate)
+stockinfor AS
 (
-        SELECT
-                symbol
-                , symbolisin 
-                , tradingdate 
-                , stocktype 
-                , ds_etl_pcs_tms 
+        SELECT symbol, symbolisin, tradingdate, stocktype, floorcode, ds_etl_pcs_tms
         FROM (
                 SELECT
                         js.symbol
-                        , js.symbolisin 
-                        , js.tradingdate 
-                        , js.stocktype 
+                        , js.symbolisin
+                        , js.tradingdate
+                        , js.stocktype
+                        , js.floorcode
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
-                                PARTITION BY js.tradingdate, js.sequence 
+                                PARTITION BY js.symbol, js.tradingdate
                                 ORDER BY js.tradingtime DESC
                         ) AS rn
-                FROM uat_mdds_stg.jad_stockinfor js 
+                FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
-                        AND js.tradingdate BETWEEN :pdat1 AND :pdat2  AND js.stocktype = 2 
+                        AND js.tradingdate BETWEEN :pdat1 AND :pdat2
+                        AND js.stocktype IN (2,3,4,6)
         ) t
         WHERE t.rn = 1
 )
-,cte as 
+-- 2. Base HOSE: quét trade_book 1 lần, gắn stocktype/floorcode, tách sẵn giá trị mua/bán NĐTNN
+, hose_tb AS
 (
-select
-        tb.trade_date as ngay_gd,
-        tb.symbol as ma_ck,
-          SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
-        SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban
-FROM
-        uat_hose_stg.trade_book tb
-join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
-        --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by ngay_gd,ma_ck
-union all
-select
-        to_date(trade_date, 'yyyy-MM-dd') as ngay_gd,
-        js.symbol as ma_ck,
-    SUM(CASE WHEN SUBSTRING(tb.buy_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
-    SUM(CASE WHEN SUBSTRING(tb.sell_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban
-FROM
-        uat_hnx_stg.trade_book tb 
-join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
-WHERE
-        tb.trade_date BETWEEN :pdatee1 AND :pdatee2 and tb.market_id in ('UPX', 'STX')
---        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
-group by ngay_gd,ma_ck
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.symbol 
+                , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+                , tb.Execution_Value AS gtri
+        FROM uat_hose_stg.trade_book tb
+        JOIN stockinfor js
+                ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+                AND tb.market_id IN ('STO', 'BDO')
 )
---tỷ lệ tham gia
-select 
-        ma_ck, 
-        sum(gtri_ndtnn_mua) - sum(gtri_ndtnn_ban) as luy_ke
-FROM cte t
-LEFT JOIN uat_ids_stg.company_profiles cp 
-       ON t.ma_ck = cp.equity_ticker 
-      AND cp.ds_snpst_dt = to_date('2026-09-02') and cp.DELETE_FLG = 0
-LEFT JOIN uat_ids_stg.categories c 
-       ON cp.category_l1_id = c.id
-       AND c.ds_snpst_dt = to_date('2026-09-02')
-GROUP BY ma_ck
-having luy_ke > 0
-order by luy_ke desc
-limit 5
-;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
+-- 3. Base HNX
+, hnx_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , js.symbol 
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+)
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+, cte_cophieu AS
+(
+        SELECT ma_ck, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM (
+                SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype = 2 AND market_id = 'STO'
+                UNION ALL
+                SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
+        ) x
+)
+-- 6. CCQ: stocktype IN (3,6)
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+, cte_ccq AS
+(
+        SELECT  ma_ck,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM (
+                SELECT symbol ma_ck,gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype IN (3,6) 
+                UNION ALL
+                SELECT symbol ma_ck,gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype IN (3,6) 
+        ) x
+        group by ma_ck, gtri_ndtnn_mua,gtri_ndtnn_ban
+)
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+, cte_cw AS
+(
+        SELECT symbol ma_ck,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM hose_tb
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+group by ma_ck
+)
+, cte_all AS
+(
+        SELECT ma_ck,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cophieu
+        UNION ALL
+        SELECT ma_ck,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cw
+        UNION ALL
+        SELECT ma_ck,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_ccq
+)
+SELECT
+         ma_ck,
+        , sum(gtri_ndtnn_mua) - sum(gtri_ndtnn_ban) AS gtri_mua_ban_rong
+FROM cte_all
+group by ma_ck
+having gtri_mua_ban_rong > 0
+ORDER BY gtri_mua_ban_rong desc;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
 2,16,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top NDTNN mua ròng,"Top 5 NDTNN có giá trị mua ròng lớn nhất.
 ",Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
@@ -868,6 +860,7 @@ stockinfor AS
 (
         SELECT
                 symbol
+                , floorcode
                 , symbolisin 
                 , tradingdate 
                 , stocktype 
@@ -875,6 +868,7 @@ stockinfor AS
         FROM (
                 SELECT
                         js.symbol
+                        , js.floorcode
                         , js.symbolisin 
                         , js.tradingdate 
                         , js.stocktype 
@@ -889,70 +883,117 @@ stockinfor AS
         ) t
         WHERE t.rn = 1
 )
-,cte as 
+-- 2. Base HOSE: quét trade_book 1 lần, gắn stocktype/floorcode, tách sẵn giá trị mua/bán NĐTNN
+, hose_tb AS
 (
-select
-        buy_acct_no as tk,
-          SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
-        SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban
-FROM
-        uat_hose_stg.trade_book tb
-join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
-        --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tk
-union all 
-        sell_acct_no as tk,
-          SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
-        SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban
-FROM
-        uat_hose_stg.trade_book tb
-join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
-        --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tk
-union all
-select
-        tb.buy_account_number as tk,
-    SUM(CASE WHEN SUBSTRING(tb.buy_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
-    SUM(CASE WHEN SUBSTRING(tb.sell_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban,
-FROM
-        uat_hnx_stg.trade_book tb 
-join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
-WHERE
-        tb.trade_date BETWEEN :pdatee1 AND :pdatee2 and tb.market_id in ('UPX', 'STX')
---        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tk
-union all 
-select
-        tb.sell_account_number tk,
-    SUM(CASE WHEN SUBSTRING(tb.buy_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
-    SUM(CASE WHEN SUBSTRING(tb.sell_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban,
-FROM
-        uat_hnx_stg.trade_book tb 
-join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
-WHERE
-        tb.trade_date BETWEEN :pdatee1 AND :pdatee2 and tb.market_id in ('UPX', 'STX')
---        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tk
+    SELECT
+            js.stocktype
+            , js.floorcode
+            , tb.market_id
+            , tb.buy_acct_no tk
+            , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+            , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+            , tb.Execution_Value AS gtri
+    FROM uat_hose_stg.trade_book tb
+    JOIN stockinfor js
+            ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+    WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+            AND tb.market_id IN ('STO', 'BDO')
+    union all 
+    SELECT
+            js.stocktype
+            , js.floorcode
+            , tb.market_id
+            , tb.sell_acct_no  tk
+            , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+            , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+            , tb.Execution_Value AS gtri
+    FROM uat_hose_stg.trade_book tb
+    JOIN stockinfor js
+            ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+    WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+            AND tb.market_id IN ('STO', 'BDO')
+)
+-- 3. Base HNX
+, hnx_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.buy_account_number tk
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+        UNION ALL 
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.sell_account_number tk
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+)
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+, cte_cophieu AS
+(
+        SELECT tk, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM (
+                SELECT  tk, gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype = 2 AND market_id = 'STO'
+                UNION ALL
+                SELECT tk, gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
+        ) x
+)
+-- 6. CCQ: stocktype IN (3,6)
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+, cte_ccq AS
+(
+        SELECT  tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM (
+                SELECT tk,gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype IN (3,6) 
+                UNION ALL
+                SELECT tk,gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype IN (3,6) 
+        ) x
+        group by tk, gtri_ndtnn_mua,gtri_ndtnn_ban
+)
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+, cte_cw AS
+(
+        SELECT tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM hose_tb
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        group by tk
+)
+, cte_all AS
+(
+        SELECT tk, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cophieu
+        UNION ALL
+        SELECT tk,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cw
+        UNION ALL
+        SELECT tk,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_ccq
 )
 --tỷ lệ tham gia
 select 
         tk, 
-        sum(gtri_ndtnn_mua) - sum(gtri_ndtnn_ban) as luy_ke
-FROM cte t
-LEFT JOIN uat_ids_stg.company_profiles cp 
-       ON t.ma_ck = cp.equity_ticker 
-      AND cp.ds_snpst_dt = to_date('2026-09-02') and cp.DELETE_FLG = 0
-LEFT JOIN uat_ids_stg.categories c 
-       ON cp.category_l1_id = c.id
-       AND c.ds_snpst_dt = to_date('2026-09-02')
+        sum(gtri_ndtnn_mua) + sum(gtri_ndtnn_ban) as luy_ke
+FROM cte_all t
 GROUP BY tk
 having luy_ke > 0
 order by luy_ke desc
@@ -987,6 +1028,7 @@ stockinfor AS
 (
         SELECT
                 symbol
+                , floorcode
                 , symbolisin 
                 , tradingdate 
                 , stocktype 
@@ -994,6 +1036,7 @@ stockinfor AS
         FROM (
                 SELECT
                         js.symbol
+                        , js.floorcode
                         , js.symbolisin 
                         , js.tradingdate 
                         , js.stocktype 
@@ -1008,70 +1051,117 @@ stockinfor AS
         ) t
         WHERE t.rn = 1
 )
-,cte as 
+-- 2. Base HOSE: quét trade_book 1 lần, gắn stocktype/floorcode, tách sẵn giá trị mua/bán NĐTNN
+, hose_tb AS
 (
-select
-        buy_acct_no as tk,
-          SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
-        SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban
-FROM
-        uat_hose_stg.trade_book tb
-join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
-        --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tk
-union all 
-        sell_acct_no as tk,
-          SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
-        SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban
-FROM
-        uat_hose_stg.trade_book tb
-join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
-        --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tk
-union all
-select
-        tb.buy_account_number as tk,
-    SUM(CASE WHEN SUBSTRING(tb.buy_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
-    SUM(CASE WHEN SUBSTRING(tb.sell_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban,
-FROM
-        uat_hnx_stg.trade_book tb 
-join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
-WHERE
-        tb.trade_date BETWEEN :pdatee1 AND :pdatee2 and tb.market_id in ('UPX', 'STX')
---        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tk
-union all 
-select
-        tb.sell_account_number tk,
-    SUM(CASE WHEN SUBSTRING(tb.buy_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
-    SUM(CASE WHEN SUBSTRING(tb.sell_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban,
-FROM
-        uat_hnx_stg.trade_book tb 
-join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
-WHERE
-        tb.trade_date BETWEEN :pdatee1 AND :pdatee2 and tb.market_id in ('UPX', 'STX')
---        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tk
+    SELECT
+            js.stocktype
+            , js.floorcode
+            , tb.market_id
+            , tb.buy_acct_no tk
+            , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+            , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+            , tb.Execution_Value AS gtri
+    FROM uat_hose_stg.trade_book tb
+    JOIN stockinfor js
+            ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+    WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+            AND tb.market_id IN ('STO', 'BDO')
+    union all 
+    SELECT
+            js.stocktype
+            , js.floorcode
+            , tb.market_id
+            , tb.sell_acct_no  tk
+            , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+            , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+            , tb.Execution_Value AS gtri
+    FROM uat_hose_stg.trade_book tb
+    JOIN stockinfor js
+            ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+    WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+            AND tb.market_id IN ('STO', 'BDO')
+)
+-- 3. Base HNX
+, hnx_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.buy_account_number tk
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+        UNION ALL 
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.sell_account_number tk
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+)
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+, cte_cophieu AS
+(
+        SELECT tk, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM (
+                SELECT  tk, gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype = 2 AND market_id = 'STO'
+                UNION ALL
+                SELECT tk, gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
+        ) x
+)
+-- 6. CCQ: stocktype IN (3,6)
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+, cte_ccq AS
+(
+        SELECT  tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM (
+                SELECT tk,gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype IN (3,6) 
+                UNION ALL
+                SELECT tk,gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype IN (3,6) 
+        ) x
+        group by tk, gtri_ndtnn_mua,gtri_ndtnn_ban
+)
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+, cte_cw AS
+(
+        SELECT tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
+        FROM hose_tb
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        group by tk
+)
+, cte_all AS
+(
+        SELECT tk, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cophieu
+        UNION ALL
+        SELECT tk,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cw
+        UNION ALL
+        SELECT tk,, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_ccq
 )
 --tỷ lệ tham gia
 select 
         tk, 
-        sum(gtri_ndtnn_mua) - sum(gtri_ndtnn_ban) as luy_ke
-FROM cte t
-LEFT JOIN uat_ids_stg.company_profiles cp 
-       ON t.ma_ck = cp.equity_ticker 
-      AND cp.ds_snpst_dt = to_date('2026-09-02') and cp.DELETE_FLG = 0
-LEFT JOIN uat_ids_stg.categories c 
-       ON cp.category_l1_id = c.id
-       AND c.ds_snpst_dt = to_date('2026-09-02')
+        sum(gtri_ndtnn_mua) + sum(gtri_ndtnn_ban) as luy_ke
+FROM cte_all t
 GROUP BY tk
 having luy_ke < 0
 order by luy_ke asc
@@ -3294,7 +3384,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,UAT bổ sung,,,,,,,,,,,,
-14,,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CW - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),"Chứng quyền
+14,93,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CW - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),"Chứng quyền
 GT ròng = GT mua - GT bán",Báo cáo,Chỉ tiêu phái sinh,Khó,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -3311,7 +3401,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,UAT bổ sung,,,,,,,,,,,,
-14,93,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+14,94,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3497,7 +3587,7 @@ SELECT
         , sum(NVL(gtri_ndtnn_mua, 0) - NVL(gtri_ndtnn_ban, 0)) AS gtri_mua_ban_rong
 FROM cte_all
 ORDER BY stt;",,,,,,Dữ liệu tĩnh,P,,,,,,
-14,94,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+14,95,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3515,7 +3605,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-14,95,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),GT ròng = GT mua - GT bán,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+14,96,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),GT ròng = GT mua - GT bán,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3532,7 +3622,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,96,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Tài khoản giao dịch NĐTNN,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,97,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Ngày giao dịch ,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3547,103 +3637,264 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
-stockinfor AS 
+-- 1. Thông tin chứng khoán: lấy bản ghi mới nhất mỗi (symbol, tradingdate)
+stockinfor AS
 (
-        SELECT
-                symbol
-                , symbolisin 
-                , tradingdate 
-                , stocktype 
-                , ds_etl_pcs_tms 
+        SELECT symbol, symbolisin, tradingdate, stocktype, floorcode, ds_etl_pcs_tms
         FROM (
                 SELECT
                         js.symbol
-                        , js.symbolisin 
-                        , js.tradingdate 
-                        , js.stocktype 
+                        , js.symbolisin
+                        , js.tradingdate
+                        , js.stocktype
+                        , js.floorcode
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
-                                PARTITION BY js.symbol, js.tradingdate 
+                                PARTITION BY js.symbol, js.tradingdate
                                 ORDER BY js.tradingtime DESC
                         ) AS rn
-                FROM uat_mdds_stg.jad_stockinfor js 
-                WHERE 1=1                        
+                FROM uat_mdds_stg.jad_stockinfor js
+                WHERE 1=1
+                        AND js.tradingdate BETWEEN :pdat1 AND :pdat2
+                        AND js.stocktype IN (1,2,3,4,6)
         ) t
         WHERE t.rn = 1
-        AND t.tradingdate BETWEEN :pdat1 AND :pdat2
-),
-cte as 
-(
---hose mua
-select 
-        tb.buy_acct_no  as tai_khoan_giao_dich,
-        'buy' as type,
-        tb.symbol as ma_ck,
-        sum(case when tb.buy_foreigner_investor_type <> '00' then tb.execution_volume else 0 end) as khoi_luong,
-        sum(case when tb.buy_foreigner_investor_type <> '00' then tb.execution_value else 0 end) as gia_tri
-from uat_hose_stg.trade_book tb
-join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.buy_foreigner_investor_type <> '00'
-        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tb.buy_acct_no,tb.symbol
-union all
---hose bán
-select 
-        tb.sell_acct_no  as tai_khoan_giao_dich,
-        'sell' as type,
-        tb.symbol as ma_ck,
-        sum(case when tb.sell_foreigner_investor_type <> '00' then tb.execution_volume else 0 end) as khoi_luong,
-        sum(case when tb.sell_foreigner_investor_type <> '00' then tb.execution_value else 0 end) as gia_tri
-from uat_hose_stg.trade_book tb
-join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.sell_foreigner_investor_type <> '00'
-        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tb.sell_acct_no,tb.symbol
-union all
---hnx mua
-select 
-        tb.buy_account_number   as tai_khoan_giao_dich,
-        'buy' as type,
-        js.symbol                                          as ma_ck,
-        sum(case when Buy_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_quantity  else 0 end) as khoi_luong,
-        sum(case when Buy_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_price * tb.trade_quantity  else 0 end) as gia_tri
-from uat_hnx_stg.trade_book tb
-join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
-where
-        tb.trade_date BETWEEN :pdatee1 AND :pdatee2 and Buy_Foreign_Investor_Type_Code IN ('10', '20')
-        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tb.buy_account_number, js.symbol
---hnx bán
-union all 
-select 
-        tb.sell_account_number   as tai_khoan_giao_dich,
-        'sell' as type,
-        js.symbol                                          as ma_ck,
-        sum(case when Sell_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_quantity  else 0 end) as khoi_luong,
-        sum(case when Sell_Foreign_Investor_Type_Code IN ('10', '20') then tb.trade_price * tb.trade_quantity  else 0 end) as gia_tri
-from uat_hnx_stg.trade_book tb
-join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
-where
-        tb.trade_date BETWEEN :pdatee1 AND :pdatee2 and Sell_Foreign_Investor_Type_Code IN ('10', '20')
-        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-group by tb.sell_account_number, js.symbol
 )
-select 
-        tai_khoan_giao_dich,
-        ma_ck,
-        sum(case when type = 'buy' then khoi_luong end) as khoi_luong_mua,
-        sum(case when type = 'sell' then khoi_luong end) as khoi_luong_ban,
-        sum(case when type = 'buy' then gia_tri end) as gia_tri_mua,
-        sum(case when type = 'sell' then gia_tri end) as gia_tri_ban
-from cte
-group by tai_khoan_giao_dich , ma_ck;",,,,,,Dữ liệu tĩnh,P,,,,,,
-15,97,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Mã CK,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+-- 2. Base HOSE: quét trade_book 1 lần, gắn stocktype/floorcode, tách sẵn giá trị mua/bán NĐTNN
+, hose_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.trade_date ngay_gd
+                , tb.symbol ma_ck
+                , tb.buy_acct_no tk
+                , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+                , tb.Execution_Value AS gtri
+        FROM uat_hose_stg.trade_book tb
+        JOIN stockinfor js
+                ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+                AND tb.market_id IN ('STO', 'BDO')
+        union all 
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.trade_date ngay_gd
+                , tb.symbol ma_ck
+                , tb.sell_acct_no tk
+                , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+                , tb.Execution_Value AS gtri
+        FROM uat_hose_stg.trade_book tb
+        JOIN stockinfor js
+                ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+                AND tb.market_id IN ('STO', 'BDO')
+)
+-- 3. Base HNX
+, hnx_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , tb.trade_date ngay_gd
+                , js.symbol ma_ck
+                , tb.buy_account_number tk
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+        union all 
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , to_date(tb.trade_date, 'yyyy-MM-dd') ngay_gd
+                , js.symbol ma_ck
+                , tb.sell_account_number tk
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+)
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+, cte_cophieu AS
+(
+        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM (
+                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype = 2 AND market_id = 'STO'
+                UNION ALL
+                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
+        ) x
+        group by ngay_gd, ma_ck, tk
+)
+-- 5. Trái phiếu DN niêm yết: stocktype = 1 ; HOSE market_id = 'BDO' ; HNX market_id = 'HCX'
+, cte_tpdn_niemyet AS
+(
+        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM (
+                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype = 1 AND market_id = 'BDO'
+                UNION ALL
+                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype = 1 AND market_id = 'HCX'
+        ) x
+        group by ngay_gd, ma_ck, tk
+)
+-- 6. CCQ: stocktype IN (3,6)
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+, cte_ccq AS
+(
+        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM (
+                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype IN (3,6) 
+                UNION ALL
+                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype IN (3,6) 
+        ) x
+        group by ngay_gd, ma_ck, tk
+)
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+, cte_cw AS
+(
+        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM hose_tb
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        group by ngay_gd, ma_ck, tk
+)
+-- 8. TP DN riêng lẻ: báo cáo HNX09
+, cte_tpdn_riengle AS
+(
+        SELECT
+                SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ MUA' THEN fr.field_value END) AS gtri_ndtnn_mua
+                , SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ BÁN' THEN fr.field_value END) AS gtri_ndtnn_ban
+                , SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH' THEN fr.field_value END) AS tong_gtri
+        FROM uat_iss_ods.flat_report fr
+        WHERE fr.report_code = 'HNX09'
+                AND fr.submit_status IN ('SUBMITTED', 'LATE_SUBMITTED')
+                -- TODO: bổ sung điều kiện kỳ báo cáo, ví dụ:
+                -- AND fr.<cột_ngày_báo_cáo> BETWEEN :pdat1 AND :pdat2
+)
+-- 9. TP chính phủ: Outright + Repo + Repo2
+, tpcp_raw AS
+(
+        SELECT
+        		a.trading_date ngay_gd
+        		, a.bond_code as ma_ck
+        		, a.buying_account_no tk
+                , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
+                , a.trading_value AS gtri
+        FROM uat_hnx_stg.OUTRIGHT_ORDER_BOOK a
+        WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
+        UNION ALL
+        SELECT
+    			a.trading_date ngay_gd
+        		, a.bond_code as ma_ck
+        		, a.selling_account_no tk
+                , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
+                , a.trading_value AS gtri
+        FROM uat_hnx_stg.OUTRIGHT_ORDER_BOOK a
+        WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
+        UNION ALL 
+        SELECT
+        		a.trading_date ngay_gd
+        		, a.bond_code as ma_ck
+        		, a.buying_account_no tk
+                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , r.first_settlement_value
+        FROM uat_hnx_stg.REPO_ORDER_BOOK r
+        WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
+        UNION ALL
+        SELECT
+        		a.trading_date ngay_gd
+        		, a.bond_code as ma_ck
+        		, a.selling_account_no tk
+                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , r.first_settlement_value
+        FROM uat_hnx_stg.REPO_ORDER_BOOK r
+        WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
+        UNION ALL
+        SELECT
+        		a.trading_date ngay_gd
+        		, a.bond_code as ma_ck
+        		, a.buying_account_no tk
+                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , r.first_settlement_value
+        FROM uat_hnx_stg.REPO2_ORDER_BOOK r
+        WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
+        UNION ALL
+        SELECT
+        		a.trading_date ngay_gd
+        		, a.bond_code as ma_ck
+        		, a.selling_account_no tk
+                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , r.first_settlement_value
+        FROM uat_hnx_stg.REPO2_ORDER_BOOK r
+        WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
+)
+, cte_tpcp AS
+(
+        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM tpcp_raw
+        group by ngay_gd, ma_ck, tk
+)
+-- 10. Trái phiếu = TP DN niêm yết + TP DN riêng lẻ + TP chính phủ
+, cte_trai_phieu AS
+(
+        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_niemyet
+--        UNION ALL
+--        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_riengle
+        UNION ALL
+        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpcp
+)
+-- 11. Hợp nhất 4 loại chứng khoán
+SELECT 1 AS stt, 'Cổ phiếu' AS loai_ck, cte_cophieu.* FROM cte_cophieu
+UNION ALL
+SELECT 2, 'Trái phiếu', cte_trai_phieu.* FROM cte_trai_phieu
+UNION ALL
+SELECT 3, 'Chứng quyền', cte_cw.* FROM cte_cw
+UNION ALL
+SELECT 4, 'CCQ', cte_ccq.* FROM cte_ccq",,,,,,,,,,,,,
+15,98,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Tài khoản giao dịch NĐTNN,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HNX:
+- Buy account number
+
+TRADE_BOOK_HOSE:
+- Buy - Acct No","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
+15,99,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Mã CK,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3658,7 +3909,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,98,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,100,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3673,7 +3924,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,99,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL bán CK,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,101,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL bán CK,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3688,7 +3939,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,100,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,102,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3703,7 +3954,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,101,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT bán chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,103,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT bán chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
