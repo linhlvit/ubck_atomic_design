@@ -1,145 +1,6 @@
 DATA DICTIONARY - SCHEMA: UAT_MRMS
-Tong so bang: 43 | Materialized View: 0
+Tong so bang: 36 | Materialized View: 0
 ==============================================================================================================
-
-BANG: BATCH_JOB_EXECUTION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JOB_EXECUTION_ID              NUMBER(19,0)        NO      PK                               
-VERSION                       NUMBER(19,0)        YES                                      
-JOB_INSTANCE_ID               NUMBER(19,0)        NO      FK     BATCH_JOB_INSTANCE.JOB_INSTANCE_ID
-CREATE_TIME                   TIMESTAMP(6)        NO                                       
-START_TIME                    TIMESTAMP(6)        YES                                      
-END_TIME                      TIMESTAMP(6)        YES                                      
-STATUS                        VARCHAR2(10)        YES                                      
-LAST_UPDATED                  TIMESTAMP(6)        YES                                      
-EXIT_CODE                     CLOB                YES                                      
-EXIT_MESSAGE                  CLOB                YES                                      
-
-
-BANG: BATCH_JOB_EXECUTION_CONTEXT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JOB_EXECUTION_ID              NUMBER(19,0)        NO      PK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
-SERIALIZED_CONTEXT            CLOB                YES                                      
-SHORT_CONTEXT                 CLOB                YES                                      
-
-
-BANG: BATCH_JOB_EXECUTION_PARAMS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JOB_EXECUTION_ID              NUMBER(19,0)        NO      FK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
-PARAMETER_NAME                VARCHAR2(100)       NO                                       
-PARAMETER_TYPE                VARCHAR2(100)       NO                                       
-IDENTIFYING                   CHAR(1)             NO                                       
-PARAMETER_VALUE               CLOB                YES                                      
-
-
-BANG: BATCH_JOB_INSTANCE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JOB_INSTANCE_ID               NUMBER(19,0)        NO      PK                               
-VERSION                       NUMBER(19,0)        YES                                      
-JOB_NAME                      VARCHAR2(100)       NO                                       
-JOB_KEY                       VARCHAR2(32)        NO                                       
-
-
-BANG: BATCH_STEP_EXECUTION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-STEP_EXECUTION_ID             NUMBER(19,0)        NO      PK                               
-VERSION                       NUMBER(19,0)        NO                                       
-STEP_NAME                     VARCHAR2(100)       NO                                       
-JOB_EXECUTION_ID              NUMBER(19,0)        NO      FK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
-CREATE_TIME                   TIMESTAMP(6)        NO                                       
-START_TIME                    TIMESTAMP(6)        YES                                      
-END_TIME                      TIMESTAMP(6)        YES                                      
-STATUS                        VARCHAR2(10)        YES                                      
-COMMIT_COUNT                  NUMBER(19,0)        YES                                      
-READ_COUNT                    NUMBER(19,0)        YES                                      
-FILTER_COUNT                  NUMBER(19,0)        YES                                      
-WRITE_COUNT                   NUMBER(19,0)        YES                                      
-READ_SKIP_COUNT               NUMBER(19,0)        YES                                      
-WRITE_SKIP_COUNT              NUMBER(19,0)        YES                                      
-PROCESS_SKIP_COUNT            NUMBER(19,0)        YES                                      
-ROLLBACK_COUNT                NUMBER(19,0)        YES                                      
-LAST_UPDATED                  TIMESTAMP(6)        YES                                      
-EXIT_CODE                     CLOB                YES                                      
-EXIT_MESSAGE                  CLOB                YES                                      
-
-
-BANG: BATCH_STEP_EXECUTION_CONTEXT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-STEP_EXECUTION_ID             NUMBER(19,0)        NO      PK     BATCH_STEP_EXECUTION.STEP_EXECUTION_ID
-SERIALIZED_CONTEXT            CLOB                YES                                      
-SHORT_CONTEXT                 CLOB                YES                                      
-
-
-BANG: DATABASECHANGELOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(255)       NO                                       
-AUTHOR                        VARCHAR2(255)       NO                                       
-FILENAME                      VARCHAR2(255)       NO                                       
-DATEEXECUTED                  TIMESTAMP(6)        NO                                       
-ORDEREXECUTED                 NUMBER              NO                                       
-EXECTYPE                      VARCHAR2(10)        NO                                       
-MD5SUM                        VARCHAR2(35)        YES                                      
-DESCRIPTION                   VARCHAR2(255)       YES                                      
-COMMENTS                      VARCHAR2(255)       YES                                      
-TAG                           VARCHAR2(255)       YES                                      
-LIQUIBASE                     VARCHAR2(20)        YES                                      
-CONTEXTS                      VARCHAR2(255)       YES                                      
-LABELS                        VARCHAR2(255)       YES                                      
-DEPLOYMENT_ID                 VARCHAR2(10)        YES                                      
-
-
-BANG: DATABASECHANGELOGLOCK
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-LOCKED                        NUMBER(1,0)         NO                                       
-LOCKGRANTED                   TIMESTAMP(6)        YES                                      
-LOCKEDBY                      VARCHAR2(255)       YES                                      
-
-
-BANG: EXPORT_FILE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-FILE_NAME                     VARCHAR2(255)       NO                                       
-FILE_PATH                     VARCHAR2(500)       YES                                      
-FILE_LENGTH                   NUMBER(19,0)        YES                                      
-ERROR_MESSAGE                 CLOB                YES                                      
-EXECUTION_DETAILS             CLOB                YES                                      
-STATUS                        NUMBER(19,0)        NO                                       
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-UPDATED_AT                    TIMESTAMP(6)        YES                                      
-CREATED_BY_ID                 VARCHAR2(255)       YES                                      
-UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
-CREATED_BY_NAME               VARCHAR2(250)       YES                                      
-UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
-DELETED                       NUMBER(1,0)         NO                                       
-
 
 BANG: PERMISSION_GROUP
 Mo ta: 
@@ -383,6 +244,9 @@ DELETED                       NUMBER(1,0)         NO
 COMPARE_PERIOD_TIME           NUMBER              YES                                      
 THRESHOLD_VALUE               NUMBER(19,4)        NO                                       
 IS_EXPIRED                    NUMBER(1,0)         NO                                       
+TOAST_DISMISSED               NUMBER(1,0)         NO                                       
+TOAST_DISMISSED_AT            TIMESTAMP(6)        YES                                      
+ALERT_TYPE                    NUMBER(1,0)         NO                                       
 
 
 BANG: RISK_ALERT_CONFIG
@@ -415,6 +279,7 @@ DELETED                       NUMBER(1,0)         NO
 CUSTOM_OLD_VALUE              NUMBER(19,4)        YES                                      
 CUSTOM_NEW_VALUE              NUMBER(19,4)        YES                                      
 THRESHOLD_VALUE               NUMBER(19,4)        NO                                       
+ALERT_TYPE                    NUMBER(1,0)         NO                                       
 
 
 BANG: RISK_ALERT_HISTORY
@@ -645,6 +510,43 @@ DELETED                       NUMBER(1,0)         NO
 PERIOD_DATE                   TIMESTAMP(6)        YES                                      
 OLD_VALUE                     NUMBER(19,4)        YES                                      
 NEW_VALUE                     NUMBER(19,4)        YES                                      
+
+
+BANG: RISK_INDICATOR_VALUE_INTRADAY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+INDICATOR_ID                  VARCHAR2(36)        NO      FK     RISK_INDICATOR.ID         
+CAPTURED_AT                   TIMESTAMP(6)        NO                                       
+VALUE                         NUMBER(19,4)        NO                                       
+UNIT_CODE                     NUMBER              YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: RISK_INDICATOR_WATCHLIST
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+USER_ID                       VARCHAR2(36)        NO                                       
+INDICATOR_ID                  VARCHAR2(36)        NO      FK     RISK_INDICATOR.ID         
+DISPLAY_ORDER                 NUMBER              YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
 
 
 BANG: RISK_MARKET_REPORT

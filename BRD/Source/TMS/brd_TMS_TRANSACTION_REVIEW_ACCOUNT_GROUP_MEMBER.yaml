@@ -1,0 +1,73 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: TRANSACTION_REVIEW_ACCOUNT_GROUP_MEMBER
+brd_ref: BRD-SRC-TMS-TRANSACTION_REVIEW_ACCOUNT_GROUP_MEMBER
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: TRANSACTION_REVIEW_ID
+  data_type: VARCHAR2(36)
+  description: ID cong viec xem xet
+  key: FK
+  fk_note: FK → TRANSACTION_REVIEW.ID
+  fk_src: inferred
+- name: ACCOUNT_GROUP_ID
+  data_type: VARCHAR2(36)
+  description: ID nhom tai khoan
+  key: FK
+  fk_note: FK → ACCOUNT_GROUP.ID
+  fk_src: inferred
+- name: ACCOUNT_CODE
+  data_type: VARCHAR2(50)
+  description: Ma tai khoan
+  key: null
+  fk_note: null
+- name: RELATIONSHIP_ID
+  data_type: VARCHAR2(36)
+  description: ID quan he
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: VARCHAR2(500)
+  description: Mo ta
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngay tao
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngay cap nhat cuoi
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id nguoi cap nhat
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Ten nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Ten nguoi cap nhat
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null

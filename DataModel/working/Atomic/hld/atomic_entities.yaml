@@ -70,7 +70,7 @@ entities:
   entity_physical_name: "af_auditor_status_history"
   description: "Lịch sử thay đổi trạng thái hành nghề của kiểm toán viên: loại sự\
     \ kiện (cấp/thu hồi/đình chỉ chứng chỉ), ngày hiệu lực, lý do."
-  source_table: "IDS.AF_AUDITOR_STATUS_HISTORY"
+  source_table: "AUDIT.AF_AUDITOR_STATUS_HISTORY"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Inspection"
@@ -80,7 +80,7 @@ entities:
   entity_physical_name: "af_inspection"
   description: "Đợt kiểm tra tổng thể công ty kiểm toán: số quyết định kiểm tra, thời\
     \ gian, kết quả kiểm tra hệ thống kiểm toán, kết quả tổng thể, hành động xử lý."
-  source_table: "IDS.AF_INSPECTION"
+  source_table: "AUDIT.AF_INSPECTION"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Enforcement Action"
@@ -90,7 +90,7 @@ entities:
   entity_physical_name: "af_sanction"
   description: "Quyết định xử phạt hành chính của UBCKNN đối với công ty kiểm toán:\
     \ số quyết định, ngày ban hành, nội dung xử phạt."
-  source_table: "IDS.AF_SANCTIONS"
+  source_table: "AUDIT.AF_SANCTIONS"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Status History"
@@ -100,7 +100,7 @@ entities:
   entity_physical_name: "af_status_history"
   description: "Lịch sử thay đổi trạng thái hoạt động của công ty kiểm toán: đình\
     \ chỉ, tạm ngừng, chấm dứt, thu hồi chứng nhận."
-  source_table: "IDS.AF_STATUS_HISTORY"
+  source_table: "AUDIT.AF_STATUS_HISTORY"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Enforcement Action"
@@ -110,7 +110,7 @@ entities:
   entity_physical_name: "af_suspension"
   description: "Quyết định đình chỉ hoạt động của UBCKNN đối với công ty kiểm toán\
     \ hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng)."
-  source_table: "IDS.AF_SUSPENSION"
+  source_table: "AUDIT.AF_SUSPENSION"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Inspection"
@@ -120,7 +120,7 @@ entities:
   entity_physical_name: "af_technical_audit"
   description: "Kết quả kiểm tra hồ sơ kiểm toán cụ thể trong một đợt kiểm tra tổng\
     \ thể: hồ sơ được kiểm tra, kết quả, hành động xử lý, nội dung vi phạm."
-  source_table: "IDS.AF_TECHNICAL_AUDIT"
+  source_table: "AUDIT.AF_TECHNICAL_AUDIT"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Warning Notice"
@@ -130,7 +130,7 @@ entities:
   entity_physical_name: "af_warning"
   description: "Văn bản nhắc nhở của BTC/UBCKNN đối với công ty kiểm toán hoặc kiểm\
     \ toán viên (TARGET_TYPE_CD phân biệt đối tượng)."
-  source_table: "IDS.AF_WARNING"
+  source_table: "AUDIT.AF_WARNING"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -733,7 +733,7 @@ entities:
   description: "Quyết định chấp thuận hoặc đình chỉ của BTC/UBCKNN đối với công ty\
     \ kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng, SOURCE_TYPE_CD\
     \ phân biệt cơ quan ban hành)."
-  source_table: "IDS.AF_APPROVAL"
+  source_table: "AUDIT.AF_APPROVAL"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -1537,7 +1537,7 @@ entities:
   entity_physical_name: "audit_firm"
   description: "Công ty kiểm toán được UBCKNN chấp thuận thực hiện kiểm toán báo cáo\
     \ tài chính của CTCK. Ghi nhận mã, tên, số GPĐKKD và trạng thái hoạt động."
-  source_table: "SCMS.AUDIT_FIRM, IDS.AF_PROFILES"
+  source_table: "SCMS.AUDIT_FIRM, AUDIT.AF_PROFILES"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
@@ -1548,7 +1548,7 @@ entities:
   description: "Kiểm toán viên cá nhân trực thuộc công ty kiểm toán được giao thực\
     \ hiện kiểm toán CTCK. Ghi nhận mã kiểm toán viên, số chứng chỉ, ngày bổ nhiệm\
     \ và trạng thái."
-  source_table: "SCMS.AUDITOR, IDS.AF_AUDITOR_PROFILES"
+  source_table: "SCMS.AUDITOR, AUDIT.AF_AUDITOR_PROFILES"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
@@ -1557,7 +1557,7 @@ entities:
   domain_prefix: "Audit Firm"
   entity_physical_name: "af_legal_representative"
   description: "Người đại diện pháp luật của công ty kiểm toán được đăng ký với UBCKNN."
-  source_table: "IDS.AF_LEGAL_REPRESENTATIVE"
+  source_table: "AUDIT.AF_LEGAL_REPRESENTATIVE"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
@@ -1763,7 +1763,7 @@ entities:
     \ SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE, SCMS.SC_FIRM_SHAREHOLDER_RELATION,\
     \ FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES,\
     \ FMS.FUNDS, FMS.INVES, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT,\
-    \ IDS.COMPANY_PROFILES, IDS.AF_PROFILES, IDS.AF_AUDITOR_PROFILES, IDS.IDENTITY,\
+    \ IDS.COMPANY_PROFILES, AUDIT.AF_PROFILES, AUDIT.AF_AUDITOR_PROFILES, IDS.IDENTITY,\
     \ FIMS.INVESTOR, FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, KNT.TAX_REG_REPRESENTATIVE,\
     \ IDS.COMPANY_RELATIONSHIP"
   status: "approved"
@@ -1783,7 +1783,7 @@ entities:
     \ SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, FMS.SECURITIES,\
     \ FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.STF_FG_BRCH,\
     \ FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT, IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES,\
-    \ IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.LEGAL_REPRESENTATIVE, FIMS.INVESTOR,\
+    \ AUDIT.AF_PROFILES, AUDIT.AF_LEGAL_REPRESENTATIVE, IDS.LEGAL_REPRESENTATIVE, FIMS.INVESTOR,\
     \ FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, KNT.TAX_REGISTRATION_INFO, KNT.TAX_REG_REPRESENTATIVE"
   status: "approved"
 - bcv_core_object: "Involved Party"
@@ -1802,7 +1802,7 @@ entities:
     \ SCMS.SC_FIRM_OWNERSHIP_RELATION, SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION,\
     \ FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES,\
     \ FMS.INVES, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT,\
-    \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, IDS.AF_PROFILES, FIMS.INVESTOR, FIMS.BANKMONI,\
+    \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, AUDIT.AF_PROFILES, FIMS.INVESTOR, FIMS.BANKMONI,\
     \ FIMS.SECURITIESCOMPANY, KNT.TAX_REGISTRATION_INFO, IDS.COMPANY_RELATIONSHIP"
   status: "approved"
 - bcv_core_object: "Involved Party"

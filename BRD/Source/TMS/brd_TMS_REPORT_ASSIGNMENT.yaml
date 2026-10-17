@@ -1,0 +1,127 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: REPORT_ASSIGNMENT
+brd_ref: BRD-SRC-TMS-REPORT_ASSIGNMENT
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key (UUID)
+  key: PK
+  fk_note: null
+- name: REPORT_ID
+  data_type: VARCHAR2(36)
+  description: ID bao cao (compliance_report_master.id hoac abnormal_report.id)
+  key: FK
+  fk_note: FK → ANALYSIS_REPORT.ID
+  fk_src: inferred
+- name: REPORT_TYPE
+  data_type: NUMBER(1,0)
+  description: 1=Bao cao tuan thu, 2=Bao cao bat thuong
+  key: null
+  fk_note: null
+- name: ASSIGNMENT_TYPE
+  data_type: NUMBER(1,0)
+  description: 1=Phe duyet (chi 1 nguoi/bao cao), 2=Nhan xet (nhieu nguoi/bao cao)
+  key: null
+  fk_note: null
+- name: ASSIGNEE_ID
+  data_type: VARCHAR2(36)
+  description: ID nguoi duoc phan cong
+  key: null
+  fk_note: null
+- name: ASSIGNEE_NAME
+  data_type: VARCHAR2(1020)
+  description: Ho ten nguoi duoc phan cong
+  key: null
+  fk_note: null
+- name: ASSIGNEE_TITLE
+  data_type: VARCHAR2(800)
+  description: Chuc vu nguoi duoc phan cong
+  key: null
+  fk_note: null
+- name: ASSIGNED_BY_ID
+  data_type: VARCHAR2(36)
+  description: ID nguoi thuc hien phan cong
+  key: null
+  fk_note: null
+- name: ASSIGNED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Ho ten nguoi phan cong
+  key: null
+  fk_note: null
+- name: ASSIGNED_BY_TITLE
+  data_type: VARCHAR2(800)
+  description: Chuc vu nguoi phan cong
+  key: null
+  fk_note: null
+- name: ASSIGNED_DATE
+  data_type: TIMESTAMP(6)
+  description: Thoi gian phan cong
+  key: null
+  fk_note: null
+- name: REVOKED_DATE
+  data_type: TIMESTAMP(6)
+  description: Thoi gian thu hoi quyen (NULL neu chua bi thu hoi)
+  key: null
+  fk_note: null
+- name: REVOKED_BY_ID
+  data_type: VARCHAR2(36)
+  description: ID nguoi thu hoi
+  key: null
+  fk_note: null
+- name: REVOKED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Ten nguoi thu hoi
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(1,0)
+  description: 1=Dang hieu luc, 0=Da thu hoi
+  key: null
+  fk_note: null
+- name: NOTIFICATION_SENT
+  data_type: NUMBER(1,0)
+  description: 'Da gui thong bao/email chua: 0=Chua, 1=Da gui'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngay tao
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngay sua cuoi
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id nguoi cap nhat
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Ten nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Ten nguoi cap nhat
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Soft delete: 0=Active, 1=Deleted'
+  key: null
+  fk_note: null
+- name: REVOKED_BY_TITLE
+  data_type: VARCHAR2(800)
+  description: null
+  key: null
+  fk_note: null

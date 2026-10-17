@@ -48,7 +48,7 @@ _NULL_RE = re.compile(r"(?:(?<=\s)|(?<=\))|(?<=ZONE))(YES|NO)(?=\s|$)")
 _TYPE_SPLIT_RE = re.compile(rf"^(\S+?)\s*((?:{_TYPE_KW})(?![A-Za-z_]).*)$")
 _KEY_RE = re.compile(r"^\s*(PK/FK|PK,FK|PK|FK)(?=\s|$)")
 _REF_RE = re.compile(r"^\s*(\S+)\.(\S+)(?=\s|$)")
-_NAME_COL_WIDTH = 30  # độ rộng cột "Cot" trong file
+_TYPE_TAIL_RE = re.compile(rf"(?:{_TYPE_KW})(?:\s*\([^)]*\))?(?:\s+(?:WITH|LOCAL|TIME|ZONE|TO|SECOND|DAY|YEAR|MONTH)(?:\s*\([^)]*\))?)*$")
 
 
 @dataclass
@@ -113,22 +113,14 @@ def _parse_column_line(line: str) -> Column | None:
     if not before.strip():
         return None
 
-    # Tách tên cột / kiểu dữ liệu
-    if len(before) > _NAME_COL_WIDTH and before[_NAME_COL_WIDTH - 1] != " ":
-        sm = _TYPE_SPLIT_RE.match(before)       # tên dài >= 30 ký tự → dính vào kiểu
-        if not sm:
-            return None
-        name, dtype = sm.group(1), sm.group(2).strip()
-    else:
-        name, dtype = before[:_NAME_COL_WIDTH].strip(), before[_NAME_COL_WIDTH:].strip()
-        if not dtype:                            # tên vừa khít 30 ký tự, kiểu ngay sau
-            sm = _TYPE_SPLIT_RE.match(before)
-            if not sm:
-                return None
-            name, dtype = sm.group(1), sm.group(2).strip()
-    if not name or " " in name:
+    # Tách tên cột / kiểu dữ liệu: neo kiểu ở CUỐI phần "before" (kiểu luôn nằm sau tên).
+    # Không dùng khớp từ-trái: tên dài chứa từ khoá kiểu (VD ..._REVOCATION_DATE DATE) sẽ bị cắt sai.
+    sm = _TYPE_TAIL_RE.search(before)
+    if not sm:
         return None
-
+    name, dtype = before[:sm.start()].strip(), sm.group(0).strip()
+    if not re.fullmatch(r"[A-Za-z0-9_$#]+", name):
+        return None
     key = ref_table = ref_col = None
     rest = after
     km = _KEY_RE.match(rest)

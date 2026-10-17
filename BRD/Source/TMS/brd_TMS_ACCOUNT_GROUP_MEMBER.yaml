@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ACCOUNT_GROUP_MEMBER
+brd_ref: BRD-SRC-TMS-ACCOUNT_GROUP_MEMBER
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: ID duy nhất (UUID)
+  key: PK
+  fk_note: null
+- name: GROUP_ID
+  data_type: VARCHAR2(36)
+  description: ID nhóm tài khoản (FK đến account_group)
+  key: null
+  fk_note: null
+- name: ACCOUNT_ID
+  data_type: VARCHAR2(36)
+  description: ID tài khoản nhà đầu tư
+  key: null
+  fk_note: null
+- name: ACCOUNT_CODE
+  data_type: VARCHAR2(50)
+  description: Mã tài khoản nhà đầu tư
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(2,0)
+  description: 'Trạng thái: 1=NEW, 2=PENDING_ADD, 3=PENDING_DELETE, 5=APPROVED'
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái xóa: 0=Chưa xóa, 1=Đã xóa'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6) WITH TIME ZONE
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6) WITH TIME ZONE
+  description: null
+  key: null
+  fk_note: null

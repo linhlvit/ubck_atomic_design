@@ -1,0 +1,250 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "AUDIT"
+  source_table: "AF_WARNING"
+  atomic_entity: "Audit Firm Warning"
+  entity_physical_name: "af_warning"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Warning Notice"
+  table_type: "Fact Append"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "3 FK: AF_PROFILE_ID (bắt buộc), AF_AUDITOR_PROFILE_ID (nullable — chỉ có\
+    \ khi TARGET_TYPE_CD = KTV), AF_INSPECTION_ID (nullable — nếu nhắc nhở phát sinh\
+    \ từ đợt kiểm tra cụ thể)."
+attributes:
+- attribute_name: "Audit Firm Warning Id"
+  physical_name: "af_warning_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Warning Notice\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Warning Code"
+  physical_name: "af_warning_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=AUDIT_AF_WARNING"
+  etl_derived_value: "AUDIT_AF_WARNING"
+  data_type: "string"
+- attribute_name: "Audit Firm Id"
+  physical_name: "af_id"
+  description: "Link đến bảng AF_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_WARNING.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
+    \ AUDIT_FIRM_CD)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Code"
+  physical_name: "af_code"
+  description: "Mã công ty kiểm toán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
+  comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Auditor Id"
+  physical_name: "af_auditor_id"
+  description: "Link đến bảng AF_AUDITOR_PROFILES — chỉ có giá trị khi TARGET_TYPE_CD\
+    \ = KTV."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.AF_AUDITOR_PROFILE_ID"
+  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES',\
+    \ AF_AUDITOR_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Auditor Code"
+  physical_name: "af_auditor_code"
+  description: "Mã kiểm toán viên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.AF_AUDITOR_PROFILE_ID"
+  comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Inspection Id"
+  physical_name: "af_inspection_id"
+  description: "Link đến bảng AF_INSPECTION — nếu nhắc nhở phát sinh từ đợt kiểm tra\
+    \ cụ thể."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.AF_INSPECTION_ID"
+  comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('AUDIT_AF_INSPECTION',\
+    \ AF_INSPECTION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Inspection Code"
+  physical_name: "af_inspection_code"
+  description: "Mã đợt kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.AF_INSPECTION_ID"
+  comment: "Lookup pair: af_inspection.af_inspection_code. Pair with Audit Firm Inspection\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Warning Target Type Code"
+  physical_name: "warning_target_tp_code"
+  description: "Nhắc nhở Công ty kiểm toán hay Kiểm toán viên."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.TARGET_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_TARGET_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_TARGET_TYPE')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Warning Source Type Code"
+  physical_name: "warning_src_tp_code"
+  description: "Nhắc nhở từ BTC hay UBCKNN."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.SOURCE_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Warning Document Number"
+  physical_name: "warning_document_nbr"
+  description: "Số văn bản quyết định nhắc nhở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.WARNING_DOC_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Warning Issue Date"
+  physical_name: "warning_issue_dt"
+  description: "Ngày văn bản quyết định nhắc nhở."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.WARNING_ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Warning Start Date"
+  physical_name: "warning_start_dt"
+  description: "Ngày bắt đầu quyết định nhắc nhở."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.WARNING_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Warning End Date"
+  physical_name: "warning_end_dt"
+  description: "Ngày kết thúc quyết định nhắc nhở."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.WARNING_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Warning Content"
+  physical_name: "warning_content"
+  description: "Nội dung quyết định nhắc nhở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.WARNING_CONTENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Warning Type Code"
+  physical_name: "warning_tp_code"
+  description: "Loại nhắc nhở (Sau kiểm tra, Qua công tác giám sát)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.AF_WARNING.WARNING_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

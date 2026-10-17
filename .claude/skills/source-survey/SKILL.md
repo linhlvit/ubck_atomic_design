@@ -53,13 +53,12 @@ Có nhiều file cùng source (VD `SCMS_UAT_schema.txt` và `SCMS_UAT_schema_202
 
 ## Quy tắc nguồn gốc dữ liệu (provenance) — BẮT BUỘC
 
-Mỗi giá trị có thể là `curated` / `schema` / `db` / `inferred`. Trường nguồn gốc là tuỳ chọn trong YAML
+Chỉ **FK** còn cờ nguồn gốc (`fk_src`). Mô tả bảng/cột **không** có cờ — `description_src` / `table_meaning_src` đã bỏ.
+Trường nguồn gốc FK là tuỳ chọn trong YAML
 (`schemas/brd_source.schema.json`, `schemas/brd_source_columns.schema.json`):
 
 | Giá trị | Trường nguồn gốc | Ý nghĩa |
 |---|---|---|
-| Mô tả bảng | `content.table_meaning_src` | `schema` / `inferred` / (vắng = `curated`) |
-| Mô tả cột | `columns[].description_src` | `schema` / `inferred` / (vắng = `curated`) |
 | FK | `columns[].fk_src` | `db` / `inferred` / (vắng = `curated`) |
 
 **Vắng trường = `curated`** — toàn bộ YAML đã có từ trước coi là đã duyệt, không cần migrate.
@@ -70,7 +69,7 @@ Mỗi giá trị có thể là `curated` / `schema` / `db` / `inferred`. Trườ
 |---|---|
 | Kiểu dữ liệu, PK | Luôn lấy từ schema, ghi đè |
 | FK (`key`, `fk_note`) | `curated` > `db` (cột "Lien ket" trong schema) > `inferred` |
-| Mô tả bảng / cột | `curated` > `schema` (comment trong file) > `inferred` > để trống |
+| Mô tả bảng / cột | Có sẵn trong YAML thì giữ; trống thì điền comment schema; schema cũng không có → `null`. Không có cờ nguồn gốc (đã bỏ `description_src`/`table_meaning_src`) |
 
 - Giá trị `curated` **không bao giờ bị ghi đè** khi chạy lại.
 - Giá trị `schema` / `db` / `inferred` được tính lại mỗi lần chạy. `inferred` bị thay nếu sau đó schema có giá trị thật.
@@ -162,16 +161,15 @@ FK `inferred` **chưa chắc đúng** — skill `atomic-lld-design` không đư�
 ### 2.2 — Suy luận mô tả (2 bước, có duyệt)
 
 1. **Lúc sinh YAML (Giai đoạn 4):**
-   - Có comment trong schema → `description` = comment, `description_src: schema`.
-   - Cột không có comment → `description: null`, **chưa suy luận** (không gắn `description_src`).
+   - Có comment trong schema → `description` = comment (chỉ điền khi `description` đang trống; không ghi đè mô tả đã có).
+   - Cột không có comment → `description: null`, **chưa suy luận**.
    - Bảng không có comment → `table_meaning: null` (nguồn không cung cấp; không bắt buộc, không suy luận lúc sinh YAML).
 2. **Bước riêng "Đề xuất mô tả"** (chạy khi người dùng yêu cầu, sau khi sinh YAML):
    - Lấy danh sách bằng `schema_reader.py --source {SOURCE} --missing-desc` (hoặc quét YAML có `description: null`/`""`).
    - Soạn mô tả tiếng Việt ngắn dựa **chỉ** trên tên bảng, tên cột, kiểu dữ liệu, FK (VD `STATUS_ID` FK → `APPLICATION_STATUSES`: "Trạng thái hồ sơ" — được; thêm quy tắc nghiệp vụ không có trong tên — không được).
-   - Ghi `description_src: inferred`, rồi trình bảng đề xuất theo từng bảng để Data Modeler duyệt hàng loạt.
+   - **Chưa ghi vào YAML**: trình bảng đề xuất theo từng bảng để Data Modeler duyệt hàng loạt, duyệt xong mới ghi `description` (không có cờ phân biệt gợi ý/đã duyệt).
    - Bảng nhiều cột (>30 cột thiếu mô tả): làm từng bảng, không dồn cả schema vào 1 lượt.
-   - Khi người thiết kế duyệt → **xoá** `description_src` (thành `curated`); sửa lại → ghi giá trị mới và xoá `description_src`.
-   - Chưa duyệt thì giữ `inferred`; LLD coi đây là gợi ý, không phải căn cứ chính.
+   - Mô tả chưa duyệt thì để `null`.
 
 ---
 
@@ -303,7 +301,7 @@ các trường curated; chỉ bổ sung các trường còn thiếu. Cần đi�
 
 **`brd_id`:** `BRD-SRC-{SOURCE}-{TABLE_NAME}` — tên bảng theo convention nguồn (Oracle = UPPER_SNAKE_CASE).
 
-**`content.table_meaning`:** comment bảng trong schema (`table_meaning_src: schema`); nếu nguồn không có → `null`.
+**`content.table_meaning`:** comment bảng trong schema; nếu nguồn không có → `null`.
 Không có rule bắt buộc `table_meaning` / `description` cột (nhiều nguồn không cung cấp); bổ sung sau theo 2.2 khi cần.
 
 **`functional_group`:**
@@ -362,7 +360,6 @@ columns:
   - name: COL_NAME
     data_type: VARCHAR2(100)   # lấy từ schema
     description: "Mô tả"       # null nếu chưa có (xem 2.2)
-    description_src: schema    # tuỳ chọn: schema | inferred; vắng = curated
     key: PK                    # PK / FK / PK/FK / null
     fk_note: "FK → REF_TABLE.REF_COL"  # null nếu không có
     fk_src: db                 # tuỳ chọn: db | inferred; vắng = curated

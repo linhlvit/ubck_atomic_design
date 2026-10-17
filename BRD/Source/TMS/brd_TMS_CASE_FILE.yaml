@@ -1,0 +1,132 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: CASE_FILE
+brd_ref: BRD-SRC-TMS-CASE_FILE
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: CASE_FILE_CODE
+  data_type: VARCHAR2(1500)
+  description: Mã vụ việc
+  key: null
+  fk_note: null
+- name: CASE_FILE_TYPE
+  data_type: NUMBER(2,0)
+  description: Bảng quản lý nhóm tài khoản nhà đầu tư
+  key: null
+  fk_note: null
+- name: SECURITIES_CODE_ID
+  data_type: VARCHAR2(36)
+  description: ID mã chứng khoán
+  key: null
+  fk_note: null
+- name: SECURITIES_CODE
+  data_type: VARCHAR2(1000)
+  description: Mã chứng khoán
+  key: null
+  fk_note: null
+- name: INFORMATION_SOURCE
+  data_type: VARCHAR2(2000)
+  description: Nguồn thông tin
+  key: null
+  fk_note: null
+- name: COMPLETION_DATE
+  data_type: DATE
+  description: Ngày hoàn thành vụ viêc
+  key: null
+  fk_note: null
+- name: START_DATE
+  data_type: DATE
+  description: Ngày bắt đầu
+  key: null
+  fk_note: null
+- name: END_DATE
+  data_type: DATE
+  description: Ngày kết thúc
+  key: null
+  fk_note: null
+- name: ASSIGNED_TO
+  data_type: VARCHAR2(100)
+  description: Người được phân công
+  key: null
+  fk_note: null
+- name: NOTES
+  data_type: CLOB
+  description: Ghi chú
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(10,0)
+  description: null
+  key: null
+  fk_note: null
+- name: INFORMATION_SOURCE_DETAIL
+  data_type: VARCHAR2(4000)
+  description: null
+  key: null
+  fk_note: null
+- name: PROCESSING_START_TIME
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: PROCESSING_END_TIME
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: DURATION_TIME
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CASE_FILE_STATUS_ID
+  data_type: VARCHAR2(144)
+  description: Trạng thái vụ việc
+  key: null
+  fk_note: null
+- name: ABNORMAL_REPORT_MASTER_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: FK
+  fk_note: FK → ABNORMAL_REPORT_MASTER.ID
+  fk_src: inferred

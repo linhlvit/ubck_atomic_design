@@ -1,0 +1,89 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: CASE_FILE_WORKFLOW
+brd_ref: BRD-SRC-TMS-CASE_FILE_WORKFLOW
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: CASE_FILE_ID
+  data_type: VARCHAR2(36)
+  description: ID vụ việc
+  key: FK
+  fk_note: FK → CASE_FILE.ID
+  fk_src: inferred
+- name: WORKFLOW_TYPE
+  data_type: NUMBER(2,0)
+  description: '1: Sơ bộ, 2: Thao túng, 3: Nội gián, 4: Liên thị trường'
+  key: null
+  fk_note: null
+- name: STEP_ORDER
+  data_type: NUMBER(3,0)
+  description: null
+  key: null
+  fk_note: null
+- name: STEP_NAME
+  data_type: VARCHAR2(800)
+  description: tên bước phê duyệt
+  key: null
+  fk_note: null
+- name: REPORT_TEMPLATE_ID
+  data_type: VARCHAR2(36)
+  description: ID mẫu báo cáo
+  key: FK
+  fk_note: FK → REPORT_TEMPLATE.ID
+  fk_src: inferred
+- name: STATUS
+  data_type: NUMBER(1,0)
+  description: '1: Chưa thực hiện, 1: Đang thực hiện, 2: Hoàn thành'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(10,0)
+  description: null
+  key: null
+  fk_note: null
+- name: ANALYSIS_WORKFLOW_ID
+  data_type: VARCHAR2(36)
+  description: Id quy trình phân tích (analysis_workflow.id)
+  key: FK
+  fk_note: FK → ANALYSIS_WORKFLOW.ID
+  fk_src: inferred

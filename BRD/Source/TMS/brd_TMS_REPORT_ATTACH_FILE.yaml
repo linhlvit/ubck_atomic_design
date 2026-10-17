@@ -1,0 +1,92 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: REPORT_ATTACH_FILE
+brd_ref: BRD-SRC-TMS-REPORT_ATTACH_FILE
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key (UUID)
+  key: PK
+  fk_note: null
+- name: REPORT_ID
+  data_type: VARCHAR2(36)
+  description: ID bao cao (cr_master.id hoac abnormal_report.id)
+  key: FK
+  fk_note: FK → ANALYSIS_REPORT.ID
+  fk_src: inferred
+- name: REPORT_TYPE
+  data_type: NUMBER(1,0)
+  description: 1=Tuan thu, 2=Bat thuong
+  key: null
+  fk_note: null
+- name: FILE_CATEGORY
+  data_type: NUMBER(1,0)
+  description: 1=File phu luc bao cao (chinh), 2=File tai lieu bo sung
+  key: null
+  fk_note: null
+- name: FILE_NAME
+  data_type: VARCHAR2(2000)
+  description: Ten file goc
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: VARCHAR2(4000)
+  description: Duong dan MinIO/Storage
+  key: null
+  fk_note: null
+- name: FILE_SIZE
+  data_type: NUMBER(19,0)
+  description: Kich thuoc (bytes)
+  key: null
+  fk_note: null
+- name: FILE_TYPE
+  data_type: VARCHAR2(200)
+  description: XLSX, CSV, PDF, ZIP
+  key: null
+  fk_note: null
+- name: DIGITAL_SIGNATURE
+  data_type: VARCHAR2(2000)
+  description: Chu ky so
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: NUMBER(3,0)
+  description: Thu tu hien thi
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngay tao
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngay sua cuoi
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id nguoi cap nhat
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Ten nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Ten nguoi cap nhat
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Soft delete: 0=Active, 1=Deleted'
+  key: null
+  fk_note: null

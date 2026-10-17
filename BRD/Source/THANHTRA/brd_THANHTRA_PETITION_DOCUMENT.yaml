@@ -4,123 +4,124 @@ source: THANHTRA
 table: PETITION_DOCUMENT
 brd_ref: BRD-SRC-THANHTRA-PETITION_DOCUMENT
 columns:
-  - name: ID
-    data_type: VARCHAR2(144)
-    description: "Khóa chính UUID"
-    key: PK
-    fk_note: null
-  - name: PETITION_ID
-    data_type: VARCHAR2(144)
-    description: "FK -> petition: hồ sơ đơn thư liên quan"
-    key: FK
-    fk_note: "FK → PETITION.ID"
-  - name: DOCUMENT_TYPE
-    data_type: VARCHAR2(200)
-    description: "Loại: CLASSIFICATION_REPORT (Tờ trình phân loại), MULTI_CONTENT_GUIDE (Phiếu hướng dẫn đơn nhiều ND), ACCEPTANCE_NOTICE (CV thông báo thụ lý KN-TC), FEEDBACK_PROPOSAL (Phiếu đề xuất xử lý PAKN), ACCEPTANCE_PROPOSAL (Phiếu đề xuất thụ lý KN/TC), FEEDBACK_TRANSFER (Phiếu chuyển đơn PAKN), DENUNCIATION_TRANSFER (Phiếu chuyển đơn TC), INVESTOR_RESPONSE (CV trả lời NĐT)"
-    key: null
-    fk_note: null
-  - name: DOCUMENT_NUMBER
-    data_type: VARCHAR2(400)
-    description: "Số văn bản (lấy từ hệ thống eDoc hoặc nhập thủ công)"
-    key: null
-    fk_note: null
-  - name: DOCUMENT_DATE
-    data_type: DATE
-    description: "Ngày ban hành văn bản xử lý đơn thư"
-    key: null
-    fk_note: null
-  - name: CONTENT
-    data_type: CLOB
-    description: "Nội dung văn bản xử lý đơn thư"
-    key: null
-    fk_note: null
-  - name: CLASSIFICATION_RESULT
-    data_type: VARCHAR2(200)
-    description: "Kết quả phân loại (Tờ trình): WITHIN_JURISDICTION, NOT_WITHIN_JURISDICTION, MULTI_CONTENT"
-    key: null
-    fk_note: null
-  - name: PROPOSED_ACTION
-    data_type: CLOB
-    description: "Đề xuất hướng xử lý đơn thư"
-    key: null
-    fk_note: null
-  - name: TRANSFER_TARGET_UNIT
-    data_type: VARCHAR2(2000)
-    description: "Cơ quan/đơn vị nhận chuyển đơn"
-    key: null
-    fk_note: null
-  - name: RESOLUTION_DEADLINE
-    data_type: DATE
-    description: "Thời hạn giải quyết (dùng cho công văn thông báo thụ lý)"
-    key: null
-    fk_note: null
-  - name: SIGNER_NAME
-    data_type: VARCHAR2(800)
-    description: "Tên người ký văn bản xử lý đơn thư"
-    key: null
-    fk_note: null
-  - name: ACCEPTANCE_PROPOSAL_TYPE
-    data_type: VARCHAR2(200)
-    description: "Đề xuất thụ lý (Phiếu đề xuất thụ lý): ACCEPT (Thụ lý), REJECT (Không thụ lý)"
-    key: null
-    fk_note: null
-  - name: REJECTION_REASON
-    data_type: CLOB
-    description: "Lý do không thụ lý (khi acceptance_proposal_type=REJECT)"
-    key: null
-    fk_note: null
-  - name: PREPARED_BY
-    data_type: VARCHAR2(800)
-    description: "ID cán bộ soạn thảo văn bản"
-    key: null
-    fk_note: null
-  - name: PREPARED_AT
-    data_type: DATE
-    description: "Ngày soạn thảo văn bản"
-    key: null
-    fk_note: null
-  - name: CREATED_AT
-    data_type: DATE
-    description: "Thời điểm tạo bản ghi"
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_AT
-    data_type: DATE
-    description: "Thời điểm cập nhật gần nhất"
-    key: null
-    fk_note: null
-  - name: CREATED_BY
-    data_type: VARCHAR2(400)
-    description: "ID người dùng tạo bản ghi"
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(400)
-    description: "ID người dùng cập nhật gần nhất"
-    key: null
-    fk_note: null
-  - name: VERSION
-    data_type: NUMBER(10,0)
-    description: "Số phiên bản bản ghi (optimistic locking)"
-    key: null
-    fk_note: null
-  - name: DELETED
-    data_type: NUMBER(1,0)
-    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
-    key: null
-    fk_note: null
-  - name: DOCUMENT_TEMPLATE_ID
-    data_type: VARCHAR2(36)
-    description: "FK -> document_template: mẫu sử dụng cho màn nhập liệu biểu mẫu đơn thư"
-    key: FK
-    fk_note: null
-  - name: DOCUMENT_TEMPLATE_NAME
-    data_type: VARCHAR2(500)
-    description: "Tên biểu mẫu sử dụng để tạo văn bản"
-    key: null
-    fk_note: null
-  - name: FIELD_HTML_JSON
-    data_type: CLOB
-    description: "JSON {instanceId: html} — nội dung rich text người dùng đã sửa từng ô trên biểu mẫu"
-    key: null
-    fk_note: null
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính UUID
+  key: PK
+  fk_note: null
+- name: PETITION_ID
+  data_type: VARCHAR2(144)
+  description: 'FK -> petition: hồ sơ đơn thư liên quan'
+  key: FK
+  fk_note: FK → PETITION.ID
+- name: DOCUMENT_TYPE
+  data_type: VARCHAR2(200)
+  description: 'Loại: CLASSIFICATION_REPORT (Tờ trình phân loại), MULTI_CONTENT_GUIDE (Phiếu hướng dẫn đơn nhiều ND), ACCEPTANCE_NOTICE (CV thông báo thụ lý KN-TC), FEEDBACK_PROPOSAL (Phiếu đề xuất xử lý PAKN), ACCEPTANCE_PROPOSAL (Phiếu đề xuất thụ lý KN/TC), FEEDBACK_TRANSFER (Phiếu chuyển đơn PAKN), DENUNCIATION_TRANSFER (Phiếu chuyển đơn TC), INVESTOR_RESPONSE (CV trả lời NĐT)'
+  key: null
+  fk_note: null
+- name: DOCUMENT_NUMBER
+  data_type: VARCHAR2(400)
+  description: Số văn bản (lấy từ hệ thống eDoc hoặc nhập thủ công)
+  key: null
+  fk_note: null
+- name: DOCUMENT_DATE
+  data_type: DATE
+  description: Ngày ban hành văn bản xử lý đơn thư
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: CLOB
+  description: Nội dung văn bản xử lý đơn thư
+  key: null
+  fk_note: null
+- name: CLASSIFICATION_RESULT
+  data_type: VARCHAR2(200)
+  description: 'Kết quả phân loại (Tờ trình): WITHIN_JURISDICTION, NOT_WITHIN_JURISDICTION, MULTI_CONTENT'
+  key: null
+  fk_note: null
+- name: PROPOSED_ACTION
+  data_type: CLOB
+  description: Đề xuất hướng xử lý đơn thư
+  key: null
+  fk_note: null
+- name: TRANSFER_TARGET_UNIT
+  data_type: VARCHAR2(2000)
+  description: Cơ quan/đơn vị nhận chuyển đơn
+  key: null
+  fk_note: null
+- name: RESOLUTION_DEADLINE
+  data_type: DATE
+  description: Thời hạn giải quyết (dùng cho công văn thông báo thụ lý)
+  key: null
+  fk_note: null
+- name: SIGNER_NAME
+  data_type: VARCHAR2(800)
+  description: Tên người ký văn bản xử lý đơn thư
+  key: null
+  fk_note: null
+- name: ACCEPTANCE_PROPOSAL_TYPE
+  data_type: VARCHAR2(200)
+  description: 'Đề xuất thụ lý (Phiếu đề xuất thụ lý): ACCEPT (Thụ lý), REJECT (Không thụ lý)'
+  key: null
+  fk_note: null
+- name: REJECTION_REASON
+  data_type: CLOB
+  description: Lý do không thụ lý (khi acceptance_proposal_type=REJECT)
+  key: null
+  fk_note: null
+- name: PREPARED_BY
+  data_type: VARCHAR2(800)
+  description: ID cán bộ soạn thảo văn bản
+  key: null
+  fk_note: null
+- name: PREPARED_AT
+  data_type: DATE
+  description: Ngày soạn thảo văn bản
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật gần nhất
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(400)
+  description: ID người dùng tạo bản ghi
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_BY
+  data_type: VARCHAR2(400)
+  description: ID người dùng cập nhật gần nhất
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(10,0)
+  description: Số phiên bản bản ghi (optimistic locking)
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa'
+  key: null
+  fk_note: null
+- name: DOCUMENT_TEMPLATE_ID
+  data_type: VARCHAR2(36)
+  description: 'FK -> document_template: mẫu sử dụng cho màn nhập liệu biểu mẫu đơn thư'
+  key: FK
+  fk_note: FK → DOCUMENT_TEMPLATE.ID
+  fk_src: inferred
+- name: DOCUMENT_TEMPLATE_NAME
+  data_type: VARCHAR2(500)
+  description: Tên biểu mẫu sử dụng để tạo văn bản
+  key: null
+  fk_note: null
+- name: FIELD_HTML_JSON
+  data_type: CLOB
+  description: 'JSON {instanceId: html} — nội dung rich text người dùng đã sửa từng ô trên biểu mẫu'
+  key: null
+  fk_note: null

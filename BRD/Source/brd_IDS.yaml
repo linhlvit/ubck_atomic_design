@@ -85,7 +85,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-CATEGORIES
   content:
     table: CATEGORIES
@@ -125,7 +124,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Bảng giới hạn tỷ lệ sở hữu nước ngoài
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-LEGAL_REPRESENTATIVE
   content:
     table: LEGAL_REPRESENTATIVE
@@ -141,7 +139,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Bảng người đại diện pháp luật
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-STATE_CAPITAL
   content:
     table: STATE_CAPITAL
@@ -157,7 +154,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Bảng thông tin vốn nhà nước
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COMPANY_RELATIONSHIP
   content:
     table: COMPANY_RELATIONSHIP
@@ -173,7 +169,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Thông tin quan hệ công ty
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-CAPITAL_MOBILIZATION
   content:
     table: CAPITAL_MOBILIZATION
@@ -239,7 +234,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu thông tin về cổ phiếu quỹ
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COMPANY_TREASURY_SHARES
   content:
     table: COMPANY_TREASURY_SHARES
@@ -266,7 +260,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-TREASURY_SHARE_TRANS_RESULT
   content:
     table: TREASURY_SHARE_TRANS_RESULT
@@ -287,7 +280,6 @@ brd_entries:
       filter_note: null
     table_meaning: Lưu thông tin kết quả giao dịch cổ phiếu quỹ (Treasury Share Transaction
       Result)
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COMPANY_INSPECTION
   content:
     table: COMPANY_INSPECTION
@@ -333,7 +325,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lịch sử thay đổi thông tin quản lý công ty
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-LOGINS
   content:
     table: LOGINS
@@ -353,7 +344,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Bảng tài khoản đăng nhập
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COUNTRIES
   content:
     table: COUNTRIES
@@ -395,20 +385,6 @@ brd_entries:
     ingestion:
       data_change_mode: Update
       filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-USER_AUDIT_LOG
-  content:
-    table: USER_AUDIT_LOG
-    description: Bảng lưu log người dùng thao tác trên hệ thống
-    functional_group: system
-    scope_status: pending
-    scope_reason: null
-    related_tables:
-    - table: USERS
-      relation: FK cha — Bảng users
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_date >= {etl_date} AND created_date < {etl_date} + 1
       filter_note: null
 - brd_id: BRD-SRC-IDS-REPORT_CATALOG
   content:
@@ -734,7 +710,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-DATA
   content:
     table: DATA
@@ -752,7 +727,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu trữ dữ liệu của hàng và cột của báo cáo tài chính
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-DATA_VALUES
   content:
     table: DATA_VALUES
@@ -774,7 +748,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-BOND_LISTING_HISTORY
   content:
     table: BOND_LISTING_HISTORY
@@ -852,7 +825,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu thông tin về số CP sau mỗi đợt mua/ bán
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-EVALUATIONS
   content:
     table: EVALUATIONS
@@ -1066,7 +1038,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-SECURITIES_OFFERING_PLAN
   content:
     table: SECURITIES_OFFERING_PLAN
@@ -1082,7 +1053,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-SECURITIES_OFFERING_RESULT
   content:
     table: SECURITIES_OFFERING_RESULT
@@ -1102,7 +1072,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-STOCK_LISTING_HISTORY
   content:
     table: STOCK_LISTING_HISTORY
@@ -1132,7 +1101,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Bảng cấu hình các mức phạt/xử lý khi vi phạm
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-VIOLATION_REPORT
   content:
     table: VIOLATION_REPORT
@@ -1172,7 +1140,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Bảng lưu trữ thông tin cấu hình mẫu vi phạm
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-WARDS
   content:
     table: WARDS
@@ -1218,7 +1185,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Bảng LOGIN_PERMISSION_BY_CODE
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-ALERT_TEMPLATE_AUDIT_DTL
   content:
     table: ALERT_TEMPLATE_AUDIT_DTL
@@ -1236,7 +1202,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Danh sách rule cấu hình cảnh báo
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-ALERT_TEMPLATE_AUDIT_HDR
   content:
     table: ALERT_TEMPLATE_AUDIT_HDR
@@ -1252,7 +1217,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Danh sách mẫu template cảnh báo
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-COMPANY_TENDER_OFFER_RESULT
   content:
     table: COMPANY_TENDER_OFFER_RESULT
@@ -1267,42 +1231,6 @@ brd_entries:
       relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
     - table: USERS
       relation: FK cha — Bảng users
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-DATABASECHANGELOG
-  content:
-    table: DATABASECHANGELOG
-    description: Lịch sử migration cơ sở dữ liệu
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-DATABASECHANGELOGLOCK
-  content:
-    table: DATABASECHANGELOGLOCK
-    description: Lock khi Liquibase đang chạy
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-DBTOOLS$MCP_LOG
-  content:
-    table: DBTOOLS$MCP_LOG
-    description: Bảng kỹ thuật Oracle Database Tools ghi log truy vấn MCP (không dùng cho nghiệp vụ)
-    functional_group: unclassified_pending
-    scope_status: pending
-    scope_reason: null
-    related_tables: null
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1322,7 +1250,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Mẫu báo cáo động — header
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-DYNAMIC_REPORT_TEMPLATE_FIELDS
   content:
     table: DYNAMIC_REPORT_TEMPLATE_FIELDS
@@ -1338,7 +1265,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Chỉ tiêu thuộc mẫu báo cáo động
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-EVALUATION_LEVEL_SCORE
   content:
     table: EVALUATION_LEVEL_SCORE
@@ -1352,7 +1278,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Cấu hình điểm áp dụng chung cho tất cả chỉ tiêu theo mức đánh giá
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-REP_DATA
   content:
     table: REP_DATA
@@ -1376,7 +1301,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-TENDER_OFFER
   content:
     table: TENDER_OFFER
@@ -1397,7 +1321,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu thông tin phương án chào mua công khai (Public Tender Offer)
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-TENDER_OFFER_RESULT
   content:
     table: TENDER_OFFER_RESULT
@@ -1416,7 +1339,6 @@ brd_entries:
       filter_logic: null
       filter_note: null
     table_meaning: Lưu thông tin kết quả chào mua công khai (Public Tender Offer Result)
-    table_meaning_src: schema
 - brd_id: BRD-SRC-IDS-APPRAISAL_CRITERIA
   brd_name: Design Atomic từ nguồn IDS bảng APPRAISAL_CRITERIA
   type: Theo Source
@@ -1445,7 +1367,6 @@ brd_entries:
   steward_email: username@ubck.com.vn
   content:
     table_meaning: Tài sản bảo đảm trái phiếu
-    table_meaning_src: schema
     functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
@@ -1509,7 +1430,6 @@ brd_entries:
   steward_email: username@ubck.com.vn
   content:
     table_meaning: Trạng thái thanh toán gốc/lãi trái phiếu
-    table_meaning_src: schema
     functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
@@ -1530,7 +1450,6 @@ brd_entries:
   content:
     table_meaning: Chi tiết từng hình thức chào bán/phát hành trong kế hoạch tăng
       vốn (5.3.2.6)
-    table_meaning_src: schema
     functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
@@ -1552,7 +1471,6 @@ brd_entries:
   steward_email: username@ubck.com.vn
   content:
     table_meaning: Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6)
-    table_meaning_src: schema
     functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
@@ -1579,7 +1497,6 @@ brd_entries:
   steward_email: username@ubck.com.vn
   content:
     table_meaning: Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
-    table_meaning_src: schema
     functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
@@ -1610,7 +1527,6 @@ brd_entries:
       BCTC sang cột đích của FINANCIAL_RATIOS_DETAIL. Khai theo REPORT_YEAR + REPORT_CD;
       REPORT_CD dạng 'BASE_<họ>_<loại>' là bản khai chung, bản khai theo REPORT_CD
       cụ thể đè base khi trùng ROW_DESC.
-    table_meaning_src: schema
     functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
@@ -1632,7 +1548,6 @@ brd_entries:
     table_meaning: Bảng chi tiết số liệu tài chính của công ty đại chúng theo kỳ (năm/quý).
       Là dữ liệu đầu vào phục vụ tính các chỉ số/tỷ số tài chính lưu trong bảng LOOKUP_KEY_FINANCIALS.
       Khóa nghiệp vụ (STOCK_CODE, YEAR, QUARTER).
-    table_meaning_src: schema
     functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
@@ -1658,7 +1573,6 @@ brd_entries:
     table_meaning: Bảng lưu kết quả tính các chỉ số/tỷ số tài chính theo công ty và
       kỳ (năm/quý). Materialize từ FINANCIAL_RATIOS_DETAIL, quan hệ 1-1 qua ID. Phục
       vụ tra cứu nhanh (lookup) cho các báo cáo phân tích.
-    table_meaning_src: schema
     functional_group: CHƯA PHÂN NHÓM
     scope_status: pending
     scope_reason: null
@@ -1709,8 +1623,6 @@ brd_entries:
         Transaction Result)
     - table: DEPARTMENTS
       relation: FK cha — Bảng departments
-    - table: USER_AUDIT_LOG
-      relation: 1-N — Bảng user audit log
     notes: null
     data_volume_hint: null
     refresh_frequency: null

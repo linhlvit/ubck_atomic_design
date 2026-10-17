@@ -1,0 +1,128 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: CASE_FILE_ASSIGNMENT
+brd_ref: BRD-SRC-TMS-CASE_FILE_ASSIGNMENT
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key (UUID)
+  key: PK
+  fk_note: null
+- name: CASE_FILE_ID
+  data_type: VARCHAR2(36)
+  description: ID vu viec
+  key: FK
+  fk_note: FK → CASE_FILE.ID
+  fk_src: inferred
+- name: ASSIGNEE_ID
+  data_type: VARCHAR2(36)
+  description: ID nguoi duoc giao
+  key: null
+  fk_note: null
+- name: ASSIGNEE_NAME
+  data_type: VARCHAR2(1000)
+  description: Ho ten nguoi duoc giao tai thoi diem giao
+  key: null
+  fk_note: null
+- name: ASSIGNEE_ROLE
+  data_type: NUMBER(1,0)
+  description: 2=Pho Truong ban, 3=Chuyen vien
+  key: null
+  fk_note: null
+- name: DEPUTY_KIND
+  data_type: NUMBER(1,0)
+  description: 'Chi khi role=2: 1=phan cong, 2=theo doi'
+  key: null
+  fk_note: null
+- name: ASSIGN_SOURCE
+  data_type: NUMBER(1,0)
+  description: 1=Truong ban giao, 2=Pho Truong ban giao
+  key: null
+  fk_note: null
+- name: ASSIGNED_BY_ID
+  data_type: VARCHAR2(36)
+  description: ID nguoi thuc hien phan cong
+  key: null
+  fk_note: null
+- name: ASSIGNED_BY_NAME
+  data_type: VARCHAR2(1000)
+  description: null
+  key: null
+  fk_note: null
+- name: ASSIGNED_AT
+  data_type: TIMESTAMP(6)
+  description: Thoi diem phan cong
+  key: null
+  fk_note: null
+- name: STATE
+  data_type: NUMBER(1,0)
+  description: 1=dang hieu luc, 2=da thu hoi
+  key: null
+  fk_note: null
+- name: REVOKED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: REVOKED_BY_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: null
+  fk_note: null
+- name: REVOKED_BY_NAME
+  data_type: VARCHAR2(1000)
+  description: null
+  key: null
+  fk_note: null
+- name: REVOKE_REASON
+  data_type: VARCHAR2(4000)
+  description: null
+  key: null
+  fk_note: null
+- name: APPROVAL_STEP_ID
+  data_type: VARCHAR2(36)
+  description: Tro toi dong case_approval_step sinh kem
+  key: FK
+  fk_note: FK → CASE_APPROVAL_STEP.ID
+  fk_src: inferred
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER
+  description: null
+  key: null
+  fk_note: null

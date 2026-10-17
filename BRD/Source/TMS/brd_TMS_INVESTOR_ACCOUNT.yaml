@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: INVESTOR_ACCOUNT
+brd_ref: BRD-SRC-TMS-INVESTOR_ACCOUNT
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: ACCOUNT_CODE
+  data_type: VARCHAR2(200)
+  description: Số tài khoản (từ VSDC)
+  key: null
+  fk_note: null
+- name: INVESTOR_TYPE
+  data_type: NUMBER(2,0)
+  description: 'Loại hình NĐT: 1=Cá nhân, 2=Tổ chức'
+  key: null
+  fk_note: null
+- name: DATE_OF_BIRTH
+  data_type: TIMESTAMP(6)
+  description: Ngày tháng năm sinh/ngày thành lập DN (từ CTCK, có thể sửa)
+  key: null
+  fk_note: null
+- name: LEGAL_REPRESENTATIVE
+  data_type: VARCHAR2(800)
+  description: Người đại diện theo pháp luật (từ CTCK, có thể sửa)
+  key: null
+  fk_note: null
+- name: PERMANENT_ADDRESS
+  data_type: VARCHAR2(2000)
+  description: Địa chỉ thường trú (từ CTCK, có thể sửa)
+  key: null
+  fk_note: null
+- name: MARGIN_ACCOUNT_OPEN_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày mở TK ký quỹ
+  key: null
+  fk_note: null
+- name: MARGIN_SERVICE_ENABLED
+  data_type: VARCHAR2(800)
+  description: Dịch vụ TC sử dụng - Ký quỹ
+  key: null
+  fk_note: null
+- name: ADVANCE_PAYMENT_SERVICE_ENABLED
+  data_type: VARCHAR2(800)
+  description: Dịch vụ TC sử dụng - Ứng trước tiền bán
+  key: null
+  fk_note: null
+- name: ACCOUNT_AUTHORIZATION_ENABLED
+  data_type: VARCHAR2(800)
+  description: Dịch vụ TC sử dụng - Hợp đồng tài chính khác
+  key: null
+  fk_note: null
+- name: AUTHORIZED_PERSON_NAME
+  data_type: VARCHAR2(800)
+  description: Người nhận ủy quyền
+  key: null
+  fk_note: null
+- name: AUTHORIZATION_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày nhận ủy quyền
+  key: null
+  fk_note: null
+- name: APPROVAL_STATUS
+  data_type: NUMBER(1,0)
+  description: Trạng thái phê duyệt tài khoản
+  key: null
+  fk_note: null
+- name: ACCOUNT_STATUS
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái: 0=Đóng, 1=Mở'
+  key: null
+  fk_note: null
+- name: DOMESTIC_FOREIGN_FLAG
+  data_type: NUMBER(1,0)
+  description: 'Trong nước/Nước ngoài: 0=Trong nước, 1=Nước ngoài'
+  key: null
+  fk_note: null
+- name: DATA_SOURCE
+  data_type: VARCHAR2(80)
+  description: 'Nguồn dữ liệu chính: VSDC, CTCK'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(10,0)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null

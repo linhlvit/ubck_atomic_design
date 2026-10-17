@@ -228,13 +228,11 @@ def parse_fk_note(note):
 # Dựng file cột
 # ──────────────────────────────────────────────────────────────────────────────
 
-def build_column_dict(base: dict | None, name: str, dtype: str, desc, desc_src, key, fk_note, fk_src, extra=None):
+def build_column_dict(base: dict | None, name: str, dtype: str, desc, key, fk_note, fk_src, extra=None):
     d = OrderedDict()
     d["name"] = name
     d["data_type"] = dtype
     d["description"] = desc
-    if desc_src:
-        d["description_src"] = desc_src
     d["key"] = key
     d["fk_note"] = fk_note
     if fk_src:
@@ -255,13 +253,11 @@ def merge_columns(table: sr.Table, existing: dict | None, fk_db: dict, fk_inf: d
         pk = bool(col.key and "PK" in col.key)
         # mô tả
         if old is None:
-            desc, dsrc = (col.comment, "schema") if col.comment else (None, None)
+            desc = col.comment or None
         else:
-            desc, dsrc = old.get("description"), old.get("description_src")
-            if dsrc is None and desc:                 # curated
-                pass
-            elif col.comment and (not desc or dsrc == "inferred" or (dsrc == "schema" and desc != col.comment)):
-                desc, dsrc = col.comment, "schema"
+            desc = old.get("description")
+            if not desc and col.comment:              # chỉ điền khi trống — không ghi đè mô tả đã có
+                desc = col.comment
                 rep["desc_filled"] += 1
         # FK
         fk, fksrc = (old or {}).get("fk_note"), (old or {}).get("fk_src")
@@ -293,12 +289,12 @@ def merge_columns(table: sr.Table, existing: dict | None, fk_db: dict, fk_inf: d
             if not pk and old_key and "PK" in old_key:
                 rep["pk_changed"].append(f"{tname}.{col.name}: {old_key} → {key}")
         extra = {k: v for k, v in (old or {}).items()
-                 if k not in ("name", "data_type", "description", "description_src", "key", "fk_note", "fk_src")}
+                 if k not in ("name", "data_type", "description", "key", "fk_note", "fk_src")}
         dtype = col.data_type.strip()                # data_type luôn theo đúng chuỗi trong file schema
         if old is not None and str(old.get("data_type") or "").strip() != dtype:
             rep["type_changed"] += 1
         return build_column_dict(old, old.get("name", col.name) if old else col.name, dtype,
-                                 desc, dsrc, key, fk, fksrc, extra)
+                                 desc, key, fk, fksrc, extra)
 
     out = []
     for c in old_cols:                                # giữ thứ tự cũ
@@ -466,8 +462,6 @@ def main() -> int:
         ingestion_notes.append((n, ing["data_change_mode"], why))
         c = OrderedDict()
         c["table_meaning"] = t.comment or None       # nguồn không cung cấp → null (không bịa)
-        if t.comment:
-            c["table_meaning_src"] = "schema"
         c["functional_group"] = GROUP_PLACEHOLDER
         c["scope_status"] = "pending"
         c["scope_reason"] = None
@@ -487,10 +481,7 @@ def main() -> int:
         e, t = entry_by[n.upper()], tables[n]
         c = e["content"]
         if not c.get("table_meaning") and t.comment:
-            c["table_meaning"], c["table_meaning_src"] = t.comment, "schema"
-            entry_changes["table_meaning"] += 1
-        elif c.get("table_meaning_src") == "inferred" and t.comment:
-            c["table_meaning"], c["table_meaning_src"] = t.comment, "schema"
+            c["table_meaning"] = t.comment
             entry_changes["table_meaning"] += 1
         if "ingestion" not in c or c.get("ingestion") is None and c.get("scope_status") != "out_of_scope":
             ing, why = decide_ingestion(t)

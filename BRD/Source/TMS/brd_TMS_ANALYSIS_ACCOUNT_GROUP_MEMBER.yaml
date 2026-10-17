@@ -1,0 +1,108 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ANALYSIS_ACCOUNT_GROUP_MEMBER
+brd_ref: BRD-SRC-TMS-ANALYSIS_ACCOUNT_GROUP_MEMBER
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: CASE_FILE_ID
+  data_type: VARCHAR2(36)
+  description: ID vụ việc
+  key: FK
+  fk_note: FK → CASE_FILE.ID
+  fk_src: inferred
+- name: WORKFLOW_TYPE
+  data_type: NUMBER(1,0)
+  description: Loại quy trình
+  key: null
+  fk_note: null
+- name: RESULT_TYPE
+  data_type: NUMBER(1,0)
+  description: Loại kết quả
+  key: null
+  fk_note: null
+- name: ACCOUNT_GROUP_ID
+  data_type: VARCHAR2(36)
+  description: ID nhóm tài khoản
+  key: FK
+  fk_note: FK → ACCOUNT_GROUP.ID
+  fk_src: inferred
+- name: ACCOUNT_CODE
+  data_type: VARCHAR2(50)
+  description: Số tài khoản thành viên
+  key: null
+  fk_note: null
+- name: RELATIONSHIP_ID
+  data_type: VARCHAR2(36)
+  description: ID mối quan hệ
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: VARCHAR2(2000)
+  description: Mô tả
+  key: null
+  fk_note: null
+- name: ANALYSIS_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày phân tích
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngày cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: Người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(10,0)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái xóa (0: Chưa xóa, 1: Đã xóa)'
+  key: null
+  fk_note: null
+- name: SECURITIES_CODE_ID
+  data_type: VARCHAR2(36)
+  description: ID chứng khoán
+  key: null
+  fk_note: null
+- name: SECURITIES_CODE
+  data_type: VARCHAR2(10)
+  description: Mã chứng khoán
+  key: null
+  fk_note: null
+- name: WORKFLOW_ID
+  data_type: VARCHAR2(36)
+  description: Id quy trình phân tích (analysis_workflow.id)
+  key: null
+  fk_note: null

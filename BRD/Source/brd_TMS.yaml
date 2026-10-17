@@ -1,0 +1,2810 @@
+﻿source: TMS
+description: Phân hệ giám sát giao dịch bất thường và quản lý hồ sơ vụ việc (TMS)
+brd_entries:
+- brd_id: BRD-SRC-TMS-ABNORMAL_COLUMN_SEMANTIC
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_COLUMN_SEMANTIC
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Mapping vi tri cot bao cao bat thuong sang semantic_field
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_COLUMN_SEMANTIC
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ABNORMAL_EXTRACTED_SIGNAL
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_EXTRACTED_SIGNAL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Tin hieu chuan hoa trich tu bao cao bat thuong
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_EXTRACTED_SIGNAL
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: ABNORMAL_REPORT_MASTER
+      relation: FK cha — Header bao cao bat thuong
+    - table: ABNORMAL_REPORT_FORM
+      relation: FK cha — File Excel uploaded trong submission cua bao cao bat thuong
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ABNORMAL_MATCH_EXCLUSION
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_MATCH_EXCLUSION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Loai tru gia tri khoi so khop quan he
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_MATCH_EXCLUSION
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ABNORMAL_REPORT_CONFIG
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_REPORT_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cau hinh cot bieu mau bao cao bat thuong
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_REPORT_CONFIG
+    related_tables:
+    - table: ABNORMAL_REPORT_FORM_TEMPLATE
+      relation: FK cha — Bieu mau Excel trong loai bao cao bat thuong
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ABNORMAL_REPORT_DATA
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_REPORT_DATA
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Du lieu dong bao cao bat thuong
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_REPORT_DATA
+    related_tables:
+    - table: ABNORMAL_REPORT_FORM
+      relation: FK cha — File Excel uploaded trong submission cua bao cao bat thuong
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ABNORMAL_REPORT_FORM
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_REPORT_FORM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: File Excel uploaded trong submission cua bao cao bat thuong
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_REPORT_FORM
+    related_tables:
+    - table: ABNORMAL_EXTRACTED_SIGNAL
+      relation: 1-N — Tin hieu chuan hoa trich tu bao cao bat thuong
+    - table: ABNORMAL_REPORT_DATA
+      relation: 1-N — Du lieu dong bao cao bat thuong
+    - table: ABNORMAL_REPORT_MASTER
+      relation: FK cha — Header bao cao bat thuong
+    - table: ABNORMAL_REPORT_FORM_TEMPLATE
+      relation: FK cha — Bieu mau Excel trong loai bao cao bat thuong
+    - table: REPORT_ATTACH_FILE
+      relation: FK cha — File dinh kem bao cao
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ABNORMAL_REPORT_FORM_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_REPORT_FORM_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bieu mau Excel trong loai bao cao bat thuong
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_REPORT_FORM_TEMPLATE
+    related_tables:
+    - table: ABNORMAL_REPORT_CONFIG
+      relation: 1-N — Cau hinh cot bieu mau bao cao bat thuong
+    - table: ABNORMAL_REPORT_FORM
+      relation: 1-N — File Excel uploaded trong submission cua bao cao bat thuong
+    - table: ABNORMAL_REPORT_TEMPLATE
+      relation: FK cha — Mau loai bao cao bat thuong
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ABNORMAL_REPORT_MASTER
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_REPORT_MASTER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Header bao cao bat thuong
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_REPORT_MASTER
+    related_tables:
+    - table: ABNORMAL_EXTRACTED_SIGNAL
+      relation: 1-N — Tin hieu chuan hoa trich tu bao cao bat thuong
+    - table: ABNORMAL_REPORT_FORM
+      relation: 1-N — File Excel uploaded trong submission cua bao cao bat thuong
+    - table: ABNORMAL_REPORT_TEMPLATE
+      relation: FK cha — Mau loai bao cao bat thuong
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ABNORMAL_REPORT_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng ABNORMAL_REPORT_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Mau loai bao cao bat thuong
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ABNORMAL_REPORT_TEMPLATE
+    related_tables:
+    - table: ABNORMAL_REPORT_FORM_TEMPLATE
+      relation: 1-N — Bieu mau Excel trong loai bao cao bat thuong
+    - table: ABNORMAL_REPORT_MASTER
+      relation: 1-N — Header bao cao bat thuong
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ACCOUNT_GROUP
+  brd_name: Design Atomic từ nguồn TMS bảng ACCOUNT_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng quản lý nhóm tài khoản nhà đầu tư
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ACCOUNT_GROUP
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: ACCOUNT_RELATIONSHIP
+      relation: 1-N — Bảng quản lý quan hệ giữa các tài khoản trong nhóm
+    - table: ANALYSIS_ACCOUNT_GROUP_MEMBER
+      relation: 1-N — Bảng analysis account group member
+    - table: TRANSACTION_REVIEW_ACCOUNT_GROUP_MEMBER
+      relation: 1-N — Bảng transaction review account group member
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ACCOUNT_GROUP_HISTORY
+  brd_name: Design Atomic từ nguồn TMS bảng ACCOUNT_GROUP_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng lưu lịch sử thay đổi nhóm tài khoản nhà đầu tư
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ACCOUNT_GROUP_HISTORY
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ACCOUNT_GROUP_MEMBER
+  brd_name: Design Atomic từ nguồn TMS bảng ACCOUNT_GROUP_MEMBER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng quản lý thành viên trong nhóm tài khoản nhà đầu tư
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ACCOUNT_GROUP_MEMBER
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ACCOUNT_RELATIONSHIP
+  brd_name: Design Atomic từ nguồn TMS bảng ACCOUNT_RELATIONSHIP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng quản lý quan hệ giữa các tài khoản trong nhóm
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ACCOUNT_RELATIONSHIP
+    related_tables:
+    - table: ACCOUNT_GROUP
+      relation: FK cha — Bảng quản lý nhóm tài khoản nhà đầu tư
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_ACCOUNT_GROUP
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_ACCOUNT_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_ACCOUNT_GROUP
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_ACCOUNT_GROUP_MEMBER
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_ACCOUNT_GROUP_MEMBER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_ACCOUNT_GROUP_MEMBER
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: ACCOUNT_GROUP
+      relation: FK cha — Bảng quản lý nhóm tài khoản nhà đầu tư
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_ACCOUNT_RELATIONSHIP
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_ACCOUNT_RELATIONSHIP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_ACCOUNT_RELATIONSHIP
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_ATTRIBUTE_DEFINE
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_ATTRIBUTE_DEFINE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_ATTRIBUTE_DEFINE
+    related_tables:
+    - table: ANALYSIS_DEFINE_REPORT_TEMPLATE
+      relation: 1-N — Bảng analysis define report template
+    - table: CASE_ANALYSIS_ATTRIBUTE_VALUE
+      relation: 1-N — Bảng case analysis attribute value
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_DEFINE_REPORT_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_DEFINE_REPORT_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_DEFINE_REPORT_TEMPLATE
+    related_tables:
+    - table: ANALYSIS_ATTRIBUTE_DEFINE
+      relation: FK cha — Bảng analysis attribute define
+    - table: REPORT_TEMPLATE
+      relation: FK cha — Bảng report template
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_EXECUTION_LOG
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_EXECUTION_LOG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_EXECUTION_LOG
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: REPORT_TEMPLATE
+      relation: FK cha — Bảng report template
+    - table: ANALYSIS_REPORT
+      relation: 1-N — Bảng analysis report
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_MM_STOCK_ACCOUNT
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_MM_STOCK_ACCOUNT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_MM_STOCK_ACCOUNT
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_MM_STOCK_WINDOW
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_MM_STOCK_WINDOW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_MM_STOCK_WINDOW
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_MM_STOCK_WINDOW_DETAIL
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_MM_STOCK_WINDOW_DETAIL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_MM_STOCK_WINDOW_DETAIL
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_MM_TIME_WINDOW
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_MM_TIME_WINDOW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_MM_TIME_WINDOW
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_REPORT
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_REPORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_REPORT
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: ANALYSIS_EXECUTION_LOG
+      relation: FK cha — Bảng analysis execution log
+    - table: COMPLIANCE_REPORT_FILE
+      relation: 1-N — Bảng compliance report file
+    - table: REPORT_ASSIGNMENT
+      relation: 1-N — Phan cong xu ly bao cao cho Ban Giam sat thi truong
+    - table: REPORT_ATTACH_FILE
+      relation: 1-N — File dinh kem bao cao
+    - table: REPORT_COMMENT
+      relation: 1-N — Nhan xet bao cao
+    - table: REPORT_PROCESS_HISTORY
+      relation: 1-N — Lich su xu ly bao cao
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_SUSPICIOUS_ACCOUNT
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_SUSPICIOUS_ACCOUNT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_SUSPICIOUS_ACCOUNT
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_SUSPICIOUS_ACCOUNT_CODE
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_SUSPICIOUS_ACCOUNT_CODE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_SUSPICIOUS_ACCOUNT_CODE
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_WORKFLOW
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_WORKFLOW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_WORKFLOW
+    related_tables:
+    - table: ANALYSIS_WORKFLOW_HISTORY_LOG
+      relation: 1-N — Bảng analysis workflow history log
+    - table: CASE_FILE_WORKFLOW
+      relation: 1-N — Bảng lưu thông tin luồng phê duyệt vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_WORKFLOW_HISTORY_LOG
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_WORKFLOW_HISTORY_LOG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_WORKFLOW_HISTORY_LOG
+    related_tables:
+    - table: ANALYSIS_WORKFLOW
+      relation: FK cha — Bảng analysis workflow
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_WORKFLOW_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_WORKFLOW_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_WORKFLOW_TEMPLATE
+    related_tables:
+    - table: REPORT_TEMPLATE
+      relation: FK cha — Bảng report template
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ANALYSIS_WORKFLOW_USER
+  brd_name: Design Atomic từ nguồn TMS bảng ANALYSIS_WORKFLOW_USER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ANALYSIS_WORKFLOW_USER
+    related_tables:
+    - table: COMPLIANCE_OUTPUT_TEMPLATE_SHARE
+      relation: 1-N — Bảng compliance output template share
+    - table: COMPLIANCE_TEMPLATE_SHARE
+      relation: 1-N — Bảng compliance template share
+    - table: DASHBOARD_ADMIN_CONFIG
+      relation: 1-N — Bảng dashboard admin config
+    - table: DASHBOARD_USER_CONFIG
+      relation: 1-N — Bảng dashboard user config
+    - table: USER_TABLE_CONFIG
+      relation: 1-N — Bảng user table config
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-ATTRIBUTE_CATALOG
+  brd_name: Design Atomic từ nguồn TMS bảng ATTRIBUTE_CATALOG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục các thuộc tính/trường dữ liệu thuộc về từng metric
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: ATTRIBUTE_CATALOG
+    related_tables:
+    - table: METRIC_CATALOG
+      relation: FK cha — Danh mục các chỉ số/metric có thể đưa vào báo cáo
+    - table: CASE_REPORT_PARAMETER_VALUE
+      relation: 1-N — Bảng case report parameter value
+    - table: METRIC_JOIN_CONDITION
+      relation: 1-N — Điều kiện join giữa các metric thông qua thuộc tính (attribute)
+    - table: REPORT_TEMPLATE_PARAMETER
+      relation: 1-N — Bảng report template parameter
+    - table: TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+      relation: 1-N — Bảng transaction review report parameter value
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-BUSINESS_DASHBOARD
+  brd_name: Design Atomic từ nguồn TMS bảng BUSINESS_DASHBOARD
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: BUSINESS_DASHBOARD
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_ANALYSIS_ATTRIBUTE_VALUE
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_ANALYSIS_ATTRIBUTE_VALUE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_ANALYSIS_ATTRIBUTE_VALUE
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: ANALYSIS_ATTRIBUTE_DEFINE
+      relation: FK cha — Bảng analysis attribute define
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_APPROVAL_STEP
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_APPROVAL_STEP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng lưu thông tin các bước phê duyệt vụ việc
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_APPROVAL_STEP
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: CASE_FILE_ASSIGNMENT
+      relation: 1-N — Phan cong xu ly vu viec cho Pho Truong ban / Chuyen vien
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_ATTACH_FILE
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_ATTACH_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng lưu file đính kèm vụ việc
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_ATTACH_FILE
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_FILE
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng lưu thông tin vụ việc
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_FILE
+    related_tables:
+    - table: ABNORMAL_EXTRACTED_SIGNAL
+      relation: 1-N — Tin hieu chuan hoa trich tu bao cao bat thuong
+    - table: ABNORMAL_REPORT_MASTER
+      relation: 1-N — Header bao cao bat thuong
+    - table: ACCOUNT_GROUP
+      relation: 1-N — Bảng quản lý nhóm tài khoản nhà đầu tư
+    - table: ACCOUNT_RELATIONSHIP
+      relation: 1-N — Bảng quản lý quan hệ giữa các tài khoản trong nhóm
+    - table: ANALYSIS_ACCOUNT_GROUP
+      relation: 1-N — Bảng analysis account group
+    - table: ANALYSIS_ACCOUNT_GROUP_MEMBER
+      relation: 1-N — Bảng analysis account group member
+    - table: ANALYSIS_ACCOUNT_RELATIONSHIP
+      relation: 1-N — Bảng analysis account relationship
+    - table: ANALYSIS_EXECUTION_LOG
+      relation: 1-N — Bảng analysis execution log
+    - table: ANALYSIS_MM_STOCK_ACCOUNT
+      relation: 1-N — Bảng analysis mm stock account
+    - table: ANALYSIS_MM_STOCK_WINDOW
+      relation: 1-N — Bảng analysis mm stock window
+    - table: ANALYSIS_MM_STOCK_WINDOW_DETAIL
+      relation: 1-N — Bảng analysis mm stock window detail
+    - table: ANALYSIS_MM_TIME_WINDOW
+      relation: 1-N — Bảng analysis mm time window
+    - table: ANALYSIS_REPORT
+      relation: 1-N — Bảng analysis report
+    - table: ANALYSIS_SUSPICIOUS_ACCOUNT
+      relation: 1-N — Bảng analysis suspicious account
+    - table: ANALYSIS_SUSPICIOUS_ACCOUNT_CODE
+      relation: 1-N — Bảng analysis suspicious account code
+    - table: CASE_ANALYSIS_ATTRIBUTE_VALUE
+      relation: 1-N — Bảng case analysis attribute value
+    - table: CASE_APPROVAL_STEP
+      relation: 1-N — Bảng lưu thông tin các bước phê duyệt vụ việc
+    - table: CASE_ATTACH_FILE
+      relation: 1-N — Bảng lưu file đính kèm vụ việc
+    - table: CASE_FILE_ASSIGNMENT
+      relation: 1-N — Phan cong xu ly vu viec cho Pho Truong ban / Chuyen vien
+    - table: CASE_FILE_INVESTOR
+      relation: 1-N — Bảng case file investor
+    - table: CASE_FILE_SECURITIES_CODE
+      relation: 1-N — Bảng case file securities code
+    - table: CASE_FILE_SECURITIES_GROUP
+      relation: 1-N — Bảng case file securities group
+    - table: CASE_FILE_WORKFLOW
+      relation: 1-N — Bảng lưu thông tin luồng phê duyệt vụ việc
+    - table: CASE_REPORT_PARAMETER_VALUE
+      relation: 1-N — Bảng case report parameter value
+    - table: REPORT_TEMPLATE_WORKFLOW
+      relation: 1-N — Bảng report template workflow
+    - table: SUSPICIOUS_ACCOUNT
+      relation: 1-N — Bảng suspicious account
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_FILE_ASSIGNMENT
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_FILE_ASSIGNMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phan cong xu ly vu viec cho Pho Truong ban / Chuyen vien
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_FILE_ASSIGNMENT
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: CASE_APPROVAL_STEP
+      relation: FK cha — Bảng lưu thông tin các bước phê duyệt vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_FILE_INVESTOR
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_FILE_INVESTOR
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_FILE_INVESTOR
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: TRANSACTION_REVIEW_INVESTOR
+      relation: FK cha — Bảng transaction review investor
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_FILE_SECURITIES_CODE
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_FILE_SECURITIES_CODE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_FILE_SECURITIES_CODE
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_FILE_SECURITIES_GROUP
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_FILE_SECURITIES_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_FILE_SECURITIES_GROUP
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_FILE_WORKFLOW
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_FILE_WORKFLOW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng lưu thông tin luồng phê duyệt vụ việc
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_FILE_WORKFLOW
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: REPORT_TEMPLATE
+      relation: FK cha — Bảng report template
+    - table: ANALYSIS_WORKFLOW
+      relation: FK cha — Bảng analysis workflow
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CASE_REPORT_PARAMETER_VALUE
+  brd_name: Design Atomic từ nguồn TMS bảng CASE_REPORT_PARAMETER_VALUE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CASE_REPORT_PARAMETER_VALUE
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    - table: REPORT_PARAMETER
+      relation: FK cha — Bảng report parameter
+    - table: ATTRIBUTE_CATALOG
+      relation: FK cha — Danh mục các thuộc tính/trường dữ liệu thuộc về từng metric
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CATEGORY_CONFIG
+  brd_name: Design Atomic từ nguồn TMS bảng CATEGORY_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CATEGORY_CONFIG
+    related_tables:
+    - table: CATEGORY_ITEM
+      relation: 1-N — Bảng category item
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CATEGORY_ITEM
+  brd_name: Design Atomic từ nguồn TMS bảng CATEGORY_ITEM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CATEGORY_ITEM
+    related_tables:
+    - table: CATEGORY_CONFIG
+      relation: FK cha — Bảng category config
+    - table: CATEGORY_ITEM_HISTORY
+      relation: 1-N — Bảng category item history
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-CATEGORY_ITEM_HISTORY
+  brd_name: Design Atomic từ nguồn TMS bảng CATEGORY_ITEM_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: CATEGORY_ITEM_HISTORY
+    related_tables:
+    - table: CATEGORY_ITEM
+      relation: FK cha — Bảng category item
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPANY_EVENT
+  brd_name: Design Atomic từ nguồn TMS bảng COMPANY_EVENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPANY_EVENT
+    related_tables:
+    - table: COMPANY_EVENT_HISTORY
+      relation: 1-N — Bảng company event history
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPANY_EVENT_HISTORY
+  brd_name: Design Atomic từ nguồn TMS bảng COMPANY_EVENT_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPANY_EVENT_HISTORY
+    related_tables:
+    - table: COMPANY_EVENT
+      relation: FK cha — Bảng company event
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_OUTPUT_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_OUTPUT_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_OUTPUT_TEMPLATE
+    related_tables:
+    - table: COMPLIANCE_OUTPUT_TEMPLATE_SHARE
+      relation: 1-N — Bảng compliance output template share
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_OUTPUT_TEMPLATE_SHARE
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_OUTPUT_TEMPLATE_SHARE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_OUTPUT_TEMPLATE_SHARE
+    related_tables:
+    - table: COMPLIANCE_OUTPUT_TEMPLATE
+      relation: FK cha — Bảng compliance output template
+    - table: ANALYSIS_WORKFLOW_USER
+      relation: FK cha — Bảng analysis workflow user
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_CONFIG
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cau hinh cot bieu mau bao cao tuan thu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_REPORT_CONFIG
+    related_tables:
+    - table: COMPLIANCE_REPORT_FORM_TEMPLATE
+      relation: FK cha — Bieu mau trong phu luc bao cao tuan thu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_DATA
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_DATA
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Du lieu dong bao cao tuan thu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_REPORT_DATA
+    related_tables:
+    - table: COMPLIANCE_REPORT_FORM
+      relation: FK cha — File bieu mau da upload trong bao cao tuan thu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_FILE
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_REPORT_FILE
+    related_tables:
+    - table: ANALYSIS_REPORT
+      relation: FK cha — Bảng analysis report
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_FORM
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_FORM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: File bieu mau da upload trong bao cao tuan thu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_REPORT_FORM
+    related_tables:
+    - table: COMPLIANCE_REPORT_DATA
+      relation: 1-N — Du lieu dong bao cao tuan thu
+    - table: COMPLIANCE_REPORT_MASTER
+      relation: FK cha — Bao cao tuan thu da nop
+    - table: COMPLIANCE_REPORT_FORM_TEMPLATE
+      relation: FK cha — Bieu mau trong phu luc bao cao tuan thu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_FORM_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_FORM_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bieu mau trong phu luc bao cao tuan thu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_REPORT_FORM_TEMPLATE
+    related_tables:
+    - table: COMPLIANCE_REPORT_CONFIG
+      relation: 1-N — Cau hinh cot bieu mau bao cao tuan thu
+    - table: COMPLIANCE_REPORT_FORM
+      relation: 1-N — File bieu mau da upload trong bao cao tuan thu
+    - table: COMPLIANCE_REPORT_TEMPLATE
+      relation: FK cha — Mau phu luc bao cao tuan thu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_MASTER
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_MASTER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bao cao tuan thu da nop
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_REPORT_MASTER
+    related_tables:
+    - table: COMPLIANCE_REPORT_FORM
+      relation: 1-N — File bieu mau da upload trong bao cao tuan thu
+    - table: COMPLIANCE_REPORT_TEMPLATE
+      relation: FK cha — Mau phu luc bao cao tuan thu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Mau phu luc bao cao tuan thu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_REPORT_TEMPLATE
+    related_tables:
+    - table: COMPLIANCE_REPORT_FORM_TEMPLATE
+      relation: 1-N — Bieu mau trong phu luc bao cao tuan thu
+    - table: COMPLIANCE_REPORT_MASTER
+      relation: 1-N — Bao cao tuan thu da nop
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPLIANCE_TEMPLATE_SHARE
+  brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_TEMPLATE_SHARE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPLIANCE_TEMPLATE_SHARE
+    related_tables:
+    - table: ANALYSIS_WORKFLOW_USER
+      relation: FK cha — Bảng analysis workflow user
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-COMPUTED_COLUMN
+  brd_name: Design Atomic từ nguồn TMS bảng COMPUTED_COLUMN
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình cột tính toán
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: COMPUTED_COLUMN
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD
+    related_tables:
+    - table: DASHBOARD_ADMIN_CONFIG
+      relation: 1-N — Bảng dashboard admin config
+    - table: DASHBOARD_USER_CONFIG
+      relation: 1-N — Bảng dashboard user config
+    - table: DASHBOARD_WIDGET_GROUP
+      relation: 1-N — Bảng dashboard widget group
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_ADMIN_CONFIG
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_ADMIN_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_ADMIN_CONFIG
+    related_tables:
+    - table: DASHBOARD
+      relation: FK cha — Bảng dashboard
+    - table: ANALYSIS_WORKFLOW_USER
+      relation: FK cha — Bảng analysis workflow user
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_ADMIN_CONFIG_ITEM
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_ADMIN_CONFIG_ITEM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_ADMIN_CONFIG_ITEM
+    related_tables:
+    - table: DASHBOARD_ADMIN_CONFIG_VERSION
+      relation: FK cha — Bảng dashboard admin config version
+    - table: DASHBOARD_WIDGET
+      relation: FK cha — Bảng dashboard widget
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_ADMIN_CONFIG_REGION
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_ADMIN_CONFIG_REGION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_ADMIN_CONFIG_REGION
+    related_tables:
+    - table: DASHBOARD_ADMIN_CONFIG_VERSION
+      relation: FK cha — Bảng dashboard admin config version
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_ADMIN_CONFIG_ROW
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_ADMIN_CONFIG_ROW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_ADMIN_CONFIG_ROW
+    related_tables:
+    - table: DASHBOARD_ADMIN_CONFIG_VERSION
+      relation: FK cha — Bảng dashboard admin config version
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_ADMIN_CONFIG_VERSION
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_ADMIN_CONFIG_VERSION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_ADMIN_CONFIG_VERSION
+    related_tables:
+    - table: DASHBOARD_ADMIN_CONFIG_ITEM
+      relation: 1-N — Bảng dashboard admin config item
+    - table: DASHBOARD_ADMIN_CONFIG_REGION
+      relation: 1-N — Bảng dashboard admin config region
+    - table: DASHBOARD_ADMIN_CONFIG_ROW
+      relation: 1-N — Bảng dashboard admin config row
+    - table: DASHBOARD_USER_CONFIG
+      relation: FK cha — Bảng dashboard user config
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_USER_CONFIG
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_USER_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_USER_CONFIG
+    related_tables:
+    - table: DASHBOARD_ADMIN_CONFIG_VERSION
+      relation: 1-N — Bảng dashboard admin config version
+    - table: DASHBOARD
+      relation: FK cha — Bảng dashboard
+    - table: ANALYSIS_WORKFLOW_USER
+      relation: FK cha — Bảng analysis workflow user
+    - table: DASHBOARD_USER_CONFIG_ITEM
+      relation: 1-N — Bảng dashboard user config item
+    - table: DASHBOARD_USER_CONFIG_REGION
+      relation: 1-N — Bảng dashboard user config region
+    - table: DASHBOARD_USER_CONFIG_ROW
+      relation: 1-N — Bảng dashboard user config row
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_USER_CONFIG_ITEM
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_USER_CONFIG_ITEM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_USER_CONFIG_ITEM
+    related_tables:
+    - table: DASHBOARD_USER_CONFIG
+      relation: FK cha — Bảng dashboard user config
+    - table: DASHBOARD_WIDGET
+      relation: FK cha — Bảng dashboard widget
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_USER_CONFIG_REGION
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_USER_CONFIG_REGION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_USER_CONFIG_REGION
+    related_tables:
+    - table: DASHBOARD_USER_CONFIG
+      relation: FK cha — Bảng dashboard user config
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_USER_CONFIG_ROW
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_USER_CONFIG_ROW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_USER_CONFIG_ROW
+    related_tables:
+    - table: DASHBOARD_USER_CONFIG
+      relation: FK cha — Bảng dashboard user config
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_WIDGET
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_WIDGET
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_WIDGET
+    related_tables:
+    - table: DASHBOARD_ADMIN_CONFIG_ITEM
+      relation: 1-N — Bảng dashboard admin config item
+    - table: DASHBOARD_USER_CONFIG_ITEM
+      relation: 1-N — Bảng dashboard user config item
+    - table: DASHBOARD_WIDGET_GROUP
+      relation: FK cha — Bảng dashboard widget group
+    - table: DASHBOARD_WIDGET_CHART
+      relation: 1-N — Bảng dashboard widget chart
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_WIDGET_CHART
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_WIDGET_CHART
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_WIDGET_CHART
+    related_tables:
+    - table: DASHBOARD_WIDGET
+      relation: FK cha — Bảng dashboard widget
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_WIDGET_FILTER
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_WIDGET_FILTER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_WIDGET_FILTER
+    related_tables:
+    - table: DASHBOARD_WIDGET_GROUP_FILTER
+      relation: 1-N — Bảng dashboard widget group filter
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_WIDGET_GROUP
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_WIDGET_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_WIDGET_GROUP
+    related_tables:
+    - table: DASHBOARD_WIDGET
+      relation: 1-N — Bảng dashboard widget
+    - table: DASHBOARD
+      relation: FK cha — Bảng dashboard
+    - table: DASHBOARD_WIDGET_GROUP_FILTER
+      relation: 1-N — Bảng dashboard widget group filter
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DASHBOARD_WIDGET_GROUP_FILTER
+  brd_name: Design Atomic từ nguồn TMS bảng DASHBOARD_WIDGET_GROUP_FILTER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DASHBOARD_WIDGET_GROUP_FILTER
+    related_tables:
+    - table: DASHBOARD_WIDGET_GROUP
+      relation: FK cha — Bảng dashboard widget group
+    - table: DASHBOARD_WIDGET_FILTER
+      relation: FK cha — Bảng dashboard widget filter
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DOCUMENT_OUTGOING
+  brd_name: Design Atomic từ nguồn TMS bảng DOCUMENT_OUTGOING
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DOCUMENT_OUTGOING
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DOCUMENT_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng DOCUMENT_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DOCUMENT_TEMPLATE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DOCUMENT_TEMPLATE_EXCEL_COLUMN
+  brd_name: Design Atomic từ nguồn TMS bảng DOCUMENT_TEMPLATE_EXCEL_COLUMN
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DOCUMENT_TEMPLATE_EXCEL_COLUMN
+    related_tables:
+    - table: DOCUMENT_TEMPLATE_FIELD
+      relation: FK cha — Bảng document template field
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-DOCUMENT_TEMPLATE_FIELD
+  brd_name: Design Atomic từ nguồn TMS bảng DOCUMENT_TEMPLATE_FIELD
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: DOCUMENT_TEMPLATE_FIELD
+    related_tables:
+    - table: DOCUMENT_TEMPLATE_EXCEL_COLUMN
+      relation: 1-N — Bảng document template excel column
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-EXPORT_FILE
+  brd_name: Design Atomic từ nguồn TMS bảng EXPORT_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: EXPORT_FILE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-INVESTOR_ACCOUNT
+  brd_name: Design Atomic từ nguồn TMS bảng INVESTOR_ACCOUNT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng lưu thông tin tài khoản nhà đầu tư
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: INVESTOR_ACCOUNT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-INVESTOR_ACCOUNT_DASHBOARD
+  brd_name: Design Atomic từ nguồn TMS bảng INVESTOR_ACCOUNT_DASHBOARD
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: INVESTOR_ACCOUNT_DASHBOARD
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-INVESTOR_ACCOUNT_EXTENDED_INFO
+  brd_name: Design Atomic từ nguồn TMS bảng INVESTOR_ACCOUNT_EXTENDED_INFO
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: INVESTOR_ACCOUNT_EXTENDED_INFO
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-INVESTOR_ACCOUNT_HISTORY
+  brd_name: Design Atomic từ nguồn TMS bảng INVESTOR_ACCOUNT_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lịch sử thay đô tài khoản nhà đầu tư
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: INVESTOR_ACCOUNT_HISTORY
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-METRIC_CATALOG
+  brd_name: Design Atomic từ nguồn TMS bảng METRIC_CATALOG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục các chỉ số/metric có thể đưa vào báo cáo
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: METRIC_CATALOG
+    related_tables:
+    - table: ATTRIBUTE_CATALOG
+      relation: 1-N — Danh mục các thuộc tính/trường dữ liệu thuộc về từng metric
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-METRIC_CATALOG_RELATIONSHIP
+  brd_name: Design Atomic từ nguồn TMS bảng METRIC_CATALOG_RELATIONSHIP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bảng quan hệ giữa các metric trong danh mục
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: METRIC_CATALOG_RELATIONSHIP
+    related_tables:
+    - table: METRIC_JOIN_CONDITION
+      relation: 1-N — Điều kiện join giữa các metric thông qua thuộc tính (attribute)
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-METRIC_DEFAULT_SORT
+  brd_name: Design Atomic từ nguồn TMS bảng METRIC_DEFAULT_SORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Sort mặc định cố định theo metric (measure đặc trưng + khóa duy
+      nhất), ghép ở ORDER BY tầng ngoài query hợp nhất Excel
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: METRIC_DEFAULT_SORT
+    related_tables:
+    - table: REPORT_TEMPLATE_METRIC
+      relation: FK cha — Cấu hình metric cho biểu mẫu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-METRIC_JOIN_CONDITION
+  brd_name: Design Atomic từ nguồn TMS bảng METRIC_JOIN_CONDITION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Điều kiện join giữa các metric thông qua thuộc tính (attribute)
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: METRIC_JOIN_CONDITION
+    related_tables:
+    - table: METRIC_CATALOG_RELATIONSHIP
+      relation: FK cha — Bảng quan hệ giữa các metric trong danh mục
+    - table: ATTRIBUTE_CATALOG
+      relation: FK cha — Danh mục các thuộc tính/trường dữ liệu thuộc về từng metric
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-METRIC_WORD_SQL
+  brd_name: Design Atomic từ nguồn TMS bảng METRIC_WORD_SQL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: 'Cấu hình N câu SQL (BM0xx) cho metric Word: mỗi dòng là 1 section
+      nguồn dữ liệu gọi sang CSDL_TT'
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: METRIC_WORD_SQL
+    related_tables:
+    - table: REPORT_TEMPLATE_METRIC
+      relation: FK cha — Cấu hình metric cho biểu mẫu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_ASSIGNMENT
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_ASSIGNMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phan cong xu ly bao cao cho Ban Giam sat thi truong
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_ASSIGNMENT
+    related_tables:
+    - table: ANALYSIS_REPORT
+      relation: FK cha — Bảng analysis report
+    - table: REPORT_ASSIGNMENT_NOTIFICATION
+      relation: 1-N — Lich su notification cho phan cong xu ly bao cao
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_ASSIGNMENT_NOTIFICATION
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_ASSIGNMENT_NOTIFICATION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lich su notification cho phan cong xu ly bao cao
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_ASSIGNMENT_NOTIFICATION
+    related_tables:
+    - table: REPORT_ASSIGNMENT
+      relation: FK cha — Phan cong xu ly bao cao cho Ban Giam sat thi truong
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_ATTACH_FILE
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_ATTACH_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: File dinh kem bao cao
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_ATTACH_FILE
+    related_tables:
+    - table: ABNORMAL_REPORT_FORM
+      relation: 1-N — File Excel uploaded trong submission cua bao cao bat thuong
+    - table: ANALYSIS_REPORT
+      relation: FK cha — Bảng analysis report
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_COLUMN
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_COLUMN
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình cột hiển thị của biểu mẫu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_COLUMN
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_COLUMN_GROUP
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_COLUMN_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình nhóm cột hiển thị
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_COLUMN_GROUP
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_COMMENT
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_COMMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Nhan xet bao cao
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_COMMENT
+    related_tables:
+    - table: ANALYSIS_REPORT
+      relation: FK cha — Bảng analysis report
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_FILTER
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_FILTER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình bộ lọc của biểu mẫu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_FILTER
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_METRIC_JOIN
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_METRIC_JOIN
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình join giữa các metric
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_METRIC_JOIN
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_PARAMETER
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_PARAMETER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_PARAMETER
+    related_tables:
+    - table: CASE_REPORT_PARAMETER_VALUE
+      relation: 1-N — Bảng case report parameter value
+    - table: REPORT_PARAMETER_HISTORY_LOG
+      relation: 1-N — Bảng report parameter history log
+    - table: REPORT_TEMPLATE_PARAMETER
+      relation: 1-N — Bảng report template parameter
+    - table: TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+      relation: 1-N — Bảng transaction review report parameter value
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_PARAMETER_HISTORY_LOG
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_PARAMETER_HISTORY_LOG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_PARAMETER_HISTORY_LOG
+    related_tables:
+    - table: REPORT_PARAMETER
+      relation: FK cha — Bảng report parameter
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_PROCESS_HISTORY
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_PROCESS_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lich su xu ly bao cao
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_PROCESS_HISTORY
+    related_tables:
+    - table: ANALYSIS_REPORT
+      relation: FK cha — Bảng analysis report
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_SORT
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_SORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình sắp xếp của biểu mẫu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_SORT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_TEMPLATE
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_TEMPLATE
+    related_tables:
+    - table: ANALYSIS_DEFINE_REPORT_TEMPLATE
+      relation: 1-N — Bảng analysis define report template
+    - table: ANALYSIS_EXECUTION_LOG
+      relation: 1-N — Bảng analysis execution log
+    - table: ANALYSIS_WORKFLOW_TEMPLATE
+      relation: 1-N — Bảng analysis workflow template
+    - table: CASE_FILE_WORKFLOW
+      relation: 1-N — Bảng lưu thông tin luồng phê duyệt vụ việc
+    - table: REPORT_TEMPLATE_PARAMETER
+      relation: 1-N — Bảng report template parameter
+    - table: REPORT_TEMPLATE_SESSION
+      relation: 1-N — Bảng report template session
+    - table: TRANSACTION_REVIEW_EXECUTION_LOG
+      relation: 1-N — Bảng transaction review execution log
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_TEMPLATE_CONFIG
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_TEMPLATE_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lưu metadata của các biểu mẫu báo cáo động do người dùng tạo
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_TEMPLATE_CONFIG
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_TEMPLATE_METRIC
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_TEMPLATE_METRIC
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Cấu hình metric cho biểu mẫu
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_TEMPLATE_METRIC
+    related_tables:
+    - table: METRIC_DEFAULT_SORT
+      relation: 1-N — Sort mặc định cố định theo metric (measure đặc trưng + khóa
+        duy nhất), ghép ở ORDER BY tầng ngoài query hợp nhất Excel
+    - table: METRIC_WORD_SQL
+      relation: '1-N — Cấu hình N câu SQL (BM0xx) cho metric Word: mỗi dòng là 1 section
+        nguồn dữ liệu gọi sang CSDL_TT'
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_TEMPLATE_PARAMETER
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_TEMPLATE_PARAMETER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_TEMPLATE_PARAMETER
+    related_tables:
+    - table: REPORT_TEMPLATE
+      relation: FK cha — Bảng report template
+    - table: REPORT_PARAMETER
+      relation: FK cha — Bảng report parameter
+    - table: ATTRIBUTE_CATALOG
+      relation: FK cha — Danh mục các thuộc tính/trường dữ liệu thuộc về từng metric
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_TEMPLATE_SESSION
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_TEMPLATE_SESSION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_TEMPLATE_SESSION
+    related_tables:
+    - table: REPORT_TEMPLATE
+      relation: FK cha — Bảng report template
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-REPORT_TEMPLATE_WORKFLOW
+  brd_name: Design Atomic từ nguồn TMS bảng REPORT_TEMPLATE_WORKFLOW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_TEMPLATE_WORKFLOW
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-SECURITIES_GROUP
+  brd_name: Design Atomic từ nguồn TMS bảng SECURITIES_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bang quan ly nhom chung khoan
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: SECURITIES_GROUP
+    related_tables:
+    - table: SECURITIES_GROUP_HISTORY
+      relation: 1-N — Bang luu lich su thay doi nhom chung khoan
+    - table: SECURITIES_GROUP_MEMBER
+      relation: 1-N — Bang quan ly thanh vien nhom chung khoan
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-SECURITIES_GROUP_HISTORY
+  brd_name: Design Atomic từ nguồn TMS bảng SECURITIES_GROUP_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bang luu lich su thay doi nhom chung khoan
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: SECURITIES_GROUP_HISTORY
+    related_tables:
+    - table: SECURITIES_GROUP
+      relation: FK cha — Bang quan ly nhom chung khoan
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-SECURITIES_GROUP_MEMBER
+  brd_name: Design Atomic từ nguồn TMS bảng SECURITIES_GROUP_MEMBER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bang quan ly thanh vien nhom chung khoan
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: SECURITIES_GROUP_MEMBER
+    related_tables:
+    - table: SECURITIES_GROUP
+      relation: FK cha — Bang quan ly nhom chung khoan
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-SUSPICIOUS_ACCOUNT
+  brd_name: Design Atomic từ nguồn TMS bảng SUSPICIOUS_ACCOUNT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: SUSPICIOUS_ACCOUNT
+    related_tables:
+    - table: CASE_FILE
+      relation: FK cha — Bảng lưu thông tin vụ việc
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW
+    related_tables:
+    - table: ACCOUNT_RELATIONSHIP
+      relation: 1-N — Bảng quản lý quan hệ giữa các tài khoản trong nhóm
+    - table: TRANSACTION_REVIEW_ACCOUNT_CODE
+      relation: 1-N — Bảng transaction review account code
+    - table: TRANSACTION_REVIEW_ACCOUNT_GROUP
+      relation: 1-N — Bảng transaction review account group
+    - table: TRANSACTION_REVIEW_ACCOUNT_GROUP_MEMBER
+      relation: 1-N — Bảng transaction review account group member
+    - table: TRANSACTION_REVIEW_ANALYSIS_ATTRIBUTE_VALUE
+      relation: 1-N — Lưu giá trị tham số phân tích cho rà soát giao dịch theo mã
+        chứng khoán
+    - table: TRANSACTION_REVIEW_ATTACH_FILE
+      relation: 1-N — Bảng transaction review attach file
+    - table: TRANSACTION_REVIEW_EXECUTION_LOG
+      relation: 1-N — Bảng transaction review execution log
+    - table: TRANSACTION_REVIEW_INVESTOR
+      relation: 1-N — Bảng transaction review investor
+    - table: TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+      relation: 1-N — Bảng transaction review report parameter value
+    - table: TRANSACTION_REVIEW_REPORT_TEMPLATE_WORKFLOW
+      relation: 1-N — Bảng transaction review report template workflow
+    - table: TRANSACTION_REVIEW_SECURITIES_CODE
+      relation: 1-N — Bảng transaction review securities code
+    - table: TRANSACTION_REVIEW_SECURITIES_GROUP
+      relation: 1-N — Bảng transaction review securities group
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_ACCOUNT_CODE
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_ACCOUNT_CODE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_ACCOUNT_CODE
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_ACCOUNT_GROUP
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_ACCOUNT_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_ACCOUNT_GROUP
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_ACCOUNT_GROUP_MEMBER
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_ACCOUNT_GROUP_MEMBER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_ACCOUNT_GROUP_MEMBER
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    - table: ACCOUNT_GROUP
+      relation: FK cha — Bảng quản lý nhóm tài khoản nhà đầu tư
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_ANALYSIS_ATTRIBUTE_VALUE
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_ANALYSIS_ATTRIBUTE_VALUE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lưu giá trị tham số phân tích cho rà soát giao dịch theo mã chứng
+      khoán
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_ANALYSIS_ATTRIBUTE_VALUE
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_ATTACH_FILE
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_ATTACH_FILE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_ATTACH_FILE
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_EXECUTION_LOG
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_EXECUTION_LOG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_EXECUTION_LOG
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    - table: REPORT_TEMPLATE
+      relation: FK cha — Bảng report template
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_INVESTOR
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_INVESTOR
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_INVESTOR
+    related_tables:
+    - table: CASE_FILE_INVESTOR
+      relation: 1-N — Bảng case file investor
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    - table: REPORT_PARAMETER
+      relation: FK cha — Bảng report parameter
+    - table: ATTRIBUTE_CATALOG
+      relation: FK cha — Danh mục các thuộc tính/trường dữ liệu thuộc về từng metric
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_REPORT_TEMPLATE_WORKFLOW
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_REPORT_TEMPLATE_WORKFLOW
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_REPORT_TEMPLATE_WORKFLOW
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_SECURITIES_CODE
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_SECURITIES_CODE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_SECURITIES_CODE
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-TRANSACTION_REVIEW_SECURITIES_GROUP
+  brd_name: Design Atomic từ nguồn TMS bảng TRANSACTION_REVIEW_SECURITIES_GROUP
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: TRANSACTION_REVIEW_SECURITIES_GROUP
+    related_tables:
+    - table: TRANSACTION_REVIEW
+      relation: FK cha — Bảng transaction review
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-USER_MANUAL
+  brd_name: Design Atomic từ nguồn TMS bảng USER_MANUAL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: USER_MANUAL
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-TMS-USER_TABLE_CONFIG
+  brd_name: Design Atomic từ nguồn TMS bảng USER_TABLE_CONFIG
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: null
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: pending
+    scope_reason: null
+    table: USER_TABLE_CONFIG
+    related_tables:
+    - table: ANALYSIS_WORKFLOW_USER
+      relation: FK cha — Bảng analysis workflow user
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null

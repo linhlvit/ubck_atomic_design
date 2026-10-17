@@ -1,61 +1,6 @@
 DATA DICTIONARY - SCHEMA: UAT_ISS
-Tong so bang: 23 | Materialized View: 0
+Tong so bang: 19 | Materialized View: 0
 ==============================================================================================================
-
-BANG: AUDIT_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-ENTITY_TYPE                   VARCHAR2(50)        NO                                       
-ENTITY_ID                     VARCHAR2(36)        NO                                       
-ENTITY_CODE                   VARCHAR2(255)       NO                                       
-ACTION                        VARCHAR2(50)        NO                                       
-JSON_OLD                      CLOB                YES                                      
-JSON_NEW                      CLOB                YES                                      
-MODIFIED_AT                   TIMESTAMP(6)        YES                                      
-CREATED_BY_ID                 VARCHAR2(36)        YES                                      
-CREATED_BY_NAME               VARCHAR2(250)       YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
-UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
-UPDATED_AT                    TIMESTAMP(6)        YES                                      
-DELETED                       NUMBER(1,0)         YES                                      
-TRANSACTION_ID                VARCHAR2(36)        YES                                      
-
-
-BANG: DATABASECHANGELOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(255)       NO                                       
-AUTHOR                        VARCHAR2(255)       NO                                       
-FILENAME                      VARCHAR2(255)       NO                                       
-DATEEXECUTED                  TIMESTAMP(6)        NO                                       
-ORDEREXECUTED                 NUMBER              NO                                       
-EXECTYPE                      VARCHAR2(10)        NO                                       
-MD5SUM                        VARCHAR2(35)        YES                                      
-DESCRIPTION                   VARCHAR2(255)       YES                                      
-COMMENTS                      VARCHAR2(255)       YES                                      
-TAG                           VARCHAR2(255)       YES                                      
-LIQUIBASE                     VARCHAR2(20)        YES                                      
-CONTEXTS                      VARCHAR2(255)       YES                                      
-LABELS                        VARCHAR2(255)       YES                                      
-DEPLOYMENT_ID                 VARCHAR2(10)        YES                                      
-
-
-BANG: DATABASECHANGELOGLOCK
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-LOCKED                        NUMBER(1,0)         NO                                       
-LOCKGRANTED                   TIMESTAMP(6)        YES                                      
-LOCKEDBY                      VARCHAR2(255)       YES                                      
-
 
 BANG: FACT_REPORT_DATA
 Mo ta: 
@@ -257,34 +202,6 @@ UPDATED_BY_ID                 VARCHAR2(36)        YES
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
 UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
 DELETED                       NUMBER(1,0)         YES                                      
-
-
-BANG: LOG_DATA_CHANGE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-APPLICATION                   VARCHAR2(100)       YES                                      
-CLASS_NAME                    VARCHAR2(200)       YES                                      
-ACTION_REAL                   VARCHAR2(50)        YES                                      
-ACTION_CUSTOM                 VARCHAR2(200)       YES                                      
-FILTER_CUSTOM                 VARCHAR2(1000)      YES                                      
-DATA_CHANGE                   CLOB                YES                                      
-CREATED_ENTITY_AT             TIMESTAMP(6) WITH TIME ZONEYES                                      
-UPDATED_ENTITY_AT             TIMESTAMP(6) WITH TIME ZONEYES                                      
-USER_ID                       VARCHAR2(36)        YES                                      
-USER_NAME                     VARCHAR2(250)       YES                                      
-FULL_NAME                     VARCHAR2(500)       YES                                      
-IP_CLIENT                     VARCHAR2(100)       YES                                      
-URL                           VARCHAR2(1000)      YES                                      
-USER_AGENT                    VARCHAR2(500)       YES                                      
-CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
-UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
-CREATED_BY_ID                 VARCHAR2(36)        YES                                      
-CREATED_BY_NAME               VARCHAR2(250)       YES                                      
-UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
-UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
 
 
 BANG: OUTPUT_REPORT
@@ -519,5 +436,4 @@ UPDATED_BY_ID                 VARCHAR2(36)        YES
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
 UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
 DELETED                       NUMBER(1,0)         YES                                      
-
 

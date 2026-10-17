@@ -1,0 +1,106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ACCOUNT_GROUP_HISTORY
+brd_ref: BRD-SRC-TMS-ACCOUNT_GROUP_HISTORY
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: ID duy nhất (UUID)
+  key: PK
+  fk_note: null
+- name: GROUP_ID
+  data_type: VARCHAR2(36)
+  description: ID nhóm tài khoản (FK đến account_group)
+  key: null
+  fk_note: null
+- name: GROUP_CODE
+  data_type: VARCHAR2(50)
+  description: Mã nhóm tài khoản
+  key: null
+  fk_note: null
+- name: CHANGE_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời điểm thay đổi
+  key: null
+  fk_note: null
+- name: CHANGE_TYPE
+  data_type: VARCHAR2(50)
+  description: Loại thay đổi (UPDATE)
+  key: null
+  fk_note: null
+- name: OLD_VALUE
+  data_type: CLOB
+  description: Giá trị cũ (JSON)
+  key: null
+  fk_note: null
+- name: NEW_VALUE
+  data_type: CLOB
+  description: Giá trị mới (JSON)
+  key: null
+  fk_note: null
+- name: CHANGE_SOURCE
+  data_type: VARCHAR2(20)
+  description: Nguồn thay đổi (WEB)
+  key: null
+  fk_note: null
+- name: CHANGED_BY_ID
+  data_type: VARCHAR2(255)
+  description: ID người thay đổi
+  key: null
+  fk_note: null
+- name: APPROVAL_STATUS
+  data_type: NUMBER(2,0)
+  description: 'Trạng thái phê duyệt: 1=NEW, 2=PENDING, 3=REJECTED, 4=APPROVED'
+  key: null
+  fk_note: null
+- name: APPROVAL_COMMENT
+  data_type: VARCHAR2(1000)
+  description: Ghi chú phê duyệt
+  key: null
+  fk_note: null
+- name: APPROVED_BY_ID
+  data_type: VARCHAR2(255)
+  description: ID người phê duyệt
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái xóa: 0=Chưa xóa, 1=Đã xóa'
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(22,0)
+  description: null
+  key: null
+  fk_note: null

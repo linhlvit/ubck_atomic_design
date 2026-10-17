@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: UAT_TMS
-Tong so bang: 136 | Materialized View: 0
+Tong so bang: 123 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ABNORMAL_COLUMN_SEMANTIC
@@ -179,7 +179,7 @@ REPORT_TYPE                   VARCHAR2(400)       YES                           
 SUBMITTER_ID                  VARCHAR2(36)        YES                                      ID nguoi nop
 SUBMITTER_NAME                VARCHAR2(2000)      YES                                      Ho ten nguoi nop
 SUBMITTER_TITLE               VARCHAR2(800)       YES                                      Chuc vu nguoi nop
-SUBMISSION_DATE               TIMESTAMP(6)        NO                                       Thoi gian he thong tiep nhan bao cao
+SUBMISSION_DATE               TIMESTAMP(6)        YES                                      Thoi gian he thong tiep nhan bao cao
 CURRENT_SUBMISSION_NO         NUMBER(1,0)         YES                                      Lan nop: 1=Nop lan dau, 2=Bo sung bieu mau 11
 ATTACHMENT_COUNT              NUMBER(3,0)         NO                                       So file dang hieu luc cua lan nop hien tai (validate nghiep vu 1..20)
 TOTAL_ATTACHMENT_SIZE         NUMBER(19,0)        NO                                       Tong dung luong file dang hieu luc (validate nghiep vu <= 15MB)
@@ -200,8 +200,9 @@ UPDATED_BY_NAME               VARCHAR2(250)       YES                           
 DELETED                       NUMBER(1,0)         NO                                       Soft delete: 0=Active, 1=Deleted
 RESUBMIT_REASON               VARCHAR2(4000)      YES                                      Ly do nop bo sung (bieu mau 11)
 CASE_FILE_ID                  VARCHAR2(36)        YES                                      
-CASE_FILE_CODE                VARCHAR2(200)       YES                                      
+CASE_FILE_CODE                VARCHAR2(1500)      YES                                      
 SUBMITTER_TYPE                VARCHAR2(400)       NO                                       
+DRAFT_REVISION                NUMBER(10,0)        NO                                       
 
 
 BANG: ABNORMAL_REPORT_TEMPLATE
@@ -234,9 +235,9 @@ ID                            VARCHAR2(36)        NO      PK                    
 GROUP_CODE                    VARCHAR2(50)        NO                                       Mã nhóm (format: NNDT_X)
 GROUP_NAME                    VARCHAR2(200)       YES                                      Tên nhóm
 SECURITIES_CODE_ID            VARCHAR2(36)        YES                                      ID mã chứng khoán
-STOCK_CODE                    VARCHAR2(50)        NO                                       Mã chứng khoán
+STOCK_CODE                    VARCHAR2(50)        YES                                      Mã chứng khoán
 CASE_FILE_ID                  VARCHAR2(36)        YES                                      ID vụ việc
-CASE_CODE                     VARCHAR2(50)        NO                                       Mã vụ việc
+CASE_CODE                     VARCHAR2(1500)      YES                                      Mã vụ việc
 RELATION_TYPE_ID              VARCHAR2(36)        YES                                      ID loại quan hệ (FK đến bảng relation_type)
 CHARACTERISTIC                VARCHAR2(2000)      YES                                      Đặc điểm
 GROUP_TYPE                    NUMBER(2,0)         YES                                      Loại nhóm
@@ -324,6 +325,7 @@ RELATIONSHIP_CODE             VARCHAR2(50)        YES
 RELATIONSHIP_TYPE             NUMBER(22,0)        YES                                      
 VERSION                       NUMBER(22,0)        NO                                       
 WORKFLOW_ID                   VARCHAR2(36)        YES                                      Quy trình phân tích sinh ra quan hệ (luồng báo cáo bất thường); NULL = nhập tay/legacy
+SOURCE_ACCOUNT_CODE           VARCHAR2(50)        YES                                      
 
 
 BANG: ANALYSIS_ACCOUNT_GROUP
@@ -362,7 +364,6 @@ WORKFLOW_TYPE                 NUMBER(1,0)         NO                            
 RESULT_TYPE                   NUMBER(1,0)         NO                                       Loại kết quả
 ACCOUNT_GROUP_ID              VARCHAR2(36)        NO                                       ID nhóm tài khoản
 ACCOUNT_CODE                  VARCHAR2(50)        NO                                       Số tài khoản thành viên
-ACCOUNT_NAME                  VARCHAR2(800)       YES                                      Tên tài khoản thành viên
 RELATIONSHIP_ID               VARCHAR2(36)        NO                                       ID mối quan hệ
 DESCRIPTION                   VARCHAR2(2000)      YES                                      Mô tả
 ANALYSIS_DATE                 TIMESTAMP(6)        YES                                      Ngày phân tích
@@ -404,6 +405,7 @@ ACCOUNT_CODE_2                VARCHAR2(50)        YES                           
 SECURITIES_CODE_ID            VARCHAR2(50)        YES                                      ID mã chứng khoán (Cột cũ)
 SECURITIES_CODE               VARCHAR2(10)        YES                                      Mã chứng khoán
 WORKFLOW_ID                   VARCHAR2(36)        YES                                      Id quy trình phân tích (analysis_workflow.id)
+SOURCE_ACCOUNT_CODE           VARCHAR2(50)        YES                                      
 
 
 BANG: ANALYSIS_ATTRIBUTE_DEFINE
@@ -663,15 +665,6 @@ TEMPLATE_ID                   VARCHAR2(100)       YES
 CASE_FILE_ID                  VARCHAR2(36)        NO                                       
 WORKFLOW_TYPE                 NUMBER(2,0)         NO                                       
 ACCOUNT_CODE                  VARCHAR2(50)        NO                                       
-ACCOUNT_NAME                  VARCHAR2(800)       YES                                      
-CONTACT_ADDRESS               VARCHAR2(2000)      YES                                      
-IDENTITY_NUMBER               VARCHAR2(200)       YES                                      
-IDENTITY_ISSUE_DATE           TIMESTAMP(6)        YES                                      
-IDENTITY_ISSUE_PLACE          VARCHAR2(800)       YES                                      
-DOMESTIC_FOREIGN_FLAG         NUMBER(1,0)         YES                                      
-PHONE_NUMBER                  VARCHAR2(200)       YES                                      
-EMAIL                         VARCHAR2(800)       YES                                      
-ACCOUNT_STATUS                NUMBER(1,0)         NO                                       
 CREATED_AT                    TIMESTAMP(6)        NO                                       
 UPDATED_AT                    TIMESTAMP(6)        YES                                      
 CREATED_BY_ID                 VARCHAR2(255)       YES                                      
@@ -679,7 +672,6 @@ UPDATED_BY_ID                 VARCHAR2(255)       YES
 CREATED_BY_NAME               VARCHAR2(250)       YES                                      
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
 DELETED                       NUMBER(1,0)         NO                                       
-ACCOUNT_TYPE                  NUMBER(1,0)         YES                                      1: Cơ sở, 2: Phái sinh
 SECURITIES_CODE_ID            VARCHAR2(36)        YES                                      
 SECURITIES_CODE               VARCHAR2(10)        YES                                      
 WORKFLOW_ID                   VARCHAR2(36)        YES                                      Id quy trình phân tích (analysis_workflow.id)
@@ -789,114 +781,6 @@ DELETED                       NUMBER(1,0)         YES                           
 CATEGORY                      VARCHAR2(400)       NO                                       Nhóm: Cổ phiếu, Thông tin giao dịch theo ngày...
 
 
-BANG: AUDIT_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-USER_ID                       VARCHAR2(36)        YES                                      
-USERNAME                      VARCHAR2(400)       YES                                      
-FULL_NAME                     VARCHAR2(800)       YES                                      
-FEATURE_CODE                  VARCHAR2(400)       YES                                      
-MODULE_CODE                   VARCHAR2(400)       YES                                      
-ACTION_TYPE                   VARCHAR2(200)       YES                                      
-ACTION_DESCRIPTION            VARCHAR2(4000)      YES                                      
-ENDPOINT                      VARCHAR2(2000)      YES                                      
-HTTP_METHOD                   VARCHAR2(40)        YES                                      
-ACTION_STATUS                 NUMBER(1,0)         YES                                      
-BEFORE_DATA                   CLOB                YES                                      
-AFTER_DATA                    CLOB                YES                                      
-LOG_DATE                      DATE                YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-
-
-BANG: BATCH_JOB_EXECUTION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JOB_EXECUTION_ID              NUMBER(19,0)        NO      PK                               
-VERSION                       NUMBER(19,0)        YES                                      
-JOB_INSTANCE_ID               NUMBER(19,0)        NO      FK     BATCH_JOB_INSTANCE.JOB_INSTANCE_ID
-CREATE_TIME                   TIMESTAMP(6)        NO                                       
-START_TIME                    TIMESTAMP(6)        YES                                      
-END_TIME                      TIMESTAMP(6)        YES                                      
-STATUS                        VARCHAR2(10)        YES                                      
-LAST_UPDATED                  TIMESTAMP(6)        YES                                      
-EXIT_CODE                     CLOB                YES                                      
-EXIT_MESSAGE                  CLOB                YES                                      
-
-
-BANG: BATCH_JOB_EXECUTION_CONTEXT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JOB_EXECUTION_ID              NUMBER(19,0)        NO      PK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
-SERIALIZED_CONTEXT            CLOB                YES                                      
-SHORT_CONTEXT                 CLOB                YES                                      
-
-
-BANG: BATCH_JOB_EXECUTION_PARAMS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JOB_EXECUTION_ID              NUMBER(19,0)        NO      FK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
-PARAMETER_NAME                VARCHAR2(100)       NO                                       
-PARAMETER_TYPE                VARCHAR2(100)       NO                                       
-IDENTIFYING                   CHAR(1)             NO                                       
-PARAMETER_VALUE               CLOB                YES                                      
-
-
-BANG: BATCH_JOB_INSTANCE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-JOB_INSTANCE_ID               NUMBER(19,0)        NO      PK                               
-VERSION                       NUMBER(19,0)        YES                                      
-JOB_NAME                      VARCHAR2(100)       NO                                       
-JOB_KEY                       VARCHAR2(32)        NO                                       
-
-
-BANG: BATCH_STEP_EXECUTION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-STEP_EXECUTION_ID             NUMBER(19,0)        NO      PK                               
-VERSION                       NUMBER(19,0)        NO                                       
-STEP_NAME                     VARCHAR2(100)       NO                                       
-JOB_EXECUTION_ID              NUMBER(19,0)        NO      FK     BATCH_JOB_EXECUTION.JOB_EXECUTION_ID
-CREATE_TIME                   TIMESTAMP(6)        NO                                       
-START_TIME                    TIMESTAMP(6)        YES                                      
-END_TIME                      TIMESTAMP(6)        YES                                      
-STATUS                        VARCHAR2(10)        YES                                      
-COMMIT_COUNT                  NUMBER(19,0)        YES                                      
-READ_COUNT                    NUMBER(19,0)        YES                                      
-FILTER_COUNT                  NUMBER(19,0)        YES                                      
-WRITE_COUNT                   NUMBER(19,0)        YES                                      
-READ_SKIP_COUNT               NUMBER(19,0)        YES                                      
-WRITE_SKIP_COUNT              NUMBER(19,0)        YES                                      
-PROCESS_SKIP_COUNT            NUMBER(19,0)        YES                                      
-ROLLBACK_COUNT                NUMBER(19,0)        YES                                      
-LAST_UPDATED                  TIMESTAMP(6)        YES                                      
-EXIT_CODE                     CLOB                YES                                      
-EXIT_MESSAGE                  CLOB                YES                                      
-
-
-BANG: BATCH_STEP_EXECUTION_CONTEXT
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-STEP_EXECUTION_ID             NUMBER(19,0)        NO      PK     BATCH_STEP_EXECUTION.STEP_EXECUTION_ID
-SERIALIZED_CONTEXT            CLOB                YES                                      
-SHORT_CONTEXT                 CLOB                YES                                      
-
-
 BANG: BUSINESS_DASHBOARD
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -927,7 +811,6 @@ CASE_FILE_ID                  VARCHAR2(36)        NO
 ATTRIBUTE_ID                  VARCHAR2(36)        NO      FK     ANALYSIS_ATTRIBUTE_DEFINE.ID
 WORKFLOW_TYPE                 NUMBER(2,0)         NO                                       
 VALUE_NUMBER                  NUMBER(19,6)        YES                                      
-VALUE_STRING                  VARCHAR2(4000)      YES                                      
 VALUE_DATE                    DATE                YES                                      
 VALUE_BOOLEAN                 NUMBER(1,0)         YES                                      
 CREATED_AT                    TIMESTAMP(6)        NO                                       
@@ -940,6 +823,7 @@ DELETED                       NUMBER(1,0)         NO
 SECURITIES_ID                 VARCHAR2(36)        YES                                      
 SECURITIES_CODE               VARCHAR2(36)        YES                                      
 WORKFLOW_ID                   VARCHAR2(36)        YES                                      Id quy trình phân tích (analysis_workflow.id)
+VALUE_STRING                  CLOB                YES                                      
 
 
 BANG: CASE_APPROVAL_STEP
@@ -949,14 +833,14 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(36)        NO      PK                               
 CASE_FILE_ID                  VARCHAR2(36)        NO                                       ID vụ việc (FK: case_file.id)
-STEP_CODE                     NUMBER(1,0)         NO                                       Mã bước: 1=Chuyên viên khởi tạo, 2=Trưởng ban phê duyệt, 3=Phó Trưởng ban phân công, 4=Chuyên viên xử lý
+STEP_CODE                     NUMBER(2,0)         NO                                       Mã bước: 1=Chuyên viên khởi tạo, 2=Trưởng ban phê duyệt, 3=Phó Trưởng ban phân công, 4=Chuyên viên xử lý
 STEP_NAME                     VARCHAR2(800)       NO                                       Tên bước (phục vụ hiển thị)
 ASSIGNED_USER_ID              VARCHAR2(36)        YES                                      User đang được giao duyệt bước này (FK: system_user.id, có thể null nếu phân công theo role)
 ASSIGNED_ROLE                 VARCHAR2(400)       YES                                      Chức vụ/nhóm duyệt (ví dụ: TRUONG_BAN, PHO_TRUONG_BAN, CHUYEN_VIEN)
 STATUS                        NUMBER(1,0)         YES                                      Trạng thái: 0=Chưa xử lý, 1=Đang xử lý, 2=Đã duyệt/Hoàn thành, 3=Từ chối
 ACTION_AT                     DATE                YES                                      Thời điểm duyệt/xử lý
-ACTION_NOTE                   VARCHAR2(400)       YES                                      Ghi chú khi duyệt/từ chối
-NEXT_STEP_CODE                NUMBER(1,0)         YES                                      Bước tiếp theo (2..4), null nếu là bước cuối
+ACTION_NOTE                   VARCHAR2(4000)      YES                                      Ghi chú khi duyệt/từ chối
+NEXT_STEP_CODE                NUMBER(2,0)         YES                                      Bước tiếp theo (2..4), null nếu là bước cuối
 NEXT_ASSIGNED_USER_ID         VARCHAR2(36)        YES                                      Người được chỉ định duyệt bước tiếp theo (FK: system_user.id)
 NEXT_ASSIGNED_ROLE            VARCHAR2(400)       YES                                      Chức vụ/nhóm của người duyệt tiếp theo
 DUE_DATE                      DATE                YES                                      Hạn xử lý (nếu cần SLA)
@@ -999,10 +883,10 @@ Mo ta: Bảng lưu thông tin vụ việc
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(36)        NO      PK                               
-CASE_FILE_CODE                VARCHAR2(200)       NO                                       Mã vụ việc
+CASE_FILE_CODE                VARCHAR2(1500)      NO                                       Mã vụ việc
 CASE_FILE_TYPE                NUMBER(2,0)         NO                                       Bảng quản lý nhóm tài khoản nhà đầu tư
 SECURITIES_CODE_ID            VARCHAR2(36)        YES                                      ID mã chứng khoán
-SECURITIES_CODE               VARCHAR2(200)       YES                                      Mã chứng khoán
+SECURITIES_CODE               VARCHAR2(1000)      YES                                      Mã chứng khoán
 INFORMATION_SOURCE            VARCHAR2(2000)      YES                                      Nguồn thông tin
 COMPLETION_DATE               DATE                YES                                      Ngày hoàn thành vụ viêc
 START_DATE                    DATE                YES                                      Ngày bắt đầu
@@ -1025,6 +909,56 @@ CASE_FILE_STATUS_ID           VARCHAR2(144)       YES                           
 ABNORMAL_REPORT_MASTER_ID     VARCHAR2(36)        YES                                      
 
 
+BANG: CASE_FILE_ASSIGNMENT
+Mo ta: Phan cong xu ly vu viec cho Pho Truong ban / Chuyen vien
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               Primary key (UUID)
+CASE_FILE_ID                  VARCHAR2(36)        NO                                       ID vu viec
+ASSIGNEE_ID                   VARCHAR2(36)        NO                                       ID nguoi duoc giao
+ASSIGNEE_NAME                 VARCHAR2(1000)      YES                                      Ho ten nguoi duoc giao tai thoi diem giao
+ASSIGNEE_ROLE                 NUMBER(1,0)         NO                                       2=Pho Truong ban, 3=Chuyen vien
+DEPUTY_KIND                   NUMBER(1,0)         YES                                      Chi khi role=2: 1=phan cong, 2=theo doi
+ASSIGN_SOURCE                 NUMBER(1,0)         NO                                       1=Truong ban giao, 2=Pho Truong ban giao
+ASSIGNED_BY_ID                VARCHAR2(36)        NO                                       ID nguoi thuc hien phan cong
+ASSIGNED_BY_NAME              VARCHAR2(1000)      YES                                      
+ASSIGNED_AT                   TIMESTAMP(6)        NO                                       Thoi diem phan cong
+STATE                         NUMBER(1,0)         NO                                       1=dang hieu luc, 2=da thu hoi
+REVOKED_AT                    TIMESTAMP(6)        YES                                      
+REVOKED_BY_ID                 VARCHAR2(36)        YES                                      
+REVOKED_BY_NAME               VARCHAR2(1000)      YES                                      
+REVOKE_REASON                 VARCHAR2(4000)      YES                                      
+APPROVAL_STEP_ID              VARCHAR2(36)        YES                                      Tro toi dong case_approval_step sinh kem
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+VERSION                       NUMBER              NO                                       
+
+
+BANG: CASE_FILE_INVESTOR
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+CASE_FILE_ID                  VARCHAR2(36)        NO                                       
+INVESTOR_ID                   VARCHAR2(100)       YES                                      
+IDENTITY_NUMBER               VARCHAR2(100)       YES                                      
+INVESTOR_DATA                 CLOB                YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
 BANG: CASE_FILE_SECURITIES_CODE
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -1034,6 +968,26 @@ ID                            VARCHAR2(36)        NO      PK
 CASE_FILE_ID                  VARCHAR2(36)        NO                                       
 SECURITIES_ID                 VARCHAR2(36)        NO                                       
 SECURITIES_CODE               VARCHAR2(36)        NO                                       
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: CASE_FILE_SECURITIES_GROUP
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+CASE_FILE_ID                  VARCHAR2(36)        NO                                       
+GROUP_ID                      VARCHAR2(36)        YES                                      
+GROUP_CODE                    VARCHAR2(50)        NO                                       
+GROUP_NAME                    VARCHAR2(200)       YES                                      
+SECURITIES_CODES              CLOB                YES                                      
 CREATED_AT                    TIMESTAMP(6)        NO                                       
 UPDATED_AT                    TIMESTAMP(6)        YES                                      
 CREATED_BY_ID                 VARCHAR2(255)       YES                                      
@@ -1132,6 +1086,7 @@ UPDATED_BY_NAME               VARCHAR2(250)       YES
 DELETED                       NUMBER(1,0)         NO                                       
 BACKGROUND_COLOR              VARCHAR2(28)        YES                                      Mã màu nền (hex, VD: #FF0000)
 TEXT_COLOR                    VARCHAR2(28)        YES                                      Mã màu chữ (hex, VD: #FFFFFF)
+VERSION                       NUMBER(19,0)        NO                                       Optimistic locking version, incremented on every update
 
 
 BANG: CATEGORY_ITEM_HISTORY
@@ -1230,30 +1185,22 @@ UPDATED_BY_NAME               VARCHAR2(250)       YES
 DELETED                       NUMBER              NO                                       
 
 
-BANG: COMPLIANCE_REPORT
+BANG: COMPLIANCE_OUTPUT_TEMPLATE_SHARE
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(36)        NO      PK                               
-REPORT_CODE                   VARCHAR2(100)       NO                                       
-REPORT_NAME                   VARCHAR2(200)       YES                                      
-REPORT_TYPE                   VARCHAR2(100)       NO                                       
-SUBMITTER_TYPE                NUMBER(2,0)         NO                                       
-SUBMITTER_ID                  VARCHAR2(36)        YES                                      
-SUBMITTER_NAME                VARCHAR2(500)       YES                                      
-SUBMISSION_DATE               TIMESTAMP(6)        NO                                       
-APPROVAL_STATUS               NUMBER(2,0)         NO                                       
-APPROVAL_DATE                 TIMESTAMP(6)        YES                                      
-APPROVER                      VARCHAR2(100)       YES                                      
-REJECTION_REASON              VARCHAR2(1000)      YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-UPDATED_AT                    TIMESTAMP(6)        YES                                      
+OUTPUT_TEMPLATE_ID            VARCHAR2(36)        NO                                       
+USER_ID                       VARCHAR2(36)        NO                                       
+STATUS                        NUMBER              NO                                       
+CREATED_AT                    TIMESTAMP(6)        YES                                      
 CREATED_BY_ID                 VARCHAR2(255)       YES                                      
-UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
 CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
-DELETED                       NUMBER(1,0)         NO                                       
+DELETED                       NUMBER              NO                                       
 
 
 BANG: COMPLIANCE_REPORT_CONFIG
@@ -1380,6 +1327,9 @@ AGGREGATION_MODE              VARCHAR2(20)        YES
 KEY_COLUMNS                   VARCHAR2(500)       YES                                      
 REQUIRE_SIGNATURE             NUMBER(3,0)         NO                                       
 VALIDATION_RULES              CLOB                YES                                      
+VERSION                       NUMBER(10,0)        NO                                       
+APPROVAL_TYPE                 VARCHAR2(20)        YES                                      
+APPROVER_CONFIG               CLOB                YES                                      
 
 
 BANG: COMPLIANCE_REPORT_MASTER
@@ -1395,7 +1345,7 @@ PERIOD_YEAR                   NUMBER(4,0)         YES                           
 REPORT_PERIOD_LABEL           VARCHAR2(800)       YES                                      Nhan hien thi ky
 SUBMITTER_ID                  VARCHAR2(36)        YES                                      ID nguoi nop
 SUBMITTER_NAME                VARCHAR2(2000)      YES                                      Ten nguoi nop
-SUBMISSION_DATE               TIMESTAMP(6)        NO                                       Thoi gian he thong tiep nhan bao cao
+SUBMISSION_DATE               TIMESTAMP(6)        YES                                      Thoi gian he thong tiep nhan bao cao
 AUTO_CHECK_STATUS             NUMBER(1,0)         YES                                      Ket qua kiem tra tu dong: 0=Khong dat, 1=Dat. NULL=Chua kiem tra
 AUTO_CHECK_REASON             VARCHAR2(4000)      YES                                      Ly do kiem tra tu dong khong dat
 AUTO_CHECK_DATE               TIMESTAMP(6)        YES                                      Thoi gian hoan thanh kiem tra tu dong
@@ -1416,6 +1366,7 @@ UPDATED_BY_NAME               VARCHAR2(250)       YES                           
 DELETED                       NUMBER(1,0)         NO                                       Soft delete: 0=Active, 1=Deleted
 SUBMITTER_TITLE               VARCHAR2(800)       YES                                      Chuc vu nguoi nop
 SUBMITTER_TYPE                VARCHAR2(400)       NO                                       
+DRAFT_REVISION                NUMBER(10,0)        NO                                       
 
 
 BANG: COMPLIANCE_REPORT_TEMPLATE
@@ -1440,6 +1391,24 @@ UPDATED_BY_NAME               VARCHAR2(250)       YES                           
 DELETED                       NUMBER(1,0)         NO                                       Soft delete: 0=Active, 1=Deleted
 
 
+BANG: COMPLIANCE_TEMPLATE_SHARE
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+TEMPLATE_ID                   VARCHAR2(36)        NO                                       
+USER_ID                       VARCHAR2(36)        NO                                       
+STATUS                        NUMBER              NO                                       
+CREATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER              NO                                       
+
+
 BANG: COMPUTED_COLUMN
 Mo ta: Cấu hình cột tính toán
 --------------------------------------------------------------------------------------------------------------
@@ -1448,8 +1417,8 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            VARCHAR2(36)        NO      PK                               
 TEMPLATE_ID                   VARCHAR2(36)        NO                                       ID biểu mẫu
 COL_NAME                      VARCHAR2(255)       NO                                       Tên cột tính toán
-FORMULA                       VARCHAR2(20)        NO                                       Công thức tính (ADD, SUB, MUL, DIV)
-LEFT_REPORT_COL_ID            VARCHAR2(36)        NO                                       ID cột trái
+FORMULA                       VARCHAR2(20)        YES                                      Công thức tính (ADD, SUB, MUL, DIV)
+LEFT_REPORT_COL_ID            VARCHAR2(36)        YES                                      ID cột trái
 RIGHT_REPORT_COL_ID           VARCHAR2(36)        YES                                      Cột bên phải (có thể null nếu formula là unary)
 DISPLAY_ORDER                 NUMBER(10,0)        NO                                       Thứ tự hiển thị
 FORMAT_PATTERN                VARCHAR2(100)       YES                                      Định dạng hiển thị dữ liệu
@@ -1461,6 +1430,7 @@ CREATED_BY_NAME               VARCHAR2(250)       YES
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
 DELETED                       NUMBER(1,0)         NO                                       
 ATTRIBUTE_ID                  VARCHAR2(36)        YES                                      Mã định danh logic cho cột tính toán (do người dùng nhập, ví dụ: totalBuyVolume)
+EXPRESSION                    VARCHAR2(1000)      YES                                      Bieu thuc toan hoc tinh toan nhieu cot (vi du: [col1] + ([col2] - [col3]) * [col4])
 
 
 BANG: DASHBOARD
@@ -1766,38 +1736,6 @@ UPDATED_BY_NAME               VARCHAR2(250)       YES
 DELETED                       NUMBER(1,0)         NO                                       
 
 
-BANG: DATABASECHANGELOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(255)       NO                                       
-AUTHOR                        VARCHAR2(255)       NO                                       
-FILENAME                      VARCHAR2(255)       NO                                       
-DATEEXECUTED                  TIMESTAMP(6)        NO                                       
-ORDEREXECUTED                 NUMBER              NO                                       
-EXECTYPE                      VARCHAR2(10)        NO                                       
-MD5SUM                        VARCHAR2(35)        YES                                      
-DESCRIPTION                   VARCHAR2(255)       YES                                      
-COMMENTS                      VARCHAR2(255)       YES                                      
-TAG                           VARCHAR2(255)       YES                                      
-LIQUIBASE                     VARCHAR2(20)        YES                                      
-CONTEXTS                      VARCHAR2(255)       YES                                      
-LABELS                        VARCHAR2(255)       YES                                      
-DEPLOYMENT_ID                 VARCHAR2(10)        YES                                      
-
-
-BANG: DATABASECHANGELOGLOCK
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-LOCKED                        NUMBER(1,0)         NO                                       
-LOCKGRANTED                   TIMESTAMP(6)        YES                                      
-LOCKEDBY                      VARCHAR2(255)       YES                                      
-
-
 BANG: DOCUMENT_OUTGOING
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -1916,25 +1854,11 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 ID                            VARCHAR2(36)        NO      PK                               
 ACCOUNT_CODE                  VARCHAR2(200)       YES                                      Số tài khoản (từ VSDC)
-ACCOUNT_NAME                  VARCHAR2(800)       YES                                      Họ và tên
-CONTACT_ADDRESS               VARCHAR2(2000)      YES                                      Địa chỉ liên lạc (từ CTCK, có thể sửa)
-IDENTITY_NUMBER               VARCHAR2(200)       YES                                      Số CCCD/Số đăng ký sở hữu
-IDENTITY_ISSUE_DATE           TIMESTAMP(6)        YES                                      Ngày cấp
-IDENTITY_ISSUE_PLACE          VARCHAR2(800)       YES                                      Nơi cấp
-OPEN_DATE                     TIMESTAMP(6)        YES                                      Ngày mở tài khoản
-CLOSE_DATE                    TIMESTAMP(6)        YES                                      Ngày đóng tài khoản
-LAST_MODIFIED_DATE            TIMESTAMP(6)        YES                                      Ngày thay đổi thông tin
-NATIONALITY                   VARCHAR2(400)       YES                                      Quốc tịch
 INVESTOR_TYPE                 NUMBER(2,0)         YES                                      Loại hình NĐT: 1=Cá nhân, 2=Tổ chức
 DATE_OF_BIRTH                 TIMESTAMP(6)        YES                                      Ngày tháng năm sinh/ngày thành lập DN (từ CTCK, có thể sửa)
 LEGAL_REPRESENTATIVE          VARCHAR2(800)       YES                                      Người đại diện theo pháp luật (từ CTCK, có thể sửa)
 PERMANENT_ADDRESS             VARCHAR2(2000)      YES                                      Địa chỉ thường trú (từ CTCK, có thể sửa)
 MARGIN_ACCOUNT_OPEN_DATE      TIMESTAMP(6)        YES                                      Ngày mở TK ký quỹ
-PHONE_NUMBER                  VARCHAR2(200)       YES                                      Số điện thoại (từ CTCK, có thể sửa)
-EMAIL                         VARCHAR2(800)       YES                                      Email (từ CTCK, có thể sửa)
-BANK_ACCOUNT_HOLDER_NAME      VARCHAR2(800)       YES                                      Tên chủ tài khoản ngân hàng (từ CTCK, có thể sửa)
-BANK_ACCOUNT_NUMBER           VARCHAR2(200)       YES                                      Số tài khoản ngân hàng (từ CTCK, có thể sửa)
-BANK_ACCOUNT_NAME             VARCHAR2(800)       YES                                      Tên ngân hàng (từ CTCK, có thể sửa)
 MARGIN_SERVICE_ENABLED        VARCHAR2(800)       YES                                      Dịch vụ TC sử dụng - Ký quỹ
 ADVANCE_PAYMENT_SERVICE_ENABLEDVARCHAR2(800)       YES                                      Dịch vụ TC sử dụng - Ứng trước tiền bán
 ACCOUNT_AUTHORIZATION_ENABLED VARCHAR2(800)       YES                                      Dịch vụ TC sử dụng - Hợp đồng tài chính khác
@@ -2058,6 +1982,7 @@ DELETED                       NUMBER(1,0)         YES                           
 SERVICE_URL                   VARCHAR2(2000)      YES                                      URL API để lấy dữ liệu cho metric này
 SQL_TEMPLATE                  CLOB                YES                                      Câu lệnh SQL template dùng để truy vấn dữ liệu cho metric này
 METRIC_TYPE                   NUMBER(1,0)         NO                                       Loại metric: 0=Excel, 1=Word
+DATA_SOURCE                   NUMBER(2,0)         NO                                       Nguon metric: 1=Bieu mau (Template), 2=So lenh (Order Book)
 
 
 BANG: METRIC_CATALOG_RELATIONSHIP
@@ -2075,6 +2000,25 @@ CREATED_BY_NAME               VARCHAR2(1020)      YES                           
 UPDATED_BY_ID                 VARCHAR2(1020)      YES                                      ID người cập nhật
 UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người cập nhật
 DELETED                       NUMBER(1,0)         YES                                      Soft delete: 0=Chưa xóa, 1=Đã xóa
+
+
+BANG: METRIC_DEFAULT_SORT
+Mo ta: Sort mặc định cố định theo metric (measure đặc trưng + khóa duy nhất), ghép ở ORDER BY tầng ngoài query hợp nhất Excel
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               Khóa chính UUID
+METRIC_ID                     VARCHAR2(36)        NO                                       FK -> metric_catalog.id
+ATTRIBUTE_ID                  VARCHAR2(36)        NO                                       FK -> attribute_catalog.id; phải là cột OUTPUT của report
+SORT_DIRECTION                VARCHAR2(4)         NO                                       Hướng sắp xếp (ASC, DESC)
+SORT_PRIORITY                 NUMBER(10,0)        NO                                       Thứ tự cột trong chuỗi sort của metric: measure(s) trước, khóa duy nhất priority cuối
+CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi
+UPDATED_AT                    TIMESTAMP(6)        YES                                      Thời điểm cập nhật bản ghi gần nhất
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      ID người tạo
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      ID người cập nhật
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      Tên người tạo
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      Tên người cập nhật
+DELETED                       NUMBER(1,0)         NO                                       Soft delete: 0=Chưa xóa, 1=Đã xóa
 
 
 BANG: METRIC_JOIN_CONDITION
@@ -2114,189 +2058,6 @@ UPDATED_BY_NAME               VARCHAR2(1020)      YES                           
 DELETED                       NUMBER(1,0)         YES                                      Soft delete: 0=Chưa xóa, 1=Đã xóa
 
 
-BANG: NOTIFICATIONS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-TITLE                         VARCHAR2(255)       NO                                       
-CONTENT                       CLOB                YES                                      
-TARGET_SCREEN                 VARCHAR2(100)       NO                                       
-PAYLOAD                       CLOB                YES                                      
-TYPE                          VARCHAR2(50)        YES                                      
-PRIORITY                      VARCHAR2(20)        YES                                      
-SENT_AT                       TIMESTAMP(6)        YES                                      
-STATUS                        VARCHAR2(20)        YES                                      
-CREATED_BY                    VARCHAR2(50)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-UPDATED_AT                    TIMESTAMP(6)        YES                                      
-CREATED_BY_ID                 VARCHAR2(255)       YES                                      
-CREATED_BY_NAME               VARCHAR2(250)       YES                                      
-DELETED                       NUMBER(22,0)        NO                                       
-UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
-UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
-
-
-BANG: NOTIFICATION_CONFIG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-USER_ID                       VARCHAR2(36)        NO                                       
-CATEGORY_ITEM_ID              VARCHAR2(36)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-UPDATED_AT                    TIMESTAMP(6)        YES                                      
-CREATED_BY_ID                 VARCHAR2(255)       YES                                      
-UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
-CREATED_BY_NAME               VARCHAR2(250)       YES                                      
-UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
-DELETED                       NUMBER(1,0)         NO                                       
-
-
-BANG: NOTIFICATION_RECIPIENTS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-NOTIFICATION_ID               VARCHAR2(36)        NO      FK     NOTIFICATIONS.ID          
-USER_ID                       VARCHAR2(50)        NO                                       
-IS_READ                       NUMBER(1,0)         YES                                      
-READ_AT                       TIMESTAMP(6)        YES                                      
-IS_DELETED                    NUMBER(1,0)         YES                                      
-DELETED_AT                    TIMESTAMP(6)        YES                                      
-IS_PUSHED                     NUMBER(1,0)         YES                                      
-PUSHED_AT                     TIMESTAMP(6)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-
-
-BANG: QRTZ_BLOB_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
-TRIGGER_NAME                  VARCHAR2(200)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
-TRIGGER_GROUP                 VARCHAR2(200)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
-BLOB_DATA                     BLOB                YES                                      
-
-
-BANG: QRTZ_CRON_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
-TRIGGER_NAME                  VARCHAR2(200)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
-TRIGGER_GROUP                 VARCHAR2(200)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
-CRON_EXPRESSION               VARCHAR2(120)       NO                                       
-TIME_ZONE_ID                  VARCHAR2(80)        YES                                      
-
-
-BANG: QRTZ_FIRED_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-ENTRY_ID                      VARCHAR2(95)        NO      PK                               
-TRIGGER_NAME                  VARCHAR2(200)       NO                                       
-TRIGGER_GROUP                 VARCHAR2(200)       NO                                       
-INSTANCE_NAME                 VARCHAR2(200)       NO                                       
-FIRED_TIME                    NUMBER(13,0)        NO                                       
-SCHED_TIME                    NUMBER(13,0)        NO                                       
-PRIORITY                      NUMBER(13,0)        NO                                       
-STATE                         VARCHAR2(16)        NO                                       
-JOB_NAME                      VARCHAR2(200)       YES                                      
-JOB_GROUP                     VARCHAR2(200)       YES                                      
-IS_NONCONCURRENT              VARCHAR2(1)         YES                                      
-REQUESTS_RECOVERY             VARCHAR2(1)         YES                                      
-
-
-BANG: QRTZ_JOB_DETAILS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-JOB_NAME                      VARCHAR2(200)       NO      PK                               
-JOB_GROUP                     VARCHAR2(200)       NO      PK                               
-DESCRIPTION                   VARCHAR2(250)       YES                                      
-JOB_CLASS_NAME                VARCHAR2(250)       NO                                       
-IS_DURABLE                    VARCHAR2(1)         NO                                       
-IS_NONCONCURRENT              VARCHAR2(1)         NO                                       
-IS_UPDATE_DATA                VARCHAR2(1)         NO                                       
-REQUESTS_RECOVERY             VARCHAR2(1)         NO                                       
-JOB_DATA                      BLOB                YES                                      
-
-
-BANG: QRTZ_LOCKS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-LOCK_NAME                     VARCHAR2(40)        NO      PK                               
-
-
-BANG: QRTZ_PAUSED_TRIGGER_GRPS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-TRIGGER_GROUP                 VARCHAR2(200)       NO      PK                               
-
-
-BANG: QRTZ_SCHEDULER_STATE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-INSTANCE_NAME                 VARCHAR2(200)       NO      PK                               
-LAST_CHECKIN_TIME             NUMBER(13,0)        NO                                       
-CHECKIN_INTERVAL              NUMBER(13,0)        NO                                       
-
-
-BANG: QRTZ_SIMPLE_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
-TRIGGER_NAME                  VARCHAR2(200)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
-TRIGGER_GROUP                 VARCHAR2(200)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
-REPEAT_COUNT                  NUMBER(7,0)         NO                                       
-REPEAT_INTERVAL               NUMBER(12,0)        NO                                       
-TIMES_TRIGGERED               NUMBER(10,0)        NO                                       
-
-
-BANG: QRTZ_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_JOB_DETAILS.SCHED_NAME
-TRIGGER_NAME                  VARCHAR2(200)       NO      PK                               
-TRIGGER_GROUP                 VARCHAR2(200)       NO      PK                               
-JOB_NAME                      VARCHAR2(200)       NO      FK     QRTZ_JOB_DETAILS.JOB_NAME 
-JOB_GROUP                     VARCHAR2(200)       NO      FK     QRTZ_JOB_DETAILS.JOB_GROUP
-DESCRIPTION                   VARCHAR2(250)       YES                                      
-NEXT_FIRE_TIME                NUMBER(13,0)        YES                                      
-PREV_FIRE_TIME                NUMBER(13,0)        YES                                      
-PRIORITY                      NUMBER(13,0)        YES                                      
-TRIGGER_STATE                 VARCHAR2(16)        NO                                       
-TRIGGER_TYPE                  VARCHAR2(8)         NO                                       
-START_TIME                    NUMBER(13,0)        NO                                       
-END_TIME                      NUMBER(13,0)        YES                                      
-CALENDAR_NAME                 VARCHAR2(200)       YES                                      
-MISFIRE_INSTR                 NUMBER(2,0)         YES                                      
-JOB_DATA                      BLOB                YES                                      
-
-
 BANG: REPORT_ASSIGNMENT
 Mo ta: Phan cong xu ly bao cao cho Ban Giam sat thi truong
 --------------------------------------------------------------------------------------------------------------
@@ -2307,15 +2068,15 @@ REPORT_ID                     VARCHAR2(36)        NO                            
 REPORT_TYPE                   NUMBER(1,0)         NO                                       1=Bao cao tuan thu, 2=Bao cao bat thuong
 ASSIGNMENT_TYPE               NUMBER(1,0)         NO                                       1=Phe duyet (chi 1 nguoi/bao cao), 2=Nhan xet (nhieu nguoi/bao cao)
 ASSIGNEE_ID                   VARCHAR2(36)        NO                                       ID nguoi duoc phan cong
-ASSIGNEE_NAME                 VARCHAR2(1000)      NO                                       Ho ten nguoi duoc phan cong
+ASSIGNEE_NAME                 VARCHAR2(1020)      NO                                       Ho ten nguoi duoc phan cong
 ASSIGNEE_TITLE                VARCHAR2(800)       YES                                      Chuc vu nguoi duoc phan cong
 ASSIGNED_BY_ID                VARCHAR2(36)        NO                                       ID nguoi thuc hien phan cong
-ASSIGNED_BY_NAME              VARCHAR2(1000)      NO                                       Ho ten nguoi phan cong
+ASSIGNED_BY_NAME              VARCHAR2(1020)      NO                                       Ho ten nguoi phan cong
 ASSIGNED_BY_TITLE             VARCHAR2(800)       YES                                      Chuc vu nguoi phan cong
 ASSIGNED_DATE                 TIMESTAMP(6)        NO                                       Thoi gian phan cong
 REVOKED_DATE                  TIMESTAMP(6)        YES                                      Thoi gian thu hoi quyen (NULL neu chua bi thu hoi)
 REVOKED_BY_ID                 VARCHAR2(36)        YES                                      ID nguoi thu hoi
-REVOKED_BY_NAME               VARCHAR2(1000)      YES                                      Ten nguoi thu hoi
+REVOKED_BY_NAME               VARCHAR2(1020)      YES                                      Ten nguoi thu hoi
 STATUS                        NUMBER(1,0)         NO                                       1=Dang hieu luc, 0=Da thu hoi
 NOTIFICATION_SENT             NUMBER(1,0)         NO                                       Da gui thong bao/email chua: 0=Chua, 1=Da gui
 CREATED_AT                    TIMESTAMP(6)        NO                                       Ngay tao
@@ -2429,7 +2190,6 @@ REPORT_ID                     VARCHAR2(36)        NO                            
 REPORT_TYPE                   NUMBER(1,0)         NO                                       1=Tuan thu, 2=Bat thuong
 COMMENTER_ID                  VARCHAR2(36)        NO                                       ID nguoi nhan xet
 COMMENTER_NAME                VARCHAR2(1000)      NO                                       Ho ten nguoi nhan xet
-COMMENTER_IDENTITY_CODE       VARCHAR2(200)       YES                                      Ma dinh danh ca nhan
 DEPARTMENT_NAME               VARCHAR2(800)       YES                                      Don vi/Ban cong tac
 CONTENT                       VARCHAR2(4000)      NO                                       Noi dung nhan xet
 COMMENT_DATE                  TIMESTAMP(6)        NO                                       Thoi gian nhan xet
@@ -2627,6 +2387,8 @@ TEMPLATE_ROLE                 NUMBER(1,0)         YES                           
 TEMPLATE_TYPE                 NUMBER(1,0)         NO                                       Loại biểu mẫu báo cáo: 0=Excel, 1=Word
 FILE_PATH                     VARCHAR2(4000)      YES                                      Đường dẫn file biểu mẫu Word đã upload lên MinIO (chỉ dùng khi template_type=1).
 FILE_NAME                     VARCHAR2(4000)      YES                                      Tên file biểu mẫu Word gốc đã upload (chỉ dùng khi template_type=1), dùng để FE hiển thị.
+DATA_SOURCE                   NUMBER(2,0)         NO                                       Nguon bieu mau: 1=Bieu mau bao cao (Report Template), 2=So lenh (Order Book)
+LAYOUT_TYPE                   NUMBER(1,0)         NO                                       Bố cục biểu mẫu: 0=Ngang (Horizontal), 1=Dọc (Vertical/Transpose)
 
 
 BANG: REPORT_TEMPLATE_METRIC
@@ -2665,6 +2427,28 @@ UPDATED_BY_ID                 VARCHAR2(255)       YES
 CREATED_BY_NAME               VARCHAR2(250)       YES                                      
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
 ATTRIBUTE_CATALOG_ID          VARCHAR2(36)        YES                                      
+
+
+BANG: REPORT_TEMPLATE_SESSION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+REPORT_TEMPLATE_ID            VARCHAR2(36)        NO                                       
+SESSION_CODE                  VARCHAR2(50)        NO                                       
+SESSION_NAME                  VARCHAR2(255)       YES                                      
+FROM_TIME                     VARCHAR2(10)        YES                                      
+TO_TIME                       VARCHAR2(10)        YES                                      
+EXCHANGE                      VARCHAR2(100)       YES                                      
+DISPLAY_ORDER                 NUMBER(5,0)         YES                                      
+DELETED                       NUMBER(1,0)         NO                                       Co xoa mem: 0=Chua xoa, 1=Da xoa
+CREATED_AT                    TIMESTAMP(6)        YES                                      Thoi diem tao ban ghi
+UPDATED_AT                    TIMESTAMP(6)        YES                                      Thoi diem cap nhat ban ghi gan nhat
+CREATED_BY_ID                 VARCHAR2(36)        YES                                      ID nguoi tao ban ghi
+UPDATED_BY_ID                 VARCHAR2(36)        YES                                      ID nguoi cap nhat ban ghi
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      Ten nguoi tao ban ghi
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      Ten nguoi cap nhat ban ghi
 
 
 BANG: REPORT_TEMPLATE_WORKFLOW
@@ -2810,16 +2594,6 @@ TEMPLATE_ID                   VARCHAR2(36)        YES                           
 TRANSACTION_REVIEW_ID         VARCHAR2(36)        NO                                       ID cong viec xem xet
 WORKFLOW_TYPE                 NUMBER(10,0)        YES                                      Loai workflow
 ACCOUNT_CODE                  VARCHAR2(50)        NO                                       Ma tai khoan
-ACCOUNT_NAME                  VARCHAR2(200)       YES                                      Ten tai khoan
-CONTACT_ADDRESS               VARCHAR2(500)       YES                                      Dia chi lien he
-IDENTITY_NUMBER               VARCHAR2(50)        YES                                      So CMND/CCCD
-IDENTITY_ISSUE_DATE           TIMESTAMP(6)        YES                                      Ngay cap CMND/CCCD
-IDENTITY_ISSUE_PLACE          VARCHAR2(200)       YES                                      Noi cap CMND/CCCD
-DOMESTIC_FOREIGN_FLAG         NUMBER(10,0)        YES                                      Co la nguoi nuoc ngoai hay khong
-PHONE_NUMBER                  VARCHAR2(50)        YES                                      So dien thoai
-EMAIL                         VARCHAR2(200)       YES                                      Email
-ACCOUNT_STATUS                NUMBER(10,0)        NO                                       Trang thai tai khoan
-ACCOUNT_TYPE                  NUMBER(10,0)        YES                                      Loai tai khoan
 CREATED_AT                    TIMESTAMP(6)        NO                                       Ngay tao
 UPDATED_AT                    TIMESTAMP(6)        YES                                      Ngay cap nhat cuoi
 CREATED_BY_ID                 VARCHAR2(255)       YES                                      User_id nguoi tao
@@ -2859,7 +2633,6 @@ ID                            VARCHAR2(36)        NO      PK
 TRANSACTION_REVIEW_ID         VARCHAR2(36)        NO                                       ID cong viec xem xet
 ACCOUNT_GROUP_ID              VARCHAR2(36)        NO                                       ID nhom tai khoan
 ACCOUNT_CODE                  VARCHAR2(50)        NO                                       Ma tai khoan
-ACCOUNT_NAME                  VARCHAR2(200)       YES                                      Ten tai khoan
 RELATIONSHIP_ID               VARCHAR2(36)        YES                                      ID quan he
 DESCRIPTION                   VARCHAR2(500)       YES                                      Mo ta
 CREATED_AT                    TIMESTAMP(6)        NO                                       Ngay tao
@@ -2881,7 +2654,6 @@ TRANSACTION_REVIEW_ID         VARCHAR2(36)        NO                            
 ATTRIBUTE_ID                  VARCHAR2(36)        NO                                       ID thuộc tính - FK tới analysis_attribute_define
 WORKFLOW_TYPE                 NUMBER(2,0)         NO                                       Loại workflow
 VALUE_NUMBER                  NUMBER(19,6)        YES                                      Giá trị kiểu số
-VALUE_STRING                  VARCHAR2(4000)      YES                                      Giá trị kiểu chuỗi
 VALUE_DATE                    DATE                YES                                      Giá trị kiểu ngày
 VALUE_BOOLEAN                 NUMBER(1,0)         YES                                      Giá trị kiểu boolean (0/1)
 SECURITIES_ID                 VARCHAR2(36)        YES                                      ID chứng khoán
@@ -2894,6 +2666,7 @@ CREATED_BY_NAME               VARCHAR2(250)       YES                           
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      Tên người cập nhật
 DELETED                       NUMBER(1,0)         NO                                       Soft delete: 0 = active, 1 = deleted
 WORKFLOW_ID                   VARCHAR2(36)        YES                                      Id quy trình phân tích (analysis_workflow.id)
+VALUE_STRING                  CLOB                YES                                      
 
 
 BANG: TRANSACTION_REVIEW_ATTACH_FILE
@@ -2947,6 +2720,25 @@ UPDATED_BY_ID                 VARCHAR2(36)        YES
 UPDATED_BY_NAME               VARCHAR2(255)       YES                                      
 DELETED                       NUMBER(1,0)         NO                                       
 WORKFLOW_ID                   VARCHAR2(36)        YES                                      Id quy trình phân tích (analysis_workflow.id)
+
+
+BANG: TRANSACTION_REVIEW_INVESTOR
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+TRANSACTION_REVIEW_ID         VARCHAR2(36)        NO                                       
+INVESTOR_ID                   VARCHAR2(100)       YES                                      
+IDENTITY_NUMBER               VARCHAR2(100)       YES                                      
+INVESTOR_DATA                 CLOB                YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
+DELETED                       NUMBER(1,0)         NO                                       
 
 
 BANG: TRANSACTION_REVIEW_REPORT_PARAMETER_VALUE
@@ -3013,6 +2805,26 @@ CREATED_BY_ID                 VARCHAR2(255)       YES                           
 UPDATED_BY_ID                 VARCHAR2(255)       YES                                      User_id nguoi cap nhat
 CREATED_BY_NAME               VARCHAR2(250)       YES                                      Ten nguoi tao
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      Ten nguoi cap nhat
+DELETED                       NUMBER(1,0)         NO                                       
+
+
+BANG: TRANSACTION_REVIEW_SECURITIES_GROUP
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+TRANSACTION_REVIEW_ID         VARCHAR2(36)        NO                                       
+GROUP_ID                      VARCHAR2(36)        YES                                      
+GROUP_CODE                    VARCHAR2(50)        NO                                       
+GROUP_NAME                    VARCHAR2(200)       YES                                      
+SECURITIES_CODES              CLOB                YES                                      
+CREATED_AT                    TIMESTAMP(6)        NO                                       
+UPDATED_AT                    TIMESTAMP(6)        YES                                      
+CREATED_BY_ID                 VARCHAR2(255)       YES                                      
+UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
+CREATED_BY_NAME               VARCHAR2(250)       YES                                      
+UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
 DELETED                       NUMBER(1,0)         NO                                       
 
 

@@ -1,0 +1,103 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ACCOUNT_GROUP
+brd_ref: BRD-SRC-TMS-ACCOUNT_GROUP
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: ID duy nhất (UUID)
+  key: PK
+  fk_note: null
+- name: GROUP_CODE
+  data_type: VARCHAR2(50)
+  description: 'Mã nhóm (format: NNDT_X)'
+  key: null
+  fk_note: null
+- name: GROUP_NAME
+  data_type: VARCHAR2(200)
+  description: Tên nhóm
+  key: null
+  fk_note: null
+- name: SECURITIES_CODE_ID
+  data_type: VARCHAR2(36)
+  description: ID mã chứng khoán
+  key: null
+  fk_note: null
+- name: STOCK_CODE
+  data_type: VARCHAR2(50)
+  description: Mã chứng khoán
+  key: null
+  fk_note: null
+- name: CASE_FILE_ID
+  data_type: VARCHAR2(36)
+  description: ID vụ việc
+  key: FK
+  fk_note: FK → CASE_FILE.ID
+  fk_src: inferred
+- name: CASE_CODE
+  data_type: VARCHAR2(1500)
+  description: Mã vụ việc
+  key: null
+  fk_note: null
+- name: RELATION_TYPE_ID
+  data_type: VARCHAR2(36)
+  description: ID loại quan hệ (FK đến bảng relation_type)
+  key: null
+  fk_note: null
+- name: CHARACTERISTIC
+  data_type: VARCHAR2(2000)
+  description: Đặc điểm
+  key: null
+  fk_note: null
+- name: GROUP_TYPE
+  data_type: NUMBER(2,0)
+  description: Loại nhóm
+  key: null
+  fk_note: null
+- name: CONTACT_PERSON_ACCOUNT
+  data_type: VARCHAR2(50)
+  description: Số tài khoản người liên hệ
+  key: null
+  fk_note: null
+- name: APPROVAL_STATUS
+  data_type: NUMBER(2,0)
+  description: 'Approval status: 1=New, 2=Pending, 3=Rejected, 4=Approved, 5=Pending
+    Delete'
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(36)
+  description: ID người tạo
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời gian tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(36)
+  description: ID người cập nhật
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời gian cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái xóa: 0=Chưa xóa, 1=Đã xóa'
+  key: null
+  fk_note: null

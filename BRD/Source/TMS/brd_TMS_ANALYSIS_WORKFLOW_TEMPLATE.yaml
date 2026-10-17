@@ -1,0 +1,77 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ANALYSIS_WORKFLOW_TEMPLATE
+brd_ref: BRD-SRC-TMS-ANALYSIS_WORKFLOW_TEMPLATE
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: WORKFLOW_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: null
+  fk_note: null
+- name: REPORT_TEMPLATE_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: FK
+  fk_note: FK → REPORT_TEMPLATE.ID
+  fk_src: inferred
+- name: PARAMETERS
+  data_type: CLOB
+  description: null
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: NUMBER(6,0)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: TEMPLATE_ROLE
+  data_type: NUMBER(1,0)
+  description: 0=SUMMARY, 1=ANALYSIS
+  key: null
+  fk_note: null
+- name: REPORT_TYPE
+  data_type: NUMBER
+  description: 'Loai bao cao (1: Báo cáo cơ sở, 2: Báo cáo phái sinh)'
+  key: null
+  fk_note: null

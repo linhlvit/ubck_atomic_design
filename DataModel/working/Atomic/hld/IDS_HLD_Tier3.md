@@ -2,8 +2,6 @@
 
 **Source system:** IDS (Information Disclosure System — Hệ thống Công bố Thông tin)
 **Tier 3:** Các entity FK đến entity Tier 2. Gồm:
-- Con của **Audit Firm Approval** (T2): AF Warning, AF Suspension, AF Technical Audit
-- Con của **Auditor Profile** (T2): Auditor Status History
 - Con của **Public Company** + **Violation Report Template** (T1×T2): Violation Report (gộp VIOLATION_REPORT + HTE_VIOLATION_REPORT)
 - Con của **Violation Report Template** (T2): Violation Report Penalty Config
 - Con của **Notification** (T2): Notification Recipient
@@ -18,10 +16,6 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Business Activity | [Business Activity] Warning Notice | Business Activity | `AF_WARNING` | Update | Văn bản nhắc nhở đối với công ty kiểm toán hoặc kiểm toán viên: FK → AF_PROFILES (công ty KT) hoặc AF_AUDITOR_PROFILES (KTV), thêm FK tùy chọn → AF_INSPECTION. | Audit Firm Warning | Fact Append | (1) Term candidate: `[Business Activity] Warning Notice` — BCV mô tả hoạt động cảnh báo/nhắc nhở nghiệp vụ. (2) Cấu trúc trường: AF_PROFILE_ID, AF_AUDITOR_PROFILE_ID (nullable), AF_INSPECTION_ID (nullable), TARGET_TYPE_CD, SOURCE_TYPE_CD, WARNING_DOC_NO, WARNING_ISSUE_DATE, WARNING_TYPE_CD. (3) Chọn `[Business Activity] Warning Notice`. Fact Append (sự kiện cảnh báo insert-only về nghiệp vụ). Phụ thuộc AF_PROFILES (T1) + AF_AUDITOR_PROFILES (T2) → Tier 3. |
-| Business Activity | [Business Activity] Enforcement Action | Business Activity | `AF_SUSPENSION` | Update | Đình chỉ hoạt động của công ty kiểm toán hoặc kiểm toán viên: TARGET_TYPE_CD phân biệt, FK → AF_INSPECTION tùy chọn. | Audit Firm Suspension | Fact Append | (1) Term candidate: `[Business Activity] Enforcement Action` — đình chỉ là hành động chế tài. (2) Cấu trúc trường: AF_PROFILE_ID, AF_AUDITOR_PROFILE_ID (nullable), AF_INSPECTION_ID (nullable), TARGET_TYPE_CD, SOURCE_TYPE_CD, SUSPENSION_DOC_NO, SUSPENSION_ISSUE_DATE, SUSPENSION_START/END_DATE. (3) Chọn `[Business Activity] Enforcement Action`. Fact Append. |
-| Business Activity | [Business Activity] Inspection | Business Activity | `AF_TECHNICAL_AUDIT` | Update | Kiểm tra hồ sơ kiểm toán (technical audit) trong một đợt kiểm tra: kết quả kiểm tra, số văn bản xử lý, nội dung vi phạm. | Audit Firm Technical Audit | Fact Append | (1) Term candidate: `[Business Activity] Inspection` — kiểm tra hồ sơ là sub-activity của đợt kiểm tra. (2) Cấu trúc trường: AF_PROFILE_ID, AF_INSPECTION_ID, INSPECTION_ENTITY_FILES, INSPECTION_YEAR, SIGNING_AUDITOR_NAME, INSPECTION_RESULT_CD, AUDIT_ACTION_CD, VIOLATION_CONTENT. (3) Chọn `[Business Activity] Inspection`. Fact Append. FK → AF_PROFILES (T1) + AF_INSPECTION (T3) → Tier 4. **Ghi vào điểm cần xác nhận.** |
-| Business Activity | [Business Activity] Status History | Business Activity | `AF_AUDITOR_STATUS_HISTORY` | Update | Lịch sử thay đổi trạng thái của kiểm toán viên: loại sự kiện, ngày hiệu lực, lý do. | Auditor Status History | Fact Append | (1) Term candidate: `[Business Activity] Status History` — chuỗi sự kiện thay đổi trạng thái. (2) Cấu trúc trường: AF_AUDITOR_PROFILE_ID, EVENT_TYPE, EFFECTIVE_DATE, REASON, ADDITIONAL_DESC. (3) Chọn `[Business Activity] Status History`. Fact Append. FK → AF_AUDITOR_PROFILES (T2) → Tier 3. |
 | Business Activity | [Business Activity] Warning Notice | Business Activity | `VIOLATION_REPORT` | Update | Hạn nộp báo cáo định kỳ và trạng thái vi phạm của CTĐC: kỳ báo cáo, ngày hạn nộp, ngày nộp thực tế, trạng thái. | Violation Report | Relative | (1) Term candidate: `[Business Activity] Warning Notice` không hoàn toàn phù hợp. Đây là theo dõi vi phạm nộp báo cáo. Gần nhất: `[Business Activity] Business Activity` hoặc `[Business Activity] Compliance Monitoring`. (2) Cấu trúc trường: COMPANY_PROFILE_ID, FORM_ID, VIOLATION_TEMPLATE_ID (FK → VIOLATION_TEMPLATES), PERIOD_NAME, BASE_DATE, DEADLINE_DATE, ACTUAL_SUBMIT_DATE, STATUS. (3) Chọn `[Business Activity] Business Activity` — đây là sự kiện nghiệp vụ theo dõi tuân thủ báo cáo. Relative (FK → Public Company T1 + Financial Report T1 + Violation Report Template T2). Đổi tên entity từ `Public Company Violation Report` → `Violation Report` (2026-08-05, theo yêu cầu tường minh Data Modeler) — gộp với HTE_VIOLATION_REPORT vào cùng 1 entity. |
 | Business Activity | [Business Activity] Business Activity | Business Activity | `HTE_VIOLATION_REPORT` | Update | Vi phạm nộp báo cáo (tương tự VIOLATION_REPORT nhưng cho module HTE): ngày hạn, ngày nộp, kỳ, trạng thái. | Violation Report | Relative | (1) Cấu trúc giống VIOLATION_REPORT: COMPANY_PROFILE_ID, FORM_ID, VIOLATION_TEMPLATE_ID, PERIOD_QUARTER/YEAR, BASE_DATE, DEADLINE_DATE, ACTUAL_SUBMIT_DATE, STATUS. (2) Gộp với VIOLATION_REPORT vào cùng 1 entity `Violation Report`, phân biệt qua Source System Code. (3) Relative (FK → Public Company T1 + Financial Report T1 + Violation Report Template T2). |
 | Condition | [Condition] Compliance Rule | Condition | `VIOLATION_PENALTY_CONFIG` | Update | Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm: số ngày quá hạn (cố định/tối thiểu/tối đa), mã khoản quy định, hình thức xử phạt, thời gian hiệu lực. | Violation Report Penalty Config | Relative | (1) Term candidate: `[Condition] Compliance Rule` — quy định ngưỡng phạt là điều kiện tuân thủ bổ sung cho mẫu vi phạm. (2) FK → VIOLATION_TEMPLATES (T2). Attribute: OVERDUE_DAYS, MIN/MAX_OVERDUE_DAYS, PARA_CD, ACTION_TYPE_CD, DESCRIPTION, EFFECTIVE_START/END_DATE, ACTIVE_FLG. (3) Chọn `[Condition] Compliance Rule`. Relative (SCD4A). FK → Violation Report Template T2 → Tier 3. Đổi tên từ `Public Company Violation Penalty Config` (2026-08-05, theo yêu cầu tường minh Data Modeler). |
@@ -103,59 +97,12 @@ erDiagram
         date EFFECTIVE_FROM_DATE
     }
 
-    AF_PROFILES {
-        int ID PK
-    }
 
-    AF_AUDITOR_PROFILES {
-        int ID PK
-        int AF_PROFILE_ID FK
-    }
 
-    AF_INSPECTION {
-        int ID PK
-        int AF_PROFILE_ID FK
-        string INSPECTION_DECISION_NO
-        date INSPECTION_START_DATE
-        date INSPECTION_END_DATE
-        string OVERALL_RESULT_CD
-    }
 
-    AF_WARNING {
-        int ID PK
-        int AF_PROFILE_ID FK
-        int AF_AUDITOR_PROFILE_ID FK
-        int AF_INSPECTION_ID FK
-        string TARGET_TYPE_CD
-        string WARNING_DOC_NO
-        date WARNING_ISSUE_DATE
-    }
 
-    AF_SANCTIONS {
-        int ID PK
-        int AF_PROFILE_ID FK
-        string SANCTION_AUTHORITY_CD
-        string DECISION_NO
-        date DECISION_DATE
-    }
 
-    AF_SUSPENSION {
-        int ID PK
-        int AF_PROFILE_ID FK
-        int AF_AUDITOR_PROFILE_ID FK
-        int AF_INSPECTION_ID FK
-        string TARGET_TYPE_CD
-        string SUSPENSION_DOC_NO
-        date SUSPENSION_START_DATE
-    }
 
-    AF_AUDITOR_STATUS_HISTORY {
-        int ID PK
-        int AF_AUDITOR_PROFILE_ID FK
-        string EVENT_TYPE
-        date EFFECTIVE_DATE
-        string REASON
-    }
 
     FORMS {
         int ID PK
@@ -237,15 +184,6 @@ erDiagram
     LEGAL_ENTITIES ||--o{ COMPANY_SHAREHOLDING : "LEGAL_ENTITY_ID"
     COMPANY_PROFILES ||--o{ COMPANY_ENTITY_ROLE : "COMPANY_PROFILE_ID"
     LEGAL_ENTITIES ||--o{ COMPANY_ENTITY_ROLE : "LEGAL_ENTITY_ID"
-    AF_PROFILES ||--o{ AF_INSPECTION : "AF_PROFILE_ID"
-    AF_PROFILES ||--o{ AF_WARNING : "AF_PROFILE_ID"
-    AF_AUDITOR_PROFILES ||--o| AF_WARNING : "AF_AUDITOR_PROFILE_ID (nullable)"
-    AF_INSPECTION ||--o| AF_WARNING : "AF_INSPECTION_ID (nullable)"
-    AF_PROFILES ||--o{ AF_SANCTIONS : "AF_PROFILE_ID"
-    AF_PROFILES ||--o{ AF_SUSPENSION : "AF_PROFILE_ID"
-    AF_AUDITOR_PROFILES ||--o| AF_SUSPENSION : "AF_AUDITOR_PROFILE_ID (nullable)"
-    AF_INSPECTION ||--o| AF_SUSPENSION : "AF_INSPECTION_ID (nullable)"
-    AF_AUDITOR_PROFILES ||--o{ AF_AUDITOR_STATUS_HISTORY : "AF_AUDITOR_PROFILE_ID"
     COMPANY_PROFILES ||--o| SECURITIES_OFFERING : "COMPANY_PROFILE_ID (nullable)"
     LEGAL_ENTITIES ||--o| SECURITIES_OFFERING : "LEGAL_ENTITY_ID (nullable)"
     COMPANY_PROFILES ||--o{ EVALUATIONS : "COMPANY_ID"
@@ -270,13 +208,7 @@ erDiagram
         string lgl_enty_id PK
     }
 
-    Auditor_Profile {
-        string audtr_prfl_id PK
-    }
 
-    Audit_Firm {
-        string audt_firm_id PK
-    }
 
     Public_Company {
         string pblc_co_id PK
@@ -353,48 +285,10 @@ erDiagram
         date eff_from_dt
     }
 
-    Audit_Firm_Inspection {
-        string audt_firm_inspc_id PK
-        string audt_firm_id FK
-        string inspc_dcsn_nbr
-        date inspc_strt_dt
-        date inspc_end_dt
-        string ovrl_rslt_code
-    }
 
-    Audit_Firm_Warning {
-        string audt_firm_wrn_id PK
-        string audt_firm_id FK
-        string audtr_prfl_id FK
-        string wrn_doc_nbr
-        date wrn_iss_dt
-        string tgt_tp_code
-    }
 
-    Audit_Firm_Sanction {
-        string audt_firm_snct_id PK
-        string audt_firm_id FK
-        string snct_auth_code
-        string dcsn_nbr
-        date dcsn_dt
-    }
 
-    Audit_Firm_Suspension {
-        string audt_firm_susp_id PK
-        string audt_firm_id FK
-        string audtr_prfl_id FK
-        string susp_doc_nbr
-        date susp_strt_dt
-        string tgt_tp_code
-    }
 
-    Auditor_Status_History {
-        string audtr_st_his_id PK
-        string audtr_prfl_id FK
-        string evnt_tp_code
-        date eff_dt
-        string rsn
-    }
 
 
     Securities_Offering {
@@ -468,13 +362,6 @@ erDiagram
     Legal_Entity ||--o{ Company_Shareholding : "lgl_enty_id"
     Public_Company ||--o{ Company_Entity_Role : "pblc_co_id"
     Legal_Entity ||--o{ Company_Entity_Role : "lgl_enty_id"
-    Audit_Firm ||--o{ Audit_Firm_Inspection : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Warning : "audt_firm_id"
-    Auditor_Profile ||--o| Audit_Firm_Warning : "audtr_prfl_id (nullable)"
-    Audit_Firm ||--o{ Audit_Firm_Sanction : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Suspension : "audt_firm_id"
-    Auditor_Profile ||--o| Audit_Firm_Suspension : "audtr_prfl_id (nullable)"
-    Auditor_Profile ||--o{ Auditor_Status_History : "audtr_prfl_id"
     Public_Company ||--o| Securities_Offering : "pblc_co_id (nullable)"
     Legal_Entity ||--o| Securities_Offering : "lgl_enty_id (nullable)"
     Public_Company ||--o{ Public_Company_Evaluation : "pblc_co_id"
@@ -499,9 +386,6 @@ erDiagram
 | `HOLDER_RELATIONSHIP.RELATIONSHIP_TYPE_CD` | Loại quan hệ giữa cổ đông | `IDS_HOLDER_RELATIONSHIP_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
 | `STOCK_CONTROLS.RESTRICTION_TYPE_CD` | Loại hạn chế chuyển nhượng CK | `IDS_STOCK_RESTRICTION_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
 | `COMPANY_ENTITY_ROLE.ROLE_TYPE_CD` | Vai trò (Người nội bộ / Cổ đông) | `IDS_ENTITY_ROLE_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
-| `AF_WARNING.TARGET_TYPE_CD` | Đối tượng nhắc nhở (công ty KT / KTV) | `IDS_WARNING_TARGET_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
-| `AF_WARNING.SOURCE_TYPE_CD` | Cơ quan nhắc nhở (BTC / UBCKNN) | `IDS_WARNING_SOURCE_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
-| `AF_SANCTIONS.SANCTION_AUTHORITY_CD` | Cơ quan xử phạt | `IDS_SANCTION_AUTHORITY` | source_table | Values load từ `LOOKUP_VALUES` |
 | `EVALUATIONS.TYPE` | Loại đánh giá xếp hạng (A/B/C) | `IDS_EVALUATION_TYPE` | etl_derived | Values lấy trực tiếp từ cột nguồn |
 | `SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD` | Thủ tục hành chính chào bán | `IDS_SO_ADMINISTRATIVE_PROC` | source_table | Values từ LOOKUP_VALUES (LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE') |
 | `TREASURY_SHARE_TRANS_RESULT.APPROVAL_STATUS_CD` | Trạng thái phê duyệt kết quả giao dịch cổ phiếu quỹ | `IDS_TS_APPROVAL_STATUS` | source_table | Dùng lại scheme đã đăng ký ở Tier2.md 6d (entity cha `COMPANY_TREASURY_SHARES`) — cùng domain trạng thái phê duyệt. |
@@ -518,10 +402,8 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T3-01 | `AF_INSPECTION` FK → AF_PROFILES (T1), không FK đến AF_APPROVAL (T2) → thực ra nên xếp Tier 2 cùng với các entity con của AF_PROFILES. Hiện để Tier 3 để nhóm về chủ đề AF enforcement. Cần điều chỉnh? | Cần xác nhận — nếu không có entity nào ở Tier 3 phụ thuộc AF_INSPECTION thì có thể nâng lên Tier 2. AF_WARNING và AF_SUSPENSION có FK → AF_INSPECTION → AF_INSPECTION ở Tier 2, AF_WARNING/SUSPENSION ở Tier 3 là hợp lý. Điều chỉnh: **AF_INSPECTION → Tier 2**. |
-| T3-02 | `AF_TECHNICAL_AUDIT` FK → AF_PROFILES (T1) + AF_INSPECTION (sẽ là T2 sau điều chỉnh T3-01) → AF_TECHNICAL_AUDIT sẽ là Tier 3. Giữ nguyên. | Xác nhận sau khi điều chỉnh T3-01. |
 | T3-03 | `NOTIFICATIONS` FK → FORMS (T1) → thực ra là Tier 2. Hiện đặt Tier 3 nhầm. Điều chỉnh về Tier 2? | Cần điều chỉnh — NOTIFICATIONS.FORM_ID → FORMS (T1) nên NOTIFICATIONS là Tier 2 Fact Append. Cũng cần xem `NOTIFICATIONS_DTL` (FK → NOTIFICATIONS) sẽ là Tier 3. |
-| T3-04 | `SECURITIES_OFFERING` FK loại trừ nhau: COMPANY_PROFILE_ID (cho tổ chức) hoặc LEGAL_ENTITY_ID (cho cá nhân). Pattern này tương tự AF_APPROVAL. ETL cần dùng APPLICANT_TYPE_FLG để xác định. | Xác nhận — giữ 2 FK nullable trên Atomic entity `Securities Offering`. ETL dùng APPLICANT_TYPE_FLG. |
+| T3-04 | `SECURITIES_OFFERING` FK loại trừ nhau: COMPANY_PROFILE_ID (cho tổ chức) hoặc LEGAL_ENTITY_ID (cho cá nhân). Pattern này tương tự `AF_APPROVAL` (nay thuộc source AUDIT). ETL cần dùng APPLICANT_TYPE_FLG để xác định. | Xác nhận — giữ 2 FK nullable trên Atomic entity `Securities Offering`. ETL dùng APPLICANT_TYPE_FLG. |
 | T3-05 | `VIOLATION_REPORT` và `HTE_VIOLATION_REPORT` có cấu trúc gần như giống nhau — xem xét gộp thành 1 entity `Violation Report` (đổi tên từ `Public Company Violation Report`, 2026-08-05) với Source System Code phân biệt module. | Đã xử lý — gộp thành 1 entity `Violation Report`, phân biệt qua Source System Code (`IDS.VIOLATION_REPORT` vs `IDS.HTE_VIOLATION_REPORT`). |
 | T3-06 | `COMPANY_DATA` (`Public Company Report Submission`) — Data Modeler quyết định (2026-07-24) bỏ hoàn toàn thiết kế Atomic cho bảng này. | **Superseded 2 lần.** (1) Khôi phục lại scope 2026-08-05 (Tier2.md 6f T2-10) — thiết kế lại ở Tier 2. (2) Sau khi bổ sung 4 FK còn thiếu (2026-08-08), entity chuyển tiếp sang **Tier 3** — xem T3-08 và Tier2.md 6f T2-12. Xem `IDS_HLD_Overview.md` 7e #14 cho lịch sử đầy đủ. |
 | T3-07 | Theo yêu cầu tường minh Data Modeler (2026-08-05): đổi tên 5 entity theo họ khái niệm rõ ràng hơn — `VIOLATION_TEMPLATES` (`Disclosure Form Definition Violation Template` → `Violation Report Template`, Domain Prefix `Violation Report`, `vr`), `VIOLATION_REPORT`+`HTE_VIOLATION_REPORT` (`Public Company Violation Report` → `Violation Report`, root entity họ `Violation Report`), `VIOLATION_PENALTY_CONFIG` (`Public Company Violation Penalty Config` → `Violation Report Penalty Config`), `NOTIFICATIONS` (`Disclosure Notification` → `Notification`, root, Domain Prefix `Notification`), `NOTIFICATIONS_DTL` (`Disclosure Form Definition Notification Recipient` → `Notification Recipient`). Đồng thời bổ sung `Violation Report,vr` vào `rule_domain_prefix_abbreviations.csv`. | Đã xử lý: `atomic_entities.yaml`, `manifest.yaml`, `classification_schemes.yaml`, mục 6a/6c Tier2.md/Tier3.md + Overview 7a/7b/Entities, `lld_IDS_VIOLATION_TEMPLATES/VIOLATION_REPORT/HTE_VIOLATION_REPORT/VIOLATION_PENALTY_CONFIG/NOTIFICATIONS/NOTIFICATIONS_DTL.yaml`. Rename này **giải quyết** vi phạm rule#8 đã ghi ở Tier2.md 6f T2-15 (LƯU Ý) — `Violation Report Template`/`Notification Recipient` không còn cần chứa tên `Financial Report Template`/`Notification` theo kiểu cũ vì đã đổi sang họ khái niệm riêng (`Violation Report`/`Notification`), nhưng `Notification Recipient` vẫn đúng chuẩn rule#8 vì chứa `Notification` (tên cha) làm substring. |

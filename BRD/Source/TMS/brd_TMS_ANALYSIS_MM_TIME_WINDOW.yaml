@@ -1,0 +1,102 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ANALYSIS_MM_TIME_WINDOW
+brd_ref: BRD-SRC-TMS-ANALYSIS_MM_TIME_WINDOW
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: CASE_FILE_ID
+  data_type: VARCHAR2(36)
+  description: ID ho so vu viec
+  key: FK
+  fk_note: FK → CASE_FILE.ID
+  fk_src: inferred
+- name: WORKFLOW_TYPE
+  data_type: NUMBER(10,0)
+  description: Loai workflow phan tich
+  key: null
+  fk_note: null
+- name: RESULT_TYPE
+  data_type: NUMBER(10,0)
+  description: Loai ket qua phan tich
+  key: null
+  fk_note: null
+- name: SECURITIES_CODE_ID
+  data_type: VARCHAR2(36)
+  description: ID ma chung khoan
+  key: null
+  fk_note: null
+- name: SECURITIES_CODE
+  data_type: VARCHAR2(10)
+  description: Ma chung khoan
+  key: null
+  fk_note: null
+- name: ANALYSIS_DATE
+  data_type: NUMBER(19,0)
+  description: Ngay phan tich (epoch ms)
+  key: null
+  fk_note: null
+- name: FROM_TIME
+  data_type: NUMBER(19,0)
+  description: Thoi gian bat dau khung (epoch ms)
+  key: null
+  fk_note: null
+- name: TO_TIME
+  data_type: NUMBER(19,0)
+  description: Thoi gian ket thuc khung (epoch ms)
+  key: null
+  fk_note: null
+- name: TIME_RANGE_DISPLAY
+  data_type: VARCHAR2(200)
+  description: Hien thi khung thoi gian
+  key: null
+  fk_note: null
+- name: PRICE_IMPACT_PERCENT
+  data_type: NUMBER(15,4)
+  description: Phan tram anh huong gia
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thoi gian tao
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thoi gian cap nhat cuoi
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(1020)
+  description: User_id nguoi tao
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Ten nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(1020)
+  description: User_id nguoi cap nhat
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Ten nguoi cap nhat
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Soft delete: 0=Chua xoa, 1=Da xoa'
+  key: null
+  fk_note: null
+- name: WORKFLOW_ID
+  data_type: VARCHAR2(36)
+  description: Id quy trình phân tích (analysis_workflow.id)
+  key: null
+  fk_note: null

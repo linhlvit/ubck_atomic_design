@@ -1,0 +1,120 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: CASE_APPROVAL_STEP
+brd_ref: BRD-SRC-TMS-CASE_APPROVAL_STEP
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: CASE_FILE_ID
+  data_type: VARCHAR2(36)
+  description: 'ID vụ việc (FK: case_file.id)'
+  key: FK
+  fk_note: FK → CASE_FILE.ID
+  fk_src: inferred
+- name: STEP_CODE
+  data_type: NUMBER(2,0)
+  description: 'Mã bước: 1=Chuyên viên khởi tạo, 2=Trưởng ban phê duyệt, 3=Phó Trưởng
+    ban phân công, 4=Chuyên viên xử lý'
+  key: null
+  fk_note: null
+- name: STEP_NAME
+  data_type: VARCHAR2(800)
+  description: Tên bước (phục vụ hiển thị)
+  key: null
+  fk_note: null
+- name: ASSIGNED_USER_ID
+  data_type: VARCHAR2(36)
+  description: 'User đang được giao duyệt bước này (FK: system_user.id, có thể null
+    nếu phân công theo role)'
+  key: null
+  fk_note: null
+- name: ASSIGNED_ROLE
+  data_type: VARCHAR2(400)
+  description: 'Chức vụ/nhóm duyệt (ví dụ: TRUONG_BAN, PHO_TRUONG_BAN, CHUYEN_VIEN)'
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái: 0=Chưa xử lý, 1=Đang xử lý, 2=Đã duyệt/Hoàn thành, 3=Từ
+    chối'
+  key: null
+  fk_note: null
+- name: ACTION_AT
+  data_type: DATE
+  description: Thời điểm duyệt/xử lý
+  key: null
+  fk_note: null
+- name: ACTION_NOTE
+  data_type: VARCHAR2(4000)
+  description: Ghi chú khi duyệt/từ chối
+  key: null
+  fk_note: null
+- name: NEXT_STEP_CODE
+  data_type: NUMBER(2,0)
+  description: Bước tiếp theo (2..4), null nếu là bước cuối
+  key: null
+  fk_note: null
+- name: NEXT_ASSIGNED_USER_ID
+  data_type: VARCHAR2(36)
+  description: 'Người được chỉ định duyệt bước tiếp theo (FK: system_user.id)'
+  key: null
+  fk_note: null
+- name: NEXT_ASSIGNED_ROLE
+  data_type: VARCHAR2(400)
+  description: Chức vụ/nhóm của người duyệt tiếp theo
+  key: null
+  fk_note: null
+- name: DUE_DATE
+  data_type: DATE
+  description: Hạn xử lý (nếu cần SLA)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(10,0)
+  description: null
+  key: null
+  fk_note: null
+- name: ACTION_BY_USER_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: null
+  fk_note: null

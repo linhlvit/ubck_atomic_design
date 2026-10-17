@@ -1,0 +1,77 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ABNORMAL_REPORT_TEMPLATE
+brd_ref: BRD-SRC-TMS-ABNORMAL_REPORT_TEMPLATE
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Primary key (UUID)
+  key: PK
+  fk_note: null
+- name: TEMPLATE_CODE
+  data_type: VARCHAR2(200)
+  description: Ma mau bao cao bat thuong
+  key: null
+  fk_note: null
+- name: TEMPLATE_NAME
+  data_type: VARCHAR2(2000)
+  description: Ten mau bao cao bat thuong
+  key: null
+  fk_note: null
+- name: REPORT_GROUP
+  data_type: VARCHAR2(400)
+  description: Nhom nghiep vu/phan loai bao cao bat thuong
+  key: null
+  fk_note: null
+- name: SUBMITTER_TYPES
+  data_type: VARCHAR2(400)
+  description: Don vi duoc nop, phan cach dau phay (1=HNX, 2=HOSE, 3=VNX, 4=VSDC,
+    5=CTCK)
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: VARCHAR2(4000)
+  description: Mo ta mau bao cao
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(1,0)
+  description: 'Trang thai: 0=Khong hoat dong, 1=Hoat dong'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngay tao
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Ngay sua cuoi
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: User_id nguoi cap nhat
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Ten nguoi tao
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Ten nguoi cap nhat
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Soft delete: 0=Active, 1=Deleted'
+  key: null
+  fk_note: null

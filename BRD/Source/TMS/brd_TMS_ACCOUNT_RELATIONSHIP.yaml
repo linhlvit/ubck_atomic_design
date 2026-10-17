@@ -1,0 +1,125 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ACCOUNT_RELATIONSHIP
+brd_ref: BRD-SRC-TMS-ACCOUNT_RELATIONSHIP
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: ID duy nhất (UUID)
+  key: PK
+  fk_note: null
+- name: ACCOUNT_ID_1
+  data_type: VARCHAR2(36)
+  description: ID tài khoản chính trong nhóm
+  key: null
+  fk_note: null
+- name: ACCOUNT_ID_2
+  data_type: VARCHAR2(36)
+  description: ID tài khoản liên quan
+  key: null
+  fk_note: null
+- name: ACCOUNT_CODE_1
+  data_type: VARCHAR2(50)
+  description: Mã tài khoản chính
+  key: null
+  fk_note: null
+- name: ACCOUNT_CODE_2
+  data_type: VARCHAR2(50)
+  description: Mã tài khoản liên quan
+  key: null
+  fk_note: null
+- name: ACCOUNT_GROUP_ID
+  data_type: VARCHAR2(36)
+  description: ID nhóm tài khoản (FK đến account_group)
+  key: FK
+  fk_note: FK → ACCOUNT_GROUP.ID
+  fk_src: inferred
+- name: RELATIONSHIP_ID
+  data_type: VARCHAR2(36)
+  description: ID loại quan hệ
+  key: null
+  fk_note: null
+- name: RELATIONSHIP_VALUE
+  data_type: VARCHAR2(4000)
+  description: Giá trị mô tả quan hệ
+  key: null
+  fk_note: null
+- name: STRENGTH
+  data_type: NUMBER(3,0)
+  description: Độ mạnh quan hệ
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái xóa: 0=Chưa xóa, 1=Đã xóa'
+  key: null
+  fk_note: null
+- name: TRANSACTION_REVIEW_ID
+  data_type: VARCHAR2(36)
+  description: ID cong viec ra soat
+  key: FK
+  fk_note: FK → TRANSACTION_REVIEW.ID
+  fk_src: inferred
+- name: CASE_FILE_ID
+  data_type: VARCHAR2(36)
+  description: ID ho so vu viec (case_file.id)
+  key: FK
+  fk_note: FK → CASE_FILE.ID
+  fk_src: inferred
+- name: RELATIONSHIP_CODE
+  data_type: VARCHAR2(50)
+  description: null
+  key: null
+  fk_note: null
+- name: RELATIONSHIP_TYPE
+  data_type: NUMBER(22,0)
+  description: null
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(22,0)
+  description: null
+  key: null
+  fk_note: null
+- name: WORKFLOW_ID
+  data_type: VARCHAR2(36)
+  description: Quy trình phân tích sinh ra quan hệ (luồng báo cáo bất thường); NULL
+    = nhập tay/legacy
+  key: null
+  fk_note: null
+- name: SOURCE_ACCOUNT_CODE
+  data_type: VARCHAR2(50)
+  description: null
+  key: null
+  fk_note: null

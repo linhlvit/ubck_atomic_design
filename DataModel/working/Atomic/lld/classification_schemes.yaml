@@ -553,13 +553,13 @@ schemes:
         name: "Giấy phép kinh doanh"
         source_table: null
       - code: "ELIGIBILITY_CERTIFICATE"
-        name: "Giấy chứng nhận đủ điều kiện kinh doanh — bổ sung khi thiết kế IDS.AF_PROFILES"
+        name: "Giấy chứng nhận đủ điều kiện kinh doanh — bổ sung khi thiết kế AUDIT.AF_PROFILES"
         source_table: null
       - code: "CITIZEN_ID"
         name: "CCCD"
         source_table: null
       - code: "AUDITOR_CERTIFICATE"
-        name: "Chứng chỉ kiểm toán viên (CPA) — bổ sung khi thiết kế IDS.AF_AUDITOR_PROFILES"
+        name: "Chứng chỉ kiểm toán viên (CPA) — bổ sung khi thiết kế AUDIT.AF_AUDITOR_PROFILES"
         source_table: null
       - code: "CUSTODIAN_MEMBER_CERTIFICATE"
         name: "Chứng nhận thành viên lưu ký"
@@ -4013,10 +4013,10 @@ schemes:
       - "Involved Party Alternative Identification"
     values: []
 
-  - scheme_code: "IDS_AF_POSITION_TITLE"
+  - scheme_code: "AUDIT_AF_POSITION_TITLE"
     name: "Chức vụ người đại diện pháp luật và kiểm toán viên — dùng chung cho af_legal_representative và af_auditor_approval"
     source_type: "source_table"
-    source_table: "IDS.lookup_values"
+    source_table: "AUDIT.lookup_values"
     used_in_entities:
       - "Audit Firm Legal Representative"
       - "Audit Firm Auditor"
@@ -4075,36 +4075,36 @@ schemes:
       - "Stock Control"
     values: []
 
-  - scheme_code: "IDS_WARNING_TARGET_TYPE"
+  - scheme_code: "AUDIT_WARNING_TARGET_TYPE"
     name: "Đối tượng nhắc nhở (công ty kiểm toán / kiểm toán viên)"
     source_type: "source_table"
-    source_table: "IDS.lookup_values"
+    source_table: "AUDIT.lookup_values"
     used_in_entities:
       - "Audit Firm Warning"
     values: []
 
-  - scheme_code: "IDS_WARNING_SOURCE_TYPE"
+  - scheme_code: "AUDIT_WARNING_SOURCE_TYPE"
     name: "Cơ quan phát hành văn bản nhắc nhở (BTC / UBCKNN)"
     source_type: "source_table"
-    source_table: "IDS.lookup_values"
+    source_table: "AUDIT.lookup_values"
     used_in_entities:
       - "Audit Firm Warning"
     values: []
 
-  - scheme_code: "IDS_SANCTION_AUTHORITY"
+  - scheme_code: "AUDIT_SANCTION_AUTHORITY"
     name: "Cơ quan phát hành quyết định xử phạt (BTC / UBCKNN)"
     source_type: "source_table"
-    source_table: "IDS.lookup_values"
+    source_table: "AUDIT.lookup_values"
     used_in_entities:
       - "Audit Firm Sanction"
     values: []
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Sanction Authority Code) đã revert về Text."
 
-  - scheme_code: "IDS_SANCTION_TARGET_TYPE"
+  - scheme_code: "AUDIT_SANCTION_TARGET_TYPE"
     name: "Đối tượng xử phạt hành chính (công ty kiểm toán / kiểm toán viên)"
     source_type: "source_table"
-    source_table: "IDS.lookup_values"
+    source_table: "AUDIT.lookup_values"
     used_in_entities:
       - "Audit Firm Sanction"
     values: []
@@ -5369,10 +5369,10 @@ schemes:
       - "Audit Firm"
     values: []
 
-  - scheme_code: "IDS_AF_STATUS"
-    name: "Trạng thái công ty kiểm toán — IDS (LOOKUP_GROUP='AF_STATUS')"
+  - scheme_code: "AUDIT_AF_STATUS"
+    name: "Trạng thái công ty kiểm toán — AUDIT (LOOKUP_GROUP='AF_STATUS')"
     source_type: "source_table"
-    source_table: "IDS.LOOKUP_VALUES"
+    source_table: "AUDIT.LOOKUP_VALUES"
     used_in_entities:
       - "Audit Firm"
     values: []
@@ -5449,85 +5449,85 @@ schemes:
     deprecated: true
     deprecated_reason: "Nguồn không có FK/lookup annotation — field liên quan (Evaluation Period Status Code) đã revert về Text."
 
-  - scheme_code: "IDS_APPROVAL_TARGET_TYPE"
-    name: "Đối tượng chấp thuận công ty kiểm toán (công ty KT / kiểm toán viên) — IDS"
+  - scheme_code: "AUDIT_APPROVAL_TARGET_TYPE"
+    name: "Đối tượng chấp thuận công ty kiểm toán (công ty KT / kiểm toán viên) — AUDIT"
     source_type: "source_table"
-    source_table: "IDS.LOOKUP_VALUES"
+    source_table: "AUDIT.LOOKUP_VALUES"
     used_in_entities:
       - "Audit Firm Approval"
     values: []
 
-  - scheme_code: "IDS_APPROVAL_SOURCE_TYPE"
-    name: "Cơ quan chấp thuận (BTC / UBCKNN) — IDS"
+  - scheme_code: "AUDIT_APPROVAL_SOURCE_TYPE"
+    name: "Cơ quan chấp thuận (BTC / UBCKNN) — AUDIT"
     source_type: "source_table"
-    source_table: "IDS.LOOKUP_VALUES"
+    source_table: "AUDIT.LOOKUP_VALUES"
     used_in_entities:
       - "Audit Firm Approval"
     values: []
 
-  - scheme_code: "IDS_AUDITOR_STATUS"
-    name: "Trạng thái kiểm toán viên — IDS"
+  - scheme_code: "AUDIT_AUDITOR_STATUS"
+    name: "Trạng thái kiểm toán viên — AUDIT"
     source_type: "source_table"
-    source_table: "IDS.LOOKUP_VALUES"
+    source_table: "AUDIT.LOOKUP_VALUES"
     used_in_entities:
       - "Audit Firm Auditor"
     values: []
 
-  - scheme_code: "IDS_INSPECTION_AUTHORITY"
-    name: "Đơn vị kiểm tra công ty kiểm toán (BTC hoặc UBCKNN) — IDS"
+  - scheme_code: "AUDIT_INSPECTION_AUTHORITY"
+    name: "Đơn vị kiểm tra công ty kiểm toán (BTC hoặc UBCKNN) — AUDIT"
     source_type: "modeler_defined"
-    source_table: "IDS.AF_INSPECTION.INSPECTION_AUTHORITY_CD"
+    source_table: "AUDIT.AF_INSPECTION.INSPECTION_AUTHORITY_CD"
     used_in_entities:
       - "Audit Firm Inspection"
     values: []
 
-  - scheme_code: "IDS_AUDIT_SYSTEM_RESULT"
-    name: "Kết quả kiểm tra hệ thống kiểm toán (Tốt/Đạt/Không đạt/Kém) — IDS"
+  - scheme_code: "AUDIT_AUDIT_SYSTEM_RESULT"
+    name: "Kết quả kiểm tra hệ thống kiểm toán (Tốt/Đạt/Không đạt/Kém) — AUDIT"
     source_type: "modeler_defined"
-    source_table: "IDS.AF_INSPECTION.AUDIT_SYSTEM_RESULT_CD"
+    source_table: "AUDIT.AF_INSPECTION.AUDIT_SYSTEM_RESULT_CD"
     used_in_entities:
       - "Audit Firm Inspection"
     values: []
 
-  - scheme_code: "IDS_AF_INSPECTION_OVERALL_RESULT"
-    name: "Kết quả kiểm tra tổng thể công ty kiểm toán (Tốt/Đạt/Không đạt/Kém) — IDS"
+  - scheme_code: "AUDIT_AF_INSPECTION_OVERALL_RESULT"
+    name: "Kết quả kiểm tra tổng thể công ty kiểm toán (Tốt/Đạt/Không đạt/Kém) — AUDIT"
     source_type: "modeler_defined"
-    source_table: "IDS.AF_INSPECTION.OVERALL_RESULT_CD"
+    source_table: "AUDIT.AF_INSPECTION.OVERALL_RESULT_CD"
     used_in_entities:
       - "Audit Firm Inspection"
     values: []
 
-  - scheme_code: "IDS_AF_INSPECTION_OVERALL_ACTION"
+  - scheme_code: "AUDIT_AF_INSPECTION_OVERALL_ACTION"
     name: "Hình thức quyết định tổng thể sau kiểm tra (Quyết định đình chỉ/Công văn nhắc\
-      \ nhở) — IDS"
+      \ nhở) — AUDIT"
     source_type: "modeler_defined"
-    source_table: "IDS.AF_INSPECTION.OVERALL_ACTION_CD"
+    source_table: "AUDIT.AF_INSPECTION.OVERALL_ACTION_CD"
     used_in_entities:
       - "Audit Firm Inspection"
     values: []
 
-  - scheme_code: "IDS_AF_INSPECTION_OVERALL_ACTION_TYPE"
-    name: "Hình thức xử lý tổng thể (Sau kiểm tra/Qua công tác giám sát) — IDS"
+  - scheme_code: "AUDIT_AF_INSPECTION_OVERALL_ACTION_TYPE"
+    name: "Hình thức xử lý tổng thể (Sau kiểm tra/Qua công tác giám sát) — AUDIT"
     source_type: "modeler_defined"
-    source_table: "IDS.AF_INSPECTION.OVERALL_ACTION_TYPE_CD"
+    source_table: "AUDIT.AF_INSPECTION.OVERALL_ACTION_TYPE_CD"
     used_in_entities:
       - "Audit Firm Inspection"
     values: []
 
-  - scheme_code: "IDS_AF_STATUS_TYPE"
+  - scheme_code: "AUDIT_AF_STATUS_TYPE"
     name: "Loại trạng thái công ty kiểm toán (Đình chỉ/Tạm ngừng/Chấm dứt/Thu hồi/Đang\
-      \ hoạt động) — IDS"
+      \ hoạt động) — AUDIT"
     source_type: "etl_derived"
-    source_table: "IDS.AF_STATUS_HISTORY.STATUS_TYPE"
+    source_table: "AUDIT.AF_STATUS_HISTORY.STATUS_TYPE"
     used_in_entities:
       - "Audit Firm Status History"
     values: []
 
-  - scheme_code: "IDS_AF_SUSPENSION_STATUS_TYPE"
+  - scheme_code: "AUDIT_AF_SUSPENSION_STATUS_TYPE"
     name: "Trạng thái đình chỉ công ty kiểm toán (đang đình chỉ/đã kết thúc/chưa đến\
-      \ thời hạn) — IDS"
+      \ thời hạn) — AUDIT"
     source_type: "modeler_defined"
-    source_table: "IDS.AF_STATUS_HISTORY.SUSPENSION_STATUS_TYPE"
+    source_table: "AUDIT.AF_STATUS_HISTORY.SUSPENSION_STATUS_TYPE"
     used_in_entities:
       - "Audit Firm Status History"
     values: []
@@ -5625,6 +5625,15 @@ schemes:
       - "Legal Entity Position"
     values: []
 
+  - scheme_code: "AUDIT_POSITION"
+    name: "Chức vụ (LOOKUP_GROUP = POSITION) — AUDIT, dùng cho af_legal_representative và af_auditor"
+    source_type: "source_table"
+    source_table: "AUDIT.LOOKUP_VALUES"
+    used_in_entities:
+      - "Audit Firm Legal Representative"
+      - "Audit Firm Auditor"
+    values: []
+
   - scheme_code: "IDS_PUB_CO_CANCEL_TYPE"
     name: "Loại hủy đăng ký công ty đại chúng — IDS"
     source_type: "source_table"
@@ -5643,10 +5652,10 @@ schemes:
     values: []
 
   # ── IDS — Tier 3: bổ sung scheme phát sinh khi thiết kế LLD (chưa có trong scaffold pre-seed) ──
-  - scheme_code: "IDS_AUDITOR_STATUS_EVENT_TYPE"
-    name: "Loại sự kiện thay đổi trạng thái kiểm toán viên — IDS"
+  - scheme_code: "AUDIT_AUDITOR_STATUS_EVENT_TYPE"
+    name: "Loại sự kiện thay đổi trạng thái kiểm toán viên — AUDIT"
     source_type: "source_table"
-    source_table: "IDS.AF_AUDITOR_STATUS_HISTORY.EVENT_TYPE"
+    source_table: "AUDIT.AF_AUDITOR_STATUS_HISTORY.EVENT_TYPE"
     used_in_entities:
       - "Audit Firm Auditor Status History"
     values: []
@@ -5685,34 +5694,34 @@ schemes:
       - "Violation Report Penalty Config"
     values: []
 
-  - scheme_code: "IDS_WARNING_TYPE"
-    name: "Loại văn bản cảnh báo/nhắc nhở đối với công ty/kiểm toán viên — IDS"
+  - scheme_code: "AUDIT_WARNING_TYPE"
+    name: "Loại văn bản cảnh báo/nhắc nhở đối với công ty/kiểm toán viên — AUDIT"
     source_type: "source_table"
-    source_table: "IDS.AF_WARNING.WARNING_TYPE_CD"
+    source_table: "AUDIT.AF_WARNING.WARNING_TYPE_CD"
     used_in_entities:
       - "Audit Firm Warning"
     values: []
 
-  - scheme_code: "IDS_AF_TECHNICAL_AUDIT_ACTION"
-    name: "Hành động xử lý sau kiểm tra hồ sơ kiểm toán — IDS"
+  - scheme_code: "AUDIT_AF_TECHNICAL_AUDIT_ACTION"
+    name: "Hành động xử lý sau kiểm tra hồ sơ kiểm toán — AUDIT"
     source_type: "source_table"
-    source_table: "IDS.AF_TECHNICAL_AUDIT.AUDIT_ACTION_CD"
+    source_table: "AUDIT.AF_TECHNICAL_AUDIT.AUDIT_ACTION_CD"
     used_in_entities:
       - "Audit Firm Technical Audit"
     values: []
 
-  - scheme_code: "IDS_AF_TECHNICAL_AUDIT_ACTION_TYPE"
-    name: "Loại hành động xử lý sau kiểm tra hồ sơ kiểm toán — IDS"
+  - scheme_code: "AUDIT_AF_TECHNICAL_AUDIT_ACTION_TYPE"
+    name: "Loại hành động xử lý sau kiểm tra hồ sơ kiểm toán — AUDIT"
     source_type: "source_table"
-    source_table: "IDS.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD"
+    source_table: "AUDIT.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD"
     used_in_entities:
       - "Audit Firm Technical Audit"
     values: []
 
-  - scheme_code: "IDS_AF_TECHNICAL_AUDIT_RESULT"
-    name: "Kết quả kiểm tra hồ sơ kiểm toán — IDS"
+  - scheme_code: "AUDIT_AF_TECHNICAL_AUDIT_RESULT"
+    name: "Kết quả kiểm tra hồ sơ kiểm toán — AUDIT"
     source_type: "source_table"
-    source_table: "IDS.AF_TECHNICAL_AUDIT.INSPECTION_RESULT_CD"
+    source_table: "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_RESULT_CD"
     used_in_entities:
       - "Audit Firm Technical Audit"
     values: []

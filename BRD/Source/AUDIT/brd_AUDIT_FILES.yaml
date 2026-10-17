@@ -7,109 +7,91 @@ columns:
 - name: ID
   data_type: NUMBER(19,0)
   description: Khóa chính
-  description_src: schema
   key: PK
   fk_note: null
 - name: FILE_NAME
   data_type: VARCHAR2(255)
   description: Tên file lưu trong hệ thống
-  description_src: schema
   key: null
   fk_note: null
 - name: ORIGINAL_FILE_NAME
   data_type: VARCHAR2(255)
   description: Tên file gốc khi upload
-  description_src: schema
   key: null
   fk_note: null
 - name: CONTENT_TYPE
   data_type: VARCHAR2(255)
   description: MIME type (ví dụ application/pdf)
-  description_src: schema
   key: null
   fk_note: null
 - name: FILE_SIZE
   data_type: NUMBER(19,0)
   description: Kích thước file (bytes)
-  description_src: schema
   key: null
   fk_note: null
 - name: MINIO_KEY
   data_type: VARCHAR2(1020)
   description: Key truy cập file trong MinIO (thường UUID + extension)
-  description_src: schema
   key: null
   fk_note: null
 - name: BUCKET_NAME
   data_type: VARCHAR2(255)
   description: Tên bucket MinIO
-  description_src: schema
   key: null
   fk_note: null
 - name: FILE_PATH
   data_type: VARCHAR2(1020)
   description: Đường dẫn logic trong bucket
-  description_src: schema
   key: null
   fk_note: null
 - name: DESCRIPTION
   data_type: VARCHAR2(1000)
   description: Mô tả file
-  description_src: schema
   key: null
   fk_note: null
 - name: TABLE_NAME
   data_type: VARCHAR2(255)
   description: Bảng object gắn file (vd users, products). Null nếu file standalone
-  description_src: schema
   key: null
   fk_note: null
 - name: OBJECT_ID
   data_type: NUMBER(19,0)
   description: ID record trong bảng tương ứng TABLE_NAME. Null nếu file standalone
-  description_src: schema
   key: null
   fk_note: null
 - name: DRAFT_TOKEN
   data_type: VARCHAR2(128)
   description: Khóa tạm gom file draft trước khi bind sang object thật. Null nếu file
     không ở draft flow
-  description_src: schema
   key: null
   fk_note: null
 - name: FILE_STATUS
   data_type: VARCHAR2(20)
   description: Trạng thái file metadata (TEMP hoặc ACTIVE)
-  description_src: schema
   key: null
   fk_note: null
 - name: FILE_CATEGORY
   data_type: VARCHAR2(1020)
   description: Phân loại trong cùng object (vd AVATAR, CONTRACT, PRODUCT_IMAGE)
-  description_src: schema
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: VARCHAR2(1020)
   description: Người tạo
-  description_src: schema
   key: null
   fk_note: null
 - name: CREATED_DATE
   data_type: TIMESTAMP(6)
   description: Ngày tạo
-  description_src: schema
   key: null
   fk_note: null
 - name: UPDATED_BY
   data_type: VARCHAR2(1020)
   description: Người cập nhật
-  description_src: schema
   key: null
   fk_note: null
 - name: UPDATED_DATE
   data_type: TIMESTAMP(6)
   description: Ngày cập nhật
-  description_src: schema
   key: null
   fk_note: null

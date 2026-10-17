@@ -903,7 +903,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_SHAREHOLDING"
   source_column: "IDS.COMPANY_SHAREHOLDING.SHAREHOLDER_TYPE"
-  comment: "SCHEMA_CODE=IDS.SHAREHOLDER_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SHAREHOLDER_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.SHAREHOLDER_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SHAREHOLDER_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_shareholding"
@@ -1339,7 +1339,7 @@ attributes:
   source_system: "IDS"
   source_table: "STOCK_CONTROLS"
   source_column: "IDS.STOCK_CONTROLS.RESTRICTION_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.RESTRICTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RESTRICTION_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.RESTRICTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RESTRICTION_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "stock_control"
@@ -1498,7 +1498,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
   source_column: null
   comment: "PK surrogate. BCV: \"[Business Activity] Status History\"."
@@ -1514,9 +1514,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
-  source_column: "IDS.AF_AUDITOR_STATUS_HISTORY.ID"
+  source_column: "AUDIT.AF_AUDITOR_STATUS_HISTORY.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -1530,12 +1530,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_STATUS_HISTORY'"
-  etl_derived_value: "IDS_AF_AUDITOR_STATUS_HISTORY"
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_STATUS_HISTORY'"
+  etl_derived_value: "AUDIT_AF_AUDITOR_STATUS_HISTORY"
   atomic_table: "af_auditor_status_history"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -1546,10 +1546,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
-  source_column: "IDS.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID"
-  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('IDS_AF_AUDITOR_PROFILES',\
+  source_column: "AUDIT.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID"
+  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES',\
     \ AF_AUDITOR_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -1563,9 +1563,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
-  source_column: "IDS.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID"
+  source_column: "AUDIT.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID"
   comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor\
     \ Id."
   classification_context: null
@@ -1580,10 +1580,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
-  source_column: "IDS.AF_AUDITOR_STATUS_HISTORY.EVENT_TYPE"
-  comment: "SCHEMA_CODE=IDS.AF_AUDITOR_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDITOR_STATUS')."
+  source_column: "AUDIT.AF_AUDITOR_STATUS_HISTORY.EVENT_TYPE"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUDITOR_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDITOR_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_auditor_status_history"
@@ -1596,9 +1596,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
-  source_column: "IDS.AF_AUDITOR_STATUS_HISTORY.EFFECTIVE_DATE"
+  source_column: "AUDIT.AF_AUDITOR_STATUS_HISTORY.EFFECTIVE_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1612,9 +1612,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
-  source_column: "IDS.AF_AUDITOR_STATUS_HISTORY.REASON"
+  source_column: "AUDIT.AF_AUDITOR_STATUS_HISTORY.REASON"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1628,9 +1628,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_STATUS_HISTORY"
-  source_column: "IDS.AF_AUDITOR_STATUS_HISTORY.ADDITIONAL_DESC"
+  source_column: "AUDIT.AF_AUDITOR_STATUS_HISTORY.ADDITIONAL_DESC"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1644,7 +1644,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
   source_column: null
   comment: "PK surrogate. BCV: \"[Business Activity] Inspection\"."
@@ -1660,9 +1660,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.ID"
+  source_column: "AUDIT.AF_INSPECTION.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -1676,12 +1676,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_INSPECTION'"
-  etl_derived_value: "IDS_AF_INSPECTION"
+  classification_context: "Source System Code = 'AUDIT_AF_INSPECTION'"
+  etl_derived_value: "AUDIT_AF_INSPECTION"
   atomic_table: "af_inspection"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -1692,11 +1692,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_INSPECTION.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_INSPECTION.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_INSPECTION.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -1710,9 +1710,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -1726,10 +1726,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.INSPECTION_AUTHORITY_CD"
-  comment: "SCHEMA_CODE=IDS.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+  source_column: "AUDIT.AF_INSPECTION.INSPECTION_AUTHORITY_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_inspection"
@@ -1742,9 +1742,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.INSPECTION_TEAM"
+  source_column: "AUDIT.AF_INSPECTION.INSPECTION_TEAM"
   comment: "Denormalized — danh sách tên cách nhau dấu ';', không tách thành entity\
     \ riêng (không có FK đến người dùng cụ thể)."
   classification_context: null
@@ -1759,9 +1759,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.INSPECTION_DECISION_NO"
+  source_column: "AUDIT.AF_INSPECTION.INSPECTION_DECISION_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1775,9 +1775,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.INSPECTION_START_DATE"
+  source_column: "AUDIT.AF_INSPECTION.INSPECTION_START_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1791,9 +1791,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.INSPECTION_END_DATE"
+  source_column: "AUDIT.AF_INSPECTION.INSPECTION_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1807,10 +1807,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.AUDIT_SYSTEM_RESULT_CD"
-  comment: "SCHEMA_CODE=IDS.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
+  source_column: "AUDIT.AF_INSPECTION.AUDIT_SYSTEM_RESULT_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_inspection"
@@ -1823,10 +1823,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.OVERALL_RESULT_CD"
-  comment: "SCHEMA_CODE=IDS.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
+  source_column: "AUDIT.AF_INSPECTION.OVERALL_RESULT_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_inspection"
@@ -1840,10 +1840,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.OVERALL_ACTION_CD"
-  comment: "SCHEMA_CODE=IDS.AF_AUDIT_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDIT_CODE')."
+  source_column: "AUDIT.AF_INSPECTION.OVERALL_ACTION_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUDIT_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDIT_CODE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_inspection"
@@ -1856,10 +1856,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.OVERALL_ACTION_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
+  source_column: "AUDIT.AF_INSPECTION.OVERALL_ACTION_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_inspection"
@@ -1872,9 +1872,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.OVERALL_DOCUMENT_NO"
+  source_column: "AUDIT.AF_INSPECTION.OVERALL_DOCUMENT_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1888,9 +1888,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.OVERALL_DOCUMENT_DATE"
+  source_column: "AUDIT.AF_INSPECTION.OVERALL_DOCUMENT_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1904,9 +1904,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.OVERALL_VIOLATION_CONTENT"
+  source_column: "AUDIT.AF_INSPECTION.OVERALL_VIOLATION_CONTENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1920,9 +1920,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.OVERALL_EFFECTIVE_FROM_DATE"
+  source_column: "AUDIT.AF_INSPECTION.OVERALL_EFFECTIVE_FROM_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1936,9 +1936,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_INSPECTION"
-  source_column: "IDS.AF_INSPECTION.OVERALL_EFFECTIVE_TO_DATE"
+  source_column: "AUDIT.AF_INSPECTION.OVERALL_EFFECTIVE_TO_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -1952,7 +1952,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
   source_column: null
   comment: "PK surrogate. BCV: \"[Business Activity] Enforcement Action\"."
@@ -1968,9 +1968,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
-  source_column: "IDS.AF_SANCTIONS.ID"
+  source_column: "AUDIT.AF_SANCTIONS.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -1984,12 +1984,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_SANCTIONS'"
-  etl_derived_value: "IDS_AF_SANCTIONS"
+  classification_context: "Source System Code = 'AUDIT_AF_SANCTIONS'"
+  etl_derived_value: "AUDIT_AF_SANCTIONS"
   atomic_table: "af_sanction"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -2000,11 +2000,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
-  source_column: "IDS.AF_SANCTIONS.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_SANCTIONS.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_SANCTIONS.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_SANCTIONS.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -2018,9 +2018,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -2034,10 +2034,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
-  source_column: "IDS.AF_SANCTIONS.SANCTION_AUTHORITY_CD"
-  comment: "SCHEMA_CODE=IDS.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+  source_column: "AUDIT.AF_SANCTIONS.SANCTION_AUTHORITY_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_sanction"
@@ -2050,9 +2050,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
-  source_column: "IDS.AF_SANCTIONS.DECISION_NO"
+  source_column: "AUDIT.AF_SANCTIONS.DECISION_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2066,9 +2066,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
-  source_column: "IDS.AF_SANCTIONS.DECISION_DATE"
+  source_column: "AUDIT.AF_SANCTIONS.DECISION_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2082,9 +2082,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
-  source_column: "IDS.AF_SANCTIONS.SANCTION_CONTENT"
+  source_column: "AUDIT.AF_SANCTIONS.SANCTION_CONTENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2098,9 +2098,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SANCTIONS"
-  source_column: "IDS.AF_SANCTIONS.ATTACHMENT_FILE_URL"
+  source_column: "AUDIT.AF_SANCTIONS.ATTACHMENT_FILE_URL"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2114,7 +2114,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
   source_column: null
   comment: "PK surrogate. BCV: \"[Business Activity] Status History\"."
@@ -2130,9 +2130,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.ID"
+  source_column: "AUDIT.AF_STATUS_HISTORY.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -2146,12 +2146,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_STATUS_HISTORY'"
-  etl_derived_value: "IDS_AF_STATUS_HISTORY"
+  classification_context: "Source System Code = 'AUDIT_AF_STATUS_HISTORY'"
+  etl_derived_value: "AUDIT_AF_STATUS_HISTORY"
   atomic_table: "af_status_history"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -2162,11 +2162,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_STATUS_HISTORY.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_STATUS_HISTORY.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_STATUS_HISTORY.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -2180,9 +2180,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -2197,10 +2197,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.STATUS_TYPE"
-  comment: "SCHEMA_CODE=IDS.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
+  source_column: "AUDIT.AF_STATUS_HISTORY.STATUS_TYPE"
+  comment: "SCHEMA_CODE=AUDIT.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_status_history"
@@ -2213,9 +2213,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.SUSPENSION_STATUS_TYPE"
+  source_column: "AUDIT.AF_STATUS_HISTORY.SUSPENSION_STATUS_TYPE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2229,9 +2229,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.DECISION_NO"
+  source_column: "AUDIT.AF_STATUS_HISTORY.DECISION_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2245,9 +2245,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.DECISION_DATE"
+  source_column: "AUDIT.AF_STATUS_HISTORY.DECISION_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2261,9 +2261,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.EFFECTIVE_FROM_DATE"
+  source_column: "AUDIT.AF_STATUS_HISTORY.EFFECTIVE_FROM_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2277,9 +2277,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.EFFECTIVE_TO_DATE"
+  source_column: "AUDIT.AF_STATUS_HISTORY.EFFECTIVE_TO_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2293,9 +2293,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.TERMINATED_DECISION_DATE"
+  source_column: "AUDIT.AF_STATUS_HISTORY.TERMINATED_DECISION_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2309,9 +2309,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.REASON"
+  source_column: "AUDIT.AF_STATUS_HISTORY.REASON"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2325,9 +2325,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_STATUS_HISTORY"
-  source_column: "IDS.AF_STATUS_HISTORY.ADDITIONAL_DESC"
+  source_column: "AUDIT.AF_STATUS_HISTORY.ADDITIONAL_DESC"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2341,7 +2341,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
   source_column: null
   comment: "PK surrogate. BCV: \"[Business Activity] Enforcement Action\"."
@@ -2357,9 +2357,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.ID"
+  source_column: "AUDIT.AF_SUSPENSION.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -2373,12 +2373,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_SUSPENSION'"
-  etl_derived_value: "IDS_AF_SUSPENSION"
+  classification_context: "Source System Code = 'AUDIT_AF_SUSPENSION'"
+  etl_derived_value: "AUDIT_AF_SUSPENSION"
   atomic_table: "af_suspension"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -2389,11 +2389,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_SUSPENSION.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_SUSPENSION.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_SUSPENSION.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -2407,9 +2407,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -2424,10 +2424,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.AF_AUDITOR_PROFILE_ID"
-  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('IDS_AF_AUDITOR_PROFILES',\
+  source_column: "AUDIT.AF_SUSPENSION.AF_AUDITOR_PROFILE_ID"
+  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES',\
     \ AF_AUDITOR_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -2441,9 +2441,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.AF_AUDITOR_PROFILE_ID"
+  source_column: "AUDIT.AF_SUSPENSION.AF_AUDITOR_PROFILE_ID"
   comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor\
     \ Id."
   classification_context: null
@@ -2458,10 +2458,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.AF_INSPECTION_ID"
-  comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('IDS_AF_INSPECTION',\
+  source_column: "AUDIT.AF_SUSPENSION.AF_INSPECTION_ID"
+  comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('AUDIT_AF_INSPECTION',\
     \ AF_INSPECTION_ID)."
   classification_context: null
   etl_derived_value: null
@@ -2475,9 +2475,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.AF_INSPECTION_ID"
+  source_column: "AUDIT.AF_SUSPENSION.AF_INSPECTION_ID"
   comment: "Lookup pair: af_inspection.af_inspection_code. Pair with Audit Firm Inspection\
     \ Id."
   classification_context: null
@@ -2492,9 +2492,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.TARGET_TYPE_CD"
+  source_column: "AUDIT.AF_SUSPENSION.TARGET_TYPE_CD"
   comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
     \ (2026-07-15)."
   classification_context: null
@@ -2509,10 +2509,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.SOURCE_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+  source_column: "AUDIT.AF_SUSPENSION.SOURCE_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_suspension"
@@ -2525,9 +2525,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.SUSPENSION_DOC_NO"
+  source_column: "AUDIT.AF_SUSPENSION.SUSPENSION_DOC_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2541,9 +2541,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.SUSPENSION_ISSUE_DATE"
+  source_column: "AUDIT.AF_SUSPENSION.SUSPENSION_ISSUE_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2557,9 +2557,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.SUSPENSION_START_DATE"
+  source_column: "AUDIT.AF_SUSPENSION.SUSPENSION_START_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2573,9 +2573,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.SUSPENSION_END_DATE"
+  source_column: "AUDIT.AF_SUSPENSION.SUSPENSION_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2589,9 +2589,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.SUSPENSION_CONTENT"
+  source_column: "AUDIT.AF_SUSPENSION.SUSPENSION_CONTENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2605,10 +2605,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_SUSPENSION"
-  source_column: "IDS.AF_SUSPENSION.SUSPENSION_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
+  source_column: "AUDIT.AF_SUSPENSION.SUSPENSION_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_suspension"
@@ -2621,7 +2621,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
   source_column: null
   comment: "PK surrogate. BCV: \"[Business Activity] Inspection\"."
@@ -2637,9 +2637,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.ID"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -2653,12 +2653,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_TECHNICAL_AUDIT'"
-  etl_derived_value: "IDS_AF_TECHNICAL_AUDIT"
+  classification_context: "Source System Code = 'AUDIT_AF_TECHNICAL_AUDIT'"
+  etl_derived_value: "AUDIT_AF_TECHNICAL_AUDIT"
   atomic_table: "af_technical_audit"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -2669,11 +2669,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_TECHNICAL_AUDIT.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_TECHNICAL_AUDIT.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -2687,9 +2687,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -2703,10 +2703,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.AF_INSPECTION_ID"
-  comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('IDS_AF_INSPECTION',\
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.AF_INSPECTION_ID"
+  comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('AUDIT_AF_INSPECTION',\
     \ AF_INSPECTION_ID)."
   classification_context: null
   etl_derived_value: null
@@ -2720,9 +2720,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.AF_INSPECTION_ID"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.AF_INSPECTION_ID"
   comment: "Lookup pair: af_inspection.af_inspection_code. Pair with Audit Firm Inspection\
     \ Id."
   classification_context: null
@@ -2737,9 +2737,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.INSPECTION_ENTITY_FILES"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_ENTITY_FILES"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2753,9 +2753,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.INSPECTION_YEAR"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_YEAR"
   comment: "Nguồn VARCHAR2(4) — giữ Text."
   classification_context: null
   etl_derived_value: null
@@ -2769,9 +2769,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.SIGNING_AUDITOR_NAME"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.SIGNING_AUDITOR_NAME"
   comment: "Denormalized — nguồn chỉ lưu tên text, không có cột FK Id đến AF_AUDITOR_PROFILES\
     \ tại bảng này."
   classification_context: null
@@ -2786,9 +2786,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LEGAL_REPRESENTATIVE_NAME"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LEGAL_REPRESENTATIVE_NAME"
   comment: "Denormalized — nguồn chỉ lưu tên text."
   classification_context: null
   etl_derived_value: null
@@ -2802,12 +2802,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.INSPECTION_RESULT_CD"
-  comment: "Scheme: IDS_AF_TECHNICAL_AUDIT_RESULT (no_lookup) — chưa liệt kê trong\
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_RESULT_CD"
+  comment: "Scheme: AUDIT_AF_TECHNICAL_AUDIT_RESULT (no_lookup) — chưa liệt kê trong\
     \ HLD Tier3 6d, bổ sung scheme mới."
-  classification_context: "IDS_AF_TECHNICAL_AUDIT_RESULT"
+  classification_context: "AUDIT_AF_TECHNICAL_AUDIT_RESULT"
   etl_derived_value: null
   atomic_table: "af_technical_audit"
   atomic_column: "inspection_result_code"
@@ -2819,12 +2819,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.AUDIT_ACTION_CD"
-  comment: "Scheme: IDS_AF_TECHNICAL_AUDIT_ACTION (no_lookup) — chưa liệt kê trong\
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.AUDIT_ACTION_CD"
+  comment: "Scheme: AUDIT_AF_TECHNICAL_AUDIT_ACTION (no_lookup) — chưa liệt kê trong\
     \ HLD Tier3 6d, bổ sung scheme mới."
-  classification_context: "IDS_AF_TECHNICAL_AUDIT_ACTION"
+  classification_context: "AUDIT_AF_TECHNICAL_AUDIT_ACTION"
   etl_derived_value: null
   atomic_table: "af_technical_audit"
   atomic_column: "audit_action_code"
@@ -2836,10 +2836,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_technical_audit"
@@ -2852,9 +2852,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.DOCUMENT_NO"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.DOCUMENT_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2868,9 +2868,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.DOCUMENT_DATE"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.DOCUMENT_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2884,9 +2884,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.VIOLATION_CONTENT"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.VIOLATION_CONTENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2900,9 +2900,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.EFFECTIVE_FROM_DATE"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.EFFECTIVE_FROM_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2916,9 +2916,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.EFFECTIVE_TO_DATE"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.EFFECTIVE_TO_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2932,9 +2932,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.REASON"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.REASON"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2948,10 +2948,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LD_INSPECTION_RESULT_CD"
-  comment: "SCHEMA_CODE=IDS.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LD_INSPECTION_RESULT_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_technical_audit"
@@ -2964,10 +2964,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LD_AUDIT_ACTION_CD"
-  comment: "SCHEMA_CODE=IDS.AF_AUDIT_ACTION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDIT_ACTION')."
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LD_AUDIT_ACTION_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUDIT_ACTION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDIT_ACTION')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_technical_audit"
@@ -2980,9 +2980,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LD_REASON"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LD_REASON"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2996,9 +2996,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LD_DOCUMENT_NO"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LD_DOCUMENT_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3012,9 +3012,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LD_DOCUMENT_DATE"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LD_DOCUMENT_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3028,9 +3028,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LD_VIOLATION_CONTENT"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LD_VIOLATION_CONTENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3044,9 +3044,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LD_EFFECTIVE_FROM_DATE"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LD_EFFECTIVE_FROM_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3060,9 +3060,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
-  source_column: "IDS.AF_TECHNICAL_AUDIT.LD_EFFECTIVE_TO_DATE"
+  source_column: "AUDIT.AF_TECHNICAL_AUDIT.LD_EFFECTIVE_TO_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3076,7 +3076,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
   source_column: null
   comment: "PK surrogate. BCV: \"[Business Activity] Warning Notice\"."
@@ -3092,9 +3092,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.ID"
+  source_column: "AUDIT.AF_WARNING.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -3108,12 +3108,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_WARNING'"
-  etl_derived_value: "IDS_AF_WARNING"
+  classification_context: "Source System Code = 'AUDIT_AF_WARNING'"
+  etl_derived_value: "AUDIT_AF_WARNING"
   atomic_table: "af_warning"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -3124,11 +3124,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_WARNING.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_WARNING.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_WARNING.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -3142,9 +3142,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -3159,10 +3159,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.AF_AUDITOR_PROFILE_ID"
-  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('IDS_AF_AUDITOR_PROFILES',\
+  source_column: "AUDIT.AF_WARNING.AF_AUDITOR_PROFILE_ID"
+  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES',\
     \ AF_AUDITOR_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -3176,9 +3176,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.AF_AUDITOR_PROFILE_ID"
+  source_column: "AUDIT.AF_WARNING.AF_AUDITOR_PROFILE_ID"
   comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor\
     \ Id."
   classification_context: null
@@ -3194,10 +3194,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.AF_INSPECTION_ID"
-  comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('IDS_AF_INSPECTION',\
+  source_column: "AUDIT.AF_WARNING.AF_INSPECTION_ID"
+  comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('AUDIT_AF_INSPECTION',\
     \ AF_INSPECTION_ID)."
   classification_context: null
   etl_derived_value: null
@@ -3211,9 +3211,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.AF_INSPECTION_ID"
+  source_column: "AUDIT.AF_WARNING.AF_INSPECTION_ID"
   comment: "Lookup pair: af_inspection.af_inspection_code. Pair with Audit Firm Inspection\
     \ Id."
   classification_context: null
@@ -3228,10 +3228,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.TARGET_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_TARGET_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_TARGET_TYPE')."
+  source_column: "AUDIT.AF_WARNING.TARGET_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_TARGET_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_TARGET_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_warning"
@@ -3244,10 +3244,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.SOURCE_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+  source_column: "AUDIT.AF_WARNING.SOURCE_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_warning"
@@ -3260,9 +3260,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.WARNING_DOC_NO"
+  source_column: "AUDIT.AF_WARNING.WARNING_DOC_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3276,9 +3276,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.WARNING_ISSUE_DATE"
+  source_column: "AUDIT.AF_WARNING.WARNING_ISSUE_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3292,9 +3292,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.WARNING_START_DATE"
+  source_column: "AUDIT.AF_WARNING.WARNING_START_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3308,9 +3308,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.WARNING_END_DATE"
+  source_column: "AUDIT.AF_WARNING.WARNING_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3324,9 +3324,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.WARNING_CONTENT"
+  source_column: "AUDIT.AF_WARNING.WARNING_CONTENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -3340,10 +3340,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_WARNING"
-  source_column: "IDS.AF_WARNING.WARNING_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
+  source_column: "AUDIT.AF_WARNING.WARNING_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_warning"
@@ -6398,103 +6398,6 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Public Company Id"
-  description: "Khóa link đến bảng COMPANY_PROFILES."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.COMPANY_PROFILE_ID"
-  comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES',\
-    \ COMPANY_PROFILE_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "pc_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Public Company Code"
-  description: "Mã công ty đại chúng."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.COMPANY_PROFILE_ID"
-  comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "pc_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Bond Ticker Symbol"
-  description: "Mã trái phiếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.BOND_TICKER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "bond_ticker_symbol"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Bond Type Code"
-  description: "Loại hình trái phiếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.BOND_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.BOND_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='BOND_TYPE')."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "bond_tp_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Decision Number"
-  description: "Số quyết định."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.DECISION_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "decision_nbr"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Decision Date"
-  description: "Ngày quyết định."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.DECISION_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "decision_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
   atomic_attribute: "Issuance Quantity"
   description: "Số lượng phát hành."
   data_domain: "Small Counter"
@@ -6509,102 +6412,6 @@ attributes:
   atomic_table: "pc_bond_listing_history"
   atomic_column: "issuance_quantity"
   data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Par Value Amount"
-  description: "Mệnh giá."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.PAR_VALUE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "par_val_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Coupon Rate"
-  description: "Lãi suất phát hành."
-  data_domain: "Interest Rate"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.COUPON_RATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "coupon_rate"
-  data_type: "decimal(8,5)"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Issuance Start Date"
-  description: "Ngày bắt đầu phát hành."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.ISSUANCE_START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "issuance_start_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Issuance End Date"
-  description: "Ngày kết thúc phát hành."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.ISSUANCE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "issuance_end_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Maturity Date"
-  description: "Ngày đáo hạn."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.MATURITY_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "maturity_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Bond Issuance Type Code"
-  description: "Phân loại."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.ISSUANCE_CATEGORY_CD"
-  comment: "SCHEMA_CODE=IDS.BOND_ISSUANCE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='BOND_ISSUANCE_CATEGORY')."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "bond_issuance_tp_code"
-  data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Capital Increase"
   atomic_attribute: "Public Company Capital Increase Id"
@@ -7169,7 +6976,7 @@ attributes:
   source_system: "IDS"
   source_table: "EVALUATIONS"
   source_column: "IDS.EVALUATIONS.TYPE"
-  comment: "SCHEMA_CODE=IDS.EVALUATION_RANK"
+  comment: "SCHEMA_CODE=AUDIT.EVALUATION_RANK"
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_evaluation"
@@ -7185,7 +6992,7 @@ attributes:
   source_system: "IDS"
   source_table: "EVALUATIONS"
   source_column: "IDS.EVALUATIONS.STATUS"
-  comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_evaluation"
@@ -7407,7 +7214,7 @@ attributes:
   source_system: "IDS"
   source_table: "EVALUATION_DETAILS"
   source_column: "IDS.EVALUATION_DETAILS.EVALUATE"
-  comment: "SCHEMA_CODE=IDS.EVALUATION_LEVEL. Values: 1-Bình thường, 2- Cảnh báo,\
+  comment: "SCHEMA_CODE=AUDIT.EVALUATION_LEVEL. Values: 1-Bình thường, 2- Cảnh báo,\
     \ 3- Rủi ro."
   classification_context: null
   etl_derived_value: null
@@ -7505,7 +7312,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_INSPECTION"
   source_column: "IDS.COMPANY_INSPECTION.INSPECTION_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.INSPECTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='INSPECTION_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.INSPECTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='INSPECTION_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_inspection"
@@ -7585,7 +7392,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_INSPECTION"
   source_column: "IDS.COMPANY_INSPECTION.INSPECTION_MODE_CD"
-  comment: "SCHEMA_CODE=IDS.INSPECTION_MODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='INSPECTION_MODE')."
+  comment: "SCHEMA_CODE=AUDIT.INSPECTION_MODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='INSPECTION_MODE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_inspection"
@@ -7779,7 +7586,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PENALTIES"
   source_column: "IDS.COMPANY_PENALTIES.PENALIZED_SUBJECT_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.PENALIZED_SUBJECT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PENALIZED_SUBJECT_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.PENALIZED_SUBJECT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PENALIZED_SUBJECT_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_penalty"
@@ -7861,7 +7668,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PENALTIES"
   source_column: "IDS.COMPANY_PENALTIES.POSITION_CD"
-  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+  comment: "SCHEMA_CODE=AUDIT.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_penalty"
@@ -8040,7 +7847,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING"
   source_column: "IDS.SECURITIES_OFFERING.APPLICANT_TYPE_FLG"
-  comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE').\
+  comment: "SCHEMA_CODE=AUDIT.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE').\
     \ Xử lý CASE WHEN dựa trên giá trị của APPLICANT_TYPE_FLG (1-TC, 2-CN)."
   classification_context: null
   etl_derived_value: null
@@ -8123,7 +7930,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING"
   source_column: "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_PROCEDURE')."
   classification_context: null
   etl_derived_value: null
@@ -8140,7 +7947,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING"
   source_column: "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
   classification_context: null
   etl_derived_value: null
@@ -8417,7 +8224,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING"
   source_column: "IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering"
@@ -8723,7 +8530,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING_PLAN"
   source_column: "IDS.SECURITIES_OFFERING_PLAN.OFFERING_METHOD_CD"
-  comment: "SCHEMA_CODE=IDS.SO_OFFERING_METHOD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_OFFERING_METHOD')."
+  comment: "SCHEMA_CODE=AUDIT.SO_OFFERING_METHOD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_OFFERING_METHOD')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_plan"
@@ -8740,7 +8547,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING_PLAN"
   source_column: "IDS.SECURITIES_OFFERING_PLAN.DISTRIBUTION_METHOD_CD"
-  comment: "SCHEMA_CODE=IDS.SO_DISTRIBUTION_METHOD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_DISTRIBUTION_METHOD')."
+  comment: "SCHEMA_CODE=AUDIT.SO_DISTRIBUTION_METHOD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_DISTRIBUTION_METHOD')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_plan"
@@ -8757,7 +8564,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING_PLAN"
   source_column: "IDS.SECURITIES_OFFERING_PLAN.SECURITY_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.SO_SECURITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_SECURITY_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.SO_SECURITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_SECURITY_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_plan"
@@ -9704,7 +9511,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING_RESULT"
   source_column: "IDS.SECURITIES_OFFERING_RESULT.OFFERING_METHOD_CD"
-  comment: "SCHEMA_CODE=IDS.SO_OFFERING_METHOD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_OFFERING_METHOD')."
+  comment: "SCHEMA_CODE=AUDIT.SO_OFFERING_METHOD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_OFFERING_METHOD')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_result"
@@ -9721,7 +9528,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING_RESULT"
   source_column: "IDS.SECURITIES_OFFERING_RESULT.SECURITY_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.SO_SECURITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_SECURITY_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.SO_SECURITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_SECURITY_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering_result"
@@ -10745,7 +10552,7 @@ attributes:
   source_system: "IDS"
   source_table: "STOCK_LISTING_HISTORY"
   source_column: "IDS.STOCK_LISTING_HISTORY.ACTION_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.STOCK_LISTING_ACTION_TYPE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.STOCK_LISTING_ACTION_TYPE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='PUB_COM_LISTING_ACTION_TYPE')."
   classification_context: null
   etl_derived_value: null
@@ -10778,7 +10585,7 @@ attributes:
   source_system: "IDS"
   source_table: "STOCK_LISTING_HISTORY"
   source_column: "IDS.STOCK_LISTING_HISTORY.EXCHANGE_CD"
-  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  comment: "SCHEMA_CODE=AUDIT.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_stock_listing_history"
@@ -11213,7 +11020,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TENDER_OFFER"
   source_column: "IDS.COMPANY_TENDER_OFFER.TARGET_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  comment: "SCHEMA_CODE=AUDIT.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_tender_offer"
@@ -11358,7 +11165,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TENDER_OFFER"
   source_column: "IDS.COMPANY_TENDER_OFFER.ADMINISTRATIVE_PROC_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_PROCEDURE')."
   classification_context: null
   etl_derived_value: null
@@ -11439,7 +11246,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TENDER_OFFER"
   source_column: "IDS.COMPANY_TENDER_OFFER.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_tender_offer"
@@ -11569,7 +11376,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TENDER_OFFER"
   source_column: "IDS.COMPANY_TENDER_OFFER.ADMINISTRATIVE_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
   classification_context: null
   etl_derived_value: null
@@ -11896,7 +11703,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TENDER_OFFER_RESULT"
   source_column: "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_tender_offer_result"
@@ -12142,7 +11949,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TREASURY_SHARES"
   source_column: "IDS.COMPANY_TREASURY_SHARES.TRANSACTION_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.SO_TRANSACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_TRANSACTION_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.SO_TRANSACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_TRANSACTION_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_treasury_share_transaction"
@@ -12240,7 +12047,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TREASURY_SHARES"
   source_column: "IDS.COMPANY_TREASURY_SHARES.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_treasury_share_transaction"
@@ -12256,7 +12063,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TREASURY_SHARES"
   source_column: "IDS.COMPANY_TREASURY_SHARES.ADMINISTRATIVE_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
   classification_context: null
   etl_derived_value: null
@@ -12370,7 +12177,7 @@ attributes:
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_TREASURY_SHARES"
-  source_column: "IDS.COMPANY_TREASURY_SHARES.LASTEST_TREASURY_TRANS_QTY"
+  source_column: "IDS.COMPANY_TREASURY_SHARES.LATEST_TREASURY_TRANS_QTY"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -12386,7 +12193,7 @@ attributes:
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_TREASURY_SHARES"
-  source_column: "IDS.COMPANY_TREASURY_SHARES.LASTEST_TREASURY_TRANS_DATE"
+  source_column: "IDS.COMPANY_TREASURY_SHARES.LATEST_TREASURY_TRANS_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -12402,7 +12209,7 @@ attributes:
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_TREASURY_SHARES"
-  source_column: "IDS.COMPANY_TREASURY_SHARES.LASTEST_OFFERING_END_DATE"
+  source_column: "IDS.COMPANY_TREASURY_SHARES.LATEST_OFFERING_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -12693,7 +12500,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TREASURY_SHARES"
   source_column: "IDS.COMPANY_TREASURY_SHARES.ADMINISTRATIVE_PROC_CD"
-  comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_PROCEDURE')."
   classification_context: null
   etl_derived_value: null
@@ -13116,7 +12923,7 @@ attributes:
   source_system: "IDS"
   source_table: "TREASURY_SHARE_TRANS_RESULT"
   source_column: "IDS.TREASURY_SHARE_TRANS_RESULT.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_treasury_share_transaction_result"
@@ -18538,7 +18345,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_REPORT"
   source_column: "IDS.VIOLATION_REPORT.PERIOD_QUARTER"
-  comment: "SCHEMA_CODE=IDS.PERIOD_QUARTER_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='QUARTER_CODE')."
+  comment: "SCHEMA_CODE=AUDIT.PERIOD_QUARTER_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='QUARTER_CODE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "violation_report"
@@ -18634,7 +18441,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_REPORT"
   source_column: "IDS.VIOLATION_REPORT.STATUS"
-  comment: "SCHEMA_CODE=IDS.VIOLATION_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.VIOLATION_SUBMISSION_STATUS. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='VIOLATION_STATUS')."
   classification_context: null
   etl_derived_value: null
@@ -20194,7 +20001,7 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.RC_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
@@ -20227,7 +20034,7 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.REPORT_SCOPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
@@ -20243,7 +20050,7 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
@@ -20275,7 +20082,7 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD"
-  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE')."
   classification_context: null
   etl_derived_value: null
@@ -20292,7 +20099,7 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.REPORTING_PERIOD_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_catalog"
@@ -20308,7 +20115,7 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_CATALOG"
   source_column: "IDS.REPORT_CATALOG.REF_CD"
-  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT')."
   classification_context: null
   etl_derived_value: null
@@ -20883,7 +20690,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.VIOLATION_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.VIOLATION_REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.VIOLATION_REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
@@ -20899,7 +20706,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.VIOLATION_SUBTYPE_CD"
-  comment: "SCHEMA_CODE=IDS.VIOLATION_REPORT_SUBTYPE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.VIOLATION_REPORT_SUBTYPE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='VIOLATION_SUBTYPE')."
   classification_context: null
   etl_derived_value: null
@@ -20916,7 +20723,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.REPORT_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
@@ -20932,7 +20739,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.REPORT_SCOPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
@@ -20948,7 +20755,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.PERIOD_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
@@ -20964,7 +20771,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD"
-  comment: "SCHEMA_CODE=IDS.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='VIOLATION_TRIGGER_POINT')."
   classification_context: null
   etl_derived_value: null
@@ -20997,7 +20804,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD_EX"
-  comment: "SCHEMA_CODE=IDS.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='VIOLATION_TRIGGER_POINT')."
   classification_context: null
   etl_derived_value: null
@@ -21030,7 +20837,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.DAY_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.DAY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='DAY_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.DAY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='DAY_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
@@ -21479,7 +21286,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
   source_column: null
   comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\"."
@@ -21495,9 +21302,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.ID"
+  source_column: "AUDIT.AF_APPROVAL.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -21511,12 +21318,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_APPROVAL'"
-  etl_derived_value: "IDS_AF_APPROVAL"
+  classification_context: "Source System Code = 'AUDIT_AF_APPROVAL'"
+  etl_derived_value: "AUDIT_AF_APPROVAL"
   atomic_table: "af_approval"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -21527,11 +21334,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_APPROVAL.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_APPROVAL.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_APPROVAL.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -21545,9 +21352,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -21562,10 +21369,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.AF_AUDITOR_PROFILE_ID"
-  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('IDS_AF_AUDITOR_PROFILES',\
+  source_column: "AUDIT.AF_APPROVAL.AF_AUDITOR_PROFILE_ID"
+  comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES',\
     \ AF_AUDITOR_PROFILE_ID)."
   classification_context: null
   etl_derived_value: null
@@ -21579,9 +21386,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.AF_AUDITOR_PROFILE_ID"
+  source_column: "AUDIT.AF_APPROVAL.AF_AUDITOR_PROFILE_ID"
   comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor\
     \ Id."
   classification_context: null
@@ -21596,10 +21403,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.TARGET_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_TARGET_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_TARGET_TYPE')."
+  source_column: "AUDIT.AF_APPROVAL.TARGET_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_TARGET_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_TARGET_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_approval"
@@ -21612,10 +21419,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.SOURCE_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+  source_column: "AUDIT.AF_APPROVAL.SOURCE_TYPE_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_approval"
@@ -21628,9 +21435,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.APPROVAL_DOC_NO"
+  source_column: "AUDIT.AF_APPROVAL.APPROVAL_DOC_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -21644,9 +21451,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.APPROVAL_ISSUE_DATE"
+  source_column: "AUDIT.AF_APPROVAL.APPROVAL_ISSUE_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -21660,9 +21467,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.APPROVAL_START_DATE"
+  source_column: "AUDIT.AF_APPROVAL.APPROVAL_START_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -21676,9 +21483,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.APPROVAL_END_DATE"
+  source_column: "AUDIT.AF_APPROVAL.APPROVAL_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -21692,9 +21499,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.APPROVAL_CONTENT"
+  source_column: "AUDIT.AF_APPROVAL.APPROVAL_CONTENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -21708,9 +21515,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.AFFILIATION_END_DATE"
+  source_column: "AUDIT.AF_APPROVAL.AFFILIATION_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -21724,9 +21531,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_APPROVAL"
-  source_column: "IDS.AF_APPROVAL.AFFILIATION_NO"
+  source_column: "AUDIT.AF_APPROVAL.AFFILIATION_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -25039,7 +24846,7 @@ attributes:
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.NEWS_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "financial_report"
@@ -25055,7 +24862,7 @@ attributes:
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.SUB_NEWS_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.SUB_NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SUB_NEWS_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.SUB_NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SUB_NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "financial_report"
@@ -25071,7 +24878,7 @@ attributes:
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.NEWS_TYPE_GROUP_CD"
-  comment: "SCHEMA_CODE=IDS.FORM_GROUP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FORM_GROUP')."
+  comment: "SCHEMA_CODE=AUDIT.FORM_GROUP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FORM_GROUP')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "financial_report"
@@ -25183,7 +24990,7 @@ attributes:
   source_system: "IDS"
   source_table: "FORMS"
   source_column: "IDS.FORMS.REPORT_TYPE"
-  comment: "SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "financial_report"
@@ -25379,7 +25186,7 @@ attributes:
   source_system: "IDS"
   source_table: "RCOL"
   source_column: "IDS.RCOL.COL_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_ROW_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_ROW_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_column"
@@ -25428,7 +25235,7 @@ attributes:
   source_system: "IDS"
   source_table: "RCOL"
   source_column: "IDS.RCOL.RC_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_column"
@@ -25594,7 +25401,7 @@ attributes:
   source_system: "IDS"
   source_table: "RROW"
   source_column: "IDS.RROW.ROW_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_ROW_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_ROW/COL_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_ROW_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_row"
@@ -25693,7 +25500,7 @@ attributes:
   source_system: "IDS"
   source_table: "RROW"
   source_column: "IDS.RROW.RC_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_row"
@@ -25980,7 +25787,7 @@ attributes:
   source_system: "IDS"
   source_table: "DATA"
   source_column: "IDS.DATA.RC_TYPE"
-  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fr_value"
@@ -29696,7 +29503,7 @@ attributes:
   source_system: "IDS"
   source_table: "PUB_COMPANY_CANCELLATION"
   source_column: "IDS.PUB_COMPANY_CANCELLATION.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
   classification_context: "IDS_APPROVAL_STATUS"
   etl_derived_value: null
   atomic_table: "pc_cancellation"
@@ -29905,7 +29712,7 @@ attributes:
   source_system: "IDS"
   source_table: "PUB_COMPANY_REGISTRATION"
   source_column: "IDS.PUB_COMPANY_REGISTRATION.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_registration"
@@ -30399,7 +30206,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_DATA"
   source_column: "IDS.COMPANY_DATA.NEWS_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_report_submission"
@@ -30626,7 +30433,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_DATA"
   source_column: "IDS.COMPANY_DATA.NEWS_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_report_submission"
@@ -37659,7 +37466,7 @@ attributes:
   source_system: "IDS"
   source_table: "REP_FORMS"
   source_column: "IDS.REP_FORMS.RP_REPORT_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "unstructured_financial_report"
@@ -37857,7 +37664,7 @@ attributes:
   source_system: "IDS"
   source_table: "REP_COLUMN"
   source_column: "IDS.REP_COLUMN.DATA_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.RF_C_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_C_DATA_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.RF_C_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_C_DATA_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ufr_column"
@@ -38071,7 +37878,7 @@ attributes:
   source_system: "IDS"
   source_table: "REP_ROW"
   source_column: "IDS.REP_ROW.DATA_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.RF_R_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_R_DATA_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.RF_R_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_R_DATA_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ufr_row"
@@ -38442,7 +38249,7 @@ attributes:
   source_system: "IDS"
   source_table: "REP_DATA"
   source_column: "IDS.REP_DATA.COL_DATA_TYPE"
-  comment: "SCHEMA_CODE=IDS.RF_C_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_C_DATA_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.RF_C_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_C_DATA_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ufr_value"
@@ -38458,7 +38265,7 @@ attributes:
   source_system: "IDS"
   source_table: "REP_DATA"
   source_column: "IDS.REP_DATA.ROW_DATA_TYPE"
-  comment: "SCHEMA_CODE=IDS.RF_R_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_R_DATA_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.RF_R_DATA_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RF_R_DATA_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ufr_value"
@@ -40488,7 +40295,7 @@ attributes:
   source_system: "IDS"
   source_table: "EVALUATION_PERIODS"
   source_column: "IDS.EVALUATION_PERIODS.STATUS"
-  comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_evaluation_period"
@@ -42596,10 +42403,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
-  comment: "PK surrogate. Hash: hash_id('IDS_AF_PROFILES', AUDIT_FIRM_CD). BCV: \"\
+  comment: "PK surrogate. Hash: hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD). BCV: \"\
     [Involved Party] Audit Firm\"."
   classification_context: null
   etl_derived_value: null
@@ -42613,9 +42420,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "BK chính (mã nghiệp vụ). PK kỹ thuật (ID) loại khỏi model theo Bước 3e.\
     \ Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
   classification_context: null
@@ -42630,12 +42437,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES'"
-  etl_derived_value: "IDS_AF_PROFILES"
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES'"
+  etl_derived_value: "AUDIT_AF_PROFILES"
   atomic_table: "audit_firm"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -42646,9 +42453,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.FULL_NAME_VI"
+  source_column: "AUDIT.AF_PROFILES.FULL_NAME_VI"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42662,9 +42469,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.FULL_NAME_EN"
+  source_column: "AUDIT.AF_PROFILES.FULL_NAME_EN"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42678,9 +42485,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.SHORT_NAME"
+  source_column: "AUDIT.AF_PROFILES.SHORT_NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42694,9 +42501,9 @@ attributes:
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.PAID_IN_CAPITAL"
+  source_column: "AUDIT.AF_PROFILES.PAID_IN_CAPITAL"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42710,9 +42517,9 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.FOREIGN_AUDIT_MEMBER_FLG"
+  source_column: "AUDIT.AF_PROFILES.FOREIGN_AUDIT_MEMBER_FLG"
   comment: "Giá trị 1 → true (là thành viên); 0 → false. Nguồn NUMBER(1)."
   classification_context: null
   etl_derived_value: null
@@ -42726,9 +42533,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.FOREIGN_AUDIT_FIRM_NAME"
+  source_column: "AUDIT.AF_PROFILES.FOREIGN_AUDIT_FIRM_NAME"
   comment: "Denormalized — hãng nước ngoài không phải Atomic entity trong scope IDS."
   classification_context: null
   etl_derived_value: null
@@ -42742,9 +42549,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.MEMBERSHIP_START_DATE"
+  source_column: "AUDIT.AF_PROFILES.MEMBERSHIP_START_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42758,9 +42565,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.MEMBERSHIP_END_DATE"
+  source_column: "AUDIT.AF_PROFILES.MEMBERSHIP_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42774,10 +42581,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
+  source_column: "AUDIT.AF_PROFILES.STATUS_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "audit_firm"
@@ -42790,9 +42597,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.EXTERNAL_ID"
+  source_column: "AUDIT.AF_PROFILES.EXTERNAL_ID"
   comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
     \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang\
     \ string."
@@ -42808,10 +42615,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  source_column: "AUDIT.AF_PROFILES.APPROVAL_STATUS_CD"
+  comment: "SCHEMA_CODE=AUDIT.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "audit_firm"
@@ -42824,9 +42631,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.APPROVER_COMMENT"
+  source_column: "AUDIT.AF_PROFILES.APPROVER_COMMENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42840,7 +42647,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
   source_column: null
   comment: "PK surrogate. BCV: \"[Involved Party] Individual\"."
@@ -42856,9 +42663,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.ID"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -42872,12 +42679,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES'"
-  etl_derived_value: "IDS_AF_AUDITOR_PROFILES"
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES'"
+  etl_derived_value: "AUDIT_AF_AUDITOR_PROFILES"
   atomic_table: "af_auditor"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -42888,11 +42695,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_AUDITOR_PROFILES.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_AUDITOR_PROFILES.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -42906,9 +42713,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -42922,9 +42729,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.FULL_NAME"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.FULL_NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42938,10 +42745,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.POSITION_TITLE_CD"
-  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.POSITION_TITLE_CD"
+  comment: "SCHEMA_CODE=AUDIT.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_auditor"
@@ -42954,9 +42761,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.PRACTICE_START_DATE"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.PRACTICE_START_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42970,9 +42777,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.PRACTICE_END_DATE"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.PRACTICE_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -42986,10 +42793,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.STATUS_CD"
+  comment: "SCHEMA_CODE=AUDIT.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_auditor"
@@ -43002,9 +42809,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.AFFILIATION_END_DATE"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.AFFILIATION_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -43018,9 +42825,9 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.SEND_EMAIL"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.SEND_EMAIL"
   comment: "Giá trị 1 → true (đã gửi); 0 → false. Nguồn NUMBER(1)."
   classification_context: null
   etl_derived_value: null
@@ -43034,9 +42841,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.EXTERNAL_ID"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.EXTERNAL_ID"
   comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
     \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang\
     \ string."
@@ -43052,10 +42859,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.APPROVAL_STATUS_CD"
+  comment: "SCHEMA_CODE=AUDIT.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_auditor"
@@ -43068,9 +42875,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.APPROVER_COMMENT"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.APPROVER_COMMENT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -43084,9 +42891,9 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.IS_WORKING"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.IS_WORKING"
   comment: "Giá trị 1 → true (đang làm việc); 0 → false. Nguồn NUMBER(1)."
   classification_context: null
   etl_derived_value: null
@@ -43100,7 +42907,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
   source_column: null
   comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\"."
@@ -43116,9 +42923,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.ID"
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.ID"
   comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
   classification_context: null
   etl_derived_value: null
@@ -43132,12 +42939,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_LEGAL_REPRESENTATIVE'"
-  etl_derived_value: "IDS_AF_LEGAL_REPRESENTATIVE"
+  classification_context: "Source System Code = 'AUDIT_AF_LEGAL_REPRESENTATIVE'"
+  etl_derived_value: "AUDIT_AF_LEGAL_REPRESENTATIVE"
   atomic_table: "af_legal_representative"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -43148,11 +42955,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID"
-  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang IDS.AF_PROFILES: AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID\
-    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('IDS_AF_PROFILES',\
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID"
+  comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID\
+    \ = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES',\
     \ AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
@@ -43166,9 +42973,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
   classification_context: null
   etl_derived_value: null
@@ -43182,9 +42989,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.FULL_NAME"
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.FULL_NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -43198,9 +43005,9 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO"
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO"
   comment: "Denormalized — nguồn không có cột phân biệt loại giấy tờ, không đủ thông\
     \ tin để tách shared entity IP Alt Identification."
   classification_context: null
@@ -43215,10 +43022,10 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.POSITION_TITLE_CD"
-  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.POSITION_TITLE_CD"
+  comment: "SCHEMA_CODE=AUDIT.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "af_legal_representative"
@@ -43231,9 +43038,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.APPOINTMENT_START_DATE"
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.APPOINTMENT_START_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -43247,9 +43054,9 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.APPOINTMENT_END_DATE"
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.APPOINTMENT_END_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -49665,7 +49472,7 @@ attributes:
   source_system: "IDS"
   source_table: "LEGAL_ENTITIES"
   source_column: "IDS.LEGAL_ENTITIES.ENTITY_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "legal_entity"
@@ -49681,7 +49488,7 @@ attributes:
   source_system: "IDS"
   source_table: "LEGAL_ENTITIES"
   source_column: "IDS.LEGAL_ENTITIES.IDENTITY_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "legal_entity"
@@ -49730,7 +49537,7 @@ attributes:
   source_system: "IDS"
   source_table: "LEGAL_ENTITIES"
   source_column: "IDS.LEGAL_ENTITIES.EDUCATION_LEVEL_CD"
-  comment: "SCHEMA_CODE=IDS.EDUCATION_LEVEL. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EDUCATION_LEVEL')."
+  comment: "SCHEMA_CODE=AUDIT.EDUCATION_LEVEL. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EDUCATION_LEVEL')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "legal_entity"
@@ -49941,7 +49748,7 @@ attributes:
   source_system: "IDS"
   source_table: "POSITIONS"
   source_column: "IDS.POSITIONS.POSITION_CD"
-  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+  comment: "SCHEMA_CODE=AUDIT.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "legal_entity_position"
@@ -50188,7 +49995,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.ENTERPRISE_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -50204,7 +50011,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.FINANCIAL_STMT_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE'). Dữ liệu dạng list (HN, ME)"
   classification_context: null
   etl_derived_value: null
@@ -50221,7 +50028,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.SECURITIES_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.SECURITIES_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SECURITIES_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.SECURITIES_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SECURITIES_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -50237,7 +50044,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.EQUITY_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  comment: "SCHEMA_CODE=AUDIT.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -50381,7 +50188,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.STATUS_IDS_CD"
-  comment: "SCHEMA_CODE=IDS.PUBLIC_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='STATUS_IDS')."
+  comment: "SCHEMA_CODE=AUDIT.PUBLIC_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='STATUS_IDS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -50527,7 +50334,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.PUBLIC_COMPANY_FORM_CD"
-  comment: "SCHEMA_CODE=IDS.PUBLIC_COMPANY_FORM_TYPE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.PUBLIC_COMPANY_FORM_TYPE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='PUBLIC_COMPANY_FORM')."
   classification_context: null
   etl_derived_value: null
@@ -50544,7 +50351,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.PUBLIC_COM_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.PUBLIC_COMPANY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PUBLIC_COM_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.PUBLIC_COMPANY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PUBLIC_COM_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -50739,7 +50546,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.APPROVAL_STATUS_CD"
-  comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+  comment: "SCHEMA_CODE=AUDIT.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -50869,7 +50676,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_ENTITY_ROLE"
   source_column: "IDS.COMPANY_ENTITY_ROLE.ROLE_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.ENTITY_ROLE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_ROLE_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.ENTITY_ROLE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_ROLE_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_entity_role"
@@ -51014,7 +50821,7 @@ attributes:
   source_system: "IDS"
   source_table: "LEGAL_REPRESENTATIVE"
   source_column: "IDS.LEGAL_REPRESENTATIVE.POSITION_CD"
-  comment: "SCHEMA_CODE=IDS.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+  comment: "SCHEMA_CODE=AUDIT.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_legal_representative"
@@ -51192,7 +50999,7 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_RELATIONSHIP"
   source_column: "IDS.COMPANY_RELATIONSHIP.RELATIONSHIP_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.COMPANY_RELATIONSHIP_TYPE. Values load từ LOOKUP_VALUES\
+  comment: "SCHEMA_CODE=AUDIT.COMPANY_RELATIONSHIP_TYPE. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='COMPANY_RELATIONSHIP_TYPE')."
   classification_context: null
   etl_derived_value: null
@@ -60580,7 +60387,7 @@ attributes:
   source_system: "IDS"
   source_table: "HOLDER_RELATIONSHIP"
   source_column: "IDS.HOLDER_RELATIONSHIP.RELATIONSHIP_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.RELATIONSHIP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RELATIONSHIP_TYPE')."
+  comment: "SCHEMA_CODE=AUDIT.RELATIONSHIP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RELATIONSHIP_TYPE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "stock_holder_relationship"
@@ -77087,12 +76894,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "FK target: audit_firm.af_id. Shared entity — không có PK surrogate riêng.\
-    \ Hash: hash_id('IDS_AF_PROFILES', AUDIT_FIRM_CD)."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Identification\
+    \ Hash: hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77105,11 +76912,11 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Involved Party Id."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77122,13 +76929,13 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
-  etl_derived_value: "IDS_AF_PROFILES"
+  etl_derived_value: "AUDIT_AF_PROFILES"
   atomic_table: "ip_alternative_identification"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -77139,11 +76946,11 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: "BUSINESS_LICENSE"
   atomic_table: "ip_alternative_identification"
@@ -77156,12 +76963,12 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.BUSINESS_REG_NO"
+  source_column: "AUDIT.AF_PROFILES.BUSINESS_REG_NO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77174,11 +76981,11 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ELIGIBILITY_CERTIFICATE."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Identification\
     \ Type Code = 'ELIGIBILITY_CERTIFICATE'"
   etl_derived_value: "ELIGIBILITY_CERTIFICATE"
   atomic_table: "ip_alternative_identification"
@@ -77191,12 +76998,12 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.ELIGIBILITY_CERT_NO"
+  source_column: "AUDIT.AF_PROFILES.ELIGIBILITY_CERT_NO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Identification\
     \ Type Code = 'ELIGIBILITY_CERTIFICATE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77209,12 +77016,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.ID"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.ID"
   comment: "FK target: af_auditor.af_auditor_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('IDS_AF_AUDITOR_PROFILES', ID)."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+    \ riêng. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES', ID)."
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'AUDITOR_CERTIFICATE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77227,11 +77034,11 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.ID"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.ID"
   comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Involved Party Id."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'AUDITOR_CERTIFICATE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77244,13 +77051,13 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'AUDITOR_CERTIFICATE'"
-  etl_derived_value: "IDS_AF_AUDITOR_PROFILES"
+  etl_derived_value: "AUDIT_AF_AUDITOR_PROFILES"
   atomic_table: "ip_alternative_identification"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -77261,12 +77068,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
   source_column: null
   comment: "Scheme: IP_ALT_ID_TYPE. Hardcode AUDITOR_CERTIFICATE — value mới, bổ sung\
     \ vào classification_schemes.yaml cùng lượt thiết kế này."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'AUDITOR_CERTIFICATE'"
   etl_derived_value: "AUDITOR_CERTIFICATE"
   atomic_table: "ip_alternative_identification"
@@ -77279,12 +77086,12 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_NO"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.AUDIT_CERT_NO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'AUDITOR_CERTIFICATE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77297,11 +77104,11 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_ISSUE_DATE"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.AUDIT_CERT_ISSUE_DATE"
   comment: null
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'AUDITOR_CERTIFICATE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77314,11 +77121,11 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
   source_column: null
   comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CITIZEN_ID."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'CITIZEN_ID'"
   etl_derived_value: "CITIZEN_ID"
   atomic_table: "ip_alternative_identification"
@@ -77331,12 +77138,12 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.IDENTITY_NO"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.IDENTITY_NO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'CITIZEN_ID'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77349,11 +77156,11 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
   source_column: null
   comment: "Scheme: IP_ALT_ID_TYPE. Hardcode PRACTITIONER_LICENSE."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'PRACTITIONER_LICENSE'"
   etl_derived_value: "PRACTITIONER_LICENSE"
   atomic_table: "ip_alternative_identification"
@@ -77366,12 +77173,12 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_NO"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.PRACTICE_CERT_NO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'PRACTITIONER_LICENSE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77384,11 +77191,11 @@ attributes:
   data_domain: "Date"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
-  source_column: "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_ISSUE_DATE"
+  source_column: "AUDIT.AF_AUDITOR_PROFILES.PRACTICE_CERT_ISSUE_DATE"
   comment: null
-  classification_context: "Source System Code = 'IDS_AF_AUDITOR_PROFILES' | Identification\
+  classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification\
     \ Type Code = 'PRACTITIONER_LICENSE'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
@@ -77455,7 +77262,7 @@ attributes:
   source_system: "IDS"
   source_table: "IDENTITY"
   source_column: "IDS.IDENTITY.IDENTITY_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE').\
+  comment: "SCHEMA_CODE=AUDIT.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE').\
     \ Xử lý CASE WHEN theo giá tri IDENTITY_TYPE_CD (1-NATIONAL_ID, 2-PASSPORT, 3-BUSINESS_LICENSE,\
     \ 4-CITIZEN_ID)"
   classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type\
@@ -82842,12 +82649,12 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "FK target: audit_firm.af_id. Shared entity — không có PK surrogate riêng.\
-    \ Hash: hash_id('IDS_AF_PROFILES', AUDIT_FIRM_CD)."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+    \ Hash: hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: null
   atomic_table: "ip_electronic_address"
@@ -82860,11 +82667,11 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Involved Party Id."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: null
   atomic_table: "ip_electronic_address"
@@ -82877,13 +82684,13 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'FAX'"
-  etl_derived_value: "IDS_AF_PROFILES"
+  etl_derived_value: "AUDIT_AF_PROFILES"
   atomic_table: "ip_electronic_address"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -82894,11 +82701,11 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode FAX."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: "FAX"
   atomic_table: "ip_electronic_address"
@@ -82911,11 +82718,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.FAX_NO"
+  source_column: "AUDIT.AF_PROFILES.FAX_NO"
   comment: null
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'FAX'"
   etl_derived_value: null
   atomic_table: "ip_electronic_address"
@@ -82928,11 +82735,11 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode PHONE."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'PHONE'"
   etl_derived_value: "PHONE"
   atomic_table: "ip_electronic_address"
@@ -82945,11 +82752,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.PHONE_NO"
+  source_column: "AUDIT.AF_PROFILES.PHONE_NO"
   comment: null
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'PHONE'"
   etl_derived_value: null
   atomic_table: "ip_electronic_address"
@@ -82962,11 +82769,11 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode WEBSITE."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'WEBSITE'"
   etl_derived_value: "WEBSITE"
   atomic_table: "ip_electronic_address"
@@ -82979,11 +82786,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.WEBSITE"
+  source_column: "AUDIT.AF_PROFILES.WEBSITE"
   comment: null
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Electronic Address\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Electronic Address\
     \ Type Code = 'WEBSITE'"
   etl_derived_value: null
   atomic_table: "ip_electronic_address"
@@ -82996,11 +82803,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.ID"
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.ID"
   comment: "FK target: af_legal_representative.af_legal_representative_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('IDS_AF_LEGAL_REPRESENTATIVE',\
+    \ entity — không có PK surrogate riêng. Hash: hash_id('AUDIT_AF_LEGAL_REPRESENTATIVE',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
@@ -83014,9 +82821,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.ID"
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.ID"
   comment: "Lookup pair: af_legal_representative.af_legal_representative_code. Pair\
     \ with Involved Party Id."
   classification_context: null
@@ -83031,13 +82838,13 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'IDS_AF_LEGAL_REPRESENTATIVE' | Electronic\
+  classification_context: "Source System Code = 'AUDIT_AF_LEGAL_REPRESENTATIVE' | Electronic\
     \ Address Type Code = 'PHONE'"
-  etl_derived_value: "IDS_AF_LEGAL_REPRESENTATIVE"
+  etl_derived_value: "AUDIT_AF_LEGAL_REPRESENTATIVE"
   atomic_table: "ip_electronic_address"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -83048,12 +82855,12 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
   source_column: null
   comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode PHONE — AF_LEGAL_REPRESENTATIVE chỉ\
     \ có 1 kênh liên lạc."
-  classification_context: "Source System Code = 'IDS_AF_LEGAL_REPRESENTATIVE' | Electronic\
+  classification_context: "Source System Code = 'AUDIT_AF_LEGAL_REPRESENTATIVE' | Electronic\
     \ Address Type Code = 'PHONE'"
   etl_derived_value: "PHONE"
   atomic_table: "ip_electronic_address"
@@ -83066,11 +82873,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_LEGAL_REPRESENTATIVE"
-  source_column: "IDS.AF_LEGAL_REPRESENTATIVE.PHONE_NO"
+  source_column: "AUDIT.AF_LEGAL_REPRESENTATIVE.PHONE_NO"
   comment: null
-  classification_context: "Source System Code = 'IDS_AF_LEGAL_REPRESENTATIVE' | Electronic\
+  classification_context: "Source System Code = 'AUDIT_AF_LEGAL_REPRESENTATIVE' | Electronic\
     \ Address Type Code = 'PHONE'"
   etl_derived_value: null
   atomic_table: "ip_electronic_address"
@@ -88100,11 +87907,11 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "FK target: audit_firm.af_id. Shared entity — không có PK surrogate riêng.\
-    \ Hash: hash_id('IDS_AF_PROFILES', AUDIT_FIRM_CD)."
+    \ Hash: hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ip_postal_address"
@@ -88117,9 +87924,9 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
+  source_column: "AUDIT.AF_PROFILES.AUDIT_FIRM_CD"
   comment: "Lookup pair: audit_firm.af_code. Pair with Involved Party Id."
   classification_context: null
   etl_derived_value: null
@@ -88133,13 +87940,13 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Address Type Code\
     \ = 'HEAD_OFFICE'"
-  etl_derived_value: "IDS_AF_PROFILES"
+  etl_derived_value: "AUDIT_AF_PROFILES"
   atomic_table: "ip_postal_address"
   atomic_column: "src_stm_code"
   data_type: "string"
@@ -88150,13 +87957,13 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE — AF_PROFILES chỉ có 1 loại\
     \ địa chỉ (trụ sở chính), khớp pattern SCMS.AUDIT_FIRM (cùng atomic_entity Audit\
     \ Firm)."
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Address Type Code\
     \ = 'HEAD_OFFICE'"
   etl_derived_value: "HEAD_OFFICE"
   atomic_table: "ip_postal_address"
@@ -88169,11 +87976,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  source_system: "IDS"
+  source_system: "AUDIT"
   source_table: "AF_PROFILES"
-  source_column: "IDS.AF_PROFILES.ADDRESS"
+  source_column: "AUDIT.AF_PROFILES.ADDRESS"
   comment: null
-  classification_context: "Source System Code = 'IDS_AF_PROFILES' | Address Type Code\
+  classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Address Type Code\
     \ = 'HEAD_OFFICE'"
   etl_derived_value: null
   atomic_table: "ip_postal_address"

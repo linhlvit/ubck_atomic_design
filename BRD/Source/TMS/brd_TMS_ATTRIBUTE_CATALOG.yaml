@@ -1,0 +1,82 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: ATTRIBUTE_CATALOG
+brd_ref: BRD-SRC-TMS-ATTRIBUTE_CATALOG
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Khóa chính UUID
+  key: PK
+  fk_note: null
+- name: METRIC_ID
+  data_type: VARCHAR2(36)
+  description: FK tham chiếu đến metric_catalog
+  key: FK
+  fk_note: FK → METRIC_CATALOG.ID
+  fk_src: db
+- name: ATTR_CODE
+  data_type: VARCHAR2(400)
+  description: Mã định danh duy nhất của thuộc tính
+  key: null
+  fk_note: null
+- name: ATTR_NAME
+  data_type: VARCHAR2(1020)
+  description: 'Tên hiển thị của thuộc tính (VD: Mã cổ phiếu, Khối lượng GD)'
+  key: null
+  fk_note: null
+- name: DATA_TYPE
+  data_type: VARCHAR2(1000)
+  description: 'Kiểu dữ liệu: Text, Number, Date, Decimal'
+  key: null
+  fk_note: null
+- name: ATTR_ROLE
+  data_type: VARCHAR2(80)
+  description: 'Vai trò: dimension=chiều phân tích, measure=chỉ số đo lường'
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái: 0=Inactive, 1=Active'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật bản ghi gần nhất
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(1020)
+  description: ID người tạo
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(1020)
+  description: ID người cập nhật
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Soft delete: 0=Chưa xóa, 1=Đã xóa'
+  key: null
+  fk_note: null
+- name: CATEGORY
+  data_type: VARCHAR2(400)
+  description: 'Nhóm: Cổ phiếu, Thông tin giao dịch theo ngày...'
+  key: null
+  fk_note: null

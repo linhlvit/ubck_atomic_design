@@ -1,1797 +1,1722 @@
 source: THANHTRA
-description: "Phân hệ Thanh tra — Quản lý hoạt động thanh tra, kiểm tra, xử lý vi phạm hành chính, tiếp công dân và đơn thư KNTC trong lĩnh vực chứng khoán"
+description: Phân hệ Thanh tra — Quản lý hoạt động thanh tra, kiểm tra, xử lý vi phạm hành chính, tiếp công dân và đơn thư KNTC trong lĩnh vực chứng khoán
 brd_entries:
-
-  # B.1 Hoạt động thanh tra - kiểm tra
-
-  - brd_id: BRD-SRC-THANHTRA-ADHOC_INSPECTION_REPORT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ADHOC_INSPECTION_REPORT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Báo cáo đột xuất thanh tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ADHOC_INSPECTION_REPORT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-EXAMINATION_ANNUAL_PLAN
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng EXAMINATION_ANNUAL_PLAN"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Kế hoạch kiểm tra hàng năm"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: EXAMINATION_ANNUAL_PLAN
-      related_tables:
-        - table: EXAMINATION_ANNUAL_PLAN_TARGET
-          relation: "1-N — Đối tượng trong kế hoạch kiểm tra hàng năm"
-        - table: EXAMINATION_TEAM
-          relation: "1-N — Hồ sơ đoàn kiểm tra"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-EXAMINATION_ANNUAL_PLAN_TARGET
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng EXAMINATION_ANNUAL_PLAN_TARGET"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đối tượng trong kế hoạch kiểm tra hàng năm"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: EXAMINATION_ANNUAL_PLAN_TARGET
-      related_tables:
-        - table: EXAMINATION_ANNUAL_PLAN
-          relation: "FK cha — Kế hoạch kiểm tra hàng năm"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-EXAMINATION_RESULT_NOTICE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng EXAMINATION_RESULT_NOTICE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Thông báo kết quả kiểm tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: EXAMINATION_RESULT_NOTICE
-      related_tables:
-        - table: EXAMINATION_TEAM
-          relation: "FK cha — Hồ sơ đoàn kiểm tra"
-        - table: EXAMINATION_RESULT_NOTICE_REMEDIAL
-          relation: "1-N — Kiến nghị, biện pháp khắc phục trong thông báo kết quả kiểm tra"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-EXAMINATION_RESULT_NOTICE_REMEDIAL
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng EXAMINATION_RESULT_NOTICE_REMEDIAL"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Kiến nghị, biện pháp khắc phục trong thông báo kết quả kiểm tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: EXAMINATION_RESULT_NOTICE_REMEDIAL
-      related_tables:
-        - table: EXAMINATION_RESULT_NOTICE
-          relation: "FK cha — Thông báo kết quả kiểm tra"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-EXAMINATION_TEAM
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng EXAMINATION_TEAM"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Hồ sơ đoàn kiểm tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: EXAMINATION_TEAM
-      related_tables:
-        - table: EXAMINATION_ANNUAL_PLAN
-          relation: "FK cha — Kế hoạch kiểm tra hàng năm"
-        - table: EXAMINATION_TEAM_MEMBER
-          relation: "1-N — Thành viên đoàn kiểm tra"
-        - table: EXAMINATION_TEAM_TARGET
-          relation: "1-N — Đối tượng kiểm tra của đoàn"
-        - table: EXAMINATION_RESULT_NOTICE
-          relation: "1-N — Thông báo kết quả kiểm tra"
-        - table: VIOLATION_CASE
-          relation: "1-N — Hồ sơ vụ việc vi phạm hành chính"
-        - table: VIOLATION_RECORD
-          relation: "1-N — Biên bản vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-EXAMINATION_TEAM_MEMBER
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng EXAMINATION_TEAM_MEMBER"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Thành viên đoàn kiểm tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: EXAMINATION_TEAM_MEMBER
-      related_tables:
-        - table: EXAMINATION_TEAM
-          relation: "FK cha — Hồ sơ đoàn kiểm tra"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng EXAMINATION_TEAM_TARGET"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đối tượng kiểm tra của đoàn"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: EXAMINATION_TEAM_TARGET
-      related_tables:
-        - table: EXAMINATION_TEAM
-          relation: "FK cha — Hồ sơ đoàn kiểm tra"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng INSPECTION_ANNUAL_PLAN"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Kế hoạch thanh tra hàng năm"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: INSPECTION_ANNUAL_PLAN
-      related_tables:
-        - table: INSPECTION_ANNUAL_PLAN_TARGET
-          relation: "1-N — Đối tượng trong kế hoạch thanh tra hàng năm"
-        - table: INSPECTION_TEAM
-          relation: "1-N — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN_TARGET
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng INSPECTION_ANNUAL_PLAN_TARGET"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đối tượng trong kế hoạch thanh tra hàng năm"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: INSPECTION_ANNUAL_PLAN_TARGET
-      related_tables:
-        - table: INSPECTION_ANNUAL_PLAN
-          relation: "FK cha — Kế hoạch thanh tra hàng năm"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-INSPECTION_CONCLUSION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng INSPECTION_CONCLUSION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Kết luận thanh tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: INSPECTION_CONCLUSION
-      related_tables:
-        - table: INSPECTION_TEAM
-          relation: "FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)"
-        - table: INSPECTION_CONCLUSION_REMEDIAL
-          relation: "1-N — Kiến nghị, biện pháp khắc phục trong kết luận thanh tra"
-        - table: POST_INSPECTION_PROCESSING
-          relation: "1-N — Theo dõi xử lý sau thanh tra"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-INSPECTION_CONCLUSION_REMEDIAL
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng INSPECTION_CONCLUSION_REMEDIAL"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Kiến nghị, biện pháp khắc phục trong kết luận thanh tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: INSPECTION_CONCLUSION_REMEDIAL
-      related_tables:
-        - table: INSPECTION_CONCLUSION
-          relation: "FK cha — Kết luận thanh tra"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-INSPECTION_REPORT_OUTLINE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng INSPECTION_REPORT_OUTLINE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đề cương báo cáo thanh tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: INSPECTION_REPORT_OUTLINE
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-INSPECTION_TEAM
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng INSPECTION_TEAM"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: INSPECTION_TEAM
-      related_tables:
-        - table: INSPECTION_ANNUAL_PLAN
-          relation: "FK cha — Kế hoạch thanh tra hàng năm"
-        - table: INSPECTION_TEAM_MEMBER
-          relation: "1-N — Thành viên đoàn thanh tra"
-        - table: INSPECTION_TEAM_TARGET
-          relation: "1-N — Đối tượng thanh tra của đoàn"
-        - table: INSPECTION_CONCLUSION
-          relation: "1-N — Kết luận thanh tra"
-        - table: VIOLATION_CASE
-          relation: "1-N — Hồ sơ vụ việc vi phạm hành chính"
-        - table: VIOLATION_RECORD
-          relation: "1-N — Biên bản vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-INSPECTION_TEAM_MEMBER
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng INSPECTION_TEAM_MEMBER"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Thành viên đoàn thanh tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: INSPECTION_TEAM_MEMBER
-      related_tables:
-        - table: INSPECTION_TEAM
-          relation: "FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-INSPECTION_TEAM_TARGET
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng INSPECTION_TEAM_TARGET"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đối tượng thanh tra của đoàn"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: INSPECTION_TEAM_TARGET
-      related_tables:
-        - table: INSPECTION_TEAM
-          relation: "FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-POST_INSPECTION_PROCESSING
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng POST_INSPECTION_PROCESSING"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Theo dõi xử lý sau thanh tra"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: POST_INSPECTION_PROCESSING
-      related_tables:
-        - table: INSPECTION_CONCLUSION
-          relation: "FK cha — Kết luận thanh tra"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PROACTIVE_NOTICE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PROACTIVE_NOTICE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Thông báo chủ động (công bố thông tin)"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: PROACTIVE_NOTICE
-      related_tables:
-        - table: PROACTIVE_NOTICE_RECIPIENT
-          relation: "1-N — Danh sách người nhận thông báo chủ động"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PROACTIVE_NOTICE_RECIPIENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PROACTIVE_NOTICE_RECIPIENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh sách người nhận thông báo chủ động"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: in_scope
-      scope_reason: null
-      table: PROACTIVE_NOTICE_RECIPIENT
-      related_tables:
-        - table: PROACTIVE_NOTICE
-          relation: "FK cha — Thông báo chủ động (công bố thông tin)"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-SUPERVISION_ACTIVITY_REPORT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng SUPERVISION_ACTIVITY_REPORT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Báo cáo hoạt động giám sát"
-      functional_group: "B.1 Hoạt động thanh tra - kiểm tra"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: SUPERVISION_ACTIVITY_REPORT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # B.2 Xử lý vi phạm hành chính
-
-  - brd_id: BRD-SRC-THANHTRA-ADHOC_ADMIN_VIOLATION_REPORT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ADHOC_ADMIN_VIOLATION_REPORT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Báo cáo đột xuất vi phạm hành chính"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ADHOC_ADMIN_VIOLATION_REPORT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-ADMIN_VIOLATION_REPORT_OUTLINE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ADMIN_VIOLATION_REPORT_OUTLINE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đề cương báo cáo vi phạm hành chính"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ADMIN_VIOLATION_REPORT_OUTLINE
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Quyết định xử phạt vi phạm hành chính"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_DECISION
-      related_tables:
-        - table: VIOLATION_CASE
-          relation: "FK cha — Hồ sơ vụ việc vi phạm hành chính"
-        - table: VIOLATION_CASE_OUTPUT_DOCUMENT
-          relation: "1-N — Văn bản đầu ra của hồ sơ vi phạm"
-        - table: PENALTY_DECISION_APPROVAL_HISTORY
-          relation: "1-N — Lịch sử phê duyệt quyết định xử phạt"
-        - table: PENALTY_DECISION_SUBJECT
-          relation: "1-N — Đối tượng bị xử phạt trong quyết định"
-        - table: PENALTY_DECISION_VIOLATION_RECORD
-          relation: "1-N — Liên kết giữa quyết định xử phạt và biên bản vi phạm"
-        - table: VPHC_PROCESS_OFFICIAL_LETTER
-          relation: "1-N — Công văn trong quy trình xử lý vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_APPROVAL_HISTORY
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_APPROVAL_HISTORY"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lịch sử phê duyệt quyết định xử phạt"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_DECISION_APPROVAL_HISTORY
-      related_tables:
-        - table: PENALTY_DECISION
-          relation: "FK cha — Quyết định xử phạt vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_CIRCUMSTANCE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_CIRCUMSTANCE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Tình tiết tăng nặng/giảm nhẹ trong quyết định xử phạt"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_DECISION_CIRCUMSTANCE
-      related_tables:
-        - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
-          relation: "FK cha — Hành vi vi phạm của đối tượng trong quyết định xử phạt"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_SUBJECT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đối tượng bị xử phạt trong quyết định"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_DECISION_SUBJECT
-      related_tables:
-        - table: PENALTY_DECISION
-          relation: "FK cha — Quyết định xử phạt vi phạm hành chính"
-        - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
-          relation: "1-N — Hành vi vi phạm của đối tượng trong quyết định xử phạt"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_SUBJECT_BEHAVIOR"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Hành vi vi phạm của đối tượng trong quyết định xử phạt"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_DECISION_SUBJECT_BEHAVIOR
-      related_tables:
-        - table: PENALTY_DECISION_SUBJECT
-          relation: "FK cha — Đối tượng bị xử phạt trong quyết định"
-        - table: VIOLATION_BEHAVIOR
-          relation: "FK tham chiếu — Danh mục hành vi vi phạm hành chính"
-        - table: PENALTY_TYPE
-          relation: "FK tham chiếu — Danh mục hình thức xử phạt"
-        - table: PENALTY_DECISION_CIRCUMSTANCE
-          relation: "1-N — Tình tiết tăng nặng/giảm nhẹ trong quyết định xử phạt"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_VIOLATION_RECORD
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_VIOLATION_RECORD"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Liên kết giữa quyết định xử phạt và biên bản vi phạm"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_DECISION_VIOLATION_RECORD
-      related_tables:
-        - table: PENALTY_DECISION
-          relation: "FK cha — Quyết định xử phạt vi phạm hành chính"
-        - table: VIOLATION_RECORD
-          relation: "FK cha — Biên bản vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_TYPE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_TYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục hình thức xử phạt"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_TYPE
-      related_tables:
-        - table: VIOLATION_BEHAVIOR
-          relation: "1-N — Danh mục hành vi vi phạm hành chính"
-        - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
-          relation: "1-N — Hành vi vi phạm của đối tượng trong quyết định xử phạt"
-        - table: PENALTY_TYPE_VIOLATION_BEHAVIOR
-          relation: "1-N — Ánh xạ hình thức xử phạt theo hành vi vi phạm"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_TYPE_VIOLATION_BEHAVIOR
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_TYPE_VIOLATION_BEHAVIOR"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Ánh xạ hình thức xử phạt theo hành vi vi phạm"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_TYPE_VIOLATION_BEHAVIOR
-      related_tables:
-        - table: PENALTY_TYPE
-          relation: "FK tham chiếu — Danh mục hình thức xử phạt"
-        - table: VIOLATION_BEHAVIOR
-          relation: "FK tham chiếu — Danh mục hành vi vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-SECURITY_MEASURE_DECISION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng SECURITY_MEASURE_DECISION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECURITY_MEASURE_DECISION
-      related_tables:
-        - table: SECURITY_MEASURE_DECISION_SUBJECT
-          relation: "1-N — Đối tượng áp dụng biện pháp ngăn chặn"
-        - table: SECURITY_MEASURE_DECISION_RECIPIENT
-          relation: "1-N — Người nhận quyết định biện pháp ngăn chặn"
-        - table: SECURITY_MEASURE_EXECUTION
-          relation: "1-N — Theo dõi thực hiện quyết định biện pháp ngăn chặn"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-SECURITY_MEASURE_DECISION_RECIPIENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng SECURITY_MEASURE_DECISION_RECIPIENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Người nhận quyết định biện pháp ngăn chặn"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECURITY_MEASURE_DECISION_RECIPIENT
-      related_tables:
-        - table: SECURITY_MEASURE_DECISION
-          relation: "FK cha — Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-SECURITY_MEASURE_DECISION_SUBJECT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng SECURITY_MEASURE_DECISION_SUBJECT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đối tượng áp dụng biện pháp ngăn chặn"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECURITY_MEASURE_DECISION_SUBJECT
-      related_tables:
-        - table: SECURITY_MEASURE_DECISION
-          relation: "FK cha — Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-SECURITY_MEASURE_EXECUTION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng SECURITY_MEASURE_EXECUTION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Theo dõi thực hiện quyết định biện pháp ngăn chặn"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECURITY_MEASURE_EXECUTION
-      related_tables:
-        - table: SECURITY_MEASURE_DECISION
-          relation: "FK cha — Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VIOLATION_BEHAVIOR"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục hành vi vi phạm hành chính"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: VIOLATION_BEHAVIOR
-      related_tables:
-        - table: PENALTY_TYPE
-          relation: "FK tham chiếu — Danh mục hình thức xử phạt"
-        - table: VIOLATION_RECORD_BEHAVIOR
-          relation: "1-N — Hành vi vi phạm ghi nhận trong biên bản"
-        - table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
-          relation: "1-N — Văn bản pháp luật áp dụng cho hành vi vi phạm"
-        - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
-          relation: "1-N — Hành vi vi phạm của đối tượng trong quyết định xử phạt"
-        - table: PENALTY_TYPE_VIOLATION_BEHAVIOR
-          relation: "1-N — Ánh xạ hình thức xử phạt theo hành vi vi phạm"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VIOLATION_BEHAVIOR_LEGAL_DOCUMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Văn bản pháp luật áp dụng cho hành vi vi phạm"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
-      related_tables:
-        - table: VIOLATION_BEHAVIOR
-          relation: "FK tham chiếu — Danh mục hành vi vi phạm hành chính"
-        - table: LEGAL_DOCUMENT
-          relation: "FK tham chiếu — Văn bản pháp luật tham chiếu"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VIOLATION_CASE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VIOLATION_CASE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Hồ sơ vụ việc vi phạm hành chính"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: VIOLATION_CASE
-      related_tables:
-        - table: INSPECTION_TEAM
-          relation: "FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)"
-        - table: EXAMINATION_TEAM
-          relation: "FK cha — Hồ sơ đoàn kiểm tra"
-        - table: VIOLATION_CASE_RECEIVED_DOCUMENT
-          relation: "1-N — Văn bản đầu vào của hồ sơ vi phạm"
-        - table: VIOLATION_CASE_OUTPUT_DOCUMENT
-          relation: "1-N — Văn bản đầu ra của hồ sơ vi phạm"
-        - table: VIOLATION_CASE_STATUS_HISTORY
-          relation: "1-N — Lịch sử trạng thái hồ sơ vi phạm"
-        - table: PENALTY_DECISION
-          relation: "1-N — Quyết định xử phạt vi phạm hành chính"
-        - table: VPHC_PROCESS_OFFICIAL_LETTER
-          relation: "1-N — Công văn trong quy trình xử lý vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VIOLATION_CASE_OUTPUT_DOCUMENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VIOLATION_CASE_OUTPUT_DOCUMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Văn bản đầu ra của hồ sơ vi phạm"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: VIOLATION_CASE_OUTPUT_DOCUMENT
-      related_tables:
-        - table: VIOLATION_CASE
-          relation: "FK cha — Hồ sơ vụ việc vi phạm hành chính"
-        - table: PENALTY_DECISION
-          relation: "FK cha — Quyết định xử phạt vi phạm hành chính"
-        - table: VPHC_PROCESS_OFFICIAL_LETTER
-          relation: "1-N — Công văn trong quy trình xử lý vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VIOLATION_CASE_RECEIVED_DOCUMENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VIOLATION_CASE_RECEIVED_DOCUMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Văn bản đầu vào của hồ sơ vi phạm"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: VIOLATION_CASE_RECEIVED_DOCUMENT
-      related_tables:
-        - table: VIOLATION_CASE
-          relation: "FK cha — Hồ sơ vụ việc vi phạm hành chính"
-        - table: VIOLATION_RECORD
-          relation: "FK cha — Biên bản vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VIOLATION_CASE_STATUS_HISTORY
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VIOLATION_CASE_STATUS_HISTORY"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lịch sử trạng thái hồ sơ vi phạm"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: VIOLATION_CASE_STATUS_HISTORY
-      related_tables:
-        - table: VIOLATION_CASE
-          relation: "FK cha — Hồ sơ vụ việc vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VIOLATION_RECORD
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VIOLATION_RECORD"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Biên bản vi phạm hành chính"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: VIOLATION_RECORD
-      related_tables:
-        - table: INSPECTION_TEAM
-          relation: "FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)"
-        - table: EXAMINATION_TEAM
-          relation: "FK cha — Hồ sơ đoàn kiểm tra"
-        - table: VIOLATION_CASE_RECEIVED_DOCUMENT
-          relation: "1-N — Văn bản đầu vào của hồ sơ vi phạm"
-        - table: VIOLATION_RECORD_BEHAVIOR
-          relation: "1-N — Hành vi vi phạm ghi nhận trong biên bản"
-        - table: PENALTY_DECISION_VIOLATION_RECORD
-          relation: "1-N — Liên kết giữa quyết định xử phạt và biên bản vi phạm"
-        - table: VPHC_PROCESS_OFFICIAL_LETTER
-          relation: "1-N — Công văn trong quy trình xử lý vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VIOLATION_RECORD_BEHAVIOR
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VIOLATION_RECORD_BEHAVIOR"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Hành vi vi phạm ghi nhận trong biên bản"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: VIOLATION_RECORD_BEHAVIOR
-      related_tables:
-        - table: VIOLATION_RECORD
-          relation: "FK cha — Biên bản vi phạm hành chính"
-        - table: VIOLATION_BEHAVIOR
-          relation: "FK tham chiếu — Danh mục hành vi vi phạm hành chính"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-VPHC_PROCESS_OFFICIAL_LETTER
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng VPHC_PROCESS_OFFICIAL_LETTER"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Công văn trong quy trình xử lý vi phạm hành chính"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: VPHC_PROCESS_OFFICIAL_LETTER
-      related_tables:
-        - table: DOCUMENT_TEMPLATE
-          relation: "FK tham chiếu — Mẫu văn bản"
-        - table: VIOLATION_CASE
-          relation: "FK cha — Hồ sơ vụ việc vi phạm hành chính"
-        - table: VIOLATION_RECORD
-          relation: "FK cha — Biên bản vi phạm hành chính"
-        - table: PENALTY_DECISION
-          relation: "FK cha — Quyết định xử phạt vi phạm hành chính"
-        - table: VIOLATION_CASE_OUTPUT_DOCUMENT
-          relation: "FK cha — Văn bản đầu ra của hồ sơ vi phạm"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # B.3 Tiếp công dân, xử lý đơn thư
-
-  - brd_id: BRD-SRC-THANHTRA-CITIZEN_COMPLAINT_REPORT_OUTLINE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng CITIZEN_COMPLAINT_REPORT_OUTLINE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đề cương báo cáo khiếu nại, tố cáo"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: CITIZEN_COMPLAINT_REPORT_OUTLINE
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-CITIZEN_RECEPTION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng CITIZEN_RECEPTION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Hồ sơ tiếp công dân"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: in_scope
-      scope_reason: null
-      table: CITIZEN_RECEPTION
-      related_tables:
-        - table: PETITION
-          relation: "FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PETITION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PETITION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: in_scope
-      scope_reason: null
-      table: PETITION
-      related_tables:
-        - table: PETITION
-          relation: "FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị"
-        - table: PETITION_DOCUMENT
-          relation: "1-N — Văn bản đính kèm đơn thư"
-        - table: CITIZEN_RECEPTION
-          relation: "1-N — Hồ sơ tiếp công dân"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PETITION_DOCUMENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PETITION_DOCUMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Văn bản đính kèm đơn thư"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: in_scope
-      scope_reason: null
-      table: PETITION_DOCUMENT
-      related_tables:
-        - table: PETITION
-          relation: "FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị"
-        - table: DOCUMENT_TEMPLATE
-          relation: "FK tham chiếu — Mẫu văn bản"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # B.4 Phòng chống tham nhũng, tiêu cực
-
-  - brd_id: BRD-SRC-THANHTRA-ADHOC_ANTI_CORRUPTION_REPORT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ADHOC_ANTI_CORRUPTION_REPORT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Báo cáo đột xuất phòng chống tham nhũng"
-      functional_group: "B.4 Phòng chống tham nhũng, tiêu cực"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ADHOC_ANTI_CORRUPTION_REPORT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-ANTI_CORRUPTION_DOCUMENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ANTI_CORRUPTION_DOCUMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Văn bản phòng chống tham nhũng"
-      functional_group: "B.4 Phòng chống tham nhũng, tiêu cực"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ANTI_CORRUPTION_DOCUMENT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-ANTI_CORRUPTION_PERIODIC_REPORT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ANTI_CORRUPTION_PERIODIC_REPORT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Báo cáo định kỳ phòng chống tham nhũng"
-      functional_group: "B.4 Phòng chống tham nhũng, tiêu cực"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ANTI_CORRUPTION_PERIODIC_REPORT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-ANTI_CORRUPTION_REPORT_OUTLINE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ANTI_CORRUPTION_REPORT_OUTLINE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Đề cương báo cáo phòng chống tham nhũng"
-      functional_group: "B.4 Phòng chống tham nhũng, tiêu cực"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ANTI_CORRUPTION_REPORT_OUTLINE
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # B.5 Phòng chống rửa tiền, tài trợ khủng bố
-
-  - brd_id: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_DOCUMENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ANTI_MONEY_LAUNDERING_DOCUMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Văn bản phòng chống rửa tiền"
-      functional_group: "B.5 Phòng chống rửa tiền, tài trợ khủng bố"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ANTI_MONEY_LAUNDERING_DOCUMENT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_REPORT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ANTI_MONEY_LAUNDERING_REPORT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Báo cáo phòng chống rửa tiền"
-      functional_group: "B.5 Phòng chống rửa tiền, tài trợ khủng bố"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: ANTI_MONEY_LAUNDERING_REPORT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # Phụ lục — Danh mục dùng chung
-
-  - brd_id: BRD-SRC-THANHTRA-LEGAL_DOCUMENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng LEGAL_DOCUMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Văn bản pháp luật tham chiếu"
-      functional_group: "Phụ lục — Danh mục dùng chung"
-      scope_status: in_scope
-      scope_reason: null
-      table: LEGAL_DOCUMENT
-      related_tables:
-        - table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
-          relation: "1-N — Văn bản pháp luật áp dụng cho hành vi vi phạm"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-OFFICIAL_LETTER_TYPE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng OFFICIAL_LETTER_TYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại công văn"
-      functional_group: "Phụ lục — Danh mục dùng chung"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: OFFICIAL_LETTER_TYPE
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-PRIVATE_CATALOG_ITEM
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PRIVATE_CATALOG_ITEM"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục dùng riêng cho phân hệ thanh tra"
-      functional_group: "Phụ lục — Danh mục dùng chung"
-      scope_status: out_of_scope
-      scope_reason: null
-      table: PRIVATE_CATALOG_ITEM
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # B.8 Quản trị phân hệ
-
-  - brd_id: BRD-SRC-THANHTRA-CODE_SEQUENCE_COUNTER
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng CODE_SEQUENCE_COUNTER"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Bộ đếm sinh mã tự động"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — bộ đếm sinh mã tự động, không chứa dữ liệu nghiệp vụ"
-      table: CODE_SEQUENCE_COUNTER
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-DOCUMENT_ATTACHMENT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng DOCUMENT_ATTACHMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Tệp đính kèm văn bản"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — lưu trữ metadata file đính kèm, không phải dữ liệu nghiệp vụ cốt lõi"
-      table: DOCUMENT_ATTACHMENT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng DOCUMENT_TEMPLATE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Mẫu văn bản"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — cấu hình mẫu văn bản kỹ thuật"
-      table: DOCUMENT_TEMPLATE
-      related_tables:
-        - table: VPHC_PROCESS_OFFICIAL_LETTER
-          relation: "1-N — Công văn trong quy trình xử lý vi phạm hành chính"
-        - table: PETITION_DOCUMENT
-          relation: "1-N — Văn bản đính kèm đơn thư"
-        - table: DOCUMENT_TEMPLATE_VERSION
-          relation: "1-N — Phiên bản mẫu văn bản"
-        - table: DOCUMENT_TEMPLATE_KEY_ASSIGN
-          relation: "1-N — Phân công trường dữ liệu cho phiên bản mẫu văn bản"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_KEY_ASSIGN
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng DOCUMENT_TEMPLATE_KEY_ASSIGN"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Phân công trường dữ liệu cho phiên bản mẫu văn bản"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — phân công trường kỹ thuật cho phiên bản mẫu văn bản"
-      table: DOCUMENT_TEMPLATE_KEY_ASSIGN
-      related_tables:
-        - table: DOCUMENT_TEMPLATE
-          relation: "FK tham chiếu — Mẫu văn bản"
-        - table: DOCUMENT_TEMPLATE_KEY_DEFINITION
-          relation: "FK cha — Định nghĩa trường dữ liệu mẫu văn bản"
-        - table: DOCUMENT_TEMPLATE_VERSION
-          relation: "FK cha — Phiên bản mẫu văn bản"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_KEY_DEFINITION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng DOCUMENT_TEMPLATE_KEY_DEFINITION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Định nghĩa trường dữ liệu mẫu văn bản"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — định nghĩa trường kỹ thuật mẫu văn bản"
-      table: DOCUMENT_TEMPLATE_KEY_DEFINITION
-      related_tables:
-        - table: DOCUMENT_TEMPLATE_KEY_ASSIGN
-          relation: "1-N — Phân công trường dữ liệu cho phiên bản mẫu văn bản"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_VERSION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng DOCUMENT_TEMPLATE_VERSION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Phiên bản mẫu văn bản"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — phiên bản file mẫu văn bản kỹ thuật"
-      table: DOCUMENT_TEMPLATE_VERSION
-      related_tables:
-        - table: DOCUMENT_TEMPLATE
-          relation: "FK tham chiếu — Mẫu văn bản"
-        - table: DOCUMENT_TEMPLATE_KEY_ASSIGN
-          relation: "1-N — Phân công trường dữ liệu cho phiên bản mẫu văn bản"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-FORM_TEMPLATE
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng FORM_TEMPLATE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Mẫu biểu mẫu in"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — cấu hình mẫu biểu mẫu in kỹ thuật"
-      table: FORM_TEMPLATE
-      related_tables:
-        - table: FORM_TEMPLATE_VERSION
-          relation: "1-N — Phiên bản mẫu biểu mẫu in"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-FORM_TEMPLATE_PLACEHOLDER
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng FORM_TEMPLATE_PLACEHOLDER"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Trường placeholder trong mẫu biểu mẫu"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — trường placeholder kỹ thuật trong biểu mẫu"
-      table: FORM_TEMPLATE_PLACEHOLDER
-      related_tables:
-        - table: FORM_TEMPLATE_VERSION
-          relation: "FK cha — Phiên bản mẫu biểu mẫu in"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-FORM_TEMPLATE_VERSION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng FORM_TEMPLATE_VERSION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Phiên bản mẫu biểu mẫu in"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — phiên bản file biểu mẫu kỹ thuật"
-      table: FORM_TEMPLATE_VERSION
-      related_tables:
-        - table: FORM_TEMPLATE
-          relation: "FK tham chiếu — Mẫu biểu mẫu in"
-        - table: FORM_TEMPLATE_PLACEHOLDER
-          relation: "1-N — Trường placeholder trong mẫu biểu mẫu"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-NOTIFICATION
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng NOTIFICATION"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Thông báo trong hệ thống"
-      functional_group: "B.8 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — thông báo nội bộ hệ thống, không phải dữ liệu nghiệp vụ"
-      table: NOTIFICATION
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-THANHTRA-DIGITAL_CERTIFICATES
-    brd_name: Design Atomic từ nguồn THANHTRA bảng DIGITAL_CERTIFICATES
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: Danh mục chứng thư số (chữ ký số) dùng để ký điện tử hồ sơ
-      functional_group: THANHTRA - Chưa phân loại (pending)
-      scope_status: pending
-      scope_reason: null
-      table: DIGITAL_CERTIFICATES
-      related_tables:
-        - table: DIGITAL_CERTIFICATE_USERS
-          relation: '1-N — '
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-DIGITAL_CERTIFICATE_USERS
-    brd_name: Design Atomic từ nguồn THANHTRA bảng DIGITAL_CERTIFICATE_USERS
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: Người dùng được gán quyền sử dụng chứng thư số
-      functional_group: THANHTRA - Chưa phân loại (pending)
-      scope_status: pending
-      scope_reason: null
-      table: DIGITAL_CERTIFICATE_USERS
-      related_tables:
-        - table: DIGITAL_CERTIFICATES
-          relation: 'FK cha — '
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-DOCUMENT_ATTACHMENT_CONTENT
-    brd_name: Design Atomic từ nguồn THANHTRA bảng DOCUMENT_ATTACHMENT_CONTENT
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: Nội dung file (BLOB) của tệp đính kèm văn bản
-      functional_group: THANHTRA - Chưa phân loại (pending)
-      scope_status: pending
-      scope_reason: null
-      table: DOCUMENT_ATTACHMENT_CONTENT
-      related_tables: null
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_SIGN_LOGS
-    brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_SIGN_LOGS
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: Lịch sử ký số quyết định xử phạt
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: pending
-      scope_reason: null
-      table: PENALTY_DECISION_SIGN_LOGS
-      related_tables:
-        - table: PENALTY_DECISION
-          relation: FK cha — Quyết định xử phạt vi phạm hành chính
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_DOSSIER
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng ANTI_MONEY_LAUNDERING_DOSSIER"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Bộ hồ sơ PCRT — gom nhóm nhiều văn bản (anti_money_laundering_document) để dễ tra cứu và theo dõi toàn bộ tiến trình xử lý từ đầu đến cuối"
-      functional_group: "B.5 Phòng chống rửa tiền, tài trợ khủng bố"
-      scope_status: out_of_scope
-      scope_reason: "Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic (nhất quán với ANTI_MONEY_LAUNDERING_DOCUMENT)"
-      table: ANTI_MONEY_LAUNDERING_DOSSIER
-      related_tables:
-        - table: ANTI_MONEY_LAUNDERING_DOCUMENT
-          relation: "1-N — Văn bản phòng chống rửa tiền thuộc bộ hồ sơ"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-CITIZEN_RECEPTION_PARTICIPANT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng CITIZEN_RECEPTION_PARTICIPANT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Người tham gia buổi tiếp công dân: RECEIVER (Người tiếp, tối thiểu 2 người) hoặc COORDINATOR (Đơn vị phối hợp, không bắt buộc)"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: in_scope
-      scope_reason: null
-      table: CITIZEN_RECEPTION_PARTICIPANT
-      related_tables:
-        - table: CITIZEN_RECEPTION
-          relation: "FK cha — Hồ sơ tiếp công dân"
-      notes: "Bảng mới (DDL UAT cập nhật) — thay thế cột RECEIVER_ID/RECEIVER_NAME (deprecated) trên CITIZEN_RECEPTION."
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-CITIZEN_RECEPTION_PETITION_LINK
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng CITIZEN_RECEPTION_PETITION_LINK"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Liên kết 1 buổi tiếp công dân với nhiều đơn thư (trường hợp đoàn đông người, mỗi người nộp 1 đơn riêng)"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: in_scope
-      scope_reason: null
-      table: CITIZEN_RECEPTION_PETITION_LINK
-      related_tables:
-        - table: CITIZEN_RECEPTION
-          relation: "FK cha — Hồ sơ tiếp công dân"
-        - table: PETITION
-          relation: "FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị"
-      notes: "Bảng mới (DDL UAT cập nhật) — thay thế cột PETITION_ID (deprecated) trên CITIZEN_RECEPTION."
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-CITIZEN_RECEPTION_SUBJECT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng CITIZEN_RECEPTION_SUBJECT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Chi tiết đối tượng được tiếp: Cá nhân (1 dòng) / Đoàn đông người (nhiều dòng, mỗi dòng 1 người đại diện) / Tổ chức (1 dòng)"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: in_scope
-      scope_reason: null
-      table: CITIZEN_RECEPTION_SUBJECT
-      related_tables:
-        - table: CITIZEN_RECEPTION
-          relation: "FK cha — Hồ sơ tiếp công dân"
-      notes: "Bảng mới (DDL UAT cập nhật) — thay thế cột SUBJECT_NAME (deprecated) trên CITIZEN_RECEPTION."
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Hình thức xử phạt bổ sung theo hành vi trên QĐ xử phạt VPHC"
-      functional_group: "B.2 Xử lý vi phạm hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
-      related_tables:
-        - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
-          relation: "FK cha — Hành vi vi phạm của đối tượng trong quyết định xử phạt"
-        - table: PENALTY_TYPE
-          relation: "FK cha — Danh mục hình thức xử phạt"
-      notes: "Bảng mới (DDL UAT cập nhật). Cân nhắc quan hệ với cột tự do SUPPLEMENTARY_PENALTY (CLOB) hiện có trên PENALTY_DECISION_SUBJECT_BEHAVIOR khi thiết kế LLD."
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-PETITION_INTERNAL_TRANSFER_UNIT
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PETITION_INTERNAL_TRANSFER_UNIT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh sách ban/đơn vị trong UBCKNN được chuyển nội bộ xử lý đơn thư (1 đơn - nhiều đơn vị)"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: in_scope
-      scope_reason: null
-      table: PETITION_INTERNAL_TRANSFER_UNIT
-      related_tables:
-        - table: PETITION
-          relation: "FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị"
-      notes: "Bảng mới (DDL UAT cập nhật) — thay thế cột INTERNAL_TRANSFER_UNIT_ID/INTERNAL_TRANSFER_UNIT_NAME (deprecated) trên PETITION."
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-  - brd_id: BRD-SRC-THANHTRA-PETITION_TARGET
-    brd_name: "Design Atomic từ nguồn THANHTRA bảng PETITION_TARGET"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh sách đối tượng được đề cập trong đơn thư (1 đơn - nhiều đối tượng, có thể thuộc loại khác nhau)"
-      functional_group: "B.3 Tiếp công dân, xử lý đơn thư"
-      scope_status: in_scope
-      scope_reason: null
-      table: PETITION_TARGET
-      related_tables:
-        - table: PETITION
-          relation: "FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị"
-      notes: "Bảng mới (DDL UAT cập nhật) — thay thế cột TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME (deprecated) trên PETITION."
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ADHOC_INSPECTION_REPORT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ADHOC_INSPECTION_REPORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Báo cáo đột xuất thanh tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ADHOC_INSPECTION_REPORT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-EXAMINATION_ANNUAL_PLAN
+  brd_name: Design Atomic từ nguồn THANHTRA bảng EXAMINATION_ANNUAL_PLAN
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kế hoạch kiểm tra hàng năm
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: EXAMINATION_ANNUAL_PLAN
+    related_tables:
+    - table: EXAMINATION_ANNUAL_PLAN_TARGET
+      relation: 1-N — Đối tượng trong kế hoạch kiểm tra hàng năm
+    - table: EXAMINATION_TEAM
+      relation: 1-N — Hồ sơ đoàn kiểm tra
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-EXAMINATION_ANNUAL_PLAN_TARGET
+  brd_name: Design Atomic từ nguồn THANHTRA bảng EXAMINATION_ANNUAL_PLAN_TARGET
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đối tượng trong kế hoạch kiểm tra hàng năm
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: EXAMINATION_ANNUAL_PLAN_TARGET
+    related_tables:
+    - table: EXAMINATION_ANNUAL_PLAN
+      relation: FK cha — Kế hoạch kiểm tra hàng năm
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-EXAMINATION_RESULT_NOTICE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng EXAMINATION_RESULT_NOTICE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Thông báo kết quả kiểm tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: EXAMINATION_RESULT_NOTICE
+    related_tables:
+    - table: EXAMINATION_TEAM
+      relation: FK cha — Hồ sơ đoàn kiểm tra
+    - table: EXAMINATION_RESULT_NOTICE_REMEDIAL
+      relation: 1-N — Kiến nghị, biện pháp khắc phục trong thông báo kết quả kiểm tra
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-EXAMINATION_RESULT_NOTICE_REMEDIAL
+  brd_name: Design Atomic từ nguồn THANHTRA bảng EXAMINATION_RESULT_NOTICE_REMEDIAL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kiến nghị, biện pháp khắc phục trong thông báo kết quả kiểm tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: EXAMINATION_RESULT_NOTICE_REMEDIAL
+    related_tables:
+    - table: EXAMINATION_RESULT_NOTICE
+      relation: FK cha — Thông báo kết quả kiểm tra
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-EXAMINATION_TEAM
+  brd_name: Design Atomic từ nguồn THANHTRA bảng EXAMINATION_TEAM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Hồ sơ đoàn kiểm tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: EXAMINATION_TEAM
+    related_tables:
+    - table: EXAMINATION_ANNUAL_PLAN
+      relation: FK cha — Kế hoạch kiểm tra hàng năm
+    - table: EXAMINATION_TEAM_MEMBER
+      relation: 1-N — Thành viên đoàn kiểm tra
+    - table: EXAMINATION_TEAM_TARGET
+      relation: 1-N — Đối tượng kiểm tra của đoàn
+    - table: EXAMINATION_RESULT_NOTICE
+      relation: 1-N — Thông báo kết quả kiểm tra
+    - table: VIOLATION_CASE
+      relation: 1-N — Hồ sơ vụ việc vi phạm hành chính
+    - table: VIOLATION_RECORD
+      relation: 1-N — Biên bản vi phạm hành chính
+    - table: PETITION_INTERNAL_TRANSFER_UNIT
+      relation: FK cha — Danh sách ban/đơn vị trong UBCKNN được chuyển nội bộ xử lý đơn thư (1 đơn - nhiều đơn vị)
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-EXAMINATION_TEAM_MEMBER
+  brd_name: Design Atomic từ nguồn THANHTRA bảng EXAMINATION_TEAM_MEMBER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Thành viên đoàn kiểm tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: EXAMINATION_TEAM_MEMBER
+    related_tables:
+    - table: EXAMINATION_TEAM
+      relation: FK cha — Hồ sơ đoàn kiểm tra
+    - table: DIGITAL_CERTIFICATE_USERS
+      relation: FK cha — Người dùng được gán quyền sử dụng chứng thư số
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
+  brd_name: Design Atomic từ nguồn THANHTRA bảng EXAMINATION_TEAM_TARGET
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đối tượng kiểm tra của đoàn
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: EXAMINATION_TEAM_TARGET
+    related_tables:
+    - table: EXAMINATION_TEAM
+      relation: FK cha — Hồ sơ đoàn kiểm tra
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN
+  brd_name: Design Atomic từ nguồn THANHTRA bảng INSPECTION_ANNUAL_PLAN
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kế hoạch thanh tra hàng năm
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: INSPECTION_ANNUAL_PLAN
+    related_tables:
+    - table: INSPECTION_ANNUAL_PLAN_TARGET
+      relation: 1-N — Đối tượng trong kế hoạch thanh tra hàng năm
+    - table: INSPECTION_TEAM
+      relation: 1-N — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN_TARGET
+  brd_name: Design Atomic từ nguồn THANHTRA bảng INSPECTION_ANNUAL_PLAN_TARGET
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đối tượng trong kế hoạch thanh tra hàng năm
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: INSPECTION_ANNUAL_PLAN_TARGET
+    related_tables:
+    - table: INSPECTION_ANNUAL_PLAN
+      relation: FK cha — Kế hoạch thanh tra hàng năm
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-INSPECTION_CONCLUSION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng INSPECTION_CONCLUSION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kết luận thanh tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: INSPECTION_CONCLUSION
+    related_tables:
+    - table: INSPECTION_TEAM
+      relation: FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)
+    - table: INSPECTION_CONCLUSION_REMEDIAL
+      relation: 1-N — Kiến nghị, biện pháp khắc phục trong kết luận thanh tra
+    - table: POST_INSPECTION_PROCESSING
+      relation: 1-N — Theo dõi xử lý sau thanh tra
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-INSPECTION_CONCLUSION_REMEDIAL
+  brd_name: Design Atomic từ nguồn THANHTRA bảng INSPECTION_CONCLUSION_REMEDIAL
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kiến nghị, biện pháp khắc phục trong kết luận thanh tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: INSPECTION_CONCLUSION_REMEDIAL
+    related_tables:
+    - table: INSPECTION_CONCLUSION
+      relation: FK cha — Kết luận thanh tra
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-INSPECTION_REPORT_OUTLINE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng INSPECTION_REPORT_OUTLINE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đề cương báo cáo thanh tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: out_of_scope
+    scope_reason: null
+    table: INSPECTION_REPORT_OUTLINE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-INSPECTION_TEAM
+  brd_name: Design Atomic từ nguồn THANHTRA bảng INSPECTION_TEAM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: INSPECTION_TEAM
+    related_tables:
+    - table: INSPECTION_ANNUAL_PLAN
+      relation: FK cha — Kế hoạch thanh tra hàng năm
+    - table: INSPECTION_TEAM_MEMBER
+      relation: 1-N — Thành viên đoàn thanh tra
+    - table: INSPECTION_TEAM_TARGET
+      relation: 1-N — Đối tượng thanh tra của đoàn
+    - table: INSPECTION_CONCLUSION
+      relation: 1-N — Kết luận thanh tra
+    - table: VIOLATION_CASE
+      relation: 1-N — Hồ sơ vụ việc vi phạm hành chính
+    - table: VIOLATION_RECORD
+      relation: 1-N — Biên bản vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-INSPECTION_TEAM_MEMBER
+  brd_name: Design Atomic từ nguồn THANHTRA bảng INSPECTION_TEAM_MEMBER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Thành viên đoàn thanh tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: INSPECTION_TEAM_MEMBER
+    related_tables:
+    - table: INSPECTION_TEAM
+      relation: FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)
+    - table: DIGITAL_CERTIFICATE_USERS
+      relation: FK cha — Người dùng được gán quyền sử dụng chứng thư số
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-INSPECTION_TEAM_TARGET
+  brd_name: Design Atomic từ nguồn THANHTRA bảng INSPECTION_TEAM_TARGET
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đối tượng thanh tra của đoàn
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: INSPECTION_TEAM_TARGET
+    related_tables:
+    - table: INSPECTION_TEAM
+      relation: FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-POST_INSPECTION_PROCESSING
+  brd_name: Design Atomic từ nguồn THANHTRA bảng POST_INSPECTION_PROCESSING
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Theo dõi xử lý sau thanh tra
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: POST_INSPECTION_PROCESSING
+    related_tables:
+    - table: INSPECTION_CONCLUSION
+      relation: FK cha — Kết luận thanh tra
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PROACTIVE_NOTICE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PROACTIVE_NOTICE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Thông báo chủ động (công bố thông tin)
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: PROACTIVE_NOTICE
+    related_tables:
+    - table: PROACTIVE_NOTICE_RECIPIENT
+      relation: 1-N — Danh sách người nhận thông báo chủ động
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PROACTIVE_NOTICE_RECIPIENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PROACTIVE_NOTICE_RECIPIENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh sách người nhận thông báo chủ động
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: in_scope
+    scope_reason: null
+    table: PROACTIVE_NOTICE_RECIPIENT
+    related_tables:
+    - table: PROACTIVE_NOTICE
+      relation: FK cha — Thông báo chủ động (công bố thông tin)
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-SUPERVISION_ACTIVITY_REPORT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng SUPERVISION_ACTIVITY_REPORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Báo cáo hoạt động giám sát
+    functional_group: B.1 Hoạt động thanh tra - kiểm tra
+    scope_status: out_of_scope
+    scope_reason: null
+    table: SUPERVISION_ACTIVITY_REPORT
+    related_tables:
+    - table: PETITION_INTERNAL_TRANSFER_UNIT
+      relation: FK cha — Danh sách ban/đơn vị trong UBCKNN được chuyển nội bộ xử lý đơn thư (1 đơn - nhiều đơn vị)
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ADHOC_ADMIN_VIOLATION_REPORT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ADHOC_ADMIN_VIOLATION_REPORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Báo cáo đột xuất vi phạm hành chính
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ADHOC_ADMIN_VIOLATION_REPORT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ADMIN_VIOLATION_REPORT_OUTLINE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ADMIN_VIOLATION_REPORT_OUTLINE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đề cương báo cáo vi phạm hành chính
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ADMIN_VIOLATION_REPORT_OUTLINE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quyết định xử phạt vi phạm hành chính
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_DECISION
+    related_tables:
+    - table: VIOLATION_CASE
+      relation: FK cha — Hồ sơ vụ việc vi phạm hành chính
+    - table: VIOLATION_CASE_OUTPUT_DOCUMENT
+      relation: 1-N — Văn bản đầu ra của hồ sơ vi phạm
+    - table: PENALTY_DECISION_APPROVAL_HISTORY
+      relation: 1-N — Lịch sử phê duyệt quyết định xử phạt
+    - table: PENALTY_DECISION_SUBJECT
+      relation: 1-N — Đối tượng bị xử phạt trong quyết định
+    - table: PENALTY_DECISION_VIOLATION_RECORD
+      relation: 1-N — Liên kết giữa quyết định xử phạt và biên bản vi phạm
+    - table: VPHC_PROCESS_OFFICIAL_LETTER
+      relation: 1-N — Công văn trong quy trình xử lý vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_APPROVAL_HISTORY
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_APPROVAL_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lịch sử phê duyệt quyết định xử phạt
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_DECISION_APPROVAL_HISTORY
+    related_tables:
+    - table: PENALTY_DECISION
+      relation: FK cha — Quyết định xử phạt vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_CIRCUMSTANCE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_CIRCUMSTANCE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Tình tiết tăng nặng/giảm nhẹ trong quyết định xử phạt
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_DECISION_CIRCUMSTANCE
+    related_tables:
+    - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+      relation: FK cha — Hành vi vi phạm của đối tượng trong quyết định xử phạt
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_SUBJECT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đối tượng bị xử phạt trong quyết định
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_DECISION_SUBJECT
+    related_tables:
+    - table: PENALTY_DECISION
+      relation: FK cha — Quyết định xử phạt vi phạm hành chính
+    - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+      relation: 1-N — Hành vi vi phạm của đối tượng trong quyết định xử phạt
+    - table: VIOLATION_RECORD
+      relation: FK cha — Biên bản vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_SUBJECT_BEHAVIOR
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Hành vi vi phạm của đối tượng trong quyết định xử phạt
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+    related_tables:
+    - table: PENALTY_DECISION_SUBJECT
+      relation: FK cha — Đối tượng bị xử phạt trong quyết định
+    - table: VIOLATION_BEHAVIOR
+      relation: FK tham chiếu — Danh mục hành vi vi phạm hành chính
+    - table: PENALTY_TYPE
+      relation: FK tham chiếu — Danh mục hình thức xử phạt
+    - table: PENALTY_DECISION_CIRCUMSTANCE
+      relation: 1-N — Tình tiết tăng nặng/giảm nhẹ trong quyết định xử phạt
+    - table: VIOLATION_RECORD
+      relation: FK cha — Biên bản vi phạm hành chính
+    - table: PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+      relation: 1-N — Hình thức xử phạt bổ sung theo hành vi trên QĐ xử phạt VPHC
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_VIOLATION_RECORD
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_VIOLATION_RECORD
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Liên kết giữa quyết định xử phạt và biên bản vi phạm
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_DECISION_VIOLATION_RECORD
+    related_tables:
+    - table: PENALTY_DECISION
+      relation: FK cha — Quyết định xử phạt vi phạm hành chính
+    - table: VIOLATION_RECORD
+      relation: FK cha — Biên bản vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_TYPE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_TYPE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục hình thức xử phạt
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_TYPE
+    related_tables:
+    - table: VIOLATION_BEHAVIOR
+      relation: 1-N — Danh mục hành vi vi phạm hành chính
+    - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+      relation: 1-N — Hành vi vi phạm của đối tượng trong quyết định xử phạt
+    - table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+      relation: 1-N — Ánh xạ hình thức xử phạt theo hành vi vi phạm
+    - table: PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+      relation: 1-N — Hình thức xử phạt bổ sung theo hành vi trên QĐ xử phạt VPHC
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_TYPE_VIOLATION_BEHAVIOR
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_TYPE_VIOLATION_BEHAVIOR
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Ánh xạ hình thức xử phạt theo hành vi vi phạm
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+    related_tables:
+    - table: PENALTY_TYPE
+      relation: FK tham chiếu — Danh mục hình thức xử phạt
+    - table: VIOLATION_BEHAVIOR
+      relation: FK tham chiếu — Danh mục hành vi vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-SECURITY_MEASURE_DECISION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng SECURITY_MEASURE_DECISION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: SECURITY_MEASURE_DECISION
+    related_tables:
+    - table: SECURITY_MEASURE_DECISION_SUBJECT
+      relation: 1-N — Đối tượng áp dụng biện pháp ngăn chặn
+    - table: SECURITY_MEASURE_DECISION_RECIPIENT
+      relation: 1-N — Người nhận quyết định biện pháp ngăn chặn
+    - table: SECURITY_MEASURE_EXECUTION
+      relation: 1-N — Theo dõi thực hiện quyết định biện pháp ngăn chặn
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-SECURITY_MEASURE_DECISION_RECIPIENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng SECURITY_MEASURE_DECISION_RECIPIENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Người nhận quyết định biện pháp ngăn chặn
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: SECURITY_MEASURE_DECISION_RECIPIENT
+    related_tables:
+    - table: SECURITY_MEASURE_DECISION
+      relation: FK cha — Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-SECURITY_MEASURE_DECISION_SUBJECT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng SECURITY_MEASURE_DECISION_SUBJECT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đối tượng áp dụng biện pháp ngăn chặn
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: SECURITY_MEASURE_DECISION_SUBJECT
+    related_tables:
+    - table: SECURITY_MEASURE_DECISION
+      relation: FK cha — Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-SECURITY_MEASURE_EXECUTION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng SECURITY_MEASURE_EXECUTION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Theo dõi thực hiện quyết định biện pháp ngăn chặn
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: SECURITY_MEASURE_EXECUTION
+    related_tables:
+    - table: SECURITY_MEASURE_DECISION
+      relation: FK cha — Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VIOLATION_BEHAVIOR
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục hành vi vi phạm hành chính
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: VIOLATION_BEHAVIOR
+    related_tables:
+    - table: PENALTY_TYPE
+      relation: FK tham chiếu — Danh mục hình thức xử phạt
+    - table: VIOLATION_RECORD_BEHAVIOR
+      relation: 1-N — Hành vi vi phạm ghi nhận trong biên bản
+    - table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
+      relation: 1-N — Văn bản pháp luật áp dụng cho hành vi vi phạm
+    - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+      relation: 1-N — Hành vi vi phạm của đối tượng trong quyết định xử phạt
+    - table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+      relation: 1-N — Ánh xạ hình thức xử phạt theo hành vi vi phạm
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Văn bản pháp luật áp dụng cho hành vi vi phạm
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: out_of_scope
+    scope_reason: null
+    table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
+    related_tables:
+    - table: VIOLATION_BEHAVIOR
+      relation: FK tham chiếu — Danh mục hành vi vi phạm hành chính
+    - table: LEGAL_DOCUMENT
+      relation: FK tham chiếu — Văn bản pháp luật tham chiếu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VIOLATION_CASE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VIOLATION_CASE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Hồ sơ vụ việc vi phạm hành chính
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: VIOLATION_CASE
+    related_tables:
+    - table: INSPECTION_TEAM
+      relation: FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)
+    - table: EXAMINATION_TEAM
+      relation: FK cha — Hồ sơ đoàn kiểm tra
+    - table: VIOLATION_CASE_RECEIVED_DOCUMENT
+      relation: 1-N — Văn bản đầu vào của hồ sơ vi phạm
+    - table: VIOLATION_CASE_OUTPUT_DOCUMENT
+      relation: 1-N — Văn bản đầu ra của hồ sơ vi phạm
+    - table: VIOLATION_CASE_STATUS_HISTORY
+      relation: 1-N — Lịch sử trạng thái hồ sơ vi phạm
+    - table: PENALTY_DECISION
+      relation: 1-N — Quyết định xử phạt vi phạm hành chính
+    - table: VPHC_PROCESS_OFFICIAL_LETTER
+      relation: 1-N — Công văn trong quy trình xử lý vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VIOLATION_CASE_OUTPUT_DOCUMENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VIOLATION_CASE_OUTPUT_DOCUMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Văn bản đầu ra của hồ sơ vi phạm
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: VIOLATION_CASE_OUTPUT_DOCUMENT
+    related_tables:
+    - table: VIOLATION_CASE
+      relation: FK cha — Hồ sơ vụ việc vi phạm hành chính
+    - table: PENALTY_DECISION
+      relation: FK cha — Quyết định xử phạt vi phạm hành chính
+    - table: VPHC_PROCESS_OFFICIAL_LETTER
+      relation: 1-N — Công văn trong quy trình xử lý vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VIOLATION_CASE_RECEIVED_DOCUMENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VIOLATION_CASE_RECEIVED_DOCUMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Văn bản đầu vào của hồ sơ vi phạm
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: VIOLATION_CASE_RECEIVED_DOCUMENT
+    related_tables:
+    - table: VIOLATION_CASE
+      relation: FK cha — Hồ sơ vụ việc vi phạm hành chính
+    - table: VIOLATION_RECORD
+      relation: FK cha — Biên bản vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VIOLATION_CASE_STATUS_HISTORY
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VIOLATION_CASE_STATUS_HISTORY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Lịch sử trạng thái hồ sơ vi phạm
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: VIOLATION_CASE_STATUS_HISTORY
+    related_tables:
+    - table: VIOLATION_CASE
+      relation: FK cha — Hồ sơ vụ việc vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VIOLATION_RECORD
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VIOLATION_RECORD
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Biên bản vi phạm hành chính
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: VIOLATION_RECORD
+    related_tables:
+    - table: INSPECTION_TEAM
+      relation: FK cha — Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)
+    - table: EXAMINATION_TEAM
+      relation: FK cha — Hồ sơ đoàn kiểm tra
+    - table: VIOLATION_CASE_RECEIVED_DOCUMENT
+      relation: 1-N — Văn bản đầu vào của hồ sơ vi phạm
+    - table: VIOLATION_RECORD_BEHAVIOR
+      relation: 1-N — Hành vi vi phạm ghi nhận trong biên bản
+    - table: PENALTY_DECISION_VIOLATION_RECORD
+      relation: 1-N — Liên kết giữa quyết định xử phạt và biên bản vi phạm
+    - table: VPHC_PROCESS_OFFICIAL_LETTER
+      relation: 1-N — Công văn trong quy trình xử lý vi phạm hành chính
+    - table: PENALTY_DECISION_SUBJECT
+      relation: 1-N — Đối tượng bị xử phạt trong quyết định
+    - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+      relation: 1-N — Hành vi vi phạm của đối tượng trong quyết định xử phạt
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VIOLATION_RECORD_BEHAVIOR
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VIOLATION_RECORD_BEHAVIOR
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Hành vi vi phạm ghi nhận trong biên bản
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: VIOLATION_RECORD_BEHAVIOR
+    related_tables:
+    - table: VIOLATION_RECORD
+      relation: FK cha — Biên bản vi phạm hành chính
+    - table: VIOLATION_BEHAVIOR
+      relation: FK tham chiếu — Danh mục hành vi vi phạm hành chính
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-VPHC_PROCESS_OFFICIAL_LETTER
+  brd_name: Design Atomic từ nguồn THANHTRA bảng VPHC_PROCESS_OFFICIAL_LETTER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Công văn trong quy trình xử lý vi phạm hành chính
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: VPHC_PROCESS_OFFICIAL_LETTER
+    related_tables:
+    - table: DOCUMENT_TEMPLATE
+      relation: FK tham chiếu — Mẫu văn bản
+    - table: VIOLATION_CASE
+      relation: FK cha — Hồ sơ vụ việc vi phạm hành chính
+    - table: VIOLATION_RECORD
+      relation: FK cha — Biên bản vi phạm hành chính
+    - table: PENALTY_DECISION
+      relation: FK cha — Quyết định xử phạt vi phạm hành chính
+    - table: VIOLATION_CASE_OUTPUT_DOCUMENT
+      relation: FK cha — Văn bản đầu ra của hồ sơ vi phạm
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-CITIZEN_COMPLAINT_REPORT_OUTLINE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng CITIZEN_COMPLAINT_REPORT_OUTLINE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đề cương báo cáo khiếu nại, tố cáo
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: out_of_scope
+    scope_reason: null
+    table: CITIZEN_COMPLAINT_REPORT_OUTLINE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-CITIZEN_RECEPTION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng CITIZEN_RECEPTION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Hồ sơ tiếp công dân
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: in_scope
+    scope_reason: null
+    table: CITIZEN_RECEPTION
+    related_tables:
+    - table: PETITION
+      relation: FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị
+    - table: CITIZEN_RECEPTION_PARTICIPANT
+      relation: '1-N — Người tham gia buổi tiếp công dân: RECEIVER (Người tiếp, tối thiểu 2 người) hoặc COORDINATOR (Đơn vị phối hợp, không bắt buộc)'
+    - table: CITIZEN_RECEPTION_PETITION_LINK
+      relation: 1-N — Liên kết 1 buổi tiếp công dân với nhiều đơn thư (trường hợp đoàn đông người, mỗi người nộp 1 đơn riêng)
+    - table: CITIZEN_RECEPTION_SUBJECT
+      relation: '1-N — Chi tiết đối tượng được tiếp: Cá nhân (1 dòng) / Đoàn đông người (nhiều dòng, mỗi dòng 1 người đại diện) / Tổ chức (1 dòng)'
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PETITION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PETITION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: in_scope
+    scope_reason: null
+    table: PETITION
+    related_tables:
+    - table: PETITION
+      relation: FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị
+    - table: PETITION_DOCUMENT
+      relation: 1-N — Văn bản đính kèm đơn thư
+    - table: CITIZEN_RECEPTION
+      relation: 1-N — Hồ sơ tiếp công dân
+    - table: CITIZEN_RECEPTION_PETITION_LINK
+      relation: 1-N — Liên kết 1 buổi tiếp công dân với nhiều đơn thư (trường hợp đoàn đông người, mỗi người nộp 1 đơn riêng)
+    - table: PETITION_INTERNAL_TRANSFER_UNIT
+      relation: FK cha — Danh sách ban/đơn vị trong UBCKNN được chuyển nội bộ xử lý đơn thư (1 đơn - nhiều đơn vị)
+    - table: PETITION_TARGET
+      relation: 1-N — Danh sách đối tượng được đề cập trong đơn thư (1 đơn - nhiều đối tượng, có thể thuộc loại khác nhau)
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PETITION_DOCUMENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PETITION_DOCUMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Văn bản đính kèm đơn thư
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: in_scope
+    scope_reason: null
+    table: PETITION_DOCUMENT
+    related_tables:
+    - table: PETITION
+      relation: FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị
+    - table: DOCUMENT_TEMPLATE
+      relation: FK tham chiếu — Mẫu văn bản
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ADHOC_ANTI_CORRUPTION_REPORT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ADHOC_ANTI_CORRUPTION_REPORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Báo cáo đột xuất phòng chống tham nhũng
+    functional_group: B.4 Phòng chống tham nhũng, tiêu cực
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ADHOC_ANTI_CORRUPTION_REPORT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ANTI_CORRUPTION_DOCUMENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ANTI_CORRUPTION_DOCUMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Văn bản phòng chống tham nhũng
+    functional_group: B.4 Phòng chống tham nhũng, tiêu cực
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ANTI_CORRUPTION_DOCUMENT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ANTI_CORRUPTION_PERIODIC_REPORT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ANTI_CORRUPTION_PERIODIC_REPORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Báo cáo định kỳ phòng chống tham nhũng
+    functional_group: B.4 Phòng chống tham nhũng, tiêu cực
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ANTI_CORRUPTION_PERIODIC_REPORT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ANTI_CORRUPTION_REPORT_OUTLINE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ANTI_CORRUPTION_REPORT_OUTLINE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Đề cương báo cáo phòng chống tham nhũng
+    functional_group: B.4 Phòng chống tham nhũng, tiêu cực
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ANTI_CORRUPTION_REPORT_OUTLINE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_DOCUMENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ANTI_MONEY_LAUNDERING_DOCUMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Văn bản phòng chống rửa tiền
+    functional_group: B.5 Phòng chống rửa tiền, tài trợ khủng bố
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    related_tables:
+    - table: ANTI_MONEY_LAUNDERING_DOSSIER
+      relation: FK cha — Bộ hồ sơ PCRT — gom nhóm nhiều văn bản (anti_money_laundering_document) để dễ tra cứu và theo dõi toàn bộ tiến trình xử lý từ đầu đến cuối
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_REPORT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ANTI_MONEY_LAUNDERING_REPORT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Báo cáo phòng chống rửa tiền
+    functional_group: B.5 Phòng chống rửa tiền, tài trợ khủng bố
+    scope_status: out_of_scope
+    scope_reason: null
+    table: ANTI_MONEY_LAUNDERING_REPORT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-LEGAL_DOCUMENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng LEGAL_DOCUMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Văn bản pháp luật tham chiếu
+    functional_group: Phụ lục — Danh mục dùng chung
+    scope_status: in_scope
+    scope_reason: null
+    table: LEGAL_DOCUMENT
+    related_tables:
+    - table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
+      relation: 1-N — Văn bản pháp luật áp dụng cho hành vi vi phạm
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-OFFICIAL_LETTER_TYPE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng OFFICIAL_LETTER_TYPE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục loại công văn
+    functional_group: Phụ lục — Danh mục dùng chung
+    scope_status: out_of_scope
+    scope_reason: null
+    table: OFFICIAL_LETTER_TYPE
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PRIVATE_CATALOG_ITEM
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PRIVATE_CATALOG_ITEM
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục dùng riêng cho phân hệ thanh tra
+    functional_group: Phụ lục — Danh mục dùng chung
+    scope_status: out_of_scope
+    scope_reason: null
+    table: PRIVATE_CATALOG_ITEM
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-CODE_SEQUENCE_COUNTER
+  brd_name: Design Atomic từ nguồn THANHTRA bảng CODE_SEQUENCE_COUNTER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bộ đếm sinh mã tự động
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — bộ đếm sinh mã tự động, không chứa dữ liệu nghiệp vụ
+    table: CODE_SEQUENCE_COUNTER
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-DOCUMENT_ATTACHMENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng DOCUMENT_ATTACHMENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Tệp đính kèm văn bản
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — lưu trữ metadata file đính kèm, không phải dữ liệu nghiệp vụ cốt lõi
+    table: DOCUMENT_ATTACHMENT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng DOCUMENT_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Mẫu văn bản
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — cấu hình mẫu văn bản kỹ thuật
+    table: DOCUMENT_TEMPLATE
+    related_tables:
+    - table: VPHC_PROCESS_OFFICIAL_LETTER
+      relation: 1-N — Công văn trong quy trình xử lý vi phạm hành chính
+    - table: PETITION_DOCUMENT
+      relation: 1-N — Văn bản đính kèm đơn thư
+    - table: DOCUMENT_TEMPLATE_VERSION
+      relation: 1-N — Phiên bản mẫu văn bản
+    - table: DOCUMENT_TEMPLATE_KEY_ASSIGN
+      relation: 1-N — Phân công trường dữ liệu cho phiên bản mẫu văn bản
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_KEY_ASSIGN
+  brd_name: Design Atomic từ nguồn THANHTRA bảng DOCUMENT_TEMPLATE_KEY_ASSIGN
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phân công trường dữ liệu cho phiên bản mẫu văn bản
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — phân công trường kỹ thuật cho phiên bản mẫu văn bản
+    table: DOCUMENT_TEMPLATE_KEY_ASSIGN
+    related_tables:
+    - table: DOCUMENT_TEMPLATE
+      relation: FK tham chiếu — Mẫu văn bản
+    - table: DOCUMENT_TEMPLATE_KEY_DEFINITION
+      relation: FK cha — Định nghĩa trường dữ liệu mẫu văn bản
+    - table: DOCUMENT_TEMPLATE_VERSION
+      relation: FK cha — Phiên bản mẫu văn bản
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_KEY_DEFINITION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng DOCUMENT_TEMPLATE_KEY_DEFINITION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Định nghĩa trường dữ liệu mẫu văn bản
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — định nghĩa trường kỹ thuật mẫu văn bản
+    table: DOCUMENT_TEMPLATE_KEY_DEFINITION
+    related_tables:
+    - table: DOCUMENT_TEMPLATE_KEY_ASSIGN
+      relation: 1-N — Phân công trường dữ liệu cho phiên bản mẫu văn bản
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_VERSION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng DOCUMENT_TEMPLATE_VERSION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phiên bản mẫu văn bản
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — phiên bản file mẫu văn bản kỹ thuật
+    table: DOCUMENT_TEMPLATE_VERSION
+    related_tables:
+    - table: DOCUMENT_TEMPLATE
+      relation: FK tham chiếu — Mẫu văn bản
+    - table: DOCUMENT_TEMPLATE_KEY_ASSIGN
+      relation: 1-N — Phân công trường dữ liệu cho phiên bản mẫu văn bản
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-FORM_TEMPLATE
+  brd_name: Design Atomic từ nguồn THANHTRA bảng FORM_TEMPLATE
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Mẫu biểu mẫu in
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — cấu hình mẫu biểu mẫu in kỹ thuật
+    table: FORM_TEMPLATE
+    related_tables:
+    - table: FORM_TEMPLATE_VERSION
+      relation: 1-N — Phiên bản mẫu biểu mẫu in
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-FORM_TEMPLATE_PLACEHOLDER
+  brd_name: Design Atomic từ nguồn THANHTRA bảng FORM_TEMPLATE_PLACEHOLDER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Trường placeholder trong mẫu biểu mẫu
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — trường placeholder kỹ thuật trong biểu mẫu
+    table: FORM_TEMPLATE_PLACEHOLDER
+    related_tables:
+    - table: FORM_TEMPLATE_VERSION
+      relation: FK cha — Phiên bản mẫu biểu mẫu in
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-FORM_TEMPLATE_VERSION
+  brd_name: Design Atomic từ nguồn THANHTRA bảng FORM_TEMPLATE_VERSION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Phiên bản mẫu biểu mẫu in
+    functional_group: B.8 Quản trị phân hệ
+    scope_status: out_of_scope
+    scope_reason: Operational/system data — phiên bản file biểu mẫu kỹ thuật
+    table: FORM_TEMPLATE_VERSION
+    related_tables:
+    - table: FORM_TEMPLATE
+      relation: FK tham chiếu — Mẫu biểu mẫu in
+    - table: FORM_TEMPLATE_PLACEHOLDER
+      relation: 1-N — Trường placeholder trong mẫu biểu mẫu
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-DIGITAL_CERTIFICATES
+  brd_name: Design Atomic từ nguồn THANHTRA bảng DIGITAL_CERTIFICATES
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh mục chứng thư số (chữ ký số) dùng để ký điện tử hồ sơ
+    functional_group: THANHTRA - Chưa phân loại (pending)
+    scope_status: pending
+    scope_reason: null
+    table: DIGITAL_CERTIFICATES
+    related_tables:
+    - table: DIGITAL_CERTIFICATE_USERS
+      relation: '1-N — '
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-DIGITAL_CERTIFICATE_USERS
+  brd_name: Design Atomic từ nguồn THANHTRA bảng DIGITAL_CERTIFICATE_USERS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Người dùng được gán quyền sử dụng chứng thư số
+    functional_group: THANHTRA - Chưa phân loại (pending)
+    scope_status: pending
+    scope_reason: null
+    table: DIGITAL_CERTIFICATE_USERS
+    related_tables:
+    - table: DIGITAL_CERTIFICATES
+      relation: 'FK cha — '
+    - table: CITIZEN_RECEPTION_PARTICIPANT
+      relation: '1-N — Người tham gia buổi tiếp công dân: RECEIVER (Người tiếp, tối thiểu 2 người) hoặc COORDINATOR (Đơn vị phối hợp, không bắt buộc)'
+    - table: EXAMINATION_TEAM_MEMBER
+      relation: 1-N — Thành viên đoàn kiểm tra
+    - table: INSPECTION_TEAM_MEMBER
+      relation: 1-N — Thành viên đoàn thanh tra
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-DOCUMENT_ATTACHMENT_CONTENT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng DOCUMENT_ATTACHMENT_CONTENT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Nội dung file (BLOB) của tệp đính kèm văn bản
+    functional_group: THANHTRA - Chưa phân loại (pending)
+    scope_status: pending
+    scope_reason: null
+    table: DOCUMENT_ATTACHMENT_CONTENT
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_DOSSIER
+  brd_name: Design Atomic từ nguồn THANHTRA bảng ANTI_MONEY_LAUNDERING_DOSSIER
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Bộ hồ sơ PCRT — gom nhóm nhiều văn bản (anti_money_laundering_document) để dễ tra cứu và theo dõi toàn bộ tiến trình xử lý từ đầu đến cuối
+    functional_group: B.5 Phòng chống rửa tiền, tài trợ khủng bố
+    scope_status: out_of_scope
+    scope_reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic (nhất quán với ANTI_MONEY_LAUNDERING_DOCUMENT)
+    table: ANTI_MONEY_LAUNDERING_DOSSIER
+    related_tables:
+    - table: ANTI_MONEY_LAUNDERING_DOCUMENT
+      relation: 1-N — Văn bản phòng chống rửa tiền thuộc bộ hồ sơ
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-CITIZEN_RECEPTION_PARTICIPANT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng CITIZEN_RECEPTION_PARTICIPANT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: 'Người tham gia buổi tiếp công dân: RECEIVER (Người tiếp, tối thiểu 2 người) hoặc COORDINATOR (Đơn vị phối hợp, không bắt buộc)'
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: in_scope
+    scope_reason: null
+    table: CITIZEN_RECEPTION_PARTICIPANT
+    related_tables:
+    - table: CITIZEN_RECEPTION
+      relation: FK cha — Hồ sơ tiếp công dân
+    - table: DIGITAL_CERTIFICATE_USERS
+      relation: FK cha — Người dùng được gán quyền sử dụng chứng thư số
+    notes: Bảng mới (DDL UAT cập nhật) — thay thế cột RECEIVER_ID/RECEIVER_NAME (deprecated) trên CITIZEN_RECEPTION.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-CITIZEN_RECEPTION_PETITION_LINK
+  brd_name: Design Atomic từ nguồn THANHTRA bảng CITIZEN_RECEPTION_PETITION_LINK
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Liên kết 1 buổi tiếp công dân với nhiều đơn thư (trường hợp đoàn đông người, mỗi người nộp 1 đơn riêng)
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: in_scope
+    scope_reason: null
+    table: CITIZEN_RECEPTION_PETITION_LINK
+    related_tables:
+    - table: CITIZEN_RECEPTION
+      relation: FK cha — Hồ sơ tiếp công dân
+    - table: PETITION
+      relation: FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị
+    notes: Bảng mới (DDL UAT cập nhật) — thay thế cột PETITION_ID (deprecated) trên CITIZEN_RECEPTION.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-CITIZEN_RECEPTION_SUBJECT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng CITIZEN_RECEPTION_SUBJECT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: 'Chi tiết đối tượng được tiếp: Cá nhân (1 dòng) / Đoàn đông người (nhiều dòng, mỗi dòng 1 người đại diện) / Tổ chức (1 dòng)'
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: in_scope
+    scope_reason: null
+    table: CITIZEN_RECEPTION_SUBJECT
+    related_tables:
+    - table: CITIZEN_RECEPTION
+      relation: FK cha — Hồ sơ tiếp công dân
+    notes: Bảng mới (DDL UAT cập nhật) — thay thế cột SUBJECT_NAME (deprecated) trên CITIZEN_RECEPTION.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Hình thức xử phạt bổ sung theo hành vi trên QĐ xử phạt VPHC
+    functional_group: B.2 Xử lý vi phạm hành chính
+    scope_status: in_scope
+    scope_reason: null
+    table: PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+    related_tables:
+    - table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+      relation: FK cha — Hành vi vi phạm của đối tượng trong quyết định xử phạt
+    - table: PENALTY_TYPE
+      relation: FK cha — Danh mục hình thức xử phạt
+    notes: Bảng mới (DDL UAT cập nhật). Cân nhắc quan hệ với cột tự do SUPPLEMENTARY_PENALTY (CLOB) hiện có trên PENALTY_DECISION_SUBJECT_BEHAVIOR khi thiết kế LLD.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PETITION_INTERNAL_TRANSFER_UNIT
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PETITION_INTERNAL_TRANSFER_UNIT
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh sách ban/đơn vị trong UBCKNN được chuyển nội bộ xử lý đơn thư (1 đơn - nhiều đơn vị)
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: in_scope
+    scope_reason: null
+    table: PETITION_INTERNAL_TRANSFER_UNIT
+    related_tables:
+    - table: PETITION
+      relation: FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị
+    - table: EXAMINATION_TEAM
+      relation: 1-N — Hồ sơ đoàn kiểm tra
+    - table: SUPERVISION_ACTIVITY_REPORT
+      relation: 1-N — Báo cáo hoạt động giám sát
+    notes: Bảng mới (DDL UAT cập nhật) — thay thế cột INTERNAL_TRANSFER_UNIT_ID/INTERNAL_TRANSFER_UNIT_NAME (deprecated) trên PETITION.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-THANHTRA-PETITION_TARGET
+  brd_name: Design Atomic từ nguồn THANHTRA bảng PETITION_TARGET
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Danh sách đối tượng được đề cập trong đơn thư (1 đơn - nhiều đối tượng, có thể thuộc loại khác nhau)
+    functional_group: B.3 Tiếp công dân, xử lý đơn thư
+    scope_status: in_scope
+    scope_reason: null
+    table: PETITION_TARGET
+    related_tables:
+    - table: PETITION
+      relation: FK cha — Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị
+    notes: Bảng mới (DDL UAT cập nhật) — thay thế cột TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME (deprecated) trên PETITION.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null

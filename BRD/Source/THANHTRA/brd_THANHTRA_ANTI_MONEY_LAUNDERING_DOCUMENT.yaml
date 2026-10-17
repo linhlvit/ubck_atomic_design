@@ -4,78 +4,85 @@ source: THANHTRA
 table: ANTI_MONEY_LAUNDERING_DOCUMENT
 brd_ref: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_DOCUMENT
 columns:
-  - name: ID
-    data_type: VARCHAR2(144)
-    description: "Khóa chính UUID"
-    key: PK
-    fk_note: null
-  - name: DOCUMENT_TYPE
-    data_type: VARCHAR2(200)
-    description: "Loại văn bản PCRT: SENT (Văn bản đi), RECEIVED (Văn bản đến)"
-    key: null
-    fk_note: null
-  - name: DOCUMENT_NUMBER
-    data_type: VARCHAR2(400)
-    description: "Số hiệu văn bản PCRT"
-    key: null
-    fk_note: null
-  - name: ISSUED_DATE
-    data_type: DATE
-    description: "Ngày ban hành văn bản"
-    key: null
-    fk_note: null
-  - name: SUMMARY
-    data_type: CLOB
-    description: "Trích yếu nội dung văn bản PCRT"
-    key: null
-    fk_note: null
-  - name: DOCUMENT_YEAR
-    data_type: NUMBER(4,0)
-    description: "Năm ban hành văn bản"
-    key: null
-    fk_note: null
-  - name: QUARTER
-    data_type: VARCHAR2(200)
-    description: "Quý ban hành văn bản: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4"
-    key: null
-    fk_note: null
-  - name: RECEIVING_UNIT
-    data_type: VARCHAR2(2000)
-    description: "Đơn vị nhận văn bản"
-    key: null
-    fk_note: null
-  - name: NOTE
-    data_type: CLOB
-    description: "Ghi chú bổ sung"
-    key: null
-    fk_note: null
-  - name: CREATED_AT
-    data_type: DATE
-    description: "Thời điểm tạo bản ghi"
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_AT
-    data_type: DATE
-    description: "Thời điểm cập nhật gần nhất"
-    key: null
-    fk_note: null
-  - name: CREATED_BY
-    data_type: VARCHAR2(400)
-    description: "ID người dùng tạo bản ghi"
-    key: null
-    fk_note: null
-  - name: LAST_MODIFIED_BY
-    data_type: VARCHAR2(400)
-    description: "ID người dùng cập nhật gần nhất"
-    key: null
-    fk_note: null
-  - name: VERSION
-    data_type: NUMBER(10,0)
-    description: "Số phiên bản bản ghi (optimistic locking)"
-    key: null
-    fk_note: null
-  - name: DELETED
-    data_type: NUMBER(1,0)
-    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
-    key: null
-    fk_note: null
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính UUID
+  key: PK
+  fk_note: null
+- name: DOCUMENT_TYPE
+  data_type: VARCHAR2(200)
+  description: 'Loại văn bản PCRT: SENT (Văn bản đi), RECEIVED (Văn bản đến)'
+  key: null
+  fk_note: null
+- name: DOCUMENT_NUMBER
+  data_type: VARCHAR2(400)
+  description: Số hiệu văn bản PCRT
+  key: null
+  fk_note: null
+- name: ISSUED_DATE
+  data_type: DATE
+  description: Ngày ban hành văn bản
+  key: null
+  fk_note: null
+- name: SUMMARY
+  data_type: CLOB
+  description: Trích yếu nội dung văn bản PCRT
+  key: null
+  fk_note: null
+- name: DOCUMENT_YEAR
+  data_type: NUMBER(4,0)
+  description: Năm ban hành văn bản
+  key: null
+  fk_note: null
+- name: QUARTER
+  data_type: VARCHAR2(200)
+  description: 'Quý ban hành văn bản: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4'
+  key: null
+  fk_note: null
+- name: RECEIVING_UNIT
+  data_type: VARCHAR2(2000)
+  description: Đơn vị nhận văn bản
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: CLOB
+  description: Ghi chú bổ sung
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_AT
+  data_type: DATE
+  description: Thời điểm cập nhật gần nhất
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(400)
+  description: ID người dùng tạo bản ghi
+  key: null
+  fk_note: null
+- name: LAST_MODIFIED_BY
+  data_type: VARCHAR2(400)
+  description: ID người dùng cập nhật gần nhất
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER(10,0)
+  description: Số phiên bản bản ghi (optimistic locking)
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa'
+  key: null
+  fk_note: null
+- name: DOSSIER_ID
+  data_type: VARCHAR2(144)
+  description: logic -> anti_money_laundering_dossier.id. NULL = văn bản tạo trước
+    khi có khái niệm bộ hồ sơ (dữ liệu cũ)
+  key: FK
+  fk_note: FK → ANTI_MONEY_LAUNDERING_DOSSIER.ID
+  fk_src: inferred

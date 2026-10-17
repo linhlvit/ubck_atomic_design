@@ -1,0 +1,74 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: REPORT_TEMPLATE_PARAMETER
+brd_ref: BRD-SRC-TMS-REPORT_TEMPLATE_PARAMETER
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: PK
+  fk_note: null
+- name: REPORT_TEMPLATE_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: FK
+  fk_note: FK → REPORT_TEMPLATE.ID
+  fk_src: inferred
+- name: REPORT_PARAMETER_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: FK
+  fk_note: FK → REPORT_PARAMETER.ID
+  fk_src: db
+- name: PARAM_SCOPE
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: PARAM_SCE
+  data_type: NUMBER(1,0)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(255)
+  description: null
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: null
+  key: null
+  fk_note: null
+- name: ATTRIBUTE_CATALOG_ID
+  data_type: VARCHAR2(36)
+  description: null
+  key: FK
+  fk_note: FK → ATTRIBUTE_CATALOG.ID
+  fk_src: inferred

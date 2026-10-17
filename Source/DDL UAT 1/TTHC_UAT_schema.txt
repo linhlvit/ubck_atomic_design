@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: TTHC_UAT
-Tong so bang: 239 | Materialized View: 0
+Tong so bang: 244 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ALIASPARTINDEX
@@ -7,7 +7,7 @@ Mo ta:
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO                                       
+ID                            NUMBER              NO      PK                               
 DOCUMENTID                    NUMBER              YES                                      
 ALIAS                         NVARCHAR2(4000)     YES                                      
 CONTENTITEMID                 NVARCHAR2(510)      YES                                      
@@ -47,7 +47,7 @@ Mo ta:
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO                                       
+ID                            NUMBER              NO      PK                               
 DOCUMENTID                    NUMBER              YES                                      
 CONTENTITEMID                 NVARCHAR2(510)      YES                                      
 CONTAINEDCONTENTITEMID        NVARCHAR2(510)      YES                                      
@@ -675,7 +675,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            NUMBER(19,0)        NO      PK                               
 TRIGGERID                     NUMBER(19,0)        NO                                       
 TRIGGERNAME                   VARCHAR2(200)       NO                                       
-CONTENTITEMID                 VARCHAR2(50)        YES                                      
+CONTENTITEMID                 NVARCHAR2(510)      YES                                      
 EVENTTYPE                     VARCHAR2(20)        NO                                       
 STATUS                        VARCHAR2(20)        NO                                       
 EXECUTIONTIMEMS               NUMBER(19,0)        NO                                       
@@ -1258,7 +1258,7 @@ Mo ta:
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            NUMBER(19,0)        NO      PK                               
-CONTENTITEMID                 VARCHAR2(255)       NO                                       
+CONTENTITEMID                 NVARCHAR2(510)      NO                                       
 CONTENTTYPE                   VARCHAR2(255)       NO                                       
 DISPLAYTEXT                   VARCHAR2(4000)      YES                                      
 DOCUMENTID                    NUMBER(19,0)        YES                                      
@@ -1307,7 +1307,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            NUMBER(19,0)        NO      PK                               
 DEFINITIONID                  NUMBER(19,0)        NO      FK     TVRP_CONTENT_INDEX_DEFINITION.ID
 DOCUMENTID                    NUMBER(19,0)        NO                                       
-CONTENTITEMID                 VARCHAR2(64)        NO                                       
+CONTENTITEMID                 NVARCHAR2(510)      NO                                       
 INDEXEDVALUE                  VARCHAR2(255)       NO                                       
 PUBLISHED                     NUMBER(1,0)         YES                                      
 LATEST                        NUMBER(1,0)         YES                                      
@@ -1323,6 +1323,26 @@ CONTENTITEMINDEXID            NUMBER              NO
 DIMENSION                     VARCHAR2(20)        NO                                       
 SCOPEVALUE                    VARCHAR2(4000)      NO                                       
 RULECLAUSEREF                 VARCHAR2(128)       YES                                      
+
+
+BANG: TVRP_CONTENT_SCHEDULED_PUBLISH
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+CONTENTITEMID                 NVARCHAR2(510)      NO                                       
+DOCUMENTID                    NUMBER(19,0)        YES                                      
+CONTENTTYPE                   VARCHAR2(1020)      YES                                      
+SITECONTENTITEMID             VARCHAR2(256)       YES                                      
+SCHEDULEDUTC                  VARCHAR2(256)       NO                                       
+STATUS                        VARCHAR2(80)        NO                                       
+ATTEMPTCOUNT                  NUMBER(10,0)        NO                                       
+ERRORMESSAGE                  VARCHAR2(4000)      YES                                      
+PROCESSEDUTC                  VARCHAR2(256)       YES                                      
+CREATEDUTC                    VARCHAR2(256)       NO                                       
+CREATEDBY                     VARCHAR2(400)       YES                                      
+UPDATEDUTC                    VARCHAR2(256)       YES                                      
 
 
 BANG: TVRP_CONTENT_STATE_SNAPSHOT
@@ -1362,7 +1382,7 @@ Mo ta:
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ID                            NUMBER(19,0)        NO      PK                               
-CONTENTITEMID                 VARCHAR2(255)       NO                                       
+CONTENTITEMID                 NVARCHAR2(510)      NO                                       
 VERSIONNUMBER                 NUMBER(10,0)        NO                                       
 CONTENT                       CLOB                NO                                       
 CREATEDBY                     VARCHAR2(255)       YES                                      
@@ -2124,6 +2144,7 @@ EFFECTIVEFROM                 NVARCHAR2(100)      YES
 EFFECTIVETOTMP                NVARCHAR2(100)      YES                                      
 UPDATEDAT                     NVARCHAR2(100)      NO                                       
 RULEROLE                      VARCHAR2(20)        YES                                      
+SCOPEJSON                     CLOB                YES                                      
 
 
 BANG: TVRP_DATA_POLICIES_HISTORY
@@ -2526,6 +2547,21 @@ CREATED_BY                    VARCHAR2(255)       YES
 UPDATED_BY                    VARCHAR2(255)       YES                                      
 
 
+BANG: TVRP_LOG_ENTRY
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(36)        NO      PK                               
+LOG_TIME                      NVARCHAR2(100)      YES                                      
+LOG_LEVEL                     VARCHAR2(10)        YES                                      
+LOGGER_NAME                   VARCHAR2(255)       YES                                      
+THREAD_NAME                   VARCHAR2(255)       YES                                      
+MESSAGE                       VARCHAR2(2000)      YES                                      
+STACK_TRACE                   CLOB                YES                                      
+HOST_NAME                     VARCHAR2(255)       YES                                      
+
+
 BANG: TVRP_MASTER_PAGE_ASSETS
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -2555,6 +2591,27 @@ OWNER                         VARCHAR2(256)       YES
 CREATEDUTC                    VARCHAR2(255)       NO                                       
 FOLDERPATH                    VARCHAR2(1024)      YES                                      
 STORAGEPROVIDER               VARCHAR2(16)        NO                                       
+CURRENTVERSION                NUMBER(10,0)        NO                                       
+UPDATEDUTC                    VARCHAR2(200)       YES                                      
+UPDATEDBY                     VARCHAR2(1024)      YES                                      
+VERSIONNOTE                   VARCHAR2(4000)      YES                                      
+
+
+BANG: TVRP_MEDIA_FILE_VERSION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+MEDIAFILEID                   NUMBER(19,0)        NO                                       
+VERSIONNO                     NUMBER(10,0)        NO                                       
+STORAGEPATH                   VARCHAR2(4000)      NO                                       
+FILENAME                      VARCHAR2(2048)      NO                                       
+CONTENTTYPE                   VARCHAR2(1024)      YES                                      
+SIZEBYTES                     NUMBER(19,0)        YES                                      
+CREATEDUTC                    VARCHAR2(200)       NO                                       
+CREATEDBY                     VARCHAR2(1024)      YES                                      
+NOTE                          VARCHAR2(4000)      YES                                      
 
 
 BANG: TVRP_MIGRATION_TRACKING
@@ -3143,6 +3200,23 @@ ACKNOWLEDGEDAT                NVARCHAR2(100)      YES
 DETECTEDAT                    NVARCHAR2(100)      NO                                       
 
 
+BANG: TVRP_OD_SCHEDULED_PUBLISH
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+DATASETID                     VARCHAR2(144)       NO                                       
+SCHEDULEDUTC                  VARCHAR2(256)       NO                                       
+STATUS                        VARCHAR2(80)        NO                                       
+ATTEMPTCOUNT                  NUMBER(10,0)        NO                                       
+ERRORMESSAGE                  VARCHAR2(4000)      YES                                      
+PROCESSEDUTC                  VARCHAR2(256)       YES                                      
+CREATEDUTC                    VARCHAR2(256)       NO                                       
+CREATEDBY                     VARCHAR2(400)       YES                                      
+UPDATEDUTC                    VARCHAR2(256)       YES                                      
+
+
 BANG: TVRP_OD_SCHEMA_PROFILE
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -3680,7 +3754,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            NUMBER              NO      PK                               
 SERVICEACCOUNTID              NUMBER(19,0)        NO      FK     TVRP_SERVICE_ACCOUNTS.ID  
 RESOURCETYPE                  VARCHAR2(64)        NO                                       
-RESOURCEID                    VARCHAR2(128)       YES                                      
+RESOURCEID                    VARCHAR2(512)       NO                                       
 ACTIONNAME                    VARCHAR2(64)        NO                                       
 EFFECT                        VARCHAR2(16)        NO                                       
 PRIORITY                      NUMBER(10,0)        NO                                       
@@ -3918,6 +3992,29 @@ DURATIONMS                    NUMBER(19,0)        YES
 COMPENSATIONSTATUS            VARCHAR2(20)        YES                                      
 COMPENSATIONERROR             VARCHAR2(4000)      YES                                      
 CREATEDAT                     NVARCHAR2(100)      NO                                       
+
+
+BANG: TVRP_TRIGGER_KAFKA_CONNECTION
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            NUMBER(19,0)        NO      PK                               
+CODE                          VARCHAR2(256)       NO                                       
+NAME                          VARCHAR2(800)       NO                                       
+DESCRIPTION                   VARCHAR2(2000)      YES                                      
+BOOTSTRAPSERVERS              VARCHAR2(4000)      NO                                       
+SECURITYPROTOCOL              VARCHAR2(128)       NO                                       
+SASLMECHANISM                 VARCHAR2(128)       YES                                      
+SASLUSERNAME                  VARCHAR2(800)       YES                                      
+SASLPASSWORD                  VARCHAR2(4000)      YES                                      
+TRUSTSTORELOCATION            VARCHAR2(2000)      YES                                      
+TRUSTSTOREPASSWORD            VARCHAR2(4000)      YES                                      
+ENABLED                       NUMBER(1,0)         NO                                       
+CREATEDAT                     TIMESTAMP(6)        NO                                       
+UPDATEDAT                     TIMESTAMP(6)        NO                                       
+CREATEDBY                     VARCHAR2(400)       YES                                      
+UPDATEDBY                     VARCHAR2(400)       YES                                      
 
 
 BANG: TVRP_TRIGGER_REVISION
@@ -4181,7 +4278,7 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            NUMBER(19,0)        NO      PK                               
 PERFORMEDBY                   VARCHAR2(255)       YES                                      
 PERFORMEDBYROLES              VARCHAR2(2000)      YES                                      
-CONTENTITEMID                 VARCHAR2(255)       YES                                      
+CONTENTITEMID                 NVARCHAR2(510)      YES                                      
 WORKFLOWID                    VARCHAR2(255)       YES                                      
 WORKFLOWINSTANCEID            NUMBER(19,0)        YES                                      
 FROMACTIVITYID                VARCHAR2(4000)      YES                                      

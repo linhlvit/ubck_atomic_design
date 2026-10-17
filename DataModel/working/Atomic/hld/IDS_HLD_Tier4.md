@@ -9,7 +9,6 @@
 Lưu ý: Một số entity ban đầu dự kiến ở Tier 4 được điều chỉnh về Tier thấp hơn sau khi phân tích FK:
 - `Financial Report Data` (DATA): ~~FK → REPORT_CATALOG (T1) + COMPANY_PROFILES (T1) → Tier 2~~ — Loại khỏi scope theo quyết định Data Modeler (2026-07-14), xem Overview mục 7f.
 - `Disclosure Notification Recipient` (NOTIFICATIONS_DTL): FK → NOTIFICATIONS (T2) → Tier 3
-- `Audit Firm Technical Audit` (AF_TECHNICAL_AUDIT): FK → AF_INSPECTION (T2) + AF_PROFILES (T1) → Tier 3
 
 ---
 
@@ -234,7 +233,7 @@ erDiagram
 |---|---|---|
 | T4-01 | `SECURITIES_OFFERING_RESULT` Source Change Mode = Update. Về nghiệp vụ, kết quả chào bán có thể được chỉnh sửa trước khi chốt chính thức. Table Type tạm là Fact Append — nếu thực tế cho phép cập nhật → đổi sang Relative (SCD2). | Cần xác nhận với nghiệp vụ/Data Engineer về khả năng sửa đổi kết quả sau khi ghi. |
 | T4-02 | `EVALUATION_DETAILS.EVALUATION_ID` là trường FK trong DB nhưng trong BRD per-table YAML không được đánh dấu `key: FK`. Tương tự `CRITERION_ID`. Cần xác nhận FK này luôn khác NULL và join được với EVALUATIONS/EVALUATION_CRITERIA. | Cần xác nhận constraint tại DB nguồn. Nếu nullable → ETL phải xử lý orphan rows. |
-| T4-03 | Sau khi điều chỉnh các entity (DATA → T2, NOTIFICATIONS_DTL → T3, AF_TECHNICAL_AUDIT → T3), Tier 4 còn 3 entity: Securities Offering Plan, Securities Offering Result, Public Company Evaluation Detail. Có nên gộp vào Tier 3 không? | Giữ Tier 4 riêng — dependency chain rõ ràng: T1 → T2 → T3(Securities Offering) → T4(Plan/Result). Tách giúp thể hiện độ phức tạp phân tầng. |
+| T4-03 | Sau khi điều chỉnh các entity (DATA → T2, NOTIFICATIONS_DTL → T3), Tier 4 còn 3 entity: Securities Offering Plan, Securities Offering Result, Public Company Evaluation Detail. Có nên gộp vào Tier 3 không? | Giữ Tier 4 riêng — dependency chain rõ ràng: T1 → T2 → T3(Securities Offering) → T4(Plan/Result). Tách giúp thể hiện độ phức tạp phân tầng. |
 | T4-04 | `REP_DATA` (`Unstructured Financial Report Value`) dùng Domain Prefix `Unstructured Financial Report` — quyết định 2026-08-27 (Tier2.md T2-22/Overview 7e #22) từng ghi rõ "chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN". Đề xuất mở rộng nhóm này thành 4 entity (thêm REP_DATA) do cùng gia đình template/value và cùng physical prefix `ufr`. | Cần Data Modeler xác nhận việc mở rộng phạm vi quyết định 2026-08-27. |
 | T4-05 | `REP_DATA` chỉ có `COMPANY_PROFILE_ID` được tag `key: FK` trong BRD; `LEGAL_ENTITY_ID`, `COMPANY_DATA_ID`, `REP_FORM_ID`, `REP_ROW_ID`, `REP_COL_ID` đều là soft-FK (`key: null`, `fk_note: null`) dù mô tả cột nêu rõ là khóa liên kết. Table Type tạm chọn Fundamental theo pattern đã áp dụng cho `DATA`/`RROW`/`RCOL`/`REP_ROW`/`REP_COLUMN`/`COMPANY_DATA` (cùng họ Value/Template, cùng lý do override). | Cần Data Modeler xác nhận: (1) constraint FK thực tế tại nguồn cho 5 soft-FK trên, (2) đồng ý Table Type = Fundamental theo pattern có sẵn. |
 | T4-06 | `REP_DATA` có cả `LEGAL_ENTITY_ID` (nullable, mô tả "ID Nhà đầu tư NNB/NLQ/CĐ") lẫn `COMPANY_PROFILE_ID` — chưa rõ 2 FK này loại trừ nhau (giống pattern `SECURITIES_OFFERING.APPLICANT_TYPE_FLG`) hay có thể cùng khác NULL đồng thời (báo cáo vừa gắn CTĐC vừa gắn 1 cá nhân liên quan cụ thể). Ảnh hưởng đến thiết kế grain ở bước LLD. | Cần Data Modeler xác nhận ý nghĩa nghiệp vụ khi cả 2 FK cùng có giá trị. |

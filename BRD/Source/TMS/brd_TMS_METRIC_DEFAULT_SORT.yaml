@@ -1,0 +1,68 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: TMS
+table: METRIC_DEFAULT_SORT
+brd_ref: BRD-SRC-TMS-METRIC_DEFAULT_SORT
+columns:
+- name: ID
+  data_type: VARCHAR2(36)
+  description: Khóa chính UUID
+  key: PK
+  fk_note: null
+- name: METRIC_ID
+  data_type: VARCHAR2(36)
+  description: -> metric_catalog.id
+  key: FK
+  fk_note: FK → REPORT_TEMPLATE_METRIC.ID
+  fk_src: inferred
+- name: ATTRIBUTE_ID
+  data_type: VARCHAR2(36)
+  description: -> attribute_catalog.id; phải là cột OUTPUT của report
+  key: null
+  fk_note: null
+- name: SORT_DIRECTION
+  data_type: VARCHAR2(4)
+  description: Hướng sắp xếp (ASC, DESC)
+  key: null
+  fk_note: null
+- name: SORT_PRIORITY
+  data_type: NUMBER(10,0)
+  description: 'Thứ tự cột trong chuỗi sort của metric: measure(s) trước, khóa duy
+    nhất priority cuối'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật bản ghi gần nhất
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(36)
+  description: ID người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(36)
+  description: ID người cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(250)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Soft delete: 0=Chưa xóa, 1=Đã xóa'
+  key: null
+  fk_note: null

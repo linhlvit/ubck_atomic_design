@@ -119,8 +119,7 @@ Rule này áp dụng **bất kể** có gọi qua Skill tool đầy đủ từ �
 2. **HLD Tier tương ứng** (`{SOURCE}_HLD_Tier{N}.md`) → chi tiết entity và quan hệ Tier đang thiết kế.
 3. **Source columns** (`BRD/Source/brd_{SOURCE}.yaml` cho bảng/`table_meaning`/`scope_status`;
    `BRD/Source/{SOURCE}/brd_{SOURCE}_{TABLE}.yaml` cho cột) → cột, data type, mô tả gốc, PK/FK. Không còn dùng `Source/{SOURCE}_Tables.csv` / `_Columns.csv`.
-   **Cờ nguồn gốc** (tuỳ chọn, vắng = đã duyệt/curated): `description_src: inferred` = mô tả gợi ý chưa duyệt — không dùng làm căn cứ
-   duy nhất để đặt tên/BCV, đối chiếu thêm HLD/nghiệp vụ; `fk_src: inferred` = FK chỉ gợi ý theo tên cột — xem quy tắc ở Bước 5.
+   **Cờ nguồn gốc FK** (tuỳ chọn, vắng = đã duyệt/curated): `fk_src: inferred` = FK chỉ gợi ý theo tên cột — xem quy tắc ở Bước 5.
    Ghi nhận data type của từng cột nguồn — dùng ở Bước 3b để review conversion risk và ghi chú khi data type nguồn không khai báo rõ ràng.
 4. **Tất cả file LLD đã có** trong cùng source system (`DataModel/working/Atomic/lld/{SOURCE}/`):
    - Entity đã thiết kế và cấu trúc attribute.

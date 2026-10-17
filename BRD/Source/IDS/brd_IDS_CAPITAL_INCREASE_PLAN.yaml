@@ -7,81 +7,68 @@ columns:
 - name: ID
   data_type: NUMBER(19,0)
   description: Khóa chính
-  description_src: schema
   key: PK
   fk_note: null
 - name: COMPANY_DATA_ID
   data_type: NUMBER(19,0)
   description: → COMPANY_DATA.ID của tin gốc
-  description_src: schema
   key: FK
   fk_note: FK → COMPANY_DATA.ID
   fk_src: inferred
 - name: COMPANY_PROFILE_ID
   data_type: NUMBER(19,0)
   description: → COMPANY_PROFILES.ID
-  description_src: schema
   key: FK
   fk_note: FK → COMPANY_PROFILES.ID
   fk_src: inferred
 - name: RESOLUTION_TYPE_CD
   data_type: VARCHAR2(800)
   description: Loại Nghị quyết ĐHĐCĐ (cột 1)
-  description_src: schema
   key: null
   fk_note: null
 - name: ATTENDANCE_RATE
   data_type: NUMBER(10,4)
   description: Tỷ lệ tham dự họp (cột 2)
-  description_src: schema
   key: null
   fk_note: null
 - name: HAS_CASH_DIVIDEND_FLG
   data_type: NUMBER(1,0)
   description: 'Chi trả cổ tức bằng tiền mặt: 1=có, 0=không (cột 3)'
-  description_src: schema
   key: null
   fk_note: null
 - name: CASH_DIVIDEND_RATE
   data_type: NUMBER(10,4)
   description: Tỷ lệ chi trả cổ tức (cột 4)
-  description_src: schema
   key: null
   fk_note: null
 - name: HAS_CAPITAL_INCREASE_FLG
   data_type: NUMBER(1,0)
   description: 'Có thông qua phương án tăng vốn: 1=có, 0=không (cột 5)'
-  description_src: schema
   key: null
   fk_note: null
 - name: APPROVAL_RATE
   data_type: VARCHAR2(800)
   description: Số lượng/tỷ lệ biểu quyết thông qua (cột 6)
-  description_src: schema
   key: null
   fk_note: null
 - name: HAS_ISSUANCE_PLAN_FLG
   data_type: VARCHAR2(2000)
   description: Hình thức chào bán/phát hành — raw text (cột 7)
-  description_src: schema
   key: null
   fk_note: null
 - name: DOC_SIGN_DATE
   data_type: DATE
   description: Ngày ký văn bản của tin gốc
-  description_src: schema
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: VARCHAR2(400)
   description: Người gửi (HNX/HOSE)
-  description_src: schema
   key: null
   fk_note: null
 - name: CREATED_DATE
   data_type: TIMESTAMP(6)
   description: Thời gian đọc dữ liệu
-  description_src: schema
   key: null
   fk_note: null
 - name: UPDATED_BY
