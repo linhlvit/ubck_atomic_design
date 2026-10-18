@@ -1,0 +1,592 @@
+-- ==============================================================================
+-- PHẦN 1: SCHEMA VSDC (uat_vsdc_stg)
+-- ==============================================================================
+
+-- 1. Bảng: outstanding_shares
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.outstanding_shares (
+    ticker_symbol STRING COMMENT 'Mã chứng khoán',
+    total_issued_shares BIGINT COMMENT 'Tổng khối lượng chứng khoán phát hành',
+    treasury_shares BIGINT COMMENT 'Khối lượng chứng khoán mua lại (Cổ phiếu quỹ)',
+    outstanding_shares BIGINT COMMENT 'Khối lượng chứng khoán đang lưu hành',
+    free_float_shares BIGINT COMMENT 'Khối lượng chứng khoán tự do chuyển nhượng',
+    restricted_shares BIGINT COMMENT 'Khối lượng chứng khoán hạn chế chuyển nhượng',
+    voting_shares BIGINT COMMENT 'Khối lượng chứng khoán có quyền biểu quyết',
+    isin_code STRING COMMENT 'Mã ISIN',
+	transaction_date DATE COMMENT 'Ngày giao dịch',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/outstanding_shares';
+
+-- 2. Bảng: open_investors
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.open_investors (
+    customer_name STRING COMMENT 'Tên khách hàng',
+    investor_type STRING COMMENT 'Loại hình (Cá nhân/Tổ chức)',
+    trading_account_no STRING COMMENT 'Mã tài khoản giao dịch',
+    address STRING COMMENT 'Địa chỉ',
+    id_number STRING COMMENT 'Số đăng ký sở hữu',
+    issue_date DATE COMMENT 'Ngày cấp',
+    issue_place STRING COMMENT 'Nơi cấp',
+    open_date DATE COMMENT 'Ngày mở tài khoản',
+    nationality STRING COMMENT 'Quốc tịch',
+    phone_number STRING COMMENT 'Số điện thoại',
+    email STRING COMMENT 'Địa chỉ email',
+	ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/open_investors';
+
+-- 3. Bảng: closed_investors
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.closed_investors (
+    customer_name STRING COMMENT 'Tên khách hàng',
+    investor_type STRING COMMENT 'Loại hình (Cá nhân/Tổ chức)',
+    trading_account_no STRING COMMENT 'Mã tài khoản giao dịch',
+    address STRING COMMENT 'Địa chỉ',
+    id_number STRING COMMENT 'Số đăng ký sở hữu',
+    issue_date DATE COMMENT 'Ngày cấp',
+    issue_place STRING COMMENT 'Nơi cấp',
+    close_date DATE COMMENT 'Ngày đóng tài khoản',
+    nationality STRING COMMENT 'Quốc tịch',
+    phone_number STRING COMMENT 'Số điện thoại',
+    email STRING COMMENT 'Địa chỉ email',
+    notes STRING COMMENT 'Ghi chú đóng tài khoản',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/closed_investors';
+
+-- 4. Bảng: updated_investors
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.updated_investors (
+    customer_name STRING COMMENT 'Tên khách hàng',
+    investor_type STRING COMMENT 'Loại hình (Cá nhân/Tổ chức)',
+    trading_account_no STRING COMMENT 'Mã tài khoản giao dịch',
+    address STRING COMMENT 'Địa chỉ',
+    id_number STRING COMMENT 'Số đăng ký sở hữu',
+    issue_date DATE COMMENT 'Ngày cấp',
+    issue_place STRING COMMENT 'Nơi cấp',
+    update_date DATE COMMENT 'Ngày thay đổi thông tin',
+    nationality STRING COMMENT 'Quốc tịch',
+    phone_number STRING COMMENT 'Số điện thoại',
+    email STRING COMMENT 'Địa chỉ email',
+    notes STRING COMMENT 'Ghi chú thay đổi',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/updated_investors';
+
+-- 5. Bảng: major_shareholder
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.major_shareholder (
+    ticker_symbol STRING COMMENT 'Mã chứng khoán',
+    voting_shares DECIMAL(18,0) COMMENT 'Số cổ phiếu có quyền biểu quyết',
+    shareholder_name STRING COMMENT 'Tên cổ đông',
+    id_number STRING COMMENT 'Số đăng ký sở hữu',
+    issue_date DATE COMMENT 'Ngày cấp',
+    contact_address STRING COMMENT 'Địa chỉ liên hệ',
+    begin_period_date DATE COMMENT 'Ngày chốt số liệu đầu kỳ',
+    begin_period_shares DECIMAL(18,0) COMMENT 'Số lượng chứng khoán đầu kỳ',
+    begin_period_ratio DECIMAL(10,2) COMMENT 'Tỷ lệ đầu kỳ (%)',
+    end_period_date DATE COMMENT 'Ngày chốt số liệu cuối kỳ',
+    end_period_shares DECIMAL(18,0) COMMENT 'Số lượng chứng khoán cuối kỳ',
+    end_period_ratio DECIMAL(10,2) COMMENT 'Tỷ lệ cuối kỳ (%)',
+    notes STRING COMMENT 'Ghi chú',
+    isin_code STRING COMMENT 'Mã ISIN',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/major_shareholder';
+
+-- 6. Bảng: end_of_day_open_interest
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.end_of_day_open_interest (
+    contract_code STRING COMMENT 'Mã hợp đồng',
+    open_interest_volume BIGINT COMMENT 'Khối lượng hợp đồng mở OI',
+    report_date DATE COMMENT 'Ngày báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/end_of_day_open_interest';
+
+-- 8. Bảng: foreign_investor_bond_portfolio
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.foreign_investor_bond_portfolio (
+    investor_name STRING COMMENT 'Họ tên NĐT',
+    investor_category STRING COMMENT 'Loại hình (Cá nhân/Tổ chức)',
+    trading_code STRING COMMENT 'Mã số giao dịch',
+    nationality STRING COMMENT 'Quốc tịch',
+    address STRING COMMENT 'Địa chỉ',
+    trading_representative_name STRING COMMENT 'Tên đại diện GD',
+    institutional_investor_type STRING COMMENT 'Loại hình NĐT tổ chức',
+    bond_code STRING COMMENT 'Mã trái phiếu',
+    owned_volume BIGINT COMMENT 'Số lượng chứng khoán sở hữu',
+    report_month STRING COMMENT 'Tháng báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/foreign_investor_bond_portfolio';
+
+-- 9. Bảng: foreign_investor_info
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.foreign_investor_info (
+    ticker_symbol STRING COMMENT 'Mã chứng khoán trong nước',
+    isin_code STRING COMMENT 'Mã ISIN',
+    total_issued_shares BIGINT COMMENT 'Tổng số cổ phiếu phát hành',
+    max_foreign_ownership_ratio DECIMAL(10,2) COMMENT 'Tỷ lệ sở hữu nước ngoài tối đa (%)',
+    max_shares_foreign_can_hold BIGINT COMMENT 'Số lượng CP tối đa NĐTNN được nắm giữ',
+    current_shares_foreign_hold BIGINT COMMENT 'Số lượng CP hiện NĐTNN đang nắm giữ',
+    remaining_shares_foreign_can_hold BIGINT COMMENT 'Số lượng CP NĐTNN còn được phép nắm giữ',
+    report_date DATE COMMENT 'Ngày báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/foreign_investor_info';
+
+-- 7. Bảng: nationality
+CREATE TABLE IF NOT EXISTS uat_vsdc_stg.nationality (
+    autoid BIGINT COMMENT 'Id',
+    name STRING COMMENT 'Tên quốc gia',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_vsdc_stg/nationality';
+
+
+-- ==============================================================================
+-- PHẦN 2: SCHEMA HNX (uat_hnx_stg)
+-- ==============================================================================
+
+-- 10. Bảng: share_auction (HNX)
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.share_auction (
+    issuer_name STRING COMMENT 'Tên tổ chức phát hành / Tên công ty',
+    auction_type STRING COMMENT 'Loại hình đấu giá',
+    registered_offering_shares BIGINT COMMENT 'Số CP đăng ký chào bán',
+    total_registered_investors BIGINT COMMENT 'Tổng số NĐT đăng ký tham gia',
+    starting_price DECIMAL(18,2) COMMENT 'Giá khởi điểm',
+    average_winning_price DECIMAL(18,2) COMMENT 'Giá trúng bình quân',
+    domestic_institutional_winners BIGINT COMMENT 'Số NĐT trúng giá tổ chức trong nước',
+    foreign_institutional_winners BIGINT COMMENT 'Số NĐT trúng giá tổ chức nước ngoài',
+    domestic_individual_winners BIGINT COMMENT 'Số NĐT trúng giá cá nhân trong nước',
+    foreign_individual_winners BIGINT COMMENT 'Số NĐT trúng giá cá nhân nước ngoài',
+    domestic_registered_buy_volume BIGINT COMMENT 'KL CP đăng ký mua - NĐT trong nước',
+    foreign_registered_buy_volume BIGINT COMMENT 'KL CP đăng ký mua - NĐT nước ngoài',
+    domestic_winning_shares BIGINT COMMENT 'Số CP trúng giá - NĐT trong nước',
+    foreign_winning_shares BIGINT COMMENT 'Số CP trúng giá - NĐT nước ngoài',
+    domestic_winning_value DECIMAL(18,2) COMMENT 'Giá trị CP trúng giá (VND) - Trong nước',
+    foreign_winning_value DECIMAL(18,2) COMMENT 'Giá trị CP trúng giá (VND) - Nước ngoài',
+    domestic_actual_sold_shares BIGINT COMMENT 'Số CP thực tế bán được - Trong nước',
+    foreign_actual_sold_shares BIGINT COMMENT 'Số CP thực tế bán được - Nước ngoài',
+    domestic_actual_sold_value DECIMAL(18,2) COMMENT 'Giá trị CP thực tế bán được - Trong nước',
+    foreign_actual_sold_value DECIMAL(18,2) COMMENT 'Giá trị CP thực tế bán được - Nước ngoài',
+    report_month STRING COMMENT 'Tháng báo cáo',
+    report_year STRING COMMENT 'Năm báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/share_auction';
+
+-- 11. Bảng: private_corp_bond_trading
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.private_corp_bond_trading (
+    indicator STRING COMMENT 'Chỉ tiêu',
+    unit STRING COMMENT 'Đơn vị tính',
+    value DECIMAL(18,4) COMMENT 'Giá trị',
+    report_date DATE COMMENT 'Ngày báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/private_corp_bond_trading';
+
+-- 12. Bảng: gov_bond_offering
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.gov_bond_offering (
+    bidding_method STRING COMMENT 'Phương thức đấu thầu',
+    bidding_session STRING COMMENT 'Đợt đấu thầu',
+    bond_code STRING COMMENT 'Mã trái phiếu',
+    issuer_name STRING COMMENT 'Tên tổ chức phát hành',
+    bond_type STRING COMMENT 'Loại trái phiếu',
+    term STRING COMMENT 'Kỳ hạn',
+    issue_date DATE COMMENT 'Ngày phát hành',
+    issue_method STRING COMMENT 'Phương thức phát hành',
+    calling_value DECIMAL(18,2) COMMENT 'Giá trị gọi thầu',
+    bidding_value DECIMAL(18,2) COMMENT 'Giá trị đặt thầu',
+    winning_value DECIMAL(18,2) COMMENT 'Giá trị trúng thầu',
+    nominal_interest_rate DECIMAL(10,2) COMMENT 'Lãi suất danh nghĩa (%)',
+    winning_interest_rate DECIMAL(10,2) COMMENT 'Lãi suất trúng thầu (%)',
+    report_month STRING COMMENT 'Tháng báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/gov_bond_offering';
+
+-- 13. Bảng: gov_bond_listed_list
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.gov_bond_listed_list (
+    bond_code STRING COMMENT 'Mã trái phiếu',
+    issuer_name STRING COMMENT 'Tổ chức phát hành',
+    bond_type STRING COMMENT 'Loại trái phiếu',
+    listed_volume BIGINT COMMENT 'Khối lượng niêm yết',
+    bond_term STRING COMMENT 'Kỳ hạn trái phiếu',
+    remaining_term STRING COMMENT 'Kỳ hạn còn lại của trái phiếu',
+    interest_payment_method STRING COMMENT 'Hình thức trả lãi',
+    interest_payment_type STRING COMMENT 'Loại hình trả lãi',
+    interest_rate DECIMAL(10,2) COMMENT 'Lãi suất (%)',
+    first_trading_date DATE COMMENT 'Ngày giao dịch đầu tiên',
+    status STRING COMMENT 'Trạng thái',
+    report_month STRING COMMENT 'Tháng báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/gov_bond_listed_list';
+
+-- 14. Bảng: gov_bond_additional_listing
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.gov_bond_additional_listing (
+    bond_code STRING COMMENT 'Mã trái phiếu',
+    bond_type STRING COMMENT 'Loại trái phiếu',
+    status STRING COMMENT 'Trạng thái',
+    volume BIGINT COMMENT 'Khối lượng',
+    par_value DECIMAL(18,2) COMMENT 'Mệnh giá trái phiếu',
+    listing_change_date DATE COMMENT 'Ngày thay đổi niêm yết',
+    report_month STRING COMMENT 'Tháng báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/gov_bond_additional_listing';
+
+-- 15. Bảng: private_corp_bond_offering
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.private_corp_bond_offering (
+    report_day STRING COMMENT 'Ngày báo cáo', 
+	report_month STRING COMMENT 'Tháng báo cáo',
+	report_year STRING COMMENT 'Năm báo cáo', 
+    market_type STRING COMMENT 'Loại thị trường (Trong nước/Quốc tế)', 
+    posting_date DATE COMMENT 'Ngày đăng tin',
+    issuer_name STRING COMMENT 'Tên doanh nghiệp phát hành',
+    enterprise_type STRING COMMENT 'Loại hình doanh nghiệp',
+    business_sector STRING COMMENT 'Lĩnh vực hoạt động',
+    bond_code STRING COMMENT 'Mã trái phiếu',
+    currency STRING COMMENT 'Tiền tệ', 
+    term_unit STRING COMMENT 'Đơn vị kỳ hạn',
+    term INT COMMENT 'Kỳ hạn',
+    issue_date DATE COMMENT 'Ngày phát hành',
+    maturity_date DATE COMMENT 'Ngày đáo hạn',
+    remaining_term INT COMMENT 'Kỳ hạn còn lại',
+    offering_volume BIGINT COMMENT 'Khối lượng chào bán',
+    par_value DECIMAL(18,2) COMMENT 'Mệnh giá',
+    interest_payment_type STRING COMMENT 'Loại hình trả lãi',
+    interest_rate_type STRING COMMENT 'Loại lãi suất',
+    interest_payment_method STRING COMMENT 'Phương thức thanh toán lãi',
+    repurchase_and_swap STRING COMMENT 'Mua lại và hoán đổi',
+    issue_market STRING COMMENT 'Thị trường phát hành',
+    issue_interest_rate DECIMAL(10,2) COMMENT 'Lãi suất phát hành (%)',
+    convertible_bond STRING COMMENT 'Trái phiếu chuyển đổi (Có/Không)',
+    warrant_linked_bond STRING COMMENT 'Trái phiếu kèm chứng quyền (Có/Không)',
+    secured_bond STRING COMMENT 'Trái phiếu bảo đảm (Có/Không)',
+	business_no STRING COMMENT 'Mã số doanh nghiệp',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/private_corp_bond_offering';
+
+-- 16. Bảng: private_corp_bond_registration
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.private_corp_bond_registration (
+    bond_code STRING COMMENT 'Mã trái phiếu',
+    currency STRING COMMENT 'Tiền tệ',
+    issuer_name STRING COMMENT 'Tên doanh nghiệp phát hành',
+    par_value DECIMAL(18,2) COMMENT 'Mệnh giá',
+    term_unit STRING COMMENT 'Đơn vị kỳ hạn',
+    remaining_term INT COMMENT 'Kỳ hạn còn lại',
+    issue_date DATE COMMENT 'Ngày phát hành',
+    maturity_date DATE COMMENT 'Ngày đáo hạn',
+    interest_payment_method STRING COMMENT 'Phương thức trả lãi',
+    interest_payment_term STRING COMMENT 'Kỳ hạn trả lãi',
+    issued_volume BIGINT COMMENT 'Khối lượng phát hành',
+    repurchased_converted_swapped_volume BIGINT COMMENT 'KL mua lại/chuyển đổi/hoán đổi',
+    registered_trading_volume BIGINT COMMENT 'Khối lượng đăng ký giao dịch',
+    outstanding_volume BIGINT COMMENT 'Khối lượng còn lưu hành',
+    issue_interest_rate DECIMAL(10,2) COMMENT 'Lãi suất phát hành (%)',
+    first_trading_date DATE COMMENT 'Ngày giao dịch đầu tiên',
+    report_day STRING COMMENT 'Ngày báo cáo', 
+	report_month STRING COMMENT 'Tháng báo cáo',
+	report_year STRING COMMENT 'Năm báo cáo', 
+	business_no STRING COMMENT 'Mã số doanh nghiệp',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/private_corp_bond_registration';
+
+-- 17. Bảng: registration_status_change
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.registration_status_change (
+    bond_code STRING COMMENT 'Mã trái phiếu',
+    issuer_name STRING COMMENT 'Tên doanh nghiệp phát hành',
+    par_value DECIMAL(18,2) COMMENT 'Mệnh giá trái phiếu',
+    currently_registered_trading_volume BIGINT COMMENT 'KL đang đăng ký giao dịch',
+    first_trading_date DATE COMMENT 'Ngày giao dịch đầu tiên',
+    last_trading_date DATE COMMENT 'Ngày giao dịch cuối cùng',
+    trading_registration_status STRING COMMENT 'Trạng thái ĐKGD',
+    report_month STRING COMMENT 'Tháng báo cáo',
+	business_no STRING COMMENT 'Mã số doanh nghiệp',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/registration_status_change';
+
+-- 18. Bảng: listing_status_change (HNX)
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.listing_status_change (
+    decision_no STRING COMMENT 'Số quyết định',
+    decision_date DATE COMMENT 'Ngày quyết định',
+    new_listed_shares BIGINT COMMENT 'Số lượng CK niêm yết mới',
+    additional_listed_shares BIGINT COMMENT 'Số lượng CK niêm yết bổ sung',
+    delisted_shares BIGINT COMMENT 'Số lượng CK hủy niêm yết',
+    exchange_transfer STRING COMMENT 'Chuyển sàn',
+    listed_value DECIMAL(18,2) COMMENT 'Giá trị CK niêm yết',
+    additional_listed_value DECIMAL(18,2) COMMENT 'Giá trị CK niêm yết bổ sung',
+    delisted_value DECIMAL(18,2) COMMENT 'Giá trị chứng khoán huỷ niêm yết',
+    ticker_symbol STRING COMMENT 'Mã CK',
+    issuer_name STRING COMMENT 'Tên Tổ chức phát hành / Tên Công ty',
+    effective_date DATE COMMENT 'Ngày hiệu lực',
+    first_trading_date DATE COMMENT 'Ngày giao dịch đầu tiên',
+    last_trading_date DATE COMMENT 'Ngày giao dịch cuối cùng',
+    delist_transfer_reason STRING COMMENT 'Lý do hủy, chuyển sàn',
+    report_month STRING COMMENT 'Tháng báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/listing_status_change';
+
+-- 19. Bảng: listed_securities_list (HNX)
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.listed_securities_list (
+    ticker_symbol STRING COMMENT 'Mã cổ phiếu/chứng khoán',
+    issuer_name STRING COMMENT 'Tổ chức phát hành',
+    listed_shares BIGINT COMMENT 'Số lượng cổ phiếu niêm yết',
+    outstanding_shares BIGINT COMMENT 'Số lượng chứng khoán lưu hành',
+    reference_price DECIMAL(18,2) COMMENT 'Giá tham chiếu',
+    report_date DATE COMMENT 'Ngày báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/listed_securities_list';
+
+-- 20. Bảng: brokerage_market_share (HNX)
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.brokerage_market_share (
+    broker_name STRING COMMENT 'Tên công ty chứng khoán',
+    member_code STRING COMMENT 'Mã thành viên',
+    total_trading_value DECIMAL(18,2) COMMENT 'Tổng giá trị giao dịch',
+    market_share_by_value DECIMAL(10,2) COMMENT 'Tỷ trọng theo tổng GTGD (%)',
+    classification STRING COMMENT 'Phân loại',
+    report_quarter STRING COMMENT 'Quý báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/brokerage_market_share';
+
+-- 21. Bảng: outright_order_book (HNX)
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.outright_order_book (
+    currency_code STRING COMMENT 'Mã tiền tệ',
+    original_order_no STRING COMMENT 'SHL gốc',
+    payment_status STRING COMMENT 'Tình trạng thanh toán',
+    trading_method STRING COMMENT 'Phương thức GD',
+    time STRING COMMENT 'Thgian',
+    order_no STRING COMMENT 'SHL',
+    remaining_term_days BIGINT COMMENT 'KH còn lại(ngày)',
+    remaining_term STRING COMMENT 'KH còn lại',
+    bond_code STRING COMMENT 'Mã TP',
+    instrument_type STRING COMMENT 'Loại hàng hóa',
+    interest_payment_type STRING COMMENT 'Loại hình trả lãi',
+    interest_payment_method STRING COMMENT 'Kiểu trả lãi',
+    interest_rate_type STRING COMMENT 'Loại lãi suất',
+    order_type STRING COMMENT 'Loại lệnh',
+    order_side STRING COMMENT 'M/B',
+    order_status STRING COMMENT 'Trạng thái lệnh',
+    quoted_price DECIMAL(18,4) COMMENT 'Giá yết',
+    yield_rate DECIMAL(10,4) COMMENT 'Lợi suất',
+    discount_rate DECIMAL(10,4) COMMENT 'Lãi suất CK',
+    execution_price DECIMAL(18,4) COMMENT 'Giá TH',
+    volume BIGINT COMMENT 'Khối lượng',
+    trading_value DECIMAL(18,2) COMMENT 'Giá trị TT',
+    trading_date DATE COMMENT 'Ngày BĐGD',
+    settlement_date DATE COMMENT 'Ngày TT',
+    selling_member_code STRING COMMENT 'TV Bán',
+    selling_rep STRING COMMENT 'ĐDGD Bán',
+    selling_account_no STRING COMMENT 'TKNĐT Bán',
+    selling_broker_dealer STRING COMMENT 'MG/TD Bán',
+    selling_proxy_entry STRING COMMENT 'Nhập hộ bán',
+    buying_member_code STRING COMMENT 'TV Mua',
+    buying_rep STRING COMMENT 'ĐDGD Mua',
+    buying_account_no STRING COMMENT 'TK NĐT mua',
+    buying_broker_dealer STRING COMMENT 'MG/TD Mua',
+    buying_proxy_entry STRING COMMENT 'Nhập hộ mua',
+    settlement_status STRING COMMENT 'Tình trạng TT',
+    settlement_bond_code STRING COMMENT 'Mã TP thanh toán',
+    settlement_volume BIGINT COMMENT 'KL thanh toán',
+    equivalent_bond_settlement_value DECIMAL(18,2) COMMENT 'GTTT bằng TPTĐ',
+    settlement_method STRING COMMENT 'Phương thức TT',
+    order_creator_rep STRING COMMENT 'ĐDGD tạo lệnh',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/outright_order_book';
+
+-- 22. Bảng: repo_order_book (HNX)
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.repo_order_book (
+    currency_code STRING COMMENT 'Mã tiền tệ',
+    original_order_no STRING COMMENT 'SHL gốc',
+    payment_status STRING COMMENT 'Tình trạng thanh toán',
+    trading_method STRING COMMENT 'Phương thức GD',
+    time STRING COMMENT 'Thgian',
+    order_no STRING COMMENT 'SHL',
+    remaining_term_days BIGINT COMMENT 'KH còn lại(ngày)',
+    remaining_term STRING COMMENT 'KH còn lại',
+    bond_code STRING COMMENT 'Mã TP',
+    instrument_type STRING COMMENT 'Loại hàng hóa',
+    interest_payment_type STRING COMMENT 'Loại hình trả lãi',
+    interest_payment_method STRING COMMENT 'Kiểu trả lãi',
+    interest_rate_type STRING COMMENT 'Loại lãi suất',
+    order_type STRING COMMENT 'Loại lệnh',
+    order_side STRING COMMENT 'M/B',
+    order_status STRING COMMENT 'Trạng thái lệnh',
+    quoted_price DECIMAL(18,4) COMMENT 'Giá yết',
+    yield_rate DECIMAL(10,4) COMMENT 'Lợi suất',
+    discount_rate DECIMAL(10,4) COMMENT 'Lãi suất CK',
+    execution_price DECIMAL(18,4) COMMENT 'Giá TH',
+    par_value DECIMAL(18,2) COMMENT 'GTMG',
+    volume BIGINT COMMENT 'Khối lượng',
+    first_settlement_value DECIMAL(18,2) COMMENT 'GTTT lần 1',
+    repo_term BIGINT COMMENT 'KH Repos',
+    repo_rate DECIMAL(10,4) COMMENT 'LS Repos',
+    coupon_rate DECIMAL(10,4) COMMENT 'LS/ lãi C',
+    repo_interest DECIMAL(18,2) COMMENT 'Lãi Repos',
+    coupon_interest DECIMAL(18,2) COMMENT 'Lãi Coupon',
+    receive_coupon_interest STRING COMMENT 'Nhận lãi Coupon',
+    interest_on_coupon DECIMAL(18,2) COMMENT 'Lãi/Lãi C',
+    risk_margin_ratio DECIMAL(10,2) COMMENT 'Tỷ lệ PVRR',
+    trading_date DATE COMMENT 'Ngày BĐGD',
+    first_settlement_date DATE COMMENT 'Ngày TT lần 1',
+    second_settlement_date DATE COMMENT 'Ngày TT lần 2',
+    end_trading_date DATE COMMENT 'Ngày KTGD',
+    second_settlement_value DECIMAL(18,2) COMMENT 'GTTT lần 2',
+    selling_member_code STRING COMMENT 'TV Bán',
+    selling_rep STRING COMMENT 'ĐDGD Bán',
+    selling_account_no STRING COMMENT 'TKNĐT Bán',
+    selling_broker_dealer STRING COMMENT 'MG/TD Bán',
+    selling_proxy_entry STRING COMMENT 'Nhập hộ bán',
+    buying_member_code STRING COMMENT 'TV Mua',
+    buying_rep STRING COMMENT 'ĐDGD Mua',
+    buying_account_no STRING COMMENT 'TK NĐT mua',
+    buying_broker_dealer STRING COMMENT 'MG/TD Mua',
+    buying_proxy_entry STRING COMMENT 'Nhập hộ mua',
+    settlement_method STRING COMMENT 'Phương thức TT',
+    order_creator_rep STRING COMMENT 'ĐDGD tạo lệnh',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/repo_order_book';
+
+-- 23. Bảng: repo2_order_book (HNX)
+CREATE TABLE IF NOT EXISTS uat_hnx_stg.repo2_order_book (
+    payment_status STRING COMMENT 'Tình trạng thanh toán',
+    currency_code STRING COMMENT 'Mã tiền tệ',
+    trading_method STRING COMMENT 'Phương thức GD',
+    time STRING COMMENT 'Thgian',
+    order_no STRING COMMENT 'SHL',
+    original_order_no STRING COMMENT 'SHL gốc',
+    remaining_term_days BIGINT COMMENT 'KH còn lại(ngày)',
+    remaining_term STRING COMMENT 'KH còn lại',
+    bond_code STRING COMMENT 'Mã TP',
+    order_type STRING COMMENT 'Loại lệnh',
+    instrument_type STRING COMMENT 'Loại hàng hóa',
+    interest_payment_type STRING COMMENT 'Loại hình trả lãi',
+    interest_payment_method STRING COMMENT 'Kiểu trả lãi',
+    interest_rate_type STRING COMMENT 'Loại lãi suất',
+    order_side STRING COMMENT 'M/B',
+    order_status STRING COMMENT 'Trạng thái lệnh',
+    risk_margin_ratio DECIMAL(10,2) COMMENT 'Tỷ lệ PVRR',
+    quoted_price DECIMAL(18,4) COMMENT 'Giá yết',
+    yield_rate DECIMAL(10,4) COMMENT 'Lợi suất',
+    discount_rate DECIMAL(10,4) COMMENT 'Lãi suất CK',
+    execution_price DECIMAL(18,4) COMMENT 'Giá TH',
+    volume BIGINT COMMENT 'Khối lượng',
+    par_value DECIMAL(18,2) COMMENT 'GTMG',
+    first_settlement_value DECIMAL(18,2) COMMENT 'GTTT lần 1',
+    repo_term BIGINT COMMENT 'KH Repos',
+    repo_interest DECIMAL(18,2) COMMENT 'Lãi Repos',
+    repo_rate DECIMAL(10,4) COMMENT 'LS Repos',
+    coupon_rate DECIMAL(10,4) COMMENT 'LS/ lãi C',
+    receive_coupon_interest STRING COMMENT 'Nhận lãi Coupon',
+    coupon_interest DECIMAL(18,2) COMMENT 'Lãi Coupon',
+    second_settlement_value DECIMAL(18,2) COMMENT 'GTTT lần 2',
+    interest_on_coupon DECIMAL(18,2) COMMENT 'Lãi/Lãi C',
+    trading_date DATE COMMENT 'Ngày BĐGD',
+    first_settlement_date DATE COMMENT 'Ngày TT lần 1',
+    end_trading_date DATE COMMENT 'Ngày KTGD',
+    second_settlement_date DATE COMMENT 'Ngày TT lần 2',
+    selling_member_code STRING COMMENT 'TV Bán',
+    selling_rep STRING COMMENT 'ĐDGD Bán',
+    selling_account_no STRING COMMENT 'TKNĐT Bán',
+    selling_broker_dealer STRING COMMENT 'MG/TD Bán',
+    selling_proxy_entry STRING COMMENT 'Nhập hộ bán',
+    buying_member_code STRING COMMENT 'TV Mua',
+    buying_rep STRING COMMENT 'ĐDGD Mua',
+    buying_account_no STRING COMMENT 'TK NĐT mua',
+    buying_broker_dealer STRING COMMENT 'MG/TD Mua',
+    buying_proxy_entry STRING COMMENT 'Nhập hộ mua',
+    settlement_method STRING COMMENT 'Phương thức TT',
+    order_creator_rep STRING COMMENT 'ĐDGD tạo lệnh',
+    settlement_status STRING COMMENT 'Tình trạng TT',
+    settlement_bond_code STRING COMMENT 'Mã TP thanh toán',
+    settlement_volume BIGINT COMMENT 'KL thanh toán',
+    equivalent_bond_settlement_value DECIMAL(18,2) COMMENT 'GTTT bằng TPTĐ',
+    mark_settlement_bond STRING COMMENT 'Đánh dấu TPTT',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hnx_stg/repo2_order_book';
+
+
+-- ==============================================================================
+-- PHẦN 3: SCHEMA HOSE (uat_hose_stg)
+-- ==============================================================================
+
+-- 25. Bảng: share_auction (HOSE)
+CREATE TABLE IF NOT EXISTS uat_hose_stg.share_auction (
+    issuer_name STRING COMMENT 'Tên tổ chức phát hành / Tên công ty',
+    auction_type STRING COMMENT 'Loại hình đấu giá',
+    registered_offering_shares BIGINT COMMENT 'Số CP đăng ký chào bán',
+    total_registered_investors BIGINT COMMENT 'Tổng số NĐT đăng ký tham gia',
+    starting_price DECIMAL(18,2) COMMENT 'Giá khởi điểm',
+    average_winning_price DECIMAL(18,2) COMMENT 'Giá trúng bình quân',
+    domestic_institutional_winners BIGINT COMMENT 'Số NĐT trúng giá tổ chức trong nước',
+    foreign_institutional_winners BIGINT COMMENT 'Số NĐT trúng giá tổ chức nước ngoài',
+    domestic_individual_winners BIGINT COMMENT 'Số NĐT trúng giá cá nhân trong nước',
+    foreign_individual_winners BIGINT COMMENT 'Số NĐT trúng giá cá nhân nước ngoài',
+    domestic_registered_buy_volume BIGINT COMMENT 'KL CP đăng ký mua - NĐT trong nước',
+    foreign_registered_buy_volume BIGINT COMMENT 'KL CP đăng ký mua - NĐT nước ngoài',
+    domestic_winning_shares BIGINT COMMENT 'Số CP trúng giá - NĐT trong nước',
+    foreign_winning_shares BIGINT COMMENT 'Số CP trúng giá - NĐT nước ngoài',
+    domestic_winning_value DECIMAL(18,2) COMMENT 'Giá trị CP trúng giá (VND) - Trong nước',
+    foreign_winning_value DECIMAL(18,2) COMMENT 'Giá trị CP trúng giá (VND) - Nước ngoài',
+    domestic_actual_sold_shares BIGINT COMMENT 'Số CP thực tế bán được - Trong nước',
+    foreign_actual_sold_shares BIGINT COMMENT 'Số CP thực tế bán được - Nước ngoài',
+    domestic_actual_sold_value DECIMAL(18,2) COMMENT 'Giá trị CP thực tế bán được - Trong nước',
+    foreign_actual_sold_value DECIMAL(18,2) COMMENT 'Giá trị CP thực tế bán được - Nước ngoài',
+    report_month STRING COMMENT 'Tháng báo cáo',
+    report_year STRING COMMENT 'Năm báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hose_stg/share_auction';
+
+-- 26. Bảng: listing_status_change (HOSE)
+CREATE TABLE IF NOT EXISTS uat_hose_stg.listing_status_change (
+    decision_no STRING COMMENT 'Số quyết định',
+    decision_date DATE COMMENT 'Ngày quyết định',
+    new_listed_shares BIGINT COMMENT 'Số lượng CK niêm yết mới',
+    additional_listed_shares BIGINT COMMENT 'Số lượng CK niêm yết bổ sung',
+    delisted_shares BIGINT COMMENT 'Số lượng CK hủy niêm yết',
+    exchange_transfer STRING COMMENT 'Chuyển sàn',
+    listed_value DECIMAL(18,2) COMMENT 'Giá trị CK niêm yết',
+    additional_listed_value DECIMAL(18,2) COMMENT 'Giá trị CK niêm yết bổ sung',
+    delisted_value DECIMAL(18,2) COMMENT 'Giá trị chứng khoán huỷ niêm yết',
+    ticker_symbol STRING COMMENT 'Mã CK',
+    issuer_name STRING COMMENT 'Tên Tổ chức phát hành / Tên công ty',
+    effective_date DATE COMMENT 'Ngày hiệu lực',
+    first_trading_date DATE COMMENT 'Ngày giao dịch đầu tiên',
+    last_trading_date DATE COMMENT 'Ngày giao dịch cuối cùng',
+    delist_transfer_reason STRING COMMENT 'Lý do hủy, chuyển sàn',
+    report_month STRING COMMENT 'Tháng báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hose_stg/listing_status_change';
+
+-- 27. Bảng: listed_securities_list (HOSE)
+CREATE TABLE IF NOT EXISTS uat_hose_stg.listed_securities_list (
+    ticker_symbol STRING COMMENT 'Mã cổ phiếu',
+    issuer_name STRING COMMENT 'Tổ chức phát hành',
+    listed_shares BIGINT COMMENT 'Số lượng cổ phiếu niêm yết',
+    outstanding_shares BIGINT COMMENT 'Số lượng chứng khoán lưu hành',
+    reference_price DECIMAL(18,2) COMMENT 'Giá tham chiếu',
+    report_date DATE COMMENT 'Ngày báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hose_stg/listed_securities_list';
+
+-- 28. Bảng: brokerage_market_share (HOSE)
+CREATE TABLE IF NOT EXISTS uat_hose_stg.brokerage_market_share (
+    broker_name STRING COMMENT 'Tên công ty chứng khoán',
+    member_code STRING COMMENT 'Mã thành viên',
+    total_trading_value DECIMAL(18,2) COMMENT 'Tổng giá trị giao dịch',
+    market_share_by_value DECIMAL(10,2) COMMENT 'Tỷ trọng theo tổng GTGD (%)',
+    classification STRING COMMENT 'Phân loại',
+    report_quarter STRING COMMENT 'Quý báo cáo',
+    ds_snpst_dt DATE COMMENT 'Ngày chốt số liệu',
+    ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời gian chạy ETL'
+) USING ICEBERG LOCATION 's3a://staging/uat_hose_stg/brokerage_market_share';
+
+-- ========================== END OF SCRIPT =====================================

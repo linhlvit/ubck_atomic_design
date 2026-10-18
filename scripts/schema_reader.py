@@ -42,7 +42,8 @@ SOURCE_SYSTEMS_CSV = ROOT / "Source" / "source_systems.csv"
 
 # Kiểu dữ liệu Oracle — dùng để tách tên cột dính liền kiểu khi tên cột >= 30 ký tự
 _TYPE_KW = (r"NVARCHAR2|VARCHAR2|VARCHAR|NCHAR|CHAR|NUMBER|FLOAT|INTEGER|DATE|"
-            r"TIMESTAMP|INTERVAL|NCLOB|CLOB|BLOB|RAW|LONG|BINARY_DOUBLE|BINARY_FLOAT|ROWID|XMLTYPE")
+            r"TIMESTAMP|INTERVAL|NCLOB|CLOB|BLOB|RAW|LONG|BINARY_DOUBLE|BINARY_FLOAT|ROWID|XMLTYPE|"
+            r"STRING|BIGINT|SMALLINT|TINYINT|INT|DECIMAL|DOUBLE|BOOLEAN")
 # Kiểu dài ≥ 20 ký tự (VD "TIMESTAMP(6) WITH TIME ZONE") làm cột "Null?" dính liền kiểu: "...ZONEYES"
 _NULL_RE = re.compile(r"(?:(?<=\s)|(?<=\))|(?<=ZONE))(YES|NO)(?=\s|$)")
 _TYPE_SPLIT_RE = re.compile(rf"^(\S+?)\s*((?:{_TYPE_KW})(?![A-Za-z_]).*)$")

@@ -1,0 +1,85 @@
+DATA DICTIONARY - SCHEMA: UAT_HOSE_STG
+Tong so bang: 4 | Materialized View: 0
+==============================================================================================================
+
+BANG: share_auction
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+issuer_name                   STRING              YES                                      Tên tổ chức phát hành / Tên công ty
+auction_type                  STRING              YES                                      Loại hình đấu giá
+registered_offering_shares    BIGINT              YES                                      Số CP đăng ký chào bán
+total_registered_investors    BIGINT              YES                                      Tổng số NĐT đăng ký tham gia
+starting_price                DECIMAL(18,2)       YES                                      Giá khởi điểm
+average_winning_price         DECIMAL(18,2)       YES                                      Giá trúng bình quân
+domestic_institutional_winnersBIGINT              YES                                      Số NĐT trúng giá tổ chức trong nước
+foreign_institutional_winners BIGINT              YES                                      Số NĐT trúng giá tổ chức nước ngoài
+domestic_individual_winners   BIGINT              YES                                      Số NĐT trúng giá cá nhân trong nước
+foreign_individual_winners    BIGINT              YES                                      Số NĐT trúng giá cá nhân nước ngoài
+domestic_registered_buy_volumeBIGINT              YES                                      KL CP đăng ký mua - NĐT trong nước
+foreign_registered_buy_volume BIGINT              YES                                      KL CP đăng ký mua - NĐT nước ngoài
+domestic_winning_shares       BIGINT              YES                                      Số CP trúng giá - NĐT trong nước
+foreign_winning_shares        BIGINT              YES                                      Số CP trúng giá - NĐT nước ngoài
+domestic_winning_value        DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Trong nước
+foreign_winning_value         DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Nước ngoài
+domestic_actual_sold_shares   BIGINT              YES                                      Số CP thực tế bán được - Trong nước
+foreign_actual_sold_shares    BIGINT              YES                                      Số CP thực tế bán được - Nước ngoài
+domestic_actual_sold_value    DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Trong nước
+foreign_actual_sold_value     DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Nước ngoài
+report_month                  STRING              YES                                      Tháng báo cáo
+report_year                   STRING              YES                                      Năm báo cáo
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: listing_status_change
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+decision_no                   STRING              YES                                      Số quyết định
+decision_date                 DATE                YES                                      Ngày quyết định
+new_listed_shares             BIGINT              YES                                      Số lượng CK niêm yết mới
+additional_listed_shares      BIGINT              YES                                      Số lượng CK niêm yết bổ sung
+delisted_shares               BIGINT              YES                                      Số lượng CK hủy niêm yết
+exchange_transfer             STRING              YES                                      Chuyển sàn
+listed_value                  DECIMAL(18,2)       YES                                      Giá trị CK niêm yết
+additional_listed_value       DECIMAL(18,2)       YES                                      Giá trị CK niêm yết bổ sung
+delisted_value                DECIMAL(18,2)       YES                                      Giá trị chứng khoán huỷ niêm yết
+ticker_symbol                 STRING              YES                                      Mã CK
+issuer_name                   STRING              YES                                      Tên Tổ chức phát hành / Tên công ty
+effective_date                DATE                YES                                      Ngày hiệu lực
+first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
+last_trading_date             DATE                YES                                      Ngày giao dịch cuối cùng
+delist_transfer_reason        STRING              YES                                      Lý do hủy, chuyển sàn
+report_month                  STRING              YES                                      Tháng báo cáo
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: listed_securities_list
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ticker_symbol                 STRING              YES                                      Mã cổ phiếu
+issuer_name                   STRING              YES                                      Tổ chức phát hành
+listed_shares                 BIGINT              YES                                      Số lượng cổ phiếu niêm yết
+outstanding_shares            BIGINT              YES                                      Số lượng chứng khoán lưu hành
+reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
+report_date                   DATE                YES                                      Ngày báo cáo
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: brokerage_market_share
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+broker_name                   STRING              YES                                      Tên công ty chứng khoán
+member_code                   STRING              YES                                      Mã thành viên
+total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
+market_share_by_value         DECIMAL(10,2)       YES                                      Tỷ trọng theo tổng GTGD (%)
+classification                STRING              YES                                      Phân loại
+report_quarter                STRING              YES                                      Quý báo cáo
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL

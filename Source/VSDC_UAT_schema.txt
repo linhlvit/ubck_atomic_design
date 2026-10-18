@@ -1,0 +1,156 @@
+DATA DICTIONARY - SCHEMA: UAT_VSDC_STG
+Tong so bang: 9 | Materialized View: 0
+==============================================================================================================
+
+BANG: outstanding_shares
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ticker_symbol                 STRING              YES                                      Mã chứng khoán
+total_issued_shares           BIGINT              YES                                      Tổng khối lượng chứng khoán phát hành
+treasury_shares               BIGINT              YES                                      Khối lượng chứng khoán mua lại (Cổ phiếu quỹ)
+outstanding_shares            BIGINT              YES                                      Khối lượng chứng khoán đang lưu hành
+free_float_shares             BIGINT              YES                                      Khối lượng chứng khoán tự do chuyển nhượng
+restricted_shares             BIGINT              YES                                      Khối lượng chứng khoán hạn chế chuyển nhượng
+voting_shares                 BIGINT              YES                                      Khối lượng chứng khoán có quyền biểu quyết
+isin_code                     STRING              YES                                      Mã ISIN
+transaction_date              DATE                YES                                      Ngày giao dịch
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: open_investors
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+customer_name                 STRING              YES                                      Tên khách hàng
+investor_type                 STRING              YES                                      Loại hình (Cá nhân/Tổ chức)
+trading_account_no            STRING              YES                                      Mã tài khoản giao dịch
+address                       STRING              YES                                      Địa chỉ
+id_number                     STRING              YES                                      Số đăng ký sở hữu
+issue_date                    DATE                YES                                      Ngày cấp
+issue_place                   STRING              YES                                      Nơi cấp
+open_date                     DATE                YES                                      Ngày mở tài khoản
+nationality                   STRING              YES                                      Quốc tịch
+phone_number                  STRING              YES                                      Số điện thoại
+email                         STRING              YES                                      Địa chỉ email
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: closed_investors
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+customer_name                 STRING              YES                                      Tên khách hàng
+investor_type                 STRING              YES                                      Loại hình (Cá nhân/Tổ chức)
+trading_account_no            STRING              YES                                      Mã tài khoản giao dịch
+address                       STRING              YES                                      Địa chỉ
+id_number                     STRING              YES                                      Số đăng ký sở hữu
+issue_date                    DATE                YES                                      Ngày cấp
+issue_place                   STRING              YES                                      Nơi cấp
+close_date                    DATE                YES                                      Ngày đóng tài khoản
+nationality                   STRING              YES                                      Quốc tịch
+phone_number                  STRING              YES                                      Số điện thoại
+email                         STRING              YES                                      Địa chỉ email
+notes                         STRING              YES                                      Ghi chú đóng tài khoản
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: updated_investors
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+customer_name                 STRING              YES                                      Tên khách hàng
+investor_type                 STRING              YES                                      Loại hình (Cá nhân/Tổ chức)
+trading_account_no            STRING              YES                                      Mã tài khoản giao dịch
+address                       STRING              YES                                      Địa chỉ
+id_number                     STRING              YES                                      Số đăng ký sở hữu
+issue_date                    DATE                YES                                      Ngày cấp
+issue_place                   STRING              YES                                      Nơi cấp
+update_date                   DATE                YES                                      Ngày thay đổi thông tin
+nationality                   STRING              YES                                      Quốc tịch
+phone_number                  STRING              YES                                      Số điện thoại
+email                         STRING              YES                                      Địa chỉ email
+notes                         STRING              YES                                      Ghi chú thay đổi
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: major_shareholder
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ticker_symbol                 STRING              YES                                      Mã chứng khoán
+voting_shares                 DECIMAL(18,0)       YES                                      Số cổ phiếu có quyền biểu quyết
+shareholder_name              STRING              YES                                      Tên cổ đông
+id_number                     STRING              YES                                      Số đăng ký sở hữu
+issue_date                    DATE                YES                                      Ngày cấp
+contact_address               STRING              YES                                      Địa chỉ liên hệ
+begin_period_date             DATE                YES                                      Ngày chốt số liệu đầu kỳ
+begin_period_shares           DECIMAL(18,0)       YES                                      Số lượng chứng khoán đầu kỳ
+begin_period_ratio            DECIMAL(10,2)       YES                                      Tỷ lệ đầu kỳ (%)
+end_period_date               DATE                YES                                      Ngày chốt số liệu cuối kỳ
+end_period_shares             DECIMAL(18,0)       YES                                      Số lượng chứng khoán cuối kỳ
+end_period_ratio              DECIMAL(10,2)       YES                                      Tỷ lệ cuối kỳ (%)
+notes                         STRING              YES                                      Ghi chú
+isin_code                     STRING              YES                                      Mã ISIN
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: end_of_day_open_interest
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+contract_code                 STRING              YES                                      Mã hợp đồng
+open_interest_volume          BIGINT              YES                                      Khối lượng hợp đồng mở OI
+report_date                   DATE                YES                                      Ngày báo cáo
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: foreign_investor_bond_portfolio
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+investor_name                 STRING              YES                                      Họ tên NĐT
+investor_category             STRING              YES                                      Loại hình (Cá nhân/Tổ chức)
+trading_code                  STRING              YES                                      Mã số giao dịch
+nationality                   STRING              YES                                      Quốc tịch
+address                       STRING              YES                                      Địa chỉ
+trading_representative_name   STRING              YES                                      Tên đại diện GD
+institutional_investor_type   STRING              YES                                      Loại hình NĐT tổ chức
+bond_code                     STRING              YES                                      Mã trái phiếu
+owned_volume                  BIGINT              YES                                      Số lượng chứng khoán sở hữu
+report_month                  STRING              YES                                      Tháng báo cáo
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: foreign_investor_info
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ticker_symbol                 STRING              YES                                      Mã chứng khoán trong nước
+isin_code                     STRING              YES                                      Mã ISIN
+total_issued_shares           BIGINT              YES                                      Tổng số cổ phiếu phát hành
+max_foreign_ownership_ratio   DECIMAL(10,2)       YES                                      Tỷ lệ sở hữu nước ngoài tối đa (%)
+max_shares_foreign_can_hold   BIGINT              YES                                      Số lượng CP tối đa NĐTNN được nắm giữ
+current_shares_foreign_hold   BIGINT              YES                                      Số lượng CP hiện NĐTNN đang nắm giữ
+remaining_shares_foreign_can_holdBIGINT              YES                                      Số lượng CP NĐTNN còn được phép nắm giữ
+report_date                   DATE                YES                                      Ngày báo cáo
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+
+BANG: nationality
+Mo ta: 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+autoid                        BIGINT              YES                                      Id
+name                          STRING              YES                                      Tên quốc gia
+ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
