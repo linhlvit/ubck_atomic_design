@@ -35,6 +35,7 @@ SELECT
     sc_dim.company_tp_code             AS company_tp_code,
     sc_dim.company_tp_nm               AS company_tp_nm,
     sc_dim.company_status_code         AS company_status_code,
+    sc_dim.company_status_nm           AS company_status_nm,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
     sc_dim.stock_exchange_nm           AS stock_exchange_nm,
     sc_dim.src_stm_code                AS securities_company_src_stm_code
@@ -66,7 +67,14 @@ SELECT
     f.report_tp_code,
     f.report_id,
     f.rpt_submission_status_code,
+    f.sent_dt,
+    f.submission_deadline_dt,
+    f.rpt_year,
+    f.rpt_period_tp_code,
+    f.period_nbr,
+    f.period_val,
     f.src_stm_code                  AS src_stm_code,
+    f.created_dt,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,
@@ -79,6 +87,7 @@ SELECT
     sc_dim.company_tp_code             AS company_tp_code,
     sc_dim.company_tp_nm               AS company_tp_nm,
     sc_dim.company_status_code         AS company_status_code,
+    sc_dim.company_status_nm           AS company_status_nm,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
     sc_dim.stock_exchange_nm           AS stock_exchange_nm,
     sc_dim.src_stm_code                AS securities_company_src_stm_code
@@ -106,6 +115,7 @@ SELECT
     f.securities_company_dim_id,
     f.indicator_code,
     f.severity_level,
+    f.alert_dt,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,
@@ -118,6 +128,7 @@ SELECT
     sc_dim.company_tp_code             AS company_tp_code,
     sc_dim.company_tp_nm               AS company_tp_nm,
     sc_dim.company_status_code         AS company_status_code,
+    sc_dim.company_status_nm           AS company_status_nm,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
     sc_dim.stock_exchange_nm           AS stock_exchange_nm,
     sc_dim.src_stm_code                AS securities_company_src_stm_code
@@ -171,7 +182,9 @@ WHERE cal.cdr_dt IN (toStartOfMonth(:etl_date))
 --    QLKD (cần số liệu cuối tháng, K_QLKD_88-91) tự filter đúng ngày cuối tháng của
 --    :etl_date trên Fact grain-ngày này — không còn nhận nguyên mọi ngày trong tháng.
 --    cal: JOIN + WHERE cdr_dt = :etl_date
---    (ETL lập lịch chạy đúng ngày cuối tháng cho bộ chỉ tiêu K_QLKD_88-91)
+--    [Sửa 2026-10-17 — BA Update 12/10] ETL chạy mỗi ngày giao dịch (bảng flat tích lũy mọi ngày);
+--    K_QLKD_88-91 chọn NGÀY GIAO DỊCH CUỐI CÙNG có dữ liệu của tháng khi truy vấn (không còn
+--    giả định ETL chỉ chạy đúng ngày cuối tháng — ngày cuối tháng có thể là ngày nghỉ).
 --    Sửa 2026-08-03: Grain APPEND tích lũy nhiều tháng — DELETE đúng tháng cuối của
 --    :etl_date (không TRUNCATE) rồi INSERT, giữ nguyên lịch sử các ngày khác.
 -- ============================================================
@@ -250,6 +263,7 @@ SELECT
     sc_dim.company_tp_code             AS company_tp_code,
     sc_dim.company_tp_nm               AS company_tp_nm,
     sc_dim.company_status_code         AS company_status_code,
+    sc_dim.company_status_nm           AS company_status_nm,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
     sc_dim.stock_exchange_nm           AS stock_exchange_nm,
     sc_dim.src_stm_code                AS securities_company_src_stm_code,
@@ -357,7 +371,8 @@ SELECT
     o.position_nm,
     o.identification_nbr,
     o.license_certificate_nbr,
-    o.src_stm_code
+    o.src_stm_code,
+    o.appointment_dt
 
 FROM datamart.opr_individual_profile o
 ;
@@ -378,7 +393,8 @@ SELECT
     o.identification_nbr,
     o.shares_count,
     o.ownership_ratio,
-    o.src_stm_code
+    o.src_stm_code,
+    o.relation_start_dt
 
 FROM datamart.opr_individual_related_party_network o
 ;
@@ -413,7 +429,8 @@ SELECT
     o.sc_code,
     o.trading_account,
     o.shareholder_nm,
-    o.src_stm_code
+    o.src_stm_code,
+    o.created_dt
 
 FROM datamart.opr_individual_trading_account o
 ;
@@ -445,10 +462,12 @@ TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON CLU
 INSERT INTO datamart.qlkd_opr_individual_violation_hist_flat
 SELECT
     -- From: OPERATIONAL Individual Violation History
+    o.pd_subject_behavior_code,
     o.pd_code,
     o.identification_nbr,
     o.decision_nbr,
     o.issued_dt,
+    o.violation_description,
     o.violation_behavior_nm,
     o.penalty_tp_nm,
     o.decision_status_code,
@@ -480,6 +499,7 @@ SELECT
     f.submission_dt,
     f.submission_status_code,
     f.src_stm_code,
+    f.preferred_report_ind,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -499,6 +519,7 @@ SELECT
     sc_dim.company_tp_code AS company_tp_code,
     sc_dim.company_tp_nm   AS company_tp_nm,
     sc_dim.company_status_code AS company_status_code,
+    sc_dim.company_status_nm AS company_status_nm,
     sc_dim.is_listed_indicator AS is_listed_indicator,
     sc_dim.stock_exchange_nm AS stock_exchange_nm,
     sc_dim.src_stm_code AS sc_dim_src_stm_code,
@@ -566,7 +587,8 @@ SELECT
     f.roe_rate,
     f.submission_dt,
     f.submission_status_code,
-    f.src_stm_code
+    f.src_stm_code,
+    f.preferred_report_ind
 
 FROM datamart.opr_securities_company_financial_report_hist f
 ;
@@ -582,7 +604,9 @@ SELECT
     f.prac_profile_id,
     f.sc_code,
     f.sc_nm,
+    f.rpt_code,
     f.rpt_year,
+    f.rpt_period_tp_code,
     f.period_nbr,
     f.total_employee_cnt,
     f.licensed_practitioner_cnt,
@@ -595,6 +619,7 @@ SELECT
     f.deriv_advisory_practitioner_cnt,
     f.deriv_proprietary_practitioner_cnt,
     f.submission_dt,
+    f.submission_status_code,
     f.src_stm_code
 
 FROM datamart.opr_securities_company_practitioner_profile f
@@ -646,24 +671,47 @@ FROM datamart.securities_service_cl_dim d
 
 
 -- ==========================================================
--- 22. OPERATIONAL: qlkd_opr_securities_company_organization_unit_list_flat
---     Bảng danh sách (không có ngày snapshot) — TRUNCATE + INSERT toàn bộ từ datamart.opr_securities_company_organization_unit_list.
+-- 23. FACT: qlkd_fct_securities_company_brokerage_market_share_snpst_flat
 -- ==========================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_organization_unit_list_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_opr_securities_company_organization_unit_list_flat
+DELETE FROM datamart.qlkd_fct_securities_company_brokerage_market_share_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.qlkd_fct_securities_company_brokerage_market_share_snpst_flat
 SELECT
-    -- From: OPR_SECURITIES_COMPANY_ORGANIZATION_UNIT_LIST
-    f.sc_ou_code,
-    f.sc_code,
-    f.sc_short_nm,
-    f.ou_tp_code,
-    f.ou_tp_nm,
-    f.ou_nm,
-    f.adr_val,
-    f.business_line_nm_list,
-    f.decision_dt,
-    f.representative_nm,
-    f.src_stm_code
+    -- From: FCT_SECURITIES_COMPANY_BROKERAGE_MARKET_SHARE_SNPST
+    f.snpst_dt_dim_id,
+    f.securities_company_dim_id,
+    f.report_quarter,
+    f.trading_venue_nm,
+    f.market_share_pct,
+    f.src_stm_code,
 
-FROM datamart.opr_securities_company_organization_unit_list f
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date,
+
+    -- From: SECURITIES COMPANY DIMENSION
+    securities_c_dim.sc_id AS sc_id,
+    securities_c_dim.sc_code AS sc_code,
+    securities_c_dim.sc_nm AS sc_nm,
+    securities_c_dim.sc_short_nm AS sc_short_nm,
+    securities_c_dim.company_tp_code AS company_tp_code,
+    securities_c_dim.company_tp_nm AS company_tp_nm,
+    securities_c_dim.company_status_code AS company_status_code,
+    securities_c_dim.company_status_nm AS company_status_nm,
+    securities_c_dim.is_listed_indicator AS is_listed_indicator,
+    securities_c_dim.stock_exchange_nm AS stock_exchange_nm,
+    securities_c_dim.src_stm_code AS securities_c_dim_src_stm_code
+
+FROM datamart.fct_securities_company_brokerage_market_share_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.securities_company_dim securities_c_dim
+    ON securities_c_dim.securities_company_dim_id = f.securities_company_dim_id
+WHERE cal.cdr_dt = :etl_date
 ;

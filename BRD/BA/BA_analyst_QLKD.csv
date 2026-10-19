@@ -6126,7 +6126,7 @@ SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
 FROM (
     SELECT LEAST(
         NVL((SELECT MIN(WORK_START_DATE) FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL WHERE WORK_START_DATE IS NOT NULL), SYSDATE),
-        NVL((SELECT MIN(SENT_AT) FROM SCMS_UAT.SC_FIRM_PERIODIC_REPORT WHERE END_DATE IS NOT NULL), SYSDATE)
+        NVL((SELECT MIN(SENT_AT) FROM SCMS_UAT.SC_FIRM_PERIODIC_REPORT WHERE SENT_AT IS NOT NULL), SYSDATE)
     ) AS min_ngay FROM DUAL
 )
 CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
@@ -6134,124 +6134,164 @@ ORDER BY ngay;",Done,Ngày dữ liệu,,,,Done,Dữ liệu tĩnh,
 Khai thác Dashboard nhân sự của công ty chứng khoán,31,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard nhân sự của CTCK,Họ và tên,"Họ tên của nhân sự, dữ liệu hiện tại",Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL
 SCMS_UAT.SC_FIRM_INFO
 SCMS_UAT.CAT_POSITION
-","p.FULL_NAME
-p.EMAIL
-p.PHONE
-p.POSITION_IDS
-p.WORK_START_DATE
-p.PERSONNEL_STATUS
-p.END_DATE
-p.SC_FIRM_INFO_ID
-f.SC_FIRM_INFO_ID
-f.SHORT_NAME
-cp.ID
-cp.POSITION_NAME
-cp.POSITION_CODE",,"-- 1. Hội đồng quản trị
+","p.SC_FIRM_INFO_ID, 
+p.FULL_NAME, 
+p.EMAIL, 
+p.PHONE, 
+p.POSITION_IDS, 
+p.PERSONNEL_STATUS, 
+p.WORK_START_DATE, 
+p.END_DATE, 
+f.SC_FIRM_INFO_ID, 
+f.SHORT_NAME, 
+cp.ID, 
+cp.POSITION_CODE, 
+cp.POSITION_NAME",,"-- 1. Hội đồng quản trị
 SELECT DISTINCT
-	f.SHORT_NAME AS ten_ctck,
+    nd.ngay,
+    f.SHORT_NAME AS ten_ctck,
     p.FULL_NAME AS ho_va_ten,
     p.EMAIL AS email,
     p.PHONE AS so_dien_thoai,
+--    p.POSITION AS chuc_vu_cu_the,
     cp.POSITION_NAME AS chuc_vu,
     p.WORK_START_DATE AS thoi_gian_bat_dau_lam_viec
-FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL p
-JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
-JOIN LATERAL (
+--    CAST(p.POSITION_IDS AS VARCHAR2(4000))
+FROM (
+    SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+    FROM (
+        SELECT MIN(WORK_START_DATE) AS min_ngay
+        FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL
+    )
+    CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL p
+    ON (p.WORK_START_DATE IS NULL OR TRUNC(p.WORK_START_DATE) <= nd.ngay)
+    AND p.PERSONNEL_STATUS = 1  -- Đương nhiệm
+--    AND LOWER(p.DEPARTMENT) LIKE '%hội đồng quản trị%'
+    AND CAST(p.POSITION_IDS AS VARCHAR2(4000)) IS NOT NULL
+    AND (p.END_DATE IS NULL OR TRUNC(p.END_DATE) >= nd.ngay)
+LEFT JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
+LEFT JOIN LATERAL (
     SELECT TRIM(REGEXP_SUBSTR(CAST(p.POSITION_IDS AS VARCHAR2(4000)), '[^,]+', 1, LEVEL)) AS pos_id
     FROM DUAL
     CONNECT BY LEVEL <= REGEXP_COUNT(CAST(p.POSITION_IDS AS VARCHAR2(4000)), ',') + 1
-) t ON 1 = 1
+) t ON p.POSITION_IDS IS NOT NULL
 JOIN SCMS_UAT.CAT_POSITION cp ON TO_CHAR(cp.ID) = t.pos_id
                               AND cp.POSITION_CODE IN (6,7,8)  -- Chủ tịch, Phó chủ tịch, Thành viên HĐQT
-WHERE p.PERSONNEL_STATUS = 1  -- Đương nhiệm
---  AND LOWER(p.DEPARTMENT) LIKE '%hội đồng quản trị%'
-  AND CAST(p.POSITION_IDS AS VARCHAR2(4000)) IS NOT NULL
-  AND (p.END_DATE IS NULL OR TRUNC(p.END_DATE) >= COALESCE(
-      TO_DATE(:p_ngay DEFAULT NULL ON CONVERSION ERROR, 'DD-MM-YYYY'),
-      TRUNC(SYSDATE)
-  )) 
-  AND f.SHORT_NAME = 'SSI'
-ORDER BY f.SHORT_NAME, p.FULL_NAME;
+WHERE nd.ngay = DATE '2026-10-10'  -- Test
+--  AND f.SHORT_NAME = 'SSI'
+ORDER BY nd.ngay, f.SHORT_NAME, p.FULL_NAME;
 
 -- 2. Hội đồng thành viên
 SELECT DISTINCT
-	f.SHORT_NAME AS ten_ctck,
+    nd.ngay,
+    f.SHORT_NAME AS ten_ctck,
     p.FULL_NAME AS ho_va_ten,
     p.EMAIL AS email,
     p.PHONE AS so_dien_thoai,
+--    p.POSITION AS chuc_vu_cu_the,
     cp.POSITION_NAME AS chuc_vu,
     p.WORK_START_DATE AS thoi_gian_bat_dau_lam_viec
-FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL p
-JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
-JOIN LATERAL (
+--    CAST(p.POSITION_IDS AS VARCHAR2(4000))
+FROM (
+    SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+    FROM (
+        SELECT MIN(WORK_START_DATE) AS min_ngay
+        FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL
+    )
+    CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL p
+    ON (p.WORK_START_DATE IS NULL OR TRUNC(p.WORK_START_DATE) <= nd.ngay)
+    AND p.PERSONNEL_STATUS = 1  -- Đương nhiệm
+--    AND LOWER(p.DEPARTMENT) LIKE '%hội đồng thành viên%'
+    AND CAST(p.POSITION_IDS AS VARCHAR2(4000)) IS NOT NULL
+    AND (p.END_DATE IS NULL OR TRUNC(p.END_DATE) >= nd.ngay)
+LEFT JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
+LEFT JOIN LATERAL (
     SELECT TRIM(REGEXP_SUBSTR(CAST(p.POSITION_IDS AS VARCHAR2(4000)), '[^,]+', 1, LEVEL)) AS pos_id
     FROM DUAL
     CONNECT BY LEVEL <= REGEXP_COUNT(CAST(p.POSITION_IDS AS VARCHAR2(4000)), ',') + 1
-) t ON 1 = 1
+) t ON p.POSITION_IDS IS NOT NULL
 JOIN SCMS_UAT.CAT_POSITION cp ON TO_CHAR(cp.ID) = t.pos_id
-                              AND cp.POSITION_CODE IN ('10', '11')  -- Chủ tịch, Thành viên HĐQT
-WHERE p.PERSONNEL_STATUS = 1  -- Đương nhiệm
---  AND LOWER(p.DEPARTMENT) LIKE '%hội đồng thành viên%'
-  AND CAST(p.POSITION_IDS AS VARCHAR2(4000)) IS NOT NULL
-  AND (p.END_DATE IS NULL OR TRUNC(p.END_DATE) >= COALESCE(
-      TO_DATE(:p_ngay DEFAULT NULL ON CONVERSION ERROR, 'DD-MM-YYYY'),
-      TRUNC(SYSDATE)
-  ))
-  AND f.SHORT_NAME = 'ACBS'
-ORDER BY f.SHORT_NAME, p.FULL_NAME;
+                                   AND cp.POSITION_CODE IN ('10', '11')  -- Chủ tịch, Thành viên HĐTV
+WHERE nd.ngay = DATE '2026-10-10'  -- Test
+--  AND f.SHORT_NAME = 'SSI'
+ORDER BY nd.ngay, f.SHORT_NAME, p.FULL_NAME;
 
 -- 3. Ban kiểm soát/UB Kiểm toán
 SELECT DISTINCT
-	f.SHORT_NAME AS ten_ctck,
+    nd.ngay,
+    f.SHORT_NAME AS ten_ctck,
     p.FULL_NAME AS ho_va_ten,
     p.EMAIL AS email,
     p.PHONE AS so_dien_thoai,
+--    p.POSITION AS chuc_vu_cu_the,
     cp.POSITION_NAME AS chuc_vu,
     p.WORK_START_DATE AS thoi_gian_bat_dau_lam_viec
-FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL p
-JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
-JOIN LATERAL (
+--    CAST(p.POSITION_IDS AS VARCHAR2(4000))
+FROM (
+    SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+    FROM (
+        SELECT MIN(WORK_START_DATE) AS min_ngay
+        FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL
+    )
+    CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL p
+    ON (p.WORK_START_DATE IS NULL OR TRUNC(p.WORK_START_DATE) <= nd.ngay)
+    AND p.PERSONNEL_STATUS = 1  -- Đương nhiệm
+--    AND LOWER(p.DEPARTMENT) LIKE '%ban kiểm soát%'
+    AND CAST(p.POSITION_IDS AS VARCHAR2(4000)) IS NOT NULL
+    AND (p.END_DATE IS NULL OR TRUNC(p.END_DATE) >= nd.ngay)
+LEFT JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
+LEFT JOIN LATERAL (
     SELECT TRIM(REGEXP_SUBSTR(CAST(p.POSITION_IDS AS VARCHAR2(4000)), '[^,]+', 1, LEVEL)) AS pos_id
     FROM DUAL
     CONNECT BY LEVEL <= REGEXP_COUNT(CAST(p.POSITION_IDS AS VARCHAR2(4000)), ',') + 1
-) t ON 1 = 1
+) t ON p.POSITION_IDS IS NOT NULL
 JOIN SCMS_UAT.CAT_POSITION cp ON TO_CHAR(cp.ID) = t.pos_id
-                              AND cp.POSITION_CODE IN ('23', '24', '25', '26', '27', '28')  -- Ban kiểm soát/UB Kiểm toán
-WHERE p.PERSONNEL_STATUS = 1  -- Đương nhiệm
---  AND LOWER(p.DEPARTMENT) LIKE '%ban kiểm soát%'
-  AND CAST(p.POSITION_IDS AS VARCHAR2(4000)) IS NOT NULL
-  AND (p.END_DATE IS NULL OR TRUNC(p.END_DATE) >= COALESCE(
-      TO_DATE(:p_ngay DEFAULT NULL ON CONVERSION ERROR, 'DD-MM-YYYY'),
-      TRUNC(SYSDATE)
-  ))
-  AND f.SHORT_NAME = 'SSI'
-ORDER BY f.SHORT_NAME, p.FULL_NAME;
+                                   AND cp.POSITION_CODE IN ('23', '24', '25', '26', '27', '28')  -- Ban kiểm soát/UB Kiểm toán
+WHERE nd.ngay = DATE '2026-10-10'  -- Test
+--  AND f.SHORT_NAME = 'SSI'
+ORDER BY nd.ngay, f.SHORT_NAME, p.FULL_NAME;
 
 -- 4. Ban điều hành
 SELECT DISTINCT
-	f.SHORT_NAME AS ten_ctck,
+    nd.ngay,
+    f.SHORT_NAME AS ten_ctck,
     p.FULL_NAME AS ho_va_ten,
     p.EMAIL AS email,
     p.PHONE AS so_dien_thoai,
+--    p.POSITION AS chuc_vu_cu_the,
     cp.POSITION_NAME AS chuc_vu,
     p.WORK_START_DATE AS thoi_gian_bat_dau_lam_viec
-FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL p
-JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
-JOIN LATERAL (
+--    CAST(p.POSITION_IDS AS VARCHAR2(4000))
+FROM (
+    SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+    FROM (
+        SELECT MIN(WORK_START_DATE) AS min_ngay
+        FROM SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL
+    )
+    CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL p
+    ON (p.WORK_START_DATE IS NULL OR TRUNC(p.WORK_START_DATE) <= nd.ngay)
+    AND p.PERSONNEL_STATUS = 1  -- Đương nhiệm
+    AND LOWER(p.DEPARTMENT) LIKE '%ban điều hành%'
+    AND CAST(p.POSITION_IDS AS VARCHAR2(4000)) IS NOT NULL
+    AND (p.END_DATE IS NULL OR TRUNC(p.END_DATE) >= nd.ngay)
+LEFT JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = p.SC_FIRM_INFO_ID
+LEFT JOIN LATERAL (
     SELECT TRIM(REGEXP_SUBSTR(CAST(p.POSITION_IDS AS VARCHAR2(4000)), '[^,]+', 1, LEVEL)) AS pos_id
     FROM DUAL
     CONNECT BY LEVEL <= REGEXP_COUNT(CAST(p.POSITION_IDS AS VARCHAR2(4000)), ',') + 1
-) t ON 1 = 1
+) t ON p.POSITION_IDS IS NOT NULL
 JOIN SCMS_UAT.CAT_POSITION cp ON TO_CHAR(cp.ID) = t.pos_id
-WHERE p.PERSONNEL_STATUS = 1  -- Đương nhiệm
-  AND LOWER(p.DEPARTMENT) LIKE '%ban điều hành%'
-  AND CAST(p.POSITION_IDS AS VARCHAR2(4000)) IS NOT NULL
-  AND (p.END_DATE IS NULL OR TRUNC(p.END_DATE) >= COALESCE(
-      TO_DATE(:p_ngay DEFAULT NULL ON CONVERSION ERROR, 'DD-MM-YYYY'),
-      TRUNC(SYSDATE)
-  ))
-  AND f.SHORT_NAME = 'HBS'
-ORDER BY f.SHORT_NAME, p.FULL_NAME;",Done,22/7: Tách riêng từng nhóm,,,,Done,Dữ liệu tĩnh,
+WHERE nd.ngay = DATE '2026-10-10'  -- Test
+--  AND f.SHORT_NAME = 'SSI'
+ORDER BY nd.ngay, f.SHORT_NAME, p.FULL_NAME;",Done,22/7: Tách riêng từng nhóm,,,,Done,Dữ liệu tĩnh,
 Khai thác Dashboard nhân sự của công ty chứng khoán,31,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard nhân sự của CTCK,Email,"Email, dữ liệu hiện tại",Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,"Lấy trực tiếp từ bảng SSC_SCMS.SC_FIRM_SENIOR_PERSONNEL, không lấy từ báo cáo",,,,Done,Dữ liệu tĩnh,
 Khai thác Dashboard nhân sự của công ty chứng khoán,31,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard nhân sự của CTCK,Số điện thoại,"Số điện thoại, dữ liệu hiện tại",Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
 Khai thác Dashboard nhân sự của công ty chứng khoán,31,,Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard nhân sự của CTCK,Chức vụ,"Chức vụ của nhân sự, dữ liệu hiện tại",Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,X,X,,Done,,"SCMS_UAT.FORM_REPORT
@@ -6343,12 +6383,12 @@ submission_data AS (
     WHERE p.SENT_AT IS NOT NULL
       AND p.RECORD_STATUS IN (1,2) -- Đúng hạn, Gửi muộn
       AND p.REPORT_PERIOD = 'NAM'     -- Kỳ năm
-	  AND c.SHORT_NAME = 'CVS'  -- Thay tên CTCK
+--	  AND c.SHORT_NAME = 'CVS'  -- Thay tên CTCK
 )
 SELECT
     sd.ten_ctck,
     nd.ngay,
---    sd.ROW_NO,
+    sd.ROW_NO,
 	MAX(CASE WHEN sd.CELL_ID = 'KT001' THEN sd.text_value END) KEEP (DENSE_RANK LAST ORDER BY sd.ngay_bao_cao) AS ho_ten,
 	MAX(CASE WHEN sd.CELL_ID = 'TS002' THEN sd.text_value END) KEEP (DENSE_RANK LAST ORDER BY sd.ngay_bao_cao) AS ty_le,
 	MAX(CASE WHEN sd.CELL_ID = 'KT006' THEN sd.text_value END) KEEP (DENSE_RANK LAST ORDER BY sd.ngay_bao_cao) AS so_luong_co_phan
@@ -6892,7 +6932,7 @@ lts.RECORD_STATUS
 sl.SERVICE_ID
 sl.SERVICE_NAME
 sl.CATALOG_CODE
-sl.RECORD_STATUS",,"-- Danh sách CN, PGD, VPĐD trong nước (Tên CN, PGD, VPĐD; Địa chỉ; Nghiệp vụ; Ngày thành lập; Giám đốc chi nhánh/Trưởng VPĐD)
+sl.RECORD_STATUS",,"-- Danh sách CN, PGD, VPĐD trong nước (Tên CN, PGD, VPĐD; Địa chỉ; Nghiệp vụ; Ngày thành lập; Giám đốc chi nhánh/Trưởng VPĐD)
 WITH nghiep_vu_cn AS (
     -- CN: parse BUSINESS_LINES → CAT_SERVICE_LEGAL_CAPITAL
     SELECT
@@ -7196,127 +7236,131 @@ Dùng 2 bảng SC_FIRM_ADHOC_REPORT, SC_FIRM_PERIODIC_REPORT",,,,Done,Dữ liệ
 "Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",39,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử nộp báo cáo của CTCK",Hạn nộp,Hạn nộp,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu động,
 "Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",39,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử nộp báo cáo của CTCK",Ngày nộp,Ngày nộp,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu động,
 "Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",39,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử nộp báo cáo của CTCK",Trạng thái,"Trạng thái: đúng hạn, trễ hạn",Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",SCMS,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu động,
-"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Chiều thời gian theo Ngày,Chiều thời gian theo Ngày,Dashboard,Chiều,Trùng,,Thanh tra,,X,,Done,,INSPECTION_TEAM,DECISION_DATE,,"-- DB: Thanh Tra
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Chiều thời gian theo Ngày,Chiều thời gian theo Ngày,Dashboard,Chiều,Trùng,,Thanh tra,,X,,Done,,PENALTY_DECISION,ISSUED_DATE,,"-- DB: Thanh Tra
 -- Chiều thời gian theo ngày
 SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
-FROM (SELECT MIN(DECISION_DATE) AS min_ngay FROM THANHTRA_UAT.INSPECTION_TEAM)
+FROM (SELECT MIN(ISSUED_DATE) AS min_ngay FROM THANHTRA_UAT.PENALTY_DECISION)
 CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
 ORDER BY ngay;",Done,"Phân hệ Thanh tra, check lại logic với DB UAT",,,,Done,Dữ liệu động,
-"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK","Loại thanh tra, kiểm tra","Loại thanh tra/ kiểm tra, định kỳ/ đột xuất",Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,"THANHTRA_UAT.INSPECTION_TEAM_TARGET, 
-THANHTRA_UAT.INSPECTION_TEAM, 
-THANHTRA_UAT.EXAMINATION_TEAM_TARGET, 
-THANHTRA_UAT.EXAMINATION_TEAM, 
-THANHTRA_UAT.PENALTY_DECISION_SUBJECT, 
-THANHTRA_UAT.PENALTY_DECISION, 
-THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR, 
-THANHTRA_UAT.VIOLATION_BEHAVIOR, 
-THANHTRA_UAT.PENALTY_TYPE, 
-SCMS_UAT.SC_FIRM_INFO","a.INSPECTION_TEAM_ID, 
-a.TARGET_NAME, 
-a.TARGET_TYPE, 
-a.DELETED, 
-b.ID, 
-b.FORM_TYPE, 
-b.DECISION_DATE, 
-b.DELETED, 
-a.EXAMINATION_TEAM_ID, 
-c.SUBJECT_NAME, 
-c.SUBJECT_ID_NUMBER, 
-c.SUBJECT_TYPE, 
-c.PENALTY_DECISION_ID, 
-c.DELETED, 
-d.ID, 
-d.DECISION_NUMBER, 
-d.ISSUED_DATE, 
-d.DELETED, 
-e.PENALTY_DECISION_SUBJECT_ID, 
-e.VIOLATION_BEHAVIOR_ID, 
-e.PENALTY_TYPE_ID, 
-e.REMEDIAL_MEASURE, 
-e.DELETED, 
-f.ID, 
-f.NAME, 
-f.DELETED, 
-g.ID, 
-g.CATEGORY, 
-g.NAME, 
-g.DELETED, 
-fi.TAX_CODE, 
-fi.SHORT_NAME",,"-- Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK
-SELECT
-    CASE b.FORM_TYPE
-        WHEN 'PERIODIC' THEN 'Thanh tra định kỳ'
-        WHEN 'UNSCHEDULED' THEN 'Thanh tra đột xuất'
-        ELSE NULL
-    END AS loai_hinh,
-    b.DECISION_DATE AS ngay_ban_hanh_qd_tt,
-    d.DECISION_NUMBER AS so_quyet_dinh_xu_phat,
-    d.ISSUED_DATE AS ngay_ban_hanh_qd_xu_phat,
-    f.NAME AS hanh_vi_vi_pham,
-    CASE WHEN g.CATEGORY = 'SUPPLEMENTARY_PENALTY'
-         THEN g.NAME ELSE NULL END AS hinh_thuc_xu_phat_bo_sung,
-    e.REMEDIAL_MEASURE AS bien_phap_khac_phuc
-FROM THANHTRA_UAT.INSPECTION_TEAM_TARGET a
-JOIN THANHTRA_UAT.INSPECTION_TEAM b ON b.ID = a.INSPECTION_TEAM_ID
-                                    AND b.DELETED = 0
-LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT c ON c.SUBJECT_NAME = a.TARGET_NAME
---                                                                                                  AND c.SUBJECT_ID_NUMBER = '666666'  -- Mã số thuế CTCK
-                                                                                                  AND c.SUBJECT_ID_NUMBER = (SELECT fi.TAX_CODE FROM SCMS_UAT.SC_FIRM_INFO fi WHERE fi.SHORT_NAME = 'SSI')
-                                                                                              AND c.SUBJECT_TYPE = 'ORGANIZATION'
-                                                                                              AND c.DELETED = 0
-LEFT JOIN THANHTRA_UAT.PENALTY_DECISION d ON d.ID = c.PENALTY_DECISION_ID
-                                          AND d.DELETED = 0
-LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR e ON e.PENALTY_DECISION_SUBJECT_ID = c.ID
-                                                                                                                   AND e.DELETED = 0
-LEFT JOIN THANHTRA_UAT.VIOLATION_BEHAVIOR f ON f.ID = e.VIOLATION_BEHAVIOR_ID
-                                            AND f.DELETED = 0
-LEFT JOIN THANHTRA_UAT.PENALTY_TYPE g ON g.ID = e.PENALTY_TYPE_ID
-                                      AND g.DELETED = 0
-WHERE a.DELETED = 0
-  AND a.TARGET_TYPE = 'SECURITIES_COMPANY'
---  AND TRUNC(b.DECISION_DATE) <= DATE '2026-08-21'
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK","Loại thanh tra, kiểm tra","Loại thanh tra/ kiểm tra, định kỳ/ đột xuất",Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,"THANHTRA_UAT.INSPECTION_TEAM_TARGET
+THANHTRA_UAT.EXAMINATION_TEAM_TARGET","INSPECTION_TEAM_TARGET.FORM_TYPE
+EXAMINATION_TEAM_TARGET.FORM_TYPE",,"-- 1. Lịch sử thanh tra, kiểm tra
+SELECT fi.SHORT_NAME AS ten_ctck,
+	CASE WHEN it.FORM_TYPE = 'PERIODIC' THEN 'Thanh tra định kỳ'
+	     WHEN it.FORM_TYPE = 'UNSCHEDULED' THEN 'Thanh tra đột xuất'
+	END LOAI_TT_KT,
+	it.DECISION_NUMBER SO_QD_TT_KT,
+	it.DECISION_DATE NGAY_QD_TT_KT
+FROM THANHTRA_UAT.INSPECTION_TEAM_TARGET itt
+LEFT JOIN THANHTRA_UAT.INSPECTION_TEAM it ON itt.INSPECTION_TEAM_ID = it.ID AND it.DELETED = 0
+JOIN SCMS_UAT.SC_FIRM_INFO fi ON TO_CHAR(fi.ID) = itt.TARGET_REFERENCE_ID
+WHERE 1=1
+	AND it.DECISION_NUMBER IS NOT NULL
+	AND itt.DELETED = 0
+	--AND fi.SHORT_NAME = 'TSC'
 
 UNION ALL
-
+SELECT fi.SHORT_NAME AS ten_ctck,
+	CASE WHEN it.FORM_TYPE = 'PERIODIC' THEN 'Kiểm tra định kỳ'
+	            WHEN it.FORM_TYPE = 'UNSCHEDULED' THEN 'Kiểm tra đột xuất'
+	END LOAI_TT_KT,
+	it.DECISION_NUMBER SO_QD_TT_KT,
+	it.DECISION_DATE NGAY_QD_TT_KT
+FROM THANHTRA_UAT.EXAMINATION_TEAM_TARGET itt
+LEFT JOIN THANHTRA_UAT.EXAMINATION_TEAM it ON itt.EXAMINATION_TEAM_ID = it.ID AND it.DELETED = 0
+JOIN SCMS_UAT.SC_FIRM_INFO fi ON TO_CHAR(fi.ID) = itt.TARGET_REFERENCE_ID
+WHERE 1=1
+AND it.DECISION_NUMBER IS NOT NULL
+AND itt.DELETED = 0
+--AND fi.SHORT_NAME = 'TSC'",Done,"-- Câu của chị Trang (tham khảo)
+SELECT CASE WHEN it.FORM_TYPE = 'PERIODIC' THEN 'Thanh tra định kỳ'
+                        WHEN it.FORM_TYPE = 'UNSCHEDULED' THEN 'Thanh tra đột xuất'
+END LOAI_TT_KT
+, it.DECISION_NUMBER SO_QD_TT_KT
+, it.DECISION_DATE NGAY_QD_TT_KT
+FROM THANHTRA_UAT.INSPECTION_TEAM_TARGET itt
+LEFT JOIN THANHTRA_UAT.INSPECTION_TEAM it ON itt.INSPECTION_TEAM_ID = it.ID AND it.DELETED = 0
+WHERE 1=1
+AND itt.DELETED = 0
+AND itt.TARGET_REFERENCE_ID = TO_CHAR((SELECT fi.ID FROM SCMS_UAT.SC_FIRM_INFO fi WHERE fi.SHORT_NAME = 'AAS'))
+UNION ALL
+SELECT CASE WHEN it.FORM_TYPE = 'PERIODIC' THEN 'Kiểm tra định kỳ'
+                        WHEN it.FORM_TYPE = 'UNSCHEDULED' THEN 'Kiểm tra đột xuất'
+END LOAI_TT_KT
+, it.DECISION_NUMBER SO_QD_TT_KT
+, it.DECISION_DATE NGAY_QD_TT_KT
+FROM THANHTRA_UAT.EXAMINATION_TEAM_TARGET itt
+LEFT JOIN THANHTRA_UAT.EXAMINATION_TEAM it ON itt.EXAMINATION_TEAM_ID = it.ID AND it.DELETED = 0
+WHERE 1=1
+AND itt.DELETED = 0
+AND itt.TARGET_REFERENCE_ID = TO_CHAR((SELECT fi.ID FROM SCMS_UAT.SC_FIRM_INFO fi WHERE fi.SHORT_NAME = 'AAS'))",,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Ngày ban hành quyết định thanh tra kiểm tra,Số quyết định thanh tra kiểm tra,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,"THANHTRA_UAT.INSPECTION_TEAM_TARGET
+THANHTRA_UAT.EXAMINATION_TEAM_TARGET","INSPECTION_TEAM_TARGET.DECISION_NUMBER
+EXAMINATION_TEAM_TARGET.DECISION_NUMBER",,,Done,,,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Ngày ban hành quyết định thanh tra kiểm tra,Ngày ban hành quyết định thanh tra kiểm tra,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,"THANHTRA_UAT.INSPECTION_TEAM_TARGET
+THANHTRA_UAT.EXAMINATION_TEAM_TARGET","INSPECTION_TEAM_TARGET.DECISION_DATE
+EXAMINATION_TEAM_TARGET.DECISION_DATE",,,Done,,,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Số quyết định xử phạt,Số quyết định xử phạt,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.PENALTY_DECISION,PENALTY_DECISION.DECISION_NUMBER,,"-- 2. Lịch sử xử phạt CTCK
 SELECT
-    CASE b.FORM_TYPE
-        WHEN 'PERIODIC' THEN 'Kiểm tra định kỳ'
-        WHEN 'UNSCHEDULED' THEN 'Kiểm tra đột xuất'
-        ELSE NULL
-    END AS loai_hinh,
-    b.DECISION_DATE AS ngay_ban_hanh_qd_tt,
-    d.DECISION_NUMBER AS so_quyet_dinh_xu_phat,
-    d.ISSUED_DATE AS ngay_ban_hanh_qd_xu_phat,
-    f.NAME AS hanh_vi_vi_pham,
-    CASE WHEN g.CATEGORY = 'SUPPLEMENTARY_PENALTY'
-         THEN g.NAME ELSE NULL END AS hinh_thuc_xu_phat_bo_sung,
-    e.REMEDIAL_MEASURE AS bien_phap_khac_phuc
-FROM THANHTRA_UAT.EXAMINATION_TEAM_TARGET a
-JOIN THANHTRA_UAT.EXAMINATION_TEAM b ON b.ID  = a.EXAMINATION_TEAM_ID
-                                     AND b.DELETED = 0
-LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT c ON c.SUBJECT_NAME = a.TARGET_NAME
-                                                                                                  AND c.SUBJECT_ID_NUMBER = (SELECT fi.TAX_CODE FROM SCMS_UAT.SC_FIRM_INFO fi WHERE fi.SHORT_NAME = 'SSI')
-                                                                                              AND c.SUBJECT_TYPE = 'ORGANIZATION'
-                                                                                              AND c.DELETED = 0
-LEFT JOIN THANHTRA_UAT.PENALTY_DECISION d ON d.ID = c.PENALTY_DECISION_ID
-                                          AND d.DELETED = 0
-LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR e ON e.PENALTY_DECISION_SUBJECT_ID = c.ID
-                                                           AND e.DELETED = 0
-LEFT JOIN THANHTRA_UAT.VIOLATION_BEHAVIOR f ON f.ID  = e.VIOLATION_BEHAVIOR_ID
-                                            AND f.DELETED = 0
-LEFT JOIN THANHTRA_UAT.PENALTY_TYPE g ON g.ID  = e.PENALTY_TYPE_ID
-                                      AND g.DELETED = 0
-WHERE a.DELETED = 0
-  AND a.TARGET_TYPE = 'SECURITIES_COMPANY'
---  AND TRUNC(b.DECISION_DATE) <= DATE '2026-08-21'
-
-ORDER BY ngay_ban_hanh_qd_tt DESC;",Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Ngày ban hành quyết định thanh tra kiểm tra,Ngày ban hành quyết định thanh tra kiểm tra,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Số quyết định xử phạt,Số quyết định xử phạt,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Ngày ban hành quyết định xử phạt,Ngày ban hành quyết định xử phạt,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Hành vi vi phạm,Hành vi vi phạm,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Hình thức xử phạt bổ sung (nếu có),Hình thức xử phạt bổ sung (nếu có),Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Biện pháp khắc phục (nếu có),Biện pháp khắc phục (nếu có),Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
+    nd.ngay,
+    fi.SHORT_NAME AS ma_ctck,
+    sd.issued_date AS ngay_qd_xu_phat,
+    sd.DECISION_NUMBER AS so_qd_xu_phat,
+    sd.hanh_vi AS hanh_vi_vi_pham,
+    sd.xu_phat_bo_sung,
+    sd.bp_khac_phuc
+FROM (
+    SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+    FROM (
+        SELECT MIN(pd.ISSUED_DATE) AS min_ngay
+        FROM THANHTRA_UAT.PENALTY_DECISION pd
+        WHERE pd.DELETED       = 0
+          AND pd.ISSUED_DATE IS NOT NULL
+    )
+    CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+LEFT JOIN (
+    SELECT
+        pds.SUBJECT_TAX_CODE,
+        pd.ISSUED_DATE AS issued_date,
+        pd.DECISION_NUMBER,
+        vb.NAME AS hanh_vi,
+        CASE WHEN pt.CATEGORY = 'SUPPLEMENTARY_PENALTY' THEN pt.NAME END AS xu_phat_bo_sung,
+        CASE WHEN pt.CATEGORY = 'REMEDIAL_MEASURE' THEN pt.NAME END AS bp_khac_phuc
+    FROM THANHTRA_UAT.PENALTY_DECISION_SUBJECT pds
+    LEFT JOIN THANHTRA_UAT.PENALTY_DECISION pd ON pd.ID = pds.PENALTY_DECISION_ID
+                                               AND pd.DELETED = 0
+    LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR pdsb ON pdsb.PENALTY_DECISION_SUBJECT_ID = pds.ID
+                                                                  AND pdsb.DELETED = 0
+    LEFT JOIN THANHTRA_UAT.VIOLATION_BEHAVIOR vb ON vb.ID = pdsb.VIOLATION_BEHAVIOR_ID
+                                                 AND vb.DELETED = 0
+    LEFT JOIN THANHTRA_UAT.PENALTY_TYPE pt ON pt.ID = pdsb.PENALTY_TYPE_ID
+                                           AND pt.DELETED = 0
+                                           AND pt.STATUS  = 'ACTIVE'
+    WHERE pds.DELETED = 0
+      AND pd.ISSUED_DATE IS NOT NULL
+) sd ON sd.issued_date <= nd.ngay
+JOIN SCMS_UAT.SC_FIRM_INFO fi ON fi.TAX_CODE = sd.SUBJECT_TAX_CODE
+WHERE nd.ngay = DATE '2026-10-17'
+--  AND fi.SHORT_NAME = 'TSC'
+ORDER BY nd.ngay, fi.SHORT_NAME, sd.issued_date DESC;",Done,"-- Câu của chị Trang (tham khảo)
+SELECT pd.DECISION_NUMBER SO_QD_XU_PHAT
+, pd.ISSUED_DATE NGAY_QD_XU_PHAT
+, vb.NAME HANH_VI_VI_PHAM
+, CASE WHEN pt.CATEGORY = 'SUPPLEMENTARY_PENALTY' THEN pt.NAME END XU_PHAT_BO_SUNG
+, CASE WHEN pt.CATEGORY = 'REMEDIAL_MEASURE' THEN pt.NAME END BP_KHAC_PHUC
+FROM THANHTRA_UAT.PENALTY_DECISION_SUBJECT pds  
+LEFT JOIN THANHTRA_UAT.PENALTY_DECISION pd ON pds.PENALTY_DECISION_ID = pd.ID AND pd.DELETED = 0 
+LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR pdsb ON pds.ID = pdsb.PENALTY_DECISION_SUBJECT_ID AND pdsb.DELETED = 0
+LEFT JOIN THANHTRA_UAT.VIOLATION_BEHAVIOR vb ON pdsb.VIOLATION_BEHAVIOR_ID = vb.ID AND vb.DELETED = 0 
+LEFT JOIN THANHTRA_UAT.PENALTY_TYPE pt ON pdsb.PENALTY_TYPE_ID = pt.ID AND pt.DELETED = 0 AND pt.STATUS = 'ACTIVE'
+WHERE 1=1
+AND pds.DELETED = 0
+AND pds.SUBJECT_TAX_CODE = (SELECT fi.TAX_CODE FROM SCMS_UAT.SC_FIRM_INFO fi WHERE fi.SHORT_NAME = 'SSI')-- Câu của chị Trang",,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Ngày ban hành quyết định xử phạt,Ngày ban hành quyết định xử phạt,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.PENALTY_DECISION,PENALTY_DECISION.ISSUED_DATE,,,Done,,,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Hành vi vi phạm,Hành vi vi phạm,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.VIOLATION_BEHAVIOR,VIOLATION_BEHAVIOR.NAME,,,Done,,,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Hình thức xử phạt bổ sung (nếu có),Hình thức xử phạt bổ sung (nếu có),Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.PENALTY_TYPE,PENALTY_TYPE.NAME,PENALTY_TYPE.CATEGORY = 'SUPPLEMENTARY_PENALTY',,Done,,,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán",40,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard tình hình tuân thủ, vi phạm của công ty chứng khoán >> Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK",Biện pháp khắc phục (nếu có),Biện pháp khắc phục (nếu có),Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.PENALTY_TYPE,PENALTY_TYPE.NAME,PENALTY_TYPE.CATEGORY = 'REMEDIAL_MEASURE',,Done,,,,,Done,Dữ liệu tĩnh,
 "Khai thác Dashboard Mạng lưới của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",41,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Mạng lưới của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Chiều thời gian theo Ngày,Chiều thời gian theo Ngày,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,"SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL, 
 SCMS_UAT.SC_FIRM_SHAREHOLDER, 
 SCMS_UAT.SC_FIRM_INSIDER_RELATION, 
@@ -8311,34 +8355,10 @@ ORDER BY p.WORK_START_DATE DESC;",Done,,,,,Done,Dữ liệu tĩnh,
 SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
 FROM (SELECT MIN(ISSUED_DATE) AS min_ngay FROM THANHTRA_UAT.PENALTY_DECISION)
 CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
-ORDER BY ngay;",Done,"Phân hệ Thanh tra, check lại logic với DB UAT",,,,Done,Dữ liệu động,
-"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Ngày quyết định,Ngày quyết định,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,"THANHTRA_UAT.PENALTY_DECISION_SUBJECT, 
-THANHTRA_UAT.PENALTY_DECISION, 
-THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR, 
-THANHTRA_UAT.PENALTY_TYPE, 
-THANHTRA_UAT.VIOLATION_CASE","a.ID, 
-a.SUBJECT_TYPE, 
-a.SUBJECT_NAME, 
-a.SUBJECT_ID_NUMBER, 
-a.PENALTY_DECISION_ID, 
-a.DELETED, 
-b.ID, 
-b.ISSUED_DATE, 
-b.DECISION_NUMBER, 
-b.VIOLATION_CASE_ID, 
-b.DELETED, 
-c.PENALTY_DECISION_SUBJECT_ID, 
-c.DESCRIPTION, 
-c.PENALTY_TYPE_ID, 
-c.DELETED, 
-d.ID, 
-d.NAME, 
-d.CATEGORY, 
-d.DELETED, 
-e.ID, 
-e.STATUS, 
-e.DELETED",,"-- Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK
+ORDER BY ngay;",Done,,,,,Done,Dữ liệu động,
+"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Ngày quyết định,Ngày quyết định,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.PENALTY_DECISION,PENALTY_DECISION.ISSUED_DATE,,"-- Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK
 SELECT
+    a.SUBJECT_ID_NUMBER AS cccd,
     b.ISSUED_DATE AS ngay_quyet_dinh,
     b.DECISION_NUMBER AS so_hieu,
     c.DESCRIPTION AS noi_dung_vi_pham,
@@ -8351,9 +8371,21 @@ SELECT
         WHEN 'CLOSED' THEN N'Đã kết thúc'
         ELSE TO_NCHAR(e.STATUS)
     END AS trang_thai
-FROM THANHTRA_UAT.PENALTY_DECISION_SUBJECT a
-JOIN THANHTRA_UAT.PENALTY_DECISION b ON b.ID = a.PENALTY_DECISION_ID
+FROM (
+    SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
+    FROM (
+        SELECT MIN(b2.ISSUED_DATE) AS min_ngay
+        FROM THANHTRA_UAT.PENALTY_DECISION b2
+        WHERE b2.DELETED       = 0
+          AND b2.ISSUED_DATE IS NOT NULL
+    )
+    CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
+) nd
+JOIN THANHTRA_UAT.PENALTY_DECISION b ON TRUNC(b.ISSUED_DATE) = nd.ngay
                                      AND b.DELETED = 0
+JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT a ON a.PENALTY_DECISION_ID = b.ID
+                                             AND a.DELETED = 0
+                                             AND a.SUBJECT_TYPE = 'INDIVIDUAL'
 JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR c ON c.PENALTY_DECISION_SUBJECT_ID = a.ID
                                                       AND c.DELETED = 0
 JOIN THANHTRA_UAT.PENALTY_TYPE d ON d.ID = c.PENALTY_TYPE_ID
@@ -8361,15 +8393,33 @@ JOIN THANHTRA_UAT.PENALTY_TYPE d ON d.ID = c.PENALTY_TYPE_ID
                                  AND d.DELETED = 0
 LEFT JOIN THANHTRA_UAT.VIOLATION_CASE e ON e.ID = b.VIOLATION_CASE_ID
                                         AND e.DELETED = 0
-WHERE a.DELETED = 0
-  AND a.SUBJECT_TYPE = 'INDIVIDUAL'
---  AND a.SUBJECT_ID_NUMBER = :p_so_cccd   -- Số CCCD/CMND của cá nhân
-  AND TRUNC(b.ISSUED_DATE) <= DATE '2026-08-21'
-ORDER BY b.ISSUED_DATE DESC;",Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Số hiệu,Số hiệu,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Nội dung vi phạm,Nội dung vi phạm,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Hình thức xử phạt ,Hình thức xử phạt ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
-"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Trạng thái,Trạng thái,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,,,,,Done,,,,,Done,Dữ liệu tĩnh,
+LEFT JOIN SCMS_UAT.SC_FIRM_SENIOR_PERSONNEL sp ON sp.NATIONAL_ID = a.SUBJECT_ID_NUMBER
+LEFT JOIN SCMS_UAT.SC_FIRM_SHAREHOLDER sh ON sh.ID_NUMBER = a.SUBJECT_ID_NUMBER
+WHERE nd.ngay <= DATE '2026-10-10'
+--  AND (sp.NATIONAL_ID IS NOT NULL OR sh.ID_NUMBER IS NOT NULL)
+--  AND a.SUBJECT_ID_NUMBER = :p_so_cccd
+ORDER BY nd.ngay, b.ISSUED_DATE DESC;",Done,"SELECT pd.ISSUED_DATE NGAY_QD
+, pd.DECISION_NUMBER SO_HIEU
+, pdsb.DESCRIPTION ND_VI_PHAM
+, CASE WHEN pt.CATEGORY = 'PRIMARY_PENALTY' THEN pt.NAME END HINH_THUC_XP
+, CASE WHEN vc.STATUS = 'NEW' THEN 'Mới tiếp nhận'
+           WHEN vc.STATUS = 'PROCESSING' THEN 'Đang xử lý'
+           WHEN vc.STATUS = 'DECISION_ISSUED' THEN 'Đã ban hành quyết định'
+           WHEN vc.STATUS = 'ENFORCED' THEN 'Đang cưỡng chế'
+           WHEN vc.STATUS = 'CLOSED' THEN 'Đã kết thúc'
+END AS trang_thai
+FROM THANHTRA_UAT.PENALTY_DECISION_SUBJECT pds  
+LEFT JOIN THANHTRA_UAT.PENALTY_DECISION pd ON pds.PENALTY_DECISION_ID = pd.ID AND pd.DELETED = 0 
+LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR pdsb ON pds.ID = pdsb.PENALTY_DECISION_SUBJECT_ID AND pdsb.DELETED = 0
+LEFT JOIN THANHTRA_UAT.PENALTY_TYPE pt ON pdsb.PENALTY_TYPE_ID = pt.ID AND pt.DELETED = 0 AND pt.STATUS = 'ACTIVE'
+LEFT JOIN THANHTRA_UAT.VIOLATION_CASE vc ON pd.VIOLATION_CASE_ID = vc.ID AND vc.DELETED = 0
+WHERE 1=1
+AND pds.DELETED = 0
+AND pds.SUBJECT_ID_NUMBER = :p_so_cccd",,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Số hiệu,Số hiệu,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.PENALTY_DECISION,PENALTY_DECISION.DECISION_NUMBER,,,Done,,,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Nội dung vi phạm,Nội dung vi phạm,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR,PENALTY_DECISION_SUBJECT_BEHAVIOR.DESCRIPTION,,,Done,,,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Hình thức xử phạt ,Hình thức xử phạt ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.PENALTY_TYPE,PENALTY_TYPE.NAME,PENALTY_TYPE.CATEGORY = 'PRIMARY_PENALTY',,Done,,,,,Done,Dữ liệu tĩnh,
+"Khai thác Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",44,,"Dashboard Tra cứu cá nhân ban quản trị, điều hành, cổ đông >> Dashboard Lịch sử vi phạm của cá nhân ban quản trị, điều hành, cổ đông tại CTCK",Trạng thái,Trạng thái,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, CTCK",Thanh tra,X,X,X,Done,,THANHTRA_UAT.VIOLATION_CASE,VIOLATION_CASE.STATUS,,,Done,,,,,Done,Dữ liệu tĩnh,
 Khai thác Data Explorer về các chỉ tiêu có cấu trúc trên báo cáo của đối tượng Công ty chứng khoán trong nước,45,,"Chào bán phát hành >> Tổng hợp số liệu chào bán, phát hành cổ phiếu",Tên công ty chứng khoán,Tên công ty chứng khoán,Data Explorer,Chiều,Dễ,"Ngày, CTCK",SCMS,,X,,Done,,"SCMS_UAT.DISCLOSURE_SECURITIES_OFFERING
 SCMS_UAT.SC_FIRM_INFO
 SCMS_UAT.LNK_SC_FIRM_SERVICE
@@ -51214,14 +51264,14 @@ HDTTTGDCK | CT | SEC_1 | 17 | 4 | TS036",Data Explorer,Chỉ tiêu cơ sở,Dễ
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,SL tổng,SL đã map,,,,,,,,,,,,,,,,,,,,,,
-,,,Dashboard,241,241,,,,,,,,,,,,,,,,,,,,,,
+,,,Dashboard,242,242,,,,,,,,,,,,,,,,,,,,,,
 ,,,Data Explorer,7860,7516,,,,,,,,,,,,,,,,,,,,,,
 ,,,Báo cáo,0,0,,,,,,,,,,,,,,,,,,,,,,
-,,,Tổng số chỉ tiêu:,8101,,,,,,,,,,,,,,,,,,,,,,,
+,,,Tổng số chỉ tiêu:,8102,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,Dashboard,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,Tổng,Đã map (SL),Đã map (%),,,,,,,,,,,,,,,,,,,,,,,
-,,241,223,92.53,,,,,,,,,,,,,,,,,,,,,,,
+,,242,224,92.56,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,Data Explorer,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,Tổng,Đã map (SL),Đã map (%),,,,,,,,,,,,,,,,,,,,,,,
