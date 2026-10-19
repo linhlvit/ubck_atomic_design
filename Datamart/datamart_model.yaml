@@ -23014,7 +23014,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số lượng thành viên ban đại diện của quỹ — literal 'ban đại diện' tạm dùng nhãn HLD (tên chức danh cl_fms_job_nm), CHƯA xác minh; Atomic không còn active_status_flag nên không lọc trạng thái"
+        description: "Số lượng thành viên ban đại diện của quỹ — đếm thành viên có chức danh (cl_fms_job, src FMS_JOBS) thuộc LOẠI chức danh (JOB_TYPE) tên 'ban đại diện': dòng cl_fms_job src FMS_JOB_TYPE nối qua cl_fms_job_tp_code, so LOWER(job_tp_nm) theo BA dòng 103 (Điều kiện). Atomic không còn active_status_flag nên không lọc trạng thái"
         source_atomic_table: "investment_fund_representative_board_member"
         source_atomic_column: "investment_fund_representative_board_member.investment_fund_representative_board_member_id"
       - logical_name: "Manager Count"
