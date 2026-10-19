@@ -1596,7 +1596,7 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_TKNB_553 | Kỳ báo cáo: Quý | - | Chiều | `CASE RIGHT(fct_private_corporate_bond_international_offering_snpst.rpt_month,2) WHEN '03' THEN 'Quý I' WHEN '06' THEN 'Quý II' WHEN '09' THEN 'Quý III' WHEN '12' THEN 'Quý IV' END` WHERE `RIGHT(rpt_month,2) IN ('03','06','09','12')` | [STT=1] Slicer — biểu mẫu tháng lũy kế từ đầu năm; kỳ Quý = tháng cuối quý (CASE theo câu lệnh BA). Định dạng `report_month` (MM hay YYYYMM) chờ xác nhận — Section 5 mục 32 | READY |
-| K_TKNB_554 | Tên Doanh nghiệp phát hành TPDN ra TT quốc tế | - | Cơ sở | `private_corporate_bond_dim.issuer_nm` | [STT=2] `private_corp_bond_offering.issuer_name` | READY |
+| K_TKNB_554 | Tên Doanh nghiệp phát hành TPDN ra TT quốc tế | - | Cơ sở | `private_corporate_bond_dim.issuer_nm` | [STT=2] `private_corp_bond_offering.issuer_nm` | READY |
 | K_TKNB_555 | Loại hình doanh nghiệp | - | Cơ sở | `private_corporate_bond_dim.enterprise_tp` | [STT=3] `enterprise_type` | READY |
 | K_TKNB_556 | Lĩnh vực hoạt động | - | Cơ sở | `private_corporate_bond_dim.business_sector` | [STT=4] `business_sector` | READY |
 | K_TKNB_557 | Mã trái phiếu | - | Cơ sở | `private_corporate_bond_dim.bond_code` | [STT=5] BK Dimension | READY |
