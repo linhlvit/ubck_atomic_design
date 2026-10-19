@@ -180,9 +180,15 @@ def components(root: Path, module: str, step: str, nhom: Optional[str]) -> List[
             ("Entities.csv", _tok_file(Path(resolve_entities_csv(root, module))
                                        if resolve_entities_csv(root, module) else None)),
         ]
+    # SKILL.md LLD chỉ còn phần dùng chung; chi tiết từng Phase + luật A1–A20 nằm ở reference/
+    # (tách 2026-10-19) — đếm đủ các file mà Phase đó phải đọc, rules.md tính trọn (trần trên).
     if step == "lld-phase1":
         return base + [
             ("SKILL datamart-lld-design", _tok_file(lld_sk / "SKILL.md")),
+            ("reference/rules.md", _tok_file(lld_sk / "reference/rules.md")),
+            ("reference/phase1_workflow.md", _tok_file(lld_sk / "reference/phase1_workflow.md")),
+            ("reference/physical_naming.md", _tok_file(lld_sk / "reference/physical_naming.md")),
+            ("reference/phase1_selfreview.md", _tok_file(lld_sk / "reference/phase1_selfreview.md")),
             ("reference/phase1_attributes.md", _tok_file(lld_sk / "reference/phase1_attributes.md")),
             ("HLD khối Nhóm", hld_group_tokens(root, module, nhom)),
             ("Entities.csv", _tok_file(Path(resolve_entities_csv(root, module))
@@ -193,6 +199,8 @@ def components(root: Path, module: str, step: str, nhom: Optional[str]) -> List[
         ba, _ = ba_group_tokens(root, module, nhom, with_sql=True)
         return base + [
             ("SKILL datamart-lld-design", _tok_file(lld_sk / "SKILL.md")),
+            ("reference/rules.md", _tok_file(lld_sk / "reference/rules.md")),
+            ("reference/phase2_workflow.md", _tok_file(lld_sk / "reference/phase2_workflow.md")),
             ("reference/phase2_detail_mapping.md",
              _tok_file(lld_sk / "reference/phase2_detail_mapping.md")),
             ("BA lát cắt 1 Nhóm (kèm SQL)", ba),
@@ -202,6 +210,8 @@ def components(root: Path, module: str, step: str, nhom: Optional[str]) -> List[
     if step == "lld-phase3":
         return base + [
             ("SKILL datamart-lld-design", _tok_file(lld_sk / "SKILL.md")),
+            ("reference/rules.md", _tok_file(lld_sk / "reference/rules.md")),
+            ("reference/phase3_workflow.md", _tok_file(lld_sk / "reference/phase3_workflow.md")),
             ("reference/phase3_flat_table.md", _tok_file(lld_sk / "reference/phase3_flat_table.md")),
             ("Attributes per-table của module", _tok_dir(lld_mod, "DTM_*.csv")),
         ]

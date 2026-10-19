@@ -257,7 +257,7 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
 | **Mức độ (Severity)** | 🔴 **Critical** (Chặn mở Gate 1/2, chặn Pull Request, từ chối nghiệm thu bàn giao) |
 | **Mô tả (Description)** | Cùng một thuộc tính `(datamart_table, datamart_column)` hoặc `(datamart_entity, datamart_attribute)` có mặt ở cả file module `Datamart/lld/{MODULE}/*.csv` và master registry `Datamart/lld/datamart_attributes.csv`, nhưng biểu thức `etl_logic` có nội dung khác nhau (sau khi strip khoảng trắng). Nguyên nhân: sửa bug ở file module nhưng quên cập nhật master registry, khiến mã ETL sinh từ master registry chạy logic cũ sai lệch. |
 | **Phương pháp chẩn đoán & phát hiện** | 1. Chạy CLI: `python scripts/check_parity.py --module [MODULE] [--strict]` (hoặc `--module all`).<br>2. So khớp từng dòng: Nếu `module_logic.strip() != master_logic.strip()`, báo cáo chi tiết: tên bảng, tên cột, file nguồn, nội dung khác biệt (diff), và chỉ báo nguồn chuẩn cần sửa. |
-| **Remediation Protocol** | **Bước 1 (Reviewer):** Xác định phiên bản logic đúng (thông thường là file module vừa được sửa đúng nghiệp vụ). Trích xuất chính xác chuỗi `etl_logic` chuẩn.<br>**Bước 2 (Gate):** Dừng báo cáo tại Gate 1/2 hoặc Cổng Bàn Giao Kịch bản C.<br>**Bước 3 (Chuyển giao):** Gọi `datamart-lld-design` (hoặc thực thi Action Proposal đã duyệt) ghi đè chuỗi `etl_logic` chuẩn vào dòng tương ứng trong `Datamart/lld/datamart_attributes.csv`.<br>**Bước 4 (Verify):** Chạy `python scripts/check_parity.py --module [MODULE] --strict` xác nhận 0 mismatch. |
+| **Remediation Protocol** | **Bước 1 (Reviewer):** Xác định phiên bản logic đúng (thông thường là file module vừa được sửa đúng nghiệp vụ). Trích xuất chính xác chuỗi `etl_logic` chuẩn.<br>**Bước 2 (Gate):** Dừng báo cáo tại Gate 1/2 hoặc Cổng Bàn Giao Kịch bản C.<br>**Bước 3 (Chuyển giao):** Gọi `datamart-lld-design` (hoặc thực thi Action Proposal đã duyệt) sửa file module nếu chính nó đang sai, rồi sinh lại `Datamart/lld/datamart_attributes.csv` bằng `build_registry.py` — không ghi đè chuỗi vào master bằng tay.<br>**Bước 4 (Verify):** Chạy `python scripts/check_parity.py --module [MODULE] --strict` xác nhận 0 mismatch. |
 
 #### 5. Đặc tả Mã lỗi: `L4-MASTER-REGISTRY-OUT-OF-SYNC`
 
@@ -269,7 +269,7 @@ Khi đi sâu vào review kỹ thuật từng nhóm (Micro-Review), các vấn đ
 | **Mức độ (Severity)** | 🔴 **Critical** (Chặn nghiệm thu và bàn giao) |
 | **Mô tả (Description)** | Master registry `Datamart/lld/datamart_attributes.csv` bị thiếu các thuộc tính đã tồn tại trong file module Attributes, hoặc master registry chứa các thuộc tính mồ côi của bảng đã bị xóa/hủy bỏ ở module. |
 | **Phương pháp chẩn đoán & phát hiện** | 1. Chạy CLI: `python scripts/check_parity.py --module [MODULE] [--strict]`.<br>2. Phát hiện danh sách `missing_in_master` hoặc `missing_in_module`. |
-| **Remediation Protocol** | **Bước 1:** Liệt kê các thuộc tính bị lệch danh mục.<br>**Bước 2:** Gọi `datamart-lld-design` đồng bộ bổ sung vào master CSV nếu thiếu, hoặc purge khỏi master CSV nếu là thuộc tính bảng đã hủy.<br>**Bước 3 (Verify):** Chạy lại `check_parity.py --strict` xác nhận 0 missing. |
+| **Remediation Protocol** | **Bước 1:** Liệt kê các thuộc tính bị lệch danh mục.<br>**Bước 2:** Gọi `datamart-lld-design` sinh lại master bằng `build_registry.py` (bảng đã hủy: `--allow-drop` sau khi human duyệt) — không sửa tay master CSV.<br>**Bước 3 (Verify):** Chạy lại `check_parity.py --strict` xác nhận 0 missing. |
 
 #### 6. Đặc tả Mã lỗi: `L1/L3-GRAIN-MISMATCH`
 
@@ -487,7 +487,7 @@ Chỉ tiêu bị XÓA là bất kỳ dòng chỉ tiêu nào trong tài liệu BA
      - Đánh dấu gắn cờ cảnh báo: `DEPRECATED / RETIRED`.
      - Kích hoạt Giao thức Dọn dẹp Toàn diện All-Tier Cleanup Protocol 5 Bước (nhất quán với Orphan Nhánh B):
        - **Tầng HLD:** Gọi `datamart-hld-design` xóa bỏ dòng KPI khỏi bảng KPI 7 cột, đồng thời xóa dòng entity liên quan trong `DTM_{MODULE}_Entities.csv` và Section 4 Reuse Analysis nếu bảng bị hủy toàn bộ.
-       - **Tầng LLD (Attributes & Detail Mapping):** Gọi `datamart-lld-design` xóa sạch các dòng thuộc tính trong file module CSV, xóa file LLD nếu bảng bị hủy, purge toàn bộ thuộc tính khỏi master registry `datamart_attributes.csv`, và xóa bỏ hoặc chuyển `RETIRED` trong `Detail_Mapping.csv`.
+       - **Tầng LLD (Attributes & Detail Mapping):** Gọi `datamart-lld-design` xóa sạch các dòng thuộc tính trong file module CSV, xóa file LLD nếu bảng bị hủy, sinh lại master registry `datamart_attributes.csv` bằng `build_registry.py`, và xóa bỏ hoặc chuyển `RETIRED` trong `Detail_Mapping.csv`.
        - **Tầng Registry (`datamart_model.yaml`):** Purge thuộc tính và entity khỏi Model Registry nếu không còn bảng nào sử dụng.
        - **Tầng Flat Table SQL:** Loại bỏ cột hoặc bảng khỏi `01_create_*.sql` và `02_populate_*.sql` để tránh sinh code và tiêu tốn tài nguyên ETL vô ích.
        - **Verify:** Chạy `check_orphan.py --strict` và `check_parity.py --strict` xác nhận hệ thống hoàn toàn sạch bóng các tàn dư mồ côi.

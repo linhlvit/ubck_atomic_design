@@ -144,7 +144,7 @@ Tuyệt đối không dùng index cứng (như `row[3]`, `row[13]`). Mỗi file 
 | **Trạng thái mapping** | `Trạng thái mapping`, `Trạng thái` | Trạng thái phân tích của BA: `Done`, `Doing`, `Pending` |
 | **Bảng nguồn** | `Bảng nguồn`, `Nguồn`, `Khai thác nguồn`, `Nguồn chi tiết` | Tên bảng nguồn (IDS, SCMS, MSS, v.v.) |
 | **Trường nguồn** | `Trường nguồn` | Tên cột trong bảng nguồn |
-| **Loại dữ liệu** | `Loại dữ liệu` | Gating `Dữ liệu động`, `Dữ liệu tĩnh`, `Chưa có CSDL - Map biểu mẫu`, v.v. |
+| **Loại dữ liệu** | `Loại dữ liệu` | Phân loại tĩnh/động của BA — chỉ tham khảo, không dùng quyết READY/PENDING |
 | **Điều kiện dữ liệu** | `Điều kiện`, `Điều kiện chung`, `Điều kiện dữ liệu` | Điều kiện lọc nghiệp vụ |
 | **Câu lệnh SQL** | `Câu lệnh tham khảo`, `Câu lệnh SQL`, `Câu lệnh update SIT` | SQL mẫu chứa logic ngầm (TTM, join, rolling) |
 | **Ghi chú** | `Note` | Ghi chú bổ sung của BA |
@@ -173,14 +173,9 @@ Khảo sát 11.289 dòng dữ liệu hợp lệ:
 - **`Doing`**: Đang xem xét (chú thích).
 - **`Delete`** (hoặc `DELETED`, `Xóa`, `Xoá`): Chỉ tiêu đã bị hủy bỏ/loại bỏ từ phía BA/nghiệp vụ. **QUY TẮC BẮT BUỘC:** Tuyệt đối KHÔNG đưa vào thiết kế Datamart (cả HLD lẫn LLD). Loại bỏ ngay từ bước đọc parser, không cấp KPI_ID, không map Detail Mapping, không đếm vào số dòng BA hợp lệ.
 
-### 4.3. `Loại dữ liệu` — Gating Trạng thái Datamart
+### 4.3. `Loại dữ liệu` — chỉ tham khảo
 
-- **`Dữ liệu động`** (~6.386 dòng): Dữ liệu giao dịch biến động theo ngày/phiên. Datamart: PENDING cho đến khi có cơ chế snapshot/SCD.
-- **`Dữ liệu tĩnh`** (~1.428 dòng): Danh mục, thông tin tổ chức/cá nhân ít biến đổi. Datamart: READY (nếu Atomic đã approved).
-- **`Chưa có CSDL - Map biểu mẫu`** (~1.837 dòng): Biểu mẫu nghiệp vụ chưa có bảng CSDL tương ứng. Datamart: PENDING (nhóm "Chưa có mapping nguồn từ BA").
-- **`Map biểu mẫu`** (~46 dòng): Biến thể của nhóm trên. Datamart: PENDING.
-- **`Dữ liệu tĩnh - Chưa có CSDL`** (~88 dòng): Datamart: PENDING.
-- **Tổ hợp nhiều giá trị** (phân cách bằng dấu phẩy, ví dụ `Dữ liệu tĩnh, Dữ liệu động`): Áp dụng **mức gating thấp nhất** trong tập hợp (tức PENDING).
+Không dùng cột này để quyết READY/PENDING (quyết định của Data Modeler). Trạng thái KPI chỉ dựa trên `Trạng thái mapping`, nguồn Atomic có thật và grain khớp — xem Bước 2 skill `datamart-hld-design`.
 
 ### 4.4. `Đánh giá` — Căn cứ Dedup và Reuse
 

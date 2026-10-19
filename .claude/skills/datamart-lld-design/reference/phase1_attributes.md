@@ -9,7 +9,7 @@ Datamart/lld/{MODULE}/
     DTM_{MODULE}_{mart_table}.csv                        (fact — không có src_stm_code)
     DTM_{MODULE}_{mart_table}_{src_stm_code}.csv         (dim, operational — mỗi nguồn 1 file)
 
-Datamart/lld/datamart_attributes.csv                     (master — append sau human approve)
+Datamart/lld/datamart_attributes.csv                     (master — sinh bằng build_registry.py, không ghi tay)
 ```
 
 - `{MODULE}` viết HOA (ví dụ `NHNCK`)
@@ -63,18 +63,18 @@ Module [MODULE_ĐANG_THIẾT_KẾ] cần thêm Y cột: [col_a, col_b, ...].
 ```
 
 5. Sau human approve → sửa trực tiếp file gốc của module sở hữu, **mọi cột phải nằm chung 1 file** (không có file nào thiếu cột so với schema bảng, không tách file theo module yêu cầu)
-6. Ngoại lệ duy nhất được tạo file riêng trong thư mục module đang thiết kế: khi nguồn dữ liệu (`src_stm_code`) thực sự khác nguồn cũ — lúc đó là multi-source thật (xem quy tắc multi-source ở Bước 1b SKILL.md), không phải trường hợp cùng nguồn Atomic chỉ thêm cột.
+6. Ngoại lệ duy nhất được tạo file riêng trong thư mục module đang thiết kế: khi nguồn dữ liệu (`src_stm_code`) thực sự khác nguồn cũ — lúc đó là multi-source thật (xem quy tắc multi-source ở Bước 1b, `reference/phase1_workflow.md`), không phải trường hợp cùng nguồn Atomic chỉ thêm cột.
 
-### Merge vào master datamart_attributes.csv
+### Cập nhật master datamart_attributes.csv
 
-Sau khi human approve từng file:
+Master là output sinh từ các file LLD per-module (RFC Đ3) — không append hay sửa tay. Sau khi human approve từng file:
+```bash
+python .claude/skills/datamart-review/scripts/build_registry.py --check   # xem bảng nào lệch
+python .claude/skills/datamart-review/scripts/build_registry.py           # ghi thật khi phần lệch chỉ thuộc bảng vừa duyệt
 ```
-"Merge file [tên file] vào datamart_attributes.csv không?"
-```
 
-- Nếu đồng ý → check trùng `(datamart_table, datamart_column)` trước khi append
-- Nếu trùng → bỏ qua dòng đó (không ghi đè)
-- Chỉ append rows mới (chưa có trong master)
+- Script tự gộp dòng trùng và giữ dòng multi-source — không cần check trùng bằng tay.
+- Bị chặn vì master còn bảng không có file per-module thì dừng, báo human — không sửa tay master để lách.
 
 ### Quy trình Deprecation / Dọn dẹp đồng bộ khi loại bỏ Fact hoặc Dim Draft (All-Tier Cleanup Protocol)
 
@@ -84,7 +84,7 @@ Sau khi human approve từng file:
 
 Khi quyết định loại bỏ hoặc thay thế một bảng Datamart draft, Claude **BẮT BUỘC** thực hiện đồng bộ 5 bước sau:
 1. **Xóa file LLD detail:** Xóa file `Datamart/lld/{MODULE}/DTM_{MODULE}_{datamart_table}.csv` (và các file biến thể multi-source nếu có).
-2. **Dọn sạch master `datamart_attributes.csv`:** Tìm và xóa TOÀN BỘ các dòng có `datamart_table == {datamart_table}` trong file master `Datamart/lld/datamart_attributes.csv`.
+2. **Master `datamart_attributes.csv`:** sinh lại bằng `build_registry.py` sau khi xóa file LLD; `--allow-drop` chỉ khi human đã duyệt và danh sách "không còn file LLD per-module" của `--check` chỉ gồm bảng đang bỏ (`--allow-drop` xóa mọi bảng mồ côi cùng lúc). Không xóa dòng trong master bằng tay.
 3. **Cập nhật `DTM_{MODULE}_Detail_Mapping.csv`:** Rà soát các KPI từng map vào bảng bị loại bỏ:
    - Nếu sáp nhập sang bảng khác: đổi `mart_table` và `mart_column` sang bảng mới.
    - Nếu không còn bảng đáp ứng: chuyển KPI sang `PENDING`, xóa giá trị `mart_table` và `mart_column`, cập nhật `ghi_chu` nêu rõ lý do.

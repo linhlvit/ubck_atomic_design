@@ -198,6 +198,7 @@ def gen_blocks(no: int, module: str, tbl: str, ttype: str, dims, cols, desc: str
 _DDL_COL = re.compile(r"^\s+([A-Za-z_][A-Za-z0-9_]*)\s+\S")
 # projection đơn giản: [alias.]col [AS name] [,] [-- ghi chú]; biểu thức phức tạp không khớp -> bỏ qua
 _DML_PROJ = re.compile(r"^(\s*)(?:(\w+)\.)?(\w+)(?:\s+AS\s+(\w+))?\s*,?\s*(?:--.*)?$", re.I)
+_SELECT_KW = re.compile(r"^\s*SELECT\s*(?:--.*)?$", re.I)
 
 
 def load_lld_business_columns(lld_dir: Path) -> dict:
@@ -309,12 +310,23 @@ def sync_columns(ddl_txt: str, dml_txt: str, flat_prefix: str, lld_cols: dict, t
             d_idx = next((k for k, n in ddl_lines if n == prev), None) if prev else (ddl_lines[0][0] if ddl_lines else None)
             # --- vị trí DML
             projs = []
+            sel_k = None  # dòng từ khóa SELECT — KHÔNG phải projection (regex _DML_PROJ khớp nhầm 'SELECT' như 1 cột)
             for k in range(ms + 1, me):
+                if sel_k is None:
+                    if _SELECT_KW.match(ml[k]):
+                        sel_k = k
+                    continue
                 m = _DML_PROJ.match(ml[k])
                 if m and not ml[k].strip().startswith("--"):
                     projs.append((k, m.group(2), m.group(4) or m.group(3)))
-            m_pos = next(((k, a) for k, a, n in projs if n == prev), None) if prev else \
-                ((projs[0][0], projs[0][1]) if projs else None)
+            if prev:
+                m_pos = next(((k, a) for k, a, n in projs if n == prev), None)
+            else:
+                # đầu bảng: chèn vào dòng đầu tiên sau SELECT (bỏ qua dòng trống/comment '-- From:'), khớp vị trí DDL.
+                # Dòng đầu có thể là biểu thức phức tạp (không khớp regex) -> alias lấy từ projection đơn giản đầu tiên.
+                first = next((k for k in range((sel_k or ms) + 1, me)
+                              if ml[k].strip() and not ml[k].strip().startswith("--")), None)
+                m_pos = (first, next((a for _, a, _ in projs if a), None)) if first is not None and sel_k is not None else None
             if d_idx is None or m_pos is None:
                 skipped.append((flat, c, f"không định vị được cột liền trước '{prev}' trong "
                                          f"{'DDL' if d_idx is None else 'DML'} (projection phức tạp?) — chèn tay"))

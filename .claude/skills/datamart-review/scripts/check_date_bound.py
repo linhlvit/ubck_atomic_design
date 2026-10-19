@@ -21,7 +21,7 @@ Cách chạy (từ thư mục gốc repo):
   python ... --module GSTT --strict        # exit 1 nếu có phát hiện
   python ... --module GSTT --file fct_hose_securities_trade   # chỉ 1 file vừa sinh (TC12 của datamart-lld-design)
 
-Quy tắc gốc: A19 trong `.claude/skills/datamart-lld-design/SKILL.md`. Chưa nằm trong run_quality_gates.py.
+Quy tắc gốc: A19 trong `.claude/skills/datamart-lld-design/reference/rules.md`. Chưa nằm trong run_quality_gates.py.
 """
 import argparse
 import csv

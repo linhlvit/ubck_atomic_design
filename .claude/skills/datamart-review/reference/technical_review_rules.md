@@ -241,7 +241,7 @@ Khi phát hiện một thực thể mồ côi (xuất hiện ở 1 hoặc 2 tầ
 - **Mã lỗi kỹ thuật:** `🟡 Warning / 🔴 Critical: [L2-ORPHAN-3WAY-ABANDONED]`.
 - **Giao thức All-Tier Table Deprecation 5 Bước Bắt Buộc:**
   1. *Bước 1 (LLD Module CSV):* Xóa tệp tin CSV mồ côi `Datamart/lld/{MODULE}/DTM_{MODULE}_{table}.csv`.
-  2. *Bước 2 (Master Registry CSV):* Purge toàn bộ các dòng thuộc tính của bảng khỏi `Datamart/lld/datamart_attributes.csv`.
+  2. *Bước 2 (Master Registry CSV):* Sinh lại `Datamart/lld/datamart_attributes.csv` bằng `build_registry.py` sau khi xóa file LLD (không xóa dòng bằng tay).
   3. *Bước 3 (Detail Mapping):* Xóa bỏ hoặc chuyển trạng thái `DEPRECATED` toàn bộ các dòng tham chiếu bảng trong `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv` (để trống 2 cột `mart_table`, `mart_column`).
   4. *Bước 4 (Model Registry YAML):* Purge định nghĩa entity khỏi `Datamart/datamart_model.yaml` (trừ khi là SHARED Dimension).
   5. *Bước 5 (HLD Entities & Flat Table SQL):* Xóa dòng entity trong `DTM_{MODULE}_Entities.csv`, cập nhật Section 4 Reuse Analysis trong `DTM_{MODULE}_HLD.md`, và xóa các khối lệnh `CREATE TABLE` / `INSERT INTO` của bảng khỏi `01_create_*.sql` và `02_populate_*.sql`.
@@ -511,7 +511,7 @@ Trôi lệch cột (Column Drift) xảy ra khi schema Flat Table bị mất đ�
 #### 1. Quy chuẩn chi tiết:
 1. **Chống Cột Ma / Cột Mồ Côi trong SQL:** Không được phép có bất kỳ cột nào xuất hiện trong `CREATE TABLE` (phần Fact/Operational) mà không tồn tại trong file module Attributes CSV và master registry `datamart_attributes.csv`. Toàn bộ các cột do copy-paste từ module khác hoặc tàn dư cũ chưa dọn PHẢI BỊ XÓA BỎ NGAY LẬP TỨC.
 2. **Chống Bỏ Sót Chỉ Tiêu Detail Mapping:** Toàn bộ các cột Fact (`mart_column`) được khai thác bởi các KPI trong `Detail_Mapping.csv` bắt buộc phải có mặt đầy đủ trong Flat Table. Bỏ sót cột đang có KPI sử dụng là vi phạm nghiêm trọng.
-3. **Đồng Bộ Master Registry Trước Khi Thêm Vào Flat Table:** Khi có yêu cầu nghiệp vụ bổ sung cột mới vào Flat Table, Designer bắt buộc phải thêm thuộc tính vào LLD Attributes module CSV, đồng bộ vào master `datamart_attributes.csv`, rồi mới được phép đưa vào Flat Table DDL và DML.
+3. **Đồng Bộ Master Registry Trước Khi Thêm Vào Flat Table:** Khi có yêu cầu nghiệp vụ bổ sung cột mới vào Flat Table, Designer bắt buộc phải thêm thuộc tính vào LLD Attributes module CSV, sinh lại master `datamart_attributes.csv` bằng `build_registry.py`, rồi mới được phép đưa vào Flat Table DDL và DML.
 4. **Mã lỗi vi phạm:** `🔴 Critical: [L4-FLAT-TABLE-COLUMN-DRIFT]`.
 
 ---

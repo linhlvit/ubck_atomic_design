@@ -63,7 +63,7 @@ graph TB có: DIM_DATE --> FACT_ISSUE  và  DIM_PRA --> FACT_ISSUE
    - **Trong `Entities.csv`:** Bảng DEPRECATED bị loại bỏ khỏi danh sách active entity cần sinh LLD (hoặc ghi rõ `reuse_status = DEPRECATED` nếu lưu vết).
    - **Kích hoạt Giao thức Bãi bỏ Bảng 5 Tầng (All-Tier Cleanup):** Nếu bảng draft đã từng sinh file LLD trước đó, Designer/Reviewer bắt buộc dọn dẹp đồng bộ:
      + Tầng 1: Xóa file `DTM_{MODULE}_{datamart_table}.csv` trong `Datamart/lld/{MODULE}/`.
-     + Tầng 2: Purge 100% dòng của bảng trong `Datamart/lld/datamart_attributes.csv`.
+     + Tầng 2: Sinh lại `Datamart/lld/datamart_attributes.csv` bằng `build_registry.py` (không xóa dòng bằng tay).
      + Tầng 3: Cập nhật Detail Mapping (`column_role = 'DEPRECATED'`, để trống bảng/cột).
      + Tầng 4: Xóa block entity trong `Datamart/datamart_model.yaml`.
      + Tầng 5: HLD Section 3/4 + `Entities.csv/.md` cập nhật DEPRECATED; Flat Table SQL xóa/comment DDL/DML.

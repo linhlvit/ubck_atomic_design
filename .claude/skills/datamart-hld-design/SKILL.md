@@ -14,7 +14,7 @@ description: |
 
 # Skill: Thiết kế HLD Datamart
 
-Đọc file này TRƯỚC KHI bắt đầu thiết kế HLD cho bất kỳ module nào.
+File này giữ quy trình, điều kiện tiên quyết, quy tắc ngữ cảnh, bảng tóm tắt luật H1–H13, Bước 5B và Phase 2. Chi tiết Bước 1–4, diễn giải 14 mục của Bước 5B và checklist bàn giao nằm trong `reference/` — đọc file của bước đang làm.
 
 ## Tài nguyên đi kèm
 
@@ -32,6 +32,18 @@ description: |
   - [`examples/flowchart_correct.md`](examples/flowchart_correct.md) — flowchart đúng
   - [`examples/flowchart_wrong.md`](examples/flowchart_wrong.md) — pattern sai flowchart
 
+**Chi tiết từng bước (tách từ file này):**
+
+| Khi | Đọc |
+|---|---|
+| Mọi lần sửa HLD | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan (H1–H13, kèm sự cố gốc) |
+| Bước 1 — đọc BA, tra Atomic, Bước 1B | [`reference/step1_input.md`](reference/step1_input.md) |
+| Bước 2 — scope gating, 5 nhóm PENDING, liên kết Section 5 | [`reference/step2_scope_gating.md`](reference/step2_scope_gating.md) |
+| Bước 3 — reuse 4 lớp, Section 4, bãi bỏ bảng 5 tầng | [`reference/step3_reuse.md`](reference/step3_reuse.md) |
+| Bước 4 — loại bảng, iso-grain, chuỗi thời gian, tỷ số tài chính | [`reference/step4_grain.md`](reference/step4_grain.md) |
+| Bước 5B — diễn giải 14 mục, lệnh CLI lẻ, bảng exit code | [`reference/step5b_review.md`](reference/step5b_review.md) |
+| Trước khi bàn giao | [`reference/handoff_checklist.md`](reference/handoff_checklist.md) |
+
 ## Điều kiện tiên quyết
 
 - [ ] `BRD/BA/BA_analyst_{MODULE}.csv` tồn tại
@@ -48,11 +60,11 @@ description: |
 >   - Ghi nhận vào Section 5 Open Issues (`DTM_{MODULE}_HLD.md`).
 >   - DỪNG lại báo cáo human để Data Modeler thuộc luồng Atomic xử lý độc lập. Tuyệt đối không tự ý sửa Atomic!
 >
-> **Cấm dùng `DataModel/working/Atomic_LinhLV/`** — track cũ đã revert, out of date. Xem chi tiết thứ tự ưu tiên 2 nguồn ở Bước 1 mục 3.
+> **Cấm dùng `DataModel/working/Atomic_LinhLV/`** — track cũ đã revert, out of date. Xem chi tiết thứ tự ưu tiên 2 nguồn ở `reference/step1_input.md` mục 3.
 
 ---
 
-## QUY TẮC NGỮ CẢNH — TRẦN 500K TOKEN (BẮT BUỘC, ĐỌC TRƯỚC MỌI BƯỚC)
+## Ngữ cảnh — trần 500K token mỗi bước
 
 **KHÔNG bao giờ Read trực tiếp 4 nhóm file này** — luôn đi qua lát cắt:
 
@@ -69,193 +81,36 @@ Sau khi `apply_patch.py` báo ghi thành công, **không Read lại file lớn v
 đã in ra (hoặc `--quiet` xác nhận số dòng thêm/bớt) là bằng chứng đủ; đọc lại cả file chỉ tốn ngân
 sách 500K mà không phát hiện thêm gì so với diff đã thấy.
 
-Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước khi chạy bước nặng:
+Mọi script ở `.claude/skills/datamart-review/scripts/`. Kiểm ngân sách trước bước nặng — dùng số đo của lệnh này, không dùng số cũ chép trong tài liệu:
 
 ```bash
 python .claude/skills/datamart-review/scripts/ctx_budget.py --module {MODULE} --all-steps
 ```
 
-Ngân sách thực đo (Nhóm nặng nhất của phân hệ nặng nhất, trần 500.000):
-
-| Bước | p50 | Xấu nhất | Phân hệ xấu nhất |
-|---|---:|---:|---|
-| hld-phase1 | ~89K | 174K | TKNB |
-| hld-phase2 | ~56K | 64K | QLKD |
-| lld-phase1 | ~77K | 131K | GSĐC |
-| lld-phase2 | ~92K | **235K** | GSĐC |
-| lld-phase3 | ~68K | 120K | GSĐC |
-| review | ~88K | 88K | — |
-
 Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay bỏ bớt thông tin nghiệp vụ.
 
 ---
 
-## QUY TẮC CHỐNG TÁI DIỄN (ANTI-REGRESSION) — ĐỌC TRƯỚC KHI SỬA HLD
+## Luật H1–H13 (tóm tắt)
 
-> Rút ra từ sự cố PTTT/QLKD ngày 2026-09-18. Cả 5 quy tắc đều là lỗi **thật đã lọt lưới**,
-> không phải rủi ro giả định. Mã lỗi tương ứng nằm trong Gate 0 (`check_references.py`) và
-> Gate 5 (`check_hld_5b.py`).
+Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết luật nào liên quan; trước khi áp dụng, đọc mục tương ứng trong [`reference/rules.md`](reference/rules.md) (`grep -n "^### H7" .claude/skills/datamart-hld-design/reference/rules.md`). Cột "Máy kiểm" ghi Gate/script bắt được lỗi; "—" nghĩa là chưa có script, phải tự kiểm theo hướng dẫn trong `rules.md`.
 
-### H1 — Một HLD là MỘT nguồn sự thật: sửa Section 1 phải sửa cả Section 3/4/5
-
-Section 1 (Lineage), Section 3 (Mô hình), Section 4 (Reuse), Section 5 (Open Issue) mô tả cùng một
-tập bảng. Sửa lẻ một Section tạo ra HLD tự mâu thuẫn.
-
-Thực tế đã sai: Section 1 và Section 5 tuyên bố `O_PTTT_13` đã giải quyết và thay Fact mới, nhưng
-Section 3 vẫn giữ node `fct_mbr_sfty_per_mbr_snpst` + entity giả `Member Report Indicator Value`
-và ghi "PENDING"; Section 3 còn để tên vật lý cũ `fct_mcr_ind_snpst` trong khi Entities/LLD đã đổi.
-
-**Checklist khi thay/bãi bỏ một bảng:** Section 1 flowchart → Section 3.1 graph TB → bảng 3.2/3.3/3.4
-→ Section 4 reuse_status → Section 5 issue → Entities.csv/.md. Đủ 6 nơi, không thiếu nơi nào.
-
-### H2 — Đóng Open Issue mặc định là "Resolved một phần" `[partial-resolution]`
-
-Nguồn Atomic mới xuất hiện **không** đồng nghĩa mọi KPI trong danh sách issue đều READY được.
-Bắt buộc tách theo grain / theo nhánh nguồn:
-
-1. Liệt kê KPI chuyển READY **kèm grain đạt được**.
-2. KPI chưa đạt → mở Open Issue mới (`O_{MODULE}_{N+1}`) ghi rõ còn thiếu gì.
-3. Issue gốc để trạng thái `Resolved một phần`, không phải `Resolved`.
-
-Thực tế đã sai: O_PTTT_11 và O_PTTT_13 bị đóng toàn phần → 9 KPI grain ngày bị đánh READY trong khi
-nguồn chỉ có grain kỳ báo cáo tháng/quý.
-
-### H3 — Reuse Fact xuyên module: grain là hợp đồng bất biến `[L1-GRAIN-MISMATCH]`
-
-Trước khi ghi `reuse` vào Section 4:
-1. Mở Entities.csv của **module chủ sở hữu**, copy nguyên văn chuỗi grain.
-2. Đối chiếu với Presentation Grain của mockup module mình (Thang 6 bậc hạt ở Bước 4B).
-3. Grain Fact **kỳ báo cáo** không phục vụ được chỉ tiêu rolling theo **phiên giao dịch** — trường hợp này
-   phải giữ PENDING và mở Open Issue, không được reuse rồi viết công thức như thể có dữ liệu ngày.
-4. Cột "Nguồn Atomic" trong Section 3 và `source_table` trong Entities.csv ghi **entity Atomic**,
-   tuyệt đối không ghi tên bảng Datamart (`fct_*`).
-
-### H4 — Trạng thái KPI phải đồng bộ 2 chiều với Detail Mapping `[L0-HLD-LLD-STATUS-DESYNC]`
-
-Bảng KPI trong HLD và Detail Mapping là hai bản ghi của cùng một trạng thái. Sau khi sửa cột
-`Trạng thái` trong HLD, chạy ngay:
-
-```bash
-python .claude/skills/datamart-review/scripts/check_references.py --module {MODULE}
-```
-
-Nhóm chuyển từ 100% PENDING sang có KPI READY còn phải bổ sung đủ: `**Source:**`, `**Star Schema:**`,
-`**Lineage Mart → Báo cáo:**`, `**Bảng grain:**` — và gỡ bảng "Bảng mapping nguồn (Atomic Placeholder)"
-nếu nhóm đã hết PENDING.
-
-### H5 — Mọi tên cột Atomic viết vào HLD phải grep được `[L0-ATOMIC-COLUMN-NOT-FOUND]`
-
-Áp dụng cho công thức KPI, ghi chú nguồn và erDiagram. Không suy tên từ nghĩa nghiệp vụ:
-`cl_risk_indicator` có `ind_nm` chứ không phải `cl_risk_ind_name`; `security_trading_snapshot` có
-`symbol` chứ không phải `security_symbol_code`. Xem bảng đối chiếu đầy đủ ở mục **A1** của
-`datamart-lld-design/SKILL.md`.
-
-> Các quy tắc H6–H9 dưới đây rút ra từ sự cố GSTT ngày 2026-09-23: BA tách Nhóm 28/29 thành 28–31
-> rồi sau đó thành 37 Nhóm. Cả 4 quy tắc là lỗi **thật đã lọt lưới**, và cả 4 đều **không** bị
-> `run_quality_gates.py` hay `datamart_progress_analyzer.py` bắt được. Script bắt được chúng là
-> `ba_hld_sync_check.py` (mã S1–S5).
-
-### H6 — BA tách/gộp/dồn số Nhóm: đánh số lại TRƯỚC, thiết kế SAU `[L1-GROUP-NUMBER-DRIFT]` `[L1-BA-STT-COLLISION]`
-
-Số Nhóm trong HLD và Detail Mapping PHẢI bằng STT của BA. Khi BA tách một Nhóm, các Nhóm phía sau bị
-dồn số. Lúc đó `datamart_progress_analyzer.py` so số lượng theo **số** Nhóm, nên sẽ:
-- báo 🔴 hàng loạt ở các Nhóm không liên quan, hoặc tệ hơn,
-- báo **🟢 Khớp giả**. Thực tế đã xảy ra: HLD Nhóm 30 cũ (PTKT, 14 KPI) "khớp" với BA Nhóm 30 mới
-  (bản đồ nhiệt, 14 dòng) chỉ vì trùng số lượng.
-
-**Trình tự bắt buộc khi file BA vừa đổi:**
-1. Chạy `ba_hld_sync_check.py --module {M}` **trước khi đọc bất kỳ Nhóm nào**. S3 liệt kê Nhóm lệch
-   số hoặc lệch tên màn hình. S2 liệt kê STT bị BA dùng chung cho 2 màn hình, hoặc dòng bị gán nhầm
-   STT (so theo cột Dashboard/báo cáo).
-2. Lập bảng ánh xạ `số cũ → số mới` từ **cột Dashboard/báo cáo** (tên màn hình), không từ số lượng.
-3. Đánh số lại **toàn bộ tham chiếu**: HLD (heading, bảng KPI, Section 1/3/4/5, changelog), Detail
-   Mapping (cột `nhom`), Entities.md, comment Flat SQL, `description` trong Attributes/master/model
-   (chỉ dòng của module mình). Ánh xạ phải áp **một lượt đồng thời** (VD 35→36 và 34→35 cùng lúc),
-   không áp tuần tự từng số, vì áp tuần tự sẽ đẩy số lên 2 lần. Nhớ đổi cả số nằm trong danh sách
-   `Nhóm 5/6/32/33`, không chỉ số đứng ngay sau chữ "Nhóm".
-4. Sau đó mới thiết kế các Nhóm có nội dung đổi.
-
-**BA gộp 2 màn hình chung 1 STT (S2):** mặc định gộp vào 1 Nhóm HLD theo quy tắc "1 STT = 1 Nhóm",
-dùng mockup (a)/(b) và **mở Open Issue để BA tách STT**. Khi BA tách xong, tách lại HLD ngay; không để
-Δ âm dai dẳng.
-
-**Dòng BA gán nhầm STT (S2, 1–2 dòng mà Dashboard là của Nhóm khác):** thiết kế theo **Dashboard**,
-ghi Open Issue. Không tự sửa file BA.
-
-### H7 — Khóa JOIN giữa 2 bảng nguồn phải có BẰNG CHỨNG, không chép từ ghi chú cũ `[L1-JOIN-KEY-UNVERIFIED]`
-
-Ghi chú trong HLD kiểu *"khóa X = Y đã xác nhận"* **không phải bằng chứng**. Trước khi dùng một khóa
-JOIN giữa 2 entity khác hệ định danh, bắt buộc có ít nhất 1 trong 3 nguồn sau, và ghi rõ nguồn vào
-Ghi chú:
-1. SQL tham khảo của BA nối đúng 2 cột đó. Grep toàn file BA qua `ba_slice.py --with-sql`, **không
-   chỉ Nhóm đang làm**.
-2. Mô tả cột trong `Source/{SOURCE}_Columns.csv` hoặc tài liệu API nguồn (VD bảng getIndexCode/getIndexName
-   của jadapter).
-3. Data Modeler xác nhận trực tiếp **trong phiên hiện tại**, kèm ví dụ giá trị.
-
-Thực tế đã sai: ghi chú ngày 2026-09-22 dùng khóa `Market Index Snapshot.Index Name = Index Constituent
-Snapshot.Index Code`, và khóa này bị chép sang Fact mới cùng 4 KPI khác. Nhưng SQL BA STT 5 nối
-`marketcode = indexcode`, và `INDEXNAME` chỉ là tên hiển thị (`VNINDEX`, `VN30`), còn mã là `HOSE`,
-`30`. Hậu quả: khóa không bao giờ khớp và toàn bộ điểm chỉ số ra NULL. Dấu hiệu nhận biết sớm: khi thấy
-một cột **tên** (`_nm`, `Name`) được đặt bằng một cột **mã** (`_code`), dừng lại kiểm tra.
-
-### H8 — Loại measure (Giá trị vs Khối lượng) phải khớp Trường nguồn BA `[L3-MEASURE-TYPE-MISMATCH]`
-
-Khi dùng lại KPI có sẵn cho một dòng BA, phải đối chiếu **Trường nguồn** của dòng đó (VD
-`foreignBuyVal` là giá trị, `foreignBuyVol` là khối lượng), không chỉ nhìn tên màn hình hay tên Nhóm.
-Thực tế đã sai: Nhóm 26 có BA ghi "GTNN mua/bán/ròng" (`foreignBuyVal`/`foreignSellVal`), nhưng HLD
-dùng lại KLNN (K_GSTT_70/71/19, khối lượng), và tên Nhóm cũng bị ghi thành "bản đồ nhiệt KLNN".
-S5 của `ba_hld_sync_check.py` bắt được lỗi này.
-
-### H9 — Đối soát NỘI DUNG từng dòng BA, không chỉ số lượng `[L3-BA-ROW-UNMAPPED]`
-
-`Δ = 0` không có nghĩa là không thiếu gì. Một dòng BA bị bỏ sót vẫn có thể bị che bởi một KPI tách
-thêm ở chỗ khác. Thực tế đã sai: Nhóm 7 thiếu "Thay đổi giá (+/-)" nhưng lại dư Từ ngày/Đến ngày, nên
-tổng số lượng lệch rất ít. Nhóm 11/13/15/17/19 cùng thiếu dòng này.
-
-Sau khi viết xong bảng KPI của một Nhóm, chạy `ba_hld_sync_check.py --module {M} --nhom {N}` và xử lý
-**từng** cảnh báo S4:
-- bổ sung KPI còn thiếu, hoặc
-- ghi giải trình vào Ghi chú HLD (VD dòng BA trùng nghĩa với dòng khác, dòng BA bị BA gán nhầm STT).
-
-> Các quy tắc H10–H13 dưới đây rút ra từ phiên 2026-09-24/25 (NDTNN/PTTT/TKNB/GSTT). Mỗi quy tắc
-> tương ứng 1 lỗi thật đã phải hoàn tác hoặc sửa lại.
-
-### H10 — Thứ tự ưu tiên khi đọc 1 dòng BA: Điều kiện chung/Mô tả > Câu lệnh tham khảo có Note "cần check" `[L3-REFERENCE-SQL-MISALIGNMENT]`
-
-Câu lệnh tham khảo có thể là bản cũ. Ví dụ GSTT Nhóm 35 dòng 515: SQL còn bảng mã phân loại NĐT theo
-từng sàn, nhưng Note ghi "Cần check lại điều kiện" và Điều kiện chung chỉ ghi "phân loại theo Invest
-Type / Client-House / Foreigner type" — tức là dùng chung quy tắc của Nhóm 28–31. Đã từng thiết kế
-theo SQL cũ và phải làm lại.
-- Khi SQL và Điều kiện chung / Mô tả mâu thuẫn: theo Điều kiện chung / Mô tả, ghi mâu thuẫn vào Open Issue.
-- Khi dòng BA có Note kiểu "cần check lại": **không** coi SQL là quy tắc chốt; hỏi Data Modeler.
-
-### H11 — Cột/công thức dùng chung nhiều Nhóm: đọc BA của MỌI Nhóm tiêu thụ trước khi đổi `[L3-SHARED-RULE-DRIFT]`
-
-Trước khi sửa `etl_logic` của một cột, grep Detail Mapping xem những KPI/Nhóm nào đang dùng cột đó
-(`logic` chứa `{table}.{column}`), rồi đọc BA của **từng** Nhóm đó. Ví dụ đã sai:
-- 8 cột Cá nhân/Tổ chức trên `fct_stock_portfolio_snpst` chỉ phục vụ Nhóm 35, nhưng được sửa theo BA Nhóm 28 mà chưa đọc Nhóm 35 (khác nhau ở bộ lọc bảng lệnh).
-- Khi BA đơn giản hóa quy tắc phân loại (2026-09-22), chỉ 2 Fact mới được cập nhật, còn 8 cột cũ cùng khái niệm giữ quy tắc cũ.
-
-Khi BA đổi một quy tắc nghiệp vụ, grep toàn module mọi `etl_logic` hiện thực cùng quy tắc (VD `client_house_cl_code`, `investor_tp_code`) và sửa **đồng loạt** hoặc ghi rõ lý do giữ khác.
-
-### H12 — BA chuyển Nhóm sang nguồn/bảng mới: kiểm bảng cũ còn KPI nào dùng không `[L2-TABLE-ZERO-USAGE]`
-
-Khi Nhóm chuyển sang Fact mới, bảng cũ có thể còn đủ 3 tầng LLD/Entities/Flat nên Gate 3 vẫn PASS,
-dù 0 KPI dùng (VD `opr_public_company_shareholding`, `legal_entity_position_dim` — GSTT 2026-09-25).
-Chạy Gate 8 (`check_design_lint.py`), cảnh báo `L2-TABLE-ZERO-USAGE` nghĩa là phải:
-- All-Tier Cleanup (xóa LLD per-table, dòng master, entity trong `datamart_model.yaml`, Entities.csv/.md, flat SQL), **và**
-- giữ lịch sử ở Section 4 HLD với `reuse_status = DEPRECATED`.
-
-### H12b — Trước khi kết luận "thiếu", đọc quyết định đã duyệt của đúng KPI `[process]`
-
-Đọc `ghi_chu` Detail Mapping và Ghi chú HLD của KPI trước khi đề xuất bổ sung/đổi cách khai thác. Đã đề xuất nhầm "Nhóm 28 thiếu chế độ Khớp lệnh" trong khi ghi chú 2026-09-23 ghi rõ BI swap sang KPI khớp lệnh riêng (Data Modeler duyệt, không CASE tham số).
-
-### H13 — Sửa bảng Markdown trong HLD: mỗi dòng KPI đúng 7 ô; giải trình ánh xạ phải tra lại KPI thật `[L1-HLD-KPI-ROW-CELLS]`
-
-- Thêm ghi chú vào dòng KPI thì **gộp vào ô Ghi chú**, không chèn `| ... |` thành ô mới (đã sinh dòng 8 ô ở PTTT K_PTTT_44). Gate 8 bắt lỗi này.
-- Khi viết giải trình "dòng BA N → K_xxx", lấy K_xxx từ bảng KPI của chính Nhóm đó (grep tên KPI), **không** suy theo tên gần giống (đã ghi nhầm dòng 188 TradingValue_i → K_PTTT_96 thay vì K_PTTT_270).
-- Khối entity trong erDiagram của một bảng đã xuất hiện ở Nhóm khác phải chép **nguyên văn** khối đang có (Gate 5 #11 `L1-INCONSISTENT-ENTITY-BLOCKS`).
+| Luật | Nội dung | Máy kiểm |
+|---|---|---|
+| H1 | Một HLD là một nguồn sự thật: thay/bãi bỏ bảng phải sửa đủ 6 nơi (Section 1 flowchart, 3.1, bảng 3.2–3.4, Section 4, Section 5, Entities.csv/.md) | Gate 5 #0 (Section 3 ↔ Section 4) — một phần |
+| H2 | Đóng Open Issue mặc định "Resolved một phần"; KPI chưa đạt mở issue mới | — |
+| H3 | Reuse Fact xuyên module: chép nguyên văn grain của module chủ; grain kỳ báo cáo không phục vụ rolling theo phiên; "Nguồn Atomic" ghi entity Atomic, không ghi `fct_*` | — (`L1-GRAIN-MISMATCH`) |
+| H4 | Trạng thái KPI đồng bộ 2 chiều HLD ↔ Detail Mapping; Nhóm hết PENDING phải bổ sung Source / Star Schema / Lineage / Bảng grain | Gate 0 `L0-HLD-LLD-STATUS-DESYNC` |
+| H5 | Mọi tên cột Atomic viết vào HLD phải grep được trong YAML | Gate 0 `L0-ATOMIC-COLUMN-NOT-FOUND` |
+| H6 | BA tách/gộp/dồn số Nhóm: đánh số lại toàn bộ tham chiếu trong một lượt trước, thiết kế sau | `ba_hld_sync_check.py` S2/S3 (Gate 10 khi có `--nhom`) |
+| H7 | Khóa JOIN giữa 2 nguồn khác hệ định danh phải có bằng chứng: SQL BA, tài liệu cột nguồn, hoặc Data Modeler xác nhận trong phiên | — (`L1-JOIN-KEY-UNVERIFIED`) |
+| H8 | Loại measure Giá trị / Khối lượng phải khớp Trường nguồn BA | `ba_hld_sync_check.py` S5 `L3-MEASURE-TYPE-MISMATCH` |
+| H9 | Đối soát nội dung từng dòng BA, không chỉ số lượng; xử lý từng cảnh báo S4 | `ba_hld_sync_check.py` S4 `L3-BA-ROW-UNMAPPED` |
+| H10 | Dòng BA mâu thuẫn: Điều kiện chung / Mô tả ưu tiên hơn SQL có Note "cần check"; ghi Open Issue | `check_ba_mapping.py` (ngoài Gate) — một phần |
+| H11 | Cột/công thức dùng chung nhiều Nhóm: đọc BA của mọi Nhóm tiêu thụ trước khi đổi; BA đổi quy tắc thì sửa đồng loạt | — (`L3-SHARED-RULE-DRIFT`) |
+| H12 | Nhóm chuyển sang bảng mới: bảng cũ 0 KPI dùng → All-Tier Cleanup, giữ lịch sử ở Section 4 | Gate 8 `L2-TABLE-ZERO-USAGE` |
+| H12b | Trước khi kết luận "thiếu", đọc `ghi_chu` Detail Mapping và Ghi chú HLD của đúng KPI | — (quy trình) |
+| H13 | Dòng KPI đúng 7 ô; giải trình "dòng BA → K_xxx" phải tra lại KPI thật; khối erDiagram trùng tên chép nguyên văn | Gate 8 `L1-HLD-KPI-ROW-CELLS`, Gate 5 #11 |
 
 ---
 
@@ -279,452 +134,15 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 
 ---
 
-## BƯỚC 1 — ĐỌC INPUT (thứ tự bắt buộc)
+## Bước 1–4 (tóm tắt)
 
-1. **BA file** (`BRD/BA/BA_analyst_{MODULE}.csv`) — extract toàn bộ dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}` (TUYỆT ĐỐI LOẠI BỎ các dòng có `Trạng thái mapping` là `Delete`/`DELETED`/`Xóa`, không đưa vào thiết kế):
+**Bước 1 — Đọc input** → `reference/step1_input.md`. Đọc BA qua `ba_slice.py --module {MODULE} --index` rồi `--nhom {N} --print` (thêm `--with-sql` khi cần SQL tham khảo), không Read thẳng file BA. Chỉ lấy dòng `Trạng thái mapping ∈ {Done, Doing, Pending}`; dòng `Delete` loại hẳn khỏi thiết kế; dòng `Phân loại = Chiều` vẫn phải có KPI_ID. Tra Atomic theo thứ tự `DataModel/Atomic/dm_manifest.yaml` → `DataModel/working/Atomic/lld/manifest.yaml`, tra `reference/source_alias_mapping.md` trước khi kết luận; không có ở cả hai nguồn thì PENDING. Mọi entity nguồn phải grep được, kể cả khi Nhóm trước đã dùng. HLD đã có thì append, không viết lại. Bước 1B: tên attribute lấy đúng `attribute.name` trong YAML; đọc SQL tham khảo của từng dòng BA trong Nhóm; ghi chú reuse trích nguyên văn tên dòng BA; khi sửa Nhóm đã có, đếm lại từ BA hiện tại, không tin ghi chú cũ.
 
-   > ⚠️ **KHÔNG Read thẳng file BA.** `BA_analyst_QLKD.csv` là 998K token — một mình đã vượt
-   > trần ngữ cảnh 500K. Đơn vị công việc là MỘT Nhóm, và Nhóm nặng nhất toàn repo chỉ ~66K token.
-   >
-   > **Bước 1a — nạp bản đồ Nhóm (một lần mỗi phiên, ~0,3–7K token):**
-   > ```bash
-   > python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --index
-   > ```
-   > Sinh `Datamart/context/ba/BA_index_{MODULE}.csv`: mỗi Nhóm một dòng — số chỉ tiêu,
-   > đếm Done/Doing/Pending, đếm Chiều/Cơ sở/Phái sinh, token ước tính. Dùng nó để chọn Nhóm
-   > và lập todo list, KHÔNG dùng để thiết kế.
-   >
-   > **Bước 1b — nạp lát cắt Nhóm đang làm:**
-   > ```bash
-   > python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --print
-   > ```
-   > Lát cắt giữ **nguyên văn mọi ô nghiệp vụ** của Nhóm đó (đã kiểm chứng trên cả 11 phân hệ:
-   > không mất dòng, không mất ô). Chỉ bỏ cột theo dõi dự án và cột SQL; thêm `--with-sql` khi
-   > cần SQL (Phase 2 LLD). File gốc trong `BRD/BA/` KHÔNG bị sửa.
-   >
-   > Delimiter / dòng header / cột STT của từng phân hệ khai trong `system/rules/ba_column_profile.yaml`
-   > — **đã kiểm chứng, không dò động nữa**. Ba phân hệ dùng `;` (FMS, TT, VP), VP đặt tên cột số
-   > thứ tự là `TT` chứ không phải `STT`, và cả 11 file đều có dòng legend ở index 2 phải bỏ.
-   > File BA lệch với profile → script dừng và báo lỗi, KHÔNG đoán tiếp.
-   > *(Mẹo: Designer có thể chạy trực tiếp CLI audit `python .claude/skills/datamart-review/scripts/check_ba_mapping.py --module {MODULE} --strict` để kiểm tra chéo tự động cấu trúc BA).*
-   - `Phân loại = Chiều` → slicer/filter dimension — **phải có KPI_ID**, không được bỏ qua
-   - `Phân loại = Cơ sở` + `Phái sinh` → KPI chỉ tiêu
-   - Ghi nhận `Trạng thái mapping` — phân biệt Done/Doing/Pending
-   - Ghi nhận cột **`Loại dữ liệu`** (`Dữ liệu tĩnh` / `Dữ liệu động`) cho từng dòng — dùng ở Bước 2 (Scope Gating) để quyết định READY/PENDING, độc lập với gating theo Atomic
-   - ❌ Không bỏ qua dòng `Phân loại = Chiều` — đây là phần của bảng KPI, không chỉ là gợi ý thiết kế
-   - ⛔ **QUY TẮC BẮT BUỘC — CHỈ TIÊU TRẠNG THÁI MAPPING = "Delete":**
-     Nếu chỉ tiêu trong file BA có `Trạng thái mapping` là **`Delete`** (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`):
-     - **TUYỆT ĐỐI KHÔNG ĐƯỢC ĐƯA VÀO THIẾT KẾ** (không đưa vào Section 1 Data Lineage, không cấp KPI ID, không đưa vào bảng KPI Section 2, không tạo Fact/Dimension/Operational trong Section 3/4, và không xuất hiện trong `Entities.csv`).
-     - Dòng này được coi là yêu cầu đã bị hủy/xóa bỏ từ phía BA/nghiệp vụ, loại bỏ ngay từ bước đọc input BA (`valid_kpis`).
-     - Không đếm vào mẫu số đối soát số lượng chỉ tiêu hợp lệ ($BA\_Valid$) ở Bước 5B.
+**Bước 2 — Scope gating** → `reference/step2_scope_gating.md`. Atomic READY + `Done`/`Doing` → READY; `Pending` hoặc ô trống → PENDING (ô trống không phải out-of-scope); không tìm được Atomic → out-of-scope. Mọi KPI PENDING phân vào đúng 1 trong 5 nhóm nguyên nhân và ghi chú theo cú pháp chuẩn (mục 2.3); blocker Nhóm 3/4/5 phải có Open Issue ở Section 5. Không reuse Fact/Dim của module khác để lấp KPI thiếu Atomic. Cột `Loại dữ liệu` của BA không dùng để quyết READY/PENDING.
 
-2. **Screenshot** — xác định scope boundary (tab, nhóm, loại thông tin hiển thị)
+**Bước 3 — Reuse** → `reference/step3_reuse.md`. Đọc `datamart_model.yaml` một lần; kiểm 4 lớp theo thứ tự và dừng ở lớp xác định được: conformed (`cdr_dt_dim`, `cl_dim`) → Classification Value (`cl_dim` khi `physical_name = cv`) → cùng nguồn Atomic → partial. Trình bày bảng `reuse_status` và dừng chờ human xác nhận, kể cả khi toàn bộ là `new`. Kết quả ghi Section 4 (gồm `DEPRECATED`); bãi bỏ bảng theo giao thức 5 tầng.
 
-3. **Tra cứu Atomic — 2 nguồn theo thứ tự ưu tiên (BẮT BUỘC theo đúng thứ tự này):**
-
-   | Ưu tiên | Nguồn | Manifest | Coi là |
-   |---|---|---|---|
-   | **1 — luôn tra trước** | `DataModel/Atomic/` | `DataModel/Atomic/dm_manifest.yaml` | READY |
-   | **2 — chỉ tra khi Nguồn 1 không có entry** | `DataModel/working/Atomic/` | `DataModel/working/Atomic/lld/manifest.yaml` | READY (draft đang hoàn thiện, nhưng vẫn dùng được cho Datamart) |
-
-   - **Bước a:** Mở `DataModel/Atomic/dm_manifest.yaml` → tìm entry `physical_name` khớp. Có entry (bất kể `status: approved` hay `draft`) → **READY**, dùng nguồn này, KHÔNG cần tra tiếp Nguồn 2.
-   - **Bước b:** Không có entry ở Nguồn 1 → tra `DataModel/working/Atomic/lld/manifest.yaml` (schema `lld_manifest`, field `source_system`/`source_table`/`atomic_entity`/`lld_file`) tìm entry khớp `atomic_entity`/`source_table` → có entry → **READY**, mở file `DataModel/working/Atomic/lld/{source_system}/{lld_file}`.
-   - Không có entry ở cả 2 nguồn → **PENDING**.
-   - Nếu tên nguồn trong BA không tìm thấy ở Nguồn 1 → tra [`reference/source_alias_mapping.md`](reference/source_alias_mapping.md) trước khi thử Nguồn 2 hoặc kết luận PENDING.
-   - Mỗi `physical_name`/`atomic_entity` có thể có nhiều entry (nhiều source table) — tra tất cả entry cùng tên, không dừng ở entry đầu tiên.
-   - Khi cùng 1 entity/physical_name xuất hiện ở CẢ 2 nguồn (VD: đã approved ở `DataModel/Atomic/` nhưng vẫn còn bản draft cũ ở `working/Atomic/`) → **luôn ưu tiên `DataModel/Atomic/`**, bỏ qua bản draft.
-   - **❌ TUYỆT ĐỐI KHÔNG dùng `DataModel/working/Atomic_LinhLV/`** — đây là track cũ đã revert, out of date. Dù cấu trúc thư mục giống hệt `DataModel/Atomic/` (cùng BCV folder), entity ở đây KHÔNG được coi là READY dưới bất kỳ hình thức nào, kể cả khi không tìm thấy entity đó ở 2 nguồn hợp lệ trên — trường hợp đó vẫn kết luận PENDING.
-   - **Cấm gán READY cho 1 entity chỉ vì "nghe quen"/đã dùng ở nhóm khác trong cùng module** — mọi entity dùng làm nguồn PHẢI có bằng chứng grep trực tiếp: `grep -rl "{physical_name}" DataModel/Atomic/**/*.yaml DataModel/working/Atomic/lld/**/*.yaml` (loại trừ `Atomic_LinhLV`) hoặc entry trong 1 trong 2 manifest trên. Không tìm thấy = PENDING, kể cả khi tên entity trùng khớp hợp lý với khái niệm nghiệp vụ (VD: đã có nhiều lần thiết kế giả định tồn tại 1 entity EAV kiểu "Member Report Indicator Value" cho báo cáo định kỳ CTCK, nhưng entity đó chưa từng có LLD approved trong track hiện hành — chỉ tồn tại ở track cũ đã revert `Atomic_LinhLV`).
-   - Khi 1 Nhóm định dùng lại đúng entity nguồn đã xác nhận READY ở Nhóm trước (cùng module) — vẫn phải tự chạy lại bước grep/tra manifest cho Nhóm này, không suy diễn "đã xác nhận rồi thì chắc vẫn đúng". BA có thể đổi nguồn giữa các Nhóm dùng chung khái niệm nghiệp vụ.
-
-4. **Entity YAML files** — xác nhận tên entity/attribute khi cần (không đoán):
-   - Nguồn 1: `DataModel/Atomic/{BCV_Folder}/dm_atm_{physical_name}-{SOURCE}.{TABLE}.yaml` — đọc `ldm.physical_name` = `atomic_table`, `attribute.physical_name` = `atomic_column`.
-   - Nguồn 2 (chỉ khi không có ở Nguồn 1): `DataModel/working/Atomic/lld/{SOURCE}/lld_{SOURCE}_{TABLE}.yaml`.
-
-5. **HLD hiện tại** (nếu có) — append thêm, không viết lại
-
-## BƯỚC 1B — SELF-REVIEW ATOMIC ATTRIBUTE NAMES (thực hiện TRƯỚC khi viết bảng KPI)
-
-- [ ] Mọi tên attribute dùng trong cột Nguồn/KPI → tra file YAML entity đó, lấy đúng `attribute.name` (field `name:` trong YAML, không phải `physical_name`). KHÔNG tự suy tên từ nghĩa nghiệp vụ.
-- [ ] Attribute không tìm thấy trong driving entity → kiểm tra entity liên quan (joined/shared entity), không kết luận PENDING trước khi tra entity phụ. Ví dụ: số định danh CCCD/Hộ chiếu nằm ở `Involved Party Alternative Identification`, không phải `Securities Practitioner`.
-- [ ] Attribute dạng ngày tháng có 2 trường tách biệt (VD: `Birth Date` + `Birth Year`) → ghi rõ cả 2 và công thức `COALESCE` trong ETL formula của KPI Derived. KHÔNG chỉ ghi 1 trường.
-- [ ] **KPI có điều kiện lọc theo Classification Value (code phân loại)** → bắt buộc đọc full nội dung ô **Mô tả** và **Mapping nghiệp vụ** của dòng BA đó để lấy giá trị code cụ thể. KHÔNG tự suy đoán code (VD: đừng giả định `'PROP'` hay `'FI'` khi chưa đọc BA).
-  - Sau khi lấy code từ BA → cross-check với `DataModel/working/Atomic/lld/classification_schemes.yaml` để xác nhận scheme tồn tại.
-  - Chỉ tạo Open Issue khi BA **thực sự không cung cấp** giá trị code. Nếu BA đã ghi rõ → dùng thẳng, không tạo issue thừa.
-  - Ví dụ thực tế (VP module): BA ghi `Buy/Sell Client House Classification Code = '30'` → Tự doanh; `Foreign Investor Type Code <> '00'` → NĐTNN (negative filter). Sai nếu dùng `'PROP'` hay `= 'FI'` mà không đọc BA.
-- [ ] **Đọc full SQL/công thức tham khảo của MỌI dòng BA trong Nhóm đang xét trước khi kết luận nguồn Atomic** — lấy bằng `ba_slice.py --module {MODULE} --nhom {N} --with-sql --print` (phạm vi là Nhóm đang xét, KHÔNG phải cả phân hệ — cả phân hệ thì vượt trần ngữ cảnh). Không suy diễn tên bảng/cột nguồn chỉ từ tên KPI hoặc khái niệm nghiệp vụ. Bắt buộc mở nguyên văn ô Công thức/Mô tả (thường chứa SQL tham khảo) và trích đúng: tên bảng JOIN, tên cột, điều kiện filter/LIKE — rồi mới tra sang Atomic. KHÔNG được giả định "chắc dùng entity X" vì nhóm trước cùng module đã dùng X cho khái niệm nghiệp vụ tương tự.
-- [ ] **Không copy pattern nguồn từ Nhóm trước khi chưa tự đọc SQL của chính dòng BA đang xét** — kể cả khi Nhóm N-1 đã xác nhận Atomic entity Y là nguồn đúng cho 1 khái niệm (VD: "Dư nợ margin"), Nhóm N nhắc lại đúng khái niệm đó KHÔNG được mặc định dùng lại Y. Phải tự đọc SQL riêng của Nhóm N — nếu BA đổi bảng/report code/sheet khác thì đó là nguồn khác, không reuse. Đây là nguyên nhân đã gây sai lặp lại nhiều lần trong thực tế (QLKD: hàng loạt Nhóm giả định dùng chung 1 entity EAV suy diễn theo tên, trong khi BA SQL thực tế của từng Nhóm chỉ ra các report_code/sheet_name/cột LIKE khác nhau hoàn toàn — phải re-verify từng Nhóm riêng lẻ mới phát hiện ra).
-- [ ] **Ghi chú "Reuse từ Nhóm X" / "BA STT Y thêm dòng '...'" PHẢI trích nguyên văn tên dòng BA** (copy đúng string cột tên chỉ tiêu trong lát cắt `ba_slice.py --nhom {N} --with-sql --print`), **KHÔNG diễn giải/tóm tắt lại theo trí nhớ** — đặc biệt khi tóm tắt nội dung 1 Nhóm để chuyển giao (viết prompt cho Skill/subagent khác, hoặc thuật lại sau khi đã đọc BA ở lượt trước trong hội thoại). Bản tóm tắt dễ đánh mất chi tiết phân biệt khi tên đích nghe giống 1 KPI đã có sẵn ở Nhóm khác. Sự cố thực tế (GSTT Nhóm 28/29, 2026-09-22): 3 dòng BA **"Giá trị mua/bán/ròng theo phân loại nhà đầu tư LOẠI KHỚP LỆNH"** (dòng 412–414/424–426) bị tóm tắt nhầm thành **"Giá trị mua RÒNG/bán RÒNG theo phân loại nhà đầu tư"** khi đối chiếu với 2 KPI đã có tên gần giống (K_GSTT_93/94 — dùng cho khái niệm tách dấu dương/âm hoàn toàn khác, vốn cũng chưa từng có dòng BA nào làm căn cứ) — gán reuse sai thay vì khai 3 KPI mới, tồn tại qua nhiều lượt sửa cho tới khi user tự đọc lại BA và phát hiện. Quy tắc khắc phục: mọi câu "khớp 1-1 công thức với dòng BA '...'" trong Ghi chú bắt buộc là nguyên văn copy-paste, không gõ lại theo trí nhớ hay theo tên KPI đích.
-- [ ] **Khi CHỈNH SỬA một Nhóm đã tồn tại (không phải thiết kế mới), KHÔNG tin ghi chú "Ghi chú tái sử dụng"/lịch sử SỬA cũ là đúng — luôn tự đếm lại từ BA hiện tại.** Một ghi chú cũ khẳng định "không có dòng X" hoặc "đã đủ N dòng" có thể sai hoặc lỗi thời (BA cập nhật thêm dòng, hoặc bản thân ghi chú đó vốn đã sai từ đầu). Trước khi coi 1 Nhóm là "đã đủ", chạy lại `ba_slice.py --nhom {N} --with-sql --print` và liệt kê thủ công từng dòng ↔ từng KPI ID, không suy diễn từ prose cũ.
-
----
-
-## BƯỚC 2 — SCOPE GATING & CÂY QUYẾT ĐỊNH 5 NHÓM PENDING
-
-### 2.1. Ma Trận Scope Gating Tổng Thể
-
-| KPI | Hành xử |
-|---|---|
-| Atomic READY + `Trang thai mapping = Done/Doing` | In-scope — thiết kế đầy đủ (READY) |
-| Atomic READY + `Trang thai mapping = Pending` | PENDING — phân loại vào 1 trong 5 nhóm PENDING bên dưới |
-| Atomic READY + `Trang thai mapping = blank` | PENDING — xử lý như Pending |
-| Atomic PENDING | PENDING — phân loại vào 1 trong 5 nhóm PENDING bên dưới |
-| Không tìm được Atomic | Out-of-scope — ghi nhận, KHÔNG thiết kế |
-
-> **Rule quan trọng (từ thực tế thiết kế PTTT):** `Trang thai mapping = blank` **KHÔNG phải Out-of-scope** — xử lý như **Pending**. Out-of-scope chỉ áp dụng khi không tìm được Atomic entity phù hợp.
-
-> **Pattern "Fact thiếu FK":** Atomic entity nguồn đã READY nhưng Fact hiện tại thiếu FK đến một chiều cần bổ sung (VD: `Member Report Indicator Value` đã có nhưng cần thêm `Securities Company Dimension` để breakdown per-CTCK) → xếp vào **Nhóm 5 (Datamart Pending)**, lý do ghi là "Fact cần bổ sung FK đến [Dimension]", Atomic cần bổ sung ghi tên Fact + chiều cần thêm.
-
-❌ Không reuse fact/dim từ module khác để lấp KPI thiếu Atomic.
-
----
-
-### 2.2. Cây Quyết Định 5 Nhóm Nguyên Nhân PENDING (5-Category PENDING Decision Tree)
-
-Mọi chỉ tiêu (hoặc nhóm chỉ tiêu) ở trạng thái PENDING **bắt buộc phải được phân loại vào đúng 1 trong 5 nhóm nguyên nhân chuẩn hóa** (tương thích 100% với bộ phân loại `PendingClassifier` trong `datamart_ba_cross_checker.py` và quy chuẩn LLD):
-
-```
-                                [CHỈ TIÊU PENDING]
-                                         │
-        ┌────────────────────────────────┴────────────────────────────────┐
-        ▼                                                                 ▼
-[Có yếu tố Ngoại lai / Schema Atomic?]                          [Không có yếu tố Ngoại lai]
-  • Nguồn: VSD, VSDC, HOSE, HNX, SBV                                      │
-  • Ghi chú: ngoại lai, chưa duyệt Atomic,                                │
-    chưa có attribute, eform, contentitem...                              │
-        │                                                                 │
-        ▼                                                                 ▼
-┌─────────────────────────────────┐                      [Có yếu tố Đa nguồn / Liên hệ thống?]
-│ NHÓM 3: Thiếu nguồn dữ liệu /   │                         • Nguồn: scms_nhnck, scms_uat
-│ Atomic entity ngoài scope       │                         • Ghi chú: join đa nguồn, multi-source,
-│ (Trách nhiệm: Data Architecture)│                           liên hệ thống, SCMS + NHNCK
-└─────────────────────────────────┘                                        │
-                                                                           ├──► [Có] ──► ┌─────────────────────────────────┐
-                                                                           │             │ NHÓM 4: Cần join phức tạp đa    │
-                                                                           │             │ nguồn                           │
-                                                                           │             │ (Trách nhiệm: Atomic Modeling)  │
-                                                                           │             └─────────────────────────────────┘
-                                                                           ▼
-                                                                 [Kiểm tra Trạng thái BA]
-                                                                    • Status != Done (Doing, Pending...)
-                                                                    • Ghi chú: Chờ BA xác nhận/confirm...
-                                                                           │
-                                                                           ├──► [Đúng] ─► ┌─────────────────────────────────┐
-                                                                           │              │ NHÓM 1: BA chưa mapping xong    │
-                                                                           │              │ (Trách nhiệm: BA Team)          │
-                                                                           │              └─────────────────────────────────┘
-                                                                           ▼
-                                                                 [Kiểm tra Nguồn từ BA]
-                                                                    • Status = Done nhưng Nguồn trống / N/A
-                                                                    • Ghi chú: Chưa có CSDL, chưa số hóa,
-                                                                      biểu mẫu giấy, báo cáo bản cứng
-                                                                           │
-                                                                           ├──► [Đúng] ─► ┌─────────────────────────────────┐
-                                                                           │              │ NHÓM 2: Chưa có mapping nguồn   │
-                                                                           │              │ từ BA (Trách nhiệm: BA Team)    │
-                                                                           │              └─────────────────────────────────┘
-                                                                           ▼
-                                                                 ┌─────────────────────────────────┐
-                                                                 │ NHÓM 5: Datamart chưa thiết kế  │
-                                                                 │ Fact/Dim                        │
-                                                                 │ (Trách nhiệm: Datamart Modeling)│
-                                                                 └─────────────────────────────────┘
-```
-
-#### Bảng Quy Chuẩn 5 Nhóm Nguyên Nhân PENDING:
-
-| Nhóm | Tên Nhóm Chuẩn Hóa | Trách Nhiệm Chủ Trì | Dấu Hiệu Nhận Biết & Điều Kiện Kích Hoạt | Hành Động Tháo Gỡ Chuẩn Hóa |
-|:---:|---|---|---|---|
-| **Nhóm 1** | **BA chưa mapping xong** | **BA Team** | - `Trạng thái mapping` $\notin$ `{Done, Hoàn thành}` (`Doing`, `Pending`, `Draft`, ô trống).<br>- Ghi chú chứa: *"chờ BA xác nhận"*, *"chờ BA confirm"*, *"chờ BA"*, *"BA đang làm"*. | BA Team hoàn tất phân tích nghiệp vụ, quy tắc tính và nguồn dữ liệu chi tiết. |
-| **Nhóm 2** | **Chưa có mapping nguồn từ BA** | **BA Team** | - `Trạng thái mapping` = `Done`, nhưng cột `Bảng nguồn` để trống, `N/A`, `(trống)`, `null`.<br>- Ghi chú/Nguồn chứa: *"chưa có CSDL"*, *"chưa có nguồn"*, *"chưa số hóa"*, *"biểu mẫu giấy"*, *"Map biểu mẫu"*, *"báo cáo bản cứng"*. | BA Team xác minh nguồn CSDL; nếu chỉ có hồ sơ giấy thì đưa vào backlog chờ số hóa. |
-| **Nhóm 3** | **Thiếu nguồn dữ liệu / Atomic entity ngoài scope** | **Data Architecture / Atomic Team** | - Bảng nguồn hoặc mô tả nhắc tới hệ thống bên ngoài: `VSD`, `VSDC`, `UAT_VSDC`, `SBV`, `HOSE`, `HNX ngoài DW`, `ngoại lai`.<br>- Bảng nguồn hoặc ghi chú ghi nhận thiếu entity/cột Atomic: *"chưa duyệt Atomic"*, *"chưa có attribute"*, *"gap Atomic"*, Open Issue `O_{MODULE}_{N}`.<br>- Các chỉ tiêu thị phần, lưu ký, xử phạt vi phạm hành chính chưa có entity Atomic. | Lập danh mục nguồn ngoại lai cần ingest hoặc thiết kế bổ sung entity/attribute vào kho Atomic DWH. Bắt buộc liên kết Section 5 Open Issue. |
-| **Nhóm 4** | **Cần join phức tạp đa nguồn** | **Atomic Modeling Team** | - Yêu cầu kết nối dữ liệu giữa nhiều phân hệ chưa có cấu trúc bảng nối chuẩn tại Atomic.<br>- Từ khóa: `scms_nhnck`, `scms_uat`, `join đa nguồn`, `multi-source`, `liên hệ thống`, `cross-system`, `SCMS và NHNCK`. | Atomic Modeling Team thiết kế bảng quan hệ kết nối (Bridge / Cross-system Entity) tại tầng Atomic trước khi kéo lên Datamart. Bắt buộc liên kết Section 5 Open Issue. |
-| **Nhóm 5** | **Datamart chưa thiết kế Fact/Dim** | **Datamart Modeling Team** | - BA đã `Done`, nguồn Atomic nội tại đầy đủ và approved (`dm_manifest.yaml`).<br>- Datamart đang chờ phân tích kiến trúc, chưa thiết kế bảng Fact/Dim hoặc Detail Mapping đang để trống. | Datamart Team thiết kế mô hình 4 tầng (Staging -> ODS -> Atomic -> Datamart) và Detail Mapping. Bắt buộc liên kết Section 5 Open Issue nếu là blocker lớn của nhóm. |
-
----
-
-### 2.3. Cú Pháp Ghi Chú Bắt Buộc Trong Bảng KPI 7 Cột (Section 2)
-
-Với mọi dòng KPI mang trạng thái `PENDING`, cột `Ghi chú` trong bảng KPI 7 cột **bắt buộc tuân thủ cú pháp chuẩn**:
-```markdown
-**Lý do pending:** [Nhóm X - <Tên nhóm>]: <mô tả blocker cụ thể, ref O_{MODULE}_{N} nếu có>. **Atomic cần bổ sung:** <tên entity/table>. **Mart dự kiến:** <tên bảng> — grain: <mô tả grain>
-```
-Hoặc cú pháp ngắn gọn:
-```markdown
-Pending - [Nhóm 1-5]: <mô tả blocker cụ thể> | <dự kiến bảng mart / cấp độ hạt>
-```
-
-**Ví dụ thực tế chuẩn:**
-- Nhóm 1: `**Lý do pending:** [Nhóm 1 - BA chưa mapping xong]: Chờ BA confirm quy tắc tính / nguồn dữ liệu chi tiết. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Securities Trading Snapshot — grain: 1 row / symbol / trade_date`
-- Nhóm 2: `**Lý do pending:** [Nhóm 2 - Chưa có mapping nguồn từ BA]: Biểu mẫu giấy BM01_VSDC chưa được số hóa vào CSDL. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Shareholding Snapshot — grain: 1 row / company / month`
-- Nhóm 3: `**Lý do pending:** [Nhóm 3 - Thiếu nguồn Atomic / Ngoại lai]: gap Atomic REPORT_CELL_VALUE, xem O_QLKD_23. **Atomic cần bổ sung:** Member Report Indicator Value. **Mart dự kiến:** Fact Member Financial Snapshot — grain: 1 row / firm / report_period`
-- Nhóm 4: `**Lý do pending:** [Nhóm 4 - Cần join phức tạp đa nguồn]: Cần Atomic bridge liên kết SCMS và NHNCK, xem O_NHNCK_05. **Atomic cần bổ sung:** Cross System Practitioner Bridge. **Mart dự kiến:** Fact Practitioner Cross System Snapshot — grain: 1 row / practitioner / license`
-- Nhóm 5: `**Lý do pending:** [Nhóm 5 - Datamart chưa thiết kế Fact/Dim]: Atomic approved (scr_mkt_idx_snpst), Datamart đang thiết kế Fact/Dim. **Atomic cần bổ sung:** Đã có đủ. **Mart dự kiến:** Fact Market Index Snapshot — grain: 1 row / index / trade_date`
-
----
-
-### 2.4. Liên Kết Bắt Buộc Với Section 5 (Vấn Đề Mở)
-
-- **Nguyên tắc liên kết:** Các blocker lớn thuộc **Nhóm 3 (Thiếu nguồn ngoại lai/Atomic ngoài scope)**, **Nhóm 4 (Cần join phức tạp đa nguồn)**, và **Nhóm 5 (Datamart chưa thiết kế Fact/Dim)** **BẮT BUỘC TẠO OPEN ISSUE** trong Section 5 của `DTM_{MODULE}_HLD.md` với mã định danh `O_{MODULE}_{N}`.
-- Cột `KPI liên quan` trong bảng Section 5 phải liệt kê đầy đủ các mã `K_{MODULE}_...` chịu ảnh hưởng.
-- Cột `Vấn đề` và `Giả định` trong Section 5 phải ghi rõ nhóm nguyên nhân PENDING và đơn vị chịu trách nhiệm xử lý (BA, Data Architecture / Atomic, hay Datamart Team).
-- *(Lưu ý: Bãi bỏ quy định cũ từng cấm tạo Open Issue cho KPI PENDING — việc tạo Open Issue là công cụ truy vết trách nhiệm và theo dõi giải tỏa blocker kiến trúc).*
-
----
-
-### 2.5. Gating Bổ Sung Theo Cột "Loại Dữ Liệu" (Mọi Nhóm Yêu Cầu)
-
-BA file có cột **"Loại dữ liệu"** với 2 giá trị: `Dữ liệu tĩnh` và `Dữ liệu động`. Đây là lớp gating **độc lập, áp dụng SAU** bảng gating theo Atomic ở trên — kể cả khi Atomic đã READY và `Trạng thái mapping = Done`, vẫn phải kiểm tra thêm cột này. Áp dụng cho **mọi Nhóm yêu cầu** (Dashboard, Data Explorer, ...), không chỉ riêng Dashboard.
-
-| Loại dữ liệu | Ý nghĩa | Hành xử |
-|---|---|---|
-| `Dữ liệu tĩnh` | BA đã chốt logic mapping/nguồn cụ thể (bảng nguồn + trường nguồn + SQL tham khảo rõ ràng, không còn ghi chú "xác nhận lại") | Thiết kế **READY** theo đúng logic mapping BA cung cấp (nếu Atomic tương ứng cũng READY) |
-| `Dữ liệu động` | Nguồn dữ liệu là báo cáo định kỳ/số liệu do phân hệ khác nộp — logic khai thác (bảng, cột, điều kiện lọc) **chưa được thống nhất**, dù BA có kèm SQL tham khảo. Dấu hiệu nhận biết: SQL có comment "xác nhận lại", "hỏi bên phân hệ xem lưu ở bảng nào" | **PENDING** — không đưa vào ETL/mapping chính thức đợt này, lý do ghi "Dữ liệu động — chưa thống nhất quy tắc khai thác" |
-| `Chưa có CSDL - Map biểu mẫu` | Biến thể khác của `Dữ liệu động` — nguồn là báo cáo/biểu mẫu giấy định kỳ (VD: "BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành", "BM 8_Danh sách cổ đông lớn") mà hệ thống **chưa có CSDL lưu trữ**, BA chỉ tham chiếu tên biểu mẫu chứ chưa xác định được bảng/cột thật | **PENDING** — xử lý giống hệt `Dữ liệu động`, lý do ghi "Chưa có CSDL - Map biểu mẫu — báo cáo giấy chưa tích hợp hệ thống" (GSTT, 2026-07-28: gặp ở "Số cổ phiếu lưu hành"/"Vốn hóa"/"P/E"/"P/B" nguồn VSDC BM1/BM8) |
-| Cell chứa **nhiều giá trị cách nhau bởi dấu phẩy** (VD: `Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu`) | Measure tổng hợp từ nhiều nguồn con có mức độ sẵn sàng khác nhau (VD: "Vốn hóa" = Giá đóng cửa (tĩnh) × Số cổ phiếu lưu hành (chưa có CSDL)) | Áp dụng **mức thấp nhất** trong tập giá trị — có bất kỳ thành phần nào `Dữ liệu động`/`Chưa có CSDL - Map biểu mẫu` → cả dòng PENDING, dù có thành phần khác đã tĩnh |
-
-> **Lưu ý — không tự suy diễn từ tên cột:** Đừng cho rằng "Chiều" luôn tĩnh và "Chỉ tiêu" luôn động. Trong 1 nhóm, cả Chiều lẫn Chỉ tiêu đều có thể là `Dữ liệu động` (VD: "Chiều thời gian theo ngày" lấy từ bảng báo cáo định kỳ `MEMBER_REPORT.DATA_DATE` → động, trong khi cùng nhóm đó "Chiều Trạng thái công ty" lấy từ danh mục hệ thống → tĩnh). Đọc đúng giá trị cột "Loại dữ liệu" của từng dòng, không suy đoán theo `Phân loại`.
-
-> **Ví dụ thực tế (QLKD Nhóm 1 — Chỉ tiêu thống kê chung, 13/07/2026):** K_QLKD_1–9 (tổng CTCK + 7 trạng thái) đánh `Dữ liệu tĩnh` — nguồn `SC_FIRM_INFO` + `CAT_SC_FIRM_STATUS` (danh mục hệ thống, logic rõ ràng) → READY. K_QLKD_10–11 (số TK phát sinh GD, số dư tiền gửi) đánh `Dữ liệu động` — nguồn `REPORT_CELL_VALUE`/`CAT_INDICATOR` (báo cáo định kỳ), SQL kèm note "Hỏi bên phân hệ xem lưu ở bảng nào, cột nào, dòng nào?" → PENDING dù Atomic `Member Report Indicator Value` đã READY.
-
-> **Trong 1 Nhóm có cả tĩnh lẫn động (rất phổ biến):** Cả 2 loại dòng KPI nằm CHUNG 1 bảng KPI duy nhất (7 cột: KPI ID/Tên/Đơn vị/Tính chất/Công thức/Ghi chú/Trạng thái) — theo đúng Bước 2 Scope Gating: dòng tĩnh đánh Trạng thái = READY (điền đủ Đơn vị/Công thức), dòng động đánh Trạng thái = PENDING (Đơn vị/Công thức để trống hoặc "TBD — chờ Atomic", cột Ghi chú chứa Lý do pending/Atomic cần bổ sung/Mart dự kiến). KHÔNG tách thành 2 block/2 bảng riêng theo trạng thái. Nếu measure động vốn được thiết kế nằm chung Fact với các measure tĩnh (VD: cùng `Fact X Snapshot`), ghi rõ trong Ghi chú của dòng đó: "measure này KHÔNG lưu trên [Fact] ở giai đoạn hiện tại — bổ sung khi thống nhất xong".
->
-> **Nếu measure "động" là cột điều kiện snapshot/grain (VD: Calendar Date dùng để so sánh `<= ngày`)** — không thể pending cả Fact chỉ vì 1 cột ngày động. Trước khi kết luận PENDING, kiểm tra xem BA có chỉ định nguồn ngày thay thế (một cột ngày khác, đã tĩnh, cùng ý nghĩa nghiệp vụ) hay không — nếu có, dùng nguồn thay thế đó và ghi chú lý do đổi nguồn; chỉ pending nếu không có nguồn thay thế nào tĩnh.
-
-## BƯỚC 3 — CHECK REUSE (DATAMART MODEL)
-
-**Mục tiêu:** Tối đa hóa tái sử dụng bảng đã có trong `datamart_model.yaml` trước khi đề xuất bảng mới. Thực hiện theo 4 lớp kiểm tra theo thứ tự — **dừng ngay khi đã xác định được reuse_status**, không kiểm tra lớp tiếp theo.
-
-**Thực hiện:** Đọc toàn bộ `Datamart/datamart_model.yaml` một lần duy nhất trước khi bắt đầu phân tích — không đọc lại từng lần.
-
----
-
-### Lớp 1 — Conformed Dimension Whitelist (không phụ thuộc source match)
-
-Một số Dimension được thiết kế dùng chung toàn hệ thống. **Bất kể module nào, bất kể BA ghi nguồn gì** — nếu nhóm thông tin cần các chiều dưới đây thì **luôn reuse**, không tạo mới:
-
-| Datamart table | Logical name | Khi nào reuse |
-|---|---|---|
-| `cdr_dt_dim` | Calendar Date Dimension | Mọi Fact có chiều thời gian |
-| `cl_dim` | Classification Dimension | Mọi chiều phân loại có nguồn từ Classification Value (CV) Atomic — xem Lớp 2 |
-
-> ❌ **KHÔNG tạo `Calendar Date Dimension` mới** dù không tìm thấy trong source match. Luôn reuse `cdr_dt_dim`.
-
----
-
-### Lớp 2 — Classification Value → cl_dim (filter theo scheme)
-
-**Áp dụng khi:** Nhóm thông tin cần một chiều phân loại dạng danh mục (ngành nghề, loại hình, trạng thái...) mà nguồn Atomic là `Classification Value` (bảng `cv`).
-
-**Quy trình:**
-1. Xác định scheme CV cần dùng (VD: `IDS_INDUSTRY_CATEGORY`, `CERTIFICATE_TYPE`...)
-2. **Kiểm tra `ldm.physical_name` trong YAML Atomic entity nguồn:**
-   - `physical_name = cv` → dữ liệu phân loại lưu trong bảng CV → **reuse `cl_dim`**
-   - `physical_name ≠ cv` (entity riêng) → Atomic thiết kế entity này độc lập → **tạo Dimension riêng**, KHÔNG reuse `cl_dim`
-3. Trong thiết kế reuse `cl_dim`: ghi rõ FK tên `Classification Dimension Id` + ghi chú scheme trong cột Ghi chú / Bảng grain
-
-**Lý do quan trọng:** `cl_dim` chỉ là projection của bảng `cv` Atomic. Nếu Atomic không lưu thông tin đó trong `cv` thì `cl_dim` không có dữ liệu đó — không thể reuse.
-
-> ❌ **KHÔNG tạo Dimension mới** khi `cl_dim` đã tồn tại và Atomic lưu dữ liệu trong `cv`.
-> ❌ **KHÔNG reuse `cl_dim`** khi Atomic lưu dữ liệu trong entity riêng (`physical_name ≠ cv`) — dù tên scheme nghe có vẻ là "phân loại".
-
-**Ví dụ đúng:**
-- BA cần chiều "Ngành nghề kinh tế cấp 1" từ `IDS.categories` → tra YAML → `physical_name = cv` (scheme `IDS_INDUSTRY_CATEGORY`) → reuse `cl_dim`
-- BA cần chiều "Loại CCHN" từ `NHNCK.CERTIFICATES` → tra YAML → `physical_name = sp_license_certificate_type` → tạo `sp_license_ctf_tp_dim` mới, KHÔNG reuse `cl_dim`
-
----
-
-### Lớp 3 — Source Match (cùng nguồn Atomic)
-
-**Áp dụng khi:** Bảng đích không thuộc Lớp 1 hoặc Lớp 2.
-
-**Bước 3a — Xác định Atomic source** từ BA analyst (cột Nguồn):
-- Đọc cột Nguồn tại từng nhóm thông tin → tra `dm_manifest.yaml` lấy `physical_name` (= `atomic_table` vật lý)
-- Nếu BA ghi tên nguồn chung (VD: "NHNCK") → đọc tất cả entry trong manifest có `source` khớp, lấy tất cả `physical_name` liên quan
-
-**Bước 3b — Tìm trong `datamart_model.yaml`** theo `source_atomic`:
-- Duyệt qua `entities` → tìm entry có `source_atomic` chứa `physical_name` đang xét
-- Không tìm thấy → `new`, chuyển sang Lớp 4 để kiểm tra Fact partial
-
-**Bước 3c — Nếu tìm thấy** (cùng nguồn Atomic đã được dùng):
-- Lấy `datamart_table` + `table_type` + số cột hiện có (`columns` list) từ model
-- So sánh `table_type` + grain mục đích:
-
-| Điều kiện | Hành xử |
-|---|---|
-| `table_type` khác nhau | `new` |
-| `table_type` giống, grain/mục đích giống | → Lớp 4 kiểm tra partial |
-| `table_type` giống, grain/mục đích khác hẳn | `new` |
-
----
-
-### Lớp 4 — Fact/Dim Partial (thêm cột vào bảng hiện có)
-
-**Áp dụng khi:** Đã tìm thấy bảng cùng loại + cùng grain từ Lớp 3, hoặc cần bổ sung measure/attribute vào Fact đã có.
-
-**Câu hỏi kiểm tra:**
-- Fact hiện có đủ các measure/FK cần thiết cho nhóm này chưa?
-- Nếu thiếu measure → `partial` (thêm cột, không tạo Fact mới)
-- Nếu thiếu FK đến Dimension mới → vẫn `partial` (thêm FK + Dimension)
-- Nếu grain thực sự khác → `new`
-
-**Báo cáo human khi phát hiện khả năng reuse (Lớp 3 hoặc 4):**
-
-```
-Phát hiện khả năng reuse:
-  Nguồn Atomic: [atomic_table]
-  Bảng đã có trong datamart_model.yaml: [datamart_table] (table_type: dim/fact/operational, N cột hiện có)
-  Bảng đang thiết kế: [tên mới đề xuất]
-  Grain hiện tại: [grain bảng đã có]
-  Grain cần thiết: [grain nhóm này]
-
-Đề xuất:
-  (a) reuse — tái sử dụng toàn bộ [datamart_table] hiện có (không thêm cột)
-  (b) partial — thêm cột/FK vào [datamart_table] hiện có
-  (c) new — tạo bảng mới (grain/mục đích thực sự khác)
-
-→ Human chọn phương án
-```
-
----
-
-### Tổng hợp và hỏi human (GATE — bắt buộc dừng)
-
-Sau khi chạy qua 4 lớp cho **tất cả bảng** trong module, trình bày bảng tóm tắt:
-
-```
-Kết quả phân tích reuse (4 lớp):
-
-| Datamart Entity | datamart_table | Lớp phát hiện | reuse_status đề xuất | Lý do |
-|---|---|---|---|---|
-| Calendar Date Dimension | cdr_dt_dim | L1 — Whitelist | reuse | Conformed Dim toàn hệ thống |
-| Classification Dimension | cl_dim | L2 — CV scheme | reuse | scheme IDS_INDUSTRY_CATEGORY đã có trong cl_dim |
-| Fact Listed Bond Snapshot | fct_lst_bnd_snpst | L3 — source match | partial | Cùng nguồn scr_trd, cần thêm cột OTC_Bond_Trading_Value |
-| Fact New Fact | fct_new | L3 — source match | new | Chưa có trong master |
-
-→ Xác nhận reuse_status từng bảng để tiến hành thiết kế?
-```
-
-> ❌ **KHÔNG được tự tiếp tục thiết kế** khi chưa có xác nhận của human — dù toàn bộ bảng đều là `new`.
-
-**Ghi kết quả vào Section 4 HLD.md** (xem format bên dưới)
-
-> **Lưu ý:** `datamart_model.yaml` rỗng (`entities: []`, module đầu tiên) → toàn bộ bảng là `new`, vẫn phải trình bày bảng tóm tắt và chờ human xác nhận.
-
----
-
-### Áp dụng reuse khi thiết kế từng nhóm (Section 2)
-
-**Bước kiểm tra bắt buộc TRƯỚC KHI đề xuất bảng đích cho mỗi nhóm:**
-
-1. Chiều thời gian → Lớp 1: luôn là `cdr_dt_dim`
-2. Chiều phân loại/danh mục → Lớp 2: kiểm tra CV scheme → nếu có thì `cl_dim`
-3. Fact/Dim khác → Lớp 3: match source → Lớp 4: kiểm tra partial
-
-**Trong bảng KPI (cột Ghi chú) và Bảng grain:** ghi rõ reuse_status và scheme/filter khi áp dụng Lớp 1 hoặc Lớp 2. Ví dụ:
-- `Calendar Date Dimension — reuse (cdr_dt_dim)`
-- `Classification Dimension — reuse cl_dim, filter scheme = 'IDS_INDUSTRY_CATEGORY'`
-
-### Section 4 — Reuse Analysis & Quy Chuẩn Tái Sử Dụng / Bãi Bỏ Bảng
-
-Thêm section này vào cuối file HLD, sau Section 3. Section 4 là nguồn sự thật cho Phase 2 — Entities (`Entities.csv` đọc trực tiếp từ đây):
-
-```markdown
-## Section 4 — Reuse Analysis
-
-| Datamart Entity | datamart_table | reuse_status | Ghi chú |
-|---|---|---|---|
-| Calendar Date Dimension | cdr_dt_dim | reuse | Conformed Dim toàn hệ thống — không thêm nguồn mới |
-| Branch Dimension | dim_branch | partial | Đã có nguồn FLEX. Module này thêm nguồn NHNCK |
-| Fact ATM Transaction | fct_atm_txn | new | Chưa có trong master |
-| Fact Old Draft Snapshot | fct_old_draft_snpst | DEPRECATED | Đã bãi bỏ theo biên bản thống nhất với BA ngày 2026-09-08 |
-```
-
-#### 1. Phân Định Rõ Hai Trường Hợp Reuse (Reuse Analysis Protocol)
-Khi một chỉ tiêu hoặc bảng được tái sử dụng giữa các nhóm, bắt buộc phân định rạch ròi:
-- **Case 1 (Physical Measure/Dim Reuse — Tái sử dụng Measure/Dim Vật Lý Đã Có):**
-  + *Bản chất:* Chỉ tiêu sử dụng trực tiếp measure hoặc attribute đã được thiết kế và lưu trữ vật lý trên Fact hoặc Dimension ở nhóm trước.
-  + *Hành xử:* Ghi rõ tên bảng logical (`datamart_entity`) và physical (`datamart_table`), cột đích. Bắt buộc đồng bộ vào `Entities.csv` và `datamart_model.yaml`. Trong Detail Mapping LLD bắt buộc điền đủ `mart_table` và `mart_column`.
-  + *Ghi chú:* `Reuse từ Nhóm X (K_{MODULE}_Y) — measure vật lý có sẵn trên Fact/Dim <Table>`.
-- **Case 2 (Presentation / Derived Reuse — Tái sử dụng Hiển Thị BI / Phái Sinh):**
-  + *Bản chất:* Chỉ tiêu hiển thị lại thuần túy qua BI layer hoặc công thức phái sinh mà không có cột vật lý riêng trên Fact/Dim.
-  + *Hành xử:* Trong Section 2 ghi rõ công thức tính và nguồn gốc. Không tạo cột vật lý trùng lặp trên Fact. Trong Detail Mapping LLD đánh dấu `column_role = 'DERIVED'`, **bắt buộc để trống** `mart_table` và `mart_column`.
-  + *Ghi chú:* `Reuse từ Nhóm X (K_{MODULE}_Y) — tính toán tại presentation layer, không lưu cột riêng trên Fact`.
-
-#### 2. Giao Thức Bãi Bỏ Bảng Đồng Bộ 5 Tầng (All-Tier Table Deprecation Protocol)
-Khi một bảng Fact/Dim draft sau khi thiết kế được xác định **không còn cần nữa** (bị bãi bỏ, sáp nhập, hoặc chuyển thành Dimension thuần theo thống nhất với BA):
-> ⛔ **CẤM TUYỆT ĐỐI:** Chỉ xóa bảng ở một tầng đơn lẻ (như xóa file Flat Table SQL mà để sót LLD hoặc HLD). Bắt buộc thực hiện đồng bộ trên cả **5 tầng kiến trúc**:
-1. **Tầng 1 (LLD Chi tiết Module):** Xóa file CSV bảng trong `Datamart/lld/{MODULE}/DTM_{MODULE}_{datamart_table}.csv`.
-2. **Tầng 2 (Master Registry):** Purge 100% dòng có `datamart_table == {datamart_table}` khỏi master registry `Datamart/lld/datamart_attributes.csv`.
-3. **Tầng 3 (Detail Mapping):** Cập nhật `DTM_{MODULE}_Detail_Mapping.csv`: nếu bãi bỏ thì chuyển `column_role = 'DEPRECATED'`, để trống `mart_table`/`mart_column`, `logic = 'Đã loại bỏ — không tạo cột/slicer'`; nếu sáp nhập thì đổi tên `mart_table`/`mart_column` sang bảng mới.
-4. **Tầng 4 (Model Registry):** Xóa triệt để block entity `- id: "DTM-{datamart_table}"` khỏi `Datamart/datamart_model.yaml` (trừ khi là Conformed/Shared Dimension dùng chung cho module khác).
-5. **Tầng 5 (HLD & Flat Table SQL):**
-   - HLD: Đánh dấu `DEPRECATED` trong Section 3 và Section 4; cập nhật `Entities.csv/.md` (loại bỏ khỏi active entities);
-   - Flat Table: Xóa khối DDL trong `01_create_{module}_flat_tables.sql` và khối DML trong `02_populate_{module}_flat_tables.sql`.
-- **Phân định Orphan Check 3 Chiều (`check_orphan.py --strict`):**
-  + **Nhánh A (Incomplete — Bảng còn $\ge 1$ KPI READY):** Gán mã `L2-ORPHAN-3WAY-INCOMPLETE`. Bắt buộc hoàn tất các tầng còn thiếu (Entities.csv, DDL/DML Flat Table). CẤM XÓA BẢNG!
-  + **Nhánh B (Abandoned — Bảng 0 KPI READY / Đã bãi bỏ):** Gán mã `L2-ORPHAN-3WAY-ABANDONED`. Kích hoạt ngay Giao thức dọn dẹp 5 tầng nêu trên.
-
----
-
-## BƯỚC 4 — PHÂN LOẠI BẢNG DATAMART
-
-| Loại | Khi nào | Pattern |
-|---|---|---|
-| **Phân tích** | KPI aggregate nhiều đối tượng / nhiều kỳ | Star Schema — Fact + Dim |
-| **Tác nghiệp** | Lookup 1 đối tượng cụ thể | Denormalized Table — 1 row per đối tượng |
-
-### BƯỚC 4B — KIỂM SOÁT CẤP ĐỘ HẠT (ISO-GRAIN RULE), CHỐNG LỆCH HẠT & LƯU TRỮ CHUỖI THỜI GIAN
-
-> **Bài học kinh nghiệm thực tế sâu sắc (Case K_GSTT_61 & Fanout Measure):**
-> 1. *Fanout measure khi SUM:* Measure (số đo, cột định lượng) bị fanout khi đặt lên Fact có grain mịn hơn cấp phát sinh (VD: `Fact Penalty Decision Subject Behavior` mang `Total_Fine_Amount` của cấp Quyết định $\implies$ SUM bị nhân đôi/nhân ba).
-> 2. *Grain Mismatch khi Reuse (Case K_GSTT_61):* Chỉ tiêu "Vốn hóa" tại Nhóm 6 (Dashboard cấp Rổ chỉ số VN30/HNX30) có công thức `MAX(idx_market_cap) GROUP BY index_code`. Khi thiết kế 8 nhóm Top-N mã chứng khoán (Nhóm 7, 9, 11, 13, 19, 21, 32, 33), người thiết kế ghi `Reuse từ Nhóm 6` và copy nguyên công thức $\implies$ Cổ phiếu VCB hiển thị vốn hóa 3.2 triệu tỷ VNĐ của cả rổ VN30 thay vì vốn hóa riêng của VCB (~450 nghìn tỷ VNĐ)!
-
-#### 1. Nguyên Tắc Đồng Hạt (Iso-Grain Rule)
-- **Presentation Grain (Cấp độ hạt trình diễn):** Xác định từ Mockup báo cáo ở Section 2: *"Một dòng kết quả hiển thị đại diện cho 1 đối tượng nghiệp vụ gì?"*. Nhìn vào các cột dimension định danh đứng liền kề (Mã CK vs Tên rổ chỉ số vs Mã CTCK vs Tên sàn).
-- **Fact Storage Grain (Cấp độ hạt lưu trữ):** Định nghĩa grain lưu trữ vật lý của bảng Fact ở Section 3: *"Một dòng bản ghi trong Fact lưu trữ trạng thái của đối tượng gì tại mốc thời gian nào?"*.
-- **Ràng buộc Iso-Grain:** Cấp độ hạt trình diễn trên báo cáo phải tương thích và không được mịn hơn cấp độ hạt của Fact lưu trữ ($Presentation\_Grain \le Fact\_Storage\_Grain$). Tuyệt đối cấm ánh xạ trực tiếp báo cáo cấp Cổ phiếu vào Fact cấp Rổ chỉ số/Sàn nếu không có bảng cầu nối (Bridge table) hợp lệ (`L1-GRAIN-MISMATCH`).
-
-#### 2. Thang 6 Bậc Phân Cấp Hạt Kinh Doanh (Grain Hierarchy)
-Khi phân tích và đối soát grain, bắt buộc tuân theo thứ bậc từ thô đến mịn:
-- **Level 1 (Sàn GDCK):** `floor_code` (HOSE, HNX, UPCOM)
-- **Level 2 (Rổ Chỉ Số):** `index_code` (VN-Index, VN30, HNX30)
-- **Level 3 (Ngành / Lĩnh Vực):** `industry_code` (Ngân hàng, Bất động sản...)
-- **Level 4 (Mã Chứng Khoán / Doanh Nghiệp):** `symbol` / `public_company_id`
-- **Level 5 (Định Chế / CTCK / Thành Viên):** `member_code` / `sc_firm_id`
-- **Level 6 (Tài Khoản / Giao Dịch Chi Tiết):** `account_number`, `order_id`
-
-*Quy tắc chống Grain Mismatch khi Reuse:* Nếu nhóm reuse có Presentation Grain ở cấp độ hạt khác nhóm gốc (ví dụ gốc Level 2, reuse Level 4) $\implies$ **CẤM copy nguyên công thức aggregate**. Bắt buộc viết lại logic aggregate theo đúng khóa định danh của nhóm reuse (ví dụ: `MAX(close_price * outstanding_share_quantity) GROUP BY symbol`).
-
-#### 3. Chuẩn Hóa Lưu Trữ Chuỗi Thời Gian & Quy Đổi Số Phiên Giao Dịch
-Đối với các chỉ tiêu phân tích kỹ thuật và chuỗi thời gian lookback (Đỉnh/Đáy 52 tuần, 6 tháng, 3 tháng, 1 tháng, MA20, MA10, MA5):
-1. **Quy đổi số phiên giao dịch chuẩn (Trading Sessions):**
-   Thị trường chứng khoán nghỉ thứ Bảy, Chủ nhật và ngày lễ, tạo ra các khoảng trống lịch tự nhiên.
-   - **CẤM:** Sử dụng ngày lịch `INTERVAL '52' WEEK` hoặc `INTERVAL '6' MONTH`.
-   - **BẮT BUỘC:** Quy đổi sang số phiên giao dịch thực tế và dùng khung cửa sổ hàng (`ROWS BETWEEN (N-1) PRECEDING AND CURRENT ROW`) trên chuỗi sắp xếp `ORDER BY <date> ASC`:
-     + **52 tuần (~1 năm):** Đúng **260 phiên** (`ROWS BETWEEN 259 PRECEDING AND CURRENT ROW`).
-     + **6 tháng (~26 tuần):** Đúng **130 phiên** (`ROWS BETWEEN 129 PRECEDING AND CURRENT ROW`).
-     + **3 tháng (~13 tuần):** Đúng **65 phiên** (`ROWS BETWEEN 64 PRECEDING AND CURRENT ROW`).
-     + **1 tháng / 4 tuần:** Đúng **20 phiên** (`ROWS BETWEEN 19 PRECEDING AND CURRENT ROW`).
-     + **Đường MA20 / MA10 / MA5:** Tương ứng 20 phiên (`19 PRECEDING`), 10 phiên (`9 PRECEDING`), 5 phiên (`4 PRECEDING`).
-   - *Xử lý cổ phiếu mới niêm yết:* Chuỗi dữ liệu lịch sử chưa đủ 260 phiên thì mệnh đề `ROWS BETWEEN 259 PRECEDING AND CURRENT ROW` tự động lấy từ phiên đầu tiên có sẵn đến hiện tại, không gây lỗi SQL và không trả về NULL.
-2. **Cấu trúc phân đoạn bắt buộc:** Mọi Window Function phải có `PARTITION BY <entity_id>` (như `PARTITION BY symbol`) và `ORDER BY <date_col> ASC` để không trộn lẫn chuỗi giá của các thực thể khác nhau.
-3. **Lựa chọn trường giá:**
-   - Bắt buộc dùng **`close_price`** (Giá đóng cửa) cho 100% các báo cáo thống kê định giá chính thức của UBCKNN / Sở GDCK (mẫu `BM021_MSS`) và đỉnh/đáy 52 tuần.
-   - Chỉ dùng `high_price` / `low_price` khi BA yêu cầu tường minh phân tích nến cực trị trong phiên (Intraday Extremes).
-
-#### 4. Nền Tảng Lưu Trữ Bắt Buộc: Fact Periodic Snapshot theo ngày (`fct_*_snpst`)
-- **LỆNH CẤM TUYỆT ĐỐI (`L2-WINDOW-STORAGE-INVALID`):** CẤM thiết kế tính toán Window Function lịch sử trên Dimension SCD4A current-state (như `security_trading_snpst_dim`).
-- *Lý do:* Bảng Dimension SCD4A current-state chỉ lưu **duy nhất 1 bản ghi hiện hành** của ngày hôm nay cho mỗi thực thể. Chạy Window Function trên 1 dòng duy nhất sẽ luôn trả về chính giá ngày hôm nay, làm mất hoàn toàn giá trị lịch sử!
-- **Kiến trúc chuẩn:** Mọi chỉ tiêu chuỗi thời gian lookback bắt buộc phải được thiết kế lưu trữ trên **Fact Periodic Snapshot theo ngày** (`fct_*_snpst`) với Grain `1 row / entity / trade_date`.
-
-#### 5. Tính Nhất Quán Chu Kỳ Trong Tỷ Số Tài Chính (Financial Ratio Period Consistency)
-- **Nguyên tắc Ghép Cặp:** Tử số và Mẫu số của các chỉ số tài chính (P/E, P/B, EPS, BVPS, ROE, ROA) bắt buộc phải nằm trên **cùng một hệ quy chiếu thời gian**:
-  + P/E Năm (TTM): Tử số = `close_price`, Mẫu số = `EPS TTM` (LNST lũy kế 4 quý gần nhất chia cho Số CP bình quân 4 quý).
-  + P/E Quý: Phải nhân 4 quy năm (`EPS Quý × 4`). Tuyệt đối không lấy Giá chia cho EPS 1 quý mà không quy năm.
-- **LỆNH CẤM CỘNG DỒN BIẾN SỐ SỐ DƯ (STOCK SUMMATION BAN):**
-  + **TUYỆT ĐỐI CẤM:** Dùng `SUM(owner_equity)` hoặc `SUM(total_assets)` qua 4 quý trong mẫu số. Vốn chủ sở hữu và Tổng tài sản là biến số số dư thời điểm (BCDKT). Phải lấy số dư quý gần nhất hoặc tính bình quân đầu/cuối kỳ: `(Đầu kỳ + Cuối kỳ) / 2`.
-- **Quy Tắc Xử Lý Thiếu BCTC:** Nếu doanh nghiệp thiếu BCTC của bất kỳ quý nào trong chuỗi 4 quý TTM $\implies$ Chỉ tiêu `net_profit_after_tax_ttm`, `EPS TTM`, `P/E` bắt buộc trả về `NULL`, nghiêm cấm việc cộng 2-3 quý rồi tự ý chia bình quân nội suy.
+**Bước 4 — Loại bảng và grain** → `reference/step4_grain.md`. Phân tích → Star Schema (Fact + Dim); tác nghiệp → bảng denormalize 1 dòng/đối tượng. Presentation grain không được mịn hơn grain lưu trữ của Fact (thang 6 bậc Sàn → Chỉ số → Ngành → Mã CK → CTCK → Giao dịch); reuse lệch cấp hạt thì viết lại aggregate. Lookback dùng số phiên (260/130/65/20) bằng `ROWS BETWEEN` trên Fact Periodic Snapshot theo ngày, không trên Dimension SCD4A. Tử và mẫu của tỷ số tài chính cùng kỳ; không `SUM` biến số dư qua nhiều kỳ.
 
 ## BƯỚC 5 — THIẾT KẾ VÀ XUẤT FILE
 
@@ -737,128 +155,17 @@ Khi phân tích và đối soát grain, bắt buộc tuân theo thứ bậc từ
 
 Tạo thư mục nếu chưa có. Thông báo đường dẫn file.
 
-## BƯỚC 5B — REVIEW CUỐI TOÀN FILE (bắt buộc, sau khi viết xong toàn bộ HLD, TRƯỚC GATE Phase 1)
+## Bước 5B — Review cuối toàn file
 
-> **Vì sao cần bước riêng:** Checklist "TRƯỚC KHI BÀN GIAO" ở dưới được áp dụng per-Nhóm trong lúc thiết kế — nhưng một số lỗi chỉ lộ ra khi nhìn **toàn file cùng lúc** (VD: 1 entity được định nghĩa đầy đủ ở Nhóm 1 nhưng bị tham chiếu rỗng ở Nhóm 2/3/6 vì mỗi khối `erDiagram`/`flowchart` là 1 render độc lập, không tự nhớ nội dung khối khác). Bước này quét lại toàn bộ file sau khi đã viết xong, dùng script thay vì đọc mắt để không bỏ sót.
-
-> **Áp dụng cả khi CHỈNH SỬA/ĐIỀU CHỈNH một phần của HLD đã tồn tại** (không chỉ khi thiết kế mới từ đầu) — kể cả khi phạm vi yêu cầu chỉ là "sửa lại Nhóm N". Vì các mục kiểm tra dưới đây quét **toàn file**, một thay đổi cục bộ (thêm/sửa 1 Nhóm) vẫn có thể làm lộ ra hoặc để sót lỗi cấu trúc đã tồn tại từ trước ở phần không đụng tới — bỏ qua Bước 5B chỉ vì "task chỉ yêu cầu sửa 1 Nhóm" đã gây sót lỗi thực tế (TT — sửa lại Nhóm 1 theo Atomic schema mới nhưng không chạy mục #0 nên bỏ sót toàn bộ file thiếu Section 4 — Reuse Analysis, heading Cụm sai cấp, bảng KPI thiếu cột Ghi chú, vốn có từ bản gốc 20260427 và không liên quan gì đến thay đổi đang làm).
-
-### Cách chạy: DÙNG SCRIPT, KHÔNG ĐỌC MẮT
-
-14 mục dưới đây đã được tự động hoá. **Bắt buộc chạy lệnh này**, không tự viết lại checker
-và không tự đánh giá bằng mắt:
-
-```bash
-python .claude/skills/datamart-review/scripts/check_hld_5b.py --module {MODULE}
-```
-
-Script in đủ 14 dòng `#0`–`#13` kèm mã lỗi. Mục `MANUAL` (#9, #10, #12) chuyển sang
-`check_references.py` và `datamart_progress_analyzer.py` — vẫn phải chạy, không được bỏ.
-Dán nguyên output vào báo cáo cho human.
-
-> **Vì sao bắt buộc dùng script:** trước khi có `check_hld_5b.py`, 14 mục này chỉ là checklist chữ.
-> Thực tế agent bỏ qua hoặc tự đánh giá "đã xong" mà không phát hiện: 18 khối erDiagram thiếu
-> `Source_System_Code`, 36 Fact dùng `Snapshot_Date_Id` thay vì `Snapshot_Date_Dimension_Id`,
-> 17 heading `### Cụm` sai cấp, Section 3 còn giữ Fact đã bãi bỏ trong khi Section 1 & 5 đã ghi Resolved.
-
-Diễn giải chi tiết từng mục (khớp 1-1 với tiêu chuẩn **Lớp 1b của `datamart-review`**):
-
-0. **Cấu trúc Section & Bảng KPI 7 Cột (`[L1-SECTION-STRUCTURE]`):**
-   - Đếm số Section (`## Section N`) — **phải đúng 5**, theo thứ tự cố định: `Data Lineage` / `Tổng quan báo cáo` / `Mô hình tổng thể` / `Reuse Analysis` / `Vấn đề mở`. Không còn biến thể 4 Section. Thiếu bất kỳ Section nào, hoặc "Vấn đề mở" không nằm ở vị trí Section 5 $\implies$ Báo lỗi cấu trúc. Module đầu tiên (`datamart_model.yaml` rỗng) vẫn phải có Section 4 với toàn bộ bảng `reuse_status = new`.
-   - Heading Cụm trong Section 1 phải đúng cấp `##### Cụm N: ...` (5 dấu `#`).
-   - Mọi bảng KPI của mỗi Nhóm phải đủ **chuẩn 7 cột**: `KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái` (1 bảng duy nhất chứa cả dòng READY lẫn PENDING, không tách 2 bảng/2 block theo header `##### READY`/`##### PENDING`). Dòng PENDING bắt buộc chứa tiền tố `[Nhóm 1-5]`.
-   - Mỗi bảng Fact/Dim/Operational trong Section 3 phải có đúng 1 dòng tương ứng trong Section 4 — Reuse Analysis (và ngược lại).
-1. **erDiagram — Entity trong quan hệ phải có block định nghĩa (`[L1-ERD-MISSING-ENTITY-BLOCK]`):**
-   Với mỗi khối ` ```mermaid\nerDiagram `, mọi entity xuất hiện trong quan hệ (`A ||--o{ B`, `A }o--|| B`...) bắt buộc phải có block định nghĩa `{ ... }` trong chính khối mermaid đó. Quét per-block để tránh nhầm ranh giới giữa các khối.
-2. **erDiagram — Cấm Fact-to-Fact reference (`[L1-FACT-TO-FACT-RELATION]`):**
-   Với mỗi dòng quan hệ `A ||--o{ B`, entity A (vế trái) **tuyệt đối không được** có tên bắt đầu bằng `Fact_`/`Fact ` — vế trái luôn phải là Dimension. Nếu cần quan hệ, bắt buộc tách Dimension chứa business key độc lập.
-3. **erDiagram — Mọi Dimension/Operational có `Source_System_Code` (`[L1-MISSING-SOURCE-SYSTEM-CODE]`):**
-   Mọi block `{ ... }` có tên kết thúc bằng `_Dimension` hoặc là bảng Operational bắt buộc phải chứa dòng `string Source_System_Code`. `Calendar_Date_Dimension` cũng bắt buộc, không có ngoại lệ.
-4. **Section 1 Flowchart — 3 Subgraph chuẩn (`[L1-FLOWCHART-3-SUBGRAPHS]`):**
-   Mọi khối flowchart trong Section 1 bắt buộc có đúng 3 subgraph chuẩn: `SRC["Staging"]` / `SIL["Atomic"]` / `GOLD["Datamart"]`.
-5. **Section 1 Flowchart — Mỗi Cụm đúng 1 bảng Datamart (`[L1-CLUSTER-MULTIPLE-MARTS]`):**
-   Đếm số node bảng trong subgraph `GOLD` (loại trừ Dimension) — **phải đúng bằng 1**.
-6. **Node ID Staging không chứa dấu chấm (`[L1-STAGING-NODE-DOT-SYNTAX]`):**
-   Node ID của mermaid Staging không được chứa dấu chấm `.` (`\w+\.\w+\[` gây lỗi cú pháp render mermaid).
-7. **Code Fence cân bằng (`[L1-UNBALANCED-CODE-FENCE]`):**
-   Tổng số dòng code fence markdown (```` ``` ````) trong toàn file bắt buộc phải là số chẵn.
-8. **KPI_ID liên tục, không trùng lặp (`[L1-DUPLICATE-KPI-ID]`):**
-   Trích toàn bộ `K_{MODULE}_\d+`, kiểm tra dải số liên tục từ 1 đến max, không có ID nào xuất hiện ở $\ge 2$ dòng bảng KPI khai sinh khác nhau (trừ dòng ghi chú "Reuse từ Nhóm X").
-9. **Nguồn Atomic tồn tại thật trong repo approved (`[L1-ATOMIC-SOURCE-NOT-FOUND]`):**
-   Mọi node Atomic dùng làm nguồn Dimension/Fact phải tồn tại thật trong `DataModel/Atomic/` (Ưu tiên 1) hoặc `DataModel/working/Atomic/` (Ưu tiên 2). **TUYỆT ĐỐI CẤM `DataModel/working/Atomic_LinhLV/`**. Ngoại lệ: `Classification Value` (`cl_value`).
-10. **Đối soát số lượng BA ↔ HLD chuẩn hóa (`[L1-COUNT-DELTA-MISMATCH]` & `[L1-DELETE-VIOLATION]`):**
-    - $HLD\_Base == BA\_Valid$ (khớp tuyệt đối 1-1).
-    - $BA\_Valid$: chỉ tính dòng có `Trạng thái mapping ∈ {Done, Doing, Pending}`, **loại bỏ 100% dòng `Delete / DELETED / Xóa / Bãi bỏ`** (vi phạm gán mã `L1-DELETE-VIOLATION`).
-    - Chênh lệch $\Delta = HLD\_Total - BA\_Valid > 0$ chỉ cho phép khi toàn bộ là phái sinh nội tại (`_YOY`, `_GROWTH`, %) hoặc sub-component (`a`, `b`) có giải trình rõ tại Ghi chú.
-11. **erDiagram của cùng 1 Fact/Dim phải giống hệt nhau ở mọi Nhóm (`[L1-INCONSISTENT-ENTITY-BLOCKS]`):**
-    Trích toàn bộ block `{tên_entity} { ... }` theo tên entity, so khớp tập hợp trường giữa mọi khối cùng tên xuất hiện trong toàn file. Khác nhau $\implies$ hợp nhất (union) toàn bộ field READY thành 1 schema chuẩn và cập nhật toàn file. Bỏ hậu tố đơn vị (`_Bil_VND`) khỏi tên field.
-12. **Mỗi KPI READY có measure phải có mặt trong erDiagram (`[L1-READY-MEASURE-MISSING-FROM-ERD]`):**
-    Mọi dòng KPI READY có Tính chất `Cơ sở`/`Phái sinh` (không phải sub-component/reuse) phải tìm thấy $\ge 1$ field tương ứng trong khối erDiagram của Fact/Dim nó thuộc về.
-13. **Chuẩn Role-Playing Date Dimension (`[L1-DATE-FK-VIOLATION]`) & Kiểm Soát Cấp Độ Hạt (`[L1-GRAIN-MISMATCH]`):**
-    - **A. Role-Playing Date Dimension trên Fact Table (`[L1-DATE-FK-VIOLATION]` / `[L2-DATE-FK-ROLE-PLAYING]`):**
-      + **CẤM TUYỆT ĐỐI:** Block Fact chứa trường `Calendar_Date_Dimension_Id FK` hoặc `Calendar_Date_Dimension_Id`. `Calendar_Date_Dimension_Id` CHỈ được phép là PK của `Calendar_Date_Dimension`. *(Cảnh báo: mẫu tham chiếu cũ tại DTM_QLKD_HLD.md dòng 1201 chứa `int Calendar_Date_Dimension_Id FK` là vi phạm nghiêm trọng, tuyệt đối không làm theo!)*.
-      + **Fact Periodic Snapshot:** Bắt buộc có trường `Snapshot_Date_Dimension_Id FK` (kiểu `string` hoặc `int`) và quan hệ `Calendar_Date_Dimension ||--o{ <Fact_Snapshot> : " "`.
-      + **Fact Event / Fact khác:** Bắt buộc có `<Role>_Date_Dimension_Id FK` (ví dụ: `Trade_Date_Dimension_Id FK`, `Issue_Date_Dimension_Id FK`, `Decision_Date_Dimension_Id FK`...) và quan hệ tương ứng.
-      + **Degenerate Date:** Các ngày mô tả nghiệp vụ phụ (ngày ký, ngày biên bản, ngày sinh) thiết kế kiểu `date`, Title_Case_With_Underscore, KHÔNG tag `FK`, KHÔNG suffix `_Dimension_Id`.
-      + **Whitelist:** `Calendar_Date_Dimension` có `Calendar_Date_Dimension_Id PK` là hợp lệ 100%.
-    - **B. Kiểm soát Cấp Độ Hạt & Ngăn ngừa Grain Mismatch (`[L1-GRAIN-MISMATCH]`):**
-      + Bắt buộc xác nhận cấp độ hạt Mockup (Presentation Grain ở Section 2) $\le$ cấp độ hạt lưu trữ Fact (Storage Grain ở Section 3).
-      + Tuân thủ nghiêm ngặt Thang 6 bậc hạt: `Sàn -> Chỉ số -> Ngành -> Mã CK -> CTCK -> Giao dịch`.
-      + Cấm sao chép công thức giữa các nhóm lệch grain (bài học thực tế K_GSTT_61: cấm copy vốn hóa rổ chỉ số Level 2 sang danh sách Top-N mã CK Level 4).
-
-
----
-
-### Tích Hợp Bộ Công Cụ Kiểm Định CLI Tự Động Vào Bước 5B
-
-Trước khi mở GATE Phase 1, Designer **bắt buộc chạy bộ lệnh audit** từ thư mục gốc của repository.
-Cách nhanh nhất là chạy runner hợp nhất (bao trùm Gate 0 → Gate 5):
+Bắt buộc sau khi viết xong HLD, và cả khi chỉ sửa một Nhóm — mọi mục quét toàn file nên thay đổi cục bộ vẫn có thể làm lộ lỗi cũ. 14 mục #0–#13 đã tự động hóa: chạy script, không đánh giá bằng mắt, dán nguyên output.
 
 ```bash
 python .claude/skills/datamart-review/scripts/run_quality_gates.py --module {MODULE} --strict
 ```
 
-Hoặc chạy lẻ khi cần xem chi tiết:
+Runner gồm `check_hld_5b.py` (14 mục #0–#13, Gate 5) và Gate 0 → Gate 9. Thêm `--nhom N1 N2 …` để bật Gate 10 cho các Nhóm vừa sửa: chạy `ba_hld_sync_check.py --nhom` và in dòng delta của đúng các Nhóm đó từ `datamart_progress_analyzer.py`. Gate 10 chỉ cảnh báo — vẫn phải đọc và xử lý từng dòng 🔴 / 🟡 (S4: bổ sung KPI hoặc ghi giải trình). Lọc output bằng `grep "Nhóm {N} "`, không cắt bằng `tail`/`head`.
 
-```bash
-# 0. Reference Integrity — cột Atomic/Mart có tồn tại thật không, CSV có vỡ cột không,
-#    trạng thái KPI giữa HLD và Detail Mapping có lệch nhau không (Exit 0 = PASS):
-python .claude/skills/datamart-review/scripts/check_references.py --module {MODULE} --strict
-
-# 1. Cấu trúc HLD — Bước 5B, 14 mục #0–#13 (Exit 0 = PASS):
-python .claude/skills/datamart-review/scripts/check_hld_5b.py --module {MODULE}
-
-# 2. Kiểm tra chéo BA, phân loại 5 nhóm PENDING và lint quy chuẩn Detail Mapping (Exit 0 = PASS):
-python .claude/skills/datamart-review/scripts/check_ba_mapping.py --module {MODULE} --strict
-
-# 3. Kiểm tra chuẩn Role-Playing Date FK trên toàn bộ Fact tables (Exit 0 = PASS):
-python .claude/skills/datamart-review/scripts/check_date_fk.py --module {MODULE} --strict
-
-# 4. Phân tích tiến độ 3 chiều BA ↔ HLD ↔ LLD và quét các chỉ tiêu bị xóa Delete:
-python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}
-
-# 5. Đối soát CẤU TRÚC + NỘI DUNG BA ↔ HLD ↔ Detail Mapping (H6–H9): file bị cắt/xóa, STT BA dùng
-#    chung/gán nhầm, lệch số Nhóm, dòng BA không có KPI, lệch loại measure GT/KL:
-python .claude/skills/datamart-review/scripts/ba_hld_sync_check.py --module {MODULE} --nhom {N...}
-```
-
-> `ba_hld_sync_check.py`: lỗi ❌ (S1/S2/S3/S5) phải xử lý hoặc có Open Issue trước khi mở GATE.
-> Cảnh báo 🟡 S4 phải xử lý **từng dòng**: bổ sung KPI hoặc ghi giải trình vào Ghi chú. Không được
-> bỏ qua vì "so tên mờ hay báo nhầm".
-
-#### Bảng Tra Cứu Exit Code & Xử Lý Vi Phạm:
-
-| Script | Exit Code | Trạng Thái | Ý Nghĩa Kỹ Thuật & Hành Động Bắt Buộc |
-|---|:---:|:---:|---|
-| `check_ba_mapping.py` | `0` | **PASS** | 100% chỉ tiêu PENDING, REUSE, DERIVED, DEPRECATED tuân thủ quy chuẩn. Cho phép tiến hành review tiếp. |
-| `check_ba_mapping.py` | `1` | **FAIL** | Có vi phạm CRITICAL: vi phạm Rule L4, REUSE thiếu cột vật lý, hoặc DERIVED điền bảng mart. **Bắt buộc sửa file CSV/HLD đến khi đạt Exit 0.** |
-| `check_date_fk.py` | `0` | **PASS** | Toàn bộ Fact table tuân thủ chuẩn Role-Playing Date FK. Zero false positive trên `cdr_dt_dim`. |
-| `check_date_fk.py` | `1` | **FAIL** | Fact table vi phạm `cdr_dt_dim_id` hoặc Fact Snapshot thiếu `snpst_dt_dim_id`. **Bắt buộc sửa tên FK sang `<role>_dt_dim_id` hoặc `snpst_dt_dim_id`.** |
-| `datamart_progress_analyzer.py` | `0` | **PASS** | Số lượng chỉ tiêu khớp hoàn toàn hoặc các chênh lệch nằm trong Whitelist đã duyệt. |
-| `datamart_progress_analyzer.py` | `1` | **WARN** | Có sự lệch số lượng chưa giải trình giữa BA và HLD. Kiểm tra các nhóm bị đánh dấu đỏ và bổ sung giải trình delta. |
-| `datamart_progress_analyzer.py` | `2` | **BLOCKER** | **L1/L2-DELETE-VIOLATION**: Phát hiện chỉ tiêu bị BA xóa (`Delete`) vẫn đưa vào thiết kế. **Bắt buộc xóa bỏ ngay khỏi HLD/LLD.** |
-
-> **Quy Tắc Chặn GATE:** Nếu bất kỳ script nào trả về Exit Code $\ne 0$ (hoặc phát hiện vi phạm CRITICAL), Designer **TUYỆT ĐỐI KHÔNG ĐƯỢC MỞ GATE** hỏi duyệt Phase 1. Bắt buộc sửa toàn bộ lỗi trực tiếp trong file HLD/LLD và chạy lại script đến khi toàn bộ trả về Exit 0.
+Diễn giải từng mục, các lệnh lẻ và bảng exit code: [`reference/step5b_review.md`](reference/step5b_review.md). Còn script trả exit ≠ 0 thì chưa mở GATE.
 
 > **GATE — bắt buộc dừng:** Sau khi xuất file, hoàn tất Bước 5B và kiểm tra sạch bằng CLI audit (Exit Code 0), đặt câu hỏi: "HLD.md đã được tạo tại [đường dẫn], đã chạy review cuối Bước 5B và bộ công cụ audit đạt chuẩn 100%. Bạn xác nhận để chuyển sang Phase 2?"
 > ❌ **KHÔNG được tự chuyển sang Phase 2** khi chưa có xác nhận của human.
@@ -913,118 +220,6 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 
 ---
 
-## CHECKLIST TRƯỚC KHI BÀN GIAO
+## Trước khi bàn giao
 
-### Section 1 — Data Lineage
-- [ ] **Mỗi Cụm chỉ 1 bảng Datamart duy nhất** — 1 Fact hoặc 1 bảng Tác nghiệp, không gộp nhiều Fact chung 1 Cụm dù cùng Atomic entity cha. Tách thành nhiều Cụm riêng (1a, 1b, 1c...), chấp nhận lặp lại node Atomic entity cha ở nhiều flowchart. Xem `reference/flowchart_rules.md` mục "Mỗi Cụm chỉ 1 bảng Datamart"
-- [ ] Mỗi flowchart có đủ 3 subgraph: `SRC["Staging"]` / `SIL["Atomic"]` / `GOLD["Datamart"]`
-- [ ] Staging: 1 subgraph duy nhất, prefix table name thể hiện nguồn (VD: `FMS.RPTVALUES`)
-- [ ] Mọi Cụm có Fact: `ECAT.ECAT_29_HolidayInfo` trong Staging + `Calendar Date` trong Atomic + `Calendar Date Dimension` trong Datamart
-- [ ] Node Staging dùng `ID["label"]` — ID không có dấu chấm
-- [ ] Node Atomic dùng `ID["label"]` — ID dùng `_`, label bỏ `_`
-- [ ] Node Datamart dùng `ID["label"]` — **ID = tên logical nối bằng `_`** (KHÔNG phải physical snake_case), label = tên logical đầy đủ có dấu cách. Cùng quy ước với node Atomic — xem `reference/flowchart_rules.md`
-- [ ] Dim xuất hiện trong subgraph Datamart; link `Dim → Fact` (không phải `Fact → Dim`)
-- [ ] Dimension seed từ Classification Value: chỉ vẽ node `Classification Value` trong Atomic
-- [ ] **Mọi Dimension trong GOLD phải có Atomic entity nguồn trong SIL với edge đầy đủ** — duyệt từng node Dim trong subgraph GOLD, kiểm tra có ít nhất 1 Atomic entity trong SIL nối vào. Thiếu edge = thiếu nguồn → tự sửa trước khi xuất file. Ví dụ lỗi: `Securities Practitioner Dimension` xuất hiện trong GOLD nhưng không có node `Securities Practitioner` trong SIL + edge `Securities Practitioner → Securities Practitioner Dimension`.
-- [ ] **Mọi Atomic entity dùng ETL join vào Fact phải có edge riêng vào Fact** — nếu Atomic entity A được dùng để enrich/join khi populate Fact (không chỉ qua Dim), phải có edge `A → Fact` trong flowchart. Ví dụ lỗi: `Securities Practitioner` dùng để join lấy CCHN của NHN có `Practice_Status_Code='3'` → cần edge `Securities Practitioner → fct_prac_license_ctf_snpst`, không chỉ `Securities Practitioner → scr_prac_dim`.
-
-### Section 2 — Tổng quan báo cáo
-- [ ] Hierarchy: `### Tab` → `#### Nhóm` (KHÔNG có header con `##### READY`/`##### PENDING`) — quy tắc đặt tên:
-  - **Tên Tab** (`### Tab`): lấy phần TRƯỚC dấu `/` trong cột **Dashboard/báo cáo** của BA (VD: `Dashboard Giám sát rủi ro`)
-  - **Tên Nhóm** (`#### Nhóm`): lấy phần SAU dấu `/`, kèm **số STT từ BA** — format: `#### Nhóm {STT} - {tên sau dấu /}`. Số nhóm = STT trong BA, KHÔNG tự đánh số lại
-  - Ví dụ đúng: BA ghi `Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống`, STT=1 → Tab: `### Tab Dashboard Giám sát rủi ro`, Nhóm: `#### Nhóm 1 - Chỉ số rủi ro hệ thống`
-  - Ví dụ đúng: BA ghi `Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro`, STT=2 → Nhóm: `#### Nhóm 2 - Phân tích đóng góp rủi ro`
-  - Sai: `#### Nhóm Thanh khoản thị trường` (thiếu số STT); sai: `#### Nhóm 1` (thiếu tên)
-- [ ] **Cấm tự chẻ 1 STT BA thành nhiều Nhóm HLD** — dù mockup/screenshot của cùng 1 STT có nhiều khối UI trực quan khác nhau (VD: 4 KPI Card + 1 biểu đồ donut trên cùng màn hình), vẫn phải gộp vào **đúng 1 Nhóm** theo đúng STT gốc — không tự quyết định tách thành "Nhóm N" và "Nhóm N+1" theo cảm nhận trình bày. Nếu 1 STT có nhiều dạng mockup, liệt kê nhiều mockup con (a), (b)... trong cùng 1 Nhóm, dùng chung 1 bảng KPI. Vi phạm rule này còn kéo theo lệch số toàn bộ các Nhóm STT phía sau (dồn +1 tính từ điểm bị chẻ) — lỗi thực tế đã xảy ra ở QLCB Nhóm 5 (BA STT=5 duy nhất, 4 dòng, bị tách thành "Nhóm 5 KPI Cards" + "Nhóm 6 donut", đẩy lệch toàn bộ BA STT 6-10 thành "Nhóm 7"-"Nhóm 11" trong HLD).
-- [ ] **Mỗi Nhóm chỉ có 1 bảng KPI duy nhất (7 cột: KPI ID / Tên KPI / Đơn vị / Tính chất / Công thức / Ghi chú / Trạng thái)** — chứa cả dòng READY lẫn dòng PENDING, phân biệt bằng cột Trạng thái. KHÔNG tách thành 2 block riêng theo header `##### READY`/`##### PENDING`, KHÔNG dùng 2 cấu trúc cột khác nhau cho READY (6 cột) và PENDING (4 cột) — đây là thay đổi thiết kế (2026-07-23, theo yêu cầu user) thay thế hoàn toàn format "Block READY/Block PENDING tách biệt" trước đó.
-- [ ] Nhóm có ít nhất 1 dòng READY → có đủ: Phân loại / Atomic / Mockup / Source / Bảng KPI / Star Schema / Lineage Mart → Báo cáo / Bảng grain. Nhóm 100% PENDING → chỉ cần Phân loại / Atomic / Mockup / Bảng KPI (bỏ Source/Star Schema/Lineage/Bảng grain)
-- [ ] **Dòng KPI PENDING trong bảng KPI chung:** Cột Đơn vị/Công thức để trống hoặc ghi "TBD — chờ Atomic"; cột Ghi chú bắt buộc chứa đủ cấu trúc chuẩn: tiền tố `[Nhóm 1-5 - <Tên nhóm>]`, mô tả blocker cụ thể (ref mã `O_{MODULE}_{N}` nếu có), Atomic cần bổ sung, và Mart dự kiến (tên bảng + grain)
-- [ ] **Bảng mapping nguồn (Atomic Placeholder)** — chỉ thêm khi Nhóm có ít nhất 1 dòng PENDING, đặt sau Bảng grain (hoặc sau Bảng KPI nếu Nhóm 100% PENDING); mỗi dòng = 1 Atomic entity, điền đủ Bảng nguồn BA + Atomic entity dự kiến + Atomic table dự kiến (TBD nếu chưa rõ); chỉ liệt kê KPI đang PENDING, không lặp lại KPI READY
-- [ ] **Mỗi cột trong Fact phải trace được về KPI/mockup của Nhóm đó** — sau khi viết xong bảng KPI, rà lại từng cột trong Fact block: cột nào không xuất hiện trong bất kỳ công thức KPI nào → loại khỏi Star Schema, trừ khi là FK trục thời gian/dimension chính hoặc là điều kiện ETL filter SCD4A đã ghi chú riêng bằng text (xem `reference/erdiagram_rules.md`). Không đưa nguyên attribute còn lại của Atomic entity nguồn vào Fact "cho đủ"
-- [ ] **Bảng KPI chỉ có 1 bảng duy nhất cho toàn Nhóm** — KHÔNG tách thành `*KPI mới:*` và `*KPI reuse:*` thành 2 bảng riêng, KHÔNG tách theo trạng thái READY/PENDING. Reuse được liệt kê cùng bảng với KPI mới; cột "Ghi chú" đánh dấu nguồn gốc reuse
-- [ ] **Lineage Mart → Báo cáo chỉ vẽ nếu Nhóm có ít nhất 1 dòng READY, chỉ vẽ từ Datamart lên báo cáo** — KHÔNG vẽ Atomic entities trong flowchart này. Node bắt đầu phải là bảng Fact/Dim/Operational (physical name trong GOLD layer), không phải Atomic entity
-- [ ] **Lineage Mart → Báo cáo gộp 1 report node duy nhất cho toàn bộ Nhóm** — KHÔNG tách report node riêng theo từng Chiều/KPI/measure. Ghi dạng `"K_{MODULE}_N-M,X,Y: {Tên Nhóm}"` liệt kê dải/danh sách KPI ID **đang READY** trong 1 node duy nhất (không đưa ID PENDING vào node báo cáo) (xem ví dụ đúng/sai trong `reference/section_structure.md`)
-- [ ] **KPI Done (sub-component) đã khai sinh ở Nhóm trước → reuse vào cùng bảng KPI, đánh dấu Trạng thái theo đúng trạng thái thật** (READY nếu Atomic sẵn sàng, PENDING nếu chưa) — không tách riêng theo vị trí bảng
-- [ ] Dòng KPI PENDING không có Star Schema, erDiagram, Lineage flowchart riêng
-- [ ] **Liên kết Open Issue cho KPI PENDING:** Các blocker lớn thuộc Nhóm 3 (Gap Atomic / ngoại lai), Nhóm 4 (Join đa nguồn), Nhóm 5 (Datamart pending) BẮT BUỘC tạo Open Issue tại Section 5 (`O_{MODULE}_{N}`) để phân định rõ trách nhiệm tháo gỡ (BA, Data Architecture / Atomic, Atomic Modeling, hay Datamart Modeling). Xóa bỏ triệt để quy định cấm cũ
-- [ ] **Tên attribute trong cột Nguồn phải là logical name chính xác từ YAML** — đọc `attribute.name` trong file YAML của entity đó. KHÔNG tự đặt tên theo cảm tính. Ví dụ sai: `Date Of Birth` khi YAML ghi `Birth Date`.
-- [ ] **Giá trị Classification Value trong công thức KPI phải lấy từ BA, KHÔNG tự suy đoán** — đọc full ô Mô tả + Mapping nghiệp vụ của từng dòng BA. Ví dụ sai: dùng `= 'PROP'` thay vì `= '30'`; dùng `= 'FI'` thay vì `<> '00'`. Sau khi lấy code từ BA → verify với `DataModel/working/Atomic/lld/classification_schemes.yaml`.
-- [ ] **KPI có nguồn từ entity phụ (join/shared entity)** → ghi rõ tên entity phụ + điều kiện join trong cột Nguồn. KHÔNG ghi nhầm vào entity chính. Ví dụ đúng: "`Involved Party Alternative Identification`.Identification Number — join qua ip_id, filter Identification Type Code = CCCD/PASSPORT".
-- [ ] KPI ID đã được khai sinh trong Section 2 trước khi xuất hiện ở file khác
-- [ ] Mọi dòng BA `Phân loại = "Chiều"` phải có KPI_ID trong bảng KPI của nhóm tương ứng — không được bỏ qua
-- [ ] Chiều dùng như ETL filter nội bộ (không hiển thị UI) → ghi rõ trong cột Ghi chú: "dùng trong formula KPI K_X_N" — vẫn phải có KPI_ID
-- [ ] Cấm dùng shorthand "xem Nhóm N" thay thế bảng KPI — nếu nhóm reuse KPI từ nhóm khác, liệt kê explicit từng KPI_ID kèm ghi chú nguồn gốc: "Reuse từ Nhóm N"
-- [ ] Đọc toàn bộ BA file trước khi viết bảng KPI — đảm bảo không sót dòng nào có `Trạng thái mapping ∈ {Done, Doing, Pending}`, ĐỒNG THỜI loại bỏ 100% các dòng có `Trạng thái mapping = Delete` (hoặc DELETE, Xóa) khỏi thiết kế HLD
-- [ ] **Mọi dòng Done không note "Trùng" → bắt buộc có KPI_ID trong nhóm:** Nếu concept đã khai ở nhóm khác → reuse explicit trong bảng KPI nhóm này, không được im lặng bỏ qua
-- [ ] **Dòng Done là sub-component của KPI phức tạp → vẫn cấp KPI_ID riêng:** Không gộp im lặng sub-component vào KPI cha. Ngoại lệ duy nhất: cột Đánh giá ghi "Trùng" → reuse ID đã có
-- [ ] **Cấm thêm KPI không có dòng BA tương ứng:** Bảng KPI chỉ chứa KPI có dòng BA trong nhóm đó (mới hoặc reuse). Không thêm KPI từ suy luận nghiệp vụ dù hợp lý
-- [ ] **Dedup KPI giữa các Nhóm trong cùng Tab:** Trước khi cấp ID mới cho Nhóm N, kiểm tra toàn bộ KPI đã khai sinh ở Nhóm 1→(N-1). Nếu trùng nội dung → reuse ID cũ, KHÔNG cấp ID mới. Liệt kê reuse **trong cùng bảng KPI 7 cột duy nhất** — điền cột Ghi chú = "Reuse từ Nhóm X". KHÔNG tạo bảng reuse riêng.
-- [ ] **Đối chiếu SỐ LƯỢNG BA ↔ HLD theo công thức chuẩn hóa (bắt buộc cho mỗi Nhóm ngay khi viết xong bảng KPI):**
-  - Đếm `BA_Valid = COUNT(dòng BA hợp lệ của Nhóm, loại bỏ dòng banner rỗng / template / dòng Delete)`
-  - Đếm `HLD_Base = COUNT(KPI Base/1-1 của Nhóm, loại trừ KPI Derived _YOY/_GROWTH/tỷ lệ nội bộ và sub-component a/b đã giải trình)`
-  - Xác nhận `BA_Valid == HLD_Base` khớp chính xác 1-1. Nếu lệch: đối chiếu từng dòng BA để phát hiện dòng bị gộp nhầm hoặc bỏ sót (đặc biệt là các chiều slicer phụ). Mọi KPI dôi dư phải được giải trình rõ trong cột Ghi chú.
-  - Ví dụ lỗi thực tế (QLCB Nhóm 4): 2 dòng BA độc lập "Thông tin doanh nghiệp" (nguồn `COMPANY_NAME_VN`) và "Mã chứng khoán" (nguồn `equity_ticker`) bị viết gộp thành 1 dòng KPI "Thông tin doanh nghiệp (Mã CK, Tên DN)" — BA 12 dòng nhưng HLD chỉ có 11 KPI, không bị rule cũ nào bắt được vì dòng KPI đó "vẫn có ID, vẫn có dòng BA tương ứng".
-  - **Số lượng khớp chưa đủ, phải khớp cả nội dung (H9):** chạy thêm `ba_hld_sync_check.py --module {MODULE} --nhom {N}` và xử lý từng cảnh báo S4/S5.
-  - **Bắt buộc xác nhận lại bằng script, không chỉ tự đếm bằng mắt:** chạy `python .claude/skills/datamart-review/scripts/datamart_progress_analyzer.py --module {MODULE}`, tìm đúng dòng của (các) Nhóm vừa viết/sửa trong bảng delta (dạng `| Nhóm N | ... | BA | HLD | LLD | Δ | ... | 🔴/✅ |`), xác nhận `Δ = 0` hoặc lệch đã giải trình rõ. **TUYỆT ĐỐI KHÔNG được xem output qua `| tail -N` / `| head -N` rồi kết luận "sạch"** — bảng delta nằm ở vị trí cố định giữa output đầy đủ (không phải cuối), cắt bớt output rất dễ bỏ lỡ đúng dòng Nhóm cần xem; nếu cần giới hạn dung lượng, dùng `grep` đích danh `"Nhóm {N} "` thay vì `tail`/`head`. Sự cố thực tế (GSTT Nhóm 28, 2026-09-22): script đã in đúng `🔴 Lệch số lượng` cho Nhóm 28 (thiếu 2 KPI reuse: "Giá mở cửa" → K_GSTT_27, "Thay đổi" → K_GSTT_11 — cả 2 đều có dòng BA rõ ràng, cột Đánh giá = "Trùng") nhưng bị bỏ sót vì agent chỉ xem qua `| tail -30`, cắt mất đúng đoạn bảng delta — chỉ phát hiện ra khi user tự đọc lại BA và hỏi lại.
-- [ ] **Gating theo "Loại dữ liệu":** Với mọi dòng BA (mọi Nhóm yêu cầu), kiểm tra cột `Loại dữ liệu` — `Dữ liệu động` → dòng KPI đó đánh Trạng thái PENDING dù Atomic đã READY/Trạng thái mapping = Done (lý do ghi trong Ghi chú: "chưa thống nhất quy tắc khai thác"); `Dữ liệu tĩnh` → theo gating Atomic bình thường. KHÔNG suy đoán tĩnh/động theo `Phân loại` (Chiều/Cơ sở/Phái sinh) — đọc đúng giá trị cột này
-- [ ] **Nhóm có cả tĩnh lẫn động:** Cả 2 loại dòng KPI nằm CHUNG 1 bảng KPI duy nhất, chỉ khác cột Trạng thái (READY cho dòng tĩnh, PENDING cho dòng động) — không tách 2 block/2 bảng riêng
-- [ ] **Kiểm soát Cấp Độ Hạt (Iso-Grain Rule):** Presentation Grain của Mockup ở Section 2 phải $\le$ Fact Storage Grain ở Section 3. Tuân thủ Thang 6 bậc hạt. Không copy công thức aggregate khi nhóm reuse có cấp hạt khác nhóm gốc (Case K_GSTT_61).
-- [ ] **Phân biệt Reuse Case 1 vs Case 2:** Case 1 (Physical measure/dim) ghi rõ bảng/cột đích và đồng bộ Entities.csv; Case 2 (Presentation / Derived) role DERIVED và để trống bảng/cột.
-
-### Section 3 — Mô hình tổng thể
-- [ ] Không bao gồm PENDING
-- [ ] Bảng Phân tích: chỉ liệt kê Fact (không liệt kê Dimension)
-- [ ] Bảng Dimension: chỉ liệt kê Dimension, có ghi chú "Tất cả Dimension áp dụng SCD Type 4A"
-- [ ] Cột Conformed điền đúng (Có/Không)
-- [ ] **Mọi measure trên Fact có grain N (kết quả của N-way join) đã qua grain-matching (BƯỚC 4B)** — measure không copy thẳng từ driving table cha có grain thô hơn Fact; nếu measure lệch grain, công thức SUM ở Section 2 phải pre-aggregate theo đúng cấp grain của measure, không SUM trực tiếp trên Fact
-- [ ] **Lưu trữ chuỗi thời gian lookback:** Mọi chỉ tiêu lookback N phiên / Window Functions phải lưu trên Fact Periodic Snapshot theo ngày (`fct_*_snpst`). CẤM tính Window Function trên Dimension SCD4A current-state (`L2-WINDOW-STORAGE-INVALID`).
-
-### Section 4 — Reuse Analysis & Deprecation
-- [ ] Có bảng với 4 cột: Datamart Entity / datamart_table / reuse_status / Ghi chú
-- [ ] Mỗi bảng đích trong Section 3 đều có 1 dòng trong Section 4
-- [ ] `reuse_status` đã được human xác nhận (không tự gán nếu có khả năng reuse)
-- [ ] Ghi chú ghi rõ lý do reuse/partial/DEPRECATED
-- [ ] **Tuân thủ Giao thức Bãi bỏ Bảng 5 tầng:** Khi bãi bỏ bảng Fact/Dim, đồng bộ trên LLD CSV, Master attributes, Detail Mapping, Model registry, và HLD Section 3/4 + Flat Table SQL.
-
-### Section 5 — Vấn đề mở
-- [ ] Bảng Open Issues có định danh `O_{MODULE}_{N}`, liệt kê đầy đủ KPI liên quan
-- [ ] Các blocker lớn thuộc Nhóm 3 (Gap Atomic/ngoại lai), Nhóm 4 (Join đa nguồn), Nhóm 5 (Datamart pending) đã được tạo Open Issue theo dõi và gán đúng trách nhiệm giải quyết (BA, Atomic, Datamart)
-
-### erDiagram
-- [ ] Mở bằng ` ```mermaid ` — KHÔNG phải ` ```erDiagram `
-- [ ] Types chỉ dùng: `int` / `float` / `decimal` / `string` / `varchar` / `boolean` / `date` / `datetime` — `decimal` viết TRẦN, dùng cho trường tiền tệ/tỷ lệ tài chính cần độ chính xác cao (xem `reference/erdiagram_rules.md`). Chỉ cấm dạng có ngoặc `decimal(23,2)` vì gây parse error Mermaid
-- [ ] Chỉ dùng label `PK` và `FK` — không có BK/DD
-- [ ] `FK` chỉ xuất hiện trong Fact entity block và phải có `||--o{` tương ứng
-- [ ] Tên entity dùng underscore (không dấu cách)
-- [ ] Tên cột dùng Title_Case_With_Underscore
-- [ ] Không thiết kế `Effective Date` / `Expiry Date` / `Population Date` / `Snapshot Date`
-- [ ] **Scan toàn bộ erDiagram đã viết trong file trước khi xuất:** không có trường `Population_Date` / `Effective_Date` / `Expiry_Date` / `Snapshot_Date` trong bất kỳ entity block nào
-- [ ] **Role-Playing Date FK trên Fact:** Tuyệt đối không có trường `Calendar_Date_Dimension_Id` trên bất kỳ Fact block nào (`Calendar_Date_Dimension_Id` chỉ là PK của `Calendar_Date_Dimension`). Fact Snapshot bắt buộc có `Snapshot_Date_Dimension_Id FK`. Fact Event bắt buộc có `<Role>_Date_Dimension_Id FK`. Phân định rõ với Degenerate Date (kiểu `date`, không gắn nhãn `FK`, không hậu tố `_Dimension_Id`).
-- [ ] Toàn file HLD: mỗi bảng có số trường và tên trường giống hệt nhau ở mọi erDiagram
-- [ ] **Tên trường trong erDiagram entity block phải khớp với `attribute.name` trong YAML Atomic entity tương ứng** — đọc YAML trước khi viết. Ví dụ sai: `Date_Of_Birth` khi YAML ghi `Birth_Date`; `Certificate_Type_Code` khi entity thực ra là FK surrogate + unique_key pair
-- [ ] **Fact entity block trong erDiagram không chứa trường nào phản ánh trạng thái kỹ thuật nguồn** (VD: `Record_Status`, `Certificate_Status_Code` từ `record_status`) nếu staging đã lọc bản ghi hiệu lực — các trường này không có giá trị phân tích ở Datamart layer
-- [ ] **Mọi entity xuất hiện trong quan hệ (`||--o{`, `}o--||`...) phải có block `{ ... }` định nghĩa field NGAY TRONG CÙNG khối `erDiagram`** — kể cả khi ghi chú "reuse/kế thừa từ Nhóm khác, không định nghĩa lại". Mỗi khối `erDiagram` là 1 render độc lập, không tự nhớ block đã vẽ ở khối khác. Xem `reference/erdiagram_rules.md` mục "Mọi entity xuất hiện trong quan hệ phải có block định nghĩa"
-
-### Quy ước chung
-- [ ] Chỉ dùng tên logical — không có physical name (snake_case) ở bất kỳ vị trí nào
-- [ ] Node label trong flowchart và graph TB không dùng `\n`
-- [ ] Nội dung nghiệp vụ bằng tiếng Việt có dấu; tên bảng/cột/entity giữ tiếng Anh
-
-### Phase 2 — Entities Files
-
-```
-□ Đọc Section 3 HLD — không đọc Section 2 hay erDiagram từng nhóm
-□ Đọc Section 4 HLD — lấy reuse_status cho từng bảng
-□ Danh sách entity đầy đủ: tất cả fact + dim + operational trong Section 3 — TRỪ bảng PENDING toàn bộ (100% KPI/Nhóm dùng bảng đó PENDING, không có ngoại lệ) — loại khỏi CSV, liệt kê riêng trong Entities.md mục "Bảng PENDING"
-□ table_type khớp với phân loại trong Section 3 (fact/dim/operational)
-□ reuse_status lấy từ Section 4 — bắt buộc có cho mọi row
-□ description + Grain lấy từ cột Grain/Mô tả của Section 3 — không tự suy luận
-□ source_table tra từ dm_manifest.yaml (physical_name) — không đoán
-□ FKs: chỉ điền cho fact, trống cho dim/operational
-□ FKs: trích từ graph TB Section 3, format "{Dim Entity}.{FK Attribute Name}" (với Calendar Date Dimension: bắt buộc dùng role-playing như "{Calendar Date Dimension}.{Snapshot Date Dimension Id}" cho Fact Snapshot hoặc "{Calendar Date Dimension}.{<Role> Date Dimension Id}" cho Fact Event; TUYỆT ĐỐI CẤM "{Calendar Date Dimension}.{Calendar Date Dimension Id}")
-□ status = draft toàn bộ rows
-□ Thứ tự: Dimension → Fact → Operational
-□ Export UTF-8 BOM (utf-8-sig)
-□ Entities.md: erDiagram chỉ vẽ relationship lines — không vẽ attribute block
-□ Entities.md: bảng entity tóm tắt có cột Datamart Entity / Loại / Reuse / Mô tả / Grain / KPI
-```
+Rà checklist trong [`reference/handoff_checklist.md`](reference/handoff_checklist.md): Section 1–5, erDiagram, quy ước chung, Phase 2 Entities.

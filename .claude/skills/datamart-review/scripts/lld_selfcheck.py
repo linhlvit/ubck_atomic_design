@@ -17,7 +17,7 @@ PHẠM VI
           (so số, không so chuỗi: "Nhóm 11" < "Nhóm 2" theo chuỗi là SAI).
     TC7 — tên bảng/cột đồng nhất giữa 5 nguồn, anchor là `datamart_attributes.csv`.
           KHÔNG quét `HLD.md` — free-text + mermaid, regex bắt token dễ false positive
-          (theo đúng ghi chú tại SKILL.md dòng 856).
+          (theo đúng ghi chú TC7 trong datamart-lld-design/reference/phase1_selfreview.md).
 
 DÙNG
     python lld_selfcheck.py -m PTTT

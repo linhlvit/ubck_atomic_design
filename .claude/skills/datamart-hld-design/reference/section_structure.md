@@ -277,7 +277,7 @@ Kết quả phân tích reuse 4 lớp ở Bước 3 (`datamart-hld-design`), **s
 ### Giao Thức Bãi Bỏ Bảng Đồng Bộ 5 Tầng (All-Tier Deprecation):
 Khi một bảng Fact/Dim bị bãi bỏ/sáp nhập:
 - Tầng 1: Xóa file CSV chi tiết bảng trong `Datamart/lld/{MODULE}/`.
-- Tầng 2: Purge 100% dòng của bảng trong `Datamart/lld/datamart_attributes.csv`.
+- Tầng 2: Sinh lại `Datamart/lld/datamart_attributes.csv` bằng `build_registry.py` (không xóa dòng bằng tay).
 - Tầng 3: Detail Mapping chuyển `column_role = 'DEPRECATED'`, để trống bảng/cột, `logic = 'Đã loại bỏ — không tạo cột/slicer'`.
 - Tầng 4: Xóa block entity trong `Datamart/datamart_model.yaml`.
 - Tầng 5: Section 3 & 4 HLD đánh dấu `DEPRECATED`, cập nhật Entities.csv/.md; Flat Table SQL xóa/comment khối DDL/DML.
