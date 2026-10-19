@@ -2,6 +2,7 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
+-- Sửa 2026-10-19: #18 gstt_opr_trading_liquidity_explorer_flat bổ sung cột index_nm (tên chỉ số, đặt cuối bảng — ALTER TABLE ... ADD COLUMN index_nm Nullable(String))
 -- Sửa 2026-10-16: bổ sung bảng #18 gstt_opr_trading_liquidity_explorer_flat (Fact phẳng Data Explorer Nhóm 37 — O_GSTT_72)
 -- 12 bảng: 9 fact + 3 operational (opr_security_ref — mới 2026-10-09, danh mục mã chứng khoán tách từ opr_security_index_constituent_ref; opr_security_index_constituent_ref — mới 2026-10-06, danh mục chỉ số/thành viên rổ Index Code ↔ Symbol ↔ ISIN; opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
 -- Sửa 2026-10-06 (v4.33–v4.36): Nhóm 34 — #3 gstt_fct_instrument_price_intraday_flat (nến phút) và #3a gstt_fct_instrument_price_daily_flat (nến ngày + Doanh thu/LNST) thay gstt_fct_security_trading_intraday_flat; mã CK và chỉ số (BA nguồn JAD_tvhistory1m/1d), dùng chung Nhóm 3, 10, 12, 14, 20, 47 (v4.35); #3b gstt_fct_security_trading_daily_flat chỉ còn Nhóm 48 (K_GSTT_352).
@@ -960,7 +961,10 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_opr_trading_liquidity_explorer_flat ON 
     idx_domestic_institution_buy_vol             Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong toàn rổ chỉ số, theo ngày — gồm khớp',
     idx_domestic_institution_sell_val            Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong toàn rổ chỉ số, theo ngày — gồm khớp lệ',
     idx_domestic_institution_sell_vol            Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư tổ chức trong nước (tài khoản loại 5) trong toàn rổ chỉ số, theo ngày — gồm khớp',
-    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
+
+    -- [MỚI 2026-10-19] Tên chỉ số — đặt CUỐI để khớp ALTER TABLE ADD COLUMN (INSERT ... SELECT theo vị trí)
+    index_nm                                     Nullable(String)        COMMENT 'Tên chuẩn của chỉ số (rổ) — VN-Index/HNX-Index/UPCoM-Index/VN30... — dùng hiển thị chiều Chỉ số của Data Explorer. Lấy từ Market Index Snapshot qua đẳng thức Market Code = Index Code (không join theo tên). Cấp chỉ số × ngày — lặp lại trên mỗi mã CK của rổ; NULL ở dòng không theo rổ (index_code = ) hoặc khi Market Index Snapshot không có market_code tương ứng trong ngày.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(trade_dt)

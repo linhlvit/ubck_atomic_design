@@ -962,7 +962,9 @@ SELECT
     f.idx_domestic_institution_buy_vol,
     f.idx_domestic_institution_sell_val,
     f.idx_domestic_institution_sell_vol,
-    f.src_stm_code
+    f.src_stm_code,
+    -- [MỚI 2026-10-19] đặt CUỐI để khớp thứ tự cột sau ALTER TABLE ADD COLUMN
+    f.index_nm
 
 FROM datamart.opr_trading_liquidity_explorer f
 WHERE f.trade_dt = :etl_date
