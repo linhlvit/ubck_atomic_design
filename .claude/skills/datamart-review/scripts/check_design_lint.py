@@ -76,7 +76,7 @@ KPI_REF = re.compile(r"K_[A-Z0-9]+_\d+")
 
 # Module đã chuyển sang Quy tắc L18 (1 KPI có MEASURE = 1 dòng Detail Mapping). Thêm module vào đây khi
 # chuyển đổi/thiết kế mới; GSDC/GSTT... chưa chuyển nên không có trong tập này.
-L18_MODULES = {"TT"}
+L18_MODULES = {"TT", "QLKD"}  # QLKD thêm 2026-10-19 sau khi gộp 113 KPI (FILTER/SLICER -> WHERE/GROUP BY của MEASURE)
 
 
 def cells(line: str) -> int:
