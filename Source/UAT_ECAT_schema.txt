@@ -171,6 +171,39 @@ ADMINISTRATIVE_PROCEDURE_STABLE_IDVARCHAR2(144)       YES                       
 COMPONENT_STABLE_ID           VARCHAR2(144)       YES                                      Stable ID của component - ID ổn định xuyên suốt các phiên bản
 
 
+BANG: ADMINISTRATIVE_PROCEDURE_COMPONENT_NEW
+Mo ta: Thành phần hồ sơ thủ tục hành chính (đồng bộ từ CSDLTT, có version)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               Khóa chính của từng version-row (UUID v7)
+ID_SYNC                       VARCHAR2(400)       YES                                      Id gốc từ nguồn (tphsId) — khóa đồng bộ
+CODE                          VARCHAR2(400)       YES                                      Mã thành phần hồ sơ (maTphs)
+NAME                          VARCHAR2(4000)      YES                                      Tên thành phần hồ sơ (tenTphs)
+DISPLAY_ORDER                 NUMBER(10,0)        YES                                      Thứ tự hiển thị (thuTu)
+PROCEDURE_ID_SYNC             VARCHAR2(400)       YES                                      Id gốc từ nguồn của TTHC cha (tthcId)
+PROCEDURE_STABLE_ID           VARCHAR2(144)       YES                                      stable_id của TTHC cha (administrative_procedure_new.stable_id)
+PROCEDURE_VERSION_ID          VARCHAR2(144)       YES                                      id (version-row) hiện hành của TTHC cha (administrative_procedure_new.id) — job đồng bộ trỏ lại mỗi khi aggregate đổi
+EFFECTIVE                     NUMBER(1,0)         NO                                       Trạng thái hiệu lực theo nguồn (trangThai): 1 Sử dụng / Hiệu lực, 0 Ngừng sử dụng / Hết hiệu lực
+ACTIVE                        NUMBER(1,0)         NO                                       Trạng thái hoạt động do eCat quản lý (1: đang hoạt động, 0: dừng)
+ACTIVE_REASON                 VARCHAR2(2000)      YES                                      Lý do thay đổi trạng thái hoạt động
+SOURCE_CREATED_AT             TIMESTAMP(6)        YES                                      Thời điểm tạo tại nguồn (createdUtc)
+SOURCE_UPDATED_AT             TIMESTAMP(6)        YES                                      Thời điểm cập nhật cuối tại nguồn (modifiedUtc)
+DELETED                       NUMBER(1,0)         YES                                      Đánh dấu xóa mềm (0: chưa xóa, 1: đã xóa)
+DELETED_REASON                VARCHAR2(2000)      YES                                      Lý do xóa
+CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo version-row
+UPDATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm cập nhật
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      Id người tạo
+CREATED_BY_NAME               VARCHAR2(1000)      YES                                      Tên người tạo
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      Id người cập nhật
+UPDATED_BY_NAME               VARCHAR2(1000)      YES                                      Tên người cập nhật
+VERSION                       NUMBER              YES                                      Số phiên bản
+EFFECTIVE_START_DATE          TIMESTAMP(6)        YES                                      Thời điểm bắt đầu hiệu lực của version-row (eCat quản lý)
+EFFECTIVE_END_DATE            TIMESTAMP(6)        YES                                      Thời điểm kết thúc hiệu lực của version-row (NULL = bản hiện hành)
+STABLE_ID                     VARCHAR2(144)       YES                                      Id ổn định xuyên suốt các phiên bản
+OLD_ID                        VARCHAR2(144)       YES                                      Id cũ
+
+
 BANG: ADMINISTRATIVE_PROCEDURE_FIELD
 Mo ta: Lĩnh vực thủ tục hành chính (đồng bộ full-scan từ CSDLTT, KHÔNG version — ghi đè tại chỗ)
 --------------------------------------------------------------------------------------------------------------

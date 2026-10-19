@@ -1,0 +1,228 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HNX"
+  source_table: "GOV_BOND_OFFERING"
+  atomic_entity: "Gov Bond Bidding Result"
+  entity_physical_name: "gov_bond_bidding_result"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HNX/brd_HNX_GOV_BOND_OFFERING.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+attributes:
+- attribute_name: "Gov Bond Bidding Result Id"
+  physical_name: "gov_bond_bidding_result_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.BIDDING_SESSION"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_GOV_BOND_OFFERING',BIDDING_SESSION)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HNX_GOV_BOND_OFFERING"
+  etl_derived_value: "HNX_GOV_BOND_OFFERING"
+  data_type: "string"
+- attribute_name: "Bidding Session"
+  physical_name: "bidding_session"
+  description: "Đợt đấu thầu"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.BIDDING_SESSION"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bidding Method"
+  physical_name: "bidding_method"
+  description: "Phương thức đấu thầu"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.BIDDING_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Code"
+  physical_name: "bond_code"
+  description: "Mã trái phiếu"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.BOND_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issuer Name"
+  physical_name: "issuer_nm"
+  description: "Tên tổ chức phát hành"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.ISSUER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Type"
+  physical_name: "bond_tp"
+  description: "Loại trái phiếu"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.BOND_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Term"
+  physical_name: "bond_term"
+  description: "Kỳ hạn"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.TERM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issue Date"
+  physical_name: "issue_dt"
+  description: "Ngày phát hành"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Issue Method"
+  physical_name: "issue_method"
+  description: "Phương thức phát hành"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.ISSUE_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Calling Value"
+  physical_name: "calling_val"
+  description: "Giá trị gọi thầu"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.CALLING_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Bidding Value"
+  physical_name: "bidding_val"
+  description: "Giá trị đặt thầu"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.BIDDING_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Winning Value"
+  physical_name: "winning_val"
+  description: "Giá trị trúng thầu"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.WINNING_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Nominal Interest Rate"
+  physical_name: "nominal_interest_rate"
+  description: "Lãi suất danh nghĩa (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.NOMINAL_INTEREST_RATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Winning Interest Rate"
+  physical_name: "winning_interest_rate"
+  description: "Lãi suất trúng thầu (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.WINNING_INTEREST_RATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_OFFERING.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

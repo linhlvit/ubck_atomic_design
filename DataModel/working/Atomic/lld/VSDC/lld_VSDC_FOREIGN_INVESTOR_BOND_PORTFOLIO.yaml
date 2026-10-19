@@ -1,0 +1,189 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_BOND_PORTFOLIO"
+  atomic_entity: "Foreign Bond Portfolio"
+  entity_physical_name: "foreign_bond_portfolio"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_FOREIGN_INVESTOR_BOND_PORTFOLIO.yaml. HLD: VSDC_HLD_Tier2.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+attributes:
+- attribute_name: "Foreign Bond Portfolio Id"
+  physical_name: "foreign_bond_portfolio_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.TRADING_CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_BOND_PORTFOLIO',TRADING_CODE)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=VSDC_FOREIGN_INVESTOR_BOND_PORTFOLIO"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_BOND_PORTFOLIO"
+  data_type: "string"
+- attribute_name: "Foreign Investor Code"
+  physical_name: "foreign_investor_code"
+  description: "Mã số giao dịch"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.TRADING_CODE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Name"
+  physical_name: "foreign_investor_nm"
+  description: "Họ tên NĐT"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.INVESTOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Type Code"
+  physical_name: "foreign_investor_tp_code"
+  description: "Loại hình (Cá nhân/Tổ chức)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.INVESTOR_CATEGORY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK đến Classification VSDC Nationality — Quốc tịch."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.NATIONALITY"
+  comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk sang VSDC.NATIONALITY: FOREIGN_INVESTOR_BOND_PORTFOLIO.NATIONALITY = NATIONALITY.AUTOID để xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING, AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không khớp AUTOID. Giả định áp dụng crosswalk như 3 bảng investor (HLD T2-02, cần xác nhận)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc tịch (denormalized) — Quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.NATIONALITY.AUTOID"
+  comment: "Lookup pair: cl_vsdc_nationality.cl_vsdc_nationality_code. Pair with Nationality Id. Giá trị lấy từ VSDC.NATIONALITY.AUTOID sau ETL crosswalk — chi tiết xem comment Nationality Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Address"
+  physical_name: "adr"
+  description: "Địa chỉ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.ADDRESS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trading Representative Name"
+  physical_name: "trading_representative_nm"
+  description: "Tên đại diện GD"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.TRADING_REPRESENTATIVE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Institutional Investor Type"
+  physical_name: "institutional_investor_tp"
+  description: "Loại hình NĐT tổ chức"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.INSTITUTIONAL_INVESTOR_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Code"
+  physical_name: "bond_code"
+  description: "Mã trái phiếu"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.BOND_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Owned Bond Quantity"
+  physical_name: "owned_bond_quantity"
+  description: "Số lượng chứng khoán sở hữu"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.OWNED_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

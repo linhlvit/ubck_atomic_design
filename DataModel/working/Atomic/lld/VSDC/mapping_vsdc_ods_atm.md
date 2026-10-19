@@ -8,7 +8,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | open_investor_account | open_investor_account_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | open_investor_account | open_investor_account_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | open_investor_account | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | open_investors | trading_account_no | STRING | atomic.uat_atm | open_investor_account | investor_account_nbr | STRING | Business key |
 | uat_vsdc_stg | open_investors | customer_name | STRING | atomic.uat_atm | open_investor_account | investor_nm | STRING | — |
@@ -29,7 +29,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | closed_investor_account | closed_investor_account_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | closed_investor_account | closed_investor_account_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | closed_investor_account | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | closed_investors | trading_account_no | STRING | atomic.uat_atm | closed_investor_account | investor_account_nbr | STRING | Business key |
 | uat_vsdc_stg | closed_investors | customer_name | STRING | atomic.uat_atm | closed_investor_account | investor_nm | STRING | — |
@@ -51,7 +51,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | updated_investor_account | updated_investor_account_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | updated_investor_account | updated_investor_account_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | updated_investor_account | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | updated_investors | trading_account_no | STRING | atomic.uat_atm | updated_investor_account | investor_account_nbr | STRING | Business key |
 | uat_vsdc_stg | updated_investors | customer_name | STRING | atomic.uat_atm | updated_investor_account | investor_nm | STRING | — |
@@ -69,49 +69,52 @@
 | — | — | — | — | atomic.uat_atm | updated_investor_account | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
 
-### Bảng 1: outstanding_shares  +  Bảng 19/27: listed_securities_list (HNX/HOSE)  →  listed_share_info
+### Bảng 1: outstanding_shares  +  Bảng 19/27: listed_securities_list (HNX/HOSE)  →  listed_share_information
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | listed_share_info | listed_share_info_id | STRING | Surrogate key — UUID generated |
-| — | — | (system) | STRING | atomic.uat_atm | listed_share_info | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
-| uat_vsdc_stg | outstanding_shares | ticker_symbol | STRING | atomic.uat_atm | listed_share_info | ticker_symbol | STRING | Business key |
-| uat_vsdc_stg | outstanding_shares | isin_code | STRING | atomic.uat_atm | listed_share_info | isin_code | STRING | — |
-| uat_vsdc_stg | outstanding_shares | total_issued_shares | BIGINT | atomic.uat_atm | listed_share_info | total_issued_share_quantity | BIGINT | — |
-| uat_vsdc_stg / uat_hnx_stg / uat_hose_stg | outstanding_shares | treasury_shares | BIGINT | atomic.uat_atm | listed_share_info | treasury_share_quantity | BIGINT | — |
-| uat_vsdc_stg | outstanding_shares | outstanding_shares | BIGINT | atomic.uat_atm | listed_share_info | outstanding_share_quantity | BIGINT | — |
-| uat_vsdc_stg | outstanding_shares | free_float_shares | BIGINT | atomic.uat_atm | listed_share_info | free_float_share_quantity | BIGINT | — |
-| uat_vsdc_stg | outstanding_shares | restricted_shares | BIGINT | atomic.uat_atm | listed_share_info | restricted_share_quantity | BIGINT | — |
-| uat_vsdc_stg | outstanding_shares | voting_shares | BIGINT | atomic.uat_atm | listed_share_info | voting_share_quantity | BIGINT | — |
-| uat_hnx_stg / uat_hose_stg | listed_securities_list | issuer_name | STRING | atomic.uat_atm | listed_share_info | issuer_nm | STRING | Bổ sung từ listed_securities_list |
-| uat_hnx_stg / uat_hose_stg | listed_securities_list | listed_shares | BIGINT | atomic.uat_atm | listed_share_info | listed_share_quantity | BIGINT | — |
-| uat_hnx_stg / uat_hose_stg | listed_securities_list | reference_price | DECIMAL(18,2) | atomic.uat_atm | listed_share_info | reference_price | DECIMAL(23,2) | Đổi precision |
-| — | — | — | — | atomic.uat_atm | listed_share_info | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
-| — | — | — | — | atomic.uat_atm | listed_share_info | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
+| — | — | (generated) | STRING | atomic.uat_atm | listed_share_information | listed_share_information_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
+| — | — | (system) | STRING | atomic.uat_atm | listed_share_information | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
+| uat_vsdc_stg / uat_hnx_stg / uat_hose_stg | outstanding_shares + listed_securities_list | ticker_symbol | STRING | atomic.uat_atm | listed_share_information | ticker_symbol | STRING | Business key |
+| uat_vsdc_stg | outstanding_shares | isin_code | STRING | atomic.uat_atm | listed_share_information | isin_code | STRING | — |
+| uat_vsdc_stg | outstanding_shares | total_issued_shares | BIGINT | atomic.uat_atm | listed_share_information | total_issued_share_quantity | BIGINT | — |
+| uat_vsdc_stg / uat_hnx_stg / uat_hose_stg | outstanding_shares | treasury_shares | BIGINT | atomic.uat_atm | listed_share_information | treasury_share_quantity | BIGINT | — |
+| uat_vsdc_stg / uat_hnx_stg / uat_hose_stg | outstanding_shares + listed_securities_list | outstanding_shares | BIGINT | atomic.uat_atm | listed_share_information | outstanding_share_quantity | BIGINT | — |
+| uat_vsdc_stg | outstanding_shares | free_float_shares | BIGINT | atomic.uat_atm | listed_share_information | free_float_share_quantity | BIGINT | — |
+| uat_vsdc_stg | outstanding_shares | restricted_shares | BIGINT | atomic.uat_atm | listed_share_information | restricted_share_quantity | BIGINT | — |
+| uat_vsdc_stg | outstanding_shares | voting_shares | BIGINT | atomic.uat_atm | listed_share_information | voting_share_quantity | BIGINT | — |
+| uat_hnx_stg / uat_hose_stg | listed_securities_list | issuer_name | STRING | atomic.uat_atm | listed_share_information | issuer_nm | STRING | Bổ sung từ listed_securities_list |
+| uat_hnx_stg / uat_hose_stg | listed_securities_list | listed_shares | BIGINT | atomic.uat_atm | listed_share_information | listed_share_quantity | BIGINT | — |
+| uat_hnx_stg / uat_hose_stg | listed_securities_list | reference_price | DECIMAL(18,2) | atomic.uat_atm | listed_share_information | reference_price | DECIMAL(23,2) | Đổi precision |
+| uat_vsdc_stg | outstanding_shares | transaction_date | DATE | atomic.uat_atm | listed_share_information | transaction_dt | DATE | — |
+| uat_hnx_stg / uat_hose_stg | listed_securities_list | report_date | DATE | atomic.uat_atm | listed_share_information | rpt_dt | DATE | — |
+| — | — | — | — | atomic.uat_atm | listed_share_information | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
+| — | — | — | — | atomic.uat_atm | listed_share_information | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
 
-### Bảng 9: foreign_investor_info  →  foreign_ownership_info
+### Bảng 9: foreign_investor_info  →  foreign_ownership_information
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | foreign_ownership_info | foreign_ownership_info_id | STRING | Surrogate key — UUID generated |
-| — | — | (system) | STRING | atomic.uat_atm | foreign_ownership_info | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
-| uat_vsdc_stg | foreign_investor_info | ticker_symbol | STRING | atomic.uat_atm | foreign_ownership_info | ticker_symbol | STRING | Business key |
-| uat_vsdc_stg | foreign_investor_info | isin_code | STRING | atomic.uat_atm | foreign_ownership_info | isin_code | STRING | — |
-| uat_vsdc_stg | foreign_investor_info | total_issued_shares | BIGINT | atomic.uat_atm | foreign_ownership_info | total_issued_share_quantity | BIGINT | — |
-| uat_vsdc_stg | foreign_investor_info | max_foreign_ownership_ratio | DECIMAL(10,2) | atomic.uat_atm | foreign_ownership_info | max_foreign_ownership_ratio | DECIMAL(5,2) | Đổi precision |
-| uat_vsdc_stg | foreign_investor_info | max_shares_foreign_can_hold | BIGINT | atomic.uat_atm | foreign_ownership_info | max_foreign_holding_quantity | BIGINT | — |
-| uat_vsdc_stg | foreign_investor_info | current_shares_foreign_hold | BIGINT | atomic.uat_atm | foreign_ownership_info | current_foreign_holding_quantity | BIGINT | — |
-| uat_vsdc_stg | foreign_investor_info | remaining_shares_foreign_can_hold | BIGINT | atomic.uat_atm | foreign_ownership_info | remaining_foreign_holding_quantity | BIGINT | — |
-| — | — | — | — | atomic.uat_atm | foreign_ownership_info | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
-| — | — | — | — | atomic.uat_atm | foreign_ownership_info | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
+| — | — | (generated) | STRING | atomic.uat_atm | foreign_ownership_information | foreign_ownership_information_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
+| — | — | (system) | STRING | atomic.uat_atm | foreign_ownership_information | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
+| uat_vsdc_stg | foreign_investor_info | ticker_symbol | STRING | atomic.uat_atm | foreign_ownership_information | ticker_symbol | STRING | Business key |
+| uat_vsdc_stg | foreign_investor_info | isin_code | STRING | atomic.uat_atm | foreign_ownership_information | isin_code | STRING | — |
+| uat_vsdc_stg | foreign_investor_info | total_issued_shares | BIGINT | atomic.uat_atm | foreign_ownership_information | total_issued_share_quantity | BIGINT | — |
+| uat_vsdc_stg | foreign_investor_info | max_foreign_ownership_ratio | DECIMAL(10,2) | atomic.uat_atm | foreign_ownership_information | max_foreign_ownership_ratio | DECIMAL(5,2) | Đổi precision |
+| uat_vsdc_stg | foreign_investor_info | max_shares_foreign_can_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | max_foreign_holding_quantity | BIGINT | — |
+| uat_vsdc_stg | foreign_investor_info | current_shares_foreign_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | current_foreign_holding_quantity | BIGINT | — |
+| uat_vsdc_stg | foreign_investor_info | remaining_shares_foreign_can_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | remaining_foreign_holding_quantity | BIGINT | — |
+| uat_vsdc_stg | foreign_investor_info | report_date | DATE | atomic.uat_atm | foreign_ownership_information | rpt_dt | DATE | — |
+| — | — | — | — | atomic.uat_atm | foreign_ownership_information | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
+| — | — | — | — | atomic.uat_atm | foreign_ownership_information | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
 
 ### Bảng 5: major_shareholder  →  major_shareholder_ownership
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | major_shareholder_ownership | major_shareholder_ownership_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | major_shareholder_ownership | major_shareholder_ownership_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | major_shareholder_ownership | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | major_shareholder | ticker_symbol | STRING | atomic.uat_atm | major_shareholder_ownership | ticker_symbol | STRING | Business key |
 | uat_vsdc_stg | major_shareholder | isin_code | STRING | atomic.uat_atm | major_shareholder_ownership | isin_code | STRING | — |
@@ -135,10 +138,11 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | end_of_day_open_interest | end_of_day_open_interest_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | end_of_day_open_interest | end_of_day_open_interest_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | end_of_day_open_interest | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | end_of_day_open_interest | contract_code | STRING | atomic.uat_atm | end_of_day_open_interest | ticker_symbol | STRING | — |
 | uat_vsdc_stg | end_of_day_open_interest | open_interest_volume | BIGINT | atomic.uat_atm | end_of_day_open_interest | open_interest_quantity | BIGINT | — |
+| uat_vsdc_stg | end_of_day_open_interest | report_date | DATE | atomic.uat_atm | end_of_day_open_interest | rpt_dt | DATE | — |
 | — | — | — | — | atomic.uat_atm | end_of_day_open_interest | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | end_of_day_open_interest | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -147,7 +151,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | foreign_bond_portfolio | foreign_bond_portfolio_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | foreign_bond_portfolio | foreign_bond_portfolio_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | foreign_bond_portfolio | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | foreign_investor_bond_portfolio | trading_code | STRING | atomic.uat_atm | foreign_bond_portfolio | foreign_investor_code | STRING | — |
 | uat_vsdc_stg | foreign_investor_bond_portfolio | investor_name | STRING | atomic.uat_atm | foreign_bond_portfolio | foreign_investor_nm | STRING | — |
@@ -170,7 +174,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | share_auction_result | share_auction_result_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | share_auction_result | share_auction_result_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | share_auction_result | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg / uat_hose_stg | share_auction | issuer_name | STRING | atomic.uat_atm | share_auction_result | issuer_nm | STRING | Business key |
 | uat_hnx_stg / uat_hose_stg | share_auction | auction_type | STRING | atomic.uat_atm | share_auction_result | auction_tp | STRING | Business key |
@@ -202,11 +206,12 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | private_corp_bond_trading_summary | private_corp_bond_trading_summary_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | private_corp_bond_trading_summary | private_corp_bond_trading_summary_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | private_corp_bond_trading_summary | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg | private_corp_bond_trading | indicator | STRING | atomic.uat_atm | private_corp_bond_trading_summary | indicator_nm | STRING | — |
 | uat_hnx_stg | private_corp_bond_trading | unit | STRING | atomic.uat_atm | private_corp_bond_trading_summary | measurement_unit | STRING | — |
 | uat_hnx_stg | private_corp_bond_trading | value | DECIMAL(18,4) | atomic.uat_atm | private_corp_bond_trading_summary | indicator_val | DECIMAL(23,4) | Đổi precision |
+| uat_hnx_stg | private_corp_bond_trading | report_date | DATE | atomic.uat_atm | private_corp_bond_trading_summary | rpt_dt | DATE | — |
 | — | — | — | — | atomic.uat_atm | private_corp_bond_trading_summary | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | private_corp_bond_trading_summary | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -215,7 +220,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | gov_bond_bidding_result | gov_bond_bidding_result_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | gov_bond_bidding_result | gov_bond_bidding_result_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | gov_bond_bidding_result | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg | gov_bond_offering | bidding_session | STRING | atomic.uat_atm | gov_bond_bidding_result | bidding_session | STRING | Business key |
 | uat_hnx_stg | gov_bond_offering | bidding_method | STRING | atomic.uat_atm | gov_bond_bidding_result | bidding_method | STRING | — |
@@ -239,7 +244,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | gov_bond_listing | gov_bond_listing_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | gov_bond_listing | gov_bond_listing_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | gov_bond_listing | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg | gov_bond_listed_list | bond_code | STRING | atomic.uat_atm | gov_bond_listing | bond_code | STRING | Business key |
 | uat_hnx_stg | gov_bond_listed_list | issuer_name | STRING | atomic.uat_atm | gov_bond_listing | issuer_nm | STRING | — |
@@ -261,7 +266,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | additional_gov_bond_listing | additional_gov_bond_listing_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | additional_gov_bond_listing | additional_gov_bond_listing_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | additional_gov_bond_listing | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg | gov_bond_additional_listing | bond_code | STRING | atomic.uat_atm | additional_gov_bond_listing | bond_code | STRING | Business key |
 | uat_hnx_stg | gov_bond_additional_listing | bond_type | STRING | atomic.uat_atm | additional_gov_bond_listing | bond_tp | STRING | — |
@@ -278,7 +283,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | private_corp_bond_offering | private_corp_bond_offering_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | private_corp_bond_offering | private_corp_bond_offering_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | private_corp_bond_offering | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg | private_corp_bond_offering | bond_code | STRING | atomic.uat_atm | private_corp_bond_offering | bond_code | STRING | Business key |
 | uat_hnx_stg | private_corp_bond_offering | market_type | STRING | atomic.uat_atm | private_corp_bond_offering | market_tp | STRING | Business key |
@@ -304,6 +309,9 @@
 | uat_hnx_stg | private_corp_bond_offering | convertible_bond | STRING | atomic.uat_atm | private_corp_bond_offering | convertible_bond_ind | INT | — |
 | uat_hnx_stg | private_corp_bond_offering | warrant_linked_bond | STRING | atomic.uat_atm | private_corp_bond_offering | warrant_linked_bond_ind | INT | — |
 | uat_hnx_stg | private_corp_bond_offering | secured_bond | STRING | atomic.uat_atm | private_corp_bond_offering | secured_bond_ind | INT | — |
+| uat_hnx_stg | private_corp_bond_offering | report_day | STRING | atomic.uat_atm | private_corp_bond_offering | rpt_day | STRING | — |
+| uat_hnx_stg | private_corp_bond_offering | report_year | STRING | atomic.uat_atm | private_corp_bond_offering | rpt_year | STRING | — |
+| uat_hnx_stg | private_corp_bond_offering | business_no | STRING | atomic.uat_atm | private_corp_bond_offering | business_nbr | STRING | — |
 | — | — | — | — | atomic.uat_atm | private_corp_bond_offering | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | private_corp_bond_offering | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -312,7 +320,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | private_corp_bond_registration | private_corp_bond_registration_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | private_corp_bond_registration | private_corp_bond_registration_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | private_corp_bond_registration | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg | private_corp_bond_registration | bond_code | STRING | atomic.uat_atm | private_corp_bond_registration | bond_code | STRING | Business key |
 | uat_hnx_stg | private_corp_bond_registration | currency | STRING | atomic.uat_atm | private_corp_bond_registration | currency_code | STRING | — |
@@ -331,6 +339,9 @@
 | uat_hnx_stg | private_corp_bond_registration | issue_interest_rate | DECIMAL(10,2) | atomic.uat_atm | private_corp_bond_registration | issue_interest_rate | DECIMAL(5,2) | — |
 | uat_hnx_stg | private_corp_bond_registration | first_trading_date | DATE | atomic.uat_atm | private_corp_bond_registration | first_trading_date | DATE | — |
 | uat_hnx_stg | private_corp_bond_registration | report_month | STRING | atomic.uat_atm | private_corp_bond_registration | rpt_month | STRING | — |
+| uat_hnx_stg | private_corp_bond_registration | report_day | STRING | atomic.uat_atm | private_corp_bond_registration | rpt_day | STRING | — |
+| uat_hnx_stg | private_corp_bond_registration | report_year | STRING | atomic.uat_atm | private_corp_bond_registration | rpt_year | STRING | — |
+| uat_hnx_stg | private_corp_bond_registration | business_no | STRING | atomic.uat_atm | private_corp_bond_registration | business_nbr | STRING | — |
 | — | — | — | — | atomic.uat_atm | private_corp_bond_registration | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | private_corp_bond_registration | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -339,7 +350,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | bond_trading_registration_status | bond_trading_registration_status_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | bond_trading_registration_status | bond_trading_registration_status_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | bond_trading_registration_status | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg | registration_status_change | bond_code | STRING | atomic.uat_atm | bond_trading_registration_status | bond_code | STRING | Business key |
 | uat_hnx_stg | registration_status_change | trading_registration_status | STRING | atomic.uat_atm | bond_trading_registration_status | trading_registration_status | STRING | Business key |
@@ -349,6 +360,7 @@
 | uat_hnx_stg | registration_status_change | first_trading_date | DATE | atomic.uat_atm | bond_trading_registration_status | first_trading_dt | DATE | — |
 | uat_hnx_stg | registration_status_change | last_trading_date | DATE | atomic.uat_atm | bond_trading_registration_status | last_trading_dt | DATE | — |
 | uat_hnx_stg | registration_status_change | report_month | STRING | atomic.uat_atm | bond_trading_registration_status | rpt_month | STRING | — |
+| uat_hnx_stg | registration_status_change | business_no | STRING | atomic.uat_atm | bond_trading_registration_status | business_nbr | STRING | — |
 | — | — | — | — | atomic.uat_atm | bond_trading_registration_status | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | bond_trading_registration_status | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -357,7 +369,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | listing_status_change | listing_status_change_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | listing_status_change | listing_status_change_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | listing_status_change | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg / uat_hose_stg | listing_status_change | decision_no | STRING | atomic.uat_atm | listing_status_change | decision_nbr | STRING | Business key |
 | uat_hnx_stg / uat_hose_stg | listing_status_change | decision_date | DATE | atomic.uat_atm | listing_status_change | decision_dt | DATE | Business key |
@@ -383,7 +395,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | brokerage_market_share | brokerage_market_share_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | brokerage_market_share | brokerage_market_share_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | brokerage_market_share | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_hnx_stg / uat_hose_stg | brokerage_market_share | member_code | STRING | atomic.uat_atm | brokerage_market_share | sc_member_code | STRING | Business key |
 | uat_hnx_stg / uat_hose_stg | brokerage_market_share | broker_name | STRING | atomic.uat_atm | brokerage_market_share | sc_nm | STRING | — |
@@ -399,7 +411,7 @@
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | bond_order_book | bond_order_book_id | STRING | Surrogate key — UUID generated |
+| — | — | (generated) | STRING | atomic.uat_atm | bond_order_book | bond_order_book_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
 | — | — | (system) | STRING | atomic.uat_atm | bond_order_book | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | — | (derived) | — | — | atomic.uat_atm | bond_order_book | order_book_type | STRING | Hardcode: 'OUTRIGHT'/'REPO'/'REPO2' theo bảng nguồn |
 | uat_hnx_stg | All 3 | order_no | STRING | atomic.uat_atm | bond_order_book | order_nbr | STRING | Business key |
@@ -466,8 +478,8 @@
 
 | # | Schema | Bảng atomic | Business Key | Trường lọc (Filter) | Ghi chú |
 | --- | --- | --- | --- | --- | --- |
-| 1 | atomic.uat_atm | listed_share_info | ticker_symbol | ds_snpst_dt | — |
-| 2 | atomic.uat_atm | foreign_ownership_info | ticker_symbol | ds_snpst_dt | — |
+| 1 | atomic.uat_atm | listed_share_information | ticker_symbol | ds_snpst_dt | — |
+| 2 | atomic.uat_atm | foreign_ownership_information | ticker_symbol | ds_snpst_dt | — |
 | 3 | atomic.uat_atm | major_shareholder_ownership | ticker_symbol, identification_nbr | ds_snpst_dt | — |
 | 4 | atomic.uat_atm | end_of_day_open_interest | ticker_symbol | ds_snpst_dt | — |
 | 5 | atomic.uat_atm | depository_account_movement | depository_member_code | ds_snpst_dt | — |

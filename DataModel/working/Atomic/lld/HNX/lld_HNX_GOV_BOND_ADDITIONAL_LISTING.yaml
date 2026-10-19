@@ -1,0 +1,139 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HNX"
+  source_table: "GOV_BOND_ADDITIONAL_LISTING"
+  atomic_entity: "Additional Gov Bond Listing"
+  entity_physical_name: "additional_gov_bond_listing"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HNX/brd_HNX_GOV_BOND_ADDITIONAL_LISTING.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+attributes:
+- attribute_name: "Additional Gov Bond Listing Id"
+  physical_name: "additional_gov_bond_listing_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.BOND_CODE"
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.STATUS"
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.LISTING_CHANGE_DATE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_GOV_BOND_ADDITIONAL_LISTING',\"concat_ws('-', BOND_CODE, STATUS, LISTING_CHANGE_DATE)\")"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HNX_GOV_BOND_ADDITIONAL_LISTING"
+  etl_derived_value: "HNX_GOV_BOND_ADDITIONAL_LISTING"
+  data_type: "string"
+- attribute_name: "Bond Code"
+  physical_name: "bond_code"
+  description: "Mã trái phiếu"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.BOND_CODE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Type"
+  physical_name: "bond_tp"
+  description: "Loại trái phiếu"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.BOND_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Additional Bond Quantity"
+  physical_name: "additional_bond_quantity"
+  description: "Khối lượng"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Par Value"
+  physical_name: "par_val"
+  description: "Mệnh giá trái phiếu"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.PAR_VALUE"
+  comment: "Nguồn DECIMAL(18,2) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Listing Status"
+  physical_name: "listing_status"
+  description: "Trạng thái"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.STATUS"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Listing Change Date"
+  physical_name: "listing_change_dt"
+  description: "Ngày thay đổi niêm yết"
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.LISTING_CHANGE_DATE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.GOV_BOND_ADDITIONAL_LISTING.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

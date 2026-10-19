@@ -1,0 +1,72 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "VSDC"
+  source_table: "NATIONALITY"
+  atomic_entity: "Classification VSDC Nationality"
+  entity_physical_name: "cl_vsdc_nationality"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Nationality"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_NATIONALITY.yaml. HLD: VSDC_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Tên entity chèn tên nguồn theo chỉ định tường minh của Data Modeler (ngoại lệ quy tắc #7; Classification Nationality của SCMS đã tồn tại) — xem VSDC_HLD_Tier1 6f T1-01."
+attributes:
+- attribute_name: "Classification VSDC Nationality Id"
+  physical_name: "cl_vsdc_nationality_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "VSDC.NATIONALITY.AUTOID"
+  comment: "PK surrogate. BCV: \"[Common] Nationality\". Danh mục quốc tịch VSDC. Hash: hash_id('VSDC_NATIONALITY',AUTOID)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification VSDC Nationality Code"
+  physical_name: "cl_vsdc_nationality_code"
+  description: "Mã quốc tịch — Id của danh mục quốc tịch VSDC. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.NATIONALITY.AUTOID"
+  comment: "BK chính. Dùng AUTOID (BIGINT) làm mã nghiệp vụ vì bảng nguồn không có cột mã khác — ETL cast sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=VSDC_NATIONALITY"
+  etl_derived_value: "VSDC_NATIONALITY"
+  data_type: "string"
+- attribute_name: "Classification VSDC Nationality Name"
+  physical_name: "cl_vsdc_nationality_nm"
+  description: "Tên quốc gia"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.NATIONALITY.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

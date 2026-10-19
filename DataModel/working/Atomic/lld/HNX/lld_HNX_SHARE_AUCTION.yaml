@@ -1,0 +1,333 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HNX"
+  source_table: "SHARE_AUCTION"
+  atomic_entity: "Share Auction Result"
+  entity_physical_name: "share_auction_result"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HNX/brd_HNX_SHARE_AUCTION.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+attributes:
+- attribute_name: "Share Auction Result Id"
+  physical_name: "share_auction_result_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.ISSUER_NAME"
+  - "HNX.SHARE_AUCTION.AUCTION_TYPE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_SHARE_AUCTION',\"concat_ws('-', ISSUER_NAME, AUCTION_TYPE)\")"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HNX_SHARE_AUCTION"
+  etl_derived_value: "HNX_SHARE_AUCTION"
+  data_type: "string"
+- attribute_name: "Issuer Name"
+  physical_name: "issuer_nm"
+  description: "Tên tổ chức phát hành / Tên công ty"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.ISSUER_NAME"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Auction Type"
+  physical_name: "auction_tp"
+  description: "Loại hình đấu giá"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.AUCTION_TYPE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Registered Offering Share Quantity"
+  physical_name: "registered_offering_share_quantity"
+  description: "Số CP đăng ký chào bán"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.REGISTERED_OFFERING_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Registered Investor Count"
+  physical_name: "registered_investor_count"
+  description: "Tổng số NĐT đăng ký tham gia"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.TOTAL_REGISTERED_INVESTORS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Starting Price"
+  physical_name: "starting_price"
+  description: "Giá khởi điểm"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.STARTING_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Average Winning Price"
+  physical_name: "average_winning_price"
+  description: "Giá trúng bình quân"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.AVERAGE_WINNING_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Domestic Institutional Winner Count"
+  physical_name: "domestic_institutional_winner_count"
+  description: "Số NĐT trúng giá tổ chức trong nước"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.DOMESTIC_INSTITUTIONAL_WINNERS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Foreign Institutional Winner Count"
+  physical_name: "foreign_institutional_winner_count"
+  description: "Số NĐT trúng giá tổ chức nước ngoài"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.FOREIGN_INSTITUTIONAL_WINNERS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Domestic Individual Winner Count"
+  physical_name: "domestic_individual_winner_count"
+  description: "Số NĐT trúng giá cá nhân trong nước"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.DOMESTIC_INDIVIDUAL_WINNERS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Foreign Individual Winner Count"
+  physical_name: "foreign_individual_winner_count"
+  description: "Số NĐT trúng giá cá nhân nước ngoài"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.FOREIGN_INDIVIDUAL_WINNERS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Domestic Registered Buy Quantity"
+  physical_name: "domestic_registered_buy_quantity"
+  description: "KL CP đăng ký mua - NĐT trong nước"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.DOMESTIC_REGISTERED_BUY_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Foreign Registered Buy Quantity"
+  physical_name: "foreign_registered_buy_quantity"
+  description: "KL CP đăng ký mua - NĐT nước ngoài"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.FOREIGN_REGISTERED_BUY_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Domestic Winning Share Quantity"
+  physical_name: "domestic_winning_share_quantity"
+  description: "Số CP trúng giá - NĐT trong nước"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.DOMESTIC_WINNING_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Foreign Winning Share Quantity"
+  physical_name: "foreign_winning_share_quantity"
+  description: "Số CP trúng giá - NĐT nước ngoài"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.FOREIGN_WINNING_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Domestic Winning Value"
+  physical_name: "domestic_winning_val"
+  description: "Giá trị CP trúng giá (VND) - Trong nước"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.DOMESTIC_WINNING_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Foreign Winning Value"
+  physical_name: "foreign_winning_val"
+  description: "Giá trị CP trúng giá (VND) - Nước ngoài"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.FOREIGN_WINNING_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Domestic Actual Sold Share Quantity"
+  physical_name: "domestic_actual_sold_share_quantity"
+  description: "Số CP thực tế bán được - Trong nước"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.DOMESTIC_ACTUAL_SOLD_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Foreign Actual Sold Share Quantity"
+  physical_name: "foreign_actual_sold_share_quantity"
+  description: "Số CP thực tế bán được - Nước ngoài"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.FOREIGN_ACTUAL_SOLD_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Domestic Actual Sold Value"
+  physical_name: "domestic_actual_sold_val"
+  description: "Giá trị CP thực tế bán được - Trong nước"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.DOMESTIC_ACTUAL_SOLD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Foreign Actual Sold Value"
+  physical_name: "foreign_actual_sold_val"
+  description: "Giá trị CP thực tế bán được - Nước ngoài"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.FOREIGN_ACTUAL_SOLD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.SHARE_AUCTION.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

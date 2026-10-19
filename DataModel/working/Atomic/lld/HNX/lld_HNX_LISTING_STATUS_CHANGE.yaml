@@ -1,0 +1,256 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HNX"
+  source_table: "LISTING_STATUS_CHANGE"
+  atomic_entity: "Listing Status Change"
+  entity_physical_name: "listing_status_change"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HNX/brd_HNX_LISTING_STATUS_CHANGE.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+attributes:
+- attribute_name: "Listing Status Change Id"
+  physical_name: "listing_status_change_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.DECISION_NO"
+  - "HNX.LISTING_STATUS_CHANGE.DECISION_DATE"
+  - "HNX.LISTING_STATUS_CHANGE.TICKER_SYMBOL"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_LISTING_STATUS_CHANGE',\"concat_ws('-', DECISION_NO, DECISION_DATE, TICKER_SYMBOL)\")"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HNX_LISTING_STATUS_CHANGE"
+  etl_derived_value: "HNX_LISTING_STATUS_CHANGE"
+  data_type: "string"
+- attribute_name: "Decision Number"
+  physical_name: "decision_nbr"
+  description: "Số quyết định"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.DECISION_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Date"
+  physical_name: "decision_dt"
+  description: "Ngày quyết định"
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.DECISION_DATE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Ticker Symbol"
+  physical_name: "ticker_symbol"
+  description: "Mã CK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.TICKER_SYMBOL"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "New Listed Share Quantity"
+  physical_name: "new_listed_share_quantity"
+  description: "Số lượng CK niêm yết mới"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.NEW_LISTED_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Additional Listed Share Quantity"
+  physical_name: "additional_listed_share_quantity"
+  description: "Số lượng CK niêm yết bổ sung"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.ADDITIONAL_LISTED_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Delisted Share Quantity"
+  physical_name: "delisted_share_quantity"
+  description: "Số lượng CK hủy niêm yết"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.DELISTED_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Exchange Transfer"
+  physical_name: "exchange_transfer"
+  description: "Chuyển sàn"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.EXCHANGE_TRANSFER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Listed Share Value"
+  physical_name: "listed_share_val"
+  description: "Giá trị CK niêm yết"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.LISTED_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Additional Listed Share Value"
+  physical_name: "additional_listed_share_val"
+  description: "Giá trị CK niêm yết bổ sung"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.ADDITIONAL_LISTED_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Delisted Share Value"
+  physical_name: "delisted_share_val"
+  description: "Giá trị chứng khoán huỷ niêm yết"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.DELISTED_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Issuer Name"
+  physical_name: "issuer_nm"
+  description: "Tên Tổ chức phát hành / Tên Công ty"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.ISSUER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Effective Date"
+  physical_name: "effective_dt"
+  description: "Ngày hiệu lực"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.EFFECTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "First Trading Date"
+  physical_name: "first_trading_dt"
+  description: "Ngày giao dịch đầu tiên"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.FIRST_TRADING_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Last Trading Date"
+  physical_name: "last_trading_dt"
+  description: "Ngày giao dịch cuối cùng"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.LAST_TRADING_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Delist Transfer Reason"
+  physical_name: "delist_transfer_reason"
+  description: "Lý do hủy, chuyển sàn"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.DELIST_TRANSFER_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_STATUS_CHANGE.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

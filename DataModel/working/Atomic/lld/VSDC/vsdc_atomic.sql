@@ -76,8 +76,8 @@ PARTITIONED BY (ds_snpst_dt, src_stm_code);
 	Business key: ticker_symbol
 	Lọc ds_snpst_dt
 	Concept Product
-CREATE TABLE IF NOT EXISTS atomic.uat_atm.listed_share_info (
-  listed_share_info_id STRING,
+CREATE TABLE IF NOT EXISTS atomic.uat_atm.listed_share_information (
+  listed_share_information_id STRING,
   ticker_symbol STRING,
   src_stm_code STRING,
   isin_code STRING,
@@ -100,8 +100,8 @@ PARTITIONED BY (ds_snpst_dt, src_stm_code);
 	Business key: ticker_symbol
 	Lọc ds_snpst_dt
 	Concept Involved Party
-CREATE TABLE IF NOT EXISTS atomic.uat_atm.foreign_ownership_info (
- foreign_ownership_info_id STRING,
+CREATE TABLE IF NOT EXISTS atomic.uat_atm.foreign_ownership_information (
+ foreign_ownership_information_id STRING,
   ticker_symbol STRING,
   src_stm_code STRING,
   isin_code STRING,

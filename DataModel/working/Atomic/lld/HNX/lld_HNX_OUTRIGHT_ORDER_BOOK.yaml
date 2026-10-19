@@ -1,0 +1,578 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HNX"
+  source_table: "OUTRIGHT_ORDER_BOOK"
+  atomic_entity: "Bond Order Book"
+  entity_physical_name: "bond_order_book"
+  bcv_core_object: "Transaction"
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  table_type: "Fact Snapshot"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HNX/brd_HNX_OUTRIGHT_ORDER_BOOK.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Entity gộp 3 sổ lệnh (OUTRIGHT/REPO/REPO2) — phân biệt qua order_book_type; cột đặc thù NULL phía còn lại, union tại bước Entity Consolidation."
+attributes:
+- attribute_name: "Bond Order Book Id"
+  physical_name: "bond_order_book_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.ORDER_NO"
+  comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Hash: hash_id('HNX_OUTRIGHT_ORDER_BOOK',ORDER_NO)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HNX_OUTRIGHT_ORDER_BOOK"
+  etl_derived_value: "HNX_OUTRIGHT_ORDER_BOOK"
+  data_type: "string"
+- attribute_name: "Order Book Type"
+  physical_name: "order_book_type"
+  description: "Loại sổ lệnh trái phiếu theo bảng nguồn: OUTRIGHT (mua bán thẳng), REPO, REPO2."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Hardcode theo bảng nguồn OUTRIGHT_ORDER_BOOK: 'OUTRIGHT'. Không đăng ký Classification Value scheme (quyết định Data Modeler 2026-10-18)."
+  classification_context: null
+  etl_derived_value: "OUTRIGHT"
+  data_type: "string"
+- attribute_name: "Order Number"
+  physical_name: "order_nbr"
+  description: "SHL"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.ORDER_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Order Number"
+  physical_name: "original_order_nbr"
+  description: "SHL gốc"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.ORIGINAL_ORDER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Time"
+  physical_name: "order_time"
+  description: "Thgian"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.TIME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Type"
+  physical_name: "order_tp"
+  description: "Loại lệnh"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.ORDER_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Side"
+  physical_name: "order_side"
+  description: "M/B"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.ORDER_SIDE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Status"
+  physical_name: "order_status"
+  description: "Trạng thái lệnh"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.ORDER_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Creator Rep"
+  physical_name: "order_creator_rep"
+  description: "ĐDGD tạo lệnh"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.ORDER_CREATOR_REP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Code"
+  physical_name: "bond_code"
+  description: "Mã TP"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.BOND_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Instrument Type"
+  physical_name: "instrument_tp"
+  description: "Loại hàng hóa"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.INSTRUMENT_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Interest Payment Type"
+  physical_name: "interest_payment_tp"
+  description: "Loại hình trả lãi"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.INTEREST_PAYMENT_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Interest Payment Method"
+  physical_name: "interest_payment_method"
+  description: "Kiểu trả lãi"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.INTEREST_PAYMENT_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Interest Rate Type"
+  physical_name: "interest_rate_tp"
+  description: "Loại lãi suất"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.INTEREST_RATE_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Remaining Term Days"
+  physical_name: "remaining_term_days"
+  description: "KH còn lại(ngày)"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.REMAINING_TERM_DAYS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Remaining Term"
+  physical_name: "remaining_term"
+  description: "KH còn lại"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.REMAINING_TERM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Currency Code"
+  physical_name: "currency_code"
+  description: "Mã tiền tệ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.CURRENCY_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Quoted Price"
+  physical_name: "quoted_price"
+  description: "Giá yết"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.QUOTED_PRICE"
+  comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(23,4) (domain Currency Amount mặc định decimal(23,2)). transform_physical_names.py sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,4)"
+- attribute_name: "Execution Price"
+  physical_name: "execution_price"
+  description: "Giá TH"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.EXECUTION_PRICE"
+  comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(23,4) (domain Currency Amount mặc định decimal(23,2)). transform_physical_names.py sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,4)"
+- attribute_name: "Yield Rate"
+  physical_name: "yield_rate"
+  description: "Lợi suất"
+  data_domain: "Interest Rate"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.YIELD_RATE"
+  comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4) (domain Interest Rate mặc định decimal(8,5)). transform_physical_names.py sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(7,4)"
+- attribute_name: "Discount Rate"
+  physical_name: "discount_rate"
+  description: "Lãi suất CK"
+  data_domain: "Interest Rate"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.DISCOUNT_RATE"
+  comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4) (domain Interest Rate mặc định decimal(8,5)). transform_physical_names.py sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(7,4)"
+- attribute_name: "Order Bond Quantity"
+  physical_name: "order_bond_quantity"
+  description: "Khối lượng"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Trading Method"
+  physical_name: "trading_method"
+  description: "Phương thức GD"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.TRADING_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trading Date"
+  physical_name: "trading_dt"
+  description: "Ngày BĐGD"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.TRADING_DATE"
+  comment: "Partition key theo mapping."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Trading Value"
+  physical_name: "trading_val"
+  description: "Giá trị TT"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.TRADING_VALUE"
+  comment: "Chỉ có ở một số loại sổ lệnh — NULL với REPO/REPO2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Settlement Method"
+  physical_name: "settlement_method"
+  description: "Phương thức TT"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SETTLEMENT_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Payment Status"
+  physical_name: "payment_status"
+  description: "Tình trạng thanh toán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.PAYMENT_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Selling Member Code"
+  physical_name: "selling_member_code"
+  description: "TV Bán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SELLING_MEMBER_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Selling Rep"
+  physical_name: "selling_rep"
+  description: "ĐDGD Bán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SELLING_REP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Selling Account Number"
+  physical_name: "selling_account_nbr"
+  description: "TKNĐT Bán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SELLING_ACCOUNT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Selling Broker Dealer"
+  physical_name: "selling_broker_dealer"
+  description: "MG/TD Bán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SELLING_BROKER_DEALER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Selling Proxy Entry"
+  physical_name: "selling_proxy_entry"
+  description: "Nhập hộ bán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SELLING_PROXY_ENTRY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Buying Member Code"
+  physical_name: "buying_member_code"
+  description: "TV Mua"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.BUYING_MEMBER_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Buying Rep"
+  physical_name: "buying_rep"
+  description: "ĐDGD Mua"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.BUYING_REP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Buying Account Number"
+  physical_name: "buying_account_nbr"
+  description: "TK NĐT mua"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.BUYING_ACCOUNT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Buying Broker Dealer"
+  physical_name: "buying_broker_dealer"
+  description: "MG/TD Mua"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.BUYING_BROKER_DEALER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Buying Proxy Entry"
+  physical_name: "buying_proxy_entry"
+  description: "Nhập hộ mua"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.BUYING_PROXY_ENTRY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Settlement Date"
+  physical_name: "settlement_dt"
+  description: "Ngày TT"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SETTLEMENT_DATE"
+  comment: "Chỉ có ở một số loại sổ lệnh — NULL với REPO, REPO2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Settlement Status"
+  physical_name: "settlement_status"
+  description: "Tình trạng TT"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SETTLEMENT_STATUS"
+  comment: "Chỉ có ở một số loại sổ lệnh — NULL với REPO. Cột chỉ có ở OUTRIGHT_ORDER_BOOK + REPO2_ORDER_BOOK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Settlement Bond Code"
+  physical_name: "settlement_bond_code"
+  description: "Mã TP thanh toán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SETTLEMENT_BOND_CODE"
+  comment: "Chỉ có ở một số loại sổ lệnh — NULL với REPO. Cột chỉ có ở OUTRIGHT_ORDER_BOOK + REPO2_ORDER_BOOK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Settlement Bond Quantity"
+  physical_name: "settlement_bond_quantity"
+  description: "KL thanh toán"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.SETTLEMENT_VOLUME"
+  comment: "Chỉ có ở một số loại sổ lệnh — NULL với REPO. Cột chỉ có ở OUTRIGHT_ORDER_BOOK + REPO2_ORDER_BOOK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Equivalent Bond Settlement Value"
+  physical_name: "equivalent_bond_settlement_val"
+  description: "GTTT bằng TPTĐ"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.EQUIVALENT_BOND_SETTLEMENT_VALUE"
+  comment: "Chỉ có ở một số loại sổ lệnh — NULL với REPO. Cột chỉ có ở OUTRIGHT_ORDER_BOOK + REPO2_ORDER_BOOK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"

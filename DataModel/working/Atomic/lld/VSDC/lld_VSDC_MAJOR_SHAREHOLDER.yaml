@@ -1,0 +1,229 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "VSDC"
+  source_table: "MAJOR_SHAREHOLDER"
+  atomic_entity: "Major Shareholder Ownership"
+  entity_physical_name: "major_shareholder_ownership"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization Ownership"
+  table_type: "Fact Snapshot"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_MAJOR_SHAREHOLDER.yaml. HLD: VSDC_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+attributes:
+- attribute_name: "Major Shareholder Ownership Id"
+  physical_name: "major_shareholder_ownership_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.TICKER_SYMBOL"
+  - "VSDC.MAJOR_SHAREHOLDER.ID_NUMBER"
+  comment: "PK surrogate. BCV: \"[Involved Party] Organization Ownership\". Hash: hash_id('VSDC_MAJOR_SHAREHOLDER',\"concat_ws('-', TICKER_SYMBOL, ID_NUMBER)\")"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=VSDC_MAJOR_SHAREHOLDER"
+  etl_derived_value: "VSDC_MAJOR_SHAREHOLDER"
+  data_type: "string"
+- attribute_name: "Ticker Symbol"
+  physical_name: "ticker_symbol"
+  description: "Mã chứng khoán"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.TICKER_SYMBOL"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "ISIN Code"
+  physical_name: "isin_code"
+  description: "Mã ISIN"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.ISIN_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Major Shareholder Name"
+  physical_name: "major_shareholder_nm"
+  description: "Tên cổ đông"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.SHAREHOLDER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số đăng ký sở hữu"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.ID_NUMBER"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issue Date"
+  physical_name: "issue_dt"
+  description: "Ngày cấp"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Address"
+  physical_name: "adr"
+  description: "Địa chỉ liên hệ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.CONTACT_ADDRESS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Voting Share Quantity"
+  physical_name: "voting_share_quantity"
+  description: "Số cổ phiếu có quyền biểu quyết"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.VOTING_SHARES"
+  comment: "Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Opening Balance Date"
+  physical_name: "opening_balance_dt"
+  description: "Ngày chốt số liệu đầu kỳ"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.BEGIN_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Opening Share Quantity"
+  physical_name: "opening_share_quantity"
+  description: "Số lượng chứng khoán đầu kỳ"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.BEGIN_PERIOD_SHARES"
+  comment: "Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Opening Ratio"
+  physical_name: "opening_ratio"
+  description: "Tỷ lệ đầu kỳ (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.BEGIN_PERIOD_RATIO"
+  comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4) (domain Percentage mặc định decimal(5,2)). transform_physical_names.py sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(7,4)"
+- attribute_name: "Closing Balance Date"
+  physical_name: "closing_balance_dt"
+  description: "Ngày chốt số liệu cuối kỳ"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.END_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Closing Share Quantity"
+  physical_name: "closing_share_quantity"
+  description: "Số lượng chứng khoán cuối kỳ"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.END_PERIOD_SHARES"
+  comment: "Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Closing Ratio"
+  physical_name: "closing_ratio"
+  description: "Tỷ lệ cuối kỳ (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.END_PERIOD_RATIO"
+  comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4) (domain Percentage mặc định decimal(5,2)). transform_physical_names.py sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(7,4)"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.MAJOR_SHAREHOLDER.NOTES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

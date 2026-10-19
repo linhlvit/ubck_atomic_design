@@ -1,0 +1,202 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "VSDC"
+  source_table: "OPEN_INVESTORS"
+  atomic_entity: "Open Investor Account"
+  entity_physical_name: "open_investor_account"
+  bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Trading Account Arrangement"
+  table_type: "Fact Snapshot"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_OPEN_INVESTORS.yaml. HLD: VSDC_HLD_Tier2.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+attributes:
+- attribute_name: "Open Investor Account Id"
+  physical_name: "open_investor_account_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.TRADING_ACCOUNT_NO"
+  comment: "PK surrogate. BCV: \"[Arrangement] Trading Account Arrangement\". Hash: hash_id('VSDC_OPEN_INVESTORS',TRADING_ACCOUNT_NO)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=VSDC_OPEN_INVESTORS"
+  etl_derived_value: "VSDC_OPEN_INVESTORS"
+  data_type: "string"
+- attribute_name: "Investor Account Number"
+  physical_name: "investor_account_nbr"
+  description: "Mã tài khoản giao dịch"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.TRADING_ACCOUNT_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Name"
+  physical_name: "investor_nm"
+  description: "Tên khách hàng"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.CUSTOMER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Type Code"
+  physical_name: "investor_tp_code"
+  description: "Loại hình (Cá nhân/Tổ chức)"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.INVESTOR_TYPE"
+  comment: "Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map sang mã INT (chưa có bảng mã, không đăng ký scheme)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Address"
+  physical_name: "adr"
+  description: "Địa chỉ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.ADDRESS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số đăng ký sở hữu"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.ID_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issue Date"
+  physical_name: "issue_dt"
+  description: "Ngày cấp"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Issue Place"
+  physical_name: "issue_place"
+  description: "Nơi cấp"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.ISSUE_PLACE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Open Date"
+  physical_name: "open_dt"
+  description: "Ngày mở tài khoản"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.OPEN_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK đến Classification VSDC Nationality — Quốc tịch."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.NATIONALITY"
+  comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk sang VSDC.NATIONALITY: OPEN_INVESTORS.NATIONALITY = NATIONALITY.AUTOID để xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING, AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không khớp AUTOID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc tịch (denormalized) — Quốc tịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.NATIONALITY.AUTOID"
+  comment: "Lookup pair: cl_vsdc_nationality.cl_vsdc_nationality_code. Pair with Nationality Id. Giá trị lấy từ VSDC.NATIONALITY.AUTOID sau ETL crosswalk — chi tiết xem comment Nationality Id. Kiểu INT theo DDL atomic đã chốt — ETL CAST AUTOID (BIGINT) sang INT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Phone Number"
+  physical_name: "phone_nbr"
+  description: "Số điện thoại"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.PHONE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Email"
+  physical_name: "email"
+  description: "Địa chỉ email"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.EMAIL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

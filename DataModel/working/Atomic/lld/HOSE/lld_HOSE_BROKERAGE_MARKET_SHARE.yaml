@@ -1,0 +1,124 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HOSE"
+  source_table: "BROKERAGE_MARKET_SHARE"
+  atomic_entity: "Brokerage Market Share"
+  entity_physical_name: "brokerage_market_share"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HOSE/brd_HOSE_BROKERAGE_MARKET_SHARE.yaml. HLD: HOSE_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Entity định nghĩa ở HLD của source đầu tiên (HNX/VSDC); HOSE bổ sung source_table."
+attributes:
+- attribute_name: "Brokerage Market Share Id"
+  physical_name: "brokerage_market_share_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HOSE.BROKERAGE_MARKET_SHARE.MEMBER_CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HOSE_BROKERAGE_MARKET_SHARE',MEMBER_CODE)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HOSE_BROKERAGE_MARKET_SHARE"
+  etl_derived_value: "HOSE_BROKERAGE_MARKET_SHARE"
+  data_type: "string"
+- attribute_name: "Securities Company Member Code"
+  physical_name: "sc_member_code"
+  description: "Mã thành viên"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.BROKERAGE_MARKET_SHARE.MEMBER_CODE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Name"
+  physical_name: "sc_nm"
+  description: "Tên công ty chứng khoán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.BROKERAGE_MARKET_SHARE.BROKER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Total Trading Value"
+  physical_name: "total_trading_val"
+  description: "Tổng giá trị giao dịch"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Market Share By Value"
+  physical_name: "market_share_by_val"
+  description: "Tỷ trọng theo tổng GTGD (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.BROKERAGE_MARKET_SHARE.MARKET_SHARE_BY_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Security Type Code"
+  physical_name: "security_tp_code"
+  description: "Phân loại"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.BROKERAGE_MARKET_SHARE.CLASSIFICATION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Quarter"
+  physical_name: "rpt_quarter"
+  description: "Quý báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.BROKERAGE_MARKET_SHARE.REPORT_QUARTER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
