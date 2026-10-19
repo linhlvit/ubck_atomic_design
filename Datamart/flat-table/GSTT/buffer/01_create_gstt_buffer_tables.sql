@@ -1,9 +1,13 @@
 -- ============================================================
 -- GSTT Buffer Tables — CREATE (tầng phục vụ chart template)
 -- Module: Giám sát Thị trường (GSTT)
--- Nguồn thiết kế: buffer_chart_templates_v4.sql (46 template tự tách) — mỗi template 1 bảng, KHÔNG gộp.
+-- Nguồn thiết kế: buffer_chart_templates_v5.sql (46 template tự tách, 45 bật + [2341] bị comment-out) — mỗi template 1 bảng, KHÔNG gộp.
+-- Cập nhật 2026-10-19: đổi tên bảng theo v5 (v4 → v5 không đổi logic bước 1b/bước 2, chỉ đổi tên + tắt [2341]).
 -- Sinh: 2026-10-17 (bản nháp chưa chạy thử trên ClickHouse, cần review trước khi chạy production).
--- 46 bảng mart.buffer_<template>, tên giữ nguyên file tham chiếu để SQL chart (bước 2) trỏ lại cùng tên.
+-- 45 bảng mart.<phân_hệ>_fct_<tên_tiếng_Anh>_flat — tên đúng convention v5 để SQL chart (bước 2) trỏ lại cùng tên
+--   (phân hệ = phần trước dấu '_' đầu tiên của tên bảng fact nguồn: gstt / qlkd / ndtnn). Khối [2341] giữ lại dạng comment.
+-- LƯU Ý (theo v5): chi-so-history [2350] và chi-so-realtime [2349] lấy từ bảng INTRADAY (cập nhật liên tục trong phiên) —
+--   nạp buffer 1 lần/ngày có thể không hợp bản chất realtime; cân nhắc lại trước khi chạy production.
 --
 -- Quy ước (khác file tham chiếu, có chủ đích):
 --   * Engine ReplicatedMergeTree() ON CLUSTER 'my_cluster' — khớp flat hiện tại (file tham chiếu dùng MergeTree thường).
@@ -19,12 +23,12 @@
 CREATE DATABASE IF NOT EXISTS mart ON CLUSTER 'my_cluster';
 
 -- ============================================================
--- 1. [2399] heat-map  →  mart.buffer_heat_map
+-- 1. [2399] heat-map  →  mart.gstt_fct_stock_heatmap_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: floor_code IN ('10','02','04') AND NOT ((floor_code = '02' AND stock_tp_code IN ('1','4')) OR (floor_code = '10' AND stock_tp_code = '1')) AND (ifNull(public_company_dim_id, '') != '' OR ifNull(securities_company_dim_id, '') != '')
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_heat_map ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_stock_heatmap_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -54,13 +58,13 @@ COMMENT 'Buffer chart template [2399] heat-map — nguồn gstt_fct_stock_portfo
 
 
 -- ============================================================
--- 2. [2391] bm021-mss-dinh-gia  →  mart.buffer_bm021_mss_dinh_gia
+-- 2. [2391] bm021-mss-dinh-gia  →  mart.gstt_fct_valuation_report_bm021_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: pct_bien_dong_ngay
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_bm021_mss_dinh_gia ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_valuation_report_bm021_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                                        Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                                        Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -91,12 +95,12 @@ COMMENT 'Buffer chart template [2391] bm021-mss-dinh-gia — nguồn gstt_fct_st
 
 
 -- ============================================================
--- 3. [2351] chi-so-eod  →  mart.buffer_chi_so_eod
+-- 3. [2351] chi-so-eod  →  mart.qlkd_fct_index_eod_flat
 --    Nguồn: datamart.qlkd_fct_market_index_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_chi_so_eod ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.qlkd_fct_index_eod_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'qlkd_fct_market_index_snpst_flat.cdr_dt',
     market_code                         Nullable(String)          COMMENT 'qlkd_fct_market_index_snpst_flat.market_code',
@@ -122,12 +126,12 @@ COMMENT 'Buffer chart template [2351] chi-so-eod — nguồn qlkd_fct_market_ind
 
 
 -- ============================================================
--- 4. [2350] chi-so-history  →  mart.buffer_chi_so_history
+-- 4. [2350] chi-so-history  →  mart.gstt_fct_index_history_flat
 --    Nguồn: datamart.gstt_fct_market_index_intraday_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_chi_so_history ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_index_history_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_market_index_intraday_flat.cdr_dt',
     market_code                         Nullable(String)          COMMENT 'gstt_fct_market_index_intraday_flat.market_code',
@@ -142,12 +146,12 @@ COMMENT 'Buffer chart template [2350] chi-so-history — nguồn gstt_fct_market
 
 
 -- ============================================================
--- 5. [2349] chi-so-realtime  →  mart.buffer_chi_so_realtime
+-- 5. [2349] chi-so-realtime  →  mart.gstt_fct_index_realtime_flat
 --    Nguồn: datamart.gstt_fct_market_index_intraday_flat
 --    Universe/lọc tĩnh: substring(index_time, 1, 5) BETWEEN '09:00' AND '14:45'
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_chi_so_realtime ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_index_realtime_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_market_index_intraday_flat.cdr_dt',
     market_code                         Nullable(String)          COMMENT 'gstt_fct_market_index_intraday_flat.market_code',
@@ -163,12 +167,12 @@ COMMENT 'Buffer chart template [2349] chi-so-realtime — nguồn gstt_fct_marke
 
 
 -- ============================================================
--- 6. [2352] dinh-gia  →  mart.buffer_dinh_gia
+-- 6. [2352] dinh-gia  →  mart.gstt_fct_index_valuation_flat
 --    Nguồn: datamart.gstt_fct_index_constituent_snpst_flat, datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (INNER JOIN: chỉ mã thuộc rổ)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_dinh_gia ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_index_valuation_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_index_constituent_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_index_constituent_snpst_flat.symbol',
@@ -193,13 +197,13 @@ COMMENT 'Buffer chart template [2352] dinh-gia — nguồn gstt_fct_index_consti
 
 
 -- ============================================================
--- 7. [2336] bang-co-phieu  →  mart.buffer_bang_co_phieu
+-- 7. [2336] bang-co-phieu  →  mart.gstt_fct_stock_list_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: vi_the_gia_trong_bien_do
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_bang_co_phieu ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_stock_list_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -235,12 +239,12 @@ COMMENT 'Buffer chart template [2336] bang-co-phieu — nguồn gstt_fct_stock_p
 
 
 -- ============================================================
--- 8. [2338] bang-phai-sinh  →  mart.buffer_bang_phai_sinh
+-- 8. [2338] bang-phai-sinh  →  mart.gstt_fct_derivative_list_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_DER (sàn 03)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_bang_phai_sinh ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_derivative_list_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -269,31 +273,32 @@ COMMENT 'Buffer chart template [2338] bang-phai-sinh — nguồn gstt_fct_stock_
 
 
 -- ============================================================
--- 9. [2341] ngay-nghi-giao-dich  →  mart.buffer_ngay_nghi_giao_dich
+-- 9. [2341] ngay-nghi-giao-dich  →  mart.cdr_fct_non_trading_day_flat
 --    Nguồn: datamart.cdr_dt_flat
 --    Universe/lọc tĩnh: is_trading_date != 'Y'
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_ngay_nghi_giao_dich ON CLUSTER 'my_cluster'
-(
-    cdr_dt                              Date                      COMMENT 'cdr_dt_flat.cdr_dt',
-    is_trading_date                     String                    COMMENT 'cdr_dt_flat.is_trading_date'
-)
-ENGINE = ReplicatedMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt))
-COMMENT 'Buffer chart template [2341] ngay-nghi-giao-dich — nguồn cdr_dt_flat; lọc: is_trading_date != \'Y\'; nạp theo ngày'
-;
+-- [v5] KHỐI BỊ TẮT: buffer_chart_templates_v5.sql comment-out cả DDL + nạp + bước 2 của [2341] (mart.cdr_fct_non_trading_day_flat không được tạo). Chưa rõ chart [2341] đọc từ đâu — cần GSTT xác nhận.
+-- CREATE TABLE IF NOT EXISTS mart.cdr_fct_non_trading_day_flat ON CLUSTER 'my_cluster'
+-- (
+--     cdr_dt                              Date                      COMMENT 'cdr_dt_flat.cdr_dt',
+--     is_trading_date                     String                    COMMENT 'cdr_dt_flat.is_trading_date'
+-- )
+-- ENGINE = ReplicatedMergeTree()
+-- PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+-- ORDER BY (assumeNotNull(cdr_dt))
+-- COMMENT 'Buffer chart template [2341] ngay-nghi-giao-dich — nguồn cdr_dt_flat; lọc: is_trading_date != \'Y\'; nạp theo ngày'
+-- ;
 
 
 -- ============================================================
--- 10. [2379] nuoc-ngoai  →  mart.buffer_nuoc_ngoai
+-- 10. [2379] nuoc-ngoai  →  mart.gstt_fct_foreign_trading_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_le_mua_rong_nn_klgd
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_nuoc_ngoai ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_foreign_trading_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -323,13 +328,13 @@ COMMENT 'Buffer chart template [2379] nuoc-ngoai — nguồn gstt_fct_stock_port
 
 
 -- ============================================================
--- 11. [2380] nuoc-ngoai-gtnn  →  mart.buffer_nuoc_ngoai_gtnn
+-- 11. [2380] nuoc-ngoai-gtnn  →  mart.gstt_fct_foreign_trading_value_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_le_mua_rong_nn_gtgd
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_nuoc_ngoai_gtnn ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_foreign_trading_value_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -348,12 +353,12 @@ COMMENT 'Buffer chart template [2380] nuoc-ngoai-gtnn — nguồn gstt_fct_stock
 
 
 -- ============================================================
--- 12. [2381] nuoc-ngoai-gtnn-intraday  →  mart.buffer_nuoc_ngoai_gtnn_intraday
+-- 12. [2381] nuoc-ngoai-gtnn-intraday  →  mart.gstt_fct_foreign_trading_value_intraday_flat
 --    Nguồn: datamart.gstt_fct_foreign_trading_min_snpst_flat
 --    Universe/lọc tĩnh: NOT ((floor_code = '02' AND stock_tp_code IN ('1','4')) OR (floor_code = '10' AND stock_tp_code = '1')) AND floor_code != '03' AND (toHour(trade_minute_tms) * 60 + toMinute(trade_minute_tms)) BETWEEN 540 AND 885
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_nuoc_ngoai_gtnn_intraday ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_foreign_trading_value_intraday_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_foreign_trading_min_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_foreign_trading_min_snpst_flat.symbol',
@@ -371,13 +376,13 @@ COMMENT 'Buffer chart template [2381] nuoc-ngoai-gtnn-intraday — nguồn gstt_
 
 
 -- ============================================================
--- 13. [2382] nuoc-ngoai-theo-chi-so  →  mart.buffer_nuoc_ngoai_theo_chi_so
+-- 13. [2382] nuoc-ngoai-theo-chi-so  →  mart.gstt_fct_foreign_trading_by_index_flat
 --    Nguồn: datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_trong_freefloat_tren_tong_von_hoa_idx
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_nuoc_ngoai_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_foreign_trading_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                    Nullable(Date)            COMMENT 'gstt_fct_index_constituent_snpst_flat.cdr_dt',
     symbol                                    Nullable(String)          COMMENT 'gstt_fct_index_constituent_snpst_flat.symbol',
@@ -396,13 +401,13 @@ COMMENT 'Buffer chart template [2382] nuoc-ngoai-theo-chi-so — nguồn gstt_fc
 
 
 -- ============================================================
--- 14. [2383] nuoc-ngoai-theo-chi-so-intraday  →  mart.buffer_nuoc_ngoai_theo_chi_so_intraday
+-- 14. [2383] nuoc-ngoai-theo-chi-so-intraday  →  mart.gstt_fct_foreign_trading_by_index_intraday_flat
 --    Nguồn: datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: dinh_gia_theo_pe_pb
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_nuoc_ngoai_theo_chi_so_intraday ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_foreign_trading_by_index_intraday_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_index_constituent_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_index_constituent_snpst_flat.symbol',
@@ -419,12 +424,12 @@ COMMENT 'Buffer chart template [2383] nuoc-ngoai-theo-chi-so-intraday — nguồ
 
 
 -- ============================================================
--- 15. [2385] phan-loai-ndt  →  mart.buffer_phan_loai_ndt
+-- 15. [2385] phan-loai-ndt  →  mart.gstt_fct_investor_category_trading_flat
 --    Nguồn: datamart.gstt_fct_investor_category_trading_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_phan_loai_ndt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_investor_category_trading_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_investor_category_trading_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_investor_category_trading_snpst_flat.symbol',
@@ -442,13 +447,13 @@ COMMENT 'Buffer chart template [2385] phan-loai-ndt — nguồn gstt_fct_investo
 
 
 -- ============================================================
--- 16. [2387] phan-loai-ndt-heatmap  →  mart.buffer_phan_loai_ndt_heatmap
+-- 16. [2387] phan-loai-ndt-heatmap  →  mart.gstt_fct_investor_category_heatmap_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: gia_tri_binh_quan_mot_lenh
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_phan_loai_ndt_heatmap ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_investor_category_heatmap_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -472,12 +477,12 @@ COMMENT 'Buffer chart template [2387] phan-loai-ndt-heatmap — nguồn gstt_fct
 
 
 -- ============================================================
--- 17. [2386] phan-loai-ndt-index  →  mart.buffer_phan_loai_ndt_index
+-- 17. [2386] phan-loai-ndt-index  →  mart.gstt_fct_investor_category_index_trading_flat
 --    Nguồn: datamart.gstt_fct_investor_category_index_trading_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_phan_loai_ndt_index ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_investor_category_index_trading_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_investor_category_index_trading_snpst_flat.cdr_dt',
     index_code                          Nullable(String)          COMMENT 'gstt_fct_investor_category_index_trading_snpst_flat.index_code',
@@ -496,13 +501,13 @@ COMMENT 'Buffer chart template [2386] phan-loai-ndt-index — nguồn gstt_fct_i
 
 
 -- ============================================================
--- 18. [2378] tong-quan  →  mart.buffer_tong_quan
+-- 18. [2378] tong-quan  →  mart.gstt_fct_market_overview_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: chenh_lech_von_hoa_freefloat_vs_thuong
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_tong_quan ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_market_overview_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                  Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                  Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -534,13 +539,13 @@ COMMENT 'Buffer chart template [2378] tong-quan — nguồn gstt_fct_stock_portf
 
 
 -- ============================================================
--- 19. [2384] tu-doanh  →  mart.buffer_tu_doanh
+-- 19. [2384] tu-doanh  →  mart.gstt_fct_proprietary_trading_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: bien_do_so_voi_tran
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_tu_doanh ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_proprietary_trading_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -566,12 +571,12 @@ COMMENT 'Buffer chart template [2384] tu-doanh — nguồn gstt_fct_stock_portfo
 
 
 -- ============================================================
--- 20. [2397] co-dong-lon  →  mart.buffer_co_dong_lon
+-- 20. [2397] co-dong-lon  →  mart.ndtnn_fct_major_shareholder_flat
 --    Nguồn: datamart.ndtnn_fct_public_company_foreign_ownership_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_co_dong_lon ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.ndtnn_fct_major_shareholder_flat ON CLUSTER 'my_cluster'
 (
     snpst_cdr_dt                        Nullable(Date)            COMMENT 'ndtnn_fct_public_company_foreign_ownership_snpst_flat.snpst_cdr_dt',
     equity_ticker_symbol                Nullable(String)          COMMENT 'ndtnn_fct_public_company_foreign_ownership_snpst_flat.equity_ticker_symbol',
@@ -587,13 +592,13 @@ COMMENT 'Buffer chart template [2397] co-dong-lon — nguồn ndtnn_fct_public_c
 
 
 -- ============================================================
--- 21. [2371] top-dot-pha-theo-chi-so  →  mart.buffer_top_dot_pha_theo_chi_so
+-- 21. [2371] top-dot-pha-theo-chi-so  →  mart.gstt_fct_breakout_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_gtgd_phai_sinh
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_dot_pha_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_breakout_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -626,12 +631,12 @@ COMMENT 'Buffer chart template [2371] top-dot-pha-theo-chi-so — nguồn gstt_f
 
 
 -- ============================================================
--- 22. [2370] top-dot-pha-theo-san  →  mart.buffer_top_dot_pha_theo_san
+-- 22. [2370] top-dot-pha-theo-san  →  mart.gstt_fct_breakout_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_dot_pha_theo_san ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_breakout_by_exchange_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -662,13 +667,13 @@ COMMENT 'Buffer chart template [2370] top-dot-pha-theo-san — nguồn gstt_fct_
 
 
 -- ============================================================
--- 23. [2369] top-dot-pha-toan-tt  →  mart.buffer_top_dot_pha_toan_tt
+-- 23. [2369] top-dot-pha-toan-tt  →  mart.gstt_fct_breakout_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: chenh_lech_gia_dong_vs_mo_cua_pct
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_dot_pha_toan_tt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_breakout_market_wide_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -701,13 +706,13 @@ COMMENT 'Buffer chart template [2369] top-dot-pha-toan-tt — nguồn gstt_fct_s
 
 
 -- ============================================================
--- 24. [2362] top-giam-gia-theo-chi-so  →  mart.buffer_top_giam_gia_theo_chi_so
+-- 24. [2362] top-giam-gia-theo-chi-so  →  mart.gstt_fct_top_losers_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: bien_do_so_voi_san
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_giam_gia_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_losers_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -743,13 +748,13 @@ COMMENT 'Buffer chart template [2362] top-giam-gia-theo-chi-so — nguồn gstt_
 
 
 -- ============================================================
--- 25. [2361] top-giam-gia-theo-san  →  mart.buffer_top_giam_gia_theo_san
+-- 25. [2361] top-giam-gia-theo-san  →  mart.gstt_fct_top_losers_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_trong_thoa_thuan
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_giam_gia_theo_san ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_losers_by_exchange_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -783,13 +788,13 @@ COMMENT 'Buffer chart template [2361] top-giam-gia-theo-san — nguồn gstt_fct
 
 
 -- ============================================================
--- 26. [2360] top-giam-gia-toan-tt  →  mart.buffer_top_giam_gia_toan_tt
+-- 26. [2360] top-giam-gia-toan-tt  →  mart.gstt_fct_top_losers_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: pe_uoc_tinh
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_giam_gia_toan_tt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_losers_market_wide_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -823,13 +828,13 @@ COMMENT 'Buffer chart template [2360] top-giam-gia-toan-tt — nguồn gstt_fct_
 
 
 -- ============================================================
--- 27. [2377] top-gt-theo-chi-so  →  mart.buffer_top_gt_theo_chi_so
+-- 27. [2377] top-gt-theo-chi-so  →  mart.gstt_fct_top_value_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_von_hoa_trong_chi_so
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_gt_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_value_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -864,13 +869,13 @@ COMMENT 'Buffer chart template [2377] top-gt-theo-chi-so — nguồn gstt_fct_st
 
 
 -- ============================================================
--- 28. [2376] top-gt-theo-san  →  mart.buffer_top_gt_theo_san
+-- 28. [2376] top-gt-theo-san  →  mart.gstt_fct_top_value_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_gtgd_tren_von_hoa
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_gt_theo_san ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_value_by_exchange_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -904,13 +909,13 @@ COMMENT 'Buffer chart template [2376] top-gt-theo-san — nguồn gstt_fct_stock
 
 
 -- ============================================================
--- 29. [2375] top-gt-toan-tt  →  mart.buffer_top_gt_toan_tt
+-- 29. [2375] top-gt-toan-tt  →  mart.gstt_fct_top_value_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: dong_gop_von_hoa_freefloat_idx
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_gt_toan_tt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_value_market_wide_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -946,13 +951,13 @@ COMMENT 'Buffer chart template [2375] top-gt-toan-tt — nguồn gstt_fct_stock_
 
 
 -- ============================================================
--- 30. [2356] top-kl-theo-chi-so  →  mart.buffer_top_kl_theo_chi_so
+-- 30. [2356] top-kl-theo-chi-so  →  mart.gstt_fct_top_volume_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_klgd_tren_idx_level
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_kl_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_volume_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -987,13 +992,13 @@ COMMENT 'Buffer chart template [2356] top-kl-theo-chi-so — nguồn gstt_fct_st
 
 
 -- ============================================================
--- 31. [2355] top-kl-theo-san  →  mart.buffer_top_kl_theo_san
+-- 31. [2355] top-kl-theo-san  →  mart.gstt_fct_top_volume_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_gtgd_nn_tren_tong_gtgd
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_kl_theo_san ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_volume_by_exchange_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1029,13 +1034,13 @@ COMMENT 'Buffer chart template [2355] top-kl-theo-san — nguồn gstt_fct_stock
 
 
 -- ============================================================
--- 32. [2354] top-kl-toan-tt  →  mart.buffer_top_kl_toan_tt
+-- 32. [2354] top-kl-toan-tt  →  mart.gstt_fct_top_volume_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: bien_dao_dong_so_voi_idx_level
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_kl_toan_tt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_volume_market_wide_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1072,13 +1077,13 @@ COMMENT 'Buffer chart template [2354] top-kl-toan-tt — nguồn gstt_fct_stock_
 
 
 -- ============================================================
--- 33. [2374] top-nn-theo-chi-so  →  mart.buffer_top_nn_theo_chi_so
+-- 33. [2374] top-nn-theo-chi-so  →  mart.gstt_fct_top_foreign_trading_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: eps_vs_chi_so_eps
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_nn_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_foreign_trading_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1117,13 +1122,13 @@ COMMENT 'Buffer chart template [2374] top-nn-theo-chi-so — nguồn gstt_fct_st
 
 
 -- ============================================================
--- 34. [2373] top-nn-theo-san  →  mart.buffer_top_nn_theo_san
+-- 34. [2373] top-nn-theo-san  →  mart.gstt_fct_top_foreign_trading_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_klgd_nn_tren_tong_klgd
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_nn_theo_san ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_foreign_trading_by_exchange_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1161,13 +1166,13 @@ COMMENT 'Buffer chart template [2373] top-nn-theo-san — nguồn gstt_fct_stock
 
 
 -- ============================================================
--- 35. [2372] top-nn-toan-tt  →  mart.buffer_top_nn_toan_tt
+-- 35. [2372] top-nn-toan-tt  →  mart.gstt_fct_top_foreign_trading_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_le_von_hoa_so_voi_idx_level
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_nn_toan_tt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_foreign_trading_market_wide_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1206,13 +1211,13 @@ COMMENT 'Buffer chart template [2372] top-nn-toan-tt — nguồn gstt_fct_stock_
 
 
 -- ============================================================
--- 36. [2359] top-tang-gia-theo-chi-so  →  mart.buffer_top_tang_gia_theo_chi_so
+-- 36. [2359] top-tang-gia-theo-chi-so  →  mart.gstt_fct_top_gainers_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: pb_uoc_tinh
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_tang_gia_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_gainers_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1246,13 +1251,13 @@ COMMENT 'Buffer chart template [2359] top-tang-gia-theo-chi-so — nguồn gstt_
 
 
 -- ============================================================
--- 37. [2358] top-tang-gia-theo-san  →  mart.buffer_top_tang_gia_theo_san
+-- 37. [2358] top-tang-gia-theo-san  →  mart.gstt_fct_top_gainers_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: chenh_lech_gia_tran_san
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_tang_gia_theo_san ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_gainers_by_exchange_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1288,13 +1293,13 @@ COMMENT 'Buffer chart template [2358] top-tang-gia-theo-san — nguồn gstt_fct
 
 
 -- ============================================================
--- 38. [2357] top-tang-gia-toan-tt  →  mart.buffer_top_tang_gia_toan_tt
+-- 38. [2357] top-tang-gia-toan-tt  →  mart.gstt_fct_top_gainers_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: von_hoa_free_float
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_tang_gia_toan_tt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_top_gainers_market_wide_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1329,13 +1334,13 @@ COMMENT 'Buffer chart template [2357] top-tang-gia-toan-tt — nguồn gstt_fct_
 
 
 -- ============================================================
--- 39. [2368] top-thung-day-theo-chi-so  →  mart.buffer_top_thung_day_theo_chi_so
+-- 39. [2368] top-thung-day-theo-chi-so  →  mart.gstt_fct_new_low_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: khoang_cach_den_gia_san_pct
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_thung_day_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_new_low_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1370,13 +1375,13 @@ COMMENT 'Buffer chart template [2368] top-thung-day-theo-chi-so — nguồn gstt
 
 
 -- ============================================================
--- 40. [2367] top-thung-day-theo-san  →  mart.buffer_top_thung_day_theo_san
+-- 40. [2367] top-thung-day-theo-san  →  mart.gstt_fct_new_low_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: do_sau_thung_day_pct
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_thung_day_theo_san ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_new_low_by_exchange_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1410,13 +1415,13 @@ COMMENT 'Buffer chart template [2367] top-thung-day-theo-san — nguồn gstt_fc
 
 
 -- ============================================================
--- 41. [2366] top-thung-day-toan-tt  →  mart.buffer_top_thung_day_toan_tt
+-- 41. [2366] top-thung-day-toan-tt  →  mart.gstt_fct_new_low_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: thanh_khoan_theo_freefloat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_thung_day_toan_tt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_new_low_market_wide_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1450,13 +1455,13 @@ COMMENT 'Buffer chart template [2366] top-thung-day-toan-tt — nguồn gstt_fct
 
 
 -- ============================================================
--- 42. [2365] top-vuot-dinh-theo-chi-so  →  mart.buffer_top_vuot_dinh_theo_chi_so
+-- 42. [2365] top-vuot-dinh-theo-chi-so  →  mart.gstt_fct_new_high_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: khoang_cach_den_gia_tran_pct
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_vuot_dinh_theo_chi_so ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_new_high_by_index_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1491,13 +1496,13 @@ COMMENT 'Buffer chart template [2365] top-vuot-dinh-theo-chi-so — nguồn gstt
 
 
 -- ============================================================
--- 43. [2364] top-vuot-dinh-theo-san  →  mart.buffer_top_vuot_dinh_theo_san
+-- 43. [2364] top-vuot-dinh-theo-san  →  mart.gstt_fct_new_high_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: do_cao_vuot_dinh_pct
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_vuot_dinh_theo_san ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_new_high_by_exchange_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1531,13 +1536,13 @@ COMMENT 'Buffer chart template [2364] top-vuot-dinh-theo-san — nguồn gstt_fc
 
 
 -- ============================================================
--- 44. [2363] top-vuot-dinh-toan-tt  →  mart.buffer_top_vuot_dinh_toan_tt
+-- 44. [2363] top-vuot-dinh-toan-tt  →  mart.gstt_fct_new_high_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_trong_klgd_phai_sinh
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_top_vuot_dinh_toan_tt ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_new_high_market_wide_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                                       Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                                       Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1571,13 +1576,13 @@ COMMENT 'Buffer chart template [2363] top-vuot-dinh-toan-tt — nguồn gstt_fct
 
 
 -- ============================================================
--- 45. [2337] bang-trai-phieu  →  mart.buffer_bang_trai_phieu
+-- 45. [2337] bang-trai-phieu  →  mart.gstt_fct_bond_list_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_BOND (stock_tp_code=1, sàn 04/10/03/02)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: klgd_rong
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_bang_trai_phieu ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_bond_list_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',
@@ -1609,13 +1614,13 @@ COMMENT 'Buffer chart template [2337] bang-trai-phieu — nguồn gstt_fct_stock
 
 
 -- ============================================================
--- 46. [2392] lich-su-gia-khoi-luong  →  mart.buffer_lich_su_gia_khoi_luong
+-- 46. [2392] lich-su-gia-khoi-luong  →  mart.gstt_fct_price_volume_history_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_BOND (stock_tp_code=1, sàn 04/10/03/02)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: bien_dong_gia_tuyet_doi
 -- ============================================================
-CREATE TABLE IF NOT EXISTS mart.buffer_lich_su_gia_khoi_luong ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS mart.gstt_fct_price_volume_history_flat ON CLUSTER 'my_cluster'
 (
     cdr_dt                              Nullable(Date)            COMMENT 'gstt_fct_stock_portfolio_snpst_flat.cdr_dt',
     symbol                              Nullable(String)          COMMENT 'gstt_fct_stock_portfolio_snpst_flat.symbol',

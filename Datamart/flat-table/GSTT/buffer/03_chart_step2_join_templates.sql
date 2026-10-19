@@ -1,17 +1,18 @@
 -- ============================================================
 -- GSTT Buffer — SQL chart bước 2 đã chỉnh cho 18 template join rổ chỉ số
 -- Sinh: 2026-10-17 (bản nháp chưa chạy thử trên ClickHouse).
--- Lý do: buffer_chart_templates_v4.sql viết s.cdr_dt / b.index_code / idx.cdr_dt nhưng FROM mart.buffer_* không có alias
+-- Lý do: buffer_chart_templates_v5.sql (và v4) viết s.cdr_dt / b.index_code / idx.cdr_dt nhưng FROM mart.<phân_hệ>_fct_*_flat không có alias
 --        (buffer đã phẳng) nên các tham chiếu có tiền tố không resolve được.
 -- Cách chỉnh (cơ học, không đổi logic):
---   1) FROM mart.buffer_<template>  →  FROM mart.buffer_<template> AS s
+--   1) FROM mart.<bảng buffer>  →  FROM mart.<bảng buffer> AS s
 --   2) b.<cột> và idx.<cột>  →  s.<cột>   (mọi cột đã nằm trong cùng 1 bảng buffer)
 --   3) s.*, s.index_code AS index_code  →  s.*   (bảng đã có cột index_code, tránh trùng tên)
--- Tham số {...:Date} / {...:String} giữ nguyên như file tham chiếu. Các template khác (28) không cần chỉnh.
+-- Tham số {...:Date} / {...:String} giữ nguyên như file tham chiếu. Các template khác (27 bật + [2341] đã tắt ở v5) không cần chỉnh.
+-- Cập nhật 2026-10-19: đổi tên bảng theo v5; bước 2 của v5 không đổi so với v4 nên các chỉnh cơ học ở trên vẫn đúng.
 -- ============================================================
 
 -- ===== [2352] dinh-gia =====
--- Bảng: mart.buffer_dinh_gia | đổi: +alias s, 9 tiền tố b./idx. → s.
+-- Bảng: mart.gstt_fct_index_valuation_flat | đổi: +alias s, 9 tiền tố b./idx. → s.
 SELECT
      per_day.cdr_dt AS dt,
      any(per_day.index_code) AS k_gstt_4,
@@ -30,7 +31,7 @@ SELECT
          s.idx_market_index_val AS idx_market_index_val,
          s.close_price AS close_price, s.outstanding_share_quantity AS outstanding_share_quantity,
          s.net_profit_after_tax AS net_profit_after_tax, s.owner_equity AS owner_equity
-     FROM mart.buffer_dinh_gia AS s
+     FROM mart.gstt_fct_index_valuation_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   s.index_code = {selected_index:String}) AS per_day
  GROUP BY per_day.cdr_dt
@@ -38,7 +39,7 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2378] tong-quan =====
--- Bảng: mart.buffer_tong_quan | đổi: +alias s, 3 tiền tố b./idx. → s.
+-- Bảng: mart.gstt_fct_market_overview_flat | đổi: +alias s, 3 tiền tố b./idx. → s.
 WITH raw AS (
      SELECT s.symbol, s.cdr_dt,
          any(s.security_full_nm) AS security_full_nm,
@@ -54,7 +55,7 @@ WITH raw AS (
          any(s.free_float_share_quantity) AS free_float_share_quantity,
          any(s.idx_market_cap) AS idx_market_cap,
          any(s.idx_free_float_market_cap) AS idx_free_float_market_cap
-     FROM mart.buffer_tong_quan AS s
+     FROM mart.gstt_fct_market_overview_flat AS s
 WHERE s.cdr_dt <= {to_date:Date} AND
   ({segment:String} = '' OR s.index_code = {segment:String})
      GROUP BY s.symbol, s.cdr_dt
@@ -155,10 +156,10 @@ WHERE s.cdr_dt <= {to_date:Date} AND
 
 
 -- ===== [2371] top-dot-pha-theo-chi-so =====
--- Bảng: mart.buffer_top_dot_pha_theo_chi_so | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_breakout_by_index_flat | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
 WITH filtered AS (
      SELECT s.*
-     FROM mart.buffer_top_dot_pha_theo_chi_so AS s
+     FROM mart.gstt_fct_breakout_by_index_flat AS s
 WHERE ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm)) AND
   ({selected_index:String} = '' OR s.index_code = {selected_index:String})),
  per_day AS (
@@ -220,12 +221,12 @@ WHERE ({security_type:String} = '' OR has(splitByChar(',', {security_type:String
 
 
 -- ===== [2370] top-dot-pha-theo-san =====
--- Bảng: mart.buffer_top_dot_pha_theo_san | đổi: +alias s, 1 tiền tố b./idx. → s.
+-- Bảng: mart.gstt_fct_breakout_by_exchange_flat | đổi: +alias s, 1 tiền tố b./idx. → s.
 WITH filtered AS (
      SELECT s.symbol, s.cdr_dt, s.security_full_nm, s.classification_business_line_nm, s.floor_code, s.stock_tp_nm,
          s.close_price, s.reference_price, s.price_change, s.total_matched_vol, s.total_matched_val, s.total_negotiated_vol, s.total_negotiated_val,
          s.outstanding_share_quantity, s.net_profit_after_tax_ttm, s.owner_equity, s.securities_company_net_profit_after_tax_ttm, s.securities_company_owner_equity
-     FROM mart.buffer_top_dot_pha_theo_san AS s
+     FROM mart.gstt_fct_breakout_by_exchange_flat AS s
 WHERE (({selected_floor:String} = 'HOSE' AND s.floor_code = '10')
             OR ({selected_floor:String} = 'HNX' AND s.floor_code = '02')
             OR ({selected_floor:String} = 'UPCOM' AND s.floor_code = '04')) AND
@@ -290,10 +291,10 @@ WHERE (({selected_floor:String} = 'HOSE' AND s.floor_code = '10')
 
 
 -- ===== [2369] top-dot-pha-toan-tt =====
--- Bảng: mart.buffer_top_dot_pha_toan_tt | đổi: +alias s, 1 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_breakout_market_wide_flat | đổi: +alias s, 1 tiền tố b./idx. → s., gộp index_code
 WITH filtered AS (
      SELECT s.*
-     FROM mart.buffer_top_dot_pha_toan_tt AS s
+     FROM mart.gstt_fct_breakout_market_wide_flat AS s
 WHERE ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm))),
  per_day AS (
      SELECT symbol, cdr_dt,
@@ -354,10 +355,10 @@ WHERE ({security_type:String} = '' OR has(splitByChar(',', {security_type:String
 
 
 -- ===== [2377] top-gt-theo-chi-so =====
--- Bảng: mart.buffer_top_gt_theo_chi_so | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_top_value_by_index_flat | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
 WITH filtered AS (
      SELECT s.*
-     FROM mart.buffer_top_gt_theo_chi_so AS s
+     FROM mart.gstt_fct_top_value_by_index_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm)) AND
   ({selected_index:String} = '' OR s.index_code = {selected_index:String})),
@@ -410,12 +411,12 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2376] top-gt-theo-san =====
--- Bảng: mart.buffer_top_gt_theo_san | đổi: +alias s, 2 tiền tố b./idx. → s.
+-- Bảng: mart.gstt_fct_top_value_by_exchange_flat | đổi: +alias s, 2 tiền tố b./idx. → s.
 WITH filtered AS (
      SELECT s.symbol, s.cdr_dt, s.security_full_nm, s.classification_business_line_nm, s.floor_code, s.stock_tp_nm,
          s.total_val, s.total_vol, s.total_matched_vol, s.total_matched_val, s.total_negotiated_vol, s.total_negotiated_val, s.close_price, s.reference_price, s.price_change, s.index_code AS index_code,
          s.outstanding_share_quantity, s.net_profit_after_tax_ttm, s.owner_equity, s.securities_company_net_profit_after_tax_ttm, s.securities_company_owner_equity
-     FROM mart.buffer_top_gt_theo_san AS s
+     FROM mart.gstt_fct_top_value_by_exchange_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   (({selected_floor:String} = 'HOSE' AND s.floor_code = '10')
             OR ({selected_floor:String} = 'HNX' AND s.floor_code = '02')
@@ -471,10 +472,10 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2375] top-gt-toan-tt =====
--- Bảng: mart.buffer_top_gt_toan_tt | đổi: +alias s, 1 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_top_value_market_wide_flat | đổi: +alias s, 1 tiền tố b./idx. → s., gộp index_code
 WITH filtered AS (
      SELECT s.*
-     FROM mart.buffer_top_gt_toan_tt AS s
+     FROM mart.gstt_fct_top_value_market_wide_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm))),
  per_day AS (
@@ -526,10 +527,10 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2356] top-kl-theo-chi-so =====
--- Bảng: mart.buffer_top_kl_theo_chi_so | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_top_volume_by_index_flat | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
 WITH filtered AS (
      SELECT s.*
-     FROM mart.buffer_top_kl_theo_chi_so AS s
+     FROM mart.gstt_fct_top_volume_by_index_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm)) AND
   ({selected_index:String} = '' OR s.index_code = {selected_index:String})),
@@ -582,12 +583,12 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2355] top-kl-theo-san =====
--- Bảng: mart.buffer_top_kl_theo_san | đổi: +alias s, 2 tiền tố b./idx. → s.
+-- Bảng: mart.gstt_fct_top_volume_by_exchange_flat | đổi: +alias s, 2 tiền tố b./idx. → s.
 WITH filtered AS (
      SELECT s.symbol, s.cdr_dt, s.security_full_nm, s.classification_business_line_nm, s.floor_code, s.stock_tp_nm,
          s.total_vol, s.total_matched_vol, s.total_matched_val, s.total_negotiated_vol, s.total_negotiated_val, s.close_price, s.reference_price, s.price_change, s.index_code AS index_code,
          s.outstanding_share_quantity, s.net_profit_after_tax_ttm, s.owner_equity, s.securities_company_net_profit_after_tax_ttm, s.securities_company_owner_equity
-     FROM mart.buffer_top_kl_theo_san AS s
+     FROM mart.gstt_fct_top_volume_by_exchange_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   (({selected_floor:String} = 'HOSE' AND s.floor_code = '10')
             OR ({selected_floor:String} = 'HNX' AND s.floor_code = '02')
@@ -643,10 +644,10 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2354] top-kl-toan-tt =====
--- Bảng: mart.buffer_top_kl_toan_tt | đổi: +alias s, 1 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_top_volume_market_wide_flat | đổi: +alias s, 1 tiền tố b./idx. → s., gộp index_code
 WITH filtered AS (
      SELECT s.*
-     FROM mart.buffer_top_kl_toan_tt AS s
+     FROM mart.gstt_fct_top_volume_market_wide_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm))),
  per_day AS (
@@ -698,10 +699,10 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2374] top-nn-theo-chi-so =====
--- Bảng: mart.buffer_top_nn_theo_chi_so | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_top_foreign_trading_by_index_flat | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
 WITH filtered AS (
      SELECT s.*
-     FROM mart.buffer_top_nn_theo_chi_so AS s
+     FROM mart.gstt_fct_top_foreign_trading_by_index_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm)) AND
   ({selected_index:String} = '' OR s.index_code = {selected_index:String})),
@@ -775,13 +776,13 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2373] top-nn-theo-san =====
--- Bảng: mart.buffer_top_nn_theo_san | đổi: +alias s, 2 tiền tố b./idx. → s.
+-- Bảng: mart.gstt_fct_top_foreign_trading_by_exchange_flat | đổi: +alias s, 2 tiền tố b./idx. → s.
 WITH filtered AS (
      SELECT s.symbol, s.cdr_dt, s.security_full_nm, s.classification_business_line_nm, s.floor_code, s.stock_tp_nm,
          s.total_vol, s.total_matched_vol, s.total_matched_val, s.total_negotiated_vol, s.total_negotiated_val, s.close_price, s.reference_price, s.price_change, s.foreign_buy_vol, s.foreign_sell_vol,
          s.foreign_buy_val, s.foreign_sell_val, s.index_code AS index_code,
          s.outstanding_share_quantity, s.net_profit_after_tax_ttm, s.owner_equity, s.securities_company_net_profit_after_tax_ttm, s.securities_company_owner_equity
-     FROM mart.buffer_top_nn_theo_san AS s
+     FROM mart.gstt_fct_top_foreign_trading_by_exchange_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   (({selected_floor:String} = 'HOSE' AND s.floor_code = '10')
             OR ({selected_floor:String} = 'HNX' AND s.floor_code = '02')
@@ -858,10 +859,10 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2372] top-nn-toan-tt =====
--- Bảng: mart.buffer_top_nn_toan_tt | đổi: +alias s, 1 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_top_foreign_trading_market_wide_flat | đổi: +alias s, 1 tiền tố b./idx. → s., gộp index_code
 WITH filtered AS (
      SELECT s.*
-     FROM mart.buffer_top_nn_toan_tt AS s
+     FROM mart.gstt_fct_top_foreign_trading_market_wide_flat AS s
 WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
   ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm))),
  per_day AS (
@@ -934,10 +935,10 @@ WHERE s.cdr_dt BETWEEN {from_date:Date} AND {to_date:Date} AND
 
 
 -- ===== [2368] top-thung-day-theo-chi-so =====
--- Bảng: mart.buffer_top_thung_day_theo_chi_so | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_new_low_by_index_flat | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
 WITH cur AS (
      SELECT s.*
-     FROM mart.buffer_top_thung_day_theo_chi_so AS s
+     FROM mart.gstt_fct_new_low_by_index_flat AS s
 WHERE s.cdr_dt = {selected_dt:Date} AND
   ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm)) AND
   ({selected_index:String} = '' OR s.index_code = {selected_index:String})),
@@ -982,10 +983,10 @@ WHERE s.cdr_dt = {selected_dt:Date} AND
 
 
 -- ===== [2367] top-thung-day-theo-san =====
--- Bảng: mart.buffer_top_thung_day_theo_san | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_new_low_by_exchange_flat | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
 WITH cur AS (
      SELECT s.*
-     FROM mart.buffer_top_thung_day_theo_san AS s
+     FROM mart.gstt_fct_new_low_by_exchange_flat AS s
 WHERE s.cdr_dt = {selected_dt:Date} AND
   (({selected_floor:String} = 'HOSE' AND s.floor_code = '10')
             OR ({selected_floor:String} = 'HNX' AND s.floor_code = '02')
@@ -1030,10 +1031,10 @@ WHERE s.cdr_dt = {selected_dt:Date} AND
 
 
 -- ===== [2365] top-vuot-dinh-theo-chi-so =====
--- Bảng: mart.buffer_top_vuot_dinh_theo_chi_so | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_new_high_by_index_flat | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
 WITH cur AS (
      SELECT s.*
-     FROM mart.buffer_top_vuot_dinh_theo_chi_so AS s
+     FROM mart.gstt_fct_new_high_by_index_flat AS s
 WHERE s.cdr_dt = {selected_dt:Date} AND
   ({security_type:String} = '' OR has(splitByChar(',', {security_type:String}), s.stock_tp_nm)) AND
   ({selected_index:String} = '' OR s.index_code = {selected_index:String})),
@@ -1078,10 +1079,10 @@ WHERE s.cdr_dt = {selected_dt:Date} AND
 
 
 -- ===== [2364] top-vuot-dinh-theo-san =====
--- Bảng: mart.buffer_top_vuot_dinh_theo_san | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
+-- Bảng: mart.gstt_fct_new_high_by_exchange_flat | đổi: +alias s, 2 tiền tố b./idx. → s., gộp index_code
 WITH cur AS (
      SELECT s.*
-     FROM mart.buffer_top_vuot_dinh_theo_san AS s
+     FROM mart.gstt_fct_new_high_by_exchange_flat AS s
 WHERE s.cdr_dt = {selected_dt:Date} AND
   (({selected_floor:String} = 'HOSE' AND s.floor_code = '10')
             OR ({selected_floor:String} = 'HNX' AND s.floor_code = '02')

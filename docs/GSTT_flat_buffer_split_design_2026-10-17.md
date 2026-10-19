@@ -4,7 +4,8 @@
 
 
 > **Trạng thái: bản nháp cần Data Modeler duyệt.** Chưa sửa LLD / HLD / Entities / 18 flat hiện có. Đã thêm 2 file SQL buffer mới (mục 10), chưa chạy thử.
-> Nguồn: `C:\Users\ADMIN\Downloads\buffer_chart_templates_v4.sql` (46 buffer tự tách + 5 template thủ công + 6 template không tham số ngày) đối chiếu `Datamart/flat-table/GSTT/01_create_gstt_flat_tables.sql` (18 bảng).
+> **Cập nhật 2026-10-19:** theo `buffer_chart_templates_v5.sql` — tên bảng đổi sang `<phân_hệ>_fct_<tên>_flat`, [2341] tắt; xem mục 10.4. Mục 1–9 giữ tên `mart.buffer_*` của v4 (lịch sử, không áp dụng).
+> Nguồn gốc (v4): `C:\Users\ADMIN\Downloads\buffer_chart_templates_v4.sql` (46 buffer tự tách + 5 template thủ công + 6 template không tham số ngày) đối chiếu `Datamart/flat-table/GSTT/01_create_gstt_flat_tables.sql` (18 bảng).
 > Mọi con số do script đếm từ 2 file trên. Chỗ **chưa chạy thử trên ClickHouse** đánh dấu ⚠ (máy này không có ClickHouse).
 
 ## 1. Kết luận
@@ -270,11 +271,11 @@ Ngoài phạm vi (giữ nguyên file tham chiếu): 5 template thủ công `ohlc
 4. Chạy thử trên ClickHouse dev: P1, P2, P6; đối chiếu số dòng B1/B2 với tổng các buffer cũ trên 1 ngày mẫu.
 5. Cập nhật HLD + Gate.
 
-## 10. Thiết kế áp dụng — 46 bảng, không gộp
+## 10. Thiết kế áp dụng — 45 bảng bật (+1 tắt ở v5), không gộp
 
-**File:** `Datamart/flat-table/GSTT/buffer/01_create_gstt_buffer_tables.sql` (46 `CREATE TABLE`) + `02_populate_gstt_buffer_tables.sql` (46 khối `DELETE` + `INSERT`). Bản nháp, chưa chạy thử trên ClickHouse.
+**File:** `Datamart/flat-table/GSTT/buffer/01_create_gstt_buffer_tables.sql` (45 `CREATE TABLE` bật + khối [2341] comment-out) + `02_populate_gstt_buffer_tables.sql` (45 khối `DELETE` + `INSERT` + khối [2341] comment-out). Bản nháp, chưa chạy thử trên ClickHouse.
 
-**Giữ nguyên file tham chiếu:** tên `mart.buffer_<template>`; mỗi template một bảng; lọc universe/khung giờ copy nguyên; mỗi bảng giữ đúng 1 cột dẫn xuất `[CỘT MỚI]` của template; nạp theo ngày bằng xoá + nạp lại.
+**Giữ nguyên file tham chiếu (v5):** tên `mart.<phân_hệ>_fct_<tên_tiếng_Anh>_flat` (cập nhật 2026-10-19, trước đó `mart.buffer_<template>` theo v4); mỗi template một bảng; lọc universe/khung giờ copy nguyên; mỗi bảng giữ đúng 1 cột dẫn xuất `[CỘT MỚI]` của template; nạp theo ngày bằng xoá + nạp lại.
 
 **Khác file tham chiếu (có chủ đích):**
 
@@ -290,60 +291,60 @@ Ngoài phạm vi (giữ nguyên file tham chiếu): 5 template thủ công `ohlc
 
 Các giá trị cấu hình (DB đích, engine, tham số ngày, DB nguồn) nằm ở đầu script sinh; đổi 1 dòng là sinh lại được.
 
-### 10.1 Danh mục 46 bảng
+### 10.1 Danh mục 46 bảng (45 bật; #9 tắt ở v5)
 
 | # | ID | Template | Bảng | Nguồn | Số cột | Cột dẫn xuất |
 |--:|---|---|---|---|--:|---|
-| 1 | 2399 | heat-map | `mart.buffer_heat_map` | stock_portfolio | 19 | — |
-| 2 | 2391 | bm021-mss-dinh-gia | `mart.buffer_bm021_mss_dinh_gia` | stock_portfolio | 20 | `pct_bien_dong_ngay` |
-| 3 | 2351 | chi-so-eod | `mart.buffer_chi_so_eod` | qlkd_fct_market_index | 15 | — |
-| 4 | 2350 | chi-so-history | `mart.buffer_chi_so_history` | market_index_intraday | 4 | — |
-| 5 | 2349 | chi-so-realtime | `mart.buffer_chi_so_realtime` | market_index_intraday | 5 | — |
-| 6 | 2352 | dinh-gia | `mart.buffer_dinh_gia` | index_constituent ⨝ stock_portfolio | 14 | — |
-| 7 | 2336 | bang-co-phieu | `mart.buffer_bang_co_phieu` | stock_portfolio | 25 | `vi_the_gia_trong_bien_do` |
-| 8 | 2338 | bang-phai-sinh | `mart.buffer_bang_phai_sinh` | stock_portfolio | 18 | — |
-| 9 | 2341 | ngay-nghi-giao-dich | `mart.buffer_ngay_nghi_giao_dich` | cdr_dt | 2 | — |
-| 10 | 2379 | nuoc-ngoai | `mart.buffer_nuoc_ngoai` | stock_portfolio | 19 | `ty_le_mua_rong_nn_klgd` |
-| 11 | 2380 | nuoc-ngoai-gtnn | `mart.buffer_nuoc_ngoai_gtnn` | stock_portfolio | 8 | `ty_le_mua_rong_nn_gtgd` |
-| 12 | 2381 | nuoc-ngoai-gtnn-intraday | `mart.buffer_nuoc_ngoai_gtnn_intraday` | foreign_trading_min | 7 | — |
-| 13 | 2382 | nuoc-ngoai-theo-chi-so | `mart.buffer_nuoc_ngoai_theo_chi_so` | index_constituent | 8 | `ty_trong_freefloat_tren_tong_von_hoa_idx` |
-| 14 | 2383 | nuoc-ngoai-theo-chi-so-intraday | `mart.buffer_nuoc_ngoai_theo_chi_so_intraday` | index_constituent | 6 | `dinh_gia_theo_pe_pb` |
-| 15 | 2385 | phan-loai-ndt | `mart.buffer_phan_loai_ndt` | investor_category_trading | 7 | — |
-| 16 | 2387 | phan-loai-ndt-heatmap | `mart.buffer_phan_loai_ndt_heatmap` | stock_portfolio | 13 | `gia_tri_binh_quan_mot_lenh` |
-| 17 | 2386 | phan-loai-ndt-index | `mart.buffer_phan_loai_ndt_index` | investor_category_index_trading | 8 | — |
-| 18 | 2378 | tong-quan | `mart.buffer_tong_quan` | stock_portfolio ⨝ index_constituent | 21 | `chenh_lech_von_hoa_freefloat_vs_thuong` |
-| 19 | 2384 | tu-doanh | `mart.buffer_tu_doanh` | stock_portfolio | 15 | `bien_do_so_voi_tran` |
-| 20 | 2397 | co-dong-lon | `mart.buffer_co_dong_lon` | ndtnn_fct_public_company_foreign_ownership | 5 | — |
-| 21 | 2371 | top-dot-pha-theo-chi-so | `mart.buffer_top_dot_pha_theo_chi_so` | stock_portfolio ⨝ index_constituent | 22 | `ty_trong_gtgd_phai_sinh` |
-| 22 | 2370 | top-dot-pha-theo-san | `mart.buffer_top_dot_pha_theo_san` | stock_portfolio ⨝ index_constituent | 20 | — |
-| 23 | 2369 | top-dot-pha-toan-tt | `mart.buffer_top_dot_pha_toan_tt` | stock_portfolio ⨝ index_constituent | 22 | `chenh_lech_gia_dong_vs_mo_cua_pct` |
-| 24 | 2362 | top-giam-gia-theo-chi-so | `mart.buffer_top_giam_gia_theo_chi_so` | stock_portfolio | 25 | `bien_do_so_voi_san` |
-| 25 | 2361 | top-giam-gia-theo-san | `mart.buffer_top_giam_gia_theo_san` | stock_portfolio | 23 | `ty_trong_thoa_thuan` |
-| 26 | 2360 | top-giam-gia-toan-tt | `mart.buffer_top_giam_gia_toan_tt` | stock_portfolio | 23 | `pe_uoc_tinh` |
-| 27 | 2377 | top-gt-theo-chi-so | `mart.buffer_top_gt_theo_chi_so` | stock_portfolio ⨝ index_constituent | 24 | `ty_trong_von_hoa_trong_chi_so` |
-| 28 | 2376 | top-gt-theo-san | `mart.buffer_top_gt_theo_san` | stock_portfolio ⨝ index_constituent | 23 | `ty_trong_gtgd_tren_von_hoa` |
-| 29 | 2375 | top-gt-toan-tt | `mart.buffer_top_gt_toan_tt` | stock_portfolio ⨝ index_constituent | 25 | `dong_gop_von_hoa_freefloat_idx` |
-| 30 | 2356 | top-kl-theo-chi-so | `mart.buffer_top_kl_theo_chi_so` | stock_portfolio ⨝ index_constituent | 24 | `ty_trong_klgd_tren_idx_level` |
-| 31 | 2355 | top-kl-theo-san | `mart.buffer_top_kl_theo_san` | stock_portfolio ⨝ index_constituent | 25 | `ty_trong_gtgd_nn_tren_tong_gtgd` |
-| 32 | 2354 | top-kl-toan-tt | `mart.buffer_top_kl_toan_tt` | stock_portfolio ⨝ index_constituent | 26 | `bien_dao_dong_so_voi_idx_level` |
-| 33 | 2374 | top-nn-theo-chi-so | `mart.buffer_top_nn_theo_chi_so` | stock_portfolio ⨝ index_constituent | 28 | `eps_vs_chi_so_eps` |
-| 34 | 2373 | top-nn-theo-san | `mart.buffer_top_nn_theo_san` | stock_portfolio ⨝ index_constituent | 27 | `ty_trong_klgd_nn_tren_tong_klgd` |
-| 35 | 2372 | top-nn-toan-tt | `mart.buffer_top_nn_toan_tt` | stock_portfolio ⨝ index_constituent | 28 | `ty_le_von_hoa_so_voi_idx_level` |
-| 36 | 2359 | top-tang-gia-theo-chi-so | `mart.buffer_top_tang_gia_theo_chi_so` | stock_portfolio | 23 | `pb_uoc_tinh` |
-| 37 | 2358 | top-tang-gia-theo-san | `mart.buffer_top_tang_gia_theo_san` | stock_portfolio | 25 | `chenh_lech_gia_tran_san` |
-| 38 | 2357 | top-tang-gia-toan-tt | `mart.buffer_top_tang_gia_toan_tt` | stock_portfolio | 24 | `von_hoa_free_float` |
-| 39 | 2368 | top-thung-day-theo-chi-so | `mart.buffer_top_thung_day_theo_chi_so` | stock_portfolio ⨝ index_constituent | 24 | `khoang_cach_den_gia_san_pct` |
-| 40 | 2367 | top-thung-day-theo-san | `mart.buffer_top_thung_day_theo_san` | stock_portfolio ⨝ index_constituent | 23 | `do_sau_thung_day_pct` |
-| 41 | 2366 | top-thung-day-toan-tt | `mart.buffer_top_thung_day_toan_tt` | stock_portfolio | 23 | `thanh_khoan_theo_freefloat` |
-| 42 | 2365 | top-vuot-dinh-theo-chi-so | `mart.buffer_top_vuot_dinh_theo_chi_so` | stock_portfolio ⨝ index_constituent | 24 | `khoang_cach_den_gia_tran_pct` |
-| 43 | 2364 | top-vuot-dinh-theo-san | `mart.buffer_top_vuot_dinh_theo_san` | stock_portfolio ⨝ index_constituent | 23 | `do_cao_vuot_dinh_pct` |
-| 44 | 2363 | top-vuot-dinh-toan-tt | `mart.buffer_top_vuot_dinh_toan_tt` | stock_portfolio | 23 | `ty_trong_klgd_phai_sinh` |
-| 45 | 2337 | bang-trai-phieu | `mart.buffer_bang_trai_phieu` | stock_portfolio | 21 | `klgd_rong` |
-| 46 | 2392 | lich-su-gia-khoi-luong | `mart.buffer_lich_su_gia_khoi_luong` | stock_portfolio | 9 | `bien_dong_gia_tuyet_doi` |
+| 1 | 2399 | heat-map | `mart.gstt_fct_stock_heatmap_flat` | stock_portfolio | 19 | — |
+| 2 | 2391 | bm021-mss-dinh-gia | `mart.gstt_fct_valuation_report_bm021_flat` | stock_portfolio | 20 | `pct_bien_dong_ngay` |
+| 3 | 2351 | chi-so-eod | `mart.qlkd_fct_index_eod_flat` | qlkd_fct_market_index | 15 | — |
+| 4 | 2350 | chi-so-history | `mart.gstt_fct_index_history_flat` | market_index_intraday | 4 | — |
+| 5 | 2349 | chi-so-realtime | `mart.gstt_fct_index_realtime_flat` | market_index_intraday | 5 | — |
+| 6 | 2352 | dinh-gia | `mart.gstt_fct_index_valuation_flat` | index_constituent ⨝ stock_portfolio | 14 | — |
+| 7 | 2336 | bang-co-phieu | `mart.gstt_fct_stock_list_flat` | stock_portfolio | 25 | `vi_the_gia_trong_bien_do` |
+| 8 | 2338 | bang-phai-sinh | `mart.gstt_fct_derivative_list_flat` | stock_portfolio | 18 | — |
+| 9 | 2341 | ngay-nghi-giao-dich | ~~`mart.cdr_fct_non_trading_day_flat`~~ **(tắt ở v5)** | cdr_dt | 2 | — |
+| 10 | 2379 | nuoc-ngoai | `mart.gstt_fct_foreign_trading_flat` | stock_portfolio | 19 | `ty_le_mua_rong_nn_klgd` |
+| 11 | 2380 | nuoc-ngoai-gtnn | `mart.gstt_fct_foreign_trading_value_flat` | stock_portfolio | 8 | `ty_le_mua_rong_nn_gtgd` |
+| 12 | 2381 | nuoc-ngoai-gtnn-intraday | `mart.gstt_fct_foreign_trading_value_intraday_flat` | foreign_trading_min | 7 | — |
+| 13 | 2382 | nuoc-ngoai-theo-chi-so | `mart.gstt_fct_foreign_trading_by_index_flat` | index_constituent | 8 | `ty_trong_freefloat_tren_tong_von_hoa_idx` |
+| 14 | 2383 | nuoc-ngoai-theo-chi-so-intraday | `mart.gstt_fct_foreign_trading_by_index_intraday_flat` | index_constituent | 6 | `dinh_gia_theo_pe_pb` |
+| 15 | 2385 | phan-loai-ndt | `mart.gstt_fct_investor_category_trading_flat` | investor_category_trading | 7 | — |
+| 16 | 2387 | phan-loai-ndt-heatmap | `mart.gstt_fct_investor_category_heatmap_flat` | stock_portfolio | 13 | `gia_tri_binh_quan_mot_lenh` |
+| 17 | 2386 | phan-loai-ndt-index | `mart.gstt_fct_investor_category_index_trading_flat` | investor_category_index_trading | 8 | — |
+| 18 | 2378 | tong-quan | `mart.gstt_fct_market_overview_flat` | stock_portfolio ⨝ index_constituent | 21 | `chenh_lech_von_hoa_freefloat_vs_thuong` |
+| 19 | 2384 | tu-doanh | `mart.gstt_fct_proprietary_trading_flat` | stock_portfolio | 15 | `bien_do_so_voi_tran` |
+| 20 | 2397 | co-dong-lon | `mart.ndtnn_fct_major_shareholder_flat` | ndtnn_fct_public_company_foreign_ownership | 5 | — |
+| 21 | 2371 | top-dot-pha-theo-chi-so | `mart.gstt_fct_breakout_by_index_flat` | stock_portfolio ⨝ index_constituent | 22 | `ty_trong_gtgd_phai_sinh` |
+| 22 | 2370 | top-dot-pha-theo-san | `mart.gstt_fct_breakout_by_exchange_flat` | stock_portfolio ⨝ index_constituent | 20 | — |
+| 23 | 2369 | top-dot-pha-toan-tt | `mart.gstt_fct_breakout_market_wide_flat` | stock_portfolio ⨝ index_constituent | 22 | `chenh_lech_gia_dong_vs_mo_cua_pct` |
+| 24 | 2362 | top-giam-gia-theo-chi-so | `mart.gstt_fct_top_losers_by_index_flat` | stock_portfolio | 25 | `bien_do_so_voi_san` |
+| 25 | 2361 | top-giam-gia-theo-san | `mart.gstt_fct_top_losers_by_exchange_flat` | stock_portfolio | 23 | `ty_trong_thoa_thuan` |
+| 26 | 2360 | top-giam-gia-toan-tt | `mart.gstt_fct_top_losers_market_wide_flat` | stock_portfolio | 23 | `pe_uoc_tinh` |
+| 27 | 2377 | top-gt-theo-chi-so | `mart.gstt_fct_top_value_by_index_flat` | stock_portfolio ⨝ index_constituent | 24 | `ty_trong_von_hoa_trong_chi_so` |
+| 28 | 2376 | top-gt-theo-san | `mart.gstt_fct_top_value_by_exchange_flat` | stock_portfolio ⨝ index_constituent | 23 | `ty_trong_gtgd_tren_von_hoa` |
+| 29 | 2375 | top-gt-toan-tt | `mart.gstt_fct_top_value_market_wide_flat` | stock_portfolio ⨝ index_constituent | 25 | `dong_gop_von_hoa_freefloat_idx` |
+| 30 | 2356 | top-kl-theo-chi-so | `mart.gstt_fct_top_volume_by_index_flat` | stock_portfolio ⨝ index_constituent | 24 | `ty_trong_klgd_tren_idx_level` |
+| 31 | 2355 | top-kl-theo-san | `mart.gstt_fct_top_volume_by_exchange_flat` | stock_portfolio ⨝ index_constituent | 25 | `ty_trong_gtgd_nn_tren_tong_gtgd` |
+| 32 | 2354 | top-kl-toan-tt | `mart.gstt_fct_top_volume_market_wide_flat` | stock_portfolio ⨝ index_constituent | 26 | `bien_dao_dong_so_voi_idx_level` |
+| 33 | 2374 | top-nn-theo-chi-so | `mart.gstt_fct_top_foreign_trading_by_index_flat` | stock_portfolio ⨝ index_constituent | 28 | `eps_vs_chi_so_eps` |
+| 34 | 2373 | top-nn-theo-san | `mart.gstt_fct_top_foreign_trading_by_exchange_flat` | stock_portfolio ⨝ index_constituent | 27 | `ty_trong_klgd_nn_tren_tong_klgd` |
+| 35 | 2372 | top-nn-toan-tt | `mart.gstt_fct_top_foreign_trading_market_wide_flat` | stock_portfolio ⨝ index_constituent | 28 | `ty_le_von_hoa_so_voi_idx_level` |
+| 36 | 2359 | top-tang-gia-theo-chi-so | `mart.gstt_fct_top_gainers_by_index_flat` | stock_portfolio | 23 | `pb_uoc_tinh` |
+| 37 | 2358 | top-tang-gia-theo-san | `mart.gstt_fct_top_gainers_by_exchange_flat` | stock_portfolio | 25 | `chenh_lech_gia_tran_san` |
+| 38 | 2357 | top-tang-gia-toan-tt | `mart.gstt_fct_top_gainers_market_wide_flat` | stock_portfolio | 24 | `von_hoa_free_float` |
+| 39 | 2368 | top-thung-day-theo-chi-so | `mart.gstt_fct_new_low_by_index_flat` | stock_portfolio ⨝ index_constituent | 24 | `khoang_cach_den_gia_san_pct` |
+| 40 | 2367 | top-thung-day-theo-san | `mart.gstt_fct_new_low_by_exchange_flat` | stock_portfolio ⨝ index_constituent | 23 | `do_sau_thung_day_pct` |
+| 41 | 2366 | top-thung-day-toan-tt | `mart.gstt_fct_new_low_market_wide_flat` | stock_portfolio | 23 | `thanh_khoan_theo_freefloat` |
+| 42 | 2365 | top-vuot-dinh-theo-chi-so | `mart.gstt_fct_new_high_by_index_flat` | stock_portfolio ⨝ index_constituent | 24 | `khoang_cach_den_gia_tran_pct` |
+| 43 | 2364 | top-vuot-dinh-theo-san | `mart.gstt_fct_new_high_by_exchange_flat` | stock_portfolio ⨝ index_constituent | 23 | `do_cao_vuot_dinh_pct` |
+| 44 | 2363 | top-vuot-dinh-toan-tt | `mart.gstt_fct_new_high_market_wide_flat` | stock_portfolio | 23 | `ty_trong_klgd_phai_sinh` |
+| 45 | 2337 | bang-trai-phieu | `mart.gstt_fct_bond_list_flat` | stock_portfolio | 21 | `klgd_rong` |
+| 46 | 2392 | lich-su-gia-khoi-luong | `mart.gstt_fct_price_volume_history_flat` | stock_portfolio | 9 | `bien_dong_gia_tuyet_doi` |
 
 ### 10.2 Đã kiểm
 
-- 46 `CREATE` = 46 `DELETE` = 46 `INSERT`; tên bảng khớp 46 buffer của file tham chiếu.
+- 45 `CREATE` = 45 `DELETE` = 45 `INSERT` đang bật; tên bảng khớp 45 buffer của `buffer_chart_templates_v5.sql` (script kiểm 2026-10-19: 0 tên cũ còn sót, 03 chỉ tham chiếu bảng đang bật). [2341] chỉ còn dạng comment.
 - Mỗi bảng: danh sách cột `CREATE` = danh sách cột `SELECT` (cùng tên, cùng thứ tự); cột copy tồn tại ở flat nguồn với **cùng kiểu**; khoá/partition nằm trong bảng.
 - Mọi cột của flat nguồn xuất hiện trong SQL bước 2 của template đều có mặt trong bảng tương ứng.
 - Công thức 34 cột dẫn xuất khớp file tham chiếu (cùng toán hạng, cùng thứ tự; chỉ thêm `toFloat64`); điều kiện `WHERE` tĩnh khớp file tham chiếu.
@@ -356,5 +357,18 @@ Các giá trị cấu hình (DB đích, engine, tham số ngày, DB nguồn) n�
 - **5 template thủ công** (`ohlcv`, `instrument-ohlcv`, `so-lenh-danh-sach-chi-so`, `so-lenh-danh-sach-ma`, `nguoi-noi-bo`) và 6 template không tham số ngày không nằm trong 46 bảng.
 - **Universe chưa chuẩn hoá** (mục 6, P7b): điều kiện trái phiếu gồm sàn 04/03, điều kiện cổ phiếu không loại mã UPCOM `stock_tp_code='1'`.
 - **34 cột dẫn xuất chưa bước 2 nào đọc** (mục 3.2); giữ theo file tham chiếu.
-- 3 bảng có nguồn thuộc module khác: `buffer_chi_so_eod` (QLKD), `buffer_co_dong_lon` (NDTNN), `buffer_ngay_nghi_giao_dich` (Common). Phải nạp sau flat của các module đó.
+- 3 bảng có nguồn thuộc module khác: `qlkd_fct_index_eod_flat` (QLKD), `ndtnn_fct_major_shareholder_flat` (NDTNN); `cdr_fct_non_trading_day_flat` (Common) đã tắt ở v5. Phải nạp sau flat của các module đó.
 - Chưa ghi HLD / `flat_table_mapping.md` (mục GSTT trong file này đã cũ so với flat hiện tại, không phải do thay đổi này).
+
+### 10.4 Cập nhật theo `buffer_chart_templates_v5.sql` (2026-10-19)
+
+GSTT cập nhật tên bảng + logic trên ClickHouse (`C:\Users\ADMIN\Downloads\buffer_chart_templates_v5.sql`). So v4 → v5 theo từng template (51 template, chuẩn hoá tên bảng trước khi so):
+
+| Thay đổi | Phạm vi | Xử lý ở repo |
+|---|---|---|
+| Đổi tên bảng buffer sang `<phân_hệ>_fct_<tên_tiếng_Anh>_flat` | 46 template (phân hệ = `gstt` 43 · `qlkd` 1 · `ndtnn` 1 · `cdr` 1) | Đổi tên trong 01/02/03 và mục 10 (46 tên khác nhau, không đụng tên bảng nào có sẵn trong `Datamart/`, `docs/`, `system/`) |
+| Khối [2341] `ngay-nghi-giao-dich` bị comment-out **cả DDL + nạp + bước 2** | 1 template | Comment-out tương ứng ở 01/02; **chưa rõ chart [2341] đọc từ đâu** — cần GSTT xác nhận |
+| Header v5: `chi-so-history` / `chi-so-realtime` lấy từ bảng INTRADAY, nạp 1 lần/ngày có thể không hợp | 2 template | Ghi chú vào header 01 |
+| Logic bước 1b (nạp) và bước 2 (SQL chart), nguồn `default.*`, cột `[CỘT MỚI]` | 51 template | **Không đổi so với v4** — không phải sinh lại cột/WHERE/biểu thức |
+
+Còn mở (không đổi sau v5): nguồn v5 vẫn đọc `default.*` còn repo/DDL đọc `datamart.*` (P4/Q3); chưa chạy ClickHouse; SQL bước 2 của 5 template thủ công không đổi. Các mục 1–9 giữ nguyên tên `mart.buffer_*` cũ vì là phương án gộp **không áp dụng** (lịch sử).

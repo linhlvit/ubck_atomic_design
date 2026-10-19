@@ -1,7 +1,8 @@
 -- ============================================================
 -- GSTT Buffer Tables — POPULATE (tầng phục vụ chart template)
 -- Module: Giám sát Thị trường (GSTT)
--- Sinh: 2026-10-17 (bản nháp chưa chạy thử). 46 khối DELETE + INSERT, 1-1 với file 01.
+-- Sinh: 2026-10-17, cập nhật tên bảng theo buffer_chart_templates_v5.sql 2026-10-19 (bản nháp chưa chạy thử).
+-- 45 khối DELETE + INSERT, 1-1 với file 01; khối [2341] bị tắt (comment-out) như v5.
 -- ETL daily: mỗi bảng DELETE đúng ngày chạy rồi INSERT lại (idempotent — chạy lại / backfill không trùng).
 -- Thứ tự: chạy SAU khi các flat nguồn đã nạp xong cùng ngày: 02_populate_gstt_flat_tables.sql (GSTT),
 --   flat QLKD (qlkd_fct_market_index_snpst_flat), flat NDTNN (ndtnn_fct_public_company_foreign_ownership_snpst_flat),
@@ -11,14 +12,14 @@
 -- ============================================================
 
 -- ============================================================
--- 1. [2399] heat-map  →  mart.buffer_heat_map
+-- 1. [2399] heat-map  →  mart.gstt_fct_stock_heatmap_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: floor_code IN ('10','02','04') AND NOT ((floor_code = '02' AND stock_tp_code IN ('1','4')) OR (floor_code = '10' AND stock_tp_code = '1')) AND (ifNull(public_company_dim_id, '') != '' OR ifNull(securities_company_dim_id, '') != '')
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_heat_map ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_stock_heatmap_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_heat_map
+INSERT INTO mart.gstt_fct_stock_heatmap_flat
 SELECT
     cdr_dt,
     symbol,
@@ -45,15 +46,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 2. [2391] bm021-mss-dinh-gia  →  mart.buffer_bm021_mss_dinh_gia
+-- 2. [2391] bm021-mss-dinh-gia  →  mart.gstt_fct_valuation_report_bm021_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: pct_bien_dong_ngay
 -- ============================================================
-DELETE FROM mart.buffer_bm021_mss_dinh_gia ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_valuation_report_bm021_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_bm021_mss_dinh_gia
+INSERT INTO mart.gstt_fct_valuation_report_bm021_flat
 SELECT
     cdr_dt,
     symbol,
@@ -81,14 +82,14 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 3. [2351] chi-so-eod  →  mart.buffer_chi_so_eod
+-- 3. [2351] chi-so-eod  →  mart.qlkd_fct_index_eod_flat
 --    Nguồn: datamart.qlkd_fct_market_index_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_chi_so_eod ON CLUSTER 'my_cluster'
+DELETE FROM mart.qlkd_fct_index_eod_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_chi_so_eod
+INSERT INTO mart.qlkd_fct_index_eod_flat
 SELECT
     cdr_dt,
     market_code,
@@ -110,14 +111,14 @@ WHERE cdr_dt = :etl_date;
 
 
 -- ============================================================
--- 4. [2350] chi-so-history  →  mart.buffer_chi_so_history
+-- 4. [2350] chi-so-history  →  mart.gstt_fct_index_history_flat
 --    Nguồn: datamart.gstt_fct_market_index_intraday_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_chi_so_history ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_index_history_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_chi_so_history
+INSERT INTO mart.gstt_fct_index_history_flat
 SELECT
     cdr_dt,
     market_code,
@@ -128,14 +129,14 @@ WHERE cdr_dt = :etl_date;
 
 
 -- ============================================================
--- 5. [2349] chi-so-realtime  →  mart.buffer_chi_so_realtime
+-- 5. [2349] chi-so-realtime  →  mart.gstt_fct_index_realtime_flat
 --    Nguồn: datamart.gstt_fct_market_index_intraday_flat
 --    Universe/lọc tĩnh: substring(index_time, 1, 5) BETWEEN '09:00' AND '14:45'
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_chi_so_realtime ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_index_realtime_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_chi_so_realtime
+INSERT INTO mart.gstt_fct_index_realtime_flat
 SELECT
     cdr_dt,
     market_code,
@@ -148,14 +149,14 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 6. [2352] dinh-gia  →  mart.buffer_dinh_gia
+-- 6. [2352] dinh-gia  →  mart.gstt_fct_index_valuation_flat
 --    Nguồn: datamart.gstt_fct_index_constituent_snpst_flat, datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (INNER JOIN: chỉ mã thuộc rổ)
 -- ============================================================
-DELETE FROM mart.buffer_dinh_gia ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_index_valuation_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_dinh_gia
+INSERT INTO mart.gstt_fct_index_valuation_flat
 SELECT
     idx.cdr_dt AS cdr_dt,
     idx.symbol AS symbol,
@@ -180,15 +181,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 7. [2336] bang-co-phieu  →  mart.buffer_bang_co_phieu
+-- 7. [2336] bang-co-phieu  →  mart.gstt_fct_stock_list_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: vi_the_gia_trong_bien_do
 -- ============================================================
-DELETE FROM mart.buffer_bang_co_phieu ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_stock_list_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_bang_co_phieu
+INSERT INTO mart.gstt_fct_stock_list_flat
 SELECT
     cdr_dt,
     symbol,
@@ -221,14 +222,14 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 8. [2338] bang-phai-sinh  →  mart.buffer_bang_phai_sinh
+-- 8. [2338] bang-phai-sinh  →  mart.gstt_fct_derivative_list_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_DER (sàn 03)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_bang_phai_sinh ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_derivative_list_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_bang_phai_sinh
+INSERT INTO mart.gstt_fct_derivative_list_flat
 SELECT
     cdr_dt,
     symbol,
@@ -254,32 +255,33 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 9. [2341] ngay-nghi-giao-dich  →  mart.buffer_ngay_nghi_giao_dich
+-- 9. [2341] ngay-nghi-giao-dich  →  mart.cdr_fct_non_trading_day_flat
 --    Nguồn: datamart.cdr_dt_flat
 --    Universe/lọc tĩnh: is_trading_date != 'Y'
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_ngay_nghi_giao_dich ON CLUSTER 'my_cluster'
-WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_ngay_nghi_giao_dich
-SELECT
-    cdr_dt,
-    is_trading_date
-FROM datamart.cdr_dt_flat
-WHERE cdr_dt = :etl_date
-  AND is_trading_date != 'Y';
+-- [v5] KHỐI BỊ TẮT: buffer_chart_templates_v5.sql comment-out cả DDL + nạp + bước 2 của [2341] (mart.cdr_fct_non_trading_day_flat không được tạo). Chưa rõ chart [2341] đọc từ đâu — cần GSTT xác nhận.
+-- DELETE FROM mart.cdr_fct_non_trading_day_flat ON CLUSTER 'my_cluster'
+-- WHERE cdr_dt = :etl_date;
+-- INSERT INTO mart.cdr_fct_non_trading_day_flat
+-- SELECT
+--     cdr_dt,
+--     is_trading_date
+-- FROM datamart.cdr_dt_flat
+-- WHERE cdr_dt = :etl_date
+--   AND is_trading_date != 'Y';
 
 
 -- ============================================================
--- 10. [2379] nuoc-ngoai  →  mart.buffer_nuoc_ngoai
+-- 10. [2379] nuoc-ngoai  →  mart.gstt_fct_foreign_trading_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_le_mua_rong_nn_klgd
 -- ============================================================
-DELETE FROM mart.buffer_nuoc_ngoai ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_foreign_trading_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_nuoc_ngoai
+INSERT INTO mart.gstt_fct_foreign_trading_flat
 SELECT
     cdr_dt,
     symbol,
@@ -306,15 +308,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 11. [2380] nuoc-ngoai-gtnn  →  mart.buffer_nuoc_ngoai_gtnn
+-- 11. [2380] nuoc-ngoai-gtnn  →  mart.gstt_fct_foreign_trading_value_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_le_mua_rong_nn_gtgd
 -- ============================================================
-DELETE FROM mart.buffer_nuoc_ngoai_gtnn ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_foreign_trading_value_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_nuoc_ngoai_gtnn
+INSERT INTO mart.gstt_fct_foreign_trading_value_flat
 SELECT
     cdr_dt,
     symbol,
@@ -330,14 +332,14 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 12. [2381] nuoc-ngoai-gtnn-intraday  →  mart.buffer_nuoc_ngoai_gtnn_intraday
+-- 12. [2381] nuoc-ngoai-gtnn-intraday  →  mart.gstt_fct_foreign_trading_value_intraday_flat
 --    Nguồn: datamart.gstt_fct_foreign_trading_min_snpst_flat
 --    Universe/lọc tĩnh: NOT ((floor_code = '02' AND stock_tp_code IN ('1','4')) OR (floor_code = '10' AND stock_tp_code = '1')) AND floor_code != '03' AND (toHour(trade_minute_tms) * 60 + toMinute(trade_minute_tms)) BETWEEN 540 AND 885
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_nuoc_ngoai_gtnn_intraday ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_foreign_trading_value_intraday_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_nuoc_ngoai_gtnn_intraday
+INSERT INTO mart.gstt_fct_foreign_trading_value_intraday_flat
 SELECT
     cdr_dt,
     symbol,
@@ -352,15 +354,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 13. [2382] nuoc-ngoai-theo-chi-so  →  mart.buffer_nuoc_ngoai_theo_chi_so
+-- 13. [2382] nuoc-ngoai-theo-chi-so  →  mart.gstt_fct_foreign_trading_by_index_flat
 --    Nguồn: datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_trong_freefloat_tren_tong_von_hoa_idx
 -- ============================================================
-DELETE FROM mart.buffer_nuoc_ngoai_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_foreign_trading_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_nuoc_ngoai_theo_chi_so
+INSERT INTO mart.gstt_fct_foreign_trading_by_index_flat
 SELECT
     cdr_dt,
     symbol,
@@ -375,15 +377,15 @@ WHERE cdr_dt = :etl_date;
 
 
 -- ============================================================
--- 14. [2383] nuoc-ngoai-theo-chi-so-intraday  →  mart.buffer_nuoc_ngoai_theo_chi_so_intraday
+-- 14. [2383] nuoc-ngoai-theo-chi-so-intraday  →  mart.gstt_fct_foreign_trading_by_index_intraday_flat
 --    Nguồn: datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: dinh_gia_theo_pe_pb
 -- ============================================================
-DELETE FROM mart.buffer_nuoc_ngoai_theo_chi_so_intraday ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_foreign_trading_by_index_intraday_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_nuoc_ngoai_theo_chi_so_intraday
+INSERT INTO mart.gstt_fct_foreign_trading_by_index_intraday_flat
 SELECT
     cdr_dt,
     symbol,
@@ -396,14 +398,14 @@ WHERE cdr_dt = :etl_date;
 
 
 -- ============================================================
--- 15. [2385] phan-loai-ndt  →  mart.buffer_phan_loai_ndt
+-- 15. [2385] phan-loai-ndt  →  mart.gstt_fct_investor_category_trading_flat
 --    Nguồn: datamart.gstt_fct_investor_category_trading_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_phan_loai_ndt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_investor_category_trading_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_phan_loai_ndt
+INSERT INTO mart.gstt_fct_investor_category_trading_flat
 SELECT
     cdr_dt,
     symbol,
@@ -417,15 +419,15 @@ WHERE cdr_dt = :etl_date;
 
 
 -- ============================================================
--- 16. [2387] phan-loai-ndt-heatmap  →  mart.buffer_phan_loai_ndt_heatmap
+-- 16. [2387] phan-loai-ndt-heatmap  →  mart.gstt_fct_investor_category_heatmap_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: gia_tri_binh_quan_mot_lenh
 -- ============================================================
-DELETE FROM mart.buffer_phan_loai_ndt_heatmap ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_investor_category_heatmap_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_phan_loai_ndt_heatmap
+INSERT INTO mart.gstt_fct_investor_category_heatmap_flat
 SELECT
     cdr_dt,
     symbol,
@@ -446,14 +448,14 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 17. [2386] phan-loai-ndt-index  →  mart.buffer_phan_loai_ndt_index
+-- 17. [2386] phan-loai-ndt-index  →  mart.gstt_fct_investor_category_index_trading_flat
 --    Nguồn: datamart.gstt_fct_investor_category_index_trading_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_phan_loai_ndt_index ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_investor_category_index_trading_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_phan_loai_ndt_index
+INSERT INTO mart.gstt_fct_investor_category_index_trading_flat
 SELECT
     cdr_dt,
     index_code,
@@ -468,15 +470,15 @@ WHERE cdr_dt = :etl_date;
 
 
 -- ============================================================
--- 18. [2378] tong-quan  →  mart.buffer_tong_quan
+-- 18. [2378] tong-quan  →  mart.gstt_fct_market_overview_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: chenh_lech_von_hoa_freefloat_vs_thuong
 -- ============================================================
-DELETE FROM mart.buffer_tong_quan ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_market_overview_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_tong_quan
+INSERT INTO mart.gstt_fct_market_overview_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -508,15 +510,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 19. [2384] tu-doanh  →  mart.buffer_tu_doanh
+-- 19. [2384] tu-doanh  →  mart.gstt_fct_proprietary_trading_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: bien_do_so_voi_tran
 -- ============================================================
-DELETE FROM mart.buffer_tu_doanh ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_proprietary_trading_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_tu_doanh
+INSERT INTO mart.gstt_fct_proprietary_trading_flat
 SELECT
     cdr_dt,
     symbol,
@@ -539,14 +541,14 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 20. [2397] co-dong-lon  →  mart.buffer_co_dong_lon
+-- 20. [2397] co-dong-lon  →  mart.ndtnn_fct_major_shareholder_flat
 --    Nguồn: datamart.ndtnn_fct_public_company_foreign_ownership_snpst_flat
 --    Universe/lọc tĩnh: không lọc thêm (chỉ lọc ngày)
 --    Grain: giữ grain flat nguồn
 -- ============================================================
-DELETE FROM mart.buffer_co_dong_lon ON CLUSTER 'my_cluster'
+DELETE FROM mart.ndtnn_fct_major_shareholder_flat ON CLUSTER 'my_cluster'
 WHERE snpst_cdr_dt = :etl_date;
-INSERT INTO mart.buffer_co_dong_lon
+INSERT INTO mart.ndtnn_fct_major_shareholder_flat
 SELECT
     snpst_cdr_dt,
     equity_ticker_symbol,
@@ -558,15 +560,15 @@ WHERE snpst_cdr_dt = :etl_date;
 
 
 -- ============================================================
--- 21. [2371] top-dot-pha-theo-chi-so  →  mart.buffer_top_dot_pha_theo_chi_so
+-- 21. [2371] top-dot-pha-theo-chi-so  →  mart.gstt_fct_breakout_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_gtgd_phai_sinh
 -- ============================================================
-DELETE FROM mart.buffer_top_dot_pha_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_breakout_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_dot_pha_theo_chi_so
+INSERT INTO mart.gstt_fct_breakout_by_index_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -599,14 +601,14 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 22. [2370] top-dot-pha-theo-san  →  mart.buffer_top_dot_pha_theo_san
+-- 22. [2370] top-dot-pha-theo-san  →  mart.gstt_fct_breakout_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 -- ============================================================
-DELETE FROM mart.buffer_top_dot_pha_theo_san ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_breakout_by_exchange_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_dot_pha_theo_san
+INSERT INTO mart.gstt_fct_breakout_by_exchange_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -637,15 +639,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 23. [2369] top-dot-pha-toan-tt  →  mart.buffer_top_dot_pha_toan_tt
+-- 23. [2369] top-dot-pha-toan-tt  →  mart.gstt_fct_breakout_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: chenh_lech_gia_dong_vs_mo_cua_pct
 -- ============================================================
-DELETE FROM mart.buffer_top_dot_pha_toan_tt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_breakout_market_wide_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_dot_pha_toan_tt
+INSERT INTO mart.gstt_fct_breakout_market_wide_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -678,15 +680,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 24. [2362] top-giam-gia-theo-chi-so  →  mart.buffer_top_giam_gia_theo_chi_so
+-- 24. [2362] top-giam-gia-theo-chi-so  →  mart.gstt_fct_top_losers_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: bien_do_so_voi_san
 -- ============================================================
-DELETE FROM mart.buffer_top_giam_gia_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_losers_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_giam_gia_theo_chi_so
+INSERT INTO mart.gstt_fct_top_losers_by_index_flat
 SELECT
     cdr_dt,
     symbol,
@@ -719,15 +721,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 25. [2361] top-giam-gia-theo-san  →  mart.buffer_top_giam_gia_theo_san
+-- 25. [2361] top-giam-gia-theo-san  →  mart.gstt_fct_top_losers_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_trong_thoa_thuan
 -- ============================================================
-DELETE FROM mart.buffer_top_giam_gia_theo_san ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_losers_by_exchange_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_giam_gia_theo_san
+INSERT INTO mart.gstt_fct_top_losers_by_exchange_flat
 SELECT
     cdr_dt,
     symbol,
@@ -758,15 +760,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 26. [2360] top-giam-gia-toan-tt  →  mart.buffer_top_giam_gia_toan_tt
+-- 26. [2360] top-giam-gia-toan-tt  →  mart.gstt_fct_top_losers_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: pe_uoc_tinh
 -- ============================================================
-DELETE FROM mart.buffer_top_giam_gia_toan_tt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_losers_market_wide_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_giam_gia_toan_tt
+INSERT INTO mart.gstt_fct_top_losers_market_wide_flat
 SELECT
     cdr_dt,
     symbol,
@@ -797,15 +799,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 27. [2377] top-gt-theo-chi-so  →  mart.buffer_top_gt_theo_chi_so
+-- 27. [2377] top-gt-theo-chi-so  →  mart.gstt_fct_top_value_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_von_hoa_trong_chi_so
 -- ============================================================
-DELETE FROM mart.buffer_top_gt_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_value_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_gt_theo_chi_so
+INSERT INTO mart.gstt_fct_top_value_by_index_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -840,15 +842,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 28. [2376] top-gt-theo-san  →  mart.buffer_top_gt_theo_san
+-- 28. [2376] top-gt-theo-san  →  mart.gstt_fct_top_value_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_gtgd_tren_von_hoa
 -- ============================================================
-DELETE FROM mart.buffer_top_gt_theo_san ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_value_by_exchange_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_gt_theo_san
+INSERT INTO mart.gstt_fct_top_value_by_exchange_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -882,15 +884,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 29. [2375] top-gt-toan-tt  →  mart.buffer_top_gt_toan_tt
+-- 29. [2375] top-gt-toan-tt  →  mart.gstt_fct_top_value_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: dong_gop_von_hoa_freefloat_idx
 -- ============================================================
-DELETE FROM mart.buffer_top_gt_toan_tt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_value_market_wide_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_gt_toan_tt
+INSERT INTO mart.gstt_fct_top_value_market_wide_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -926,15 +928,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 30. [2356] top-kl-theo-chi-so  →  mart.buffer_top_kl_theo_chi_so
+-- 30. [2356] top-kl-theo-chi-so  →  mart.gstt_fct_top_volume_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_klgd_tren_idx_level
 -- ============================================================
-DELETE FROM mart.buffer_top_kl_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_volume_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_kl_theo_chi_so
+INSERT INTO mart.gstt_fct_top_volume_by_index_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -969,15 +971,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 31. [2355] top-kl-theo-san  →  mart.buffer_top_kl_theo_san
+-- 31. [2355] top-kl-theo-san  →  mart.gstt_fct_top_volume_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_gtgd_nn_tren_tong_gtgd
 -- ============================================================
-DELETE FROM mart.buffer_top_kl_theo_san ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_volume_by_exchange_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_kl_theo_san
+INSERT INTO mart.gstt_fct_top_volume_by_exchange_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1013,15 +1015,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 32. [2354] top-kl-toan-tt  →  mart.buffer_top_kl_toan_tt
+-- 32. [2354] top-kl-toan-tt  →  mart.gstt_fct_top_volume_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: bien_dao_dong_so_voi_idx_level
 -- ============================================================
-DELETE FROM mart.buffer_top_kl_toan_tt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_volume_market_wide_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_kl_toan_tt
+INSERT INTO mart.gstt_fct_top_volume_market_wide_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1058,15 +1060,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 33. [2374] top-nn-theo-chi-so  →  mart.buffer_top_nn_theo_chi_so
+-- 33. [2374] top-nn-theo-chi-so  →  mart.gstt_fct_top_foreign_trading_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: eps_vs_chi_so_eps
 -- ============================================================
-DELETE FROM mart.buffer_top_nn_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_foreign_trading_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_nn_theo_chi_so
+INSERT INTO mart.gstt_fct_top_foreign_trading_by_index_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1105,15 +1107,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 34. [2373] top-nn-theo-san  →  mart.buffer_top_nn_theo_san
+-- 34. [2373] top-nn-theo-san  →  mart.gstt_fct_top_foreign_trading_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_trong_klgd_nn_tren_tong_klgd
 -- ============================================================
-DELETE FROM mart.buffer_top_nn_theo_san ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_foreign_trading_by_exchange_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_nn_theo_san
+INSERT INTO mart.gstt_fct_top_foreign_trading_by_exchange_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1151,15 +1153,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 35. [2372] top-nn-toan-tt  →  mart.buffer_top_nn_toan_tt
+-- 35. [2372] top-nn-toan-tt  →  mart.gstt_fct_top_foreign_trading_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: ty_le_von_hoa_so_voi_idx_level
 -- ============================================================
-DELETE FROM mart.buffer_top_nn_toan_tt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_foreign_trading_market_wide_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_nn_toan_tt
+INSERT INTO mart.gstt_fct_top_foreign_trading_market_wide_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1198,15 +1200,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 36. [2359] top-tang-gia-theo-chi-so  →  mart.buffer_top_tang_gia_theo_chi_so
+-- 36. [2359] top-tang-gia-theo-chi-so  →  mart.gstt_fct_top_gainers_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: pb_uoc_tinh
 -- ============================================================
-DELETE FROM mart.buffer_top_tang_gia_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_gainers_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_tang_gia_theo_chi_so
+INSERT INTO mart.gstt_fct_top_gainers_by_index_flat
 SELECT
     cdr_dt,
     symbol,
@@ -1237,15 +1239,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 37. [2358] top-tang-gia-theo-san  →  mart.buffer_top_tang_gia_theo_san
+-- 37. [2358] top-tang-gia-theo-san  →  mart.gstt_fct_top_gainers_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: chenh_lech_gia_tran_san
 -- ============================================================
-DELETE FROM mart.buffer_top_tang_gia_theo_san ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_gainers_by_exchange_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_tang_gia_theo_san
+INSERT INTO mart.gstt_fct_top_gainers_by_exchange_flat
 SELECT
     cdr_dt,
     symbol,
@@ -1278,15 +1280,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 38. [2357] top-tang-gia-toan-tt  →  mart.buffer_top_tang_gia_toan_tt
+-- 38. [2357] top-tang-gia-toan-tt  →  mart.gstt_fct_top_gainers_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: von_hoa_free_float
 -- ============================================================
-DELETE FROM mart.buffer_top_tang_gia_toan_tt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_top_gainers_market_wide_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_tang_gia_toan_tt
+INSERT INTO mart.gstt_fct_top_gainers_market_wide_flat
 SELECT
     cdr_dt,
     symbol,
@@ -1318,15 +1320,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 39. [2368] top-thung-day-theo-chi-so  →  mart.buffer_top_thung_day_theo_chi_so
+-- 39. [2368] top-thung-day-theo-chi-so  →  mart.gstt_fct_new_low_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: khoang_cach_den_gia_san_pct
 -- ============================================================
-DELETE FROM mart.buffer_top_thung_day_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_new_low_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_thung_day_theo_chi_so
+INSERT INTO mart.gstt_fct_new_low_by_index_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1361,15 +1363,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 40. [2367] top-thung-day-theo-san  →  mart.buffer_top_thung_day_theo_san
+-- 40. [2367] top-thung-day-theo-san  →  mart.gstt_fct_new_low_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: do_sau_thung_day_pct
 -- ============================================================
-DELETE FROM mart.buffer_top_thung_day_theo_san ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_new_low_by_exchange_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_thung_day_theo_san
+INSERT INTO mart.gstt_fct_new_low_by_exchange_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1403,15 +1405,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 41. [2366] top-thung-day-toan-tt  →  mart.buffer_top_thung_day_toan_tt
+-- 41. [2366] top-thung-day-toan-tt  →  mart.gstt_fct_new_low_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: thanh_khoan_theo_freefloat
 -- ============================================================
-DELETE FROM mart.buffer_top_thung_day_toan_tt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_new_low_market_wide_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_thung_day_toan_tt
+INSERT INTO mart.gstt_fct_new_low_market_wide_flat
 SELECT
     cdr_dt,
     symbol,
@@ -1442,15 +1444,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 42. [2365] top-vuot-dinh-theo-chi-so  →  mart.buffer_top_vuot_dinh_theo_chi_so
+-- 42. [2365] top-vuot-dinh-theo-chi-so  →  mart.gstt_fct_new_high_by_index_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: khoang_cach_den_gia_tran_pct
 -- ============================================================
-DELETE FROM mart.buffer_top_vuot_dinh_theo_chi_so ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_new_high_by_index_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_vuot_dinh_theo_chi_so
+INSERT INTO mart.gstt_fct_new_high_by_index_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1485,15 +1487,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 43. [2364] top-vuot-dinh-theo-san  →  mart.buffer_top_vuot_dinh_theo_san
+-- 43. [2364] top-vuot-dinh-theo-san  →  mart.gstt_fct_new_high_by_exchange_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat, datamart.gstt_fct_index_constituent_snpst_flat
 --    Universe/lọc tĩnh: U_EQ không loại sàn 03
 --    Grain: 1 dòng / mã CK / chỉ số / ngày (mã không thuộc rổ nào: 1 dòng, cột rổ NULL)
 --    Cột dẫn xuất: do_cao_vuot_dinh_pct
 -- ============================================================
-DELETE FROM mart.buffer_top_vuot_dinh_theo_san ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_new_high_by_exchange_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_vuot_dinh_theo_san
+INSERT INTO mart.gstt_fct_new_high_by_exchange_flat
 SELECT
     s.cdr_dt AS cdr_dt,
     s.symbol AS symbol,
@@ -1527,15 +1529,15 @@ SETTINGS join_use_nulls = 1;
 
 
 -- ============================================================
--- 44. [2363] top-vuot-dinh-toan-tt  →  mart.buffer_top_vuot_dinh_toan_tt
+-- 44. [2363] top-vuot-dinh-toan-tt  →  mart.gstt_fct_new_high_market_wide_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_EQ (cổ phiếu/CCQ/CW: loại trái phiếu HOSE/HNX, phái sinh HNX, sàn 03)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: ty_trong_klgd_phai_sinh
 -- ============================================================
-DELETE FROM mart.buffer_top_vuot_dinh_toan_tt ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_new_high_market_wide_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_top_vuot_dinh_toan_tt
+INSERT INTO mart.gstt_fct_new_high_market_wide_flat
 SELECT
     cdr_dt,
     symbol,
@@ -1566,15 +1568,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 45. [2337] bang-trai-phieu  →  mart.buffer_bang_trai_phieu
+-- 45. [2337] bang-trai-phieu  →  mart.gstt_fct_bond_list_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_BOND (stock_tp_code=1, sàn 04/10/03/02)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: klgd_rong
 -- ============================================================
-DELETE FROM mart.buffer_bang_trai_phieu ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_bond_list_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_bang_trai_phieu
+INSERT INTO mart.gstt_fct_bond_list_flat
 SELECT
     cdr_dt,
     symbol,
@@ -1603,15 +1605,15 @@ WHERE cdr_dt = :etl_date
 
 
 -- ============================================================
--- 46. [2392] lich-su-gia-khoi-luong  →  mart.buffer_lich_su_gia_khoi_luong
+-- 46. [2392] lich-su-gia-khoi-luong  →  mart.gstt_fct_price_volume_history_flat
 --    Nguồn: datamart.gstt_fct_stock_portfolio_snpst_flat
 --    Universe/lọc tĩnh: U_BOND (stock_tp_code=1, sàn 04/10/03/02)
 --    Grain: giữ grain flat nguồn
 --    Cột dẫn xuất: bien_dong_gia_tuyet_doi
 -- ============================================================
-DELETE FROM mart.buffer_lich_su_gia_khoi_luong ON CLUSTER 'my_cluster'
+DELETE FROM mart.gstt_fct_price_volume_history_flat ON CLUSTER 'my_cluster'
 WHERE cdr_dt = :etl_date;
-INSERT INTO mart.buffer_lich_su_gia_khoi_luong
+INSERT INTO mart.gstt_fct_price_volume_history_flat
 SELECT
     cdr_dt,
     symbol,
