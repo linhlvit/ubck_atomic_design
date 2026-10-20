@@ -39,7 +39,7 @@ erDiagram
 | Securities Dimension | Dimension | new | Danh mục mã chứng khoán | 1 row / mã CK (SCD4A) | — |
 | Public Company Dimension | Dimension | partial | Công ty đại chúng + nhóm ngành — bảng dùng chung GSDC/QLCB, NDTNN chỉ thêm 1 cột delta (Classification Business Line Name) | 1 row / công ty đại chúng (SCD2) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
-| Foreign Investor Trading Detail Report | Fact (report) | new | Top NĐTNN mua/bán ròng (dùng lại từ Nhóm 15, nối Securities Dimension theo Symbol) | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) | K_NDTNN_262-264 |
+| Foreign Investor Trading Detail Report | Fact (report) | new | Top NĐTNN mua/bán ròng (dùng lại từ Nhóm 15, nối Securities Dimension theo Symbol) | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) × 1 Source_System_Code | K_NDTNN_262-264 |
 
 ---
 
@@ -130,7 +130,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Foreign Investor Trading Detail Report | Fact (report) | new | Báo cáo chi tiết giao dịch NĐTNN theo tài khoản | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) | K_NDTNN_84-89,262-264 |
+| Foreign Investor Trading Detail Report | Fact (report) | new | Báo cáo chi tiết giao dịch NĐTNN theo tài khoản (cổ phiếu/CCQ/ETF/chứng quyền/TPDN niêm yết HOSE+HNX và TPCP HNX Outright/Repo/Repo2) | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) × 1 Source_System_Code | K_NDTNN_84-89,262-264 |
 
 ---
 

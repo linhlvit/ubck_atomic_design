@@ -118,7 +118,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.symbol, js.tradingdate
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -324,8 +324,8 @@ stockinfor AS
                         , js.stocktype 
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
-                                PARTITION BY js.tradingdate, js.sequence 
-                                ORDER BY js.tradingtime DESC
+                                PARTITION BY js.tradingdate, js.symbol
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -475,7 +475,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
        PARTITION BY js.symbol, js.tradingdate 
-       ORDER BY js.tradingtime DESC
+       ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -605,7 +605,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.symbol, js.tradingdate
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -737,7 +737,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.symbol, js.tradingdate
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -874,8 +874,8 @@ stockinfor AS
                         , js.stocktype 
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
-                                PARTITION BY js.tradingdate, js.sequence 
-                                ORDER BY js.tradingtime DESC
+                                PARTITION BY js.tradingdate, js.symbol
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -1042,8 +1042,8 @@ stockinfor AS
                         , js.stocktype 
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
-                                PARTITION BY js.tradingdate, js.sequence 
-                                ORDER BY js.tradingtime DESC
+                                PARTITION BY js.tradingdate, js.symbol
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -1201,7 +1201,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.tradingdate, js.sequence
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -1386,7 +1386,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.tradingdate, js.sequence
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -1465,7 +1465,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.tradingdate, js.sequence
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -1576,7 +1576,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.tradingdate, js.sequence
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -1683,8 +1683,8 @@ stockinfor AS
                         , js.stocktype 
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
-                                PARTITION BY js.tradingdate, js.sequence 
-                                ORDER BY js.tradingtime DESC
+                                PARTITION BY js.tradingdate, js.symbol
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -2172,7 +2172,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.symbol, js.tradingdate 
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -2267,109 +2267,101 @@ ORDER BY tradingdate, marketId, marketCode;",,,,,Chưa có SQL,Dữ liệu tĩnh
     SELECT
         report_log_id,
         section_id,
-        row_path,
         row_order,
-        entity_code,
         column_path,
+        sheet_name,
         value_raw
     FROM uat_fims_ods.fir_value
     WHERE report_code IN ('59WJB', 'BZ5X4')
-      AND sheet_name  = 'II'
-      AND is_mirror = 0 
-      AND is_section_echo = 0 
+      AND is_mirror = 0
+      AND is_section_echo = 0
       AND is_band_overflow = 0
-      AND is_static_copy = 0 
+      AND is_static_copy = 0
       AND is_template_marker = 0
-      AND is_total_row = 0 -- Bỏ dòng tổng cộng để không tính trùng số liệu
-      AND ngay_nop = :ngaynop
+      AND is_total_row = 0
+--      AND ngay_nop = :ngaynop
 ),
+-- ===== Phần 1: NĐT cá nhân / tổ chức (sheet II) =====
 base_rows AS (
-    SELECT DISTINCT
-        report_log_id,
-        section_id,
-        row_path,
-        row_order,
-        entity_code
+    SELECT DISTINCT report_log_id, section_id, row_order
     FROM base_cell
+    WHERE sheet_name = 'II'
 ),
-c_ten_kh AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        COALESCE(value_raw, value_raw) AS ten_kh
-    FROM base_cell 
-    WHERE column_path = 'Tên khách hàng'
-),
-c_loai_hinh AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        COALESCE(value_raw, value_raw) AS loai_hinh_to_chuc
-    FROM base_cell 
-    WHERE column_path = 'Loại hình đối với tổ chức'
+c_ma_gd AS (
+    SELECT report_log_id, section_id, row_order,
+           -- vd 085FCA5632 -> CA5632 (6 ký tự cuối)
+           SUBSTR(UPPER(TRIM(value_raw)), -6) AS ma_gd_key
+    FROM base_cell
+    WHERE sheet_name = 'II'
+      AND column_path = 'Mã số giao dịch chứng khoán'
+      AND value_raw IS NOT NULL
 ),
 c_gtri_danh_muc AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        -- Ưu tiên lấy value_raw kiểu DOUBLE, nếu rỗng thì ép kiểu từ value_raw
-        value_raw AS tong_gtri_danh_muc
-    FROM base_cell 
-    WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
+    SELECT report_log_id, section_id, row_order,
+           TRY_CAST(value_raw AS DECIMAL(38,6)) AS tong_gtri_danh_muc
+    FROM base_cell
+    WHERE sheet_name = 'II'
+      AND column_path = 'Tổng giá trị danh mục > Giá trị'
+),
+inv AS (
+    SELECT
+        SUBSTR(UPPER(TRIM(TransactionCode)), -6) AS ma_gd_key,
+        Name,
+        ObjectType,
+        InvestorTypeId
+    FROM uat_fims_stg.investor
+    WHERE TRIM(TransactionCode) <> ''
+      AND Deleted = 0
 ),
 pvt_data AS (
     SELECT
-        b.row_path,
-        b.row_order,
-        b.entity_code,
-        c_ten_kh.ten_kh,
-        c_loai_hinh.loai_hinh_to_chuc,
-        c_gtri_danh_muc.tong_gtri_danh_muc
+        b.report_log_id,
+        m.ma_gd_key,
+        inv.Name   AS ten_ndt,
+        it.Name    AS loai_hinh_ndt,
+        CASE
+            WHEN inv.ObjectType = 1 THEN 'Cá nhân'
+            WHEN inv.ObjectType = 2
+                 AND it.Name LIKE '%Quỹ%' or it.Name like '%Fund%*'
+                 AND it.Name NOT LIKE '%Không phải quỹ%'      THEN 'Quỹ'
+            WHEN inv.ObjectType = 2
+                 AND (it.Name LIKE '%Không phải quỹ%'
+                      OR it.Name LIKE '%Công ty%'
+                      OR it.Name LIKE '%Ngân hàng%')          THEN 'Tổ chức khác quỹ'
+            ELSE 'Chưa xác định (không khớp investor)'
+        END AS nhom_loai_hinh,
+        g.tong_gtri_danh_muc
     FROM base_rows b
-    -- Khóa ghép kèm report_log_id để tránh nhân chéo dòng giữa 2 báo cáo 59WJB và BZ5X4:
-    LEFT JOIN c_ten_kh        ON b.report_log_id = c_ten_kh.report_log_id 
-    AND b.section_id    = c_ten_kh.section_id 
-    AND b.row_order     = c_ten_kh.row_order
-
-    LEFT JOIN c_loai_hinh     ON b.report_log_id = c_loai_hinh.report_log_id 
-    AND b.section_id    = c_loai_hinh.section_id 
-    AND b.row_order     = c_loai_hinh.row_order
-
-    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id 
-    AND b.section_id    = c_gtri_danh_muc.section_id 
-    AND b.row_order     = c_gtri_danh_muc.row_order
+    LEFT JOIN c_ma_gd m
+           ON b.report_log_id = m.report_log_id
+          AND b.section_id    = m.section_id
+          AND b.row_order     = m.row_order
+    LEFT JOIN c_gtri_danh_muc g
+           ON b.report_log_id = g.report_log_id
+          AND b.section_id    = g.section_id
+          AND b.row_order     = g.row_order
+    LEFT JOIN inv
+           ON m.ma_gd_key = inv.ma_gd_key
+    LEFT JOIN uat_fims_stg.investortype it
+           ON inv.InvestorTypeId = it.Id
+    WHERE g.tong_gtri_danh_muc IS NOT NULL
+),
+-- ===== Phần 2: Chi nhánh ngân hàng nước ngoài (sheet III) =====
+chi_nhanh_nhnn AS (
+    SELECT
+        'Chi nhánh ngân hàng nước ngoài' AS nhom_loai_hinh,
+        SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+    FROM base_cell
+    WHERE sheet_name = 'III'
+      AND column_path = 'Số dư cuối kỳ > Giá trị'
 )
-SELECT
-    COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định') AS loai_hinh_to_chuc,
-    -- 1. Cá nhân
-    ROUND(SUM(CASE 
-        WHEN row_path = 'B-Cá nhân' 
-        THEN tong_gtri_danh_muc 
-    END), 4) AS tong_gtri_danh_muc_ca_nhan,   
-    -- 2. Tổ chức khác Quỹ (Bọc ngoặc tròn các điều kiện OR để row_path = 'A-Tổ chức' áp dụng cho tất cả)
-    ROUND(SUM(CASE
-        WHEN row_path = 'A-Tổ chức' 
-             AND (loai_hinh_to_chuc LIKE '%Công ty%' 
-                  OR loai_hinh_to_chuc LIKE '%Ngân hàng%' 
-                  OR loai_hinh_to_chuc LIKE '%Tổ chức%' 
-                  OR loai_hinh_to_chuc LIKE '%Không phải quỹ%' 
-                  OR loai_hinh_to_chuc LIKE '%Các loại khác%') 
-        THEN tong_gtri_danh_muc
-    END), 4) AS dong_von_rong_tochuc_khac_quy,
-    -- 3. Quỹ
-    ROUND(SUM(CASE
-        WHEN row_path = 'A-Tổ chức' 
-             AND loai_hinh_to_chuc LIKE '%Quỹ%' 
-             AND loai_hinh_to_chuc NOT LIKE '%Không phải quỹ%' 
-        THEN tong_gtri_danh_muc
-    END), 4) AS dong_von_rong_quy,
-     sum(tong_gtri_danh_muc)
+SELECT nhom_loai_hinh,
+       ROUND(SUM(tong_gtri_danh_muc), 4) AS tong_gtri_danh_muc
 FROM pvt_data
-WHERE tong_gtri_danh_muc IS NOT NULL
-GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tổng giá trị danh mục,
+GROUP BY nhom_loai_hinh
+UNION ALL
+SELECT nhom_loai_hinh, ROUND(tong_gtri, 4)
+FROM chi_nhanh_nhnn;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tổng giá trị danh mục,
 6,44,Dashboard/Danh mục/Thống kê danh mục,Loại hình nhà đầu tư,,Dashboard,Chiều,Trùng,,FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
@@ -2385,8 +2377,8 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,,,,,
-,47,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của chi nhánh ngân hàng nước ngoài,Tổng giá trị danh mục của NĐTNN là chi nhánh ngân hàng nước ngoài,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,,,,,,,,,Done,Dữ liệu động,,,,,,bổ sung UAT,
-,48,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của tổ chức khác quỹ,Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,47,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của ngân hàng nước ngoài tại VN,Tổng giá trị danh mục của NĐTNN là chi nhánh ngân hàng nước ngoài,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,,,,,,,,,Done,Dữ liệu động,,,,,,bổ sung UAT,
+6,48,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của tổ chức khác quỹ,Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2399,85 +2391,74 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
     SELECT
         report_log_id,
         section_id,
-        row_path,
         row_order,
-        entity_code,
         column_path,
         value_raw
     FROM uat_fims_ods.fir_value
     WHERE report_code IN ('59WJB', 'BZ5X4')
-      AND sheet_name  = 'II'
-      AND is_mirror = 0 
-      AND is_section_echo = 0 
+      AND sheet_name = 'II'
+      AND is_mirror = 0
+      AND is_section_echo = 0
       AND is_band_overflow = 0
-      AND is_static_copy = 0 
+      AND is_static_copy = 0
       AND is_template_marker = 0
-      AND is_total_row = 0 -- Bỏ dòng tổng cộng để không tính trùng số liệu
+      AND is_total_row = 0           -- bỏ dòng tổng cộng để không tính trùng
       AND ngay_nop = :ngaynop
 ),
 base_rows AS (
-    SELECT DISTINCT
-        report_log_id,
-        section_id,
-        row_path,
-        row_order,
-        entity_code
+    SELECT DISTINCT report_log_id, section_id, row_order
     FROM base_cell
 ),
-c_quoc_tich AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        COALESCE(value_raw, value_raw) AS quoc_tich
-    FROM base_cell 
-    WHERE column_path = 'Quốc tịch'
-),
-c_loai_hinh AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        COALESCE(value_raw, value_raw) AS loai_hinh_to_chuc
-    FROM base_cell 
-    WHERE column_path = 'Loại hình đối với tổ chức'
+c_ma_gd AS (
+    SELECT report_log_id, section_id, row_order,
+           -- vd 085FCA5632 -> CA5632 (6 ký tự cuối)
+           SUBSTR(UPPER(TRIM(value_raw)), -6) AS ma_gd_key
+    FROM base_cell
+    WHERE column_path = 'Mã số giao dịch chứng khoán'   -- cần xác nhận đúng column_path
+      AND value_raw IS NOT NULL
 ),
 c_gtri_danh_muc AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        value_raw AS tong_gtri_danh_muc
-    FROM base_cell 
+    SELECT report_log_id, section_id, row_order,
+           TRY_CAST(value_raw AS DECIMAL(38,6)) AS tong_gtri_danh_muc
+    FROM base_cell
     WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
+),
+inv AS (
+    SELECT
+        SUBSTR(UPPER(TRIM(TransactionCode)), -6) AS ma_gd_key,
+        NaId
+    FROM uat_fims_ods.investor
+    WHERE TransactionCode IS NOT NULL
+      AND TRIM(TransactionCode) <> ''
+      AND Deleted = 0
 ),
 pvt_data AS (
     SELECT
-        b.row_path,
-        b.row_order,
-        b.entity_code,
-        c_quoc_tich.quoc_tich,
-        c_loai_hinh.loai_hinh_to_chuc,
-        c_gtri_danh_muc.tong_gtri_danh_muc
+        b.report_log_id,
+        m.ma_gd_key,
+        COALESCE(n.Name, 'Chưa xác định') AS quoc_tich,
+        g.tong_gtri_danh_muc
     FROM base_rows b
-    -- Khóa ghép kèm report_log_id để tránh nhân chéo dòng giữa 2 báo cáo 59WJB và BZ5X4:
-    LEFT JOIN c_quoc_tich        ON b.report_log_id = c_quoc_tich.report_log_id 
-    AND b.section_id    = c_quoc_tich.section_id 
-    AND b.row_order     = c_quoc_tich.row_order
-    LEFT JOIN c_loai_hinh     ON b.report_log_id = c_loai_hinh.report_log_id 
-    AND b.section_id    = c_loai_hinh.section_id 
-    AND b.row_order     = c_loai_hinh.row_order
-    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id 
-    AND b.section_id    = c_gtri_danh_muc.section_id 
-    AND b.row_order     = c_gtri_danh_muc.row_order
+    LEFT JOIN c_ma_gd m
+           ON b.report_log_id = m.report_log_id
+          AND b.section_id    = m.section_id
+          AND b.row_order     = m.row_order
+    LEFT JOIN c_gtri_danh_muc g
+           ON b.report_log_id = g.report_log_id
+          AND b.section_id    = g.section_id
+          AND b.row_order     = g.row_order
+    LEFT JOIN inv
+           ON m.ma_gd_key = inv.ma_gd_key
+    LEFT JOIN uat_fims_ods.national n
+           ON inv.NaId = n.Id
 )
-select 
-        quoc_tich,
-        sum(tong_gtri_danh_muc)
-from pvt_data 
-group by quoc_tich 
-order by sum(tong_gtri_danh_muc) desc
-limit 5;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
+SELECT
+    quoc_tich,
+    SUM(tong_gtri_danh_muc) AS tong_gtri_danh_muc
+FROM pvt_data
+GROUP BY quoc_tich
+ORDER BY tong_gtri_danh_muc DESC
+LIMIT 5",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
 Quốc tịch","Sum (Tổng giá trị danh mục) theo cột Quốc tịch, lấy top 5 lớn nhất"
 6,50,Dashboard/Danh mục/Thống kê danh mục,Top 5 NĐT,Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, NĐT",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
@@ -2487,85 +2468,72 @@ Quốc tịch","Sum (Tổng giá trị danh mục) theo cột Quốc tịch, l�
     SELECT
         report_log_id,
         section_id,
-        row_path,
         row_order,
-        entity_code,
         column_path,
         value_raw
     FROM uat_fims_ods.fir_value
     WHERE report_code IN ('59WJB', 'BZ5X4')
-      AND sheet_name  = 'II'
-      AND is_mirror = 0 
-      AND is_section_echo = 0 
+      AND sheet_name = 'II'
+      AND is_mirror = 0
+      AND is_section_echo = 0
       AND is_band_overflow = 0
-      AND is_static_copy = 0 
+      AND is_static_copy = 0
       AND is_template_marker = 0
-      AND is_total_row = 0 -- Bỏ dòng tổng cộng để không tính trùng số liệu
+      AND is_total_row = 0           -- bỏ dòng tổng cộng để không tính trùng
       AND ngay_nop = :ngaynop
 ),
 base_rows AS (
-    SELECT DISTINCT
-        report_log_id,
-        section_id,
-        row_path,
-        row_order,
-        entity_code
+    SELECT DISTINCT report_log_id, section_id, row_order
     FROM base_cell
 ),
-c_ten_kh AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        COALESCE(value_raw, value_raw) AS ten_kh
-    FROM base_cell 
-    WHERE column_path = 'Tên khách hàng'
-),
-c_loai_hinh AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        COALESCE(value_raw, value_raw) AS loai_hinh_to_chuc
-    FROM base_cell 
-    WHERE column_path = 'Loại hình đối với tổ chức'
+c_ma_gd AS (
+    SELECT report_log_id, section_id, row_order,
+           -- vd 085FCA5632 -> CA5632 (6 ký tự cuối)
+           SUBSTR(UPPER(TRIM(value_raw)), -6) AS ma_gd_key
+    FROM base_cell
+    WHERE column_path = 'Mã số giao dịch chứng khoán'   -- cần xác nhận đúng column_path
+      AND value_raw IS NOT NULL
 ),
 c_gtri_danh_muc AS (
-    SELECT 
-        report_log_id, 
-        section_id, 
-        row_order, 
-        value_raw AS tong_gtri_danh_muc
-    FROM base_cell 
+    SELECT report_log_id, section_id, row_order,
+           TRY_CAST(value_raw AS DECIMAL(38,6)) AS tong_gtri_danh_muc
+    FROM base_cell
     WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
+),
+inv AS (
+    SELECT
+        SUBSTR(UPPER(TRIM(TransactionCode)), -6) AS ma_gd_key,
+        Name
+    FROM uat_fims_ods.investor
+    WHERE TransactionCode IS NOT NULL
+      AND TRIM(TransactionCode) <> ''
+      AND Deleted = 0
 ),
 pvt_data AS (
     SELECT
-        b.row_path,
-        b.row_order,
-        b.entity_code,
-        c_ten_kh.ten_kh,
-        c_loai_hinh.loai_hinh_to_chuc,
-        c_gtri_danh_muc.tong_gtri_danh_muc
+        b.report_log_id,
+        m.ma_gd_key,
+        COALESCE(inv.Name, 'Chưa xác định') AS ten_kh,
+        g.tong_gtri_danh_muc
     FROM base_rows b
-    -- Khóa ghép kèm report_log_id để tránh nhân chéo dòng giữa 2 báo cáo 59WJB và BZ5X4:
-    LEFT JOIN c_ten_kh        ON b.report_log_id = c_ten_kh.report_log_id 
-    AND b.section_id    = c_ten_kh.section_id 
-    AND b.row_order     = c_ten_kh.row_order
-    LEFT JOIN c_loai_hinh     ON b.report_log_id = c_loai_hinh.report_log_id 
-    AND b.section_id    = c_loai_hinh.section_id 
-    AND b.row_order     = c_loai_hinh.row_order
-    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id 
-    AND b.section_id    = c_gtri_danh_muc.section_id 
-    AND b.row_order     = c_gtri_danh_muc.row_order
+    LEFT JOIN c_ma_gd m
+           ON b.report_log_id = m.report_log_id
+          AND b.section_id    = m.section_id
+          AND b.row_order     = m.row_order
+    LEFT JOIN c_gtri_danh_muc g
+           ON b.report_log_id = g.report_log_id
+          AND b.section_id    = g.section_id
+          AND b.row_order     = g.row_order
+    LEFT JOIN inv
+           ON m.ma_gd_key = inv.ma_gd_key
 )
-select 
-        ten_kh,
-        sum(tong_gtri_danh_muc)
-from pvt_data 
-group by ten_kh
-order by sum(tong_gtri_danh_muc) desc
-limit 5;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
+SELECT
+    ten_kh,
+    SUM(tong_gtri_danh_muc) AS tong_gtri_danh_muc
+FROM pvt_data
+GROUP BY ten_kh
+ORDER BY tong_gtri_danh_muc DESC
+LIMIT 5;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
 Tên khách hàng","Sum (Tổng giá trị danh mục) theo cột Tên khách hàng, lấy top 5 lớn nhất"
 7,51,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Giá trị tài sản,,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
@@ -2939,7 +2907,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
        PARTITION BY js.symbol, js.tradingdate 
-       ORDER BY js.tradingtime DESC
+       ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -3055,7 +3023,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
        PARTITION BY js.symbol, js.tradingdate 
-       ORDER BY js.tradingtime DESC
+       ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js 
                 WHERE 1=1
@@ -3166,7 +3134,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.symbol, js.tradingdate
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -3433,7 +3401,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.symbol, js.tradingdate
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -3651,7 +3619,7 @@ stockinfor AS
                         , js.ds_etl_pcs_tms
                         , ROW_NUMBER() OVER (
                                 PARTITION BY js.symbol, js.tradingdate
-                                ORDER BY js.tradingtime DESC
+                                ORDER BY js.tradingtime DESC, sequence DESC
                         ) AS rn
                 FROM uat_mdds_stg.jad_stockinfor js
                 WHERE 1=1
@@ -3669,31 +3637,31 @@ stockinfor AS
                 , tb.market_id
                 , tb.trade_date ngay_gd
                 , tb.symbol ma_ck
-                , tb.buy_acct_no tk
+                , tb.sell_acct_no tk
+                , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.execution_volume  ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.execution_volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
-                , tb.Execution_Value AS gtri
         FROM uat_hose_stg.trade_book tb
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
-        union all 
-        SELECT
+       	UNION ALL 
+       	SELECT
                 js.stocktype
                 , js.floorcode
                 , tb.market_id
                 , tb.trade_date ngay_gd
                 , tb.symbol ma_ck
-                , tb.sell_acct_no tk
+                , tb.buy_acct_no tk
+                , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.execution_volume  ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.execution_volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
-                , tb.Execution_Value AS gtri
         FROM uat_hose_stg.trade_book tb
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -3705,80 +3673,32 @@ stockinfor AS
                 , tb.trade_date ngay_gd
                 , js.symbol ma_ck
                 , tb.buy_account_number tk
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_quantity ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_quantity ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
-                , tb.Trade_price * tb.Trade_quantity AS gtri
         FROM uat_hnx_stg.trade_book tb
         JOIN stockinfor js
                 ON js.symbolisin = tb.issue_code
                 AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
-                AND tb.market_id IN ('UPX', 'STX', 'HCX')
-        union all 
-        SELECT
+		UNION ALL 
+		SELECT
                 js.stocktype
                 , js.floorcode
                 , tb.market_id
-                , to_date(tb.trade_date, 'yyyy-MM-dd') ngay_gd
+                , tb.trade_date ngay_gd
                 , js.symbol ma_ck
                 , tb.sell_account_number tk
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_quantity ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_quantity ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
-                , tb.Trade_price * tb.Trade_quantity AS gtri
         FROM uat_hnx_stg.trade_book tb
         JOIN stockinfor js
                 ON js.symbolisin = tb.issue_code
                 AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
-                AND tb.market_id IN ('UPX', 'STX', 'HCX')
-)
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
-, cte_cophieu AS
-(
-        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM (
-                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
-                UNION ALL
-                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hnx_tb
-                WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
-        ) x
-        group by ngay_gd, ma_ck, tk
-)
--- 5. Trái phiếu DN niêm yết: stocktype = 1 ; HOSE market_id = 'BDO' ; HNX market_id = 'HCX'
-, cte_tpdn_niemyet AS
-(
-        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM (
-                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 1 AND market_id = 'BDO'
-                UNION ALL
-                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hnx_tb
-                WHERE stocktype = 1 AND market_id = 'HCX'
-        ) x
-        group by ngay_gd, ma_ck, tk
-)
--- 6. CCQ: stocktype IN (3,6)
---    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
-, cte_ccq AS
-(
-        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM (
-                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype IN (3,6) 
-                UNION ALL
-                SELECT ngay_gd, ma_ck, tk,gtri_mua, gtri_ban, gtri FROM hnx_tb
-                WHERE stocktype IN (3,6) 
-        ) x
-        group by ngay_gd, ma_ck, tk
-)
--- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
-, cte_cw AS
-(
-        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM hose_tb
-        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
-        group by ngay_gd, ma_ck, tk
 )
 -- 8. TP DN riêng lẻ: báo cáo HNX09
 , cte_tpdn_riengle AS
@@ -3800,9 +3720,10 @@ stockinfor AS
         		a.trading_date ngay_gd
         		, a.bond_code as ma_ck
         		, a.buying_account_no tk
+        		, CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
-                , a.trading_value AS gtri
         FROM uat_hnx_stg.OUTRIGHT_ORDER_BOOK a
         WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
         UNION ALL
@@ -3810,75 +3731,86 @@ stockinfor AS
     			a.trading_date ngay_gd
         		, a.bond_code as ma_ck
         		, a.selling_account_no tk
+                , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
-                , a.trading_value AS gtri
         FROM uat_hnx_stg.OUTRIGHT_ORDER_BOOK a
         WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
         UNION ALL 
         SELECT
-        		a.trading_date ngay_gd
-        		, a.bond_code as ma_ck
-        		, a.buying_account_no tk
-                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , r.first_settlement_value
+        		r.trading_date ngay_gd
+        		, r.bond_code as ma_ck
+        		, r.buying_account_no tk
+        		, CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_ban
+                , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_ban
         FROM uat_hnx_stg.REPO_ORDER_BOOK r
         WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
         UNION ALL
         SELECT
-        		a.trading_date ngay_gd
-        		, a.bond_code as ma_ck
-        		, a.selling_account_no tk
-                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , r.first_settlement_value
-        FROM uat_hnx_stg.REPO_ORDER_BOOK r
+        		r.trading_date ngay_gd
+        		, r.bond_code as ma_ck
+        		, r.selling_account_no tk
+        		, CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_ban
+                , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_ban
+        FROM uat_hnx_stg.REPO_ORDER_BOOK r 
         WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
         UNION ALL
         SELECT
-        		a.trading_date ngay_gd
-        		, a.bond_code as ma_ck
-        		, a.buying_account_no tk
-                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , r.first_settlement_value
+        		r.trading_date ngay_gd
+        		, r.bond_code as ma_ck
+        		, r.buying_account_no tk
+        		, CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_ban
+                , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_ban
         FROM uat_hnx_stg.REPO2_ORDER_BOOK r
         WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
         UNION ALL
         SELECT
-        		a.trading_date ngay_gd
-        		, a.bond_code as ma_ck
-        		, a.selling_account_no tk
-                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , r.first_settlement_value
+        		r.trading_date ngay_gd
+        		, r.bond_code as ma_ck
+        		, r.selling_account_no tk
+        		, CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_ban
+                , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_ban
         FROM uat_hnx_stg.REPO2_ORDER_BOOK r
         WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
 )
-, cte_tpcp AS
-(
-        SELECT ngay_gd, ma_ck, tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM tpcp_raw
-        group by ngay_gd, ma_ck, tk
-)
--- 10. Trái phiếu = TP DN niêm yết + TP DN riêng lẻ + TP chính phủ
-, cte_trai_phieu AS
-(
-        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_niemyet
---        UNION ALL
---        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_riengle
-        UNION ALL
-        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpcp
-)
--- 11. Hợp nhất 4 loại chứng khoán
-SELECT 1 AS stt, 'Cổ phiếu' AS loai_ck, cte_cophieu.* FROM cte_cophieu
-UNION ALL
-SELECT 2, 'Trái phiếu', cte_trai_phieu.* FROM cte_trai_phieu
-UNION ALL
-SELECT 3, 'Chứng quyền', cte_cw.* FROM cte_cw
-UNION ALL
-SELECT 4, 'CCQ', cte_ccq.* FROM cte_ccq",,,,,,,,,,,,,
+select 
+	ngay_gd,
+	ma_ck,
+	tk,
+	khoi_luong_mua,
+	khoi_luong_ban,
+	gtri_mua,
+	gtri_ban
+from hose_tb
+union all 
+select 
+	ngay_gd,
+	ma_ck,
+	tk,
+	khoi_luong_mua,
+	khoi_luong_ban,
+	gtri_mua,
+	gtri_ban
+from hnx_tb
+union all 
+select 
+	ngay_gd,
+	ma_ck,
+	tk,
+	khoi_luong_mua,
+	khoi_luong_ban,
+	gtri_mua,
+	gtri_ban
+from tpcp_raw;",,,,,,,,,,,,,
 15,98,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Tài khoản giao dịch NĐTNN,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 

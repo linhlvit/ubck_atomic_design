@@ -7,6 +7,8 @@
 -- Sửa 2026-10-16: ndtnn_foreign_investor_trading_statistics_rpt_flat thêm giá trị security_tp_group = 'WARRANT' (chỉ đổi COMMENT, không đổi cột);
 --   ndtnn_fct_securities_foreign_trading_snpst_flat không đổi cấu trúc (stock_tp_code đã có để BI lọc cổ phiếu '2')
 -- Sửa 2026-10-17: ndtnn_fct_securities_foreign_trading_snpst_flat không đổi cấu trúc (Fact bỏ trái phiếu, stock_tp_code còn '2','3','6','4'); ndtnn_foreign_investor_trading_detail_rpt_flat chỉ đổi COMMENT report_dt (Ngày giao dịch — K_NDTNN_266)
+-- Sửa 2026-10-20: ndtnn_foreign_investor_trading_detail_rpt_flat thêm dòng TPCP (Bond Order Book HNX OUTRIGHT/REPO/REPO2) — không thêm cột;
+--   ORDER BY thêm src_stm_code (grain mới 5 thành phần) → bảng đã deploy phải DROP + CREATE lại rồi nạp lại lịch sử (O_NDTNN_50)
 -- ============================================================
 
 -- ============================================================
@@ -106,16 +108,16 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_foreign_investor_trading_detail_rpt_fl
     -- From: FACT Foreign Investor Trading Detail Report
     report_dt                       Date                    COMMENT 'Ngày giao dịch (Ngày báo cáo)',
     account_nbr                     String                  COMMENT 'Tài khoản giao dịch NĐTNN',
-    symbol                          String                  COMMENT 'Mã CK — denormalize text trực tiếp',
+    symbol                          String                  COMMENT 'Mã CK — denormalize text trực tiếp (TPCP: mã trái phiếu bond_code)',
     trade_direction_code            String                  COMMENT 'Chiều mua/bán (BUY/SELL)',
-    account_holder_nm               Nullable(String)        COMMENT 'Tên chủ tài khoản (đệm sẵn)',
+    account_holder_nm               Nullable(String)        COMMENT 'Tên chủ tài khoản (đệm sẵn; NULL với TPCP)',
     execution_vol                   Int64                   COMMENT 'KL mua/bán CK',
     execution_val                   Decimal(23,2)           COMMENT 'GT mua/bán CK',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu (ORDERTRADE_TRADE_BOOK_HOSE/HNX, HNX_OUTRIGHT/REPO/REPO2_ORDER_BOOK) — thuộc grain'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(report_dt))
-ORDER BY (assumeNotNull(report_dt), account_nbr, symbol, trade_direction_code)
+ORDER BY (assumeNotNull(report_dt), account_nbr, symbol, trade_direction_code, src_stm_code)
 COMMENT 'Flat table — Foreign Investor Trading Detail Report (denormalize, không FK Dimension)'
 ;
 
