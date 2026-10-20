@@ -19,7 +19,7 @@ metadata:
   approved_at: null
   notes: "Nguồn chính cho shared entity IP Alt Identification với grain đúng chuẩn\
     \ (1 dòng = 1 giấy tờ). IDENTITY_TYPE_CD là cột lookup động (LOOKUP_GROUP = 'IDENTITY\
-    \ TYPE') — dùng placeholder (source). ID (PK kỹ thuật) và audit fields (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE/DELETE_FLG)\
+    \ TYPE') — dùng placeholder IDENTIFICATION. ID (PK kỹ thuật) và audit fields (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE/DELETE_FLG)\
     \ không map vào shared entity schema chuẩn — document pending_design.yaml."
 attributes:
 - attribute_name: "Involved Party Id"
@@ -31,8 +31,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.IDENTITY.LEGAL_ENTITY_ID"
-  comment: "FK target: legal_entity.legal_entity_id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('IDS_LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
+  comment: "Surrogate Key của shared entity. Hash: hash_id('IDS_LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -71,8 +70,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.IDENTITY.IDENTITY_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE'). Xử lý CASE WHEN theo giá tri IDENTITY_TYPE_CD (1-NATIONAL_ID, 2-PASSPORT, 3-BUSINESS_LICENSE, 4-CITIZEN_ID)"
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  comment: "SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE')."
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Number"
@@ -85,7 +84,7 @@ attributes:
   source_columns:
   - "IDS.IDENTITY.IDENTITY_NO"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -98,7 +97,7 @@ attributes:
   source_columns:
   - "IDS.IDENTITY.IDENTITY_ISSUED_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Issue Place"
@@ -111,6 +110,6 @@ attributes:
   source_columns:
   - "IDS.IDENTITY.IDENTITY_ISSUED_PLACE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"

@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=THANHTRA.EXAMINATION_TEAM_TARGET"
+  classification_context: "SOURCE_SYSTEM=THANHTRA_EXAMINATION_TEAM_TARGET"
   etl_derived_value: "THANHTRA_EXAMINATION_TEAM_TARGET"
   data_type: "string"
 - attribute_name: "Examination Team Id"
@@ -73,7 +73,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID"
-  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA_EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

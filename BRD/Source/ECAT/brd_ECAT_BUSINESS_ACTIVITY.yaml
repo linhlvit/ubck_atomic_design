@@ -4,138 +4,141 @@ source: ECAT
 table: BUSINESS_ACTIVITY
 brd_ref: BRD-SRC-ECAT-BUSINESS_ACTIVITY
 columns:
-  - name: ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*Khóa chính (UUIDv7)*"
-    key: PK
-    fk_note: null
-  - name: CODE
-    data_type: "VARCHAR2(200)"
-    description: "*Mã hoạt động kinh doanh*"
-    key: null
-    fk_note: null
-  - name: NAME
-    data_type: "VARCHAR2(1020)"
-    description: "*Tên hoạt động kinh doanh*"
-    key: null
-    fk_note: null
-  - name: DESCRIPTION
-    data_type: "CLOB"
-    description: "*Mô tả*"
-    key: null
-    fk_note: null
-  - name: ENTERPRISE_TYPE_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*Stable Id loại hình doanh nghiệp (tham chiếu enterprise_type.stableId)*"
-    key: null
-    fk_note: null
-  - name: ACTIVE
-    data_type: "NUMBER(1,0)"
-    description: "Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)"
-    key: null
-    fk_note: null
-  - name: CURRENCY_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*Stable Id** tiền tệ (**tham chiếu currency.stableId)*"
-    key: null
-    fk_note: null
-  - name: ACTIVE_REASON
-    data_type: "CLOB"
-    description: "*Lý do hoạt động*"
-    key: null
-    fk_note: null
-  - name: DELETED
-    data_type: "NUMBER(1,0)"
-    description: "Xóa mềm (0: Chưa xóa, 1: Đã xóa)"
-    key: null
-    fk_note: null
-  - name: DELETED_REASON
-    data_type: "CLOB"
-    description: "*Lý do xóa*"
-    key: null
-    fk_note: null
-  - name: VERSION
-    data_type: "NUMBER"
-    description: "*Phiên bản*"
-    key: null
-    fk_note: null
-  - name: EFFECTIVE_START_DATE
-    data_type: "TIMESTAMP(6)"
-    description: "*Ngày bắt đầu*"
-    key: null
-    fk_note: null
-  - name: EFFECTIVE_END_DATE
-    data_type: "TIMESTAMP(6)"
-    description: "*Ngày kết thúc*"
-    key: null
-    fk_note: null
-  - name: OLD_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID cũ*"
-    key: null
-    fk_note: null
-  - name: CREATED_AT
-    data_type: "TIMESTAMP(6)"
-    description: "*Ngày tạo*"
-    key: null
-    fk_note: null
-  - name: UPDATED_AT
-    data_type: "TIMESTAMP(6)"
-    description: "*Ngày cập nhật*"
-    key: null
-    fk_note: null
-  - name: CREATED_BY_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*Người tạo*"
-    key: null
-    fk_note: null
-  - name: CREATED_BY_NAME
-    data_type: "VARCHAR2(255 CHAR)"
-    description: "*Tên người tạo*"
-    key: null
-    fk_note: null
-  - name: UPDATED_BY_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*Người cập nhật*"
-    key: null
-    fk_note: null
-  - name: UPDATED_BY_NAME
-    data_type: "VARCHAR2(255 CHAR)"
-    description: "*Tên người cập nhật*"
-    key: null
-    fk_note: null
-  - name: STABLE_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID bản ghi ổn định - không đổi qua các version*"
-    key: null
-    fk_note: null
-  - name: ENTERPRISE_TYPE_VERSION_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID phiên bản của **EnterpriseType**(lưu **enterprise_type**.id hiện tại)*"
-    key: null
-    fk_note: null
-  - name: CURRENCY_VERSION_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID phiên bản của **Currency**(lưu** currency**.id hiện tại)*"
-    key: null
-    fk_note: null
-  - name: LEGAL_CAPITAL_AMOUNT
-    data_type: "NUMBER(15,0)"
-    description: "*Số vốn pháp định*"
-    key: null
-    fk_note: null
-  - name: ORGANIZATION_TYPE_ID
-    data_type: "VARCHAR2(144)"
-    description: null
-    key: null
-    fk_note: null
-  - name: ORGANIZATION_TYPE_VERSION_ID
-    data_type: "VARCHAR2(144)"
-    description: null
-    key: null
-    fk_note: null
-  - name: EFFECTIVE
-    data_type: "NUMBER(1,0)"
-    description: "Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)"
-    key: null
-    fk_note: null
+- name: ID
+  data_type: VARCHAR2(144)
+  description: '*Khóa chính (UUIDv7)*'
+  key: PK
+  fk_note: null
+- name: CODE
+  data_type: VARCHAR2(200)
+  description: '*Mã hoạt động kinh doanh*'
+  key: null
+  fk_note: null
+- name: NAME
+  data_type: VARCHAR2(1020)
+  description: '*Tên hoạt động kinh doanh*'
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: CLOB
+  description: '*Mô tả*'
+  key: null
+  fk_note: null
+- name: ENTERPRISE_TYPE_ID
+  data_type: VARCHAR2(144)
+  description: '*Stable Id loại hình doanh nghiệp (tham chiếu enterprise_type.stableId)*'
+  key: FK
+  fk_note: FK → ENTERPRISE_TYPE.ID
+  fk_src: inferred
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)'
+  key: null
+  fk_note: null
+- name: CURRENCY_ID
+  data_type: VARCHAR2(144)
+  description: '*Stable Id** tiền tệ (**tham chiếu currency.stableId)*'
+  key: FK
+  fk_note: FK → CURRENCY.ID
+  fk_src: inferred
+- name: ACTIVE_REASON
+  data_type: CLOB
+  description: '*Lý do hoạt động*'
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Xóa mềm (0: Chưa xóa, 1: Đã xóa)'
+  key: null
+  fk_note: null
+- name: DELETED_REASON
+  data_type: CLOB
+  description: '*Lý do xóa*'
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER
+  description: '*Phiên bản*'
+  key: null
+  fk_note: null
+- name: EFFECTIVE_START_DATE
+  data_type: TIMESTAMP(6)
+  description: '*Ngày bắt đầu*'
+  key: null
+  fk_note: null
+- name: EFFECTIVE_END_DATE
+  data_type: TIMESTAMP(6)
+  description: '*Ngày kết thúc*'
+  key: null
+  fk_note: null
+- name: OLD_ID
+  data_type: VARCHAR2(144)
+  description: '*ID cũ*'
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: '*Ngày tạo*'
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: '*Ngày cập nhật*'
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: '*Người tạo*'
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: '*Tên người tạo*'
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: '*Người cập nhật*'
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: '*Tên người cập nhật*'
+  key: null
+  fk_note: null
+- name: STABLE_ID
+  data_type: VARCHAR2(144)
+  description: '*ID bản ghi ổn định - không đổi qua các version*'
+  key: null
+  fk_note: null
+- name: ENTERPRISE_TYPE_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: '*ID phiên bản của **EnterpriseType**(lưu **enterprise_type**.id hiện tại)*'
+  key: null
+  fk_note: null
+- name: CURRENCY_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: '*ID phiên bản của **Currency**(lưu** currency**.id hiện tại)*'
+  key: null
+  fk_note: null
+- name: LEGAL_CAPITAL_AMOUNT
+  data_type: NUMBER(15,0)
+  description: '*Số vốn pháp định*'
+  key: null
+  fk_note: null
+- name: ORGANIZATION_TYPE_ID
+  data_type: VARCHAR2(144)
+  description: null
+  key: FK
+  fk_note: FK → ORGANIZATION_TYPE.ID
+  fk_src: inferred
+- name: ORGANIZATION_TYPE_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: null
+  key: null
+  fk_note: null
+- name: EFFECTIVE
+  data_type: NUMBER(1,0)
+  description: 'Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)'
+  key: null
+  fk_note: null

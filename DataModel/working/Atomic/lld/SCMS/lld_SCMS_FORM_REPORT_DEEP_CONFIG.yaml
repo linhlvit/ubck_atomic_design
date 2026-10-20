@@ -101,8 +101,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT_DEEP_CONFIG.SHEET_ID"
-  comment: "Nguồn NCLOB — lưu nguyên dạng text. Cần xác nhận format JSON trước khi\
-    \ denormalize/parse."
+  comment: "Parsing từ trường FORM_REPORT_DEEP_CONFIG.SHEETS_JSON. Join được với SCMS.REPORT_INPUT_CELL_VALUE.SHEET_ID."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -120,17 +119,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Sheet Code"
-  physical_name: "sheet_code"
-  description: "Mã sheet."
+- attribute_name: "Cell Id"
+  physical_name: "cell_id"
+  description: "Mã cell."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT_DEEP_CONFIG.CELL_ID"
-  comment: "Nguồn NCLOB — lưu nguyên dạng text. Cần xác nhận format JSON trước khi\
-    \ denormalize/parse."
+  comment: "Parsing từ trường FORM_REPORT_DEEP_CONFIG.SHEETS_JSON. Join được với SCMS.REPORT_INPUT_CELL_VALUE.CELL_ID."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

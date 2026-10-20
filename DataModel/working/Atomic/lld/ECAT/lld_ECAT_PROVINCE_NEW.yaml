@@ -35,7 +35,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('ECAT.PROVINCE_NEW', CODE). BCV: \"Geographic\
+  comment: "PK surrogate. Hash: hash_id('ECAT_PROVINCE_NEW', CODE). BCV: \"Geographic\
     \ Area\" (Location)."
   classification_context: null
   etl_derived_value: null
@@ -49,7 +49,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  classification_context: "SOURCE_SYSTEM=ECAT.PROVINCE_NEW"
+  classification_context: "SOURCE_SYSTEM=ECAT_PROVINCE_NEW"
   etl_derived_value: "ECAT_PROVINCE_NEW"
   data_type: "string"
 - attribute_name: "Geographic Area Type Code"
@@ -116,7 +116,7 @@ attributes:
   source_columns:
   - "ECAT.PROVINCE_NEW.REGION_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Parent là REGION. Resolve:\
-    \ join REGION_ID → ECAT.REGION.ID để lấy CODE, rồi hash_id('ECAT.REGION', CODE_CHA).\
+    \ join REGION_ID → ECAT.REGION.ID để lấy CODE, rồi hash_id('ECAT_REGION', CODE_CHA).\
     \ COUNTRY_ID trên bảng nguồn là denormalized, suy ra được qua REGION → COUNTRY\
     \ nên không map riêng."
   classification_context: null
@@ -290,7 +290,7 @@ attributes:
   source_columns:
   - "ECAT.PROVINCE_NEW.CREATED_BY_ID"
   comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
     \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
   classification_context: null
   etl_derived_value: null
@@ -333,7 +333,7 @@ attributes:
   source_columns:
   - "ECAT.PROVINCE_NEW.UPDATED_BY_ID"
   comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
     \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
   classification_context: null
   etl_derived_value: null

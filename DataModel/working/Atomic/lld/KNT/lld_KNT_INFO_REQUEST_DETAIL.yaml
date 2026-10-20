@@ -69,8 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "KNT.INFO_REQUEST_DETAIL.TAX_CODE"
-  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
+  comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -83,8 +82,7 @@ attributes:
   status: "draft"
   source_columns:
   - "KNT.INFO_REQUEST_DETAIL.TAX_CODE"
-  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
-    \ Pair with External Tax Registration Id."
+  comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -117,17 +115,16 @@ attributes:
 - attribute_name: "Response Status Code"
   physical_name: "response_status_code"
   description: "Trạng thái phản hồi WebService."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.INFO_REQUEST_DETAIL.STATUS"
-  comment: "Scheme: KNT_INFO_REQUEST_STATUS. Nguồn lưu dạng số — ETL cần convert sang\
-    \ string code."
+  comment: null
   classification_context: "KNT_INFO_REQUEST_STATUS"
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Message Packet Id"
   physical_name: "message_packet_id"
   description: "Mã gói tin trao đổi liên quan."

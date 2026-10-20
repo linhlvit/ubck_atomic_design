@@ -53,7 +53,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=THANHTRA.EXAMINATION_TEAM_MEMBER"
+  classification_context: "SOURCE_SYSTEM=THANHTRA_EXAMINATION_TEAM_MEMBER"
   etl_derived_value: "THANHTRA_EXAMINATION_TEAM_MEMBER"
   data_type: "string"
 - attribute_name: "Examination Team Id"
@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_MEMBER.EXAMINATION_TEAM_ID"
-  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_TEAM_MEMBER.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_TEAM_MEMBER.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA_EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -130,7 +130,7 @@ attributes:
   status: "pending"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'DEPARTMENT'). Cần ETL crosswalk sang NHNCK.DEPARTMENTS: EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận DEPARTMENT_ID nguồn khớp NHNCK.DEPARTMENTS.ID, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'DEPARTMENT'). Cần ETL crosswalk sang NHNCK.DEPARTMENTS: EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK_DEPARTMENTS', DEPARTMENT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận DEPARTMENT_ID nguồn khớp NHNCK.DEPARTMENTS.ID, cần Data Modeler xác nhận trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

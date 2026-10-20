@@ -58,7 +58,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR"
+  classification_context: "SOURCE_SYSTEM=THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR"
   etl_derived_value: "THANHTRA_PENALTY_DECISION_SUBJECT_BEHAVIOR"
   data_type: "string"
 - attribute_name: "Penalty Decision Subject Id"
@@ -70,7 +70,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_DECISION_SUBJECT_ID"
-  comment: "FK target: pd_subject.pd_subject_id. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT', PENALTY_DECISION_SUBJECT_ID)."
+  comment: "FK target: pd_subject.pd_subject_id. Hash: hash_id('THANHTRA_PENALTY_DECISION_SUBJECT', PENALTY_DECISION_SUBJECT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -96,7 +96,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID"
-  comment: "FK target: violation_behavior.violation_behavior_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_BEHAVIOR: PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID = VIOLATION_BEHAVIOR.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_BEHAVIOR', CODE) | Trước đây hash trực tiếp theo VIOLATION_BEHAVIOR_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: violation_behavior.violation_behavior_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_BEHAVIOR: PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID = VIOLATION_BEHAVIOR.ID để xác nhận CODE sau đó hash_id('THANHTRA_VIOLATION_BEHAVIOR', CODE) | Trước đây hash trực tiếp theo VIOLATION_BEHAVIOR_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -126,7 +126,7 @@ attributes:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID"
   comment: "FK target: cl_thanhtra_penalty_type.cl_thanhtra_penalty_tp_id. Cần ETL\
     \ crosswalk sang THANHTRA.PENALTY_TYPE: PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID\
-    \ = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA.PENALTY_TYPE', CODE)\
+    \ = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA_PENALTY_TYPE', CODE)\
     \ | Trước đây hash trực tiếp theo PENALTY_TYPE_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -209,7 +209,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_RECORD_ID"
-  comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD',\
+  comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA_VIOLATION_RECORD',\
     \ VIOLATION_RECORD_ID)."
   classification_context: null
   etl_derived_value: null

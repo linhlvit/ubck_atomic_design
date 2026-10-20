@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: GMS_IDS_LOOKUP_VALUES
+brd_ref: BRD-SRC-ECAT-GMS_IDS_LOOKUP_VALUES
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính
+  key: PK
+  fk_note: null
+- name: ID_SYNC
+  data_type: VARCHAR2(144)
+  description: ID bản ghi bên nguồn - đối chiếu/upsert khi đồng bộ
+  key: null
+  fk_note: null
+- name: LOOKUP_GROUP
+  data_type: VARCHAR2(120)
+  description: Nhóm lookup
+  key: null
+  fk_note: null
+- name: LOOKUP_CD
+  data_type: VARCHAR2(400)
+  description: Mã lookup
+  key: null
+  fk_note: null
+- name: LOOKUP_VALUE_VN
+  data_type: VARCHAR2(4000)
+  description: Giá trị hiển thị (tiếng Việt)
+  key: null
+  fk_note: null
+- name: LOOKUP_VALUE_EN
+  data_type: VARCHAR2(4000)
+  description: Giá trị hiển thị (tiếng Anh)
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: NUMBER(2,0)
+  description: Thứ tự hiển thị
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: VARCHAR2(1020)
+  description: Mô tả
+  key: null
+  fk_note: null
+- name: ACTIVE_FLG
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái sử dụng (1: có, 0: không)'
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(120)
+  description: Người tạo
+  key: null
+  fk_note: null
+- name: CREATED_DATE
+  data_type: DATE
+  description: Ngày tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: VARCHAR2(120)
+  description: Người sửa
+  key: null
+  fk_note: null
+- name: UPDATED_DATE
+  data_type: DATE
+  description: Ngày sửa
+  key: null
+  fk_note: null
+- name: SYNC_FLG
+  data_type: NUMBER(1,0)
+  description: Cờ đồng bộ
+  key: null
+  fk_note: null
+- name: DELETE_FLG
+  data_type: NUMBER(1,0)
+  description: Xóa mềm (không hiển thị ra màn hình, khác với active_flg)
+  key: null
+  fk_note: null
+- name: SYSTEM_CD
+  data_type: VARCHAR2(80)
+  description: Mã hệ thống nguồn (mặc định IDS)
+  key: null
+  fk_note: null
+- name: LOOKUP_PARENT_ID
+  data_type: NUMBER(10,0)
+  description: ID lookup cha bên nguồn (phân cấp) - map qua id_sync của bản ghi cha
+  key: null
+  fk_note: null

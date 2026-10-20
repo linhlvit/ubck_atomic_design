@@ -1,0 +1,138 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: ADMINISTRATIVE_PROCEDURE_COMPONENT_NEW
+brd_ref: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE_COMPONENT_NEW
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính của từng version-row (UUID v7)
+  key: PK
+  fk_note: null
+- name: ID_SYNC
+  data_type: VARCHAR2(400)
+  description: Id gốc từ nguồn (tphsId) — khóa đồng bộ
+  key: null
+  fk_note: null
+- name: CODE
+  data_type: VARCHAR2(400)
+  description: Mã thành phần hồ sơ (maTphs)
+  key: null
+  fk_note: null
+- name: NAME
+  data_type: VARCHAR2(4000)
+  description: Tên thành phần hồ sơ (tenTphs)
+  key: null
+  fk_note: null
+- name: DISPLAY_ORDER
+  data_type: NUMBER(10,0)
+  description: Thứ tự hiển thị (thuTu)
+  key: null
+  fk_note: null
+- name: PROCEDURE_ID_SYNC
+  data_type: VARCHAR2(400)
+  description: Id gốc từ nguồn của TTHC cha (tthcId)
+  key: null
+  fk_note: null
+- name: PROCEDURE_STABLE_ID
+  data_type: VARCHAR2(144)
+  description: stable_id của TTHC cha (administrative_procedure_new.stable_id)
+  key: null
+  fk_note: null
+- name: PROCEDURE_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: id (version-row) hiện hành của TTHC cha (administrative_procedure_new.id)
+    — job đồng bộ trỏ lại mỗi khi aggregate đổi
+  key: null
+  fk_note: null
+- name: EFFECTIVE
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái hiệu lực theo nguồn (trangThai): 1 Sử dụng / Hiệu lực,
+    0 Ngừng sử dụng / Hết hiệu lực'
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái hoạt động do eCat quản lý (1: đang hoạt động, 0: dừng)'
+  key: null
+  fk_note: null
+- name: ACTIVE_REASON
+  data_type: VARCHAR2(2000)
+  description: Lý do thay đổi trạng thái hoạt động
+  key: null
+  fk_note: null
+- name: SOURCE_CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo tại nguồn (createdUtc)
+  key: null
+  fk_note: null
+- name: SOURCE_UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật cuối tại nguồn (modifiedUtc)
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Đánh dấu xóa mềm (0: chưa xóa, 1: đã xóa)'
+  key: null
+  fk_note: null
+- name: DELETED_REASON
+  data_type: VARCHAR2(2000)
+  description: Lý do xóa
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo version-row
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: Id người tạo
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(1000)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: Id người cập nhật
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(1000)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER
+  description: Số phiên bản
+  key: null
+  fk_note: null
+- name: EFFECTIVE_START_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời điểm bắt đầu hiệu lực của version-row (eCat quản lý)
+  key: null
+  fk_note: null
+- name: EFFECTIVE_END_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời điểm kết thúc hiệu lực của version-row (NULL = bản hiện hành)
+  key: null
+  fk_note: null
+- name: STABLE_ID
+  data_type: VARCHAR2(144)
+  description: Id ổn định xuyên suốt các phiên bản
+  key: null
+  fk_note: null
+- name: OLD_ID
+  data_type: VARCHAR2(144)
+  description: Id cũ
+  key: null
+  fk_note: null

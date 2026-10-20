@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: UAT_TMS
-Tong so bang: 103 | Materialized View: 0
+Tong so bang: 99 | Materialized View: 0
 ==============================================================================================================
 
 BANG: ABNORMAL_COLUMN_SEMANTIC
@@ -2230,38 +2230,6 @@ UPDATED_BY_ID                 VARCHAR2(255)       YES                           
 CREATED_BY_NAME               VARCHAR2(250)       YES                                      Ten nguoi tao
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      Ten nguoi cap nhat
 DELETED                       NUMBER(1,0)         NO                                       
-
-
-BANG: TRANSACTION_REVIEW_EXECUTION_LOG
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-ANALYSIS_NAME                 VARCHAR2(100)       YES                                      
-TRANSACTION_REVIEW_ID         VARCHAR2(36)        YES                                      
-SECURITIES_CODE_ID            VARCHAR2(36)        YES                                      
-SECURITIES_CODE               VARCHAR2(10)        YES                                      
-REPORT_TEMPLATE_ID            VARCHAR2(36)        NO                                       
-WORKFLOW_TYPE                 NUMBER(10,0)        NO                                       
-START_TIME                    TIMESTAMP(6) WITH TIME ZONENO                                       
-END_TIME                      TIMESTAMP(6) WITH TIME ZONEYES                                      
-STATUS                        NUMBER(10,0)        NO                                       
-REQUEST_PARAM                 CLOB                YES                                      
-ERROR_MESSAGE                 CLOB                YES                                      
-PATH                          VARCHAR2(2000)      YES                                      
-DURATION_MS                   NUMBER(19,0)        YES                                      
-EXECUTION_DETAILS             CLOB                YES                                      
-TEMPLATE_TYPE                 NUMBER(10,0)        NO                                       
-FILE_NAME                     VARCHAR2(200)       YES                                      
-CREATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
-CREATED_BY_ID                 VARCHAR2(36)        YES                                      
-CREATED_BY_NAME               VARCHAR2(255)       YES                                      
-UPDATED_AT                    TIMESTAMP(6) WITH TIME ZONEYES                                      
-UPDATED_BY_ID                 VARCHAR2(36)        YES                                      
-UPDATED_BY_NAME               VARCHAR2(255)       YES                                      
-DELETED                       NUMBER(1,0)         NO                                       
-WORKFLOW_ID                   VARCHAR2(36)        YES                                      Id quy trình phân tích (analysis_workflow.id)
 
 
 BANG: TRANSACTION_REVIEW_INVESTOR

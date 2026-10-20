@@ -36,7 +36,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('ECAT.WARD_OLD', CODE). BCV: \"Geographic\
+  comment: "PK surrogate. Hash: hash_id('ECAT_WARD_OLD', CODE). BCV: \"Geographic\
     \ Area\" (Location) — entity riêng Geographic Area Old cho phân cấp lịch sử pre-2025."
   classification_context: null
   etl_derived_value: null
@@ -50,7 +50,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  classification_context: "SOURCE_SYSTEM=ECAT.WARD_OLD"
+  classification_context: "SOURCE_SYSTEM=ECAT_WARD_OLD"
   etl_derived_value: "ECAT_WARD_OLD"
   data_type: "string"
 - attribute_name: "Geographic Area Old Type Code"
@@ -130,7 +130,7 @@ attributes:
   source_columns:
   - "ECAT.WARD_OLD.DISTRICT_OLD_ID"
   comment: "FK target: Geographic Area Old.Geographic Area Old Id. Parent là DISTRICT_OLD.\
-    \ Resolve: join DISTRICT_OLD_ID → ECAT.DISTRICT_OLD.ID để lấy CODE, rồi hash_id('ECAT.DISTRICT_OLD',\
+    \ Resolve: join DISTRICT_OLD_ID → ECAT.DISTRICT_OLD.ID để lấy CODE, rồi hash_id('ECAT_DISTRICT_OLD',\
     \ CODE_CHA)."
   classification_context: null
   etl_derived_value: null
@@ -161,7 +161,7 @@ attributes:
   - "ECAT.WARD_OLD.WARD_NEW_ID"
   comment: "FK target: Geographic Area.Geographic Area Id (KHÁC entity — successor\
     \ mapping sau sáp nhập hành chính). Resolve: join WARD_NEW_ID → ECAT.WARD_NEW.ID\
-    \ để lấy CODE, rồi hash_id('ECAT.WARD_NEW', CODE)."
+    \ để lấy CODE, rồi hash_id('ECAT_WARD_NEW', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -334,7 +334,7 @@ attributes:
   source_columns:
   - "ECAT.WARD_OLD.CREATED_BY_ID"
   comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
     \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
   classification_context: null
   etl_derived_value: null
@@ -377,7 +377,7 @@ attributes:
   source_columns:
   - "ECAT.WARD_OLD.UPDATED_BY_ID"
   comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
     \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
   classification_context: null
   etl_derived_value: null

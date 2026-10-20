@@ -119,12 +119,6 @@ sources:
 - source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
   lld_file: "FIMS/lld_FIMS_SECURITIESCOMPANY_IP_Electronic_Address.yaml"
-- source_system: "KNT"
-  source_table: "TAX_REGISTRATION_INFO"
-  lld_file: "KNT/lld_KNT_TAX_REGISTRATION_INFO_IP_Electronic_Address.yaml"
-- source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  lld_file: "KNT/lld_KNT_TAX_REG_REPRESENTATIVE_IP_Electronic_Address.yaml"
 consolidation_notes:
 - "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Id' — đặt nullable=true"
 - "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Code' — đặt nullable=true"
@@ -199,8 +193,6 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
     FIMS.BANKMONI: "FIMS.BANKMONI.Id"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Id"
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Securities Company Foreign Representative Office Personnel."
@@ -247,8 +239,6 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
     FIMS.BANKMONI: "FIMS.BANKMONI.Id"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Id"
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -295,8 +285,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — điện thoại cố định."
@@ -343,8 +331,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Số điện thoại của người đại diện theo ủy quyền."
@@ -391,8 +377,6 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.Telephone"
     FIMS.BANKMONI: "FIMS.BANKMONI.Telephone"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Telephone"
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.PHONE"
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại địa chỉ điện tử — email."
@@ -439,8 +423,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Địa chỉ email của người nội bộ liên quan."
@@ -487,8 +469,6 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.Email"
     FIMS.BANKMONI: "FIMS.BANKMONI.Email"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Email"
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.EMAIL"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — fax."
@@ -535,8 +515,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Số fax của tổ chức."
@@ -583,8 +561,6 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.Fax"
     FIMS.BANKMONI: "FIMS.BANKMONI.Fax"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Fax"
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.FAX"
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.FAX"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại địa chỉ điện tử — điện thoại di động."
@@ -631,8 +607,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Số điện thoại di động của người dùng. DIAL_NUMBER (mã vùng) ghép với\
@@ -680,8 +654,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — website."
@@ -728,8 +700,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Địa chỉ website của tổ chức."
@@ -776,8 +746,6 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.Website"
     FIMS.BANKMONI: "FIMS.BANKMONI.Website"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.Website"
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại địa chỉ điện tử — điện thoại cơ quan."
@@ -824,8 +792,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Số điện thoại văn phòng của người dùng."
@@ -872,8 +838,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — email công bố thông tin."
@@ -920,8 +884,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Email dùng để nhận thông báo CBTT."
@@ -968,8 +930,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — email cá nhân/đăng nhập."
@@ -1017,8 +977,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Email cá nhân/đăng nhập của người hành nghề."
@@ -1065,8 +1023,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — điện thoại kinh doanh."
@@ -1113,56 +1069,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Electronic Address Value"
-  physical_name: "electronic_adr_val"
-  description: "Số điện thoại địa chỉ kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    AUDIT.AF_PROFILES: null
-    AUDIT.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.BANKMONI: null
-    FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PHONE"
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — email kinh doanh."
@@ -1209,56 +1115,6 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Electronic Address Value"
-  physical_name: "electronic_adr_val"
-  description: "Email kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    AUDIT.AF_PROFILES: null
-    AUDIT.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.BANKMONI: null
-    FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_EMAIL"
-    KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — fax kinh doanh."
@@ -1305,53 +1161,3 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Electronic Address Value"
-  physical_name: "electronic_adr_val"
-  description: "Số fax địa chỉ kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    AUDIT.AF_PROFILES: null
-    AUDIT.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.BANKMONI: null
-    FIMS.SECURITIESCOMPANY: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_FAX"
-    KNT.TAX_REG_REPRESENTATIVE: null

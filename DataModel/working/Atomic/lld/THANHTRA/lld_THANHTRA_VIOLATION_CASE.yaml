@@ -33,7 +33,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('THANHTRA.VIOLATION_CASE', CODE). BCV: [Business\
+  comment: "PK surrogate. Hash: hash_id('THANHTRA_VIOLATION_CASE', CODE). BCV: [Business\
     \ Activity] Conduct Violation."
   classification_context: null
   etl_derived_value: null
@@ -61,7 +61,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=THANHTRA.VIOLATION_CASE"
+  classification_context: "SOURCE_SYSTEM=THANHTRA_VIOLATION_CASE"
   etl_derived_value: "THANHTRA_VIOLATION_CASE"
   data_type: "string"
 - attribute_name: "Violation Case Name"
@@ -86,7 +86,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.INSPECTION_TEAM_ID"
-  comment: "FK target: inspection_team.inspection_team_id. Cần ETL crosswalk sang THANHTRA.INSPECTION_TEAM: VIOLATION_CASE.INSPECTION_TEAM_ID = INSPECTION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.INSPECTION_TEAM', CODE) | Nullable — case có thể không từ thanh tra."
+  comment: "FK target: inspection_team.inspection_team_id. Cần ETL crosswalk sang THANHTRA.INSPECTION_TEAM: VIOLATION_CASE.INSPECTION_TEAM_ID = INSPECTION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA_INSPECTION_TEAM', CODE) | Nullable — case có thể không từ thanh tra."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -114,7 +114,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE.EXAMINATION_TEAM_ID"
-  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: VIOLATION_CASE.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Nullable — case có thể không từ kiểm tra."
+  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: VIOLATION_CASE.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA_EXAMINATION_TEAM', CODE) | Nullable — case có thể không từ kiểm tra."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

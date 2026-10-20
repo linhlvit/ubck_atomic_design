@@ -220,6 +220,56 @@ SOURCE_UPDATED_AT             TIMESTAMP(6)        YES                           
 CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi tại eCat
 UPDATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm cập nhật bản ghi tại eCat
 
+
+BANG: ADMINISTRATIVE_PROCEDURE_NEW
+Mo ta: Thủ tục hành chính (đồng bộ từ CSDLTT, có version)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               Khóa chính của từng version-row (UUID v7)
+ID_SYNC                       VARCHAR2(400)       YES                                      Id gốc từ nguồn (tthcId) — khóa đồng bộ
+CODE                          VARCHAR2(400)       YES                                      Mã thủ tục hành chính (maThuTuc)
+E_FORM_CODE                   VARCHAR2(400)       YES                                      Mã Eform (maEform)
+NAME                          VARCHAR2(4000)      YES                                      Tên thủ tục hành chính (tenTthc)
+FIELD_NAME                    VARCHAR2(2000)      YES                                      Lĩnh vực (linhVuc) — tên lĩnh vực nguồn gửi trong TTHC
+FIELD_ID                      VARCHAR2(144)       YES                                      Id lĩnh vực (administrative_procedure_field.id) — job đồng bộ tra theo tên lĩnh vực, NULL nếu chưa khớp
+IMPLEMENTATION_SEQUENCE       CLOB                YES                                      Trình tự thực hiện (trinhTuThucHien)
+IMPLEMENTATION_METHOD         CLOB                YES                                      Các bước/cách thức thực hiện (cachThucThucHien)
+PROCESSING_TIME_AMOUNT        NUMBER(10,0)        YES                                      Thời hạn giải quyết — số ngày làm việc (thoiGianGiaiQuyet)
+ADDITIONAL_DAYS               NUMBER(10,0)        YES                                      Số ngày bổ sung (soNgayBoSung)
+FEE_AMOUNT                    NUMBER(19,2)        YES                                      Lệ phí (lePhi)
+FEE_PAYMENT_REQUIRED          NUMBER(1,0)         YES                                      Nộp lệ phí (nopLePhi): 1 có, 0 không
+SUBMIT_RESULT_TO_LEADERSHIP   NUMBER(1,0)         YES                                      Trình kết quả lên LĐUB (trinhKqLenLdub): 1 có, 0 không
+MULTIPLE_TYPES                NUMBER(1,0)         YES                                      Chọn nhiều loại (chonNhieuLoai): 1 có, 0 không
+APPLIED_SUBJECT               VARCHAR2(2000)      YES                                      Đối tượng thực hiện (doiTuong)
+PROCEDURE_LEVEL               VARCHAR2(1020)      YES                                      Mức độ (mucDo) — vd Toàn trình / Một phần
+COMPETENT_AUTHORITY           VARCHAR2(4000)      YES                                      Cơ quan có thẩm quyền (coQuanCoThamQuyen)
+COORDINATING_AGENCY           VARCHAR2(4000)      YES                                      Cơ quan phối hợp (coQuanPhoiHop)
+PROCEDURE_GROUP               VARCHAR2(2000)      YES                                      Nhóm thủ tục hành chính (nhomTthc)
+LEGAL_BASIS                   CLOB                YES                                      Căn cứ pháp lý (canCuPhapLy)
+IMPLEMENTATION_RESULT         CLOB                YES                                      Kết quả TTHC (ketQuaTthc)
+NOTE                          CLOB                YES                                      Mô tả thủ tục / ghi chú (ghiChu)
+EFFECTIVE                     NUMBER(1,0)         NO                                       Trạng thái hiệu lực theo nguồn (trangThai): 1 Sử dụng / Hiệu lực, 0 Ngừng sử dụng / Hết hiệu lực
+ACTIVE                        NUMBER(1,0)         NO                                       Trạng thái hoạt động do eCat quản lý (1: đang hoạt động, 0: dừng)
+ACTIVE_REASON                 VARCHAR2(2000)      YES                                      Lý do thay đổi trạng thái hoạt động
+SOURCE_CREATED_AT             TIMESTAMP(6)        YES                                      Thời điểm tạo tại nguồn (createdUtc)
+SOURCE_UPDATED_AT             TIMESTAMP(6)        YES                                      Thời điểm cập nhật cuối tại nguồn (modifiedUtc)
+DELETED                       NUMBER(1,0)         YES                                      Đánh dấu xóa mềm (0: chưa xóa, 1: đã xóa)
+DELETED_REASON                VARCHAR2(2000)      YES                                      Lý do xóa
+CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo version-row
+UPDATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm cập nhật
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      Id người tạo
+CREATED_BY_NAME               VARCHAR2(1000)      YES                                      Tên người tạo
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      Id người cập nhật
+UPDATED_BY_NAME               VARCHAR2(1000)      YES                                      Tên người cập nhật
+VERSION                       NUMBER              YES                                      Số phiên bản
+EFFECTIVE_START_DATE          TIMESTAMP(6)        YES                                      Thời điểm bắt đầu hiệu lực của version-row (eCat quản lý)
+EFFECTIVE_END_DATE            TIMESTAMP(6)        YES                                      Thời điểm kết thúc hiệu lực của version-row (NULL = bản hiện hành)
+STABLE_ID                     VARCHAR2(144)       YES                                      Id ổn định xuyên suốt các phiên bản
+OLD_ID                        VARCHAR2(144)       YES                                      Id cũ
+PROCESSING_TIME_UNIT          VARCHAR2(400)       YES                                      Đơn vị thời hạn giải quyết (loaiThoiGianLamViec) — vd "Ngày làm việc"
+
+
 BANG: ADMINISTRATIVE_PROCEDURE_VERSION_MAP
 Mo ta: Mapping version cha (TTHC) - con (thành phần TTHC), append-only
 --------------------------------------------------------------------------------------------------------------
@@ -369,6 +419,41 @@ CREATED_BY                    VARCHAR2(1020)      YES                           
 CREATED_DATE                  TIMESTAMP(6)        YES                                      Ngày tạo
 LAST_UPDATED_BY               VARCHAR2(1020)      YES                                      Người sửa
 LAST_UPDATED_DATE             TIMESTAMP(6)        YES                                      Ngày sửa
+
+
+BANG: APPROVED_AUDITORS_NEW
+Mo ta: Bảng lưu thông tin kiểm toán viên 
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               Khóa chính
+ID_SYNC                       NUMBER(10,0)        YES                                      ID đồng bộ từ hệ thống cũ
+FULL_NAME                     VARCHAR2(1020)      YES                                      Họ và tên kiểm toán viên
+AUDIT_FIRM_ID                 VARCHAR2(144)       YES                                      ID công ty kiểm toán
+AUDIT_FIRM_VERSION_ID         VARCHAR2(144)       YES                                      ID phiên bản công ty kiểm toán
+PERSONAL_DOCUMENT_NO          VARCHAR2(200)       YES                                      Số giấy tờ cá nhân
+AUDIT_PRACTICE_CERT_NO        VARCHAR2(1020)      YES                                      Số chứng chỉ hành nghề kiểm toán
+AUDIT_PRACTICE_CERT_ISSUE_DATETIMESTAMP(6)        YES                                      Ngày cấp chứng chỉ hành nghề kiểm toán
+PRACTICE_START_DATE           TIMESTAMP(6)        YES                                      Ngày bắt đầu hành nghề
+PRACTICE_END_DATE             TIMESTAMP(6)        YES                                      Ngày kết thúc hành nghề
+AUDITOR_CERT_NO               VARCHAR2(1020)      YES                                      Số chứng chỉ kiểm toán viên
+AUDITOR_CERT_ISSUE_DATE       TIMESTAMP(6)        YES                                      Ngày cấp chứng chỉ kiểm toán viên
+REDUCTION_DATE                TIMESTAMP(6)        YES                                      Ngày giảm bớt
+ACTIVE                        NUMBER(1,0)         YES                                      Trạng thái hoạt động (1: Active, 0: Inactive)
+ACTIVE_REASON                 CLOB                YES                                      Lý do thay đổi trạng thái active
+DELETED                       NUMBER(1,0)         YES                                      Đánh dấu xóa mềm (0: Chưa xóa, 1: Đã xóa)
+DELETED_REASON                CLOB                YES                                      Lý do xóa
+VERSION                       NUMBER              YES                                      Phiên bản bản ghi
+EFFECTIVE_START_DATE          TIMESTAMP(6)        YES                                      Ngày bắt đầu hiệu lực
+EFFECTIVE_END_DATE            TIMESTAMP(6)        YES                                      Ngày kết thúc hiệu lực
+OLD_ID                        VARCHAR2(144)       YES                                      ID của phiên bản trước đó
+STABLE_ID                     VARCHAR2(144)       YES                                      ID ổn định giữa các phiên bản
+CREATED_AT                    TIMESTAMP(6)        YES                                      Thời điểm tạo
+UPDATED_AT                    TIMESTAMP(6)        YES                                      Thời điểm cập nhật
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      ID người tạo
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người tạo
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      ID người cập nhật
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người cập nhật
 
 
 BANG: APPROVED_AUDITOR_APPROVAL
@@ -1449,6 +1534,77 @@ CREATED_BY_NAME               VARCHAR2(1020)      YES                           
 UPDATED_BY_ID                 VARCHAR2(144)       YES                                      Người cập nhật (ID)
 UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Người cập nhật (Tên)
 CAPITAL                       NUMBER(15,0)        YES                                      
+
+
+BANG: FOREIGN_FUND_BRANCH_NEW
+Mo ta: Thông tin chi nhánh công ty quản lý quỹ nước ngoài
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               Khoá chính
+ID_SYNC                       VARCHAR2(144)       YES                                      ID đồng bộ
+COMPANY_NAME                  VARCHAR2(1020)      YES                                      Tên công ty
+PARENT_COMPANY_NAME           VARCHAR2(1020)      YES                                      Tên công ty mẹ
+HEAD_OFFICE_ADDRESS           VARCHAR2(4000)      YES                                      Địa chỉ trụ sở chính
+PARENT_REGISTRATION_NO        VARCHAR2(4000)      YES                                      Mã số đăng ký công ty mẹ
+COUNTRY_ID                    VARCHAR2(144)       YES                                      ID quốc gia
+COUNTRY_NAME                  VARCHAR2(4000)      YES                                      Tên quốc gia
+PARENT_LICENSE_NO             VARCHAR2(2000)      YES                                      Số giấy phép công ty mẹ
+PARENT_LICENSE_ISSUE_DATE     TIMESTAMP(6)        YES                                      Ngày cấp giấy phép công ty mẹ
+PARENT_LICENSE_ISSUER         VARCHAR2(4000)      YES                                      Cơ quan cấp giấy phép công ty mẹ
+OFFICIAL_OPERATION_DATE       TIMESTAMP(6)        YES                                      Ngày hoạt động chính thức
+PARENT_FAX                    VARCHAR2(80)        YES                                      Fax công ty mẹ
+PARENT_PHONE                  VARCHAR2(80)        YES                                      Điện thoại công ty mẹ
+CHARTER_CAPITAL               NUMBER(18,2)        YES                                      Vốn điều lệ
+REGISTRATION_CERTIFICATE_NO   VARCHAR2(4000)      YES                                      Số giấy chứng nhận đăng ký
+BRANCH_NAME                   VARCHAR2(1020)      YES                                      Tên chi nhánh
+BRANCH_ENGLISH_NAME           VARCHAR2(2000)      YES                                      Tên chi nhánh tiếng Anh
+BRANCH_SHORT_NAME             VARCHAR2(1020)      YES                                      Tên viết tắt của chi nhánh
+BRANCH_ADDRESS                VARCHAR2(4000)      YES                                      Địa chỉ chi nhánh
+ESTABLISHMENT_DECISION        VARCHAR2(400)       YES                                      Quyết định thành lập
+DECISION_ISSUE_DATE           TIMESTAMP(6)        YES                                      Ngày cấp quyết định
+TAX_CODE                      VARCHAR2(2000)      YES                                      Mã số thuế
+BRANCH_PHONE                  VARCHAR2(80)        YES                                      Điện thoại chi nhánh
+BRANCH_FAX                    VARCHAR2(80)        YES                                      Fax chi nhánh
+EMAIL                         VARCHAR2(400)       YES                                      Email
+WEBSITE                       VARCHAR2(400)       YES                                      Website
+ACTIVITY_CONTENT              CLOB                YES                                      Nội dung hoạt động
+OPERATION_DATE                TIMESTAMP(6)        YES                                      Ngày bắt đầu hoạt động
+EXPIRATION_DATE               TIMESTAMP(6)        YES                                      Ngày hết hạn hoạt động
+STATUS_ID                     VARCHAR2(144)       YES                                      ID trạng thái
+STATUS_NAME                   VARCHAR2(1020)      YES                                      Tên trạng thái
+NOTE                          CLOB                YES                                      Ghi chú
+ATTACHMENTS                   CLOB                YES                                      Danh sách tệp đính kèm
+HEAD_REPRESENTATIVE_NAME      VARCHAR2(1020)      YES                                      Họ tên trưởng đại diện
+HEAD_REPRESENTATIVE_GENDER    NUMBER(1,0)         YES                                      Giới tính trưởng đại diện
+HEAD_REPRESENTATIVE_NATIONALITYVARCHAR2(1020)      YES                                      Quốc tịch trưởng đại diện
+HEAD_REPRESENTATIVE_DOCUMENT_NUMBERVARCHAR2(200)       YES                                      Số giấy tờ của trưởng đại diện
+HEAD_REPRESENTATIVE_DOCUMENT_ISSUE_DATETIMESTAMP(6)        YES                                      Ngày cấp giấy tờ của trưởng đại diện
+HEAD_REPRESENTATIVE_ADDRESS   CLOB                YES                                      Địa chỉ của trưởng đại diện
+CASE_NAME                     VARCHAR2(2000)      YES                                      Tên sự vụ
+LATEST_CERTIFICATE_NO         VARCHAR2(400)       YES                                      Số giấy chứng nhận mới nhất
+APPROVAL_DATE                 TIMESTAMP(6)        YES                                      Ngày phê duyệt
+CHANGE_REASON                 CLOB                YES                                      Lý do thay đổi
+CHANGE_CONTENT                CLOB                YES                                      Nội dung thay đổi
+CREATED_BY                    VARCHAR2(1020)      YES                                      Người tạo từ hệ thống nguồn
+CREATED_DATE                  TIMESTAMP(6)        YES                                      Ngày tạo từ hệ thống nguồn
+LAST_UPDATED_BY               VARCHAR2(1020)      YES                                      Người cập nhật từ hệ thống nguồn
+LAST_UPDATED_DATE             TIMESTAMP(6)        YES                                      Ngày cập nhật từ hệ thống nguồn
+ACTIVE                        NUMBER(1,0)         YES                                      Trạng thái hoạt động: 1 - hoạt động, 0 - không hoạt động
+ACTIVE_REASON                 CLOB                YES                                      Lý do thay đổi trạng thái hoạt động
+DELETED                       NUMBER(1,0)         YES                                      Trạng thái xoá: 1 - đã xoá, 0 - chưa xoá
+DELETED_REASON                CLOB                YES                                      Lý do xoá
+VERSION                       NUMBER              YES                                      Số phiên bản
+EFFECTIVE_START_DATE          TIMESTAMP(6)        YES                                      Ngày bắt đầu hiệu lực của phiên bản
+EFFECTIVE_END_DATE            TIMESTAMP(6)        YES                                      Ngày kết thúc hiệu lực của phiên bản
+OLD_ID                        VARCHAR2(144)       YES                                      ID của phiên bản trước
+STABLE_ID                     VARCHAR2(144)       YES                                      ID ổn định dùng để liên kết các phiên bản
+CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo bản ghi
+UPDATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm cập nhật bản ghi
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      ID người tạo
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người tạo
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      ID người cập nhật
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người cập nhật
 
 
 BANG: FOREIGN_FUND_MANAGER_BRANCH
@@ -2549,6 +2705,60 @@ STABLE_ID                     VARCHAR2(144)       YES
 SECURITY_COMPANY_VERSION_ID   VARCHAR2(144)       YES                                      
 
 
+BANG: PAYMENT_CUSTODIAN_BANK_NEW
+Mo ta: Thông tin ngân hàng thanh toán, lưu ký
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               
+CODE                          VARCHAR2(200)       YES                                      Mã ngân hàng thanh toán, lưu ký
+NAME_VN                       VARCHAR2(2000)      YES                                      Tên tiếng Việt
+NAME_EN                       VARCHAR2(2000)      YES                                      Tên tiếng Anh
+SHORT_NAME                    VARCHAR2(400)       YES                                      Tên viết tắt
+ENTERPRISE_CODE               VARCHAR2(200)       YES                                      Mã số doanh nghiệp
+ESTABLISHMENT_LICENSE         VARCHAR2(800)       YES                                      Số giấy phép TL và HĐ
+TAX_CODE                      VARCHAR2(200)       YES                                      Mã số thuế
+ADDRESS                       VARCHAR2(4000)      YES                                      Địa chỉ
+PHONE_NUMBER                  VARCHAR2(200)       YES                                      Điện thoại
+FAX                           VARCHAR2(200)       YES                                      Fax
+EMAIL                         VARCHAR2(1020)      YES                                      Email
+WEBSITE                       VARCHAR2(2000)      YES                                      Website
+LICENSE_ISSUE_DATE            TIMESTAMP(6)        YES                                      Ngày cấp GP
+LICENSE_ISSUER                VARCHAR2(2000)      YES                                      Nơi cấp GP
+CHARTER_CAPITAL               NUMBER              YES                                      Vốn điều lệ
+BANK_CATEGORY                 NUMBER(1,0)         YES                                      Phân loại
+INPUT_REPORT_DATA             NUMBER(1,0)         YES                                      Có dữ liệu báo cáo đầu vào
+PAYMENT_DECISION_NUMBER       VARCHAR2(800)       YES                                      Số QĐ chấp thuận làm NHTT
+PAYMENT_DECISION_DATE         TIMESTAMP(6)        YES                                      Ngày quyết định
+PAYMENT_START_DATE            TIMESTAMP(6)        YES                                      Ngày bắt đầu triển khai
+PAYMENT_FUNCTION_DESCRIPTION  NCLOB               YES                                      Mô tả nghiệp vụ thanh toán
+BUSINESS_REG_CERT_NUMBER      VARCHAR2(800)       YES                                      Số giấy chứng nhận ĐKHĐ
+BUSINESS_REG_CERT_DATE        TIMESTAMP(6)        YES                                      Ngày cấp
+BUSINESS_OPERATION_START_DATE TIMESTAMP(6)        YES                                      Ngày bắt đầu triển khai
+CUSTODIAN_MEMBER_CERT_NUMBER  VARCHAR2(800)       YES                                      Số GCN thành viên lưu ký
+CUSTODIAN_CERT_DATE           TIMESTAMP(6)        YES                                      Ngày cấp GCN thành viên
+CUSTODIAN_MEMBER_CODE         VARCHAR2(800)       YES                                      Mã thành viên lưu ký
+CUSTODIAN_FUNCTION_DESCRIPTIONNCLOB               YES                                      Mô tả nghiệp vụ lưu ký
+NOTE                          NCLOB               YES                                      Ghi chú
+STABLE_ID                     VARCHAR2(144)       YES                                      ID ổn định xuyên suốt các phiên bản
+DELETED                       NUMBER(1,0)         YES                                      Đánh dấu xóa mềm (0: Chưa xóa, 1: Đã xóa)
+DELETED_REASON                NCLOB               YES                                      Lý do xóa
+VERSION                       NUMBER              YES                                      Phiên bản bản ghi
+EFFECTIVE_START_DATE          TIMESTAMP(6)        YES                                      Thời gian bắt đầu hiệu lực phiên bản
+EFFECTIVE_END_DATE            TIMESTAMP(6)        YES                                      Thời gian kết thúc hiệu lực phiên bản
+OLD_ID                        VARCHAR2(144)       YES                                      ID của phiên bản trước đó
+CREATED_AT                    TIMESTAMP(6)        YES                                      Thời điểm tạo
+UPDATED_AT                    TIMESTAMP(6)        YES                                      Thời điểm cập nhật
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      ID người tạo
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người tạo
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      ID người cập nhật
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người cập nhật
+ID_SYNC                       VARCHAR2(144)       YES                                      ID đồng bộ từ CSDLTT
+ACTIVE                        VARCHAR2(1020)      YES                                      Trạng thái
+STATUS_ID                     VARCHAR2(144)       YES                                      Id trạng thái
+ATTACHMENT_PATH               CLOB                YES                                      File đính kèm
+
+
 BANG: PENALTY_FORM
 Mo ta: Danh mục Hình thức xử phạt
 --------------------------------------------------------------------------------------------------------------
@@ -2899,6 +3109,81 @@ UPDATED_BY_USER_NAME          VARCHAR2(120)       YES
 UPDATED_DATE                  TIMESTAMP(6)        YES                                      
 
 
+BANG: PUBLIC_COMPANY_NEW
+Mo ta: Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               Khóa chính
+COMPANY_NAME_VN               VARCHAR2(1020)      YES                                      Tên tổ chức (Tiếng Việt)
+COMPANY_NAME_EN               VARCHAR2(1020)      YES                                      Tên tổ chức (Tiếng Anh)
+BUSINESS_REG_NO               VARCHAR2(400)       YES                                      Mã số doanh nghiệp
+FIRST_REG_DATE                DATE                YES                                      Ngày đăng ký lần đầu
+LATEST_REG_DATE               DATE                YES                                      Ngày cập nhật gần nhất
+LATEST_REG_PROV               VARCHAR2(200)       YES                                      Nơi cập nhật gần nhất
+CAPITAL_PAID_REPORTED         NUMBER(18,0)        YES                                      Vốn điều lệ thực góp
+TREASURY_SHARES               NUMBER(19,0)        YES                                      Cổ phiếu quỹ
+HEAD_OFFICE_ADDR              VARCHAR2(1020)      YES                                      Địa chỉ trụ sở chính
+PROVINCE_ID                   VARCHAR2(200)       YES                                      Tỉnh/Thành phố
+TRADING_OFFICE_ADDR           VARCHAR2(1020)      YES                                      Địa chỉ văn phòng giao dịch
+WEBSITE                       VARCHAR2(1020)      YES                                      Website
+PHONE_NO                      VARCHAR2(80)        YES                                      Điện thoại
+FAX_NO                        VARCHAR2(80)        YES                                      Fax
+CATEGORY_L1_ID                VARCHAR2(400)       YES                                      Ngành nghề cấp 1
+CATEGORY_L2_ID                VARCHAR2(400)       YES                                      Ngành nghề cấp 2
+ENTERPRISE_TYPE_CD            VARCHAR2(400)       YES                                      Loại hình công ty
+FINANCIAL_STMT_TYPE_CD        VARCHAR2(400)       YES                                      Loại báo cáo tài chính (nhiều giá trị)
+SECURITIES_TYPE_CD            VARCHAR2(400)       YES                                      Loại chứng khoán niêm yết/ĐKGD
+EQUITY_LISTING_EXCH           VARCHAR2(400)       YES                                      Sàn niêm yết/ĐKGD cổ phiếu
+EQUITY_TICKER                 VARCHAR2(80)        YES                                      Cổ phiếu
+EQUITY_SECURITY_FLG           NUMBER(1,0)         YES                                      Cờ chứng khoán cổ phiếu
+EQUITY_LISTED_QTY             NUMBER(19,0)        YES                                      SL cổ phiếu đang niêm yết/ĐKGD
+BOND_LISTING_EXCH             VARCHAR2(80)        YES                                      Sàn niêm yết trái phiếu
+BOND_TICKER                   VARCHAR2(80)        YES                                      Trái phiếu
+BOND_SECURITY_FLG             NUMBER(1,0)         YES                                      Cờ chứng khoán trái phiếu
+BOND_LISTED_QTY               NUMBER(19,0)        YES                                      SL trái phiếu đang niêm yết
+INTL_EXCH                     VARCHAR2(80)        YES                                      Sàn niêm yết quốc tế
+INTL_TICKER                   VARCHAR2(80)        YES                                      Mã chứng khoán quốc tế
+STATUS_IDS_CD                 VARCHAR2(400)       YES                                      Trạng thái
+AUTO_APPROVAL_FLG             NUMBER(1,0)         YES                                      Tự động phê duyệt
+COMPANY_LOGIN                 VARCHAR2(200)       YES                                      Tài khoản đăng nhập
+APPROVER_COMMENT              VARCHAR2(1020)      YES                                      Ghi chú phê duyệt
+SPECIALIST_NOTES              VARCHAR2(4000)      YES                                      Ghi chú của chuyên viên
+IDS_REG_STATUS_FLG            NUMBER(1,0)         YES                                      Trạng thái đăng ký IDS
+IDS_REG_DATE                  DATE                YES                                      Ngày đăng ký IDS
+OPERATING_STATUS_CD           VARCHAR2(400)       YES                                      Trạng thái hoạt động của CTĐC
+FY_END_DATE                   DATE                YES                                      Ngày kết thúc năm tài chính
+PUBLIC_COMPANY_FORM_CD        VARCHAR2(400)       YES                                      Hình thức trở thành CTĐC
+PUBLIC_COM_TYPE_CD            VARCHAR2(400)       YES                                      Phân loại công ty
+PUBLIC_BOND_ISSUER_FLG        NUMBER(1,0)         YES                                      Tổ chức niêm yết trái phiếu
+FORMER_STATE_OWNED_FLG        NUMBER(1,0)         YES                                      Tiền thân là doanh nghiệp nhà nước
+EQUIT_LICENSE_DATE            DATE                YES                                      Ngày cấp phép cổ phần hóa
+CAPITAL_AT_EQUIT              NUMBER(18,0)        YES                                      Vốn điều lệ tại thời điểm CPH
+HAS_STATE_OWN_FLG             NUMBER(1,0)         YES                                      Có vốn nhà nước
+FDI_COM_FLG                   NUMBER(1,0)         YES                                      Tiền thân là doanh nghiệp FDI
+HAS_PARENT_COM_FLG            NUMBER(1,0)         YES                                      Có công ty mẹ
+HAS_SUBSIDIARIES_FLG          NUMBER(1,0)         YES                                      Có công ty con
+HAS_JOINT_VENTURES_FLG        NUMBER(1,0)         YES                                      Có liên doanh
+DELETE_FLG                    NUMBER(1,0)         YES                                      Trạng thái xoá
+DELETED                       NUMBER(1,0)         YES                                      Cờ xóa mềm
+DELETED_REASON                VARCHAR2(4000)      YES                                      Lý do xóa
+VERSION                       NUMBER              YES                                      Phiên bản bản ghi
+EFFECTIVE_START_DATE          TIMESTAMP(6)        YES                                      Ngày bắt đầu hiệu lực
+EFFECTIVE_END_DATE            TIMESTAMP(6)        YES                                      Ngày kết thúc hiệu lực
+OLD_ID                        VARCHAR2(144)       YES                                      ID cũ
+STABLE_ID                     VARCHAR2(144)       YES                                      ID bản ghi ổn định - không đổi qua các version
+CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo
+UPDATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm cập nhật
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      ID người tạo
+CREATED_BY_NAME               VARCHAR2(800)       YES                                      Tên người tạo
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      ID người cập nhật
+UPDATED_BY_NAME               VARCHAR2(800)       YES                                      Tên người cập nhật
+HEAD_OFFICE_PROV              VARCHAR2(200)       YES                                      Tỉnh/TP trụ sở chính
+IPO_COMPANY_FLG               NUMBER(1,0)         YES                                      1-Công ty đang IPO, 0-Công ty đại chúng
+ID_SYNC                       VARCHAR2(144)       YES                                      ID đồng bộ
+APPROVAL_STATUS_CD            VARCHAR2(400)       YES                                      Trạng thái hồ sơ
+
+
 BANG: PUBLIC_COMPANY_VERSION_MAP
 Mo ta: Mapping version cha-con của aggregate công ty đại chúng, append-only
 --------------------------------------------------------------------------------------------------------------
@@ -3195,6 +3480,41 @@ UPDATED_AT                    TIMESTAMP(6)        NO                            
 UPDATED_BY_ID                 VARCHAR2(144)       YES                                      ID người cập nhật
 UPDATED_BY_NAME               VARCHAR2(1000)      YES                                      Tên người cập nhật
 EFFECTIVE                     NUMBER(1,0)         YES                                      Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)
+
+
+BANG: TAX_ID_STATUS
+Mo ta: Danh mục trạng thái mã số thuế (MST)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ID                            VARCHAR2(144)       NO      PK                               Khóa chính (UUID v7)
+TAX_ID_CODE                   VARCHAR2(200)       NO                                       Mã trạng thái MST
+TAX_ID_NAME                   VARCHAR2(1020)      NO                                       Tên trạng thái MST
+TAX_ID_DECLARATION_DOCUMENT   VARCHAR2(1020)      YES                                      Văn bản ban hành tờ khai
+TAX_ID_DECLARATION_DOCUMENT_DATEDATE                YES                                      Ngày ban hành văn bản tờ khai
+CREATED_DATE                  DATE                YES                                      Ngày tạo từ hệ thống nguồn
+CREATED_USER                  VARCHAR2(1020)      YES                                      Người tạo từ hệ thống nguồn
+LAST_UPDATED_DATE             DATE                YES                                      Ngày sửa từ hệ thống nguồn
+LAST_UPDATED_USER             VARCHAR2(1020)      YES                                      Người sửa từ hệ thống nguồn
+SYNC_DATE                     DATE                YES                                      Ngày đồng bộ từ hệ thống nguồn
+EFFECTIVE_FROM_DATE           DATE                NO                                       Ngày hiệu lực từ
+EFFECTIVE_TO_DATE             DATE                NO                                       Ngày hiệu lực đến
+EFFECTIVE                     NUMBER(1,0)         YES                                      Tình trạng (1: Hiệu lực, 0: Hết hiệu lực)
+EFFECTIVE_REASON              CLOB                YES                                      Lý do thay đổi tình trạng
+DELETED                       NUMBER(1,0)         YES                                      Đánh dấu xóa mềm (0: Chưa xóa, 1: Đã xóa)
+DELETED_REASON                CLOB                YES                                      Lý do xóa
+VERSION                       NUMBER              YES                                      Phiên bản bản ghi
+EFFECTIVE_START_DATE          TIMESTAMP(6)        YES                                      Thời gian bắt đầu hiệu lực phiên bản
+EFFECTIVE_END_DATE            TIMESTAMP(6)        YES                                      Thời gian kết thúc hiệu lực phiên bản
+OLD_ID                        VARCHAR2(144)       YES                                      ID của phiên bản trước đó
+STABLE_ID                     VARCHAR2(144)       YES                                      ID ổn định xuyên suốt các phiên bản
+CREATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm tạo
+UPDATED_AT                    TIMESTAMP(6)        NO                                       Thời điểm cập nhật
+CREATED_BY_ID                 VARCHAR2(144)       YES                                      ID người tạo
+CREATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người tạo
+UPDATED_BY_ID                 VARCHAR2(144)       YES                                      ID người cập nhật
+UPDATED_BY_NAME               VARCHAR2(1020)      YES                                      Tên người cập nhật
+
 
 BANG: UBCK_STAFF
 Mo ta: Danh mục nhân sự Ủy ban chứng khoán

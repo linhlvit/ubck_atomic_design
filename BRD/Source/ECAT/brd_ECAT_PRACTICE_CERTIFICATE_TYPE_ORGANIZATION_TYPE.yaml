@@ -1,0 +1,23 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: PRACTICE_CERTIFICATE_TYPE_ORGANIZATION_TYPE
+brd_ref: BRD-SRC-ECAT-PRACTICE_CERTIFICATE_TYPE_ORGANIZATION_TYPE
+columns:
+- name: PRACTICE_CERTIFICATE_TYPE_ID
+  data_type: VARCHAR2(144)
+  description: ID phiên bản của Loại chứng chỉ hành nghề
+  key: PK/FK
+  fk_note: FK → PRACTICE_CERTIFICATE_TYPE.ID
+  fk_src: inferred
+- name: PRACTICE_CERTIFICATE_TYPE_STABLE_ID
+  data_type: VARCHAR2(144)
+  description: ID ổn định của Loại chứng chỉ hành nghề
+  key: null
+  fk_note: null
+- name: ORGANIZATION_TYPE_ID
+  data_type: VARCHAR2(144)
+  description: ID của Loại đối tượng người dùng
+  key: PK/FK
+  fk_note: FK → ORGANIZATION_TYPE.ID
+  fk_src: inferred

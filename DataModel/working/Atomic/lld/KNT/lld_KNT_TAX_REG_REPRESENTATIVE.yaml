@@ -68,9 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID"
-  comment: "FK target: External Tax Registration.External Tax Registration Id. Nguồn\
-    \ lưu ID kỹ thuật của TAX_REGISTRATION_INFO — ETL join TAX_REGISTRATION_ID → KNT.TAX_REGISTRATION_INFO.ID\
-    \ để lấy TAX_CODE rồi hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
+  comment: "FK target: et_registration.et_registration_id. Cần ETL crosswalk sang KNT.TAX_REGISTRATION_INFO: TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID = TAX_REGISTRATION_INFO.ID để xác nhận TAX_CODE sau đó hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -82,9 +80,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID"
-  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
-    \ Pair with External Tax Registration Id."
+  - "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
+  comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id. Giá trị lấy từ KNT.TAX_REGISTRATION_INFO.TAX_CODE sau ETL crosswalk — chi tiết xem comment External Tax Registration Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -113,6 +110,84 @@ attributes:
   comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — xác nhận là free text,\
     \ không phải Classification Value cố định. Đổi tên từ \"Position Code\" vì mô\
     \ tả nguồn là \"tên hoặc mã\", không chỉ mã."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_TYPE"
+  comment: "Map 1:1 từ nguồn, giữ nguyên mã nguồn (1010/2080/1020), không qua Classification Value (gộp từ ip_alternative_identification, quyết định Data Modeler 2026-10-20)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số giấy tờ định danh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_NUMBER"
+  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_alternative_identification, quyết định Data Modeler 2026-10-20)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy tờ định danh. Mô tả gốc nguồn: Ngày cấp giấy phép thành lập."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.ISSUE_DATE"
+  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_alternative_identification, quyết định Data Modeler 2026-10-20)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Phone Number"
+  physical_name: "phone_nbr"
+  description: "Số điện thoại liên hệ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.PHONE"
+  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định Data Modeler 2026-10-20)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fax Number"
+  physical_name: "fax_nbr"
+  description: "Số fax."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.FAX"
+  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định Data Modeler 2026-10-20)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Email Address"
+  physical_name: "email_adr"
+  description: "Địa chỉ email liên hệ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.EMAIL"
+  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định Data Modeler 2026-10-20)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: FMSQLQ_STATUS
+brd_ref: BRD-SRC-ECAT-FMSQLQ_STATUS
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính của bản ghi (UUID dạng VARCHAR2(36 CHAR))
+  key: PK
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(200)
+  description: Tài khoản người tạo bản ghi
+  key: null
+  fk_note: null
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: NVARCHAR2(200)
+  description: Tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: ITEM_NAME
+  data_type: NVARCHAR2(1000)
+  description: Tên hiển thị chính
+  key: null
+  fk_note: null
+- name: TYPE_SEC
+  data_type: NUMBER(18,2)
+  description: 'Loại đối tượng áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP...'
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Cờ đang kích hoạt: 1=Đang hoạt động, 0=Vô hiệu'
+  key: null
+  fk_note: null
+- name: SUBMIT_REPORT
+  data_type: NUMBER(1,0)
+  description: 'Cờ trạng thái phải nộp báo cáo: 1=Phải nộp, 0=Không'
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(4000)
+  description: Mô tả chi tiết
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động'
+  key: null
+  fk_note: null
+- name: ID_SYNC
+  data_type: VARCHAR2(144)
+  description: ID đồng bộ từ hệ thống nguồn
+  key: null
+  fk_note: null

@@ -17,6 +17,20 @@ brd_entries:
     related_tables:
     - table: USERS
       relation: FK tự tham chiếu — CREATED_BY_ID và UPDATED_BY_ID trỏ về chính bảng USERS (audit người tạo/cập nhật)
+    - table: REPRESENTATIVE_POSITIONS
+      relation: 1-N — Danh sách chức vụ người đại diện của user (STOCK_EXCHANGE_VSDC, EXTERNAL_ORGANIZATION)
+    - table: USER_EXT_INDIVIDUAL_CATEGORIES
+      relation: 1-N — Danh mục Cá nhân bên ngoài gán cho user
+    - table: USER_GROUP
+      relation: 1-N — Bảng user group
+    - table: USER_OBJECT_TYPE_ASSIGNMENTS
+      relation: 1-N — Loại đối tượng người dùng gán cho user (Tổ chức/Cá nhân bên ngoài)
+    - table: USER_ORGANIZATION
+      relation: 1-N — Mapping giữa user và organization (external)
+    - table: USER_POSITIONS
+      relation: 1-N — Danh sách chức vụ của cá nhân bên ngoài (chọn nhiều)
+    - table: USER_ROLE
+      relation: 1-N — Bảng user role
     notes: Self-referencing FK trên CREATED_BY_ID và UPDATED_BY_ID. Keycloak integration qua KEY_CLOAK_ID. Hỗ trợ nhiều loại người dùng (USER_TYPE) và phân loại con (USER_SUB_TYPE).
     data_volume_hint: null
     refresh_frequency: null
@@ -35,7 +49,11 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: GROUPS
-    related_tables: null
+    related_tables:
+    - table: GROUP_ROLE
+      relation: 1-N — Bảng group role
+    - table: USER_GROUP
+      relation: 1-N — Bảng user group
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -54,7 +72,11 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: GROUP_ROLE
-    related_tables: null
+    related_tables:
+    - table: GROUPS
+      relation: FK cha — Bảng groups
+    - table: ROLE
+      relation: FK cha — Bảng role
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -73,7 +95,11 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: MODULE
-    related_tables: null
+    related_tables:
+    - table: RESOURCES
+      relation: 1-N — Bảng resources
+    - table: ROLE
+      relation: 1-N — Bảng role
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -92,7 +118,13 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: PERMISSION
-    related_tables: null
+    related_tables:
+    - table: RESOURCES
+      relation: FK cha — Bảng resources
+    - table: PERMISSION_DEPENDENCY
+      relation: 1-N — Bảng permission dependency
+    - table: ROLE_PERMISSION
+      relation: 1-N — Bảng role permission
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -111,7 +143,9 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: PERMISSION_DEPENDENCY
-    related_tables: null
+    related_tables:
+    - table: PERMISSION
+      relation: FK cha — Bảng permission
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -130,7 +164,9 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: REPRESENTATIVE_POSITIONS
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Người dùng hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -149,7 +185,11 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: RESOURCES
-    related_tables: null
+    related_tables:
+    - table: PERMISSION
+      relation: 1-N — Bảng permission
+    - table: MODULE
+      relation: FK cha — Danh sách phân hệ trong hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -168,7 +208,15 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: ROLE
-    related_tables: null
+    related_tables:
+    - table: GROUP_ROLE
+      relation: 1-N — Bảng group role
+    - table: MODULE
+      relation: FK cha — Danh sách phân hệ trong hệ thống
+    - table: ROLE_PERMISSION
+      relation: 1-N — Bảng role permission
+    - table: USER_ROLE
+      relation: 1-N — Bảng user role
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -187,7 +235,11 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: ROLE_PERMISSION
-    related_tables: null
+    related_tables:
+    - table: ROLE
+      relation: FK cha — Bảng role
+    - table: PERMISSION
+      relation: FK cha — Bảng permission
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -206,7 +258,9 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: USER_EXT_INDIVIDUAL_CATEGORIES
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Người dùng hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -225,7 +279,11 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: USER_GROUP
-    related_tables: null
+    related_tables:
+    - table: GROUPS
+      relation: FK cha — Bảng groups
+    - table: USERS
+      relation: FK cha — Người dùng hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -263,7 +321,9 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: USER_OBJECT_TYPE_ASSIGNMENTS
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Người dùng hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -282,7 +342,9 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: USER_ORGANIZATION
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Người dùng hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -301,7 +363,9 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: USER_POSITIONS
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Người dùng hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -320,7 +384,11 @@ brd_entries:
     scope_status: pending
     scope_reason: null
     table: USER_ROLE
-    related_tables: null
+    related_tables:
+    - table: USERS
+      relation: FK cha — Người dùng hệ thống
+    - table: ROLE
+      relation: FK cha — Bảng role
     notes: null
     data_volume_hint: null
     refresh_frequency: null

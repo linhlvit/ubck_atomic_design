@@ -1,0 +1,57 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: ADMINISTRATIVE_PROCEDURE_FIELD
+brd_ref: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE_FIELD
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính (UUID v7)
+  key: PK
+  fk_note: null
+- name: ID_SYNC
+  data_type: VARCHAR2(400)
+  description: Id gốc từ nguồn (linhVucId) — khóa đồng bộ
+  key: null
+  fk_note: null
+- name: CODE
+  data_type: VARCHAR2(400)
+  description: Mã lĩnh vực (ma)
+  key: null
+  fk_note: null
+- name: NAME
+  data_type: VARCHAR2(2000)
+  description: Tên lĩnh vực (tenLinhVuc)
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: CLOB
+  description: Mô tả lĩnh vực (moTa)
+  key: null
+  fk_note: null
+- name: EFFECTIVE
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái theo nguồn (trangThai): 1 Sử dụng / Hiệu lực, 0 Ngừng sử
+    dụng / Hết hiệu lực'
+  key: null
+  fk_note: null
+- name: SOURCE_CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo tại nguồn (createdUtc)
+  key: null
+  fk_note: null
+- name: SOURCE_UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật cuối tại nguồn (modifiedUtc)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo bản ghi tại eCat
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật bản ghi tại eCat
+  key: null
+  fk_note: null

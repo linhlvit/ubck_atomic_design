@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Shared entity — extend từ IAM.USERS. 2 loại giấy tờ: NATIONAL_ID (căn cước\
+  notes: "Shared entity — extend từ IAM.USERS. 2 loại giấy tờ: CITIZEN_ID (căn cước\
     \ công dân/CMND/hộ chiếu — nguồn không phân biệt loại cụ thể) và TAX_ID (mã số\
     \ thuế). Mỗi loại = 1 block."
 attributes:
@@ -32,7 +32,7 @@ attributes:
   - "IAM.USERS.ID"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
     \ Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng bảng\
-    \ để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
+    \ để lấy USERNAME. Hash: hash_id('IAM_USERS', USERNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -59,7 +59,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IAM.USERS"
+  classification_context: "SOURCE_SYSTEM=IAM_USERS"
   etl_derived_value: "IAM_USERS"
   data_type: "string"
 - attribute_name: "Identification Type Code"
@@ -70,10 +70,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID vì nguồn chỉ có cột CITIZEN_ID_NUMBER\
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CITIZEN_ID vì nguồn chỉ có cột CITIZEN_ID_NUMBER\
     \ không có cột type — không phân biệt được CMND/CCCD/hộ chiếu."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
+  etl_derived_value: "CITIZEN_ID"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -86,7 +86,7 @@ attributes:
   - "IAM.USERS.CITIZEN_ID_NUMBER"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Type Code"

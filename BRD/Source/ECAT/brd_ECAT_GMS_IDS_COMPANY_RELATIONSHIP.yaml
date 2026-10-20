@@ -1,0 +1,162 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: GMS_IDS_COMPANY_RELATIONSHIP
+brd_ref: BRD-SRC-ECAT-GMS_IDS_COMPANY_RELATIONSHIP
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính (UUID v7)
+  key: PK
+  fk_note: null
+- name: COMPANY_PROFILE_ID
+  data_type: VARCHAR2(144)
+  description: id lookup theo id_sync của bảng cha
+  key: null
+  fk_note: null
+- name: COMPANY_PROFILE_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: ID version của bảng cha
+  key: null
+  fk_note: null
+- name: COMPANY_PROFILE_STABLE_ID
+  data_type: VARCHAR2(144)
+  description: ID stable của bảng cha
+  key: null
+  fk_note: null
+- name: RELATIONSHIP_TYPE_CD
+  data_type: VARCHAR2(400)
+  description: 'Kiểu quan hệ công ty (mẹ, con, liên danh liên kết): LOOKUP_VALUES
+    LOOKUP_GROUP = COMPANY_RELATIONSHIP_TYPE'
+  key: null
+  fk_note: null
+- name: FULL_NAME_VI
+  data_type: VARCHAR2(2400)
+  description: Tên (tiếng Việt)
+  key: null
+  fk_note: null
+- name: FULL_NAME_EN
+  data_type: VARCHAR2(2400)
+  description: Tên (tiếng Anh)
+  key: null
+  fk_note: null
+- name: BUSINESS_REG_NO
+  data_type: VARCHAR2(2000)
+  description: Mã số doanh nghiệp
+  key: null
+  fk_note: null
+- name: HEAD_OFFICE_ADDR
+  data_type: VARCHAR2(1020)
+  description: Địa chỉ trụ sở chính
+  key: null
+  fk_note: null
+- name: RELATED_PARTY_INFO
+  data_type: VARCHAR2(1020)
+  description: Thông tin người liên quan
+  key: null
+  fk_note: null
+- name: PAID_IN_CAPITAL
+  data_type: NUMBER(19,0)
+  description: Vốn điều lệ thực góp
+  key: null
+  fk_note: null
+- name: OWNED_SHARE_QTY
+  data_type: NUMBER(19,0)
+  description: Số cổ phiếu sở hữu
+  key: null
+  fk_note: null
+- name: OWNERSHIP_RATIO
+  data_type: NUMBER(19,6)
+  description: Phần trăm sở hữu
+  key: null
+  fk_note: null
+- name: VOTING_SHARE_RATIO
+  data_type: NUMBER(19,6)
+  description: Tỷ lệ cổ phiếu biểu quyết
+  key: null
+  fk_note: null
+- name: EFFECTIVE_FROM_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày hiệu lực (từ ngày)
+  key: null
+  fk_note: null
+- name: EFFECTIVE_TO_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày hiệu lực (đến ngày)
+  key: null
+  fk_note: null
+- name: ID_SYNC
+  data_type: VARCHAR2(144)
+  description: ID bản ghi từ hệ thống nguồn (COMPANY_RELATIONSHIP.ID)
+  key: null
+  fk_note: null
+- name: IS_SYNC
+  data_type: NUMBER(1,0)
+  description: 'Đánh dấu đồng bộ (1: Đồng bộ; 0: Thêm tay)'
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Đánh dấu xóa mềm (0: Chưa xóa, 1: Đã xóa)'
+  key: null
+  fk_note: null
+- name: DELETED_REASON
+  data_type: CLOB
+  description: Lý do xóa
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER
+  description: Phiên bản bản ghi
+  key: null
+  fk_note: null
+- name: EFFECTIVE_START_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời gian bắt đầu hiệu lực phiên bản
+  key: null
+  fk_note: null
+- name: EFFECTIVE_END_DATE
+  data_type: TIMESTAMP(6)
+  description: Thời gian kết thúc hiệu lực phiên bản
+  key: null
+  fk_note: null
+- name: OLD_ID
+  data_type: VARCHAR2(144)
+  description: ID phiên bản trước đó
+  key: null
+  fk_note: null
+- name: STABLE_ID
+  data_type: VARCHAR2(144)
+  description: ID ổn định xuyên suốt các phiên bản
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: ID người tạo
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: ID người cập nhật
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null

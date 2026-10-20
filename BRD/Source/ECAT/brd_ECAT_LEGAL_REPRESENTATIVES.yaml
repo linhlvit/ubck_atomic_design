@@ -1,0 +1,63 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: LEGAL_REPRESENTATIVES
+brd_ref: BRD-SRC-ECAT-LEGAL_REPRESENTATIVES
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính của bản ghi (UUID dạng VARCHAR2(36 CHAR))
+  key: PK
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: Thời điểm tạo bản ghi
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(200)
+  description: Tài khoản người tạo bản ghi
+  key: null
+  fk_note: null
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: Thời điểm cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: NVARCHAR2(200)
+  description: Tài khoản người cập nhật bản ghi lần cuối
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_ID
+  data_type: VARCHAR2(400)
+  description: ID của người đại diện pháp luật (từ hệ thống nguồn)
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_NAME
+  data_type: NVARCHAR2(1000)
+  description: Họ tên người đại diện pháp luật
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: NVARCHAR2(1000)
+  description: Chức vụ
+  key: null
+  fk_note: null
+- name: FUND_MANAGEMENT_COMPANY_ID
+  data_type: VARCHAR2(144)
+  description: ID công ty quản lý quỹ sở hữu người đại diện (FK tới fund_management_company,
+    quan hệ 1-n)
+  key: FK
+  fk_note: FK → FUND_MANAGEMENT_COMPANY.ID
+  fk_src: inferred
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động'
+  key: null
+  fk_note: null
+- name: ID_SYNC
+  data_type: VARCHAR2(144)
+  description: ID đồng bộ từ hệ thống nguồn
+  key: null
+  fk_note: null

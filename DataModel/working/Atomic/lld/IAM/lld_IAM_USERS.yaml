@@ -32,7 +32,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity\
-    \ and Access Management User' theo HLD IAM Tier 1. Hash: hash_id('IAM.USERS',\
+    \ and Access Management User' theo HLD IAM Tier 1. Hash: hash_id('IAM_USERS',\
     \ USERNAME)."
   classification_context: null
   etl_derived_value: null
@@ -62,7 +62,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=IAM.USERS"
+  classification_context: "SOURCE_SYSTEM=IAM_USERS"
   etl_derived_value: "IAM_USERS"
   data_type: "string"
 - attribute_name: "Full Name"
@@ -108,15 +108,14 @@ attributes:
   data_type: "date"
 - attribute_name: "Individual Gender Code"
   physical_name: "individual_gender_code"
-  description: "Giới tính (1: Nam, 2: Nữ, 3: Khác)."
+  description: "Giới tính."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IAM.USERS.GENDER"
-  comment: "Scheme: IAM_GENDER. Nguồn NUMBER(1): 1=MALE, 2=FEMALE, 3=OTHER — ETL map\
-    \ sang string code. Nguồn lưu dạng số — ETL cần convert sang string."
+  comment: "SCHEMA_CODE=GENDER"
   classification_context: "IAM_GENDER"
   etl_derived_value: null
   data_type: "string"
@@ -129,22 +128,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IAM.USERS.USER_TYPE"
-  comment: "Scheme: IAM_USER_TYPE. Nguồn NUMBER(1) — cần profile values từ team IAM.\
-    \ Nguồn lưu dạng số — ETL cần convert sang string code."
-  classification_context: "IAM_USER_TYPE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Sub Type Code"
-  physical_name: "ip_sub_tp_code"
-  description: "Phân loại người dùng."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IAM.USERS.USER_SUB_TYPE"
-  comment: "Scheme: IAM_USER_SUB_TYPE. Nguồn VARCHAR50 — lấy distinct values từ USERS.USER_SUB_TYPE."
-  classification_context: "IAM_USER_SUB_TYPE"
+  comment: "SCHEMA_CODE=IAM.USER_TYPE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Super Admin Indicator"
@@ -247,43 +232,13 @@ attributes:
 - attribute_name: "Practice Certificate Type Id"
   physical_name: "practice_certificate_tp_id"
   description: "Chứng chỉ hành nghề — loại chứng chỉ của người dùng."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
-  comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cross-source\
-    \ FK (IAM → NHNCK), trả lời T1-02 HLD. Pending — nguồn IAM lưu VARCHAR2(36) dạng\
-    \ GUID, trong khi NHNCK.CERTIFICATES.ID là NUMBER tự tăng; chưa xác nhận join\
-    \ key giá trị thực tế giữa 2 hệ thống nên chưa thêm Hash."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Practice Certificate Type Code"
-  physical_name: "practice_certificate_tp_code"
-  description: "Mã loại chứng chỉ hành nghề (denormalized lookup)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "pending"
   source_columns:
   - "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
-  comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_tp_code.\
-    \ Pair with Practice Certificate Type Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Avatar Path"
-  physical_name: "avatar_path"
-  description: "Đường dẫn avatar của người dùng."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IAM.USERS.AVATAR_PATH"
-  comment: "BCV: không có term riêng. Lưu đường dẫn file ảnh đại diện."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -301,46 +256,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Login Failure Count"
-  physical_name: "login_failure_count"
-  description: "Số lần đăng nhập thất bại."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IAM.USERS.COUNT_LOGIN_FALSE"
-  comment: "BCV: không có term riêng. Nguồn NUMBER(1) — đếm số lần login fail, domain\
-    \ Small Counter phù hợp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Lock Expiry Timestamp"
-  physical_name: "lock_expiry_tms"
-  description: "Thời gian hết khóa tài khoản."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IAM.USERS.EXPIRE_LOCK_USER"
-  comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Last Login Timestamp"
-  physical_name: "last_login_tms"
-  description: "Lần đăng nhập cuối cùng."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IAM.USERS.LAST_LOGIN"
-  comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
 - attribute_name: "Representative Name"
   physical_name: "representative_nm"
   description: "Tên người đại diện."
@@ -395,16 +310,86 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Representative Position Id"
-  physical_name: "representative_position_id"
-  description: "Chức vụ người đại diện."
+- attribute_name: "Dial Number"
+  physical_name: "dial_number"
+  description: "Mã vùng điện thoại."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.USERS.REPRESENTATIVE_POSITION_ID"
-  comment: "Denormalized VARCHAR2(255) — giữ dạng Text đến khi xác nhận T1-03 HLD."
+  - "IAM.USERS.DIAL_NUMBER"
+  comment: "BCV: không có term riêng. Nguồn VARCHAR2(16)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Id"
+  physical_name: "member_id"
+  description: "ID định danh thành viên (lưu nguyên, không xử lý nghiệp vụ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.MEMBER_ID"
+  comment: "BCV: không có term riêng. Giữ dạng Text, không tạo FK theo quyết định Data\
+    \ Modeler 2026-10-20."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Name"
+  physical_name: "member_nm"
+  description: "Tên thành viên tương ứng Member Id."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.MEMBER_NAME"
+  comment: "BCV: không có term riêng. Denormalized text — cặp với Member Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Individual Member Id"
+  physical_name: "ext_individual_member_id"
+  description: "ID thành viên của Cá nhân bên ngoài (lưu nguyên, không xử lý nghiệp\
+    \ vụ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.EXT_INDIVIDUAL_MEMBER_ID"
+  comment: "BCV: không có term riêng. Giữ dạng Text, không tạo FK theo quyết định Data\
+    \ Modeler 2026-10-20."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Individual Member Name"
+  physical_name: "ext_individual_member_nm"
+  description: "Tên thành viên tương ứng External Individual Member Id."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.EXT_INDIVIDUAL_MEMBER_NAME"
+  comment: "BCV: không có term riêng. Denormalized text — cặp với External Individual\
+    \ Member Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã công ty chứng khoán (Tổ chức bên ngoài), null nếu không có."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.USERS.SECURITIES_COMPANY_CODE"
+  comment: "BCV: không có term riêng. Denormalized text — chưa xác nhận FK đến entity\
+    \ công ty chứng khoán."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

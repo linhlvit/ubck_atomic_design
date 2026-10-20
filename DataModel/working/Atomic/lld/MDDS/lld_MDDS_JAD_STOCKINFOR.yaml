@@ -95,16 +95,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Exchange Code"
-  physical_name: "exchange_code"
+- attribute_name: "Floor Code"
+  physical_name: "floor_code"
   description: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.FLOORCODE"
-  comment: null
+  comment: "SCHEMA_CODE=MDDS.FLOOR_CODE"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -706,15 +706,16 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "Market Id"
-  physical_name: "market_id"
+- attribute_name: "Exchange Code"
+  physical_name: "exchange_code"
   description: "Mã sàn theo Sở."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.MARKETID"
+  comment: "SCHEMA_CODE=MDDS.EXCHANGE_CODE"
   classification_context: null
   etl_derived_value: null
   data_type: "string"

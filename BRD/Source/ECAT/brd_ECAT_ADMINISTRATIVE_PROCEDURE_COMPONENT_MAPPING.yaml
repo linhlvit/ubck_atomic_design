@@ -4,18 +4,26 @@ source: ECAT
 table: ADMINISTRATIVE_PROCEDURE_COMPONENT_MAPPING
 brd_ref: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE_COMPONENT_MAPPING
 columns:
-  - name: ADMINISTRATIVE_PROCEDURE_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID TTHC (tham chiếu administrative_procedure.id)*"
-    key: PK
-    fk_note: null
-  - name: COMPONENT_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*ID thành phần TTHC (tham chiếu administrative_procedure_component.id)*"
-    key: PK
-    fk_note: null
-  - name: COMPONENT_STABLE_ID
-    data_type: "VARCHAR2(36 CHAR)"
-    description: "*Stable ID của component - ID ổn định xuyên suốt các phiên bản*"
-    key: null
-    fk_note: null
+- name: ADMINISTRATIVE_PROCEDURE_ID
+  data_type: VARCHAR2(144)
+  description: '*ID TTHC (tham chiếu administrative_procedure.id)*'
+  key: PK/FK
+  fk_note: FK → ADMINISTRATIVE_PROCEDURE.ID
+  fk_src: inferred
+- name: COMPONENT_ID
+  data_type: VARCHAR2(144)
+  description: '*ID thành phần TTHC (tham chiếu administrative_procedure_component.id)*'
+  key: PK/FK
+  fk_note: FK → ADMINISTRATIVE_PROCEDURE_COMPONENT.ID
+  fk_src: inferred
+- name: COMPONENT_STABLE_ID
+  data_type: VARCHAR2(144)
+  description: '*Stable ID của component - ID ổn định xuyên suốt các phiên bản*'
+  key: null
+  fk_note: null
+- name: ADMINISTRATIVE_PROCEDURE_STABLE_ID
+  data_type: VARCHAR2(144)
+  description: Stable ID của administrative_procedure - ID ổn định xuyên suốt các
+    phiên bản
+  key: null
+  fk_note: null

@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: ADMINISTRATIVE_PROCEDURE_VERSION_MAP
+brd_ref: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE_VERSION_MAP
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính (UUID v7)
+  key: PK
+  fk_note: null
+- name: ADMINISTRATIVE_PROCEDURE_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: id (version-row) hiện hành của TTHC tại thời điểm ghi (administrative_procedure_new.id)
+  key: null
+  fk_note: null
+- name: COMPONENT_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: id (version-row) hiện hành của thành phần tương ứng (administrative_procedure_component_new.id)
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm ghi mapping
+  key: null
+  fk_note: null

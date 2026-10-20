@@ -33,7 +33,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('THANHTRA.VIOLATION_BEHAVIOR', CODE). BCV:\
+  comment: "PK surrogate. Hash: hash_id('THANHTRA_VIOLATION_BEHAVIOR', CODE). BCV:\
     \ [Business Activity] Conduct Violation."
   classification_context: null
   etl_derived_value: null
@@ -62,7 +62,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=THANHTRA.VIOLATION_BEHAVIOR"
+  classification_context: "SOURCE_SYSTEM=THANHTRA_VIOLATION_BEHAVIOR"
   etl_derived_value: "THANHTRA_VIOLATION_BEHAVIOR"
   data_type: "string"
 - attribute_name: "Violation Behavior Name"
@@ -103,7 +103,7 @@ attributes:
   - "THANHTRA.VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID"
   comment: "FK target: cl_thanhtra_penalty_type.cl_thanhtra_penalty_tp_id. Cần ETL\
     \ crosswalk sang THANHTRA.PENALTY_TYPE: VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID\
-    \ = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA.PENALTY_TYPE', CODE)\
+    \ = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA_PENALTY_TYPE', CODE)\
     \ | Trước đây hash trực tiếp theo PRIMARY_PENALTY_TYPE_ID (ID kỹ thuật) gây sai\
     \ lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27.\
     \ Capture từ junction PENALTY_TYPE_VIOLATION_BEHAVIOR (out_of_scope) qua trường\

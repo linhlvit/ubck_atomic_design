@@ -31,7 +31,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('THANHTRA.EXAMINATION_TEAM', CODE). BCV: [Business\
+  comment: "PK surrogate. Hash: hash_id('THANHTRA_EXAMINATION_TEAM', CODE). BCV: [Business\
     \ Activity] Business Review."
   classification_context: null
   etl_derived_value: null
@@ -60,7 +60,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=THANHTRA.EXAMINATION_TEAM"
+  classification_context: "SOURCE_SYSTEM=THANHTRA_EXAMINATION_TEAM"
   etl_derived_value: "THANHTRA_EXAMINATION_TEAM"
   data_type: "string"
 - attribute_name: "Examination Annual Plan Id"
@@ -72,7 +72,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM.EXAMINATION_ANNUAL_PLAN_ID"
-  comment: "FK target: examination_annual_plan.examination_annual_plan_id. Hash: hash_id('THANHTRA.EXAMINATION_ANNUAL_PLAN',\
+  comment: "FK target: examination_annual_plan.examination_annual_plan_id. Hash: hash_id('THANHTRA_EXAMINATION_ANNUAL_PLAN',\
     \ EXAMINATION_ANNUAL_PLAN_ID)."
   classification_context: null
   etl_derived_value: null
@@ -103,7 +103,7 @@ attributes:
   - "THANHTRA.EXAMINATION_TEAM.UNIT_ID"
   comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'UNIT'). Cần ETL\
     \ crosswalk sang NHNCK.UNITS: EXAMINATION_TEAM.UNIT_ID = UNITS.ID để xác nhận\
-    \ UNIT_CODE sau đó hash_id('NHNCK.UNITS', UNIT_CODE) | Crosswalk khác phân hệ\
+    \ UNIT_CODE sau đó hash_id('NHNCK_UNITS', UNIT_CODE) | Crosswalk khác phân hệ\
     \ (THANHTRA → NHNCK) — chưa xác nhận UNIT_ID nguồn khớp NHNCK.UNITS.ID, cần Data\
     \ Modeler xác nhận trước go-live."
   classification_context: null

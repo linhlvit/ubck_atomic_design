@@ -56,7 +56,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT"
+  classification_context: "SOURCE_SYSTEM=THANHTRA_VIOLATION_CASE_RECEIVED_DOCUMENT"
   etl_derived_value: "THANHTRA_VIOLATION_CASE_RECEIVED_DOCUMENT"
   data_type: "string"
 - attribute_name: "Violation Case Id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID"
-  comment: "FK target: violation_case.violation_case_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_CASE: VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID = VIOLATION_CASE.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_CASE', CODE) | Trước đây hash trực tiếp theo VIOLATION_CASE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: violation_case.violation_case_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_CASE: VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID = VIOLATION_CASE.ID để xác nhận CODE sau đó hash_id('THANHTRA_VIOLATION_CASE', CODE) | Trước đây hash trực tiếp theo VIOLATION_CASE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -135,7 +135,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_RECORD_ID"
-  comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID). Nullable — chỉ có khi chọn từ biên bản VPHC trên hệ thống."
+  comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA_VIOLATION_RECORD', VIOLATION_RECORD_ID). Nullable — chỉ có khi chọn từ biên bản VPHC trên hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

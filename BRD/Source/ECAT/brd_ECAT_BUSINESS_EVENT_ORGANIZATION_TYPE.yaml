@@ -1,0 +1,23 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: BUSINESS_EVENT_ORGANIZATION_TYPE
+brd_ref: BRD-SRC-ECAT-BUSINESS_EVENT_ORGANIZATION_TYPE
+columns:
+- name: BUSINESS_EVENT_ID
+  data_type: VARCHAR2(144)
+  description: ID phiên bản sự vụ
+  key: PK/FK
+  fk_note: FK → BUSINESS_EVENT.ID
+  fk_src: inferred
+- name: ORGANIZATION_TYPE_ID
+  data_type: VARCHAR2(144)
+  description: ID loại tổ chức
+  key: PK/FK
+  fk_note: FK → ORGANIZATION_TYPE.ID
+  fk_src: inferred
+- name: BUSINESS_EVENT_STABLE_ID
+  data_type: VARCHAR2(144)
+  description: Stable ID sự vụ
+  key: null
+  fk_note: null

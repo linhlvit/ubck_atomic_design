@@ -1,0 +1,27 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: UBCK_STAFF_USER_GROUP
+brd_ref: BRD-SRC-ECAT-UBCK_STAFF_USER_GROUP
+columns:
+- name: UBCK_STAFF_ID
+  data_type: VARCHAR2(144)
+  description: ID phiên bản cán bộ UBCK
+  key: PK/FK
+  fk_note: FK → UBCK_STAFF.ID
+  fk_src: inferred
+- name: USER_GROUP_ID
+  data_type: VARCHAR2(144)
+  description: ID nhóm người dùng IAM
+  key: PK
+  fk_note: null
+- name: USER_GROUP_CODE
+  data_type: VARCHAR2(1020)
+  description: Mã nhóm người dùng IAM tại thời điểm đồng bộ
+  key: null
+  fk_note: null
+- name: USER_GROUP_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên nhóm người dùng IAM tại thời điểm đồng bộ
+  key: null
+  fk_note: null

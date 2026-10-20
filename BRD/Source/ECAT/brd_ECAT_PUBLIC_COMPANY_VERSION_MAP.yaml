@@ -1,0 +1,32 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: PUBLIC_COMPANY_VERSION_MAP
+brd_ref: BRD-SRC-ECAT-PUBLIC_COMPANY_VERSION_MAP
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính (UUID v7)
+  key: PK
+  fk_note: null
+- name: PUBLIC_COMPANY_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: id (version-row) hiện hành của cha (public_company_new.id) tại thời
+    điểm ghi
+  key: null
+  fk_note: null
+- name: ENTITY_TYPE
+  data_type: VARCHAR2(120)
+  description: REPRESENTATIVE / STATE_CAPITAL / RELATIONSHIP / FOREIGN_OWNER_LIMIT
+  key: null
+  fk_note: null
+- name: ENTITY_VERSION_ID
+  data_type: VARCHAR2(144)
+  description: id (version-row) hiện hành của bản ghi con tương ứng
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm ghi mapping
+  key: null
+  fk_note: null

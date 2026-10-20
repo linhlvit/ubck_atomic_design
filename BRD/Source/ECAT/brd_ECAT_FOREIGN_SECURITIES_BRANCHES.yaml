@@ -1,0 +1,283 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: FOREIGN_SECURITIES_BRANCHES
+brd_ref: BRD-SRC-ECAT-FOREIGN_SECURITIES_BRANCHES
+columns:
+- name: ID
+  data_type: VARCHAR2(144)
+  description: Khóa chính (UUID)
+  key: PK
+  fk_note: null
+- name: ID_SYNC
+  data_type: NUMBER(10,0)
+  description: ID đồng bộ từ hệ thống khác
+  key: null
+  fk_note: null
+- name: STABLE_ID
+  data_type: VARCHAR2(144)
+  description: null
+  key: null
+  fk_note: null
+- name: BRANCH_NAME
+  data_type: VARCHAR2(4000)
+  description: Tên chi nhánh
+  key: null
+  fk_note: null
+- name: BRANCH_ENGLISH_NAME
+  data_type: VARCHAR2(4000)
+  description: Tên chi nhánh (tiếng Anh)
+  key: null
+  fk_note: null
+- name: BRANCH_SHORT_NAME
+  data_type: VARCHAR2(3200)
+  description: Tên viết tắt chi nhánh
+  key: null
+  fk_note: null
+- name: BRANCH_ADDRESS
+  data_type: VARCHAR2(4000)
+  description: Địa chỉ chi nhánh
+  key: null
+  fk_note: null
+- name: PHONE
+  data_type: VARCHAR2(800)
+  description: Số điện thoại chi nhánh
+  key: null
+  fk_note: null
+- name: FAX
+  data_type: VARCHAR2(800)
+  description: Số fax
+  key: null
+  fk_note: null
+- name: EMAIL
+  data_type: VARCHAR2(3200)
+  description: Email
+  key: null
+  fk_note: null
+- name: TAX_CODE
+  data_type: VARCHAR2(800)
+  description: Mã số thuế
+  key: null
+  fk_note: null
+- name: ENTERPRISE_CODE
+  data_type: VARCHAR2(800)
+  description: Mã số doanh nghiệp
+  key: null
+  fk_note: null
+- name: ESTABLISHMENT_LICENSE_NO
+  data_type: VARCHAR2(1600)
+  description: Số giấy phép thành lập
+  key: null
+  fk_note: null
+- name: ESTABLISHMENT_LICENSE_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày cấp giấy phép thành lập
+  key: null
+  fk_note: null
+- name: OPERATION_CERTIFICATE_NO
+  data_type: VARCHAR2(3200)
+  description: Số giấy phép hoạt động
+  key: null
+  fk_note: null
+- name: OPERATION_CERTIFICATE_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày cấp giấy phép hoạt động
+  key: null
+  fk_note: null
+- name: OFFICIAL_OPERATION_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày chính thức hoạt động
+  key: null
+  fk_note: null
+- name: SERVICE_ID
+  data_type: NUMBER(10,0)
+  description: ID dịch vụ
+  key: FK
+  fk_note: FK → BUSINESS_SERVICE.ID
+  fk_src: inferred
+- name: GRANTED_CAPITAL
+  data_type: NUMBER(20,0)
+  description: Vốn điều lệ
+  key: null
+  fk_note: null
+- name: FISCAL_YEAR_END_DATE
+  data_type: VARCHAR2(80)
+  description: Ngày kết thúc năm tài chính
+  key: null
+  fk_note: null
+- name: FINANCIAL_STATEMENT_TYPE
+  data_type: VARCHAR2(800)
+  description: Loại báo cáo tài chính
+  key: null
+  fk_note: null
+- name: STATUS_ID
+  data_type: VARCHAR2(144)
+  description: ID trạng thái
+  key: null
+  fk_note: null
+- name: STATUS_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên trạng thái
+  key: null
+  fk_note: null
+- name: PARENT_COMPANY_NAME
+  data_type: VARCHAR2(4000)
+  description: Tên công ty mẹ
+  key: null
+  fk_note: null
+- name: PARENT_OPERATION_LICENSE_NO
+  data_type: VARCHAR2(1600)
+  description: Số giấy phép hoạt động công ty mẹ
+  key: null
+  fk_note: null
+- name: PARENT_LICENSE_ISSUE_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày cấp giấy phép công ty mẹ
+  key: null
+  fk_note: null
+- name: PARENT_HEAD_OFFICE_ADDRESS
+  data_type: VARCHAR2(4000)
+  description: Địa chỉ trụ sở chính công ty mẹ
+  key: null
+  fk_note: null
+- name: COUNTRY_ID
+  data_type: VARCHAR2(144)
+  description: ID quốc gia
+  key: FK
+  fk_note: FK → COUNTRY.ID
+  fk_src: inferred
+- name: COUNTRY_NAME
+  data_type: VARCHAR2(3200)
+  description: Tên quốc gia
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên người đại diện
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_NATIONALITY_ID
+  data_type: VARCHAR2(144)
+  description: ID quốc tịch người đại diện
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_NATIONALITY_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên quốc tịch người đại diện
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_DATE_OF_BIRTH
+  data_type: TIMESTAMP(6)
+  description: Ngày sinh người đại diện
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_DOCUMENT_NO
+  data_type: VARCHAR2(400)
+  description: Số giấy tờ tùy thân người đại diện
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_DOCUMENT_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày cấp giấy tờ tùy thân người đại diện
+  key: null
+  fk_note: null
+- name: REPRESENTATIVE_DOCUMENT_PLACE
+  data_type: VARCHAR2(2000)
+  description: Nơi cấp giấy tờ tùy thân người đại diện
+  key: null
+  fk_note: null
+- name: FILE_PATH
+  data_type: CLOB
+  description: Đường dẫn tệp tin liên quan
+  key: null
+  fk_note: null
+- name: FILE_NAME
+  data_type: VARCHAR2(2000)
+  description: Tên tệp tin liên quan
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: CLOB
+  description: Ghi chú
+  key: null
+  fk_note: null
+- name: ACTIVE
+  data_type: NUMBER(1,0)
+  description: 'Trạng thái hoạt động (1: Active, 0: Inactive)'
+  key: null
+  fk_note: null
+- name: ACTIVE_REASON
+  data_type: CLOB
+  description: Lý do thay đổi trạng thái active
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(1,0)
+  description: 'Đánh dấu xóa mềm (0: Chưa xóa, 1: Đã xóa)'
+  key: null
+  fk_note: null
+- name: DELETED_REASON
+  data_type: CLOB
+  description: Lý do xóa
+  key: null
+  fk_note: null
+- name: VERSION
+  data_type: NUMBER
+  description: Phiên bản bản ghi
+  key: null
+  fk_note: null
+- name: EFFECTIVE_START_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày bắt đầu hiệu lực
+  key: null
+  fk_note: null
+- name: EFFECTIVE_END_DATE
+  data_type: TIMESTAMP(6)
+  description: Ngày kết thúc hiệu lực
+  key: null
+  fk_note: null
+- name: OLD_ID
+  data_type: VARCHAR2(144)
+  description: ID của phiên bản trước đó
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm tạo
+  key: null
+  fk_note: null
+- name: UPDATED_AT
+  data_type: TIMESTAMP(6)
+  description: Thời điểm cập nhật
+  key: null
+  fk_note: null
+- name: CREATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: ID người tạo
+  key: null
+  fk_note: null
+- name: CREATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên người tạo
+  key: null
+  fk_note: null
+- name: UPDATED_BY_ID
+  data_type: VARCHAR2(144)
+  description: ID người cập nhật
+  key: null
+  fk_note: null
+- name: UPDATED_BY_NAME
+  data_type: VARCHAR2(1020)
+  description: Tên người cập nhật
+  key: null
+  fk_note: null
+- name: SERVICE_NAME
+  data_type: CLOB
+  description: null
+  key: null
+  fk_note: null
+- name: COUNTRY_CODE
+  data_type: VARCHAR2(200)
+  description: Mã quốc gia
+  key: null
+  fk_note: null
