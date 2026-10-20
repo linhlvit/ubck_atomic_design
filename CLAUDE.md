@@ -136,7 +136,7 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 
 ## QUY TẮC CỨNG — TRƯỚC KHI SỬA HÀNG LOẠT / ĐỔI QUY TẮC DÙNG CHUNG (bài học 2026-09-25)
 
-Áp dụng cả khi không gọi Skill. Chi tiết: H10–H13 (`datamart-hld-design`), A12–A15 và A20 (`datamart-lld-design`).
+Áp dụng cả khi không gọi Skill. Chi tiết: H10–H14 (`datamart-hld-design`), A12–A15, A20 và A21 (`datamart-lld-design`).
 
 1. **Không kết luận cột Atomic thiếu/rỗng từ YAML LLD.** Đối chiếu `BRD/Source/` của mọi nguồn + hỏi xác nhận dữ liệu vật lý trước khi đổi `etl_logic` hàng loạt (VD `securities_trade.execution_val` HNX có thật dù YAML không khai báo).
 2. **Câu trả lời 1 chữ cho câu hỏi kép** ("có", "ok"): nhắc lại cách hiểu 1 câu trước khi sửa ≥ 5 cột hoặc nhiều module.
@@ -146,6 +146,7 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 6. **Trước khi báo "thiết kế thiếu X" hoặc đề xuất đổi cách khai thác:** đọc `ghi_chu` Detail Mapping + Ghi chú HLD của đúng KPI đó — có thể đã có quyết định Data Modeler duyệt (VD toggle Khớp lệnh GSTT Nhóm 28/29 = swap KPI sang 153–155/164–166, không dùng CASE tham số).
 7. **Gate 8 (`check_design_lint.py`) nằm trong `run_quality_gates.py`**: bắt dòng bảng KPI sai số ô, bảng 0 KPI dùng (→ All-Tier Cleanup), comment flat SQL dính `:etl_date`, và (module trong `L18_MODULES`, hiện TT và QLKD) KPI có MEASURE bị nhân thành nhiều dòng Detail Mapping (Quy tắc L18).
 8. **Cột mới ở Fact/Operational phải lên flat DDL + DML trong CÙNG lượt** (A20 `datamart-lld-design`) — áp dụng mọi đường thêm cột (Phase 1, `apply_kpi_patch.py`, sửa tay), kể cả khi không ở Phase 3 và không gọi Skill. Lệnh: `build_flat_tables.py --module {M} --sync-columns [--apply]` rồi `check_flat_table.py --module {M} --strict`. **Gate FAIL không phải "tồn đọng"**: Gate 4 FAIL phải sửa hoặc ghi rõ lý do + chủ xử lý, không được gạt sang "lỗi có từ trước". Sự cố (QLQ, 2026-10-14): 29 cột `opr_*` có KPI READY (VD `assets_under_management_amt`) có trong LLD + Detail Mapping nhưng thiếu ở flat qua nhiều phiên, Gate 4 đã báo FAIL nhưng bị bỏ qua. Phép thử nhanh: *cột có trong Detail Mapping mà không có trong flat DDL?*
+9. **Chọn chỉ số (VN-Index…) trên `market_index_snapshot`:** BA `IndexCode = 'VNINDEX'` → `index_nm = 'VNINDEX'` (`INDEXNAME`; giữ literal BA, Data Modeler chốt 2026-10-20). Không dùng `market_code = 'HOSE'` đại diện; không chép quyết định của Nhóm này sang Nhóm khác khi chưa đọc BA Nhóm đó; cột BA ghi mà Atomic không grep thấy ≠ entity không có cột tương ứng — liệt kê đủ cột entity trước (H14, A21). Khóa JOIN Index Constituent vẫn theo H7.
 
 ## CHỐT CHẶN MÁY (2026-10-15) — hook `dm_guard` + chốt ghi file
 

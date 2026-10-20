@@ -1,4 +1,4 @@
-# Luật chống tái diễn H1–H13 — HLD Datamart
+# Luật chống tái diễn H1–H14 — HLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm sự cố gốc và cách kiểm. Đọc đúng mục cần dùng, ví dụ `grep -n "^### H7" .claude/skills/datamart-hld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -18,6 +18,7 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm s
 - H12 — BA chuyển Nhóm sang nguồn/bảng mới: kiểm bảng cũ còn KPI nào dùng không `[L2-TABLE-ZERO-USAGE]`
 - H12b — Trước khi kết luận "thiếu", đọc quyết định đã duyệt của đúng KPI `[process]`
 - H13 — Sửa bảng Markdown trong HLD: mỗi dòng KPI đúng 7 ô; giải trình ánh xạ phải tra lại KPI thật `[L1-HLD-KPI-ROW-CELLS]`
+- H14 — Chọn chỉ số (VN-Index, VN30…) trên `market_index_snapshot`: lọc `index_nm`, giữ literal BA, không dùng `market_code = 'HOSE'` đại diện `[process]`
 - Ghi chú lịch sử
 
 ### H1 — Một HLD là MỘT nguồn sự thật: sửa Section 1 phải sửa cả Section 3/4/5
@@ -181,6 +182,40 @@ Chạy Gate 8 (`check_design_lint.py`), cảnh báo `L2-TABLE-ZERO-USAGE` nghĩa
 - Khi viết giải trình "dòng BA N → K_xxx", lấy K_xxx từ bảng KPI của chính Nhóm đó (grep tên KPI), **không** suy theo tên gần giống (đã ghi nhầm dòng 188 TradingValue_i → K_PTTT_96 thay vì K_PTTT_270).
 - Khối entity trong erDiagram của một bảng đã xuất hiện ở Nhóm khác phải chép **nguyên văn** khối đang có (Gate 5 #11 `L1-INCONSISTENT-ENTITY-BLOCKS`).
 
+
+### H14 — Chọn chỉ số (VN-Index, VN30…) trên `market_index_snapshot`: lọc `index_nm`, giữ literal BA, không dùng `market_code = 'HOSE'` đại diện `[process]`
+
+Điều kiện BA kiểu `IndexCode = 'VNINDEX'` (hoặc `marketCode = 'VNINDEX'`) → ở Atomic `market_index_snapshot` viết
+`market_index_snapshot.index_nm = 'VNINDEX'` (`index_nm` ← `MDDS.JAD_MARKETINFOR.INDEXNAME`). Data Modeler chốt 2026-10-20:
+nguồn không có cột `IndexCode`, BA gọi sai tên cột; `'VNINDEX'` là **giá trị của `INDEXNAME`**. Giữ nguyên literal của BA,
+chỉ đổi tên cột sang cột Atomic thật. KHÔNG thay bằng `market_code = 'HOSE'`.
+
+Sự cố gốc (PTTT, lộ ra 2026-10-20 khi user hỏi vì sao `fct_market_risk_snpst` lọc `HOSE` trong khi BA ghi `VNINDEX`):
+1. Ghi chú HLD 2026-07-30 kết luận "entity KHÔNG có cột mã chỉ số — chỉ có `Market Code`/`Market Id`/`Index Type Code`". Sai: entity còn
+   có `index_nm` (`INDEXNAME`). Cột BA ghi mà không grep thấy ở Atomic **không** đồng nghĩa entity không có cột tương ứng.
+2. Quyết định đó chỉ chốt cho Nhóm 1&2 nhưng lan sang Nhóm 4/5/6 (qua "đồng bộ Attributes" 2026-09-07), khoảng 10 cột của
+   `fct_market_risk_snpst` (`vnindex_val`, `vnindex_daily_return`, `vnindex_val_previous_day`, `volatility_30_days`,
+   `index_log_return`, `index_val_monthly_average`…) mà không ai đọc lại BA Nhóm 4.
+3. HLD ghi "BA dòng 107" cho điều kiện `market_code = 'HOSE'`, nhưng dòng BA đó ("Thời gian") để trống điều kiện. Các dòng BA Nhóm 4
+   Systemic vol / Độ lệch chuẩn 20 phiên / Lợi suất ngày / Giá t / Giá t−1 đều ghi `IndexCode = 'VNINDEX'`, không dòng nào ghi `HOSE`.
+4. Literal BA bị đổi (`VNINDEX` → `HOSE`) mà không kèm bằng chứng giá trị (không profile dữ liệu, không xác nhận trong phiên).
+
+Cách làm:
+1. Cột BA ghi không có ở entity Atomic: liệt kê ĐỦ `physical_name` + `source_column` của entity
+   (`grep -n "physical_name:\|source_column:" DataModel/Atomic/Group/dm_atm_{entity}-*.yaml`) và mô tả cột trong
+   `BRD/Source/{SRC}/brd_*.yaml` — tìm cột `_nm`, `_tp_code`, `_code` — rồi mới kết luận "không có" hoặc chọn cột đại diện.
+2. Giữ literal BA. Đổi literal (VD `VNINDEX` → `HOSE`) chỉ khi có giá trị thật (1 dòng mẫu đã ẩn danh) hoặc Data Modeler xác nhận
+   trong phiên; ghi nguồn bằng chứng vào Ghi chú.
+3. Quyết định chốt cho Nhóm A không tự áp sang Nhóm B (H11): đọc điều kiện BA của từng Nhóm; "BA dòng N" ghi trong HLD phải mở
+   dòng N kiểm tra điều kiện có thật.
+4. Bước lấy bản ghi cuối ngày: `PARTITION BY` phải chứa cột định danh chỉ số đang dùng ở `WHERE` (`index_nm`).
+
+Ranh giới với H7: H14 chỉ nói về điều kiện **lọc literal** chọn 1 chỉ số. Khóa JOIN Market Index Snapshot ↔ Index Constituent vẫn
+theo H7 (`market_code = index_code`, SQL BA STT 5 GSTT) — KHÔNG nối `index_nm = index_code`: INDEXNAME là tên hiển thị (`VNINDEX`,
+`VN30`) còn `index_code` là mã (`HOSE`, `30`).
+
+Cách kiểm: `grep -n "market_code = 'HOSE'" Datamart/lld/{M}/*.csv Datamart/hld/DTM_{M}_HLD.md`; mỗi chỗ dùng để chọn VN-Index
+phải đối chiếu BA của từng Nhóm tiêu thụ.
 
 ## Ghi chú lịch sử
 

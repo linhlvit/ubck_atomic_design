@@ -18,13 +18,13 @@ description: |
 
 # Skill: Thiết kế LLD Datamart
 
-File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A20 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
+File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A21 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
 
 ## Đọc gì, khi nào
 
 | Khi | Đọc | Nội dung chính |
 |---|---|---|
-| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A20 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
+| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A21 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
 | Phase 0 — Plan | [`reference/phase0_plan.md`](reference/phase0_plan.md) | Bước P1–P3, định dạng Plan tổng, bảng physical name chuẩn |
 | Phase 1 — Attributes | [`reference/phase1_workflow.md`](reference/phase1_workflow.md) | Input, Bước 0–3 (driving table, coverage Dimension, `src_stm_code`, xuất CSV), Checklist Phase 1 |
 | | [`reference/phase1_attributes.md`](reference/phase1_attributes.md) | 15 cột CSV, `etl_logic_type`, ràng buộc key/nullable, partial, merge |
@@ -146,7 +146,7 @@ Ghi thật (bỏ `--check`) chỉ khi `--check` cho thấy phần lệch **chỉ
 
 ---
 
-## Luật A1–A20 (tóm tắt)
+## Luật A1–A21 (tóm tắt)
 
 Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết luật nào liên quan; trước khi áp dụng, đọc mục tương ứng trong [`reference/rules.md`](reference/rules.md) (`grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`). Cột "Máy kiểm" ghi Gate/script bắt được lỗi và mã lỗi in ra; "—" nghĩa là chưa có script, phải tự kiểm theo hướng dẫn trong `rules.md`.
 
@@ -172,6 +172,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | A18 | Chỉ tiêu mã CK × ngày: dùng bản tin cuối ngày của snapshot (`trading_time DESC, sequence DESC`), không `SUM` lại `securities_trade` | 1 | Gate 8 `L3-CUMULATIVE-SNAPSHOT-NOT-DEDUPED` |
 | A19 | Bảng Atomic snapshot/event: mọi tham chiếu có giới hạn ngày tường minh (R1–R6) | 1 (+ mốc ngày KPI ở Phase 2) | `check_date_bound.py` (TC12) — chưa nằm trong Gate |
 | A20 | Cột mới ở Fact/Operational lên flat DDL + DML trong cùng lượt; Gate 4 FAIL không phải "tồn đọng" | 1, 3 | Gate 4 `L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING`, Gate 9 |
+| A21 | Lọc VN-Index trên `market_index_snapshot`: `index_nm = 'VNINDEX'` (literal BA), không `market_code = 'HOSE'`; `PARTITION BY` cuối ngày chứa `index_nm`; đổi một cột thì grep và sửa đồng loạt | 1, 2 | — (quy trình) |
 
 ---
 

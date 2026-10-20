@@ -14,7 +14,7 @@ description: |
 
 # Skill: Thiết kế HLD Datamart
 
-File này giữ quy trình, điều kiện tiên quyết, quy tắc ngữ cảnh, bảng tóm tắt luật H1–H13, Bước 5B và Phase 2. Chi tiết Bước 1–4, diễn giải 14 mục của Bước 5B và checklist bàn giao nằm trong `reference/` — đọc file của bước đang làm.
+File này giữ quy trình, điều kiện tiên quyết, quy tắc ngữ cảnh, bảng tóm tắt luật H1–H14, Bước 5B và Phase 2. Chi tiết Bước 1–4, diễn giải 14 mục của Bước 5B và checklist bàn giao nằm trong `reference/` — đọc file của bước đang làm.
 
 ## Tài nguyên đi kèm
 
@@ -36,7 +36,7 @@ File này giữ quy trình, điều kiện tiên quyết, quy tắc ngữ cảnh
 
 | Khi | Đọc |
 |---|---|
-| Mọi lần sửa HLD | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan (H1–H13, kèm sự cố gốc) |
+| Mọi lần sửa HLD | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan (H1–H14, kèm sự cố gốc) |
 | Bước 1 — đọc BA, tra Atomic, Bước 1B | [`reference/step1_input.md`](reference/step1_input.md) |
 | Bước 2 — scope gating, 5 nhóm PENDING, liên kết Section 5 | [`reference/step2_scope_gating.md`](reference/step2_scope_gating.md) |
 | Bước 3 — reuse 4 lớp, Section 4, bãi bỏ bảng 5 tầng | [`reference/step3_reuse.md`](reference/step3_reuse.md) |
@@ -91,7 +91,7 @@ Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay b
 
 ---
 
-## Luật H1–H13 (tóm tắt)
+## Luật H1–H14 (tóm tắt)
 
 Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết luật nào liên quan; trước khi áp dụng, đọc mục tương ứng trong [`reference/rules.md`](reference/rules.md) (`grep -n "^### H7" .claude/skills/datamart-hld-design/reference/rules.md`). Cột "Máy kiểm" ghi Gate/script bắt được lỗi; "—" nghĩa là chưa có script, phải tự kiểm theo hướng dẫn trong `rules.md`.
 
@@ -111,6 +111,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | H12 | Nhóm chuyển sang bảng mới: bảng cũ 0 KPI dùng → All-Tier Cleanup, giữ lịch sử ở Section 4 | Gate 8 `L2-TABLE-ZERO-USAGE` |
 | H12b | Trước khi kết luận "thiếu", đọc `ghi_chu` Detail Mapping và Ghi chú HLD của đúng KPI | — (quy trình) |
 | H13 | Dòng KPI đúng 7 ô; giải trình "dòng BA → K_xxx" phải tra lại KPI thật; khối erDiagram trùng tên chép nguyên văn | Gate 8 `L1-HLD-KPI-ROW-CELLS`, Gate 5 #11 |
+| H14 | Chọn chỉ số trên `market_index_snapshot`: BA `IndexCode = 'VNINDEX'` → `index_nm = 'VNINDEX'`, giữ literal BA, không dùng `market_code = 'HOSE'` đại diện; cột BA không có ở Atomic thì liệt kê đủ cột entity trước khi kết luận; quyết định của Nhóm này không tự áp sang Nhóm khác | — (quy trình) |
 
 ---
 
