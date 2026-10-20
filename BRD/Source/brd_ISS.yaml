@@ -11,8 +11,8 @@ brd_entries:
   content:
     table_meaning: Dữ liệu chi tiết (fact) trích xuất từ báo cáo đầu vào đã nộp, theo từng sheet và kỳ báo cáo
     functional_group: Quản lý báo cáo đầu vào (Input Report)
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Bảng cần Parsing
     table: FACT_REPORT_DATA
     related_tables:
     - table: INPUT_REPORT_TEMPLATE
@@ -36,7 +36,7 @@ brd_entries:
   content:
     table_meaning: Thông tin file đính kèm dùng chung trong hệ thống (tên file, dung lượng, đường dẫn lưu trữ)
     functional_group: Nhật ký & tiện ích dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: FILE_INFO
     related_tables:
@@ -65,8 +65,8 @@ brd_entries:
   content:
     table_meaning: Yêu cầu nộp báo cáo đầu vào theo tổ chức và kỳ báo cáo, sinh từ mẫu báo cáo
     functional_group: Quản lý báo cáo đầu vào (Input Report)
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Bảng cần Parsing
     table: INPUT_REPORT
     related_tables:
     - table: INPUT_REPORT_TEMPLATE
@@ -90,7 +90,7 @@ brd_entries:
   content:
     table_meaning: Cấu hình hạn nộp và nhắc nhở cho báo cáo đầu vào theo mẫu báo cáo
     functional_group: Quản lý báo cáo đầu vào (Input Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: INPUT_REPORT_DEADLINE
     related_tables:
@@ -113,8 +113,8 @@ brd_entries:
   content:
     table_meaning: Cây chỉ tiêu (metric) trong sheet của mẫu báo cáo đầu vào
     functional_group: Quản lý báo cáo đầu vào (Input Report)
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Bảng cần Parsing
     table: INPUT_REPORT_METRIC
     related_tables:
     - table: INPUT_REPORT_TEMPLATE_SHEET
@@ -136,8 +136,8 @@ brd_entries:
   content:
     table_meaning: Bản ghi nộp báo cáo đầu vào thực tế — file nộp, trạng thái nộp, kết quả so khớp
     functional_group: Quản lý báo cáo đầu vào (Input Report)
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Bảng cần Parsing
     table: INPUT_REPORT_SUBMISSION
     related_tables:
     - table: INPUT_REPORT
@@ -163,8 +163,8 @@ brd_entries:
   content:
     table_meaning: Mẫu báo cáo đầu vào — mã báo cáo, căn cứ pháp lý, cấu hình layout
     functional_group: Quản lý báo cáo đầu vào (Input Report)
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Bảng cần Parsing
     table: INPUT_REPORT_TEMPLATE
     related_tables:
     - table: FILE_INFO
@@ -198,8 +198,8 @@ brd_entries:
   content:
     table_meaning: Sheet (trang tính) trong mẫu báo cáo đầu vào
     functional_group: Quản lý báo cáo đầu vào (Input Report)
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Bảng cần Parsing
     table: INPUT_REPORT_TEMPLATE_SHEET
     related_tables:
     - table: INPUT_REPORT_TEMPLATE
@@ -223,7 +223,7 @@ brd_entries:
   content:
     table_meaning: Bản ghi báo cáo đầu ra được sinh theo kỳ báo cáo
     functional_group: Quản lý báo cáo đầu ra (Output Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT
     related_tables:
@@ -250,7 +250,7 @@ brd_entries:
   content:
     table_meaning: Cấu hình hạn phát sinh báo cáo đầu ra theo mẫu báo cáo
     functional_group: Quản lý báo cáo đầu ra (Output Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_DEADLINE
     related_tables:
@@ -271,7 +271,7 @@ brd_entries:
   content:
     table_meaning: Job (tác vụ nền) sinh báo cáo đầu ra tự động
     functional_group: Quản lý báo cáo đầu ra (Output Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_GENERATE_JOB
     related_tables:
@@ -292,7 +292,7 @@ brd_entries:
   content:
     table_meaning: Chi tiết báo cáo đầu ra được sinh ra trong một job
     functional_group: Quản lý báo cáo đầu ra (Output Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_GENERATE_JOB_ITEM
     related_tables:
@@ -315,7 +315,7 @@ brd_entries:
   content:
     table_meaning: Cây chỉ tiêu (metric) trong mẫu báo cáo đầu ra
     functional_group: Quản lý báo cáo đầu ra (Output Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_METRIC
     related_tables:
@@ -338,7 +338,7 @@ brd_entries:
   content:
     table_meaning: 'Bảng liên kết N-N: mẫu báo cáo đầu vào là nguồn dữ liệu cho mẫu báo cáo đầu ra'
     functional_group: Quản lý báo cáo đầu ra (Output Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_SOURCE
     related_tables:
@@ -361,7 +361,7 @@ brd_entries:
   content:
     table_meaning: Mẫu báo cáo đầu ra — mã báo cáo, căn cứ pháp lý, cấu hình truy vấn dữ liệu
     functional_group: Quản lý báo cáo đầu ra (Output Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_TEMPLATE
     related_tables:
@@ -394,7 +394,7 @@ brd_entries:
   content:
     table_meaning: Tổ hợp (combo) hợp lệ giữa mẫu báo cáo đầu vào và mẫu báo cáo đầu ra
     functional_group: Quản lý báo cáo đầu ra (Output Report)
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_TEMPLATE_COMBO_USED
     related_tables:
@@ -417,7 +417,7 @@ brd_entries:
   content:
     table_meaning: Nhóm quyền truy cập báo cáo — danh sách mã báo cáo đầu vào/đầu ra được phép
     functional_group: Phân quyền báo cáo
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: REPORT_PERMISSION_GROUP
     related_tables:
@@ -438,7 +438,7 @@ brd_entries:
   content:
     table_meaning: Nhật ký gửi/phát báo cáo (đầu vào hoặc đầu ra) đến nơi nhận
     functional_group: Phân quyền báo cáo
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: REPORT_SEND_LOG
     related_tables:
@@ -463,7 +463,7 @@ brd_entries:
   content:
     table_meaning: Gán người dùng vào nhóm quyền báo cáo
     functional_group: Phân quyền báo cáo
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: USER_PERMISSION_GROUP
     related_tables:

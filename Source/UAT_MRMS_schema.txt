@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: UAT_MRMS
-Tong so bang: 36 | Materialized View: 0
+Tong so bang: 22 | Materialized View: 0
 ==============================================================================================================
 
 BANG: PERMISSION_GROUP
@@ -52,162 +52,6 @@ CREATED_BY_NAME               VARCHAR2(250)       YES
 UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
 DELETED                       NUMBER(1,0)         NO                                       
 DISPLAY_ORDER                 NUMBER              YES                                      
-
-
-BANG: QRTZ_BLOB_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
-TRIGGER_NAME                  VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
-TRIGGER_GROUP                 VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
-BLOB_DATA                     BLOB                YES                                      
-
-
-BANG: QRTZ_CALENDARS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-CALENDAR_NAME                 VARCHAR2(190)       NO      PK                               
-CALENDAR                      BLOB                NO                                       
-
-
-BANG: QRTZ_CRON_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
-TRIGGER_NAME                  VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
-TRIGGER_GROUP                 VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
-CRON_EXPRESSION               VARCHAR2(120)       NO                                       
-TIME_ZONE_ID                  VARCHAR2(80)        YES                                      
-
-
-BANG: QRTZ_FIRED_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-ENTRY_ID                      VARCHAR2(95)        NO      PK                               
-TRIGGER_NAME                  VARCHAR2(190)       NO                                       
-TRIGGER_GROUP                 VARCHAR2(190)       NO                                       
-INSTANCE_NAME                 VARCHAR2(190)       NO                                       
-FIRED_TIME                    NUMBER(13,0)        NO                                       
-SCHED_TIME                    NUMBER(13,0)        NO                                       
-PRIORITY                      NUMBER(10,0)        NO                                       
-STATE                         VARCHAR2(16)        NO                                       
-JOB_NAME                      VARCHAR2(190)       YES                                      
-JOB_GROUP                     VARCHAR2(190)       YES                                      
-IS_NONCONCURRENT              VARCHAR2(1)         YES                                      
-REQUESTS_RECOVERY             VARCHAR2(1)         YES                                      
-
-
-BANG: QRTZ_JOB_DETAILS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-JOB_NAME                      VARCHAR2(190)       NO      PK                               
-JOB_GROUP                     VARCHAR2(190)       NO      PK                               
-DESCRIPTION                   VARCHAR2(250)       YES                                      
-JOB_CLASS_NAME                VARCHAR2(250)       NO                                       
-IS_DURABLE                    VARCHAR2(1)         NO                                       
-IS_NONCONCURRENT              VARCHAR2(1)         NO                                       
-IS_UPDATE_DATA                VARCHAR2(1)         NO                                       
-REQUESTS_RECOVERY             VARCHAR2(1)         NO                                       
-JOB_DATA                      BLOB                YES                                      
-
-
-BANG: QRTZ_LOCKS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-LOCK_NAME                     VARCHAR2(40)        NO      PK                               
-
-
-BANG: QRTZ_PAUSED_TRIGGER_GRPS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-TRIGGER_GROUP                 VARCHAR2(190)       NO      PK                               
-
-
-BANG: QRTZ_SCHEDULER_STATE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK                               
-INSTANCE_NAME                 VARCHAR2(190)       NO      PK                               
-LAST_CHECKIN_TIME             NUMBER(13,0)        NO                                       
-CHECKIN_INTERVAL              NUMBER(13,0)        NO                                       
-
-
-BANG: QRTZ_SIMPLE_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
-TRIGGER_NAME                  VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
-TRIGGER_GROUP                 VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
-REPEAT_COUNT                  NUMBER(7,0)         NO                                       
-REPEAT_INTERVAL               NUMBER(12,0)        NO                                       
-TIMES_TRIGGERED               NUMBER(10,0)        NO                                       
-
-
-BANG: QRTZ_SIMPROP_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_TRIGGERS.SCHED_NAME  
-TRIGGER_NAME                  VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_NAME
-TRIGGER_GROUP                 VARCHAR2(190)       NO      PK     QRTZ_TRIGGERS.TRIGGER_GROUP
-STR_PROP_1                    VARCHAR2(512)       YES                                      
-STR_PROP_2                    VARCHAR2(512)       YES                                      
-STR_PROP_3                    VARCHAR2(512)       YES                                      
-INT_PROP_1                    NUMBER(10,0)        YES                                      
-INT_PROP_2                    NUMBER(10,0)        YES                                      
-LONG_PROP_1                   NUMBER(19,0)        YES                                      
-LONG_PROP_2                   NUMBER(19,0)        YES                                      
-DEC_PROP_1                    NUMBER(13,4)        YES                                      
-DEC_PROP_2                    NUMBER(13,4)        YES                                      
-BOOL_PROP_1                   VARCHAR2(1)         YES                                      
-BOOL_PROP_2                   VARCHAR2(1)         YES                                      
-
-
-BANG: QRTZ_TRIGGERS
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SCHED_NAME                    VARCHAR2(120)       NO      PK     QRTZ_JOB_DETAILS.SCHED_NAME
-TRIGGER_NAME                  VARCHAR2(190)       NO      PK                               
-TRIGGER_GROUP                 VARCHAR2(190)       NO      PK                               
-JOB_NAME                      VARCHAR2(190)       NO      FK     QRTZ_JOB_DETAILS.JOB_NAME 
-JOB_GROUP                     VARCHAR2(190)       NO      FK     QRTZ_JOB_DETAILS.JOB_GROUP
-DESCRIPTION                   VARCHAR2(250)       YES                                      
-NEXT_FIRE_TIME                NUMBER(13,0)        YES                                      
-PREV_FIRE_TIME                NUMBER(13,0)        YES                                      
-PRIORITY                      NUMBER(10,0)        YES                                      
-TRIGGER_STATE                 VARCHAR2(16)        NO                                       
-TRIGGER_TYPE                  VARCHAR2(8)         NO                                       
-START_TIME                    NUMBER(13,0)        NO                                       
-END_TIME                      NUMBER(13,0)        YES                                      
-CALENDAR_NAME                 VARCHAR2(190)       YES                                      
-MISFIRE_INSTR                 NUMBER(2,0)         YES                                      
-JOB_DATA                      BLOB                YES                                      
 
 
 BANG: RISK_ALERT
@@ -435,32 +279,6 @@ UPDATED_BY_NAME               VARCHAR2(250)       YES
 DELETED                       NUMBER(1,0)         NO                                       
 
 
-BANG: RISK_INDICATOR_SCHEDULE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-INDICATOR_ID                  VARCHAR2(36)        NO      FK     RISK_INDICATOR.ID         
-FREQUENCY_TYPE                NUMBER(1,0)         NO                                       
-FREQUENCY_VALUE               NUMBER              NO                                       
-START_TIME                    TIMESTAMP(6)        NO                                       
-NEXT_RUN_TIME                 TIMESTAMP(6)        NO                                       
-LAST_RUN_TIME                 TIMESTAMP(6)        YES                                      
-CRON_EXPRESSION               VARCHAR2(100)       YES                                      
-IS_ENABLED                    NUMBER(1,0)         NO                                       
-TOTAL_RUNS                    NUMBER              YES                                      
-LAST_STATUS                   VARCHAR2(50)        YES                                      
-LAST_ERROR                    VARCHAR2(2000)      YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-UPDATED_AT                    TIMESTAMP(6)        YES                                      
-CREATED_BY_ID                 VARCHAR2(255)       YES                                      
-UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
-CREATED_BY_NAME               VARCHAR2(250)       YES                                      
-UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
-DELETED                       NUMBER(1,0)         NO                                       
-
-
 BANG: RISK_INDICATOR_VALUE
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -615,31 +433,6 @@ UPDATED_BY_NAME               VARCHAR2(250)       YES
 DELETED                       NUMBER(1,0)         NO                                       
 
 
-BANG: RISK_NOTIFICATION
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-ALERT_ID                      VARCHAR2(36)        NO      FK     RISK_ALERT.ID             
-NOTIFICATION_TYPE             NUMBER(1,0)         NO                                       
-RECIPIENT_USER_ID             VARCHAR2(36)        YES                                      
-RECIPIENT_EMAIL               VARCHAR2(255)       YES                                      
-SENT_AT                       TIMESTAMP(6)        NO                                       
-SEND_STATUS                   NUMBER(1,0)         NO                                       
-SEND_ERROR                    VARCHAR2(1000)      YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-UPDATED_AT                    TIMESTAMP(6)        YES                                      
-CREATED_BY_ID                 VARCHAR2(255)       YES                                      
-UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
-CREATED_BY_NAME               VARCHAR2(250)       YES                                      
-UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
-DELETED                       NUMBER(1,0)         NO                                       
-READ_STATUS                   NUMBER(1,0)         NO                                       
-TITLE                         VARCHAR2(255)       YES                                      
-CONTENT                       VARCHAR2(1000)      YES                                      
-
-
 BANG: RISK_REPORT_FILE
 Mo ta: 
 --------------------------------------------------------------------------------------------------------------
@@ -674,24 +467,6 @@ DESCRIPTION                   VARCHAR2(4000)      YES
 TEMPLATE_CONTENT              CLOB                YES                                      
 DISPLAY_ORDER                 NUMBER(4,0)         YES                                      
 IS_ACTIVE                     NUMBER(1,0)         NO                                       
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-UPDATED_AT                    TIMESTAMP(6)        YES                                      
-CREATED_BY_ID                 VARCHAR2(255)       YES                                      
-UPDATED_BY_ID                 VARCHAR2(255)       YES                                      
-CREATED_BY_NAME               VARCHAR2(250)       YES                                      
-UPDATED_BY_NAME               VARCHAR2(250)       YES                                      
-DELETED                       NUMBER(1,0)         NO                                       
-
-
-BANG: RISK_REPORT_UPLOAD_BATCH
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            VARCHAR2(36)        NO      PK                               
-REPORT_TYPE_ID                VARCHAR2(36)        NO                                       
-REPORT_DATE                   DATE                NO                                       
-FILE_COUNT                    NUMBER              YES                                      
 CREATED_AT                    TIMESTAMP(6)        NO                                       
 UPDATED_AT                    TIMESTAMP(6)        YES                                      
 CREATED_BY_ID                 VARCHAR2(255)       YES                                      

@@ -9,7 +9,7 @@ brd_entries:
   content:
     table_meaning: Chỉ tiêu tài chính cảnh báo
     functional_group: Cảnh báo vi phạm
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: ALERT_FINANCIAL_INDICATOR
     related_tables:
@@ -30,7 +30,7 @@ brd_entries:
   content:
     table_meaning: Chỉ tiêu cảnh báo
     functional_group: Cảnh báo vi phạm
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: ALERT_INDICATOR
     related_tables:
@@ -59,7 +59,7 @@ brd_entries:
   content:
     table_meaning: Điều kiện kích hoạt cảnh báo chỉ tiêu
     functional_group: Cảnh báo vi phạm
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: ALERT_INDICATOR_CONDITION
     related_tables:
@@ -84,7 +84,7 @@ brd_entries:
   content:
     table_meaning: Lần chạy cảnh báo
     functional_group: Cảnh báo vi phạm
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: ALERT_RUN
     related_tables:
@@ -113,7 +113,7 @@ brd_entries:
   content:
     table_meaning: Kiểm toán viên
     functional_group: Công ty kiểm toán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: AUDITOR
     related_tables:
@@ -136,7 +136,7 @@ brd_entries:
   content:
     table_meaning: Công ty kiểm toán
     functional_group: Công ty kiểm toán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: AUDIT_FIRM
     related_tables:
@@ -207,7 +207,7 @@ brd_entries:
   content:
     table_meaning: Báo cáo định kỳ ngân hàng
     functional_group: Ngân hàng lưu ký
-    scope_status: pending
+    scope_status: in_scope
     scope_reason: null
     table: BANK_PERIODIC_REPORT
     related_tables:
@@ -255,7 +255,7 @@ brd_entries:
   content:
     table_meaning: Danh mục chung
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CATEGORY
     related_tables: null
@@ -274,7 +274,7 @@ brd_entries:
   content:
     table_meaning: Danh mục cảnh báo
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_ALERT
     related_tables:
@@ -318,7 +318,7 @@ brd_entries:
   content:
     table_meaning: Danh mục loại công ty
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_COMPANY_TYPE
     related_tables:
@@ -340,7 +340,7 @@ brd_entries:
     table_meaning: Danh mục quận/huyện
     functional_group: Danh mục dùng chung
     scope_status: in_scope
-    scope_reason: Không thiết kế Atomic entity riêng (dữ liệu địa giới chuẩn hóa tại ECAT), nhưng ETL vẫn crosswalk bảng này để lấy DISTRICT_CODE khi hash geographic_area_old — xem comment FK 'District Id' trong lld_SCMS_SC_FIRM_BRANCH/INFO/REP_OFFICE/TRANSACTION_OFFICE_IP_Postal_Address.yaml. Đánh in_scope vì có bị ETL đọc tới (2026-07-31).
+    scope_reason: Được FK tới từ LLD khác
     table: CAT_DISTRICT
     related_tables:
     - table: CAT_PROVINCE
@@ -429,7 +429,7 @@ brd_entries:
   content:
     table_meaning: Danh mục chỉ tiêu
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_INDICATOR
     related_tables:
@@ -450,7 +450,7 @@ brd_entries:
   content:
     table_meaning: Danh mục nhóm chỉ tiêu
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_INDICATOR_CATALOG
     related_tables:
@@ -475,7 +475,7 @@ brd_entries:
   content:
     table_meaning: Danh mục chỉ tiêu thống kê
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_INDICATOR_STATISTIC
     related_tables:
@@ -497,7 +497,7 @@ brd_entries:
     table_meaning: Danh mục quốc tịch
     functional_group: Danh mục dùng chung
     scope_status: in_scope
-    scope_reason: null
+    scope_reason: Được FK tới từ LLD khác
     table: CAT_NATIONALITY
     related_tables:
     - table: SC_FIRM_DOMESTIC_REP_OFFICE
@@ -529,7 +529,7 @@ brd_entries:
   content:
     table_meaning: Danh mục chức vụ
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: in_scope
     scope_reason: null
     table: CAT_POSITION
     related_tables:
@@ -554,7 +554,7 @@ brd_entries:
   content:
     table_meaning: Danh mục trạng thái hồ sơ
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_PROFILE_STATUS
     related_tables: null
@@ -574,7 +574,7 @@ brd_entries:
     table_meaning: Danh mục tỉnh/thành phố
     functional_group: Danh mục dùng chung
     scope_status: in_scope
-    scope_reason: Không thiết kế Atomic entity riêng (dữ liệu địa giới chuẩn hóa tại ECAT), nhưng ETL vẫn crosswalk bảng này để lấy PROVINCE_CODE khi hash geographic_area — xem comment FK 'Province Id' trong lld_SCMS_SC_FIRM_BRANCH/INFO/REP_OFFICE/TRANSACTION_OFFICE_IP_Postal_Address.yaml. Đánh in_scope vì có bị ETL đọc tới (2026-07-31).
+    scope_reason: Được FK tới từ LLD khác
     table: CAT_PROVINCE
     related_tables:
     - table: CAT_DISTRICT
@@ -604,7 +604,7 @@ brd_entries:
   content:
     table_meaning: Danh mục mối quan hệ
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_RELATIONSHIP
     related_tables: null
@@ -623,7 +623,7 @@ brd_entries:
   content:
     table_meaning: Danh mục vị trí tại công ty chứng khoán
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_SC_FIRM_POSITION
     related_tables: null
@@ -713,7 +713,7 @@ brd_entries:
   content:
     table_meaning: Danh mục loại giao dịch cổ đông
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_SHAREHOLDER_TRANSACTION_TYPE
     related_tables:
@@ -734,7 +734,7 @@ brd_entries:
   content:
     table_meaning: Danh mục mã thống kê
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_STATISTIC
     related_tables: null
@@ -753,7 +753,7 @@ brd_entries:
   content:
     table_meaning: Danh mục loại vi phạm
     functional_group: Danh mục dùng chung
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_VIOLATION_TYPE
     related_tables: null
@@ -773,7 +773,7 @@ brd_entries:
     table_meaning: Danh mục phường/xã
     functional_group: Danh mục dùng chung
     scope_status: in_scope
-    scope_reason: Không thiết kế Atomic entity riêng (dữ liệu địa giới chuẩn hóa tại ECAT), nhưng ETL vẫn crosswalk bảng này để lấy Ward Code khi hash geographic_area — xem comment FK 'Ward Id' trong lld_SCMS_SC_FIRM_BRANCH/INFO/REP_OFFICE/TRANSACTION_OFFICE_IP_Postal_Address.yaml. Đánh in_scope vì có bị ETL đọc tới (2026-07-31).
+    scope_reason: Được FK tới từ LLD khác
     table: CAT_WARD
     related_tables:
     - table: CAT_PROVINCE
@@ -824,7 +824,7 @@ brd_entries:
   content:
     table_meaning: Chứng thư số
     functional_group: Quản lý CTCK
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: DIGITAL_CERTIFICATE
     related_tables:
@@ -847,7 +847,7 @@ brd_entries:
   content:
     table_meaning: Tin tức công bố thông tin
     functional_group: Công bố thông tin
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: DISCLOSURE_NEWS
     related_tables: null
@@ -866,7 +866,7 @@ brd_entries:
   content:
     table_meaning: Tệp đính kèm tin tức CBTT
     functional_group: Công bố thông tin
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: DISCLOSURE_NEWS_FILE
     related_tables: null
@@ -885,7 +885,7 @@ brd_entries:
   content:
     table_meaning: Báo cáo công bố thông tin
     functional_group: Công bố thông tin
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: DISCLOSURE_REPORT
     related_tables:
@@ -939,7 +939,7 @@ brd_entries:
   content:
     table_meaning: Thông tin cổ đông công bố
     functional_group: Công bố thông tin
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: DISCLOSURE_SHAREHOLDER
     related_tables:
@@ -1169,7 +1169,7 @@ brd_entries:
   content:
     table_meaning: Cấu hình chi tiết biểu mẫu báo cáo
     functional_group: Biểu mẫu báo cáo
-    scope_status: pending
+    scope_status: in_scope
     scope_reason: null
     table: FORM_REPORT_DEEP_CONFIG
     related_tables:
@@ -1211,7 +1211,7 @@ brd_entries:
   content:
     table_meaning: Ánh xạ biểu mẫu báo cáo gộp (canonical) sang nguồn đọc dữ liệu khai thác/cảnh báo
     functional_group: Biểu mẫu báo cáo
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: FORM_REPORT_INPUT_SOURCE
     related_tables:
@@ -1232,7 +1232,7 @@ brd_entries:
   content:
     table_meaning: Kỳ báo cáo của biểu mẫu
     functional_group: Biểu mẫu báo cáo
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: FORM_REPORT_PERIODIC
     related_tables:
@@ -1286,7 +1286,7 @@ brd_entries:
   content:
     table_meaning: Cột tiêu đề hàng biểu mẫu
     functional_group: Biểu mẫu báo cáo
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: FORM_ROW_HEADER_COLUMN
     related_tables:
@@ -1510,7 +1510,7 @@ brd_entries:
   content:
     table_meaning: Liên kết chức năng và người dùng
     functional_group: Quản trị phân hệ
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_FUNCTION_USER
     related_tables:
@@ -1533,7 +1533,7 @@ brd_entries:
   content:
     table_meaning: Liên kết chức năng và nhóm người dùng
     functional_group: Quản trị phân hệ
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_FUNCTION_USER_GROUP
     related_tables:
@@ -1621,7 +1621,7 @@ brd_entries:
   content:
     table_meaning: Liên kết công ty chứng khoán và báo cáo
     functional_group: Liên kết
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_SC_FIRM_REPORT
     related_tables:
@@ -1667,7 +1667,7 @@ brd_entries:
   content:
     table_meaning: Liên kết trạng thái CTCK và báo cáo
     functional_group: Liên kết
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_SC_FIRM_STATUS_REPORT
     related_tables:
@@ -1690,7 +1690,7 @@ brd_entries:
   content:
     table_meaning: Liên kết dịch vụ, CTCK và báo cáo
     functional_group: Liên kết
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_SERVICE_SC_FIRM_REPORT
     related_tables:
@@ -1740,7 +1740,7 @@ brd_entries:
   content:
     table_meaning: Liên kết người dùng và ngân hàng
     functional_group: Quản trị phân hệ
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_USER_BANK
     related_tables:
@@ -1763,7 +1763,7 @@ brd_entries:
   content:
     table_meaning: Liên kết người dùng và nhóm
     functional_group: Quản trị phân hệ
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_USER_GROUP
     related_tables:
@@ -1786,7 +1786,7 @@ brd_entries:
   content:
     table_meaning: Liên kết nhóm người dùng và báo cáo
     functional_group: Quản trị phân hệ
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_USER_GROUP_REPORT
     related_tables:
@@ -1809,7 +1809,7 @@ brd_entries:
   content:
     table_meaning: Liên kết người dùng và báo cáo
     functional_group: Quản trị phân hệ
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_USER_REPORT
     related_tables:
@@ -1834,7 +1834,7 @@ brd_entries:
   content:
     table_meaning: Liên kết người dùng và công ty chứng khoán
     functional_group: Quản trị phân hệ
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LNK_USER_SC_FIRM
     related_tables:
@@ -1859,7 +1859,7 @@ brd_entries:
   content:
     table_meaning: Báo cáo định kỳ của đơn vị thành viên
     functional_group: Báo cáo đầu vào
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: MEMBER_REPORT
     related_tables:
@@ -1931,7 +1931,7 @@ brd_entries:
   content:
     table_meaning: Xử lý báo cáo của đơn vị thành viên
     functional_group: Báo cáo đầu vào
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: MEMBER_REPORT_PROCESSING
     related_tables:
@@ -2152,7 +2152,7 @@ brd_entries:
   content:
     table_meaning: Cấu hình bộ lọc khả dụng khi khai thác một biểu mẫu báo cáo đầu ra
     functional_group: Biểu mẫu báo cáo
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_FILTER
     related_tables:
@@ -2244,7 +2244,7 @@ brd_entries:
   content:
     table_meaning: Giá trị ô trong báo cáo
     functional_group: Biểu mẫu báo cáo
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: REPORT_CELL_VALUE
     related_tables:
@@ -2283,7 +2283,7 @@ brd_entries:
   content:
     table_meaning: Giá trị hàng động trong báo cáo
     functional_group: Biểu mẫu báo cáo
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: REPORT_DYNAMIC_ROW_VALUE
     related_tables:
@@ -2366,7 +2366,7 @@ brd_entries:
   content:
     table_meaning: Tệp đính kèm nộp báo cáo
     functional_group: Báo cáo đầu vào
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: REPORT_INPUT_SUBMISSION_FILE
     related_tables:
@@ -2387,7 +2387,7 @@ brd_entries:
   content:
     table_meaning: Vi phạm trong báo cáo
     functional_group: Biểu mẫu báo cáo
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: REPORT_VIOLATION
     related_tables:
@@ -2410,7 +2410,7 @@ brd_entries:
   content:
     table_meaning: Chỉ tiêu quản lý rủi ro
     functional_group: Cảnh báo rủi ro
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: RISK_INDICATOR
     related_tables:
@@ -2433,7 +2433,7 @@ brd_entries:
   content:
     table_meaning: Nhóm chỉ tiêu rủi ro
     functional_group: Cảnh báo rủi ro
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: RISK_INDICATOR_GROUP
     related_tables:
@@ -2458,7 +2458,7 @@ brd_entries:
   content:
     table_meaning: Kỳ báo cáo rủi ro
     functional_group: Cảnh báo rủi ro
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: RISK_REPORTING_PERIOD
     related_tables:
@@ -2485,7 +2485,7 @@ brd_entries:
   content:
     table_meaning: Kỳ báo cáo rủi ro theo công ty chứng khoán
     functional_group: Cảnh báo rủi ro
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: RISK_REPORTING_PERIOD_SC_FIRM
     related_tables:
@@ -2510,7 +2510,7 @@ brd_entries:
   content:
     table_meaning: Thang điểm đánh giá rủi ro
     functional_group: Cảnh báo rủi ro
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: RISK_SCORING_SCALE
     related_tables:
@@ -2533,7 +2533,7 @@ brd_entries:
   content:
     table_meaning: Chi tiết điểm rủi ro công ty chứng khoán
     functional_group: Cảnh báo rủi ro
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: RISK_SCORING_SC_FIRM_DETAIL
     related_tables:
@@ -2562,7 +2562,7 @@ brd_entries:
   content:
     table_meaning: Tổng hợp rủi ro
     functional_group: Cảnh báo rủi ro
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: RISK_SUMMARY
     related_tables:
@@ -2587,7 +2587,7 @@ brd_entries:
   content:
     table_meaning: Chi tiết tổng hợp rủi ro
     functional_group: Cảnh báo rủi ro
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: RISK_SUMMARY_DETAIL
     related_tables:
@@ -2704,7 +2704,7 @@ brd_entries:
   content:
     table_meaning: Quyết định xử phạt hành chính
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_ADMIN_PENALTY_DECISION
     related_tables:
@@ -2725,7 +2725,7 @@ brd_entries:
   content:
     table_meaning: Xử lý hành chính công ty chứng khoán
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_ADMIN_SANCTION
     related_tables:
@@ -2746,7 +2746,7 @@ brd_entries:
   content:
     table_meaning: Cảnh báo vi phạm công ty chứng khoán
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_ALERT_VIOLATION
     related_tables:
@@ -2814,7 +2814,7 @@ brd_entries:
   content:
     table_meaning: Khiếu nại, kiến nghị công ty chứng khoán
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_COMPLAINT_PETITION
     related_tables:
@@ -2856,7 +2856,7 @@ brd_entries:
   content:
     table_meaning: Văn phòng đại diện trong nước
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_DOMESTIC_REP_OFFICE
     related_tables:
@@ -3100,7 +3100,7 @@ brd_entries:
   content:
     table_meaning: Văn phòng đại diện nước ngoài tại Việt Nam
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_FOREIGN_REP_OFFICE_VN
     related_tables:
@@ -3302,7 +3302,7 @@ brd_entries:
   content:
     table_meaning: Lịch kiểm tra công ty chứng khoán
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_INSPECTION_SCHEDULE
     related_tables:
@@ -3323,7 +3323,7 @@ brd_entries:
   content:
     table_meaning: Người hành nghề chứng khoán
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_LICENSED_PRACTITIONER
     related_tables:
@@ -3383,7 +3383,7 @@ brd_entries:
   content:
     table_meaning: Quan hệ sở hữu công ty chứng khoán
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_OWNERSHIP_RELATION
     related_tables:
@@ -3601,7 +3601,7 @@ brd_entries:
   content:
     table_meaning: Dịch vụ của công ty chứng khoán
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_SERVICE
     related_tables:
@@ -3680,7 +3680,7 @@ brd_entries:
   content:
     table_meaning: Quan hệ cổ đông
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_SHAREHOLDER_RELATION
     related_tables:
@@ -3703,7 +3703,7 @@ brd_entries:
   content:
     table_meaning: Người đại diện cổ đông
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
     related_tables:
@@ -3730,7 +3730,7 @@ brd_entries:
   content:
     table_meaning: Chuyển nhượng cổ phần
     functional_group: Quản lý CTCK
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_SHAREHOLDER_TRANSFER
     related_tables:
@@ -3796,7 +3796,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: ALERT_GROUP
     related_tables:
@@ -3817,7 +3817,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: ALERT_RUN_MISSING_REPORT_LOG
     related_tables:
@@ -3842,7 +3842,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: ALERT_VIOLATION_SNAPSHOT
     related_tables:
@@ -3865,7 +3865,7 @@ brd_entries:
   content:
     table_meaning: Danh mục phân loại ý kiến kiểm toán
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_AUDIT_OPINION_TYPE
     related_tables: null
@@ -3884,7 +3884,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_FILTER
     related_tables:
@@ -3907,7 +3907,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAT_REPORT_GROUP
     related_tables:
@@ -3928,7 +3928,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_PARENT
     related_tables:
@@ -3953,7 +3953,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_PARENT_CHILD
     related_tables:
@@ -3976,7 +3976,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: OUTPUT_REPORT_PARENT_COMMON_FILTER
     related_tables:
@@ -3999,7 +3999,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: SCMS_ECAT_WORKING_SCHEDULE
     related_tables: null
@@ -4018,7 +4018,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_PRACTITIONER_CCHN
     related_tables:
@@ -4039,7 +4039,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: null
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: SC_FIRM_PRACTITIONER_CCHN_DIV
     related_tables: null

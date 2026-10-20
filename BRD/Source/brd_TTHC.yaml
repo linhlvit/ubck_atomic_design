@@ -10,7 +10,7 @@ brd_entries:
     table_meaning: Hồ sơ đăng ký chào bán / phát hành chứng khoán và kết quả xét duyệt (GCN / văn bản từ chối) — toàn bộ lưu trong cùng bảng ContentItemIndex, phân biệt bởi ContentType (Latest=1, Published=1)
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
     scope_status: in_scope
-    scope_reason: Qua ODS TTHC (STG → parse → ODS → ATM) — nguồn của ODS CLASSIFICATION_VALUE, AP_DOCUMENT_APPLICANT, AP_DOCUMENT (2026-09-30)
+    scope_reason: Bảng cần Parsing
     table: CONTENTITEMINDEX
     related_tables:
     - table: DOCUMENT
@@ -54,7 +54,7 @@ brd_entries:
   content:
     table_meaning: Trường văn bản đơn (text, input-url, radios) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: TEXTFIELDINDEX
     related_tables:
@@ -75,7 +75,7 @@ brd_entries:
   content:
     table_meaning: Trường HTML (rich-text editor) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: HTMLFIELDINDEX
     related_tables:
@@ -96,7 +96,7 @@ brd_entries:
   content:
     table_meaning: Trường văn bản nhiều giá trị (textarea, multi-value) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: MULTITEXTFIELDINDEX
     related_tables:
@@ -117,7 +117,7 @@ brd_entries:
   content:
     table_meaning: Trường liên kết URL (input-url) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: LINKFIELDINDEX
     related_tables:
@@ -138,7 +138,7 @@ brd_entries:
   content:
     table_meaning: Trường số (input-number) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: NUMERICFIELDINDEX
     related_tables:
@@ -159,7 +159,7 @@ brd_entries:
   content:
     table_meaning: Trường ngày (input-date) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: DATEFIELDINDEX
     related_tables:
@@ -180,7 +180,7 @@ brd_entries:
   content:
     table_meaning: Trường ngày giờ (datetime fields) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: DATETIMEFIELDINDEX
     related_tables:
@@ -201,7 +201,7 @@ brd_entries:
   content:
     table_meaning: Trường giờ (time fields) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: TIMEFIELDINDEX
     related_tables:
@@ -222,7 +222,7 @@ brd_entries:
   content:
     table_meaning: Trường boolean của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: BOOLEANFIELDINDEX
     related_tables:
@@ -243,7 +243,7 @@ brd_entries:
   content:
     table_meaning: Trường chọn ContentItem khác (content picker) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: CONTENTPICKERFIELDINDEX
     related_tables:
@@ -264,7 +264,7 @@ brd_entries:
   content:
     table_meaning: Trường chọn người dùng (user picker) của tờ khai Eform đã index — gộp vào Application Eform Field Value
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: USERPICKERFIELDINDEX
     related_tables:
@@ -285,7 +285,7 @@ brd_entries:
   content:
     table_meaning: Workflow instance xét duyệt hồ sơ chào bán — ghi nhận từng lần chạy quy trình (WorkflowId, WorkflowStatus, CreatedUtc) gắn với hồ sơ qua CorrelationId
     functional_group: UID-02 Quy trình xét duyệt hồ sơ
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     table: WORKFLOWINDEX
     related_tables:
@@ -309,7 +309,7 @@ brd_entries:
     table_meaning: Raw JSON gốc của toàn bộ ContentItem — cột Content chứa JSON serialize toàn bộ nội dung chi tiết
     functional_group: UID-01 Hồ sơ chào bán chứng khoán
     scope_status: in_scope
-    scope_reason: Qua ODS TTHC (STG → parse → ODS → ATM) — nguồn của ODS AP_DOCUMENT_APPLICANT, AP_DOCUMENT (2026-09-30)
+    scope_reason: Bảng cần Parsing
     table: DOCUMENT
     related_tables:
     - table: CONTENTITEMINDEX
@@ -673,7 +673,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CONTENT_TRIGGERS
     related_tables: null
@@ -692,7 +692,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: TMP_CII_ID_REMAP
     related_tables:

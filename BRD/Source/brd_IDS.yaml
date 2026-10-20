@@ -90,7 +90,7 @@ brd_entries:
     table: CATEGORIES
     description: Bảng lưu trữ danh mục ngành nghề của công ty đại chúng.
     functional_group: public_company
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: CATEGORIES
@@ -313,7 +313,7 @@ brd_entries:
     table: COMPANY_CHANGE_ROLE_HIS
     description: Lịch sử thay đổi thông tin quản lý công ty
     functional_group: public_company
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: COMPANY_PROFILES
@@ -330,7 +330,7 @@ brd_entries:
     table: LOGINS
     description: Bảng tài khoản đăng nhập
     functional_group: auth
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: COMPANY_PROFILES
@@ -349,7 +349,7 @@ brd_entries:
     table: COUNTRIES
     description: Bảng lưu quốc gia
     functional_group: master_data
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables: null
     ingestion:
@@ -361,8 +361,8 @@ brd_entries:
     table: PROVINCES
     description: Bảng lưu dữ liệu tỉnh thành
     functional_group: master_data
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Được FK tới từ LLD khác
     related_tables:
     - table: WARDS
       relation: 1-N — Phường/xã thuộc tỉnh
@@ -377,7 +377,7 @@ brd_entries:
     table: LOOKUP_VALUES
     description: Bảng lưu dữ liệu danh mục
     functional_group: master_data
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: LOOKUP_VALUES
@@ -507,7 +507,7 @@ brd_entries:
     table: FIELDS
     description: Trường dữ liệu chi tiết
     functional_group: reporting
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: FORM_FIELDS
@@ -527,7 +527,7 @@ brd_entries:
     table: FORM_FIELDS
     description: Lưu cấu hình trường dữ liệu của các mẫu báo cáo
     functional_group: reporting
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: FIELDS
@@ -545,7 +545,7 @@ brd_entries:
     table: FORM_FIELD_HISTORY
     description: Lưu lại lịch sử khi cấu hình form_fields
     functional_group: reporting
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: FIELDS
@@ -561,7 +561,7 @@ brd_entries:
     table: DEPARTMENTS
     description: Lưu dữ liệu phòng ban
     functional_group: master_data
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: USERS
@@ -575,7 +575,7 @@ brd_entries:
     table: DATA_TYPES
     description: Lưu kiểu dữ liệu sử dụng cho các fields trong hệ thống
     functional_group: master_data
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables: null
     ingestion:
@@ -732,7 +732,7 @@ brd_entries:
     table: DATA_VALUES
     description: Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields
     functional_group: reporting
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: COMPANY_DATA
@@ -769,7 +769,7 @@ brd_entries:
     table: COMPANY_DIGITAL_CERTIFICATES
     description: Lưu trữ dữ liệu ký số của các công ty
     functional_group: document
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: COMPANY_PROFILES
@@ -918,7 +918,7 @@ brd_entries:
     table: FILES
     description: Lữu trữ thông tin file đính kèm của các object trong hệ thống.
     functional_group: document
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables: null
     ingestion:
@@ -930,7 +930,7 @@ brd_entries:
     table: HOLIDAY_CALENDAR
     description: Lưu trữ dữ liệu ngày nghỉ.
     functional_group: master_data
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables: null
     ingestion:
@@ -976,7 +976,7 @@ brd_entries:
     table: MANUAL_DOCUMENT
     description: Lưu trữ cấu hình tài liệu hướng dẫn trong hệ thống
     functional_group: document
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables: null
     ingestion:
@@ -1091,7 +1091,7 @@ brd_entries:
     table: VIOLATION_PENALTY_CONFIG
     description: Bảng cấu hình các mức phạt/xử lý khi vi phạm
     functional_group: inspection_penalty
-    scope_status: in_scope
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: VIOLATION_TEMPLATES
@@ -1145,7 +1145,7 @@ brd_entries:
     table: WARDS
     description: Lưu trữ thông tin xã/phường
     functional_group: master_data
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: PROVINCES
@@ -1173,7 +1173,7 @@ brd_entries:
     table: LOGIN_PERMISSION_BY_CODE
     description: Bảng LOGIN_PERMISSION_BY_CODE
     functional_group: auth
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: LOGINS
@@ -1190,7 +1190,7 @@ brd_entries:
     table: ALERT_TEMPLATE_AUDIT_DTL
     description: Danh sách rule cấu hình cảnh báo
     functional_group: unclassified_pending
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: ALERT_TEMPLATE_AUDIT_HDR
@@ -1207,7 +1207,7 @@ brd_entries:
     table: ALERT_TEMPLATE_AUDIT_HDR
     description: Danh sách mẫu template cảnh báo
     functional_group: unclassified_pending
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: ALERT_TEMPLATE_AUDIT_DTL
@@ -1240,7 +1240,7 @@ brd_entries:
     table: DYNAMIC_REPORT_TEMPLATES
     description: Mẫu báo cáo động — header
     functional_group: unclassified_pending
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: FORMS
@@ -1255,7 +1255,7 @@ brd_entries:
     table: DYNAMIC_REPORT_TEMPLATE_FIELDS
     description: Chỉ tiêu thuộc mẫu báo cáo động
     functional_group: unclassified_pending
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: FIELDS
@@ -1270,7 +1270,7 @@ brd_entries:
     table: EVALUATION_LEVEL_SCORE
     description: Cấu hình điểm áp dụng chung cho tất cả chỉ tiêu theo mức đánh giá
     functional_group: unclassified_pending
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables: null
     ingestion:
@@ -1306,7 +1306,7 @@ brd_entries:
     table: TENDER_OFFER
     description: Lưu thông tin phương án chào mua công khai (Public Tender Offer)
     functional_group: unclassified_pending
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: COMPANY_PROFILES
@@ -1326,7 +1326,7 @@ brd_entries:
     table: TENDER_OFFER_RESULT
     description: Lưu thông tin kết quả chào mua công khai (Public Tender Offer Result)
     functional_group: unclassified_pending
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     related_tables:
     - table: TENDER_OFFER
@@ -1347,7 +1347,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: APPRAISAL_CRITERIA
     related_tables:
@@ -1368,7 +1368,7 @@ brd_entries:
   content:
     table_meaning: Tài sản bảo đảm trái phiếu
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: BOND_COLLATERAL
     related_tables: null
@@ -1387,7 +1387,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: BOND_LISTING
     related_tables:
@@ -1410,7 +1410,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: BOND_LISTING_HISTORY_TMP
     related_tables:
@@ -1431,7 +1431,7 @@ brd_entries:
   content:
     table_meaning: Trạng thái thanh toán gốc/lãi trái phiếu
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: BOND_PAYMENT_STATUS
     related_tables: null
@@ -1451,7 +1451,7 @@ brd_entries:
     table_meaning: Chi tiết từng hình thức chào bán/phát hành trong kế hoạch tăng
       vốn (5.3.2.6)
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAPITAL_INCREASE_DETAIL
     related_tables:
@@ -1472,7 +1472,7 @@ brd_entries:
   content:
     table_meaning: Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6)
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: CAPITAL_INCREASE_PLAN
     related_tables:
@@ -1498,7 +1498,7 @@ brd_entries:
   content:
     table_meaning: Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: DOSSIER_APPRAISAL_RESULT
     related_tables:
@@ -1528,7 +1528,7 @@ brd_entries:
       REPORT_CD dạng 'BASE_<họ>_<loại>' là bản khai chung, bản khai theo REPORT_CD
       cụ thể đè base khi trùng ROW_DESC.
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: FINANCIAL_INDICATOR_MAPPING
     related_tables: null
@@ -1549,7 +1549,7 @@ brd_entries:
       Là dữ liệu đầu vào phục vụ tính các chỉ số/tỷ số tài chính lưu trong bảng LOOKUP_KEY_FINANCIALS.
       Khóa nghiệp vụ (STOCK_CODE, YEAR, QUARTER).
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: FINANCIAL_RATIOS_DETAIL
     related_tables:
@@ -1574,7 +1574,7 @@ brd_entries:
       kỳ (năm/quý). Materialize từ FINANCIAL_RATIOS_DETAIL, quan hệ 1-1 qua ID. Phục
       vụ tra cứu nhanh (lookup) cho các báo cáo phân tích.
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: LOOKUP_KEY_FINANCIALS
     related_tables:
@@ -1597,7 +1597,7 @@ brd_entries:
   content:
     table_meaning: null
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: USERS
     related_tables:

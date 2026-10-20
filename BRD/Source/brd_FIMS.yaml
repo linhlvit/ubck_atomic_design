@@ -408,7 +408,7 @@ brd_entries:
     table_meaning: lưu danh sách biểu mẫu báo cáo đầu vào
     functional_group: FIMS.2 Biểu mẫu báo cáo đầu vào
     scope_status: in_scope
-    scope_reason: Qua ODS báo cáo động FIMS (STG → parse → ODS → ATM) — LLD nhóm Foreign Investor Report (2026-09-30)
+    scope_reason: null
     table: RPTTEMP
     related_tables:
     - table: REPORTTYPE
@@ -441,7 +441,7 @@ brd_entries:
     table_meaning: lưu danh sách các sheet trong biểu mẫu báo cáo đầu vào
     functional_group: FIMS.2 Biểu mẫu báo cáo đầu vào
     scope_status: in_scope
-    scope_reason: Qua ODS báo cáo động FIMS (STG → parse → ODS → ATM) — LLD nhóm Foreign Investor Report (2026-09-30)
+    scope_reason: null
     table: SHEET
     related_tables:
     - table: RPTPDSHT
@@ -755,7 +755,7 @@ brd_entries:
     table_meaning: lưu danh sách quốc tịch / quốc gia
     functional_group: FIMS.5 Danh mục dùng chung
     scope_status: in_scope
-    scope_reason: Không thiết kế Atomic entity riêng (dữ liệu quốc tịch/quốc gia chuẩn hóa tại ECAT), nhưng ETL vẫn crosswalk bảng này để lấy Code khi hash geographic_area — xem comment FK trong lld_FIMS_INVESTOR.yaml và lld_FIMS_TRADINGREPRESENTATIVE.yaml. Đánh in_scope vì có bị ETL đọc tới (2026-07-31).
+    scope_reason: Được FK tới từ LLD khác
     table: NATIONAL
     related_tables:
     - table: BANKMONI
@@ -797,8 +797,8 @@ brd_entries:
   content:
     table_meaning: lưu danh sách danh mục tình trạng hoạt động
     functional_group: FIMS.5 Danh mục dùng chung
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: STATUS
     related_tables:
     - table: BANKMONI
@@ -924,8 +924,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách danh mục loại hình doanh nghiệp
     functional_group: FIMS.5 Danh mục dùng chung
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: COMPANYTYPE
     related_tables:
     - table: INVESTOR
@@ -1108,8 +1108,8 @@ brd_entries:
   content:
     table_meaning: lưu danh sách danh mục loại nhà đầu tư
     functional_group: FIMS.5 Danh mục dùng chung
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: INVESTORTYPE
     related_tables:
     - table: INVESTOR
@@ -1347,8 +1347,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách tài khoản giao dịch chứng khoán
     functional_group: FIMS.6 Nhà đầu tư nước ngoài
-    scope_status: in_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: out_of_scope
+    scope_reason: null
     table: SECURITIESACCOUNT
     related_tables:
     - table: INVESTOR
@@ -1395,8 +1395,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách danh mục chứng khoán của NĐT NN
     functional_group: FIMS.6 Nhà đầu tư nước ngoài
-    scope_status: in_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: out_of_scope
+    scope_reason: null
     table: CATEGORIESSTOCK
     related_tables:
     - table: INVESTOR
@@ -1444,7 +1444,7 @@ brd_entries:
     table_meaning: Lưu danh sách đại diện giao dịch
     functional_group: FIMS.6 Nhà đầu tư nước ngoài
     scope_status: in_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_reason: null
     table: TRADINGREPRESENTATIVE
     related_tables:
     - table: NATIONAL
@@ -1478,8 +1478,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch
     functional_group: FIMS.7 Thành viên thị trường
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: STOCKEXCHANGE
     related_tables:
     - table: ANNOUNCE
@@ -1517,8 +1517,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký
     functional_group: FIMS.7 Thành viên thị trường
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: DEPOSITORYCENTER
     related_tables:
     - table: ANNOUNCE
@@ -1556,8 +1556,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ
     functional_group: FIMS.7 Thành viên thị trường
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: FUNDCOMPANY
     related_tables:
     - table: ANNOUNCE
@@ -1647,8 +1647,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán
     functional_group: FIMS.7 Thành viên thị trường
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: SECURITIESCOMPANY
     related_tables:
     - table: ANNOUNCE
@@ -1791,8 +1791,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài
     functional_group: FIMS.7 Thành viên thị trường
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: BRANCHS
     related_tables:
     - table: ANNOUNCE
@@ -1853,8 +1853,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán
     functional_group: FIMS.7 Thành viên thị trường
-    scope_status: out_of_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: in_scope
+    scope_reason: null
     table: INFODISCREPRES
     related_tables:
     - table: ANNOUNCE
@@ -1974,7 +1974,7 @@ brd_entries:
     table_meaning: lưu danh sách báo cáo của các thành viên thị trường
     functional_group: FIMS.8 Báo cáo thành viên
     scope_status: in_scope
-    scope_reason: Qua ODS báo cáo động FIMS (STG → parse → ODS → ATM) — LLD nhóm Foreign Investor Report (2026-09-30)
+    scope_reason: null
     table: RPTMEMBER
     related_tables:
     - table: ANNOUNCE
@@ -2044,7 +2044,7 @@ brd_entries:
     table_meaning: bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới
     functional_group: FIMS.8 Báo cáo thành viên
     scope_status: in_scope
-    scope_reason: Qua ODS báo cáo động FIMS (STG → parse → ODS → ATM) — LLD nhóm Foreign Investor Report (2026-09-30)
+    scope_reason: null
     table: RPTVALUES
     related_tables:
     - table: BANKMONI
@@ -2463,8 +2463,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách ủy quyền giao dịch
     functional_group: FIMS.10 Ủy quyền CBTT và giao dịch
-    scope_status: in_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: out_of_scope
+    scope_reason: null
     table: TRADINGAUTHORIZATION
     related_tables:
     - table: FUNDCOMPANY
@@ -2519,8 +2519,8 @@ brd_entries:
   content:
     table_meaning: Lưu danh sách NĐT NN trong ủy quyền giao dịch
     functional_group: FIMS.10 Ủy quyền CBTT và giao dịch
-    scope_status: in_scope
-    scope_reason: Chờ thiết kế LLD
+    scope_status: out_of_scope
+    scope_reason: null
     table: TRADINGAUTHORIZATIONINVES
     related_tables:
     - table: INVESTOR
@@ -2565,8 +2565,8 @@ brd_entries:
   content:
     table_meaning: Danh mục tỉnh/thành phố (bản mới)
     functional_group: FIMS.5 Danh mục dùng chung
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Được FK tới từ LLD khác
     table: PROVINCE_NEW
     related_tables: null
     notes: null
@@ -2584,7 +2584,7 @@ brd_entries:
   content:
     table_meaning: Lưu vết purge/khôi phục báo cáo thành viên thử nghiệm (RPTMEMBER)
     functional_group: FIMS.8 Báo cáo thành viên
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: RPT_MEMBER_TESTER_PURGE
     related_tables: null
@@ -2603,7 +2603,7 @@ brd_entries:
   content:
     table_meaning: Phân quyền loại sự vụ báo cáo theo người dùng (SsoUserId – RPT_EVENT_TYPE)
     functional_group: FIMS.8 Báo cáo thành viên
-    scope_status: pending
+    scope_status: out_of_scope
     scope_reason: null
     table: USER_EVENT_TYPE
     related_tables:
@@ -2626,8 +2626,8 @@ brd_entries:
   content:
     table_meaning: Danh mục phường/xã (bản mới)
     functional_group: FIMS.5 Danh mục dùng chung
-    scope_status: pending
-    scope_reason: null
+    scope_status: in_scope
+    scope_reason: Được FK tới từ LLD khác
     table: WARD_NEW
     related_tables: null
     notes: null
