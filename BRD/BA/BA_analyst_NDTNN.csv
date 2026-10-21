@@ -19,7 +19,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -60,7 +60,7 @@ FROM
 join 
         stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
 where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
+        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STK'
         --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
 union all
 select
@@ -99,7 +99,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -141,7 +141,7 @@ stockinfor AS
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
+                AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -160,20 +160,20 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
         FROM (
                 SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
         ) x
 )
 -- 6. CCQ: stocktype IN (3,6)
---    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STK', HNX = 'UPX'/'STX')
 , cte_ccq AS
 (
         SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
@@ -185,12 +185,12 @@ stockinfor AS
                 WHERE stocktype IN (3,6) 
         ) x
 )
--- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STK')
 , cte_cw AS
 (
         SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
         FROM hose_tb
-        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STK'
 )
 , cte_all AS
 (
@@ -228,7 +228,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -253,7 +253,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -265,7 +265,7 @@ and row_path = 'Tổng
 and ngay_nop = :ngaynop;","select frc.value_raw  from uat_fims_ods.fir_value frc
 where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
-and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and column_path = 'Kỳ báo cáo';
 and row_path = 'Tổng
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Tổng,Tổng số lượng tới thời điểm báo cáo,
 1,6,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là cá nhân,Số lượng mã số giao dịch cấp mới cho NĐTNN là cá nhân (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'H0I8J'
@@ -275,7 +275,7 @@ and row_path = 'Cá nhân'
 and ngay_nop = :ngaynop;","select frc.value_raw  from uat_fims_ods.fir_value frc
 where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
-and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and column_path = 'Kỳ báo cáo';
 and row_path = 'Cá nhân'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Cá nhân,Tổng số lượng tới thời điểm báo cáo,
 1,7,Dashboard/Giao dịch/Thống kê chung,Tăng trưởng NĐT mới là tổ chức,Số lượng mã số giao dịch cấp mới cho NĐTNN là tổ chức (YTD).,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'H0I8J'
@@ -285,14 +285,40 @@ and row_path = 'Tổ chức'
 and ngay_nop = :ngaynop;","select frc.value_raw  from uat_fims_ods.fir_value frc
 where report_code = 'H0I8J'
 and frc.sheet_name = 'I'
-and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and column_path = 'Kỳ báo cáo';
 and row_path = 'Tổ chức'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng)",I. Thông tin chung,Tổ chức,Tổng số lượng tới thời điểm báo cáo,
-2,8,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Giá trị mua/bán ròng,Giá trị mua/bán ròng = Giá trị mua - giá trị bán,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tháng","CSDLTT, MDDS",X,X,X,Done,Sổ lệnh,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HNX:
+1,8,Dashboard/Giao dịch/Thống kê chung,Số lượng NĐT,Tổng số lượng NĐTNN cho đến thời điểm báo cáo,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Tổng
+and ngay_nop = :ngaynop;","select frc.value_raw  from uat_fims_ods.fir_value frc
+where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Tổng
+and ngay_nop = :ngaynop;",bổ sung UAT,,,,,,,,,,,,
+1,9,Dashboard/Giao dịch/Thống kê chung,Số lượng NĐT Cá nhân,Tổng số lượng NĐTNN cá nhân cho đến thời điểm báo cáo,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Cá nhân'
+and ngay_nop = :ngaynop;","select frc.value_raw  from uat_fims_ods.fir_value frc
+where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Cá nhân'
+and ngay_nop = :ngaynop;",bổ sung UAT,,,,,,,,,,,,
+1,10,Dashboard/Giao dịch/Thống kê chung,Số lượng NĐT Tổ chức,Tổng số lượng NĐTNN Tổ chức cho đến thời điểm báo cáo,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Tổ chức'
+and ngay_nop = :ngaynop;","select frc.value_raw  from uat_fims_ods.fir_value frc
+where report_code = 'H0I8J'
+and frc.sheet_name = 'I'
+and column_path = 'Tổng số lượng tới thời điểm báo cáo';
+and row_path = 'Tổ chức'
+and ngay_nop = :ngaynop;",bổ sung UAT,,,,,,,,,,,,
+2,11,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Giá trị mua/bán ròng,Giá trị mua/bán ròng = Giá trị mua - giá trị bán,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tháng","CSDLTT, MDDS",X,X,X,Done,Sổ lệnh,danh muc,"TRADE_BOOK_HNX:
 - Trade price
 - Trade quantity
 => Giá trị GD = Trade price * Trade quantity
@@ -303,7 +329,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -346,7 +372,7 @@ FROM
 join 
         stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
 where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
+        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STK'
         --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
 union all
 select
@@ -381,17 +407,17 @@ LEFT JOIN uat_ids_stg.categories c
        AND c.ds_snpst_dt = to_date('2026-09-02')
 GROUP BY coalesce(c.industry_name, 'Chưa phân ngành'), t.ma_ck, t.ngay_gd
 ;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,9,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Ngành,,Dashboard,Chiều,Dễ,,IDS,X,X,X,Done,,CATEGORIES,INDUSTRY_NAME,"MDDS:
+2,12,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Ngành,,Dashboard,Chiều,Dễ,,IDS,X,X,X,Done,,CATEGORIES,INDUSTRY_NAME,"MDDS:
 js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')",,,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,10,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Mã CK,,Dashboard,Chiều,Dễ,,"CSDLTT, MDDS",X,X,X,Done,,"CSDLTT:
+2,13,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Mã CK,,Dashboard,Chiều,Dễ,,"CSDLTT, MDDS",X,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -404,12 +430,12 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')",,,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,11,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Lũy kế mua ròng,Tính lũy kế mua/bán ròng trong một khoảng thời gian (từ ngày đến ngày theo điều kiện lọc),Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tháng","CSDLTT, MDDS",X,X,X,Done,,"CSDLTT:
+2,14,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Lũy kế mua ròng,Tính lũy kế mua/bán ròng trong một khoảng thời gian (từ ngày đến ngày theo điều kiện lọc),Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tháng","CSDLTT, MDDS",X,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -424,12 +450,12 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')",,,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,12,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top ngành bán ròng,"Top 5 ngành có giá trị bán ròng lớn nhất.
+2,15,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top ngành bán ròng,"Top 5 ngành có giá trị bán ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK, gom nhóm mã CK theo ngành để lấy top",Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Tháng","CSDLTT, IDS, MDDS",,X,X,Done,,"IDS.CATEGORIES
  
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
@@ -452,7 +478,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -538,7 +564,7 @@ group by industry_name
 having mua_ban_rong < 0
 ORDER BY mua_ban_rong asc
 limit 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,13,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top ngành mua ròng,"Top 5 ngành có giá trị mua ròng lớn nhất.
+2,16,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top ngành mua ròng,"Top 5 ngành có giá trị mua ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK, gom nhóm mã CK theo ngành để lấy top",Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Tháng","CSDLTT, IDS, MDDS",,X,X,Done,,"IDS.CATEGORIES
  
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
@@ -561,12 +587,12 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')",,,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,14,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã bán ròng,"Top 5 mã cổ phiếu có giá trị bán ròng lớn nhất.
+2,17,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã bán ròng,"Top 5 mã cổ phiếu có giá trị bán ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK",Dashboard,Chỉ tiêu,Trùng,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -586,7 +612,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -629,7 +655,7 @@ stockinfor AS
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
+                AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -649,20 +675,20 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT ma_ck, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
         FROM (
                 SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
         ) x
 )
 -- 6. CCQ: stocktype IN (3,6)
---    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STK', HNX = 'UPX'/'STX')
 , cte_ccq AS
 (
         SELECT  ma_ck,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
@@ -675,12 +701,12 @@ stockinfor AS
         ) x
         group by ma_ck, gtri_ndtnn_mua,gtri_ndtnn_ban
 )
--- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STK')
 , cte_cw AS
 (
         SELECT symbol ma_ck,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
         FROM hose_tb
-        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STK'
         GROUP BY ma_ck
 )
 , cte_all AS
@@ -698,7 +724,7 @@ FROM cte_all
 group by ma_ck
 having gtri_mua_ban_rong < 0
 ORDER BY gtri_mua_ban_rong asc;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,15,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã mua ròng,"Top 5 mã cổ phiếu có giá trị mua ròng lớn nhất.
+2,18,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã mua ròng,"Top 5 mã cổ phiếu có giá trị mua ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK",Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -718,7 +744,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -761,7 +787,7 @@ stockinfor AS
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
+                AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -781,20 +807,20 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT ma_ck, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
         FROM (
                 SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
         ) x
 )
 -- 6. CCQ: stocktype IN (3,6)
---    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STK', HNX = 'UPX'/'STX')
 , cte_ccq AS
 (
         SELECT  ma_ck,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
@@ -807,12 +833,12 @@ stockinfor AS
         ) x
         group by ma_ck, gtri_ndtnn_mua,gtri_ndtnn_ban
 )
--- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STK')
 , cte_cw AS
 (
         SELECT symbol ma_ck,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
         FROM hose_tb
-        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STK'
 group by ma_ck
 )
 , cte_all AS
@@ -830,7 +856,7 @@ FROM cte_all
 group by ma_ck
 having gtri_mua_ban_rong > 0
 ORDER BY gtri_mua_ban_rong desc;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,16,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top NDTNN mua ròng,"Top 5 NDTNN có giá trị mua ròng lớn nhất.
+2,19,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top NDTNN mua ròng,"Top 5 NDTNN có giá trị mua ròng lớn nhất.
 ",Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -851,7 +877,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -898,7 +924,7 @@ stockinfor AS
     JOIN stockinfor js
             ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
     WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-            AND tb.market_id IN ('STO', 'BDO')
+            AND tb.market_id IN ('STK', 'BDO')
     union all 
     SELECT
             js.stocktype
@@ -912,7 +938,7 @@ stockinfor AS
     JOIN stockinfor js
             ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
     WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-            AND tb.market_id IN ('STO', 'BDO')
+            AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -947,20 +973,20 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT tk, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
         FROM (
                 SELECT  tk, gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT tk, gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
         ) x
 )
 -- 6. CCQ: stocktype IN (3,6)
---    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STK', HNX = 'UPX'/'STX')
 , cte_ccq AS
 (
         SELECT  tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
@@ -973,12 +999,12 @@ stockinfor AS
         ) x
         group by tk, gtri_ndtnn_mua,gtri_ndtnn_ban
 )
--- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STK')
 , cte_cw AS
 (
         SELECT tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
         FROM hose_tb
-        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STK'
         group by tk
 )
 , cte_all AS
@@ -999,7 +1025,7 @@ having luy_ke > 0
 order by luy_ke desc
 limit 5
 ;",UAT bổ sung,,,,,,,,,,,,
-2,17,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top NDTNN bán ròng,"Top 5 NDTNN có giá trị mua ròng lớn nhất.
+2,20,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top NDTNN bán ròng,"Top 5 NDTNN có giá trị mua ròng lớn nhất.
 Gom nhóm giá trị mua/bán ròng theo mã CK",Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Tháng","CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -1019,7 +1045,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -1066,7 +1092,7 @@ stockinfor AS
     JOIN stockinfor js
             ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
     WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-            AND tb.market_id IN ('STO', 'BDO')
+            AND tb.market_id IN ('STK', 'BDO')
     union all 
     SELECT
             js.stocktype
@@ -1080,7 +1106,7 @@ stockinfor AS
     JOIN stockinfor js
             ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
     WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-            AND tb.market_id IN ('STO', 'BDO')
+            AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -1115,20 +1141,20 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT tk, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
         FROM (
                 SELECT  tk, gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT tk, gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
         ) x
 )
 -- 6. CCQ: stocktype IN (3,6)
---    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STK', HNX = 'UPX'/'STX')
 , cte_ccq AS
 (
         SELECT  tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
@@ -1141,12 +1167,12 @@ stockinfor AS
         ) x
         group by tk, gtri_ndtnn_mua,gtri_ndtnn_ban
 )
--- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STK')
 , cte_cw AS
 (
         SELECT tk,SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban
         FROM hose_tb
-        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STK'
         group by tk
 )
 , cte_all AS
@@ -1167,7 +1193,7 @@ having luy_ke < 0
 order by luy_ke asc
 limit 5
 ;",UAT bổ sung,,,,,,,,,,,,
-2,18,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tỷ trọng giao dịch theo ngày,Tỷ trọng = (Tổng giá trị mua + Tổng giá trị bán) *100 /Tổng giá trị giao dịch toàn thị trường *2,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
+2,21,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tỷ trọng giao dịch theo ngày,Tỷ trọng = (Tổng giá trị mua + Tổng giá trị bán) *100 /Tổng giá trị giao dịch toàn thị trường *2,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -1182,7 +1208,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -1225,7 +1251,7 @@ stockinfor AS
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
+                AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -1245,13 +1271,13 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT ngay_gd, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
         FROM (
                 SELECT trade_date ngay_gd, gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT trade_date ngay_gd, gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
@@ -1265,7 +1291,7 @@ SELECT
         , (SUM(NVL(gtri_ndtnn_mua,0))+SUM(NVL(gtri_ndtnn_ban,0)))*100/SUM(NVL(tong_gtri,0))*2
 FROM cte_cophieu
 ORDER BY 1;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,19,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tổng giá trị giao dịch NĐTNN,"Tổng giá trị giao dịch NĐTNN = Tổng giá trị mua của NĐTNN
+2,22,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tổng giá trị giao dịch NĐTNN,"Tổng giá trị giao dịch NĐTNN = Tổng giá trị mua của NĐTNN
 + Tổng giá trị bán của NĐTNN",Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -1281,12 +1307,12 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')",,Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,20,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tổng giá trị mua của NĐTNN,,Dashboard,Chỉ tiêu phái sinh,Trùng,,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
+2,23,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tổng giá trị mua của NĐTNN,,Dashboard,Chỉ tiêu phái sinh,Trùng,,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -1302,12 +1328,12 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')",,Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,21,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tổng giá trị bán của NĐTNN,,Dashboard,Chỉ tiêu phái sinh,Trùng,,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
+2,24,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tổng giá trị bán của NĐTNN,,Dashboard,Chỉ tiêu phái sinh,Trùng,,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -1323,12 +1349,12 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')",,Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,22,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tổng giá trị giao dịch toàn thị trường,"Tổng GTGD toàn thị trường = Tổng giá trị GD khớp lệnh + tổng giá trị GD thỏa thuận cổ phiếu, CCQ, trái phiếu trên các sàn giao dịch",Dashboard,Chỉ tiêu phái sinh,Trùng,,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
+2,25,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tổng giá trị giao dịch toàn thị trường,"Tổng GTGD toàn thị trường = Tổng giá trị GD khớp lệnh + tổng giá trị GD thỏa thuận cổ phiếu, CCQ, trái phiếu trên các sàn giao dịch",Dashboard,Chỉ tiêu phái sinh,Trùng,,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -1343,12 +1369,12 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and market_id in ('UPX', 'STX')",,[S-01] Điều kiện lọc Tổng GT GD toàn TT không nên lọc NĐTNN — phải lấy toàn bộ thị trường,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,23,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tỷ trọng TB phiên,"Tính giá trị trung bình trong khoảng thời gian
+2,26,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tỷ trọng TB phiên,"Tính giá trị trung bình trong khoảng thời gian
  Tỷ trọng TB phiên = Tổng tỷ trọng trong khoảng thời gian đã chọn/Số ngày giao dịch thực tế",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
@@ -1364,7 +1390,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -1405,7 +1431,7 @@ FROM
 join 
         stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
 where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
+        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STK'
         --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
 union all
 select
@@ -1424,7 +1450,7 @@ WHERE
 select round(((sum(gtri_ndtnn_mua) + sum(gtri_ndtnn_ban))/(sum(tong_gtri*2)))*100,2)  AS ty_le_pct FROM cte;","Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước
 
 cần phải xác nhận lại trường trade date từ sổ lệnh có phải ngày giao dịch thực tế không, hay phải lấy từ sổ khớp",,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,24,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tỷ trọng theo ngành(top ngành),"Tính tỷ trọng trung bình theo nhóm ngành và lấy top 5 cao nhất.
+2,27,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Tỷ trọng theo ngành(top ngành),"Tính tỷ trọng trung bình theo nhóm ngành và lấy top 5 cao nhất.
 Gom nhóm Tổng giá trị giao dịch NĐTNN theo mã CK, gom nhóm mã CK theo ngành rồi tính tỷ trọng so với toàn ngành",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"CSDLTT, IDS, MDDS",X,X,X,Done,,"IDS.CATEGORIES
 IDS.COMPANY_PROFILES
 
@@ -1446,7 +1472,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -1490,7 +1516,7 @@ stockinfor AS
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
+                AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -1511,34 +1537,34 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT coalesce(c.industry_name, 'Chưa phân ngành') nganh, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
         FROM (
                 SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
         ) x
-		LEFT JOIN uat_ids_stg.company_profiles cp 
+                LEFT JOIN uat_ids_stg.company_profiles cp 
            ON t.symbol = cp.equity_ticker 
           AND cp.ds_snpst_dt = to_date('2026-09-02') and cp.DELETE_FLG = 0
-		LEFT JOIN uat_ids_stg.categories c 
-			   ON cp.category_l1_id = c.id
-			   AND c.ds_snpst_dt = to_date('2026-09-02')
-		GROUP BY coalesce(c.industry_name, 'Chưa phân ngành')
+                LEFT JOIN uat_ids_stg.categories c 
+                           ON cp.category_l1_id = c.id
+                           AND c.ds_snpst_dt = to_date('2026-09-02')
+                GROUP BY coalesce(c.industry_name, 'Chưa phân ngành')
 
 )
 SELECT
         nganh
-        , (gtri_ndtnn_mua+gtri_ndtnn_ban)*100/(tong_gtri*2) as ty_trong
+        , gtri_ndtnn_mua+gtri_ndtnn_ban as tong_gtri
 FROM cte_cophieu
 group by nganh
-order by ty_trong
+order by tong_gtri
 limit 5;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-2,25,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã tỷ trọng cao,Tính tỷ trọng trung bình theo mã cổ phiếu và lấy top 5 cao nhất.Gom nhóm Tổng giá trị giao dịch NĐTNN theo mã CK rồi tính tỷ trọng so với tổng giá trị giao dịch của mã,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
+2,28,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top mã tỷ trọng cao,Tính tỷ trọng trung bình theo mã cổ phiếu và lấy top 5 cao nhất.Gom nhóm Tổng giá trị giao dịch NĐTNN theo mã CK rồi tính tỷ trọng so với tổng giá trị giao dịch của mã,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -1557,7 +1583,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -1601,7 +1627,7 @@ stockinfor AS
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
+                AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -1622,13 +1648,13 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT ma_ck, SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
         FROM (
                 SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT symbol ma_ck, gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
@@ -1636,14 +1662,11 @@ stockinfor AS
 )
 SELECT
         ma_ck
-        , SUM(NVL(gtri_ndtnn_mua,0))
-        , SUM(NVL(gtri_ndtnn_ban,0))
-        , SUM(NVL(tong_gtri,0))
-        , (SUM(NVL(gtri_ndtnn_mua,0))+SUM(NVL(gtri_ndtnn_ban,0)))*100/SUM(NVL(tong_gtri,0))*2 ty_trong
+        , SUM(NVL(gtri_ndtnn_mua,0))+SUM(NVL(gtri_ndtnn_ban,0)) ty_trong
 FROM cte_cophieu
 order by ty_trong
 limit 5;",Cần bảng danh mục ngành từ IDS-GSĐC. Phần MSS đã xác định: trường mã CK để JOIN.,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-,26,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top NDTNN tỷ trọng cao ,tỷ trọng NDTNN = NDTNN_mua + NDTNN_bán,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"CSDLTT, MDDS",,,,Doing,,"CSDLTT:
+2,29,Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN,Top NDTNN tỷ trọng cao ,tỷ trọng NDTNN = NDTNN_mua + NDTNN_bán,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"CSDLTT, MDDS",,,,Doing,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -1662,7 +1685,7 @@ js.stocktype = 2
 
 TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
-        and market_id = 'STO'
+        and market_id = 'STK'
 
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
@@ -1695,34 +1718,34 @@ stockinfor AS
 ,cte as 
 (
 select
-	buy_acct_no as tk,
-  	SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
-	SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban,
-   	SUM(Execution_Value) tong_gtri
+        buy_acct_no as tk,
+          SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
+        SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban,
+           SUM(Execution_Value) tong_gtri
 FROM
         uat_hose_stg.trade_book tb
 join 
         stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
 where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
+        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STK'
         --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
 group by tk
 union all 
-	sell_acct_no as tk,
-  	SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
-	SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban,
-   	SUM(Execution_Value) tong_gtri
+        sell_acct_no as tk,
+          SUM(CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua,
+        SUM(CASE WHEN SUBSTRING(tb.sell_acct_no ,4,1) in ('E','F') THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban,
+           SUM(Execution_Value) tong_gtri
 FROM
         uat_hose_stg.trade_book tb
 join 
         stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
 where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STO'
+        tb.trade_date BETWEEN :pdat1 AND :pdat2 and tb.market_id = 'STK'
         --and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
 group by tk
 union all
 select
-	tb.buy_account_number as tk,
+        tb.buy_account_number as tk,
     SUM(CASE WHEN SUBSTRING(tb.buy_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
     SUM(CASE WHEN SUBSTRING(tb.sell_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban,
     sum(Trade_price * Trade_quantity) as tong_gtri
@@ -1736,7 +1759,7 @@ WHERE
 group by tk
 union all 
 select
-	tb.sell_account_number tk,
+        tb.sell_account_number tk,
     SUM(CASE WHEN SUBSTRING(tb.buy_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua, 
     SUM(CASE WHEN SUBSTRING(tb.sell_account_number  ,4,1) in ('E','F') THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban,
     sum(Trade_price * Trade_quantity) as tong_gtri
@@ -1751,8 +1774,8 @@ group by tk
 )
 --tỷ lệ tham gia
 select 
-	tk, 
-	SUM(tong_gtri) ty_trong 
+        tk, 
+        SUM(tong_gtri) ty_trong 
 FROM cte t
 LEFT JOIN uat_ids_stg.company_profiles cp 
        ON t.ma_ck = cp.equity_ticker 
@@ -1764,8 +1787,8 @@ GROUP BY tk
 having luy_ke > 0
 order by luy_ke desc
 limit 5
-;",UAT bổ sung,,,,,,,,,,,,
-3,27,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ròng ,"Dòng tiền ròng = Tổng tiền vào - Tổng tiền ra
+;",UAT bổ sung,,,,,Dữ liệu tĩnh,,,,,,,
+3,30,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ròng ,"Dòng tiền ròng = Tổng tiền vào - Tổng tiền ra
 Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
@@ -1774,7 +1797,7 @@ where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),Báo cáo tại ngày (lấy ngày cuối tháng)
-3,28,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền vào, ,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'IBOU9'
+3,31,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền vào, ,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'IBOU9'
 and column_path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;","select sum(frc.value_raw)  from uat_fims_ods.fir_value frc
@@ -1782,7 +1805,7 @@ where report_code = 'IBOU9'
 and column_path = 'Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD),
-3,29,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ra,Tổng tiền ra,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'IBOU9'
+3,32,Dashboard/Giám sát dòng vốn/Thống kê dòng vốn,Dòng tiền ra,Tổng tiền ra,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,FIMS,X,X,,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'IBOU9'
 and column_path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;","select sum(frc.value_raw)  from uat_fims_ods.fir_value frc
@@ -1790,7 +1813,7 @@ where report_code = 'IBOU9'
 and column_path = 'Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD),
-4,30,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Dòng vốn ròng,"Dòng vốn ròng = Dòng vốn đầu tư vào - Dòng vốn rút ra
+4,33,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Dòng vốn ròng,"Dòng vốn ròng = Dòng vốn đầu tư vào - Dòng vốn rút ra
 Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)",Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,FIMS,X,X,X,Done,  ,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
@@ -1874,8 +1897,8 @@ SELECT
     END), 4) AS dong_von_rong_quy
 FROM pvt_data
 WHERE tong_gtri_danh_muc IS NOT NULL
-GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),join với cụm INVESTOR qua cột MSGD
-4,31,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Loại hình NĐTNN,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),join với cụm INVESTKR qua cột MSGD
+4,34,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Loại hình NĐTNN,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1884,7 +1907,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Loại hình đối với tổ chức,Nếu Loại hình có chi tiết thì lấy luôn phân loại theo báo cáo
-4,32,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quốc gia,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,35,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quốc gia,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1893,7 +1916,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,
-4,33,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,36,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1902,7 +1925,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,,,,,
-4,34,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Cá nhân,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Cá nhân.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,37,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Cá nhân,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Cá nhân.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1911,7 +1934,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng (2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),"Báo cáo phân loại theo Cá nhân và Tổ chức, Tổ chức phân loại theo cột Loại hình đối với tổ chức"
-4,35,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Tổ chức khác quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Tổ chức khác quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
+4,38,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Tổ chức khác quỹ,Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Tổ chức khác quỹ.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại hình NĐTNN",FIMS,,X,X,Done,Báo cáo,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
       AND is_section_echo = 0 
@@ -1920,7 +1943,7 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');",,,,,Don
       AND is_template_marker = 0
       AND is_total_row = 0
       AND ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,,,,,
-4,36,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia vào ròng,Top 5 quốc gia có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
+4,39,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia vào ròng,Top 5 quốc gia có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -1972,7 +1995,7 @@ WHERE q.quoc_tich IS NOT NULL
 GROUP BY q.quoc_tich
 ORDER BY vao_rong DESC
 LIMIT 5;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 dương"
-4,37,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia rút ròng,Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
+4,40,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia rút ròng,Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2024,7 +2047,7 @@ WHERE q.quoc_tich IS NOT NULL
 GROUP BY q.quoc_tich
 ORDER BY vao_rong ASC
 LIMIT 5;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Quốc tịch,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 âm nhiều nhất"
-4,38,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT vào ròng,Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
+4,41,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT vào ròng,Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2075,7 +2098,7 @@ JOIN c_ndt c
 GROUP BY c.ten_ndt
 ORDER BY vao_rong DESC
 LIMIT 5;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Tên nhà đầu tư,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 dương"
-4,39,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT  rút ròng,Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
+4,42,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT  rút ròng,Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2126,7 +2149,7 @@ JOIN c_ndt c
 GROUP BY c.ten_ndt
 ORDER BY vao_rong ASC
 LIMIT 5;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,,Tên nhà đầu tư,"Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 âm nhiều nhất"
-5,40,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Dòng tiền ròng,Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.,Dashboard,Chỉ tiêu phái sinh,Trùng,Tháng,FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'IBOU9'
+5,43,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Dòng tiền ròng,Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.,Dashboard,Chỉ tiêu phái sinh,Trùng,Tháng,FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;","select frc.value_raw  from uat_fims_ods.fir_value frc
@@ -2134,7 +2157,7 @@ where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 and row_path = 'Tổng= (1) + (2)'
 and ngay_nop = :ngaynop;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng)",,Tổng = (1)+(2),Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD),
-5,41,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Giá trị mua/bán ròng,Giá trị mua bán ròng hàng ngày của nhà đầu tư.,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
+5,44,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Giá trị mua/bán ròng,Giá trị mua bán ròng hàng ngày của nhà đầu tư.,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,"CSDLTT, MDDS",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -2225,14 +2248,15 @@ SELECT
     trade_date  AS ngay_gd,
     gtri_mua_ngay - gtri_ban_ngay as mua_ban_rong
 FROM daily_summary;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-5,42,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Điểm đóng cửa chỉ số,Mức điểm của VN-Index tại cuối mỗi ngày.,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,MDDS,,X,X,Done,,JAD_MARKETINFOR,"""marketIndex"",
+5,45,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Điểm đóng cửa chỉ số,Mức điểm của VN-Index tại cuối mỗi ngày.,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,MDDS,,X,X,Done,,JAD_MARKETINFOR,"""marketIndex"",
 ""tradingdate"",
 ""indexTime"",
 ""marketCode""","WHERE 1=1
         -- Lọc khoảng ngày (nếu cần lọc, truyền dạng 'yyyyMMdd' ví dụ: '20260101'):
          AND m.tradingdate BETWEEN :tu_ngay AND :den_ngay
         AND m.marketId   = '10'
-        AND m.marketCode = 'HOSE'","WITH ranked AS (
+        AND m.marketCode = 'HOSE'","WITH ranked_day AS (
+    -- Bước 1: bản ghi cuối cùng (indexTime lớn nhất) của mỗi ngày giao dịch
     SELECT
         m.tradingdate,
         m.marketId,
@@ -2242,13 +2266,27 @@ FROM daily_summary;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
         ROW_NUMBER() OVER (
             PARTITION BY m.marketId, m.marketCode, m.tradingdate
             ORDER BY m.indexTime DESC
-        ) AS rn
+        ) AS rn_day
     FROM uat_mdds_stg.jad_marketinfor m
     WHERE 1=1
-        -- Lọc khoảng ngày (nếu cần lọc, truyền dạng 'yyyyMMdd' ví dụ: '20260101'):
-         AND m.tradingdate BETWEEN :tu_ngay AND :den_ngay
+        AND m.tradingdate BETWEEN :tu_ngay AND :den_ngay   -- 'yyyyMMdd'
         AND m.marketId   = '10'
         AND m.marketCode = 'HOSE'
+),
+last_of_day AS (
+    SELECT tradingdate, marketId, marketCode, marketIndex, indexTime
+    FROM ranked_day
+    WHERE rn_day = 1
+),
+ranked_month AS (
+    -- Bước 2: trong mỗi tháng, xếp hạng ngày giao dịch giảm dần
+    SELECT
+        d.*,
+        ROW_NUMBER() OVER (
+            PARTITION BY d.marketId, d.marketCode, SUBSTR(d.tradingdate, 1, 6)
+            ORDER BY d.tradingdate DESC
+        ) AS rn_month
+    FROM last_of_day d
 )
 SELECT
     tradingdate,
@@ -2256,10 +2294,10 @@ SELECT
     marketCode,
     marketIndex,
     indexTime
-FROM ranked
-WHERE rn = 1
+FROM ranked_month
+WHERE rn_month = 1
 ORDER BY tradingdate, marketId, marketCode;",,,,,Chưa có SQL,Dữ liệu tĩnh,P,,,,,,
-6,43,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục,"Tổng quy mô tài sản mà NĐTNN đang nắm giữ (bao gồm cổ phiếu, trái phiếu và tiền mặt.",Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Toàn thị trường",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,46,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục,"Tổng quy mô tài sản mà NĐTNN đang nắm giữ (bao gồm cổ phiếu, trái phiếu và tiền mặt.",Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Toàn thị trường",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2362,28 +2400,32 @@ GROUP BY nhom_loai_hinh
 UNION ALL
 SELECT nhom_loai_hinh, ROUND(tong_gtri, 4)
 FROM chi_nhanh_nhnn;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tổng giá trị danh mục,
-6,44,Dashboard/Danh mục/Thống kê danh mục,Loại hình nhà đầu tư,,Dashboard,Chiều,Trùng,,FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,47,Dashboard/Danh mục/Thống kê danh mục,Loại hình nhà đầu tư,,Dashboard,Chiều,Trùng,,FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu tĩnh,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,Loại hình đối với tổ chức,
-6,45,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của cá nhân,Tổng giá trị danh mục của NĐTNN là cá nhân,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,48,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của cá nhân,Tổng giá trị danh mục của NĐTNN là cá nhân,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (2),Tổng giá trị danh mục,
-6,46,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của quỹ,Tổng giá trị danh mục của NĐTNN là quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,49,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của quỹ,Tổng giá trị danh mục của NĐTNN là quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,,,,,
-6,47,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của ngân hàng nước ngoài tại VN,Tổng giá trị danh mục của NĐTNN là chi nhánh ngân hàng nước ngoài,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,,,,,,,,,Done,Dữ liệu động,,,,,,bổ sung UAT,
-6,48,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của tổ chức khác quỹ,Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,50,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của ngân hàng nước ngoài tại VN,Tổng giá trị danh mục của NĐTNN là chi nhánh ngân hàng nước ngoài,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,,,"        WHERE report_code = '59WJB'
+          AND sheet_name  = 'II'
+          AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
+          AND is_static_copy = 0 AND is_template_marker = 0
+          and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,,,,,,bổ sung UAT,
+6,51,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của tổ chức khác quỹ,Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,,,,,
-6,49,Dashboard/Danh mục/Thống kê danh mục,Top 5 quốc gia,Top 5 quốc gia có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Quốc gia",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,52,Dashboard/Danh mục/Thống kê danh mục,Top 5 quốc gia,Top 5 quốc gia có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Quốc gia",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2460,7 +2502,7 @@ GROUP BY quoc_tich
 ORDER BY tong_gtri_danh_muc DESC
 LIMIT 5",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
 Quốc tịch","Sum (Tổng giá trị danh mục) theo cột Quốc tịch, lấy top 5 lớn nhất"
-6,50,Dashboard/Danh mục/Thống kê danh mục,Top 5 NĐT,Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, NĐT",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+6,53,Dashboard/Danh mục/Thống kê danh mục,Top 5 NĐT,Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, NĐT",FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2535,7 +2577,7 @@ GROUP BY ten_kh
 ORDER BY tong_gtri_danh_muc DESC
 LIMIT 5;",,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,,"Tổng giá trị danh mục,
 Tên khách hàng","Sum (Tổng giá trị danh mục) theo cột Tên khách hàng, lấy top 5 lớn nhất"
-7,51,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Giá trị tài sản,,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,54,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Giá trị tài sản,,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2654,37 +2696,37 @@ SELECT
         sum(gtri_von_gop)*100/sum(tong_gtri_danh_muc) as gtri_von_gop,
         sum(tien)*100/sum(tong_gtri_danh_muc) as tien
 FROM pvt_data;",,,,,Done,Dữ liệu động,P,,,,,,
-7,52,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Loại tài sản,,Dashboard,Chiều,TB,,FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,55,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Loại tài sản,,Dashboard,Chiều,TB,,FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,,,,,
-7,53,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Cổ phiếu, CCQ niêm yết","Giá trị tài sản NĐTNN đầu tư vào cổ phiếu, CCQ niêm yết",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,56,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Cổ phiếu, CCQ niêm yết","Giá trị tài sản NĐTNN đầu tư vào cổ phiếu, CCQ niêm yết",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),"Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết>>Giá trị",
-7,54,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Trái phiếu,Giá trị tài sản NĐTNN đầu tư vào trái phiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,57,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Trái phiếu,Giá trị tài sản NĐTNN đầu tư vào trái phiếu,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Trái phiếu,Sum (Giá trị) của 3 loại trái phiếu
-7,55,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Upcom,Giá trị tài sản NĐTNN đầu tư vào upcom,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,58,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Upcom,Giá trị tài sản NĐTNN đầu tư vào upcom,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom)>>Giá trị,
-7,56,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác","Giá trị tài sản NĐTNN đầu tư vào giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,59,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,"Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác","Giá trị tài sản NĐTNN đầu tư vào giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác",Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),"Cổ phiếu/Chứng chỉ quỹ>>Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác>>Giá trị",
-7,57,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Tiền và tương đương với tiền,Giá trị tài sản NĐTNN là tiền và tương đương với tiền,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+7,60,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Tiền và tương đương với tiền,Giá trị tài sản NĐTNN là tiền và tương đương với tiền,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại tài sản",FIMS,,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,Lấy từ báo cáo NHLK,,,,Done,Dữ liệu động,P,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,Tổng= (1)+(2),Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...)>> Giá trị,
-8,58,Dashboard/Danh mục/Phân ngành của NĐTNN,Nhóm ngành,Lấy theo phân loại nhóm ngành của phân hệ IDS.,Dashboard,Chiều,TB,Tháng,"IDS, CSDLTT",X,X,,Done,,"uat_vsdc_stg.foreign_investor_info
+8,61,Dashboard/Danh mục/Phân ngành của NĐTNN,Nhóm ngành,Lấy theo phân loại nhóm ngành của phân hệ IDS.,Dashboard,Chiều,TB,Tháng,"IDS, CSDLTT",X,X,,Done,,"uat_vsdc_stg.foreign_investor_info
 
 COMPANY_PROFILES
 categories","IDS:
@@ -2701,7 +2743,7 @@ LEFT JOIN uat_ids_stg.categories c
        AND c.ds_snpst_dt = to_date('2026-09-02')
 where fii.ds_snpst_dt between :pdate1 and :pdate2
 group by nvl(c.industry_name, 'Chưa phân ngành');",,,,,Done,Dữ liệu tĩnh,P,,,,,,
-8,59,Dashboard/Danh mục/Phân ngành của NĐTNN,Tỷ trọng theo ngành,Tỷ trọng theo ngành = Tổng giá trị tài sản NĐTNN theo một nhóm ngành*100/Tổng giá trị tài sản NĐTNN toàn thị trường,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,"IDS, CSDLTT",X,X,,Done,,"uat_vsdc_stg.foreign_investor_info
+8,62,Dashboard/Danh mục/Phân ngành của NĐTNN,Tỷ trọng theo ngành,Tỷ trọng theo ngành = Tổng giá trị tài sản NĐTNN theo một nhóm ngành*100/Tổng giá trị tài sản NĐTNN toàn thị trường,Dashboard,Chỉ tiêu phái sinh,TB,Tháng,"IDS, CSDLTT",X,X,,Done,,"uat_vsdc_stg.foreign_investor_info
 
 COMPANY_PROFILES
 categories","IDS:
@@ -2712,7 +2754,7 @@ uat_vsdc_stg.foreign_investor_info.current_shares_foreign_hold
 uat_vsdc_stg.foreign_investor_info.total_issued_shares
 
 ",,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-9,60,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Mã CK,,Dashboard,Chỉ tiêu cơ sở,Dễ,,CSDLTT,,,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,ticker_symbol,,"select 
+9,63,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Mã CK,,Dashboard,Chỉ tiêu cơ sở,Dễ,,CSDLTT,,,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,ticker_symbol,,"select 
         ticker_symbol as ma_ck,
         max_foreign_ownership_ratio as ty_le_so_huu,
         remaining_shares_foreign_can_hold as room_con_lai,
@@ -2720,18 +2762,18 @@ uat_vsdc_stg.foreign_investor_info.total_issued_shares
 from uat_vsdc_stg.foreign_investor_info;",,,,,,Dữ liệu tĩnh,F,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,"Các dòng mã CK tại cột ""Mã trong 
 nước""","Mã trong 
 nước",
-9,61,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Tỷ lệ sở hữu (theo mã CK),Tỷ lệ sở hữu của NĐTNN với từng mã chứng khoán,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,max_foreign_ownership_ratio,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,F,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN * 100/ Tổng số cổ phiếu phát hành,
-9,62,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room còn lại (theo mã CK),Giá trị room còn được phép nắm giữ của NĐTNN,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,F,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành,
-9,63,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room tối đa,Giới hạn room theo quy định từng mã CK.,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,max_shares_foreign_can_hold,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,F,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Tỷ lệ sở hữu nước ngoài tối đa (%),
-9,64,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Top 5 mã có room còn lại thấp nhất.,Lấy top 5 mã có room còn lại thấp nhất.,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,,"select 
+9,64,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Tỷ lệ sở hữu (theo mã CK),Tỷ lệ sở hữu của NĐTNN với từng mã chứng khoán,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,max_foreign_ownership_ratio,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,F,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN * 100/ Tổng số cổ phiếu phát hành,
+9,65,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room còn lại (theo mã CK),Giá trị room còn được phép nắm giữ của NĐTNN,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,remaining_shares_foreign_can_hold,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,F,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành,
+9,66,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room tối đa,Giới hạn room theo quy định từng mã CK.,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,max_shares_foreign_can_hold,,,,,,,Done,Chưa có CSDL - Map biểu mẫu,F,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Tỷ lệ sở hữu nước ngoài tối đa (%),
+9,67,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Top 5 mã có room còn lại thấp nhất.,Lấy top 5 mã có room còn lại thấp nhất.,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,remaining_shares_foreign_can_hold,,"select 
         ticker_symbol as ma_ck,
         remaining_shares_foreign_can_hold as room_con_lai
 from uat_vsdc_stg.foreign_investor_info
 order by remaining_shares_foreign_can_hold asc
 limit 5; ",,,,,Chưa có SQL,Chưa có CSDL - Map biểu mẫu,F,,Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC),,,Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành,Lấy top 5 nhỏ nhất
-9,65,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room theo ngành (%),Room theo ngành = Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"IDS, CSDLTT",X,X,,Done,,"IDS.CATEGORIES
+9,68,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room theo ngành (%),Room theo ngành = Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"IDS, CSDLTT",X,X,,Done,,"IDS.CATEGORIES
 
-UAT_VSDC_STG.FOREIGN_INVESTOR_INFO","IDS:
+UAT_VSDC_STG.FOREIGN_INVESTKR_INFO","IDS:
 - CATEGORIES. INDUSTRY_NAME
 
 Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành",GROUP BY CATEGORIES. INDUSTRY_NAME,"select 
@@ -2745,7 +2787,7 @@ from uat_vsdc_stg.foreign_investor_info fii
            ON cp.category_l1_id = c.id
            AND c.ds_snpst_dt = to_date('2026-09-02')
 group by nvl(c.industry_name, 'Chưa phân ngành');",,,,,Chưa có SQL,Chưa có CSDL - Map biểu mẫu,F,,,,,,
-10,66,Dashboard/Danh mục/Cảnh báo ngưỡng Room còn lại của NĐTNN,Room còn lại (cổ phiếu),Những mã cổ phiếu có Room còn lại = 0,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,CSDLTT,,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,"where max_foreign_ownership_ratio= 0
+10,69,Dashboard/Danh mục/Cảnh báo ngưỡng Room còn lại của NĐTNN,Room còn lại (cổ phiếu),Những mã cổ phiếu có Room còn lại = 0,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,CSDLTT,,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,remaining_shares_foreign_can_hold,"where max_foreign_ownership_ratio= 0
 ","select 
         ticker_symbol as ma_ck,
         remaining_shares_foreign_can_hold as room_con_lai
@@ -2755,7 +2797,7 @@ order by remaining_shares_foreign_can_hold asc;",,,,,Done,Dữ liệu tĩnh,F,,Q
 nước""","Số lượng cổ phiếu còn được phép nắm giữ bởi NĐTNN
 
 Mã trong nước","Where ""Số lượng cổ phiếu còn được phép nắm giữ bởi NĐTNN"" = 0"
-11,67,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Dễ,,FIMS,,,,Done,,INVESTOR,Name,,"select 
+11,70,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Dễ,,FIMS,,,,Done,,INVESTKR,Name,,"select 
         i.`name` ten_ndt,
         SUBSTR(UPPER(TRIM(TransactionCode)), -6) ma_so_gd,
         n.`name` quoc_tich,
@@ -2769,22 +2811,22 @@ left join uat_fims_stg.bankmoni b on i.bankaddid = b.id and b.ds_snpst_dt = '202
 left join uat_fims_stg.investortype it on i.investortypeid = it.id and it.ds_snpst_dt = '2026-08-28'
 left join uat_fims_stg.status s on i.statusid = s.id and s.ds_snpst_dt = '2026-08-28'
 where i.ds_snpst_dt = '2026-08-28' and i.deleted = 0;",,,,,Done,Dữ liệu tĩnh,F,,,,,,
-11,68,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Quốc tịch,Quốc tịch nhà đầu tư nước ngoài,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"NATIONAL
-INVESTOR","NATIONAL.Name
-INVESTOR.Naid",,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-11,69,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Mã số giao dịch,"Mã số giao dịch của nhà đầu tư, là định danh duy nhất của một nhà đầu tư nước ngoài",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,INVESTOR,INVESTOR.TransactionCode,,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-11,70,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Ngân hàng lưu ký,Ngân hàng lưu ký nơi nhà đầu tư nước ngoài mở tài khoản giao dịch,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"BANKMONI
-INVESTOR","BANKMONI.Name
-INVESTOR.bankaddid",,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-11,71,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Loại hình nhà đầu tư,"Phân loại nhà đầu tư là tổ chức, cá nhân, quỹ…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTORTYPE
-INVESTOR",INVESTORTYPE.Name,,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-11,72,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Đại diện giao dịch,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"
-INVESTOR","INVESTOR.Director
+11,71,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Quốc tịch,Quốc tịch nhà đầu tư nước ngoài,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"NATIONAL
+INVESTKR","NATIONAL.Name
+INVESTKR.Naid",,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
+11,72,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Mã số giao dịch,"Mã số giao dịch của nhà đầu tư, là định danh duy nhất của một nhà đầu tư nước ngoài",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,INVESTKR,INVESTKR.TransactionCode,,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
+11,73,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Ngân hàng lưu ký,Ngân hàng lưu ký nơi nhà đầu tư nước ngoài mở tài khoản giao dịch,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"BANKMONI
+INVESTKR","BANKMONI.Name
+INVESTKR.bankaddid",,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
+11,74,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Loại hình nhà đầu tư,"Phân loại nhà đầu tư là tổ chức, cá nhân, quỹ…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTKRTYPE
+INVESTKR",INVESTKRTYPE.Name,,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
+11,75,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Đại diện giao dịch,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"
+INVESTKR","INVESTKR.Director
 ",,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-11,73,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Trạng thái,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTOR
+11,76,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Trạng thái,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTKR
 STATUS","STATUS.Name
-INVESTOR.statusid",,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-12,74,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,FIMS,,,,Doing,, uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+INVESTKR.statusid",,,,,,,Done,Dữ liệu tĩnh,F,,,,,,
+12,77,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,FIMS,,,,Doing,, uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
@@ -2850,12 +2892,12 @@ pvt_dt as
           AND b.row_order     = m.row_order
 )
 select * from pvt_dt;",,,,,Done,Dữ liệu tĩnh,F,,,,,,
-12,75,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Tổng giá trị danh mục,Tổng giá trị thị trường của tài sản mà nhà đầu tư nước ngoài đang nắm giữ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Tháng, NĐT",FIMS,,X,,Doing,, uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
+12,78,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Tổng giá trị danh mục,Tổng giá trị thị trường của tài sản mà nhà đầu tư nước ngoài đang nắm giữ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Tháng, NĐT",FIMS,,X,,Doing,, uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",,,,,,Done,Chưa có CSDL - Map biểu mẫu,F,,"Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng)",II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân,"Các dòng của cột """,Tổng giá trị danh mục,
-13,76,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,Thanh tra,,,,Done,,PENALTY_DECISION_SUBJECT,SUBJECT_NAME,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');","SELECT
+13,79,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,Thanh tra,,,,Done,,PENALTY_DECISION_SUBJECT,SUBJECT_NAME,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');","SELECT
         pds.SUBJECT_NAME thong_tin_NDTNN,
         pd.ISSUED_DATE ngay_qd,
         pt.NAME phan_loai,
@@ -2866,13 +2908,13 @@ LEFT JOIN THANHTRA_UAT.PENALTY_DECISION pd ON pds.PENALTY_DECISION_ID = pd.id
 LEFT JOIN THANHTRA_UAT.PENALTY_DECISION_SUBJECT_BEHAVIOR pdsb ON pdsb.PENALTY_DECISION_SUBJECT_ID = pds.id
 LEFT JOIN THANHTRA_UAT.PENALTY_TYPE pt ON pt.id = pdsb.PENALTY_TYPE_ID
 WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Dữ liệu tĩnh,F,,,,,,
-13,77,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Ngày quyết định,Ngày ra quyết định xử phạt nhà đầu tư nước ngoài,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,"PENALTY_DECISION
+13,80,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Ngày quyết định,Ngày ra quyết định xử phạt nhà đầu tư nước ngoài,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,"PENALTY_DECISION
 PENALTY_DECISION_SUBJECT ",PENALTY_DECISION.ISSUED_DATE,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-13,78,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Phân loại,"Phân loại hình thức xử lý: bị nhắc nhở, xử phạt hành chính,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_TYPE,NAME,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-13,79,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Nội dung/ Trích yếu,Tóm tắt nội dung xử phạt,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION_SUBJECT_BEHAVIOR,DESCRIPTION,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-13,80,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Mức độ,"Đánh giá mức độ vi phạm là thấp, trùng bình, cao,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,,,,,không có trường thông tin xác định mức độ phi phạm  ==> lên UAT trao dổi vs HO để loại bỏ trường này,,,,Done,Dữ liệu tĩnh,F,,,,,,
-13,81,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Trạng thái,"Trạng thái xử lý: đã khắc phục, đã nộp phạt,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION,Status,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,F,,,,,,
-14,82,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Cổ phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+13,81,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Phân loại,"Phân loại hình thức xử lý: bị nhắc nhở, xử phạt hành chính,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_TYPE,NAME,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,F,,,,,,
+13,82,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Nội dung/ Trích yếu,Tóm tắt nội dung xử phạt,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION_SUBJECT_BEHAVIOR,DESCRIPTION,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,F,,,,,,
+13,83,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Mức độ,"Đánh giá mức độ vi phạm là thấp, trùng bình, cao,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,,,,,không có trường thông tin xác định mức độ phi phạm  ==> lên UAT trao dổi vs HO để loại bỏ trường này,,,,Done,Dữ liệu tĩnh,F,,,,,,
+13,84,Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN,Trạng thái,"Trạng thái xử lý: đã khắc phục, đã nộp phạt,…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,Thanh tra,X,X,,Done,,PENALTY_DECISION,Status,"WHERE pd.ISSUED_DATE BETWEEN TO_DATE(:pdate1, 'yyyymmdd') AND TO_DATE(:pdate2, 'yyyymmdd');",,,,,,Done,Dữ liệu tĩnh,F,,,,,,
+14,85,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Cổ phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -2884,236 +2926,6 @@ jad_stockinfor","TRADE_BOOK_HNX:
 TRADE_BOOK_HOSE:
 - Execution - Value
 - Buy - Invest Type","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
-stockinfor AS 
-(
-        SELECT
-                symbol
-                , symbolisin 
-                , tradingdate 
-                , stocktype 
-                , ds_etl_pcs_tms 
-        FROM (
-                SELECT
-                        js.symbol
-                        , js.symbolisin 
-                        , js.tradingdate 
-                        , js.stocktype 
-                        , js.ds_etl_pcs_tms
-                        , ROW_NUMBER() OVER (
-       PARTITION BY js.symbol, js.tradingdate 
-       ORDER BY js.tradingtime DESC, sequence DESC
-                        ) AS rn
-                FROM uat_mdds_stg.jad_stockinfor js 
-                WHERE 1=1
-                        
-        ) t
-        WHERE t.rn = 1
-)
-,cte as 
-(
-select
-        SUM(case WHEN (tb.buy_foreigner_investor_type <> '00') and (js.stocktype = 1) THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua_co_phieu,
-        SUM(CASE WHEN (sell_foreigner_investor_type <> '00') and (js.stocktype = 1) THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban_co_phieu,
-        SUM(case WHEN (buy_foreigner_investor_type <> '00') and (js.stocktype = 2) THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua_trai_phieu,
-        SUM(case when (sell_foreigner_investor_type <> '00') and (js.stocktype = 2) then Execution_Value else 0 end) gtri_ndtnn_ban_trai_phieu,
-        SUM(case WHEN (tb.buy_foreigner_investor_type <> '00') and (js.stocktype in(3,6)) THEN tb.Execution_Value ELSE 0 END) gtri_ndtnn_mua_CCQ,
-        SUM(case when (tb.sell_foreigner_investor_type <> '00') and (js.stocktype in(3,6)) then tb.Execution_Value else 0 end) gtri_ndtnn_ban_CCQ
-FROM
-        uat_hose_stg.trade_book tb
-left join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2
---        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-union all
-select
-        SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 1) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_co_phieu,
-        SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 1) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_co_phieu,
-        SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 2) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_trai_phieu,
-        SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 2) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_trai_phieu,
-        SUM(CASE WHEN (Buy_Foreign_Investor_Type_Code IN ('10', '20')) and (js.stocktype in(3,6)) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_CCQ,
-        SUM(CASE WHEN (Sell_Foreign_Investor_Type_Code IN ('10', '20')) and (js.stocktype in(3,6)) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_CCQ
-FROM
-        uat_hnx_stg.trade_book tb 
-left join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
-WHERE
-        tb.trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
-)
---CP
-select
-        SUM(gtri_ndtnn_mua_co_phieu)     AS tong_gtri_ndtnn_mua_co_phieu,
-        SUM(gtri_ndtnn_ban_co_phieu)      AS tong_gtri_ndtnn_ban_co_phieu,
-        SUM(gtri_ndtnn_mua_co_phieu) - SUM(gtri_ndtnn_ban_co_phieu) as luy_ke_co_phieu
-FROM cte;",cần làm rõ xem có sum hay không,,,,,Dữ liệu tĩnh,P,,,,,,
-14,83,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Cổ phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HNX:
-- Trade price
-- Trade quantity
-- Sell Foreign Investor Type Code
-
-TRADE_BOOK_HOSE:
-- Execution - Value
-- Sell - Invest Type","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,cần làm rõ xem có sum hay không,,,,,Dữ liệu tĩnh,P,,,,,,
-14,84,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Cổ phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),GT ròng = GT mua - GT bán,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HNX:
-- Trade price
-- Trade quantity
-=> Giá trị GD = Trade price * Trade quantity
-
-TRADE_BOOK_HOSE:
-- Execution - Value (có sẵn, dùng trực tiếp)","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-14,85,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Trái phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HNX:
-- Trade price
-- Trade quantity
-- Buy Foreign Investor Type Code
-
-TRADE_BOOK_HOSE:
-- Execution - Value
-- Buy - Invest Type","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
-stockinfor AS 
-(
-        SELECT
-                symbol
-                , symbolisin 
-                , tradingdate 
-                , stocktype 
-                , ds_etl_pcs_tms 
-        FROM (
-                SELECT
-                        js.symbol
-                        , js.symbolisin 
-                        , js.tradingdate 
-                        , js.stocktype 
-                        , js.ds_etl_pcs_tms
-                        , ROW_NUMBER() OVER (
-       PARTITION BY js.symbol, js.tradingdate 
-       ORDER BY js.tradingtime DESC, sequence DESC
-                        ) AS rn
-                FROM uat_mdds_stg.jad_stockinfor js 
-                WHERE 1=1
-                        
-        ) t
-        WHERE t.rn = 1
-)
-,cte as 
-(
-select
-        SUM(case WHEN (tb.buy_foreigner_investor_type <> '00') and (js.stocktype = 1) THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua_co_phieu,
-        SUM(CASE WHEN (sell_foreigner_investor_type <> '00') and (js.stocktype = 1) THEN Execution_Value ELSE 0 END) gtri_ndtnn_ban_co_phieu,
-        SUM(case WHEN (buy_foreigner_investor_type <> '00') and (js.stocktype = 2) THEN Execution_Value ELSE 0 END) gtri_ndtnn_mua_trai_phieu,
-        SUM(case when (sell_foreigner_investor_type <> '00') and (js.stocktype = 2) then Execution_Value else 0 end) gtri_ndtnn_ban_trai_phieu,
-        SUM(case WHEN (tb.buy_foreigner_investor_type <> '00') and (js.stocktype in(3,6)) THEN tb.Execution_Value ELSE 0 END) gtri_ndtnn_mua_CCQ,
-        SUM(case when (tb.sell_foreigner_investor_type <> '00') and (js.stocktype in(3,6)) then tb.Execution_Value else 0 end) gtri_ndtnn_ban_CCQ
-FROM
-        uat_hose_stg.trade_book tb
-left join 
-        stockinfor js on tb.symbol = js.symbol and tb.trade_date = js.tradingdate 
-where
-        tb.trade_date BETWEEN :pdat1 AND :pdat2
---        and to_date(tb.ds_snpst_dt, 'yyyy-MM-dd') = to_date('2026-09-07', 'yyyy-MM-dd')
-union all
-select
-        SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 1) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_co_phieu,
-        SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 1) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_co_phieu,
-        SUM(CASE WHEN Buy_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 2) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_trai_phieu,
-        SUM(CASE WHEN Sell_Foreign_Investor_Type_Code IN ('10', '20') and (js.stocktype = 2) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_trai_phieu,
-        SUM(CASE WHEN (Buy_Foreign_Investor_Type_Code IN ('10', '20')) and (js.stocktype in(3,6)) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_mua_CCQ,
-        SUM(CASE WHEN (Sell_Foreign_Investor_Type_Code IN ('10', '20')) and (js.stocktype in(3,6)) THEN (Trade_price * Trade_quantity) ELSE 0 END) gtri_ndtnn_ban_CCQ
-FROM
-        uat_hnx_stg.trade_book tb 
-left join 
-        stockinfor js on js.symbolisin = tb.issue_code and to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate 
-WHERE
-        tb.trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date('2026-09-07', 'yyyy-MM-dd')
-)
---TP
-select
-        SUM(gtri_ndtnn_mua_trai_phieu)     AS tong_gtri_ndtnn_mua_trai_phieu,
-        SUM(gtri_ndtnn_ban_trai_phieu)      AS tong_gtri_ndtnn_ban_trai_phieu,
-        SUM(gtri_ndtnn_mua_trai_phieu) - SUM(gtri_ndtnn_ban_trai_phieu) as luy_ke_trai_phieu
-FROM cte;",,,,,,Dữ liệu tĩnh,P,,,,,,
-14,86,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Trái phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HNX:
-- Trade price
-- Trade quantity
-- Sell Foreign Investor Type Code
-
-TRADE_BOOK_HOSE:
-- Execution - Value
-- Sell - Invest Type","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-14,87,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Trái phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),GT ròng = GT mua - GT bán,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HNX:
-- Trade price
-- Trade quantity
-=> Giá trị GD = Trade price * Trade quantity
-
-TRADE_BOOK_HOSE:
-- Execution - Value (có sẵn, dùng trực tiếp)","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-14,88,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CCQ - GT NĐTNN mua chứng khoán (triệu VNĐ),Chứng chỉ quỹ,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HOSE:
-- Symbol
-- Execution - Value
-- Buy - Invest Type / Sell - Invest Type
-
-JAD_STOCKINFOR.stocktype","TRADE_BOOK_HNX:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
 
@@ -3157,7 +2969,7 @@ stockinfor AS
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
+                AND tb.market_id IN ('STK', 'BDO')
 )
 -- 3. Base HNX
 , hnx_tb AS
@@ -3176,13 +2988,13 @@ stockinfor AS
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
                 AND tb.market_id IN ('UPX', 'STX', 'HCX')
 )
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
 , cte_cophieu AS
 (
         SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
         FROM (
                 SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
+                WHERE stocktype = 2 AND market_id = 'STK'
                 UNION ALL
                 SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
                 WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
@@ -3201,7 +3013,7 @@ stockinfor AS
         ) x
 )
 -- 6. CCQ: stocktype IN (3,6)
---    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STK', HNX = 'UPX'/'STX')
 , cte_ccq AS
 (
         SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
@@ -3213,12 +3025,383 @@ stockinfor AS
                 WHERE stocktype IN (3,6) 
         ) x
 )
--- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STK')
 , cte_cw AS
 (
         SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
         FROM hose_tb
-        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STK'
+)
+-- 8. TP DN riêng lẻ: báo cáo HNX09
+, cte_tpdn_riengle AS
+(
+        SELECT
+                SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ MUA' THEN fr.field_value END) AS gtri_ndtnn_mua
+                , SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ BÁN' THEN fr.field_value END) AS gtri_ndtnn_ban
+                , SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH' THEN fr.field_value END) AS tong_gtri
+        FROM uat_iss_ods.flat_report fr
+        WHERE fr.report_code = 'HNX09'
+                AND fr.submit_status IN ('SUBMITTED', 'LATE_SUBMITTED')
+                -- TODO: bổ sung điều kiện kỳ báo cáo, ví dụ:
+                -- AND fr.<cột_ngày_báo_cáo> BETWEEN :pdat1 AND :pdat2
+)
+-- 9. TP chính phủ: Outright + Repo + Repo2
+, tpcp_raw AS
+(
+        SELECT
+                CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
+                , a.trading_value AS gtri
+        FROM uat_hnx_stg.OUTRIGHT_ORDER_BOOK a
+        WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
+        UNION ALL
+        SELECT
+                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , r.first_settlement_value
+        FROM uat_hnx_stg.REPO_ORDER_BOOK r
+        WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
+        UNION ALL
+        SELECT
+                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
+                , r.first_settlement_value
+        FROM uat_hnx_stg.REPO2_ORDER_BOOK r
+        WHERE r.trading_date BETWEEN :pdat1 AND :pdat2
+)
+, cte_tpcp AS
+(
+        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM tpcp_raw
+)
+-- 10. Trái phiếu = TP DN niêm yết + TP DN riêng lẻ + TP chính phủ
+, cte_trai_phieu AS
+(
+        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_niemyet
+        UNION ALL
+        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_riengle
+        UNION ALL
+        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpcp
+)
+-- 11. Hợp nhất 4 loại chứng khoán
+, cte_all AS
+(
+        SELECT 1 AS stt, 'Cổ phiếu' AS loai_ck, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cophieu
+        UNION ALL
+        SELECT 2, 'Trái phiếu', SUM(gtri_ndtnn_mua), SUM(gtri_ndtnn_ban) FROM cte_trai_phieu
+        UNION ALL
+        SELECT 3, 'Chứng quyền', gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cw
+        UNION ALL
+        SELECT 4, 'CCQ', gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_ccq
+)
+SELECT
+        loai_ck
+        , NVL(gtri_ndtnn_mua, 0)                          AS gtri_mua
+        , NVL(gtri_ndtnn_ban, 0)                          AS gtri_ban
+        , NVL(gtri_ndtnn_mua, 0) - NVL(gtri_ndtnn_ban, 0) AS gtri_mua_ban_rong
+FROM cte_all
+ORDER BY stt;",cần làm rõ xem có sum hay không,,,,,Dữ liệu tĩnh,P,,,,,,
+14,86,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Cổ phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Sell - Invest Type","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,cần làm rõ xem có sum hay không,,,,,Dữ liệu tĩnh,P,,,,,,
+14,87,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Cổ phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),GT ròng = GT mua - GT bán,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
+14,88,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Trái phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Buy Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Buy - Invest Type","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
+14,89,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Trái phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Sell - Invest Type","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
+14,90,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Trái phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),GT ròng = GT mua - GT bán,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
+14,91,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CCQ - GT NĐTNN mua chứng khoán (triệu VNĐ),Chứng chỉ quỹ,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type
+
+JAD_STKCKINFOR.stocktype","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
+14,92,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CCQ - GT NĐTNN bán chứng khoán (triệu VNĐ),Chứng chỉ quỹ,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type
+
+JAD_STKCKINFOR.stocktype","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
+14,93,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CCQ - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),"Chứng chỉ quỹ
+GT ròng = GT mua - GT bán",Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
+14,94,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CW - GT NĐTNN mua chứng khoán (triệu VNĐ),Chứng quyền có bảo đảm,Báo cáo,Chỉ tiêu phái sinh,Khó,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type
+
+JAD_STKCKINFOR.stocktype","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,UAT bổ sung,,,,,,,,,,,,
+14,95,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CW - GT NĐTNN bán chứng khoán (triệu VNĐ),Chứng quyền có bảo đảm ,Báo cáo,Chỉ tiêu phái sinh,Khó,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type
+
+JAD_STKCKINFOR.stocktype","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,UAT bổ sung,,,,,,,,,,,,
+14,96,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CW - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),"Chứng quyền
+GT ròng = GT mua - GT bán",Báo cáo,Chỉ tiêu phái sinh,Khó,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type
+
+JAD_STKCKINFOR.stocktype","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,UAT bổ sung,,,,,,,,,,,,
+14,97,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+MDDS: 
+jad_stockinfor","TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Buy Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Buy - Invest Type","TRADE_BOOK_HNX:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
+
+TRADE_BOOK_HOSE:
+where  trade_date BETWEEN :pdat1 AND :pdat2
+        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
+-- 1. Thông tin chứng khoán: lấy bản ghi mới nhất mỗi (symbol, tradingdate)
+stockinfor AS
+(
+        SELECT symbol, symbolisin, tradingdate, stocktype, floorcode, ds_etl_pcs_tms
+        FROM (
+                SELECT
+                        js.symbol
+                        , js.symbolisin
+                        , js.tradingdate
+                        , js.stocktype
+                        , js.floorcode
+                        , js.ds_etl_pcs_tms
+                        , ROW_NUMBER() OVER (
+                                PARTITION BY js.symbol, js.tradingdate
+                                ORDER BY js.tradingtime DESC, sequence DESC
+                        ) AS rn
+                FROM uat_mdds_stg.jad_stockinfor js
+                WHERE 1=1
+                        AND js.tradingdate BETWEEN :pdat1 AND :pdat2
+                        AND js.stocktype IN (1,2,3,4,6)
+        ) t
+        WHERE t.rn = 1
+)
+-- 2. Base HOSE: quét trade_book 1 lần, gắn stocktype/floorcode, tách sẵn giá trị mua/bán NĐTNN
+, hose_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
+                , tb.Execution_Value AS gtri
+        FROM uat_hose_stg.trade_book tb
+        JOIN stockinfor js
+                ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
+                AND tb.market_id IN ('STK', 'BDO')
+)
+-- 3. Base HNX
+, hnx_tb AS
+(
+        SELECT
+                js.stocktype
+                , js.floorcode
+                , tb.market_id
+                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
+                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
+                , tb.Trade_price * tb.Trade_quantity AS gtri
+        FROM uat_hnx_stg.trade_book tb
+        JOIN stockinfor js
+                ON js.symbolisin = tb.issue_code
+                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
+        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
+                AND tb.market_id IN ('UPX', 'STX', 'HCX')
+)
+-- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STK' ; HNX market_id IN ('UPX','STX')
+, cte_cophieu AS
+(
+        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM (
+                SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype = 2 AND market_id = 'STK'
+                UNION ALL
+                SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
+        ) x
+)
+-- 5. Trái phiếu DN niêm yết: stocktype = 1 ; HOSE market_id = 'BDO' ; HNX market_id = 'HCX'
+, cte_tpdn_niemyet AS
+(
+        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM (
+                SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype = 1 AND market_id = 'BDO'
+                UNION ALL
+                SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype = 1 AND market_id = 'HCX'
+        ) x
+)
+-- 6. CCQ: stocktype IN (3,6)
+--    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STK', HNX = 'UPX'/'STX')
+, cte_ccq AS
+(
+        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM (
+                SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
+                WHERE stocktype IN (3,6) 
+                UNION ALL
+                SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
+                WHERE stocktype IN (3,6) 
+        ) x
+)
+-- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STK')
+, cte_cw AS
+(
+        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
+        FROM hose_tb
+        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STK'
 )
 -- 8. TP DN riêng lẻ: báo cáo HNX09
 , cte_tpdn_riengle AS
@@ -3289,273 +3472,7 @@ SELECT
         , NVL(gtri_ndtnn_mua, 0) - NVL(gtri_ndtnn_ban, 0) AS gtri_mua_ban_rong
 FROM cte_all
 ORDER BY stt;",,,,,,Dữ liệu tĩnh,P,,,,,,
-14,89,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CCQ - GT NĐTNN bán chứng khoán (triệu VNĐ),Chứng chỉ quỹ,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HOSE:
-- Symbol
-- Execution - Value
-- Buy - Invest Type / Sell - Invest Type
-
-JAD_STOCKINFOR.stocktype","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-14,90,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CCQ - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),"Chứng chỉ quỹ
-GT ròng = GT mua - GT bán",Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HOSE:
-- Symbol
-- Execution - Value
-- Buy - Invest Type / Sell - Invest Type","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-14,91,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CW - GT NĐTNN mua chứng khoán (triệu VNĐ),Chứng quyền có bảo đảm,Báo cáo,Chỉ tiêu phái sinh,Khó,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HOSE:
-- Symbol
-- Execution - Value
-- Buy - Invest Type / Sell - Invest Type
-
-JAD_STOCKINFOR.stocktype","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,UAT bổ sung,,,,,,,,,,,,
-14,92,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CW - GT NĐTNN bán chứng khoán (triệu VNĐ),Chứng quyền có bảo đảm ,Báo cáo,Chỉ tiêu phái sinh,Khó,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HOSE:
-- Symbol
-- Execution - Value
-- Buy - Invest Type / Sell - Invest Type
-
-JAD_STOCKINFOR.stocktype","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,UAT bổ sung,,,,,,,,,,,,
-14,93,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,CW - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),"Chứng quyền
-GT ròng = GT mua - GT bán",Báo cáo,Chỉ tiêu phái sinh,Khó,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HOSE:
-- Symbol
-- Execution - Value
-- Buy - Invest Type / Sell - Invest Type
-
-JAD_STOCKINFOR.stocktype","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,UAT bổ sung,,,,,,,,,,,,
-14,94,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN mua chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
-TRADE_BOOK_HOSE / TRADE_BOOK_HNX
-
-MDDS: 
-jad_stockinfor","TRADE_BOOK_HNX:
-- Trade price
-- Trade quantity
-- Buy Foreign Investor Type Code
-
-TRADE_BOOK_HOSE:
-- Execution - Value
-- Buy - Invest Type","TRADE_BOOK_HNX:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')
-
-TRADE_BOOK_HOSE:
-where  trade_date BETWEEN :pdat1 AND :pdat2
-        and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')","WITH
--- 1. Thông tin chứng khoán: lấy bản ghi mới nhất mỗi (symbol, tradingdate)
-stockinfor AS
-(
-        SELECT symbol, symbolisin, tradingdate, stocktype, floorcode, ds_etl_pcs_tms
-        FROM (
-                SELECT
-                        js.symbol
-                        , js.symbolisin
-                        , js.tradingdate
-                        , js.stocktype
-                        , js.floorcode
-                        , js.ds_etl_pcs_tms
-                        , ROW_NUMBER() OVER (
-                                PARTITION BY js.symbol, js.tradingdate
-                                ORDER BY js.tradingtime DESC, sequence DESC
-                        ) AS rn
-                FROM uat_mdds_stg.jad_stockinfor js
-                WHERE 1=1
-                        AND js.tradingdate BETWEEN :pdat1 AND :pdat2
-                        AND js.stocktype IN (1,2,3,4,6)
-        ) t
-        WHERE t.rn = 1
-)
--- 2. Base HOSE: quét trade_book 1 lần, gắn stocktype/floorcode, tách sẵn giá trị mua/bán NĐTNN
-, hose_tb AS
-(
-        SELECT
-                js.stocktype
-                , js.floorcode
-                , tb.market_id
-                , CASE WHEN SUBSTRING(tb.buy_acct_no ,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_mua
-                , CASE WHEN SUBSTRING(tb.sell_acct_no,4,1) IN ('E','F') THEN tb.Execution_Value ELSE 0 END AS gtri_ban
-                , tb.Execution_Value AS gtri
-        FROM uat_hose_stg.trade_book tb
-        JOIN stockinfor js
-                ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
-        WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-                AND tb.market_id IN ('STO', 'BDO')
-)
--- 3. Base HNX
-, hnx_tb AS
-(
-        SELECT
-                js.stocktype
-                , js.floorcode
-                , tb.market_id
-                , CASE WHEN SUBSTRING(tb.buy_account_number ,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_mua
-                , CASE WHEN SUBSTRING(tb.sell_account_number,4,1) IN ('E','F') THEN tb.Trade_price * tb.Trade_quantity ELSE 0 END AS gtri_ban
-                , tb.Trade_price * tb.Trade_quantity AS gtri
-        FROM uat_hnx_stg.trade_book tb
-        JOIN stockinfor js
-                ON js.symbolisin = tb.issue_code
-                AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
-        WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
-                AND tb.market_id IN ('UPX', 'STX', 'HCX')
-)
--- 4. Cổ phiếu: stocktype = 2 ; HOSE market_id = 'STO' ; HNX market_id IN ('UPX','STX')
-, cte_cophieu AS
-(
-        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM (
-                SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 2 AND market_id = 'STO'
-                UNION ALL
-                SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
-                WHERE stocktype = 2 AND market_id IN ('UPX', 'STX')
-        ) x
-)
--- 5. Trái phiếu DN niêm yết: stocktype = 1 ; HOSE market_id = 'BDO' ; HNX market_id = 'HCX'
-, cte_tpdn_niemyet AS
-(
-        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM (
-                SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype = 1 AND market_id = 'BDO'
-                UNION ALL
-                SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
-                WHERE stocktype = 1 AND market_id = 'HCX'
-        ) x
-)
--- 6. CCQ: stocktype IN (3,6)
---    (chưa có rule market_id nên giữ như câu lệnh gốc: HOSE = 'STO', HNX = 'UPX'/'STX')
-, cte_ccq AS
-(
-        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM (
-                SELECT gtri_mua, gtri_ban, gtri FROM hose_tb
-                WHERE stocktype IN (3,6) 
-                UNION ALL
-                SELECT gtri_mua, gtri_ban, gtri FROM hnx_tb
-                WHERE stocktype IN (3,6) 
-        ) x
-)
--- 7. CW: stocktype = 4 AND floorcode = 10 (HOSE, market_id = 'STO')
-, cte_cw AS
-(
-        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM hose_tb
-        WHERE stocktype = 4 AND floorcode = 10 AND market_id = 'STO'
-)
--- 8. TP DN riêng lẻ: báo cáo HNX09
-, cte_tpdn_riengle AS
-(
-        SELECT
-                SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ MUA' THEN fr.field_value END) AS gtri_ndtnn_mua
-                , SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ BÁN' THEN fr.field_value END) AS gtri_ndtnn_ban
-                , SUM(CASE WHEN fr.row_path = 'GIÁ TRỊ GIAO DỊCH' THEN fr.field_value END) AS tong_gtri
-        FROM uat_iss_ods.flat_report fr
-        WHERE fr.report_code = 'HNX09'
-                AND fr.submit_status IN ('SUBMITTED', 'LATE_SUBMITTED')
-                -- TODO: bổ sung điều kiện kỳ báo cáo, ví dụ:
-                -- AND fr.<cột_ngày_báo_cáo> BETWEEN :pdat1 AND :pdat2
-)
--- 9. TP chính phủ: Outright + Repo + Repo2
-, tpcp_raw AS
-(
-        SELECT
-                CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
-                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
-                , a.trading_value AS gtri
-        FROM uat_hnx_stg.OUTRIGHT_ORDER_BOOK a
-        WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
-        UNION ALL
-        SELECT
-                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , r.first_settlement_value
-        FROM uat_hnx_stg.REPO_ORDER_BOOK r
-        WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
-        UNION ALL
-        SELECT
-                CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END
-                , r.first_settlement_value
-        FROM uat_hnx_stg.REPO2_ORDER_BOOK r
-        WHERE r.trading_date BETWEEN :pdat1 AND :pdat2
-)
-, cte_tpcp AS
-(
-        SELECT SUM(gtri_mua) AS gtri_ndtnn_mua, SUM(gtri_ban) AS gtri_ndtnn_ban, SUM(gtri) AS tong_gtri
-        FROM tpcp_raw
-)
--- 10. Trái phiếu = TP DN niêm yết + TP DN riêng lẻ + TP chính phủ
-, cte_trai_phieu AS
-(
-        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_niemyet
-        UNION ALL
-        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpdn_riengle
-        UNION ALL
-        SELECT gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_tpcp
-)
--- 11. Hợp nhất 4 loại chứng khoán
-, cte_all AS
-(
-        SELECT 1 AS stt, 'Cổ phiếu' AS loai_ck, gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cophieu
-        UNION ALL
-        SELECT 2, 'Trái phiếu', SUM(gtri_ndtnn_mua), SUM(gtri_ndtnn_ban) FROM cte_trai_phieu
-        UNION ALL
-        SELECT 3, 'Chứng quyền', gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_cw
-        UNION ALL
-        SELECT 4, 'CCQ', gtri_ndtnn_mua, gtri_ndtnn_ban FROM cte_ccq
-)
-SELECT
-        , sumn(NVL(gtri_ndtnn_mua, 0))                          AS gtri_mua
-        , sum(NVL(gtri_ndtnn_ban, 0))                          AS gtri_ban
-        , sum(NVL(gtri_ndtnn_mua, 0) - NVL(gtri_ndtnn_ban, 0)) AS gtri_mua_ban_rong
-FROM cte_all
-ORDER BY stt;",,,,,,Dữ liệu tĩnh,P,,,,,,
-14,95,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+14,98,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN bán chứng khoán (triệu VNĐ),,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3573,7 +3490,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-14,96,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),GT ròng = GT mua - GT bán,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+14,99,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán,Tổng - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ),GT ròng = GT mua - GT bán,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại CK","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3590,7 +3507,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,97,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Ngày giao dịch ,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,100,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Ngày giao dịch ,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3646,8 +3563,8 @@ stockinfor AS
         JOIN stockinfor js
                 ON tb.symbol = js.symbol AND tb.trade_date = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdat1 AND :pdat2
-       	UNION ALL 
-       	SELECT
+               UNION ALL 
+               SELECT
                 js.stocktype
                 , js.floorcode
                 , tb.market_id
@@ -3682,8 +3599,8 @@ stockinfor AS
                 ON js.symbolisin = tb.issue_code
                 AND to_date(tb.trade_date, 'yyyyMMdd') = js.tradingdate
         WHERE tb.trade_date BETWEEN :pdatee1 AND :pdatee2
-		UNION ALL 
-		SELECT
+                UNION ALL 
+                SELECT
                 js.stocktype
                 , js.floorcode
                 , tb.market_id
@@ -3717,20 +3634,20 @@ stockinfor AS
 , tpcp_raw AS
 (
         SELECT
-        		a.trading_date ngay_gd
-        		, a.bond_code as ma_ck
-        		, a.buying_account_no tk
-        		, CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_mua
-                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_ban
-                , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
-                , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
+                        a.trading_date ngay_gd
+                        , a.bond_code as ma_ck
+                        , a.buying_account_no tk
+                        , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_mua
+                        , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_ban
+                        , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
+                        , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_ban
         FROM uat_hnx_stg.OUTRIGHT_ORDER_BOOK a
         WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
         UNION ALL
         SELECT
-    			a.trading_date ngay_gd
-        		, a.bond_code as ma_ck
-        		, a.selling_account_no tk
+                            a.trading_date ngay_gd
+                        , a.bond_code as ma_ck
+                        , a.selling_account_no tk
                 , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_mua
                 , CASE WHEN SUBSTRING(a.selling_account_no,4,1) IN ('E','F') THEN a.volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(a.buying_account_no ,4,1) IN ('E','F') THEN a.trading_value ELSE 0 END AS gtri_mua
@@ -3739,10 +3656,10 @@ stockinfor AS
         WHERE a.trading_date BETWEEN :pdat1 AND :pdat2
         UNION ALL 
         SELECT
-        		r.trading_date ngay_gd
-        		, r.bond_code as ma_ck
-        		, r.buying_account_no tk
-        		, CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
+                        r.trading_date ngay_gd
+                        , r.bond_code as ma_ck
+                        , r.buying_account_no tk
+                        , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
                 , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_ban
@@ -3750,10 +3667,10 @@ stockinfor AS
         WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
         UNION ALL
         SELECT
-        		r.trading_date ngay_gd
-        		, r.bond_code as ma_ck
-        		, r.selling_account_no tk
-        		, CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
+                        r.trading_date ngay_gd
+                        , r.bond_code as ma_ck
+                        , r.selling_account_no tk
+                        , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
                 , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_ban
@@ -3761,10 +3678,10 @@ stockinfor AS
         WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
         UNION ALL
         SELECT
-        		r.trading_date ngay_gd
-        		, r.bond_code as ma_ck
-        		, r.buying_account_no tk
-        		, CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
+                        r.trading_date ngay_gd
+                        , r.bond_code as ma_ck
+                        , r.buying_account_no tk
+                        , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
                 , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_ban
@@ -3772,46 +3689,67 @@ stockinfor AS
         WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
         UNION ALL
         SELECT
-        		r.trading_date ngay_gd
-        		, r.bond_code as ma_ck
-        		, r.selling_account_no tk
-        		, CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
+                        r.trading_date ngay_gd
+                        , r.bond_code as ma_ck
+                        , r.selling_account_no tk
+                        , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_mua
                 , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.volume ELSE 0 END AS khoi_luong_ban
                 , CASE WHEN SUBSTRING(r.buying_account_no ,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_mua
                 , CASE WHEN SUBSTRING(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value ELSE 0 END AS gtri_ban
         FROM uat_hnx_stg.REPO2_ORDER_BOOK r
         WHERE r.trading_date  BETWEEN :pdat1 AND :pdat2
-)
+),
+full as 
+(
 select 
-	ngay_gd,
-	ma_ck,
-	tk,
-	khoi_luong_mua,
-	khoi_luong_ban,
-	gtri_mua,
-	gtri_ban
+        ngay_gd,
+        ma_ck,
+        tk,
+        khoi_luong_mua,
+        khoi_luong_ban,
+        gtri_mua,
+        gtri_ban
 from hose_tb
 union all 
 select 
-	ngay_gd,
-	ma_ck,
-	tk,
-	khoi_luong_mua,
-	khoi_luong_ban,
-	gtri_mua,
-	gtri_ban
+        ngay_gd,
+        ma_ck,
+        tk,
+        khoi_luong_mua,
+        khoi_luong_ban,
+        gtri_mua,
+        gtri_ban
 from hnx_tb
 union all 
 select 
-	ngay_gd,
-	ma_ck,
-	tk,
-	khoi_luong_mua,
-	khoi_luong_ban,
-	gtri_mua,
-	gtri_ban
-from tpcp_raw;",,,,,,,,,,,,,
-15,98,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Tài khoản giao dịch NĐTNN,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+        ngay_gd,
+        ma_ck,
+        tk,
+        khoi_luong_mua,
+        khoi_luong_ban,
+        gtri_mua,
+        gtri_ban
+from tpcp_raw
+)
+select 
+        ngay_gd,
+        SUBSTR(UPPER(TRIM(tk)), -6) as MSGD,
+        khoi_luong_mua,
+        khoi_luong_ban,
+        gtri_mua,
+        gtri_ban
+from full f
+left join uat_fims_stg.investor i on i.SUBSTR(UPPER(TRIM(i.TransactionCode)), -6) = SUBSTR(UPPER(TRIM(tk)), -6) and i.ds_snpst_dt = :pdate
+
+
+
+
+
+
+",,,,,,,,,,,,,
+15,101,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,tên NĐTNN,,Báo cáo,Chiều,Dễ,"Ngày, NĐT",FIMS,,X,X,Done,,"FIMS:
+investor",name ,,,bổ sung UAT ,,,,,,,,,,,,
+15,102,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Tài khoản giao dịch NĐTNN,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3826,7 +3764,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,99,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Mã CK,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,103,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,Mã CK,,Báo cáo,Chiều,Dễ,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3841,7 +3779,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,100,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,104,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3856,7 +3794,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,101,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL bán CK,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,105,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,KL bán CK,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3871,7 +3809,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,102,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,106,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT mua chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 
@@ -3886,7 +3824,7 @@ where  trade_date BETWEEN :pdat1 AND :pdat2
 TRADE_BOOK_HOSE:
 where  trade_date BETWEEN :pdat1 AND :pdat2
         and to_date(tb.ds_snpst_dt) = to_date(:pdate, 'yyyy-MM-dd')",,,,,,,Dữ liệu tĩnh,P,,,,,,
-15,103,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT bán chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
+15,107,Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết,GT bán chứng khoán,,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, NĐT","MDDS, HNX, HOSE, TKNB",,X,X,Done,,"CSDLTT:
 TRADE_BOOK_HOSE / TRADE_BOOK_HNX
 
 MDDS: 

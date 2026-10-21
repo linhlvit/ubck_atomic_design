@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_foreign_investor_trading_detail_rpt_fl
     symbol                          String                  COMMENT 'Mã CK — denormalize text trực tiếp (TPCP: mã trái phiếu bond_code)',
     trade_direction_code            String                  COMMENT 'Chiều mua/bán (BUY/SELL)',
     account_holder_nm               Nullable(String)        COMMENT 'Tên chủ tài khoản (đệm sẵn; NULL với TPCP)',
+    investor_nm                                  Nullable(String)        COMMENT '[MỚI 2026-10-21 — BA STT 15 Mã 101 tên NĐTNN] Tên nhà đầu tư nước ngoài (FIMS INVESTOR.Name) — chiều của báo cáo chi tiết. Nối theo mã số giao dịch (MSGD) = 6 ký tự cuối (UPPER/TRIM) của số tài khoản cùng phía với chiều giao dịch (SQL BA STT 15: SUBSTR(UPPER(TRIM(i.TransactionCode)), -6) = SUBSTR(UPPER(TRIM(tk)), -6)); LEFT JOIN nên NULL nếu không khớp. Khác account_holder_nm (tên chủ tài khoản trên sổ lệnh). Không thuộc grain. Xem O_NDTNN_52',
     execution_vol                   Int64                   COMMENT 'KL mua/bán CK',
     execution_val                   Decimal(23,2)           COMMENT 'GT mua/bán CK',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu (ORDERTRADE_TRADE_BOOK_HOSE/HNX, HNX_OUTRIGHT/REPO/REPO2_ORDER_BOOK) — thuộc grain'

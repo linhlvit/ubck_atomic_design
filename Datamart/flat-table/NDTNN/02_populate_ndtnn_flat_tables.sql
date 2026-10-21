@@ -117,6 +117,7 @@ SELECT
     f.symbol,
     f.trade_direction_code,
     f.account_holder_nm,
+    f.investor_nm,
     f.execution_vol,
     f.execution_val,
     f.src_stm_code
