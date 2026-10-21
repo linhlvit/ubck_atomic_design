@@ -32,7 +32,7 @@ attributes:
     source_system: KNT
     source_table: TAX_REGISTRATION_INFO
     source_column: null
-    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Hash: hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -582,20 +582,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Secondary Business Line Code
-    physical_name: secondary_business_line_code
-    business_meaning: Ngành nghề kinh doanh bổ sung của doanh nghiệp (từ TAX_REG_BUSINESS_LINE).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REG_BUSINESS_LINE.BUSINESS_LINE_CODE
-    comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Array<Text>. Trước đây denormalize thành ARRAY do xem TAX_REG_BUSINESS_LINE là junction 1:N; nay map trực tiếp giả định 1 dòng/TAX_CODE. Không còn dùng scheme KNT_BUSINESS_LINE (đã revert về Text). HLD decision cũ (ARRAY): KNT_HLD_Overview.md mục 7d — cần cập nhật lại nếu áp dụng."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Message Packet Id
     physical_name: message_packet_id
     business_meaning: Mã gói tin trao đổi liên quan.
@@ -607,5 +593,187 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.MSG_PACKET_ID
     comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Head Office Address
+    physical_name: head_office_adr
+    business_meaning: Địa chỉ trụ sở chính của doanh nghiệp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.HQ_ADDRESS
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_postal_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Address Description
+    physical_name: business_adr_description
+    business_meaning: Mô tả địa chỉ kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_ADDRESS_DESC
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_postal_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Province Code
+    physical_name: business_province_code
+    business_meaning: Mã tỉnh/thành phố địa chỉ kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_CODE
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_postal_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Province Name
+    physical_name: business_province_nm
+    business_meaning: Tên tỉnh/thành phố kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_postal_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business District Code
+    physical_name: business_district_code
+    business_meaning: Mã quận/huyện địa chỉ kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_CODE
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_postal_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business District Name
+    physical_name: business_district_nm
+    business_meaning: Tên quận/huyện kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_postal_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Ward Code
+    physical_name: business_ward_code
+    business_meaning: Mã xã/phường địa chỉ kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_CODE
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_postal_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Ward Name
+    physical_name: business_ward_nm
+    business_meaning: Tên xã/phường địa chỉ kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_postal_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Phone Number
+    physical_name: phone_nbr
+    business_meaning: Số điện thoại liên hệ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.PHONE
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fax Number
+    physical_name: fax_nbr
+    business_meaning: Số fax.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.FAX
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Phone Number
+    physical_name: business_phone_nbr
+    business_meaning: Số điện thoại địa chỉ kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_PHONE
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Fax Number
+    physical_name: business_fax_nbr
+    business_meaning: Số fax địa chỉ kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_FAX
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định Data Modeler 2026-10-20)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Email Address
+    physical_name: business_email_adr
+    business_meaning: Email kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_EMAIL
+    comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định Data Modeler 2026-10-20)."
     classification_context: null
     etl_derived_value: null

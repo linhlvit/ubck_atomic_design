@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_status_history-AUDIT.AF_STATUS_HISTORY
+  logical_name: Audit Firm Status History
+  physical_name: af_status_history
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Status History"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  description: |
+    Lịch sử thay đổi trạng thái hoạt động của công ty kiểm toán: đình chỉ, tạm ngừng, chấm dứt, thu hồi chứng nhận.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_STATUS_HISTORY
+
+attributes:
+  - name: Audit Firm Status History Id
+    physical_name: af_status_history_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Status History\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Status History Code
+    physical_name: af_status_history_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_STATUS_HISTORY'"
+    etl_derived_value: AUDIT_AF_STATUS_HISTORY
+
+  - name: Audit Firm Id
+    physical_name: af_id
+    business_meaning: Link đến bảng AF_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.AF_PROFILE_ID
+    comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_STATUS_HISTORY.AF_PROFILE_ID = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: af_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_PROFILES.AUDIT_FIRM_CD
+    comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Status Type Code
+    physical_name: status_tp_code
+    business_meaning: "Loại trạng thái (Đình chỉ, Tạm ngừng, Chấm dứt, Thu hồi, Đang hoạt động)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.STATUS_TYPE
+    comment: "SCHEMA_CODE=AUDIT.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Status Type Code
+    physical_name: suspension_status_tp_code
+    business_meaning: "Trạng thái đình chỉ (đang đình chỉ, đã kết thúc, chưa đến thời hạn)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.SUSPENSION_STATUS_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Decision Number
+    physical_name: decision_nbr
+    business_meaning: Số quyết định.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.DECISION_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Decision Date
+    physical_name: decision_dt
+    business_meaning: Ngày quyết định.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.DECISION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective From Date
+    physical_name: effective_from_dt
+    business_meaning: "Thời gian hiệu lực - Từ ngày."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.EFFECTIVE_FROM_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective To Date
+    physical_name: effective_to_dt
+    business_meaning: "Thời gian hiệu lực - Đến ngày."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.EFFECTIVE_TO_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Terminated Decision Date
+    physical_name: terminated_decision_dt
+    business_meaning: Ngày quyết định chấm dứt/Thu hồi GCN.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.TERMINATED_DECISION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reason Description
+    physical_name: reason_description
+    business_meaning: Lý do (chọn từ lý do từ dropdown lấy từ BTC).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.REASON
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Additional Description
+    physical_name: additional_description
+    business_meaning: Mô tả bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_STATUS_HISTORY
+    source_column: AUDIT.AF_STATUS_HISTORY.ADDITIONAL_DESC
+    comment: null
+    classification_context: null
+    etl_derived_value: null

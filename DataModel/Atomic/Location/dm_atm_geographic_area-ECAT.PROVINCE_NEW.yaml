@@ -32,7 +32,7 @@ attributes:
     source_system: ECAT
     source_table: PROVINCE_NEW
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('ECAT.PROVINCE_NEW', CODE). BCV: \"Geographic Area\" (Location)."
+    comment: "PK surrogate. Hash: hash_id('ECAT_PROVINCE_NEW', CODE). BCV: \"Geographic Area\" (Location)."
     classification_context: null
     etl_derived_value: null
 
@@ -116,7 +116,7 @@ attributes:
     source_system: ECAT
     source_table: PROVINCE_NEW
     source_column: ECAT.PROVINCE_NEW.REGION_ID
-    comment: "FK target: geographic_area.geographic_area_id. Parent là REGION. Resolve: join REGION_ID → ECAT.REGION.ID để lấy CODE, rồi hash_id('ECAT.REGION', CODE_CHA). COUNTRY_ID trên bảng nguồn là denormalized, suy ra được qua REGION → COUNTRY nên không map riêng."
+    comment: "FK target: geographic_area.geographic_area_id. Parent là REGION. Resolve: join REGION_ID → ECAT.REGION.ID để lấy CODE, rồi hash_id('ECAT_REGION', CODE_CHA). COUNTRY_ID trên bảng nguồn là denormalized, suy ra được qua REGION → COUNTRY nên không map riêng."
     classification_context: null
     etl_derived_value: null
 
@@ -298,7 +298,7 @@ attributes:
     source_system: ECAT
     source_table: PROVINCE_NEW
     source_column: ECAT.PROVINCE_NEW.CREATED_BY_ID
-    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
     classification_context: null
     etl_derived_value: null
 
@@ -340,7 +340,7 @@ attributes:
     source_system: ECAT
     source_table: PROVINCE_NEW
     source_column: ECAT.PROVINCE_NEW.UPDATED_BY_ID
-    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
     classification_context: null
     etl_derived_value: null
 

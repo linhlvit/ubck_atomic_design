@@ -67,7 +67,7 @@ attributes:
   - name: Covered Warrant Type Code
     physical_name: covered_warrant_tp_code
     business_meaning: Kiểu chứng quyền.
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
@@ -108,7 +108,7 @@ attributes:
 
   - name: Floor Code
     physical_name: floor_code
-    business_meaning: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond."
+    business_meaning: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS."
     data_domain: Classification Value
     data_type: string
     nullable: true
@@ -116,12 +116,12 @@ attributes:
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.FLOORCODE
-    comment: "Scheme: MDDS_FLOOR_CODE."
-    classification_context: MDDS_FLOOR_CODE
+    comment: "SCHEMA_CODE=MDDS.FLOOR_CODE"
+    classification_context: null
     etl_derived_value: null
 
-  - name: Security Full Name
-    physical_name: security_full_nm
+  - name: Full Name
+    physical_name: full_nm
     business_meaning: Tên chứng khoán (tiếng Việt).
     data_domain: Text
     data_type: string
@@ -136,7 +136,7 @@ attributes:
 
   - name: Fund Type Code
     physical_name: fund_tp_code
-    business_meaning: Loại quỹ — FSS quy định.
+    business_meaning: Loại quỹ.
     data_domain: Text
     data_type: string
     nullable: true
@@ -144,7 +144,7 @@ attributes:
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.FUNDTYPE
-    comment: "Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá trị."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -260,22 +260,22 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Security Event Status Code
-    physical_name: security_event_status_code
+  - name: Status Code
+    physical_name: status_code
     business_meaning: Trạng thái sự kiện quyền của CK.
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.STATUS
-    comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
-    classification_context: MDDS_SECURITY_EVENT_STATUS
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
-  - name: Security Id
-    physical_name: security_id
+  - name: Stock Id
+    physical_name: stock_id
     business_meaning: ID của chứng khoán trong hệ thống Sở.
     data_domain: Text
     data_type: string
@@ -291,15 +291,15 @@ attributes:
   - name: Stock Type Code
     physical_name: stock_tp_code
     business_meaning: Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...).
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.STOCKTYPE
-    comment: "Scheme: MDDS_STOCK_TYPE."
-    classification_context: MDDS_STOCK_TYPE
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Bid Volume
@@ -543,15 +543,15 @@ attributes:
   - name: Exercise Style Code
     physical_name: exercise_style_code
     business_meaning: "Kiểu thực hiện phái sinh: A/E/B/Z."
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.EXERCISESTYLE
-    comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other — chuẩn quốc tế, tập cố định."
-    classification_context: MDDS_EXERCISE_STYLE
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: First Trading Date
@@ -708,8 +708,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Trade Direction Code
-    physical_name: trade_direction_code
+  - name: Last Color
+    physical_name: last_color
     business_meaning: Chiều mua/bán chủ động gần nhất.
     data_domain: Classification Value
     data_type: string
@@ -764,10 +764,10 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Market Id
-    physical_name: market_id
+  - name: Exchange Code
+    physical_name: exchange_code
     business_meaning: Mã sàn theo Sở.
-    data_domain: Text
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
@@ -977,15 +977,15 @@ attributes:
   - name: Put Or Call Code
     physical_name: put_or_call_code
     business_meaning: "Loại quyền phái sinh: P/C."
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.PUTORCALL
-    comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị khi stocktype = OP."
-    classification_context: MDDS_PUT_OR_CALL
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: Reference Price
@@ -1030,8 +1030,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Symbol
-    physical_name: symbol
+  - name: Ticker Symbol
+    physical_name: ticker_symbol
     business_meaning: Mã chứng khoán.
     data_domain: Text
     data_type: string
@@ -1170,6 +1170,20 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
+  - name: Trading Timestamp
+    physical_name: trading_tms
+    business_meaning: Ngày giờ giao dịch.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: MDDS
+    source_table: JAD_STOCKINFOR
+    source_column: MDDS.JAD_STOCKINFOR.TRADINGTIMESTAMP
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
   - name: Underlying Symbol
     physical_name: underlying_symbol
     business_meaning: Chứng khoán cơ sở — dành cho CW/phái sinh.
@@ -1195,48 +1209,6 @@ attributes:
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.YIELD
     comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang decimal(8,5). Cần validate không có giá trị non-numeric."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Open Price M1
-    physical_name: open_price_m1
-    business_meaning: Giá mở cửa (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OPEN_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: High Price M1
-    physical_name: high_price_m1
-    business_meaning: Giá cao nhất (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.HIGH_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Low Price M1
-    physical_name: low_price_m1
-    business_meaning: Giá thấp nhất (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.LOW_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
     classification_context: null
     etl_derived_value: null
 

@@ -74,7 +74,7 @@ attributes:
     source_system: THANHTRA
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID
-    comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA_EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -176,34 +176,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Content
-    physical_name: content
-    business_meaning: Nội dung thông báo kết quả kiểm tra.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: EXAMINATION_RESULT_NOTICE
-    source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.CONTENT
-    comment: Nguồn CLOB — ETL truncate.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Recommendation
-    physical_name: recommendation
-    business_meaning: Ý kiến kiến nghị trong thông báo kết quả kiểm tra.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: EXAMINATION_RESULT_NOTICE
-    source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.RECOMMENDATION
-    comment: Nguồn CLOB — ETL truncate.
-    classification_context: null
-    etl_derived_value: null
-
   - name: Execution Status Code
     physical_name: execution_status_code
     business_meaning: "Trạng thái thực hiện: NOT_EXECUTED, FULLY_EXECUTED, PARTIALLY_EXECUTED."
@@ -215,19 +187,5 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.EXECUTION_STATUS
     comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Execution Description
-    physical_name: execution_description
-    business_meaning: Mô tả tình hình thực hiện thông báo kết quả kiểm tra.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: EXAMINATION_RESULT_NOTICE
-    source_column: THANHTRA.EXAMINATION_RESULT_NOTICE.EXECUTION_DESCRIPTION
-    comment: Nguồn CLOB — ETL truncate.
     classification_context: null
     etl_derived_value: null

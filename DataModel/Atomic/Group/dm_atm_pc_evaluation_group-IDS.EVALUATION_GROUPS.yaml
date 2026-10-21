@@ -32,7 +32,7 @@ attributes:
     source_system: IDS
     source_table: EVALUATION_GROUPS
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). BCV: \"[Group] Group\"."
+    comment: "PK surrogate. Hash: hash_id('IDS_EVALUATION_GROUPS', GROUP_CD). BCV: \"[Group] Group\"."
     classification_context: null
     etl_derived_value: null
 
@@ -103,19 +103,5 @@ attributes:
     source_table: EVALUATION_GROUPS
     source_column: IDS.EVALUATION_GROUPS.WEIGHT
     comment: "Nguồn NUMBER(5,2) lưu theo thang 0-1 (không phải 0-100) — giữ nguyên giá trị gốc, không nhân 100 khi ETL."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Display Order
-    physical_name: display_order
-    business_meaning: Số thứ tự hiển thị.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: EVALUATION_GROUPS
-    source_column: IDS.EVALUATION_GROUPS.DISPLAY_ORDER
-    comment: null
     classification_context: null
     etl_derived_value: null

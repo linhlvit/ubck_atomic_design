@@ -1113,3 +1113,17 @@ attributes:
     comment: NVARCHAR2(1000). Mô tả gốc BRD trống.
     classification_context: null
     etl_derived_value: null
+
+  - name: Source Record Insert Timestamp
+    physical_name: src_record_insert_tms
+    business_meaning: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại hệ thống nguồn.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CREATED_AT
+    comment: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột nguồn CREATED_AT).
+    classification_context: null
+    etl_derived_value: null

@@ -32,7 +32,7 @@ attributes:
     source_system: THANHTRA
     source_table: INSPECTION_TEAM
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('THANHTRA.INSPECTION_TEAM', CODE). BCV: [Business Activity] Business Review."
+    comment: "PK surrogate. Hash: hash_id('THANHTRA_INSPECTION_TEAM', CODE). BCV: [Business Activity] Business Review."
     classification_context: null
     etl_derived_value: null
 
@@ -74,7 +74,7 @@ attributes:
     source_system: THANHTRA
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.INSPECTION_ANNUAL_PLAN_ID
-    comment: "FK target: inspection_annual_plan.inspection_annual_plan_id. Hash: hash_id('THANHTRA.INSPECTION_ANNUAL_PLAN', INSPECTION_ANNUAL_PLAN_ID)."
+    comment: "FK target: inspection_annual_plan.inspection_annual_plan_id. Hash: hash_id('THANHTRA_INSPECTION_ANNUAL_PLAN', INSPECTION_ANNUAL_PLAN_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -218,20 +218,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Content
-    physical_name: content
-    business_meaning: Nội dung tổng quát cuộc thanh tra.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: INSPECTION_TEAM
-    source_column: THANHTRA.INSPECTION_TEAM.CONTENT
-    comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
-    classification_context: null
-    etl_derived_value: null
-
   - name: Inspection Period From Date
     physical_name: inspection_period_from_dt
     business_meaning: "Thời kỳ thanh tra - Từ ngày."
@@ -263,28 +249,28 @@ attributes:
   - name: Anti Money Laundering Indicator
     physical_name: anti_money_laundering_ind
     business_meaning: "Có thanh tra PCRT: 0=Không, 1=Có."
-    data_domain: Indicator
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: THANHTRA
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.ANTI_MONEY_LAUNDERING
-    comment: "Nguồn NUMBER(1,0) — map sang indicator."
+    comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
     classification_context: null
     etl_derived_value: null
 
   - name: Abnormal Transaction Check Indicator
     physical_name: abnormal_transaction_check_ind
     business_meaning: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có."
-    data_domain: Indicator
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: THANHTRA
     source_table: INSPECTION_TEAM
     source_column: THANHTRA.INSPECTION_TEAM.ABNORMAL_TRANSACTION_CHECK
-    comment: "Nguồn NUMBER(1,0) — map sang indicator."
+    comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
     classification_context: null
     etl_derived_value: null
 
@@ -302,16 +288,30 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Note
-    physical_name: note
-    business_meaning: Ghi chú bổ sung.
+  - name: Criminal Transfer Indicator
+    physical_name: criminal_transfer_ind
+    business_meaning: Có (1) / Không (0) chuyển hồ sơ sang Cơ quan điều tra (CQĐT).
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_TEAM
+    source_column: THANHTRA.INSPECTION_TEAM.CRIMINAL_TRANSFER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Criminal Transfer Note
+    physical_name: criminal_transfer_note
+    business_meaning: "Ghi chú tên Cơ quan điều tra được chuyển đến — chỉ có ý nghĩa khi Criminal Transfer Indicator = 1."
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: THANHTRA
     source_table: INSPECTION_TEAM
-    source_column: THANHTRA.INSPECTION_TEAM.NOTE
-    comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    source_column: THANHTRA.INSPECTION_TEAM.CRIMINAL_TRANSFER_NOTE
+    comment: null
     classification_context: null
     etl_derived_value: null

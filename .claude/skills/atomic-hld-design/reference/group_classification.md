@@ -20,6 +20,7 @@ Danh sách group dùng trong cột "Nhóm" của mục 7f HLD Overview. Group nh
 | `Xử lý luồng khác` | Dữ liệu đã được thiết kế/xử lý ở một luồng ETL/nghiệp vụ khác ngoài Atomic — không thiết kế lại tại đây |
 | `Fact Data` | Bảng fact nghiệp vụ đã có/đang có thiết kế Atomic nhưng bị loại khỏi scope theo quyết định tường minh của Data Modeler (không thuộc nhóm kỹ thuật nào ở trên) |
 | `Khảo sát sai` | Bảng có trong khảo sát nguồn (CSV/BRD) nhưng không tồn tại trong DDL/schema thực tế khi đối chiếu lại — dữ liệu khảo sát lỗi thời/sai sót |
+| `Chưa có LLD` | Bảng nguồn từng có thiết kế HLD nhưng không có LLD trong dự án — LLD là chuẩn, HLD gỡ entity (quyết định Data Modeler 2026-10-21) |
 
 ## Quy tắc bổ sung group mới
 

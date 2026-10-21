@@ -149,13 +149,6 @@ entries:
     reason: "HLD 7d đưa 2 phương án loại trừ lẫn nhau cho junction này: (a) denormalize thành ARRAY legal_document_codes, hoặc (b) giữ dạng text legacy trên chính Violation Behavior. LLD trước đó làm cả 2 (giữ field 'Legal Document' text + thêm 'Legal Document Codes' ARRAY từ junction) gây trùng lặp nghiệp vụ. Người thiết kế xác nhận 2026-07-18 chọn phương án (b) — giữ text legacy."
     action: "Không map attribute ARRAY từ junction. Thông tin văn bản pháp luật đã capture qua attribute 'Legal Document' (free-text, nguồn THANHTRA.VIOLATION_BEHAVIOR.LEGAL_DOCUMENT) trên lld_THANHTRA_VIOLATION_BEHAVIOR.yaml."
 
-  - source_system: "ECAT"
-    source_table: "BUSINESS_LINE_LEVEL_2"
-    source_column: "PARENT_LINE_VERSION_ID"
-    description: "Id phiên bản của bản ghi cha (business_line_level_1) — theo Source/ECAT_Columns.csv, trỏ tới BUSINESS_LINE_LEVEL_1.ID (version-specific), khác PARENT_LINE_ID (trỏ tới BUSINESS_LINE_LEVEL_1.STABLE_ID)."
-    reason: "Trùng lặp về mặt nghiệp vụ với PARENT_LINE_ID — Atomic chỉ cần 1 FK parent duy nhất, dùng STABLE_ID (BK) làm chuẩn resolve theo quyết định T1-05/T1-08 (ECAT_HLD_Tier1.md). PARENT_LINE_VERSION_ID là con trỏ kỹ thuật đến 1 version cụ thể của bản ghi cha — không cần thiết khi Atomic không lưu vết version-specific ID."
-    action: "Không map. Parent Classification Business Line Id/Code đã resolve qua PARENT_LINE_ID (xem lld_ECAT_BUSINESS_LINE_LEVEL_2.yaml)."
-
   - source_system: "SCMS"
     source_table: "SC_FIRM_REP_OFFICE"
     source_column: "SO_QUYET_DINH"

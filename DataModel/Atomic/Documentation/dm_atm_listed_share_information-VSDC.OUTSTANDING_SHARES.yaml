@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-listed_share_information-VSDC.OUTSTANDING_SHARES
+  logical_name: Listed Share Information
+  physical_name: listed_share_information
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  description: |
+    Thông tin cổ phiếu niêm yết theo mã chứng khoán: cơ cấu số lượng cổ phiếu (phát hành, quỹ, lưu hành, tự do chuyển nhượng, hạn chế chuyển nhượng, biểu quyết) từ VSDC và số lượng niêm yết, giá tham chiếu từ HNX/HOSE.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-VSDC-OUTSTANDING_SHARES
+
+attributes:
+  - name: Listed Share Information Id
+    physical_name: listed_share_information_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.TICKER_SYMBOL
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_OUTSTANDING_SHARES',TICKER_SYMBOL)"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'VSDC_OUTSTANDING_SHARES'"
+    etl_derived_value: VSDC_OUTSTANDING_SHARES
+
+  - name: Ticker Symbol
+    physical_name: ticker_symbol
+    business_meaning: Mã chứng khoán
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.TICKER_SYMBOL
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: ISIN Code
+    physical_name: isin_code
+    business_meaning: Mã ISIN
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.ISIN_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Issued Share Quantity
+    physical_name: total_issued_share_quantity
+    business_meaning: Tổng khối lượng chứng khoán phát hành
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.TOTAL_ISSUED_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Treasury Share Quantity
+    physical_name: treasury_share_quantity
+    business_meaning: Khối lượng chứng khoán mua lại (Cổ phiếu quỹ)
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.TREASURY_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Outstanding Share Quantity
+    physical_name: outstanding_share_quantity
+    business_meaning: Khối lượng chứng khoán đang lưu hành
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.OUTSTANDING_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Free Float Share Quantity
+    physical_name: free_float_share_quantity
+    business_meaning: Khối lượng chứng khoán tự do chuyển nhượng
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.FREE_FLOAT_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Restricted Share Quantity
+    physical_name: restricted_share_quantity
+    business_meaning: Khối lượng chứng khoán hạn chế chuyển nhượng
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.RESTRICTED_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Voting Share Quantity
+    physical_name: voting_share_quantity
+    business_meaning: Khối lượng chứng khoán có quyền biểu quyết
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.VOTING_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Transaction Date
+    physical_name: transaction_dt
+    business_meaning: Ngày giao dịch
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OUTSTANDING_SHARES
+    source_column: VSDC.OUTSTANDING_SHARES.TRANSACTION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -1,0 +1,359 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-share_auction_result-HOSE.SHARE_AUCTION
+  logical_name: Share Auction Result
+  physical_name: share_auction_result
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HOSE
+  description: |
+    Kết quả đấu giá cổ phiếu theo tổ chức phát hành và loại đấu giá: số cổ phiếu chào bán, số nhà đầu tư đăng ký và trúng giá (trong nước/nước ngoài, tổ chức/cá nhân), giá khởi điểm, giá trúng bình quân, khối lượng và giá trị trúng giá/bán thực tế.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HOSE-SHARE_AUCTION
+
+attributes:
+  - name: Share Auction Result Id
+    physical_name: share_auction_result_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HOSE_SHARE_AUCTION',\"concat_ws('-', ISSUER_NAME, AUCTION_TYPE)\")"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HOSE_SHARE_AUCTION'"
+    etl_derived_value: HOSE_SHARE_AUCTION
+
+  - name: Issuer Name
+    physical_name: issuer_nm
+    business_meaning: Tên tổ chức phát hành / Tên công ty
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.ISSUER_NAME
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Auction Type
+    physical_name: auction_tp
+    business_meaning: Loại hình đấu giá
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.AUCTION_TYPE
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Registered Offering Share Quantity
+    physical_name: registered_offering_share_quantity
+    business_meaning: Số CP đăng ký chào bán
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.REGISTERED_OFFERING_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Registered Investor Count
+    physical_name: registered_investor_count
+    business_meaning: Tổng số NĐT đăng ký tham gia
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.TOTAL_REGISTERED_INVESTORS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Starting Price
+    physical_name: starting_price
+    business_meaning: Giá khởi điểm
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.STARTING_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Average Winning Price
+    physical_name: average_winning_price
+    business_meaning: Giá trúng bình quân
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.AVERAGE_WINNING_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Domestic Institutional Winner Count
+    physical_name: domestic_institutional_winner_count
+    business_meaning: Số NĐT trúng giá tổ chức trong nước
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.DOMESTIC_INSTITUTIONAL_WINNERS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Institutional Winner Count
+    physical_name: foreign_institutional_winner_count
+    business_meaning: Số NĐT trúng giá tổ chức nước ngoài
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.FOREIGN_INSTITUTIONAL_WINNERS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Domestic Individual Winner Count
+    physical_name: domestic_individual_winner_count
+    business_meaning: Số NĐT trúng giá cá nhân trong nước
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.DOMESTIC_INDIVIDUAL_WINNERS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Individual Winner Count
+    physical_name: foreign_individual_winner_count
+    business_meaning: Số NĐT trúng giá cá nhân nước ngoài
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.FOREIGN_INDIVIDUAL_WINNERS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Domestic Registered Buy Quantity
+    physical_name: domestic_registered_buy_quantity
+    business_meaning: "KL CP đăng ký mua - NĐT trong nước"
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.DOMESTIC_REGISTERED_BUY_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Registered Buy Quantity
+    physical_name: foreign_registered_buy_quantity
+    business_meaning: "KL CP đăng ký mua - NĐT nước ngoài"
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.FOREIGN_REGISTERED_BUY_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Domestic Winning Share Quantity
+    physical_name: domestic_winning_share_quantity
+    business_meaning: "Số CP trúng giá - NĐT trong nước"
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.DOMESTIC_WINNING_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Winning Share Quantity
+    physical_name: foreign_winning_share_quantity
+    business_meaning: "Số CP trúng giá - NĐT nước ngoài"
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.FOREIGN_WINNING_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Domestic Winning Value
+    physical_name: domestic_winning_val
+    business_meaning: "Giá trị CP trúng giá (VND) - Trong nước"
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.DOMESTIC_WINNING_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Winning Value
+    physical_name: foreign_winning_val
+    business_meaning: "Giá trị CP trúng giá (VND) - Nước ngoài"
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.FOREIGN_WINNING_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Domestic Actual Sold Share Quantity
+    physical_name: domestic_actual_sold_share_quantity
+    business_meaning: "Số CP thực tế bán được - Trong nước"
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.DOMESTIC_ACTUAL_SOLD_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Actual Sold Share Quantity
+    physical_name: foreign_actual_sold_share_quantity
+    business_meaning: "Số CP thực tế bán được - Nước ngoài"
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.FOREIGN_ACTUAL_SOLD_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Domestic Actual Sold Value
+    physical_name: domestic_actual_sold_val
+    business_meaning: "Giá trị CP thực tế bán được - Trong nước"
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.DOMESTIC_ACTUAL_SOLD_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Actual Sold Value
+    physical_name: foreign_actual_sold_val
+    business_meaning: "Giá trị CP thực tế bán được - Nước ngoài"
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.FOREIGN_ACTUAL_SOLD_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: SHARE_AUCTION
+    source_column: HOSE.SHARE_AUCTION.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null

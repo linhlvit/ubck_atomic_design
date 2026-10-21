@@ -1,7 +1,7 @@
 # IDS HLD — Tier 1
 
 **Source system:** IDS (Information Disclosure System — Hệ thống Công bố Thông tin)
-**Tier 1:** Các entity độc lập — không FK đến entity nghiệp vụ khác trong scope IDS. Gồm 2 nhánh: (A) Công ty đại chúng (`COMPANY_PROFILES`), (B) Thực thể pháp lý (`LEGAL_ENTITIES`), và các entity template/danh mục độc lập (FORMS, REPORT_CATALOG, REP_FORMS, EVALUATION_GROUPS, EVALUATION_PERIODS). `CATEGORIES` (danh mục ngành nghề 2 cấp) promote thành Atomic entity **shared** `Classification Business Line` (đã có từ ECAT) — xem 6f T1-13; đảo ngược quyết định T1-11. *(Nhánh Công ty kiểm toán `AF_PROFILES` đã tách sang `AUDIT_HLD_Tier1.md` — 2026-10-16.)*
+**Tier 1:** Các entity độc lập — không FK đến entity nghiệp vụ khác trong scope IDS. Gồm 2 nhánh: (A) Công ty đại chúng (`COMPANY_PROFILES`), (B) Thực thể pháp lý (`LEGAL_ENTITIES`), và các entity template/danh mục độc lập (FORMS, REPORT_CATALOG, REP_FORMS, EVALUATION_GROUPS, EVALUATION_PERIODS). `CATEGORIES` không có LLD — đã gỡ khỏi HLD IDS (xem 6f T1-13). *(Nhánh Công ty kiểm toán `AF_PROFILES` đã tách sang `AUDIT_HLD_Tier1.md` — 2026-10-16.)*
 
 ---
 
@@ -12,11 +12,10 @@
 | Involved Party | [Involved Party] Organization | Organization | `COMPANY_PROFILES` | Update | Thông tin cơ bản của công ty đại chúng: tên VI/EN, mã CK, sàn niêm yết, trạng thái, vốn điều lệ, loại hình doanh nghiệp. Hạt nhân của toàn bộ IDS — hầu hết bảng nghiệp vụ FK về đây. | Public Company | Fundamental | (1) Term candidate: `[Involved Party] Organization` — BCV mô tả tổ chức/pháp nhân có lifecycle riêng, được UBCKNN quản lý. (2) Cấu trúc trường: tên VI/EN/viết tắt, mã CK, sàn niêm yết (EQUITY_LISTING_EXCH), trạng thái (STATUS_IDS_CD), vốn điều lệ (CAPITAL_PAID_REPORTED), loại doanh nghiệp (ENTERPRISE_TYPE_CD), loại BCTC (FINANCIAL_STMT_TYPE_CD) — rõ ràng là profile của pháp nhân tổ chức; không có bảng `company_detail` riêng trong BRD thực tế. (3) Chọn `[Involved Party] Organization` — công ty đại chúng là pháp nhân tổ chức; shared entity với SCMS.DM_CONG_TY_DC. |
 | Involved Party | [Involved Party] Individual | Involved Party | `LEGAL_ENTITIES` | Update | Cổ đông giao dịch, người nội bộ, người liên quan của công ty đại chúng (cá nhân hoặc tổ chức). Grain = 1 thực thể pháp lý độc lập — không FK đến COMPANY_PROFILES ở bảng này; quan hệ với công ty thể hiện qua COMPANY_ENTITY_ROLE và COMPANY_SHAREHOLDING (Tier 3). | Legal Entity | Fundamental | (1) Term candidate: `[Involved Party] Individual` — BCV mô tả cá nhân hoặc tổ chức là Involved Party có lifecycle riêng. (2) Cấu trúc trường: ENTITY_NAME, ENTITY_TYPE_CD (cá nhân/tổ chức), GENDER_CD, BIRTH_DATE, ADDRESS, PHONE_NO, FAX_NO, NATIONALITY, EDUCATION_LEVEL_CD, BUSINESS_REG_NO (nếu là tổ chức), PAID_UP_CHARTER_CAPITAL, WEBSITE — đây là profile đầy đủ của một thực thể pháp lý độc lập không gắn với công ty cụ thể. (3) Chọn `[Involved Party] Individual` — LEGAL_ENTITIES là Involved Party với lifecycle riêng; grain = 1 thực thể, không phải 1 giao dịch. Fundamental vì không FK đến bảng nghiệp vụ ở T1. |
 | Documentation | [Documentation] Form Document | Documentation | `FORMS` | Update | Định nghĩa template form CBTT — mỗi form là một loại hồ sơ/tin công bố; self-ref qua `parent_form_id` tạo cấu trúc cha-con. | Financial Report | Relative | (1) Term candidate: `[Documentation] Form Document` (BCV id 9348, category Documentation, part_of `Documentation Item`) — "Mục Tài liệu được trình bày theo bố cục mẫu tiêu chuẩn, yêu cầu cung cấp thêm thông tin" (VD: mẫu đơn vay, bảng câu hỏi). (2) Cấu trúc trường: form_type_cd, news_type_cd, parent_form_id (self-ref), tên biểu mẫu — chỉ là metadata của bản mẫu (layout chuẩn), không có dữ liệu nghiệp vụ thực; dữ liệu thực (đã điền vào form) nằm ở `Financial Report Value` (`DATA`) — đúng khớp mô tả "yêu cầu cung cấp thêm thông tin". (3) Chọn `[Documentation] Form Document`, thay cho `[Condition] Form Definition` trước đây — term "Form Definition" **không tồn tại** trong `knowledge/terms.csv` (grep xác nhận 0 kết quả; term cũ tự đặt, không qua tra cứu BCV đúng quy trình rule#6), trong khi "Form Document" là term thật (id 9348) khớp chính xác cấu trúc bảng. Đổi theo yêu cầu tường minh Data Modeler (2026-08-13) — xem Overview 7e #21. Domain prefix giữ nguyên `Financial Report` (`fr`). |
-| Condition | [Condition] Form Definition | Condition | `REPORT_CATALOG` | Update | Danh mục báo cáo tài chính: định nghĩa loại báo cáo (BCTC, KQKD...) với tập hàng/cột tương ứng. | Financial Report Catalog | Relative | (1) Term candidate: `[Condition] Form Definition` — BCV mô tả mẫu biểu/danh mục được định nghĩa sẵn. (2) Cấu trúc trường: rc_type_cd, tên catalog, phạm vi (rc_scope_cd), loại doanh nghiệp (report_type_cd), kỳ báo cáo — đây là định nghĩa danh mục mẫu báo cáo BCTC, không phải dữ liệu thực. (3) Chọn `[Condition] Form Definition` — REPORT_CATALOG là template mẫu được duy trì làm quy chuẩn. |
+| Documentation | [Documentation] Form Document | Documentation | `REPORT_CATALOG` | Update | Danh mục báo cáo tài chính: định nghĩa loại báo cáo (BCTC, KQKD...) với tập hàng/cột tương ứng. | Financial Report Catalog | Relative | (1) Term: `[Documentation] Form Document` (BCV id 9348) theo LLD `lld_IDS_REPORT_CATALOG.yaml` — cùng họ với `FORMS`/`RROW`/`RCOL`. (2) Cấu trúc trường: rc_type_cd, tên catalog, phạm vi (rc_scope_cd), loại doanh nghiệp (report_type_cd), kỳ báo cáo — metadata bản mẫu BCTC, không phải dữ liệu thực. (3) Chọn `[Documentation] Form Document` (đồng bộ theo LLD 2026-10-21, thay `[Condition] Form Definition`). |
 | Documentation | [Documentation] Form Document | Documentation | `REP_FORMS` | Update | Template báo cáo định kỳ (tháng/quý/năm/bán niên) — bộ mẫu độc lập với báo cáo tài chính. | Unstructured Financial Report | Relative | (1) Term candidate: `[Documentation] Form Document` (BCV id 9348, category Documentation, part_of `Documentation Item`) — "Mục Tài liệu được trình bày theo bố cục mẫu tiêu chuẩn, yêu cầu cung cấp thêm thông tin". (2) Cấu trúc trường: rf_report_type_cd (tần suất), tên form, mô tả — chỉ là metadata của bản mẫu báo cáo định kỳ, không có dữ liệu nghiệp vụ thực (số liệu điền vào từng kỳ). (3) Chọn `[Documentation] Form Document`, thay cho `[Condition] Form Definition` trước đây — term "Form Definition" **không tồn tại** trong `knowledge/terms.csv` (grep xác nhận 0 kết quả; tự đặt, không qua tra cứu BCV đúng quy trình rule#6), trong khi "Form Document" là term thật (id 9348) khớp chính xác. Đổi theo yêu cầu tường minh Data Modeler (2026-08-13) — xem Overview 7e #21. Đổi tên entity từ `Periodic Report Form` (2026-08-05); domain prefix đổi sang `Unstructured Financial Report` (`ufr`) (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN) — xem Overview 7e #22. Bỏ chữ "Sub" khỏi tên entity (2026-08-27) — xem Overview 7e #23. |
-| Group | [Group] Group | Group | `EVALUATION_GROUPS` | Update | Nhóm chỉ tiêu đánh giá xếp hạng công ty đại chúng (không có FK đến bảng nghiệp vụ khác). | Public Company Evaluation Group | Classification | (1) Term candidate: `[Group] Group` — BCV mô tả nhóm phân loại. (2) Cấu trúc trường: GROUP_NAME, GROUP_CD, WEIGHT, DISPLAY_ORDER — đây là danh mục nhóm chỉ tiêu phục vụ đánh giá, có CODE + NAME + metadata. Tuy nhiên có WEIGHT (trọng số) là attribute nghiệp vụ quan trọng. (3) Chọn `[Group] Group` — EVALUATION_GROUPS là bảng phân nhóm chỉ tiêu đánh giá; TABLE_TYPE = Classification vì đây là reference data được duy trì để phân loại chỉ tiêu. |
+| Group | [Group] Group | Group | `EVALUATION_GROUPS` | Update | Nhóm chỉ tiêu đánh giá xếp hạng công ty đại chúng (không có FK đến bảng nghiệp vụ khác). | Public Company Evaluation Group | Relative | (1) Term candidate: `[Group] Group` — BCV mô tả nhóm phân loại. (2) Cấu trúc trường: GROUP_NAME, GROUP_CD, WEIGHT, DISPLAY_ORDER — đây là danh mục nhóm chỉ tiêu phục vụ đánh giá, có CODE + NAME + metadata. Tuy nhiên có WEIGHT (trọng số) là attribute nghiệp vụ quan trọng. (3) Chọn `[Group] Group` — EVALUATION_GROUPS là bảng phân nhóm chỉ tiêu đánh giá; Table Type = Relative theo LLD (`lld_IDS_EVALUATION_GROUPS.yaml`, 2026-10-21). |
 | Event | [Event] Period | Event | `EVALUATION_PERIODS` | Update | Kỳ đánh giá xếp hạng công ty đại chúng (năm + tháng + trạng thái đã duyệt). | Public Company Evaluation Period | Fundamental | (1) Term candidate: `[Event] Period` — BCV mô tả khoảng thời gian nghiệp vụ có lifecycle riêng (draft → approved). (2) Cấu trúc trường: YEAR, MONTH, STATUS (approved/draft) — đây là kỳ đánh giá có lifecycle riêng, không chỉ là reference data Code + Name. (3) Chọn `[Event] Period` — EVALUATION_PERIODS là kỳ nghiệp vụ độc lập phục vụ đánh giá. Fundamental vì không FK đến entity nghiệp vụ khác. |
-| Common | [Common] Industry Classification | Common | `CATEGORIES` | Update | Danh mục ngành nghề kinh doanh 2 cấp của CTĐC, self-referencing qua `PARENT_ID` — dùng cho `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID`. | **Classification Business Line** (shared với ECAT) | Relative | (1) Term candidate: `[Common] Industry Classification` (BCV id 8291, category `Common`) — "phân loại tổ chức dựa trên những gì tổ chức sản xuất, kinh doanh hoặc chế tạo". (2) Cấu trúc trường: `INDUSTRY_CD`/`INDUSTRY_NAME`/`DESCRIPTION` là nội dung nghiệp vụ; `PARENT_ID` (self-ref) tạo cấu trúc cha-con 2 cấp — cấu trúc gần như đồng nhất với `ECAT.BUSINESS_LINE_LEVEL_1`/`BUSINESS_LINE_LEVEL_2` (đã gộp thành entity `Classification Business Line`, self-referencing, cùng BCV Concept `[Common] Industry Classification`, `ECAT_HLD_Tier1.md` T1-07). (3) Theo yêu cầu tường minh của Data Modeler (2026-07-17), coi `IDS.CATEGORIES` và `ECAT.BUSINESS_LINE_LEVEL_1/2` là **cùng một concept nghiệp vụ** (danh mục ngành nghề 2 cấp) → gộp thành **shared entity** `Classification Business Line` thay vì tạo entity riêng — đảo ngược lý do "khác nguồn dữ liệu" của quyết định T1-11. Table Type = `Relative` (giữ nguyên theo entity gốc từ ECAT, không theo rule mặc định Common→Classification). Xem 6f T1-13. |
 
 ---
 
@@ -93,19 +92,7 @@ erDiagram
         string STATUS
     }
 
-    CATEGORIES {
-        int ID PK
-        string INDUSTRY_CD
-        string INDUSTRY_NAME
-        string DESCRIPTION
-        int PARENT_ID FK
-        string SYSTEM_CD
-    }
-
-    COMPANY_PROFILES }o--|| CATEGORIES : "CATEGORY_L1_ID"
-    COMPANY_PROFILES }o--|| CATEGORIES : "CATEGORY_L2_ID"
     FORMS ||--o{ FORMS : "PARENT_FORM_ID (self-ref)"
-    CATEGORIES ||--o{ CATEGORIES : "PARENT_ID (self-ref)"
 ```
 
 ---
@@ -128,10 +115,8 @@ erDiagram
         string pblc_co_form_code
         decimal cptl_pd_rptd_amt
         date fy_end_dt
-        bigint biz_line_lv1_id FK
-        string biz_line_lv1_code
-        bigint biz_line_lv2_id FK
-        string biz_line_lv2_code
+        string biz_line_lv1_tp_code
+        string biz_line_lv2_tp_code
     }
 
     Legal_Entity {
@@ -160,9 +145,9 @@ erDiagram
         string entp_tp_code
     }
 
-    Financial_Report_Sub_Template {
-        string fr_sub_template_id PK
-        string fr_sub_template_code
+    Unstructured_Financial_Report {
+        string ufr_id PK
+        string ufr_code
         string prd_rpt_freq_code
     }
 
@@ -181,20 +166,8 @@ erDiagram
         string eval_prd_st_code
     }
 
-    Classification_Business_Line {
-        bigint biz_line_id PK
-        string biz_line_code
-        string biz_line_lv_tp_code
-        bigint prn_biz_line_id FK
-    }
-
     Financial_Report ||--o{ Financial_Report : "parent_form_id"
-    Classification_Business_Line ||--o{ Classification_Business_Line : "prn_biz_line_id (self-join)"
-    Classification_Business_Line ||--o{ Public_Company : "biz_line_lv1_id"
-    Classification_Business_Line ||--o{ Public_Company : "biz_line_lv2_id"
 ```
-
-> `Classification_Business_Line` là entity **đã có** (nguồn ECAT: `BUSINESS_LINE_LEVEL_1`/`BUSINESS_LINE_LEVEL_2`, xem `ECAT_HLD_Tier1.md` T1-07) — Tier này chỉ bổ sung `IDS.CATEGORIES` làm nguồn thứ 2 (shared entity), không đổi cấu trúc. Xem 6f T1-13.
 
 ---
 
@@ -217,7 +190,6 @@ erDiagram
 | `REPORT_CATALOG.RC_SCOPE_CD` | Phạm vi báo cáo (hợp nhất, mẹ...) | `IDS_REPORT_SCOPE` | source_table | Values load từ `LOOKUP_VALUES` |
 | `REP_FORMS.RF_REPORT_TYPE_CD` | Tần suất báo cáo định kỳ (tháng/quý/năm...) | `IDS_PERIODIC_REPORT_FREQUENCY` | etl_derived | Values lấy trực tiếp từ cột nguồn |
 | `EVALUATION_PERIODS.STATUS` | Trạng thái kỳ đánh giá (approved/draft) | `IDS_EVAL_PERIOD_STATUS` | etl_derived | Values lấy trực tiếp từ cột nguồn |
-| ETL derive từ `CATEGORIES.PARENT_ID IS NULL`/`NOT NULL` | Phân biệt cấp ngành nghề (1/2) trên entity `Classification Business Line` — giá trị dùng chung scheme `ECAT_BUSINESS_LINE_LEVEL` đã có (bổ sung nguồn `IDS.CATEGORIES` cho 2 code `LEVEL_1`/`LEVEL_2`) | `ECAT_BUSINESS_LINE_LEVEL` | etl_derived | `CATEGORIES` không tách 2 bảng như ECAT — level suy ra từ `PARENT_ID` (NULL = cấp 1, NOT NULL = cấp 2), khác cơ chế derive-từ-tên-bảng của ECAT. Cơ chế derive cụ thể để LLD xác nhận (xem 6f T1-13). `IDS_INDUSTRY_CATEGORY` (scheme cũ) deprecated — xem 6f T1-13. |
 
 ---
 
@@ -232,13 +204,7 @@ erDiagram
 | # | Câu hỏi | Kết quả |
 |---|---|---|
 | T1-01 | `COMPANY_PROFILES` trong BRD thực tế đã bao gồm cả các cột mà HLD cũ gán cho `company_detail` (FINANCIAL_STMT_TYPE_CD, FY_END_DATE, EQUITY_LISTING_EXCH...) — xác nhận không có bảng `company_detail` riêng. | Xác nhận — BRD per-table `brd_IDS_COMPANY_PROFILES.yaml` đã có đầy đủ các cột trên. Merge 1 entity từ 1 bảng. |
-| T1-02 | `LEGAL_ENTITIES` là Tier 1 Fundamental (không FK đến COMPANY_PROFILES tại bảng này). Quan hệ cổ đông × công ty = Tier 3 qua `COMPANY_SHAREHOLDING` và `COMPANY_ENTITY_ROLE`. Xác nhận phân tầng đúng. | Xác nhận — LEGAL_ENTITIES.yaml không có cột FK → COMPANY_PROFILES. Quan hệ chỉ thể hiện qua bảng junction Tier 3. |
-| T1-03 | `EVALUATION_GROUPS` có WEIGHT là attribute nghiệp vụ, không chỉ Code + Name → cần entity riêng thay vì Classification Value. Tuy nhiên đây là reference data dùng để phân nhóm chỉ tiêu, không phải instance nghiệp vụ → TABLE_TYPE = Classification. Xác nhận. | Xác nhận — EVALUATION_GROUPS là nhóm chỉ tiêu cố định, table_type = Classification phù hợp. |
+| T1-02 | `LEGAL_ENTITIES` là Tier 1 Fundamental (không FK đến COMPANY_PROFILES tại bảng này). Quan hệ cổ đông × công ty = Tier 3 qua `COMPANY_SHAREHOLDING` và `COMPANY_ENTITY_ROLE`. Xác nhận phân tầng đúng. | Xác nhận — LEGAL_ENTITIES.yaml không có cột FK → COMPANY_PROFILES. Quan hệ chỉ thể hiện qua bảng Tier 3. |
+| T1-03 | `EVALUATION_GROUPS` có WEIGHT là attribute nghiệp vụ, không chỉ Code + Name → cần entity riêng thay vì Classification Value. Tuy nhiên đây là reference data dùng để phân nhóm chỉ tiêu, không phải instance nghiệp vụ → Table Type theo LLD = Relative (cập nhật 2026-10-21, trước đó Classification). | Đã đồng bộ theo LLD: Table Type = Relative. |
 | T1-04 | `EVALUATION_PERIODS` có STATUS lifecycle riêng (draft → approved) → Fundamental, không phải Classification. Xác nhận. | Xác nhận — có lifecycle status, grain = 1 kỳ đánh giá. |
-| T1-06 | ~~`CATEGORIES` (ngành nghề 2 cấp, self-ref) → Classification Value `IDS_INDUSTRY_CATEGORY`, không tạo Atomic entity riêng.~~ | **Đã đảo ngược tại T1-09, rồi đảo ngược lại tại T1-11** — kết quả cuối cùng trùng với quyết định gốc ở dòng này (Classification Value, không tạo Atomic entity). |
-| T1-07 | `CATEGORIES` tra BCV ra `[Common] Industry Classification` (BCV id 8291, category `Common`) — theo rule mặc định của skill (Common → Table Type `Classification`, tức Classification Value, không tạo Atomic entity riêng), khác với quyết định thực tế áp dụng ở tier này. Data Modeler chỉ định tường minh Table Type = `Relative` (self-referencing qua `PARENT_ID`, có surrogate key riêng), không dùng ngoại lệ Geographic Area (ngoại lệ đó chỉ áp dụng cho `[Location]`). Ghi nhận đây là quyết định thiết kế tường minh, không phải suy luận theo rule mặc định. Tương tự pattern `Classification ECAT Business Line` (ECAT_HLD_Tier1.md T1-07). | **Superseded bởi T1-11** — CATEGORIES không còn là Atomic entity nên Table Type không còn áp dụng. |
-| T1-08 | `CATEGORIES.SYSTEM_CD` — mô tả trống trong BRD (`brd_IDS_CATEGORIES.yaml`). Tên gợi ý phân biệt hệ thống dùng chung bảng CATEGORIES (nếu bảng này được shared bởi nhiều module IDS), nhưng chưa rõ ý nghĩa cụ thể / giá trị domain. Cần đối chiếu dữ liệu thực tế trước khi thiết kế LLD. | **Không còn áp dụng** — xem T1-11. CATEGORIES không thiết kế thành Atomic entity nên không cần map attribute SYSTEM_CD. |
-| T1-09 | Đảo ngược quyết định T1-06: `CATEGORIES` promote thành Atomic entity `Classification IDS Business Line`, Table Type = `Relative`, theo yêu cầu tường minh của Data Modeler. `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` sẽ xử lý thành cặp Id + Code (FK đến entity mới) ở LLD, thay vì Classification Value scheme `IDS_INDUSTRY_CATEGORY` như quyết định cũ. | **Superseded bởi T1-11 (2026-07-14)** — xem T1-11. |
-| T1-10 | `CATEGORIES.ACTIVE_FLG` và `CATEGORIES.STATUS_FLG` — tên cột và mô tả nguồn không khớp nhau: `ACTIVE_FLG` (tên gợi ý cờ hiệu lực) có mô tả BRD chỉ ghi "Chọn" (gợi ý cờ UI checked/selected); `STATUS_FLG` (tên gợi ý trạng thái chung) có mô tả rõ "1: Active (Hiệu lực); 0: Inactive (Hết hiệu lực)". LLD map 1:1 thành 2 Boolean riêng (`Selected Indicator` ← ACTIVE_FLG, `Active Indicator` ← STATUS_FLG) theo mô tả gốc, không coi là trùng lặp — theo nguyên tắc "map 1:1, không tự loại trừ vì nghi trùng lặp" đã áp dụng cho CAT_SC_FIRM_STATUS. | **Không còn áp dụng** — xem T1-11. CATEGORIES không thiết kế thành Atomic entity nên không cần map attribute ACTIVE_FLG/STATUS_FLG. |
-| T1-11 | Đảo ngược quyết định T1-09: `CATEGORIES` KHÔNG thiết kế thành Atomic entity nữa — theo quyết định tường minh của Data Modeler (2026-07-14). IDS không dùng chung entity `Classification Business Line` (ECAT, đổi tên từ `Classification ECAT Business Line` theo rule mới bỏ tiền tố nguồn) vì khác nguồn dữ liệu, và cũng không giữ entity riêng `Classification IDS Business Line`. `IDS.CATEGORIES` chuyển hẳn ra ngoài scope Atomic — xem Overview mục 7f. `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` quay lại dùng Classification Value scheme `IDS_INDUSTRY_CATEGORY` (un-deprecated trong classification_schemes.yaml) thay vì cặp FK Id+Code. | Đã xử lý — mục 6a/6b/6c/6d đã cập nhật (bỏ entity, thêm lại Reference Data row). `lld_IDS_CATEGORIES.yaml` đã xóa. `lld_IDS_COMPANY_PROFILES.yaml` quay lại 2 attribute Classification Value (`Business Line Level 1/2 Code`). |
-| T1-13 | Đảo ngược quyết định T1-11: `CATEGORIES` promote lại thành Atomic entity, nhưng lần này là **shared entity** với `Classification Business Line` đã có từ ECAT (`ECAT_HLD_Tier1.md` T1-07) — theo yêu cầu tường minh của Data Modeler (2026-07-17). Khác T1-09 (từng tạo entity riêng `Classification IDS Business Line`), lần này `IDS.CATEGORIES` và `ECAT.BUSINESS_LINE_LEVEL_1/2` được xác nhận là **cùng 1 concept nghiệp vụ** (danh mục ngành nghề 2 cấp, self-referencing) → gộp vào cùng 1 dòng `atomic_entities.yaml` (`Classification Business Line`, bổ sung `source_table: IDS.CATEGORIES`), không tạo entity trùng tên. `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` chuyển từ Classification Value 1-field-Code sang cặp FK Id+Code đến `Classification Business Line` (rule CLAUDE.md #3) — thực hiện ở LLD. Scheme `IDS_INDUSTRY_CATEGORY` deprecated; scheme `ECAT_BUSINESS_LINE_LEVEL` bổ sung nguồn `IDS.CATEGORIES` (derive qua `PARENT_ID IS NULL`/`NOT NULL` thay vì tên bảng — cơ chế cụ thể để LLD xác nhận). | Đã xử lý ở mục 6a/6b/6c/6d Tier1 này + `atomic_entities.yaml` (bổ sung source_table) + `classification_schemes.yaml` (deprecate `IDS_INDUSTRY_CATEGORY`). LLD (`lld_IDS_CATEGORIES.yaml`, cập nhật `lld_IDS_COMPANY_PROFILES.yaml` FK Id+Code, `manifest.yaml`) — chưa thực hiện, thuộc phạm vi `atomic-lld-design`. |
+| T1-13 | `CATEGORIES` (danh mục ngành nghề 2 cấp) không có `lld_IDS_CATEGORIES.yaml` trong dự án → gỡ khỏi HLD IDS (quyết định Data Modeler 2026-10-21), chuyển vào Overview 7f (nhóm `Chưa có LLD`). `Classification Business Line` chỉ sinh từ ECAT; `COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID` dùng 2 thuộc tính Classification Value `Business Line Level 1/2 Type Code` theo `lld_IDS_COMPANY_PROFILES.yaml`. | Đã xử lý ở 6a/6b/6c/6d + Overview. |

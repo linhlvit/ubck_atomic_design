@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-additional_gov_bond_listing-HNX.GOV_BOND_ADDITIONAL_LISTING
+  logical_name: Additional Gov Bond Listing
+  physical_name: additional_gov_bond_listing
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  description: |
+    Sự kiện niêm yết bổ sung hoặc thay đổi niêm yết của trái phiếu Chính phủ: mã trái phiếu, loại, trạng thái, khối lượng, mệnh giá và ngày thay đổi niêm yết.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HNX-GOV_BOND_ADDITIONAL_LISTING
+
+attributes:
+  - name: Additional Gov Bond Listing Id
+    physical_name: additional_gov_bond_listing_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_GOV_BOND_ADDITIONAL_LISTING',\"concat_ws('-', BOND_CODE, STATUS, LISTING_CHANGE_DATE)\")"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HNX_GOV_BOND_ADDITIONAL_LISTING'"
+    etl_derived_value: HNX_GOV_BOND_ADDITIONAL_LISTING
+
+  - name: Bond Code
+    physical_name: bond_code
+    business_meaning: Mã trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.BOND_CODE
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Bond Type
+    physical_name: bond_tp
+    business_meaning: Loại trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.BOND_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Additional Bond Quantity
+    physical_name: additional_bond_quantity
+    business_meaning: Khối lượng
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Par Value
+    physical_name: par_val
+    business_meaning: Mệnh giá trái phiếu
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.PAR_VALUE
+    comment: "Nguồn DECIMAL(18,2) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Listing Status
+    physical_name: listing_status
+    business_meaning: Trạng thái
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.STATUS
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Listing Change Date
+    physical_name: listing_change_dt
+    business_meaning: Ngày thay đổi niêm yết
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.LISTING_CHANGE_DATE
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null

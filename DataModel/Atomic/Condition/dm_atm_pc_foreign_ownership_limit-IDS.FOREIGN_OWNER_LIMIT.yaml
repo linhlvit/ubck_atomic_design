@@ -1,0 +1,135 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_foreign_ownership_limit-IDS.FOREIGN_OWNER_LIMIT
+  logical_name: Public Company Foreign Ownership Limit
+  physical_name: pc_foreign_ownership_limit
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Ownership Constraint"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Quyết định quy định tỷ lệ tối đa sở hữu nước ngoài tại CTĐC: số quyết định, tỷ lệ giới hạn, thời gian hiệu lực.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-FOREIGN_OWNER_LIMIT
+
+attributes:
+  - name: Public Company Foreign Ownership Limit Id
+    physical_name: pc_foreign_ownership_limit_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: FOREIGN_OWNER_LIMIT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Condition] Ownership Constraint\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Foreign Ownership Limit Code
+    physical_name: pc_foreign_ownership_limit_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: FOREIGN_OWNER_LIMIT
+    source_column: IDS.FOREIGN_OWNER_LIMIT.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: FOREIGN_OWNER_LIMIT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_FOREIGN_OWNER_LIMIT'"
+    etl_derived_value: IDS_FOREIGN_OWNER_LIMIT
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Khóa link đến bảng COMPANY_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: FOREIGN_OWNER_LIMIT
+    source_column: IDS.FOREIGN_OWNER_LIMIT.COMPANY_PROFILE_ID
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: FOREIGN_OWNER_LIMIT
+    source_column: IDS.FOREIGN_OWNER_LIMIT.COMPANY_PROFILE_ID
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Maximum Foreign Ownership Rate Percentage
+    physical_name: maximum_foreign_ownership_rate_percentage
+    business_meaning: Tỷ lệ sở hữu nước ngoài tối đa.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FOREIGN_OWNER_LIMIT
+    source_column: IDS.FOREIGN_OWNER_LIMIT.MAX_OWNER_RATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective From Date
+    physical_name: effective_from_dt
+    business_meaning: Thời gian áp dụng (từ ngày).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FOREIGN_OWNER_LIMIT
+    source_column: IDS.FOREIGN_OWNER_LIMIT.FROM_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective To Date
+    physical_name: effective_to_dt
+    business_meaning: Thời gian áp dụng (đến ngày).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FOREIGN_OWNER_LIMIT
+    source_column: IDS.FOREIGN_OWNER_LIMIT.TO_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

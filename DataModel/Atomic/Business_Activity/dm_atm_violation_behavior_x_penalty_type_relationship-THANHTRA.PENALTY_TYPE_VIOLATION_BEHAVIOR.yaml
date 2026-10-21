@@ -1,0 +1,93 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-violation_behavior_x_penalty_type_relationship-THANHTRA.PENALTY_TYPE_VIOLATION_BEHAVIOR
+  logical_name: Violation Behavior X Penalty Type Relationship
+  physical_name: violation_behavior_x_penalty_type_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: THANHTRA
+  description: |
+    Hình thức xử phạt bổ sung áp dụng cho từng hành vi vi phạm hành chính trong danh mục — entity link/relationship thuần bắc cầu Violation Behavior (T2) và Penalty Type (T1), quan hệ N:N, cross-tier FK bình thường. Bảng nguồn chỉ có 2 FK nghiệp vụ nên PK composite trên 2 FK Id. PRIMARY
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-THANHTRA-PENALTY_TYPE_VIOLATION_BEHAVIOR
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_TYPE_VIOLATION_BEHAVIOR'"
+    etl_derived_value: THANHTRA_PENALTY_TYPE_VIOLATION_BEHAVIOR
+
+  - name: Violation Behavior Id
+    physical_name: violation_behavior_id
+    business_meaning: FK đến Violation Behavior (hành vi vi phạm liên kết).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+    source_column: THANHTRA.PENALTY_TYPE_VIOLATION_BEHAVIOR.VIOLATION_BEHAVIOR_ID
+    comment: "FK target: violation_behavior.violation_behavior_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_BEHAVIOR: PENALTY_TYPE_VIOLATION_BEHAVIOR.VIOLATION_BEHAVIOR_ID = VIOLATION_BEHAVIOR.ID để xác nhận CODE sau đó hash_id('THANHTRA_VIOLATION_BEHAVIOR', CODE). Composite PK cùng Classification THANHTRA Penalty Type Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Behavior Code
+    physical_name: violation_behavior_code
+    business_meaning: Mã hành vi vi phạm liên kết (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+    source_column: THANHTRA.VIOLATION_BEHAVIOR.CODE
+    comment: "Lookup pair: violation_behavior.violation_behavior_code. Pair with Violation Behavior Id. Giá trị lấy từ THANHTRA.VIOLATION_BEHAVIOR.CODE sau ETL crosswalk — chi tiết xem comment Violation Behavior Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification THANHTRA Penalty Type Id
+    physical_name: cl_thanhtra_penalty_tp_id
+    business_meaning: FK đến Penalty Type (hình thức xử phạt bổ sung áp dụng cho hành vi vi phạm).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+    source_column: THANHTRA.PENALTY_TYPE_VIOLATION_BEHAVIOR.PENALTY_TYPE_ID
+    comment: "FK target: cl_thanhtra_penalty_type.cl_thanhtra_penalty_tp_id. Cần ETL crosswalk sang THANHTRA.PENALTY_TYPE: PENALTY_TYPE_VIOLATION_BEHAVIOR.PENALTY_TYPE_ID = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA_PENALTY_TYPE', CODE). Composite PK cùng Violation Behavior Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification THANHTRA Penalty Type Code
+    physical_name: cl_thanhtra_penalty_tp_code
+    business_meaning: Mã hình thức xử phạt bổ sung (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_TYPE_VIOLATION_BEHAVIOR
+    source_column: THANHTRA.PENALTY_TYPE.CODE
+    comment: "Lookup pair: cl_thanhtra_penalty_type.cl_thanhtra_penalty_tp_code. Pair with Classification THANHTRA Penalty Type Id. Giá trị lấy từ THANHTRA.PENALTY_TYPE.CODE sau ETL crosswalk — chi tiết xem comment Classification THANHTRA Penalty Type Id."
+    classification_context: null
+    etl_derived_value: null

@@ -1,7 +1,7 @@
 # SCMS HLD — Tier 2
 
 **Source system:** SCMS (Quản lý Giám sát Công ty Chứng khoán)
-**Tier 2:** Các entity có FK đến Tier 1 — bao gồm chi nhánh, VPDD, PGD, nhân sự, kiểm toán viên, ngân hàng lưu ký, dịch vụ được cấp phép, báo cáo định kỳ/đột xuất, công bố thông tin, vi phạm, chế tài hành chính, khiếu nại, kiểm tra, cổ đông, quan hệ sở hữu, thang điểm rủi ro, điều kiện cảnh báo.
+**Tier 2:** Các entity có FK đến Tier 1 — bao gồm chi nhánh, VPĐD, PGD (Organization Unit), chi nhánh/VPĐD nước ngoài (Foreign Organization Unit), nhân sự cấp cao và nhân sự chi nhánh/VPĐD nước ngoài, báo cáo định kỳ/đột xuất, báo cáo định kỳ ngân hàng, CBTT chào bán chứng khoán, thay đổi hồ sơ, cổ đông/người nội bộ/người liên quan/cổ đông lớn, các entity `_x_ Relationship` dịch vụ được cấp phép, nhóm biểu mẫu báo cáo (Input Submission/Sheet/Deep Config/Event Type Relationship) và shared entity Involved Party Postal/Electronic Address, Alternative Identification.
 
 ---
 
@@ -9,52 +9,33 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Atomic Entity | table_type | BCV Term |
 |---|---|---|---|---|---|---|---|
-| Involved Party | [Involved Party] Branch | Involved Party | SC_FIRM_BRANCH | Chi nhánh của CTCK trong nước (có địa chỉ, giấy phép, trạng thái riêng) | Securities Company Organization Unit | Relative | (1) BCV có `Branch` trong Involved Party — đơn vị thành viên có địa chỉ pháp lý riêng của một Involved Party lớn hơn. (2) SC_FIRM_BRANCH lưu chi nhánh CTCK: địa chỉ, tỉnh/huyện/xã, giấy phép, ngày hoạt động, trạng thái — đây là Involved Party con của Securities Company. (3) Chọn `[Involved Party] Branch`. |
-| Involved Party | [Involved Party] Representative Office | Involved Party | SC_FIRM_REP_OFFICE | Văn phòng đại diện trong nước của CTCK (VPDD nội địa) | Securities Company Organization Unit | Relative | (1) BCV có `Representative Office` trong Involved Party. (2) SC_FIRM_REP_OFFICE có FK đến cả SC_FIRM_INFO và SC_FIRM_BRANCH — VPDD có thể trực thuộc hội sở hoặc chi nhánh. (3) Chọn `[Involved Party] Representative Office`. |
-| Involved Party | [Involved Party] Branch | Involved Party | SC_FIRM_TRANSACTION_OFFICE | Phòng giao dịch của CTCK (PGD — đơn vị phụ thuộc chi nhánh hoặc hội sở) | Securities Company Organization Unit | Relative | (1) BCV có `Branch` hoặc `Transaction Office` trong Involved Party. (2) SC_FIRM_TRANSACTION_OFFICE có FK đến SC_FIRM_INFO và SC_FIRM_BRANCH — PGD là đơn vị nhỏ nhất trực tiếp giao dịch với KH. (3) Chọn `[Involved Party] Branch` vì không có term Transaction Office riêng trong BCV; entity name phân biệt bằng từ Transaction Office. |
-| Involved Party | [Involved Party] Representative Office | Involved Party | SC_FIRM_DOMESTIC_REP_OFFICE | Văn phòng đại diện trong nước (bảng thứ hai — cấu trúc khác SC_FIRM_REP_OFFICE) | Securities Company Organization Unit | Relative | (1) SCMS có 2 bảng VPDD nội địa: SC_FIRM_REP_OFFICE và SC_FIRM_DOMESTIC_REP_OFFICE. (2) SC_FIRM_DOMESTIC_REP_OFFICE có cấu trúc khác (không có FK SC_FIRM_BRANCH_ID, chỉ FK SC_FIRM_INFO_ID + CAT_NATIONALITY_ID) — có thể là VPDD của tổ chức nước ngoài tại VN. (3) Giữ là entity riêng để tránh nhầm lẫn dữ liệu. |
+| Involved Party | [Involved Party] Branch | Involved Party | SC_FIRM_BRANCH | Chi nhánh của CTCK trong nước (có địa chỉ, giấy phép, trạng thái riêng) | Securities Company Organization Unit | Fundamental | (1) BCV có `Branch` trong Involved Party — đơn vị thành viên có địa chỉ pháp lý riêng của một Involved Party lớn hơn. (2) SC_FIRM_BRANCH lưu chi nhánh CTCK: địa chỉ, tỉnh/huyện/xã, giấy phép, ngày hoạt động, trạng thái — đây là Involved Party con của Securities Company. (3) Chọn `[Involved Party] Branch`. |
+| Involved Party | [Involved Party] Representative Office | Involved Party | SC_FIRM_REP_OFFICE | Văn phòng đại diện trong nước của CTCK (VPDD nội địa) | Securities Company Organization Unit | Fundamental | (1) BCV có `Representative Office` trong Involved Party. (2) SC_FIRM_REP_OFFICE có FK đến cả SC_FIRM_INFO và SC_FIRM_BRANCH — VPDD có thể trực thuộc hội sở hoặc chi nhánh. (3) Chọn `[Involved Party] Representative Office`. |
+| Involved Party | [Involved Party] Branch | Involved Party | SC_FIRM_TRANSACTION_OFFICE | Phòng giao dịch của CTCK (PGD — đơn vị phụ thuộc chi nhánh hoặc hội sở) | Securities Company Organization Unit | Fundamental | (1) BCV có `Branch` hoặc `Transaction Office` trong Involved Party. (2) SC_FIRM_TRANSACTION_OFFICE có FK đến SC_FIRM_INFO và SC_FIRM_BRANCH — PGD là đơn vị nhỏ nhất trực tiếp giao dịch với KH. (3) Chọn `[Involved Party] Branch` vì không có term Transaction Office riêng trong BCV; entity name phân biệt bằng từ Transaction Office. |
 | Involved Party | [Involved Party] Branch | Involved Party | SC_FIRM_FOREIGN_BRANCH | Chi nhánh CTCK nước ngoài hoạt động tại Việt Nam | Securities Company Foreign Organization Unit | Relative | (1) BCV có `Branch` Involved Party — chi nhánh của tổ chức nước ngoài. (2) SC_FIRM_FOREIGN_BRANCH lưu thông tin pháp lý chi nhánh CTCK NN tại VN: giấy phép, công ty mẹ ở nước ngoài, vốn cấp, trạng thái. (3) Chọn `[Involved Party] Branch` với prefix Securities Company Foreign Organization Unit để phân biệt. (4) **[2026-10-10]** Gộp cùng SC_FIRM_FOREIGN_REP_OFFICE vào `Securities Company Foreign Organization Unit` (type FOREIGN_BRANCH) theo yêu cầu Data Modeler. |
-| Involved Party | [Involved Party] Representative Office | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE | Văn phòng đại diện CTCK nước ngoài tại Việt Nam | Securities Company Foreign Organization Unit | Relative | (1) BCV có `Representative Office` Involved Party. (2) SC_FIRM_FOREIGN_REP_OFFICE lưu VPDD của CTCK nước ngoài: công ty mẹ, giấy phép, thời hạn hoạt động, phạm vi hoạt động. (3) Chọn `[Involved Party] Representative Office`. (4) **[2026-10-10]** Tách khỏi `Securities Company Organization Unit`, gộp vào `Securities Company Foreign Organization Unit` (type FOREIGN_REP_OFFICE). |
-| Involved Party | [Involved Party] Representative Office | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE_VN | Văn phòng đại diện CTCK nước ngoài — phiên bản tại Việt Nam (cấu trúc khác SC_FIRM_FOREIGN_REP_OFFICE) | Securities Company Organization Unit | Relative | (1) Tương tự SC_FIRM_FOREIGN_REP_OFFICE nhưng có thêm BUSINESS_LICENSE (giấy phép VN) và REP_OFFICE_NAME. Có thể là VPDD đã đăng ký tại VN (khác với VPDD đang đăng ký). (2) Giữ entity riêng — cấu trúc khác và FK khác (không có SC_FIRM_INFO_ID trực tiếp). |
-| Involved Party | [Involved Party] Senior Officer | Involved Party | SC_FIRM_SENIOR_PERSONNEL | Nhân sự cao cấp của CTCK (Giám đốc, Phó GĐ, Kế toán trưởng...) | Securities Company Senior Personnel | Relative | (1) BCV có `Senior Officer` hoặc `Key Personnel` trong Involved Party. (2) SC_FIRM_SENIOR_PERSONNEL lưu nhân sự cấp cao: họ tên, CCCD, ngày bổ nhiệm/miễn nhiệm, chức vụ, FK đến SC_FIRM_INFO/BRANCH/REP_OFFICE/TRANSACTION_OFFICE. Đây là Involved Party cá nhân gắn với CTCK. (3) Chọn `[Involved Party] Senior Officer`. |
-| Involved Party | [Involved Party] Individual | Involved Party | SC_FIRM_LICENSED_PRACTITIONER | Người hành nghề chứng khoán đang công tác tại CTCK (từ hệ thống SCMS) | Securities Company Practitioner | Fundamental | (1) BCV có `Registered Securities Practitioner` trong Involved Party — cùng term với entity `Securities Practitioner` (NHNCK), nhưng đây là 1 Fundamental entity riêng. (2) SC_FIRM_LICENSED_PRACTITIONER lưu thông tin người HNCK tại CTCK: số CCHN, ngày cấp, trạng thái làm việc, FK đến SC_FIRM_INFO — khác BK, khác bộ thuộc tính nghiệp vụ với NHNCK.PROFESSIONALS. (3) **Sửa lại 2026-07-09 (theo yêu cầu Data Modeler):** tạo entity riêng `Securities Company Practitioner` (domain prefix `Securities Company`, cùng họ với Securities Company Senior Personnel) — KHÔNG extend source_table vào `Securities Practitioner`. Liên kết chéo hệ thống với Securities Practitioner (NHNCK) qua cặp FK Id/Code (nullable) dựa trên NHN_ID. |
-| Involved Party | [Involved Party] Auditor | Involved Party | AUDITOR | Kiểm toán viên được giao kiểm toán CTCK (cá nhân, trực thuộc AUDIT_FIRM) | Audit Firm Auditor | Relative | (1) BCV có `Auditor` trong Involved Party — cá nhân có chứng chỉ kiểm toán. (2) AUDITOR có FK AUDIT_FIRM_ID → AUDIT_FIRM.ID — là Involved Party cá nhân gắn với công ty kiểm toán. (3) Chọn `[Involved Party] Auditor`. |
-| Involved Party | [Involved Party] Custodian | Involved Party | CUSTODIAN_BANK | Ngân hàng lưu ký được CTCK chỉ định (quan hệ CTCK—Ngân hàng lưu ký) | Securities Company Custodian Bank | Relative | (1) BCV có `Securities Service Agreement` hoặc `Custodian Arrangement` trong Arrangement. (2) CUSTODIAN_BANK không phải thực thể Ngân hàng — mà là quan hệ giữa CTCK và Ngân hàng lưu ký (SC_FIRM_INFO_ID + BANK_ID). Đây là arrangement/thỏa thuận lưu ký. (3) Chọn `[Arrangement] Securities Service Agreement` — mô tả quan hệ lưu ký. |
+| Involved Party | [Involved Party] Branch | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE | Văn phòng đại diện CTCK nước ngoài tại Việt Nam | Securities Company Foreign Organization Unit | Relative | (1) BCV có `Representative Office` Involved Party. (2) SC_FIRM_FOREIGN_REP_OFFICE lưu VPDD của CTCK nước ngoài: công ty mẹ, giấy phép, thời hạn hoạt động, phạm vi hoạt động. (3) Chọn `[Involved Party] Representative Office`. (4) **[2026-10-10]** Tách khỏi `Securities Company Organization Unit`, gộp vào `Securities Company Foreign Organization Unit` (type FOREIGN_REP_OFFICE). |
+| Involved Party | [Involved Party] Senior Officer | Involved Party | SC_FIRM_SENIOR_PERSONNEL | Nhân sự cao cấp của CTCK (Giám đốc, Phó GĐ, Kế toán trưởng...) | Securities Company Senior Personnel | Fundamental | (1) BCV có `Senior Officer` hoặc `Key Personnel` trong Involved Party. (2) SC_FIRM_SENIOR_PERSONNEL lưu nhân sự cấp cao: họ tên, CCCD, ngày bổ nhiệm/miễn nhiệm, chức vụ, FK đến SC_FIRM_INFO/BRANCH/REP_OFFICE/TRANSACTION_OFFICE. Đây là Involved Party cá nhân gắn với CTCK. (3) Chọn `[Involved Party] Senior Officer`. |
 | Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_BRANCH_PERSONNEL | Nhân sự tại chi nhánh CTCK nước ngoài tại Việt Nam | Securities Company Foreign Branch Personnel | Fundamental | (1) Đưa lại vào scope từ Tier 3 sau khi resolve mâu thuẫn Append/SCD4A (xem SCMS_HLD_Overview.md mục 7e #10) — table_type đổi thành Fundamental, không cần track SCD4A qua UPDATED_AT. (2) FK → SC_FIRM_FOREIGN_BRANCH.ID (Securities Company Foreign Organization Unit). (3) Grain = Involved Party (cá nhân) → tách Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification. (4) Chọn `[Involved Party] Key Personnel`. |
-| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL | Nhân sự tại VPĐD CTCK nước ngoài tại Việt Nam | Securities Company Foreign Representative Office Personnel | Fundamental | (1) Đưa lại vào scope từ Tier 3, cùng lý do với SC_FIRM_FOREIGN_BRANCH_PERSONNEL. (2) FK → SC_FIRM_FOREIGN_REP_OFFICE.ID (Securities Company Organization Unit). (3) Grain = Involved Party (cá nhân) → tách Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification. (4) Chọn `[Involved Party] Key Personnel`. |
-| Event | [Event] Party Registration | Event | SC_FIRM_SERVICE | Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK (đăng ký/thu hồi dịch vụ) | Securities Company Licensed Service | Fundamental | (1) Term candidate `Party Registration` (knowledge/terms.csv #9819) — BCV: "an Event that is a formal granting, by an authorized body, of rights/privileges/statuses to an Involved Party; a Party Registration may be backed up by a Registration Document". Property đi kèm: Registration Life Cycle Status (Effective/Revoked/Suspended), Registration Last Verified Date. (2) SC_FIRM_SERVICE: FK→SC_FIRM_INFO (Involved Party được cấp quyền), FK→CAT_SERVICE (dịch vụ được cấp — nguồn deprecated, target Atomic đổi sang `Classification Securities Company Firm Service`/CAT_SERVICE_LEGAL_CAPITAL, xem Tier1 6f T1-11), REGISTRATION_DOC_NUMBER/DATE (văn bản cấp), TERMINATION_DOC_NUMBER + END_DATE (văn bản/ngày thu hồi), RECORD_STATUS (trạng thái hiệu lực), PROVISIONAL (cờ bản nháp) — khớp đúng cấu trúc vòng đời cấp/thu hồi của 1 Party Registration. (3) Chọn `[Event] Party Registration` — sát nghĩa hơn `[Event] Business Activity` dùng trước đây (pattern mượn từ PENALTY_DECISION/SANCTION vốn là biện pháp chế tài, khác bản chất với việc cấp quyền hoạt động dịch vụ). Trả lời 7e-04: SC_FIRM_SERVICE và LNK_SC_FIRM_SERVICE phản ánh 2 dữ liệu nghiệp vụ khác nhau — SC_FIRM_SERVICE là hồ sơ đăng ký/thu hồi dịch vụ (Party Registration), LNK_SC_FIRM_SERVICE là danh mục số giấy phép hiện hành (LICENSE_NUMBER/LICENSE_DATE) theo từng CTCK×dịch vụ — cần thiết kế entity riêng, không loại bỏ (xem mục 6e). |
-| Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_PERIODIC_REPORT | Báo cáo định kỳ CTCK nộp lên UBCKNN (mỗi kỳ = 1 event nộp báo cáo) | Securities Company Periodic Report | Relative | (1) BCV có `Transaction` hoặc `Submission` trong Event — sự kiện nộp tài liệu. (2) SC_FIRM_PERIODIC_REPORT ghi nhận từng lần nộp báo cáo định kỳ: REPORT_YEAR, PERIOD, RECORD_STATUS (0=chưa gửi,1=đã gửi,2=đã duyệt). Đây là event nộp báo cáo, có trạng thái lifecycle. (3) Chọn `[Event] Transaction`. |
-| Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_ADHOC_REPORT | Báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN | Securities Company Adhoc Report | Relative | (1) Tương tự SC_FIRM_PERIODIC_REPORT — event nộp báo cáo đột xuất theo yêu cầu hoặc bất thường. (2) SC_FIRM_ADHOC_REPORT có RECORD_STATUS, EVENT_TYPE_ID, DETAIL_TYPE — mô tả event nghiệp vụ. (3) Chọn `[Event] Transaction`. |
-| Business Activity | [Business Activity] Communication | Business Activity | DISCLOSURE_REPORT | Báo cáo công bố thông tin (CBTT) của CTCK | Securities Company Disclosure Report | Relative | (1) BCV có `Communication` trong Event — sự kiện truyền đạt thông tin ra bên ngoài. (2) DISCLOSURE_REPORT = sự kiện CBTT: gắn SC_FIRM_INFO_ID, loại CBTT, nội dung. (3) Chọn `[Event] Communication`. |
+| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL | Nhân sự tại VPĐD CTCK nước ngoài tại Việt Nam | Securities Company Foreign Representative Office Personnel | Fundamental | (1) Đưa lại vào scope từ Tier 3, cùng lý do với SC_FIRM_FOREIGN_BRANCH_PERSONNEL. (2) FK → SC_FIRM_FOREIGN_REP_OFFICE.ID (Securities Company Foreign Organization Unit). (3) Grain = Involved Party (cá nhân) → tách Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification. (4) Chọn `[Involved Party] Key Personnel`. |
+| Documentation | [Documentation] Regulatory Report | Documentation | SC_FIRM_PERIODIC_REPORT | Báo cáo định kỳ CTCK nộp lên UBCKNN (mỗi kỳ = 1 event nộp báo cáo) | Securities Company Periodic Report | Relative | (1) BCV term `Regulatory Report` (BCV id 9297, Documentation) — "Identifies Regulatory Information which is a report on regulations... any aspect of the financial institution's operations", cùng term với `Securities Company Report Input Submission`. (2) SC_FIRM_PERIODIC_REPORT ghi nhận từng lần nộp báo cáo định kỳ: REPORT_YEAR, PERIOD, RECORD_STATUS (0=chưa gửi,1=đã gửi,2=đã duyệt). Đây là event nộp báo cáo, có trạng thái lifecycle. (3) Đồng bộ theo LLD (2026-10-21): BCO = Documentation, BCV Concept = `[Documentation] Regulatory Report`, Table Type = Relative; thay concept cũ `[Business Activity] Transaction`. |
+| Documentation | [Documentation] Regulatory Report | Documentation | SC_FIRM_ADHOC_REPORT | Báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN | Securities Company Adhoc Report | Relative | (1) BCV term `Regulatory Report` (BCV id 9297, Documentation) — "Identifies Regulatory Information which is a report on regulations... any aspect of the financial institution's operations", cùng term với `Securities Company Report Input Submission`. (2) SC_FIRM_ADHOC_REPORT có RECORD_STATUS, EVENT_TYPE_ID, DETAIL_TYPE — mô tả event nghiệp vụ. (3) Đồng bộ theo LLD (2026-10-21): BCO = Documentation, BCV Concept = `[Documentation] Regulatory Report`, Table Type = Relative; thay concept cũ `[Business Activity] Transaction`. |
 | Event | [Event] Communication | Event | DISCLOSURE_SECURITIES_OFFERING | Thông tin chào bán chứng khoán CTCK công bố | Securities Company Disclosure Securities Offering | Relative | (1) CBTT chào bán chứng khoán là event Communication cụ thể. (2) DISCLOSURE_SECURITIES_OFFERING có SC_FIRM_INFO_ID, thông tin về đợt chào bán. (3) Chọn `[Event] Communication`. |
-| Event | [Event] Communication | Event | DISCLOSURE_SHAREHOLDER | Thông tin cổ đông lớn CTCK công bố (CBTT cổ đông) | Securities Company Disclosure Shareholder | Relative | (1) CBTT thông tin cổ đông là event Communication. (2) DISCLOSURE_SHAREHOLDER có SC_FIRM_INFO_ID, thông tin cổ đông được công bố. (3) Chọn `[Event] Communication`. |
-| Event | [Event] Business Activity | Event | REPORT_VIOLATION | Vi phạm phát hiện từ báo cáo CTCK nộp (không phải từ cảnh báo hệ thống) | Securities Company Report Violation | Fact Append | (1) BCV có `Violation` hoặc `Non-compliance Event` trong Business Activity/Event. (2) REPORT_VIOLATION ghi nhận vi phạm phát hiện từ báo cáo — mỗi dòng là 1 vi phạm, insert-only. (3) Chọn `[Event] Business Activity` với table_type Fact Append. |
-| Event | [Event] Business Activity | Event | SC_FIRM_ALERT_VIOLATION | Cảnh báo vi phạm phát sinh từ hệ thống cảnh báo tự động (alert engine) | Securities Company Alert Violation | Fact Append | (1) SC_FIRM_ALERT_VIOLATION ghi nhận vi phạm ngưỡng được hệ thống phát hiện tự động — mỗi dòng là 1 lần phát hiện vi phạm, insert-only. (2) Có ALERT_INDICATOR_ID, ENTITY_TYPE, ENTITY_ID, ALERT_RUN_ID. (3) Chọn `[Event] Business Activity`, Fact Append. |
-| Documentation | [Documentation] Legal Decision | Documentation | SC_FIRM_ADMIN_PENALTY_DECISION | Quyết định xử phạt hành chính của UBCKNN đối với CTCK | Securities Company Administrative Penalty Decision | Relative | (1) BCV có `Legal Decision` hoặc `Enforcement Decision` trong Documentation. (2) SC_FIRM_ADMIN_PENALTY_DECISION = văn bản quyết định xử phạt: số quyết định, ngày ban hành, hình thức phạt, số tiền. (3) Chọn `[Documentation] Legal Decision`. |
-| Documentation | [Documentation] Legal Decision | Documentation | SC_FIRM_ADMIN_SANCTION | Biện pháp xử lý hành chính CTCK (cảnh cáo, đình chỉ, thu hồi giấy phép...) | Securities Company Administrative Sanction | Relative | (1) SC_FIRM_ADMIN_SANCTION = văn bản/biện pháp xử lý hành chính: hình thức xử lý (CANH_CAO, PHAT_TIEN, DINH_CHI, TUOC_GIAY_PHEP). (2) Khác với Penalty Decision — Sanction là biện pháp cụ thể được áp dụng. (3) Chọn `[Documentation] Legal Decision`. |
-| Documentation | [Documentation] Complaint | Documentation | SC_FIRM_COMPLAINT_PETITION | Đơn khiếu nại/tố cáo/kiến nghị liên quan đến CTCK | Securities Company Complaint Petition | Relative | (1) BCV có `Customer Complaint` hoặc `Petition` trong Communication. (2) SC_FIRM_COMPLAINT_PETITION lưu đơn thư: loại đơn (KHIEU_NAI/TO_CAO/KIEN_NGHI), ngày tiếp nhận, trạng thái xử lý. (3) Chọn `[Communication] Customer Complaint`. |
-| Business Activity | [Business Activity] Inspection Schedule | Business Activity | SC_FIRM_INSPECTION_SCHEDULE | Lịch kiểm tra/thanh tra CTCK của UBCKNN | Securities Company Inspection Schedule | Relative | (1) BCV có `Inspection` hoặc `Examination` trong Business Activity. (2) SC_FIRM_INSPECTION_SCHEDULE lưu lịch kiểm tra/thanh tra: ngày bắt đầu/kết thúc, hình thức (định kỳ/đột xuất), quyết định, kết luận. (3) Chọn `[Business Activity] Inspection Schedule`. |
-| Involved Party | [Involved Party] Shareholder | Involved Party | SC_FIRM_SHAREHOLDER | Cổ đông của CTCK (cá nhân hoặc tổ chức) | Securities Company Shareholder | Relative | (1) BCV có `Shareholder` trong Involved Party — đây là Involved Party nắm cổ phần trong CTCK. (2) SC_FIRM_SHAREHOLDER lưu thông tin cổ đông: tỷ lệ sở hữu, số cổ phần, loại cổ đông (lớn/sáng lập/phổ thông). (3) Chọn `[Involved Party] Shareholder`. |
-| Involved Party | [Involved Party] Insider | Involved Party | SC_FIRM_INSIDER_RELATION | Người nội bộ (người có liên quan) của CTCK theo quy định CBTT | Securities Company Insider Related Person | Relative | (1) BCV có `Insider` hoặc `Connected Person` trong Involved Party. (2) SC_FIRM_INSIDER_RELATION lưu người nội bộ: quan hệ với SENIOR_PERSONNEL (vợ/chồng/con...), CCCD, tỷ lệ sở hữu. (3) Chọn `[Involved Party] Insider`. |
-| Involved Party | [Involved Party] Connected Entity | Involved Party | SC_FIRM_OWNERSHIP_RELATION | Quan hệ sở hữu CTCK — công ty mẹ, công ty con, công ty liên kết | Securities Company Ownership Relation | Relative | (1) BCV có `Connected Entity` hoặc `Affiliated Entity` trong Involved Party. (2) SC_FIRM_OWNERSHIP_RELATION lưu quan hệ sở hữu: loại quan hệ (SO_HUU_TREN_5/CONG_TY_CON/CONG_TY_ME/LIEN_KET), tỷ lệ sở hữu, tên công ty. (3) Chọn `[Involved Party] Connected Entity`. |
-| Involved Party | [Involved Party] Connected Person | Involved Party | SC_FIRM_RELATED_PERSON | Người liên quan của CTCK (theo quy định CBTT/sở hữu) | Securities Company Related Person | Relative | (1) BCV có `Connected Person` trong Involved Party. (2) SC_FIRM_RELATED_PERSON lưu người liên quan: loại (CA_NHAN/TO_CHUC), tỷ lệ sở hữu, mối quan hệ. Khác INSIDER_RELATION ở chỗ không gắn SENIOR_PERSONNEL_ID. (3) Chọn `[Involved Party] Connected Person`. |
+| Involved Party | [Involved Party] Shareholder | Involved Party | SC_FIRM_SHAREHOLDER | Cổ đông của CTCK (cá nhân hoặc tổ chức) | Securities Company Shareholder | Fundamental | (1) BCV có `Shareholder` trong Involved Party — đây là Involved Party nắm cổ phần trong CTCK. (2) SC_FIRM_SHAREHOLDER lưu thông tin cổ đông: tỷ lệ sở hữu, số cổ phần, loại cổ đông (lớn/sáng lập/phổ thông). (3) Chọn `[Involved Party] Shareholder`. |
+| Involved Party | [Involved Party] Insider | Involved Party | SC_FIRM_INSIDER_RELATION | Người nội bộ (người có liên quan) của CTCK theo quy định CBTT | Securities Company Insider Related Person | Fundamental | (1) BCV có `Insider` hoặc `Connected Person` trong Involved Party. (2) SC_FIRM_INSIDER_RELATION lưu người nội bộ: quan hệ với SENIOR_PERSONNEL (vợ/chồng/con...), CCCD, tỷ lệ sở hữu. (3) Chọn `[Involved Party] Insider`. |
+| Involved Party | [Involved Party] Connected Person | Involved Party | SC_FIRM_RELATED_PERSON | Người liên quan của CTCK (theo quy định CBTT/sở hữu) | Securities Company Related Person | Fundamental | (1) BCV có `Connected Person` trong Involved Party. (2) SC_FIRM_RELATED_PERSON lưu người liên quan: loại (CA_NHAN/TO_CHUC), tỷ lệ sở hữu, mối quan hệ. Khác INSIDER_RELATION ở chỗ không gắn SENIOR_PERSONNEL_ID. (3) Chọn `[Involved Party] Connected Person`. |
 | Event | [Event] Business Activity | Event | SC_FIRM_PROFILE_CHANGE | Lịch sử thay đổi hồ sơ CTCK (loại thay đổi, trước/sau, số văn bản) | Securities Company Profile Change | Fact Append | (1) BCV có `Change Event` hoặc `Profile Amendment` trong Business Activity/Event. (2) SC_FIRM_PROFILE_CHANGE ghi nhận từng lần thay đổi hồ sơ: ENTITY_TYPE (CTCK/CHI_NHANH/NHAN_SU...), BEFORE_INFO/AFTER_INFO, EVENT_TYPE_ID, số văn bản. Insert-only. (3) Chọn `[Event] Business Activity`, Fact Append. |
-| Condition | [Condition] Risk Scale | Condition | RISK_SCORING_SCALE | Thang điểm đánh giá rủi ro cho từng chỉ tiêu (mức điểm và mô tả điều kiện) | Securities Company Risk Indicator Scoring Scale | Relative | (1) BCV có `Risk Scale` hoặc `Rating Scale` trong Condition — điều kiện/quy tắc đánh giá. (2) RISK_SCORING_SCALE lưu thang điểm cho RISK_INDICATOR: từng mức điểm, mô tả điều kiện, khoảng giá trị. FK → RISK_INDICATOR.ID. (3) Chọn `[Condition] Risk Scale`. |
-| Condition | [Condition] Alert Rule | Condition | ALERT_INDICATOR_CONDITION | Điều kiện kích hoạt cảnh báo cho chỉ tiêu cảnh báo (ngưỡng, công thức) | Securities Company Alert Indicator Condition | Relative | (1) BCV có `Alert Rule` hoặc `Trigger Condition` trong Condition. (2) ALERT_INDICATOR_CONDITION lưu điều kiện cảnh báo: biểu thức logic, ngưỡng, công thức. FK → ALERT_INDICATOR.ID. (3) Chọn `[Condition] Alert Rule`. |
-| Business Activity | [Business Activity] Data Monitoring | Business Activity | ALERT_RUN | Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho 1 chỉ tiêu cảnh báo | Securities Company Alert Run | Fact Append | (1) Term candidate `Data Monitoring` (BCV id 7794, category Business Activity, type_of `Data Processing Activity`): "Identifies a Data Processing Activity Type that relates to the examination of data for specific purposes." Term `Operating Activity` (id 7793, "ongoing actions undertaken in support of business objectives") bị loại vì quá chung chung, không đặc tả bản chất "quét/kiểm tra dữ liệu". (2) ALERT_RUN: FK→ALERT_INDICATOR (chỉ tiêu được kiểm tra); ALERT_TARGET_ENTITY/DATA_YEAR/DATA_PERIOD mô tả phạm vi dữ liệu được quét; START_TIME/END_TIME/RECORD_STATUS/ALERT_COUNT_GENERATED/ERROR_MESSAGE mô tả vòng đời 1 lần thực thi việc kiểm tra dữ liệu phát hiện vi phạm — khớp đúng "examination of data for specific purposes". (3) Chọn `[Business Activity] Data Monitoring`. Fact Append vì grain = 1 occurrence thực thi, nguồn Append theo CREATED_AT. Đảo ngược quyết định loại-scope trước đây — xem Overview 7e (entry mới) và mục 6f T2-08. |
 | Involved Party | [Involved Party] Major Shareholder | Involved Party | SC_FIRM_MAJOR_SHAREHOLDER_RELATION | Quan hệ cổ đông lớn (sở hữu ≥5%) của CTCK | Securities Company Major Shareholder Relation | Relative | (1) BCV có `Major Shareholder` trong Involved Party — Involved Party nắm tỷ lệ sở hữu lớn. (2) Bảng: FK→SC_FIRM_INFO(FK cứng), SHAREHOLDER_ID(key: null — không phải FK). Grain = 1 cổ đông lớn × 1 CTCK. (3) Chọn `[Involved Party] Major Shareholder`. Chuyển từ Tier 3 xuống Tier 2 sau khi xác nhận BRD. |
-| Business Activity | [Business Activity] Business Activity | Business Activity | RISK_SUMMARY | Tổng hợp điểm rủi ro CTCK theo kỳ đánh giá (tổng điểm CAMEL + xếp hạng) | Securities Company Risk Summary | Fact Snapshot | (1) BCV có `Risk Summary` trong Business Activity — sự kiện tổng hợp kết quả đánh giá. (2) Bảng: FK→SC_FIRM_INFO(FK cứng), RISK_REPORTING_PERIOD_ID(FK suy luận→T1), RISK_SCORING_SC_FIRM_ID(key: null — không phải FK). Grain = 1 CTCK × 1 kỳ → Fact Snapshot. (3) Chuyển từ Tier 3 xuống Tier 2 sau khi xác nhận BRD. |
-| Event | [Event] Party Registration | Event | LNK_SC_FIRM_BUSINESS_LINE | Liên kết CTCK và nghiệp vụ kinh doanh chứng khoán được cấp phép (FK SC_FIRM_ID + BUSINESS_LINE_ID), kèm trạng thái liên kết | Securities Company Business Transaction Relationship | Relative | (1) Term candidate `Party Registration` (BCV id 9819) — cùng pattern đã dùng cho `Securities Company Licensed Service` (SC_FIRM_SERVICE, xem trên): cấp quyền hoạt động nghiệp vụ cho Involved Party, có vòng đời hiệu lực. (2) Cấu trúc bảng: SC_FIRM_ID (FK → Securities Company), BUSINESS_LINE_ID (FK → **`Classification Securities Company Firm Service`, Tier 1 — đổi target sau khi `Classification Business Transaction` deprecated, xem T1-11**), RECORD_STATUS (1=đang hoạt động/0=ngừng hoạt động), ID (PK riêng) — có attribute trạng thái + PK riêng, KHÔNG phải pure junction 2-cột (khác rule mặc định "denormalize ARRAY<STRUCT>" cho pure junction giữa 2 Atomic entity). (3) Chọn `[Event] Party Registration`, Table Type = Relative theo chỉ đạo tường minh của Data Modeler — tách entity riêng thay vì denormalize, đảo ngược quyết định cũ (xem 6f T2-11/T2-12, Overview 7d/7e). **Chưa có LLD — cần Data Modeler xác nhận lại còn cần entity Relative riêng này không sau khi business line trở thành attribute trên entity chính (xem T2-12).** |
-| Documentation | [Documentation] Regulatory Report | Documentation | REPORT_INPUT_SUBMISSION | Lần nộp dữ liệu báo cáo đầu vào (eForm) gắn với 1 biểu mẫu báo cáo, có thể liên kết tới báo cáo định kỳ cụ thể hoặc không liên kết | Securities Company Report Input Submission | Relative | (1) BCV term `Regulatory Report` (id 9297, category Documentation) — "Identifies Regulatory Information which is a report on regulations... any aspect of the financial institution's operations." Tiền lệ IDS: `Public Company Report Submission` (COMPANY_DATA) dùng đúng term này cho bảng ghi nhận 1 lần nộp báo cáo/CBTT. BCV không có concept "Submission" độc lập — chỉ có property Submission Date/Number/Authority thuộc Reported Information/Regulatory Report. (2) Cấu trúc bảng: FORM_REPORT_ID (FK→FORM_REPORT), REF_TYPE (BAO_CAO_DINH_KY/UNLINKED — 2 giá trị theo xác nhận Data Modeler), REF_ID (con trỏ logic, chỉ có ý nghĩa khi REF_TYPE=BAO_CAO_DINH_KY), FORM_VERSION_ID, CREATED_AT/LAST_MODIFIED_AT — đúng bản chất "1 lần nộp dữ liệu báo cáo", khớp Regulatory Report. (3) Chọn `[Documentation] Regulatory Report`. Đặt tên `Securities Company Report Input Submission` — chứa trọn "Securities Company Report" (entity cha, Tier 1) làm substring liên tục, tuân thủ Rule #8. Table Type = Relative theo chỉ đạo Data Modeler (không dùng Fundamental cho nhóm report family này — xem Tier1 T1-12). FORM_REPORT_ID model đúng cặp FK chuẩn `Securities Company Report Id` + `Securities Company Report Code` (Rule 3 CLAUDE.md) — nhất quán pattern thật đã dùng ở LLD cho FORM_REPORT_ID trên Securities Company Periodic/Adhoc/Disclosure Report (không phải denormalize 1 trường như mô tả trước đây ở Tier1 T1-08, vốn chỉ đúng ở mức tường thuật HLD — xem đính chính T2-13). Đảo ngược quyết định loại-scope trước đây — xem 7e/7f Overview. |
+| Documentation | [Documentation] Regulatory Report | Documentation | REPORT_INPUT_SUBMISSION | Lần nộp dữ liệu báo cáo đầu vào (eForm) gắn với 1 biểu mẫu báo cáo, có thể liên kết tới báo cáo định kỳ cụ thể hoặc không liên kết | Securities Company Report Input Submission | Relative | (1) BCV term `Regulatory Report` (id 9297, category Documentation) — "Identifies Regulatory Information which is a report on regulations... any aspect of the financial institution's operations." Tiền lệ IDS: `Public Company Report Submission` (COMPANY_DATA) dùng đúng term này cho bảng ghi nhận 1 lần nộp báo cáo/CBTT. BCV không có concept "Submission" độc lập — chỉ có property Submission Date/Number/Authority thuộc Reported Information/Regulatory Report. (2) Cấu trúc bảng: FORM_REPORT_ID (FK→FORM_REPORT), REF_TYPE (BAO_CAO_DINH_KY/UNLINKED — 2 giá trị theo xác nhận Data Modeler), REF_ID (con trỏ logic, chỉ có ý nghĩa khi REF_TYPE=BAO_CAO_DINH_KY), FORM_VERSION_ID, CREATED_AT/LAST_MODIFIED_AT — đúng bản chất "1 lần nộp dữ liệu báo cáo", khớp Regulatory Report. (3) Chọn `[Documentation] Regulatory Report`. Đặt tên `Securities Company Report Input Submission` — chứa trọn "Securities Company Report" (entity cha, Tier 1) làm substring liên tục, tuân thủ Rule #8. Table Type = Relative theo chỉ đạo Data Modeler (không dùng Fundamental cho nhóm report family này — xem Tier1 T1-12). FORM_REPORT_ID model đúng cặp FK chuẩn `Securities Company Report Id` + `Securities Company Report Code` (Rule 3 CLAUDE.md) — nhất quán pattern thật đã dùng ở LLD cho FORM_REPORT_ID trên Securities Company Periodic/Adhoc/Disclosure Report. Đảo ngược quyết định loại-scope trước đây — xem 7e/7f Overview. |
 | Documentation | [Documentation] Form Document | Documentation | FORM_SHEET | Sheet/trang cụ thể trong 1 biểu mẫu báo cáo — tiêu đề, khổ giấy, người ký, loại sheet (DATA/SUMMARY/HEADER) | Securities Company Report Sheet | Relative | (1) Tái dùng term `Form Document` (id 9348, category Documentation) — đã dùng cho entity cha FORM_REPORT; FORM_SHEET là 1 sheet/trang cụ thể bên trong biểu mẫu, cùng concept Documentation. (2) Cấu trúc bảng: FORM_REPORT_ID (FK), SHEET_CODE/SHEET_NAME, MAIN_TITLE/SUB_TITLE, PAPER_SIZE/PAPER_ORIENTATION, SIGNATORY, REPORT_STYLE (H/C/HC/TH), RECORD_TYPE (DATA/SUMMARY/HEADER), SORT_ORDER, ACTIVE, RECORD_STATUS — định nghĩa 1 trang cụ thể (không chỉ hiển thị) với ý nghĩa nghiệp vụ (người ký, loại sheet). (3) Chọn Documentation, Relative — phụ thuộc `Securities Company Report` (Tier 1). Đặt tên chứa trọn "Securities Company Report" (Rule #8). Đảo ngược quyết định loại-scope trước đây (xem 7e/7f Overview, T1-14). |
-| Documentation | [Documentation] Form Document | Documentation | LNK_EVENT_TYPE_FORM | Quy định biểu mẫu nào bắt buộc nộp cho loại sự kiện nào, trong khoảng thời gian nào | Securities Company Report X Classification Securities Company Event Type Relationship | Relative | (1) Tái dùng term `Form Document` — quan hệ xác định Form Document nào (`Securities Company Report`) áp dụng bắt buộc cho loại sự kiện nào (`Classification Securities Company Event Type`), cùng pattern tái dùng BCV Concept của entity cha như dòng `Securities Company X Classification Securities Company Firm Service Relationship` (LNK_SC_FIRM_SERVICE, xem dưới). (2) Cấu trúc bảng: EVENT_TYPE_ID (FK), FORM_REPORT_ID (FK), APPLICABLE_FROM/APPLICABLE_TO (khoảng hiệu lực), REQUIRED (bắt buộc/không), SORT_ORDER, RECORD_STATUS — có attribute nghiệp vụ thật, không phải junction 2 cột thuần (khác điều kiện denormalize ARRAY<STRUCT>). (3) Theo tham khảo pattern NHNCK `APPLICATION_DECISIONS` (đảo ngược pure-junction → entity riêng, naming `_x_ Relationship`) và tiền lệ SCMS `LNK_SC_FIRM_SERVICE` — đặt tên `Securities Company Report X Classification Securities Company Event Type Relationship`, Domain Prefix `(none)`, Table Type Relative. Đảo ngược quyết định loại-scope trước đây (xem 7e/7f Overview, T1-14). |
-| Documentation | [Documentation] Form Document | Documentation | FORM_REPORT_INPUT_SOURCE | Ánh xạ biểu mẫu báo cáo gộp (canonical) sang nguồn đọc dữ liệu khai thác/cảnh báo, kèm phạm vi kỳ và độ ưu tiên | Securities Company Report Input Source | Relative | (1) Tái dùng term `Form Document` — quan hệ giữa 2 Form Document (biểu mẫu canonical và biểu mẫu nguồn), khác `Regulatory Report` (REPORT_INPUT_SUBMISSION) vì đây không phải 1 lần nộp báo cáo cụ thể mà là quan hệ cấu hình giữa 2 template. (2) Cấu trúc bảng: CANONICAL_FORM_REPORT_ID (FK), SOURCE_FORM_REPORT_ID (FK) — cả 2 cùng trỏ `Securities Company Report`; PERIOD_SCOPE (ALL hoặc CSV: QUY/BAN_NIEN/NAM), PRIORITY (nhỏ = ưu tiên cao khi trùng CTCK+kỳ), ACTIVE, NOTE — có attribute nghiệp vụ thật. (3) Chọn Documentation, Relative. Bảng chưa được khảo sát BRD trước đây — cấu trúc trích từ DDL UAT (Source/DDL UAT 1/SCMS_UAT_schema.txt), bổ sung BRD 2026-09-16. Đặt tên `Securities Company Report Input Source` theo chỉ đạo Data Modeler. |
-| Condition | [Condition] Format Condition | Condition | OUTPUT_REPORT_FILTER | Cấu hình bộ lọc khả dụng khi khai thác 1 biểu mẫu báo cáo đầu ra (cho phép chọn, giá trị mặc định, thứ tự) | Securities Company Report Output Filter | Relative | (1) Term `Format Condition` (id 9090, category Condition) — "Identifies a Condition that specifies how information should be organized and presented", cha của nhóm term "Report Format..." trong BCV liên quan trình bày báo cáo. (2) Cấu trúc bảng: FORM_REPORT_ID (FK), FILTER_CATALOG_ID (FK→CAT_FILTER — bảng Code+Name thuần, reference data set theo Rule #11 CLAUDE.md, không thiết kế Atomic entity riêng), ALLOW_SELECT, DEFAULT_VALUE, SORT_ORDER — quy định bộ lọc khả dụng, có attribute nghiệp vụ (mặc định, cho phép chọn). (3) Chọn Condition, Relative — phụ thuộc `Securities Company Report` (Tier 1). FILTER_CATALOG_ID model thành Classification Value thật (`Filter Catalog Code`, scheme `SCMS_CAT_FILTER`) — crosswalk sang CAT_FILTER.CODE; giá trị CAT_FILTER đã được Data Modeler insert trực tiếp vào `cl_value`, xem 6f T2-16. Bảng chưa được khảo sát BRD trước đây — cấu trúc trích từ DDL UAT, bổ sung BRD 2026-09-16. |
-| Involved Party | [Involved Party] Broker Dealer | Involved Party | LNK_SC_FIRM_SERVICE | Danh mục số giấy phép dịch vụ chứng khoán hiện hành theo CTCK × dịch vụ (LICENSE_NUMBER, LICENSE_DATE, START_DATE, END_DATE) | Securities Company X Classification Securities Company Firm Service Relationship | Relative | (1) Term candidate ban đầu `[Event] Party Registration` (cùng pattern SC_FIRM_SERVICE/LNK_SC_FIRM_BUSINESS_LINE) — **bị loại theo chỉ đạo tường minh của Data Modeler (2026-09-15)**: entity này mô tả năng lực/thuộc tính hiện hành của chính Involved Party Securities Company (dịch vụ nào CTCK đang được cấp phép), không phải sự kiện đăng ký — tái dùng đúng BCV Concept `[Involved Party] Broker Dealer` của entity cha `Securities Company`. (2) Cấu trúc bảng: SC_FIRM_INFO_ID (FK → Securities Company), SERVICE_ID (FK → `Classification Securities Company Firm Service`, retarget theo T1-11 — nguồn `fk_note` còn ghi `cat_service` deprecated), LICENSE_NUMBER/LICENSE_DATE/START_DATE/END_DATE — có attribute nghiệp vụ riêng nên không denormalize ARRAY, nhưng theo quyết định Data Modeler **business key vẫn là composite (SC_FIRM_INFO_ID, SERVICE_ID)** như các bảng link khác trong dự án — không tạo Id/Code riêng cho entity, không map cột `ID` kỹ thuật nguồn (xem pending_design.yaml), không thiết kế `CREATED_AT`/`RECORD_STATUS` (dư thừa với ds_rcrd_eff_dt/ds_rcrd_end_dt của SCD2). (3) Đặt tên theo pattern `_x_` (nêu rõ cả 2 entity liên kết) vì PK là composite 2 FK Id, mirror `lld_NHNCK_APPLICATION_DECISIONS.yaml` và entity `Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship` (NHNCK). Table Type = Relative (SCD2) — khác Fundamental của SC_FIRM_SERVICE vì đây là danh mục hiện hành (state), không phải sự kiện đăng ký/thu hồi. Trả lời dứt điểm mục 6e cũ (7e-04/T2-05). |
-| Involved Party | [Involved Party] Branch | Involved Party | LNK_TRANSACTION_OFFICE_SERVICE | Liên kết phòng giao dịch CTCK với dịch vụ chứng khoán được cấp phép (SC_FIRM_TRANSACTION_OFFICE_ID + SERVICE_ID + RECORD_STATUS) | Securities Company Organization Unit X Classification Securities Company Firm Service Relationship | Relative | (1) **Đảo ngược quyết định denormalize ARRAY trước đây (Overview 7d cũ) theo chỉ đạo tường minh của Data Modeler (2026-09-23)** — mirror chính xác dòng trên (`Securities Company X Classification Securities Company Firm Service Relationship`, LNK_SC_FIRM_SERVICE): tái dùng BCV Concept `[Involved Party] Branch` của entity cha `Securities Company Organization Unit` (thay vì `Party Registration`). (2) Cấu trúc bảng: SC_FIRM_TRANSACTION_OFFICE_ID (FK → Securities Company Organization Unit), SERVICE_ID (FK → `Classification Securities Company Firm Service`), CREATED_AT, RECORD_STATUS — chỉ 2 FK, không có business attribute riêng (khác dòng trên vốn có LICENSE_NUMBER/START_DATE/END_DATE). PK vẫn composite (SC_FIRM_TRANSACTION_OFFICE_ID, SERVICE_ID) — không tạo Id/Code riêng cho entity, không map `ID`/`CREATED_AT`/`RECORD_STATUS` kỹ thuật nguồn (xem pending_design.yaml), nhất quán với `lld_SCMS_LNK_SC_FIRM_SERVICE.yaml` (không khai báo `ds_*` field). (3) Đặt tên theo pattern `_x_`. Table Type = Relative. |
-| Involved Party | [Involved Party] Branch | Involved Party | LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE | Liên kết chi nhánh CTCK nước ngoài với dịch vụ chứng khoán được cấp phép (SC_FIRM_FOREIGN_BRANCH_ID + SERVICE_ID + CREATED_AT) | Securities Company Foreign Organization Unit X Classification Securities Company Firm Service Relationship | Relative | (1) **Đảo ngược quyết định denormalize ARRAY<STRUCT> trước đây (6d cũ) theo yêu cầu Data Modeler (2026-10-10)** — mirror dòng LNK_TRANSACTION_OFFICE_SERVICE / LNK_SC_FIRM_SERVICE, chỉ khác entity cha `Securities Company Foreign Organization Unit`. (2) Bảng không có attribute nghiệp vụ riêng ngoài CREATED_AT nhưng đã chọn entity `_x_` theo chỉ đạo; composite PK 2 FK. (3) Tái dùng BCV Concept `[Involved Party] Branch`. |
+| Documentation | [Documentation] Form Document | Documentation | LNK_EVENT_TYPE_FORM | Quy định biểu mẫu nào bắt buộc nộp cho loại sự kiện nào, trong khoảng thời gian nào | Securities Company Report X Classification Securities Company Event Type Relationship | Relative | (1) Tái dùng term `Form Document` — quan hệ xác định Form Document nào (`Securities Company Report`) áp dụng bắt buộc cho loại sự kiện nào (`Classification Securities Company Event Type`), cùng pattern tái dùng BCV Concept của entity cha như dòng `Securities Company X Classification Securities Company Firm Service Relationship` (LNK_SC_FIRM_SERVICE, xem dưới). (2) Cấu trúc bảng: EVENT_TYPE_ID (FK), FORM_REPORT_ID (FK), APPLICABLE_FROM/APPLICABLE_TO (khoảng hiệu lực), REQUIRED (bắt buộc/không), SORT_ORDER, RECORD_STATUS — có attribute nghiệp vụ thật, không phải junction 2 cột thuần. (3) Theo tham khảo pattern NHNCK `APPLICATION_DECISIONS` (đảo ngược pure-junction → entity riêng, naming `_x_ Relationship`) và tiền lệ SCMS `LNK_SC_FIRM_SERVICE` — đặt tên `Securities Company Report X Classification Securities Company Event Type Relationship`, Domain Prefix `(none)`, Table Type Relative. Đảo ngược quyết định loại-scope trước đây (xem 7e/7f Overview, T1-14). |
+| Involved Party | [Involved Party] Broker Dealer | Involved Party | LNK_SC_FIRM_SERVICE | Danh mục số giấy phép dịch vụ chứng khoán hiện hành theo CTCK × dịch vụ (LICENSE_NUMBER, LICENSE_DATE, START_DATE, END_DATE) | Securities Company X Classification Securities Company Firm Service Relationship | Relative | (1) Term candidate ban đầu `[Event] Party Registration` (cùng pattern SC_FIRM_SERVICE/LNK_SC_FIRM_BUSINESS_LINE) — **bị loại theo chỉ đạo tường minh của Data Modeler (2026-09-15)**: entity này mô tả năng lực/thuộc tính hiện hành của chính Involved Party Securities Company (dịch vụ nào CTCK đang được cấp phép), không phải sự kiện đăng ký — tái dùng đúng BCV Concept `[Involved Party] Broker Dealer` của entity cha `Securities Company`. (2) Cấu trúc bảng: SC_FIRM_INFO_ID (FK → Securities Company), SERVICE_ID (FK → `Classification Securities Company Firm Service`, retarget theo T1-11 — nguồn `fk_note` còn ghi `cat_service` deprecated), LICENSE_NUMBER/LICENSE_DATE/START_DATE/END_DATE — có attribute nghiệp vụ riêng; theo quyết định Data Modeler **business key vẫn là composite (SC_FIRM_INFO_ID, SERVICE_ID)** như các bảng link khác trong dự án — không tạo Id/Code riêng cho entity, không map cột `ID` kỹ thuật nguồn (xem pending_design.yaml), không thiết kế `CREATED_AT`/`RECORD_STATUS` (dư thừa với ds_rcrd_eff_dt/ds_rcrd_end_dt của SCD2). (3) Đặt tên theo pattern `_x_` (nêu rõ cả 2 entity liên kết) vì PK là composite 2 FK Id, mirror `lld_NHNCK_APPLICATION_DECISIONS.yaml` và entity `Regulatory Authority Organization Unit X Securities Practitioner License Certificate Type Relationship` (NHNCK). Table Type = Relative (SCD2) — khác Fundamental của SC_FIRM_SERVICE vì đây là danh mục hiện hành (state), không phải sự kiện đăng ký/thu hồi. Trả lời dứt điểm mục 6e cũ (7e-04/T2-05). |
+| Involved Party | [Involved Party] Branch | Involved Party | LNK_TRANSACTION_OFFICE_SERVICE | Liên kết phòng giao dịch CTCK với dịch vụ chứng khoán được cấp phép (SC_FIRM_TRANSACTION_OFFICE_ID + SERVICE_ID + RECORD_STATUS) | Securities Company Organization Unit X Classification Securities Company Firm Service Relationship | Relative | (1) Theo chỉ đạo Data Modeler (2026-09-23) — mirror chính xác dòng trên (`Securities Company X Classification Securities Company Firm Service Relationship`, LNK_SC_FIRM_SERVICE): tái dùng BCV Concept `[Involved Party] Branch` của entity cha `Securities Company Organization Unit` (thay vì `Party Registration`). (2) Cấu trúc bảng: SC_FIRM_TRANSACTION_OFFICE_ID (FK → Securities Company Organization Unit), SERVICE_ID (FK → `Classification Securities Company Firm Service`), CREATED_AT, RECORD_STATUS — chỉ 2 FK, không có business attribute riêng (khác dòng trên vốn có LICENSE_NUMBER/START_DATE/END_DATE). PK vẫn composite (SC_FIRM_TRANSACTION_OFFICE_ID, SERVICE_ID) — không tạo Id/Code riêng cho entity, không map `ID`/`CREATED_AT`/`RECORD_STATUS` kỹ thuật nguồn (xem pending_design.yaml), nhất quán với `lld_SCMS_LNK_SC_FIRM_SERVICE.yaml` (không khai báo `ds_*` field). (3) Đặt tên theo pattern `_x_`. Table Type = Relative. |
+| Involved Party | [Involved Party] Branch | Involved Party | LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE | Liên kết chi nhánh CTCK nước ngoài với dịch vụ chứng khoán được cấp phép (SC_FIRM_FOREIGN_BRANCH_ID + SERVICE_ID + CREATED_AT) | Securities Company Foreign Organization Unit X Classification Securities Company Firm Service Relationship | Relative | (1) Theo chỉ đạo Data Modeler (2026-10-10) — mirror dòng LNK_TRANSACTION_OFFICE_SERVICE / LNK_SC_FIRM_SERVICE, chỉ khác entity cha `Securities Company Foreign Organization Unit`. (2) Bảng không có attribute nghiệp vụ riêng ngoài CREATED_AT nhưng đã chọn entity `_x_` theo chỉ đạo; composite PK 2 FK. (3) Tái dùng BCV Concept `[Involved Party] Branch`. |
 | Business Activity | [Event] Transaction | Business Activity | BANK_PERIODIC_REPORT | Báo cáo định kỳ của ngân hàng lưu ký nộp UBCKNN | Securities Company Bank Periodic | Relative | (1) Term `[Event] Transaction` như `SC_FIRM_PERIODIC_REPORT`. (2) Bảng có BANK_ID/FORM_REPORT_ID/EVENT_TYPE_ID, kỳ-năm, hạn nộp, RECORD_STATUS, các mốc gửi/duyệt/hủy — 1 dòng = 1 lần ngân hàng nộp báo cáo; cấu trúc giống báo cáo CTCK. (3) Chọn `[Event] Transaction`. |
 | Documentation | [Documentation] Form Document | Documentation | FORM_REPORT_DEEP_CONFIG | Cấu hình sâu của biểu mẫu báo cáo | Securities Company Report Deep Config | Relative | (1) Term `Form Document` (id 9348) — tài liệu theo mẫu chuẩn. (2) Bảng gắn 1 FORM_REPORT với cấu hình JSON (SHEETS_JSON cấu trúc sheet; 5 cột còn lại không map). (3) Chọn `[Documentation] Form Document` như FORM_SHEET*. |
+| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Địa chỉ bưu chính (trụ sở/địa chỉ liên hệ) của các Involved Party trong SCMS: CTCK, chi nhánh/PGD/VPĐD, ngân hàng, nhân sự, cổ đông. | Involved Party Postal Address | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
+| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Địa chỉ điện tử (điện thoại/fax/email/website) của các Involved Party trong SCMS. | Involved Party Electronic Address | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
+| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Giấy tờ định danh/giấy phép (GPKD, mã số thuế, CCCD/hộ chiếu...) của các Involved Party trong SCMS. | Involved Party Alternative Identification | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
 
 ---
 
@@ -65,25 +46,12 @@ erDiagram
     SC_FIRM_INFO {
         int ID PK
     }
-    AUDIT_FIRM {
-        int ID PK
-    }
     BANK {
-        int ID PK
-    }
-    RISK_INDICATOR {
-        int ID PK
-    }
-    ALERT_INDICATOR {
-        int ID PK
-    }
-    RISK_REPORTING_PERIOD {
         int ID PK
     }
     CAT_SERVICE_LEGAL_CAPITAL {
         int SERVICE_ID PK
     }
-
     SC_FIRM_BRANCH {
         int ID PK
         int SC_FIRM_INFO_ID FK
@@ -99,10 +67,6 @@ erDiagram
         int SC_FIRM_INFO_ID FK
         int SC_FIRM_BRANCH_ID FK
     }
-    SC_FIRM_DOMESTIC_REP_OFFICE {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
     SC_FIRM_FOREIGN_BRANCH {
         int ID PK
         int SC_FIRM_INFO_ID FK
@@ -111,26 +75,10 @@ erDiagram
         int ID PK
         int SC_FIRM_INFO_ID FK
     }
-    SC_FIRM_FOREIGN_REP_OFFICE_VN {
-        int ID PK
-    }
     SC_FIRM_SENIOR_PERSONNEL {
         int ID PK
         int SC_FIRM_INFO_ID FK
         int SC_FIRM_BRANCH_ID FK
-    }
-    SC_FIRM_LICENSED_PRACTITIONER {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-        int SC_FIRM_BRANCH_ID FK
-    }
-    AUDITOR {
-        int ID PK
-        int AUDIT_FIRM_ID FK
-    }
-    CUSTODIAN_BANK {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
     }
     SC_FIRM_FOREIGN_BRANCH_PERSONNEL {
         int ID PK
@@ -140,11 +88,6 @@ erDiagram
         int ID PK
         int SC_FIRM_FOREIGN_REP_OFFICE_ID FK
     }
-    SC_FIRM_SERVICE {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-        int SERVICE_ID FK
-    }
     SC_FIRM_PERIODIC_REPORT {
         int ID PK
         int SC_FIRM_INFO_ID FK
@@ -153,45 +96,7 @@ erDiagram
         int ID PK
         int SC_FIRM_INFO_ID FK
     }
-    DISCLOSURE_REPORT {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
     DISCLOSURE_SECURITIES_OFFERING {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
-    DISCLOSURE_SHAREHOLDER {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
-    REPORT_VIOLATION {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
-    SC_FIRM_ALERT_VIOLATION {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-        int ALERT_INDICATOR_ID FK
-        int ALERT_RUN_ID FK
-    }
-    ALERT_RUN {
-        int ID PK
-        int ALERT_INDICATOR_ID FK
-    }
-    SC_FIRM_ADMIN_PENALTY_DECISION {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
-    SC_FIRM_ADMIN_SANCTION {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
-    SC_FIRM_COMPLAINT_PETITION {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
-    SC_FIRM_INSPECTION_SCHEDULE {
         int ID PK
         int SC_FIRM_INFO_ID FK
     }
@@ -203,10 +108,6 @@ erDiagram
         int ID PK
         int SC_FIRM_INFO_ID FK
     }
-    SC_FIRM_OWNERSHIP_RELATION {
-        int ID PK
-        int SC_FIRM_INFO_ID FK
-    }
     SC_FIRM_RELATED_PERSON {
         int ID PK
         int SC_FIRM_INFO_ID FK
@@ -214,20 +115,6 @@ erDiagram
     SC_FIRM_PROFILE_CHANGE {
         int ID PK
         int SC_FIRM_INFO_ID FK
-    }
-    RISK_SCORING_SCALE {
-        int ID PK
-        int RISK_INDICATOR_ID FK
-    }
-    ALERT_INDICATOR_CONDITION {
-        int ID PK
-        int ALERT_INDICATOR_ID FK
-    }
-    LNK_SC_FIRM_BUSINESS_LINE {
-        int ID PK
-        int SC_FIRM_ID FK
-        int BUSINESS_LINE_ID FK
-        int RECORD_STATUS
     }
     LNK_SC_FIRM_SERVICE {
         int ID PK
@@ -273,58 +160,42 @@ erDiagram
         date APPLICABLE_TO
         number REQUIRED
     }
-    FORM_REPORT_INPUT_SOURCE {
+    BANK_PERIODIC_REPORT {
         int ID PK
-        int CANONICAL_FORM_REPORT_ID FK
-        int SOURCE_FORM_REPORT_ID FK
-        nvarchar PERIOD_SCOPE
-        number PRIORITY
+        int BANK_ID FK
+        int FORM_REPORT_ID FK
+        int EVENT_TYPE_ID FK
     }
-    OUTPUT_REPORT_FILTER {
+    FORM_REPORT_DEEP_CONFIG {
         int ID PK
         int FORM_REPORT_ID FK
-        int FILTER_CATALOG_ID FK
-        number ALLOW_SELECT
+    }
+    LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE {
+        int SC_FIRM_FOREIGN_BRANCH_ID FK
+        int SERVICE_ID FK
+    }
+    SC_FIRM_MAJOR_SHAREHOLDER_RELATION {
+        int ID PK
+        int SC_FIRM_INFO_ID FK
     }
 
     SC_FIRM_INFO ||--o{ SC_FIRM_BRANCH : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_REP_OFFICE : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_TRANSACTION_OFFICE : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_DOMESTIC_REP_OFFICE : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_FOREIGN_BRANCH : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_FOREIGN_REP_OFFICE : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_SENIOR_PERSONNEL : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_LICENSED_PRACTITIONER : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ CUSTODIAN_BANK : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_SERVICE : "SC_FIRM_INFO_ID"
     SC_FIRM_FOREIGN_BRANCH ||--o{ SC_FIRM_FOREIGN_BRANCH_PERSONNEL : "SC_FIRM_FOREIGN_BRANCH_ID"
     SC_FIRM_FOREIGN_REP_OFFICE ||--o{ SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL : "SC_FIRM_FOREIGN_REP_OFFICE_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_PERIODIC_REPORT : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_ADHOC_REPORT : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ DISCLOSURE_REPORT : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ REPORT_VIOLATION : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_ALERT_VIOLATION : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_ADMIN_PENALTY_DECISION : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_ADMIN_SANCTION : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_COMPLAINT_PETITION : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_INSPECTION_SCHEDULE : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_SHAREHOLDER : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_INSIDER_RELATION : "SC_FIRM_INFO_ID"
-    SC_FIRM_INFO ||--o{ SC_FIRM_OWNERSHIP_RELATION : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_RELATED_PERSON : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_PROFILE_CHANGE : "SC_FIRM_INFO_ID"
     SC_FIRM_BRANCH ||--o{ SC_FIRM_REP_OFFICE : "SC_FIRM_BRANCH_ID"
     SC_FIRM_BRANCH ||--o{ SC_FIRM_TRANSACTION_OFFICE : "SC_FIRM_BRANCH_ID"
     SC_FIRM_BRANCH ||--o{ SC_FIRM_SENIOR_PERSONNEL : "SC_FIRM_BRANCH_ID"
-    SC_FIRM_BRANCH ||--o{ SC_FIRM_LICENSED_PRACTITIONER : "SC_FIRM_BRANCH_ID"
-    AUDIT_FIRM ||--o{ AUDITOR : "AUDIT_FIRM_ID"
-    RISK_INDICATOR ||--o{ RISK_SCORING_SCALE : "RISK_INDICATOR_ID"
-    ALERT_INDICATOR ||--o{ ALERT_INDICATOR_CONDITION : "ALERT_INDICATOR_ID"
-    ALERT_INDICATOR ||--o{ SC_FIRM_ALERT_VIOLATION : "ALERT_INDICATOR_ID"
-    ALERT_INDICATOR ||--o{ ALERT_RUN : "ALERT_INDICATOR_ID"
-    ALERT_RUN ||--o{ SC_FIRM_ALERT_VIOLATION : "ALERT_RUN_ID"
-    SC_FIRM_INFO ||--o{ LNK_SC_FIRM_BUSINESS_LINE : "SC_FIRM_ID"
-    CAT_SERVICE_LEGAL_CAPITAL ||--o{ LNK_SC_FIRM_BUSINESS_LINE : "BUSINESS_LINE_ID"
     SC_FIRM_INFO ||--o{ LNK_SC_FIRM_SERVICE : "SC_FIRM_INFO_ID"
     CAT_SERVICE_LEGAL_CAPITAL ||--o{ LNK_SC_FIRM_SERVICE : "SERVICE_ID"
     SC_FIRM_TRANSACTION_OFFICE ||--o{ LNK_TRANSACTION_OFFICE_SERVICE : "SC_FIRM_TRANSACTION_OFFICE_ID"
@@ -333,9 +204,13 @@ erDiagram
     FORM_REPORT ||--o{ FORM_SHEET : "FORM_REPORT_ID"
     CAT_EVENT_TYPE ||--o{ LNK_EVENT_TYPE_FORM : "EVENT_TYPE_ID"
     FORM_REPORT ||--o{ LNK_EVENT_TYPE_FORM : "FORM_REPORT_ID"
-    FORM_REPORT ||--o{ FORM_REPORT_INPUT_SOURCE : "CANONICAL_FORM_REPORT_ID"
-    FORM_REPORT ||--o{ FORM_REPORT_INPUT_SOURCE : "SOURCE_FORM_REPORT_ID"
-    FORM_REPORT ||--o{ OUTPUT_REPORT_FILTER : "FORM_REPORT_ID"
+    BANK ||--o{ BANK_PERIODIC_REPORT : "BANK_ID"
+    FORM_REPORT ||--o{ BANK_PERIODIC_REPORT : "FORM_REPORT_ID"
+    CAT_EVENT_TYPE ||--o{ BANK_PERIODIC_REPORT : "EVENT_TYPE_ID"
+    FORM_REPORT ||--o{ FORM_REPORT_DEEP_CONFIG : "FORM_REPORT_ID"
+    SC_FIRM_FOREIGN_BRANCH ||--o{ LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE : "SC_FIRM_FOREIGN_BRANCH_ID"
+    CAT_SERVICE_LEGAL_CAPITAL ||--o{ LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE : "SERVICE_ID"
+    SC_FIRM_INFO ||--o{ SC_FIRM_MAJOR_SHAREHOLDER_RELATION : "SC_FIRM_INFO_ID"
 ```
 
 ---
@@ -348,25 +223,9 @@ erDiagram
         bigint ds_securities_company_id PK
         string sc_firm_code
     }
-    Audit_Firm {
-        bigint ds_audit_firm_id PK
-        string audit_firm_code
-    }
     Securities_Company_Bank {
         bigint ds_bank_id PK
         string bank_code
-    }
-    Securities_Company_Risk_Indicator {
-        bigint ds_risk_indicator_id PK
-        string risk_indicator_code
-    }
-    Securities_Company_Alert_Indicator {
-        bigint ds_alert_indicator_id PK
-        string alert_indicator_code
-    }
-    Securities_Company_Risk_Reporting_Period {
-        bigint ds_risk_reporting_period_id PK
-        string period_value
     }
     Classification_Securities_Company_Firm_Service {
         bigint cl_sc_firm_service_id PK
@@ -389,7 +248,7 @@ erDiagram
         date establish_date
         string ds_org_unit_status_code
     }
-    Securities_Company_Foreign_Branch {
+    Securities_Company_Foreign_Organization_Unit {
         bigint ds_sc_firm_foreign_branch_id PK
         bigint securities_company_id FK
         string securities_company_code
@@ -401,26 +260,6 @@ erDiagram
         string securities_company_code
         string full_name
         date appointment_date
-    }
-    Securities_Practitioner {
-        bigint ds_id PK
-    }
-    Audit_Firm_Auditor {
-        bigint ds_auditor_id PK
-        bigint audit_firm_id FK
-        string audit_firm_code
-    }
-    Securities_Company_Custodian_Bank {
-        bigint ds_custodian_bank_id PK
-        bigint securities_company_id FK
-        string securities_company_code
-        bigint securities_company_bank_id FK
-    }
-    Securities_Company_Licensed_Service {
-        bigint ds_sc_licensed_service_id PK
-        bigint securities_company_id FK
-        string securities_company_code
-        string service_code
     }
     Securities_Company_Periodic_Report {
         bigint ds_periodic_report_id PK
@@ -435,47 +274,7 @@ erDiagram
         bigint securities_company_id FK
         string securities_company_code
     }
-    Securities_Company_Disclosure_Report {
-        bigint ds_disclosure_report_id PK
-        bigint securities_company_id FK
-        string securities_company_code
-    }
     Securities_Company_Disclosure_Securities_Offering {
-        bigint ds_id PK
-        bigint securities_company_id FK
-    }
-    Securities_Company_Disclosure_Shareholder {
-        bigint ds_id PK
-        bigint securities_company_id FK
-    }
-    Securities_Company_Report_Violation {
-        bigint ds_id PK
-        bigint securities_company_id FK
-    }
-    Securities_Company_Alert_Violation {
-        bigint ds_id PK
-        bigint securities_company_id FK
-        bigint securities_company_alert_indicator_id FK
-        bigint securities_company_alert_run_id FK
-    }
-    Securities_Company_Alert_Run {
-        bigint ds_id PK
-        bigint securities_company_alert_indicator_id FK
-        string run_code
-    }
-    Securities_Company_Administrative_Penalty_Decision {
-        bigint ds_id PK
-        bigint securities_company_id FK
-    }
-    Securities_Company_Administrative_Sanction {
-        bigint ds_id PK
-        bigint securities_company_id FK
-    }
-    Securities_Company_Complaint_Petition {
-        bigint ds_id PK
-        bigint securities_company_id FK
-    }
-    Securities_Company_Inspection_Schedule {
         bigint ds_id PK
         bigint securities_company_id FK
     }
@@ -488,10 +287,6 @@ erDiagram
         bigint ds_id PK
         bigint securities_company_id FK
     }
-    Securities_Company_Ownership_Relation {
-        bigint ds_id PK
-        bigint securities_company_id FK
-    }
     Securities_Company_Related_Person {
         bigint ds_id PK
         bigint securities_company_id FK
@@ -499,23 +294,6 @@ erDiagram
     Securities_Company_Profile_Change {
         bigint ds_id PK
         bigint securities_company_id FK
-    }
-    Securities_Company_Risk_Scoring_Scale {
-        bigint ds_id PK
-        bigint securities_company_risk_indicator_id FK
-        string securities_company_risk_indicator_code
-    }
-    Securities_Company_Alert_Indicator_Condition {
-        bigint ds_id PK
-        bigint securities_company_alert_indicator_id FK
-    }
-    Securities_Company_Business_Transaction_Relationship {
-        bigint ds_id PK
-        bigint securities_company_id FK
-        string securities_company_code
-        bigint cl_sc_firm_service_id FK
-        string cl_sc_firm_service_code
-        string ds_record_status_code
     }
     Securities_Company_X_Classification_Securities_Company_Firm_Service_Relationship {
         bigint sc_id PK
@@ -550,7 +328,7 @@ erDiagram
         string ds_report_style_code
         string ds_record_type_code
     }
-    Classification_Securities_Company_Event_Type_X_Securities_Company_Report_Relationship {
+    Securities_Company_Report_X_Classification_Securities_Company_Event_Type_Relationship {
         bigint cl_sc_event_tp_x_sc_rpt_rltnp_id PK
         string cl_sc_event_tp_x_sc_rpt_rltnp_code
         bigint cl_sc_event_tp_id FK
@@ -561,45 +339,52 @@ erDiagram
         date applicable_to_dt
         boolean required_ind
     }
-    Securities_Company_Report_Input_Source {
-        bigint ds_id PK
-        bigint canonical_sc_report_id FK
-        string canonical_sc_report_code
-        bigint source_sc_report_id FK
-        string source_sc_report_code
-        string period_scope_txt
-        number priority_num
-    }
-    Securities_Company_Report_Output_Filter {
-        bigint ds_id PK
+    Securities_Company_Bank_Periodic {
+        bigint sc_bank_periodic_id PK
+        bigint sc_bank_id FK
         bigint sc_report_id FK
-        string sc_report_code
-        string filter_catalog_txt
-        boolean allow_select_ind
+    }
+    Securities_Company_Report_Deep_Config {
+        bigint sc_report_deep_config_id PK
+        bigint sc_report_id FK
+    }
+    Securities_Company_Foreign_Branch_Personnel {
+        bigint sc_foreign_branch_personnel_id PK
+        bigint sc_foreign_organization_unit_id FK
+    }
+    Securities_Company_Foreign_Representative_Office_Personnel {
+        bigint sc_foreign_representative_office_personnel_id PK
+        bigint sc_foreign_organization_unit_id FK
+    }
+    Securities_Company_Foreign_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship {
+        bigint sc_foreign_organization_unit_id FK
+        bigint cl_sc_firm_service_id FK
+    }
+    Securities_Company_Major_Shareholder_Relation {
+        bigint sc_major_shareholder_relation_id PK
+        bigint securities_company_id FK
     }
 
     Securities_Company ||--o{ Securities_Company_Organization_Unit : "securities_company_id"
-    Securities_Company ||--o{ Securities_Company_Foreign_Branch : "securities_company_id"
+    Securities_Company ||--o{ Securities_Company_Foreign_Organization_Unit : "securities_company_id"
     Securities_Company ||--o{ Securities_Company_Senior_Personnel : "securities_company_id"
-    Securities_Company ||--o{ Securities_Company_Licensed_Service : "securities_company_id"
-    Audit_Firm ||--o{ Audit_Firm_Auditor : "audit_firm_id"
-    Securities_Company_Risk_Indicator ||--o{ Securities_Company_Risk_Scoring_Scale : "securities_company_risk_indicator_id"
-    Securities_Company_Alert_Indicator ||--o{ Securities_Company_Alert_Indicator_Condition : "securities_company_alert_indicator_id"
-    Securities_Company_Alert_Indicator ||--o{ Securities_Company_Alert_Run : "securities_company_alert_indicator_id"
-    Securities_Company_Alert_Run ||--o{ Securities_Company_Alert_Violation : "securities_company_alert_run_id"
-    Securities_Company ||--o{ Securities_Company_Business_Transaction_Relationship : "securities_company_id"
-    Classification_Securities_Company_Firm_Service ||--o{ Securities_Company_Business_Transaction_Relationship : "cl_sc_firm_service_id"
     Securities_Company ||--o{ Securities_Company_X_Classification_Securities_Company_Firm_Service_Relationship : "sc_id"
     Classification_Securities_Company_Firm_Service ||--o{ Securities_Company_X_Classification_Securities_Company_Firm_Service_Relationship : "cl_sc_firm_service_id"
     Securities_Company_Organization_Unit ||--o{ Securities_Company_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship : "sc_ou_id"
     Classification_Securities_Company_Firm_Service ||--o{ Securities_Company_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship : "cl_sc_firm_service_id"
     Securities_Company_Report ||--o{ Securities_Company_Report_Input_Submission : "sc_report_id"
     Securities_Company_Report ||--o{ Securities_Company_Report_Sheet : "sc_report_id"
-    Classification_Securities_Company_Event_Type ||--o{ Classification_Securities_Company_Event_Type_X_Securities_Company_Report_Relationship : "cl_sc_event_tp_id"
-    Securities_Company_Report ||--o{ Classification_Securities_Company_Event_Type_X_Securities_Company_Report_Relationship : "sc_report_id"
-    Securities_Company_Report ||--o{ Securities_Company_Report_Input_Source : "canonical_sc_report_id"
-    Securities_Company_Report ||--o{ Securities_Company_Report_Input_Source : "source_sc_report_id"
-    Securities_Company_Report ||--o{ Securities_Company_Report_Output_Filter : "sc_report_id"
+    Classification_Securities_Company_Event_Type ||--o{ Securities_Company_Report_X_Classification_Securities_Company_Event_Type_Relationship : "cl_sc_event_tp_id"
+    Securities_Company_Report ||--o{ Securities_Company_Report_X_Classification_Securities_Company_Event_Type_Relationship : "sc_report_id"
+    Securities_Company_Bank ||--o{ Securities_Company_Bank_Periodic : "sc_bank_id"
+    Securities_Company_Report ||--o{ Securities_Company_Bank_Periodic : "sc_report_id"
+    Classification_Securities_Company_Event_Type ||--o{ Securities_Company_Bank_Periodic : "event_type"
+    Securities_Company_Report ||--o{ Securities_Company_Report_Deep_Config : "sc_report_id"
+    Securities_Company_Foreign_Organization_Unit ||--o{ Securities_Company_Foreign_Branch_Personnel : "sc_foreign_organization_unit_id"
+    Securities_Company_Foreign_Organization_Unit ||--o{ Securities_Company_Foreign_Representative_Office_Personnel : "sc_foreign_organization_unit_id"
+    Securities_Company_Foreign_Organization_Unit ||--o{ Securities_Company_Foreign_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship : "sc_foreign_organization_unit_id"
+    Classification_Securities_Company_Firm_Service ||--o{ Securities_Company_Foreign_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship : "cl_sc_firm_service_id"
+    Securities_Company ||--o{ Securities_Company_Major_Shareholder_Relation : "securities_company_id"
 ```
 
 ---
@@ -609,18 +394,12 @@ erDiagram
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
 | SC_FIRM_PERIODIC_REPORT.RECORD_STATUS | Trạng thái nộp báo cáo định kỳ (0=Chưa gửi, 1=Đã gửi, 2=Đã duyệt, -1=Từ chối, 3=Bị hủy) | `SCMS_REPORT_SUBMISSION_STATUS` | source_table | Dùng chung cho periodic, adhoc, foreign branch report |
-| SC_FIRM_INSPECTION_SCHEDULE.RECORD_TYPE | Loại nghiệp vụ (KIEM_TRA / THANH_TRA) | `SCMS_INSPECTION_TYPE` | source_table | Values: KIEM_TRA, THANH_TRA |
-| SC_FIRM_ADMIN_SANCTION.FORM_TYPE | Hình thức xử phạt hành chính | `SCMS_ADMIN_SANCTION_TYPE` | source_table | Values: CANH_CAO, PHAT_TIEN, DINH_CHI, TUOC_GIAY_PHEP |
-| SC_FIRM_COMPLAINT_PETITION.PETITION_TYPE | Loại đơn thư | `SCMS_PETITION_TYPE` | source_table | Values: KHIEU_NAI, TO_CAO, KIEN_NGHI, PHAN_ANH |
-| ALERT_RUN.RECORD_STATUS | Trạng thái vòng đời của 1 lần chạy cảnh báo tự động | `SCMS_ALERT_RUN_RECORD_STATUS` | source_table | Values: 0=Đang xử lý, 1=Hoàn thành, -1=Lỗi, 2=Bị huỷ. Field kiểu Classification Value bắt buộc có Scheme Code, cùng pattern với các RECORD_STATUS khác trong SCMS |
-| ALERT_RUN.ALERT_TARGET_ENTITY | Đối tượng đích được quét trong lần chạy cảnh báo | — (không gán scheme) | — | Map 1:1 từ nguồn dạng Text — mô tả nguồn chưa rõ ràng, chưa có bằng chứng data xác nhận có cùng domain với `SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE` (scheme `SCMS_ALERT_ENTITY_TYPE`) hay không. Cần profile giá trị thực tế ở bước LLD trước khi quyết định có chuẩn hóa thành Classification Value hay không (xem 6f) |
 | REPORT_INPUT_SUBMISSION.REF_TYPE | Loại đối tượng được liên kết khi nộp dữ liệu báo cáo đầu vào | `SCMS_REPORT_INPUT_SUBMISSION_REF_TYPE` | source_table | Values: BAO_CAO_DINH_KY (liên kết báo cáo định kỳ — REF_ID trỏ logic tới Securities Company Periodic Report), UNLINKED (không liên kết) |
 | BANK_PERIODIC_REPORT.RECORD_STATUS | Trạng thái nộp báo cáo định kỳ của ngân hàng lưu ký (0=Chưa gửi, 1=Đã gửi, 2=Đã duyệt, -1=Từ chối, 3=Bị hủy) | `SCMS_REPORT_SUBMISSION_STATUS` | source_table | Dùng chung scheme với báo cáo CTCK (cùng bộ giá trị) |
 | FORM_SHEET.REPORT_STYLE | Kiểu trình bày sheet | `SCMS_SHEET_REPORT_STYLE` | source_table | Values: H, C, HC, TH (theo mô tả nguồn) |
 | FORM_SHEET.RECORD_TYPE | Loại sheet | `SCMS_SHEET_RECORD_TYPE` | source_table | Values: DATA, SUMMARY, HEADER |
 | FORM_SHEET.PAPER_SIZE | Khổ giấy | `SCMS_SHEET_PAPER_SIZE` | source_table | Values suy luận: A4, A3 |
 | FORM_SHEET.PAPER_ORIENTATION | Chiều giấy | `SCMS_SHEET_PAPER_ORIENTATION` | source_table | Values suy luận: PORTRAIT, LANDSCAPE |
-| FORM_REPORT_INPUT_SOURCE.PERIOD_SCOPE | Phạm vi kỳ áp dụng ánh xạ nguồn dữ liệu | — (không gán scheme) | — | Giá trị dạng CSV nhiều mã (ALL hoặc tổ hợp QUY,BAN_NIEN,NAM) — giữ Text tự do, không chuẩn hóa Classification Value đơn trị. |
 
 ---
 
@@ -636,23 +415,13 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T2-01 | SC_FIRM_DOMESTIC_REP_OFFICE và SC_FIRM_REP_OFFICE đều là VPDD nội địa — có nên gộp thành 1 entity không? | Tạm giữ 2 entity riêng: cấu trúc trường khác nhau (SC_FIRM_DOMESTIC_REP_OFFICE không có SC_FIRM_BRANCH_ID, có NATIONALITY_ID). Cần xác nhận nghiệp vụ: 2 bảng này mô tả 2 loại VPDD khác nhau hay là dữ liệu trùng lặp từ 2 thời kỳ khác nhau? |
-| T2-02 | SC_FIRM_FOREIGN_REP_OFFICE_VN không có SC_FIRM_INFO_ID trong CSV — quan hệ với SC_FIRM_INFO là gì? | Cần xác nhận: VPDD NN tại VN có BUSINESS_LICENSE_NUMBER riêng do UBCKNN cấp — có thể là entity độc lập không FK trực tiếp đến SC_FIRM_INFO. Tạm để T2; nếu không có business FK đến SC_FIRM_INFO, hạ xuống T1. |
-| T2-03 | SC_FIRM_LICENSED_PRACTITIONER có FK đến SC_FIRM_BRANCH, SC_FIRM_TRANSACTION_OFFICE, SC_FIRM_REP_OFFICE (đều T2) — tạo circular với Tier 2 không? | Xem xét: SC_FIRM_LICENSED_PRACTITIONER chính FK đến SC_FIRM_INFO_ID (T1) → đặt T2. Các FK đến BRANCH/REP_OFFICE/TRANSACTION_OFFICE là optional location FK, không tạo dependency bắt buộc. |
-| T2-04 | SC_FIRM_SENIOR_PERSONNEL cũng có FK đến SC_FIRM_BRANCH, SC_FIRM_REP_OFFICE, SC_FIRM_TRANSACTION_OFFICE (T2) — cùng issue với T2-03 | Cùng xử lý như T2-03 — chính FK là SC_FIRM_INFO_ID (T1); FK đến sub-office là optional. |
-| T2-05 | SC_FIRM_SERVICE là bảng riêng bên cạnh LNK_SC_FIRM_SERVICE — 2 bảng này quan hệ gì? | **Đã xác nhận và đã thiết kế (2026-09-15).** 2 bảng phản ánh 2 dữ liệu nghiệp vụ khác nhau. SC_FIRM_SERVICE = hồ sơ đăng ký/thu hồi dịch vụ theo từng văn bản (REGISTRATION_DOC_NUMBER/DATE, TERMINATION_DOC_NUMBER, END_DATE) → entity `Securities Company Licensed Service` (`[Event] Party Registration`, Fundamental). LNK_SC_FIRM_SERVICE = danh mục số giấy phép hiện hành theo CTCK × dịch vụ (LICENSE_NUMBER, LICENSE_DATE, START_DATE, END_DATE) → đã thiết kế thành entity `Securities Company X Classification Securities Company Firm Service Relationship` (`[Involved Party] Broker Dealer`, Relative, composite PK) — xem mục 6a, `lld_SCMS_LNK_SC_FIRM_SERVICE.yaml`. |
-| T2-06 | SC_FIRM_LICENSED_PRACTITIONER trước đây được LOCKED để extend source_table vào entity `Securities Practitioner` (NHNCK) — quyết định này có đúng không? | **Đã sửa lại 2026-07-09 (theo yêu cầu Data Modeler):** SAI — 2 bảng độc lập. `Securities Practitioner` (NHNCK.PROFESSIONALS) và `Securities Company Practitioner` (SCMS.SC_FIRM_LICENSED_PRACTITIONER, entity mới) tách thành 2 Fundamental entity riêng, chỉ liên kết chéo hệ thống qua cặp FK Id/Code (nullable) dựa trên NHN_ID. Đã cập nhật `atomic_entities.yaml`, LLD SCMS (main + 3 shared entity), `manifest.yaml`, xoá `entities/entity_securities_practitioner.yaml` (không còn multi-source). |
-| T2-07 | SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID, SC_FIRM_PERIODIC_REPORT/DISCLOSURE_REPORT/SC_FIRM_ADHOC_REPORT.APPROVED_BY/SENDER_ID/CANCELLED_BY và các field tương tự (PROCESSOR_ID, PERFORMED_BY, USER_ID) trước đây pending FK đến placeholder "SCMS.SYS_USER" — target thật là gì? | **Đã xác nhận 2026-07-10 (theo yêu cầu Data Modeler):** Target thật là `Identity and Access Management User` (IAM.USERS, xem `lld_IAM_USERS.yaml`). Đã đổi tên attribute `{Role} SCMS User Id/Code` → `{Role} IAM User Id/Code` trong 9 file LLD SCMS. Vẫn giữ `status: pending` vì SCMS lưu ID dạng NUMBER còn IAM.USERS.ID là UUIDv7 (string) — chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống. Cần Data Modeler xác nhận cách map giá trị trước khi chuyển draft. |
-| T2-08 | SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID (FK thật theo BRD → ALERT_RUN.ID) — có cần đưa ALERT_RUN vào scope thiết kế không? | **Đã resolve (2026-07-12).** Đảo ngược quyết định loại-scope trước đây (2026-07-10) — thiết kế `ALERT_RUN` thành entity `Securities Company Alert Run` (`[Business Activity] Data Monitoring`, Fact Append, xem mục 6a). FK `SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID` → "Securities Company Alert Run" đã resolve. Đã xóa dòng ALERT_RUN khỏi Overview 7f/`atomic_out_of_scope.yaml`; xem Overview 7e entry mới. |
+| T2-04 | SC_FIRM_SENIOR_PERSONNEL cũng có FK đến SC_FIRM_BRANCH, SC_FIRM_REP_OFFICE, SC_FIRM_TRANSACTION_OFFICE (T2) — có tạo circular với Tier 2 không? | Không — chính FK là SC_FIRM_INFO_ID (T1); FK đến sub-office là optional. |
+| T2-07 | SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID, SC_FIRM_PERIODIC_REPORT/DISCLOSURE_REPORT/SC_FIRM_ADHOC_REPORT.APPROVED_BY/SENDER_ID/CANCELLED_BY và các field tương tự (PROCESSOR_ID, PERFORMED_BY, USER_ID) trước đây pending FK đến placeholder "SCMS.SYS_USER" — target thật là gì? | **Đã xác nhận 2026-07-10 (theo yêu cầu Data Modeler):** Target thật là `Identity and Access Management User` (IAM.USERS, xem `lld_IAM_USERS.yaml`). Đã đổi tên attribute `{Role} SCMS User Id/Code` → `{Role} IAM User Id/Code` trong 9 file LLD SCMS. Vẫn giữ `status: pending` vì SCMS lưu ID dạng NUMBER còn IAM.USERS.ID là UUIDv7 (string) — chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống. Cần Data Modeler xác nhận cách map giá trị trước khi chuyển draft. **[2026-10-21]** `DISCLOSURE_REPORT` đã gỡ khỏi HLD (không có LLD, xem 7f Overview). |
 | T2-09 | SC_FIRM_INFO.TOTAL_SHARES (số lượng cổ phần, NUMBER(38)) — data_domain nào phù hợp? | **Đề xuất 2026-07-10:** Không domain nào trong 12 domain chuẩn phù hợp (Small Counter=int quá nhỏ, các domain số khác mang ý nghĩa tiền tệ/lãi suất sai ngữ nghĩa). Đã tạm gắn `[PROPOSE NEW DOMAIN] Quantity (decimal(38,0))` trên attribute — cần Data Modeler duyệt bổ sung domain `Quantity` vào `reference/data_domains.md` (hiện `validate_lld_yaml.py` sẽ báo lỗi cho đến khi duyệt). |
-| T2-10 | ALERT_RUN.ALERT_TARGET_ENTITY (NVARCHAR2(80)) — mô tả nguồn chưa rõ ràng, có cùng domain giá trị với `SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE` (scheme `SCMS_ALERT_ENTITY_TYPE`: CTCK/CN_NUOC_NGOAI/VPDD_NUOC_NGOAI) hay là 1 domain khác? | **Chưa resolve.** Theo yêu cầu Data Modeler: map 1:1 từ nguồn dạng Text ở vòng HLD này, không gán scheme. Cần profile giá trị thực tế ở bước LLD để xác định có nên chuẩn hóa thành Classification Value hay không, và nếu có thì tái sử dụng `SCMS_ALERT_ENTITY_TYPE` hay tạo scheme riêng. |
-| T2-11 | `LNK_SC_FIRM_BUSINESS_LINE` — quyết định cũ (SCMS_HLD_Overview.md 7d, xem Tier1 T1-09) coi đây là pure junction giữa 2 Atomic entity, denormalize thành `business_lines ARRAY<STRUCT<business_line_id, business_line_code>>` trên Securities Company. Data Modeler yêu cầu đảo ngược (2026-07-14): tách thành entity Relative độc lập `Securities Company Business Transaction Relationship`, Tier 2 (phụ thuộc Securities Company T1 + Classification Business Transaction T1). | **Đã xử lý.** Lý do đảo ngược: bảng có `RECORD_STATUS` + PK riêng (`ID`) — không còn thỏa điều kiện "pure junction 2 cột không attribute riêng" của skill rule. Xem mục 6a/6b/6c, Overview 7a/7d/7e. |
-| T2-12 | Nguồn bổ sung `CAT_SERVICE_LEGAL_CAPITAL` thay thế `CAT_SERVICE` và `CAT_BUSINESS_LINE` (Tier1 T1-11) — ảnh hưởng đến `SC_FIRM_SERVICE` (FK→CAT_SERVICE) và `LNK_SC_FIRM_BUSINESS_LINE` (FK→Classification Business Transaction, chưa có LLD). | **Quyết định Data Modeler (chốt, 2026-09-12).** FK target đổi sang `Classification Securities Company Firm Service` cho cả 2 bảng. Riêng `LNK_SC_FIRM_BUSINESS_LINE` (entity `Securities Company Business Transaction Relationship`) — vì "business line" nay chỉ là attribute Classification Value (`Application Type Code`) trên entity chính chứ không còn entity FK độc lập, cần Data Modeler xác nhận lại có còn cần tách entity Relative riêng này không hay nên denormalize khác đi khi thiết kế LLD (chưa chốt — xem plan thực thi). |
-| T2-13 | `FORM_REPORT_ID` trên `REPORT_INPUT_SUBMISSION` xử lý thế nào — cặp Id+Code chuẩn (Rule 3 CLAUDE.md) hay denormalize code đơn? | **Đính chính (2026-09-15).** Kiểm tra lại LLD thật (`lld_SCMS_SC_FIRM_PERIODIC_REPORT.yaml` v.v.) cho thấy `FORM_REPORT_ID` trên các entity sibling (Periodic/Adhoc/Disclosure Report) **đã luôn được model đúng cặp FK chuẩn** `Securities Company Report Id` + `Securities Company Report Code` (Rule 3), KHÔNG denormalize như mô tả trước đây ở Tier1 T1-08 (mô tả đó chỉ đúng ở mức tường thuật HLD, không khớp LLD thật). `REPORT_INPUT_SUBMISSION` theo đúng pattern thật này — cặp Id+Code chuẩn, không ngoại lệ. |
+| T2-13 | `FORM_REPORT_ID` trên `REPORT_INPUT_SUBMISSION` xử lý thế nào — cặp Id+Code chuẩn (Rule 3 CLAUDE.md) hay denormalize code đơn? | **Đính chính (2026-09-15).** Kiểm tra lại LLD thật (`lld_SCMS_SC_FIRM_PERIODIC_REPORT.yaml` v.v.) cho thấy `FORM_REPORT_ID` trên các entity sibling (Periodic/Adhoc/Disclosure Report) **đã luôn được model đúng cặp FK chuẩn** `Securities Company Report Id` + `Securities Company Report Code` (Rule 3). `REPORT_INPUT_SUBMISSION` theo đúng pattern thật này — cặp Id+Code chuẩn, không ngoại lệ. |
 | T2-14 | `REPORT_INPUT_SUBMISSION.REF_ID` (số, `key: null` trong BRD — không khai báo FK) xử lý thế nào? | **Quyết định Data Modeler (chốt, 2026-09-15).** Map 1:1 thành attribute số (soft pointer, không FK cứng). Chỉ có ý nghĩa khi `REF_TYPE=BAO_CAO_DINH_KY`, lúc đó trỏ logic tới `Securities Company Periodic Report.ID`; nguồn không enforce nên không model FK. `REF_TYPE` thực tế chỉ có 2 giá trị `BAO_CAO_DINH_KY`/`UNLINKED` (xác nhận Data Modeler) — xem scheme `SCMS_REPORT_INPUT_SUBMISSION_REF_TYPE` mục 6d. |
 | T2-15 | `REPORT_INPUT_SUBMISSION.FORM_VERSION_ID` — chưa rõ bảng đích tham chiếu. | **Chưa resolve.** Giữ plain attribute — có thể liên quan `FORM_REPORT_HISTORY` (hiện ngoài scope, xem 7f Overview). Cần Data Modeler xác nhận khi có thêm thông tin nguồn. |
-| T2-16 | **[MỚI 2026-09-16]** `OUTPUT_REPORT_FILTER.FILTER_CATALOG_ID` FK đến `CAT_FILTER` — bảng chưa được khảo sát/thiết kế Atomic trong dự án (không có BRD, không xuất hiện ở source nào khác). | **[CẬP NHẬT cùng ngày]** Quyết định tạm thời ban đầu (denormalize Text) đã được thay thế. `CAT_FILTER` (ID/CODE/NAME/DESCRIPTION/ALLOW_MULTIPLE/SORT_ORDER) là bảng Code+Name thuần — reference data set theo Rule #11 CLAUDE.md, không thiết kế thành Atomic entity riêng. Theo yêu cầu Data Modeler, giá trị `CAT_FILTER` đã được insert trực tiếp vào bảng Fundamental `cl_value` → đổi `FILTER_CATALOG_ID` thành Classification Value thật: crosswalk sang `CAT_FILTER.ID` để lấy `CODE`, attribute đổi tên `Filter Catalog Id` → `Filter Catalog Code` (scheme `SCMS_CAT_FILTER`, đăng ký tại `classification_schemes.yaml`). |
-| T2-17 | **[MỚI 2026-09-16]** `OUTPUT_REPORT_CHART_CONFIG` (LINE_MARKER_TYPE/ROUND_POINT_TYPE/ROUND_MARKER_TYPE) — có nên đưa vào scope Atomic cùng đợt với `OUTPUT_REPORT_FILTER` không? | **Quyết định Data Modeler (đề xuất, chốt trong lượt này): giữ ngoài scope**, nhóm `UI Metadata` — toàn bộ attribute là cấu hình hiển thị chart thuần túy, cùng lý do/nhóm với sibling `OUTPUT_REPORT_EXTRACTION`/`OUTPUT_REPORT_EXTRACTION_VALUE` đã loại trước đó. Khác `OUTPUT_REPORT_FILTER` (có ALLOW_SELECT/DEFAULT_VALUE mang ý nghĩa cấu hình nghiệp vụ) và khác `FORM_REPORT_INPUT_SOURCE` (có PERIOD_SCOPE/PRIORITY). Xem 7f Overview. |
 | T2-18 | **[MỚI 2026-10-06]** `BANK_PERIODIC_REPORT` → entity `Securities Company Bank Periodic` (tên theo chỉ đạo Data Modeler; không có hậu tố "Report"). Đồng thời đổi tên entity cha BANK từ `Securities Company Depositary Bank` → `Securities Company Bank` (xem Tier1). Cặp (Update, Relative) bình thường. `APPROVED_BY`/`SENDER_ID`/`CANCELLED_BY` → pending (SYS_USER ngoài scope). `BANK_PERIODIC_REPORT_HISTORY` vẫn ngoài scope. | **Đã thiết kế (draft).** Xem `lld_SCMS_BANK_PERIODIC_REPORT.yaml`. |
 | T2-19 | **[MỚI 2026-10-06]** `FORM_REPORT_DEEP_CONFIG` — chỉ map ID, FORM_REPORT_ID, SHEETS_JSON (NCLOB, lưu Text). Quan hệ với FORM_REPORT là 1:1 hay 1:N? Định dạng SHEETS_JSON có cần parse thành cấu trúc sheet không? | **Chưa resolve.** Tạm grain 1 dòng cấu hình/biểu mẫu; Text thô. Cần Data Modeler xác nhận. Xem `lld_SCMS_FORM_REPORT_DEEP_CONFIG.yaml`. |
-| T2-20 | **[MỚI 2026-10-10]** Gộp SC_FIRM_FOREIGN_BRANCH + SC_FIRM_FOREIGN_REP_OFFICE → `Securities Company Foreign Organization Unit`; LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE → entity `_x_` `Securities Company Foreign Organization Unit X Classification Securities Company Firm Service Relationship` (đảo ngược denormalize ARRAY<STRUCT>). | **Quyết định Data Modeler (chốt, 2026-10-10).** Thiết kế tương tự `Securities Company Organization Unit`; COUNTRY → Geographic Area qua CAT_NATIONALITY. Entity con PERSONNEL/DISCLOSURE_REPORT/ADHOC_REPORT/ALERT_VIOLATION đổi FK target (ADHOC_REPORT đang approved — chưa sửa). |
+| T2-20 | **[MỚI 2026-10-10]** Gộp SC_FIRM_FOREIGN_BRANCH + SC_FIRM_FOREIGN_REP_OFFICE → `Securities Company Foreign Organization Unit`; LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE → entity `_x_` `Securities Company Foreign Organization Unit X Classification Securities Company Firm Service Relationship`. | **Quyết định Data Modeler (chốt, 2026-10-10).** Thiết kế tương tự `Securities Company Organization Unit`; COUNTRY → Geographic Area qua CAT_NATIONALITY. Entity con PERSONNEL/DISCLOSURE_REPORT/ADHOC_REPORT/ALERT_VIOLATION đổi FK target (ADHOC_REPORT đang approved — chưa sửa). |
+| T2-21 | **[2026-10-21]** Đồng bộ HLD Tier 2 theo LLD (LLD là chuẩn). | Gỡ khỏi HLD (không có LLD, chuyển 7f Overview nhóm `Chưa có LLD`): chế tài/khiếu nại/kiểm tra (Administrative Penalty Decision/Sanction, Complaint Petition, Inspection Schedule), Disclosure Report/Shareholder Change, Report Violation, Alert Violation/Run/Indicator Condition, Custodian Bank, Licensed Service, Practitioner, Ownership Relation, Audit Firm Auditor, Risk Summary/Scoring Scale, Business Transaction Relationship, Report Input Source/Output Filter, và các dòng Organization Unit từ SC_FIRM_DOMESTIC_REP_OFFICE/SC_FIRM_FOREIGN_REP_OFFICE_VN. Thêm `Securities Company Foreign Branch Personnel`/`Foreign Representative Office Personnel` (đã có LLD), 3 shared entity IP. Adhoc/Periodic Report: BCO Documentation, `[Documentation] Regulatory Report`, Relative; Disclosure Securities Offering: Relative; Organization Unit/Insider/Related Person/Senior Personnel/Shareholder: Fundamental. |

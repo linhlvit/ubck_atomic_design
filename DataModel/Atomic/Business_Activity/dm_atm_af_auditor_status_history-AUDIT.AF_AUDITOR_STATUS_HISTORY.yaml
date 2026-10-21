@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_auditor_status_history-AUDIT.AF_AUDITOR_STATUS_HISTORY
+  logical_name: Audit Firm Auditor Status History
+  physical_name: af_auditor_status_history
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Status History"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  description: |
+    Lịch sử thay đổi trạng thái hành nghề của kiểm toán viên: loại sự kiện (cấp/thu hồi/đình chỉ chứng chỉ), ngày hiệu lực, lý do.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_AUDITOR_STATUS_HISTORY
+
+attributes:
+  - name: Audit Firm Auditor Status History Id
+    physical_name: af_auditor_status_history_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Status History\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Status History Code
+    physical_name: af_auditor_status_history_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: AUDIT.AF_AUDITOR_STATUS_HISTORY.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_STATUS_HISTORY'"
+    etl_derived_value: AUDIT_AF_AUDITOR_STATUS_HISTORY
+
+  - name: Audit Firm Auditor Id
+    physical_name: af_auditor_id
+    business_meaning: Khóa link đến bảng AF_AUDITOR_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: AUDIT.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID
+    comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES', AF_AUDITOR_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Code
+    physical_name: af_auditor_code
+    business_meaning: Mã kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: AUDIT.AF_AUDITOR_STATUS_HISTORY.AF_AUDITOR_PROFILE_ID
+    comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Event Type Code
+    physical_name: event_tp_code
+    business_meaning: Loại sự kiện thay đổi trạng thái kiểm toán viên.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: AUDIT.AF_AUDITOR_STATUS_HISTORY.EVENT_TYPE
+    comment: "SCHEMA_CODE=AUDIT.AF_AUDITOR_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDITOR_STATUS')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective Date
+    physical_name: effective_dt
+    business_meaning: Ngày hiệu lực thay đổi trạng thái.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: AUDIT.AF_AUDITOR_STATUS_HISTORY.EFFECTIVE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reason Description
+    physical_name: reason_description
+    business_meaning: Lý do thay đổi trạng thái kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: AUDIT.AF_AUDITOR_STATUS_HISTORY.REASON
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Additional Description
+    physical_name: additional_description
+    business_meaning: Mô tả bổ sung về thay đổi trạng thái.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_STATUS_HISTORY
+    source_column: AUDIT.AF_AUDITOR_STATUS_HISTORY.ADDITIONAL_DESC
+    comment: null
+    classification_context: null
+    etl_derived_value: null

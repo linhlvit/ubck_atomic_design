@@ -123,9 +123,7 @@ erDiagram
 
 #### 7d. Junction Tables
 
-| Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
-|---|---|---|---|
-| *(Không có junction table trong scope VSDC)* | — | — | — |
+Không có junction table.
 
 #### 7e. Điểm cần xác nhận
 

@@ -32,7 +32,7 @@ attributes:
     source_system: KNT
     source_table: INVOICE_DETAIL
     source_column: null
-    comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể bị áp dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT.INVOICE_DETAIL', ID)."
+    comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể bị áp dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT_INVOICE_DETAIL', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -74,7 +74,7 @@ attributes:
     source_system: KNT
     source_table: INVOICE_DETAIL
     source_column: KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID
-    comment: "FK target: et_enforcement_invoice_decision.et_enforcement_invoice_decision_id. Nguồn lưu ID kỹ thuật của TAX_ENFORCEMENT_INVOICE — ETL join TAX_ENFORCEMENT_INVOICE_ID → KNT.TAX_ENFORCEMENT_INVOICE.ID để lấy DECISION_NUMBER rồi hash_id('KNT.TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
+    comment: "FK target: et_enforcement_invoice_decision.et_enforcement_invoice_decision_id. Cần ETL crosswalk sang KNT.TAX_ENFORCEMENT_INVOICE: INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID = TAX_ENFORCEMENT_INVOICE.ID để xác nhận DECISION_NUMBER sau đó hash_id('KNT_TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)"
     classification_context: null
     etl_derived_value: null
 
@@ -87,8 +87,8 @@ attributes:
     is_primary_key: false
     source_system: KNT
     source_table: INVOICE_DETAIL
-    source_column: KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID
-    comment: "Lookup pair: et_enforcement_invoice_decision.et_enforcement_invoice_decision_code. Pair with External Tax Enforcement Invoice Decision Id."
+    source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER
+    comment: "Lookup pair: et_enforcement_invoice_decision.et_enforcement_invoice_decision_code. Pair with External Tax Enforcement Invoice Decision Id. Giá trị lấy từ KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment External Tax Enforcement Invoice Decision Id."
     classification_context: null
     etl_derived_value: null
 

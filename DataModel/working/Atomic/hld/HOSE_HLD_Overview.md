@@ -24,10 +24,10 @@
 ```mermaid
 graph TD
     subgraph T1["Tier 1 — Extend entity có sẵn"]
-        E1["Share Auction Result (HNX)"]
-        E2["Listing Status Change (HNX)"]
-        E3["Brokerage Market Share (HNX)"]
-        E4["Listed Share Information (VSDC)"]
+        E1["Share Auction Result"]
+        E2["Listing Status Change"]
+        E3["Brokerage Market Share"]
+        E4["Listed Share Information"]
     end
 ```
 
@@ -46,10 +46,10 @@ graph TD
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | brokerage_market_share | Append | Thị phần môi giới theo quý tại HOSE | Brokerage Market Share (HNX) | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
-| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | listed_securities_list | Append | Danh sách chứng khoán niêm yết HOSE | Listed Share Information (VSDC) | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
-| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | listing_status_change | Append | Quyết định thay đổi niêm yết tại HOSE | Listing Status Change (HNX) | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
-| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | share_auction | Append | Kết quả đấu giá cổ phiếu tại HOSE | Share Auction Result (HNX) | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | brokerage_market_share | Append | Thị phần môi giới theo quý tại HOSE — entity định nghĩa ở HNX | Brokerage Market Share | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | listed_securities_list | Append | Danh sách chứng khoán niêm yết HOSE — entity định nghĩa ở VSDC | Listed Share Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | listing_status_change | Append | Quyết định thay đổi niêm yết tại HOSE — entity định nghĩa ở HNX | Listing Status Change | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | share_auction | Append | Kết quả đấu giá cổ phiếu tại HOSE — entity định nghĩa ở HNX | Share Auction Result | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
@@ -77,9 +77,7 @@ erDiagram
 
 #### 7d. Junction Tables
 
-| Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
-|---|---|---|---|
-| *(Không có junction table trong scope HOSE)* | — | — | — |
+Không có junction table.
 
 #### 7e. Điểm cần xác nhận
 

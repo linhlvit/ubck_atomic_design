@@ -1494,7 +1494,7 @@ schemes:
       - "Fund Management Company Employee"
     values: []
     deprecated: true
-    deprecated_reason: "FMS.EVENT_TYPE đã nâng cấp thành Atomic entity thật 'Classification FMS Event Type' (table_type Relative, HLD bổ sung FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities #46, Tier6 T6-06) — không còn dùng scheme này (2026-07-19). Entity tiêu thụ (Member Disclosure Announcement, Fund Management Company, Foreign Fund Management Organization Unit) đổi EVENT_TYPE_ID sang cặp FK Classification FMS Event Type Id + Code."
+    deprecated_reason: "FMS.EVENT_TYPE đã nâng cấp thành Atomic entity thật 'Classification FMS Event Type' (table_type Relative, HLD bổ sung FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities #46, Tier5 T5-06) — không còn dùng scheme này (2026-07-19). Entity tiêu thụ (Member Disclosure Announcement, Fund Management Company, Foreign Fund Management Organization Unit) đổi EVENT_TYPE_ID sang cặp FK Classification FMS Event Type Id + Code."
 
   - scheme_code: "FMS_WARNING_SYSTEM_OBJECT_TYPE"
     name: "Loại đối tượng áp dụng tham số cảnh báo giám sát — 1=QLQ, 2=Quỹ đầu tư, 3=NH LKGS, 4=ĐLPP, 5=ĐLCN (mô tả nguồn liệt kê '...', chưa đầy đủ)"
@@ -4627,20 +4627,6 @@ schemes:
       - code: "WARD"
         name: "Phường/Xã/Thị trấn (hiện hành — post-sáp nhập 2025) — từ ECAT.WARD_NEW"
         source_table: "ECAT.WARD_NEW"
-
-  - scheme_code: "ECAT_BUSINESS_LINE_LEVEL"
-    name: "Phân biệt cấp ngành nghề trên entity Classification Business Line"
-    source_type: "etl_derived"
-    source_table: null
-    used_in_entities:
-      - "Classification Business Line"
-    values:
-      - code: "LEVEL_1"
-        name: "Ngành nghề cấp 1 — từ ECAT.BUSINESS_LINE_LEVEL_1"
-        source_table: "ECAT.BUSINESS_LINE_LEVEL_1"
-      - code: "LEVEL_2"
-        name: "Ngành nghề cấp 2 — từ ECAT.BUSINESS_LINE_LEVEL_2"
-        source_table: "ECAT.BUSINESS_LINE_LEVEL_2"
 
   - scheme_code: "GEOGRAPHIC_AREA_OLD_TYPE"
     name: null

@@ -1,6 +1,96 @@
 schema_type: atomic_out_of_scope
 schema_version: '1.0'
 entries:
+- source_system: ECAT
+  source_table: ADMINISTRATIVE_PROCEDURE
+  description: Danh mục Thủ tục hành chính (TTHC)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: ADMINISTRATIVE_PROCEDURE_COMPONENT
+  description: Thành phần hồ sơ của Thủ tục hành chính
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: ADMINISTRATIVE_PROCEDURE_COMPONENT_MAPPING
+  description: 'N-N: TTHC - Thành phần TTHC'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: BUSINESS_EVENT_ENTERPRISE_TYPE
+  description: 'N-N: Sự vụ - Loại hình doanh nghiệp'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: BUSINESS_LINE_LEVEL_1
+  description: Danh mục ngành nghề cấp 1
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: BUSINESS_LINE_LEVEL_2
+  description: Danh mục ngành nghề cấp 2 (cha-con qua PARENT_LINE_ID)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: DEPARTMENT
+  description: Danh mục Phòng ban (UBCKNN)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: ENTERPRISE_TYPE
+  description: Danh mục Loại hình doanh nghiệp (self-referencing)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: LEGAL_DOCUMENT
+  description: Bảng thông tin văn bản pháp lý
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: OPERATIONAL_STATUS_TYPE_ENTERPRISE_TYPE
+  description: 'N-N: Loại trạng thái hoạt động - Loại hình doanh nghiệp'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: ORGANIZATION_TYPE_USER_TYPE
+  description: 'N-N: Loại tổ chức - Loại đối tượng (USER_TYPE)'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: PAR_VALUE
+  description: Danh mục Mệnh giá chứng khoán
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: PENALTY_FORM_VIOLATION_TYPE
+  description: 'N-N: Hình thức xử phạt - Loại vi phạm'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: SECURITY
+  description: Danh mục Chứng khoán
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: SECURITY_TYPE
+  description: Danh mục Loại chứng khoán (self-referencing)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: UBCK_STAFF
+  description: Danh mục nhân sự UBCKNN
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: VIOLATION_TYPE
+  description: Danh mục loại vi phạm (kèm mức tiền phạt)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: ECAT
+  source_table: WORKING_SCHEDULE
+  description: Danh mục Lịch làm việc
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: FIMS
   source_table: ANNOUNCEINVESHIS
   description: Lịch sử NĐT NN trong ủy quyền CBTT
@@ -50,26 +140,177 @@ entries:
   group: Audit Log nguồn
   reason: Audit Log nguồn — snapshot lịch sử thành viên ủy quyền giao dịch.
 - source_system: FIMS
+  source_table: ANNOUNCE
+  description: Tin công bố thông tin (CBTT) của thành viên thị trường
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
   source_table: ANNOUNCEINVES
   description: Danh sách NĐT NN trong ủy quyền CBTT
-  group: Cascade drop
-  reason: Cascade drop từ AUTHOANNOUNCE — denormalize thành ARRAY trên Info Disclosure
-    Authorization (xem 7d).
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: AUTHOANNOUNCE
+  description: Danh sách ủy quyền CBTT — thành viên thị trường ủy quyền cho đại diện
+    CBTT
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: BRANCHS
+  description: Danh sách chi nhánh/VPĐD của công ty QLQ nước ngoài tại Việt Nam
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21.
+    Vẫn là 1 trong 9 bảng đầu vào UNION của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
+    (7a).
+- source_system: FIMS
+  source_table: BRANCHSBUSINES
+  description: Liên kết BRANCHS ↔ BUSINESS (nghiệp vụ KD của CN QLQ NN)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: CATEGORIESSTOCK
+  description: Số lượng và tỷ lệ sở hữu chứng khoán hiện tại của NĐT NN tại 1 CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: CDTWARN
+  description: Danh sách điều kiện cảnh báo giám sát (ngưỡng min/max cho từng tham
+    số)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: CLOSING_PRICE_SECURITIES
+  description: Giá đóng cửa chứng khoán theo phiên, nhận từ HOSE/HNX/UPCOM hoặc nhập
+    tay
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: DEPOSITORYCENTER
+  description: Danh sách Trung tâm lưu ký chứng khoán (VSDC)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21.
+    Vẫn là 1 trong 9 bảng đầu vào UNION của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
+    (7a).
+- source_system: FIMS
+  source_table: FUNDCOMBUSINES
+  description: Liên kết FUNDCOMPANY ↔ BUSINESS (nghiệp vụ KD của QLQ)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: FUNDCOMPANY
+  description: Danh sách công ty quản lý quỹ — đối tượng thành viên thị trường gửi
+    báo cáo
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21.
+    Vẫn là 1 trong 9 bảng đầu vào UNION của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
+    (7a).
+- source_system: FIMS
+  source_table: FUNDCOMTYPE
+  description: Liên kết FUNDCOMPANY ↔ loại hình công ty
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: INDIREBUSINESS
+  description: Liên kết INFODISCREPRES ↔ BUSINESS (nghiệp vụ KD của người hành nghề)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: INFODISCREPRES
+  description: Danh sách đối tượng ủy quyền CBTT/giao dịch (cá nhân và tổ chức)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21.
+    Vẫn là 1 trong 9 bảng đầu vào UNION của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
+    (7a).
+- source_system: FIMS
+  source_table: PARAWARN
+  description: Danh sách tham số cảnh báo giám sát thành viên thị trường
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: RPTPDSHT
+  description: Bảng trung gian SHEET ↔ RPTPERIOD
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: RPTPERIOD
+  description: Danh sách kỳ của báo cáo đầu vào (kỳ tháng/quý/năm)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: RPTPROCESS
+  description: Lịch sử xử lý báo cáo của chuyên viên UBCKNN (duyệt/từ chối/yêu cầu
+    gửi lại)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: RPT_EVENT_TYPE
+  description: Danh sách loại sự vụ/nghĩa vụ báo cáo (CBTT, hồ sơ, báo cáo định kỳ)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: SECCOMBUSINES
+  description: Liên kết SECURITIESCOMPANY ↔ BUSINESS (nghiệp vụ KD của CTCK)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: SECCOMTYPE
+  description: Liên kết SECURITIESCOMPANY ↔ loại hình công ty
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: SECURITIESACCOUNT
+  description: Danh sách tài khoản giao dịch chứng khoán của NĐT nước ngoài
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: STOCKEXCHANGE
+  description: Danh sách sở giao dịch chứng khoán
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21.
+    Vẫn là 1 trong 9 bảng đầu vào UNION của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
+    (7a).
+- source_system: FIMS
+  source_table: TLPROFILES
+  description: Danh sách nhân sự chủ chốt tại các tổ chức thành viên thị trường
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: TRADINGAUTHORIZATION
+  description: Danh sách ủy quyền giao dịch cho đại diện giao dịch
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: TRADINGAUTHORIZATIONINVES
+  description: Quan hệ 1:1 với TRADINGAUTHORIZATION (người được ủy quyền)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FIMS
+  source_table: TRADINGREPRESENTATIVE
+  description: Danh sách đại diện giao dịch cho NĐT nước ngoài tại công ty chứng khoán
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21.
+    Vẫn là 1 trong 9 bảng đầu vào UNION của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
+    (7a).
+- source_system: FIMS
+  source_table: VIOLT
+  description: Danh sách vi phạm điều kiện cảnh báo của thành viên thị trường
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: FIMS
   source_table: RPT_EVENT_TYPE_LEGAL_BASIS
   description: Danh sách căn cứ pháp lý của loại sự vụ
   group: Chưa có cột
-  reason: Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope.
+  reason: Chưa có thông tin cột đầy đủ.
 - source_system: FIMS
   source_table: RPT_EVENT_TYPE_SCHEDULE
   description: Lịch nộp báo cáo theo loại sự vụ
   group: Chưa có cột
-  reason: Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope.
+  reason: Chưa có thông tin cột đầy đủ.
 - source_system: FIMS
   source_table: RPT_EVENT_TYPE_STATUS_LINK
   description: Liên kết trạng thái loại sự vụ
   group: Chưa có cột
-  reason: Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope.
+  reason: Chưa có thông tin cột đầy đủ.
 - source_system: FIMS
   source_table: FORM_SCHEMAS
   description: Schema biểu mẫu động
@@ -91,16 +332,6 @@ entries:
   group: Form Metadata
   reason: Audit Log nguồn — lịch sử phiên bản biểu mẫu. Chưa xác định entity Atomic
     tương ứng.
-- source_system: FIMS
-  source_table: RPTPDSHT
-  description: Bảng trung gian SHEET ↔ RPTPERIOD
-  group: Form Metadata
-  reason: Junction Table — xử lý thành ARRAY trên Reporting Period (xem 7d).
-- source_system: FIMS
-  source_table: RPTTEMP
-  description: '*(xem mục 7a — in scope)*'
-  group: Form Metadata
-  reason: '*(in scope)*'
 - source_system: FIMS
   source_table: RPTTPOUT
   description: Danh sách biểu mẫu báo cáo đầu ra
@@ -126,12 +357,6 @@ entries:
   description: Cấu hình kỳ báo cáo do cán bộ UB tự thiết lập
   group: Form Metadata
   reason: Form Metadata — cấu hình kỳ đặc biệt gắn với biểu mẫu.
-- source_system: FIMS
-  source_table: SHEET
-  description: Danh sách các sheet trong biểu mẫu báo cáo đầu vào
-  group: Form Metadata
-  reason: 'Cần xác nhận: có thể là Tier 2 entity hoặc denormalize vào Reporting Template.
-    Chờ kết luận mục 7e-2.'
 - source_system: FIMS
   source_table: SHEETOUT
   description: Danh sách sheet của báo cáo đầu ra
@@ -429,6 +654,213 @@ entries:
   group: Audit Log nguồn
   reason: Audit Log nguồn — PREV_VALUE/VALUE_CHANGE/SNAPSHOT_JSON generic.
 - source_system: FMS
+  source_table: AGENCIES_BRA
+  description: Danh sách CN/PGD của đại lý quỹ đầu tư
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: AGEN_TF_MBF
+  description: Gán đại lý phân phối cho thành viên quỹ đầu tư
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FMS
+  source_table: ANNOUNCE
+  description: Công bố thông tin (CBTT)/thông báo của thành viên thị trường
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: BANK_EMPLOY
+  description: Nhân sự của ngân hàng lưu ký giám sát
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: BRANCHS
+  description: Danh sách chi nhánh/VPĐD của công ty QLQ trong nước
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: BRA_BUSINESS
+  description: Ngành nghề kinh doanh của chi nhánh CTQLQ
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FMS
+  source_table: CDT_WARN
+  description: Danh sách điều kiện cảnh báo cụ thể (ngưỡng min/max, so sánh kép giữa
+    2 tham số cảnh báo)
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: DISTRIBUTOR_PERSONNEL
+  description: Nhân sự tại địa điểm giao dịch của Securities Distribution Agent
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: EVENT_TYPE_AGENCY_TYPE
+  description: Loại sự vụ áp dụng cho loại đại lý
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FMS
+  source_table: FACTOR
+  description: Tiêu chí chấm điểm xếp hạng chi tiết (self-ref cha/con)
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: FTOR_SCALE
+  description: Thang điểm/khoảng giá trị áp dụng cho từng tiêu chí
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: FUD_TAGT
+  description: Liên kết quỹ với loại đại lý chuyển nhượng
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FMS
+  source_table: GRP_FACTOR
+  description: Nhóm tiêu chí chấm điểm xếp hạng công ty QLQ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: INSDER_RELA
+  description: Người có quan hệ gia đình/liên quan với cổ đông nội bộ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: INSDER_RPRST
+  description: Người đại diện theo ủy quyền của cổ đông nội bộ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: INSID_CHANGE
+  description: Giao dịch chuyển nhượng cổ phần/CCQ của cổ đông nội bộ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: INSPECTION_PENALTY_DECISION
+  description: Quyết định xử phạt vi phạm hành chính phát sinh từ đợt thanh tra
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: INSPECTION_ROUND
+  description: Đợt thanh tra/kiểm tra định kỳ hoặc đột xuất do UBCKNN tổ chức
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: INSPECTION_TARGET
+  description: Đối tượng cụ thể chịu thanh tra trong 1 đợt
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: JOB_TL_PRO
+  description: Chức danh công việc của người hành nghề
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: MB_CHANGE
+  description: Lịch sử thay đổi vốn góp của nhà đầu tư trong quỹ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: MB_FUND
+  description: Danh sách nhà đầu tư nắm giữ chứng chỉ quỹ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: OTHER_AGENT
+  description: Đại lý/tổ chức trung gian khác tham gia thị trường quỹ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: PARA_WARN
+  description: Danh sách tham số cảnh báo giám sát công ty QLQ, định nghĩa chỉ tiêu
+    theo dõi kèm công thức tính
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: PENSION_AGENT
+  description: Đại lý phân phối/tổ chức cung cấp dịch vụ hưu trí
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: PENSION_FUND
+  description: Quỹ hưu trí bổ sung tự nguyện do công ty QLQ quản lý
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: PENSION_PROVIDER
+  description: Đại lý phân phối/tổ chức cung cấp dịch vụ hưu trí
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: RNK_FACTOR
+  description: Điểm số thực tế theo từng tiêu chí chi tiết của 1 kết quả xếp hạng
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: RNK_GR_FTOR
+  description: Điểm số của 1 kết quả xếp hạng theo từng nhóm tiêu chí
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: SEC_FUND_MANAGER
+  description: Gán người hành nghề làm người quản lý quỹ được chỉ định
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: FMS
+  source_table: TL_PRO_RELA
+  description: Người có quan hệ gia đình/liên quan với nhân sự chủ chốt CTQLQ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: TRANSFER_AGENT
+  description: Đại lý chuyển nhượng quyền sở hữu CCQ (VSDC, NHTM hoặc tổ chức khác)
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: TRANSFER_MBF
+  description: Giao dịch mua/bán/chuyển nhượng chứng chỉ quỹ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: TRS_FER_INDER
+  description: Giao dịch chuyển nhượng cổ phần nội bộ công ty QLQ
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
+  source_table: VIOLT
+  description: Danh sách vi phạm của thành viên thị trường (đa hướng)
+  group: Chưa có LLD
+  reason: Gỡ thiết kế HLD (2026-10-13) — LLD không còn trong `lld/FMS` (bản cũ ở `DataModel/working/Backup`);
+    thiết kế lại khi có LLD.
+- source_system: FMS
   source_table: STAKE
   description: Danh sách các bên liên quan của công ty QLQ
   group: Chưa có cột
@@ -552,33 +984,6 @@ entries:
   description: Danh sách tham số cấu hình hệ thống
   group: Isolated
   reason: Không có quan hệ FK đến bảng nghiệp vụ nào trong scope.
-- source_system: FMS
-  source_table: AGEN_TF_MBF
-  description: Gán đại lý phân phối cho thành viên quỹ đầu tư
-  group: Junction
-  reason: Pure junction 2 FK (AGENCIES, MB_FUND) — không có business attribute; denormalize
-    trên Investment Fund Investor Membership nếu cần.
-- source_system: FMS
-  source_table: BRA_BUSINESS
-  description: Ngành nghề kinh doanh của chi nhánh CTQLQ
-  group: Junction
-  reason: Pure junction 2 FK (BRANCHS, BUSINESS) — cùng pattern SEC_BUSINESS/FG_BUSINESS
-    đã denormalize.
-- source_system: FMS
-  source_table: EVENT_TYPE_AGENCY_TYPE
-  description: Loại sự vụ áp dụng cho loại đại lý
-  group: Junction
-  reason: Pure junction 2 FK (EVENT_TYPE, AGENCY_TYPE) — không có business attribute.
-- source_system: FMS
-  source_table: FUD_TAGT
-  description: Liên kết quỹ với loại đại lý chuyển nhượng
-  group: Junction
-  reason: Pure junction 2 FK (FUNDS, AGENCY_TYPE) — không có business attribute.
-- source_system: FMS
-  source_table: SEC_FUND_MANAGER
-  description: Gán người hành nghề làm người quản lý quỹ được chỉ định
-  group: Junction
-  reason: Pure junction 2 FK (SECURITIES, TL_PROFILES) — không có business attribute.
 - source_system: FMS
   source_table: CONFIG
   description: Cấu hình mapping cột nguồn-đích cho ETL/đồng bộ dữ liệu
@@ -872,6 +1277,33 @@ entries:
   description: Lịch sử thay đổi phiên bản biểu mẫu báo cáo tổng hợp đầu ra
   group: Xử lý luồng khác
   reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
+- source_system: HNX
+  source_table: listed_securities_list
+  description: Danh sách chứng khoán niêm yết HNX
+  group: Shared Entity
+  reason: Dùng entity `Listed Share Information` (định nghĩa ở VSDC) — chỉ bổ sung
+    `source_table`, không tạo entity mới tại HNX
+- source_system: HOSE
+  source_table: brokerage_market_share
+  description: Thị phần môi giới theo quý tại HOSE
+  group: Shared Entity
+  reason: Dùng entity `Brokerage Market Share` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
+- source_system: HOSE
+  source_table: listed_securities_list
+  description: Danh sách chứng khoán niêm yết HOSE
+  group: Shared Entity
+  reason: Dùng entity `Listed Share Information` (định nghĩa ở VSDC) — chỉ bổ sung
+    `source_table`
+- source_system: HOSE
+  source_table: listing_status_change
+  description: Quyết định thay đổi niêm yết tại HOSE
+  group: Shared Entity
+  reason: Dùng entity `Listing Status Change` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
+- source_system: HOSE
+  source_table: share_auction
+  description: Kết quả đấu giá cổ phiếu tại HOSE
+  group: Shared Entity
+  reason: Dùng entity `Share Auction Result` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
 - source_system: IDS
   source_table: '`COMPANY_CHANGE_ROLE_HIS`'
   description: Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn.
@@ -885,6 +1317,29 @@ entries:
   group: Audit Log nguồn
   reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
     kiện nghiệp vụ
+- source_system: IDS
+  source_table: '`CATEGORIES`'
+  description: Danh mục ngành nghề kinh doanh 2 cấp của CTĐC, self-referencing qua
+    PARENT_ID; chỉ dùng để join ETL cho COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID.
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: IDS
+  source_table: '`NOTIFICATIONS_DTL`'
+  description: 'Danh sách người nhận của một thông báo CBTT: login, loại đối tượng,
+    email, điện thoại.'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: IDS
+  source_table: '`NOTIFICATIONS`'
+  description: 'Instance thông báo CBTT đã phát sinh: trạng thái, loại tin, ngày gửi.'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: IDS
+  source_table: '`VIOLATION_PENALTY_CONFIG`'
+  description: 'Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm: số ngày quá hạn, mã
+    khoản quy định, hình thức xử phạt, thời gian hiệu lực.'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: IDS
   source_table: '`DATA_VALUES`'
   description: Bảng giá trị tham chiếu cho field trong form.
@@ -1044,20 +1499,23 @@ entries:
   reason: Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không
     qua IDS
 - source_system: KNT
+  source_table: TAX_REG_ADDRESS_TYPE
+  description: Loại địa chỉ trong thông tin đăng ký thuế của doanh nghiệp (trụ sở/chi
+    nhánh/địa điểm kinh doanh)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: KNT
+  source_table: TAX_REG_BUSINESS_LINE
+  description: Ngành nghề kinh doanh trong hồ sơ đăng ký thuế
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: KNT
   source_table: MSG_PACKET
   description: Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính (nội
     dung XML, trạng thái gửi/nhận)
   group: Operational / System
   reason: Operational/system data — bảng quản lý lifecycle gói tin truyền nhận, không
     có giá trị nghiệp vụ. Là FK reference chung của toàn bộ entity Tier 1.
-- source_system: KNT
-  source_table: TAX_REG_ADDRESS_TYPE
-  description: Loại địa chỉ trong thông tin đăng ký thuế của doanh nghiệp (trụ sở/chi
-    nhánh/địa điểm kinh doanh)
-  group: Shared Entity
-  reason: Không thiết kế Atomic entity riêng — ADDRESS/WARD/DISTRICT/PROVINCE/COUNTRY
-    denormalize vào IP Postal Address, EMAIL/PHONE/FAX/WEBSITE denormalize vào IP
-    Electronic Address, gắn với External Tax Registration (cha).
 - source_system: NHNCK
   source_table: CERTIFICATE_DOCUMENTS
   description: Liên kết loại tài liệu với loại chứng chỉ
@@ -1169,6 +1627,14 @@ entries:
   reason: Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn
     còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau.
 - source_system: NHNCK
+  source_table: IDENTITY_INFO_C06S
+  description: Lịch sử kiểm tra xác thực danh tính với C06 (CSDL quốc gia về dân cư)
+  group: Involved Party
+  reason: '**Quyết định Data Modeler (2026-09-12) — trả về out_of_scope**, đảo ngược
+    quyết định đưa vào scope trước đó (2026-07-23, xem Entities #5f). Entity `Individual`
+    (Fundamental) đã gỡ khỏi `manifest.yaml`/`atomic_entities.yaml`; LLD `lld_NHNCK_IDENTITY_INFO_C06S*.yaml`
+    không còn trong dự án.'
+- source_system: NHNCK
   source_table: PROFESSIONAL_TRAININGS
   description: Lịch sử đào tạo, bồi dưỡng của người hành nghề
   group: Involved Party
@@ -1205,6 +1671,24 @@ entries:
   group: Operational
   reason: Operational/migration data — nghiệp vụ 1 lần, không có giá trị phân tích
     liên tục.
+- source_system: NHNCK
+  source_table: ORGANIZATION_REPORT_LOG_SYNCS
+  description: Đối soát đồng bộ báo cáo nhân sự hành nghề với Organization Employment
+    Report
+  group: Operational
+  reason: 'Thiết kế thử 2026-08-13 (BCV Concept `[Documentation] Employer Registration`),
+    nhưng Data Modeler quyết định (2026-08-14) bỏ thiết kế Atomic entity đợt này —
+    trả `scope_status` về `out_of_scope`. LLD/manifest/atomic_entities đã gỡ bỏ. Xem
+    `## Entities` #31, `NHNCK_HLD_Tier4.md` 6f #6.'
+- source_system: NHNCK
+  source_table: VERIFY_CERTIFICATE_CONVERSION_STATUSES
+  description: Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái CCHN (lý do
+    thẩm định theo từng cấp xét duyệt)
+  group: Operational
+  reason: 'Thiết kế thử 2026-08-13, tạm dừng 2026-08-14 vì FK cha `CERTIFICATE_CONVERSION_REQUESTS`
+    vẫn `out_of_scope` (xem `## Entities` #24). **Quyết định Data Modeler (2026-09-12)
+    — chốt `out_of_scope` (không còn chờ bảng cha nữa):** không có nhu cầu khai thác
+    nghiệp vụ trên báo cáo.'
 - source_system: NHNCK
   source_table: APPLICATION_LOGS
   description: Nhật ký thay đổi trạng thái/nội dung hồ sơ
@@ -1325,6 +1809,20 @@ entries:
   description: Nhật ký gửi SMS trong hệ thống
   group: System / Log
   reason: Operational log.
+- source_system: NHNCK
+  source_table: CERTIFICATE_CONVERSION_REQUEST_LOGS
+  description: Nhật ký hành động xử lý yêu cầu chuyển đổi CCHN (log theo từng ACTION/DETAIL)
+  group: Uncertain scope
+  reason: 'Bảng mới phát hiện qua đối chiếu DDL UAT (2026-07-15), `scope_status: pending`
+    từ đó đến 2026-09-12. **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope`:**
+    không có nhu cầu khai thác nghiệp vụ trên báo cáo.'
+- source_system: NHNCK
+  source_table: REPORT_TEMPLATES
+  description: Mẫu biểu báo cáo (report template) cấu hình JSON theo từng module
+  group: Uncertain scope
+  reason: 'Bảng mới phát hiện qua đối chiếu DDL UAT (2026-07-15), `scope_status: pending`
+    từ đó đến 2026-09-12. **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope`:**
+    không có nhu cầu khai thác nghiệp vụ trên báo cáo.'
 - source_system: SCMS
   source_table: BANK_HISTORY
   description: Lịch sử ngân hàng đối tác
@@ -1376,6 +1874,183 @@ entries:
   description: Log kiểm tra hệ thống tổng quát
   group: Audit Log nguồn
   reason: Cấu trúc OLD_DATA/NEW_DATA JSON + ACTION_TYPE — Audit log kỹ thuật.
+- source_system: SCMS
+  source_table: ALERT_FINANCIAL_INDICATOR
+  description: Danh mục chỉ tiêu tài chính dùng trong hệ thống cảnh báo
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: ALERT_INDICATOR
+  description: Danh mục chỉ tiêu cảnh báo giám sát CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: ALERT_INDICATOR_CONDITION
+  description: Điều kiện kích hoạt cảnh báo cho từng chỉ tiêu cảnh báo
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: ALERT_RUN
+  description: Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho
+    1 chỉ tiêu cảnh báo
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: AUDITOR
+  description: Kiểm toán viên cá nhân trực thuộc công ty kiểm toán
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: AUDIT_FIRM
+  description: Danh mục công ty kiểm toán được UBCKNN chấp thuận
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: CAT_NATIONALITY
+  description: Danh mục quốc tịch
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: CUSTODIAN_BANK
+  description: Thỏa thuận lưu ký/thanh toán giữa CTCK và ngân hàng được chỉ định
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: DISCLOSURE_REPORT
+  description: Báo cáo công bố thông tin (CBTT) của CTCK gửi lên UBCKNN
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: DISCLOSURE_SHAREHOLDER
+  description: Thông tin công bố về cổ đông lớn hoặc thay đổi sở hữu CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: FORM_REPORT_INPUT_SOURCE
+  description: Ánh xạ biểu mẫu báo cáo gộp (canonical) sang nguồn đọc dữ liệu khai
+    thác/cảnh báo
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: LNK_PRACTITIONER_BUSINESS_LINE
+  description: Liên kết người hành nghề chứng khoán và nghiệp vụ kinh doanh chứng
+    khoán được phép thực hiện
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: LNK_SC_FIRM_BUSINESS_LINE
+  description: Liên kết CTCK và nghiệp vụ kinh doanh chứng khoán được cấp phép, kèm
+    trạng thái liên kết
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: OUTPUT_REPORT_FILTER
+  description: Cấu hình bộ lọc khả dụng khi khai thác 1 biểu mẫu báo cáo đầu ra
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: REPORT_VIOLATION
+  description: Vi phạm phát hiện từ kết quả kiểm tra báo cáo CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: RISK_INDICATOR
+  description: Danh mục chỉ tiêu đánh giá rủi ro CTCK theo phương pháp CAMEL
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: RISK_INDICATOR_GROUP
+  description: Danh mục nhóm chỉ tiêu rủi ro theo phương pháp CAMEL (C/A/M/E/L)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: RISK_REPORTING_PERIOD
+  description: Danh mục kỳ đánh giá rủi ro CTCK (quý/năm)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: RISK_SCORING_SCALE
+  description: Thang điểm đánh giá rủi ro quy định cho từng chỉ tiêu
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: RISK_SCORING_SC_FIRM_DETAIL
+  description: Chi tiết điểm rủi ro từng chỉ tiêu cho từng CTCK theo từng kỳ đánh
+    giá
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: RISK_SUMMARY
+  description: Tổng hợp điểm rủi ro của CTCK theo kỳ đánh giá
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_ADMIN_PENALTY_DECISION
+  description: Quyết định xử phạt vi phạm hành chính do UBCKNN ban hành cho CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_ADMIN_SANCTION
+  description: Biện pháp xử lý hành chính áp dụng cho CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_ALERT_VIOLATION
+  description: Vi phạm ngưỡng được hệ thống cảnh báo tự động phát hiện
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_COMPLAINT_PETITION
+  description: Đơn khiếu nại, tố cáo, kiến nghị, phản ánh liên quan đến CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_DOMESTIC_REP_OFFICE
+  description: Văn phòng đại diện trong nước (cấu trúc cột khác SC_FIRM_REP_OFFICE,
+    không FK chi nhánh cha)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+  description: Văn phòng đại diện CTCK nước ngoài đã được cấp giấy phép VN
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_INSPECTION_SCHEDULE
+  description: Lịch kiểm tra/thanh tra CTCK do UBCKNN thực hiện
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_LICENSED_PRACTITIONER
+  description: Người hành nghề chứng khoán đang công tác tại CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_OWNERSHIP_RELATION
+  description: Quan hệ sở hữu của CTCK với các tổ chức khác (mẹ/con/liên kết)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_SERVICE
+  description: Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK (đăng ký/thu hồi
+    dịch vụ)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_SHAREHOLDER_RELATION
+  description: Người có liên quan của cổ đông CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+  description: Người được cổ đông tổ chức ủy quyền đại diện quyền lợi tại CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: SCMS
+  source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+  description: Chuyển nhượng cổ phần giữa hai cổ đông CTCK
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: SCMS
   source_table: FORM_REPORT_HISTORY
   description: Lịch sử phiên bản biểu mẫu
@@ -1827,6 +2502,87 @@ entries:
   group: Audit Log nguồn
   reason: Audit Log nguồn — không thiết kế entity Atomic riêng
 - source_system: THANHTRA
+  source_table: CITIZEN_RECEPTION
+  description: 'Buổi tiếp công dân: ngày tiếp, loại đối tượng, tóm tắt nội dung'
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: CITIZEN_RECEPTION_PARTICIPANT
+  description: Người tham gia buổi tiếp công dân (người tiếp, đơn vị phối hợp)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: CITIZEN_RECEPTION_PETITION_LINK
+  description: Liên kết một buổi tiếp công dân với nhiều đơn thư
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: CITIZEN_RECEPTION_SUBJECT
+  description: Chi tiết đối tượng được tiếp (cá nhân, đoàn đông người, tổ chức)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: INSPECTION_CONCLUSION_REMEDIAL
+  description: Biện pháp khắc phục trong kết luận thanh tra
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: PETITION_DOCUMENT
+  description: Văn bản phát sinh trong quá trình xử lý đơn thư (8 loại)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: PETITION_INTERNAL_TRANSFER_UNIT
+  description: Đơn vị nội bộ UBCKNN được chuyển xử lý đơn thư
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: PETITION_TARGET
+  description: Đối tượng được đề cập trong đơn thư
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: PROACTIVE_NOTICE
+  description: Thông báo chủ động phát đi từ thanh tra, không gắn với hồ sơ cụ thể
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: PROACTIVE_NOTICE_RECIPIENT
+  description: Danh sách công ty nhận thông báo chủ động
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: SECURITY_MEASURE_DECISION
+  description: Quyết định áp dụng biện pháp ngăn chặn/khẩn cấp hành chính, độc lập
+    với hồ sơ VPHC
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: SECURITY_MEASURE_DECISION_RECIPIENT
+  description: Đơn vị nhận bản sao quyết định biện pháp ngăn chặn
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: SECURITY_MEASURE_DECISION_SUBJECT
+  description: Đối tượng bị áp dụng biện pháp ngăn chặn trong quyết định
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: SECURITY_MEASURE_EXECUTION
+  description: Kết quả thực thi quyết định biện pháp ngăn chặn
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
+  description: Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
+  source_table: VPHC_PROCESS_OFFICIAL_LETTER
+  description: Công văn chính thức phát sinh trong quy trình xử lý VPHC
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: THANHTRA
   source_table: DOCUMENT_TEMPLATE
   description: 'Template biểu mẫu công văn: định nghĩa cấu trúc form, placeholder
     fields'
@@ -1864,12 +2620,6 @@ entries:
   group: Form Metadata
   reason: Form Metadata — version control
 - source_system: THANHTRA
-  source_table: VIOLATION_BEHAVIOR_LEGAL_DOCUMENT
-  description: Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật
-  group: Junction
-  reason: Pure junction không có business attribute — KHÔNG denormalize thành ARRAY
-    (trùng với text legacy `Legal Document` đã có sẵn). Xem `pending_design.yaml`.
-- source_system: THANHTRA
   source_table: CODE_SEQUENCE_COUNTER
   description: Bộ đếm sinh mã tự động
   group: Operational / System
@@ -1895,3 +2645,86 @@ entries:
   description: Danh mục private do user định nghĩa trong hệ thống
   group: Operational / System
   reason: Operational/system data — configuration metadata
+- source_system: TMS
+  source_table: ACCOUNT_FINANCIAL_SERVICE
+  description: Dịch vụ tài chính đăng ký trên tài khoản
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: ACCOUNT_GROUP
+  description: Nhóm tài khoản do nghiệp vụ giám sát xác định
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: ACCOUNT_GROUP_MEMBER
+  description: Quan hệ thành viên giữa tài khoản và nhóm giám sát
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: ACCOUNT_RELATIONSHIP
+  description: Mối quan hệ giữa 2 tài khoản NĐT trong giám sát
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: CASE_APPROVAL_STEP
+  description: Nhật ký duyệt từng bước xử lý vụ việc
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: CASE_ATTACH_FILE
+  description: File đính kèm vụ việc
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: CASE_FILE
+  description: Vụ việc giám sát giao dịch chứng khoán bất thường
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: CASE_FILE_SECURITIES_CODE
+  description: Mã chứng khoán liên quan tới vụ việc (N-N)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: CASE_FILE_WORKFLOW
+  description: Từng bước quy trình xử lý vụ việc
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: COMPANY_EVENT
+  description: Sự kiện tổ chức niêm yết ảnh hưởng giá tham chiếu
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: INVESTOR_ACCOUNT
+  description: Thông tin tài khoản nhà đầu tư (từ VSDC)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: INVESTOR_ACCOUNT_EXTENDED_INFO
+  description: Thông tin mở rộng tài khoản (liên hệ/ngân hàng)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: SECURITIES_GROUP
+  description: Nhóm chứng khoán do Ban GSTT tự quản lý
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: SECURITIES_GROUP_MEMBER
+  description: Thành viên nhóm chứng khoán (GROUP_ID + SECURITIES_CODE)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+- source_system: TMS
+  source_table: ACCOUNT_AUTHORIZATION
+  description: Thông tin ủy quyền giao dịch trên tài khoản (theo khảo sát cũ)
+  group: Khảo sát sai
+  reason: Không tồn tại trong DDL UAT thực tế (schema UAT_TMS) — dữ liệu khảo sát
+    nguồn lỗi thời/sai sót, đã reconcile 2026-07-23. Nghiệp vụ ủy quyền đã nằm sẵn
+    trên INVESTOR_ACCOUNT.AUTHORIZED_PERSON_NAME/AUTHORIZATION_DATE.
+- source_system: VSDC
+  source_table: account_opening_closing_status
+  description: Trạng thái mở/đóng tài khoản (đã bỏ khỏi mapping)
+  group: Fact Data
+  reason: Bỏ không còn khai thác theo quyết định Data Modeler — không còn trong DDL
+    nguồn hiện tại

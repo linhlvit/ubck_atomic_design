@@ -32,8 +32,8 @@ attributes:
     source_system: IAM
     source_table: USERS
     source_column: IAM.USERS.ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng bảng để lấy USERNAME. Hash: hash_id('IAM.USERS', USERNAME)."
-    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'NATIONAL_ID'"
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Shared entity — không có PK surrogate riêng, join theo IAM.USERS.ID cùng bảng để lấy USERNAME. Hash: hash_id('IAM_USERS', USERNAME)."
+    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'CITIZEN_ID'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -47,7 +47,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.USERNAME
     comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'CITIZEN_ID'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -61,7 +61,7 @@ attributes:
     source_table: USERS
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'CITIZEN_ID'"
     etl_derived_value: IAM_USERS
 
   - name: Identification Type Code
@@ -74,9 +74,9 @@ attributes:
     source_system: IAM
     source_table: USERS
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID vì nguồn chỉ có cột CITIZEN_ID_NUMBER không có cột type — không phân biệt được CMND/CCCD/hộ chiếu."
-    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: NATIONAL_ID
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CITIZEN_ID vì nguồn chỉ có cột CITIZEN_ID_NUMBER không có cột type — không phân biệt được CMND/CCCD/hộ chiếu."
+    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: CITIZEN_ID
 
   - name: Identification Number
     physical_name: identification_nbr
@@ -89,7 +89,7 @@ attributes:
     source_table: USERS
     source_column: IAM.USERS.CITIZEN_ID_NUMBER
     comment: BK của shared entity cùng với Involved Party Id + Identification Type Code.
-    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'NATIONAL_ID'"
+    classification_context: "Source System Code = 'IAM_USERS' | Identification Type Code = 'CITIZEN_ID'"
     etl_derived_value: null
 
   - name: Identification Type Code

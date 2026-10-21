@@ -56,12 +56,15 @@ graph TD
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
 | T1 | Involved Party | [Involved Party] Individual | Personal Information | USERS | Update | Người dùng hệ thống IAM — cán bộ UBCK, cán bộ CTCK, chuyên gia | Identity and Access Management User | Fundamental | (1) Individual (BCV 10902): thể nhân là Involved Party. (2) Cấu trúc USERS: FULL_NAME, DATE_OF_BIRTH, GENDER, CITIZEN_ID, tổ chức — đây là thể nhân có danh tính đầy đủ. (3) Chọn Individual vì người dùng IAM là cá nhân thực tế, không phải Organization. |
+| T1 | Involved Party | Shared Entity | Shared Entity | USERS | Update | Giấy tờ định danh của người dùng (CITIZEN_ID_NUMBER, TAX_ID_NUMBER) | Involved Party Alternative Identification | Fundamental | Shared Entity — extend source_table IAM.USERS; Tier = Tier của host entity `USERS` (T1). Grain = 1 người dùng → bắt buộc tách. |
+| T1 | Involved Party | Shared Entity | Shared Entity | USERS | Update | Thông tin liên lạc điện tử của người dùng (EMAIL, PHONE, DIAL_NUMBER, OFFICE_PHONE) | Involved Party Electronic Address | Fundamental | Shared Entity — extend source_table IAM.USERS; Tier = Tier của host entity `USERS` (T1). |
+| T1 | Involved Party | Shared Entity | Shared Entity | USERS | Update | Thông tin địa chỉ của người dùng (ADDRESS) | Involved Party Postal Address | Fundamental | Shared Entity — extend source_table IAM.USERS; Tier = Tier của host entity `USERS` (T1). |
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
 ```mermaid
 erDiagram
-    IAM_System_User {
+    Identity_and_Access_Management_User {
         bigint ds_id PK
         string user_code
         string username
@@ -110,9 +113,9 @@ erDiagram
         string identn_nbr
     }
 
-    IAM_System_User ||--o{ Involved_Party_Postal_Address : "ip_id"
-    IAM_System_User ||--o{ Involved_Party_Electronic_Address : "ip_id"
-    IAM_System_User ||--o{ Involved_Party_Alternative_Identification : "ip_id"
+    Identity_and_Access_Management_User ||--o{ Involved_Party_Postal_Address : "ip_id"
+    Identity_and_Access_Management_User ||--o{ Involved_Party_Electronic_Address : "ip_id"
+    Identity_and_Access_Management_User ||--o{ Involved_Party_Alternative_Identification : "ip_id"
 ```
 
 #### 7c. Bảng Classification Value
@@ -126,7 +129,7 @@ erDiagram
 
 #### 7d. Junction Tables
 
-*(Không có junction table trong IAM)*
+Không có junction table.
 
 #### 7e. Điểm cần xác nhận
 

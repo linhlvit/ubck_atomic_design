@@ -489,12 +489,14 @@ LLD: 14 files trong `DataModel/working/Atomic/lld/DCST/` — tất cả `draft`.
 
 | Tier | Số entities | HLD file |
 |---|---|---|
-| Tier 1 | 7 entities | `FMS_HLD_Tier1.md` |
-| Tier 2 | 7 entities | `FMS_HLD_Tier2.md` |
-| Tier 3 | 5 entities | `FMS_HLD_Tier3.md` |
+| Tier 1 | 15 entities | `FMS_HLD_Tier1.md` |
+| Tier 2 | 5 entities | `FMS_HLD_Tier2.md` |
+| Tier 3 | 6 entities | `FMS_HLD_Tier3.md` |
 | Tier 4 | 3 entities | `FMS_HLD_Tier4.md` |
+| Tier 5 | 1 entities | `FMS_HLD_Tier5.md` |
+| Tier 6 | 5 entities | `FMS_HLD_Tier6.md` |
 
-LLD: 38 files trong `DataModel/working/Atomic/lld/FMS/` — tất cả `draft`.
+LLD: 63 files trong `DataModel/working/Atomic/lld/FMS/` — tất cả `approved`.
 
 ---
 

@@ -1,13 +1,13 @@
 # IDS HLD — Tier 3
 
 **Source system:** IDS (Information Disclosure System — Hệ thống Công bố Thông tin)
-**Tier 3:** Các entity FK đến entity Tier 2. Gồm:
-- Con của **Public Company** + **Violation Report Template** (T1×T2): Violation Report (gộp VIOLATION_REPORT + HTE_VIOLATION_REPORT)
-- Con của **Violation Report Template** (T2): Violation Report Penalty Config
-- Con của **Notification** (T2): Notification Recipient
-- Con của **Securities Offering** (T2): Securities Offering Plan, Securities Offering Result *(T4)*
-- Con của **Public Company Evaluation** (T2): Public Company Evaluation Detail *(T4)*
-- Con của **Public Company** + **Financial Report** (T1) + **Public Company Securities Offering** (T3, chuyển từ Tier 2 — xem T3-08): Public Company Report Submission
+**Tier 3:** Các entity thuộc Tier 3 theo LLD (`group: T3`). Gồm:
+- Con của **Legal Entity** (T1): Legal Entity Position, Stock Holder Trading Account, Stock Holder Relationship, Stock Control
+- Con của **Public Company** + **Legal Entity** (T1): Public Company Shareholding, Public Company Entity Role, Public Company Securities Offering
+- Con của **Public Company** + **Public Company Evaluation Period** (T1): Public Company Evaluation
+- Con của **Public Company** + **Financial Report** (T1) + **Violation Report Template** (T2): Violation Report (gộp VIOLATION_REPORT + HTE_VIOLATION_REPORT)
+- Con của **Public Company** + **Financial Report** (T1) + **Public Company Securities Offering** (T3) + **Public Company Tender Offer** (T2) + **Legal Entity** (T1): Public Company Report Submission
+- Con của **Public Company Tender Offer** (T2): Public Company Tender Offer Result
 - Con của **Public Company Treasury Share Transaction** (T2): Public Company Treasury Share Transaction Result
 
 ---
@@ -16,11 +16,17 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Business Activity | [Business Activity] Warning Notice | Business Activity | `VIOLATION_REPORT` | Update | Hạn nộp báo cáo định kỳ và trạng thái vi phạm của CTĐC: kỳ báo cáo, ngày hạn nộp, ngày nộp thực tế, trạng thái. | Violation Report | Relative | (1) Term candidate: `[Business Activity] Warning Notice` không hoàn toàn phù hợp. Đây là theo dõi vi phạm nộp báo cáo. Gần nhất: `[Business Activity] Business Activity` hoặc `[Business Activity] Compliance Monitoring`. (2) Cấu trúc trường: COMPANY_PROFILE_ID, FORM_ID, VIOLATION_TEMPLATE_ID (FK → VIOLATION_TEMPLATES), PERIOD_NAME, BASE_DATE, DEADLINE_DATE, ACTUAL_SUBMIT_DATE, STATUS. (3) Chọn `[Business Activity] Business Activity` — đây là sự kiện nghiệp vụ theo dõi tuân thủ báo cáo. Relative (FK → Public Company T1 + Financial Report T1 + Violation Report Template T2). Đổi tên entity từ `Public Company Violation Report` → `Violation Report` (2026-08-05, theo yêu cầu tường minh Data Modeler) — gộp với HTE_VIOLATION_REPORT vào cùng 1 entity. |
-| Business Activity | [Business Activity] Business Activity | Business Activity | `HTE_VIOLATION_REPORT` | Update | Vi phạm nộp báo cáo (tương tự VIOLATION_REPORT nhưng cho module HTE): ngày hạn, ngày nộp, kỳ, trạng thái. | Violation Report | Relative | (1) Cấu trúc giống VIOLATION_REPORT: COMPANY_PROFILE_ID, FORM_ID, VIOLATION_TEMPLATE_ID, PERIOD_QUARTER/YEAR, BASE_DATE, DEADLINE_DATE, ACTUAL_SUBMIT_DATE, STATUS. (2) Gộp với VIOLATION_REPORT vào cùng 1 entity `Violation Report`, phân biệt qua Source System Code. (3) Relative (FK → Public Company T1 + Financial Report T1 + Violation Report Template T2). |
-| Condition | [Condition] Compliance Rule | Condition | `VIOLATION_PENALTY_CONFIG` | Update | Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm: số ngày quá hạn (cố định/tối thiểu/tối đa), mã khoản quy định, hình thức xử phạt, thời gian hiệu lực. | Violation Report Penalty Config | Relative | (1) Term candidate: `[Condition] Compliance Rule` — quy định ngưỡng phạt là điều kiện tuân thủ bổ sung cho mẫu vi phạm. (2) FK → VIOLATION_TEMPLATES (T2). Attribute: OVERDUE_DAYS, MIN/MAX_OVERDUE_DAYS, PARA_CD, ACTION_TYPE_CD, DESCRIPTION, EFFECTIVE_START/END_DATE, ACTIVE_FLG. (3) Chọn `[Condition] Compliance Rule`. Relative (SCD4A). FK → Violation Report Template T2 → Tier 3. Đổi tên từ `Public Company Violation Penalty Config` (2026-08-05, theo yêu cầu tường minh Data Modeler). |
-| Communication | [Communication] Notification | Communication | `NOTIFICATIONS_DTL` | Update | Danh sách người nhận của một thông báo CBTT: login, loại đối tượng nhận, email, điện thoại. | Notification Recipient | Relative | (1) Term candidate: `[Communication] Notification` — chi tiết người nhận thông báo là thành phần của Notification. (2) FK → NOTIFICATIONS (T2) + COMPANY_PROFILES (nullable T1). Cấu trúc: LOGIN_ID, RECIPIENT_TYPE_CD, EMAIL, PHONE. (3) Chọn `[Communication] Notification`. Relative (FK → Notification T2 → Tier 3). Đổi tên từ `Disclosure Form Definition Notification Recipient` (2026-08-05, theo yêu cầu tường minh Data Modeler). |
-| Documentation | [Documentation] Regulatory Report | Documentation | `COMPANY_DATA` | Update | Lần nộp báo cáo/tin công bố thông tin (CBTT) của CTĐC: form, trạng thái duyệt, ngày nộp/duyệt/từ chối, tin đính chính. | Public Company Report Submission | Relative | (1) Term candidate: `[Documentation] Regulatory Report` (BCV #9297) — hồ sơ nộp báo cáo/tin CBTT cho cơ quan quản lý, có lifecycle duyệt riêng. (2) Cấu trúc trường đầy đủ theo DDL thực tế (11 cột bổ sung 2026-08-08 — xem T3-08): COMPANY_PROFILE_ID (FK → Public Company T1), FORM_ID (FK → Financial Report T1), PARENT_ID (self-ref — tin đính chính → tin gốc), REF_ID (self-ref — tin được đính chính), LINK_ID (self-ref — link bản dịch VI/EN), NEWS_STATUS_CD, NEWS_TYPE_CD, LANGUAGE_CD, REPORT_YEAR/QUARTER/MONTH, DOC_TITLE/NO/DATE/SUMMARY/SIGN_DATE, các mốc ngày SUBMISSION/APPROVAL/REJECTION/DEADLINE/REVIEW/SEND_BACK/CLOSE, OVERDUE_DAYS, DIGITAL_SIGNATURE_FLG, ALERT_AUDIT, SYSTEM_CD, FLATTENED_FLG, SECURITIES_OFFERING_ID (FK → Public Company Securities Offering T3), DISCLOSURE_TYPE, LEGAL_ENTITY_ID (FK → Legal Entity T1), COMPANY_TENDER_OFFER_ID (FK → Public Company Tender Offer T2), COMPANY_TREASURY_SHARE_ID (FK ý nghĩa đúng → `Public Company Treasury Share Transaction` T2, entity mới thiết kế 2026-08-09 — xem Tier2.md 6f T2-17; **LƯU Ý**: `lld_IDS_COMPANY_DATA.yaml`/`atomic_attributes.yaml` hiện vẫn map hash vào `pc_treasury_stock_activity` do entity thật chưa tồn tại khi làm LLD — cần redirect ở `/atomic-lld-design`), APPROVER_USER_ID/APPROVER_USER_NAME (FK → Identity and Access Management User, pending). (3) Chọn `[Documentation] Regulatory Report`. Table Type = Fundamental theo quyết định chủ đích của Data Modeler (Overview 7e #13, 2026-07-23). FK → Public Company (T1) + Financial Report (T1) + Legal Entity (T1) + Public Company Tender Offer (T2) + Public Company Treasury Share Transaction (T2) + **Public Company Securities Offering (T3)** → do phụ thuộc T3 nên entity chuyển từ Tier 2 lên **Tier 3** (2026-08-08, xác nhận Data Modeler — xem Tier2.md 6f T2-12 và T3-08). Khôi phục lại scope theo yêu cầu Data Modeler (2026-08-05), xem Tier2.md 6f T2-10. Table Type Fundamental → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem Overview 7e #27. |
+| Documentation | [Documentation] Regulatory Report | Documentation | `COMPANY_DATA` | Update | Lần nộp báo cáo/tin CBTT của CTĐC: form, trạng thái duyệt, ngày nộp/duyệt/từ chối, tin đính chính. | Public Company Report Submission | Relative | (1) [Documentation] Regulatory Report — hồ sơ nộp báo cáo/tin CBTT, có lifecycle duyệt riêng. (2) FK → COMPANY_PROFILES (T1) + FORMS (T1), self-ref PARENT_ID/REF_ID. BRD hiện tại thiếu 11 cột đã có trên DDL thực tế (gồm 4 FK) — xem Tier2.md 6f T2-12. (3) Chọn [Documentation] Regulatory Report. Khôi phục scope 2026-08-05 — xem 7e, Tier2.md 6f T2-10/T2-12/T2-14. |
+| Involved Party | [Involved Party] Individual Employment Status | Involved Party | `POSITIONS` | Update | Chức vụ của người nội bộ/cổ đông tại công ty: mã chức vụ, ngày bổ nhiệm, ngày miễn nhiệm. | Legal Entity Position | Fundamental | (1) [Involved Party] Individual Employment Status — vai trò chức vụ của cá nhân. (2) FK → LEGAL_ENTITIES. Cấu trúc: POSITION_CD, APPOINTMENT_DATE, DISMISSAL_DATE. (3) Chọn [Involved Party] Individual Employment Status. |
+| Arrangement | [Arrangement] Account | Arrangement | `ACCOUNT_NUMBERS` | Update | Tài khoản giao dịch chứng khoán của cổ đông tại CTCK: số tài khoản, mã CTCK, cờ tài khoản chính. | Stock Holder Trading Account | Fundamental | (1) [Arrangement] Account — thỏa thuận tài khoản giao dịch. (2) FK → LEGAL_ENTITIES. Cấu trúc: ACCOUNT_NO, CTCK_CODE, PRIMARY_ACCOUNT_FLG, OPEN_DATE. (3) Chọn [Arrangement] Account. |
+| Involved Party | [Involved Party] Involved Party Relationship | Involved Party | `HOLDER_RELATIONSHIP` | Update | Quan hệ giữa các cổ đông: vợ-chồng, cha-con, ủy quyền, sở hữu chéo. | Stock Holder Relationship | Fundamental | (1) [Involved Party] Involved Party Relationship — quan hệ giữa 2 Legal Entity. (2) FK × 2 → LEGAL_ENTITIES (self-referencing). Cấu trúc: LEGAL_ENTITY_ID, RELATED_LEGAL_ENTITY_ID, RELATIONSHIP_TYPE_CD. (3) Chọn [Involved Party] Involved Party Relationship. |
+| Arrangement | [Arrangement] Ownership | Arrangement | `STOCK_CONTROLS` | Update | Chứng khoán của cổ đông bị đưa vào diện kiểm soát/hạn chế chuyển nhượng: loại hạn chế, thời gian hiệu lực. | Stock Control | Fundamental | (1) [Arrangement] Ownership — sở hữu có ràng buộc kiểm soát. (2) FK → LEGAL_ENTITIES. Cấu trúc: TICKER, RESTRICTION_TYPE_CD, START_DATE, END_DATE. (3) Chọn [Arrangement] Ownership. |
+| Arrangement | [Arrangement] Ownership | Arrangement | `COMPANY_SHAREHOLDING` | Update | Thông tin cổ đông của CTĐC: số lượng, tỷ lệ sở hữu, phân loại cổ đông (sáng lập/lớn/chiến lược/nội bộ/nhà nước/liên quan). | Public Company Shareholding | Fundamental | (1) [Arrangement] Ownership — quan hệ sở hữu giữa cổ đông và công ty. (2) FK → COMPANY_PROFILES + LEGAL_ENTITIES. Cấu trúc: SHAREHOLDER_TYPE, OWNERSHIP_QTY/RATIO/DATE, 7 cờ phân loại. (3) Chọn [Arrangement] Ownership. |
+| Involved Party | [Involved Party] Individual Employment Status | Involved Party | `COMPANY_ENTITY_ROLE` | Update | Vai trò của người nội bộ/cổ đông tại CTĐC: loại vai trò, trạng thái hoạt động, thời gian hiệu lực. | Public Company Entity Role | Fundamental | (1) [Involved Party] Individual Employment Status — vai trò theo thời gian tại tổ chức. (2) FK → COMPANY_PROFILES + LEGAL_ENTITIES. Cấu trúc: ROLE_TYPE_CD, ACTIVE_FLG, EFFECTIVE_FROM/TO_DATE. (3) Chọn [Involved Party] Individual Employment Status. |
+| Business Activity | [Business Activity] Business Activity | Business Activity | `SECURITIES_OFFERING` | Update | Hồ sơ đăng ký chào bán/phát hành chứng khoán của CTĐC hoặc cá nhân (APPLICANT_TYPE_FLG phân biệt). | Public Company Securities Offering | Fundamental | (1) [Business Activity] Business Activity — phát hành CK là hoạt động kinh doanh quan trọng. (2) FK → COMPANY_PROFILES (nullable) hoặc LEGAL_ENTITIES (nullable), loại trừ nhau theo APPLICANT_TYPE_FLG. (3) Chọn [Business Activity] Business Activity. |
+| Business Activity | [Business Activity] Evaluation | Business Activity | `EVALUATIONS` | Update | Đánh giá/xếp hạng CTĐC theo kỳ: tổng điểm, ngày đánh giá, loại đánh giá (A/B/C), trạng thái. | Public Company Evaluation | Fundamental | (1) [Business Activity] Evaluation — hoạt động đánh giá xếp hạng. (2) FK → COMPANY_PROFILES + EVALUATION_PERIODS. (3) Chọn [Business Activity] Evaluation. |
+| Business Activity | [Business Activity] Business Activity | Business Activity | `VIOLATION_REPORT` | Update | Hạn nộp báo cáo định kỳ và trạng thái vi phạm của CTĐC: kỳ báo cáo, ngày hạn nộp, ngày nộp thực tế, trạng thái. | Violation Report | Fundamental | (1) Term: `[Business Activity] Business Activity` theo LLD — theo dõi tuân thủ báo cáo CBTT. (2) Cấu trúc trường: COMPANY_PROFILE_ID, FORM_ID, VIOLATION_TEMPLATE_ID, PERIOD_NAME, BASE_DATE, DEADLINE_DATE, ACTUAL_SUBMIT_DATE, STATUS. (3) Table Type = Fundamental theo LLD; gộp với `HTE_VIOLATION_REPORT` (Source System Code phân biệt). Đổi tên từ `Public Company Violation Report` (2026-08-05) — xem Overview 7e #18. |
+| Business Activity | [Business Activity] Business Activity | Business Activity | `HTE_VIOLATION_REPORT` | Update | Vi phạm nộp báo cáo (tương tự VIOLATION_REPORT nhưng cho module HTE): ngày hạn, ngày nộp, kỳ, trạng thái. | Violation Report | Fundamental | (1) Cấu trúc giống VIOLATION_REPORT: COMPANY_PROFILE_ID, FORM_ID, VIOLATION_TEMPLATE_ID, PERIOD_QUARTER/YEAR, BASE_DATE, DEADLINE_DATE, ACTUAL_SUBMIT_DATE, STATUS. (2) Gộp với VIOLATION_REPORT vào cùng 1 entity `Violation Report`, phân biệt qua Source System Code. (3) Fundamental theo LLD (FK → Public Company T1 + Financial Report T1 + Violation Report Template T2). |
 | Business Activity | [Business Activity] Business Activity | Business Activity | `TREASURY_SHARE_TRANS_RESULT` | Update | Kết quả thực hiện thực tế của một đợt mua/bán cổ phiếu quỹ: số lượng đăng ký/thực hiện, giá bình quân, thời gian thực tế. | Public Company Treasury Share Transaction Result | Fundamental | (1) Term candidate: `[Business Activity] Business Activity` — fallback giống entity cha, không có BCV term riêng cho kết quả giao dịch cổ phiếu quỹ. (2) Cấu trúc trường: `REGISTERED_TRANS_QTY`, `EXECUTED_TRANS_QTY`, `AVERAGE_TRANS_PRICE`, `TRANS_START/END_DATE`, `APPROVAL_STATUS_CD` — bản ghi kết quả thực hiện, có quy trình phê duyệt riêng tương tự entity cha. (3) Chọn `[Business Activity] Business Activity`. Table Type = Fundamental — đúng precedent `Public Company Securities Offering Result` (Result FK vào Fundamental khác vẫn = Fundamental, xem `atomic_entities.yaml`) và Overview 7e #7 (pattern override chung). FK → Public Company Treasury Share Transaction (T2) → Tier 3. Rule #8: tên cha `Public Company Treasury Share Transaction` là substring liên tục trong tên con. |
 | Business Activity | [Business Activity] Business Activity | Business Activity | `COMPANY_TENDER_OFFER_RESULT` | Update | Kết quả thực hiện của một đợt chào mua công khai: số lượng CP đăng ký bán/thực tế mua, số NĐT tương ứng, tổng vốn thực hiện, tỷ lệ sở hữu sau chào mua, giấy chứng nhận/công văn UBCKNN, trạng thái phê duyệt, người phê duyệt/xử lý. | Public Company Tender Offer Result | Fundamental | (1) Term candidate: `[Business Activity] Business Activity` — mirror đúng entity cha `Public Company Tender Offer` (cùng concept), không tìm được BCV term chuyên biệt hơn cho "tender offer result" khi tra `knowledge/terms.csv` (chỉ có 1 mục nhắc "Tender Offer" như 1 giá trị ví dụ của `Financial Market Offering Declaration Type`, không phải entity concept riêng). (2) Cấu trúc trường: `COMPANY_TENDER_OFFER_ID` (FK cha, không crosswalk — Code của cha map thẳng từ ID kỹ thuật), `REGISTERED_SALE_SHARE_QTY`/`REGISTERED_SALE_INVESTOR_QTY`/`ACTUAL_PURCHASED_SHARE_QTY`/`ACTUAL_PURCHASED_INVESTOR_QTY`/`POST_OFFER_SHARE_QTY` (Small Counter), `TOTAL_FUNDING_AM` (Currency Amount), `POST_OFFER_OWNERSHIP_RATIO` (Percentage), `CERTIFICATE_NO/DATE`, `OFFICIAL_LETTER_NO/DATE`, `APPROVAL_STATUS_CD` (SO_APPROVAL_STATUS, mirror cha), `APPROVER_USER_ID/NAME` + `PROCESSOR_USER_ID/NAME` (mirror pattern `lld_IDS_SECURITIES_OFFERING_RESULT.yaml`, pending FK → IAM.USERS), `REVISION_REASON`. (3) Chọn `[Business Activity] Business Activity`. Table Type = **Fundamental** (theo yêu cầu tường minh Data Modeler 2026-09-05 — đúng precedent `Public Company Treasury Share Transaction Result`/`Public Company Securities Offering Result` ở dòng trên: Result FK vào Fundamental khác vẫn = Fundamental). FK → Public Company Tender Offer (T2) → Tier 3. Rule #8: tên cha `Public Company Tender Offer` là substring liên tục trong tên con. Entity mới, chưa từng có trong HLD trước lượt này — xem T3-10. |
 
@@ -32,14 +38,6 @@
 erDiagram
     LEGAL_ENTITIES {
         int ID PK
-    }
-
-    IDENTITY {
-        int ID PK
-        int LEGAL_ENTITY_ID FK
-        string IDENTITY_TYPE_CD
-        string IDENTITY_NO
-        date IDENTITY_ISSUED_DATE
     }
 
     POSITIONS {
@@ -154,13 +152,6 @@ erDiagram
         string STATUS
     }
 
-    NOTIFICATIONS {
-        int ID PK
-        int FORM_ID FK
-        string NEWS_STATUS_CD
-        date SENT_DATE
-    }
-
     COMPANY_TREASURY_SHARES {
         int ID PK
     }
@@ -174,7 +165,17 @@ erDiagram
         string APPROVAL_STATUS_CD
     }
 
-    LEGAL_ENTITIES ||--o{ IDENTITY : "LEGAL_ENTITY_ID"
+    COMPANY_DATA {
+        int ID PK
+        int COMPANY_PROFILE_ID
+        int FORM_ID FK
+        int PARENT_ID FK
+        int REF_ID FK
+        string NEWS_STATUS_CD
+        string NEWS_TYPE_CD
+        date SUBMISSION_DATE
+    }
+
     LEGAL_ENTITIES ||--o{ POSITIONS : "LEGAL_ENTITY_ID"
     LEGAL_ENTITIES ||--o{ ACCOUNT_NUMBERS : "LEGAL_ENTITY_ID"
     LEGAL_ENTITIES ||--o{ HOLDER_RELATIONSHIP : "LEGAL_ENTITY_ID"
@@ -194,8 +195,10 @@ erDiagram
     COMPANY_PROFILES ||--o{ HTE_VIOLATION_REPORT : "COMPANY_PROFILE_ID"
     FORMS ||--o{ HTE_VIOLATION_REPORT : "FORM_ID"
     VIOLATION_TEMPLATES ||--o{ HTE_VIOLATION_REPORT : "VIOLATION_TEMPLATE_ID"
-    FORMS ||--o{ NOTIFICATIONS : "FORM_ID"
     COMPANY_TREASURY_SHARES ||--o{ TREASURY_SHARE_TRANS_RESULT : "COMPANY_TREASURY_SHARE_ID"
+    COMPANY_PROFILES ||--o{ COMPANY_DATA : "COMPANY_PROFILE_ID"
+    FORMS ||--o{ COMPANY_DATA : "FORM_ID"
+    COMPANY_DATA ||--o{ COMPANY_DATA : "PARENT_ID / REF_ID (self-ref)"
 ```
 
 ---
@@ -226,14 +229,6 @@ erDiagram
         string vr_template_id PK
     }
 
-    Legal_Entity_Alternative_Identification {
-        string lgl_enty_alt_identn_id PK
-        string lgl_enty_id FK
-        string id_tp_code
-        string id_nbr
-        date id_iss_dt
-    }
-
     Legal_Entity_Position {
         string lgl_enty_pos_id PK
         string lgl_enty_id FK
@@ -242,7 +237,7 @@ erDiagram
         date dsmsl_dt
     }
 
-    Legal_Entity_Trading_Account {
+    Stock_Holder_Trading_Account {
         string lgl_enty_tdg_ac_id PK
         string lgl_enty_id FK
         string ac_nbr
@@ -250,14 +245,14 @@ erDiagram
         boolean prm_ac_f
     }
 
-    Legal_Entity_Relationship {
+    Stock_Holder_Relationship {
         string lgl_enty_rltnp_id PK
         string lgl_enty_id FK
         string rltd_lgl_enty_id FK
         string rltnp_tp_code
     }
 
-    Legal_Entity_Stock_Control {
+    Stock_Control {
         string lgl_enty_stk_cntl_id PK
         string lgl_enty_id FK
         string ticker
@@ -266,7 +261,7 @@ erDiagram
         date end_dt
     }
 
-    Company_Shareholding {
+    Public_Company_Shareholding {
         string co_shldhg_id PK
         string pblc_co_id FK
         string lgl_enty_id FK
@@ -276,7 +271,7 @@ erDiagram
         date own_dt
     }
 
-    Company_Entity_Role {
+    Public_Company_Entity_Role {
         string co_enty_role_id PK
         string pblc_co_id FK
         string lgl_enty_id FK
@@ -291,7 +286,7 @@ erDiagram
 
 
 
-    Securities_Offering {
+    Public_Company_Securities_Offering {
         string scrt_ofr_id PK
         string pblc_co_id FK
         string lgl_enty_id FK
@@ -320,13 +315,6 @@ erDiagram
         string st_code
     }
 
-    Notification {
-        string notification_id PK
-        string fr_id FK
-        date sent_dt
-        string news_st_code
-    }
-
     Public_Company_Treasury_Share_Transaction {
         string pc_treasury_share_transaction_id PK
     }
@@ -340,38 +328,34 @@ erDiagram
         string approval_status_cd
     }
 
-    Violation_Report_Penalty_Config {
-        string vr_penalty_config_id PK
-        string vr_template_id FK
-        int ovrd_days
-        int min_ovrd_days
-        int max_ovrd_days
-        string para_code
-        string actn_tp_code
-        date eff_strt_dt
-        date eff_end_dt
+    Public_Company_Report_Submission {
+        string pblc_co_rpt_subm_id PK
+        string pblc_co_id FK
+        string fr_id FK
+        string prn_subm_id FK
+        string subm_st_code
     }
 
-    Legal_Entity ||--o{ Legal_Entity_Alternative_Identification : "lgl_enty_id"
     Legal_Entity ||--o{ Legal_Entity_Position : "lgl_enty_id"
-    Legal_Entity ||--o{ Legal_Entity_Trading_Account : "lgl_enty_id"
-    Legal_Entity ||--o{ Legal_Entity_Relationship : "lgl_enty_id"
-    Legal_Entity ||--o{ Legal_Entity_Relationship : "rltd_lgl_enty_id"
-    Legal_Entity ||--o{ Legal_Entity_Stock_Control : "lgl_enty_id"
-    Public_Company ||--o{ Company_Shareholding : "pblc_co_id"
-    Legal_Entity ||--o{ Company_Shareholding : "lgl_enty_id"
-    Public_Company ||--o{ Company_Entity_Role : "pblc_co_id"
-    Legal_Entity ||--o{ Company_Entity_Role : "lgl_enty_id"
-    Public_Company ||--o| Securities_Offering : "pblc_co_id (nullable)"
-    Legal_Entity ||--o| Securities_Offering : "lgl_enty_id (nullable)"
+    Legal_Entity ||--o{ Stock_Holder_Trading_Account : "lgl_enty_id"
+    Legal_Entity ||--o{ Stock_Holder_Relationship : "lgl_enty_id"
+    Legal_Entity ||--o{ Stock_Holder_Relationship : "rltd_lgl_enty_id"
+    Legal_Entity ||--o{ Stock_Control : "lgl_enty_id"
+    Public_Company ||--o{ Public_Company_Shareholding : "pblc_co_id"
+    Legal_Entity ||--o{ Public_Company_Shareholding : "lgl_enty_id"
+    Public_Company ||--o{ Public_Company_Entity_Role : "pblc_co_id"
+    Legal_Entity ||--o{ Public_Company_Entity_Role : "lgl_enty_id"
+    Public_Company ||--o| Public_Company_Securities_Offering : "pblc_co_id (nullable)"
+    Legal_Entity ||--o| Public_Company_Securities_Offering : "lgl_enty_id (nullable)"
     Public_Company ||--o{ Public_Company_Evaluation : "pblc_co_id"
     Public_Company_Evaluation_Period ||--o{ Public_Company_Evaluation : "pblc_co_eval_prd_id"
     Public_Company ||--o{ Violation_Report : "pblc_co_id"
     Financial_Report ||--o{ Violation_Report : "fr_id"
     Violation_Report_Template ||--o{ Violation_Report : "vr_template_id"
-    Financial_Report ||--o{ Notification : "fr_id"
-    Violation_Report_Template ||--o{ Violation_Report_Penalty_Config : "vr_template_id"
     Public_Company_Treasury_Share_Transaction ||--o{ Public_Company_Treasury_Share_Transaction_Result : "pc_treasury_share_transaction_id"
+    Public_Company ||--o{ Public_Company_Report_Submission : "pblc_co_id"
+    Financial_Report ||--o{ Public_Company_Report_Submission : "fr_id"
+    Public_Company_Report_Submission ||--o{ Public_Company_Report_Submission : "prn_subm_id / corr_refr_id (self-ref)"
 ```
 
 ---
@@ -380,7 +364,7 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| `IDENTITY.IDENTITY_TYPE_CD` | Loại giấy tờ định danh (CMND/CCCD/Hộ chiếu/ĐKKD) | `IDS_IDENTITY_TYPE` | source_table | ETL map sang `IP_ALT_ID_TYPE` — dùng scheme IDS cho staging |
+| `COMPANY_DATA.NEWS_STATUS_CD` | Trạng thái duyệt lần nộp báo cáo/tin CBTT | `IDS_SUBMISSION_STATUS` | source_table | Values load từ `LOOKUP_VALUES` (GROUP = NEWS_APPROVAL_STATUS) |
 | `POSITIONS.POSITION_CD` | Chức vụ (Chủ tịch HĐQT, Thành viên BGĐ...) | `IDS_POSITION_CD` | source_table | Values load từ `LOOKUP_VALUES` |
 | `ACCOUNT_NUMBERS.CTCK_CODE` | Mã CTCK (nơi mở tài khoản) | `IDS_CTCK_CODE` | etl_derived | Values từ thực tế thị trường |
 | `HOLDER_RELATIONSHIP.RELATIONSHIP_TYPE_CD` | Loại quan hệ giữa cổ đông | `IDS_HOLDER_RELATIONSHIP_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
@@ -402,11 +386,10 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T3-03 | `NOTIFICATIONS` FK → FORMS (T1) → thực ra là Tier 2. Hiện đặt Tier 3 nhầm. Điều chỉnh về Tier 2? | Cần điều chỉnh — NOTIFICATIONS.FORM_ID → FORMS (T1) nên NOTIFICATIONS là Tier 2 Fact Append. Cũng cần xem `NOTIFICATIONS_DTL` (FK → NOTIFICATIONS) sẽ là Tier 3. |
 | T3-04 | `SECURITIES_OFFERING` FK loại trừ nhau: COMPANY_PROFILE_ID (cho tổ chức) hoặc LEGAL_ENTITY_ID (cho cá nhân). Pattern này tương tự `AF_APPROVAL` (nay thuộc source AUDIT). ETL cần dùng APPLICANT_TYPE_FLG để xác định. | Xác nhận — giữ 2 FK nullable trên Atomic entity `Securities Offering`. ETL dùng APPLICANT_TYPE_FLG. |
 | T3-05 | `VIOLATION_REPORT` và `HTE_VIOLATION_REPORT` có cấu trúc gần như giống nhau — xem xét gộp thành 1 entity `Violation Report` (đổi tên từ `Public Company Violation Report`, 2026-08-05) với Source System Code phân biệt module. | Đã xử lý — gộp thành 1 entity `Violation Report`, phân biệt qua Source System Code (`IDS.VIOLATION_REPORT` vs `IDS.HTE_VIOLATION_REPORT`). |
-| T3-06 | `COMPANY_DATA` (`Public Company Report Submission`) — Data Modeler quyết định (2026-07-24) bỏ hoàn toàn thiết kế Atomic cho bảng này. | **Superseded 2 lần.** (1) Khôi phục lại scope 2026-08-05 (Tier2.md 6f T2-10) — thiết kế lại ở Tier 2. (2) Sau khi bổ sung 4 FK còn thiếu (2026-08-08), entity chuyển tiếp sang **Tier 3** — xem T3-08 và Tier2.md 6f T2-12. Xem `IDS_HLD_Overview.md` 7e #14 cho lịch sử đầy đủ. |
-| T3-07 | Theo yêu cầu tường minh Data Modeler (2026-08-05): đổi tên 5 entity theo họ khái niệm rõ ràng hơn — `VIOLATION_TEMPLATES` (`Disclosure Form Definition Violation Template` → `Violation Report Template`, Domain Prefix `Violation Report`, `vr`), `VIOLATION_REPORT`+`HTE_VIOLATION_REPORT` (`Public Company Violation Report` → `Violation Report`, root entity họ `Violation Report`), `VIOLATION_PENALTY_CONFIG` (`Public Company Violation Penalty Config` → `Violation Report Penalty Config`), `NOTIFICATIONS` (`Disclosure Notification` → `Notification`, root, Domain Prefix `Notification`), `NOTIFICATIONS_DTL` (`Disclosure Form Definition Notification Recipient` → `Notification Recipient`). Đồng thời bổ sung `Violation Report,vr` vào `rule_domain_prefix_abbreviations.csv`. | Đã xử lý: `atomic_entities.yaml`, `manifest.yaml`, `classification_schemes.yaml`, mục 6a/6c Tier2.md/Tier3.md + Overview 7a/7b/Entities, `lld_IDS_VIOLATION_TEMPLATES/VIOLATION_REPORT/HTE_VIOLATION_REPORT/VIOLATION_PENALTY_CONFIG/NOTIFICATIONS/NOTIFICATIONS_DTL.yaml`. Rename này **giải quyết** vi phạm rule#8 đã ghi ở Tier2.md 6f T2-15 (LƯU Ý) — `Violation Report Template`/`Notification Recipient` không còn cần chứa tên `Financial Report Template`/`Notification` theo kiểu cũ vì đã đổi sang họ khái niệm riêng (`Violation Report`/`Notification`), nhưng `Notification Recipient` vẫn đúng chuẩn rule#8 vì chứa `Notification` (tên cha) làm substring. |
-| T3-08 | `COMPANY_DATA` (`Public Company Report Submission`) chuyển từ Tier2.md sang Tier3.md (2026-08-08). Lý do: bổ sung 11 cột từng thiếu so với DDL thực tế (xem Tier2.md 6f T2-12) — trong đó có FK `SECURITIES_OFFERING_ID` → Public Company Securities Offering (Tier 3) — khiến entity phụ thuộc Tier 3, khớp lịch sử thiết kế cũ (Overview 7e #13/#14) từng xếp Tier 3 trước khi bị loại scope. | Đã xử lý — di chuyển dòng entity trong bảng 6a từ Tier2.md sang Tier3.md, cập nhật `group: T2→T3` trong `lld_IDS_COMPANY_DATA.yaml` + `manifest.yaml`. 3 FK còn lại (Legal Entity T1, Public Company Tender Offer T2, Public Company Treasury Stock Activity T2) không tự thân đòi hỏi Tier 3 — chỉ riêng Securities Offering (T3) là lý do bump. |
-| T3-09 | `TREASURY_SHARE_TRANS_RESULT` FK → `COMPANY_TREASURY_SHARES` (Tier 2, entity mới `Public Company Treasury Share Transaction` — xem Tier2.md 6f T2-17) → Tier 3. Đồng thời phát hiện dòng mô tả `COMPANY_DATA.COMPANY_TREASURY_SHARE_ID` (mục 6a ở trên) đang ghi sai tên entity đích (`Public Company Treasury Stock Activity`) — đã sửa lại đúng thành `Public Company Treasury Share Transaction`, kèm ghi chú LLD (`lld_IDS_COMPANY_DATA.yaml`) vẫn cần redirect FK hash thật. | Đã xử lý ở mục 6a/6b/6c/6d Tier3.md này. Redirect FK thật trong `lld_IDS_COMPANY_DATA.yaml` + `atomic_attributes.yaml` — chưa xử lý, thuộc phạm vi `/atomic-lld-design`. |
+| T3-07 | Theo yêu cầu Data Modeler (2026-08-05): `VIOLATION_TEMPLATES` → `Violation Report Template` (Domain Prefix `Violation Report`, `vr`), `VIOLATION_REPORT`+`HTE_VIOLATION_REPORT` → `Violation Report` (root, gộp 1 entity). `NOTIFICATIONS`/`NOTIFICATIONS_DTL`/`VIOLATION_PENALTY_CONFIG` không có LLD → gỡ khỏi HLD (2026-10-21), xem Overview 7f. | Đã xử lý: `atomic_entities.yaml`, `manifest.yaml`, `classification_schemes.yaml`, 6a/6c, Overview 7a/7b/Entities, `lld_IDS_VIOLATION_TEMPLATES/VIOLATION_REPORT.yaml`. |
+| T3-08 | `COMPANY_DATA` (`Public Company Report Submission`) — BRD (`brd_IDS_COMPANY_DATA.yaml`, 30 cột) thiếu 11 cột có trên DDL thực tế (`ALERT_AUDIT`, `SYSTEM_CD`, `CLOSE_DATE`, `SECURITIES_OFFERING_ID` (FK), `DISCLOSURE_TYPE`, `LEGAL_ENTITY_ID` (FK), `COMPANY_TENDER_OFFER_ID` (FK), `COMPANY_TREASURY_SHARE_ID` (FK), `APPROVER_USER_ID`, `APPROVER_USER_NAME`, `FLATTENED_FLG`). | Đã bổ sung vào `lld_IDS_COMPANY_DATA.yaml` (2026-08-08). Tier 3 theo LLD (`group: T3`): FK tới Public Company Securities Offering (T3) và Public Company Tender Offer (T2); Table Type Relative theo LLD. `SYSTEM_CD`/`CLOSE_DATE` không có mô tả nguồn — cần Data Modeler xác nhận. |
+| T3-09 | `TREASURY_SHARE_TRANS_RESULT` FK → `COMPANY_TREASURY_SHARES` (Tier 2, entity mới `Public Company Treasury Share Transaction` — xem Tier2.md 6f T2-17) → Tier 3. | Đã xử lý ở mục 6a/6b/6c/6d Tier3.md này. |
 | T3-10 | `COMPANY_TENDER_OFFER_RESULT` chưa từng có file BRD in_scope/HLD/manifest trước lượt thiết kế này (2026-09-05) — phát hiện khi Data Modeler yêu cầu bổ sung LLD trực tiếp cho bảng này (mirror tiền lệ `COMPANY_TREASURY_SHARES` — Tier2.md T2-17 — và `TREASURY_SHARE_TRANS_RESULT` — T3-09). FK duy nhất → `COMPANY_TENDER_OFFER` (Tier 2) → Tier 3. Table Type = Fundamental theo yêu cầu tường minh Data Modeler. | Đã xử lý — entity mới `Public Company Tender Offer Result` thêm vào mục 6a Tier3.md ở trên, `atomic_entities.yaml`, `manifest.yaml`, `IDS_HLD_Overview.md` (7a + Entities), `BRD/Source/brd_IDS.yaml` (`scope_status: pending → in_scope`). LLD: `lld_IDS_COMPANY_TENDER_OFFER_RESULT.yaml` (`design_status: draft`). |
+| T3-11 | Tier theo LLD: 8 entity Tier 3 (Legal Entity Position, Stock Holder Trading Account/Relationship, Stock Control, Public Company Shareholding/Entity Role/Securities Offering/Evaluation) chỉ FK tới entity Tier 1 — theo dependency thuần sẽ là Tier 2, nhưng LLD ghi `group: T3`. | Giữ theo LLD (LLD là chuẩn); cần Data Modeler xác nhận nếu muốn đổi. |

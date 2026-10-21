@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-bond_trading_registration_status-HNX.REGISTRATION_STATUS_CHANGE
+  logical_name: Bond Trading Registration Status
+  physical_name: bond_trading_registration_status
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  description: |
+    Trạng thái đăng ký giao dịch của trái phiếu: mã trái phiếu, tổ chức phát hành, mệnh giá, khối lượng đăng ký giao dịch hiện tại, ngày giao dịch đầu/cuối và trạng thái đăng ký.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HNX-REGISTRATION_STATUS_CHANGE
+
+attributes:
+  - name: Bond Trading Registration Status Id
+    physical_name: bond_trading_registration_status_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_REGISTRATION_STATUS_CHANGE',\"concat_ws('-', BOND_CODE, TRADING_REGISTRATION_STATUS)\")"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HNX_REGISTRATION_STATUS_CHANGE'"
+    etl_derived_value: HNX_REGISTRATION_STATUS_CHANGE
+
+  - name: Bond Code
+    physical_name: bond_code
+    business_meaning: Mã trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.BOND_CODE
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Trading Registration Status
+    physical_name: trading_registration_status
+    business_meaning: Trạng thái ĐKGD
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.TRADING_REGISTRATION_STATUS
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issuer Name
+    physical_name: issuer_nm
+    business_meaning: Tên doanh nghiệp phát hành
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.ISSUER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Par Value
+    physical_name: par_val
+    business_meaning: Mệnh giá trái phiếu
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.PAR_VALUE
+    comment: "Nguồn DECIMAL(18,2) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Registered Trading Bond Quantity
+    physical_name: registered_trading_bond_quantity
+    business_meaning: KL đang đăng ký giao dịch
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.CURRENTLY_REGISTERED_TRADING_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: First Trading Date
+    physical_name: first_trading_dt
+    business_meaning: Ngày giao dịch đầu tiên
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.FIRST_TRADING_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Last Trading Date
+    physical_name: last_trading_dt
+    business_meaning: Ngày giao dịch cuối cùng
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.LAST_TRADING_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Number
+    physical_name: business_nbr
+    business_meaning: Mã số doanh nghiệp
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REGISTRATION_STATUS_CHANGE
+    source_column: HNX.REGISTRATION_STATUS_CHANGE.BUSINESS_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null

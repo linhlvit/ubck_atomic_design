@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_alternative_identification-AUDIT.AF_AUDITOR_PROFILES
+  logical_name: Involved Party Alternative Identification
+  physical_name: ip_alternative_identification
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  description: |
+    Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_AUDITOR_PROFILES
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Audit Firm Auditor (Involved Party).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.ID
+    comment: "Surrogate Key của shared entity. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES', ID)."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'AUDITOR_CERTIFICATE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Audit Firm Auditor.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.ID
+    comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'AUDITOR_CERTIFICATE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'AUDITOR_CERTIFICATE'"
+    etl_derived_value: AUDIT_AF_AUDITOR_PROFILES
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ — Chứng chỉ kiểm toán viên (CPA).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode AUDITOR_CERTIFICATE — value mới, bổ sung vào classification_schemes.yaml cùng lượt thiết kế này."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'AUDITOR_CERTIFICATE'"
+    etl_derived_value: AUDITOR_CERTIFICATE
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số chứng chỉ kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.AUDIT_CERT_NO
+    comment: BK của shared entity cùng với Involved Party Id + Identification Type Code.
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'AUDITOR_CERTIFICATE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp chứng chỉ kiểm toán viên.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.AUDIT_CERT_ISSUE_DATE
+    comment: null
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'AUDITOR_CERTIFICATE'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ — CCCD.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CITIZEN_ID."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: CITIZEN_ID
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số CCCD.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.IDENTITY_NO
+    comment: BK của shared entity cùng với Involved Party Id + Identification Type Code.
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'CITIZEN_ID'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ — Chứng chỉ hành nghề kiểm toán (CCHN).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode PRACTITIONER_LICENSE."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: PRACTITIONER_LICENSE
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số GCN đăng ký hành nghề kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.PRACTICE_CERT_NO
+    comment: BK của shared entity cùng với Involved Party Id + Identification Type Code.
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp GCN đăng ký hành nghề kiểm toán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.PRACTICE_CERT_ISSUE_DATE
+    comment: null
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: null

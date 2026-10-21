@@ -32,7 +32,7 @@ attributes:
     source_system: KNT
     source_table: INFO_REQUEST_DETAIL
     source_column: null
-    comment: "PK surrogate. BCV: \"[Communication] Information Request\". 1 lần trao đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT.INFO_REQUEST_DETAIL', ID)."
+    comment: "PK surrogate. BCV: \"[Communication] Information Request\". 1 lần trao đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT_INFO_REQUEST_DETAIL', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -74,7 +74,7 @@ attributes:
     source_system: KNT
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.TAX_CODE
-    comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -123,14 +123,14 @@ attributes:
   - name: Response Status Code
     physical_name: response_status_code
     business_meaning: Trạng thái phản hồi WebService.
-    data_domain: Classification Value
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: INFO_REQUEST_DETAIL
     source_column: KNT.INFO_REQUEST_DETAIL.STATUS
-    comment: "Scheme: KNT_INFO_REQUEST_STATUS. Nguồn lưu dạng số — ETL cần convert sang string code."
+    comment: null
     classification_context: KNT_INFO_REQUEST_STATUS
     etl_derived_value: null
 

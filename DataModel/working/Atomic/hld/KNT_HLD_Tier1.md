@@ -100,7 +100,7 @@ erDiagram
         string tax_code
         string taxpayer_name
         string operation_status_code
-        string business_line_codes
+        string primary_business_line_code
     }
 
     External_Tax_Declaration_Report {
@@ -180,6 +180,6 @@ erDiagram
 |---|---|---|
 | T1-01 | `TAX_ENFORCEMENT_INVOICE.BASIS_DECISION_NUMBER` ("Căn cứ: số quyết định gốc") có phải luôn trỏ đến `TAX_ENFORCEMENT_DEBT.DECISION_NUMBER` không, hay có thể trỏ đến quyết định khác (VD: quyết định truy thu thuế gốc không nằm trong scope hiện tại)? | Chưa xác nhận — hiện để 2 entity độc lập không liên kết Atomic, chỉ ghi nhận nghi vấn. |
 | T1-02 | `TAX_REPORT` (báo cáo tài chính do Cục Thuế cung cấp) có trùng lặp nghiệp vụ với `SSC_REPORT` (báo cáo tài chính do UBCKNN tổng hợp từ IDS/SCMS/FMS gửi Cục Thuế/BTC — đang pending) không? Đây có phải 2 chiều dữ liệu khác nhau (in/out) của cùng 1 báo cáo? | Chưa xác nhận — `SSC_REPORT` thuộc nhóm bảng người dùng đang tự đánh giá, chưa thiết kế. |
-| T1-03 | `TAX_REGISTRATION_INFO` có các trường địa chỉ/liên lạc inline (HQ_ADDRESS, PHONE, FAX, BUSINESS_ADDRESS_DESC, BUSINESS_PHONE...) trùng lặp về ý nghĩa với `TAX_REG_ADDRESS_TYPE` (Tier 2 — chi tiết địa chỉ theo loại, có EMAIL/PHONE/FAX/WEBSITE riêng). Nguồn nào là authoritative để nạp vào shared entity IP Postal Address / IP Electronic Address? | Chưa xác nhận — tạm thời nạp cả 2 nguồn vào shared entity (mỗi nguồn 1 `Address Type Code`/`Electronic Address Type Code` khác nhau: BUSINESS/HEAD_OFFICE từ TAX_REGISTRATION_INFO trực tiếp so với theo TYPE cụ thể từ TAX_REG_ADDRESS_TYPE), cần Data Modeler xác nhận có dư thừa dữ liệu hay không. |
+| T1-03 | **[GỠ 2026-10-21]** `TAX_REG_ADDRESS_TYPE` không có LLD trong dự án — HLD gỡ, bảng đưa vào 7f nhóm `Chưa có LLD` của KNT_HLD_Overview. | Không còn ảnh hưởng. |
 | T1-04 | `HIGH_RISK_ENTERPRISE` không có `ingestion.data_change_mode` khai báo trong `brd_KNT.yaml` (khác với 6 bảng còn lại của Tier 1). `MANAGING_TAX_AUTHORITY` là free text hay có danh mục cố định (có thể trùng `CAT_ORG_UNIT` — KNT-REF, đang pending)? | **[MỘT PHẦN GIẢI QUYẾT 2026-07-19]** Change Mode xác nhận = Append (đã bổ sung `ingestion` vào `brd_KNT.yaml`) → Table Type đổi từ Fact Snapshot sang Fact Append, BCO đổi sang Business Activity ([Business Activity] Involved Party Rating Activity). Còn lại `MANAGING_TAX_AUTHORITY` free text hay danh mục cố định — chưa xác nhận, cần profile dữ liệu thực tế trước LLD. |
 | T1-05 | `HIGH_RISK_ENTERPRISE.ENTERPRISE_CODE` ("Mã số doanh nghiệp đăng ký kinh doanh") có phải cùng giá trị với `TAX_REGISTRATION_INFO.TAX_CODE` không (ở Việt Nam mã số DN thường trùng MST)? Nếu đúng → có thể dựng liên kết logic (business key) với `External Tax Registration`. | Chưa xác nhận — hiện thiết kế `External Tax High Risk Enterprise` là entity độc lập ở Tier 1, không dựng FK/liên kết logic với `External Tax Registration`. |

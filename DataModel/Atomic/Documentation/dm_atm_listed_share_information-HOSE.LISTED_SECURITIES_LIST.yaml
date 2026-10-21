@@ -1,0 +1,135 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-listed_share_information-HOSE.LISTED_SECURITIES_LIST
+  logical_name: Listed Share Information
+  physical_name: listed_share_information
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HOSE
+  description: |
+    Thông tin cổ phiếu niêm yết theo mã chứng khoán: cơ cấu số lượng cổ phiếu (phát hành, quỹ, lưu hành, tự do chuyển nhượng, hạn chế chuyển nhượng, biểu quyết) từ VSDC và số lượng niêm yết, giá tham chiếu từ HNX/HOSE.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HOSE-LISTED_SECURITIES_LIST
+
+attributes:
+  - name: Listed Share Information Id
+    physical_name: listed_share_information_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HOSE
+    source_table: LISTED_SECURITIES_LIST
+    source_column: HOSE.LISTED_SECURITIES_LIST.TICKER_SYMBOL
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HOSE_LISTED_SECURITIES_LIST',TICKER_SYMBOL)"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTED_SECURITIES_LIST
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HOSE_LISTED_SECURITIES_LIST'"
+    etl_derived_value: HOSE_LISTED_SECURITIES_LIST
+
+  - name: Ticker Symbol
+    physical_name: ticker_symbol
+    business_meaning: Mã cổ phiếu
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTED_SECURITIES_LIST
+    source_column: HOSE.LISTED_SECURITIES_LIST.TICKER_SYMBOL
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Outstanding Share Quantity
+    physical_name: outstanding_share_quantity
+    business_meaning: Số lượng chứng khoán lưu hành
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTED_SECURITIES_LIST
+    source_column: HOSE.LISTED_SECURITIES_LIST.OUTSTANDING_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issuer Name
+    physical_name: issuer_nm
+    business_meaning: Tổ chức phát hành
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTED_SECURITIES_LIST
+    source_column: HOSE.LISTED_SECURITIES_LIST.ISSUER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Listed Share Quantity
+    physical_name: listed_share_quantity
+    business_meaning: Số lượng cổ phiếu niêm yết
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTED_SECURITIES_LIST
+    source_column: HOSE.LISTED_SECURITIES_LIST.LISTED_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reference Price
+    physical_name: reference_price
+    business_meaning: Giá tham chiếu
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTED_SECURITIES_LIST
+    source_column: HOSE.LISTED_SECURITIES_LIST.REFERENCE_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Ngày báo cáo
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTED_SECURITIES_LIST
+    source_column: HOSE.LISTED_SECURITIES_LIST.REPORT_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -1,0 +1,303 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-vr_template-IDS.VIOLATION_TEMPLATES
+  logical_name: Violation Report Template
+  physical_name: vr_template
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Compliance Rule"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Mẫu cấu hình quy tắc vi phạm CBTT: loại báo cáo, thời hạn nộp mặc định, điều khoản xử phạt tương ứng. Đổi tên từ "Disclosure Form Definition Violation Template" (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e #18.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-VIOLATION_TEMPLATES
+
+attributes:
+  - name: Violation Report Template Id
+    physical_name: vr_template_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS_VIOLATION_TEMPLATES', VIOLATION_CD). BCV: \"[Condition] Compliance Rule\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Report Template Code
+    physical_name: vr_template_code
+    business_meaning: Mã vi phạm. BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.VIOLATION_CD
+    comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_VIOLATION_TEMPLATES'"
+    etl_derived_value: IDS_VIOLATION_TEMPLATES
+
+  - name: Financial Report Template Id
+    physical_name: fr_template_id
+    business_meaning: FK đến bảng FORMS.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.FORM_ID
+    comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS: VIOLATION_TEMPLATES.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS', FORM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template Code
+    physical_name: fr_template_code
+    business_meaning: Mã form CBTT.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.FORMS.FORM_CD
+    comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id. Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem comment Financial Report Template Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Report Name
+    physical_name: vr_nm
+    business_meaning: Tên vi phạm (Tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.VIOLATION_NAME_VI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Report English Name
+    physical_name: vr_english_nm
+    business_meaning: Tên vi phạm (Tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.VIOLATION_NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Report Type Code
+    physical_name: vr_tp_code
+    business_meaning: Mã loại vi phạm VIOLATION_TYPE.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.VIOLATION_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.VIOLATION_REPORT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Report Sub Type Code
+    physical_name: vr_sub_tp_code
+    business_meaning: Mã nhóm/loại vi phạm chi tiết VIOLATION_SUBTYPE.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.VIOLATION_SUBTYPE_CD
+    comment: "SCHEMA_CODE=IDS.VIOLATION_REPORT_SUBTYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_SUBTYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: News Type Code
+    physical_name: news_tp_code
+    business_meaning: Mã phân loại.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.REPORT_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.NEWS_TYPE_CD. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Scope Type Code
+    physical_name: fr_scope_tp_code
+    business_meaning: Mã phạm vi báo cáo REPORT_SCOPE.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.REPORT_SCOPE_CD
+    comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Type Code
+    physical_name: period_tp_code
+    business_meaning: "Mã loại kỳ báo cáo (Năm, Bán niên, Quý...)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.PERIOD_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Trigger Point Code
+    physical_name: violation_trigger_point_code
+    business_meaning: Mã thời điểm/hành động kích hoạt vi phạm VIOLATION_TRIGGER_POINT.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD
+    comment: "SCHEMA_CODE=IDS.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TRIGGER_POINT')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Offset Day Count
+    physical_name: offset_day_count
+    business_meaning: Số ngày bù/chênh lệch để tính hạn (Deadline).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.OFFSET_DAYS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Trigger Point Extended Code
+    physical_name: violation_trigger_point_extended_code
+    business_meaning: Mốc chặn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD_EX
+    comment: "SCHEMA_CODE=IDS.VIOLATION_TRIGGER_POINT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='VIOLATION_TRIGGER_POINT')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Offset Day Count Extended
+    physical_name: offset_day_count_extended
+    business_meaning: Thời hạn tối đa.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.OFFSET_DAYS_EX
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Day Type Code
+    physical_name: day_tp_code
+    business_meaning: "Mã loại ngày (Ngày làm việc, Ngày thường...)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.DAY_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.DAY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='DAY_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective Start Date
+    physical_name: effective_start_dt
+    business_meaning: Ngày bắt đầu có hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.EFFECTIVE_START_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective End Date
+    physical_name: effective_end_dt
+    business_meaning: Ngày kết thúc hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.EFFECTIVE_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Offset Day Count Condition
+    physical_name: offset_day_count_condition
+    business_meaning: Số ngày cộng thêm khi có điều kiện.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: VIOLATION_TEMPLATES
+    source_column: IDS.VIOLATION_TEMPLATES.OFFSET_DAYS_CONDITION
+    comment: null
+    classification_context: null
+    etl_derived_value: null

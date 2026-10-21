@@ -69,7 +69,7 @@ erDiagram
 
 ```mermaid
 erDiagram
-    IAM_System_User {
+    Identity_and_Access_Management_User {
         bigint ds_id PK
         string user_code
         string username
@@ -117,9 +117,9 @@ erDiagram
         string identn_nbr
     }
 
-    IAM_System_User ||--o{ Involved_Party_Postal_Address : "ip_id (shared entity)"
-    IAM_System_User ||--o{ Involved_Party_Electronic_Address : "ip_id (shared entity)"
-    IAM_System_User ||--o{ Involved_Party_Alternative_Identification : "ip_id (shared entity)"
+    Identity_and_Access_Management_User ||--o{ Involved_Party_Postal_Address : "ip_id (shared entity)"
+    Identity_and_Access_Management_User ||--o{ Involved_Party_Electronic_Address : "ip_id (shared entity)"
+    Identity_and_Access_Management_User ||--o{ Involved_Party_Alternative_Identification : "ip_id (shared entity)"
 ```
 
 ---

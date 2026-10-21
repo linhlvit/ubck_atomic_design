@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_treasury_stock_activity-IDS.COMPANY_TREASURY_STOCKS
+  logical_name: Public Company Treasury Stock Activity
+  physical_name: pc_treasury_stock_activity
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Hoạt động mua/bán cổ phiếu quỹ của CTĐC theo năm: số lượng đăng ký mua/bán, giá, thời gian.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-COMPANY_TREASURY_STOCKS
+
+attributes:
+  - name: Public Company Treasury Stock Activity Id
+    physical_name: pc_treasury_stock_activity_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Treasury Stock Activity Code
+    physical_name: pc_treasury_stock_activity_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: IDS.COMPANY_TREASURY_STOCKS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_COMPANY_TREASURY_STOCKS'"
+    etl_derived_value: IDS_COMPANY_TREASURY_STOCKS
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Khóa link đến bảng COMPANY_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: IDS.COMPANY_TREASURY_STOCKS.COMPANY_PROFILE_ID
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: IDS.COMPANY_TREASURY_STOCKS.COMPANY_PROFILE_ID
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Transaction Year
+    physical_name: transaction_year
+    business_meaning: Năm giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: IDS.COMPANY_TREASURY_STOCKS.TRANSACTION_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Treasury Buy Quantity
+    physical_name: treasury_buy_quantity
+    business_meaning: Số lượng mua cổ phiếu quỹ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: IDS.COMPANY_TREASURY_STOCKS.TREASURY_BUY_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Treasury Buy Round Count
+    physical_name: treasury_buy_round_count
+    business_meaning: Số đợt mua cổ phiếu quỹ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: IDS.COMPANY_TREASURY_STOCKS.TREASURY_BUY_RC
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Treasury Sell Quantity
+    physical_name: treasury_sell_quantity
+    business_meaning: Số lượng bán cổ phiếu quỹ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: IDS.COMPANY_TREASURY_STOCKS.TREASURY_SELL_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Treasury Sell Round Count
+    physical_name: treasury_sell_round_count
+    business_meaning: Số đợt bán cổ phiếu quỹ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_TREASURY_STOCKS
+    source_column: IDS.COMPANY_TREASURY_STOCKS.TREASURY_SELL_RC
+    comment: null
+    classification_context: null
+    etl_derived_value: null

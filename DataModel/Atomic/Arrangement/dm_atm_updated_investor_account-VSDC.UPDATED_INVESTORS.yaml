@@ -1,0 +1,233 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-updated_investor_account-VSDC.UPDATED_INVESTORS
+  logical_name: Updated Investor Account
+  physical_name: updated_investor_account
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Trading Account Arrangement"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  description: |
+    Danh sách tài khoản giao dịch chứng khoán của nhà đầu tư có thay đổi thông tin trong kỳ, gồm thông tin chủ tài khoản, ngày thay đổi và ghi chú thay đổi.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-VSDC-UPDATED_INVESTORS
+
+attributes:
+  - name: Updated Investor Account Id
+    physical_name: updated_investor_account_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.TRADING_ACCOUNT_NO
+    comment: "PK surrogate. BCV: \"[Arrangement] Trading Account Arrangement\". Hash: hash_id('VSDC_UPDATED_INVESTORS',TRADING_ACCOUNT_NO)"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'VSDC_UPDATED_INVESTORS'"
+    etl_derived_value: VSDC_UPDATED_INVESTORS
+
+  - name: Investor Account Number
+    physical_name: investor_account_nbr
+    business_meaning: Mã tài khoản giao dịch
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.TRADING_ACCOUNT_NO
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Investor Name
+    physical_name: investor_nm
+    business_meaning: Tên khách hàng
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.CUSTOMER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Investor Type Code
+    physical_name: investor_tp_code
+    business_meaning: Loại hình (Cá nhân/Tổ chức)
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.INVESTOR_TYPE
+    comment: "Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map sang mã INT (chưa có bảng mã, không đăng ký scheme)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Address
+    physical_name: adr
+    business_meaning: Địa chỉ
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.ADDRESS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số đăng ký sở hữu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.ID_NUMBER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issue_dt
+    business_meaning: Ngày cấp
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.ISSUE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issue Place
+    physical_name: issue_place
+    business_meaning: Nơi cấp
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.ISSUE_PLACE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Update Date
+    physical_name: update_dt
+    business_meaning: Ngày thay đổi thông tin
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.UPDATE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: FK đến Classification VSDC Nationality — Quốc tịch.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.NATIONALITY
+    comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk sang VSDC.NATIONALITY: UPDATED_INVESTORS.NATIONALITY = NATIONALITY.AUTOID để xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING, AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không khớp AUTOID."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc tịch (denormalized) — Quốc tịch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.NATIONALITY.AUTOID
+    comment: "Lookup pair: cl_vsdc_nationality.cl_vsdc_nationality_code. Pair with Nationality Id. Giá trị lấy từ VSDC.NATIONALITY.AUTOID sau ETL crosswalk — chi tiết xem comment Nationality Id. Kiểu INT theo DDL atomic đã chốt — ETL CAST AUTOID (BIGINT) sang INT."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Phone Number
+    physical_name: phone_nbr
+    business_meaning: Số điện thoại
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.PHONE_NUMBER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Email
+    physical_name: email
+    business_meaning: Địa chỉ email
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.EMAIL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Update Note
+    physical_name: update_note
+    business_meaning: Ghi chú thay đổi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.NOTES
+    comment: null
+    classification_context: null
+    etl_derived_value: null

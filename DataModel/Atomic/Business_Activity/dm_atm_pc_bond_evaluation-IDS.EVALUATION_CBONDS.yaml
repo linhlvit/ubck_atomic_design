@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: EVALUATION_CBONDS
     source_column: IDS.EVALUATION_CBONDS.COMPANY_ID
-    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_ID). Cột nguồn COMPANY_ID (khác tên chuẩn COMPANY_PROFILE_ID ở các bảng khác) — chưa có ràng buộc NOT NULL rõ ràng nên để nullable."
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_ID). Cột nguồn COMPANY_ID (khác tên chuẩn COMPANY_PROFILE_ID ở các bảng khác) — chưa có ràng buộc NOT NULL rõ ràng nên để nullable."
     classification_context: null
     etl_derived_value: null
 
@@ -92,8 +92,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Business Registration Number Snapshot
-    physical_name: business_registration_nbr_snpst
+  - name: Business Registration Number
+    physical_name: business_registration_nbr
     business_meaning: Mã số doanh nghiệp (snapshot tại thời điểm đánh giá).
     data_domain: Text
     data_type: string
@@ -106,9 +106,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Equity Ticker Symbol Snapshot
-    physical_name: equity_ticker_symbol_snpst
-    business_meaning: "Mã cổ phiếu (mã chứng khoán, snapshot tại thời điểm đánh giá)."
+  - name: Equity Ticker Symbol
+    physical_name: equity_ticker_symbol
+    business_meaning: Mã cổ phiếu (mã chứng khoán).
     data_domain: Text
     data_type: string
     nullable: true
@@ -120,9 +120,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Public Company Name Snapshot
-    physical_name: pc_nm_snpst
-    business_meaning: Tên công ty (snapshot tại thời điểm đánh giá).
+  - name: Public Company Name
+    physical_name: pc_nm
+    business_meaning: Tên công ty.
     data_domain: Text
     data_type: string
     nullable: true

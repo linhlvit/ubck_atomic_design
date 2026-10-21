@@ -102,7 +102,7 @@ attributes:
     source_system: SCMS
     source_table: FORM_REPORT_DEEP_CONFIG
     source_column: SCMS.FORM_REPORT_DEEP_CONFIG.SHEET_ID
-    comment: Nguồn NCLOB — lưu nguyên dạng text. Cần xác nhận format JSON trước khi denormalize/parse.
+    comment: Parsing từ trường FORM_REPORT_DEEP_CONFIG.SHEETS_JSON. Join được với SCMS.REPORT_INPUT_CELL_VALUE.SHEET_ID.
     classification_context: null
     etl_derived_value: null
 
@@ -117,5 +117,19 @@ attributes:
     source_table: FORM_REPORT_DEEP_CONFIG
     source_column: SCMS.FORM_REPORT_DEEP_CONFIG.SHEET_CODE
     comment: Nguồn NCLOB — lưu nguyên dạng text. Cần xác nhận format JSON trước khi denormalize/parse.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Cell Id
+    physical_name: cell_id
+    business_meaning: Mã cell.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: FORM_REPORT_DEEP_CONFIG
+    source_column: SCMS.FORM_REPORT_DEEP_CONFIG.CELL_ID
+    comment: Parsing từ trường FORM_REPORT_DEEP_CONFIG.SHEETS_JSON. Join được với SCMS.REPORT_INPUT_CELL_VALUE.CELL_ID.
     classification_context: null
     etl_derived_value: null

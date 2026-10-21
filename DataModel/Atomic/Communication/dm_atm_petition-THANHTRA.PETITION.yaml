@@ -1,0 +1,345 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-petition-THANHTRA.PETITION
+  logical_name: Petition
+  physical_name: petition
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Feedback"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  description: |
+    Hồ sơ đơn thư gửi đến UBCKNN từ công dân hoặc tổ chức, gồm phản ánh kiến nghị, khiếu nại và tố cáo, với khả năng nhận diện đơn trùng qua self-reference.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-THANHTRA-PETITION
+
+attributes:
+  - name: Petition Id
+    physical_name: petition_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('THANHTRA_PETITION', CODE). BCV: [Communication] Feedback."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Petition Code
+    physical_name: petition_code
+    business_meaning: "Mã vụ việc tự sinh UNIQUE (VD: DA2540). BK duy nhất — Id hash từ trường này."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.CODE
+    comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key cũ — gộp còn 1 trường Code duy nhất.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_PETITION'"
+    etl_derived_value: THANHTRA_PETITION
+
+  - name: Received Date
+    physical_name: received_dt
+    business_meaning: Ngày tiếp nhận đơn thư.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.RECEIVED_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Forwarding Unit
+    physical_name: forwarding_unit
+    business_meaning: Đơn vị/cơ quan chuyển đơn thư đến Thanh tra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.FORWARDING_UNIT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sender Name
+    physical_name: sender_nm
+    business_meaning: Họ tên người gửi đơn thư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.SENDER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sender Address
+    physical_name: sender_adr
+    business_meaning: Địa chỉ người gửi đơn thư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.SENDER_ADDRESS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Content
+    physical_name: content
+    business_meaning: Nội dung tóm tắt đơn thư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.CONTENT
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Petition Category Code
+    physical_name: petition_category_code
+    business_meaning: "Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.PETITION_CATEGORY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Related To Corporate Bond Indicator
+    physical_name: related_to_corporate_bond_ind
+    business_meaning: "Liên quan TPDN: 0=Không, 1=Có."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.RELATED_TO_CORPORATE_BOND
+    comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Eligible For Processing Indicator
+    physical_name: eligible_for_processing_ind
+    business_meaning: "Đủ điều kiện xử lý: 0=Không, 1=Có."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.ELIGIBLE_FOR_PROCESSING
+    comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Within Jurisdiction Indicator
+    physical_name: within_jurisdiction_ind
+    business_meaning: "Thuộc thẩm quyền: 0=Không, 1=Có."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.WITHIN_JURISDICTION
+    comment: "Nguồn NUMBER(1,0) — giữ nguyên giá trị số 0/1."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Duplicate Type Code
+    physical_name: duplicate_tp_code
+    business_meaning: "Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.DUPLICATE_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Original Petition Id
+    physical_name: original_petition_id
+    business_meaning: "FK tự tham chiếu đến đơn gốc. Bắt buộc khi duplicate_type=DUPLICATE."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.ORIGINAL_PETITION_ID
+    comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION: PETITION.ORIGINAL_PETITION_ID = PETITION.ID để xác nhận CODE sau đó hash_id('THANHTRA_PETITION', CODE) | Self-reference."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Original Petition Code
+    physical_name: original_petition_code
+    business_meaning: Mã đơn gốc (snapshot denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.CODE
+    comment: "Lookup pair: petition.petition_code. Pair with Original Petition Id. Giá trị lấy từ THANHTRA.PETITION.CODE sau ETL crosswalk — chi tiết xem comment Original Petition Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Number
+    physical_name: submission_nbr
+    business_meaning: Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.SUBMISSION_NUMBER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Transferred Authority
+    physical_name: transferred_authority
+    business_meaning: Tên cơ quan có thẩm quyền nhận chuyển đơn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.TRANSFERRED_AUTHORITY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning: "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.STATUS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày kết thúc xử lý đơn thư.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.NOTE
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Target Type Code
+    physical_name: target_tp_code
+    business_meaning: Loại đối tượng liên quan đến đơn thư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.TARGET_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Target Reference Id
+    physical_name: target_reference_id
+    business_meaning: ID tham chiếu đối tượng liên quan trong hệ thống nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.TARGET_REFERENCE_ID
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Target Name
+    physical_name: target_nm
+    business_meaning: Tên đối tượng liên quan đến đơn thư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PETITION
+    source_column: THANHTRA.PETITION.TARGET_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null

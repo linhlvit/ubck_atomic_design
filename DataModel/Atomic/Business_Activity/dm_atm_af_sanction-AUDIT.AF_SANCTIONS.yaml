@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_sanction-AUDIT.AF_SANCTIONS
+  logical_name: Audit Firm Sanction
+  physical_name: af_sanction
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Enforcement Action"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  description: |
+    Quyết định xử phạt hành chính của UBCKNN đối với công ty kiểm toán: số quyết định, ngày ban hành, nội dung xử phạt.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_SANCTIONS
+
+attributes:
+  - name: Audit Firm Sanction Id
+    physical_name: af_sanction_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Enforcement Action\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Sanction Code
+    physical_name: af_sanction_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: AUDIT.AF_SANCTIONS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_SANCTIONS'"
+    etl_derived_value: AUDIT_AF_SANCTIONS
+
+  - name: Audit Firm Id
+    physical_name: af_id
+    business_meaning: Link đến bảng AF_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: AUDIT.AF_SANCTIONS.AF_PROFILE_ID
+    comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_SANCTIONS.AF_PROFILE_ID = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: af_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: AUDIT.AF_PROFILES.AUDIT_FIRM_CD
+    comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sanction Authority Code
+    physical_name: sanction_authority_code
+    business_meaning: Đơn vị xử phạt (BTC hay UB).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: AUDIT.AF_SANCTIONS.SANCTION_AUTHORITY_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Decision Number
+    physical_name: decision_nbr
+    business_meaning: Số quyết định xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: AUDIT.AF_SANCTIONS.DECISION_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Decision Date
+    physical_name: decision_dt
+    business_meaning: Ngày quyết định xử phạt.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: AUDIT.AF_SANCTIONS.DECISION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sanction Content
+    physical_name: sanction_content
+    business_meaning: Nội dung quyết định xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: AUDIT.AF_SANCTIONS.SANCTION_CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Attachment File Url
+    physical_name: attachment_file_url
+    business_meaning: File đính kèm (đường link).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SANCTIONS
+    source_column: AUDIT.AF_SANCTIONS.ATTACHMENT_FILE_URL
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -1,0 +1,78 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_bond_listing_history-IDS.BOND_LISTING_HISTORY
+  logical_name: Public Company Bond Listing History
+  physical_name: pc_bond_listing_history
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  description: Lịch sử phát hành và niêm yết trái phiếu doanh nghiệp của CTĐC.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-BOND_LISTING_HISTORY
+
+attributes:
+  - name: Public Company Bond Listing History Id
+    physical_name: pc_bond_listing_history_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: BOND_LISTING_HISTORY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Bond Listing History Code
+    physical_name: pc_bond_listing_history_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: BOND_LISTING_HISTORY
+    source_column: IDS.BOND_LISTING_HISTORY.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: BOND_LISTING_HISTORY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_BOND_LISTING_HISTORY'"
+    etl_derived_value: IDS_BOND_LISTING_HISTORY
+
+  - name: Issuance Quantity
+    physical_name: issuance_quantity
+    business_meaning: Số lượng phát hành.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: BOND_LISTING_HISTORY
+    source_column: IDS.BOND_LISTING_HISTORY.ISSUANCE_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null

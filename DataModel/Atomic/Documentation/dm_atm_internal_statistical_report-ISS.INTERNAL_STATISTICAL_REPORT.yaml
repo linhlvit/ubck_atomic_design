@@ -1,0 +1,429 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-internal_statistical_report-ISS.INTERNAL_STATISTICAL_REPORT
+  logical_name: Internal Statistical Report
+  physical_name: internal_statistical_report
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Documentation"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: ISS
+  description: |
+    Báo cáo định kỳ ISS (thống kê nội bộ UBCKNN). Grain = 1 ô × 1 lần nộp × 1 kỳ báo cáo. Dữ liệu flatten đến từng ô biểu mẫu (cell-level), hỗ trợ cả 3 layout: MIXED / COLUMN_BASED / ROW_BASED. BK composite: report_code || sheet_nm || field_code || row_index || origin_dt_val.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ISS-INTERNAL_STATISTICAL_REPORT
+
+attributes:
+  - name: Internal Statistical Report Id
+    physical_name: internal_statistical_rpt_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Form Documentation\". Hash: hash_id('ISS_INTERNAL_STATISTICAL_REPORT', report_code || sheet_name || field_code || row_index || origin_date_value)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Internal Statistical Report Code
+    physical_name: internal_statistical_rpt_code
+    business_meaning: "Mã nghiệp vụ ô giá trị = report_code || sheet_nm || field_code || row_index || origin_dt_val. BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: null
+    comment: "ETL-derived: concat(report_code, sheet_name, field_code, row_index, origin_date_value) từ ODS INTERNAL_STATISTICAL_REPORT — BK composite. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'ISS_INTERNAL_STATISTICAL_REPORT'"
+    etl_derived_value: ISS_INTERNAL_STATISTICAL_REPORT
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: "Mã báo cáo (VD: HNX01A1, HSX02) — phân biệt loại báo cáo trong hệ thống ISS."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_code
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_name
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Submission System Code
+    physical_name: rpt_submission_stm_code
+    business_meaning: "Nguồn nộp báo cáo (ICP, CDW, KDL, ...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.submit_source
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Version Number
+    physical_name: version_nbr
+    business_meaning: Phiên bản template báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.template_version
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: "Kiểu layout biểu mẫu (MIXED, COLUMN_BASED, ROW_BASED)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_layout_type
+    comment: "Ảnh hưởng cách đọc column_position/row_position và column_code/row_code: COLUMN_BASED → row_* là NULL; ROW_BASED → col_* là NULL; MIXED → cả hai đều có giá trị."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Name
+    physical_name: sheet_nm
+    business_meaning: Tên sheet trong biểu mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.sheet_name
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Start Address
+    physical_name: column_start_adr
+    business_meaning: "Ký tự cột bắt đầu vùng dữ liệu trong Excel (VD: C)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_start_position
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Start Address
+    physical_name: row_start_adr
+    business_meaning: "Số dòng bắt đầu vùng dữ liệu trong Excel (VD: 7)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_start_position
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Path
+    physical_name: column_path
+    business_meaning: Tên đầy đủ chỉ tiêu cột theo cây chỉ tiêu. NULL với layout ROW_BASED.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_path
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Path
+    physical_name: row_path
+    business_meaning: Tên đầy đủ chỉ tiêu dòng theo cây chỉ tiêu. NULL với layout COLUMN_BASED.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_path
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Index
+    physical_name: row_index
+    business_meaning: "Vị trí hàng thực tế của ô = thứ tự JSON object trong json_data (bắt đầu từ 1) + data_index. Dùng để phân biệt các dòng động trong cùng band khi field_code trùng nhau."
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_index
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Address
+    physical_name: column_adr
+    business_meaning: "Vị trí cột trong Excel của chỉ tiêu COLUMN (VD: C, D). NULL với layout ROW_BASED."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.col_position
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Address
+    physical_name: row_adr
+    business_meaning: "Vị trí dòng trong Excel của chỉ tiêu ROW (VD: 7, 9). NULL với layout COLUMN_BASED."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_position
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Code
+    physical_name: column_code
+    business_meaning: Metric code của chỉ tiêu COLUMN. NULL với layout ROW_BASED.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_code
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Code
+    physical_name: row_code
+    business_meaning: Metric code của chỉ tiêu ROW. NULL với layout COLUMN_BASED.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_code
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Cell Code
+    physical_name: cell_code
+    business_meaning: "Mã định danh ô gốc từ JSON: {col_code}-{row_code} (MIXED) / {col_code} (COLUMN_BASED) / {row_code} (ROW_BASED)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.field_code
+    comment: Thành phần BK. Không unique trong 1 sheet khi có band động — phân biệt bằng row_index.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Type Code
+    physical_name: data_tp_code
+    business_meaning: "Kiểu dữ liệu của ô (NUMBER, CURRENCY, STRING, ...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.data_type
+    comment: Dùng để CAST field_val phía consumer — không ép kiểu tại Atomic.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Cell Value
+    physical_name: cell_val
+    business_meaning: Giá trị của ô dữ liệu dạng chuỗi gốc từ nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.field_value
+    comment: Luôn lưu dạng chuỗi; consumer tự CAST theo data_tp_code.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Type Code
+    physical_name: period_tp_code
+    business_meaning: "Loại kỳ báo cáo (DAILY, MONTHLY, QUARTERLY, YEARLY, ...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.date_type
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Value
+    physical_name: period_val
+    business_meaning: "Giá trị kỳ báo cáo dạng chuỗi gốc (VD: 25/11/2015, 07/2026)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.origin_date_value
+    comment: "Thành phần BK — giữ nguyên chuỗi gốc, không parse."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning: Ngày trong kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_day
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng trong kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_month
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Quarter
+    physical_name: rpt_quarter
+    business_meaning: Quý trong kỳ báo cáo (1–4).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_quarter
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Half Year
+    physical_name: rpt_half_year
+    business_meaning: Nửa năm trong kỳ báo cáo (1–2).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_half_year
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm trong kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_year
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Status Code
+    physical_name: submission_status_code
+    business_meaning: "Trạng thái nộp báo cáo (SUBMITTED, LATE_SUBMITTED, RESUBMITTED, OVERDUE)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ISS
+    source_table: INTERNAL_STATISTICAL_REPORT
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.submit_status
+    comment: null
+    classification_context: null
+    etl_derived_value: null

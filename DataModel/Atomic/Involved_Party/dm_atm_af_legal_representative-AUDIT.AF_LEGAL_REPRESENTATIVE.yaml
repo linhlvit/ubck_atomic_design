@@ -1,0 +1,162 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_legal_representative-AUDIT.AF_LEGAL_REPRESENTATIVE
+  logical_name: Audit Firm Legal Representative
+  physical_name: af_legal_representative
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: AUDIT
+  description: Người đại diện pháp luật của công ty kiểm toán được đăng ký với UBCKNN.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_LEGAL_REPRESENTATIVE
+
+attributes:
+  - name: Audit Firm Legal Representative Id
+    physical_name: af_legal_representative_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Legal Representative Code
+    physical_name: af_legal_representative_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: AUDIT.AF_LEGAL_REPRESENTATIVE.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_LEGAL_REPRESENTATIVE'"
+    etl_derived_value: AUDIT_AF_LEGAL_REPRESENTATIVE
+
+  - name: Audit Firm Id
+    physical_name: af_id
+    business_meaning: Link đến bảng AF_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: AUDIT.AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID
+    comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_LEGAL_REPRESENTATIVE.AF_PROFILE_ID = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: af_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: AUDIT.AF_PROFILES.AUDIT_FIRM_CD
+    comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Legal Representative Name
+    physical_name: af_legal_representative_nm
+    business_meaning: Tên đầy đủ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: AUDIT.AF_LEGAL_REPRESENTATIVE.FULL_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số CMND/hộ chiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: AUDIT.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO
+    comment: "Denormalized — nguồn không có cột phân biệt loại giấy tờ, không đủ thông tin để tách shared entity IP Alt Identification."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Position Title Code
+    physical_name: position_title_code
+    business_meaning: Chức vụ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: AUDIT.AF_LEGAL_REPRESENTATIVE.POSITION_TITLE_CD
+    comment: "SCHEMA_CODE=AUDIT.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Appointment Start Date
+    physical_name: appointment_start_dt
+    business_meaning: Bổ nhiệm (từ ngày).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: AUDIT.AF_LEGAL_REPRESENTATIVE.APPOINTMENT_START_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Appointment End Date
+    physical_name: appointment_end_dt
+    business_meaning: Bổ nhiệm (đến ngày).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_LEGAL_REPRESENTATIVE
+    source_column: AUDIT.AF_LEGAL_REPRESENTATIVE.APPOINTMENT_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -2,11 +2,11 @@
 
 > **Nguồn:** Hệ thống KNT — Dữ liệu trao đổi giữa UBCKNN và Tổng cục Thuế (Cục Thuế)/Bộ Tài chính (Oracle)
 >
-> **Phạm vi:** Đăng ký thuế doanh nghiệp trên TTCK, báo cáo tài chính/tờ khai thuế, cưỡng chế nợ thuế/ngừng sử dụng hóa đơn, xử lý vi phạm pháp luật về thuế, giám sát doanh nghiệp rủi ro cao, trao đổi yêu cầu thông tin với Cục Thuế. Đã xử lý 12/53 bảng nguồn — các bảng còn lại (báo cáo tổng hợp UBCKNN, xử phạt VPHC chứng khoán, thông tin công ty/kiểm toán, danh mục dùng chung, hạ tầng hệ thống...) đang được Data Modeler đánh giá, sẽ thiết kế ở đợt sau.
+> **Phạm vi:** Đăng ký thuế doanh nghiệp trên TTCK, báo cáo tài chính/tờ khai thuế, cưỡng chế nợ thuế/ngừng sử dụng hóa đơn, xử lý vi phạm pháp luật về thuế, giám sát doanh nghiệp rủi ro cao, trao đổi yêu cầu thông tin với Cục Thuế. Đã thiết kế 10/53 bảng nguồn (có LLD) — các bảng còn lại (báo cáo tổng hợp UBCKNN, xử phạt VPHC chứng khoán, thông tin công ty/kiểm toán, danh mục dùng chung, hạ tầng hệ thống...) đang được Data Modeler đánh giá, sẽ thiết kế ở đợt sau.
 >
 > **File chi tiết theo tầng:**
 > - [KNT_HLD_Tier1.md](KNT_HLD_Tier1.md) — External Tax Registration, External Tax Declaration Report, External Tax Enforcement Debt Decision, External Tax Enforcement Invoice Decision, External Tax Violation Handling, External Tax Information Request, External Tax High Risk Enterprise
-> - [KNT_HLD_Tier2.md](KNT_HLD_Tier2.md) — External Tax Registration Representative, External Tax Declaration Report Detail, External Tax Invoice Detail (TAX_REG_ADDRESS_TYPE, TAX_REG_BUSINESS_LINE denormalize vào shared entity / ARRAY trên External Tax Registration — không tạo entity riêng)
+> - [KNT_HLD_Tier2.md](KNT_HLD_Tier2.md) — External Tax Registration Representative, External Tax Declaration Report Detail, External Tax Invoice Detail
 >
 > **Domain Prefix:** `External Tax` (abbreviation `et`) áp dụng cho toàn bộ 10 entity nguồn KNT ở trên — quyết định Data Modeler 2026-07-19, đăng ký vào `system/rules/rule_domain_prefix_abbreviations.csv`.
 
@@ -16,7 +16,7 @@
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Involved Party | [Involved Party] Organization | Organization | TAX_REGISTRATION_INFO | Update | Thông tin đăng ký thuế do Cục Thuế cung cấp: địa chỉ, vốn điều lệ, người đại diện, trạng thái hoạt động, tạm ngừng kinh doanh | External Tax Registration | Fundamental | Organization — hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Tách IP Postal Address + IP Electronic Address. Denormalize business_line_codes ARRAY. |
+| 1 | Involved Party | [Involved Party] Organization | Organization | TAX_REGISTRATION_INFO | Update | Thông tin đăng ký thuế do Cục Thuế cung cấp: địa chỉ, vốn điều lệ, người đại diện, trạng thái hoạt động, tạm ngừng kinh doanh | External Tax Registration | Fundamental | Organization — hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Tách IP Postal Address + IP Electronic Address. |
 | 1 | Documentation | [Documentation] Declaration Document | Declaration Document | TAX_REPORT | Append | Báo cáo tài chính do Cục Thuế cung cấp cho UBCKNN: thông tin tờ khai, kỳ kê khai, MST, thông tin kiểm toán | External Tax Declaration Report | Fact Append | Declaration Document — tờ khai/báo cáo tài chính theo kỳ, mỗi lần nộp (kể cả bổ sung) là 1 bản ghi mới. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Gov. Registration Document | TAX_ENFORCEMENT_DEBT | Append | Thông tin quyết định cưỡng chế nợ thuế do Cục Thuế ban hành: phương thức cưỡng chế, số tiền, tài sản kê biên | External Tax Enforcement Debt Decision | Fact Append | Gov. Registration Document — quyết định hành chính cưỡng chế nợ thuế (kê biên tài sản/phong tỏa tài khoản). |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Gov. Registration Document | TAX_ENFORCEMENT_INVOICE | Append | Thông tin quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành: số QĐ, đối tượng bị cưỡng chế, thời gian hiệu lực | External Tax Enforcement Invoice Decision | Fact Append | Gov. Registration Document — quyết định hành chính cưỡng chế bằng biện pháp ngừng sử dụng hóa đơn. |
@@ -77,7 +77,6 @@ graph TD
 |---|---|---|---|
 | TAX_REGISTRATION_INFO.OPERATION_STATUS | Trạng thái hoạt động doanh nghiệp (TrangThaiHoatDongEnum) | Classification Value | Scheme: `KNT_OPERATION_STATUS`. FK từ External Tax Registration. |
 | TAX_REGISTRATION_INFO.SUSPENSION_TYPE | Lý do ngừng hoạt động (LyDoNgungHoatDongEnum) | Classification Value | Scheme: `KNT_SUSPENSION_TYPE`. FK từ External Tax Registration. |
-| TAX_REG_BUSINESS_LINE (BUSINESS_LINE_CODE/NAME) | Ngành nghề kinh doanh của doanh nghiệp | ~~Classification Value~~ | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không phải Classification Value. Scheme `KNT_BUSINESS_LINE` deprecated. Map 1:1 (Text) — xem 7d. |
 | TAX_REPORT.PERIOD_TYPE | Kiểu kỳ báo cáo (Năm/Bán niên/Quý/Tháng) | Classification Value | Scheme: `KNT_REPORT_PERIOD_TYPE`. FK từ External Tax Declaration Report. |
 | TAX_ENFORCEMENT_DEBT.ENFORCEMENT_METHOD_CODE/NAME, TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_CODE/NAME | Hình thức cưỡng chế | ~~Classification Value~~ | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không phải Classification Value. Scheme `KNT_ENFORCEMENT_METHOD` deprecated. Map 1:1 (Text) cho cả 2 entity. |
 | TAX_REPORT_DETAIL.SHEET_NAME | Loại sheet báo cáo tài chính (BCDKT/KQKD/LCTT...) | Classification Value | Scheme: `KNT_REPORT_SHEET`. FK từ External Tax Declaration Report Detail. |
@@ -85,15 +84,13 @@ graph TD
 | INFO_REQUEST_DETAIL.STATUS | Trạng thái phản hồi WebService (TrangThaiResponseWsEnum) | Classification Value | Scheme: `KNT_INFO_REQUEST_STATUS`. FK từ External Tax Information Request. |
 | INVOICE_DETAIL.INVOICE_TYPE | Loại hóa đơn bị cưỡng chế ngừng sử dụng | ~~Classification Value~~ | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không phải Classification Value. Scheme `KNT_INVOICE_TYPE` deprecated. Map 1:1 (Text). |
 | TAX_REG_REPRESENTATIVE.ID_DOCUMENT_TYPE | Loại giấy tờ định danh người đại diện | Classification Value (dùng chung dự án) | Tái sử dụng scheme `IP_ALT_ID_TYPE` đã có — không tạo scheme mới. |
-| TAX_REGISTRATION_INFO / TAX_REG_ADDRESS_TYPE / TAX_REG_REPRESENTATIVE (địa chỉ/điện thoại/fax/email) | Loại địa chỉ bưu chính / điện tử | Classification Value (dùng chung dự án) | Tái sử dụng scheme `IP_ADDR_TYPE` / `IP_ELEC_ADDR_TYPE` đã có — không tạo scheme mới. |
+| TAX_REGISTRATION_INFO / TAX_REG_REPRESENTATIVE (địa chỉ/điện thoại/fax/email) | Loại địa chỉ bưu chính / điện tử | Classification Value (dùng chung dự án) | Tái sử dụng scheme `IP_ADDR_TYPE` / `IP_ELEC_ADDR_TYPE` đã có — không tạo scheme mới. |
 
 ---
 
 #### 7d. Junction Tables
 
-| Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
-|---|---|---|---|
-| TAX_REG_BUSINESS_LINE | Ngành nghề kinh doanh trong hồ sơ đăng ký thuế | External Tax Registration | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không denormalize ARRAY nữa — `BUSINESS_LINE_CODE` map 1:1 (Text) thành attribute `Secondary Business Line Code` scalar trên External Tax Registration (giả định 1 dòng/TAX_CODE). |
+Không có junction table.
 
 ---
 
@@ -103,9 +100,9 @@ graph TD
 |---|---|---|---|
 | 1 | 1 | `TAX_ENFORCEMENT_INVOICE.BASIS_DECISION_NUMBER` ("Căn cứ: số quyết định gốc") có phải luôn trỏ đến `TAX_ENFORCEMENT_DEBT.DECISION_NUMBER` không? | Nếu có → cần dựng liên kết logic (business key) giữa External Tax Enforcement Debt Decision và External Tax Enforcement Invoice Decision ở LLD. Hiện để 2 entity độc lập. |
 | 2 | 1 | `TAX_REPORT` (báo cáo tài chính do Cục Thuế cung cấp) có trùng lặp nghiệp vụ với `SSC_REPORT` (báo cáo tài chính do UBCKNN tổng hợp gửi Cục Thuế/BTC — đang pending, chưa thiết kế) không? | Ảnh hưởng thiết kế khi SSC_REPORT được đánh giá ở đợt sau — có thể cần entity riêng biệt (2 chiều dữ liệu in/out) hoặc gộp. |
-| 3 | 1 | `TAX_REGISTRATION_INFO` có trường địa chỉ/liên lạc inline (HQ_ADDRESS, PHONE, FAX, BUSINESS_*) trùng lặp ý nghĩa với `TAX_REG_ADDRESS_TYPE` (chi tiết theo loại). Nguồn nào authoritative cho IP Postal/Electronic Address? | Tạm nạp cả 2 nguồn (2 Address Type Code khác nhau) — cần Data Modeler xác nhận có dư thừa dữ liệu hay không trước khi LLD. |
+| 3 | 1 | **[GỠ 2026-10-21]** `TAX_REG_ADDRESS_TYPE` không có LLD trong dự án — HLD gỡ, bảng đưa vào 7f nhóm `Chưa có LLD`. | Không còn ảnh hưởng. |
 | 4 | 2 | **[ĐÃ GIẢI QUYẾT]** `INVOICE_DETAIL` đã thiết kế thành "External Tax Invoice Detail" (Tier 2, FK External Tax Enforcement Invoice Decision). | Không còn ảnh hưởng. |
-| 5 | 2 | **[MỘT PHẦN GIẢI QUYẾT 2026-07-20]** `TAX_REG_REPRESENTATIVE.POSITION` là free text hay có danh mục cố định? `TAX_REG_ADDRESS_TYPE`/`TAX_REG_BUSINESS_LINE` không có PK — grain (TAX_CODE, TYPE)/(TAX_CODE, BUSINESS_LINE_CODE) có đảm bảo unique không? | Xác nhận là free text — đã map 1:1 (Text), scheme `KNT_REPRESENTATIVE_POSITION` deprecated. Grain unique của `TAX_REG_BUSINESS_LINE` (TAX_CODE, BUSINESS_LINE_CODE) chưa profile chính thức — LLD tạm giả định 1 dòng/TAX_CODE khi map `Secondary Business Line Code` scalar (xem 7d). |
+| 5 | 2 | **[GIẢI QUYẾT 2026-07-20]** `TAX_REG_REPRESENTATIVE.POSITION` là free text hay có danh mục cố định? | Xác nhận là free text — đã map 1:1 (Text), scheme `KNT_REPRESENTATIVE_POSITION` deprecated. |
 | 6 | 1 | `HIGH_RISK_ENTERPRISE.ENTERPRISE_CODE` ("Mã số doanh nghiệp đăng ký kinh doanh") có cùng giá trị với `TAX_REGISTRATION_INFO.TAX_CODE` không? | Nếu có → dựng liên kết logic (business key) giữa `External Tax High Risk Enterprise` và `External Tax Registration` ở LLD. Hiện thiết kế 2 entity độc lập, không liên kết. |
 | 7 | 1 | **[ĐÃ GIẢI QUYẾT 2026-07-19]** `HIGH_RISK_ENTERPRISE` không có `ingestion.data_change_mode` khai báo trong `brd_KNT.yaml`. `MANAGING_TAX_AUTHORITY` là free text hay trùng danh mục `CAT_ORG_UNIT` (KNT-REF, đang pending)? | Đã bổ sung `ingestion.data_change_mode: Append` vào `brd_KNT.yaml`; BCO đổi sang Business Activity ([Business Activity] Involved Party Rating Activity), Table Type đổi sang Fact Append. `MANAGING_TAX_AUTHORITY` vẫn cần profile trước LLD. |
 | 8 | 2 | **[GHI NHẬN 2026-07-19]** `External Tax Invoice Detail` (đổi tên từ "Tax Enforcement Invoice Decision Item") không còn chứa đầy đủ tên entity cha `External Tax Enforcement Invoice Decision` — vi phạm rule #8 đặt tên entity con. | Giữ nguyên theo quyết định tường minh Data Modeler (đổi tên hàng loạt 10 entity nguồn KNT sang prefix "External Tax", 2026-07-19) — ghi nhận là ngoại lệ có chủ đích, không tự động sửa lại tên. |
@@ -116,7 +113,8 @@ graph TD
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
-| Shared Entity | TAX_REG_ADDRESS_TYPE | Loại địa chỉ trong thông tin đăng ký thuế của doanh nghiệp (trụ sở/chi nhánh/địa điểm kinh doanh) | Không thiết kế Atomic entity riêng — ADDRESS/WARD/DISTRICT/PROVINCE/COUNTRY denormalize vào IP Postal Address, EMAIL/PHONE/FAX/WEBSITE denormalize vào IP Electronic Address, gắn với External Tax Registration (cha). |
+| Chưa có LLD | TAX_REG_ADDRESS_TYPE | Loại địa chỉ trong thông tin đăng ký thuế của doanh nghiệp (trụ sở/chi nhánh/địa điểm kinh doanh) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | TAX_REG_BUSINESS_LINE | Ngành nghề kinh doanh trong hồ sơ đăng ký thuế | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Operational / System | MSG_PACKET | Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính (nội dung XML, trạng thái gửi/nhận) | Operational/system data — bảng quản lý lifecycle gói tin truyền nhận, không có giá trị nghiệp vụ. Là FK reference chung của toàn bộ entity Tier 1. |
 
 ---
@@ -161,7 +159,7 @@ graph TD
 ### 6. External Tax Registration
 **Tier:** 1 | **Source:** `TAX_REGISTRATION_INFO` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
 **Domain Prefix:** External Tax
-**Description:** Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK do Cục Thuế cung cấp: địa chỉ, vốn điều lệ, người đại diện, trạng thái hoạt động, tạm ngừng kinh doanh. Tách IP Postal Address + IP Electronic Address; denormalize business_line_codes ARRAY.
+**Description:** Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK do Cục Thuế cung cấp: địa chỉ, vốn điều lệ, người đại diện, trạng thái hoạt động, tạm ngừng kinh doanh. Tách IP Postal Address + IP Electronic Address.
 
 
 ### 7. External Tax Violation Handling

@@ -61,12 +61,12 @@ attributes:
     source_table: INVES
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: FMS_INVES
 
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning: "Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu, 4=Mã số DN."
+    business_meaning: Loại giấy tờ định danh.
     data_domain: Classification Value
     data_type: string
     nullable: false
@@ -74,13 +74,13 @@ attributes:
     source_system: FMS
     source_table: INVES
     source_column: FMS.INVES.ID_TYPE
-    comment: "Scheme: IP_ALT_ID_TYPE. (source) — type lấy động từ nguồn. ETL map: 1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT;4=ENTERPRISE_CODE."
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
+    comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — type lấy động từ nguồn."
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning: Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp.
+    business_meaning: Số CMND/CCCD/Hộ chiếu.
     data_domain: Text
     data_type: string
     nullable: true
@@ -89,7 +89,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -103,7 +103,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null
 
   - name: Identification Issue Place
@@ -117,5 +117,5 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID_PLACE
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
     etl_derived_value: null

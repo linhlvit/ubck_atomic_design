@@ -9,7 +9,7 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Event | [Event] Event | Circumstance | PENALTY_DECISION_CIRCUMSTANCE | Update | Tình tiết tăng nặng/giảm nhẹ áp dụng cho từng hành vi vi phạm trong quyết định: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT — entity nhỏ nhưng cần thiết cho tính toán mức phạt | Penalty Decision Subject Behavior Circumstance | Fundamental | (1) Conduct Violation — BCV: entity này mô tả tình tiết cụ thể của hành vi vi phạm. (2) Bảng có FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT(CLOB) — ghi nhận từng tình tiết tăng nặng hoặc giảm nhẹ ảnh hưởng đến mức phạt. (3) Conduct Violation đồng concept với chuỗi parent entities. Relative của TT Penalty Decision Subject Behavior → tên phải chứa "TT Penalty Decision Subject Behavior" ✓: "TT Penalty Decision Subject Behavior Circumstance". |
+| Event | [Event] Event | Circumstance | PENALTY_DECISION_CIRCUMSTANCE | Update | Tình tiết tăng nặng/giảm nhẹ áp dụng cho từng hành vi vi phạm trong quyết định: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT — entity nhỏ nhưng cần thiết cho tính toán mức phạt | Penalty Decision Circumstance | Fundamental | (1) Conduct Violation — BCV: entity này mô tả tình tiết cụ thể của hành vi vi phạm. (2) Bảng có FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT(CLOB) — ghi nhận từng tình tiết tăng nặng hoặc giảm nhẹ ảnh hưởng đến mức phạt. (3) Conduct Violation đồng concept với chuỗi parent entities. Tên entity theo LLD: "Penalty Decision Circumstance" (prefix "Penalty Decision" của nhóm). |
 
 ---
 
@@ -41,13 +41,13 @@ erDiagram
         bigint ds_penalty_decision_subject_behavior_id PK
     }
 
-    Penalty_Decision_Subject_Behavior_Circumstance {
-        bigint ds_penalty_decision_subject_behavior_circumstance_id PK
+    Penalty_Decision_Circumstance {
+        bigint ds_penalty_decision_circumstance_id PK
         bigint ds_penalty_decision_subject_behavior_id FK
         varchar circumstance_type_code
     }
 
-    Penalty_Decision_Subject_Behavior ||--o{ Penalty_Decision_Subject_Behavior_Circumstance : ""
+    Penalty_Decision_Subject_Behavior ||--o{ Penalty_Decision_Circumstance : ""
 ```
 
 ---

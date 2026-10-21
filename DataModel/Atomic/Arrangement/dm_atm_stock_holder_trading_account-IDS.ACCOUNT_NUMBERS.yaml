@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-stock_holder_trading_account-IDS.ACCOUNT_NUMBERS
+  logical_name: Stock Holder Trading Account
+  physical_name: stock_holder_trading_account
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Account"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Tài khoản giao dịch chứng khoán của cổ đông mở tại công ty chứng khoán: số tài khoản, mã CTCK, cờ tài khoản chính.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-ACCOUNT_NUMBERS
+
+attributes:
+  - name: Stock Holder Trading Account Id
+    physical_name: stock_holder_trading_account_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Account\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Stock Holder Trading Account Code
+    physical_name: stock_holder_trading_account_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: IDS.ACCOUNT_NUMBERS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_ACCOUNT_NUMBERS'"
+    etl_derived_value: IDS_ACCOUNT_NUMBERS
+
+  - name: Legal Entity Id
+    physical_name: legal_entity_id
+    business_meaning: "ID cổ đông liên quan - ref LEGAL_ENTITIES."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: IDS.ACCOUNT_NUMBERS.LEGAL_ENTITY_ID
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Entity Code
+    physical_name: legal_entity_code
+    business_meaning: Mã cổ đông liên quan (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: IDS.ACCOUNT_NUMBERS.LEGAL_ENTITY_ID
+    comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Trading Account Number
+    physical_name: trading_account_nbr
+    business_meaning: Số tài khoản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: IDS.ACCOUNT_NUMBERS.TRADING_ACCOUNT_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã CTy chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: IDS.ACCOUNT_NUMBERS.SEC_COMPANY_CD
+    comment: "Denormalized — chưa xác nhận cross-source FK đến Securities Company entity (SCMS), giữ Text cho đến khi Data Modeler xác nhận."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Account Open Date
+    physical_name: account_open_dt
+    business_meaning: Ngày mở.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: IDS.ACCOUNT_NUMBERS.ACCOUNT_OPEN_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Primary Account Indicator
+    physical_name: primary_account_ind
+    business_meaning: "Đánh dấu tài khoản chính (1-key, 0-không key)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: ACCOUNT_NUMBERS
+    source_column: IDS.ACCOUNT_NUMBERS.PRIMARY_ACCOUNT_FLG
+    comment: Giá trị 1 → true (tài khoản chính); 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null

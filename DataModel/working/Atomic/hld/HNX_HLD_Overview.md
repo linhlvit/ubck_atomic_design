@@ -22,7 +22,7 @@
 | T1 | Share Auction Result | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.share_auction, HOSE.share_auction | Dùng chung HNX + HOSE |
 
 **Tổng: 11 Atomic entities** (11 Tier 1)
-*(Trong đó: 1 bảng nguồn extend entity của source khác — `HNX.listed_securities_list` → `Listed Share Information` (VSDC) — không tạo mới)*
+*(Trong đó: 1 bảng nguồn extend entity của source khác — `HNX.listed_securities_list` → entity `Listed Share Information` (định nghĩa ở VSDC) — không tạo mới)*
 
 ---
 
@@ -69,7 +69,7 @@ graph TD
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | brokerage_market_share | Append | Thị phần môi giới theo quý | Brokerage Market Share | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | gov_bond_offering | Append | Kết quả đấu thầu trái phiếu Chính phủ | Gov Bond Bidding Result | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | gov_bond_listed_list | Append | Danh sách trái phiếu Chính phủ niêm yết | Gov Bond Listing | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
-| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | listed_securities_list | Append | Danh sách chứng khoán niêm yết HNX (số lượng niêm yết, giá tham chiếu) | Listed Share Information (định nghĩa ở VSDC) | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | listed_securities_list | Append | Danh sách chứng khoán niêm yết HNX (số lượng niêm yết, giá tham chiếu) — entity `Listed Share Information` định nghĩa ở VSDC | Listed Share Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | listing_status_change | Append | Quyết định thay đổi niêm yết | Listing Status Change | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | private_corp_bond_offering | Append | Chào bán trái phiếu doanh nghiệp riêng lẻ | Private Corp Bond Offering | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | private_corp_bond_registration | Append | Đăng ký giao dịch trái phiếu doanh nghiệp riêng lẻ | Private Corp Bond Registration | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
@@ -123,9 +123,7 @@ erDiagram
 
 #### 7d. Junction Tables
 
-| Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
-|---|---|---|---|
-| *(Không có junction table trong scope HNX)* | — | — | — |
+Không có junction table.
 
 #### 7e. Điểm cần xác nhận
 

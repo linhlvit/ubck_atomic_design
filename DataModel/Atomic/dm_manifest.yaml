@@ -2,6 +2,19 @@ schema_type: dm_manifest
 schema_version: "1.0"
 entries:
 - subfolder: Arrangement
+  file_name: dm_atm_closed_investor_account-VSDC.CLOSED_INVESTORS.yaml
+  id: ATM-closed_investor_account-VSDC.CLOSED_INVESTORS
+  physical_name: closed_investor_account
+  logical_name: Closed Investor Account
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Trading Account Arrangement"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  status: draft
+  attribute_count: 15
+  brd_ref: BRD-SRC-VSDC-CLOSED_INVESTORS
+- subfolder: Arrangement
   file_name: dm_atm_discretionary_investment_account-FMS.INVES_ACC.yaml
   id: ATM-discretionary_investment_account-FMS.INVES_ACC
   physical_name: discretionary_investment_account
@@ -14,6 +27,19 @@ entries:
   status: approved
   attribute_count: 13
   brd_ref: BRD-SRC-FMS-INVES_ACC
+- subfolder: Arrangement
+  file_name: dm_atm_open_investor_account-VSDC.OPEN_INVESTORS.yaml
+  id: ATM-open_investor_account-VSDC.OPEN_INVESTORS
+  physical_name: open_investor_account
+  logical_name: Open Investor Account
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Trading Account Arrangement"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-VSDC-OPEN_INVESTORS
 - subfolder: Arrangement
   file_name: dm_atm_pc_share_statistics-IDS.COMPANY_SHARE_STATISTICS.yaml
   id: ATM-pc_share_statistics-IDS.COMPANY_SHARE_STATISTICS
@@ -38,7 +64,7 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 37
+  attribute_count: 36
   brd_ref: BRD-SRC-IDS-COMPANY_SHAREHOLDING
 - subfolder: Arrangement
   file_name: dm_atm_pc_state_capital-IDS.STATE_CAPITAL.yaml
@@ -51,8 +77,138 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 12
+  attribute_count: 11
   brd_ref: BRD-SRC-IDS-STATE_CAPITAL
+- subfolder: Arrangement
+  file_name: dm_atm_stock_control-IDS.STOCK_CONTROLS.yaml
+  id: ATM-stock_control-IDS.STOCK_CONTROLS
+  physical_name: stock_control
+  logical_name: Stock Control
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 9
+  brd_ref: BRD-SRC-IDS-STOCK_CONTROLS
+- subfolder: Arrangement
+  file_name: dm_atm_stock_holder_trading_account-IDS.ACCOUNT_NUMBERS.yaml
+  id: ATM-stock_holder_trading_account-IDS.ACCOUNT_NUMBERS
+  physical_name: stock_holder_trading_account
+  logical_name: Stock Holder Trading Account
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Account"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 9
+  brd_ref: BRD-SRC-IDS-ACCOUNT_NUMBERS
+- subfolder: Arrangement
+  file_name: dm_atm_updated_investor_account-VSDC.UPDATED_INVESTORS.yaml
+  id: ATM-updated_investor_account-VSDC.UPDATED_INVESTORS
+  physical_name: updated_investor_account
+  logical_name: Updated Investor Account
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Trading Account Arrangement"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  status: draft
+  attribute_count: 15
+  brd_ref: BRD-SRC-VSDC-UPDATED_INVESTORS
+- subfolder: Business_Activity
+  file_name: dm_atm_af_auditor_status_history-AUDIT.AF_AUDITOR_STATUS_HISTORY.yaml
+  id: ATM-af_auditor_status_history-AUDIT.AF_AUDITOR_STATUS_HISTORY
+  physical_name: af_auditor_status_history
+  logical_name: Audit Firm Auditor Status History
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Status History"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  status: draft
+  attribute_count: 9
+  brd_ref: BRD-SRC-AUDIT-AF_AUDITOR_STATUS_HISTORY
+- subfolder: Business_Activity
+  file_name: dm_atm_af_inspection-AUDIT.AF_INSPECTION.yaml
+  id: ATM-af_inspection-AUDIT.AF_INSPECTION
+  physical_name: af_inspection
+  logical_name: Audit Firm Inspection
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Inspection"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  status: draft
+  attribute_count: 20
+  brd_ref: BRD-SRC-AUDIT-AF_INSPECTION
+- subfolder: Business_Activity
+  file_name: dm_atm_af_sanction-AUDIT.AF_SANCTIONS.yaml
+  id: ATM-af_sanction-AUDIT.AF_SANCTIONS
+  physical_name: af_sanction
+  logical_name: Audit Firm Sanction
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Enforcement Action"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-AUDIT-AF_SANCTIONS
+- subfolder: Business_Activity
+  file_name: dm_atm_af_status_history-AUDIT.AF_STATUS_HISTORY.yaml
+  id: ATM-af_status_history-AUDIT.AF_STATUS_HISTORY
+  physical_name: af_status_history
+  logical_name: Audit Firm Status History
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Status History"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-AUDIT-AF_STATUS_HISTORY
+- subfolder: Business_Activity
+  file_name: dm_atm_af_suspension-AUDIT.AF_SUSPENSION.yaml
+  id: ATM-af_suspension-AUDIT.AF_SUSPENSION
+  physical_name: af_suspension
+  logical_name: Audit Firm Suspension
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Enforcement Action"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-AUDIT-AF_SUSPENSION
+- subfolder: Business_Activity
+  file_name: dm_atm_af_technical_audit-AUDIT.AF_TECHNICAL_AUDIT.yaml
+  id: ATM-af_technical_audit-AUDIT.AF_TECHNICAL_AUDIT
+  physical_name: af_technical_audit
+  logical_name: Audit Firm Technical Audit
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Inspection"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  status: draft
+  attribute_count: 35
+  brd_ref: BRD-SRC-AUDIT-AF_TECHNICAL_AUDIT
+- subfolder: Business_Activity
+  file_name: dm_atm_af_warning-AUDIT.AF_WARNING.yaml
+  id: ATM-af_warning-AUDIT.AF_WARNING
+  physical_name: af_warning
+  logical_name: Audit Firm Warning
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Warning Notice"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-AUDIT-AF_WARNING
 - subfolder: Business_Activity
   file_name: dm_atm_et_high_risk_enterprise-KNT.HIGH_RISK_ENTERPRISE.yaml
   id: ATM-et_high_risk_enterprise-KNT.HIGH_RISK_ENTERPRISE
@@ -67,6 +223,45 @@ entries:
   attribute_count: 8
   brd_ref: BRD-SRC-KNT-HIGH_RISK_ENTERPRISE
 - subfolder: Business_Activity
+  file_name: dm_atm_examination_annual_plan_target-THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET.yaml
+  id: ATM-examination_annual_plan_target-THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET
+  physical_name: examination_annual_plan_target
+  logical_name: Examination Annual Plan Target
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 15
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_ANNUAL_PLAN_TARGET
+- subfolder: Business_Activity
+  file_name: dm_atm_examination_team-THANHTRA.EXAMINATION_TEAM.yaml
+  id: ATM-examination_team-THANHTRA.EXAMINATION_TEAM
+  physical_name: examination_team
+  logical_name: Examination Team
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 21
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM
+- subfolder: Business_Activity
+  file_name: dm_atm_examination_team_member-THANHTRA.EXAMINATION_TEAM_MEMBER.yaml
+  id: ATM-examination_team_member-THANHTRA.EXAMINATION_TEAM_MEMBER
+  physical_name: examination_team_member
+  logical_name: Examination Team Member
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 12
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM_MEMBER
+- subfolder: Business_Activity
   file_name: dm_atm_examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET.yaml
   id: ATM-examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET
   physical_name: examination_team_target
@@ -77,7 +272,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 15
+  attribute_count: 17
   brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
 - subfolder: Business_Activity
   file_name: dm_atm_inspection_annual_plan_target-THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.yaml
@@ -90,7 +285,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 12
+  attribute_count: 14
   brd_ref: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN_TARGET
 - subfolder: Business_Activity
   file_name: dm_atm_inspection_post_processing-THANHTRA.POST_INSPECTION_PROCESSING.yaml
@@ -103,7 +298,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 15
+  attribute_count: 13
   brd_ref: BRD-SRC-THANHTRA-POST_INSPECTION_PROCESSING
 - subfolder: Business_Activity
   file_name: dm_atm_inspection_team-THANHTRA.INSPECTION_TEAM.yaml
@@ -119,6 +314,19 @@ entries:
   attribute_count: 21
   brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM
 - subfolder: Business_Activity
+  file_name: dm_atm_inspection_team_member-THANHTRA.INSPECTION_TEAM_MEMBER.yaml
+  id: ATM-inspection_team_member-THANHTRA.INSPECTION_TEAM_MEMBER
+  physical_name: inspection_team_member
+  logical_name: Inspection Team Member
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM_MEMBER
+- subfolder: Business_Activity
   file_name: dm_atm_inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET.yaml
   id: ATM-inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET
   physical_name: inspection_team_target
@@ -129,7 +337,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 14
+  attribute_count: 16
   brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM_TARGET
 - subfolder: Business_Activity
   file_name: dm_atm_member_rating-FMS.RANK.yaml
@@ -145,6 +353,19 @@ entries:
   attribute_count: 10
   brd_ref: BRD-SRC-FMS-RANK
 - subfolder: Business_Activity
+  file_name: dm_atm_member_rating_period-FMS.RATING_PD.yaml
+  id: ATM-member_rating_period-FMS.RATING_PD
+  physical_name: member_rating_period
+  logical_name: Member Rating Period
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Assessment Period"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  status: approved
+  attribute_count: 6
+  brd_ref: BRD-SRC-FMS-RATING_PD
+- subfolder: Business_Activity
   file_name: dm_atm_pc_bond_evaluation-IDS.EVALUATION_CBONDS.yaml
   id: ATM-pc_bond_evaluation-IDS.EVALUATION_CBONDS
   physical_name: pc_bond_evaluation
@@ -157,6 +378,45 @@ entries:
   status: draft
   attribute_count: 13
   brd_ref: BRD-SRC-IDS-EVALUATION_CBONDS
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_bond_listing_history-IDS.BOND_LISTING_HISTORY.yaml
+  id: ATM-pc_bond_listing_history-IDS.BOND_LISTING_HISTORY
+  physical_name: pc_bond_listing_history
+  logical_name: Public Company Bond Listing History
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  status: draft
+  attribute_count: 4
+  brd_ref: BRD-SRC-IDS-BOND_LISTING_HISTORY
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_capital_increase-IDS.COMPANY_ADD_CAPITAL.yaml
+  id: ATM-pc_capital_increase-IDS.COMPANY_ADD_CAPITAL
+  physical_name: pc_capital_increase
+  logical_name: Public Company Capital Increase
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-IDS-COMPANY_ADD_CAPITAL
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_capital_mobilization-IDS.CAPITAL_MOBILIZATION.yaml
+  id: ATM-pc_capital_mobilization-IDS.CAPITAL_MOBILIZATION
+  physical_name: pc_capital_mobilization
+  logical_name: Public Company Capital Mobilization
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 11
+  brd_ref: BRD-SRC-IDS-CAPITAL_MOBILIZATION
 - subfolder: Business_Activity
   file_name: dm_atm_pc_evaluation-IDS.EVALUATIONS.yaml
   id: ATM-pc_evaluation-IDS.EVALUATIONS
@@ -184,6 +444,32 @@ entries:
   attribute_count: 10
   brd_ref: BRD-SRC-IDS-EVALUATION_DETAILS
 - subfolder: Business_Activity
+  file_name: dm_atm_pc_inspection-IDS.COMPANY_INSPECTION.yaml
+  id: ATM-pc_inspection-IDS.COMPANY_INSPECTION
+  physical_name: pc_inspection
+  logical_name: Public Company Inspection
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Inspection"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-IDS-COMPANY_INSPECTION
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_penalty-IDS.COMPANY_PENALTIES.yaml
+  id: ATM-pc_penalty-IDS.COMPANY_PENALTIES
+  physical_name: pc_penalty
+  logical_name: Public Company Penalty
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Enforcement Action"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  status: draft
+  attribute_count: 18
+  brd_ref: BRD-SRC-IDS-COMPANY_PENALTIES
+- subfolder: Business_Activity
   file_name: dm_atm_pc_securities_offering-IDS.SECURITIES_OFFERING.yaml
   id: ATM-pc_securities_offering-IDS.SECURITIES_OFFERING
   physical_name: pc_securities_offering
@@ -194,7 +480,7 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 42
+  attribute_count: 39
   brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING
 - subfolder: Business_Activity
   file_name: dm_atm_pc_securities_offering_plan-IDS.SECURITIES_OFFERING_PLAN.yaml
@@ -207,7 +493,7 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 58
+  attribute_count: 57
   brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING_PLAN
 - subfolder: Business_Activity
   file_name: dm_atm_pc_securities_offering_result-IDS.SECURITIES_OFFERING_RESULT.yaml
@@ -220,8 +506,47 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 69
+  attribute_count: 67
   brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING_RESULT
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_stock_listing_history-IDS.STOCK_LISTING_HISTORY.yaml
+  id: ATM-pc_stock_listing_history-IDS.STOCK_LISTING_HISTORY
+  physical_name: pc_stock_listing_history
+  logical_name: Public Company Stock Listing History
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  status: draft
+  attribute_count: 16
+  brd_ref: BRD-SRC-IDS-STOCK_LISTING_HISTORY
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_tender_offer-IDS.COMPANY_TENDER_OFFER.yaml
+  id: ATM-pc_tender_offer-IDS.COMPANY_TENDER_OFFER
+  physical_name: pc_tender_offer
+  logical_name: Public Company Tender Offer
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 41
+  brd_ref: BRD-SRC-IDS-COMPANY_TENDER_OFFER
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_tender_offer_result-IDS.COMPANY_TENDER_OFFER_RESULT.yaml
+  id: ATM-pc_tender_offer_result-IDS.COMPANY_TENDER_OFFER_RESULT
+  physical_name: pc_tender_offer_result
+  logical_name: Public Company Tender Offer Result
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 29
+  brd_ref: BRD-SRC-IDS-COMPANY_TENDER_OFFER_RESULT
 - subfolder: Business_Activity
   file_name: dm_atm_pc_treasury_share_transaction-IDS.COMPANY_TREASURY_SHARES.yaml
   id: ATM-pc_treasury_share_transaction-IDS.COMPANY_TREASURY_SHARES
@@ -233,7 +558,7 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 44
+  attribute_count: 43
   brd_ref: BRD-SRC-IDS-COMPANY_TREASURY_SHARES
 - subfolder: Business_Activity
   file_name: dm_atm_pc_treasury_share_transaction_result-IDS.TREASURY_SHARE_TRANS_RESULT.yaml
@@ -246,20 +571,33 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 30
+  attribute_count: 25
   brd_ref: BRD-SRC-IDS-TREASURY_SHARE_TRANS_RESULT
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_treasury_stock_activity-IDS.COMPANY_TREASURY_STOCKS.yaml
+  id: ATM-pc_treasury_stock_activity-IDS.COMPANY_TREASURY_STOCKS
+  physical_name: pc_treasury_stock_activity
+  logical_name: Public Company Treasury Stock Activity
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-IDS-COMPANY_TREASURY_STOCKS
 - subfolder: Business_Activity
   file_name: dm_atm_sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT.yaml
   id: ATM-sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT
   physical_name: sc_adhoc_report
   logical_name: Securities Company Adhoc Report
   bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Transaction"
+  bcv_concept: "[Event] Transaction"
   table_type: Relative
   etl_pattern: SCD2
   source: SCMS
   status: draft
-  attribute_count: 40
+  attribute_count: 41
   brd_ref: BRD-SRC-SCMS-SC_FIRM_ADHOC_REPORT
 - subfolder: Business_Activity
   file_name: dm_atm_sc_bank_periodic-SCMS.BANK_PERIODIC_REPORT.yaml
@@ -267,7 +605,7 @@ entries:
   physical_name: sc_bank_periodic
   logical_name: Securities Company Bank Periodic
   bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Transaction"
+  bcv_concept: "[Event] Transaction"
   table_type: Relative
   etl_pattern: SCD2
   source: SCMS
@@ -306,9 +644,9 @@ entries:
   physical_name: sc_periodic_report
   logical_name: Securities Company Periodic Report
   bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Transaction"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  bcv_concept: "[Event] Transaction"
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
   attribute_count: 25
@@ -405,17 +743,56 @@ entries:
   attribute_count: 14
   brd_ref: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR
 - subfolder: Business_Activity
-  file_name: dm_atm_violation_record_behavior-THANHTRA.VIOLATION_RECORD_BEHAVIOR.yaml
-  id: ATM-violation_record_behavior-THANHTRA.VIOLATION_RECORD_BEHAVIOR
-  physical_name: violation_record_behavior
-  logical_name: Violation Record Behavior
+  file_name: dm_atm_violation_behavior_x_penalty_type_relationship-THANHTRA.PENALTY_TYPE_VIOLATION_BEHAVIOR.yaml
+  id: ATM-violation_behavior_x_penalty_type_relationship-THANHTRA.PENALTY_TYPE_VIOLATION_BEHAVIOR
+  physical_name: violation_behavior_x_penalty_type_relationship
+  logical_name: Violation Behavior X Penalty Type Relationship
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: THANHTRA
+  status: draft
+  attribute_count: 5
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_TYPE_VIOLATION_BEHAVIOR
+- subfolder: Business_Activity
+  file_name: dm_atm_violation_case-THANHTRA.VIOLATION_CASE.yaml
+  id: ATM-violation_case-THANHTRA.VIOLATION_CASE
+  physical_name: violation_case
+  logical_name: Violation Case
   bcv_core_object: Business Activity
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: Fundamental
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 9
+  attribute_count: 13
+  brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE
+- subfolder: Business_Activity
+  file_name: dm_atm_violation_record-THANHTRA.VIOLATION_RECORD.yaml
+  id: ATM-violation_record-THANHTRA.VIOLATION_RECORD
+  physical_name: violation_record
+  logical_name: Violation Record
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 34
+  brd_ref: BRD-SRC-THANHTRA-VIOLATION_RECORD
+- subfolder: Business_Activity
+  file_name: dm_atm_violation_record_x_violation_behavior_relationship-THANHTRA.VIOLATION_RECORD_BEHAVIOR.yaml
+  id: ATM-violation_record_x_violation_behavior_relationship-THANHTRA.VIOLATION_RECORD_BEHAVIOR
+  physical_name: violation_record_x_violation_behavior_relationship
+  logical_name: Violation Record X Violation Behavior Relationship
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: THANHTRA
+  status: draft
+  attribute_count: 5
   brd_ref: BRD-SRC-THANHTRA-VIOLATION_RECORD_BEHAVIOR
 - subfolder: Business_Activity
   file_name: dm_atm_violation_report-IDS.VIOLATION_REPORT.yaml
@@ -430,6 +807,19 @@ entries:
   status: draft
   attribute_count: 19
   brd_ref: BRD-SRC-IDS-VIOLATION_REPORT
+- subfolder: Business_Direction
+  file_name: dm_atm_cl_thanhtra_penalty_type-THANHTRA.PENALTY_TYPE.yaml
+  id: ATM-cl_thanhtra_penalty_type-THANHTRA.PENALTY_TYPE
+  physical_name: cl_thanhtra_penalty_type
+  logical_name: Classification THANHTRA Penalty Type
+  bcv_core_object: Business Direction
+  bcv_concept: "[Business Direction] Law"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: THANHTRA
+  status: draft
+  attribute_count: 8
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_TYPE
 - subfolder: Business_Direction
   file_name: dm_atm_examination_annual_plan-THANHTRA.EXAMINATION_ANNUAL_PLAN.yaml
   id: ATM-examination_annual_plan-THANHTRA.EXAMINATION_ANNUAL_PLAN
@@ -454,7 +844,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 9
+  attribute_count: 8
   brd_ref: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN
 - subfolder: Business_Direction
   file_name: dm_atm_legal_document-THANHTRA.LEGAL_DOCUMENT.yaml
@@ -469,45 +859,6 @@ entries:
   status: draft
   attribute_count: 7
   brd_ref: BRD-SRC-THANHTRA-LEGAL_DOCUMENT
-- subfolder: Business_Direction
-  file_name: dm_atm_penalty_type-THANHTRA.PENALTY_TYPE.yaml
-  id: ATM-penalty_type-THANHTRA.PENALTY_TYPE
-  physical_name: penalty_type
-  logical_name: Penalty Type
-  bcv_core_object: Business Direction
-  bcv_concept: "[Business Direction] Law"
-  table_type: Classification
-  etl_pattern: Upsert
-  source: THANHTRA
-  status: draft
-  attribute_count: 9
-  brd_ref: BRD-SRC-THANHTRA-PENALTY_TYPE
-- subfolder: Common
-  file_name: dm_atm_cl_business_line-ECAT.BUSINESS_LINE_LEVEL_1.yaml
-  id: ATM-cl_business_line-ECAT.BUSINESS_LINE_LEVEL_1
-  physical_name: cl_business_line
-  logical_name: Classification Business Line
-  bcv_core_object: Common
-  bcv_concept: "[Common] Industry Classification"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: ECAT
-  status: draft
-  attribute_count: 16
-  brd_ref: BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_1
-- subfolder: Common
-  file_name: dm_atm_cl_business_line-ECAT.BUSINESS_LINE_LEVEL_2.yaml
-  id: ATM-cl_business_line-ECAT.BUSINESS_LINE_LEVEL_2
-  physical_name: cl_business_line
-  logical_name: Classification Business Line
-  bcv_core_object: Common
-  bcv_concept: "[Common] Industry Classification"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: ECAT
-  status: draft
-  attribute_count: 16
-  brd_ref: BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_2
 - subfolder: Common
   file_name: dm_atm_cl_fims_company_type-FIMS.COMPANYTYPE.yaml
   id: ATM-cl_fims_company_type-FIMS.COMPANYTYPE
@@ -547,19 +898,6 @@ entries:
   status: draft
   attribute_count: 7
   brd_ref: BRD-SRC-FIMS-STATUS
-- subfolder: Common
-  file_name: dm_atm_cl_firm_status-SCMS.CAT_SC_FIRM_STATUS.yaml
-  id: ATM-cl_firm_status-SCMS.CAT_SC_FIRM_STATUS
-  physical_name: cl_firm_status
-  logical_name: Classification Firm Status
-  bcv_core_object: Common
-  bcv_concept: "[Common] Firm Status"
-  table_type: Classification
-  etl_pattern: Upsert
-  source: SCMS
-  status: draft
-  attribute_count: 14
-  brd_ref: BRD-SRC-SCMS-CAT_SC_FIRM_STATUS
 - subfolder: Common
   file_name: dm_atm_cl_fms_agency_type-FMS.AGENCY_TYPE.yaml
   id: ATM-cl_fms_agency_type-FMS.AGENCY_TYPE
@@ -636,7 +974,7 @@ entries:
   etl_pattern: SCD2
   source: FMS
   status: approved
-  attribute_count: 4
+  attribute_count: 5
   brd_ref: BRD-SRC-FMS-JOB_TYPE
 - subfolder: Common
   file_name: dm_atm_cl_fms_job-FMS.JOBS.yaml
@@ -649,7 +987,7 @@ entries:
   etl_pattern: SCD2
   source: FMS
   status: approved
-  attribute_count: 6
+  attribute_count: 7
   brd_ref: BRD-SRC-FMS-JOBS
 - subfolder: Common
   file_name: dm_atm_cl_fms_status-FMS.STATUS.yaml
@@ -697,8 +1035,8 @@ entries:
   logical_name: Classification Risk Indicator
   bcv_core_object: Common
   bcv_concept: "[Common] Classification"
-  table_type: Classification
-  etl_pattern: Upsert
+  table_type: Relative
+  etl_pattern: SCD2
   source: MRMS
   status: draft
   attribute_count: 10
@@ -898,6 +1236,19 @@ entries:
   status: draft
   attribute_count: 7
   brd_ref: BRD-SRC-TTHC-CLASSIFICATION_VALUE
+- subfolder: Common
+  file_name: dm_atm_cl_vsdc_nationality-VSDC.NATIONALITY.yaml
+  id: ATM-cl_vsdc_nationality-VSDC.NATIONALITY
+  physical_name: cl_vsdc_nationality
+  logical_name: Classification VSDC Nationality
+  bcv_core_object: Common
+  bcv_concept: "[Common] Nationality"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: VSDC
+  status: draft
+  attribute_count: 4
+  brd_ref: BRD-SRC-VSDC-NATIONALITY
 - subfolder: Communication
   file_name: dm_atm_et_information_request-KNT.INFO_REQUEST_DETAIL.yaml
   id: ATM-et_information_request-KNT.INFO_REQUEST_DETAIL
@@ -911,6 +1262,19 @@ entries:
   status: draft
   attribute_count: 9
   brd_ref: BRD-SRC-KNT-INFO_REQUEST_DETAIL
+- subfolder: Communication
+  file_name: dm_atm_petition-THANHTRA.PETITION.yaml
+  id: ATM-petition-THANHTRA.PETITION
+  physical_name: petition
+  logical_name: Petition
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Feedback"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 23
+  brd_ref: BRD-SRC-THANHTRA-PETITION
 - subfolder: Communication
   file_name: dm_atm_sp_license_application_result_notification-NHNCK.MCDT_RESULT_OUTBOX.yaml
   id: ATM-sp_license_application_result_notification-NHNCK.MCDT_RESULT_OUTBOX
@@ -974,8 +1338,21 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 12
+  attribute_count: 9
   brd_ref: BRD-SRC-IDS-EVALUATION_CRITERIA
+- subfolder: Condition
+  file_name: dm_atm_pc_foreign_ownership_limit-IDS.FOREIGN_OWNER_LIMIT.yaml
+  id: ATM-pc_foreign_ownership_limit-IDS.FOREIGN_OWNER_LIMIT
+  physical_name: pc_foreign_ownership_limit
+  logical_name: Public Company Foreign Ownership Limit
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Ownership Constraint"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 8
+  brd_ref: BRD-SRC-IDS-FOREIGN_OWNER_LIMIT
 - subfolder: Condition
   file_name: dm_atm_sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES.yaml
   id: ATM-sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES
@@ -989,6 +1366,45 @@ entries:
   status: approved
   attribute_count: 9
   brd_ref: BRD-SRC-NHNCK-EXAM_SESSION_FEES
+- subfolder: Condition
+  file_name: dm_atm_vr_template-IDS.VIOLATION_TEMPLATES.yaml
+  id: ATM-vr_template-IDS.VIOLATION_TEMPLATES
+  physical_name: vr_template
+  logical_name: Violation Report Template
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Compliance Rule"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 20
+  brd_ref: BRD-SRC-IDS-VIOLATION_TEMPLATES
+- subfolder: Documentation
+  file_name: dm_atm_additional_gov_bond_listing-HNX.GOV_BOND_ADDITIONAL_LISTING.yaml
+  id: ATM-additional_gov_bond_listing-HNX.GOV_BOND_ADDITIONAL_LISTING
+  physical_name: additional_gov_bond_listing
+  logical_name: Additional Gov Bond Listing
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 9
+  brd_ref: BRD-SRC-HNX-GOV_BOND_ADDITIONAL_LISTING
+- subfolder: Documentation
+  file_name: dm_atm_af_approval-AUDIT.AF_APPROVAL.yaml
+  id: ATM-af_approval-AUDIT.AF_APPROVAL
+  physical_name: af_approval
+  logical_name: Audit Firm Approval
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: AUDIT
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-AUDIT-AF_APPROVAL
 - subfolder: Documentation
   file_name: dm_atm_ap_document-TTHC.AP_DOCUMENT.yaml
   id: ATM-ap_document-TTHC.AP_DOCUMENT
@@ -1002,6 +1418,58 @@ entries:
   status: draft
   attribute_count: 23
   brd_ref: BRD-SRC-TTHC-AP_DOCUMENT
+- subfolder: Documentation
+  file_name: dm_atm_bond_trading_registration_status-HNX.REGISTRATION_STATUS_CHANGE.yaml
+  id: ATM-bond_trading_registration_status-HNX.REGISTRATION_STATUS_CHANGE
+  physical_name: bond_trading_registration_status
+  logical_name: Bond Trading Registration Status
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 11
+  brd_ref: BRD-SRC-HNX-REGISTRATION_STATUS_CHANGE
+- subfolder: Documentation
+  file_name: dm_atm_brokerage_market_share-HNX.BROKERAGE_MARKET_SHARE.yaml
+  id: ATM-brokerage_market_share-HNX.BROKERAGE_MARKET_SHARE
+  physical_name: brokerage_market_share
+  logical_name: Brokerage Market Share
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 8
+  brd_ref: BRD-SRC-HNX-BROKERAGE_MARKET_SHARE
+- subfolder: Documentation
+  file_name: dm_atm_brokerage_market_share-HOSE.BROKERAGE_MARKET_SHARE.yaml
+  id: ATM-brokerage_market_share-HOSE.BROKERAGE_MARKET_SHARE
+  physical_name: brokerage_market_share
+  logical_name: Brokerage Market Share
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HOSE
+  status: draft
+  attribute_count: 8
+  brd_ref: BRD-SRC-HOSE-BROKERAGE_MARKET_SHARE
+- subfolder: Documentation
+  file_name: dm_atm_end_of_day_open_interest-VSDC.END_OF_DAY_OPEN_INTEREST.yaml
+  id: ATM-end_of_day_open_interest-VSDC.END_OF_DAY_OPEN_INTEREST
+  physical_name: end_of_day_open_interest
+  logical_name: End Of Day Open Interest
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  status: draft
+  attribute_count: 5
+  brd_ref: BRD-SRC-VSDC-END_OF_DAY_OPEN_INTEREST
 - subfolder: Documentation
   file_name: dm_atm_et_declaration_report-KNT.TAX_REPORT.yaml
   id: ATM-et_declaration_report-KNT.TAX_REPORT
@@ -1091,7 +1559,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 15
+  attribute_count: 12
   brd_ref: BRD-SRC-THANHTRA-EXAMINATION_RESULT_NOTICE
 - subfolder: Documentation
   file_name: dm_atm_examination_result_notice_remedial-THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.yaml
@@ -1104,7 +1572,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 7
+  attribute_count: 5
   brd_ref: BRD-SRC-THANHTRA-EXAMINATION_RESULT_NOTICE_REMEDIAL
 - subfolder: Documentation
   file_name: dm_atm_financial_report-IDS.FORMS.yaml
@@ -1182,7 +1650,7 @@ entries:
   etl_pattern: SCD2
   source: FMS
   status: approved
-  attribute_count: 30
+  attribute_count: 31
   brd_ref: BRD-SRC-FMS-RPT_MEMBER
 - subfolder: Documentation
   file_name: dm_atm_fmr_value-FMS.RPT_VALUES.yaml
@@ -1198,6 +1666,19 @@ entries:
   attribute_count: 29
   brd_ref: BRD-SRC-FMS-RPT_VALUES
 - subfolder: Documentation
+  file_name: dm_atm_foreign_bond_portfolio-VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO.yaml
+  id: ATM-foreign_bond_portfolio-VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO
+  physical_name: foreign_bond_portfolio
+  logical_name: Foreign Bond Portfolio
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-VSDC-FOREIGN_INVESTOR_BOND_PORTFOLIO
+- subfolder: Documentation
   file_name: dm_atm_foreign_investor_report-FIMS.FOREIGN_INVESTOR_REPORT.yaml
   id: ATM-foreign_investor_report-FIMS.FOREIGN_INVESTOR_REPORT
   physical_name: foreign_investor_report
@@ -1210,6 +1691,19 @@ entries:
   status: approved
   attribute_count: 11
   brd_ref: BRD-SRC-FIMS-FOREIGN_INVESTOR_REPORT
+- subfolder: Documentation
+  file_name: dm_atm_foreign_ownership_information-VSDC.FOREIGN_INVESTOR_INFO.yaml
+  id: ATM-foreign_ownership_information-VSDC.FOREIGN_INVESTOR_INFO
+  physical_name: foreign_ownership_information
+  logical_name: Foreign Ownership Information
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-VSDC-FOREIGN_INVESTOR_INFO
 - subfolder: Documentation
   file_name: dm_atm_fr_column-IDS.RCOL.yaml
   id: ATM-fr_column-IDS.RCOL
@@ -1263,6 +1757,162 @@ entries:
   attribute_count: 17
   brd_ref: BRD-SRC-FMS-RPT_TEMP
 - subfolder: Documentation
+  file_name: dm_atm_gov_bond_bidding_result-HNX.GOV_BOND_OFFERING.yaml
+  id: ATM-gov_bond_bidding_result-HNX.GOV_BOND_OFFERING
+  physical_name: gov_bond_bidding_result
+  logical_name: Gov Bond Bidding Result
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 16
+  brd_ref: BRD-SRC-HNX-GOV_BOND_OFFERING
+- subfolder: Documentation
+  file_name: dm_atm_gov_bond_listing-HNX.GOV_BOND_LISTED_LIST.yaml
+  id: ATM-gov_bond_listing-HNX.GOV_BOND_LISTED_LIST
+  physical_name: gov_bond_listing
+  logical_name: Gov Bond Listing
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-HNX-GOV_BOND_LISTED_LIST
+- subfolder: Documentation
+  file_name: dm_atm_inspection_conclusion-THANHTRA.INSPECTION_CONCLUSION.yaml
+  id: ATM-inspection_conclusion-THANHTRA.INSPECTION_CONCLUSION
+  physical_name: inspection_conclusion
+  logical_name: Inspection Conclusion
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 18
+  brd_ref: BRD-SRC-THANHTRA-INSPECTION_CONCLUSION
+- subfolder: Documentation
+  file_name: dm_atm_internal_statistical_report-ISS.INTERNAL_STATISTICAL_REPORT.yaml
+  id: ATM-internal_statistical_report-ISS.INTERNAL_STATISTICAL_REPORT
+  physical_name: internal_statistical_report
+  logical_name: Internal Statistical Report
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Documentation"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: ISS
+  status: approved
+  attribute_count: 29
+  brd_ref: BRD-SRC-ISS-INTERNAL_STATISTICAL_REPORT
+- subfolder: Documentation
+  file_name: dm_atm_listed_share_information-HNX.LISTED_SECURITIES_LIST.yaml
+  id: ATM-listed_share_information-HNX.LISTED_SECURITIES_LIST
+  physical_name: listed_share_information
+  logical_name: Listed Share Information
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 8
+  brd_ref: BRD-SRC-HNX-LISTED_SECURITIES_LIST
+- subfolder: Documentation
+  file_name: dm_atm_listed_share_information-HOSE.LISTED_SECURITIES_LIST.yaml
+  id: ATM-listed_share_information-HOSE.LISTED_SECURITIES_LIST
+  physical_name: listed_share_information
+  logical_name: Listed Share Information
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HOSE
+  status: draft
+  attribute_count: 8
+  brd_ref: BRD-SRC-HOSE-LISTED_SECURITIES_LIST
+- subfolder: Documentation
+  file_name: dm_atm_listed_share_information-VSDC.OUTSTANDING_SHARES.yaml
+  id: ATM-listed_share_information-VSDC.OUTSTANDING_SHARES
+  physical_name: listed_share_information
+  logical_name: Listed Share Information
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  status: draft
+  attribute_count: 11
+  brd_ref: BRD-SRC-VSDC-OUTSTANDING_SHARES
+- subfolder: Documentation
+  file_name: dm_atm_listing_status_change-HNX.LISTING_STATUS_CHANGE.yaml
+  id: ATM-listing_status_change-HNX.LISTING_STATUS_CHANGE
+  physical_name: listing_status_change
+  logical_name: Listing Status Change
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 18
+  brd_ref: BRD-SRC-HNX-LISTING_STATUS_CHANGE
+- subfolder: Documentation
+  file_name: dm_atm_listing_status_change-HOSE.LISTING_STATUS_CHANGE.yaml
+  id: ATM-listing_status_change-HOSE.LISTING_STATUS_CHANGE
+  physical_name: listing_status_change
+  logical_name: Listing Status Change
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HOSE
+  status: draft
+  attribute_count: 18
+  brd_ref: BRD-SRC-HOSE-LISTING_STATUS_CHANGE
+- subfolder: Documentation
+  file_name: dm_atm_pc_cancellation-IDS.PUB_COMPANY_CANCELLATION.yaml
+  id: ATM-pc_cancellation-IDS.PUB_COMPANY_CANCELLATION
+  physical_name: pc_cancellation
+  logical_name: Public Company Cancellation
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-IDS-PUB_COMPANY_CANCELLATION
+- subfolder: Documentation
+  file_name: dm_atm_pc_registration-IDS.PUB_COMPANY_REGISTRATION.yaml
+  id: ATM-pc_registration-IDS.PUB_COMPANY_REGISTRATION
+  physical_name: pc_registration
+  logical_name: Public Company Registration
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-IDS-PUB_COMPANY_REGISTRATION
+- subfolder: Documentation
+  file_name: dm_atm_pc_report_extension-IDS.REPORT_EXTENSIONS.yaml
+  id: ATM-pc_report_extension-IDS.REPORT_EXTENSIONS
+  physical_name: pc_report_extension
+  logical_name: Public Company Report Extension
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Filing"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-IDS-REPORT_EXTENSIONS
+- subfolder: Documentation
   file_name: dm_atm_pc_report_submission-IDS.COMPANY_DATA.yaml
   id: ATM-pc_report_submission-IDS.COMPANY_DATA
   physical_name: pc_report_submission
@@ -1276,31 +1926,44 @@ entries:
   attribute_count: 48
   brd_ref: BRD-SRC-IDS-COMPANY_DATA
 - subfolder: Documentation
-  file_name: dm_atm_sc_administrative_penalty_decision-SCMS.SC_FIRM_ADMIN_PENALTY_DECISION.yaml
-  id: ATM-sc_administrative_penalty_decision-SCMS.SC_FIRM_ADMIN_PENALTY_DECISION
-  physical_name: sc_administrative_penalty_decision
-  logical_name: Securities Company Administrative Penalty Decision
+  file_name: dm_atm_private_corp_bond_offering-HNX.PRIVATE_CORP_BOND_OFFERING.yaml
+  id: ATM-private_corp_bond_offering-HNX.PRIVATE_CORP_BOND_OFFERING
+  physical_name: private_corp_bond_offering
+  logical_name: Private Corp Bond Offering
   bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Legal Decision"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
   status: draft
-  attribute_count: 20
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADMIN_PENALTY_DECISION
+  attribute_count: 29
+  brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_OFFERING
 - subfolder: Documentation
-  file_name: dm_atm_sc_administrative_sanction-SCMS.SC_FIRM_ADMIN_SANCTION.yaml
-  id: ATM-sc_administrative_sanction-SCMS.SC_FIRM_ADMIN_SANCTION
-  physical_name: sc_administrative_sanction
-  logical_name: Securities Company Administrative Sanction
+  file_name: dm_atm_private_corp_bond_registration-HNX.PRIVATE_CORP_BOND_REGISTRATION.yaml
+  id: ATM-private_corp_bond_registration-HNX.PRIVATE_CORP_BOND_REGISTRATION
+  physical_name: private_corp_bond_registration
+  logical_name: Private Corp Bond Registration
   bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Legal Decision"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: SCMS
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
   status: draft
-  attribute_count: 16
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADMIN_SANCTION
+  attribute_count: 22
+  brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_REGISTRATION
+- subfolder: Documentation
+  file_name: dm_atm_private_corp_bond_trading_summary-HNX.PRIVATE_CORP_BOND_TRADING.yaml
+  id: ATM-private_corp_bond_trading_summary-HNX.PRIVATE_CORP_BOND_TRADING
+  physical_name: private_corp_bond_trading_summary
+  logical_name: Private Corp Bond Trading Summary
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 6
+  brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_TRADING
 - subfolder: Documentation
   file_name: dm_atm_sc_report-SCMS.FORM_REPORT.yaml
   id: ATM-sc_report-SCMS.FORM_REPORT
@@ -1325,8 +1988,21 @@ entries:
   etl_pattern: SCD2
   source: SCMS
   status: draft
-  attribute_count: 7
+  attribute_count: 8
   brd_ref: BRD-SRC-SCMS-FORM_REPORT_DEEP_CONFIG
+- subfolder: Documentation
+  file_name: dm_atm_sc_report_indicator-SCMS.FORM_INDICATOR_INPUT.yaml
+  id: ATM-sc_report_indicator-SCMS.FORM_INDICATOR_INPUT
+  physical_name: sc_report_indicator
+  logical_name: Securities Company Report Indicator
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: draft
+  attribute_count: 9
+  brd_ref: BRD-SRC-SCMS-FORM_INDICATOR_INPUT
 - subfolder: Documentation
   file_name: dm_atm_sc_report_input_submission-SCMS.REPORT_INPUT_SUBMISSION.yaml
   id: ATM-sc_report_input_submission-SCMS.REPORT_INPUT_SUBMISSION
@@ -1354,6 +2030,32 @@ entries:
   attribute_count: 11
   brd_ref: BRD-SRC-SCMS-REPORT_INPUT_CELL_VALUE
 - subfolder: Documentation
+  file_name: dm_atm_sc_report_sheet-SCMS.FORM_SHEET.yaml
+  id: ATM-sc_report_sheet-SCMS.FORM_SHEET
+  physical_name: sc_report_sheet
+  logical_name: Securities Company Report Sheet
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: draft
+  attribute_count: 28
+  brd_ref: BRD-SRC-SCMS-FORM_SHEET
+- subfolder: Documentation
+  file_name: dm_atm_sc_report_sheet_cell-SCMS.FORM_SHEET_CELL.yaml
+  id: ATM-sc_report_sheet_cell-SCMS.FORM_SHEET_CELL
+  physical_name: sc_report_sheet_cell
+  logical_name: Securities Company Report Sheet Cell
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: draft
+  attribute_count: 40
+  brd_ref: BRD-SRC-SCMS-FORM_SHEET_CELL
+- subfolder: Documentation
   file_name: dm_atm_sc_report_sheet_column-SCMS.FORM_SHEET_COLUMN.yaml
   id: ATM-sc_report_sheet_column-SCMS.FORM_SHEET_COLUMN
   physical_name: sc_report_sheet_column
@@ -1366,6 +2068,19 @@ entries:
   status: draft
   attribute_count: 22
   brd_ref: BRD-SRC-SCMS-FORM_SHEET_COLUMN
+- subfolder: Documentation
+  file_name: dm_atm_sc_report_sheet_row-SCMS.FORM_SHEET_ROW.yaml
+  id: ATM-sc_report_sheet_row-SCMS.FORM_SHEET_ROW
+  physical_name: sc_report_sheet_row
+  logical_name: Securities Company Report Sheet Row
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: draft
+  attribute_count: 23
+  brd_ref: BRD-SRC-SCMS-FORM_SHEET_ROW
 - subfolder: Documentation
   file_name: dm_atm_sc_report_x_cl_sc_event_type_relationship-SCMS.LNK_EVENT_TYPE_FORM.yaml
   id: ATM-sc_report_x_cl_sc_event_type_relationship-SCMS.LNK_EVENT_TYPE_FORM
@@ -1381,6 +2096,32 @@ entries:
   attribute_count: 8
   brd_ref: BRD-SRC-SCMS-LNK_EVENT_TYPE_FORM
 - subfolder: Documentation
+  file_name: dm_atm_share_auction_result-HNX.SHARE_AUCTION.yaml
+  id: ATM-share_auction_result-HNX.SHARE_AUCTION
+  physical_name: share_auction_result
+  logical_name: Share Auction Result
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 24
+  brd_ref: BRD-SRC-HNX-SHARE_AUCTION
+- subfolder: Documentation
+  file_name: dm_atm_share_auction_result-HOSE.SHARE_AUCTION.yaml
+  id: ATM-share_auction_result-HOSE.SHARE_AUCTION
+  physical_name: share_auction_result
+  logical_name: Share Auction Result
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HOSE
+  status: draft
+  attribute_count: 24
+  brd_ref: BRD-SRC-HOSE-SHARE_AUCTION
+- subfolder: Documentation
   file_name: dm_atm_sp_license_application-NHNCK.APPLICATIONS.yaml
   id: ATM-sp_license_application-NHNCK.APPLICATIONS
   physical_name: sp_license_application
@@ -1391,7 +2132,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 42
+  attribute_count: 44
   brd_ref: BRD-SRC-NHNCK-APPLICATIONS
 - subfolder: Documentation
   file_name: dm_atm_sp_license_application_education_certificate_document-NHNCK.APPLICATION_SPECIALIZATIONS.yaml
@@ -1602,7 +2343,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 12
+  attribute_count: 11
   brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE_OUTPUT_DOCUMENT
 - subfolder: Documentation
   file_name: dm_atm_violation_case_received_document-THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.yaml
@@ -1615,7 +2356,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: approved
-  attribute_count: 12
+  attribute_count: 10
   brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE_RECEIVED_DOCUMENT
 - subfolder: Event
   file_name: dm_atm_pc_evaluation_period-IDS.EVALUATION_PERIODS.yaml
@@ -1641,7 +2382,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 7
+  attribute_count: 6
   brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_CIRCUMSTANCE
 - subfolder: Event
   file_name: dm_atm_pd_subject-THANHTRA.PENALTY_DECISION_SUBJECT.yaml
@@ -1654,7 +2395,7 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 33
+  attribute_count: 31
   brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
 - subfolder: Event
   file_name: dm_atm_pd_subject_behavior-THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.yaml
@@ -1667,8 +2408,34 @@ entries:
   etl_pattern: SCD4A
   source: THANHTRA
   status: draft
-  attribute_count: 18
+  attribute_count: 15
   brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR
+- subfolder: Event
+  file_name: dm_atm_pd_subject_behavior_x_penalty_type_relationship-THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.yaml
+  id: ATM-pd_subject_behavior_x_penalty_type_relationship-THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+  physical_name: pd_subject_behavior_x_penalty_type_relationship
+  logical_name: Penalty Decision Subject Behavior X Penalty Type Relationship
+  bcv_core_object: Event
+  bcv_concept: "[Event] Event"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: THANHTRA
+  status: draft
+  attribute_count: 5
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY
+- subfolder: Event
+  file_name: dm_atm_penalty_decision-THANHTRA.PENALTY_DECISION.yaml
+  id: ATM-penalty_decision-THANHTRA.PENALTY_DECISION
+  physical_name: penalty_decision
+  logical_name: Penalty Decision
+  bcv_core_object: Event
+  bcv_concept: "[Event] Event"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 32
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION
 - subfolder: Event
   file_name: dm_atm_penalty_decision_x_violation_record_relationship-THANHTRA.PENALTY_DECISION_VIOLATION_RECORD.yaml
   id: ATM-penalty_decision_x_violation_record_relationship-THANHTRA.PENALTY_DECISION_VIOLATION_RECORD
@@ -1683,44 +2450,31 @@ entries:
   attribute_count: 5
   brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_VIOLATION_RECORD
 - subfolder: Event
-  file_name: dm_atm_sc_alert_indicator-SCMS.ALERT_INDICATOR.yaml
-  id: ATM-sc_alert_indicator-SCMS.ALERT_INDICATOR
-  physical_name: sc_alert_indicator
-  logical_name: Securities Company Alert Indicator
-  bcv_core_object: Event
-  bcv_concept: "[Event] Alert Indicator"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: draft
-  attribute_count: 26
-  brd_ref: BRD-SRC-SCMS-ALERT_INDICATOR
-- subfolder: Event
-  file_name: dm_atm_sc_alert_violation-SCMS.SC_FIRM_ALERT_VIOLATION.yaml
-  id: ATM-sc_alert_violation-SCMS.SC_FIRM_ALERT_VIOLATION
-  physical_name: sc_alert_violation
-  logical_name: Securities Company Alert Violation
-  bcv_core_object: Event
-  bcv_concept: "[Event] Business Activity"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: SCMS
-  status: draft
-  attribute_count: 38
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_ALERT_VIOLATION
-- subfolder: Event
   file_name: dm_atm_sc_disclosure_securities_offering-SCMS.DISCLOSURE_SECURITIES_OFFERING.yaml
   id: ATM-sc_disclosure_securities_offering-SCMS.DISCLOSURE_SECURITIES_OFFERING
   physical_name: sc_disclosure_securities_offering
   logical_name: Securities Company Disclosure Securities Offering
   bcv_core_object: Event
   bcv_concept: "[Event] Communication"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
-  attribute_count: 78
+  attribute_count: 79
   brd_ref: BRD-SRC-SCMS-DISCLOSURE_SECURITIES_OFFERING
+- subfolder: Event
+  file_name: dm_atm_sc_profile_change-SCMS.SC_FIRM_PROFILE_CHANGE.yaml
+  id: ATM-sc_profile_change-SCMS.SC_FIRM_PROFILE_CHANGE
+  physical_name: sc_profile_change
+  logical_name: Securities Company Profile Change
+  bcv_core_object: Event
+  bcv_concept: "[Event] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  status: draft
+  attribute_count: 26
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_PROFILE_CHANGE
 - subfolder: Event
   file_name: dm_atm_sc_shareholder_ownership_change-SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.yaml
   id: ATM-sc_shareholder_ownership_change-SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
@@ -1785,7 +2539,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: MDDS
   status: draft
-  attribute_count: 55
+  attribute_count: 44
   brd_ref: BRD-SRC-MDDS-JAD_MARKETINFOR
 - subfolder: Group
   file_name: dm_atm_pc_evaluation_group-IDS.EVALUATION_GROUPS.yaml
@@ -1798,7 +2552,7 @@ entries:
   etl_pattern: Upsert
   source: IDS
   status: draft
-  attribute_count: 7
+  attribute_count: 6
   brd_ref: BRD-SRC-IDS-EVALUATION_GROUPS
 - subfolder: Group
   file_name: dm_atm_sp_license_application_group-NHNCK.APPLICATION_GROUPS.yaml
@@ -1827,6 +2581,45 @@ entries:
   attribute_count: 13
   brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORD_GROUPS
 - subfolder: Involved_Party
+  file_name: dm_atm_af_auditor-AUDIT.AF_AUDITOR_PROFILES.yaml
+  id: ATM-af_auditor-AUDIT.AF_AUDITOR_PROFILES
+  physical_name: af_auditor
+  logical_name: Audit Firm Auditor
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  status: draft
+  attribute_count: 16
+  brd_ref: BRD-SRC-AUDIT-AF_AUDITOR_PROFILES
+- subfolder: Involved_Party
+  file_name: dm_atm_af_auditor_practice_history-AUDIT.AF_AUDITOR_PRACTICE_HISTORY.yaml
+  id: ATM-af_auditor_practice_history-AUDIT.AF_AUDITOR_PRACTICE_HISTORY
+  physical_name: af_auditor_practice_history
+  logical_name: Audit Firm Auditor Practice History
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Employer"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: AUDIT
+  status: draft
+  attribute_count: 9
+  brd_ref: BRD-SRC-AUDIT-AF_AUDITOR_PRACTICE_HISTORY
+- subfolder: Involved_Party
+  file_name: dm_atm_af_legal_representative-AUDIT.AF_LEGAL_REPRESENTATIVE.yaml
+  id: ATM-af_legal_representative-AUDIT.AF_LEGAL_REPRESENTATIVE
+  physical_name: af_legal_representative
+  logical_name: Audit Firm Legal Representative
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: AUDIT
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-AUDIT-AF_LEGAL_REPRESENTATIVE
+- subfolder: Involved_Party
   file_name: dm_atm_ap_document_applicant-TTHC.AP_DOCUMENT_APPLICANT.yaml
   id: ATM-ap_document_applicant-TTHC.AP_DOCUMENT_APPLICANT
   physical_name: ap_document_applicant
@@ -1839,6 +2632,19 @@ entries:
   status: draft
   attribute_count: 6
   brd_ref: BRD-SRC-TTHC-AP_DOCUMENT_APPLICANT
+- subfolder: Involved_Party
+  file_name: dm_atm_audit_firm-AUDIT.AF_PROFILES.yaml
+  id: ATM-audit_firm-AUDIT.AF_PROFILES
+  physical_name: audit_firm
+  logical_name: Audit Firm
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Audit Firm"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  status: draft
+  attribute_count: 15
+  brd_ref: BRD-SRC-AUDIT-AF_PROFILES
 - subfolder: Involved_Party
   file_name: dm_atm_custodian_bank-FIMS.BANKMONI.yaml
   id: ATM-custodian_bank-FIMS.BANKMONI
@@ -1889,7 +2695,7 @@ entries:
   etl_pattern: SCD4A
   source: KNT
   status: draft
-  attribute_count: 42
+  attribute_count: 54
   brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
 - subfolder: Involved_Party
   file_name: dm_atm_et_registration_representative-KNT.TAX_REG_REPRESENTATIVE.yaml
@@ -1902,7 +2708,7 @@ entries:
   etl_pattern: SCD4A
   source: KNT
   status: draft
-  attribute_count: 7
+  attribute_count: 13
   brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
 - subfolder: Involved_Party
   file_name: dm_atm_fmc_employee-FMS.TL_PROFILES.yaml
@@ -2046,7 +2852,7 @@ entries:
   etl_pattern: SCD4A
   source: IAM
   status: draft
-  attribute_count: 28
+  attribute_count: 27
   brd_ref: BRD-SRC-IAM-USERS
 - subfolder: Involved_Party
   file_name: dm_atm_investment_fund-FMS.FUNDS.yaml
@@ -2074,6 +2880,32 @@ entries:
   status: approved
   attribute_count: 17
   brd_ref: BRD-SRC-FMS-REPRESENT
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_alternative_identification-AUDIT.AF_AUDITOR_PROFILES.yaml
+  id: ATM-ip_alternative_identification-AUDIT.AF_AUDITOR_PROFILES
+  physical_name: ip_alternative_identification
+  logical_name: Involved Party Alternative Identification
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  status: approved
+  attribute_count: 11
+  brd_ref: BRD-SRC-AUDIT-AF_AUDITOR_PROFILES
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_alternative_identification-AUDIT.AF_PROFILES.yaml
+  id: ATM-ip_alternative_identification-AUDIT.AF_PROFILES
+  physical_name: ip_alternative_identification
+  logical_name: Involved Party Alternative Identification
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  status: approved
+  attribute_count: 7
+  brd_ref: BRD-SRC-AUDIT-AF_PROFILES
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-FIMS.BANKMONI.yaml
   id: ATM-ip_alternative_identification-FIMS.BANKMONI
@@ -2270,18 +3102,44 @@ entries:
   attribute_count: 7
   brd_ref: BRD-SRC-IAM-USERS
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-KNT.TAX_REG_REPRESENTATIVE.yaml
-  id: ATM-ip_alternative_identification-KNT.TAX_REG_REPRESENTATIVE
+  file_name: dm_atm_ip_alternative_identification-IDS.COMPANY_PROFILES.yaml
+  id: ATM-ip_alternative_identification-IDS.COMPANY_PROFILES
   physical_name: ip_alternative_identification
   logical_name: Involved Party Alternative Identification
   bcv_core_object: Involved Party
   bcv_concept: Shared Entity
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: KNT
+  source: IDS
   status: approved
-  attribute_count: 6
-  brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+  attribute_count: 5
+  brd_ref: BRD-SRC-IDS-COMPANY_PROFILES
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_alternative_identification-IDS.COMPANY_RELATIONSHIP.yaml
+  id: ATM-ip_alternative_identification-IDS.COMPANY_RELATIONSHIP
+  physical_name: ip_alternative_identification
+  logical_name: Involved Party Alternative Identification
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: approved
+  attribute_count: 5
+  brd_ref: BRD-SRC-IDS-COMPANY_RELATIONSHIP
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_alternative_identification-IDS.IDENTITY.yaml
+  id: ATM-ip_alternative_identification-IDS.IDENTITY
+  physical_name: ip_alternative_identification
+  logical_name: Involved Party Alternative Identification
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: approved
+  attribute_count: 7
+  brd_ref: BRD-SRC-IDS-IDENTITY
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-NHNCK.PROFESSIONALS.yaml
   id: ATM-ip_alternative_identification-NHNCK.PROFESSIONALS
@@ -2465,32 +3323,6 @@ entries:
   attribute_count: 5
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER_RELATION.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER_RELATION
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 7
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_RELATION
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 7
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
-- subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_TRANSACTION_OFFICE.yaml
   id: ATM-ip_alternative_identification-SCMS.SC_FIRM_TRANSACTION_OFFICE
   physical_name: ip_alternative_identification
@@ -2503,6 +3335,32 @@ entries:
   status: approved
   attribute_count: 6
   brd_ref: BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_electronic_address-AUDIT.AF_LEGAL_REPRESENTATIVE.yaml
+  id: ATM-ip_electronic_address-AUDIT.AF_LEGAL_REPRESENTATIVE
+  physical_name: ip_electronic_address
+  logical_name: Involved Party Electronic Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  status: approved
+  attribute_count: 5
+  brd_ref: BRD-SRC-AUDIT-AF_LEGAL_REPRESENTATIVE
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_electronic_address-AUDIT.AF_PROFILES.yaml
+  id: ATM-ip_electronic_address-AUDIT.AF_PROFILES
+  physical_name: ip_electronic_address
+  logical_name: Involved Party Electronic Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  status: approved
+  attribute_count: 9
+  brd_ref: BRD-SRC-AUDIT-AF_PROFILES
 - subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-FIMS.BANKMONI.yaml
   id: ATM-ip_electronic_address-FIMS.BANKMONI
@@ -2673,31 +3531,44 @@ entries:
   attribute_count: 9
   brd_ref: BRD-SRC-IAM-USERS
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-KNT.TAX_REG_REPRESENTATIVE.yaml
-  id: ATM-ip_electronic_address-KNT.TAX_REG_REPRESENTATIVE
+  file_name: dm_atm_ip_electronic_address-IDS.COMPANY_PROFILES.yaml
+  id: ATM-ip_electronic_address-IDS.COMPANY_PROFILES
   physical_name: ip_electronic_address
   logical_name: Involved Party Electronic Address
   bcv_core_object: Involved Party
   bcv_concept: Shared Entity
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: KNT
+  source: IDS
   status: approved
   attribute_count: 9
-  brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+  brd_ref: BRD-SRC-IDS-COMPANY_PROFILES
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-KNT.TAX_REGISTRATION_INFO.yaml
-  id: ATM-ip_electronic_address-KNT.TAX_REGISTRATION_INFO
+  file_name: dm_atm_ip_electronic_address-IDS.LEGAL_ENTITIES.yaml
+  id: ATM-ip_electronic_address-IDS.LEGAL_ENTITIES
   physical_name: ip_electronic_address
   logical_name: Involved Party Electronic Address
   bcv_core_object: Involved Party
   bcv_concept: Shared Entity
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: KNT
+  source: IDS
   status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
+  attribute_count: 9
+  brd_ref: BRD-SRC-IDS-LEGAL_ENTITIES
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_electronic_address-IDS.LEGAL_REPRESENTATIVE.yaml
+  id: ATM-ip_electronic_address-IDS.LEGAL_REPRESENTATIVE
+  physical_name: ip_electronic_address
+  logical_name: Involved Party Electronic Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: approved
+  attribute_count: 7
+  brd_ref: BRD-SRC-IDS-LEGAL_REPRESENTATIVE
 - subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-NHNCK.ORGANIZATIONS.yaml
   id: ATM-ip_electronic_address-NHNCK.ORGANIZATIONS
@@ -2920,6 +3791,19 @@ entries:
   attribute_count: 7
   brd_ref: BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
 - subfolder: Involved_Party
+  file_name: dm_atm_ip_postal_address-AUDIT.AF_PROFILES.yaml
+  id: ATM-ip_postal_address-AUDIT.AF_PROFILES
+  physical_name: ip_postal_address
+  logical_name: Involved Party Postal Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  status: approved
+  attribute_count: 5
+  brd_ref: BRD-SRC-AUDIT-AF_PROFILES
+- subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-FIMS.BANKMONI.yaml
   id: ATM-ip_postal_address-FIMS.BANKMONI
   physical_name: ip_postal_address
@@ -2943,7 +3827,7 @@ entries:
   etl_pattern: SCD4A
   source: FIMS
   status: approved
-  attribute_count: 5
+  attribute_count: 9
   brd_ref: BRD-SRC-FIMS-INVESTOR
 - subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-FIMS.SECURITIESCOMPANY.yaml
@@ -3115,18 +3999,31 @@ entries:
   attribute_count: 9
   brd_ref: BRD-SRC-IDS-COMPANY_PROFILES
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-KNT.TAX_REGISTRATION_INFO.yaml
-  id: ATM-ip_postal_address-KNT.TAX_REGISTRATION_INFO
+  file_name: dm_atm_ip_postal_address-IDS.COMPANY_RELATIONSHIP.yaml
+  id: ATM-ip_postal_address-IDS.COMPANY_RELATIONSHIP
   physical_name: ip_postal_address
   logical_name: Involved Party Postal Address
   bcv_core_object: Involved Party
   bcv_concept: Shared Entity
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: KNT
+  source: IDS
   status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
+  attribute_count: 5
+  brd_ref: BRD-SRC-IDS-COMPANY_RELATIONSHIP
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_postal_address-IDS.LEGAL_ENTITIES.yaml
+  id: ATM-ip_postal_address-IDS.LEGAL_ENTITIES
+  physical_name: ip_postal_address
+  logical_name: Involved Party Postal Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: approved
+  attribute_count: 5
+  brd_ref: BRD-SRC-IDS-LEGAL_ENTITIES
 - subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-NHNCK.ORGANIZATIONS.yaml
   id: ATM-ip_postal_address-NHNCK.ORGANIZATIONS
@@ -3349,6 +4246,19 @@ entries:
   attribute_count: 11
   brd_ref: BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
 - subfolder: Involved_Party
+  file_name: dm_atm_legal_entity-IDS.LEGAL_ENTITIES.yaml
+  id: ATM-legal_entity-IDS.LEGAL_ENTITIES
+  physical_name: legal_entity
+  logical_name: Legal Entity
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-IDS-LEGAL_ENTITIES
+- subfolder: Involved_Party
   file_name: dm_atm_legal_entity_position-IDS.POSITIONS.yaml
   id: ATM-legal_entity_position-IDS.POSITIONS
   physical_name: legal_entity_position
@@ -3359,8 +4269,60 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 12
+  attribute_count: 10
   brd_ref: BRD-SRC-IDS-POSITIONS
+- subfolder: Involved_Party
+  file_name: dm_atm_major_shareholder_ownership-VSDC.MAJOR_SHAREHOLDER.yaml
+  id: ATM-major_shareholder_ownership-VSDC.MAJOR_SHAREHOLDER
+  physical_name: major_shareholder_ownership
+  logical_name: Major Shareholder Ownership
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization Ownership"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: VSDC
+  status: draft
+  attribute_count: 16
+  brd_ref: BRD-SRC-VSDC-MAJOR_SHAREHOLDER
+- subfolder: Involved_Party
+  file_name: dm_atm_pc_entity_role-IDS.COMPANY_ENTITY_ROLE.yaml
+  id: ATM-pc_entity_role-IDS.COMPANY_ENTITY_ROLE
+  physical_name: pc_entity_role
+  logical_name: Public Company Entity Role
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-IDS-COMPANY_ENTITY_ROLE
+- subfolder: Involved_Party
+  file_name: dm_atm_pc_legal_representative-IDS.LEGAL_REPRESENTATIVE.yaml
+  id: ATM-pc_legal_representative-IDS.LEGAL_REPRESENTATIVE
+  physical_name: pc_legal_representative
+  logical_name: Public Company Legal Representative
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 12
+  brd_ref: BRD-SRC-IDS-LEGAL_REPRESENTATIVE
+- subfolder: Involved_Party
+  file_name: dm_atm_pc_related_entity-IDS.COMPANY_RELATIONSHIP.yaml
+  id: ATM-pc_related_entity-IDS.COMPANY_RELATIONSHIP
+  physical_name: pc_related_entity
+  logical_name: Public Company Related Entity
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 15
+  brd_ref: BRD-SRC-IDS-COMPANY_RELATIONSHIP
 - subfolder: Involved_Party
   file_name: dm_atm_public_company-IDS.COMPANY_PROFILES.yaml
   id: ATM-public_company-IDS.COMPANY_PROFILES
@@ -3372,7 +4334,7 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 51
+  attribute_count: 47
   brd_ref: BRD-SRC-IDS-COMPANY_PROFILES
 - subfolder: Involved_Party
   file_name: dm_atm_ra_organization_unit-NHNCK.UNITS.yaml
@@ -3415,6 +4377,19 @@ entries:
   attribute_count: 20
   brd_ref: BRD-SRC-SCMS-BANK
 - subfolder: Involved_Party
+  file_name: dm_atm_sc_foreign_branch_personnel-SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.yaml
+  id: ATM-sc_foreign_branch_personnel-SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL
+  physical_name: sc_foreign_branch_personnel
+  logical_name: Securities Company Foreign Branch Personnel
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Key Personnel"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 27
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH_PERSONNEL
+- subfolder: Involved_Party
   file_name: dm_atm_sc_foreign_organization_unit-SCMS.SC_FIRM_FOREIGN_BRANCH.yaml
   id: ATM-sc_foreign_organization_unit-SCMS.SC_FIRM_FOREIGN_BRANCH
   physical_name: sc_foreign_organization_unit
@@ -3455,27 +4430,53 @@ entries:
   attribute_count: 5
   brd_ref: BRD-SRC-SCMS-LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE
 - subfolder: Involved_Party
+  file_name: dm_atm_sc_foreign_representative_office_personnel-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.yaml
+  id: ATM-sc_foreign_representative_office_personnel-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
+  physical_name: sc_foreign_representative_office_personnel
+  logical_name: Securities Company Foreign Representative Office Personnel
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Key Personnel"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
+- subfolder: Involved_Party
   file_name: dm_atm_sc_insider_related_person-SCMS.SC_FIRM_INSIDER_RELATION.yaml
   id: ATM-sc_insider_related_person-SCMS.SC_FIRM_INSIDER_RELATION
   physical_name: sc_insider_related_person
   logical_name: Securities Company Insider Related Person
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Insider"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
-  attribute_count: 26
+  attribute_count: 27
   brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
+- subfolder: Involved_Party
+  file_name: dm_atm_sc_major_shareholder_relation-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.yaml
+  id: ATM-sc_major_shareholder_relation-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+  physical_name: sc_major_shareholder_relation
+  logical_name: Securities Company Major Shareholder Relation
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Major Shareholder"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: draft
+  attribute_count: 20
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_MAJOR_SHAREHOLDER_RELATION
 - subfolder: Involved_Party
   file_name: dm_atm_sc_organization_unit-SCMS.SC_FIRM_BRANCH.yaml
   id: ATM-sc_organization_unit-SCMS.SC_FIRM_BRANCH
   physical_name: sc_organization_unit
   logical_name: Securities Company Organization Unit
   bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Branch"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  bcv_concept: "[Involved Party] Branch, [Involved Party] Representative Office"
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
   attribute_count: 25
@@ -3486,9 +4487,9 @@ entries:
   physical_name: sc_organization_unit
   logical_name: Securities Company Organization Unit
   bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Branch"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  bcv_concept: "[Involved Party] Branch, [Involved Party] Representative Office"
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
   attribute_count: 27
@@ -3499,9 +4500,9 @@ entries:
   physical_name: sc_organization_unit
   logical_name: Securities Company Organization Unit
   bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Branch"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  bcv_concept: "[Involved Party] Branch, [Involved Party] Representative Office"
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
   attribute_count: 26
@@ -3517,7 +4518,7 @@ entries:
   table_type: Relative
   etl_pattern: SCD2
   source: SCMS
-  status: approved
+  status: draft
   attribute_count: 5
   brd_ref: BRD-SRC-SCMS-LNK_TRANSACTION_OFFICE_SERVICE
 - subfolder: Involved_Party
@@ -3527,8 +4528,8 @@ entries:
   logical_name: Securities Company Related Person
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Connected Person"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
   attribute_count: 25
@@ -3540,8 +4541,8 @@ entries:
   logical_name: Securities Company Senior Personnel
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Senior Officer"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
   attribute_count: 39
@@ -3553,38 +4554,12 @@ entries:
   logical_name: Securities Company Shareholder
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Shareholder"
-  table_type: Fundamental
-  etl_pattern: SCD4A
+  table_type: Relative
+  etl_pattern: SCD2
   source: SCMS
   status: draft
-  attribute_count: 41
+  attribute_count: 42
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
-- subfolder: Involved_Party
-  file_name: dm_atm_sc_shareholder_relation-SCMS.SC_FIRM_SHAREHOLDER_RELATION.yaml
-  id: ATM-sc_shareholder_relation-SCMS.SC_FIRM_SHAREHOLDER_RELATION
-  physical_name: sc_shareholder_relation
-  logical_name: Securities Company Shareholder Relation
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Connected Person"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: draft
-  attribute_count: 20
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_RELATION
-- subfolder: Involved_Party
-  file_name: dm_atm_sc_shareholder_representative-SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.yaml
-  id: ATM-sc_shareholder_representative-SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE
-  physical_name: sc_shareholder_representative
-  logical_name: Securities Company Shareholder Representative
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Representative"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
 - subfolder: Involved_Party
   file_name: dm_atm_sc_x_cl_sc_firm_service_relationship-SCMS.LNK_SC_FIRM_SERVICE.yaml
   id: ATM-sc_x_cl_sc_firm_service_relationship-SCMS.LNK_SC_FIRM_SERVICE
@@ -3662,7 +4637,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 37
+  attribute_count: 41
   brd_ref: BRD-SRC-NHNCK-PROFESSIONALS
 - subfolder: Involved_Party
   file_name: dm_atm_sp_employment_status-NHNCK.PROFESSIONAL_WORK_HISTORIES.yaml
@@ -3703,6 +4678,19 @@ entries:
   status: approved
   attribute_count: 15
   brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_RELATIONSHIPS
+- subfolder: Involved_Party
+  file_name: dm_atm_stock_holder_relationship-IDS.HOLDER_RELATIONSHIP.yaml
+  id: ATM-stock_holder_relationship-IDS.HOLDER_RELATIONSHIP
+  physical_name: stock_holder_relationship
+  logical_name: Stock Holder Relationship
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-IDS-HOLDER_RELATIONSHIP
 - subfolder: Location
   file_name: dm_atm_geographic_area-ECAT.COUNTRY.yaml
   id: ATM-geographic_area-ECAT.COUNTRY
@@ -3844,8 +4832,47 @@ entries:
   etl_pattern: Fact Snapshot
   source: MDDS
   status: draft
-  attribute_count: 88
+  attribute_count: 86
   brd_ref: BRD-SRC-MDDS-JAD_STOCKINFOR
+- subfolder: Transaction
+  file_name: dm_atm_bond_order_book-HNX.OUTRIGHT_ORDER_BOOK.yaml
+  id: ATM-bond_order_book-HNX.OUTRIGHT_ORDER_BOOK
+  physical_name: bond_order_book
+  logical_name: Bond Order Book
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 43
+  brd_ref: BRD-SRC-HNX-OUTRIGHT_ORDER_BOOK
+- subfolder: Transaction
+  file_name: dm_atm_bond_order_book-HNX.REPO2_ORDER_BOOK.yaml
+  id: ATM-bond_order_book-HNX.REPO2_ORDER_BOOK
+  physical_name: bond_order_book
+  logical_name: Bond Order Book
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 56
+  brd_ref: BRD-SRC-HNX-REPO2_ORDER_BOOK
+- subfolder: Transaction
+  file_name: dm_atm_bond_order_book-HNX.REPO_ORDER_BOOK.yaml
+  id: ATM-bond_order_book-HNX.REPO_ORDER_BOOK
+  physical_name: bond_order_book
+  logical_name: Bond Order Book
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 51
+  brd_ref: BRD-SRC-HNX-REPO_ORDER_BOOK
 - subfolder: Transaction
   file_name: dm_atm_security_match_log-MDDS.JAD_TRANSLOG.yaml
   id: ATM-security_match_log-MDDS.JAD_TRANSLOG

@@ -22,20 +22,6 @@ ldm:
     brd: BRD-SRC-THANHTRA-PENALTY_DECISION_VIOLATION_RECORD
 
 attributes:
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: PENALTY_DECISION_VIOLATION_RECORD
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_VIOLATION_RECORD'"
-    etl_derived_value: THANHTRA_PENALTY_DECISION_VIOLATION_RECORD
-
   - name: Penalty Decision Id
     physical_name: pd_id
     business_meaning: "FK -> penalty_decision. FK đến quyết định xử phạt liên kết với biên bản vi phạm này."
@@ -46,7 +32,7 @@ attributes:
     source_system: THANHTRA
     source_table: PENALTY_DECISION_VIOLATION_RECORD
     source_column: THANHTRA.PENALTY_DECISION_VIOLATION_RECORD.PENALTY_DECISION_ID
-    comment: "FK target: penalty_decision.penalty_decision_id. Hash: hash_id('THANHTRA.PENALTY_DECISION', PENALTY_DECISION_ID). Composite PK cùng Violation Record Id."
+    comment: "FK target: penalty_decision.penalty_decision_id. Hash: hash_id('THANHTRA_PENALTY_DECISION', PENALTY_DECISION_ID). Composite PK cùng Violation Record Id."
     classification_context: null
     etl_derived_value: null
 
@@ -74,7 +60,7 @@ attributes:
     source_system: THANHTRA
     source_table: PENALTY_DECISION_VIOLATION_RECORD
     source_column: THANHTRA.PENALTY_DECISION_VIOLATION_RECORD.VIOLATION_RECORD_ID
-    comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID). Composite PK cùng Penalty Decision Id."
+    comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA_VIOLATION_RECORD', VIOLATION_RECORD_ID). Composite PK cùng Penalty Decision Id."
     classification_context: null
     etl_derived_value: null
 
@@ -91,3 +77,17 @@ attributes:
     comment: "Lookup pair: violation_record.violation_record_code. Pair with Violation Record Id."
     classification_context: null
     etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: PENALTY_DECISION_VIOLATION_RECORD
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_VIOLATION_RECORD'"
+    etl_derived_value: THANHTRA_PENALTY_DECISION_VIOLATION_RECORD

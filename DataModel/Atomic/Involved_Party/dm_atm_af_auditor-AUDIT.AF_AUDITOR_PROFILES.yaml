@@ -1,0 +1,247 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_auditor-AUDIT.AF_AUDITOR_PROFILES
+  logical_name: Audit Firm Auditor
+  physical_name: af_auditor
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: AUDIT
+  description: |
+    Kiểm toán viên cá nhân trực thuộc công ty kiểm toán được giao thực hiện kiểm toán CTCK. Ghi nhận mã kiểm toán viên, số chứng chỉ, ngày bổ nhiệm và trạng thái.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_AUDITOR_PROFILES
+
+attributes:
+  - name: Audit Firm Auditor Id
+    physical_name: af_auditor_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Code
+    physical_name: af_auditor_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PROFILES'"
+    etl_derived_value: AUDIT_AF_AUDITOR_PROFILES
+
+  - name: Audit Firm Id
+    physical_name: af_id
+    business_meaning: Link đến bảng AF_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.AF_PROFILE_ID
+    comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_AUDITOR_PROFILES.AF_PROFILE_ID = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: af_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_PROFILES.AUDIT_FIRM_CD
+    comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Name
+    physical_name: af_auditor_nm
+    business_meaning: Họ và tên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.FULL_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Position Title Code
+    physical_name: position_title_code
+    business_meaning: Chức vụ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.POSITION_TITLE_CD
+    comment: "SCHEMA_CODE=AUDIT.POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='POSITION')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Practice Start Date
+    physical_name: practice_start_dt
+    business_meaning: Ngày bắt đầu hành nghề.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.PRACTICE_START_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Practice End Date
+    physical_name: practice_end_dt
+    business_meaning: Ngày kết thúc hành nghề.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.PRACTICE_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Auditor Status Code
+    physical_name: auditor_status_code
+    business_meaning: Trạng thái kiểm toán viên.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.STATUS_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Affiliation End Date
+    physical_name: affiliation_end_dt
+    business_meaning: Ngày mà kiểm toán viên không còn thuộc công ty kiểm toán nữa.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.AFFILIATION_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Email Sent Indicator
+    physical_name: email_sent_ind
+    business_meaning: Đánh dấu bản ghi đã được gửi email hay chưa.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.SEND_EMAIL
+    comment: Giá trị 1 → true (đã gửi); 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: External Reference ID
+    physical_name: external_reference_id
+    business_meaning: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.EXTERNAL_ID
+    comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Status Code
+    physical_name: approval_status_code
+    business_meaning: Trạng thái duyệt hồ sơ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.APPROVAL_STATUS_CD
+    comment: "SCHEMA_CODE=AUDIT.PROFILE_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PROFILE_APPROVAL_STATUS')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approver Comment
+    physical_name: approver_comment
+    business_meaning: Ý kiến người duyệt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.APPROVER_COMMENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Working Indicator
+    physical_name: working_ind
+    business_meaning: Đánh dấu kiểm toán viên đang làm việc.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PROFILES
+    source_column: AUDIT.AF_AUDITOR_PROFILES.IS_WORKING
+    comment: Giá trị 1 → true (đang làm việc); 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null

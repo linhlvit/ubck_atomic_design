@@ -32,7 +32,7 @@ attributes:
     source_system: KNT
     source_table: TAX_REPORT_DETAIL
     source_column: null
-    comment: "PK surrogate. BCV: \"[Documentation] Reported Information\". Dòng chỉ tiêu chi tiết trong 1 External Tax Declaration Report. Hash: hash_id('KNT.TAX_REPORT_DETAIL', ID)."
+    comment: "PK surrogate. BCV: \"[Documentation] Reported Information\". Dòng chỉ tiêu chi tiết trong 1 External Tax Declaration Report. Hash: hash_id('KNT_TAX_REPORT_DETAIL', ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -74,7 +74,7 @@ attributes:
     source_system: KNT
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID
-    comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID để xác nhận DECLARATION_CODE sau đó hash_id('KNT.TAX_REPORT', DECLARATION_CODE) |"
+    comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID để xác nhận DECLARATION_CODE sau đó hash_id('KNT_TAX_REPORT', DECLARATION_CODE)"
     classification_context: null
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: KNT
     source_table: TAX_REPORT_DETAIL
     source_column: KNT.TAX_REPORT.DECLARATION_CODE
-    comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair with et_declaration_rpt_id. Giá trị lấy từ KNT.TAX_REPORT.DECLARATION_CODE sau ETL crosswalk — chi tiết xem comment External Tax Declaration Report Id."
+    comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair with External Tax Declaration Report Id. Giá trị lấy từ KNT.TAX_REPORT.DECLARATION_CODE sau ETL crosswalk — chi tiết xem comment External Tax Declaration Report Id."
     classification_context: null
     etl_derived_value: null
 

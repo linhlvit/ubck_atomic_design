@@ -2,8 +2,8 @@
 
 **Source system:** AUDIT (GMS Audit — schema `GMS_AUDIT_UAT`, tách từ IDS)
 **Tier 3:** Các entity FK đến entity Tier 2. Gồm:
-- Con của **Audit Firm Approval** (T2): AF Warning, AF Suspension, AF Technical Audit
-- Con của **Auditor Profile** (T2): Auditor Status History
+- Con của **Audit Firm** (T1) / **Audit Firm Auditor** (T2) / **Audit Firm Inspection** (T2): Audit Firm Warning, Audit Firm Suspension, Audit Firm Technical Audit, Audit Firm Sanction
+- Con của **Audit Firm Auditor** (T2): Audit Firm Auditor Practice History, Audit Firm Auditor Status History
 
 *Nội dung tách từ `IDS_HLD_Tier3.md` ngày 2026-10-16; mã điểm xác nhận (T3-xx) giữ nguyên số gốc.*
 
@@ -13,11 +13,12 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Business Activity | [Business Activity] Warning Notice | Business Activity | `AF_WARNING` | Update | Văn bản nhắc nhở đối với công ty kiểm toán hoặc kiểm toán viên: FK → AF_PROFILES (công ty KT) hoặc AF_AUDITOR_PROFILES (KTV), thêm FK tùy chọn → AF_INSPECTION. | Audit Firm Warning | Fact Append | (1) Term candidate: `[Business Activity] Warning Notice` — BCV mô tả hoạt động cảnh báo/nhắc nhở nghiệp vụ. (2) Cấu trúc trường: AF_PROFILE_ID, AF_AUDITOR_PROFILE_ID (nullable), AF_INSPECTION_ID (nullable), TARGET_TYPE_CD, SOURCE_TYPE_CD, WARNING_DOC_NO, WARNING_ISSUE_DATE, WARNING_TYPE_CD. (3) Chọn `[Business Activity] Warning Notice`. Fact Append (sự kiện cảnh báo insert-only về nghiệp vụ). Phụ thuộc AF_PROFILES (T1) + AF_AUDITOR_PROFILES (T2) → Tier 3. |
-| Business Activity | [Business Activity] Enforcement Action | Business Activity | `AF_SUSPENSION` | Update | Đình chỉ hoạt động của công ty kiểm toán hoặc kiểm toán viên: TARGET_TYPE_CD phân biệt, FK → AF_INSPECTION tùy chọn. | Audit Firm Suspension | Fact Append | (1) Term candidate: `[Business Activity] Enforcement Action` — đình chỉ là hành động chế tài. (2) Cấu trúc trường: AF_PROFILE_ID, AF_AUDITOR_PROFILE_ID (nullable), AF_INSPECTION_ID (nullable), TARGET_TYPE_CD, SOURCE_TYPE_CD, SUSPENSION_DOC_NO, SUSPENSION_ISSUE_DATE, SUSPENSION_START/END_DATE. (3) Chọn `[Business Activity] Enforcement Action`. Fact Append. |
-| Business Activity | [Business Activity] Inspection | Business Activity | `AF_TECHNICAL_AUDIT` | Update | Kiểm tra hồ sơ kiểm toán (technical audit) trong một đợt kiểm tra: kết quả kiểm tra, số văn bản xử lý, nội dung vi phạm. | Audit Firm Technical Audit | Fact Append | (1) Term candidate: `[Business Activity] Inspection` — kiểm tra hồ sơ là sub-activity của đợt kiểm tra. (2) Cấu trúc trường: AF_PROFILE_ID, AF_INSPECTION_ID, INSPECTION_ENTITY_FILES, INSPECTION_YEAR, SIGNING_AUDITOR_NAME, INSPECTION_RESULT_CD, AUDIT_ACTION_CD, VIOLATION_CONTENT. (3) Chọn `[Business Activity] Inspection`. Fact Append. FK → AF_PROFILES (T1) + AF_INSPECTION (T3) → Tier 4. **Ghi vào điểm cần xác nhận.** |
+| Business Activity | [Business Activity] Warning Notice | Business Activity | `AF_WARNING` | Append | Văn bản nhắc nhở đối với công ty kiểm toán hoặc kiểm toán viên: FK → AF_PROFILES (công ty KT) hoặc AF_AUDITOR_PROFILES (KTV), thêm FK tùy chọn → AF_INSPECTION. | Audit Firm Warning | Fact Append | (1) Term candidate: `[Business Activity] Warning Notice` — BCV mô tả hoạt động cảnh báo/nhắc nhở nghiệp vụ. (2) Cấu trúc trường: AF_PROFILE_ID, AF_AUDITOR_PROFILE_ID (nullable), AF_INSPECTION_ID (nullable), TARGET_TYPE_CD, SOURCE_TYPE_CD, WARNING_DOC_NO, WARNING_ISSUE_DATE, WARNING_TYPE_CD. (3) Chọn `[Business Activity] Warning Notice`. Fact Append (sự kiện cảnh báo insert-only về nghiệp vụ). Phụ thuộc AF_PROFILES (T1) + AF_AUDITOR_PROFILES (T2) → Tier 3. |
+| Business Activity | [Business Activity] Enforcement Action | Business Activity | `AF_SANCTIONS` | Append | Quyết định xử phạt hành chính đối với công ty kiểm toán: số quyết định, ngày, nội dung xử phạt, URL file đính kèm. | Audit Firm Sanction | Fact Append | (1) Term candidate: `[Business Activity] Enforcement Action` — hành động chế tài/xử phạt. (2) Cấu trúc trường: AF_PROFILE_ID, SANCTION_AUTHORITY_CD, DECISION_NO, DECISION_DATE, SANCTION_CONTENT, ATTACHMENT_FILE_URL. (3) Chọn `[Business Activity] Enforcement Action`. Fact Append. FK → AF_PROFILES (T1); Tier 3 theo LLD. |
+| Business Activity | [Business Activity] Enforcement Action | Business Activity | `AF_SUSPENSION` | Append | Đình chỉ hoạt động của công ty kiểm toán hoặc kiểm toán viên: TARGET_TYPE_CD phân biệt, FK → AF_INSPECTION tùy chọn. | Audit Firm Suspension | Fact Append | (1) Term candidate: `[Business Activity] Enforcement Action` — đình chỉ là hành động chế tài. (2) Cấu trúc trường: AF_PROFILE_ID, AF_AUDITOR_PROFILE_ID (nullable), AF_INSPECTION_ID (nullable), TARGET_TYPE_CD, SOURCE_TYPE_CD, SUSPENSION_DOC_NO, SUSPENSION_ISSUE_DATE, SUSPENSION_START/END_DATE. (3) Chọn `[Business Activity] Enforcement Action`. Fact Append. |
+| Business Activity | [Business Activity] Inspection | Business Activity | `AF_TECHNICAL_AUDIT` | Append | Kiểm tra hồ sơ kiểm toán (technical audit) trong một đợt kiểm tra: kết quả kiểm tra, số văn bản xử lý, nội dung vi phạm. | Audit Firm Technical Audit | Fact Append | (1) Term candidate: `[Business Activity] Inspection` — kiểm tra hồ sơ là sub-activity của đợt kiểm tra. (2) Cấu trúc trường: AF_PROFILE_ID, AF_INSPECTION_ID, INSPECTION_ENTITY_FILES, INSPECTION_YEAR, SIGNING_AUDITOR_NAME, INSPECTION_RESULT_CD, AUDIT_ACTION_CD, VIOLATION_CONTENT. (3) Chọn `[Business Activity] Inspection`. Fact Append. FK → AF_PROFILES (T1) + AF_INSPECTION (T2) → Tier 3. |
 | Involved Party | [Involved Party] Employer | Involved Party | `AF_AUDITOR_PRACTICE_HISTORY` | Update | Lịch sử hành nghề của kiểm toán viên: công ty kiểm toán nơi hành nghề, hành nghề từ ngày / đến ngày. | Audit Firm Auditor Practice History | Relative | (1) Term candidate: `[Involved Party] Employer` — Organization là bên cung cấp công việc cho Individual; kèm `Employer Effective Date` (ngày Individual bắt đầu làm việc với Employer). (2) Cấu trúc trường: AF_AUDITOR_PROFILE_ID (FK KTV), PRACTICE_ORGANIZATION_ID (FK → AF_PROFILES), PRACTICE_FROM_DATE, PRACTICE_TO_DATE — mỗi dòng là 1 giai đoạn KTV hành nghề tại 1 công ty KT, có ngày kết thúc cập nhật được. (3) Chọn `[Involved Party] Employer`; không chọn `Status History` vì dòng không ghi thay đổi trạng thái mà ghi quan hệ KTV–công ty theo thời gian. Relative (SCD2; FK → Audit Firm Auditor T2 + Audit Firm T1). |
-| Business Activity | [Business Activity] Status History | Business Activity | `AF_AUDITOR_STATUS_HISTORY` | Update | Lịch sử thay đổi trạng thái của kiểm toán viên: loại sự kiện, ngày hiệu lực, lý do. | Auditor Status History | Fact Append | (1) Term candidate: `[Business Activity] Status History` — chuỗi sự kiện thay đổi trạng thái. (2) Cấu trúc trường: AF_AUDITOR_PROFILE_ID, EVENT_TYPE, EFFECTIVE_DATE, REASON, ADDITIONAL_DESC. (3) Chọn `[Business Activity] Status History`. Fact Append. FK → AF_AUDITOR_PROFILES (T2) → Tier 3. |
+| Business Activity | [Business Activity] Status History | Business Activity | `AF_AUDITOR_STATUS_HISTORY` | Append | Lịch sử thay đổi trạng thái của kiểm toán viên: loại sự kiện, ngày hiệu lực, lý do. | Audit Firm Auditor Status History | Fact Append | (1) Term candidate: `[Business Activity] Status History` — chuỗi sự kiện thay đổi trạng thái. (2) Cấu trúc trường: AF_AUDITOR_PROFILE_ID, EVENT_TYPE, EFFECTIVE_DATE, REASON, ADDITIONAL_DESC. (3) Chọn `[Business Activity] Status History`. Fact Append. FK → AF_AUDITOR_PROFILES (T2) → Tier 3. |
 
 ---
 
@@ -126,7 +127,7 @@ erDiagram
 ```mermaid
 erDiagram
 
-    Auditor_Profile {
+    Audit_Firm_Auditor {
         string audtr_prfl_id PK
     }
 
@@ -188,7 +189,7 @@ erDiagram
         date practice_to_dt
     }
 
-    Auditor_Status_History {
+    Audit_Firm_Auditor_Status_History {
         string audtr_st_his_id PK
         string audtr_prfl_id FK
         string evnt_tp_code
@@ -206,13 +207,13 @@ erDiagram
 
     Audit_Firm ||--o{ Audit_Firm_Inspection : "audt_firm_id"
     Audit_Firm ||--o{ Audit_Firm_Warning : "audt_firm_id"
-    Auditor_Profile ||--o| Audit_Firm_Warning : "audtr_prfl_id (nullable)"
+    Audit_Firm_Auditor ||--o| Audit_Firm_Warning : "audtr_prfl_id (nullable)"
     Audit_Firm ||--o{ Audit_Firm_Sanction : "audt_firm_id"
     Audit_Firm ||--o{ Audit_Firm_Suspension : "audt_firm_id"
-    Auditor_Profile ||--o| Audit_Firm_Suspension : "audtr_prfl_id (nullable)"
-    Auditor_Profile ||--o{ Audit_Firm_Auditor_Practice_History : "af_auditor_id (nullable)"
+    Audit_Firm_Auditor ||--o| Audit_Firm_Suspension : "audtr_prfl_id (nullable)"
+    Audit_Firm_Auditor ||--o{ Audit_Firm_Auditor_Practice_History : "af_auditor_id"
     Audit_Firm ||--o{ Audit_Firm_Auditor_Practice_History : "af_id"
-    Auditor_Profile ||--o{ Auditor_Status_History : "audtr_prfl_id"
+    Audit_Firm_Auditor ||--o{ Audit_Firm_Auditor_Status_History : "audtr_prfl_id"
 ```
 
 ---

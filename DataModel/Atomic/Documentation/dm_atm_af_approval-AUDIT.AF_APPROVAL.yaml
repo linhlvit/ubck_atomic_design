@@ -1,0 +1,261 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_approval-AUDIT.AF_APPROVAL
+  logical_name: Audit Firm Approval
+  physical_name: af_approval
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: AUDIT
+  description: |
+    Quyết định chấp thuận hoặc đình chỉ của BTC/UBCKNN đối với công ty kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng, SOURCE_TYPE_CD phân biệt cơ quan ban hành).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_APPROVAL
+
+attributes:
+  - name: Audit Firm Approval Id
+    physical_name: af_approval_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Approval Code
+    physical_name: af_approval_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_APPROVAL'"
+    etl_derived_value: AUDIT_AF_APPROVAL
+
+  - name: Audit Firm Id
+    physical_name: af_id
+    business_meaning: Link đến bảng AF_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.AF_PROFILE_ID
+    comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_APPROVAL.AF_PROFILE_ID = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: af_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_PROFILES.AUDIT_FIRM_CD
+    comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Id
+    physical_name: af_auditor_id
+    business_meaning: "Link đến bảng AF_AUDITOR_PROFILES — chỉ có giá trị khi TARGET_TYPE_CD = AUDITOR."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.AF_AUDITOR_PROFILE_ID
+    comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES', AF_AUDITOR_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Code
+    physical_name: af_auditor_code
+    business_meaning: Mã kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.AF_AUDITOR_PROFILE_ID
+    comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Target Type Code
+    physical_name: approval_target_tp_code
+    business_meaning: Chấp thuận Công ty kiểm toán hay Kiểm toán viên.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.TARGET_TYPE_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_TARGET_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_TARGET_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Source Type Code
+    physical_name: approval_src_tp_code
+    business_meaning: Chấp thuận từ BTC hay UBCKNN.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.SOURCE_TYPE_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Document Number
+    physical_name: approval_document_nbr
+    business_meaning: Số văn bản quyết định chấp thuận của BTC.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.APPROVAL_DOC_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Issue Date
+    physical_name: approval_issue_dt
+    business_meaning: Ngày văn bản quyết định chấp thuận của BTC.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.APPROVAL_ISSUE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Start Date
+    physical_name: approval_start_dt
+    business_meaning: Ngày bắt đầu quyết định chấp thuận của BTC.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.APPROVAL_START_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval End Date
+    physical_name: approval_end_dt
+    business_meaning: Ngày kết thúc quyết định chấp thuận của BTC.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.APPROVAL_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Approval Content
+    physical_name: approval_content
+    business_meaning: Nội dung quyết định chấp thuận của BTC.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.APPROVAL_CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Affiliation End Date
+    physical_name: affiliation_end_dt
+    business_meaning: Ngày kiểm toán viên không còn thuộc công ty kiểm toán nữa.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.AFFILIATION_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Affiliation Number
+    physical_name: affiliation_nbr
+    business_meaning: Số văn bản giảm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.AFFILIATION_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Affiliation Change Reason Description
+    physical_name: affiliation_change_reason_description
+    business_meaning: Lý do thay đổi/giảm chấp thuận.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_APPROVAL
+    source_column: AUDIT.AF_APPROVAL.AFFILIATION_CHANGE_REASON
+    comment: Nguồn VARCHAR2(4000).
+    classification_context: null
+    etl_derived_value: null

@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_report_extension-IDS.REPORT_EXTENSIONS
+  logical_name: Public Company Report Extension
+  physical_name: pc_report_extension
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Filing"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Hồ sơ xin gia hạn nộp báo cáo định kỳ của CTĐC: lý do xin gia hạn, thời gian gia hạn được chấp thuận.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-REPORT_EXTENSIONS
+
+attributes:
+  - name: Public Company Report Extension Id
+    physical_name: pc_rpt_extension_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Filing\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Report Extension Code
+    physical_name: pc_rpt_extension_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_REPORT_EXTENSIONS'"
+    etl_derived_value: IDS_REPORT_EXTENSIONS
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Khóa link đến bảng COMPANY_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.COMPANY_PROFILE_ID
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.COMPANY_PROFILE_ID
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template Id
+    physical_name: fr_template_id
+    business_meaning: Id mẫu form CBTT áp dụng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.FORM_CD
+    comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Template Code
+    physical_name: fr_template_code
+    business_meaning: Mã mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.FORM_CD
+    comment: "Lookup pair: fr_template.fr_template_code. Pair with Financial Report Template Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Period Name
+    physical_name: rpt_period_nm
+    business_meaning: Tên kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.REPORT_PERIOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Extension Day Count
+    physical_name: extension_day_count
+    business_meaning: Số ngày gia hạn.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.EXTENSION_DAYS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Official Letter Number
+    physical_name: official_letter_nbr
+    business_meaning: Số công văn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.DOC_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Official Letter Date
+    physical_name: official_letter_dt
+    business_meaning: Ngày công văn.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.DOC_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.REPORT_YEAR
+    comment: Nguồn NUMBER(4) — năm báo cáo.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Quarter
+    physical_name: rpt_quarter
+    business_meaning: Quý báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_EXTENSIONS
+    source_column: IDS.REPORT_EXTENSIONS.REPORT_QUARTER
+    comment: null
+    classification_context: null
+    etl_derived_value: null

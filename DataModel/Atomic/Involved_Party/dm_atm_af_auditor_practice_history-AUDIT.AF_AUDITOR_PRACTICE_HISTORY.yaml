@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_auditor_practice_history-AUDIT.AF_AUDITOR_PRACTICE_HISTORY
+  logical_name: Audit Firm Auditor Practice History
+  physical_name: af_auditor_practice_history
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Employer"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: AUDIT
+  description: |
+    Lịch sử hành nghề của kiểm toán viên: công ty kiểm toán là nơi hành nghề và khoảng thời gian hành nghề (từ ngày – đến ngày).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_AUDITOR_PRACTICE_HISTORY
+
+attributes:
+  - name: Audit Firm Auditor Practice History Id
+    physical_name: af_auditor_practice_history_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Employer\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Practice History Code
+    physical_name: af_auditor_practice_history_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: AUDIT.AF_AUDITOR_PRACTICE_HISTORY.ID
+    comment: BK chính. PK nguồn NUMBER(10).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_AUDITOR_PRACTICE_HISTORY'"
+    etl_derived_value: AUDIT_AF_AUDITOR_PRACTICE_HISTORY
+
+  - name: Audit Firm Auditor Id
+    physical_name: af_auditor_id
+    business_meaning: Khóa link đến bảng AF_AUDITOR_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: AUDIT.AF_AUDITOR_PRACTICE_HISTORY.AF_AUDITOR_PROFILE_ID
+    comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES', AF_AUDITOR_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Code
+    physical_name: af_auditor_code
+    business_meaning: Mã kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: AUDIT.AF_AUDITOR_PRACTICE_HISTORY.AF_AUDITOR_PROFILE_ID
+    comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Id
+    physical_name: af_id
+    business_meaning: "Công ty kiểm toán là nơi hành nghề, link đến bảng AF_PROFILES."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: AUDIT.AF_AUDITOR_PRACTICE_HISTORY.PRACTICE_ORGANIZATION_ID
+    comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_AUDITOR_PRACTICE_HISTORY.PRACTICE_ORGANIZATION_ID = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: af_code
+    business_meaning: Mã công ty kiểm toán là nơi hành nghề.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: AUDIT.AF_PROFILES.AUDIT_FIRM_CD
+    comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id. Giá trị lấy từ AUDIT.AF_PROFILES.AUDIT_FIRM_CD sau ETL crosswalk — chi tiết xem comment Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Practice From Date
+    physical_name: practice_from_dt
+    business_meaning: Hành nghề từ ngày.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: AUDIT.AF_AUDITOR_PRACTICE_HISTORY.PRACTICE_FROM_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Practice To Date
+    physical_name: practice_to_dt
+    business_meaning: "Hành nghề đến ngày. NULL = đang hành nghề."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_AUDITOR_PRACTICE_HISTORY
+    source_column: AUDIT.AF_AUDITOR_PRACTICE_HISTORY.PRACTICE_TO_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

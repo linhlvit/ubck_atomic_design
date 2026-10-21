@@ -1,0 +1,513 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_technical_audit-AUDIT.AF_TECHNICAL_AUDIT
+  logical_name: Audit Firm Technical Audit
+  physical_name: af_technical_audit
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Inspection"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  description: |
+    Kết quả kiểm tra hồ sơ kiểm toán cụ thể trong một đợt kiểm tra tổng thể: hồ sơ được kiểm tra, kết quả, hành động xử lý, nội dung vi phạm.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_TECHNICAL_AUDIT
+
+attributes:
+  - name: Audit Firm Technical Audit Id
+    physical_name: af_technical_audit_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Inspection\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Technical Audit Code
+    physical_name: af_technical_audit_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_TECHNICAL_AUDIT'"
+    etl_derived_value: AUDIT_AF_TECHNICAL_AUDIT
+
+  - name: Audit Firm Id
+    physical_name: af_id
+    business_meaning: Link đến bảng AF_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.AF_PROFILE_ID
+    comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_TECHNICAL_AUDIT.AF_PROFILE_ID = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: af_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_PROFILES.AUDIT_FIRM_CD
+    comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Inspection Id
+    physical_name: af_inspection_id
+    business_meaning: Link đến bảng AF_INSPECTION.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.AF_INSPECTION_ID
+    comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('AUDIT_AF_INSPECTION', AF_INSPECTION_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Inspection Code
+    physical_name: af_inspection_code
+    business_meaning: Mã đợt kiểm tra.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.AF_INSPECTION_ID
+    comment: "Lookup pair: af_inspection.af_inspection_code. Pair with Audit Firm Inspection Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Inspection Entity Files
+    physical_name: inspection_entity_files
+    business_meaning: Tên hồ sơ kiểm tra (chọn MCK hoặc nhập tay).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_ENTITY_FILES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Inspection Year
+    physical_name: inspection_year
+    business_meaning: Năm kiểm tra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_YEAR
+    comment: Nguồn VARCHAR2(4) — giữ Text.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Signing Auditor Name
+    physical_name: signing_auditor_nm
+    business_meaning: Kiểm toán viên ký BCTC (chọn từ danh sách KTV).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.SIGNING_AUDITOR_NAME
+    comment: "Denormalized — nguồn chỉ lưu tên text, không có cột FK Id đến AF_AUDITOR_PROFILES tại bảng này."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Representative Name
+    physical_name: legal_representative_nm
+    business_meaning: Lãnh đạo ký BCTC (chọn từ danh sách KTV).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LEGAL_REPRESENTATIVE_NAME
+    comment: Denormalized — nguồn chỉ lưu tên text.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Inspection Result Code
+    physical_name: inspection_result_code
+    business_meaning: Kết quả kiểm tra (Tốt; Đạt; Không đạt; Kém).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_RESULT_CD
+    comment: "Scheme: AUDIT_AF_TECHNICAL_AUDIT_RESULT (no_lookup) — chưa liệt kê trong HLD Tier3 6d, bổ sung scheme mới."
+    classification_context: AUDIT_AF_TECHNICAL_AUDIT_RESULT
+    etl_derived_value: null
+
+  - name: Audit Action Code
+    physical_name: audit_action_code
+    business_meaning: Hình thức quyết định (Quyết định đình chỉ; Công văn nhắc nhở).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.AUDIT_ACTION_CD
+    comment: "Scheme: AUDIT_AF_TECHNICAL_AUDIT_ACTION (no_lookup) — chưa liệt kê trong HLD Tier3 6d, bổ sung scheme mới."
+    classification_context: AUDIT_AF_TECHNICAL_AUDIT_ACTION
+    etl_derived_value: null
+
+  - name: Action Type Code
+    physical_name: action_tp_code
+    business_meaning: "Hình thức xử lý (Sau kiểm tra, Qua công tác giám sát)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning: Số văn bản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.DOCUMENT_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Date
+    physical_name: document_dt
+    business_meaning: Ngày văn bản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.DOCUMENT_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Violation Content
+    physical_name: violation_content
+    business_meaning: Nội dung vi phạm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.VIOLATION_CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective From Date
+    physical_name: effective_from_dt
+    business_meaning: "Thời gian hiệu lực - Từ ngày."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.EFFECTIVE_FROM_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective To Date
+    physical_name: effective_to_dt
+    business_meaning: "Thời gian hiệu lực - Đến ngày."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.EFFECTIVE_TO_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reason Description
+    physical_name: reason_description
+    business_meaning: Lý do (KTV).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.REASON
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Inspection Result Code
+    physical_name: leadership_inspection_result_code
+    business_meaning: Kết quả kiểm tra (Lãnh đạo).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_INSPECTION_RESULT_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Audit Action Code
+    physical_name: leadership_audit_action_code
+    business_meaning: Hình thức xử lý (Lãnh đạo).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_AUDIT_ACTION_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_AUDIT_ACTION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDIT_ACTION')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Reason Description
+    physical_name: leadership_reason_description
+    business_meaning: Lý do (Lãnh đạo).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_REASON
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Document Number
+    physical_name: leadership_document_nbr
+    business_meaning: Số văn bản (Lãnh đạo).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_DOCUMENT_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Document Date
+    physical_name: leadership_document_dt
+    business_meaning: Ngày văn bản (Lãnh đạo).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_DOCUMENT_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Violation Content
+    physical_name: leadership_violation_content
+    business_meaning: Nội dung vi phạm (Lãnh đạo).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_VIOLATION_CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Effective From Date
+    physical_name: leadership_effective_from_dt
+    business_meaning: Từ ngày (Lãnh đạo).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_EFFECTIVE_FROM_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Effective To Date
+    physical_name: leadership_effective_to_dt
+    business_meaning: Đến ngày (Lãnh đạo).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_EFFECTIVE_TO_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Inspection Unit Code
+    physical_name: inspection_unit_code
+    business_meaning: Đơn vị thực hiện kiểm tra.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_UNIT
+    comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_UNIT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_UNIT')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Inspection Type Code
+    physical_name: inspection_tp_code
+    business_meaning: Hình thức kiểm tra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Inspection Other Unit Name
+    physical_name: inspection_other_unit_nm
+    business_meaning: Tên đơn vị kiểm tra khác (nhập tay khi Inspection Unit Code chọn Khác).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.INSPECTION_OTHER_UNIT
+    comment: "Nguồn không có mô tả cột, mô tả suy từ tên cột; cần xác nhận. Nguồn VARCHAR2(1020)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Consider Next Year Processing Code
+    physical_name: consider_next_year_processing_code
+    business_meaning: Hình thức xử lý xem xét ở năm kiểm tra tiếp theo (KTV).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.CONSIDER_NEXT_YEAR_PROCESSING
+    comment: "SCHEMA_CODE=AUDIT.AF_NEXT_YEAR_PROCESSING. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_NEXT_YEAR_PROCESSING')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Other Processing Description
+    physical_name: other_processing_description
+    business_meaning: Nội dung xử lý khác (KTV).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.OTHER_PROCESSING
+    comment: "Nguồn không có mô tả cột, mô tả suy từ tên cột; cần xác nhận. Nguồn VARCHAR2(2048)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Consider Next Year Processing Code
+    physical_name: leadership_consider_next_year_processing_code
+    business_meaning: Hình thức xử lý xem xét ở năm kiểm tra tiếp theo (Lãnh đạo).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_CONSIDER_NEXT_YEAR_PROCESSING
+    comment: "SCHEMA_CODE=AUDIT.AF_NEXT_YEAR_PROCESSING. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_NEXT_YEAR_PROCESSING')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Leadership Other Processing Description
+    physical_name: leadership_other_processing_description
+    business_meaning: Nội dung xử lý khác (Lãnh đạo).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_TECHNICAL_AUDIT
+    source_column: AUDIT.AF_TECHNICAL_AUDIT.LD_OTHER_PROCESSING
+    comment: "Nguồn không có mô tả cột, mô tả suy từ tên cột; cần xác nhận. Nguồn VARCHAR2(2048)."
+    classification_context: null
+    etl_derived_value: null

@@ -32,21 +32,21 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: null
-    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+    comment: "PK surrogate. Hash: hash_id('IDS_SECURITIES_OFFERING', APPLICATION_CD). BCV: \"[Business Activity] Business Activity\"."
     classification_context: null
     etl_derived_value: null
 
   - name: Public Company Securities Offering Code
     physical_name: pc_securities_offering_code
-    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    business_meaning: Khóa chính. BK của entity — mã hồ sơ đăng ký chào bán/phát hành.
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: IDS
     source_table: SECURITIES_OFFERING
-    source_column: IDS.SECURITIES_OFFERING.ID
-    comment: "BK chính. PK nguồn NUMBER(10,0) tự tăng."
+    source_column: IDS.SECURITIES_OFFERING.APPLICATION_CD
+    comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang APPLICATION_CD theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live (APPLICATION_CD hiện không khai báo NOT NULL trong nguồn)."
     classification_context: null
     etl_derived_value: null
 
@@ -64,17 +64,17 @@ attributes:
     classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING'"
     etl_derived_value: IDS_SECURITIES_OFFERING
 
-  - name: Applicant Type Indicator
-    physical_name: applicant_tp_ind
+  - name: Legal Entity Type Code
+    physical_name: legal_entity_tp_code
     business_meaning: "Phân loại bên đăng ký chào bán: tổ chức hay cá nhân."
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Classification Value
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPLICANT_TYPE_FLG
-    comment: "Encoding nguồn: 1 = Tổ chức (dùng Public Company Id), 0 = Cá nhân (dùng Legal Entity Id)."
+    comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE'). Xử lý CASE WHEN dựa trên giá trị của APPLICANT_TYPE_FLG (1-TC, 2-CN)."
     classification_context: null
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.COMPANY_PROFILE_ID
-    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID) | Loại trừ nhau với Legal Entity Id — xem metadata.notes."
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID) | Loại trừ nhau với Legal Entity Id — xem metadata.notes."
     classification_context: null
     etl_derived_value: null
 
@@ -116,7 +116,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.LEGAL_ENTITY_ID
-    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID) | Loại trừ nhau với Public Company Id — xem metadata.notes."
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES', LEGAL_ENTITY_ID) | Loại trừ nhau với Public Company Id — xem metadata.notes."
     classification_context: null
     etl_derived_value: null
 
@@ -134,22 +134,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Application Code
-    physical_name: application_code
-    business_meaning: Mã hồ sơ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: SECURITIES_OFFERING
-    source_column: IDS.SECURITIES_OFFERING.APPLICATION_CD
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
   - name: Administrative Procedure Code
-    physical_name: administrative_procedure_code
+    physical_name: ap_code
     business_meaning: Thủ tục hành chính áp dụng.
     data_domain: Classification Value
     data_type: string
@@ -158,8 +144,8 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD
-    comment: "Scheme: IDS_SO_ADMINISTRATIVE_PROC (source_table, LOOKUP_VALUES LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: IDS_SO_ADMINISTRATIVE_PROC
+    comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_PROCEDURE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_ADMINISTRATIVE_PROCEDURE')."
+    classification_context: null
     etl_derived_value: null
 
   - name: Administrative Status Code
@@ -172,8 +158,8 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.ADMINISTRATIVE_STATUS_CD
-    comment: "Scheme: IDS_SO_ADMINISTRATIVE_STATUS (source_table, LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: IDS_SO_ADMINISTRATIVE_STATUS
+    comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
+    classification_context: null
     etl_derived_value: null
 
   - name: Certificate Number
@@ -410,8 +396,8 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD
-    comment: "Scheme: IDS_SO_APPROVAL_STATUS (source_table, LOOKUP_GROUP = 'SO_APPROVAL_STATUS') — chưa có trong HLD 6d, bổ sung scheme mới."
-    classification_context: IDS_SO_APPROVAL_STATUS
+    comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
+    classification_context: null
     etl_derived_value: null
 
   - name: Approver User Id
@@ -424,7 +410,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -442,8 +428,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Approver User Name Snapshot
-    physical_name: approver_user_nm_snpst
+  - name: Approver User Name
+    physical_name: approver_user_nm
     business_meaning: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập với Approver User Code)."
     data_domain: Text
     data_type: string
@@ -466,7 +452,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
     classification_context: null
     etl_derived_value: null
 
@@ -484,8 +470,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Processor User Name Snapshot
-    physical_name: processor_user_nm_snpst
+  - name: Processor User Name
+    physical_name: processor_user_nm
     business_meaning: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS).
     data_domain: Text
     data_type: string
@@ -523,34 +509,6 @@ attributes:
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.MULTI_TURN_FLG
     comment: "Encoding nguồn: 1 = Có nhiều đợt, 0 = Không."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Synced From External System Indicator
-    physical_name: synced_from_external_stm_ind
-    business_meaning: Đánh dấu hồ sơ được đồng bộ từ hệ thống TTHC hay tạo mới tại IDS.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: SECURITIES_OFFERING
-    source_column: IDS.SECURITIES_OFFERING.IS_SYNC
-    comment: "Encoding nguồn: 1 = Đồng bộ từ TTHC, 0 = Tạo mới tại IDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Deleted Indicator
-    physical_name: deleted_ind
-    business_meaning: Đánh dấu trạng thái xóa mềm.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: SECURITIES_OFFERING
-    source_column: IDS.SECURITIES_OFFERING.DELETE_FLG
-    comment: "Encoding nguồn: 1 = Đã xóa, 0 = Chưa xóa."
     classification_context: null
     etl_derived_value: null
 

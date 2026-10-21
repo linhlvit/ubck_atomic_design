@@ -13,24 +13,11 @@
 | T1 | Business Direction | [Business Direction] Business Plan | Regulatory Planning | EXAMINATION_ANNUAL_PLAN | Update | Kế hoạch kiểm tra hàng năm: cấu trúc đồng nhất với INSPECTION_ANNUAL_PLAN, dành cho đoàn kiểm tra | Examination Annual Plan | Fundamental | (1) Business Plan — BCV: cùng mô tả. (2) Bảng: cấu trúc hoàn toàn đồng nhất với INSPECTION_ANNUAL_PLAN. (3) Tách entity riêng vì Inspection và Examination là 2 loại hình khác thẩm quyền. Cùng BCV Concept, khác prefix. |
 | T1 | Communication | [Communication] Feedback | Petition Management | PETITION | Update | Đơn thư công dân/tổ chức: PETITION_CATEGORY(FEEDBACK_SUGGESTION/COMPLAINT/DENUNCIATION), self-ref đơn trùng, STATUS | Petition | Fundamental | (1) Feedback — BCV: "a Communication to offer a compliment or a complaint". Complaint — BCV sub-type: "indicate dissatisfaction". (2) Bảng: PETITION_CATEGORY(3 values), SENDER_NAME/ADDRESS, self-ref ORIGINAL_PETITION_ID, STATUS. (3) Dùng Feedback (parent) thay Complaint vì FEEDBACK_SUGGESTION không phải "dissatisfaction" — Feedback bao hàm cả 3 loại đơn thư. |
 | T1 | Business Direction | [Business Direction] Law | Legal Reference | LEGAL_DOCUMENT | Update | Danh mục văn bản pháp luật làm căn cứ xử phạt: CODE(VBPL-XXXX), NAME, ISSUED_DATE, STATUS(ACTIVE/INACTIVE) | Legal Document | Fundamental | (1) Law — BCV: "a Business Direction defining binding rules legally enforceable; failure to comply may result in penalty". (2) Bảng: CODE(VBPL-XXXX), NAME, ISSUED_DATE, STATUS lifecycle. (3) Chọn Law: bảng lưu văn bản pháp luật làm căn cứ xử phạt. Có ISSUED_DATE + STATUS lifecycle → Fundamental (không phải Classification Value thuần túy). |
-| T1 | Event | [Event] Event | Regulatory Communication | PROACTIVE_NOTICE | Update | Thông báo chủ động phát đi: NOTICE_TYPE(4 values), PRIORITY, STATUS(DRAFT/SENT), không FK đến inspection/examination | Proactive Notice | Fundamental | (1) Notification — BCV: "a Communication to convey information; e.g., update notifying of a policy change, circular". Announcement — BCV: "to make information public or widely known". (2) Bảng: TITLE, CONTENT, NOTICE_TYPE, PRIORITY, SENT_AT, STATUS(DRAFT/SENT). (3) Chọn Notification (không Announcement): mục đích truyền đạt thông tin định hướng/nhắc nhở nội bộ, không phải công bố rộng rãi. |
-| T1 | Business Activity | [Business Activity] Conduct Violation | Enforcement | SECURITY_MEASURE_DECISION | Update | Quyết định biện pháp ngăn chặn/khẩn cấp: MEASURE_TYPE(BAN_POSITION/BAN_ACTIVITY/FREEZE_ACCOUNT/OTHER), không FK đến VIOLATION_CASE | Security Measure Decision | Fundamental | (1) Conduct Violation — BCV: "a Business Activity that breaches a business code of conduct". (2) Bảng: DECISION_NUMBER, MEASURE_TYPE(4 values), EFFECTIVE_DATE, DURATION_MONTHS, SIGNER_NAME — quyết định hành chính độc lập. (3) Không có BCV term cho "administrative preventive measure decision". Conduct Violation là gần nhất vì đây là hoạt động xử lý vi phạm pháp lý. Ghi nhận T1-04 để review. |
 | T1 | Business Direction | [Business Direction] Law | Regulatory Catalog | PENALTY_TYPE | Update | Danh mục hình thức xử phạt hành chính: CATEGORY(PRIMARY/SUPPLEMENTARY/REMEDIAL), STATUS(ACTIVE/INACTIVE), LEGAL_BASIS | Classification THANHTRA Penalty Type | Classification | (1) Law — BCV: "defines binding rules legally enforceable". (2) Bảng: CODE(UNIQUE), NAME, CATEGORY(3 values), STATUS lifecycle, LEGAL_BASIS. (3) Không thuần Code+Name vì có CATEGORY, STATUS, LEGAL_BASIS → Fundamental. Law phù hợp vì các hình thức xử phạt được pháp luật quy định. |
 | T2 | Business Activity | [Business Activity] Business Review | Inspection | INSPECTION_TEAM | Update | Hồ sơ đoàn thanh tra: CODE(HSTT-YYYY-XXX), FK→ANNUAL_PLAN(nullable), FORM_TYPE(PERIODIC/UNSCHEDULED), DECISION_NUMBER | Inspection Team | Fundamental | (1) Business Review — BCV: "a Business Activity in which business operations are studied and compared to business objectives". (2) Bảng: CODE(HSTT-YYYY-XXX), FK→INSPECTION_ANNUAL_PLAN(nullable), PLAN_YEAR, FORM_TYPE, DECISION_NUMBER(UNIQUE), rich inspection details, VERIFICATION_MINUTES_SIGN_DATE. (3) Business Review là BCV term phù hợp nhất cho hoạt động thanh tra (review operations vs objectives). Không có "Regulatory Inspection" trong BCV. |
 | T2 | Business Activity | [Business Activity] Business Review | Examination | EXAMINATION_TEAM | Update | Hồ sơ đoàn kiểm tra: CODE(HSKT-YYYY-XXX), FK→ANNUAL_PLAN(nullable), UNIT_ID/UNIT_NAME, FORM_TYPE | Examination Team | Fundamental | (1) Business Review — BCV: cùng mô tả. (2) Bảng: CODE(HSKT-YYYY-XXX), FK→EXAMINATION_ANNUAL_PLAN(nullable), UNIT_ID, UNIT_NAME, FORM_TYPE, DECISION_NUMBER(UNIQUE). (3) Business Review khớp. Tách 2 entity vì Inspection và Examination khác thẩm quyền. |
 | T2 | Business Activity | [Business Activity] Business Review | Inspection Target | INSPECTION_ANNUAL_PLAN_TARGET | Update | Danh sách đối tượng thanh tra trong kế hoạch năm: TARGET_TYPE(3 values), TARGET_NAME | Inspection Annual Plan Target | Fundamental | (1) Business Plan — entity này mở rộng kế hoạch với danh sách mục tiêu. (2) Bảng: FK→INSPECTION_ANNUAL_PLAN, TARGET_TYPE(SECURITIES_COMPANY/FUND_MANAGEMENT_COMPANY/PUBLIC_COMPANY), TARGET_NAME. (3) Relative của TT Inspection Annual Plan, tên chứa parent ✓. |
 | T2 | Business Activity | [Business Activity] Business Review | Examination Target | EXAMINATION_ANNUAL_PLAN_TARGET | Update | Danh sách đối tượng kiểm tra trong kế hoạch năm: cấu trúc tương tự INSPECTION_ANNUAL_PLAN_TARGET | Examination Annual Plan Target | Fundamental | (1) Business Plan — cùng mô tả. (2) Cấu trúc đồng nhất với INSPECTION_ANNUAL_PLAN_TARGET. (3) Relative của TT Examination Annual Plan, tên chứa parent ✓. |
-| T2 | Business Activity | [Business Activity] Conduct Violation | Security Measure Subject | SECURITY_MEASURE_DECISION_SUBJECT | Update | Đối tượng bị áp dụng biện pháp ngăn chặn: SUBJECT_TYPE, SUBJECT_NAME, SUBJECT_ID_NUMBER | Security Measure Decision Subject | Fundamental | (1) Involved Party — BCV: "an Entity involved in the Financial Institution's business". (2) Bảng: FK→SECURITY_MEASURE_DECISION, SUBJECT_TYPE, SUBJECT_NAME, SUBJECT_ID_NUMBER — thông tin định danh từng đối tượng bị ngăn chặn. (3) Involved Party khớp — mỗi dòng là 1 đối tượng (Involved Party) trong bối cảnh biện pháp ngăn chặn. Tên chứa "TT Security Measure Decision" ✓. |
-| T2 | Business Activity | [Business Activity] Conduct Violation | Security Measure Recipient | SECURITY_MEASURE_DECISION_RECIPIENT | Update | Đơn vị nhận quyết định ngăn chặn: RECIPIENT_TYPE(5 values), RECIPIENT_NAME | Security Measure Decision Recipient | Fundamental | (1) Communication — BCV: "an exchange of information with an Involved Party". (2) Bảng: FK→SECURITY_MEASURE_DECISION, RECIPIENT_TYPE(5 values), RECIPIENT_NAME — danh sách đơn vị nhận bản sao quyết định. (3) Không có BCV term cho "decision recipient list". Communication là parent concept phù hợp nhất. Tên chứa "TT Security Measure Decision" ✓. |
-| T2 | Business Activity | [Business Activity] Business Review | Security Measure Execution | SECURITY_MEASURE_EXECUTION | Update | Kết quả thực thi biện pháp ngăn chặn: REPORTER_NAME, REPORT_DATE, EXECUTION_RESULT(3 values) | Security Measure Execution | Fundamental | (1) Business Review — BCV: "Status Review" sub-type: "a Business Activity in which the status of an item is reviewed". (2) Bảng: FK→SECURITY_MEASURE_DECISION, REPORTER_NAME, REPORT_DATE, EXECUTION_RESULT(FULLY_EXECUTED/IN_PROGRESS/NOT_EXECUTED). (3) Status Review (sub-type Business Review) phù hợp nhất — báo cáo kết quả thực thi. Tên chứa "TT Security Measure" ✓. |
-| T2 | Business Activity | [Business Activity] Business Review | Citizen Reception | CITIZEN_RECEPTION | Update | Buổi tiếp công dân: RECEPTION_DATE, RECEIVER_ID, SUBJECT_TYPE, NUMBER_OF_PEOPLE, FK→PETITION(nullable) | Citizen Reception | Fundamental | (1) Business Review — BCV: gần nhất cho "formal reception/meeting activity". (2) Bảng: RECEPTION_DATE, RECEIVER_ID, SUBJECT_TYPE, SUBJECT_NAME, NUMBER_OF_PEOPLE, SUMMARY, FK→PETITION(nullable). (3) Không có BCV term cho "citizen reception". Business Review phù hợp — hoạt động gặp mặt/xem xét vụ việc. FK→PETITION nullable → Fundamental. |
-| T2 | Business Activity | [Business Activity] Business Review | Citizen Reception | CITIZEN_RECEPTION_PARTICIPANT | Update | Người tham gia buổi tiếp công dân (bảng mới): FK→CITIZEN_RECEPTION, PARTICIPANT_TYPE(RECEIVER/COORDINATOR), USER_ID/USER_FULL_NAME | Citizen Reception Participant | Fundamental | Kế thừa BCV Concept của Citizen Reception (parent). Thay thế cột RECEIVER_ID/RECEIVER_NAME (nay DEPRECATED trên CITIZEN_RECEPTION). Chi tiết xem THANHTRA_HLD_Tier2.md. |
-| T2 | Business Activity | [Business Activity] Business Review | Citizen Reception | CITIZEN_RECEPTION_SUBJECT | Update | Chi tiết đối tượng được tiếp (bảng mới): FK→CITIZEN_RECEPTION, FULL_NAME/ID_NUMBER hoặc ORGANIZATION_NAME/BUSINESS_REGISTRATION_NUMBER | Citizen Reception Subject | Fundamental | Kế thừa BCV Concept của Citizen Reception (parent). Thay thế cột SUBJECT_NAME (nay DEPRECATED trên CITIZEN_RECEPTION). Chi tiết xem THANHTRA_HLD_Tier2.md. |
-| T2 | Business Activity | [Business Activity] Business Review | Citizen Reception | CITIZEN_RECEPTION_PETITION_LINK | Update | Liên kết 1 buổi tiếp với nhiều đơn thư (bảng mới): FK→CITIZEN_RECEPTION, FK→PETITION | Citizen Reception X Petition Relationship | Relative | Domain Prefix rỗng (entity link bắc cầu 2 domain). Thay thế cột PETITION_ID (nay DEPRECATED trên CITIZEN_RECEPTION). Chi tiết xem THANHTRA_HLD_Tier2.md. |
-| T2 | Communication | [Communication] Feedback | Petition Processing Document | PETITION_DOCUMENT | Update | Văn bản xử lý đơn thư: DOCUMENT_TYPE(8 loại), DOCUMENT_NUMBER, nội dung, người ký | Petition Document | Fundamental | (1) Feedback — đồng concept với TT Petition parent. Communication — BCV: "an exchange of information". (2) Bảng: FK→PETITION, DOCUMENT_TYPE(8 values), DOCUMENT_NUMBER, DOCUMENT_DATE, CONTENT, CLASSIFICATION_RESULT, PROPOSED_ACTION, SIGNER_NAME. (3) Artifact của quy trình xử lý Petition. Relative → tên chứa "TT Petition" ✓. |
-| T2 | Communication | [Communication] Feedback | Petition Processing Assignment | PETITION_INTERNAL_TRANSFER_UNIT | Update | Đơn vị nội bộ được chuyển xử lý đơn (bảng mới): FK→PETITION, UNIT_ID/UNIT_NAME | Petition X Regulatory Authority Organization Unit Relationship | Relative | Domain Prefix rỗng (entity link bắc cầu Petition — Regulatory Authority Organization Unit, entity đã có ở NHNCK). Thay thế cột INTERNAL_TRANSFER_UNIT_ID/NAME (nay DEPRECATED trên PETITION). Chi tiết xem THANHTRA_HLD_Tier2.md. |
-| T2 | Communication | [Communication] Feedback | Petition Target | PETITION_TARGET | Update | Đối tượng được đề cập trong đơn thư (bảng mới): FK→PETITION, TARGET_TYPE(4 values), TARGET_REFERENCE_ID, TARGET_NAME | Petition Target | Fundamental | Kế thừa BCV Concept của Petition (parent). Polymorphic reference — giữ pattern đã dùng ở Inspection/Examination Team Target. Thay thế cột TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME (nay DEPRECATED trên PETITION). Chi tiết xem THANHTRA_HLD_Tier2.md. |
-| T2 | Event | [Event] Event | Proactive Notice Recipient | PROACTIVE_NOTICE_RECIPIENT | Update | Danh sách công ty nhận thông báo chủ động: COMPANY_CODE, RECIPIENT_TYPE | Proactive Notice Recipient | Fundamental | (1) Notification — entity này ghi nhận recipients của Notification. (2) Bảng: FK→PROACTIVE_NOTICE, COMPANY_CODE, RECIPIENT_TYPE. (3) Relative → tên chứa "TT Proactive Notice" ✓. |
 | T2 | Business Activity | [Business Activity] Conduct Violation | Violation Behavior Catalog | VIOLATION_BEHAVIOR | Update | Danh mục hành vi vi phạm hành chính: CODE(UNIQUE), FK→PENALTY_TYPE, MIN/MAX_FINE_AMOUNT, REMEDIAL_MEASURE, VIOLATION_CLAUSE | Violation Behavior | Fundamental | (1) Conduct Violation — BCV: "a Business Activity that breaches a business code of conduct". (2) Bảng: CODE(UNIQUE), NAME, FK→PENALTY_TYPE, MIN_FINE_AMOUNT, MAX_FINE_AMOUNT, REMEDIAL_MEASURE, VIOLATION_CLAUSE — danh mục hành vi với mức phạt min/max, căn cứ pháp lý. (3) Không thuần Code+Name vì có FK + fine range → Fundamental. Conduct Violation phù hợp hơn Law vì đây mô tả hành vi vi phạm cụ thể. |
 | T3 | Business Activity | [Business Activity] Conduct Violation | VPHC Case | VIOLATION_CASE | Update | Hồ sơ xử lý vi phạm hành chính: SOURCE_CATEGORY(5 types), FK→INSPECTION/EXAMINATION_TEAM(nullable), STATUS(5 states) | Violation Case | Fundamental | (1) Conduct Violation — BCV: "a Business Activity that breaches a business code of conduct of the Financial Institution". (2) Bảng: CODE, NAME, SOURCE_CATEGORY(5 values), FK→INSPECTION_TEAM(nullable), FK→EXAMINATION_TEAM(nullable), ASSIGNED_OFFICER_ID, STATUS(NEW/PROCESSING/DECISION_ISSUED/ENFORCED/CLOSED), BOND fields. (3) Conduct Violation khớp hoàn toàn — entity hồ sơ vi phạm pháp luật với lifecycle đầy đủ. |
 | T3 | Business Activity | [Business Activity] Conduct Violation | Violation Record | VIOLATION_RECORD | Update | Biên bản vi phạm hành chính: RECORD_NUMBER, RECORD_TYPE(PAPER/ELECTRONIC), FK suy luận→Teams, STATUS(DRAFT→SIGNED→NUMBERED→SENT) | Violation Record | Fundamental | (1) Form Document — BCV: "a Documentation Item in a standard template layout requiring additional information". (2) Bảng: RECORD_NUMBER, RECORD_TYPE(2 values), FK suy luận→INSPECTION/EXAMINATION_TEAM, SUBJECT_TYPE/NAME/ID_NUMBER, STATUS(4 states), signing/forwarding tracking. (3) Form Document khớp — biên bản vi phạm là biểu mẫu pháp lý với workflow phê duyệt 4 bước. FK suy luận → Tier 3 (xem T3-01). |
@@ -40,22 +27,20 @@
 | T3 | Business Activity | [Business Activity] Business Review | Examination Team Member | EXAMINATION_TEAM_MEMBER | Update | Danh sách thành viên đoàn kiểm tra: cấu trúc đồng nhất với INSPECTION_TEAM_MEMBER | Examination Team Member | Fundamental | (1) Involved Party — BCV: cùng mô tả. (2) Cấu trúc đồng nhất với INSPECTION_TEAM_MEMBER. (3) Tên chứa "TT Examination Team" ✓. |
 | T3 | Business Activity | [Business Activity] Business Review | Inspection Team Target | INSPECTION_TEAM_TARGET | Update | Đối tượng được thanh tra trong đoàn: TARGET_TYPE(7 values), TARGET_REFERENCE_ID, TARGET_NAME | Inspection Team Target | Fundamental | (1) Business Review — entity này ghi nhận "ai được review" trong inspection activity. (2) Bảng: FK→INSPECTION_TEAM, TARGET_TYPE(7 values), TARGET_REFERENCE_ID, TARGET_NAME. (3) Business Review phù hợp. Tên chứa "TT Inspection Team" ✓. |
 | T3 | Business Activity | [Business Activity] Business Review | Examination Team Target | EXAMINATION_TEAM_TARGET | Update | Đối tượng được kiểm tra trong đoàn: TARGET_TYPE(7 values), TARGET_REFERENCE_ID, TARGET_NAME | Examination Team Target | Fundamental | (1) Business Review — cùng mô tả. (2) Cấu trúc đồng nhất với INSPECTION_TEAM_TARGET. (3) Tên chứa "TT Examination Team" ✓. |
-| T3 | Business Activity | [Business Activity] Conduct Violation | Violation Behavior Penalty Type | PENALTY_TYPE_VIOLATION_BEHAVIOR | Update | Hình thức xử phạt bổ sung theo hành vi vi phạm (DDL UAT): FK→PENALTY_TYPE, FK→VIOLATION_BEHAVIOR | Violation Behavior X Penalty Type Relationship | Relative | Domain Prefix rỗng (entity link, pure junction). Cross-tier FK →T1 Penalty Type. Chi tiết xem THANHTRA_HLD_Tier3.md. |
+| T3 | Business Activity | [Business Activity] Conduct Violation | Violation Behavior Penalty Type | PENALTY_TYPE_VIOLATION_BEHAVIOR | Update | Hình thức xử phạt bổ sung theo hành vi vi phạm (DDL UAT): FK→PENALTY_TYPE, FK→VIOLATION_BEHAVIOR | Violation Behavior X Penalty Type Relationship | Relative | Domain Prefix rỗng (entity link). Cross-tier FK →T1 Penalty Type. Chi tiết xem THANHTRA_HLD_Tier3.md. |
 | T4 | Event | [Event] Event | Penalty Decision | PENALTY_DECISION | Update | Quyết định xử phạt VPHC: DECISION_NUMBER, FK→VIOLATION_CASE, TOTAL_FINE_AMOUNT, STATUS(7 states), COMPLAINT_EXISTS, LAWSUIT_EXISTS | Penalty Decision | Fundamental | (1) Event — BCV: "identifies a significant occurrence". Judicial Event — BCV: "deals with violation of law". (2) Bảng: DECISION_NUMBER, ISSUED_DATE, FK→VIOLATION_CASE, TOTAL_FINE_AMOUNT, STATUS(7 values), COMPLAINT_EXISTS, LAWSUIT_EXISTS, SUBMITTED_BY_ID, APPROVER_ID. (3) Judicial Event gần nhất nhưng đây là quyết định hành chính (không tư pháp). Dùng parent [Event] để tránh gán concept sai. Xem T4-01. |
 | T4 | Documentation | [Documentation] Form Document | VPHC Output Document | VIOLATION_CASE_OUTPUT_DOCUMENT | Update | Văn bản đầu ra quy trình VPHC: DOCUMENT_TYPE(9 values) liên kết tài liệu phát sinh | Violation Case Output Document | Fundamental | (1) Form Document — BCV: formal document. (2) Bảng: FK→VIOLATION_CASE, DOCUMENT_TYPE(9 values gồm cả PENALTY_DECISION). (3) Form Document phù hợp. Tên chứa "TT Violation Case" ✓. |
 | T4 | Documentation | [Documentation] Documentation Item | VPHC Received Document | VIOLATION_CASE_RECEIVED_DOCUMENT | Update | Văn bản tiếp nhận trong hồ sơ VPHC: DOCUMENT_NUMBER, RECEIVED_DATE, SUMMARY | Violation Case Received Document | Fundamental | (1) Documentation Item — BCV: "a piece of documentation". (2) Bảng: FK→VIOLATION_CASE, DOCUMENT_NUMBER, RECEIVED_DATE, SUMMARY — tài liệu nhận vào. (3) Documentation Item (chứ không phải Form Document) vì đây là tài liệu tiếp nhận từ bên ngoài. Tên chứa "TT Violation Case" ✓. |
 | T4 | Business Activity | [Business Activity] Conduct Violation | Violation Record X Violation Behavior Relationship | VIOLATION_RECORD_BEHAVIOR | Update | Liên kết biên bản VPHC với danh mục hành vi vi phạm: FK→VIOLATION_RECORD, FK→VIOLATION_BEHAVIOR | Violation Record X Violation Behavior Relationship | Relative | [SỬA 2026-09-22] Đổi từ Fundamental sang pure link/relationship "_x_" (đồng nhất pattern NHNCK.APPLICATION_DECISIONS) — DESCRIPTION/LEGAL_BASIS bỏ khỏi thiết kế, PK composite trên 2 FK Id, không Id/Code riêng. Tên chứa cả "Violation Record" lẫn "Violation Behavior" ✓. |
-| T4 | Documentation | [Documentation] Form Document | Inspection Conclusion Remedial | INSPECTION_CONCLUSION_REMEDIAL | Update | Biện pháp khắc phục trong kết luận thanh tra: FK→INSPECTION_CONCLUSION, DESCRIPTION | Inspection Conclusion Remedial | Fundamental | (1) Form Document — chi tiết nội dung của văn bản kết luận. (2) Bảng: FK→INSPECTION_CONCLUSION, DESCRIPTION(CLOB) — từng biện pháp khắc phục. (3) Tên chứa "TT Inspection Conclusion" ✓. |
 | T4 | Documentation | [Documentation] Form Document | Examination Result Notice Remedial | EXAMINATION_RESULT_NOTICE_REMEDIAL | Update | Biện pháp khắc phục trong thông báo kết quả kiểm tra: FK→EXAMINATION_RESULT_NOTICE, DESCRIPTION | Examination Result Notice Remedial | Fundamental | (1) Form Document — cùng mô tả. (2) Cấu trúc đồng nhất với INSPECTION_CONCLUSION_REMEDIAL. (3) Tên chứa "TT Examination Result Notice" ✓. |
 | T4 | Business Activity | [Business Activity] Business Review | Inspection Post Processing | POST_INSPECTION_PROCESSING | Update | Theo dõi thực hiện kiến nghị sau thanh tra: FK→INSPECTION_CONCLUSION, REQUIREMENT_TYPE, STATUS(5 states), DUE_DATE | Inspection Post Processing | Fundamental | (1) Status Review (sub-type Business Review) — BCV: "reviews status to determine if still valid". (2) Bảng: FK→INSPECTION_CONCLUSION, REQUIREMENT_TYPE, RESPONSIBLE_PARTY, DUE_DATE, STATUS(5 values), IMPLEMENTATION_NOTES, RESULT_SUMMARY. (3) Status Review phù hợp — theo dõi tiến độ thực hiện kiến nghị. Tên chứa "TT Inspection" nhưng không đủ "TT Inspection Conclusion" (xem T4-03). |
 | T5 | Event | [Event] Event | Penalty Subject | PENALTY_DECISION_SUBJECT | Update | Đối tượng bị xử phạt trong quyết định: SUBJECT_TYPE, embedded identity, TOTAL_FINE_AMOUNT, PAID_AMOUNT, COMPLIANCE_STATUS(4 states) | Penalty Decision Subject | Fundamental | (1) Involved Party — BCV: "an Entity involved in the Financial Institution's business". (2) Bảng: FK→PENALTY_DECISION, SUBJECT_TYPE, SUBJECT_NAME, SUBJECT_ID_NUMBER, TOTAL_FINE_AMOUNT, PAID_AMOUNT, COERCED_AMOUNT, COMPLIANCE_STATUS, PAYMENT_PROOF_URL. (3) Involved Party khớp — mỗi đối tượng bị xử phạt là Involved Party trong bối cảnh quyết định. Tên chứa "TT Penalty Decision" ✓. |
-| T5 | Documentation | [Documentation] Form Document | Official Letter Administrative Violation Process | VPHC_PROCESS_OFFICIAL_LETTER | Update | Công văn trong quy trình VPHC: OFFICIAL_LETTER_SUBTYPE(8 values), FK→VIOLATION_CASE/RECORD/PENALTY_DECISION(đều nullable), form data CLOBs | Official Letter Administrative Violation Process | Fundamental | (1) Form Document — BCV: "a Documentation Item in a standard template layout requiring additional information". (2) Bảng: OFFICIAL_LETTER_SUBTYPE(8 values), FK→VIOLATION_CASE(nullable), FK→VIOLATION_RECORD(nullable), FK→PENALTY_DECISION(nullable), DOCUMENT_TEMPLATE_ID, 3 CLOB form fields. (3) Form Document khớp — công văn theo mẫu. Cả 3 FK nullable → Fundamental. FK→PENALTY_DECISION(T4) → đặt T5. |
-| T5 | Event | [Event] Event | Penalty Decision Violation Link | PENALTY_DECISION_VIOLATION_RECORD | Update | Liên kết quyết định xử phạt với biên bản vi phạm liên quan: FK→PENALTY_DECISION, FK→VIOLATION_RECORD, không có business attribute nào khác ngoài audit fields chuẩn (CREATED_AT/BY, LAST_MODIFIED_AT/BY, VERSION, DELETED) | Penalty Decision X Violation Record | Relative | (1) Event — BCV Concept kế thừa từ Penalty Decision (entity neo/anchor của quan hệ), nhưng KHÔNG dùng domain prefix "Penalty Decision" của nhóm — Domain Prefix = rỗng vì đây là entity link/relationship thuần bắc cầu 2 domain khác nhau (Penalty Decision T4 + Violation Record T3), không thuộc riêng nhóm nào. (2) Bảng: chỉ 2 FK nghiệp vụ (PENALTY_DECISION_ID, VIOLATION_RECORD_ID) + audit fields — về business attribute là pure junction, nhưng có VERSION + DELETED (soft-delete) cho thấy bản thân liên kết có vòng đời riêng (gắn/gỡ biên bản khỏi quyết định qua thời gian, cần audit trail độc lập chứ không chỉ là quan hệ tĩnh). (3) Quyết định Data Modeler (không denormalize ARRAY như junction thuần khác trong source này): giữ làm entity Relative riêng, đặt tên theo pattern junction-entity đã dùng trong dự án (`{A} X {B} Relationship`, xem `Fund Distribution Agent X Investment Fund Relationship`). Theo cơ chế bảng link đã chuẩn hóa (SKILL.md `atomic-lld-design` mục 3e): entity KHÔNG có cặp Id/Code riêng — PK là composite trên 2 FK Id (Penalty Decision Id + Violation Record Id). Table Type = Relative vì FK đến 2 Fundamental (Penalty Decision T4, Violation Record T3). Lưu ý: quan hệ chi tiết hơn (biên bản nào gắn với hành vi/đối tượng nào trong quyết định) đã có sẵn ở FK `PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_RECORD_ID` (T6) — entity header-level này chỉ phản ánh liên kết tổng quát quyết định↔biên bản, không thay thế quan hệ chi tiết đó. |
+| T5 | Event | [Event] Event | Penalty Decision Violation Link | PENALTY_DECISION_VIOLATION_RECORD | Update | Liên kết quyết định xử phạt với biên bản vi phạm liên quan: FK→PENALTY_DECISION, FK→VIOLATION_RECORD, không có business attribute nào khác ngoài audit fields chuẩn (CREATED_AT/BY, LAST_MODIFIED_AT/BY, VERSION, DELETED) | Penalty Decision X Violation Record Relationship | Relative | (1) Event — BCV Concept kế thừa từ Penalty Decision (entity neo/anchor của quan hệ), nhưng KHÔNG dùng domain prefix "Penalty Decision" của nhóm — Domain Prefix = rỗng vì đây là entity link/relationship thuần bắc cầu 2 domain khác nhau (Penalty Decision T4 + Violation Record T3), không thuộc riêng nhóm nào. (2) Bảng: chỉ 2 FK nghiệp vụ (PENALTY_DECISION_ID, VIOLATION_RECORD_ID) + audit fields — về business attribute là pure junction, nhưng có VERSION + DELETED (soft-delete) cho thấy bản thân liên kết có vòng đời riêng (gắn/gỡ biên bản khỏi quyết định qua thời gian, cần audit trail độc lập chứ không chỉ là quan hệ tĩnh). (3) Quyết định Data Modeler: giữ làm entity Relative riêng, đặt tên theo pattern junction-entity đã dùng trong dự án (`{A} X {B} Relationship`, xem `Fund Distribution Agent X Investment Fund Relationship`). Theo cơ chế bảng link đã chuẩn hóa (SKILL.md `atomic-lld-design` mục 3e): entity KHÔNG có cặp Id/Code riêng — PK là composite trên 2 FK Id (Penalty Decision Id + Violation Record Id). Table Type = Relative vì FK đến 2 Fundamental (Penalty Decision T4, Violation Record T3). Lưu ý: quan hệ chi tiết hơn (biên bản nào gắn với hành vi/đối tượng nào trong quyết định) đã có sẵn ở FK `PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_RECORD_ID` (T6) — entity header-level này chỉ phản ánh liên kết tổng quát quyết định↔biên bản, không thay thế quan hệ chi tiết đó. |
 | T6 | Event | [Event] Event | Penalty Subject Behavior | PENALTY_DECISION_SUBJECT_BEHAVIOR | Update | Chi tiết hành vi vi phạm của từng đối tượng: FK→PENALTY_DECISION_SUBJECT, FK→VIOLATION_BEHAVIOR, FK→PENALTY_TYPE, MIN/MAX/APPLIED_FINE_AMOUNT | Penalty Decision Subject Behavior | Fundamental | (1) Conduct Violation — đồng concept với parent. (2) Bảng: FK→PENALTY_DECISION_SUBJECT, FK→VIOLATION_BEHAVIOR, FK→PENALTY_TYPE, MIN/MAX/APPLIED_FINE_AMOUNT, REMEDIAL_MEASURE, LEGAL_BASIS. (3) Conduct Violation phù hợp — chi tiết từng hành vi được xử lý. Tên chứa "TT Penalty Decision Subject" ✓. |
-| T6 | Event | [Event] Event | Penalty Subject Behavior Supplementary | PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY | Update | Hình thức xử phạt bổ sung theo hành vi (bảng mới): FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, FK→PENALTY_TYPE | Penalty Decision Subject Behavior X Penalty Type Relationship | Relative | Domain Prefix rỗng (entity link, pure junction). Cross-tier FK →T1 Penalty Type. Chi tiết xem THANHTRA_HLD_Tier6.md. |
-| T7 | Event | [Event] Event | Circumstance | PENALTY_DECISION_CIRCUMSTANCE | Update | Tình tiết tăng nặng/giảm nhẹ: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT | Penalty Decision Subject Behavior Circumstance | Fundamental | (1) Conduct Violation — đồng concept với parent. (2) Bảng: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(2 values), CONTENT(CLOB). (3) Conduct Violation phù hợp. Tên chứa "TT Penalty Decision Subject Behavior" ✓. Tier sâu nhất (T7) vì là leaf node của chuỗi dependency dài nhất. |
+| T6 | Event | [Event] Event | Penalty Subject Behavior Supplementary | PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY | Update | Hình thức xử phạt bổ sung theo hành vi (bảng mới): FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, FK→PENALTY_TYPE | Penalty Decision Subject Behavior X Penalty Type Relationship | Relative | Domain Prefix rỗng (entity link). Cross-tier FK →T1 Penalty Type. Chi tiết xem THANHTRA_HLD_Tier6.md. |
+| T7 | Event | [Event] Event | Circumstance | PENALTY_DECISION_CIRCUMSTANCE | Update | Tình tiết tăng nặng/giảm nhẹ: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT | Penalty Decision Circumstance | Fundamental | (1) Conduct Violation — đồng concept với parent. (2) Bảng: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(2 values), CONTENT(CLOB). (3) Conduct Violation phù hợp. Tên entity theo LLD: "Penalty Decision Circumstance". Tier sâu nhất (T7) vì là leaf node của chuỗi dependency dài nhất. |
 
-**Tổng: 44 Atomic entities** (T1: 7, T2: 16, T3: 8, T4: 7, T5: 3, T6: 2, T7: 1)
+**Tổng: 30 Atomic entities** (T1: 5, T2: 5, T3: 9, T4: 6, T5: 2, T6: 2, T7: 1)
 
 ---
 
@@ -68,8 +53,6 @@ graph TD
         EAP["Examination Annual Plan"]
         PET["Petition"]
         LD["Legal Document"]
-        PN["Proactive Notice"]
-        SMD["Security Measure Decision"]
         PT["Penalty Type"]
     end
 
@@ -78,12 +61,6 @@ graph TD
         ET["Examination Team"]
         IAPT["Inspection Annual Plan Target"]
         EAPT["Examination Annual Plan Target"]
-        SMDS["Security Measure Decision Subject"]
-        SMDR["Security Measure Decision Recipient"]
-        SME["Security Measure Execution"]
-        CR["Citizen Reception"]
-        PD2["Petition Document"]
-        PNR["Proactive Notice Recipient"]
         VB["Violation Behavior"]
     end
 
@@ -95,6 +72,7 @@ graph TD
         ITM["Inspection Team Member"]
         ETM["Examination Team Member"]
         ITT["Inspection Team Target"]
+        VBPT["Violation Behavior X Penalty Type Relationship"]
         ETT["Examination Team Target"]
     end
 
@@ -103,34 +81,28 @@ graph TD
         VCOD["Violation Case Output Document"]
         VCRD["Violation Case Received Document"]
         VRB["Violation Record X Violation Behavior Relationship"]
-        ICR["Inspection Conclusion Remedial"]
         ERNR["Examination Result Notice Remedial"]
         IPP["Inspection Post Processing"]
     end
 
     subgraph T5["Tier 5 — FK to Tier 4"]
         PDSU["Penalty Decision Subject"]
-        VOL["Official Letter Administrative Violation Process"]
+        PDVR["Penalty Decision X Violation Record Relationship"]
     end
 
     subgraph T6["Tier 6 — FK to Tier 5"]
         PDSB["Penalty Decision Subject Behavior"]
+        PDSBS["Penalty Decision Subject Behavior X Penalty Type Relationship"]
     end
 
     subgraph T7["Tier 7 — FK to Tier 6"]
-        PDSBC["Penalty Decision Subject Behavior Circumstance"]
+        PDSBC["Penalty Decision Circumstance"]
     end
 
     IAP --> IT
     EAP --> ET
     IAP --> IAPT
     EAP --> EAPT
-    SMD --> SMDS
-    SMD --> SMDR
-    SMD --> SME
-    PET --> CR
-    PET --> PD2
-    PN --> PNR
     PT --> VB
 
     IT --> VC
@@ -147,18 +119,22 @@ graph TD
     VC --> VCRD
     VR --> VRB
     VB --> VRB
-    IC --> ICR
     IC --> IPP
     ERN --> ERNR
 
     PDE --> PDSU
-    PDE --> VOL
 
     PDSU --> PDSB
     PT --> PDSB
     VB --> PDSB
 
     PDSB --> PDSBC
+    PDSB --> PDSBS
+    PT --> PDSBS
+    PDE --> PDVR
+    VR --> PDVR
+    VB --> VBPT
+    PT --> VBPT
 ```
 
 ---
@@ -176,11 +152,7 @@ graph TD
 
 #### 7d. Junction Tables
 
-| Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
-|---|---|---|---|
-| PENALTY_TYPE_VIOLATION_BEHAVIOR | Junction giữa PENALTY_TYPE và VIOLATION_BEHAVIOR (hình thức xử phạt bổ sung, N:N) | Violation Behavior, Penalty Type | Quyết định Data Modeler: KHÔNG denormalize — giữ làm entity Relative riêng `Violation Behavior X Penalty Type Relationship` (Tier 3) vì quan hệ N:N, PRIMARY_PENALTY_TYPE_ID chỉ thể hiện hình thức xử phạt chính. Xem T3-05.
-| VIOLATION_BEHAVIOR_LEGAL_DOCUMENT | Junction giữa VIOLATION_BEHAVIOR và LEGAL_DOCUMENT (out_of_scope trong BRD) | Violation Behavior | Quyết định 2026-07-18: KHÔNG denormalize thành ARRAY — giữ dạng text legacy sẵn có (`Legal Document`) trên TT Violation Behavior để tránh trùng lặp. Xem `pending_design.yaml`. |
-| PENALTY_DECISION_VIOLATION_RECORD | Junction giữa PENALTY_DECISION và VIOLATION_RECORD | Penalty Decision, Violation Record | Quyết định Data Modeler: KHÔNG denormalize ARRAY — giữ làm entity Relative riêng `Penalty Decision X Violation Record Relationship` (Tier 5) do có VERSION/DELETED phản ánh vòng đời liên kết độc lập. Xem T5 mục 6a. |
+Không có junction table.
 
 ---
 
@@ -188,18 +160,11 @@ graph TD
 
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
-| 1 | T1 | SECURITY_MEASURE_DECISION không FK đến VIOLATION_CASE — đây là quyết định hành chính độc lập hay luôn liên kết hồ sơ vi phạm? | Nếu có FK → dời sang T4 |
-| 2 | T1 | Security Measure Decision dùng BCV [Business Activity] Conduct Violation — không có term đặc thù cho "administrative preventive measure decision" | Cần review với Data Architect |
-| 3 | T3 | VIOLATION_RECORD có FK suy luận đến INSPECTION/EXAMINATION_TEAM (không formal FK) — nếu không có FK chính thức → có thể là T2 | Xác nhận với BA/dev team |
-| 4 | T4 | Penalty Decision dùng BCV [Event] — không có term cụ thể cho "administrative penalty decision" | Cần review với Data Architect |
-| 6 | T4 | Inspection Post Processing — tên không chứa đủ "TT Inspection Conclusion" (chỉ có "TT Inspection"). Đề xuất đổi thành "TT Inspection Conclusion Post Processing" | Xác nhận với team Design |
-| 7 | T5 | VPHC_PROCESS_OFFICIAL_LETTER có 3 CLOB form data (FIELD_HTML_JSON, FIELD_SOURCE_JSON, MANUAL_MERGE_DATA_JSON) — cần load lên Atomic không? | Đề xuất bỏ qua CLOBs — không có giá trị phân tích |
-| 8 | T7 | PENALTY_DECISION_CIRCUMSTANCE có 3 trường nghiệp vụ — có nên denormalize vào T6 không? | Giữ entity riêng để phân tích số lượng tình tiết tăng nặng/giảm nhẹ độc lập |
-| 9 | T2 | DDL UAT cập nhật (2026-09) thêm 3 bảng con CITIZEN_RECEPTION_PARTICIPANT/SUBJECT/PETITION_LINK, đánh dấu DEPRECATED 4 cột trên CITIZEN_RECEPTION (RECEIVER_ID, RECEIVER_NAME, SUBJECT_NAME, PETITION_ID) — chỉ giữ để tương thích ngược. Xem T2-05. | Loại 4 cột deprecated khỏi attribute mapping LLD của Citizen Reception, document `pending_design.yaml`. Cần Data Modeler xác nhận trước Bước LLD. |
-| 10 | T2 | DDL UAT cập nhật thêm 2 bảng con PETITION_INTERNAL_TRANSFER_UNIT/PETITION_TARGET, đánh dấu DEPRECATED 5 cột trên PETITION (INTERNAL_TRANSFER_UNIT_ID/NAME, TARGET_TYPE/REFERENCE_ID/NAME) — các cột này từng được thêm vào LLD Petition draft 2026-08-07 khi chưa có bảng con. Xem T2-06. | Gỡ 5 cột deprecated khỏi mapping LLD Petition, chuyển hẳn sang 2 bảng con mới. Cần Data Modeler xác nhận trước Bước LLD. |
-| 11 | T6 | DDL UAT cập nhật thêm bảng con PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY nhưng KHÔNG đánh dấu DEPRECATED cột `SUPPLEMENTARY_PENALTY` (CLOB, free-text) hiện có trên PENALTY_DECISION_SUBJECT_BEHAVIOR — khác với case T2 ở trên (nguồn không xác nhận superseded). Xem T6-03. | Giữ nguyên `SUPPLEMENTARY_PENALTY` trên Atomic (chưa loại bỏ), thiết kế bảng con song song — cần Data Modeler xác nhận có trùng lặp/mâu thuẫn dữ liệu không khi thiết kế LLD. |
-| 12 | T2 | 6 bảng mới (CITIZEN_RECEPTION_PARTICIPANT/SUBJECT/PETITION_LINK, PETITION_INTERNAL_TRANSFER_UNIT/TARGET, PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY) chỉ có `ID` kỹ thuật (VARCHAR2 UUID) trong DDL, không có cột mã nghiệp vụ (business code) riêng — khác giả định mặc định của Rule 3e (`atomic-lld-design`, hash Id từ Code). | Cần Data Modeler quyết định khi thiết kế LLD: dùng `ID` kỹ thuật làm BK tạm (Code = ID nguồn), hay áp dụng composite PK theo 2 FK cha cho 2 entity Relative (Citizen Reception X Petition Relationship, Penalty Decision Subject Behavior X Penalty Type Relationship). |
-| 13 | T3 | PENALTY_TYPE_VIOLATION_BEHAVIOR trước đây ngoài scope (junction denormalize qua PRIMARY_PENALTY_TYPE_ID) — nay đưa vào scope thành entity link vì mô tả cột PENALTY_TYPE_ID là hình thức xử phạt bổ sung (N:N). Xem T3-05. | Cần Data Modeler xác nhận; nếu từ chối thì quay lại ngoài scope và xóa LLD/manifest entry. |
+| 1 | T3 | VIOLATION_RECORD có FK suy luận đến INSPECTION/EXAMINATION_TEAM (không formal FK) — nếu không có FK chính thức → có thể là T2 | Xác nhận với BA/dev team |
+| 2 | T4 | Penalty Decision dùng BCV [Event] — không có term cụ thể cho "administrative penalty decision" | Cần review với Data Architect |
+| 3 | T4 | Inspection Post Processing — tên không chứa đủ "TT Inspection Conclusion" (chỉ có "TT Inspection"). Đề xuất đổi thành "TT Inspection Conclusion Post Processing" | Xác nhận với team Design |
+| 4 | T7 | PENALTY_DECISION_CIRCUMSTANCE có 3 trường nghiệp vụ — có nên denormalize vào T6 không? | Giữ entity riêng để phân tích số lượng tình tiết tăng nặng/giảm nhẹ độc lập |
+| 5 | T6 | DDL UAT cập nhật thêm bảng con PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY nhưng KHÔNG đánh dấu DEPRECATED cột `SUPPLEMENTARY_PENALTY` (CLOB, free-text) hiện có trên PENALTY_DECISION_SUBJECT_BEHAVIOR — khác với case T2 ở trên (nguồn không xác nhận superseded). Xem T6-03. | Giữ nguyên `SUPPLEMENTARY_PENALTY` trên Atomic (chưa loại bỏ), thiết kế bảng con song song — cần Data Modeler xác nhận có trùng lặp/mâu thuẫn dữ liệu không khi thiết kế LLD. |
 
 ---
 
@@ -207,9 +172,24 @@ graph TD
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
+| Chưa có LLD | VIOLATION_BEHAVIOR_LEGAL_DOCUMENT | Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | SECURITY_MEASURE_DECISION | Quyết định áp dụng biện pháp ngăn chặn/khẩn cấp hành chính, độc lập với hồ sơ VPHC | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | SECURITY_MEASURE_DECISION_SUBJECT | Đối tượng bị áp dụng biện pháp ngăn chặn trong quyết định | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | SECURITY_MEASURE_DECISION_RECIPIENT | Đơn vị nhận bản sao quyết định biện pháp ngăn chặn | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | SECURITY_MEASURE_EXECUTION | Kết quả thực thi quyết định biện pháp ngăn chặn | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | PROACTIVE_NOTICE | Thông báo chủ động phát đi từ thanh tra, không gắn với hồ sơ cụ thể | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | PROACTIVE_NOTICE_RECIPIENT | Danh sách công ty nhận thông báo chủ động | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | CITIZEN_RECEPTION | Buổi tiếp công dân: ngày tiếp, loại đối tượng, tóm tắt nội dung | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | CITIZEN_RECEPTION_PARTICIPANT | Người tham gia buổi tiếp công dân (người tiếp, đơn vị phối hợp) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | CITIZEN_RECEPTION_SUBJECT | Chi tiết đối tượng được tiếp (cá nhân, đoàn đông người, tổ chức) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | CITIZEN_RECEPTION_PETITION_LINK | Liên kết một buổi tiếp công dân với nhiều đơn thư | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | PETITION_DOCUMENT | Văn bản phát sinh trong quá trình xử lý đơn thư (8 loại) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | PETITION_INTERNAL_TRANSFER_UNIT | Đơn vị nội bộ UBCKNN được chuyển xử lý đơn thư | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | PETITION_TARGET | Đối tượng được đề cập trong đơn thư | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | INSPECTION_CONCLUSION_REMEDIAL | Biện pháp khắc phục trong kết luận thanh tra | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | VPHC_PROCESS_OFFICIAL_LETTER | Công văn chính thức phát sinh trong quy trình xử lý VPHC | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Audit Log nguồn | VIOLATION_CASE_STATUS_HISTORY | Log lịch sử thay đổi trạng thái hồ sơ VPHC | Audit Log nguồn — không thiết kế entity Atomic riêng |
 | Audit Log nguồn | PENALTY_DECISION_APPROVAL_HISTORY | Log hoạt động phê duyệt quyết định xử phạt | Audit Log nguồn — không thiết kế entity Atomic riêng |
-| Junction | VIOLATION_BEHAVIOR_LEGAL_DOCUMENT | Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật | Pure junction không có business attribute — KHÔNG denormalize thành ARRAY (trùng với text legacy `Legal Document` đã có sẵn). Xem `pending_design.yaml`. |
 | Form Metadata | DOCUMENT_TEMPLATE | Template biểu mẫu công văn: định nghĩa cấu trúc form, placeholder fields | Operational/system data — metadata form/template không có giá trị nghiệp vụ Atomic |
 | Audit Log nguồn | ADHOC_INSPECTION_REPORT | Báo cáo thanh tra ad-hoc | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |
 | Audit Log nguồn | SUPERVISION_ACTIVITY_REPORT | Báo cáo hoạt động giám sát | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |
@@ -248,187 +228,125 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 > Single source of truth cho metadata entity. `aggregate_atomic.py` parse section này để sinh `atomic_entities.yaml`.
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
-### 1. Inspection Annual Plan
-**Tier:** 1 | **Source:** `INSPECTION_ANNUAL_PLAN` | **BCV Concept:** [Business Direction] Business Plan | **BCO:** Business Direction | **Table Type:** Fundamental
-**Description:** Kế hoạch thanh tra hàng năm của UBCKNN, được phê duyệt bằng quyết định hành chính. Mỗi năm có 1 kế hoạch (PLAN_YEAR unique), bao gồm thông tin quyết định phê duyệt, trạng thái DRAFT/APPROVED.
+### 1. Classification THANHTRA Penalty Type
+**Tier:** 1 | **Source:** `PENALTY_TYPE` | **BCV Concept:** [Business Direction] Law | **BCO:** Business Direction | **Table Type:** Classification
+**Description:** Danh mục hình thức xử phạt hành chính được pháp luật quy định, phân loại thành hình phạt chính, hình phạt bổ sung và biện pháp khắc phục, có trạng thái hiệu lực.
 
 ### 2. Examination Annual Plan
 **Tier:** 1 | **Source:** `EXAMINATION_ANNUAL_PLAN` | **BCV Concept:** [Business Direction] Business Plan | **BCO:** Business Direction | **Table Type:** Fundamental
 **Description:** Kế hoạch kiểm tra hàng năm của UBCKNN, cấu trúc đồng nhất với kế hoạch thanh tra nhưng dành riêng cho hoạt động kiểm tra (khác thẩm quyền).
 
-### 3. Citizen Reception
-**Tier:** 2 | **Source:** `CITIZEN_RECEPTION` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Ghi nhận buổi tiếp công dân tại UBCKNN: ngày tiếp, cán bộ tiếp, loại đối tượng, nội dung tóm tắt, liên kết hồ sơ đơn thư nếu có.
+### 3. Inspection Annual Plan
+**Tier:** 1 | **Source:** `INSPECTION_ANNUAL_PLAN` | **BCV Concept:** [Business Direction] Business Plan | **BCO:** Business Direction | **Table Type:** Fundamental
+**Description:** Kế hoạch thanh tra hàng năm của UBCKNN, được phê duyệt bằng quyết định hành chính. Mỗi năm có 1 kế hoạch (PLAN_YEAR unique), bao gồm thông tin quyết định phê duyệt, trạng thái DRAFT/APPROVED.
 
-### 4. Examination Annual Plan Target
-**Tier:** 2 | **Source:** `EXAMINATION_ANNUAL_PLAN_TARGET` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Danh sách đối tượng được đưa vào kế hoạch kiểm tra hàng năm, phân loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng).
-
-### 5. Examination Team
-**Tier:** 2 | **Source:** `EXAMINATION_TEAM` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Hồ sơ đoàn kiểm tra cụ thể (mã HSKT-YYYY-XXX), ghi nhận thông tin thành lập đoàn, quyết định kiểm tra, đơn vị chủ trì và hình thức kiểm tra (định kỳ/đột xuất).
-
-### 6. Inspection Annual Plan Target
-**Tier:** 2 | **Source:** `INSPECTION_ANNUAL_PLAN_TARGET` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Danh sách đối tượng được đưa vào kế hoạch thanh tra hàng năm, phân loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng).
-
-### 7. Inspection Team
-**Tier:** 2 | **Source:** `INSPECTION_TEAM` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Hồ sơ đoàn thanh tra cụ thể (mã HSTT-YYYY-XXX), ghi nhận thông tin thành lập đoàn, quyết định thanh tra, hình thức thanh tra (định kỳ/đột xuất) và ngày ký biên bản xác minh.
-
-### 8. Legal Document
+### 4. Legal Document
 **Tier:** 1 | **Source:** `LEGAL_DOCUMENT` | **BCV Concept:** [Business Direction] Law | **BCO:** Business Direction | **Table Type:** Fundamental
 **Description:** Danh mục văn bản pháp luật (nghị định, thông tư, quyết định) làm căn cứ pháp lý cho việc xử phạt vi phạm hành chính, có trạng thái hiệu lực ACTIVE/INACTIVE.
 
-### 9. Penalty Decision
-**Tier:** 4 | **Source:** `PENALTY_DECISION` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
-**Description:** Quyết định xử phạt vi phạm hành chính: ghi nhận số quyết định, ngày ban hành, tổng số tiền phạt, trạng thái (7 bước), thông tin khiếu nại và khởi kiện liên quan.
-
-### 10. Penalty Decision Subject
-**Tier:** 5 | **Source:** `PENALTY_DECISION_SUBJECT` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
-**Description:** Đối tượng bị xử phạt trong quyết định: thông tin định danh, tổng số tiền phạt, số tiền đã nộp, số tiền cưỡng chế, trạng thái tuân thủ thanh toán.
-
-### 11. Penalty Decision Subject Behavior
-**Tier:** 6 | **Source:** `PENALTY_DECISION_SUBJECT_BEHAVIOR` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
-**Description:** Chi tiết từng hành vi vi phạm của một đối tượng trong quyết định xử phạt: liên kết hành vi vi phạm, hình thức xử phạt được áp dụng, mức phạt thực tế.
-
-### 12. Penalty Decision Subject Behavior Circumstance
-**Tier:** 7 | **Source:** `PENALTY_DECISION_CIRCUMSTANCE` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
-**Description:** Tình tiết tăng nặng hoặc giảm nhẹ áp dụng cho từng hành vi vi phạm của đối tượng trong quyết định xử phạt, kèm nội dung chi tiết giải thích.
-
-### 13. Classification THANHTRA Penalty Type
-**Tier:** 1 | **Source:** `PENALTY_TYPE` | **BCV Concept:** [Business Direction] Law | **BCO:** Business Direction | **Table Type:** Classification
-**Description:** Danh mục hình thức xử phạt hành chính được pháp luật quy định, phân loại thành hình phạt chính, hình phạt bổ sung và biện pháp khắc phục, có trạng thái hiệu lực.
-
-### 14. Petition
+### 5. Petition
 **Tier:** 1 | **Source:** `PETITION` | **BCV Concept:** [Communication] Feedback | **BCO:** Communication | **Table Type:** Fundamental
 **Description:** Hồ sơ đơn thư gửi đến UBCKNN từ công dân hoặc tổ chức, gồm phản ánh kiến nghị, khiếu nại và tố cáo, với khả năng nhận diện đơn trùng qua self-reference.
 
-### 15. Petition Document
-**Tier:** 2 | **Source:** `PETITION_DOCUMENT` | **BCV Concept:** [Communication] Feedback | **BCO:** Communication | **Table Type:** Fundamental
-**Description:** Văn bản phát sinh trong quá trình xử lý đơn thư (8 loại), từ tờ trình phân loại, phiếu đề xuất thụ lý đến công văn trả lời nhà đầu tư.
+### 6. Examination Annual Plan Target
+**Tier:** 2 | **Source:** `EXAMINATION_ANNUAL_PLAN_TARGET` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
+**Description:** Danh sách đối tượng được đưa vào kế hoạch kiểm tra hàng năm, phân loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng).
 
-### 16. Proactive Notice
-**Tier:** 1 | **Source:** `PROACTIVE_NOTICE` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
-**Description:** Thông báo chủ động phát đi từ thanh tra UBCKNN (không gắn với hồ sơ cụ thể), dùng để cảnh báo, nhắc nhở hoặc hướng dẫn các đơn vị được giám sát.
+### 7. Examination Team
+**Tier:** 2 | **Source:** `EXAMINATION_TEAM` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
+**Description:** Hồ sơ đoàn kiểm tra cụ thể (mã HSKT-YYYY-XXX), ghi nhận thông tin thành lập đoàn, quyết định kiểm tra, đơn vị chủ trì và hình thức kiểm tra (định kỳ/đột xuất).
 
-### 17. Proactive Notice Recipient
-**Tier:** 2 | **Source:** `PROACTIVE_NOTICE_RECIPIENT` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
-**Description:** Danh sách công ty nhận thông báo chủ động: mã công ty và loại người nhận, theo dõi phạm vi phát hành thông báo.
+### 8. Inspection Annual Plan Target
+**Tier:** 2 | **Source:** `INSPECTION_ANNUAL_PLAN_TARGET` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
+**Description:** Danh sách đối tượng được đưa vào kế hoạch thanh tra hàng năm, phân loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng).
 
-### 18. Security Measure Decision
-**Tier:** 1 | **Source:** `SECURITY_MEASURE_DECISION` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Quyết định áp dụng biện pháp ngăn chặn/khẩn cấp hành chính (cấm đảm nhiệm chức vụ, đình chỉ hoạt động, phong tỏa tài khoản), độc lập với hồ sơ VPHC.
+### 9. Inspection Team
+**Tier:** 2 | **Source:** `INSPECTION_TEAM` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
+**Description:** Hồ sơ đoàn thanh tra cụ thể (mã HSTT-YYYY-XXX), ghi nhận thông tin thành lập đoàn, quyết định thanh tra, hình thức thanh tra (định kỳ/đột xuất) và ngày ký biên bản xác minh.
 
-### 19. Security Measure Decision Recipient
-**Tier:** 2 | **Source:** `SECURITY_MEASURE_DECISION_RECIPIENT` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Danh sách đơn vị nhận bản sao quyết định biện pháp ngăn chặn: công ty chứng khoán, quản lý quỹ, sở giao dịch, VSDC, ban nghiệp vụ UBCKNN.
-
-### 20. Security Measure Decision Subject
-**Tier:** 2 | **Source:** `SECURITY_MEASURE_DECISION_SUBJECT` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Đối tượng bị áp dụng biện pháp ngăn chặn trong quyết định: thông tin định danh nhúng (loại, tên, số giấy tờ).
-
-### 21. Security Measure Execution
-**Tier:** 2 | **Source:** `SECURITY_MEASURE_EXECUTION` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Theo dõi kết quả thực thi quyết định biện pháp ngăn chặn: người báo cáo, ngày báo cáo, kết quả (đã thực hiện đầy đủ/đang thực hiện/chưa thực hiện).
-
-### 22. Violation Behavior
+### 10. Violation Behavior
 **Tier:** 2 | **Source:** `VIOLATION_BEHAVIOR` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fundamental
 **Description:** Danh mục hành vi vi phạm hành chính được pháp luật quy định: loại hành vi, hình thức xử phạt chính, khung tiền phạt min/max, biện pháp khắc phục.
 
-### 23. Violation Case
-**Tier:** 3 | **Source:** `VIOLATION_CASE` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Hồ sơ xử lý vi phạm hành chính (VPHC): ghi nhận nguồn phát hiện, liên kết đoàn thanh tra/kiểm tra, cán bộ phụ trách, vòng đời hồ sơ (5 trạng thái), theo dõi tiền bảo đảm.
-
-### 24. Violation Case Output Document
-**Tier:** 4 | **Source:** `VIOLATION_CASE_OUTPUT_DOCUMENT` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
-**Description:** Danh sách văn bản đầu ra phát sinh trong quá trình xử lý hồ sơ VPHC (9 loại), từ thông báo vi phạm đến quyết định xử phạt.
-
-### 25. Violation Case Received Document
-**Tier:** 4 | **Source:** `VIOLATION_CASE_RECEIVED_DOCUMENT` | **BCV Concept:** [Documentation] Documentation Item | **BCO:** Documentation | **Table Type:** Fundamental
-**Description:** Văn bản do đối tượng vi phạm hoặc cơ quan nộp vào hồ sơ VPHC: số văn bản, ngày tiếp nhận, nội dung tóm tắt.
-
-### 26. Violation Record
-**Tier:** 3 | **Source:** `VIOLATION_RECORD` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Biên bản vi phạm hành chính: tài liệu pháp lý chính thức ghi nhận hành vi vi phạm, trải qua workflow 4 bước từ soạn thảo đến gửi cho đối tượng.
-
-### 27. Violation Record X Violation Behavior Relationship
-**Tier:** 4 | **Source:** `VIOLATION_RECORD_BEHAVIOR` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Relative
-**Description:** Entity link/relationship thuần liên kết biên bản VPHC (Violation Record) với danh mục hành vi vi phạm (Violation Behavior). [SỬA 2026-09-22] Đổi từ Fundamental "Violation Record X Violation Behavior Relationship" — DESCRIPTION/LEGAL_BASIS bỏ khỏi thiết kế (pattern "_x_", đồng nhất NHNCK.APPLICATION_DECISIONS), PK composite trên 2 FK Id, không có Id/Code riêng của entity.
-
-### 28. Examination Result Notice Remedial
-**Tier:** 4 | **Source:** `EXAMINATION_RESULT_NOTICE_REMEDIAL` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
-**Description:** Từng biện pháp khắc phục yêu cầu trong thông báo kết quả kiểm tra: nội dung chi tiết biện pháp khắc phục theo từng kết quả kiểm tra.
-
-### 29. Examination Result Notice
+### 11. Examination Result Notice
 **Tier:** 3 | **Source:** `EXAMINATION_RESULT_NOTICE` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
 **Description:** Thông báo kết quả kiểm tra chính thức: số công văn, ngày ban hành và công bố, đối tượng kiểm tra, nội dung kết quả, kiến nghị và trạng thái thực hiện.
 
-### 30. Examination Team Member
+### 12. Examination Team Member
 **Tier:** 3 | **Source:** `EXAMINATION_TEAM_MEMBER` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
 **Description:** Danh sách thành viên đoàn kiểm tra: ID người dùng, tên và vai trò trong đoàn (trưởng đoàn, kiểm tra viên, thư ký...).
 
-### 31. Examination Team Target
+### 13. Examination Team Target
 **Tier:** 3 | **Source:** `EXAMINATION_TEAM_TARGET` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
 **Description:** Danh sách đối tượng được kiểm tra trong đoàn cụ thể: 7 loại đơn vị/cá nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng.
 
-### 32. Inspection Conclusion
+### 14. Inspection Conclusion
 **Tier:** 3 | **Source:** `INSPECTION_CONCLUSION` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
 **Description:** Kết luận thanh tra chính thức: số kết luận, ngày ban hành và công bố, đối tượng thanh tra, nội dung kết luận, kiến nghị, trạng thái thực hiện kiến nghị.
 
-### 33. Inspection Conclusion Remedial
-**Tier:** 4 | **Source:** `INSPECTION_CONCLUSION_REMEDIAL` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
-**Description:** Từng biện pháp khắc phục yêu cầu trong kết luận thanh tra: nội dung chi tiết từng kiến nghị cần thực hiện.
-
-### 34. Inspection Post Processing
-**Tier:** 4 | **Source:** `POST_INSPECTION_PROCESSING` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Theo dõi tiến độ thực hiện từng kiến nghị sau thanh tra: loại yêu cầu, đơn vị chịu trách nhiệm, thời hạn, trạng thái thực hiện (5 bước), ghi chú tình hình.
-
-### 35. Inspection Team Member
+### 15. Inspection Team Member
 **Tier:** 3 | **Source:** `INSPECTION_TEAM_MEMBER` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
 **Description:** Danh sách thành viên đoàn thanh tra: ID người dùng, tên và vai trò trong đoàn (trưởng đoàn, thanh tra viên, thư ký...).
 
-### 36. Inspection Team Target
+### 16. Inspection Team Target
 **Tier:** 3 | **Source:** `INSPECTION_TEAM_TARGET` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
 **Description:** Danh sách đối tượng được thanh tra trong đoàn cụ thể: 7 loại đơn vị/cá nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng.
 
-### 37. Official Letter Administrative Violation Process
-**Tier:** 5 | **Source:** `VPHC_PROCESS_OFFICIAL_LETTER` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
-**Description:** Công văn chính thức phát sinh trong quy trình xử lý VPHC (8 loại từ thông báo vi phạm đến đôn đốc khắc phục), sử dụng biểu mẫu chuẩn, liên kết với hồ sơ VPHC/biên bản/quyết định.
+### 17. Violation Behavior X Penalty Type Relationship
+**Tier:** 3 | **Source:** `PENALTY_TYPE_VIOLATION_BEHAVIOR` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Relative
+**Domain Prefix:** (none)
+**Description:** Hình thức xử phạt bổ sung áp dụng cho từng hành vi vi phạm hành chính trong danh mục — entity link/relationship thuần bắc cầu Violation Behavior (T2) và Penalty Type (T1), quan hệ N:N, cross-tier FK bình thường. Bảng nguồn chỉ có 2 FK nghiệp vụ nên PK composite trên 2 FK Id. PRIMARY_PENALTY_TYPE_ID trên Violation Behavior vẫn là hình thức xử phạt chính.
 
-### 38. Penalty Decision X Violation Record Relationship
+### 18. Violation Case
+**Tier:** 3 | **Source:** `VIOLATION_CASE` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fundamental
+**Description:** Hồ sơ xử lý vi phạm hành chính (VPHC): ghi nhận nguồn phát hiện, liên kết đoàn thanh tra/kiểm tra, cán bộ phụ trách, vòng đời hồ sơ (5 trạng thái), theo dõi tiền bảo đảm.
+
+### 19. Violation Record
+**Tier:** 3 | **Source:** `VIOLATION_RECORD` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fundamental
+**Description:** Biên bản vi phạm hành chính: tài liệu pháp lý chính thức ghi nhận hành vi vi phạm, trải qua workflow 4 bước từ soạn thảo đến gửi cho đối tượng.
+
+### 20. Examination Result Notice Remedial
+**Tier:** 4 | **Source:** `EXAMINATION_RESULT_NOTICE_REMEDIAL` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
+**Description:** Từng biện pháp khắc phục yêu cầu trong thông báo kết quả kiểm tra: nội dung chi tiết biện pháp khắc phục theo từng kết quả kiểm tra.
+
+### 21. Inspection Post Processing
+**Tier:** 4 | **Source:** `POST_INSPECTION_PROCESSING` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
+**Description:** Theo dõi tiến độ thực hiện từng kiến nghị sau thanh tra: loại yêu cầu, đơn vị chịu trách nhiệm, thời hạn, trạng thái thực hiện (5 bước), ghi chú tình hình.
+
+### 22. Penalty Decision
+**Tier:** 4 | **Source:** `PENALTY_DECISION` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
+**Description:** Quyết định xử phạt vi phạm hành chính: ghi nhận số quyết định, ngày ban hành, tổng số tiền phạt, trạng thái (7 bước), thông tin khiếu nại và khởi kiện liên quan.
+
+### 23. Violation Case Output Document
+**Tier:** 4 | **Source:** `VIOLATION_CASE_OUTPUT_DOCUMENT` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Fundamental
+**Description:** Danh sách văn bản đầu ra phát sinh trong quá trình xử lý hồ sơ VPHC (9 loại), từ thông báo vi phạm đến quyết định xử phạt.
+
+### 24. Violation Case Received Document
+**Tier:** 4 | **Source:** `VIOLATION_CASE_RECEIVED_DOCUMENT` | **BCV Concept:** [Documentation] Documentation Item | **BCO:** Documentation | **Table Type:** Fundamental
+**Description:** Văn bản do đối tượng vi phạm hoặc cơ quan nộp vào hồ sơ VPHC: số văn bản, ngày tiếp nhận, nội dung tóm tắt.
+
+### 25. Violation Record X Violation Behavior Relationship
+**Tier:** 4 | **Source:** `VIOLATION_RECORD_BEHAVIOR` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Relative
+**Description:** Entity link/relationship thuần liên kết biên bản VPHC (Violation Record) với danh mục hành vi vi phạm (Violation Behavior). [SỬA 2026-09-22] Đổi từ Fundamental "Violation Record X Violation Behavior Relationship" — DESCRIPTION/LEGAL_BASIS bỏ khỏi thiết kế (pattern "_x_", đồng nhất NHNCK.APPLICATION_DECISIONS), PK composite trên 2 FK Id, không có Id/Code riêng của entity.
+
+### 26. Penalty Decision Subject
+**Tier:** 5 | **Source:** `PENALTY_DECISION_SUBJECT` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
+**Description:** Đối tượng bị xử phạt trong quyết định: thông tin định danh, tổng số tiền phạt, số tiền đã nộp, số tiền cưỡng chế, trạng thái tuân thủ thanh toán.
+
+### 27. Penalty Decision X Violation Record Relationship
 **Tier:** 5 | **Source:** `PENALTY_DECISION_VIOLATION_RECORD` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Relative
 **Domain Prefix:** (none)
-**Description:** Liên kết giữa quyết định xử phạt VPHC và biên bản vi phạm hành chính liên quan — entity link/relationship thuần bắc cầu 2 domain (Penalty Decision + Violation Record) nên không mang domain prefix riêng của nhóm nào. Giữ làm entity Relative riêng thay vì denormalize ARRAY vì bảng có VERSION/DELETED phản ánh vòng đời gắn/gỡ liên kết độc lập, cần audit trail. Theo cơ chế bảng link chuẩn hóa của dự án: không có cặp Id/Code riêng — PK composite trên 2 FK Id. **[SỬA 2026-08-15]** Thêm suffix "Relationship" vào tên entity cho nhất quán với các entity link `_x_` khác trong dự án.
+**Description:** Liên kết giữa quyết định xử phạt VPHC và biên bản vi phạm hành chính liên quan — entity link/relationship thuần bắc cầu 2 domain (Penalty Decision + Violation Record) nên không mang domain prefix riêng của nhóm nào. Giữ làm entity Relative riêng vì bảng có VERSION/DELETED phản ánh vòng đời gắn/gỡ liên kết độc lập, cần audit trail. Theo cơ chế bảng link chuẩn hóa của dự án: không có cặp Id/Code riêng — PK composite trên 2 FK Id. **[SỬA 2026-08-15]** Thêm suffix "Relationship" vào tên entity cho nhất quán với các entity link `_x_` khác trong dự án.
 
-### 39. Citizen Reception Participant
-**Tier:** 2 | **Source:** `CITIZEN_RECEPTION_PARTICIPANT` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Người tham gia buổi tiếp công dân: RECEIVER (người tiếp, tối thiểu 2 người) hoặc COORDINATOR (đơn vị phối hợp, không bắt buộc). Bảng mới (DDL UAT 2026-09) thay thế cột RECEIVER_ID/RECEIVER_NAME (nay DEPRECATED) trên Citizen Reception. Kế thừa BCV Concept của entity cha vì là chi tiết 1-N của cùng hoạt động, không phải hoạt động nghiệp vụ độc lập.
+### 28. Penalty Decision Subject Behavior
+**Tier:** 6 | **Source:** `PENALTY_DECISION_SUBJECT_BEHAVIOR` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
+**Description:** Chi tiết từng hành vi vi phạm của một đối tượng trong quyết định xử phạt: liên kết hành vi vi phạm, hình thức xử phạt được áp dụng, mức phạt thực tế.
 
-### 40. Citizen Reception Subject
-**Tier:** 2 | **Source:** `CITIZEN_RECEPTION_SUBJECT` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Fundamental
-**Description:** Chi tiết đối tượng được tiếp: cá nhân (1 dòng), đoàn đông người (nhiều dòng, mỗi dòng 1 người đại diện), hoặc tổ chức (1 dòng). Bảng mới (DDL UAT 2026-09) thay thế cột SUBJECT_NAME (nay DEPRECATED) trên Citizen Reception. Không tách IP Postal Address dù có ADDRESS — snapshot tại thời điểm tiếp, không phải hồ sơ Involved Party độc lập.
-
-### 41. Citizen Reception X Petition Relationship
-**Tier:** 2 | **Source:** `CITIZEN_RECEPTION_PETITION_LINK` | **BCV Concept:** [Business Activity] Business Review | **BCO:** Business Activity | **Table Type:** Relative
-**Domain Prefix:** (none)
-**Description:** Liên kết 1 buổi tiếp công dân với nhiều đơn thư (trường hợp đoàn đông người, mỗi người nộp 1 đơn riêng) — entity link/relationship thuần bắc cầu 2 domain (Citizen Reception + Petition) nên không mang domain prefix riêng. Bảng mới (DDL UAT 2026-09) thay thế cột PETITION_ID (nay DEPRECATED) trên Citizen Reception. Theo cơ chế bảng link chuẩn hóa của dự án, cùng pattern với Penalty Decision X Violation Record Relationship.
-
-### 42. Petition X Regulatory Authority Organization Unit Relationship
-**Tier:** 2 | **Source:** `PETITION_INTERNAL_TRANSFER_UNIT` | **BCV Concept:** [Communication] Feedback | **BCO:** Communication | **Table Type:** Relative
-**Domain Prefix:** (none)
-**Description:** Danh sách đơn vị nội bộ UBCKNN được chuyển xử lý đơn thư (1 đơn - nhiều đơn vị) — entity link bắc cầu Petition (Communication) và Regulatory Authority Organization Unit (Involved Party, entity đã có ở nguồn NHNCK). Bảng mới (DDL UAT 2026-09) thay thế cột INTERNAL_TRANSFER_UNIT_ID/NAME (nay DEPRECATED) trên Petition. Không phải polymorphic (khác Petition Target) vì UNIT luôn là 1 loại: đơn vị nội bộ UBCKNN.
-
-### 43. Petition Target
-**Tier:** 2 | **Source:** `PETITION_TARGET` | **BCV Concept:** [Communication] Feedback | **BCO:** Communication | **Table Type:** Fundamental
-**Description:** Danh sách đối tượng được đề cập trong đơn thư (1 đơn - nhiều đối tượng, có thể thuộc loại khác nhau: công ty chứng khoán, công ty quản lý quỹ, công ty đại chúng, khác). Bảng mới (DDL UAT 2026-09) thay thế cột TARGET_TYPE/TARGET_REFERENCE_ID/TARGET_NAME (nay DEPRECATED) trên Petition. Polymorphic reference — giữ pattern đã dùng ở Inspection/Examination Team Target.
-
-### 44. Penalty Decision Subject Behavior X Penalty Type Relationship
+### 29. Penalty Decision Subject Behavior X Penalty Type Relationship
 **Tier:** 6 | **Source:** `PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Relative
 **Domain Prefix:** (none)
 **Description:** Hình thức xử phạt bổ sung theo hành vi trên quyết định xử phạt VPHC — entity link/relationship thuần bắc cầu Penalty Decision Subject Behavior (T6) và Penalty Type (T1), cross-tier FK bình thường. Bảng mới (DDL UAT 2026-09), cho phép 1 hành vi có N hình thức xử phạt bổ sung. Cân nhắc quan hệ với cột SUPPLEMENTARY_PENALTY (CLOB, free-text) hiện có trên Penalty Decision Subject Behavior — DDL không đánh dấu DEPRECATED, cần Data Modeler xác nhận khi thiết kế LLD.
 
-### 45. Violation Behavior X Penalty Type Relationship
-**Tier:** 3 | **Source:** `PENALTY_TYPE_VIOLATION_BEHAVIOR` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Relative
-**Domain Prefix:** (none)
-**Description:** Hình thức xử phạt bổ sung áp dụng cho từng hành vi vi phạm hành chính trong danh mục — entity link/relationship thuần bắc cầu Violation Behavior (T2) và Penalty Type (T1), quan hệ N:N, cross-tier FK bình thường. Bảng nguồn chỉ có 2 FK nghiệp vụ nên PK composite trên 2 FK Id. PRIMARY_PENALTY_TYPE_ID trên Violation Behavior vẫn là hình thức xử phạt chính.
+### 30. Penalty Decision Circumstance
+**Tier:** 7 | **Source:** `PENALTY_DECISION_CIRCUMSTANCE` | **BCV Concept:** [Event] Event | **BCO:** Event | **Table Type:** Fundamental
+**Description:** Tình tiết tăng nặng hoặc giảm nhẹ áp dụng cho từng hành vi vi phạm của đối tượng trong quyết định xử phạt, kèm nội dung chi tiết giải thích.

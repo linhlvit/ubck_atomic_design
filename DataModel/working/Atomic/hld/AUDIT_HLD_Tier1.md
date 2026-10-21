@@ -1,7 +1,7 @@
 # AUDIT HLD — Tier 1
 
 **Source system:** AUDIT (GMS Audit — schema `GMS_AUDIT_UAT`, tách từ IDS)
-**Tier 1:** Entity độc lập của AUDIT — Công ty kiểm toán (`AF_PROFILES`).
+**Tier 1:** Entity độc lập của AUDIT — Công ty kiểm toán (`AF_PROFILES`) và các shared entity của host `AF_PROFILES` (IP Postal Address, IP Electronic Address, IP Alternative Identification).
 
 *Nội dung tách từ `IDS_HLD_Tier1.md` ngày 2026-10-16; mã điểm xác nhận (T1-xx) giữ nguyên số gốc.*
 
@@ -11,7 +11,10 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Involved Party | [Involved Party] Organization | Organization | `AF_PROFILES` | Update | Hồ sơ công ty kiểm toán được BTC/UBCKNN chấp thuận: tên VI/EN, vốn điều lệ thực góp, thành viên hãng kiểm toán quốc tế. | Audit Firm | Fundamental | (1) Term candidate: `[Involved Party] Organization` — BCV mô tả pháp nhân tổ chức. (2) Cấu trúc trường: tên VI/EN/viết tắt, số ĐKKD, vốn điều lệ, trạng thái, ngày chấp thuận, thành viên hãng nước ngoài — đây là profile của một tổ chức kiểm toán độc lập. (3) Chọn `[Involved Party] Organization` — công ty kiểm toán là pháp nhân tổ chức; shared entity với SCMS.CT_KIEM_TOAN. |
+| Involved Party | [Involved Party] Audit Firm | Organization | `AF_PROFILES` | Update | Hồ sơ công ty kiểm toán được BTC/UBCKNN chấp thuận: tên VI/EN, vốn điều lệ thực góp, thành viên hãng kiểm toán quốc tế. | Audit Firm | Fundamental | (1) BCV Concept `[Involved Party] Audit Firm` (theo LLD) — công ty kiểm toán là pháp nhân tổ chức được UBCKNN quản lý. (2) Cấu trúc trường: tên VI/EN/viết tắt, số ĐKKD, vốn điều lệ, trạng thái, ngày chấp thuận, thành viên hãng nước ngoài — đây là profile của một tổ chức kiểm toán độc lập. (3) Chọn `[Involved Party] Audit Firm`; shared entity với SCMS.CT_KIEM_TOAN. |
+| Involved Party | Shared Entity | Shared Entity | `AF_PROFILES` | Update | Giấy chứng nhận ĐKKD/đủ điều kiện kinh doanh của công ty kiểm toán. | Involved Party Alternative Identification | Fundamental | Shared Entity — extend source_table AUDIT; Tier 1 = Tier của host entity `AF_PROFILES`. |
+| Involved Party | Shared Entity | Shared Entity | `AF_PROFILES` | Update | Địa chỉ điện tử (điện thoại/fax/website) của công ty kiểm toán (không có kênh EMAIL). | Involved Party Electronic Address | Fundamental | Shared Entity — extend source_table AUDIT; Tier 1 = Tier của host entity `AF_PROFILES`. |
+| Involved Party | Shared Entity | Shared Entity | `AF_PROFILES` | Update | Địa chỉ bưu chính (trụ sở) của công ty kiểm toán. | Involved Party Postal Address | Fundamental | Shared Entity — extend source_table AUDIT; Tier 1 = Tier của host entity `AF_PROFILES`. |
 
 ---
 

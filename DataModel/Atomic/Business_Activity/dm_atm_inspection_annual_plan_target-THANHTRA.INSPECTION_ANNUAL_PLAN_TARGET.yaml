@@ -74,7 +74,7 @@ attributes:
     source_system: THANHTRA
     source_table: INSPECTION_ANNUAL_PLAN_TARGET
     source_column: THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.INSPECTION_ANNUAL_PLAN_ID
-    comment: "FK target: inspection_annual_plan.inspection_annual_plan_id. Hash: hash_id('THANHTRA.INSPECTION_ANNUAL_PLAN', INSPECTION_ANNUAL_PLAN_ID)."
+    comment: "FK target: inspection_annual_plan.inspection_annual_plan_id. Hash: hash_id('THANHTRA_INSPECTION_ANNUAL_PLAN', INSPECTION_ANNUAL_PLAN_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -187,5 +187,33 @@ attributes:
     source_table: INSPECTION_ANNUAL_PLAN_TARGET
     source_column: THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.PLANNED_CONTENT
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Implemented Indicator
+    physical_name: implemented_ind
+    business_meaning: "Đã triển khai thanh tra đối tượng này chưa: 0 = Chưa triển khai, 1 = Đã triển khai."
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN_TARGET
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.IMPLEMENTED
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Actual Quarter
+    physical_name: actual_quarter
+    business_meaning: "Quý thực tế triển khai (1-4) — do người dùng cập nhật khi đã triển khai xong."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN_TARGET
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.ACTUAL_QUARTER
+    comment: "Nguồn NUMBER(1,0) — ETL cast sang integer. Giá trị hợp lệ: 1–4."
     classification_context: null
     etl_derived_value: null

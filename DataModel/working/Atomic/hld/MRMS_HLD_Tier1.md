@@ -1,7 +1,7 @@
 # MRMS HLD — Tier 1
 
 **Source system:** MRMS (Quản lý rủi ro về thị trường chứng khoán)
-**Tier 1:** Entity độc lập, không FK đến bảng nghiệp vụ khác trong scope — RISK_INDICATOR chỉ FK đến RISK_INDICATOR_CATEGORY (xử lý như Classification Value ở lần thiết kế này, xem 6e/6f).
+**Tier 1:** Entity độc lập, không FK đến bảng nghiệp vụ khác trong scope — RISK_INDICATOR chỉ tham chiếu RISK_INDICATOR_CATEGORY (map vào shared entity Classification Value, cũng Tier 1, xem 6d/6f).
 
 ---
 
@@ -9,7 +9,8 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Common | [Common] Classification | — | RISK_INDICATOR | Update | Danh mục chỉ tiêu tài chính (trong nước & quốc tế) dùng cho Dashboard giám sát rủi ro (GDP, CPI, VNIndex, DXY...) | Classification Risk Indicator | Classification | (1) Đã tra `knowledge/terms.csv` và `reference_data_sets.csv` — không có BCV term chuyên biệt cho khái niệm "chỉ tiêu kinh tế vĩ mô/thị trường dùng để giám sát rủi ro hệ thống" (khác `Key Risk Indicator` giám sát nội bộ CTCK đã dùng ở SCMS `[Business Activity] Risk Indicator`). (2) Cấu trúc RISK_INDICATOR: INDICATOR_CODE/INDICATOR_NAME (business key + tên), CATEGORY_ID (FK nhóm), PERIOD_TYPE/UNIT_CODE/SOURCE_CODE (thuộc tính phân loại mặc định), DISPLAY_ORDER/IS_DISPLAY (UI), STATUS (active flag), LAST_SYNC_TIME (đồng bộ tự động) — bảng master định nghĩa chỉ tiêu, không lưu giá trị đo lường cụ thể (giá trị nằm ở RISK_INDICATOR_VALUE, xem Tier 2) → vai trò danh mục/reference hơn là entity nghiệp vụ có lifecycle riêng. (3) Theo chỉ đạo Data Modeler: gán BCV Core Object = Common, BCV Concept = `[Common] Classification`, Table Type = Classification (Upsert). Tên entity theo convention project cho nhóm Common/Classification hiện có (Classification Business Line, Classification Firm Status, Classification Nationality, Classification Service...): `Classification [Term]` → **Classification Risk Indicator**. |
+| Common | [Common] Classification | — | RISK_INDICATOR | Update | Danh mục chỉ tiêu tài chính (trong nước & quốc tế) dùng cho Dashboard giám sát rủi ro (GDP, CPI, VNIndex, DXY...) | Classification Risk Indicator | Relative | (1) Đã tra `knowledge/terms.csv` và `reference_data_sets.csv` — không có BCV term chuyên biệt cho khái niệm "chỉ tiêu kinh tế vĩ mô/thị trường dùng để giám sát rủi ro hệ thống" (khác `Key Risk Indicator` giám sát nội bộ CTCK đã dùng ở SCMS `[Business Activity] Risk Indicator`). (2) Cấu trúc RISK_INDICATOR: INDICATOR_CODE/INDICATOR_NAME (business key + tên), CATEGORY_ID (FK nhóm), PERIOD_TYPE/UNIT_CODE/SOURCE_CODE (thuộc tính phân loại mặc định), DISPLAY_ORDER/IS_DISPLAY (UI), STATUS (active flag), LAST_SYNC_TIME (đồng bộ tự động) — bảng master định nghĩa chỉ tiêu, không lưu giá trị đo lường cụ thể (giá trị nằm ở RISK_INDICATOR_VALUE, xem Tier 2) → vai trò danh mục/reference hơn là entity nghiệp vụ có lifecycle riêng. (3) Theo chỉ đạo Data Modeler: gán BCV Core Object = Common, BCV Concept = `[Common] Classification`, Table Type = Relative (SCD2, theo LLD). Tên entity theo convention project cho nhóm Common/Classification hiện có (Classification Business Line, Classification Firm Status, Classification Nationality, Classification Service...): `Classification [Term]` → **Classification Risk Indicator**. |
+| Common | [Classification] Common | Common | RISK_INDICATOR_CATEGORY | Update | Nhóm chỉ tiêu (Yếu tố vĩ mô, Yếu tố tiền tệ, Thị trường cổ phiếu...) | Classification Value | Relative | Map vào shared entity Classification Value (cl_value) theo LLD `lld_MRMS_RISK_INDICATOR_CATEGORY.yaml`, mirror pattern NHNCK/TTHC: Schema Code = `MRMS.RISK_INDICATOR_CATEGORY`, chỉ Code/Name/Description. SET_CODE/STATUS của nguồn không có chỗ trong cl_value — ghi `pending_design.yaml`. |
 
 ---
 
@@ -33,7 +34,7 @@ erDiagram
     }
 ```
 
-> CATEGORY_ID trỏ đến RISK_INDICATOR_CATEGORY — không vẽ vì xử lý như Classification Value (xem 6d, 6e).
+> CATEGORY_ID trỏ đến RISK_INDICATOR_CATEGORY — nguồn của shared entity Classification Value (xem 6d, 6f).
 
 ---
 
@@ -52,6 +53,14 @@ erDiagram
         string data_src_code
         boolean actv_f
     }
+
+    Classification_Value {
+        string cl_code
+        string schema_code
+        string cl_nm
+    }
+
+    Classification_Risk_Indicator }o..|| Classification_Value : "rsk_ind_cgy_code"
 ```
 
 ---
@@ -60,7 +69,7 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| RISK_INDICATOR.CATEGORY_ID → RISK_INDICATOR_CATEGORY | Nhóm chỉ tiêu (Yếu tố vĩ mô, Yếu tố tiền tệ, Thị trường cổ phiếu...) | `MRMS_RISK_INDICATOR_CATEGORY` | source_table | RISK_INDICATOR_CATEGORY có thêm STATUS/SET_CODE ngoài CODE/NAME — xem 6e, có thể cần promote thành entity riêng sau. |
+| RISK_INDICATOR.CATEGORY_ID → RISK_INDICATOR_CATEGORY | Nhóm chỉ tiêu (Yếu tố vĩ mô, Yếu tố tiền tệ, Thị trường cổ phiếu...) | `MRMS_RISK_INDICATOR_CATEGORY` | source_table | Nguồn của shared entity Classification Value (cl_value); STATUS/SET_CODE ngoài CODE/NAME chưa có chỗ trong cl_value — xem 6f T1-01. |
 | RISK_INDICATOR.SET_CODE | Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế | `MRMS_RISK_INDICATOR_SET` | source_table | |
 | RISK_INDICATOR.PERIOD_TYPE | Tần suất: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm | `MRMS_RISK_PERIOD_TYPE` | source_table | Dùng chung với RISK_INDICATOR_VALUE.PERIOD_TYPE (Tier 2). |
 | RISK_INDICATOR.UNIT_CODE | Đơn vị mặc định: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính | `MRMS_RISK_UNIT` | source_table | Dùng chung với RISK_INDICATOR_VALUE.UNIT_CODE (Tier 2). |
@@ -81,6 +90,6 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T1-01 | RISK_INDICATOR_CATEGORY (FK cha của RISK_INDICATOR) nên xử lý là Classification Value (như lần thiết kế này) hay promote thành entity riêng "Classification Risk Indicator Category" (theo tiền lệ LinhLV, do có STATUS + SET_CODE ngoài CODE/NAME)? | **Đã thiết kế LLD (2026-08-30)** theo pattern NHNCK cl_value (`lld_MRMS_RISK_INDICATOR_CATEGORY.yaml`) — map vào Fundamental entity dùng chung Classification Value, Schema Code = `MRMS.RISK_INDICATOR_CATEGORY`. SET_CODE/STATUS không có chỗ trong schema chuẩn cl_value — document `pending_design.yaml`, không map. Câu hỏi promote thành entity riêng vẫn còn open nếu sau này cần khai thác 2 field này. |
+| T1-01 | RISK_INDICATOR_CATEGORY (FK cha của RISK_INDICATOR) xử lý thế nào trên Atomic? | **Đã xử lý theo LLD (2026-08-30)** — map vào shared entity `Classification Value` (cl_value, `[Classification] Common`, Relative, T1) theo pattern NHNCK (`lld_MRMS_RISK_INDICATOR_CATEGORY.yaml`), Schema Code = `MRMS.RISK_INDICATOR_CATEGORY`. SET_CODE/STATUS không có chỗ trong cl_value — ghi `pending_design.yaml`, không map. |
 | T1-02 | RISK_INDICATOR_CUSTOM có nên gộp vào Classification Risk Indicator (theo tiền lệ LinhLV, dùng Indicator Type Code phân biệt Hệ thống/Tự tạo) ở lần thiết kế tiếp theo không? | Open — ngoài phạm vi yêu cầu lần này, xem 6e. |
 | T1-03 | RISK_INDICATOR có 8/9 cột của technical bundle chuẩn (STATUS, DELETED, CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME — thiếu VERSION). Theo Bước 2c (atomic-lld-design), bundle không đủ 9/9 nên KHÔNG tự loại trừ — đã map bình thường thành attribute (STATUS → Classification Value do có nhãn nghiệp vụ 0/1 tường minh; CREATED_BY_ID/NAME, UPDATED_BY_ID/NAME → Text denormalized do không có bảng user trong phạm vi khảo sát). Xác nhận STATUS có đúng là "trạng thái hoạt động" nghiệp vụ (không chỉ audit bundle) không? | Open — LLD đã thiết kế theo giả định STATUS là business field thật (Active Status Code), cần Data Modeler xác nhận. |

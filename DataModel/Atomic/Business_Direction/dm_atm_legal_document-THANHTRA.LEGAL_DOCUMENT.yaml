@@ -32,7 +32,7 @@ attributes:
     source_system: THANHTRA
     source_table: LEGAL_DOCUMENT
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('THANHTRA.LEGAL_DOCUMENT', CODE). BCV: [Business Direction] Law."
+    comment: "PK surrogate. Hash: hash_id('THANHTRA_LEGAL_DOCUMENT', CODE). BCV: [Business Direction] Law."
     classification_context: null
     etl_derived_value: null
 
@@ -92,20 +92,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Life Cycle Status Code
-    physical_name: life_cycle_status_code
-    business_meaning: "Trạng thái hiệu lực: ACTIVE (Đang hiệu lực), INACTIVE (Hết hiệu lực)."
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: LEGAL_DOCUMENT
-    source_column: THANHTRA.LEGAL_DOCUMENT.STATUS
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
   - name: Note
     physical_name: note
     business_meaning: Ghi chú bổ sung.
@@ -116,6 +102,20 @@ attributes:
     source_system: THANHTRA
     source_table: LEGAL_DOCUMENT
     source_column: THANHTRA.LEGAL_DOCUMENT.NOTE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Ecatalog Id
+    physical_name: ecatalog_id
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: LEGAL_DOCUMENT
+    source_column: THANHTRA.LEGAL_DOCUMENT.ECATALOG_ID
     comment: null
     classification_context: null
     etl_derived_value: null

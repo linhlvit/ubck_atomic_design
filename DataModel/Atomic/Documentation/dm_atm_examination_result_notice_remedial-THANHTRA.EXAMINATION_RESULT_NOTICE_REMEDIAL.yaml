@@ -74,7 +74,7 @@ attributes:
     source_system: THANHTRA
     source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.EXAMINATION_RESULT_NOTICE_ID
-    comment: "FK target: examination_result_notice.examination_result_notice_id. Hash: hash_id('THANHTRA.EXAMINATION_RESULT_NOTICE', EXAMINATION_RESULT_NOTICE_ID)."
+    comment: "FK target: examination_result_notice.examination_result_notice_id. Hash: hash_id('THANHTRA_EXAMINATION_RESULT_NOTICE', EXAMINATION_RESULT_NOTICE_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -89,33 +89,5 @@ attributes:
     source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
     source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.EXAMINATION_RESULT_NOTICE_ID
     comment: "Lookup pair: examination_result_notice.examination_result_notice_code. Pair with Examination Result Notice Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Description
-    physical_name: description
-    business_meaning: Nội dung biện pháp khắc phục sau kiểm tra.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
-    source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.DESCRIPTION
-    comment: Nguồn CLOB — ETL truncate.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Sort Order
-    physical_name: sort_order
-    business_meaning: Thứ tự hiển thị biện pháp khắc phục.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: EXAMINATION_RESULT_NOTICE_REMEDIAL
-    source_column: THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.SORT_ORDER
-    comment: "Nguồn NUMBER(5,0) — ETL cast sang integer."
     classification_context: null
     etl_derived_value: null

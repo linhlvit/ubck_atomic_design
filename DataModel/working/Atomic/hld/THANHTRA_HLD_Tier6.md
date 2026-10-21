@@ -10,7 +10,7 @@
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
 | Event | [Event] Event | Penalty Subject Behavior | PENALTY_DECISION_SUBJECT_BEHAVIOR | Update | Chi tiết hành vi vi phạm của từng đối tượng trong quyết định xử phạt: FK→PENALTY_DECISION_SUBJECT, FK→VIOLATION_BEHAVIOR, FK→PENALTY_TYPE, MIN/MAX/APPLIED_FINE_AMOUNT, REMEDIAL_MEASURE, LEGAL_BASIS | Penalty Decision Subject Behavior | Fundamental | (1) Conduct Violation — BCV: "a Business Activity that breaches a business code of conduct". (2) Bảng có FK→PENALTY_DECISION_SUBJECT, FK→VIOLATION_BEHAVIOR, FK→PENALTY_TYPE, MIN_FINE_AMOUNT, MAX_FINE_AMOUNT, APPLIED_FINE_AMOUNT, REMEDIAL_MEASURE, LEGAL_BASIS — chi tiết từng hành vi vi phạm của 1 đối tượng bị xử phạt: loại hành vi, hình thức phạt được áp dụng, mức phạt thực tế. (3) Conduct Violation khớp — đây là từng hành vi cụ thể được xử lý trong quyết định. Relative của TT Penalty Decision Subject → tên phải chứa "TT Penalty Decision Subject" ✓. |
-| Event | [Event] Event | Penalty Subject Behavior Supplementary | PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY | Update | Hình thức xử phạt bổ sung theo hành vi (bảng mới, DDL UAT cập nhật): FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, FK→PENALTY_TYPE, không có business attribute nào khác ngoài audit fields chuẩn | Penalty Decision Subject Behavior X Penalty Type Relationship | Relative | (1) Event — BCV Concept kế thừa từ Penalty Decision Subject Behavior (entity neo/anchor, cùng Tier), Domain Prefix = rỗng vì là entity link/relationship thuần bắc cầu 2 entity cùng nhóm Event — cùng cơ chế `{A} X {B} Relationship` đã dùng cho `Penalty Decision X Violation Record Relationship` (xem HLD Overview 7a). (2) Bảng: chỉ 2 FK nghiệp vụ (PENALTY_DECISION_SUBJECT_BEHAVIOR_ID, PENALTY_TYPE_ID) + audit fields — pure junction cho phép 1 hành vi có N hình thức xử phạt bổ sung (trước đây chỉ lưu 1 chuỗi tự do). (3) Cân nhắc quan hệ với cột `SUPPLEMENTARY_PENALTY` (CLOB, free-text) hiện có trên PENALTY_DECISION_SUBJECT_BEHAVIOR — DDL KHÔNG đánh dấu DEPRECATED cột này, nhưng về nghiệp vụ có thể đã bị thay thế bởi bảng con có cấu trúc chuẩn hóa hơn (xem T6 Điểm cần xác nhận). PK: composite (PENALTY_DECISION_SUBJECT_BEHAVIOR_ID + PENALTY_TYPE_ID) — bảng không có business attribute nào khác ngoài 2 FK, thỏa điều kiện "pure link" (Rule 3e). Table Type = Relative vì FK đến 2 Fundamental (Penalty Decision Subject Behavior T6, Penalty Type T1) — cross-tier FK bình thường, cùng pattern PENALTY_DECISION_SUBJECT_BEHAVIOR đang dùng cho FK tới Penalty Type. |
+| Event | [Event] Event | Penalty Subject Behavior Supplementary | PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY | Update | Hình thức xử phạt bổ sung theo hành vi (bảng mới, DDL UAT cập nhật): FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, FK→PENALTY_TYPE, không có business attribute nào khác ngoài audit fields chuẩn | Penalty Decision Subject Behavior X Penalty Type Relationship | Relative | (1) Event — BCV Concept kế thừa từ Penalty Decision Subject Behavior (entity neo/anchor, cùng Tier), Domain Prefix = rỗng vì là entity link/relationship thuần bắc cầu 2 entity cùng nhóm Event — cùng cơ chế `{A} X {B} Relationship` đã dùng cho `Penalty Decision X Violation Record Relationship` (xem HLD Overview 7a). (2) Bảng: chỉ 2 FK nghiệp vụ (PENALTY_DECISION_SUBJECT_BEHAVIOR_ID, PENALTY_TYPE_ID) + audit fields — entity link cho phép 1 hành vi có N hình thức xử phạt bổ sung (trước đây chỉ lưu 1 chuỗi tự do). (3) Cân nhắc quan hệ với cột `SUPPLEMENTARY_PENALTY` (CLOB, free-text) hiện có trên PENALTY_DECISION_SUBJECT_BEHAVIOR — DDL KHÔNG đánh dấu DEPRECATED cột này, nhưng về nghiệp vụ có thể đã bị thay thế bởi bảng con có cấu trúc chuẩn hóa hơn (xem T6 Điểm cần xác nhận). PK: composite (PENALTY_DECISION_SUBJECT_BEHAVIOR_ID + PENALTY_TYPE_ID) — bảng không có business attribute nào khác ngoài 2 FK, thỏa điều kiện "pure link" (Rule 3e). Table Type = Relative vì FK đến 2 Fundamental (Penalty Decision Subject Behavior T6, Penalty Type T1) — cross-tier FK bình thường, cùng pattern PENALTY_DECISION_SUBJECT_BEHAVIOR đang dùng cho FK tới Penalty Type. |
 
 ---
 
@@ -82,9 +82,17 @@ erDiagram
         number applied_fine_amount
     }
 
+    Penalty_Decision_Subject_Behavior_X_Penalty_Type_Relationship {
+        bigint ds_penalty_decision_subject_behavior_id PK, FK
+        bigint ds_penalty_type_id PK, FK
+        varchar penalty_type_code
+    }
+
     Penalty_Decision_Subject ||--o{ Penalty_Decision_Subject_Behavior : ""
     Violation_Behavior ||--o{ Penalty_Decision_Subject_Behavior : ""
     Penalty_Type ||--o{ Penalty_Decision_Subject_Behavior : ""
+    Penalty_Decision_Subject_Behavior ||--o{ Penalty_Decision_Subject_Behavior_X_Penalty_Type_Relationship : ""
+    Penalty_Type ||--o{ Penalty_Decision_Subject_Behavior_X_Penalty_Type_Relationship : ""
 ```
 
 ---

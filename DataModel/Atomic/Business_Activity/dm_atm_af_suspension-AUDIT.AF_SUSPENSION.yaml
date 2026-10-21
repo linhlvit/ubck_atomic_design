@@ -1,0 +1,261 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-af_suspension-AUDIT.AF_SUSPENSION
+  logical_name: Audit Firm Suspension
+  physical_name: af_suspension
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Enforcement Action"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: AUDIT
+  description: |
+    Quyết định đình chỉ hoạt động của UBCKNN đối với công ty kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-AUDIT-AF_SUSPENSION
+
+attributes:
+  - name: Audit Firm Suspension Id
+    physical_name: af_suspension_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Enforcement Action\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Suspension Code
+    physical_name: af_suspension_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'AUDIT_AF_SUSPENSION'"
+    etl_derived_value: AUDIT_AF_SUSPENSION
+
+  - name: Audit Firm Id
+    physical_name: af_id
+    business_meaning: Link đến bảng AF_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.AF_PROFILE_ID
+    comment: "FK target: audit_firm.af_id. Cần ETL crosswalk sang AUDIT.AF_PROFILES: AF_SUSPENSION.AF_PROFILE_ID = AF_PROFILES.ID để xác nhận AUDIT_FIRM_CD sau đó hash_id('AUDIT_AF_PROFILES', AUDIT_FIRM_CD)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Code
+    physical_name: af_code
+    business_meaning: Mã công ty kiểm toán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_PROFILES.AUDIT_FIRM_CD
+    comment: "Lookup pair: audit_firm.af_code. Pair with Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Id
+    physical_name: af_auditor_id
+    business_meaning: "Link đến bảng AF_AUDITOR_PROFILES — chỉ có giá trị khi TARGET_TYPE_CD = KTV."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.AF_AUDITOR_PROFILE_ID
+    comment: "FK target: af_auditor.af_auditor_id. Hash: hash_id('AUDIT_AF_AUDITOR_PROFILES', AF_AUDITOR_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Auditor Code
+    physical_name: af_auditor_code
+    business_meaning: Mã kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.AF_AUDITOR_PROFILE_ID
+    comment: "Lookup pair: af_auditor.af_auditor_code. Pair with Audit Firm Auditor Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Inspection Id
+    physical_name: af_inspection_id
+    business_meaning: Link đến bảng AF_INSPECTION.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.AF_INSPECTION_ID
+    comment: "FK target: af_inspection.af_inspection_id. Hash: hash_id('AUDIT_AF_INSPECTION', AF_INSPECTION_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Firm Inspection Code
+    physical_name: af_inspection_code
+    business_meaning: Mã đợt kiểm tra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.AF_INSPECTION_ID
+    comment: "Lookup pair: af_inspection.af_inspection_code. Pair with Audit Firm Inspection Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Target Type Code
+    physical_name: suspension_target_tp_code
+    business_meaning: Nhắc nhở Công ty kiểm toán hay Kiểm toán viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.TARGET_TYPE_CD
+    comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler (2026-07-15)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Source Type Code
+    physical_name: suspension_src_tp_code
+    business_meaning: Đình chỉ từ BTC hay UBCKNN.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.SOURCE_TYPE_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_AUTHORITY. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Document Number
+    physical_name: suspension_document_nbr
+    business_meaning: Số văn bản quyết định đình chỉ của BTC.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.SUSPENSION_DOC_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Issue Date
+    physical_name: suspension_issue_dt
+    business_meaning: Ngày văn bản quyết định đình chỉ của BTC.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.SUSPENSION_ISSUE_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Start Date
+    physical_name: suspension_start_dt
+    business_meaning: BTC đình chỉ (từ ngày).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.SUSPENSION_START_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension End Date
+    physical_name: suspension_end_dt
+    business_meaning: BTC đình chỉ (đến ngày).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.SUSPENSION_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Content
+    physical_name: suspension_content
+    business_meaning: Nội dung quyết định đình chỉ của BTC.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.SUSPENSION_CONTENT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Suspension Type Code
+    physical_name: suspension_tp_code
+    business_meaning: "Loại đình chỉ (Sau kiểm tra, Qua công tác giám sát)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: AUDIT
+    source_table: AF_SUSPENSION
+    source_column: AUDIT.AF_SUSPENSION.SUSPENSION_TYPE_CD
+    comment: "SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
+    classification_context: null
+    etl_derived_value: null

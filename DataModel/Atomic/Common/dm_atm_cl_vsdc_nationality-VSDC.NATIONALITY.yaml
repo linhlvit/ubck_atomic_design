@@ -1,0 +1,79 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_vsdc_nationality-VSDC.NATIONALITY
+  logical_name: Classification VSDC Nationality
+  physical_name: cl_vsdc_nationality
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Nationality"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: VSDC
+  description: |
+    Danh mục quốc tịch của VSDC gồm mã nội bộ (`autoid`) và tên quốc gia, được các bảng tài khoản nhà đầu tư và danh mục trái phiếu nhà đầu tư nước ngoài tham chiếu qua crosswalk `nationality = autoid`.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-VSDC-NATIONALITY
+
+attributes:
+  - name: Classification VSDC Nationality Id
+    physical_name: cl_vsdc_nationality_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: VSDC
+    source_table: NATIONALITY
+    source_column: VSDC.NATIONALITY.AUTOID
+    comment: "PK surrogate. BCV: \"[Common] Nationality\". Danh mục quốc tịch VSDC. Hash: hash_id('VSDC_NATIONALITY',AUTOID)"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification VSDC Nationality Code
+    physical_name: cl_vsdc_nationality_code
+    business_meaning: Mã quốc tịch — Id của danh mục quốc tịch VSDC. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: VSDC
+    source_table: NATIONALITY
+    source_column: VSDC.NATIONALITY.AUTOID
+    comment: BK chính. Dùng AUTOID (BIGINT) làm mã nghiệp vụ vì bảng nguồn không có cột mã khác — ETL cast sang string.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: VSDC
+    source_table: NATIONALITY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'VSDC_NATIONALITY'"
+    etl_derived_value: VSDC_NATIONALITY
+
+  - name: Classification VSDC Nationality Name
+    physical_name: cl_vsdc_nationality_nm
+    business_meaning: Tên quốc gia
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: NATIONALITY
+    source_column: VSDC.NATIONALITY.NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null

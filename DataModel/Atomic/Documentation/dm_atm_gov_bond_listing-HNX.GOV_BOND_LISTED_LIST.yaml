@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-gov_bond_listing-HNX.GOV_BOND_LISTED_LIST
+  logical_name: Gov Bond Listing
+  physical_name: gov_bond_listing
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  description: |
+    Danh sách trái phiếu Chính phủ niêm yết tại HNX: mã, tổ chức phát hành, loại, khối lượng niêm yết, kỳ hạn, hình thức trả lãi, lãi suất, ngày giao dịch đầu tiên và trạng thái.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HNX-GOV_BOND_LISTED_LIST
+
+attributes:
+  - name: Gov Bond Listing Id
+    physical_name: gov_bond_listing_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.BOND_CODE
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_GOV_BOND_LISTED_LIST',BOND_CODE)"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HNX_GOV_BOND_LISTED_LIST'"
+    etl_derived_value: HNX_GOV_BOND_LISTED_LIST
+
+  - name: Bond Code
+    physical_name: bond_code
+    business_meaning: Mã trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.BOND_CODE
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issuer Name
+    physical_name: issuer_nm
+    business_meaning: Tổ chức phát hành
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.ISSUER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Bond Type
+    physical_name: bond_tp
+    business_meaning: Loại trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.BOND_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Listed Bond Quantity
+    physical_name: listed_bond_quantity
+    business_meaning: Khối lượng niêm yết
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.LISTED_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Bond Term
+    physical_name: bond_term
+    business_meaning: Kỳ hạn trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.BOND_TERM
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Remaining Bond Term
+    physical_name: remaining_bond_term
+    business_meaning: Kỳ hạn còn lại của trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.REMAINING_TERM
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Interest Payment Method
+    physical_name: interest_payment_method
+    business_meaning: Hình thức trả lãi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.INTEREST_PAYMENT_METHOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Interest Payment Type
+    physical_name: interest_payment_tp
+    business_meaning: Loại hình trả lãi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.INTEREST_PAYMENT_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Interest Rate
+    physical_name: interest_rate
+    business_meaning: "Lãi suất (%)"
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.INTEREST_RATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: First Trading Date
+    physical_name: first_trading_dt
+    business_meaning: Ngày giao dịch đầu tiên
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.FIRST_TRADING_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Listing Status
+    physical_name: listing_status
+    business_meaning: Trạng thái
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.STATUS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_LISTED_LIST
+    source_column: HNX.GOV_BOND_LISTED_LIST.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null

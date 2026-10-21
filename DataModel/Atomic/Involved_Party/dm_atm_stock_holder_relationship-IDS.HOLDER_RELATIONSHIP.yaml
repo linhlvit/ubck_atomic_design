@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-stock_holder_relationship-IDS.HOLDER_RELATIONSHIP
+  logical_name: Stock Holder Relationship
+  physical_name: stock_holder_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Quan hệ giữa các cổ đông/người liên quan: vợ-chồng, cha-con, ủy quyền, sở hữu chéo — 2 FK tự tham chiếu đến Legal Entity.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-HOLDER_RELATIONSHIP
+
+attributes:
+  - name: Stock Holder Relationship Id
+    physical_name: stock_holder_rltnp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Involved Party Relationship\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Stock Holder Relationship Code
+    physical_name: stock_holder_rltnp_code
+    business_meaning: Id khóa chính tự sinh. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_HOLDER_RELATIONSHIP'"
+    etl_derived_value: IDS_HOLDER_RELATIONSHIP
+
+  - name: Legal Entity Id
+    physical_name: legal_entity_id
+    business_meaning: "ID cổ đông liên quan - ref LEGAL_ENTITIES."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.LEGAL_ENTITY_ID
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Entity Code
+    physical_name: legal_entity_code
+    business_meaning: Mã cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.LEGAL_ENTITY_ID
+    comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Related Legal Entity Id
+    physical_name: related_legal_entity_id
+    business_meaning: ID cổ đông liên quan (đối tượng quan hệ).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.RELATED_ENTITY_ID
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES', RELATED_ENTITY_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Related Legal Entity Code
+    physical_name: related_legal_entity_code
+    business_meaning: Mã cổ đông liên quan (đối tượng quan hệ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.RELATED_ENTITY_ID
+    comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Related Legal Entity Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Relationship Type Code
+    physical_name: rltnp_tp_code
+    business_meaning: Loại quan hệ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.RELATIONSHIP_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.RELATIONSHIP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RELATIONSHIP_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective From Date
+    physical_name: effective_from_dt
+    business_meaning: Ngày bắt đầu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.EFFECTIVE_FROM_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective To Date
+    physical_name: effective_to_dt
+    business_meaning: Ngày kết thúc.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.EFFECTIVE_TO_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Relationship Reason
+    physical_name: rltnp_reason
+    business_meaning: Lý do.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.RELATIONSHIP_REASON
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Relationship Start Date
+    physical_name: rltnp_start_dt
+    business_meaning: Ngày bắt đầu là người liên quan.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.RELATIONSHIP_START_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Relationship End Date
+    physical_name: rltnp_end_dt
+    business_meaning: Ngày kết thúc là người liên quan.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.RELATIONSHIP_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Remarks
+    physical_name: remarks
+    business_meaning: Ghi chú.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: HOLDER_RELATIONSHIP
+    source_column: IDS.HOLDER_RELATIONSHIP.REMARKS
+    comment: null
+    classification_context: null
+    etl_derived_value: null

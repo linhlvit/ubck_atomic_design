@@ -1,12 +1,14 @@
 # FIMS HLD — Tier 1
 
 **Source system:** FIMS (Hệ thống quản lý giám sát và công bố thông tin thành viên thị trường — Oracle)
-**Tier 1:** Entity độc lập, không FK đến entity nghiệp vụ khác — chỉ FK đến Classification Value. Gồm 9 entity: Market Participant Organization (5 bảng nguồn gộp), Foreign Investor, Foreign Investor Report (thay Reporting Template — 2026-09-30), Classification Foreign Investor Reporting Entity (mới 2026-09-30), Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price.
+**Tier 1:** Entity độc lập, không FK đến entity nghiệp vụ khác — chỉ FK đến Classification / Classification Value. Gồm 8 entity: Classification FIMS Company Type, Classification FIMS Investor Type, Classification FIMS Status, Classification Foreign Investor Reporting Entity (mới 2026-09-30), Custodian Bank, Foreign Investor, Foreign Investor Report (thay Reporting Template — 2026-09-30), Securities Company — cùng 3 shared entity IP Postal Address / IP Electronic Address / IP Alt Identification (Tier = tier của host entity). Đồng bộ theo LLD ngày 2026-10-21.
 
 > **Cập nhật (2026-07-10):** NATIONAL/LOCATION đã loại khỏi scope Atomic — dữ liệu địa
 > giới hành chính chuyển sang chuẩn hóa tại nguồn **ECAT** (xem `ECAT_HLD_Tier1.md`).
 > FIMS không tự thiết kế Geographic Area nữa, chỉ tham chiếu qua lookup giá trị. Xem
 > mục 7f của `FIMS_HLD_Overview.md`.
+
+> **Cập nhật (2026-10-21):** các entity Tier 1 chưa có LLD (Market Participant Organization — phần FUNDCOMPANY/DEPOSITORYCENTER/STOCKEXCHANGE, Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price) đã gỡ khỏi HLD; bảng nguồn chuyển vào 7f nhóm `Chưa có LLD`.
 
 ---
 
@@ -14,20 +16,18 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Mô tả bảng nguồn | Atomic Entity | table_type | BCV Term |
 |---|---|---|---|---|---|---|---|
-| Involved Party | [Involved Party] Organization | Organization | FUNDCOMPANY | Danh sách công ty quản lý quỹ — đối tượng thành viên thị trường gửi báo cáo lên UBCKNN | Market Participant Organization | Fundamental | (1) BCV term `[Involved Party] Organization` — tổ chức là Involved Party tham gia thị trường. (2) FUNDCOMPANY: Name, EName, ShortName, IdNo, RegNo, StatusId, Capital — đây là profile tổ chức pháp nhân đầy đủ. (3) Chọn `[Involved Party] Organization`. Gộp 5 bảng nguồn (FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE) thành 1 entity phân biệt bằng `FIMS_MARKET_PARTICIPANT_TYPE`. |
-| Involved Party | [Involved Party] Organization | Organization | SECURITIESCOMPANY | Danh sách công ty chứng khoán — đối tượng thành viên thị trường | Securities Company | Fundamental | **[2026-10-05 — thay quyết định gộp cũ]** Theo chỉ đạo Data Modeler: map vào entity `Securities Company` (cùng entity với `SCMS.SC_FIRM_INFO`), không gộp vào Market Participant Organization. Tách IP Postal Address + IP Electronic Address + IP Alt Identification. Xem T1-11. |
-| Involved Party | [Involved Party] Organization | Organization | BANKMONI | Danh sách ngân hàng lưu ký giám sát — đối tượng thành viên thị trường | Custodian Bank | Fundamental | **[2026-10-05 — thay quyết định gộp cũ]** Theo chỉ đạo Data Modeler: map vào entity `Custodian Bank` (cùng entity với `FMS.BANK_MONI`), không gộp vào Market Participant Organization. Tách IP Postal Address + IP Electronic Address + IP Alt Identification. Xem T1-10. |
-| Involved Party | [Involved Party] Organization | Organization | DEPOSITORYCENTER | Danh sách Trung tâm lưu ký chứng khoán (VSDC) — đối tượng thành viên thị trường | Market Participant Organization | Fundamental | Cùng entity với FUNDCOMPANY — gộp vào Market Participant Organization, `FIMS_MARKET_PARTICIPANT_TYPE = DEPOSITORY_CENTER`. |
-| Involved Party | [Involved Party] Organization | Organization | STOCKEXCHANGE | Danh sách sở giao dịch chứng khoán — đối tượng thành viên thị trường | Market Participant Organization | Fundamental | Cùng entity với FUNDCOMPANY — gộp vào Market Participant Organization, `FIMS_MARKET_PARTICIPANT_TYPE = STOCK_EXCHANGE`. |
-| Involved Party | [Involved Party] Individual | Individual | INVESTOR | Danh sách nhà đầu tư nước ngoài (cá nhân và tổ chức) đăng ký hoạt động tại Việt Nam theo quy định UBCKNN | Foreign Investor | Fundamental | (1) BCV term `[Involved Party] Individual` — đây là cá nhân/tổ chức nước ngoài. (2) INVESTOR: ObjectType(1=Cá nhân, 2=Tổ chức), IdNo, NaId, Address, Tel, Email, StatusId — profile NĐT NN với thông tin nhận dạng và liên lạc. (3) ObjectType gộp cả cá nhân lẫn tổ chức → 1 entity dùng Classification Value phân biệt. Chọn `[Involved Party] Individual` vì primary use case là cá nhân; tổ chức NĐT NN là ngoại lệ (ít trường hơn). |
+| Common | [Common] Organization Legal Structure | Classification | COMPANYTYPE | Danh mục loại hình doanh nghiệp | Classification FIMS Company Type | Relative | (1) BCV term `[Common] Organization Legal Structure` — phân biệt Organization theo hình thức/loại hình doanh nghiệp. (2) Promote từ Classification Value (scheme `FIMS_COMPANY_TYPE`, deprecated) lên entity riêng, cùng pattern `Classification FMS Company Type`; BK = CODE. (3) FK từ Foreign Investor. |
+| Common | [Common] Involved Party Type | Classification | INVESTORTYPE | Danh mục loại nhà đầu tư nước ngoài | Classification FIMS Investor Type | Relative | (1) BCV term `[Common] Involved Party Type` — danh mục loại nhà đầu tư. (2) Promote từ Classification Value (scheme `FIMS_INVESTOR_TYPE`, deprecated) lên entity riêng; BK = SNAME. (3) FK từ Foreign Investor. |
+| Common | [Common] Involved Party Life Cycle Status | Classification | STATUS | Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư | Classification FIMS Status | Relative | (1) BCV term `[Common] Involved Party Life Cycle Status` (không có term trần "Status" trong Common). (2) Promote từ Classification Value (scheme `FIMS_ACTIVITY_STATUS`, deprecated) lên entity riêng, cùng pattern `Classification FMS Status`; BK = Code. (3) FK từ Foreign Investor, Securities Company, Custodian Bank. |
+| Common | [Common] Classification | Classification | 9 bảng danh mục đối tượng (qua ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`) | Danh mục tổ chức/cá nhân từng là bên nộp báo cáo động | Classification Foreign Investor Reporting Entity | Relative | (1) **Quyết định Data Modeler 2026-09-30:** BCO `Common`, concept `[Common] Classification` — đây là bảng danh mục tra cứu (mã + tên + loại), không phải hồ sơ Involved Party đầy đủ. BCV không có term Common riêng cho "reporting entity"; dùng cùng concept với các entity `cl_*` khác trong dự án. (2) ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` (tên cũ `dim_object`) UNION 9 bảng FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, INFODISCREPRES, BRANCHS, INVESTOR, TRADINGREPRESENTATIVE (không JOIN), gắn `object_type`: object_id, object_code, object_name, object_short_name. (3) Bảng tra cứu hợp nhất (Code + tên + loại) phục vụ báo cáo động → Domain Prefix `Classification`; BK = `object_id ‖ object_type` (object_id không duy nhất giữa các loại). Không tách shared entity IP (chỉ có mã/tên, không có địa chỉ/liên lạc/giấy tờ). |
+| Involved Party | [Involved Party] Organization | Organization | BANKMONI | Danh sách ngân hàng lưu ký giám sát — đối tượng thành viên thị trường | Custodian Bank | Fundamental | **[2026-10-05 — thay quyết định gộp cũ]** Theo chỉ đạo Data Modeler: map vào entity `Custodian Bank` (cùng entity với `FMS.BANK_MONI`), không gộp vào Market Participant Organization. Tách IP Postal Address + IP Electronic Address + IP Alt Identification. FK đến Classification FIMS Status. Xem T1-10. |
+| Involved Party | [Involved Party] Individual | Individual | INVESTOR | Danh sách nhà đầu tư nước ngoài (cá nhân và tổ chức) đăng ký hoạt động tại Việt Nam theo quy định UBCKNN | Foreign Investor | Fundamental | (1) BCV term `[Involved Party] Individual` — đây là cá nhân/tổ chức nước ngoài. (2) INVESTOR: ObjectType(1=Cá nhân, 2=Tổ chức), IdNo, NaId, Address, Tel, Email, StatusId — profile NĐT NN với thông tin nhận dạng và liên lạc. (3) ObjectType gộp cả cá nhân lẫn tổ chức → 1 entity phân biệt bằng `investor_object_tp_code`. Chọn `[Involved Party] Individual` vì primary use case là cá nhân; tổ chức NĐT NN là ngoại lệ (ít trường hơn). FK đến Securities Company, Custodian Bank (x2: lưu ký + lưu ký vốn), Classification FIMS Investor Type / Company Type / Status. |
 | Documentation | [Documentation] Form Document | Form Document | RPTTEMP (qua ODS `FOREIGN_INVESTOR_REPORT`) | Danh sách biểu mẫu báo cáo định kỳ do UBCKNN ban hành — master template mà thành viên thị trường phải nộp | Foreign Investor Report | Relative | (1) Term candidate `Form Document` (BCV Documentation): "Identifies a Documentation Item presented in a standard template layout which requires additional information to be supplied". (2) ODS `FOREIGN_INVESTOR_REPORT` (tên cũ `dim_report_template`) = `RPTTEMP ⋈ SHEET` (`SHEET.RptId = RPTTEMP.Id`, chỉ `Status = 1`): rpt_id, report_code, report_name, legal_basis, template_status, sheet_id, sheet_code, sheet_name, sheet_index. Grain = 1 sheet × 1 mẫu. (3) Mẫu báo cáo là template layout chờ thành viên điền số liệu → khớp `Form Document`; thay quyết định cũ `[Business Activity] Business Activity` của entity `Reporting Template` (2026-09-30). ODS ghi đè toàn bộ mỗi lần chạy → Atomic SCD2 (Relative). Domain Prefix `Foreign Investor Report` (gốc của nhóm; physical `foreign_investor_report`, cột viết tắt `fir_`). |
 | Documentation | [Documentation] Form Document | Form Document | SHEET (qua ODS `FOREIGN_INVESTOR_REPORT`) | Danh sách các sheet trong biểu mẫu báo cáo đầu vào | Foreign Investor Report | Relative | Cùng entity với RPTTEMP — SHEET quyết định grain (BK `sheet_id` → `fir_code`). SHEET đồng thời là nguồn parse JSON của `Foreign Investor Report Structure` (Tier 2). |
-| Common | [Common] Classification | Classification | 9 bảng danh mục đối tượng (qua ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`) | Danh mục tổ chức/cá nhân từng là bên nộp báo cáo động | Classification Foreign Investor Reporting Entity | Relative | (1) **Quyết định Data Modeler 2026-09-30:** BCO `Common`, concept `[Common] Classification` — đây là bảng danh mục tra cứu (mã + tên + loại), không phải hồ sơ Involved Party đầy đủ. BCV không có term Common riêng cho "reporting entity"; dùng cùng concept với các entity `cl_*` khác trong dự án. (2) ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` (tên cũ `dim_object`) UNION 9 bảng FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, INFODISCREPRES, BRANCHS, INVESTOR, TRADINGREPRESENTATIVE (không JOIN), gắn `object_type`: object_id, object_code, object_name, object_short_name. (3) Bảng tra cứu hợp nhất (Code + tên + loại) phục vụ báo cáo động → Domain Prefix `Classification` theo quyết định Data Modeler; BK = `object_id ‖ object_type` (object_id không duy nhất giữa các loại). Không tách shared entity IP (chỉ có mã/tên, không có địa chỉ/liên lạc/giấy tờ). 9 bảng staging đã in scope cho entity khác. |
-| Business Activity | [Business Activity] Assessment Period | Period | RPTPERIOD | Danh sách kỳ báo cáo định kỳ gắn với biểu mẫu — xác định ngày bắt đầu, kết thúc, hạn nộp | Reporting Period | Fundamental | (1) BCV term `[Business Activity] Assessment Period` — kỳ đánh giá/báo cáo. (2) RPTPERIOD: mã kỳ, ngày bắt đầu, ngày kết thúc, hạn nộp, FK đến RPTTEMP. (3) Kỳ báo cáo pháp lý mang ngữ nghĩa "assessment period" rõ ràng → chọn `[Business Activity] Assessment Period`. |
-| Business Activity | [Business Activity] Business Activity | Business Activity | RPT_EVENT_TYPE | Danh mục loại sự vụ/nghĩa vụ báo cáo mà thành viên thị trường phải thực hiện theo pháp luật | Reporting Obligation Type | Fundamental | (1) BCV term `[Business Activity] Business Activity` — loại sự vụ định nghĩa một nghĩa vụ hoạt động. (2) RPT_EVENT_TYPE: MA_SU_VU, TEN_SU_VU, PHAN_LOAI_SU_VU, LOAI_NGHIA_VU — phân loại nghĩa vụ báo cáo/CBTT/hồ sơ. (3) Đây là danh mục loại nghĩa vụ (master reference) chứ không phải instance → Fundamental (Classification có cấu trúc rộng hơn Code+Name). |
-| Condition | [Condition] Scoring Criterion | Scoring Criterion | PARAWARN | Danh sách tham số cảnh báo giám sát — định nghĩa chỉ tiêu theo dõi thành viên thị trường kèm công thức tính | Warning Parameter | Fundamental | (1) BCV term `[Condition] Scoring Criterion` — tham số cảnh báo là tiêu chí chấm điểm/đánh giá. (2) PARAWARN: Name, LegalCode, FormulaInfo (NCLOB), SystemObject — tham số kỹ thuật với công thức. (3) Đây là "criterion" định nghĩa ngưỡng đánh giá, không phải Condition instance → `[Condition] Scoring Criterion`. Nền tảng cho Warning Condition (Tier 2). |
-| Involved Party | [Involved Party] Registered Representative | Agent | TRADINGREPRESENTATIVE | Danh sách đại diện giao dịch — cá nhân đại diện cho NĐT nước ngoài thực hiện giao dịch chứng khoán tại công ty CK | Trading Representative | Fundamental | (1) Term candidate `Registered Representative` (BCV Involved Party > Agent): "an Agent who is associated with a broker or dealer, who acts as an account executive for clients, advising them on trading investment products". (2) TRADINGREPRESENTATIVE: FullName, Sex, DateOfBirth, IdNo, NaId (FK→NATIONAL), Address, Telephone/Email/Fax, StatusId — đúng là hồ sơ cá nhân (Individual) đóng vai trò đại diện giao dịch tại CTCK cho NĐT NN, khớp cấu trúc `Registered Representative`. (3) Chọn `[Involved Party] Registered Representative`. Bị bỏ sót ở lần thiết kế trước dù được FK trực tiếp từ `RPTMEMBER.TradingRepresentativeId` (Tier 2) và `TRADINGAUTHORIZATION.TradingRepresentativeId` (Tier 3). Chỉ FK đến NATIONAL + STATUS (Classification/shared) → Tier 1. Grain = 1 Individual → tách IP Postal Address (Address) + IP Electronic Address (Telephone/Email/Fax) + IP Alt Identification (IdNo). Xem T1-05. |
-| Condition | [Condition] Product Price Condition | Product Price Condition | CLOSING_PRICE_SECURITIES | Giá đóng cửa chứng khoán theo phiên giao dịch, nhận từ HOSE/HNX/UPCOM hoặc nhập tay | Securities Closing Price | Fact Snapshot | (1) Term candidate `Product Price Condition` (BCV Condition): "specifies the amount to be charged/valued for... a Financial Market Instrument" — giá chứng khoán là 1 dạng Product Price Condition. (2) CLOSING_PRICE_SECURITIES: SecCode (mã CK, không FK cấu trúc — chỉ denormalize Classification Value SECURITIES), TradeDate, ClosePrice, Source (HOSE/HNX/UPCOM/MANUAL), IsFake. Change Mode = Append, filter theo DateCreated — mỗi phiên 1 dòng giá, không update dòng cũ. (3) Đây chính là ví dụ mẫu "bảng giá cuối ngày" của Fact Snapshot pattern → Table Type = Fact Snapshot. Không FK đến entity nghiệp vụ nào (SecCode chỉ denormalize mã CK) → Tier 1. Xem T1-06 về nguồn gốc dữ liệu. |
+| Involved Party | Shared Entity | Shared Entity | BANKMONI, INVESTOR, SECURITIESCOMPANY | Địa chỉ/liên lạc/giấy tờ định danh của Involved Party | Involved Party Alternative Identification | Fundamental | Shared entity — mỗi host (Foreign Investor, Securities Company, Custodian Bank) có 1 LLD riêng (`lld_FIMS_*_IP_Alt_Identification.yaml`); Tier = tier của host (T1). |
+| Involved Party | Shared Entity | Shared Entity | BANKMONI, INVESTOR, SECURITIESCOMPANY | Địa chỉ/liên lạc/giấy tờ định danh của Involved Party | Involved Party Electronic Address | Fundamental | Shared entity — mỗi host có 1 LLD riêng (`lld_FIMS_*_IP_Electronic_Address.yaml`); Tier = tier của host (T1). |
+| Involved Party | Shared Entity | Shared Entity | BANKMONI, INVESTOR, SECURITIESCOMPANY | Địa chỉ/liên lạc/giấy tờ định danh của Involved Party | Involved Party Postal Address | Fundamental | Shared entity — mỗi host có 1 LLD riêng (`lld_FIMS_*_IP_Postal_Address.yaml`); Tier = tier của host (T1). |
+| Involved Party | [Involved Party] Broker Dealer | Organization | SECURITIESCOMPANY | Danh sách công ty chứng khoán — đối tượng thành viên thị trường | Securities Company | Fundamental | **[2026-10-05 — thay quyết định gộp cũ]** Theo chỉ đạo Data Modeler: map vào entity `Securities Company` (cùng entity với `SCMS.SC_FIRM_INFO`), không gộp vào Market Participant Organization. BCV `[Involved Party] Broker Dealer`. Tách IP Postal Address + IP Electronic Address + IP Alt Identification. FK đến Classification FIMS Status. Xem T1-11. |
 
 ---
 
@@ -35,27 +35,6 @@
 
 ```mermaid
 erDiagram
-    FUNDCOMPANY {
-        NUMBER Id PK
-        NVARCHAR2 Name
-        NVARCHAR2 EName
-        NVARCHAR2 ShortName
-        NUMBER NaId FK
-        NVARCHAR2 IdNo
-        DATE IdDate
-        NVARCHAR2 IdAdd
-        NVARCHAR2 RegNo
-        DATE RegDate
-        NVARCHAR2 RegAdd
-        NVARCHAR2 Address
-        NVARCHAR2 Tel
-        NVARCHAR2 Fax
-        NVARCHAR2 Email
-        NVARCHAR2 Website
-        NUMBER Capital
-        NUMBER StatusId FK
-    }
-
     SECURITIESCOMPANY {
         NUMBER Id PK
         NVARCHAR2 Name
@@ -67,20 +46,6 @@ erDiagram
     }
 
     BANKMONI {
-        NUMBER Id PK
-        NVARCHAR2 Name
-        NUMBER NaId FK
-        NUMBER StatusId FK
-    }
-
-    DEPOSITORYCENTER {
-        NUMBER Id PK
-        NVARCHAR2 Name
-        NUMBER NaId FK
-        NUMBER StatusId FK
-    }
-
-    STOCKEXCHANGE {
         NUMBER Id PK
         NVARCHAR2 Name
         NUMBER NaId FK
@@ -101,13 +66,25 @@ erDiagram
         NUMBER StatusId FK
     }
 
-    NATIONAL {
+    STATUS {
         NUMBER Id PK
-        NVARCHAR2 Name
         NVARCHAR2 Code
+        NVARCHAR2 Name
     }
 
-    LOCATION {
+    INVESTORTYPE {
+        NUMBER Id PK
+        NVARCHAR2 SName
+        NVARCHAR2 Name
+    }
+
+    COMPANYTYPE {
+        NUMBER Id PK
+        NVARCHAR2 Code
+        NVARCHAR2 Name
+    }
+
+    NATIONAL {
         NUMBER Id PK
         NVARCHAR2 Name
         NVARCHAR2 Code
@@ -121,69 +98,16 @@ erDiagram
         NUMBER Status
     }
 
-    RPTPERIOD {
-        NUMBER Id PK
-        NVARCHAR2 PeriodCode
-        DATE StartDate
-        DATE EndDate
-        DATE DeadlineSend
-        NUMBER RptTempId FK
-    }
-
-    RPT_EVENT_TYPE {
-        NUMBER BC_SU_VU_ID PK
-        NVARCHAR2 MA_SU_VU
-        NVARCHAR2 TEN_SU_VU
-        NUMBER PHAN_LOAI_SU_VU
-        NUMBER LOAI_NGHIA_VU
-    }
-
-    PARAWARN {
-        NUMBER Id PK
-        NVARCHAR2 Name
-        NVARCHAR2 LegalCode
-        NCLOB FormulaInfo
-        NUMBER SystemObject
-    }
-
-    STATUS {
-        NUMBER Id PK
-        NVARCHAR2 Name
-    }
-
-    TRADINGREPRESENTATIVE {
-        NUMBER ID PK
-        NVARCHAR2 FULLNAME
-        NVARCHAR2 SEX
-        DATE DATEOFBIRTH
-        NVARCHAR2 IDNO
-        NUMBER NAID FK
-        NVARCHAR2 ADDRESS
-        NVARCHAR2 TELEPHONE
-        NVARCHAR2 EMAIL
-        NVARCHAR2 FAX
-        NUMBER STATUSID FK
-    }
-
-    CLOSING_PRICE_SECURITIES {
-        NUMBER Id PK
-        VARCHAR2 SecCode
-        DATE TradeDate
-        NUMBER ClosePrice
-        VARCHAR2 Source
-        NUMBER IsFake
-    }
-
-    FUNDCOMPANY ||--o{ NATIONAL : "NaId"
     SECURITIESCOMPANY ||--o{ NATIONAL : "NaId"
+    SECURITIESCOMPANY ||--o{ STATUS : "StatusId"
     BANKMONI ||--o{ NATIONAL : "NaId"
-    DEPOSITORYCENTER ||--o{ NATIONAL : "NaId"
-    STOCKEXCHANGE ||--o{ NATIONAL : "NaId"
+    BANKMONI ||--o{ STATUS : "StatusId"
     INVESTOR ||--o{ NATIONAL : "NaId"
     INVESTOR ||--o{ SECURITIESCOMPANY : "SecId"
     INVESTOR ||--o{ BANKMONI : "BankId"
-    RPTPERIOD ||--o{ RPTTEMP : "RptTempId"
-    TRADINGREPRESENTATIVE ||--o{ NATIONAL : "NAID"
+    INVESTOR ||--o{ STATUS : "StatusId"
+    INVESTOR ||--o{ INVESTORTYPE : "InvesTypeId"
+    INVESTOR ||--o{ COMPANYTYPE : "CompanyTypeId"
 ```
 
 ---
@@ -194,31 +118,78 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Market_Participant_Organization {
-        bigint ds_market_participant_org_id PK
-        string market_participant_org_code
-        string market_participant_type_code
-        string name
-        string ename
-        string short_name
-        string geographic_area_code
-        bigint geographic_area_id FK
-        string activity_status_code
-        string reg_no
-        date reg_date
-        decimal capital
-        date ds_effective_from
-        date ds_effective_to
-        string ds_source_system
-        timestamp ds_loaded_at
+    Classification_FIMS_Status {
+        string cl_fims_status_id PK
+        string cl_fims_status_code
+        string cl_fims_status_nm
+        string object_tp_code
     }
 
-    Geographic_Area {
-        bigint ds_geographic_area_id PK
-        string geographic_area_code
-        string geographic_area_type_code
-        string name
-        string ds_source_system
+    Classification_FIMS_Investor_Type {
+        string cl_fims_investor_tp_id PK
+        string cl_fims_investor_tp_code
+        string cl_fims_investor_tp_nm
+    }
+
+    Classification_FIMS_Company_Type {
+        string cl_fims_company_tp_id PK
+        string cl_fims_company_tp_code
+        string cl_fims_company_tp_nm
+        string object_tp_code
+    }
+
+    Securities_Company {
+        string sc_id PK
+        string sc_code
+        string cl_fims_status_id FK
+        string cl_fims_status_code
+        string sc_nm
+        string sc_english_nm
+        string sc_short_nm
+        string nationality_id
+        string nationality_code
+        decimal charter_capital_amt
+        string director_full_nm
+    }
+
+    Custodian_Bank {
+        string custodian_bank_id PK
+        string custodian_bank_code
+        string cl_fims_status_id FK
+        string cl_fims_status_code
+        string custodian_bank_full_nm
+        string custodian_bank_english_nm
+        string custodian_bank_short_nm
+        string nationality_id
+        string nationality_code
+        decimal charter_capital_amt
+        string director_full_nm
+    }
+
+    Foreign_Investor {
+        string foreign_investor_id PK
+        string foreign_investor_code
+        string investor_object_tp_code
+        string full_nm
+        string english_nm
+        string gender_code
+        date dt_of_birth
+        string nationality_id
+        string nationality_code
+        string cl_fims_investor_tp_id FK
+        string cl_fims_investor_tp_code
+        string depository_account_nbr
+        string sc_id FK
+        string sc_code
+        string custodian_bank_id FK
+        string custodian_bank_code
+        string capital_investment_account_nbr
+        string capital_custodian_bank_id FK
+        string capital_custodian_bank_code
+        string cl_fims_company_tp_id FK
+        string cl_fims_company_tp_code
+        string cl_fims_status_id FK
+        string cl_fims_status_code
     }
 
     IP_Postal_Address {
@@ -244,86 +215,6 @@ erDiagram
         string alt_id_place
     }
 
-    Foreign_Investor {
-        bigint ds_foreign_investor_id PK
-        string foreign_investor_code
-        string investor_object_type_code
-        bigint geographic_area_id FK
-        string geographic_area_code
-        string investor_type_code
-        string activity_status_code
-        timestamp ds_effective_from
-        timestamp ds_effective_to
-        string ds_source_system
-        timestamp ds_loaded_at
-    }
-
-    Reporting_Period {
-        bigint ds_reporting_period_id PK
-        string reporting_period_code
-        bigint ds_reporting_template_id FK
-        string reporting_template_code
-        date start_date
-        date end_date
-        date deadline_date
-        string ds_source_system
-        timestamp ds_loaded_at
-    }
-
-    Reporting_Obligation_Type {
-        bigint ds_reporting_obligation_type_id PK
-        string reporting_obligation_type_code
-        string name
-        string event_category_code
-        string obligation_category_code
-        string ds_source_system
-        timestamp ds_loaded_at
-    }
-
-    Warning_Parameter {
-        bigint ds_warning_parameter_id PK
-        string warning_parameter_code
-        string name
-        string legal_code
-        string formula_info
-        string system_object_type_code
-        string ds_source_system
-        timestamp ds_loaded_at
-    }
-
-    Trading_Representative {
-        bigint ds_trading_representative_id PK
-        string trading_representative_code
-        string full_name
-        string gender_code
-        date date_of_birth
-        bigint geographic_area_id FK
-        string geographic_area_code
-        string activity_status_code
-        date ds_effective_from
-        date ds_effective_to
-        string ds_source_system
-        timestamp ds_loaded_at
-    }
-
-    Securities_Closing_Price {
-        bigint ds_securities_closing_price_id PK
-        string securities_code
-        date trade_date
-        decimal close_price
-        string price_source_code
-        int is_estimated_flag
-        string ds_source_system
-        timestamp ds_loaded_at
-    }
-
-    Market_Participant_Organization ||--o{ Geographic_Area : "geographic_area_id"
-    Market_Participant_Organization ||--o{ IP_Postal_Address : "ds_involved_party_id"
-    Market_Participant_Organization ||--o{ IP_Electronic_Address : "ds_involved_party_id"
-    Market_Participant_Organization ||--o{ IP_Alt_Identification : "ds_involved_party_id"
-    Foreign_Investor ||--o{ Geographic_Area : "geographic_area_id"
-    Foreign_Investor ||--o{ IP_Alt_Identification : "ds_involved_party_id"
-    Reporting_Period ||--o{ Foreign_Investor_Report : "Reporting Template FK cũ — chờ repoint, xem T1-08"
     Foreign_Investor_Report {
         string fir_id PK
         string fir_code "sheet_id"
@@ -336,6 +227,7 @@ erDiagram
         string sheet_nm
         int sheet_index
     }
+
     Classification_Foreign_Investor_Reporting_Entity {
         string cl_foreign_investor_reporting_entity_id PK
         string cl_foreign_investor_reporting_entity_code "object_id + object_type"
@@ -346,10 +238,24 @@ erDiagram
         string reporting_entity_nm
         string reporting_entity_short_nm
     }
-    Trading_Representative ||--o{ Geographic_Area : "geographic_area_id"
-    Trading_Representative ||--o{ IP_Postal_Address : "ds_involved_party_id"
-    Trading_Representative ||--o{ IP_Electronic_Address : "ds_involved_party_id"
-    Trading_Representative ||--o{ IP_Alt_Identification : "ds_involved_party_id"
+
+    Securities_Company ||--o{ Classification_FIMS_Status : "cl_fims_status_id"
+    Custodian_Bank ||--o{ Classification_FIMS_Status : "cl_fims_status_id"
+    Foreign_Investor ||--o{ Classification_FIMS_Status : "cl_fims_status_id"
+    Foreign_Investor ||--o{ Classification_FIMS_Investor_Type : "cl_fims_investor_tp_id"
+    Foreign_Investor ||--o{ Classification_FIMS_Company_Type : "cl_fims_company_tp_id"
+    Foreign_Investor ||--o{ Securities_Company : "sc_id"
+    Foreign_Investor ||--o{ Custodian_Bank : "custodian_bank_id"
+    Foreign_Investor ||--o{ Custodian_Bank : "capital_custodian_bank_id"
+    Securities_Company ||--o{ IP_Postal_Address : "ds_involved_party_id"
+    Securities_Company ||--o{ IP_Electronic_Address : "ds_involved_party_id"
+    Securities_Company ||--o{ IP_Alt_Identification : "ds_involved_party_id"
+    Custodian_Bank ||--o{ IP_Postal_Address : "ds_involved_party_id"
+    Custodian_Bank ||--o{ IP_Electronic_Address : "ds_involved_party_id"
+    Custodian_Bank ||--o{ IP_Alt_Identification : "ds_involved_party_id"
+    Foreign_Investor ||--o{ IP_Postal_Address : "ds_involved_party_id"
+    Foreign_Investor ||--o{ IP_Electronic_Address : "ds_involved_party_id"
+    Foreign_Investor ||--o{ IP_Alt_Identification : "ds_involved_party_id"
 ```
 
 ---
@@ -358,24 +264,18 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| FUNDCOMPANY.StatusId → STATUS | Tình trạng hoạt động của tổ chức thành viên | `FIMS_ACTIVITY_STATUS` | source_table | Dùng chung cho cả 5 loại tổ chức thành viên + NĐT NN |
-| INVESTOR.InvesTypeId → INVESTORTYPE | Loại nhà đầu tư nước ngoài | `FIMS_INVESTOR_TYPE` | source_table | |
-| FUNDCOMPANY.CompanyTypeId → COMPANYTYPE | Loại hình doanh nghiệp | `FIMS_COMPANY_TYPE` | source_table | |
 | INVESTOR.ObjectType | Loại đối tượng NĐT NN (cá nhân/tổ chức) | `FIMS_STOCKHOLDER_TYPE` | source_table | → FIMS.STOCKHOLDERTYPE |
-| ETL-derived | Loại thành viên thị trường (QLQ/CTCK/NHLK/VSDC/Sở GD) | `FIMS_MARKET_PARTICIPANT_TYPE` | etl_derived | Phân biệt 5 bảng nguồn gộp chung |
 | RPTTEMP.ReportTypeId → REPORTTYPE | Loại báo cáo thành viên | `FIMS_REPORT_TYPE` | source_table | |
-| RPT_EVENT_TYPE.PHAN_LOAI_SU_VU | Phân loại sự vụ (định kỳ/bất thường/theo yêu cầu) | `FIMS_REPORTING_EVENT_CATEGORY` | etl_derived | |
-| RPT_EVENT_TYPE.LOAI_NGHIA_VU | Loại nghĩa vụ (BC/CBTT/hồ sơ/khác) | `FIMS_REPORTING_OBLIGATION_CATEGORY` | etl_derived | |
-| PARAWARN.SystemObject | Loại đối tượng áp dụng tham số cảnh báo | `FIMS_SYSTEM_OBJECT_TYPE` | etl_derived | 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN |
-| CLOSING_PRICE_SECURITIES.Source | Nguồn dữ liệu giá đóng cửa (HOSE/HNX/UPCOM/MANUAL) | `FIMS_PRICE_SOURCE` | source_table | |
 | ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE` | Loại đối tượng nộp báo cáo (9 loại theo bảng danh mục gốc) | `FIMS_REPORTING_ENTITY_TYPE` | etl_derived | Dùng chung với Foreign Investor Report Value |
 | ODS `FOREIGN_INVESTOR_REPORT.TEMPLATE_STATUS` (RPTTEMP.Status) | Trạng thái mẫu báo cáo | `FIMS_REPORT_TEMPLATE_STATUS` | etl_derived | ODS chỉ nạp `Status = 1` |
+
+> STATUS / INVESTORTYPE / COMPANYTYPE đã promote thành entity (6a) — scheme `FIMS_ACTIVITY_STATUS`, `FIMS_INVESTOR_TYPE`, `FIMS_COMPANY_TYPE` không còn dùng.
 
 ---
 
 ## 6e. Bảng chờ thiết kế
 
-*(Không có — tất cả bảng Tier 1 đã có thông tin cột đầy đủ)*
+*(Không có — tất cả bảng Tier 1 trong HLD đã có LLD)*
 
 ---
 
@@ -383,14 +283,11 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T1-01 | FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE có cấu trúc cột gần đồng nhất — xác nhận gộp 5 bảng thành 1 entity `Market Participant Organization` phân biệt bằng `FIMS_MARKET_PARTICIPANT_TYPE`? | Đề xuất: Gộp. Cấu trúc (Name/EName/ShortName/NaId/IdNo/RegNo/Address/Tel/Fax/Email/Website/Capital/StatusId) đồng nhất. ETL union 5 bảng, thêm cột `market_participant_type_code` ETL-derived. |
-| T1-02 | INVESTOR.ObjectType = 1 (cá nhân) và 2 (tổ chức) — có cần tách thành 2 entity riêng (Foreign Investor Individual + Foreign Investor Organization) không? | Đề xuất: Giữ 1 entity, phân biệt bằng `investor_object_type_code`. Cấu trúc cột đồng nhất — không có cột riêng cho từng loại. |
-| T1-03 | RPTTEMP và RPTPERIOD — xác nhận đây là entity nghiệp vụ (không phải config IT) cần thiết kế Atomic? | Cần xác nhận. Nếu RPTTEMP là template cố định do UBCKNN ban hành → in scope. Nếu là config UI của hệ thống → ngoài scope. |
-| T1-04 | Geographic Area — FIMS.NATIONAL và FIMS.LOCATION có nên bổ sung vào shared entity `Geographic Area` không? | **Đã chốt (2026-07-10) — không bổ sung.** Geographic Area chỉ còn 1 nguồn duy nhất là ECAT. NATIONAL/LOCATION loại khỏi scope (xem 7f Overview). Entity FIMS đang FK đến NATIONAL (Market Participant Organization, Foreign Investor, Trading Representative) sẽ resolve bằng lookup giá trị đối chiếu Geographic Area nguồn ECAT khi được thiết kế LLD. |
-| T1-05 | `TRADINGREPRESENTATIVE` là bảng riêng cho đại diện giao dịch, nhưng `INFODISCREPRES.ProfileKind = 6` (`FIMS_PROFILE_KIND` scheme, Tier 2) cũng có giá trị "Đại diện giao dịch" (`TRADING_REPRESENTATIVE`). Đây có phải 2 cách lưu trùng lặp cho cùng 1 vai trò nghiệp vụ, hay `INFODISCREPRES` chỉ dùng ProfileKind=6 cho mục đích phân loại lịch sử/di trú dữ liệu còn `TRADINGREPRESENTATIVE` mới là bảng vận hành hiện tại? | Cần xác nhận với đội FIMS. Nếu trùng lặp → cân nhắc gộp `Trading Representative` vào `Info Disclosure Representative` (dùng Profile Kind Code phân biệt) thay vì giữ 2 entity riêng. Tạm thời giữ tách biệt vì `TRADINGREPRESENTATIVE` có PK và FK độc lập, được `RPTMEMBER`/`TRADINGAUTHORIZATION` FK trực tiếp (không qua `INFODISCREPRES`). |
-| T1-06 | `CLOSING_PRICE_SECURITIES.Source` = HOSE/HNX/UPCOM/MANUAL — xác nhận FIMS có phải nguồn gốc dữ liệu giá hay chỉ cache lại từ sàn giao dịch để tính toán nội bộ (VD: tính tỷ lệ sở hữu/room ngoại trên `Foreign Investor Securities Account`)? | Không ảnh hưởng quyết định scope (đã in-scope vì FIMS lưu bản ghi giá cục bộ phục vụ nghiệp vụ giám sát), nhưng cần ghi rõ trong LLD: `ds_source_system = FIMS` chỉ phản ánh nơi bản ghi được lưu, `price_source_code` mới là nguồn gốc giá thực tế (HOSE/HNX/UPCOM/MANUAL). |
-| T1-07 | **[GHI NHẬN 2026-07-19]** `INVESTOR` có cột `Address` (địa chỉ) và `Telephone/Fax/Email/Website` (liên lạc) nhưng HLD ban đầu chỉ ghi "Tách IP Alt Identification", bỏ sót IP Postal Address + IP Electronic Address. | Áp dụng quy tắc bắt buộc "grain = Involved Party → luôn tách đủ 3 shared entity" khi thiết kế LLD (`lld_FIMS_INVESTOR_IP_Postal_Address.yaml`, `lld_FIMS_INVESTOR_IP_Electronic_Address.yaml`) — không phụ thuộc HLD Tier có liệt kê hay không. Đã đồng bộ lại 7a/Entities/diagram của `FIMS_HLD_Overview.md`. |
-| T1-08 | **[2026-09-30]** `Reporting Template` (RPTTEMP) được thay bằng `Foreign Investor Report` (grain = sheet, BK `sheet_id`, qua ODS `FOREIGN_INVESTOR_REPORT`). `Reporting Period` (RPTPERIOD.RptTempId) và `Member Periodic Report` (RPTMEMBER.RptTempId) trước đây FK đến Reporting Template (grain = mẫu). | Chờ Data Modeler chốt: repoint FK sang `Foreign Investor Report` qua `rpt_id` (1 mẫu → n sheet, không phải BK) hay giữ mã mẫu dạng text. Chưa có LLD Reporting Period/Member Periodic Report nên chưa phát sinh sửa file. Xem 7e-12 Overview. |
-| T1-09 | **[2026-09-30]** `Classification Foreign Investor Reporting Entity` chồng lấn nội dung với `Market Participant Organization`, `Foreign Investor`, `Trading Representative`, `Info Disclosure Representative`, `Foreign FM Branch Organization` (cùng 9 bảng nguồn). Giữ riêng theo quyết định Data Modeler vì là danh mục tra cứu hợp nhất của luồng báo cáo động (ODS). `object_code` loại "Đại diện giao dịch" = `idno` đã được nguồn mã hóa trước khi tới staging (xác nhận BA 24/09/2026) — không phải số giấy tờ gốc. | Không tạo FK sang các entity IP trên ở phạm vi này. |
-| T1-10 | **[2026-10-05]** `BANKMONI` map vào `Custodian Bank` (không gộp Market Participant Organization như T1-01). Cần xác nhận: (a) dùng `Id` nguồn làm BK vì không có mã nghiệp vụ; (b) `RegNo/RegDate/RegAdd` → `BUSINESS_LICENSE`, `IdNo/IdDate/IdAdd` → `IDENTIFICATION`, `DepCert` → `CUSTODIAN_MEMBER_CERTIFICATE`; (c) `FMS.BANK_MONI` và `FIMS.BANKMONI` có cùng tập ngân hàng không — hash khác nhau (`FMS_BANK_MONI` vs `FIMS_BANKMONI`) nên không tự dedupe; (d) `lld_FIMS_INVESTOR` (approved) còn `hash_id('FMS_BANK_MONI', BankAddId)` ở Custodian Bank Id — cần đổi sang `FIMS_BANKMONI`. | Chờ xác nhận. |
-| T1-11 | **[2026-10-05]** `SECURITIESCOMPANY` map vào `Securities Company` (không gộp Market Participant Organization như T1-01; cùng hướng với T1-10). Cần xác nhận: (a) dùng `Id` nguồn làm BK `sc_code` vì không có mã nghiệp vụ — trong khi `SCMS.SC_FIRM_INFO` dùng `CODE` viết tắt (VD SSI); (b) `RegNo/RegDate/RegAdd` → `BUSINESS_LICENSE`, `IdNo/IdDate/IdAdd` → `IDENTIFICATION`, `DepCert` → `CUSTODIAN_MEMBER_CERTIFICATE`; (c) FIMS và SCMS cùng có CTCK nhưng hash khác nhau (`FIMS_SECURITIESCOMPANY` vs `SCMS_SC_FIRM_INFO`) nên không tự dedupe — cần crosswalk theo `ShortName`/`RegNo` nếu muốn hợp nhất; (d) bảng liên kết `SECCOMBUSINES`/`SECCOMTYPE` (Overview) vẫn ghi gộp vào Market Participant Organization — cần rà lại; (e) các entity Tier 2 có FK `SecComId` (TLPROFILES, RPTMEMBER) phải dùng `hash_id('FIMS_SECURITIESCOMPANY', Id)`. | Chờ xác nhận. |
+| T1-01 | ~~FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE gộp thành 1 entity `Market Participant Organization`?~~ | **Đã cập nhật theo LLD (2026-10-21):** SECURITIESCOMPANY → `Securities Company`, BANKMONI → `Custodian Bank` (T1-10, T1-11). FUNDCOMPANY/DEPOSITORYCENTER/STOCKEXCHANGE chưa có LLD → gỡ khỏi HLD, đưa vào 7f nhóm `Chưa có LLD`. |
+| T1-02 | INVESTOR.ObjectType = 1 (cá nhân) và 2 (tổ chức) — có cần tách thành 2 entity riêng không? | Đề xuất: Giữ 1 entity, phân biệt bằng `investor_object_tp_code`. Cấu trúc cột đồng nhất — không có cột riêng cho từng loại. |
+| T1-04 | Geographic Area — FIMS.NATIONAL và FIMS.LOCATION có nên bổ sung vào shared entity `Geographic Area` không? | **Đã chốt (2026-07-10) — không bổ sung.** Geographic Area chỉ còn 1 nguồn duy nhất là ECAT. NATIONAL/LOCATION loại khỏi scope (xem 7f Overview). Entity FIMS FK đến NATIONAL (Securities Company, Custodian Bank, Foreign Investor) resolve bằng cặp `nationality_id/code` đối chiếu Geographic Area nguồn ECAT. |
+| T1-07 | **[GHI NHẬN 2026-07-19]** `INVESTOR` có cột `Address` và `Telephone/Fax/Email/Website` nhưng HLD ban đầu chỉ ghi "Tách IP Alt Identification". | Áp dụng quy tắc "grain = Involved Party → luôn tách đủ 3 shared entity" (`lld_FIMS_INVESTOR_IP_*.yaml`). Đã đồng bộ 7a/Entities/diagram. |
+| T1-08 | **[2026-09-30]** `Reporting Template` (RPTTEMP) được thay bằng `Foreign Investor Report` (grain = sheet, BK `sheet_id`, qua ODS `FOREIGN_INVESTOR_REPORT`). | Các entity từng FK đến Reporting Template (Reporting Period, Member Periodic Report) chưa có LLD nên đã gỡ khỏi HLD (2026-10-21). |
+| T1-09 | **[2026-09-30]** `Classification Foreign Investor Reporting Entity` chồng lấn nội dung với `Securities Company`, `Custodian Bank`, `Foreign Investor` (cùng nguồn trong 9 bảng UNION). Giữ riêng theo quyết định Data Modeler vì là danh mục tra cứu hợp nhất của luồng báo cáo động (ODS). `object_code` loại "Đại diện giao dịch" = `idno` đã được nguồn mã hóa trước khi tới staging (xác nhận BA 24/09/2026) — không phải số giấy tờ gốc. | Không tạo FK sang các entity IP trên ở phạm vi này. |
+| T1-10 | **[2026-10-05]** `BANKMONI` map vào `Custodian Bank` (không gộp như T1-01). Cần xác nhận: (a) dùng `Id` nguồn làm BK vì không có mã nghiệp vụ; (b) `RegNo/RegDate/RegAdd` → `BUSINESS_LICENSE`, `IdNo/IdDate/IdAdd` → `IDENTIFICATION`, `DepCert` → `CUSTODIAN_MEMBER_CERTIFICATE`; (c) `FMS.BANK_MONI` và `FIMS.BANKMONI` có cùng tập ngân hàng không — hash khác nhau (`FMS_BANK_MONI` vs `FIMS_BANKMONI`) nên không tự dedupe; (d) `lld_FIMS_INVESTOR` (approved) còn `hash_id('FMS_BANK_MONI', BankAddId)` ở Custodian Bank Id — cần đổi sang `FIMS_BANKMONI`. | Chờ xác nhận. |
+| T1-11 | **[2026-10-05]** `SECURITIESCOMPANY` map vào `Securities Company` (không gộp như T1-01; cùng hướng với T1-10). Cần xác nhận: (a) dùng `Id` nguồn làm BK `sc_code` vì không có mã nghiệp vụ — trong khi `SCMS.SC_FIRM_INFO` dùng `CODE` viết tắt (VD SSI); (b) `RegNo/RegDate/RegAdd` → `BUSINESS_LICENSE`, `IdNo/IdDate/IdAdd` → `IDENTIFICATION`, `DepCert` → `CUSTODIAN_MEMBER_CERTIFICATE`; (c) FIMS và SCMS cùng có CTCK nhưng hash khác nhau (`FIMS_SECURITIESCOMPANY` vs `SCMS_SC_FIRM_INFO`) nên không tự dedupe — cần crosswalk theo `ShortName`/`RegNo` nếu muốn hợp nhất; (d) các FK `SecComId` từ nguồn khác phải dùng `hash_id('FIMS_SECURITIESCOMPANY', Id)`. | Chờ xác nhận. |

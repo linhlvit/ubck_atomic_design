@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-private_corp_bond_trading_summary-HNX.PRIVATE_CORP_BOND_TRADING
+  logical_name: Private Corp Bond Trading Summary
+  physical_name: private_corp_bond_trading_summary
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  description: |
+    Chỉ tiêu thống kê giao dịch trái phiếu doanh nghiệp riêng lẻ theo ngày báo cáo: tên chỉ tiêu, đơn vị tính và giá trị.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HNX-PRIVATE_CORP_BOND_TRADING
+
+attributes:
+  - name: Private Corp Bond Trading Summary Id
+    physical_name: private_corp_bond_trading_summary_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_TRADING
+    source_column: HNX.PRIVATE_CORP_BOND_TRADING.INDICATOR
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_PRIVATE_CORP_BOND_TRADING',INDICATOR)"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_TRADING
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HNX_PRIVATE_CORP_BOND_TRADING'"
+    etl_derived_value: HNX_PRIVATE_CORP_BOND_TRADING
+
+  - name: Indicator Name
+    physical_name: ind_nm
+    business_meaning: Chỉ tiêu
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_TRADING
+    source_column: HNX.PRIVATE_CORP_BOND_TRADING.INDICATOR
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Measurement Unit
+    physical_name: measurement_unit
+    business_meaning: Đơn vị tính
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_TRADING
+    source_column: HNX.PRIVATE_CORP_BOND_TRADING.UNIT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Indicator Value
+    physical_name: ind_val
+    business_meaning: Giá trị
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_TRADING
+    source_column: HNX.PRIVATE_CORP_BOND_TRADING.VALUE
+    comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(23,4) (domain Currency Amount mặc định decimal(23,2)). transform_physical_names.py sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]. Giá trị chỉ tiêu phụ thuộc measurement_unit (không phải lúc nào cũng tiền tệ) — domain Currency Amount là gần đúng nhất."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Date
+    physical_name: rpt_dt
+    business_meaning: Ngày báo cáo
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_TRADING
+    source_column: HNX.PRIVATE_CORP_BOND_TRADING.REPORT_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

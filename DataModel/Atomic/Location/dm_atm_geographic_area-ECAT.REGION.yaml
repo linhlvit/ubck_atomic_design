@@ -32,7 +32,7 @@ attributes:
     source_system: ECAT
     source_table: REGION
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('ECAT.REGION', CODE). BCV: \"Geographic Area\" (Location)."
+    comment: "PK surrogate. Hash: hash_id('ECAT_REGION', CODE). BCV: \"Geographic Area\" (Location)."
     classification_context: null
     etl_derived_value: null
 
@@ -102,7 +102,7 @@ attributes:
     source_system: ECAT
     source_table: REGION
     source_column: ECAT.REGION.COUNTRY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Parent là COUNTRY. Resolve: join COUNTRY_ID → ECAT.COUNTRY.ID để lấy CODE, rồi hash_id('ECAT.COUNTRY', CODE_CHA)."
+    comment: "FK target: geographic_area.geographic_area_id. Parent là COUNTRY. Resolve: join COUNTRY_ID → ECAT.COUNTRY.ID để lấy CODE, rồi hash_id('ECAT_COUNTRY', CODE_CHA)."
     classification_context: null
     etl_derived_value: null
 
@@ -256,7 +256,7 @@ attributes:
     source_system: ECAT
     source_table: REGION
     source_column: ECAT.REGION.CREATED_BY_ID
-    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
     classification_context: null
     etl_derived_value: null
 
@@ -298,7 +298,7 @@ attributes:
     source_system: ECAT
     source_table: REGION
     source_column: ECAT.REGION.UPDATED_BY_ID
-    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
     classification_context: null
     etl_derived_value: null
 

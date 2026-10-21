@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.COMPANY_PROFILE_ID
-    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -130,7 +130,7 @@ attributes:
     source_system: IDS
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.STATE_OWNER_ORG_VI
-    comment: "Denormalized — không phải FK đến Regulatory Authority Organization Unit (chưa xác nhận cross-source)."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -173,19 +173,5 @@ attributes:
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.OWNERSHIP_RATIO
     comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1 hay 0-100)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Deleted Indicator
-    physical_name: deleted_ind
-    business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: STATE_CAPITAL
-    source_column: IDS.STATE_CAPITAL.DELETE_FLG
-    comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
     classification_context: null
     etl_derived_value: null

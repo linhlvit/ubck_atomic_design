@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: TREASURY_SHARE_TRANS_RESULT
     source_column: IDS.TREASURY_SHARE_TRANS_RESULT.COMPANY_TREASURY_SHARE_ID
-    comment: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id. Hash: hash_id('IDS.COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
+    comment: "FK target: pc_treasury_share_transaction.pc_treasury_share_transaction_id. Hash: hash_id('IDS_COMPANY_TREASURY_SHARES', COMPANY_TREASURY_SHARE_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -340,63 +340,7 @@ attributes:
     source_system: IDS
     source_table: TREASURY_SHARE_TRANS_RESULT
     source_column: IDS.TREASURY_SHARE_TRANS_RESULT.APPROVAL_STATUS_CD
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Approver User Id
-    physical_name: approver_user_id
-    business_meaning: ID Login của Lãnh đạo phê duyệt.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: TREASURY_SHARE_TRANS_RESULT
-    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.APPROVER_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.TREASURY_SHARE_TRANS_RESULT.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Approver User Name
-    physical_name: approver_user_nm
-    business_meaning: Lãnh đạo phê duyệt kết quả.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: TREASURY_SHARE_TRANS_RESULT
-    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.APPROVER_USER_NAME
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Processor User Id
-    physical_name: processor_user_id
-    business_meaning: ID Login của Chuyên viên xử lý.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: TREASURY_SHARE_TRANS_RESULT
-    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.PROCESSOR_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM.USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.TREASURY_SHARE_TRANS_RESULT.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Processor User Name
-    physical_name: processor_user_nm
-    business_meaning: Chuyên viên xử lý hồ sơ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: TREASURY_SHARE_TRANS_RESULT
-    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.PROCESSOR_USER_NAME
-    comment: null
+    comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
     classification_context: null
     etl_derived_value: null
 
@@ -411,20 +355,6 @@ attributes:
     source_table: TREASURY_SHARE_TRANS_RESULT
     source_column: IDS.TREASURY_SHARE_TRANS_RESULT.REVISION_REASON
     comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Deleted Indicator
-    physical_name: deleted_ind
-    business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: TREASURY_SHARE_TRANS_RESULT
-    source_column: IDS.TREASURY_SHARE_TRANS_RESULT.DELETE_FLG
-    comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1,0)."
     classification_context: null
     etl_derived_value: null
 

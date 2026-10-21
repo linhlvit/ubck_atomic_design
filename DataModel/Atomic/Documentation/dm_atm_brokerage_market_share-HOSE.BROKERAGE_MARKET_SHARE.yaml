@@ -1,0 +1,135 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-brokerage_market_share-HOSE.BROKERAGE_MARKET_SHARE
+  logical_name: Brokerage Market Share
+  physical_name: brokerage_market_share
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HOSE
+  description: |
+    Thị phần môi giới của từng công ty chứng khoán thành viên theo quý: tên công ty, mã thành viên, tổng giá trị giao dịch, thị phần theo giá trị và phân loại.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HOSE-BROKERAGE_MARKET_SHARE
+
+attributes:
+  - name: Brokerage Market Share Id
+    physical_name: brokerage_market_share_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.MEMBER_CODE
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HOSE_BROKERAGE_MARKET_SHARE',MEMBER_CODE)"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HOSE_BROKERAGE_MARKET_SHARE'"
+    etl_derived_value: HOSE_BROKERAGE_MARKET_SHARE
+
+  - name: Securities Company Member Code
+    physical_name: sc_member_code
+    business_meaning: Mã thành viên
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.MEMBER_CODE
+    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Name
+    physical_name: sc_nm
+    business_meaning: Tên công ty chứng khoán
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.BROKER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Trading Value
+    physical_name: total_trading_val
+    business_meaning: Tổng giá trị giao dịch
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Market Share By Value
+    physical_name: market_share_by_val
+    business_meaning: "Tỷ trọng theo tổng GTGD (%)"
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.MARKET_SHARE_BY_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Security Type Code
+    physical_name: security_tp_code
+    business_meaning: Phân loại
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.CLASSIFICATION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Quarter
+    physical_name: rpt_quarter
+    business_meaning: Quý báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_QUARTER
+    comment: null
+    classification_context: null
+    etl_derived_value: null

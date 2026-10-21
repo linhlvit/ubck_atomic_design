@@ -120,22 +120,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Jadapter Id
-    physical_name: jadapter_id
-    business_meaning: ID jadapter sinh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.ID
-    comment: Metadata kỹ thuật jadapter — giữ để traceability.
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Prior Index
-    physical_name: prior_index
+  - name: Previous Prior Market Index
+    physical_name: previous_prior_market_index
     business_meaning: Index cuối cùng của phiên trước đó.
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -165,8 +151,8 @@ attributes:
   - name: PT Total Trade Count
     physical_name: pt_total_trade_count
     business_meaning: Tổng số giao dịch thỏa thuận.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: false
     is_primary_key: false
     source_system: MDDS
@@ -288,18 +274,18 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Index Color Code
-    physical_name: index_color_code
+  - name: Index Color
+    physical_name: index_color
     business_meaning: Indicator index đang tăng/giảm.
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.INDEXCOLOR
-    comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
-    classification_context: MDDS_PRICE_CHANGE_COLOR
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: Index Name
@@ -347,7 +333,7 @@ attributes:
   - name: Index Type Code
     physical_name: index_tp_code
     business_meaning: Loại index — mã Sở quy định.
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
@@ -414,18 +400,18 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Market Status Code
-    physical_name: market_status_code
+  - name: Market Status
+    physical_name: market_status
     business_meaning: Trạng thái phiên giao dịch.
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.MARKETSTATUS
-    comment: "Scheme: MDDS_MARKET_STATUS."
-    classification_context: MDDS_MARKET_STATUS
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: No Change Count
@@ -529,7 +515,7 @@ attributes:
   - name: Previous Market Status Code
     physical_name: previous_market_status_code
     business_meaning: Trạng thái phiên giao dịch liền trước.
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
@@ -638,156 +624,16 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Open Index M1
-    physical_name: open_index_m1
-    business_meaning: Chỉ số mở cửa (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.OPEN_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: High Index M1
-    physical_name: high_index_m1
-    business_meaning: Chỉ số cao nhất (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.HIGH_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Low Index M1
-    physical_name: low_index_m1
-    business_meaning: Chỉ số thấp nhất (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.LOW_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Index Change M1
-    physical_name: index_change_m1
-    business_meaning: Mức thay đổi chỉ số (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.INDEXCHANGE_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Index Percent Change M1
-    physical_name: index_percent_change_m1
-    business_meaning: Phần trăm thay đổi chỉ số (mốc M1).
-    data_domain: Percentage
-    data_type: decimal(5,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.INDEXPERCENTCHANGE_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Total Volume M1
-    physical_name: total_vol_m1
-    business_meaning: Tổng khối lượng giao dịch (mốc M1).
-    data_domain: Large Counter
-    data_type: bigint
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.TOTALVOLUME_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS. Nguồn lưu dạng FLOAT(53) — ETL cần cast sang bigint; validate giá trị nguyên (không mất phần thập phân)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Total Value M1
-    physical_name: total_val_m1
-    business_meaning: Tổng giá trị giao dịch (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.TOTALVALUE_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: PT Total Volume M1
-    physical_name: pt_total_vol_m1
-    business_meaning: Tổng khối lượng giao dịch thỏa thuận (mốc M1).
-    data_domain: Large Counter
-    data_type: bigint
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_QTTY_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: PT Total Value M1
-    physical_name: pt_total_val_m1
-    business_meaning: Tổng giá trị giao dịch thỏa thuận (mốc M1).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_VALUE_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: PT Total Trade Count M1
-    physical_name: pt_total_trade_count_m1
-    business_meaning: Tổng số giao dịch thỏa thuận (mốc M1).
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_MARKETINFOR
-    source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_TRADE_M1
-    comment: "Hậu tố _M1: nguồn chưa mô tả — cùng cấu trúc với cột không hậu tố, nghi là giá trị tại mốc M-1; cần xác nhận với MDDS. Nguồn lưu dạng FLOAT(53) — ETL cần cast sang int; validate giá trị nguyên (không mất phần thập phân)."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Exchange Code
     physical_name: exchange_code
     business_meaning: Mã sàn giao dịch.
-    data_domain: Text
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_MARKETINFOR
     source_column: MDDS.JAD_MARKETINFOR.EXCHANGECODE
-    comment: "Có thể cùng value set với Floor Code — cần profile dữ liệu trước khi chuyển sang Classification Value. Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+    comment: "SCHEMA_CODE=MDDS.EXCHANGE_CODE"
     classification_context: null
     etl_derived_value: null

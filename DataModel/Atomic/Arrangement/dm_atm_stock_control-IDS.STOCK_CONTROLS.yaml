@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-stock_control-IDS.STOCK_CONTROLS
+  logical_name: Stock Control
+  physical_name: stock_control
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Chứng khoán của cổ đông bị đưa vào diện kiểm soát/hạn chế chuyển nhượng: mã CK, loại hạn chế, thời gian hiệu lực.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-STOCK_CONTROLS
+
+attributes:
+  - name: Stock Control Id
+    physical_name: stock_control_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Stock Control Code
+    physical_name: stock_control_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: IDS.STOCK_CONTROLS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_STOCK_CONTROLS'"
+    etl_derived_value: IDS_STOCK_CONTROLS
+
+  - name: Legal Entity Id
+    physical_name: legal_entity_id
+    business_meaning: "ID cổ đông liên quan - ref LEGAL_ENTITIES."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: IDS.STOCK_CONTROLS.LEGAL_ENTITY_ID
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS_LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Entity Code
+    physical_name: legal_entity_code
+    business_meaning: Mã cổ đông liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: IDS.STOCK_CONTROLS.LEGAL_ENTITY_ID
+    comment: "Lookup pair: legal_entity.legal_entity_code. Pair with Legal Entity Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Restricted Share Quantity
+    physical_name: restricted_share_quantity
+    business_meaning: SL cổ phiếu bị hạn chế chuyển nhượng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: IDS.STOCK_CONTROLS.RESTRICTED_SHARE_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Restriction Start Date
+    physical_name: restriction_start_dt
+    business_meaning: Ngày bắt đầu hạn chế.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: IDS.STOCK_CONTROLS.RESTRICTION_START_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Restriction End Date
+    physical_name: restriction_end_dt
+    business_meaning: Ngày hết hạn chế.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: IDS.STOCK_CONTROLS.RESTRICTION_END_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Restriction Type Code
+    physical_name: restriction_tp_code
+    business_meaning: "Loại hạn chế - LOOKUP_VALUES LOOKUP_GROUP = RESTRICTION_TYPE."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_CONTROLS
+    source_column: IDS.STOCK_CONTROLS.RESTRICTION_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.RESTRICTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RESTRICTION_TYPE')."
+    classification_context: null
+    etl_derived_value: null

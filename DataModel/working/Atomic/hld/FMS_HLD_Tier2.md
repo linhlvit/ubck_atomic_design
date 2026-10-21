@@ -1,6 +1,6 @@
 # FMS — HLD Tier 2: Phụ thuộc Tier 1
 
-> **Phụ thuộc Tier 1:** Fund Management Company, Custodian Bank, Fund Distribution Agent
+> **Phụ thuộc Tier 1:** Fund Management Company, Custodian Bank, Fund Distribution Agent, Member Rating Period
 >
 > **Thiết kế theo:** [FMS_HLD_Overview.md](FMS_HLD_Overview.md)
 
@@ -14,7 +14,7 @@
 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | TL_PROFILES | Update | Danh sách nhân sự chủ chốt công ty QLQ | Fund Management Company Employee | Fundamental | (1) Term candidate: `Individual Employment Status` — BCV mô tả cá nhân đang giữ vị trí trong tổ chức. (2) Cấu trúc trường: TL_PROFILES có họ tên, ngày sinh, giới tính, CCCD, chức vụ (JOB_TYPE FK), ngày bổ nhiệm, ngày thôi → entity nhân sự với lifecycle bổ nhiệm/thôi chức. IP Alt Identification từ CCCD/Hộ chiếu. (3) Chọn `Individual Employment Status`. |
 | Involved Party | [Involved Party] Funds | Investment Fund | FUNDS | Update | Danh sách quỹ đầu tư chứng khoán | Investment Fund | Fundamental | (1) Term candidate ban đầu: `Investment Fund` (Arrangement). (2) Cấu trúc trường: FUNDS có tên quỹ, mã CCQ (CER_CODE), loại quỹ (FTYPE_ID), vốn điều lệ, NAV, NAV/CCQ, ngày niêm yết, FK đến SECURITIES (công ty QLQ) + BANK_MONI (NH LKGS). (3) BCO điều chỉnh theo review: `Involved Party` — tra BCV term `Funds` (Involved Party, id 10821): "Identifies an Involved Party that represents any managed pool of investment assets. Fund representatives play a role as institutional investors or investing entities...". Quỹ đầu tư đóng vai trò một Involved Party (định chế đầu tư), không phải Arrangement. Chọn `[Involved Party] Funds`. |
 | Involved Party | [Involved Party] Individual | Individual | INVES | Update | Danh sách nhà đầu tư ủy thác | Discretionary Investment Investor | Fundamental | (1) Term candidate: `Individual` — BCV mô tả cá nhân/tổ chức là nhà đầu tư ủy thác. (2) Cấu trúc trường: INVES có họ tên, CCCD, địa chỉ, FK đến SECURITIES (công ty QLQ nhận ủy thác) → entity NĐT ủy thác với thông tin cá nhân đầy đủ; tách IP Alt Identification. (3) Chọn `Individual`. |
-| Business Activity | [Business Activity] Business Activity | Business Activity | RANK | Append | Bảng xếp hạng theo kỳ đánh giá (1 dòng = 1 kết quả xếp hạng/kỳ) | Member Rating | Classification | (1) Term candidate: `Conduct Violation` không phù hợp. Tra lại: kết quả xếp hạng = outcome của một đợt đánh giá — gần `Assessment Result` hơn. (2) Cấu trúc trường: RANK có SEC_ID (FK SECURITIES), RT_PD_ID (FK kỳ đánh giá), TOTAL_SCORE, RANK_INDEX, RANK_TYPE → mỗi dòng = 1 kết quả xếp hạng của 1 CTQLQ trong 1 kỳ, append theo kỳ. (3) Chọn `Business Activity` → Table Type `Classification` (theo LLD `lld_FMS_RANK.yaml`). |
+| Business Activity | [Business Activity] Business Activity | Business Activity | RANK | Append | Bảng xếp hạng theo kỳ đánh giá (1 dòng = 1 kết quả xếp hạng/kỳ) | Member Rating | Classification | (1) Term candidate: `Conduct Violation` không phù hợp. Tra lại: kết quả xếp hạng = outcome của một đợt đánh giá — gần `Assessment Result` hơn. (2) Cấu trúc trường: RANK có SEC_ID (FK SECURITIES), RT_PD_ID (FK RATING_PD → Member Rating Period, Tier 1), TOTAL_SCORE, RANK_INDEX, RANK_TYPE → mỗi dòng = 1 kết quả xếp hạng của 1 CTQLQ trong 1 kỳ, append theo kỳ. (3) Chọn `Business Activity` → Table Type `Classification` (theo LLD `lld_FMS_RANK.yaml`). |
 
 ---
 
@@ -34,12 +34,14 @@ graph LR
     SECURITIES["**SECURITIES** (Tier 1)"]:::outscope
     BANK_MONI["**BANK_MONI** (Tier 1)"]:::outscope
     AGENCIES["**AGENCIES** (Tier 1)"]:::outscope
+    RATING_PD["**RATING_PD** (Tier 1)"]:::outscope
 
     TL_PROFILES -->|"SEC_ID"| SECURITIES
     FUNDS -->|"SEC_ID"| SECURITIES
     FUNDS -->|"BANK_ID"| BANK_MONI
     INVES -->|"SEC_ID"| SECURITIES
     RANK -->|"SEC_ID"| SECURITIES
+    RANK -->|"RT_PD_ID"| RATING_PD
 ```
 
 ---
@@ -62,6 +64,7 @@ graph TD
     FMC["**Fund Management Company** (Tier 1)"]:::outscope
     CB["**Custodian Bank** (Tier 1)"]:::outscope
     FDA["**Fund Distribution Agent** (Tier 1)"]:::outscope
+    MRP["**Member Rating Period** (Tier 1)"]:::outscope
 
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
@@ -77,6 +80,7 @@ graph TD
     DII -->|"Fund Management Company FK"| FMC
     ALTID -.->|"shared"| DII
     MR -->|"Fund Management Company FK"| FMC
+    MR -->|"Member Rating Period FK"| MRP
 ```
 
 ---

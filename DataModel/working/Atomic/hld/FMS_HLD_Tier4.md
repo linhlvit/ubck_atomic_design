@@ -1,10 +1,8 @@
-# FMS — HLD Tier 4: Phụ thuộc Tier 3
+# FMS — HLD Tier 4: Independent Entities (Nhóm nghiệp vụ mới phát hiện)
 
-> **[2026-10-13] TIER NÀY KHÔNG CÒN ENTITY TRONG HLD.** Toàn bộ bảng của tier đã được gỡ thiết kế (không còn LLD trong `lld/FMS`) và chuyển sang mục 7f của `FMS_HLD_Overview.md`. Nội dung bên dưới chỉ để tham khảo lịch sử, không còn hiệu lực; có thể xoá file này.
-
-> **Phụ thuộc Tier 1:** Fund Management Company
-> **Phụ thuộc Tier 2:** Investment Fund
-> **Phụ thuộc Tier 3:** Investment Fund Investor Membership
+> **Phụ thuộc:** Không phụ thuộc Tier nào (một số FK đến entity Tier 1/2 đã có: Fund Management Company, Custodian Bank, Fund Management Company Employee).
+>
+> **Bối cảnh:** Tier 4 thiết kế cho các bảng nguồn phát hiện sau khi BRD/Source/FMS mở rộng khảo sát. Hiện còn: Fund Management Company Insider, Securities Distribution Agent, Fund Management Company Securities Offering. Các bảng còn lại của Tier 4 đã chuyển sang mục 7f Overview (chưa có LLD). **[CẬP NHẬT REVIEW 2026-07-03]** Nhóm Audit Firm bỏ khỏi scope thiết kế Atomic — thông tin kiểm toán lấy từ phân hệ IDS.
 >
 > **Thiết kế theo:** [FMS_HLD_Overview.md](FMS_HLD_Overview.md)
 
@@ -14,9 +12,12 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Business Activity | [Business Activity] Business Activity | Transaction | MB_CHANGE | Append | Lịch sử thay đổi vốn góp của nhà đầu tư trong quỹ | Investment Fund Investor Capital Change Log | Fact Append | (1) Term candidate ban đầu: `Transaction` (Event). (2) Cấu trúc trường: MB_CHANGE có FK đến MB_FUND (NĐT trong quỹ), số tiền thay đổi, loại thay đổi (góp thêm/rút bớt), ngày phát sinh → append theo ngày, mỗi dòng = 1 sự kiện thay đổi vốn. (3) BCO điều chỉnh theo review: `Business Activity` (tạm dùng, tương tự MEMBER_RATING/RANK — cần tra lại BCV term chính xác hơn cho sự kiện thay đổi vốn góp). Table Type giữ `Fact Append`. |
-| Transaction | [Event] Transaction | Transaction | TRANSFER_MBF | Append | Giao dịch mua/bán chứng chỉ quỹ | Investment Fund Certificate Transfer | Fact Append | (1) Term candidate: `Transaction` — BCV mô tả giao dịch chuyển nhượng CCQ. (2) Cấu trúc trường: TRANSFER_MBF có FK đến FUNDS (quỹ), FK đến MB_FUND (NĐT), loại giao dịch, số lượng CCQ, ngày giao dịch, giá trị giao dịch → mỗi dòng = 1 giao dịch CCQ, insert-only. (3) Chọn `Transaction` → Fact Append. |
-| Transaction | [Event] Transaction | Transaction | TRS_FER_INDER | Append | Giao dịch chuyển nhượng cổ phần nội bộ công ty QLQ | Fund Management Company Share Transfer | Fact Append | (1) Term candidate: `Transaction` — giao dịch chuyển nhượng cổ phần. (2) Cấu trúc trường: TRS_FER_INDER có FK đến SECURITIES (CTQLQ), ngày giao dịch, số lượng, giá trị → mỗi dòng = 1 giao dịch chuyển nhượng cổ phần, insert-only. Lưu ý BRD note: mất FK InFrmId/InToId (INSIDER bị bỏ). (3) Chọn `Transaction` → Fact Append. |
+| Involved Party | [Involved Party] Individual | Individual | INSIDER | Update | Cổ đông nội bộ/người có liên quan của công ty QLQ | Fund Management Company Insider | Fundamental | (1) Term candidate: `Individual` — không tìm được BCV term riêng "Insider"/"Related Party" khớp cấu trúc; INSIDER nghiêng cá nhân (BIRTH, EMPLOY_STATUS, ID_NO) nhưng ID_NO cũng nhận "Mã số doanh nghiệp" (bao gồm tổ chức). (2) Cấu trúc trường: FK SC_ID (SECURITIES), S_ID (STOCKHOLDER_TYPE — loại cổ đông), TLPRO_ID (TL_PROFILES, kiêm nhiệm), NAT_ID (NATIONAL), CAPITAL/QTTY (vốn góp/CCQ nắm giữ), INSIDER_TYPE (cổ đông lớn/BĐH/HĐQT), ADDRESS/TELEPHONE/FAX/EMAIL, ID_NO/ID_DATE/ID_ADD. Tách IP Postal Address + IP Electronic Address + IP Alt Identification. (3) Chọn `Individual`, đặt tên `Fund Management Company Insider` vì FK cha là Fund Management Company (SECURITIES). |
+| Involved Party | [Involved Party] Organization | Organization | DISTRIBUTOR_AGENT | Update | Đại lý phân phối chứng chỉ quỹ có GCN đăng ký hoạt động riêng | Securities Distribution Agent | Fundamental | (1) Term candidate: `Organization` — generic, cấu trúc gần như trùng Fund Distribution Agent (AGENCIES) đã thiết kế Tier 1. (2) Cấu trúc trường: ITEM_NAME, NAME_EN, SHORT_NAME, BUSINESS_LICENSE_NO, TAX_CODE, **DISTRIBUTION_CERT_NO/DATE/ISSUED_BY** (GCN đăng ký hoạt động phân phối CCQ — cột KHÔNG có ở AGENCIES), ADDRESS, PHONE, FAX. (3) Chọn `Organization`, đặt tên riêng `Securities Distribution Agent` (không trùng `Fund Distribution Agent`) do có GCN phân phối riêng biệt — **nghi ngờ trùng lặp nghiệp vụ với Fund Distribution Agent (AGENCIES), xem 6f.** Tách IP Postal Address + IP Electronic Address. |
+| Business Activity | [Business Activity] Corporate Action | Business Activity | OFFERING | Update | Đợt chào bán cổ phần/trái phiếu của công ty QLQ | Fund Management Company Securities Offering | Fundamental | (1) Term candidate: `Corporate Action` — đợt chào bán chứng khoán của CTQLQ. (2) Cấu trúc trường (theo LLD `lld_FMS_OFFERING.yaml`): FK Fund Management Company, loại chào bán/loại chứng khoán, số lượng, giá, tổng giá trị đăng ký, mục đích và phương án sử dụng vốn, thời gian dự kiến/thực tế, kết quả chào bán (SL bán, giá thực tế, số NĐT) → 1 dòng/đợt, cập nhật xuyên suốt lifecycle (kế hoạch → thực hiện → kết quả), không insert-only. (3) Chọn `Corporate Action`. Không phải Involved Party — không tách shared entity. |
+
+**[CẬP NHẬT REVIEW 2026-07-03] AUDIT_FIRM bỏ không thiết kế:** Thông tin kiểm toán (công ty kiểm toán, kiểm toán viên, nhắc nhở kiểm toán) lấy từ phân hệ IDS — không thiết kế Atomic entity `Audit Firm` tại FMS. Cascade: AUDITOR (Tier 5) và AUDIT_FIRM_REMINDER (Tier 7) cũng bỏ theo. Xem mục 7f Overview (nhóm `Xử lý luồng khác`).
+
 
 ---
 
@@ -27,18 +28,22 @@ graph LR
     classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    MB_CHANGE["**MB_CHANGE**\nThay đổi vốn góp NĐT quỹ"]:::src
-    TRANSFER_MBF["**TRANSFER_MBF**\nGiao dịch mua/bán CCQ"]:::src
-    TRS_FER_INDER["**TRS_FER_INDER**\nChuyển nhượng cổ phần QLQ"]:::src
+    INSIDER["**INSIDER**\nCổ đông nội bộ CTQLQ"]:::src
+    DISTRIBUTOR_AGENT["**DISTRIBUTOR_AGENT**\nĐại lý phân phối (GCN riêng)"]:::src
+    OFFERING["**OFFERING**\nĐợt chào bán của CTQLQ"]:::src
 
-    MB_FUND["**MB_FUND** (Tier 3)"]:::outscope
-    FUNDS["**FUNDS** (Tier 2)"]:::outscope
     SECURITIES["**SECURITIES** (Tier 1)"]:::outscope
+    BANK_MONI["**BANK_MONI** (Tier 1)"]:::outscope
+    NATIONAL["**NATIONAL** (Tier 1)"]:::outscope
+    STATUS["**Classification FMS Status** (Tier 1)"]:::outscope
+    AGENCY_TYPE["**AGENCY_TYPE** (Tier 1, Classification Value)"]:::outscope
+    RELATION["**RELATION** (Tier 1, Classification Value)"]:::outscope
+    TL_PROFILES["**TL_PROFILES** (Tier 2)"]:::outscope
 
-    MB_CHANGE -->|"MB_FUND_ID"| MB_FUND
-    TRANSFER_MBF -->|"FUND_ID"| FUNDS
-    TRANSFER_MBF -->|"MB_FUND_ID"| MB_FUND
-    TRS_FER_INDER -->|"SEC_ID"| SECURITIES
+    INSIDER -->|"SC_ID"| SECURITIES
+    OFFERING -->|"SEC_ID"| SECURITIES
+    INSIDER -->|"NAT_ID"| NATIONAL
+    INSIDER -->|"TLPRO_ID (nullable)"| TL_PROFILES
 ```
 
 ---
@@ -47,21 +52,33 @@ graph LR
 
 ```mermaid
 graph TD
-    classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
+    classDef atomic fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef shared fill:#fae8ff,stroke:#9333ea,color:#4a044e
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    IFCCL["**Investment Fund Investor Capital Change Log**\n[Business Activity] Business Activity\nMBCHANGE"]:::pattern
-    IFCT["**Investment Fund Certificate Transfer**\n[Event] Transaction\nTRANSFERMBF"]:::pattern
-    FMCST["**Fund Management Company Share Transfer**\n[Event] Transaction\nTRSFERINDER"]:::pattern
+    FMCI["**Fund Management Company Insider**\n[Involved Party] Individual\nINSIDER"]:::atomic
+    SDA["**Securities Distribution Agent**\n[Involved Party] Organization\nDISTRIBUTOR_AGENT"]:::atomic
+    OFF["**Fund Management Company Securities Offering**\n[Business Activity] Corporate Action\nOFFERING"]:::atomic
 
-    IFIM["**Investment Fund Investor Membership** (Tier 3)"]:::outscope
-    IF["**Investment Fund** (Tier 2)"]:::outscope
     FMC["**Fund Management Company** (Tier 1)"]:::outscope
+    CB["**Custodian Bank** (Tier 1)"]:::outscope
+    GEO["**Geographic Area** (Tier 1, shared)"]:::outscope
+    KP["**Fund Management Company Employee** (Tier 2)"]:::outscope
 
-    IFCCL -->|"Investment Fund Investor Membership FK"| IFIM
-    IFCT -->|"Investment Fund FK"| IF
-    IFCT -->|"Investment Fund Investor Membership FK"| IFIM
-    FMCST -->|"Fund Management Company FK"| FMC
+    ADDR["IP Postal Address"]:::shared
+    EADDR["IP Electronic Address"]:::shared
+    ALTID["IP Alt Identification"]:::shared
+
+
+    FMCI -->|"Fund Management Company FK (x2: liên quan + thuộc về)"| FMC
+    FMCI -->|"Geographic Area FK"| GEO
+    FMCI -->|"Employee FK (nullable, kiêm nhiệm)"| KP
+    OFF -->|"Fund Management Company FK"| FMC
+    ADDR -.->|"shared"| FMCI
+    EADDR -.->|"shared"| FMCI
+    ALTID -.->|"shared"| FMCI
+    ADDR -.->|"shared"| SDA
+    EADDR -.->|"shared"| SDA
 ```
 
 ---
@@ -70,8 +87,8 @@ graph TD
 
 | Source Table | Mô tả | Scheme Code dự kiến | Ghi chú |
 |---|---|---|---|
-| MB_CHANGE.CHANGE_TYPE | Loại thay đổi vốn góp: góp thêm / rút bớt | `FMS_CAPITAL_CHANGE_TYPE` | etl_derived — ETL derived: SUBSCRIPTION / REDEMPTION / TRANSFER_IN / TRANSFER_OUT. |
-| TRANSFER_MBF.TRANSFER_TYPE | Loại giao dịch CCQ: mua / bán / chuyển nhượng | `FMS_CERTIFICATE_TRANSFER_TYPE` | etl_derived — ETL derived: BUY / SELL / TRANSFER. |
+| INSIDER.INSIDER_TYPE | Loại cổ đông nội bộ: 1=Cổ đông lớn, 2=Ban điều hành, 3=HĐQT | `FMS_INSIDER_TYPE` | etl_derived — ETL derived: MAJOR_SHAREHOLDER / EXECUTIVE / BOARD_MEMBER. |
+| DISTRIBUTOR_AGENT.COMPANY_TYPE | Loại hình công ty: 1=CK, 2=NHTM, 3=Bảo hiểm, 4=Khác | `FMS_AGENT_COMPANY_TYPE` | etl_derived — Securities Distribution Agent. |
 
 ---
 
@@ -85,7 +102,17 @@ Không có bảng nào trong Tier 4 chưa đủ thông tin cột.
 
 | # | Câu hỏi | Ảnh hưởng |
 |---|---|---|
-| T4-01 | TRS_FER_INDER mất FK InFrmId/InToId (INSIDER table bị bỏ khỏi scope) — entity Share Transfer sẽ không biết bên mua và bên bán là ai. Xác nhận: có thể load dữ liệu thiếu FK này không, hay cần xem xét scope lại? | **Chờ xác nhận.** GAP đã ghi nhận trong BRD notes. Tạm thiết kế entity không có FK bên mua/bán — ghi nhận trong pending_design.yaml ở bước LLD. |
-| T4-02 | TRANSFER_MBF FK đến MB_FUND — nếu NĐT chưa có record trong MB_FUND thì giao dịch đầu tiên có thể bị orphan. Xác nhận: MB_FUND luôn tồn tại trước TRANSFER_MBF? | **Chờ xác nhận.** |
-| T4-03 | MB_CHANGE vs TRANSFER_MBF — hai bảng cùng ghi về vốn góp NĐT. Xác nhận phân biệt: MB_CHANGE = thay đổi vốn góp (tài chính); TRANSFER_MBF = giao dịch CCQ (thị trường). Đây là 2 entity khác nhau? | **Chờ xác nhận.** Tạm thiết kế 2 entity riêng. |
-| T4-04 | MB_CHANGE — BCO đã chốt `Business Activity` theo review (thay cho `Transaction`). Term BCV cụ thể vẫn cần tra lại. | **Đã chốt BCO, term chờ tra lại.** |
+| T4-02 | **Securities Distribution Agent** (DISTRIBUTOR_AGENT) có cấu trúc cột gần như trùng **Fund Distribution Agent** (AGENCIES, Tier 1) — cùng là tổ chức phân phối CCQ, chỉ khác DISTRIBUTOR_AGENT có thêm GCN đăng ký hoạt động phân phối riêng. Xác nhận nghiệp vụ: đây là 2 mạng lưới đại lý song song, hay DISTRIBUTOR_AGENT là phiên bản mới/thay thế AGENCIES? | Nếu là 1 nghiệp vụ → cần gộp lại thành 1 entity trước khi LLD, tránh trùng lặp dữ liệu. |
+| T4-04 | **Đã chốt (2026-10-02):** Fund Management Company Insider chỉ có 1 FK đến SECURITIES (SC_ID). S_ID là FK đến STOCKHOLDER_TYPE (Classification FMS Stockholder Type) — thiết kế lại thành cặp Stockholder Type Id + Code. | Đóng điểm cần xác nhận; INSIDER thêm quan hệ đến STOCKHOLDER_TYPE. |
+
+---
+
+## Shared Entity — bổ sung source_table
+
+Các entity Tier 4 sau bổ sung `source_table` vào shared entity đã có (không tạo entity mới):
+
+| Shared Entity | Entity tham chiếu | Trường nguồn |
+|---|---|---|
+| IP Postal Address | Fund Management Company Insider, Securities Distribution Agent | ADDRESS |
+| IP Electronic Address | Fund Management Company Insider (TELEPHONE/FAX/EMAIL), Securities Distribution Agent (PHONE/FAX) | EMAIL, PHONE, FAX, WEBSITE |
+| IP Alt Identification | Fund Management Company Insider | ID_NO, ID_DATE, ID_ADD / ID_PLACE |

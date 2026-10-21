@@ -1,0 +1,247 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_stock_listing_history-IDS.STOCK_LISTING_HISTORY
+  logical_name: Public Company Stock Listing History
+  physical_name: pc_stock_listing_history
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  description: |
+    Lịch sử các sự kiện niêm yết và hủy niêm yết cổ phiếu của CTĐC trên sàn giao dịch.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-STOCK_LISTING_HISTORY
+
+attributes:
+  - name: Public Company Stock Listing History Id
+    physical_name: pc_stock_listing_history_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Stock Listing History Code
+    physical_name: pc_stock_listing_history_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_STOCK_LISTING_HISTORY'"
+    etl_derived_value: IDS_STOCK_LISTING_HISTORY
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Khóa link đến bảng COMPANY_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.COMPANY_PROFILE_ID
+    comment: "FK target: public_company.pc_id. Hash: hash_id('IDS_COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.COMPANY_PROFILE_ID
+    comment: "Lookup pair: public_company.pc_code. Pair with Public Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Stock Listing Action Type Code
+    physical_name: stock_listing_action_tp_code
+    business_meaning: Phân loại (Đăng ký niêm yết/giao dịch lần đầu; Hủy đăng ký niêm yết/giao dịch lần đầu; Đăng ký niêm yết/giao dịch bổ sung; Hủy niêm yết/giao dịch bổ sung).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.ACTION_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.STOCK_LISTING_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='PUB_COM_LISTING_ACTION_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sequence Number
+    physical_name: sequence_nbr
+    business_meaning: Số lần.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.SEQUENCE_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Exchange Code
+    physical_name: exchange_code
+    business_meaning: Sàn niêm yết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.EXCHANGE_CD
+    comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Equity Ticker Symbol
+    physical_name: equity_ticker_symbol
+    business_meaning: Mã cổ phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.EQUITY_TICKER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Decision Number
+    physical_name: decision_nbr
+    business_meaning: Số quyết định.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.DECISION_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Decision Date
+    physical_name: decision_dt
+    business_meaning: Ngày quyết định.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.DECISION_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Trading Date
+    physical_name: trading_dt
+    business_meaning: Ngày giao dịch.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.TRADING_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Delisting Date
+    physical_name: delisting_dt
+    business_meaning: Ngày hủy niêm yết.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.DELISTING_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Listed Share Quantity
+    physical_name: listed_share_quantity
+    business_meaning: Số lượng cổ phiếu niêm yết.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.LISTED_SHARE_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Change Share Quantity
+    physical_name: change_share_quantity
+    business_meaning: Số lượng cổ phiếu niêm yết bổ sung/ hủy.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.CHANGE_SHARE_QTY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Share Quantity After Change
+    physical_name: total_share_quantity_after_change
+    business_meaning: Số lượng cổ phiếu sau niêm yết bổ sung/ hủy.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STOCK_LISTING_HISTORY
+    source_column: IDS.STOCK_LISTING_HISTORY.TOTAL_SHARE_QTY_AFTER_CHANGE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -74,7 +74,7 @@ attributes:
     source_system: THANHTRA
     source_table: VIOLATION_CASE_RECEIVED_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID
-    comment: "FK target: violation_case.violation_case_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_CASE: VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID = VIOLATION_CASE.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_CASE', CODE) | Trước đây hash trực tiếp theo VIOLATION_CASE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment: "FK target: violation_case.violation_case_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_CASE: VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID = VIOLATION_CASE.ID để xác nhận CODE sau đó hash_id('THANHTRA_VIOLATION_CASE', CODE) | Trước đây hash trực tiếp theo VIOLATION_CASE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: null
     etl_derived_value: null
 
@@ -120,34 +120,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Issuing Unit Reference Id
-    physical_name: issuing_unit_reference_id
-    business_meaning: ID tham chiếu đơn vị lập/gửi văn bản tiếp nhận trong hệ thống nguồn.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: VIOLATION_CASE_RECEIVED_DOCUMENT
-    source_column: THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.ISSUING_UNIT_ID
-    comment: "Denormalized reference — không FK formal. Đơn vị phát hành có thể là đơn vị nội bộ UBCKNN hoặc tổ chức ngoài (Sở GDCK, VSDC...) tương tự Violation Case.Source Unit Reference Id nên không crosswalk cố định sang 1 catalog duy nhất."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Issuing Unit Name
-    physical_name: issuing_unit_nm
-    business_meaning: Tên đơn vị lập/gửi văn bản tiếp nhận (snapshot).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: VIOLATION_CASE_RECEIVED_DOCUMENT
-    source_column: THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.ISSUING_UNIT_NAME
-    comment: Denormalized snapshot tên đơn vị. Pair with Issuing Unit Reference Id.
-    classification_context: null
-    etl_derived_value: null
-
   - name: Violation Subject Name
     physical_name: violation_subject_nm
     business_meaning: Tên đối tượng vi phạm trong văn bản tiếp nhận (snapshot).
@@ -172,7 +144,7 @@ attributes:
     source_system: THANHTRA
     source_table: VIOLATION_CASE_RECEIVED_DOCUMENT
     source_column: THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_RECORD_ID
-    comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA.VIOLATION_RECORD', VIOLATION_RECORD_ID). Nullable — chỉ có khi chọn từ biên bản VPHC trên hệ thống."
+    comment: "FK target: violation_record.violation_record_id. Hash: hash_id('THANHTRA_VIOLATION_RECORD', VIOLATION_RECORD_ID). Nullable — chỉ có khi chọn từ biên bản VPHC trên hệ thống."
     classification_context: null
     etl_derived_value: null
 
