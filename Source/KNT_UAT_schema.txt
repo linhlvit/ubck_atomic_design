@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: KNT_UAT
-Tong so bang: 52 | Materialized View: 0
+Tong so bang: 44 | Materialized View: 0
 ==============================================================================================================
 
 BANG: AUDITOR
@@ -150,26 +150,6 @@ DIFF_FLAG                     NUMBER              YES                           
 COMPARISON_DATE               DATE                YES                                      Ngày thực hiện đối chiếu
 
 
-BANG: COMPANY_COMPARISON_QUEUE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-SOURCE_SYSTEM                 CHAR(1)             NO                                       
-ACTION_TYPE                   CHAR(1)             NO                                       
-MSG_PACKET_ID                 NUMBER              YES                                      
-DETAIL_ID                     NUMBER              YES                                      
-STATUS                        CHAR(1)             NO                                       
-RETRY_COUNT                   NUMBER              NO                                       
-WORKER_ID                     VARCHAR2(64)        YES                                      
-AVAILABLE_AT                  TIMESTAMP(6)        NO                                       
-STARTED_AT                    TIMESTAMP(6)        YES                                      
-FINISHED_AT                   TIMESTAMP(6)        YES                                      
-ERROR_MESSAGE                 VARCHAR2(2000)      YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-
-
 BANG: COMPANY_INFO
 Mo ta: Thông tin công ty tham gia thị trường chứng khoán gửi sang Cục Thuế: tên, MST, loại công ty, vốn, người đại diện, thông tin niêm yết
 --------------------------------------------------------------------------------------------------------------
@@ -200,24 +180,6 @@ MSG_PACKET_ID                 NUMBER              YES     FK     MSG_PACKET.ID  
 GUID                          VARCHAR2(200)       YES                                      Định danh duy nhất toàn cục (GUID/UUID) của bản ghi
 BUSINESS_LICENSE              VARCHAR2(800)       YES                                      Số giấy phép đăng ký kinh doanh (GPKD)
 RECORD_COUNT                  NUMBER              YES                                      Số bản ghi công ty có cùng gói tin và loại công ty
-
-
-BANG: CONFIG_PARAM
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-PARAM_CODE                    VARCHAR2(100)       YES                                      Mã tham số hệ thống (key tra cứu)
-PARAM_NAME                    VARCHAR2(400)       YES                                      Tên tham số hệ thống
-VALUE                         VARCHAR2(800)       YES                                      Giá trị tham số/chỉ tiêu/cấu hình
-DESCRIPTION                   VARCHAR2(800)       YES                                      Mô tả chi tiết
-STATUS                        NUMBER              YES                                      Trạng thái bản ghi: 1=Đang sử dụng, 0=Không sử dụng
-CREATED_AT                    DATE                YES                                      Thời điểm tạo bản ghi
-SYSTEM_CODE                   NUMBER              YES                                      Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)
-PARAM_ID                      NUMBER              NO      PK                               ID tham số (khóa chính bổ sung)
-PARENT_ID                     NUMBER              YES                                      FK -> cùng bảng: ID gói tin/tham số cha
-TYPE                          NUMBER(2,0)         YES                                      Loại/nhóm tham số cấu hình (phân loại theo nghiệp vụ hệ thống; không phải kiểu dữ liệu TEXT/NUMBER)
-TITLE                         VARCHAR2(400)       YES                                      Tiêu đề hiển thị
 
 
 BANG: DATA_RECONCILIATION
@@ -343,92 +305,6 @@ USER_ID                       NUMBER              YES                           
 USER_GROUP_ID                 NUMBER              YES                                      FK -> sys_user_group: Nhóm người dùng liên quan
 
 
-BANG: MSG_PACKET
-Mo ta: Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính: nội dung XML, trạng thái gửi/nhận, mã giao dịch
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-PACKET_CODE                   VARCHAR2(200)       YES                                      Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)
-TYPE                          NUMBER              YES                                      Loại gói tin/doanh nghiệp (GOI_TIN.LOAI): 1=Công ty đại chúng (IDS), 4=Công ty chứng khoán (SCMS), 5=Công ty quản lý quỹ (FMS); giá trị khác theo nghiệp vụ import XML
-SENDER_UNIT                   NUMBER              YES                                      Đơn vị gửi (DonViTruyenNhanEnum): 1=TCT (Cục Thuế), 2=UBCKNN, 3=BTC (Bộ Tài chính)
-RECEIVER_UNIT                 NUMBER              YES                                      Đơn vị nhận (DonViTruyenNhanEnum): 1=TCT (Cục Thuế), 2=UBCKNN, 3=BTC (Bộ Tài chính)
-SENT_BY                       VARCHAR2(400)       YES                                      Tài khoản người thực hiện gửi gói tin
-STATUS                        NUMBER              YES                                      Trang thai truyen nhan nhanh CT/TCT (Cuc thue)
-CONTENT                       CLOB                YES                                      Nội dung gói tin dạng XML (CLOB)
-DESCRIPTION                   VARCHAR2(4000)      YES                                      Mô tả chi tiết
-SENT_AT                       DATE                YES                                      Thời điểm gửi gói tin
-VERSION                       VARCHAR2(80)        YES                                      Phiên bản giao thức trao đổi dữ liệu
-SENDER_CODE                   VARCHAR2(200)       YES                                      Mã hệ thống gửi message
-SENDER_NAME                   VARCHAR2(400)       YES                                      Tên hệ thống gửi message
-RECEIVER_CODE                 VARCHAR2(200)       YES                                      Mã hệ thống nhận message
-RECEIVER_NAME                 VARCHAR2(400)       YES                                      Tên hệ thống nhận message
-TRAN_CODE                     VARCHAR2(80)        YES                                      Mã giao dịch (transaction code) theo chuẩn trao đổi dữ liệu
-MSG_ID                        VARCHAR2(200)       YES                                      Mã định danh message trong hệ thống trao đổi dữ liệu
-MSG_REF_ID                    VARCHAR2(200)       YES                                      Mã tham chiếu message gốc (khi là message phản hồi)
-LINK_ID                       VARCHAR2(2000)      YES                                      ID liên kết với message gốc trong chuỗi trao đổi
-ORIGINAL_CODE                 VARCHAR2(200)       YES                                      Mã hệ thống gốc gửi dữ liệu
-ORIGINAL_NAME                 VARCHAR2(400)       YES                                      Tên hệ thống gốc gửi dữ liệu
-ORIGINAL_DATE                 VARCHAR2(200)       YES                                      Ngày tạo dữ liệu tại hệ thống gốc
-ERROR_CODE                    VARCHAR2(200)       YES                                      Mã lỗi khi xử lý gói tin (nếu có)
-ERROR_DESC                    VARCHAR2(200)       YES                                      Mô tả lỗi khi xử lý gói tin
-SPARE1                        VARCHAR2(500)       YES                                      Spare1 — VARCHAR2(500)
-SPARE2                        VARCHAR2(500)       YES                                      Spare2 CTY va BC
-SPARE3                        VARCHAR2(500)       YES                                      Spare3 (vd. loại YC / marker SDL_NGUON) — VARCHAR2(500)
-PARENT_ID                     NUMBER              YES                                      FK -> cùng bảng: ID gói tin/tham số cha
-TAX_CODE                      VARCHAR2(200)       YES                                      Mã số thuế doanh nghiệp
-REPRESENTATIVE_NAME           VARCHAR2(800)       YES                                      Họ tên người đại diện/chủ hộ kinh doanh
-CREATED_BY                    VARCHAR2(800)       YES                                      Tài khoản/tên người tạo bản ghi
-TIME_START                    DATE                YES                                      Thời điểm bắt đầu tạo/xử lý gói tin khi import XML
-TIME_END                      DATE                YES                                      Thời điểm kết thúc xử lý import XML thành công
-IS_SENT_TCT                   NUMBER(1,0)         NO                                       Đã gửi XML sang Cục Thuế (CT): 0=chưa gửi, 1=đã gửi ít nhất một lần thành công
-IS_SENT_MOF                   NUMBER(1,0)         NO                                       Đã gửi XML sang Bộ Tài chính (BTC): 0=chưa gửi, 1=đã gửi
-SEND_TCT_COUNT                NUMBER(10,0)        NO                                       Số lần đã gửi XML sang Cục Thuế (CT)
-SEND_MOF_COUNT                NUMBER(10,0)        NO                                       Số lần đã gửi XML sang Bộ Tài chính (BTC)
-MSG_ERROR                     CLOB                YES                                      Loi phan hoi ve tu API
-RECEIVED_AT                   DATE                YES                                      
-STATUS_MOF                    NUMBER(10,0)        YES                                      Trang thai truyen nhan nhanh BTC/MOF (Bo Tai chinh)
-DELETED                       VARCHAR2(1)         YES                                      
-
-
-BANG: MSG_PACKET_CODE_SLOT
-Mo ta: Bộ đếm slot sinh mã gói tin theo khóa (tránh trùng MA_GOI_TIN khi tạo hàng loạt)
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-SLOT_KEY                      VARCHAR2(24)        NO      PK                               Khóa slot sinh mã (VD: prefix + ngày + loại gói tin)
-SLOT_COUNT                    NUMBER(10,0)        NO                                       Bộ đếm tuần tự trong slot — tăng mỗi lần cấp mã mới
-
-
-BANG: MSG_PACKET_CONFIG
-Mo ta: Cấu hình gói tin trao đổi: định nghĩa chức năng, đơn vị, hệ thống, phương thức truyền nhận dữ liệu
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-FUNCTION_NAME                 VARCHAR2(800)       YES                                      Tên chức năng/menu hiển thị trên giao diện
-ORG_UNIT_CODE                 VARCHAR2(800)       YES                                      Mã đơn vị gửi báo cáo (CTCK/QLQ/CN QLQ NN...)
-SYSTEM_CODE                   VARCHAR2(80)        YES                                      Mã hệ thống nguồn (HeThongEnum): 1=IDS, 2=IDM, 3=Thanh tra, 4=SCMS, 5=FMS, 6=THUE (TCT)
-DATA_DIRECTION                NUMBER              YES                                      Chiều dữ liệu gói tin (LoaiDuLieuEnum): 1=Gói tin đi (UBCKNN→CT), 2=Gói tin đến (CT→UBCKNN)
-TRANSFER_METHOD               NUMBER              YES                                      Phương thức truyền nhận (PhuongThucTruyenNhanEnum): 1=WebService, 2=MQ, 3=Cả hai
-LAST_MODIFIED_AT              DATE                YES                                      Thời điểm cập nhật lần cuối
-LAST_MODIFIED_BY              VARCHAR2(400)       YES                                      Tài khoản/tên người cập nhật lần cuối
-
-
-BANG: MSG_PACKET_CONTENT
-Mo ta: Payload CLOB tách khỏi msg_packet: XML đầu vào, XML gửi/ký, JSON logic và phản hồi Trục CT/BTC
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-MSG_PACKET_ID                 NUMBER(19,0)        NO      PK     MSG_PACKET.ID             PK/FK -> msg_packet.id (quan hệ 1-1)
-XML_INPUT                     CLOB                YES                                      XML import đầu vào (cu GOI_TIN.XML_INPUT hoặc payload gốc)
-XML_OUT                       CLOB                YES                                      XML nội dung gửi/ký (cu GOI_TIN.NOI_DUNG)
-JSON_OUT                      CLOB                YES                                      JSON cùng cây logic với payload XML (cu GOI_TIN.JSON_CONTENT)
-RESPONSE_TCT_XML              CLOB                YES                                      XML phản hồi Cục Thuế (TCT) — khối DATA trong callback getPhanHoiCT
-RESPONSE_MOF_XML              CLOB                YES                                      XML phản hồi Bộ Tài chính — khối DATA trong callback getPhanHoiBTC
-MSG_ERROR                     CLOB                YES                                      Thông báo lỗi xử lý/phản hồi Trục (nếu có)
-
-
 BANG: PENALTY_DECISION
 Mo ta: Quyết định xử phạt vi phạm hành chính trong lĩnh vực chứng khoán: số QĐ, đối tượng, hành vi vi phạm, tổng tiền phạt
 --------------------------------------------------------------------------------------------------------------
@@ -551,29 +427,6 @@ LAST_MODIFIED_AT              TIMESTAMP(6)        NO
 SOURCE_NOTIFY_FLAG            NUMBER(1,0)         NO                                       0 = chưa đẩy thông báo lệch BCTC cho phân hệ nguồn; 1 = đã đẩy thông báo
 
 
-BANG: REPORT_COMPARISON_QUEUE
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-ACTION_TYPE                   CHAR(1)             NO                                       
-SSC_REPORT_DETAIL_ID          NUMBER              YES                                      
-SSC_REPORT_ID                 NUMBER              YES                                      
-STATUS                        CHAR(1)             NO                                       
-RETRY_COUNT                   NUMBER              NO                                       
-WORKER_ID                     VARCHAR2(64)        YES                                      
-AVAILABLE_AT                  TIMESTAMP(6)        NO                                       
-STARTED_AT                    TIMESTAMP(6)        YES                                      
-FINISHED_AT                   TIMESTAMP(6)        YES                                      
-ERROR_MESSAGE                 VARCHAR2(2000)      YES                                      
-CREATED_AT                    TIMESTAMP(6)        NO                                       
-SOURCE_SYSTEM                 CHAR(1)             NO                                       
-DETAIL_ID                     NUMBER              YES                                      
-HEADER_ID                     NUMBER              YES                                      
-LEGACY_CREATED_AT             DATE                NO                                       
-
-
 BANG: REPORT_CYCLE
 Mo ta: Danh mục chu kỳ báo cáo: mã, giá trị, tháng và năm tương ứng
 --------------------------------------------------------------------------------------------------------------
@@ -632,24 +485,6 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
 INDICATOR_CODE                VARCHAR2(100)       YES                                      Mã chỉ tiêu trong biểu mẫu báo cáo
 INDICATOR_NAME                VARCHAR2(500)       YES                                      Tên chỉ tiêu trong biểu mẫu báo cáo
-
-
-BANG: SCHEDULE_CONFIG
-Mo ta: Lịch thiết lập truyền/nhận dữ liệu tự động với Cục Thuế và Bộ Tài chính: tần suất, giờ chạy, biểu thức CRON
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               Khóa chính của bản ghi (ID số tự tăng)
-TYPE                          NUMBER              YES                                      Loại lịch/nghiệp vụ (SysThietLapLichEnum): 0=CT đại chúng, 1-5=BCTC IDS (TT200/202/49/232/Bảo hiểm), 6=CTCK, 7=BCTC SCMS TT334, 8=CT QLQ, 9=XLVP, 10=KTV, 11=BCTC FMS TT125, 12-21=dữ liệu TCT, 22=Đối soát
-FUNCTION_ID                   NUMBER              YES                                      FK -> sys_function: Chức năng liên quan
-FREQUENCY                     VARCHAR2(80)        YES                                      Tần suất: 0=Hàng ngày, 1=Hàng tháng, 2=Hàng năm, 3=Khi có yêu cầu, 4=Quý, 5=Nửa năm
-START_DATE                    DATE                YES                                      Ngày bắt đầu tiến hành truyền/nhận (định dạng dd)
-START_HOUR                    VARCHAR2(80)        YES                                      Giờ bắt đầu tiến hành truyền/nhận
-START_MINUTE                  VARCHAR2(80)        YES                                      Phút bắt đầu tiến hành truyền/nhận
-STATUS                        VARCHAR2(80)        YES                                      Trạng thái lịch (TrangThaiSuDungEnum): 1=Sử dụng, 2=Ngừng sử dụng
-ORG_UNIT_ID                   NUMBER              YES     FK     CAT_ORG_UNIT.ID           FK -> cat_org_unit: Đơn vị tổ chức của người dùng
-CRON_EXPRESSION               VARCHAR2(400)       YES                                      Biểu thức CRON tính thời gian chạy job tự động
-API_PACKET_CODE               VARCHAR2(200)       YES                                      Mã gói API/nghiệp vụ gắn với lịch (MA_GOI_API): map job Quartz sinh dữ liệu hoặc push
 
 
 BANG: SSC_PENALTY

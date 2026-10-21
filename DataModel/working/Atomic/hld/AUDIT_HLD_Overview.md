@@ -133,48 +133,45 @@ Không có junction table.
 
 #### 7f. Bảng ngoài scope
 
-Chưa đánh phạm vi — Data Modeler sẽ quyết định `in_scope`/`out_of_scope` theo số lượng LLD và FK (BRD hiện để `pending`). Các bảng AUDIT còn lại ngoài nhóm `AF_*`:
-
-| Source Table | Ghi chú |
-|---|---|
-| `ALERT_TEMPLATE_AUDIT_DTL` | `scope_status: pending` — chưa đánh phạm vi |
-| `ALERT_TEMPLATE_AUDIT_HDR` | `scope_status: pending` — chưa đánh phạm vi |
-| `COMPANY_CHANGE_ROLE_HIS` | `scope_status: pending` — chưa đánh phạm vi |
-| `COMPANY_DATA` | `scope_status: pending` — chưa đánh phạm vi |
-| `COMPANY_DIGITAL_CERTIFICATES` | `scope_status: pending` — chưa đánh phạm vi |
-| `COUNTRIES` | `scope_status: pending` — chưa đánh phạm vi |
-| `DATA` | `scope_status: pending` — chưa đánh phạm vi |
-| `DATABASECHANGELOG` | `scope_status: pending` — chưa đánh phạm vi |
-| `DATABASECHANGELOGLOCK` | `scope_status: pending` — chưa đánh phạm vi |
-| `DATA_TYPES` | `scope_status: pending` — chưa đánh phạm vi |
-| `DATA_VALUES` | `scope_status: pending` — chưa đánh phạm vi |
-| `DEPARTMENTS` | `scope_status: pending` — chưa đánh phạm vi |
-| `FIELDS` | `scope_status: pending` — chưa đánh phạm vi |
-| `FILES` | `scope_status: pending` — chưa đánh phạm vi |
-| `FORMS` | `scope_status: pending` — chưa đánh phạm vi |
-| `FORM_FIELDS` | `scope_status: pending` — chưa đánh phạm vi |
-| `FORM_FIELD_HISTORY` | `scope_status: pending` — chưa đánh phạm vi |
-| `HISTORY_CHANGE_LOG` | `scope_status: pending` — chưa đánh phạm vi |
-| `HOLIDAY_CALENDAR` | `scope_status: pending` — chưa đánh phạm vi |
-| `HTE_NOTIFICATIONS_DTL` | `scope_status: pending` — chưa đánh phạm vi |
-| `HTE_NOTIFICATIONS_RESULT` | `scope_status: pending` — chưa đánh phạm vi |
-| `HTE_VIOLATION_REPORT` | `scope_status: pending` — chưa đánh phạm vi |
-| `LOGINS` | `scope_status: pending` — chưa đánh phạm vi |
-| `LOGIN_PERMISSION_BY_CODE` | `scope_status: pending` — chưa đánh phạm vi |
-| `LOOKUP_VALUES` | `scope_status: pending` — chưa đánh phạm vi |
-| `NOTIFICATIONS` | `scope_status: pending` — chưa đánh phạm vi |
-| `NOTIFICATIONS_DTL` | `scope_status: pending` — chưa đánh phạm vi |
-| `NOTIFICATIONS_RESULT` | `scope_status: pending` — chưa đánh phạm vi |
-| `RCOL` | `scope_status: pending` — chưa đánh phạm vi |
-| `REPORT_CATALOG` | `scope_status: pending` — chưa đánh phạm vi |
-| `REP_COLUMN` | `scope_status: pending` — chưa đánh phạm vi |
-| `REP_DATA` | `scope_status: pending` — chưa đánh phạm vi |
-| `REP_FORMS` | `scope_status: pending` — chưa đánh phạm vi |
-| `REP_ROW` | `scope_status: pending` — chưa đánh phạm vi |
-| `RROW` | `scope_status: pending` — chưa đánh phạm vi |
-| `SMS_LOG` | `scope_status: pending` — chưa đánh phạm vi |
-| `VIOLATION_REPORT` | `scope_status: pending` — chưa đánh phạm vi |
-| `VIOLATION_TEMPLATES` | `scope_status: pending` — chưa đánh phạm vi |
+| Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
+|---|---|---|---|
+| Chưa có LLD | ALERT_TEMPLATE_AUDIT_DTL | Danh sách rule cấu hình cảnh báo | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | ALERT_TEMPLATE_AUDIT_HDR | Danh sách mẫu template cảnh báo | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | COMPANY_CHANGE_ROLE_HIS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | COMPANY_DATA | Lưu FORMS dữ liệu thuộc COMPANY_PROFILES | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | COMPANY_DIGITAL_CERTIFICATES | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | COUNTRIES | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | DATA | Lưu trữ dữ liệu của hàng và cột của báo cáo tài chính | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Operational / System | DATABASECHANGELOG | Chưa có mô tả trong BRD. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | DATABASECHANGELOGLOCK | Chưa có mô tả trong BRD. | Operational/system data — không có giá trị nghiệp vụ |
+| Chưa có LLD | DATA_TYPES | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | DATA_VALUES | Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | DEPARTMENTS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | FIELDS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | FILES | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | FORMS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | FORM_FIELDS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | FORM_FIELD_HISTORY | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | HISTORY_CHANGE_LOG | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | HOLIDAY_CALENDAR | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | HTE_NOTIFICATIONS_DTL | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | HTE_NOTIFICATIONS_RESULT | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Hệ thống / Phân quyền | LOGINS | Bảng tài khoản đăng nhập | Operational/system data — không có giá trị nghiệp vụ |
+| Hệ thống / Phân quyền | LOGIN_PERMISSION_BY_CODE | Bảng LOGIN_PERMISSION_BY_CODE | Operational/system data — không có giá trị nghiệp vụ |
+| Chưa có LLD | LOOKUP_VALUES | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | NOTIFICATIONS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | NOTIFICATIONS_DTL | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | NOTIFICATIONS_RESULT | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | RCOL | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | REPORT_CATALOG | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | REP_COLUMN | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | REP_DATA | Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | REP_FORMS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | REP_ROW | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | RROW | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | SMS_LOG | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | VIOLATION_REPORT | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | VIOLATION_TEMPLATES | Bảng lưu trữ thông tin cấu hình mẫu vi phạm | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 
 ---
 

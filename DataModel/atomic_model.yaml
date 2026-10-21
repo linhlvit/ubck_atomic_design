@@ -6275,6 +6275,1237 @@ entities:
           = lấy theo Examination Team.End Date.
         comment: null
 - ldm:
+    id: ATM-fmc_securities_offering
+    logical_name_1st: Fund Management Company Securities Offering
+    physical_name_1st: fmc_securities_offering
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: "Đợt chào bán cổ phần/trái phiếu của công ty quản lý quỹ: loại\
+      \ chào bán, loại chứng khoán, số lượng, giá, mục đích sử dụng vốn, thời gian\
+      \ dự kiến/thực tế và kết quả chào bán. 1 dòng/đợt, cập nhật xuyên suốt lifecycle\
+      \ (kế hoạch → thực hiện → kết quả)."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Activity
+    bcv_concept_most: "[Business Activity] Corporate Action"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-OFFERING
+  attributes:
+  - name: Fund Management Company Securities Offering Id
+    physical_name: fmc_securities_offering_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Business Activity] Corporate Action\". Đợt\
+      \ chào bán cổ phần/trái phiếu của Fund Management Company."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Business Activity] Corporate Action\". Đợt\
+          \ chào bán cổ phần/trái phiếu của Fund Management Company."
+  - name: Fund Management Company Securities Offering Code
+    physical_name: fmc_securities_offering_code
+    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    comment_1st: BK chính. PK nguồn.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.ID
+        business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+        comment: BK chính. PK nguồn.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_OFFERING
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning_1st: "FK -> SECURITIES: Công ty QLQ liên quan."
+    comment_1st: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+      \ SEC_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.SEC_ID
+        business_meaning: "FK -> SECURITIES: Công ty QLQ liên quan."
+        comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+          \ SEC_ID)."
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning_1st: Mã công ty QLQ liên quan.
+    comment_1st: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+      \ Company Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.SEC_ID
+        business_meaning: Mã công ty QLQ liên quan.
+        comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+          \ Company Id."
+  - name: TTHC Application Name
+    physical_name: tthc_application_nm
+    business_meaning_1st: Tên hồ sơ TTHC liên quan đến đợt chào bán (từ phân hệ TTHC).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.TTHC_NAME
+        business_meaning: Tên hồ sơ TTHC liên quan đến đợt chào bán (từ phân hệ TTHC).
+        comment: null
+  - name: Offering Type Code
+    physical_name: offering_tp_code
+    business_meaning_1st: "Loại chào bán: PUBLIC=Chào bán ra công chúng, PRIVATE=Chào\
+      \ bán riêng lẻ."
+    comment_1st: SCHEMA_CODE=FMS.OFFERING_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.OFFERING_TYPE
+        business_meaning: "Loại chào bán: PUBLIC=Chào bán ra công chúng, PRIVATE=Chào\
+          \ bán riêng lẻ."
+        comment: SCHEMA_CODE=FMS.OFFERING_TYPE
+  - name: Securities Type Code
+    physical_name: securities_tp_code
+    business_meaning_1st: "Loại chứng khoán chào bán: CP=Cổ phần, TP=Trái phiếu."
+    comment_1st: SCHEMA_CODE=FMS.SECURITIES_OFFERING_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.SECURITIES_TYPE
+        business_meaning: "Loại chứng khoán chào bán: CP=Cổ phần, TP=Trái phiếu."
+        comment: SCHEMA_CODE=FMS.SECURITIES_OFFERING_TYPE
+  - name: Securities Name
+    physical_name: securities_nm
+    business_meaning_1st: Tên chứng khoán chào bán.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.SECURITIES_NAME
+        business_meaning: Tên chứng khoán chào bán.
+        comment: null
+  - name: Unit Par Value Amount
+    physical_name: unit_par_val_amt
+    business_meaning_1st: "Mệnh giá CCQ (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.PAR_VALUE
+        business_meaning: "Mệnh giá CCQ (đơn vị: VNĐ)."
+        comment: null
+  - name: Offered Quantity
+    physical_name: offered_quantity
+    business_meaning_1st: Số lượng chứng khoán đăng ký chào bán.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.QUANTITY_OFFERED
+        business_meaning: Số lượng chứng khoán đăng ký chào bán.
+        comment: null
+  - name: Offering Price Amount
+    physical_name: offering_price_amt
+    business_meaning_1st: "Giá chào bán theo kế hoạch (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.OFFERING_PRICE
+        business_meaning: "Giá chào bán theo kế hoạch (đơn vị: VNĐ)."
+        comment: null
+  - name: Total Registered Value Amount
+    physical_name: total_registered_val_amt
+    business_meaning_1st: "Tổng giá trị đăng ký chào bán (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.TOTAL_REGISTERED_VALUE
+        business_meaning: "Tổng giá trị đăng ký chào bán (đơn vị: VNĐ)."
+        comment: null
+  - name: Purpose Description
+    physical_name: purpose_description
+    business_meaning_1st: Mục đích sử dụng vốn huy động được từ đợt chào bán.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.PURPOSE
+        business_meaning: Mục đích sử dụng vốn huy động được từ đợt chào bán.
+        comment: null
+  - name: Capital Usage Plan Description
+    physical_name: capital_usage_plan_description
+    business_meaning_1st: Kế hoạch sử dụng vốn chi tiết sau chào bán.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.CAPITAL_USAGE_PLAN
+        business_meaning: Kế hoạch sử dụng vốn chi tiết sau chào bán.
+        comment: null
+  - name: Expected Start Date
+    physical_name: expected_start_dt
+    business_meaning_1st: Ngày dự kiến bắt đầu chào bán.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.EXPECTED_START_DATE
+        business_meaning: Ngày dự kiến bắt đầu chào bán.
+        comment: null
+  - name: Expected End Date
+    physical_name: expected_end_dt
+    business_meaning_1st: Ngày dự kiến kết thúc chào bán.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.EXPECTED_END_DATE
+        business_meaning: Ngày dự kiến kết thúc chào bán.
+        comment: null
+  - name: Guarantor Organization Name
+    physical_name: guarantor_organization_nm
+    business_meaning_1st: Tổ chức bảo lãnh phát hành (tên tổ chức).
+    comment_1st: Denormalized — không có FK cấu trúc đến entity tổ chức bảo lãnh.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.GUARANTOR_ORG
+        business_meaning: Tổ chức bảo lãnh phát hành (tên tổ chức).
+        comment: Denormalized — không có FK cấu trúc đến entity tổ chức bảo lãnh.
+  - name: Advisory Organization Name
+    physical_name: advisory_organization_nm
+    business_meaning_1st: Tổ chức tư vấn phát hành (tên tổ chức).
+    comment_1st: Denormalized — không có FK cấu trúc đến entity tổ chức tư vấn.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.ADVISORY_ORG
+        business_meaning: Tổ chức tư vấn phát hành (tên tổ chức).
+        comment: Denormalized — không có FK cấu trúc đến entity tổ chức tư vấn.
+  - name: Offering Method Description
+    physical_name: offering_method_description
+    business_meaning_1st: "Phương thức chào bán: đấu giá, dựng sổ, phân phối trực\
+      \ tiếp..."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.OFFERING_METHOD
+        business_meaning: "Phương thức chào bán: đấu giá, dựng sổ, phân phối trực\
+          \ tiếp..."
+        comment: null
+  - name: Target Audience Description
+    physical_name: target_audience_description
+    business_meaning_1st: Đối tượng chào bán mục tiêu (mô tả hoặc mã danh mục).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.TARGET_AUDIENCE
+        business_meaning: Đối tượng chào bán mục tiêu (mô tả hoặc mã danh mục).
+        comment: null
+  - name: Capital Purpose Code
+    physical_name: capital_purpose_code
+    business_meaning_1st: Mục đích sử dụng vốn (mã danh mục).
+    comment_1st: Mô tả nguồn ghi 'mã danh mục' nhưng chưa xác định bảng danh mục nguồn
+      — giữ Text, cần xác nhận trước khi tách Classification Value.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.CAPITAL_PURPOSE
+        business_meaning: Mục đích sử dụng vốn (mã danh mục).
+        comment: Mô tả nguồn ghi 'mã danh mục' nhưng chưa xác định bảng danh mục nguồn
+          — giữ Text, cần xác nhận trước khi tách Classification Value.
+  - name: Offering Start Date
+    physical_name: offering_start_dt
+    business_meaning_1st: Ngày thực tế bắt đầu chào bán.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.OFFERING_START_DATE
+        business_meaning: Ngày thực tế bắt đầu chào bán.
+        comment: null
+  - name: Offering End Date
+    physical_name: offering_end_dt
+    business_meaning_1st: Ngày thực tế kết thúc chào bán.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.OFFERING_END_DATE
+        business_meaning: Ngày thực tế kết thúc chào bán.
+        comment: null
+  - name: Extended Flag
+    physical_name: extended_flag
+    business_meaning_1st: "Cờ đã gia hạn thời gian chào bán: 1=Đã gia hạn, 0=Chưa."
+    comment_1st: Giá trị 1 → true; 0 → false.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.EXTENDED
+        business_meaning: "Cờ đã gia hạn thời gian chào bán: 1=Đã gia hạn, 0=Chưa."
+        comment: Giá trị 1 → true; 0 → false.
+  - name: Actual Target Description
+    physical_name: actual_target_description
+    business_meaning_1st: Đối tượng chào bán thực tế (mô tả chi tiết).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.ACTUAL_TARGET
+        business_meaning: Đối tượng chào bán thực tế (mô tả chi tiết).
+        comment: null
+  - name: Sold Quantity
+    physical_name: sold_quantity
+    business_meaning_1st: Số lượng chứng khoán đã bán được trong đợt chào bán.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.QUANTITY_SOLD
+        business_meaning: Số lượng chứng khoán đã bán được trong đợt chào bán.
+        comment: null
+  - name: Actual Price Amount
+    physical_name: actual_price_amt
+    business_meaning_1st: "Giá bán thực tế (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.ACTUAL_PRICE
+        business_meaning: "Giá bán thực tế (đơn vị: VNĐ)."
+        comment: null
+  - name: Actual Total Value Amount
+    physical_name: actual_total_val_amt
+    business_meaning_1st: "Tổng giá trị thực tế huy động được (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.ACTUAL_TOTAL_VALUE
+        business_meaning: "Tổng giá trị thực tế huy động được (đơn vị: VNĐ)."
+        comment: null
+  - name: Employee Participant Count
+    physical_name: employee_participant_count
+    business_meaning_1st: Số lượng nhân viên tham gia mua trong chào bán nội bộ.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.EMPLOYEE_COUNT
+        business_meaning: Số lượng nhân viên tham gia mua trong chào bán nội bộ.
+        comment: null
+  - name: Foreign Investor Participant Count
+    physical_name: foreign_investor_participant_count
+    business_meaning_1st: Số lượng nhà đầu tư nước ngoài tham gia đợt chào bán.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.FOREIGN_INVESTOR_COUNT
+        business_meaning: Số lượng nhà đầu tư nước ngoài tham gia đợt chào bán.
+        comment: null
+  - name: Issuance Value Amount
+    physical_name: issuance_val_amt
+    business_meaning_1st: "Giá trị phát hành thực tế (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.ISSUANCE_VALUE
+        business_meaning: "Giá trị phát hành thực tế (đơn vị: VNĐ)."
+        comment: null
+  - name: Approval Document Number
+    physical_name: approval_document_nbr
+    business_meaning_1st: Số văn bản chấp thuận đợt chào bán của UBCKNN.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.APPROVAL_DOCUMENT_NO
+        business_meaning: Số văn bản chấp thuận đợt chào bán của UBCKNN.
+        comment: null
+  - name: Approval Document Date
+    physical_name: approval_document_dt
+    business_meaning_1st: Ngày văn bản chấp thuận đợt chào bán.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.APPROVAL_DOCUMENT_DATE
+        business_meaning: Ngày văn bản chấp thuận đợt chào bán.
+        comment: null
+  - name: Data Source Code
+    physical_name: data_src_code
+    business_meaning_1st: "Nguồn dữ liệu: MANUAL=Nhập trên FMS, TTHC=Đồng bộ từ phân\
+      \ hệ TTHC."
+    comment_1st: SCHEMA_CODE=FMS_OFFERING_DATA_SOURCE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.DATA_SOURCE
+        business_meaning: "Nguồn dữ liệu: MANUAL=Nhập trên FMS, TTHC=Đồng bộ từ phân\
+          \ hệ TTHC."
+        comment: SCHEMA_CODE=FMS_OFFERING_DATA_SOURCE
+  - name: Affair Code
+    physical_name: affair_code
+    business_meaning_1st: Mã sự vụ chào bán (mã danh mục loại sự vụ).
+    comment_1st: Mô tả nguồn ghi 'mã danh mục' nhưng chưa xác định bảng danh mục —
+      giữ Text.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.AFFAIR_CODE
+        business_meaning: Mã sự vụ chào bán (mã danh mục loại sự vụ).
+        comment: Mô tả nguồn ghi 'mã danh mục' nhưng chưa xác định bảng danh mục —
+          giữ Text.
+  - name: Stock Class Code
+    physical_name: stock_class_code
+    business_meaning_1st: Loại cổ phần.
+    comment_1st: SCHEMA_CODE=FMS.STOCK_CLASS
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.STOCK_CLASS
+        business_meaning: Loại cổ phần.
+        comment: SCHEMA_CODE=FMS.STOCK_CLASS
+  - name: TTHC External Reference Id
+    physical_name: tthc_external_reference_id
+    business_meaning_1st: ID hồ sơ TTHC tương ứng (chống trùng khi đồng bộ từ TTHC).
+    comment_1st: Denormalized — TTHC ngoài phạm vi thiết kế FMS.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.TTHC_EXTERNAL_ID
+        business_meaning: ID hồ sơ TTHC tương ứng (chống trùng khi đồng bộ từ TTHC).
+        comment: Denormalized — TTHC ngoài phạm vi thiết kế FMS.
+  - name: Report Result Date
+    physical_name: rpt_result_dt
+    business_meaning_1st: Ngày báo cáo kết quả chào bán với UBCKNN.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.REPORT_RESULT_DATE
+        business_meaning: Ngày báo cáo kết quả chào bán với UBCKNN.
+        comment: null
+  - name: Extended To Date
+    physical_name: extended_to_dt
+    business_meaning_1st: Gia hạn chào bán đến ngày (khi đã được gia hạn).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.EXTENDED_TO_DATE
+        business_meaning: Gia hạn chào bán đến ngày (khi đã được gia hạn).
+        comment: null
+  - name: Assessment Description
+    physical_name: assessment_description
+    business_meaning_1st: Đánh giá kết quả đợt chào bán.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.ASSESSMENT
+        business_meaning: Đánh giá kết quả đợt chào bán.
+        comment: null
+  - name: Note Text
+    physical_name: note_text
+    business_meaning_1st: Ghi chú về đợt chào bán.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.NOTE_TEXT
+        business_meaning: Ghi chú về đợt chào bán.
+        comment: null
+  - name: Bond Type Code
+    physical_name: bond_tp_code
+    business_meaning_1st: Loại trái phiếu
+    comment_1st: SCHEMA_CODE=FMS_BOND_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.BOND_TYPE
+        business_meaning: Loại trái phiếu
+        comment: SCHEMA_CODE=FMS_BOND_TYPE
+  - name: Bond Term Years
+    physical_name: bond_term_years
+    business_meaning_1st: "Kỳ hạn trái phiếu (đơn vị: năm)."
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.BOND_TERM_YEARS
+        business_meaning: "Kỳ hạn trái phiếu (đơn vị: năm)."
+        comment: null
+  - name: Interest Payment Period Description
+    physical_name: interest_payment_period_description
+    business_meaning_1st: Kỳ trả lãi trái phiếu (tháng/quý/năm...).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.INTEREST_PAYMENT_PERIOD
+        business_meaning: Kỳ trả lãi trái phiếu (tháng/quý/năm...).
+        comment: null
+  - name: Bondholder Representative Name
+    physical_name: bondholder_representative_nm
+    business_meaning_1st: Tên tổ chức đại diện người sở hữu trái phiếu.
+    comment_1st: Denormalized — không có FK cấu trúc đến entity đại diện.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.BONDHOLDER_REPRESENTATIVE
+        business_meaning: Tên tổ chức đại diện người sở hữu trái phiếu.
+        comment: Denormalized — không có FK cấu trúc đến entity đại diện.
+  - name: Collateral Secured Flag
+    physical_name: collateral_secured_flag
+    business_meaning_1st: "Cờ có tài sản bảo đảm: 1=Có tài sản bảo đảm, 0=Không."
+    comment_1st: Giá trị 1 → true; 0 → false.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING
+        source_column: FMS.OFFERING.COLLATERAL_SECURED
+        business_meaning: "Cờ có tài sản bảo đảm: 1=Có tài sản bảo đảm, 0=Không."
+        comment: Giá trị 1 → true; 0 → false.
+- ldm:
+    id: ATM-fmc_securities_offering_plan
+    logical_name_1st: Fund Management Company Securities Offering Plan
+    physical_name_1st: fmc_securities_offering_plan
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: "Kế hoạch phân bổ chào bán theo từng nhóm đối tượng/phương thức\
+      \ của 1 đợt chào bán: số lượng, giá, giá trị, số nhà đầu tư kế hoạch và thực\
+      \ tế."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Activity
+    bcv_concept_most: "[Business Activity] Corporate Action"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-OFFERING_PLAN
+  attributes:
+  - name: Fund Management Company Securities Offering Plan Id
+    physical_name: fmc_securities_offering_plan_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Business Activity] Corporate Action\" (kế\
+      \ thừa từ Fund Management Company Securities Offering). Kế hoạch phân bổ chào\
+      \ bán theo nhóm đối tượng/phương thức."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Business Activity] Corporate Action\" (kế\
+          \ thừa từ Fund Management Company Securities Offering). Kế hoạch phân bổ\
+          \ chào bán theo nhóm đối tượng/phương thức."
+  - name: Fund Management Company Securities Offering Plan Code
+    physical_name: fmc_securities_offering_plan_code
+    business_meaning_1st: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    comment_1st: BK chính. PK nguồn.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.ID
+        business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+        comment: BK chính. PK nguồn.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_OFFERING_PLAN
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Fund Management Company Securities Offering Id
+    physical_name: fmc_securities_offering_id
+    business_meaning_1st: "FK -> OFFERING: Đợt chào bán liên quan."
+    comment_1st: "FK target: fmc_securities_offering.fmc_securities_offering_id. Hash:\
+      \ hash_id('FMS_OFFERING', OFFERING_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.OFFERING_ID
+        business_meaning: "FK -> OFFERING: Đợt chào bán liên quan."
+        comment: "FK target: fmc_securities_offering.fmc_securities_offering_id. Hash:\
+          \ hash_id('FMS_OFFERING', OFFERING_ID)."
+  - name: Fund Management Company Securities Offering Code
+    physical_name: fmc_securities_offering_code
+    business_meaning_1st: Mã đợt chào bán liên quan.
+    comment_1st: "Lookup pair: fmc_securities_offering.fmc_securities_offering_code.\
+      \ Pair with Fund Management Company Securities Offering Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.OFFERING_ID
+        business_meaning: Mã đợt chào bán liên quan.
+        comment: "Lookup pair: fmc_securities_offering.fmc_securities_offering_code.\
+          \ Pair with Fund Management Company Securities Offering Id."
+  - name: Target Audience Description
+    physical_name: target_audience_description
+    business_meaning_1st: Đối tượng chào bán mục tiêu (mô tả hoặc mã danh mục).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.TARGET_AUDIENCE
+        business_meaning: Đối tượng chào bán mục tiêu (mô tả hoặc mã danh mục).
+        comment: null
+  - name: Offering Method Code
+    physical_name: offering_method_code
+    business_meaning_1st: Mã hình thức chào bán (enum StockOfferingPlanMethodEnum).
+    comment_1st: SCHEMA_CODE=FMS_STOCK_OFFERING_PLAN_METHOD
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.METHOD_CODE
+        business_meaning: Mã hình thức chào bán (enum StockOfferingPlanMethodEnum).
+        comment: SCHEMA_CODE=FMS_STOCK_OFFERING_PLAN_METHOD
+  - name: Planned Quantity
+    physical_name: planned_quantity
+    business_meaning_1st: Số lượng chứng khoán trong kế hoạch chào bán.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.QUANTITY_CB
+        business_meaning: Số lượng chứng khoán trong kế hoạch chào bán.
+        comment: null
+  - name: Planned Price Amount
+    physical_name: planned_price_amt
+    business_meaning_1st: "Giá chào bán theo kế hoạch (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.PRICE_CB
+        business_meaning: "Giá chào bán theo kế hoạch (đơn vị: VNĐ)."
+        comment: null
+  - name: Planned Value Amount
+    physical_name: planned_val_amt
+    business_meaning_1st: "Giá trị chào bán theo kế hoạch, có thể nhập tay (đơn vị:\
+      \ VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.VALUE_CB
+        business_meaning: "Giá trị chào bán theo kế hoạch, có thể nhập tay (đơn vị:\
+          \ VNĐ)."
+        comment: null
+  - name: Planned Participant Count
+    physical_name: planned_participant_count
+    business_meaning_1st: Số lượng người/tổ chức tham gia theo kế hoạch.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.PEOPLE_COUNT
+        business_meaning: Số lượng người/tổ chức tham gia theo kế hoạch.
+        comment: null
+  - name: Audience Description
+    physical_name: audience_description
+    business_meaning_1st: Mô tả đối tượng mua theo kế hoạch.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.AUDIENCE_DESCRIPTION
+        business_meaning: Mô tả đối tượng mua theo kế hoạch.
+        comment: null
+  - name: Swap Purpose Description
+    physical_name: swap_purpose_description
+    business_meaning_1st: Mục đích hoán đổi (nếu chào bán kèm hoán đổi).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.SWAP_PURPOSE
+        business_meaning: Mục đích hoán đổi (nếu chào bán kèm hoán đổi).
+        comment: null
+  - name: Actual Quantity
+    physical_name: actual_quantity
+    business_meaning_1st: Số lượng thực tế đã bán trong kế hoạch.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.ACTUAL_QUANTITY_CB
+        business_meaning: Số lượng thực tế đã bán trong kế hoạch.
+        comment: null
+  - name: Actual Price Amount
+    physical_name: actual_price_amt
+    business_meaning_1st: "Giá bán thực tế (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.ACTUAL_PRICE_CB
+        business_meaning: "Giá bán thực tế (đơn vị: VNĐ)."
+        comment: null
+  - name: Actual Value Amount
+    physical_name: actual_val_amt
+    business_meaning_1st: "Giá trị bán thực tế (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.ACTUAL_VALUE_CB
+        business_meaning: "Giá trị bán thực tế (đơn vị: VNĐ)."
+        comment: null
+  - name: Actual Participant Count
+    physical_name: actual_participant_count
+    business_meaning_1st: Số người/tổ chức tham gia thực tế.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.ACTUAL_PEOPLE_COUNT
+        business_meaning: Số người/tổ chức tham gia thực tế.
+        comment: null
+  - name: Actual Audience Description
+    physical_name: actual_audience_description
+    business_meaning_1st: Mô tả đối tượng tham gia thực tế.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.ACTUAL_AUDIENCE_DESCRIPTION
+        business_meaning: Mô tả đối tượng tham gia thực tế.
+        comment: null
+  - name: Actual Swap Purpose Description
+    physical_name: actual_swap_purpose_description
+    business_meaning_1st: Mục đích hoán đổi thực tế.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.ACTUAL_SWAP_PURPOSE
+        business_meaning: Mục đích hoán đổi thực tế.
+        comment: null
+  - name: Foreign Investor Participant Count
+    physical_name: foreign_investor_participant_count
+    business_meaning_1st: Số lượng nhà đầu tư nước ngoài tham gia đợt chào bán.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.FOREIGN_INVESTOR_COUNT
+        business_meaning: Số lượng nhà đầu tư nước ngoài tham gia đợt chào bán.
+        comment: null
+  - name: Foreign Issuance Value Amount
+    physical_name: foreign_issuance_val_amt
+    business_meaning_1st: "Giá trị phát hành cho nhà đầu tư nước ngoài (đơn vị: VNĐ)."
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: OFFERING_PLAN
+        source_column: FMS.OFFERING_PLAN.ISSUANCE_VALUE_FOREIGN
+        business_meaning: "Giá trị phát hành cho nhà đầu tư nước ngoài (đơn vị: VNĐ)."
+        comment: null
+- ldm:
     id: ATM-inspection_annual_plan_target
     logical_name_1st: Inspection Annual Plan Target
     physical_name_1st: inspection_annual_plan_target
@@ -16167,784 +17398,6 @@ entities:
         business_meaning: Số đợt bán cổ phiếu quỹ.
         comment: null
 - ldm:
-    id: ATM-sc_adhoc_report
-    logical_name_1st: Securities Company Adhoc Report
-    physical_name_1st: sc_adhoc_report
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: Báo cáo đột xuất của CTCK nộp lên UBCKNN khi phát sinh sự kiện
-      bất thường hoặc theo yêu cầu. Ghi nhận từng lần nộp báo cáo với loại sự kiện,
-      ngày nộp và trạng thái xử lý.
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Business Activity
-    bcv_concept_most: "[Event] Transaction"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
-    conflict_review: "bcv_core_object: ['Documentation', 'Business Activity']; bcv_concept:\
-      \ ['[Event] Transaction', '[Documentation] Regulatory Report']"
-    sources:
-    - SCMS
-    references:
-      brd:
-      - BRD-SRC-SCMS-SC_FIRM_ADHOC_REPORT
-  attributes:
-  - name: Securities Company Adhoc Report Id
-    physical_name: sc_adhoc_rpt_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: PK surrogate.
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: PK surrogate.
-  - name: Securities Company Adhoc Report Code
-    physical_name: sc_adhoc_rpt_code
-    business_meaning_1st: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
-    comment_1st: BK. NUMBER(10) — ETL convert sang string.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.ID
-        business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
-        comment: BK. NUMBER(10) — ETL convert sang string.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: SCMS_SC_FIRM_ADHOC_REPORT
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: Securities Company Id
-    physical_name: sc_id
-    business_meaning_1st: FK đến Công ty chứng khoán nộp báo cáo.
-    comment_1st: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-      \ SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-      \ đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID
-        business_meaning: FK đến Công ty chứng khoán nộp báo cáo.
-        comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-          \ SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
-          \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
-  - name: Securities Company Code
-    physical_name: sc_code
-    business_meaning_1st: Mã Công ty chứng khoán.
-    comment_1st: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
-      \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem\
-      \ comment Securities Company Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_INFO.CODE
-        business_meaning: Mã Công ty chứng khoán.
-        comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
-          \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-          \ xem comment Securities Company Id."
-  - name: Securities Company Foreign Branch Id
-    physical_name: sc_foreign_branch_id
-    business_meaning_1st: FK đến chi nhánh CTCK nước ngoài liên quan (nullable).
-    comment_1st: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
-      \ SC_FIRM_FOREIGN_BRANCH_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID
-        business_meaning: FK đến chi nhánh CTCK nước ngoài liên quan (nullable).
-        comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
-          \ SC_FIRM_FOREIGN_BRANCH_ID)."
-  - name: Securities Company Foreign Branch Code
-    physical_name: sc_foreign_branch_code
-    business_meaning_1st: Mã chi nhánh CTCK nước ngoài.
-    comment_1st: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with\
-      \ Securities Company Foreign Branch Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID
-        business_meaning: Mã chi nhánh CTCK nước ngoài.
-        comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with\
-          \ Securities Company Foreign Branch Id."
-  - name: Securities Company Bank Id
-    physical_name: sc_bank_id
-    business_meaning_1st: FK đến ngân hàng liên quan đến báo cáo (nullable).
-    comment_1st: "FK target: sc_bank.sc_bank_id. Hash: hash_id('SCMS_BANK', BANK_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID
-        business_meaning: FK đến ngân hàng liên quan đến báo cáo (nullable).
-        comment: "FK target: sc_bank.sc_bank_id. Hash: hash_id('SCMS_BANK', BANK_ID)."
-  - name: Securities Company Bank Code
-    physical_name: sc_bank_code
-    business_meaning_1st: Mã ngân hàng.
-    comment_1st: "Lookup pair: sc_bank.sc_bank_code. Pair with Bank Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID
-        business_meaning: Mã ngân hàng.
-        comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Bank Id."
-  - name: Securities Company Report Id
-    physical_name: sc_rpt_id
-    business_meaning_1st: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
-    comment_1st: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
-      \ FORM_REPORT_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID
-        business_meaning: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
-        comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
-          \ FORM_REPORT_ID)."
-  - name: Securities Company Report Code
-    physical_name: sc_rpt_code
-    business_meaning_1st: Mã biểu mẫu báo cáo liên quan.
-    comment_1st: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company\
-      \ Report Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID
-        business_meaning: Mã biểu mẫu báo cáo liên quan.
-        comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company\
-          \ Report Id."
-  - name: Submitted Securities Company Report Id
-    physical_name: submitted_sc_rpt_id
-    business_meaning_1st: Phiên bản biểu mẫu báo cáo. ID của FORM_REPORT tại thời
-      điểm nộp — phiên bản cụ thể đã dùng khi nộp, có thể khác Securities Company
-      Report Id nếu biểu mẫu đã phát sinh phiên bản mới hơn sau khi nộp (Data Modeler
-      xác nhận 2026-09-17).
-    comment_1st: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
-      \ FORM_VERSION_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID
-        business_meaning: Phiên bản biểu mẫu báo cáo. ID của FORM_REPORT tại thời
-          điểm nộp — phiên bản cụ thể đã dùng khi nộp, có thể khác Securities Company
-          Report Id nếu biểu mẫu đã phát sinh phiên bản mới hơn sau khi nộp (Data
-          Modeler xác nhận 2026-09-17).
-        comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
-          \ FORM_VERSION_ID)."
-  - name: Submitted Securities Company Report Code
-    physical_name: submitted_sc_rpt_code
-    business_meaning_1st: Mã biểu mẫu báo cáo tại thời điểm nộp.
-    comment_1st: "Lookup pair: sc_report.sc_rpt_code. Pair with Submitted Securities\
-      \ Company Report Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID
-        business_meaning: Mã biểu mẫu báo cáo tại thời điểm nộp.
-        comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Submitted Securities\
-          \ Company Report Id."
-  - name: Securities Company Report Input Submission Id
-    physical_name: sc_rpt_input_submission_id
-    business_meaning_1st: FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION).
-    comment_1st: "FK target: sc_report_input_submission.sc_rpt_input_submission_id.\
-      \ Hash: hash_id('SCMS_REPORT_INPUT_SUBMISSION', REPORT_INPUT_SUBMISSION_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID
-        business_meaning: FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION).
-        comment: "FK target: sc_report_input_submission.sc_rpt_input_submission_id.\
-          \ Hash: hash_id('SCMS_REPORT_INPUT_SUBMISSION', REPORT_INPUT_SUBMISSION_ID)."
-  - name: Securities Company Report Input Submission Code
-    physical_name: sc_rpt_input_submission_code
-    business_meaning_1st: Mã phiên gửi báo cáo liên quan.
-    comment_1st: "Lookup pair: sc_report_input_submission.sc_rpt_input_submission_code.\
-      \ Pair with Securities Company Report Input Submission Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID
-        business_meaning: Mã phiên gửi báo cáo liên quan.
-        comment: "Lookup pair: sc_report_input_submission.sc_rpt_input_submission_code.\
-          \ Pair with Securities Company Report Input Submission Id."
-  - name: Report Name
-    physical_name: rpt_nm
-    business_meaning_1st: Tên báo cáo/biểu mẫu.
-    comment_1st: VARCHAR2(2000).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_NAME
-        business_meaning: Tên báo cáo/biểu mẫu.
-        comment: VARCHAR2(2000).
-  - name: Report Year
-    physical_name: rpt_year
-    business_meaning_1st: Năm báo cáo.
-    comment_1st: NUMBER(10).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_YEAR
-        business_meaning: Năm báo cáo.
-        comment: NUMBER(10).
-  - name: Document Number
-    physical_name: document_nbr
-    business_meaning_1st: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
-    comment_1st: VARCHAR2(200).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_NUMBER
-        business_meaning: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
-        comment: VARCHAR2(200).
-  - name: Period Value
-    physical_name: period_val
-    business_meaning_1st: "Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1)."
-    comment_1st: NVARCHAR2(200).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.PERIOD_VALUE
-        business_meaning: "Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1)."
-        comment: NVARCHAR2(200).
-  - name: Adhoc Report Code
-    physical_name: adhoc_rpt_code
-    business_meaning_1st: Mã chi tiết loại báo cáo (TT96/nhóm stakeholder), tùy chọn..
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.DETAIL_TYPE
-        business_meaning: Mã chi tiết loại báo cáo (TT96/nhóm stakeholder), tùy chọn..
-        comment: null
-  - name: Category Code
-    physical_name: category_code
-    business_meaning_1st: Phân loại báo cáo đột xuất.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CATEGORY
-        business_meaning: Phân loại báo cáo đột xuất.
-        comment: null
-  - name: Signature Type Code
-    physical_name: signature_tp_code
-    business_meaning_1st: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload\
-      \ file ký; NONE=Không yêu cầu chữ ký."
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SIGNATURE_TYPE
-        business_meaning: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload\
-          \ file ký; NONE=Không yêu cầu chữ ký."
-        comment: null
-  - name: Report Submission Status Code
-    physical_name: rpt_submission_status_code
-    business_meaning_1st: "Trạng thái nộp báo cáo đột xuất: 0-Chưa gửi; 1-Gửi đúng\
-      \ hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo\
-      \ cáo."
-    comment_1st: SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS
-        business_meaning: "Trạng thái nộp báo cáo đột xuất: 0-Chưa gửi; 1-Gửi đúng\
-          \ hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại\
-          \ báo cáo."
-        comment: SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS
-  - name: Previous Report Submission Status Code
-    physical_name: previous_rpt_submission_status_code
-    business_meaning_1st: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.PREVIOUS_SUBMIT_STATUS
-        business_meaning: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
-        comment: null
-  - name: Depositary Bank Scope Code
-    physical_name: depositary_bank_scope_code
-    business_meaning_1st: "Phân loại ngân hàng lúc tạo báo cáo: LUU_KY=Lưu ký; GIAM_SAT=Giám\
-      \ sát."
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.BANK_SCOPE
-        business_meaning: "Phân loại ngân hàng lúc tạo báo cáo: LUU_KY=Lưu ký; GIAM_SAT=Giám\
-          \ sát."
-        comment: null
-  - name: Allow Import Indicator
-    physical_name: allow_import_ind
-    business_meaning_1st: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không\
-      \ cho phép."
-    comment_1st: NUMBER(1).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.ALLOW_IMPORT
-        business_meaning: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không\
-          \ cho phép."
-        comment: NUMBER(1).
-  - name: Overdue Days
-    physical_name: overdue_days
-    business_meaning_1st: Số ngày gửi báo cáo muộn.
-    comment_1st: "NUMBER(10). Đổi tên từ SO_NGAY_GUI_MUON — DDL UAT hiện tại: LATE_SUBMISSION_DAYS."
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.LATE_SUBMISSION_DAYS
-        business_meaning: Số ngày gửi báo cáo muộn.
-        comment: "NUMBER(10). Đổi tên từ SO_NGAY_GUI_MUON — DDL UAT hiện tại: LATE_SUBMISSION_DAYS."
-  - name: Submission Deadline Timestamp
-    physical_name: submission_deadline_tms
-    business_meaning_1st: Hạn nộp báo cáo đột xuất.
-    comment_1st: "TIMESTAMP(6). Đổi tên từ HAN_GUI — DDL UAT hiện tại: SUBMISSION_DEADLINE."
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SUBMISSION_DEADLINE
-        business_meaning: Hạn nộp báo cáo đột xuất.
-        comment: "TIMESTAMP(6). Đổi tên từ HAN_GUI — DDL UAT hiện tại: SUBMISSION_DEADLINE."
-  - name: Requires Disclosure Indicator
-    physical_name: requires_disclosure_ind
-    business_meaning_1st: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
-    comment_1st: NUMBER(1).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REQUIRES_DISCLOSURE
-        business_meaning: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
-        comment: NUMBER(1).
-  - name: Classification Securities Company Event Type Id
-    physical_name: cl_sc_event_tp_id
-    business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
-        business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-  - name: Classification Securities Company Event Type Code
-    physical_name: cl_sc_event_tp_code
-    business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-    comment_1st: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-      \ Pair with Classification Securities Company Event Type Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
-        business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-        comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-          \ Pair with Classification Securities Company Event Type Id."
-  - name: Event Date
-    physical_name: event_dt
-    business_meaning_1st: Ngày xảy ra sự kiện báo cáo đột xuất.
-    comment_1st: Mô tả gốc BRD trống.
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_DATE
-        business_meaning: Ngày xảy ra sự kiện báo cáo đột xuất.
-        comment: Mô tả gốc BRD trống.
-  - name: Document Date
-    physical_name: document_dt
-    business_meaning_1st: Ngày ký/ban hành văn bản.
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_DATE
-        business_meaning: Ngày ký/ban hành văn bản.
-        comment: null
-  - name: Sent Timestamp
-    physical_name: sent_tms
-    business_meaning_1st: Thời điểm gửi báo cáo.
-    comment_1st: TIMESTAMP(6).
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENT_AT
-        business_meaning: Thời điểm gửi báo cáo.
-        comment: TIMESTAMP(6).
-  - name: Cancelled Timestamp
-    physical_name: cancelled_tms
-    business_meaning_1st: Thời điểm hủy báo cáo.
-    comment_1st: TIMESTAMP(6).
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_AT
-        business_meaning: Thời điểm hủy báo cáo.
-        comment: TIMESTAMP(6).
-  - name: Sender IAM User Id
-    physical_name: sender_iam_user_id
-    business_meaning_1st: FK đến người gửi báo cáo.
-    comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM_USERS', SENDER_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID
-        business_meaning: FK đến người gửi báo cáo.
-        comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM_USERS', SENDER_ID)."
-  - name: Sender IAM User Code
-    physical_name: sender_iam_user_code
-    business_meaning_1st: Mã người gửi báo cáo.
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pair with Sender IAM User Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID
-        business_meaning: Mã người gửi báo cáo.
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pair with Sender IAM User Id."
-  - name: Cancelled By IAM User Id
-    physical_name: cancelled_by_iam_user_id
-    business_meaning_1st: FK đến người hủy báo cáo.
-    comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY
-        business_meaning: FK đến người hủy báo cáo.
-        comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
-  - name: Cancelled By IAM User Code
-    physical_name: cancelled_by_iam_user_code
-    business_meaning_1st: Mã người hủy báo cáo.
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pair with Cancelled By IAM User Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY
-        business_meaning: Mã người hủy báo cáo.
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pair with Cancelled By IAM User Id."
-  - name: Import File Path
-    physical_name: import_file_path
-    business_meaning_1st: Đường dẫn file Excel import dữ liệu.
-    comment_1st: VARCHAR2(2000).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.IMPORT_FILE_PATH
-        business_meaning: Đường dẫn file Excel import dữ liệu.
-        comment: VARCHAR2(2000).
-  - name: Source Record Insert Timestamp
-    physical_name: src_record_insert_tms
-    business_meaning_1st: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
-      hệ thống nguồn.
-    comment_1st: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột
-      nguồn CREATED_AT).
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ADHOC_REPORT
-        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
-          hệ thống nguồn.
-        comment: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột
-          nguồn CREATED_AT).
-- ldm:
     id: ATM-sc_bank_periodic
     logical_name_1st: Securities Company Bank Periodic
     physical_name_1st: sc_bank_periodic
@@ -17999,488 +18452,6 @@ entities:
         comment: null
       - source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
         source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.PREVIOUS_SUBMIT_STATUS
-        business_meaning: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
-        comment: null
-- ldm:
-    id: ATM-sc_periodic_report
-    logical_name_1st: Securities Company Periodic Report
-    physical_name_1st: sc_periodic_report
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: Báo cáo định kỳ của CTCK nộp lên UBCKNN (tài chính, hoạt động
-      kinh doanh). Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng
-      thái xử lý.
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Business Activity
-    bcv_concept_most: "[Event] Transaction"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
-    conflict_review: "bcv_core_object: ['Documentation', 'Business Activity']; bcv_concept:\
-      \ ['[Event] Transaction', '[Documentation] Regulatory Report']"
-    sources:
-    - SCMS
-    references:
-      brd:
-      - BRD-SRC-SCMS-SC_FIRM_PERIODIC_REPORT
-  attributes:
-  - name: Securities Company Periodic Report Id
-    physical_name: sc_periodic_rpt_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: PK surrogate.
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: PK surrogate.
-  - name: Securities Company Periodic Report Code
-    physical_name: sc_periodic_rpt_code
-    business_meaning_1st: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
-    comment_1st: BK. NUMBER(19) — ETL convert sang string.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.ID
-        business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
-        comment: BK. NUMBER(19) — ETL convert sang string.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: SCMS_SC_FIRM_PERIODIC_REPORT
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: Securities Company Id
-    physical_name: sc_id
-    business_meaning_1st: FK đến Công ty chứng khoán nộp báo cáo.
-    comment_1st: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-      \ SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
-      \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo\
-      \ SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE)\
-      \ — đã sửa sang crosswalk 2026-07-27."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID
-        business_meaning: FK đến Công ty chứng khoán nộp báo cáo.
-        comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-          \ SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận\
-          \ CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp\
-          \ theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
-          \ từ CODE) — đã sửa sang crosswalk 2026-07-27."
-  - name: Securities Company Code
-    physical_name: sc_code
-    business_meaning_1st: Mã Công ty chứng khoán.
-    comment_1st: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
-      \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem\
-      \ comment Securities Company Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_INFO.CODE
-        business_meaning: Mã Công ty chứng khoán.
-        comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
-          \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
-          \ xem comment Securities Company Id."
-  - name: Securities Company Form Report Id
-    physical_name: sc_form_rpt_id
-    business_meaning_1st: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
-    comment_1st: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
-      \ FORM_REPORT_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
-        business_meaning: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
-        comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
-          \ FORM_REPORT_ID)."
-  - name: Securities Company Form Report Code
-    physical_name: sc_form_rpt_code
-    business_meaning_1st: Mã biểu mẫu báo cáo liên quan (FORM_REPORT).
-    comment_1st: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company\
-      \ Form Report Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
-        business_meaning: Mã biểu mẫu báo cáo liên quan (FORM_REPORT).
-        comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company\
-          \ Form Report Id."
-  - name: Report Name
-    physical_name: rpt_nm
-    business_meaning_1st: Tên báo cáo/biểu mẫu.
-    comment_1st: NVARCHAR2(2000).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_NAME
-        business_meaning: Tên báo cáo/biểu mẫu.
-        comment: NVARCHAR2(2000).
-  - name: Report Year
-    physical_name: rpt_year
-    business_meaning_1st: Năm báo cáo.
-    comment_1st: "NUMBER(10) — giá trị năm (VD: 2024)."
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_YEAR
-        business_meaning: Năm báo cáo.
-        comment: "NUMBER(10) — giá trị năm (VD: 2024)."
-  - name: Period
-    physical_name: period
-    business_meaning_1st: Kỳ số (1-4 cho quý, 1-12 cho tháng).
-    comment_1st: NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.PERIOD
-        business_meaning: Kỳ số (1-4 cho quý, 1-12 cho tháng).
-        comment: NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo.
-  - name: Quarter
-    physical_name: quarter
-    business_meaning_1st: Quý trong năm (1, 2, 3, 4).
-    comment_1st: NUMBER(10).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.QUARTER
-        business_meaning: Quý trong năm (1, 2, 3, 4).
-        comment: NUMBER(10).
-  - name: Report Month
-    physical_name: rpt_month
-    business_meaning_1st: Tháng trong năm.
-    comment_1st: NUMBER(10). Mô tả gốc BRD trống.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_MONTH
-        business_meaning: Tháng trong năm.
-        comment: NUMBER(10). Mô tả gốc BRD trống.
-  - name: Report Period
-    physical_name: rpt_period
-    business_meaning_1st: Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).
-    comment_1st: VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value
-      theo quyết định thiết kế.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_PERIOD
-        business_meaning: Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).
-        comment: VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value
-          theo quyết định thiết kế.
-  - name: Start Date
-    physical_name: start_dt
-    business_meaning_1st: Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.START_DATE
-        business_meaning: Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.
-        comment: null
-  - name: End Date
-    physical_name: end_dt
-    business_meaning_1st: Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.END_DATE
-        business_meaning: Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.
-        comment: null
-  - name: Submission Deadline Date
-    physical_name: submission_deadline_dt
-    business_meaning_1st: Hạn nộp báo cáo theo quy định.
-    comment_1st: SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp
-      — ETL dùng SUBMISSION_DEADLINE (DATE).
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE
-        business_meaning: Hạn nộp báo cáo theo quy định.
-        comment: SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp
-          — ETL dùng SUBMISSION_DEADLINE (DATE).
-  - name: Submission Deadline Timestamp
-    physical_name: submission_deadline_tms
-    business_meaning_1st: Hạn nộp báo cáo theo quy định (có giờ).
-    comment_1st: TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE. ETL dùng cột
-      này nếu cần độ chính xác giờ.
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT
-        business_meaning: Hạn nộp báo cáo theo quy định (có giờ).
-        comment: TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE. ETL dùng cột
-          này nếu cần độ chính xác giờ.
-  - name: Report Submission Status Code
-    physical_name: rpt_submission_status_code
-    business_meaning_1st: "Trạng thái nộp báo cáo định kỳ: 0-Chưa gửi; 1-Gửi đúng\
-      \ hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo\
-      \ cáo."
-    comment_1st: SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.RECORD_STATUS
-        business_meaning: "Trạng thái nộp báo cáo định kỳ: 0-Chưa gửi; 1-Gửi đúng\
-          \ hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại\
-          \ báo cáo."
-        comment: SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS
-  - name: Overdue Days
-    physical_name: overdue_days
-    business_meaning_1st: Số ngày nộp báo cáo quá hạn.
-    comment_1st: NUMBER(10).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.OVERDUE_DAYS
-        business_meaning: Số ngày nộp báo cáo quá hạn.
-        comment: NUMBER(10).
-  - name: Classification Securities Company Event Type Id
-    physical_name: cl_sc_event_tp_id
-    business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
-        business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-  - name: Classification Securities Company Event Type Code
-    physical_name: cl_sc_event_tp_code
-    business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-    comment_1st: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-      \ Pair with Classification Securities Company Event Type Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
-        business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-        comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-          \ Pair with Classification Securities Company Event Type Id."
-  - name: Sent Timestamp
-    physical_name: sent_tms
-    business_meaning_1st: Thời điểm gửi báo cáo lên UBCKNN.
-    comment_1st: TIMESTAMP(6).
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENT_AT
-        business_meaning: Thời điểm gửi báo cáo lên UBCKNN.
-        comment: TIMESTAMP(6).
-  - name: Valid Digital Signature Indicator
-    physical_name: valid_digital_signature_ind
-    business_meaning_1st: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
-    comment_1st: NUMBER(1). Mô tả gốc BRD trống.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DIGITAL_SIGNATURE
-        business_meaning: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
-        comment: NUMBER(1). Mô tả gốc BRD trống.
-  - name: Valid Data Indicator
-    physical_name: valid_data_ind
-    business_meaning_1st: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ;\
-      \ 0=Không hợp lệ."
-    comment_1st: NUMBER(1). Mô tả gốc BRD trống.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DATA
-        business_meaning: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ;\
-          \ 0=Không hợp lệ."
-        comment: NUMBER(1). Mô tả gốc BRD trống.
-  - name: Previous Report Submission Status Code
-    physical_name: previous_rpt_submission_status_code
-    business_meaning_1st: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_PERIODIC_REPORT
-        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.PREVIOUS_SUBMIT_STATUS
         business_meaning: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
         comment: null
 - ldm:
@@ -21880,8 +21851,7 @@ entities:
   - name: Financial Report Template Id
     physical_name: fr_template_id
     business_meaning_1st: Id mẫu form CBTT áp dụng.
-    comment_1st: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS',\
-      \ FORM_CD)."
+    comment_1st: "FK target: financial_report.fr_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -21894,8 +21864,7 @@ entities:
       - source_table: VIOLATION_REPORT
         source_column: IDS.VIOLATION_REPORT.FORM_CD
         business_meaning: Id mẫu form CBTT áp dụng.
-        comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS',\
-          \ FORM_CD)."
+        comment: "FK target: financial_report.fr_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
   - name: Financial Report Template Code
     physical_name: fr_template_code
     business_meaning_1st: Mã mẫu báo cáo.
@@ -26439,7 +26408,7 @@ entities:
   - name: Schema Code
     physical_name: schema_code
     business_meaning_1st: Mã loại phân loại.
-    comment_1st: Hardcode giá trị trong etl_derived_value.
+    comment_1st: Hardcode MRMS.RISK_INDICATOR_CATEGORY.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -26454,48 +26423,48 @@ entities:
     - NHNCK.EDUCATION_LEVELS
     - NHNCK.POSITIONS
     - NHNCK.SPECIALIZATIONS
-    conflict_review: "data_domain: ['Classification Value', 'Text']"
+    conflict_review: "data_domain: ['Text', 'Classification Value']"
     source_mappings:
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode MRMS.RISK_INDICATOR_CATEGORY.
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_SOURCES
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode NHNCK.APPLICATION_SOURCES.
       - source_table: APPLICATION_STATUSES
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode NHNCK.APPLICATION_STATUSES.
       - source_table: BANKS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode NHNCK.BANKS.
       - source_table: DEPARTMENTS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode NHNCK.DEPARTMENTS.
       - source_table: DOCUMENTS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode NHNCK.DOCUMENTS.
       - source_table: EDUCATION_LEVELS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode NHNCK.EDUCATION_LEVELS.
       - source_table: POSITIONS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode NHNCK.POSITIONS.
       - source_table: SPECIALIZATIONS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: Hardcode giá trị trong etl_derived_value.
+        comment: Hardcode NHNCK.SPECIALIZATIONS.
     - source_system: TTHC
       source_tables:
       - source_table: CLASSIFICATION_VALUE
@@ -28405,283 +28374,6 @@ entities:
         business_meaning: Ghi chú
         comment: null
 - ldm:
-    id: ATM-fr_catalog
-    logical_name_1st: Financial Report Catalog
-    physical_name_1st: fr_catalog
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: "Danh mục báo cáo tài chính: định nghĩa loại BCTC và tập hàng/cột\
-      \ dùng cho template số liệu. Table Type đổi Fundamental → Relative (2026-09-15,\
-      \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e."
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Condition
-    bcv_concept_most: "[Condition] Form Definition"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
-    conflict_review: "bcv_core_object: ['Documentation', 'Condition']; bcv_concept:\
-      \ ['[Condition] Form Definition', '[Documentation] Form Document']"
-    sources:
-    - IDS
-    references:
-      brd:
-      - BRD-SRC-IDS-REPORT_CATALOG
-  attributes:
-  - name: Financial Report Catalog Id
-    physical_name: fr_catalog_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
-      \ Form Definition\"."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
-          \ Form Definition\"."
-  - name: Financial Report Catalog Code
-    physical_name: fr_catalog_code
-    business_meaning_1st: BK duy nhất — Id hash từ trường này.
-    comment_1st: BK chính — Nguồn NUMBER(10,0) — ETL cast sang string.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.ID
-        business_meaning: BK duy nhất — Id hash từ trường này.
-        comment: BK chính — Nguồn NUMBER(10,0) — ETL cast sang string.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: IDS_REPORT_CATALOG
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: Report Code
-    physical_name: rpt_code
-    business_meaning_1st: Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique —
-      giữ lại làm business reference field.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.REPORT_CD
-        business_meaning: Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique —
-          giữ lại làm business reference field.
-        comment: null
-  - name: Financial Report Catalog Name
-    physical_name: fr_catalog_nm
-    business_meaning_1st: Tên báo cáo (tiếng Việt).
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.REPORT_NAME_VI
-        business_meaning: Tên báo cáo (tiếng Việt).
-        comment: null
-  - name: Financial Report Catalog English Name
-    physical_name: fr_catalog_english_nm
-    business_meaning_1st: Tên báo cáo (tiếng Anh).
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.REPORT_NAME_EN
-        business_meaning: Tên báo cáo (tiếng Anh).
-        comment: null
-  - name: Report Catalog Type Code
-    physical_name: rpt_catalog_tp_code
-    business_meaning_1st: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
-    comment_1st: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
-      (LOOKUP_GROUP='RC_TYPE').
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.RC_TYPE_CD
-        business_meaning: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
-        comment: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
-          (LOOKUP_GROUP='RC_TYPE').
-  - name: Financial Report Year
-    physical_name: fr_year
-    business_meaning_1st: Lưu năm của báo cáo.
-    comment_1st: Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay
-      vì Date.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.REPORT_YEAR
-        business_meaning: Lưu năm của báo cáo.
-        comment: Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay
-          vì Date.
-  - name: Financial Report Scope Type Code
-    physical_name: fr_scope_tp_code
-    business_meaning_1st: Loại hình báo cáo (Hợp nhất, Mẹ).
-    comment_1st: SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE').
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.REPORT_SCOPE_CD
-        business_meaning: Loại hình báo cáo (Hợp nhất, Mẹ).
-        comment: SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE').
-  - name: Enterprise Type Code
-    physical_name: enterprise_tp_code
-    business_meaning_1st: Loại hình doanh nghiệp (DN, BH, TD, CK).
-    comment_1st: SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE').
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD
-        business_meaning: Loại hình doanh nghiệp (DN, BH, TD, CK).
-        comment: SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE').
-  - name: Consolidated Indicator
-    physical_name: consolidated_ind
-    business_meaning_1st: Có phải là báo cáo hợp nhất không.
-    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.CONSOLIDATED_FLG
-        business_meaning: Có phải là báo cáo hợp nhất không.
-        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
-  - name: Financial Statement Type Code
-    physical_name: financial_statement_tp_code
-    business_meaning_1st: Tham chiếu báo cáo tài chính (không có mô tả tại nguồn).
-    comment_1st: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES
-      (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE').
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD
-        business_meaning: Tham chiếu báo cáo tài chính (không có mô tả tại nguồn).
-        comment: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES
-          (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE').
-  - name: Reporting Period Type Code
-    physical_name: reporting_period_tp_code
-    business_meaning_1st: Loại kỳ báo cáo.
-    comment_1st: SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES
-      (LOOKUP_GROUP='REPORT_PERIOD_TYPE').
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.REPORTING_PERIOD_CD
-        business_meaning: Loại kỳ báo cáo.
-        comment: SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES
-          (LOOKUP_GROUP='REPORT_PERIOD_TYPE').
-  - name: Financial Statement Component Type Code
-    physical_name: financial_statement_component_tp_code
-    business_meaning_1st: Loại thành phần của báo cáo tài chính.
-    comment_1st: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ
-      LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT').
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: REPORT_CATALOG
-        source_column: IDS.REPORT_CATALOG.REF_CD
-        business_meaning: Loại thành phần của báo cáo tài chính.
-        comment: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ
-          LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT').
-- ldm:
     id: ATM-pc_evaluation_criterion
     logical_name_1st: Public Company Evaluation Criterion
     physical_name_1st: pc_evaluation_criterion
@@ -29320,7 +29012,7 @@ entities:
   - name: Financial Report Template Id
     physical_name: fr_template_id
     business_meaning_1st: FK đến bảng FORMS.
-    comment_1st: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
+    comment_1st: "FK target: financial_report.fr_id. Cần ETL crosswalk sang IDS.FORMS:\
       \ VIOLATION_TEMPLATES.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS',\
       \ FORM_CD)."
     data_domain_most: Surrogate Key
@@ -29335,7 +29027,7 @@ entities:
       - source_table: VIOLATION_TEMPLATES
         source_column: IDS.VIOLATION_TEMPLATES.FORM_ID
         business_meaning: FK đến bảng FORMS.
-        comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
+        comment: "FK target: financial_report.fr_id. Cần ETL crosswalk sang IDS.FORMS:\
           \ VIOLATION_TEMPLATES.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS',\
           \ FORM_CD)."
   - name: Financial Report Template Code
@@ -37857,6 +37549,282 @@ entities:
         business_meaning: Ngày báo cáo
         comment: null
 - ldm:
+    id: ATM-fr_catalog
+    logical_name_1st: Financial Report Catalog
+    physical_name_1st: fr_catalog
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Danh mục báo cáo tài chính: định nghĩa loại BCTC và tập hàng/cột\
+      \ dùng cho template số liệu. Table Type đổi Fundamental → Relative (2026-09-15,\
+      \ theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Form Document"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - IDS
+    references:
+      brd:
+      - BRD-SRC-IDS-REPORT_CATALOG
+  attributes:
+  - name: Financial Report Catalog Id
+    physical_name: fr_catalog_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
+      \ Form Definition\"."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
+          \ Form Definition\"."
+  - name: Financial Report Catalog Code
+    physical_name: fr_catalog_code
+    business_meaning_1st: BK duy nhất — Id hash từ trường này.
+    comment_1st: BK chính — Nguồn NUMBER(10,0) — ETL cast sang string.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.ID
+        business_meaning: BK duy nhất — Id hash từ trường này.
+        comment: BK chính — Nguồn NUMBER(10,0) — ETL cast sang string.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: IDS_REPORT_CATALOG
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning_1st: Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique —
+      giữ lại làm business reference field.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.REPORT_CD
+        business_meaning: Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique —
+          giữ lại làm business reference field.
+        comment: null
+  - name: Financial Report Catalog Name
+    physical_name: fr_catalog_nm
+    business_meaning_1st: Tên báo cáo (tiếng Việt).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.REPORT_NAME_VI
+        business_meaning: Tên báo cáo (tiếng Việt).
+        comment: null
+  - name: Financial Report Catalog English Name
+    physical_name: fr_catalog_english_nm
+    business_meaning_1st: Tên báo cáo (tiếng Anh).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.REPORT_NAME_EN
+        business_meaning: Tên báo cáo (tiếng Anh).
+        comment: null
+  - name: Report Catalog Type Code
+    physical_name: rpt_catalog_tp_code
+    business_meaning_1st: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
+    comment_1st: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='RC_TYPE').
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.RC_TYPE_CD
+        business_meaning: Loại báo cáo, lấy từ bảng REPORT_CATALOG.
+        comment: SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='RC_TYPE').
+  - name: Financial Report Year
+    physical_name: fr_year
+    business_meaning_1st: Lưu năm của báo cáo.
+    comment_1st: Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay
+      vì Date.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.REPORT_YEAR
+        business_meaning: Lưu năm của báo cáo.
+        comment: Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay
+          vì Date.
+  - name: Financial Report Scope Type Code
+    physical_name: fr_scope_tp_code
+    business_meaning_1st: Loại hình báo cáo (Hợp nhất, Mẹ).
+    comment_1st: SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE').
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.REPORT_SCOPE_CD
+        business_meaning: Loại hình báo cáo (Hợp nhất, Mẹ).
+        comment: SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE').
+  - name: Enterprise Type Code
+    physical_name: enterprise_tp_code
+    business_meaning_1st: Loại hình doanh nghiệp (DN, BH, TD, CK).
+    comment_1st: SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE').
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD
+        business_meaning: Loại hình doanh nghiệp (DN, BH, TD, CK).
+        comment: SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE').
+  - name: Consolidated Indicator
+    physical_name: consolidated_ind
+    business_meaning_1st: Có phải là báo cáo hợp nhất không.
+    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.CONSOLIDATED_FLG
+        business_meaning: Có phải là báo cáo hợp nhất không.
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+  - name: Financial Statement Type Code
+    physical_name: financial_statement_tp_code
+    business_meaning_1st: Tham chiếu báo cáo tài chính (không có mô tả tại nguồn).
+    comment_1st: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE').
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD
+        business_meaning: Tham chiếu báo cáo tài chính (không có mô tả tại nguồn).
+        comment: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE').
+  - name: Reporting Period Type Code
+    physical_name: reporting_period_tp_code
+    business_meaning_1st: Loại kỳ báo cáo.
+    comment_1st: SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES
+      (LOOKUP_GROUP='REPORT_PERIOD_TYPE').
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.REPORTING_PERIOD_CD
+        business_meaning: Loại kỳ báo cáo.
+        comment: SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES
+          (LOOKUP_GROUP='REPORT_PERIOD_TYPE').
+  - name: Financial Statement Component Type Code
+    physical_name: financial_statement_component_tp_code
+    business_meaning_1st: Loại thành phần của báo cáo tài chính.
+    comment_1st: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ
+      LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT').
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: REPORT_CATALOG
+        source_column: IDS.REPORT_CATALOG.REF_CD
+        business_meaning: Loại thành phần của báo cáo tài chính.
+        comment: SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ
+          LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT').
+- ldm:
     id: ATM-fr_column
     logical_name_1st: Financial Report Column
     physical_name_1st: fr_column
@@ -42049,8 +42017,7 @@ entities:
   - name: Financial Report Template Id
     physical_name: fr_template_id
     business_meaning_1st: Id mẫu form CBTT áp dụng.
-    comment_1st: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS',\
-      \ FORM_CD)."
+    comment_1st: "FK target: financial_report.fr_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -42063,8 +42030,7 @@ entities:
       - source_table: REPORT_EXTENSIONS
         source_column: IDS.REPORT_EXTENSIONS.FORM_CD
         business_meaning: Id mẫu form CBTT áp dụng.
-        comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS',\
-          \ FORM_CD)."
+        comment: "FK target: financial_report.fr_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
   - name: Financial Report Template Code
     physical_name: fr_template_code
     business_meaning_1st: Mã mẫu báo cáo.
@@ -44197,6 +44163,1264 @@ entities:
       - source_table: PRIVATE_CORP_BOND_TRADING
         source_column: HNX.PRIVATE_CORP_BOND_TRADING.REPORT_DATE
         business_meaning: Ngày báo cáo
+        comment: null
+- ldm:
+    id: ATM-sc_adhoc_report
+    logical_name_1st: Securities Company Adhoc Report
+    physical_name_1st: sc_adhoc_report
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Báo cáo đột xuất của CTCK nộp lên UBCKNN khi phát sinh sự kiện
+      bất thường hoặc theo yêu cầu. Ghi nhận từng lần nộp báo cáo với loại sự kiện,
+      ngày nộp và trạng thái xử lý.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Regulatory Report"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - SCMS
+    references:
+      brd:
+      - BRD-SRC-SCMS-SC_FIRM_ADHOC_REPORT
+  attributes:
+  - name: Securities Company Adhoc Report Id
+    physical_name: sc_adhoc_rpt_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: PK surrogate.
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: PK surrogate.
+  - name: Securities Company Adhoc Report Code
+    physical_name: sc_adhoc_rpt_code
+    business_meaning_1st: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    comment_1st: BK. NUMBER(10) — ETL convert sang string.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.ID
+        business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+        comment: BK. NUMBER(10) — ETL convert sang string.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: SCMS_SC_FIRM_ADHOC_REPORT
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning_1st: FK đến Công ty chứng khoán nộp báo cáo.
+    comment_1st: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+      \ SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
+      \ đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID
+        business_meaning: FK đến Công ty chứng khoán nộp báo cáo.
+        comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+          \ SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
+          \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning_1st: Mã Công ty chứng khoán.
+    comment_1st: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+      \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem\
+      \ comment Securities Company Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_INFO.CODE
+        business_meaning: Mã Công ty chứng khoán.
+        comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+          \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
+          \ xem comment Securities Company Id."
+  - name: Securities Company Foreign Branch Id
+    physical_name: sc_foreign_branch_id
+    business_meaning_1st: FK đến chi nhánh CTCK nước ngoài liên quan (nullable).
+    comment_1st: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+      \ SC_FIRM_FOREIGN_BRANCH_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID
+        business_meaning: FK đến chi nhánh CTCK nước ngoài liên quan (nullable).
+        comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+          \ SC_FIRM_FOREIGN_BRANCH_ID)."
+  - name: Securities Company Foreign Branch Code
+    physical_name: sc_foreign_branch_code
+    business_meaning_1st: Mã chi nhánh CTCK nước ngoài.
+    comment_1st: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with\
+      \ Securities Company Foreign Branch Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID
+        business_meaning: Mã chi nhánh CTCK nước ngoài.
+        comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with\
+          \ Securities Company Foreign Branch Id."
+  - name: Securities Company Bank Id
+    physical_name: sc_bank_id
+    business_meaning_1st: FK đến ngân hàng liên quan đến báo cáo (nullable).
+    comment_1st: "FK target: sc_bank.sc_bank_id. Hash: hash_id('SCMS_BANK', BANK_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID
+        business_meaning: FK đến ngân hàng liên quan đến báo cáo (nullable).
+        comment: "FK target: sc_bank.sc_bank_id. Hash: hash_id('SCMS_BANK', BANK_ID)."
+  - name: Securities Company Bank Code
+    physical_name: sc_bank_code
+    business_meaning_1st: Mã ngân hàng.
+    comment_1st: "Lookup pair: sc_bank.sc_bank_code. Pair with Bank Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID
+        business_meaning: Mã ngân hàng.
+        comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Bank Id."
+  - name: Securities Company Report Id
+    physical_name: sc_rpt_id
+    business_meaning_1st: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
+    comment_1st: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
+      \ FORM_REPORT_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID
+        business_meaning: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
+        comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
+          \ FORM_REPORT_ID)."
+  - name: Securities Company Report Code
+    physical_name: sc_rpt_code
+    business_meaning_1st: Mã biểu mẫu báo cáo liên quan.
+    comment_1st: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company\
+      \ Report Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID
+        business_meaning: Mã biểu mẫu báo cáo liên quan.
+        comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company\
+          \ Report Id."
+  - name: Submitted Securities Company Report Id
+    physical_name: submitted_sc_rpt_id
+    business_meaning_1st: Phiên bản biểu mẫu báo cáo. ID của FORM_REPORT tại thời
+      điểm nộp — phiên bản cụ thể đã dùng khi nộp, có thể khác Securities Company
+      Report Id nếu biểu mẫu đã phát sinh phiên bản mới hơn sau khi nộp (Data Modeler
+      xác nhận 2026-09-17).
+    comment_1st: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
+      \ FORM_VERSION_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID
+        business_meaning: Phiên bản biểu mẫu báo cáo. ID của FORM_REPORT tại thời
+          điểm nộp — phiên bản cụ thể đã dùng khi nộp, có thể khác Securities Company
+          Report Id nếu biểu mẫu đã phát sinh phiên bản mới hơn sau khi nộp (Data
+          Modeler xác nhận 2026-09-17).
+        comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
+          \ FORM_VERSION_ID)."
+  - name: Submitted Securities Company Report Code
+    physical_name: submitted_sc_rpt_code
+    business_meaning_1st: Mã biểu mẫu báo cáo tại thời điểm nộp.
+    comment_1st: "Lookup pair: sc_report.sc_rpt_code. Pair with Submitted Securities\
+      \ Company Report Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID
+        business_meaning: Mã biểu mẫu báo cáo tại thời điểm nộp.
+        comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Submitted Securities\
+          \ Company Report Id."
+  - name: Securities Company Report Input Submission Id
+    physical_name: sc_rpt_input_submission_id
+    business_meaning_1st: FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION).
+    comment_1st: "FK target: sc_report_input_submission.sc_rpt_input_submission_id.\
+      \ Hash: hash_id('SCMS_REPORT_INPUT_SUBMISSION', REPORT_INPUT_SUBMISSION_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID
+        business_meaning: FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION).
+        comment: "FK target: sc_report_input_submission.sc_rpt_input_submission_id.\
+          \ Hash: hash_id('SCMS_REPORT_INPUT_SUBMISSION', REPORT_INPUT_SUBMISSION_ID)."
+  - name: Securities Company Report Input Submission Code
+    physical_name: sc_rpt_input_submission_code
+    business_meaning_1st: Mã phiên gửi báo cáo liên quan.
+    comment_1st: "Lookup pair: sc_report_input_submission.sc_rpt_input_submission_code.\
+      \ Pair with Securities Company Report Input Submission Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID
+        business_meaning: Mã phiên gửi báo cáo liên quan.
+        comment: "Lookup pair: sc_report_input_submission.sc_rpt_input_submission_code.\
+          \ Pair with Securities Company Report Input Submission Id."
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning_1st: Tên báo cáo/biểu mẫu.
+    comment_1st: VARCHAR2(2000).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_NAME
+        business_meaning: Tên báo cáo/biểu mẫu.
+        comment: VARCHAR2(2000).
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning_1st: Năm báo cáo.
+    comment_1st: NUMBER(10).
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REPORT_YEAR
+        business_meaning: Năm báo cáo.
+        comment: NUMBER(10).
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning_1st: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
+    comment_1st: VARCHAR2(200).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_NUMBER
+        business_meaning: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
+        comment: VARCHAR2(200).
+  - name: Period Value
+    physical_name: period_val
+    business_meaning_1st: "Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1)."
+    comment_1st: NVARCHAR2(200).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.PERIOD_VALUE
+        business_meaning: "Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1)."
+        comment: NVARCHAR2(200).
+  - name: Adhoc Report Code
+    physical_name: adhoc_rpt_code
+    business_meaning_1st: Mã chi tiết loại báo cáo (TT96/nhóm stakeholder), tùy chọn..
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.DETAIL_TYPE
+        business_meaning: Mã chi tiết loại báo cáo (TT96/nhóm stakeholder), tùy chọn..
+        comment: null
+  - name: Category Code
+    physical_name: category_code
+    business_meaning_1st: Phân loại báo cáo đột xuất.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CATEGORY
+        business_meaning: Phân loại báo cáo đột xuất.
+        comment: null
+  - name: Signature Type Code
+    physical_name: signature_tp_code
+    business_meaning_1st: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload\
+      \ file ký; NONE=Không yêu cầu chữ ký."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SIGNATURE_TYPE
+        business_meaning: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload\
+          \ file ký; NONE=Không yêu cầu chữ ký."
+        comment: null
+  - name: Report Submission Status Code
+    physical_name: rpt_submission_status_code
+    business_meaning_1st: "Trạng thái nộp báo cáo đột xuất: 0-Chưa gửi; 1-Gửi đúng\
+      \ hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo\
+      \ cáo."
+    comment_1st: SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS
+        business_meaning: "Trạng thái nộp báo cáo đột xuất: 0-Chưa gửi; 1-Gửi đúng\
+          \ hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại\
+          \ báo cáo."
+        comment: SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS
+  - name: Previous Report Submission Status Code
+    physical_name: previous_rpt_submission_status_code
+    business_meaning_1st: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.PREVIOUS_SUBMIT_STATUS
+        business_meaning: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
+        comment: null
+  - name: Depositary Bank Scope Code
+    physical_name: depositary_bank_scope_code
+    business_meaning_1st: "Phân loại ngân hàng lúc tạo báo cáo: LUU_KY=Lưu ký; GIAM_SAT=Giám\
+      \ sát."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.BANK_SCOPE
+        business_meaning: "Phân loại ngân hàng lúc tạo báo cáo: LUU_KY=Lưu ký; GIAM_SAT=Giám\
+          \ sát."
+        comment: null
+  - name: Allow Import Indicator
+    physical_name: allow_import_ind
+    business_meaning_1st: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không\
+      \ cho phép."
+    comment_1st: NUMBER(1).
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.ALLOW_IMPORT
+        business_meaning: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không\
+          \ cho phép."
+        comment: NUMBER(1).
+  - name: Overdue Days
+    physical_name: overdue_days
+    business_meaning_1st: Số ngày gửi báo cáo muộn.
+    comment_1st: "NUMBER(10). Đổi tên từ SO_NGAY_GUI_MUON — DDL UAT hiện tại: LATE_SUBMISSION_DAYS."
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.LATE_SUBMISSION_DAYS
+        business_meaning: Số ngày gửi báo cáo muộn.
+        comment: "NUMBER(10). Đổi tên từ SO_NGAY_GUI_MUON — DDL UAT hiện tại: LATE_SUBMISSION_DAYS."
+  - name: Submission Deadline Timestamp
+    physical_name: submission_deadline_tms
+    business_meaning_1st: Hạn nộp báo cáo đột xuất.
+    comment_1st: "TIMESTAMP(6). Đổi tên từ HAN_GUI — DDL UAT hiện tại: SUBMISSION_DEADLINE."
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SUBMISSION_DEADLINE
+        business_meaning: Hạn nộp báo cáo đột xuất.
+        comment: "TIMESTAMP(6). Đổi tên từ HAN_GUI — DDL UAT hiện tại: SUBMISSION_DEADLINE."
+  - name: Requires Disclosure Indicator
+    physical_name: requires_disclosure_ind
+    business_meaning_1st: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
+    comment_1st: NUMBER(1).
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.REQUIRES_DISCLOSURE
+        business_meaning: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
+        comment: NUMBER(1).
+  - name: Classification Securities Company Event Type Id
+    physical_name: cl_sc_event_tp_id
+    business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
+      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
+        business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
+          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  - name: Classification Securities Company Event Type Code
+    physical_name: cl_sc_event_tp_code
+    business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+    comment_1st: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
+      \ Pair with Classification Securities Company Event Type Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
+        business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+        comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
+          \ Pair with Classification Securities Company Event Type Id."
+  - name: Event Date
+    physical_name: event_dt
+    business_meaning_1st: Ngày xảy ra sự kiện báo cáo đột xuất.
+    comment_1st: Mô tả gốc BRD trống.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_DATE
+        business_meaning: Ngày xảy ra sự kiện báo cáo đột xuất.
+        comment: Mô tả gốc BRD trống.
+  - name: Document Date
+    physical_name: document_dt
+    business_meaning_1st: Ngày ký/ban hành văn bản.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_DATE
+        business_meaning: Ngày ký/ban hành văn bản.
+        comment: null
+  - name: Sent Timestamp
+    physical_name: sent_tms
+    business_meaning_1st: Thời điểm gửi báo cáo.
+    comment_1st: TIMESTAMP(6).
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENT_AT
+        business_meaning: Thời điểm gửi báo cáo.
+        comment: TIMESTAMP(6).
+  - name: Cancelled Timestamp
+    physical_name: cancelled_tms
+    business_meaning_1st: Thời điểm hủy báo cáo.
+    comment_1st: TIMESTAMP(6).
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_AT
+        business_meaning: Thời điểm hủy báo cáo.
+        comment: TIMESTAMP(6).
+  - name: Sender IAM User Id
+    physical_name: sender_iam_user_id
+    business_meaning_1st: FK đến người gửi báo cáo.
+    comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+      \ Hash: hash_id('IAM_USERS', SENDER_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID
+        business_meaning: FK đến người gửi báo cáo.
+        comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+          \ Hash: hash_id('IAM_USERS', SENDER_ID)."
+  - name: Sender IAM User Code
+    physical_name: sender_iam_user_code
+    business_meaning_1st: Mã người gửi báo cáo.
+    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+      \ Pair with Sender IAM User Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID
+        business_meaning: Mã người gửi báo cáo.
+        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+          \ Pair with Sender IAM User Id."
+  - name: Cancelled By IAM User Id
+    physical_name: cancelled_by_iam_user_id
+    business_meaning_1st: FK đến người hủy báo cáo.
+    comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+      \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY
+        business_meaning: FK đến người hủy báo cáo.
+        comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+          \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
+  - name: Cancelled By IAM User Code
+    physical_name: cancelled_by_iam_user_code
+    business_meaning_1st: Mã người hủy báo cáo.
+    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+      \ Pair with Cancelled By IAM User Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY
+        business_meaning: Mã người hủy báo cáo.
+        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+          \ Pair with Cancelled By IAM User Id."
+  - name: Import File Path
+    physical_name: import_file_path
+    business_meaning_1st: Đường dẫn file Excel import dữ liệu.
+    comment_1st: VARCHAR2(2000).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.IMPORT_FILE_PATH
+        business_meaning: Đường dẫn file Excel import dữ liệu.
+        comment: VARCHAR2(2000).
+  - name: Source Record Insert Timestamp
+    physical_name: src_record_insert_tms
+    business_meaning_1st: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
+      hệ thống nguồn.
+    comment_1st: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột
+      nguồn CREATED_AT).
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ADHOC_REPORT
+        source_column: SCMS.SC_FIRM_ADHOC_REPORT.CREATED_AT
+        business_meaning: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
+          hệ thống nguồn.
+        comment: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột
+          nguồn CREATED_AT).
+- ldm:
+    id: ATM-sc_periodic_report
+    logical_name_1st: Securities Company Periodic Report
+    physical_name_1st: sc_periodic_report
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Báo cáo định kỳ của CTCK nộp lên UBCKNN (tài chính, hoạt động
+      kinh doanh). Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng
+      thái xử lý.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Regulatory Report"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - SCMS
+    references:
+      brd:
+      - BRD-SRC-SCMS-SC_FIRM_PERIODIC_REPORT
+  attributes:
+  - name: Securities Company Periodic Report Id
+    physical_name: sc_periodic_rpt_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: PK surrogate.
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: PK surrogate.
+  - name: Securities Company Periodic Report Code
+    physical_name: sc_periodic_rpt_code
+    business_meaning_1st: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    comment_1st: BK. NUMBER(19) — ETL convert sang string.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.ID
+        business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+        comment: BK. NUMBER(19) — ETL convert sang string.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: SCMS_SC_FIRM_PERIODIC_REPORT
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning_1st: FK đến Công ty chứng khoán nộp báo cáo.
+    comment_1st: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+      \ SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
+      \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo\
+      \ SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE)\
+      \ — đã sửa sang crosswalk 2026-07-27."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID
+        business_meaning: FK đến Công ty chứng khoán nộp báo cáo.
+        comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+          \ SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận\
+          \ CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp\
+          \ theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
+          \ từ CODE) — đã sửa sang crosswalk 2026-07-27."
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning_1st: Mã Công ty chứng khoán.
+    comment_1st: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+      \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem\
+      \ comment Securities Company Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_INFO.CODE
+        business_meaning: Mã Công ty chứng khoán.
+        comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+          \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
+          \ xem comment Securities Company Id."
+  - name: Securities Company Form Report Id
+    physical_name: sc_form_rpt_id
+    business_meaning_1st: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
+    comment_1st: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
+      \ FORM_REPORT_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
+        business_meaning: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
+        comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT',\
+          \ FORM_REPORT_ID)."
+  - name: Securities Company Form Report Code
+    physical_name: sc_form_rpt_code
+    business_meaning_1st: Mã biểu mẫu báo cáo liên quan (FORM_REPORT).
+    comment_1st: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company\
+      \ Form Report Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
+        business_meaning: Mã biểu mẫu báo cáo liên quan (FORM_REPORT).
+        comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company\
+          \ Form Report Id."
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning_1st: Tên báo cáo/biểu mẫu.
+    comment_1st: NVARCHAR2(2000).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_NAME
+        business_meaning: Tên báo cáo/biểu mẫu.
+        comment: NVARCHAR2(2000).
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning_1st: Năm báo cáo.
+    comment_1st: "NUMBER(10) — giá trị năm (VD: 2024)."
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_YEAR
+        business_meaning: Năm báo cáo.
+        comment: "NUMBER(10) — giá trị năm (VD: 2024)."
+  - name: Period
+    physical_name: period
+    business_meaning_1st: Kỳ số (1-4 cho quý, 1-12 cho tháng).
+    comment_1st: NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.PERIOD
+        business_meaning: Kỳ số (1-4 cho quý, 1-12 cho tháng).
+        comment: NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo.
+  - name: Quarter
+    physical_name: quarter
+    business_meaning_1st: Quý trong năm (1, 2, 3, 4).
+    comment_1st: NUMBER(10).
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.QUARTER
+        business_meaning: Quý trong năm (1, 2, 3, 4).
+        comment: NUMBER(10).
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning_1st: Tháng trong năm.
+    comment_1st: NUMBER(10). Mô tả gốc BRD trống.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_MONTH
+        business_meaning: Tháng trong năm.
+        comment: NUMBER(10). Mô tả gốc BRD trống.
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).
+    comment_1st: VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value
+      theo quyết định thiết kế.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_PERIOD
+        business_meaning: Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).
+        comment: VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value
+          theo quyết định thiết kế.
+  - name: Start Date
+    physical_name: start_dt
+    business_meaning_1st: Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.START_DATE
+        business_meaning: Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.
+        comment: null
+  - name: End Date
+    physical_name: end_dt
+    business_meaning_1st: Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.END_DATE
+        business_meaning: Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.
+        comment: null
+  - name: Submission Deadline Date
+    physical_name: submission_deadline_dt
+    business_meaning_1st: Hạn nộp báo cáo theo quy định.
+    comment_1st: SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp
+      — ETL dùng SUBMISSION_DEADLINE (DATE).
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE
+        business_meaning: Hạn nộp báo cáo theo quy định.
+        comment: SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp
+          — ETL dùng SUBMISSION_DEADLINE (DATE).
+  - name: Submission Deadline Timestamp
+    physical_name: submission_deadline_tms
+    business_meaning_1st: Hạn nộp báo cáo theo quy định (có giờ).
+    comment_1st: TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE. ETL dùng cột
+      này nếu cần độ chính xác giờ.
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT
+        business_meaning: Hạn nộp báo cáo theo quy định (có giờ).
+        comment: TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE. ETL dùng cột
+          này nếu cần độ chính xác giờ.
+  - name: Report Submission Status Code
+    physical_name: rpt_submission_status_code
+    business_meaning_1st: "Trạng thái nộp báo cáo định kỳ: 0-Chưa gửi; 1-Gửi đúng\
+      \ hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo\
+      \ cáo."
+    comment_1st: SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.RECORD_STATUS
+        business_meaning: "Trạng thái nộp báo cáo định kỳ: 0-Chưa gửi; 1-Gửi đúng\
+          \ hạn; 2-Gửi muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại\
+          \ báo cáo."
+        comment: SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS
+  - name: Overdue Days
+    physical_name: overdue_days
+    business_meaning_1st: Số ngày nộp báo cáo quá hạn.
+    comment_1st: NUMBER(10).
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.OVERDUE_DAYS
+        business_meaning: Số ngày nộp báo cáo quá hạn.
+        comment: NUMBER(10).
+  - name: Classification Securities Company Event Type Id
+    physical_name: cl_sc_event_tp_id
+    business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
+      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
+        business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
+          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  - name: Classification Securities Company Event Type Code
+    physical_name: cl_sc_event_tp_code
+    business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+    comment_1st: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
+      \ Pair with Classification Securities Company Event Type Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
+        business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+        comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
+          \ Pair with Classification Securities Company Event Type Id."
+  - name: Sent Timestamp
+    physical_name: sent_tms
+    business_meaning_1st: Thời điểm gửi báo cáo lên UBCKNN.
+    comment_1st: TIMESTAMP(6).
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENT_AT
+        business_meaning: Thời điểm gửi báo cáo lên UBCKNN.
+        comment: TIMESTAMP(6).
+  - name: Valid Digital Signature Indicator
+    physical_name: valid_digital_signature_ind
+    business_meaning_1st: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
+    comment_1st: NUMBER(1). Mô tả gốc BRD trống.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DIGITAL_SIGNATURE
+        business_meaning: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
+        comment: NUMBER(1). Mô tả gốc BRD trống.
+  - name: Valid Data Indicator
+    physical_name: valid_data_ind
+    business_meaning_1st: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ;\
+      \ 0=Không hợp lệ."
+    comment_1st: NUMBER(1). Mô tả gốc BRD trống.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DATA
+        business_meaning: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ;\
+          \ 0=Không hợp lệ."
+        comment: NUMBER(1). Mô tả gốc BRD trống.
+  - name: Previous Report Submission Status Code
+    physical_name: previous_rpt_submission_status_code
+    business_meaning_1st: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_PERIODIC_REPORT
+        source_column: SCMS.SC_FIRM_PERIODIC_REPORT.PREVIOUS_SUBMIT_STATUS
+        business_meaning: Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống).
         comment: null
 - ldm:
     id: ATM-sc_report
@@ -62858,8 +64082,7 @@ entities:
     physical_name: legal_representative_full_nm
     business_meaning_1st: Họ tên người đại diện theo pháp luật.
     comment_1st: Prefix chủ thể — thông tin người đại diện khác chủ thể chính (doanh
-      nghiệp). Denormalized, không có FK link trực tiếp tới External Tax Registration
-      Representative (entity riêng, Tier 2).
+      nghiệp). Denormalized trên entity này, lấy trực tiếp từ TAX_REGISTRATION_INFO.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -62873,8 +64096,7 @@ entities:
         source_column: KNT.TAX_REGISTRATION_INFO.LEGAL_REPRESENTATIVE_NAME
         business_meaning: Họ tên người đại diện theo pháp luật.
         comment: Prefix chủ thể — thông tin người đại diện khác chủ thể chính (doanh
-          nghiệp). Denormalized, không có FK link trực tiếp tới External Tax Registration
-          Representative (entity riêng, Tier 2).
+          nghiệp). Denormalized trên entity này, lấy trực tiếp từ TAX_REGISTRATION_INFO.
   - name: Legal Representative Identification Number
     physical_name: legal_representative_identification_nbr
     business_meaning_1st: Số CMND/hộ chiếu người đại diện theo pháp luật.
@@ -69988,7 +71210,8 @@ entities:
       - source_table: INVES
         source_column: FMS.INVES.ID_TYPE
         business_meaning: Loại giấy tờ định danh.
-        comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — type lấy động từ nguồn."
+        comment: "Scheme: IP_ALT_ID_TYPE. RULE: Case when ID_TYPE = 0 then BUSINESS_LICENSE\
+          \ then ID_TYPE = 1 then CITIZEN_ID then ID_TYPE = 2 then NATIONAL_ID end."
       - source_table: REPRESENT
         source_column: null
         business_meaning: Loại giấy tờ định danh.

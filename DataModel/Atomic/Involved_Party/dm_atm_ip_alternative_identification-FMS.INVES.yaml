@@ -61,7 +61,7 @@ attributes:
     source_table: INVES
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(RULE)'"
     etl_derived_value: FMS_INVES
 
   - name: Identification Type Code
@@ -74,8 +74,8 @@ attributes:
     source_system: FMS
     source_table: INVES
     source_column: FMS.INVES.ID_TYPE
-    comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — type lấy động từ nguồn."
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
+    comment: "Scheme: IP_ALT_ID_TYPE. RULE: Case when ID_TYPE = 0 then BUSINESS_LICENSE then ID_TYPE = 1 then CITIZEN_ID then ID_TYPE = 2 then NATIONAL_ID end."
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(RULE)'"
     etl_derived_value: null
 
   - name: Identification Number
@@ -89,7 +89,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID_NO
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(RULE)'"
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -103,7 +103,7 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID_DATE
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(RULE)'"
     etl_derived_value: null
 
   - name: Identification Issue Place
@@ -117,5 +117,5 @@ attributes:
     source_table: INVES
     source_column: FMS.INVES.ID_PLACE
     comment: null
-    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = 'IDENTIFICATION'"
+    classification_context: "Source System Code = 'FMS_INVES' | Identification Type Code = '(RULE)'"
     etl_derived_value: null

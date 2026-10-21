@@ -205,17 +205,27 @@ entities:
   source_table: "THANHTRA.EXAMINATION_TEAM_TARGET"
   status: "draft"
 - bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Involved Party Rating Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  table_type: "Fact Append"
-  domain_prefix: "External Tax"
-  entity_physical_name: "et_high_risk_enterprise"
-  description: "Danh sách doanh nghiệp bị Cục Thuế xếp hạng/đánh giá thuộc diện rủi\
-    \ ro cao về thuế theo từng năm đánh giá. Ghi nhận mã/tên DN, địa chỉ trụ sở, cơ\
-    \ quan thuế quản lý và năm đánh giá — cùng 1 DN có thể xuất hiện lại ở nhiều năm\
-    \ khác nhau. BCO/Table Type điều chỉnh 2026-07-19"
-  source_table: "KNT.HIGH_RISK_ENTERPRISE"
-  status: "draft"
+  bcv_concept: "[Business Activity] Corporate Action"
+  atomic_entity: "Fund Management Company Securities Offering"
+  table_type: "Fundamental"
+  domain_prefix: "Fund Management Company"
+  entity_physical_name: "fmc_securities_offering"
+  description: "Đợt chào bán cổ phần/trái phiếu của công ty quản lý quỹ: loại chào\
+    \ bán, loại chứng khoán, số lượng, giá, mục đích sử dụng vốn, thời gian dự kiến/thực\
+    \ tế và kết quả chào bán. 1 dòng/đợt, cập nhật xuyên suốt lifecycle (kế hoạch\
+    \ → thực hiện → kết quả)."
+  source_table: "FMS.OFFERING"
+  status: "approved"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Corporate Action"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  table_type: "Fundamental"
+  domain_prefix: "Fund Management Company"
+  entity_physical_name: "fmc_securities_offering_plan"
+  description: "Kế hoạch phân bổ chào bán theo từng nhóm đối tượng/phương thức của\
+    \ 1 đợt chào bán: số lượng, giá, giá trị, số nhà đầu tư kế hoạch và thực tế."
+  source_table: "FMS.OFFERING_PLAN"
+  status: "approved"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
   atomic_entity: "Inspection Annual Plan Target"
@@ -613,16 +623,6 @@ entities:
   source_table: "IDS.VIOLATION_REPORT"
   status: "draft"
 - bcv_core_object: "Communication"
-  bcv_concept: "[Communication] Information Request"
-  atomic_entity: "External Tax Information Request"
-  table_type: "Fact Append"
-  domain_prefix: "External Tax"
-  entity_physical_name: "et_information_request"
-  description: "1 lần trao đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN liên quan\
-    \ đến 1 doanh nghiệp, kèm trạng thái phản hồi WebService."
-  source_table: "KNT.INFO_REQUEST_DETAIL"
-  status: "draft"
-- bcv_core_object: "Communication"
   bcv_concept: "[Communication] Feedback"
   atomic_entity: "Petition"
   table_type: "Fundamental"
@@ -830,30 +830,6 @@ entities:
     \ trên TTCK. Ghi nhận số quyết định, hình thức cưỡng chế, số tiền cưỡng chế và\
     \ tài sản kê biên."
   source_table: "KNT.TAX_ENFORCEMENT_DEBT"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  table_type: "Fact Append"
-  domain_prefix: "External Tax"
-  entity_physical_name: "et_enforcement_invoice_decision"
-  description: "Quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành đối\
-    \ với doanh nghiệp trên TTCK. Ghi nhận số quyết định và thời gian hiệu lực. Nghi\
-    \ vấn liên kết logic với External Tax Enforcement Debt Decision qua Basis Decision\
-    \ Number — xem 7e#1."
-  source_table: "KNT.TAX_ENFORCEMENT_INVOICE"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Invoice"
-  atomic_entity: "External Tax Invoice Detail"
-  table_type: "Fact Append"
-  domain_prefix: "External Tax"
-  entity_physical_name: "et_invoice_detail"
-  description: "1 hóa đơn cụ thể bị áp dụng biện pháp cưỡng chế ngừng sử dụng, thuộc\
-    \ 1 External Tax Enforcement Invoice Decision. Đổi tên từ \"Tax Enforcement Invoice\
-    \ Decision Item\" 2026-07-19 — tên không còn chứa đầy đủ tên entity cha, ngoại\
-    \ lệ có chủ đích, xem 7e#8."
-  source_table: "KNT.INVOICE_DETAIL"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
@@ -1784,18 +1760,6 @@ entities:
     \ ngừng kinh doanh. Tách IP Postal Address + IP Electronic Address; denormalize\
     \ business_line_codes ARRAY."
   source_table: "KNT.TAX_REGISTRATION_INFO"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Designated Representative"
-  atomic_entity: "External Tax Registration Representative"
-  table_type: "Fundamental"
-  domain_prefix: "External Tax"
-  entity_physical_name: "et_registration_representative"
-  description: "Người đại diện theo pháp luật/chủ hộ kinh doanh của 1 hồ sơ External\
-    \ Tax Registration: họ tên, chức vụ, giấy tờ định danh. Tách IP Alt Identification\
-    \ + IP Electronic Address. FK đến External Tax Registration. Table Type điều chỉnh\
-    \ 2026-07-19 (từ Relative sang Fundamental)."
-  source_table: "KNT.TAX_REG_REPRESENTATIVE"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"

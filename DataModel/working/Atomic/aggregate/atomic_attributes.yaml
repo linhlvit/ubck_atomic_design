@@ -5304,6 +5304,1104 @@ attributes:
   atomic_column: "end_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Fund Management Company Securities Offering Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Business Activity] Corporate Action\". Đợt chào\
+    \ bán cổ phần/trái phiếu của Fund Management Company."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "fmc_securities_offering_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Fund Management Company Securities Offering Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "fmc_securities_offering_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'FMS_OFFERING'"
+  etl_derived_value: "FMS_OFFERING"
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Fund Management Company Id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.SEC_ID"
+  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "fmc_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Fund Management Company Code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.SEC_ID"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "fmc_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "TTHC Application Name"
+  description: "Tên hồ sơ TTHC liên quan đến đợt chào bán (từ phân hệ TTHC)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.TTHC_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "tthc_application_nm"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Offering Type Code"
+  description: "Loại chào bán: PUBLIC=Chào bán ra công chúng, PRIVATE=Chào bán riêng\
+    \ lẻ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.OFFERING_TYPE"
+  comment: "SCHEMA_CODE=FMS.OFFERING_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "offering_tp_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Securities Type Code"
+  description: "Loại chứng khoán chào bán: CP=Cổ phần, TP=Trái phiếu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.SECURITIES_TYPE"
+  comment: "SCHEMA_CODE=FMS.SECURITIES_OFFERING_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "securities_tp_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Securities Name"
+  description: "Tên chứng khoán chào bán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.SECURITIES_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "securities_nm"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Unit Par Value Amount"
+  description: "Mệnh giá CCQ (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.PAR_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "unit_par_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Offered Quantity"
+  description: "Số lượng chứng khoán đăng ký chào bán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.QUANTITY_OFFERED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "offered_quantity"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Offering Price Amount"
+  description: "Giá chào bán theo kế hoạch (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.OFFERING_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "offering_price_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Total Registered Value Amount"
+  description: "Tổng giá trị đăng ký chào bán (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.TOTAL_REGISTERED_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "total_registered_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Purpose Description"
+  description: "Mục đích sử dụng vốn huy động được từ đợt chào bán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.PURPOSE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "purpose_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Capital Usage Plan Description"
+  description: "Kế hoạch sử dụng vốn chi tiết sau chào bán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.CAPITAL_USAGE_PLAN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "capital_usage_plan_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Expected Start Date"
+  description: "Ngày dự kiến bắt đầu chào bán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.EXPECTED_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "expected_start_dt"
+  data_type: "date"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Expected End Date"
+  description: "Ngày dự kiến kết thúc chào bán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.EXPECTED_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "expected_end_dt"
+  data_type: "date"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Guarantor Organization Name"
+  description: "Tổ chức bảo lãnh phát hành (tên tổ chức)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.GUARANTOR_ORG"
+  comment: "Denormalized — không có FK cấu trúc đến entity tổ chức bảo lãnh."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "guarantor_organization_nm"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Advisory Organization Name"
+  description: "Tổ chức tư vấn phát hành (tên tổ chức)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.ADVISORY_ORG"
+  comment: "Denormalized — không có FK cấu trúc đến entity tổ chức tư vấn."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "advisory_organization_nm"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Offering Method Description"
+  description: "Phương thức chào bán: đấu giá, dựng sổ, phân phối trực tiếp..."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.OFFERING_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "offering_method_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Target Audience Description"
+  description: "Đối tượng chào bán mục tiêu (mô tả hoặc mã danh mục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.TARGET_AUDIENCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "target_audience_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Capital Purpose Code"
+  description: "Mục đích sử dụng vốn (mã danh mục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.CAPITAL_PURPOSE"
+  comment: "Mô tả nguồn ghi 'mã danh mục' nhưng chưa xác định bảng danh mục nguồn\
+    \ — giữ Text, cần xác nhận trước khi tách Classification Value."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "capital_purpose_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Offering Start Date"
+  description: "Ngày thực tế bắt đầu chào bán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.OFFERING_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "offering_start_dt"
+  data_type: "date"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Offering End Date"
+  description: "Ngày thực tế kết thúc chào bán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.OFFERING_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "offering_end_dt"
+  data_type: "date"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Extended Flag"
+  description: "Cờ đã gia hạn thời gian chào bán: 1=Đã gia hạn, 0=Chưa."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.EXTENDED"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "extended_flag"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Actual Target Description"
+  description: "Đối tượng chào bán thực tế (mô tả chi tiết)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.ACTUAL_TARGET"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "actual_target_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Sold Quantity"
+  description: "Số lượng chứng khoán đã bán được trong đợt chào bán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.QUANTITY_SOLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "sold_quantity"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Actual Price Amount"
+  description: "Giá bán thực tế (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.ACTUAL_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "actual_price_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Actual Total Value Amount"
+  description: "Tổng giá trị thực tế huy động được (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.ACTUAL_TOTAL_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "actual_total_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Employee Participant Count"
+  description: "Số lượng nhân viên tham gia mua trong chào bán nội bộ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.EMPLOYEE_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "employee_participant_count"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Foreign Investor Participant Count"
+  description: "Số lượng nhà đầu tư nước ngoài tham gia đợt chào bán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.FOREIGN_INVESTOR_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "foreign_investor_participant_count"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Issuance Value Amount"
+  description: "Giá trị phát hành thực tế (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.ISSUANCE_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "issuance_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Approval Document Number"
+  description: "Số văn bản chấp thuận đợt chào bán của UBCKNN."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.APPROVAL_DOCUMENT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "approval_document_nbr"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Approval Document Date"
+  description: "Ngày văn bản chấp thuận đợt chào bán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.APPROVAL_DOCUMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "approval_document_dt"
+  data_type: "date"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Data Source Code"
+  description: "Nguồn dữ liệu: MANUAL=Nhập trên FMS, TTHC=Đồng bộ từ phân hệ TTHC."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.DATA_SOURCE"
+  comment: "SCHEMA_CODE=FMS_OFFERING_DATA_SOURCE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "data_src_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Affair Code"
+  description: "Mã sự vụ chào bán (mã danh mục loại sự vụ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.AFFAIR_CODE"
+  comment: "Mô tả nguồn ghi 'mã danh mục' nhưng chưa xác định bảng danh mục — giữ\
+    \ Text."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "affair_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Stock Class Code"
+  description: "Loại cổ phần."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.STOCK_CLASS"
+  comment: "SCHEMA_CODE=FMS.STOCK_CLASS"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "stock_class_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "TTHC External Reference Id"
+  description: "ID hồ sơ TTHC tương ứng (chống trùng khi đồng bộ từ TTHC)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.TTHC_EXTERNAL_ID"
+  comment: "Denormalized — TTHC ngoài phạm vi thiết kế FMS."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "tthc_external_reference_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Report Result Date"
+  description: "Ngày báo cáo kết quả chào bán với UBCKNN."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.REPORT_RESULT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "rpt_result_dt"
+  data_type: "date"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Extended To Date"
+  description: "Gia hạn chào bán đến ngày (khi đã được gia hạn)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.EXTENDED_TO_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "extended_to_dt"
+  data_type: "date"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Assessment Description"
+  description: "Đánh giá kết quả đợt chào bán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.ASSESSMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "assessment_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Note Text"
+  description: "Ghi chú về đợt chào bán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.NOTE_TEXT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "note_text"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Bond Type Code"
+  description: "Loại trái phiếu"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.BOND_TYPE"
+  comment: "SCHEMA_CODE=FMS_BOND_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "bond_tp_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Bond Term Years"
+  description: "Kỳ hạn trái phiếu (đơn vị: năm)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.BOND_TERM_YEARS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "bond_term_years"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Interest Payment Period Description"
+  description: "Kỳ trả lãi trái phiếu (tháng/quý/năm...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.INTEREST_PAYMENT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "interest_payment_period_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Bondholder Representative Name"
+  description: "Tên tổ chức đại diện người sở hữu trái phiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.BONDHOLDER_REPRESENTATIVE"
+  comment: "Denormalized — không có FK cấu trúc đến entity đại diện."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "bondholder_representative_nm"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering"
+  atomic_attribute: "Collateral Secured Flag"
+  description: "Cờ có tài sản bảo đảm: 1=Có tài sản bảo đảm, 0=Không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING"
+  source_column: "FMS.OFFERING.COLLATERAL_SECURED"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "collateral_secured_flag"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Fund Management Company Securities Offering Plan Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Business Activity] Corporate Action\" (kế thừa từ\
+    \ Fund Management Company Securities Offering). Kế hoạch phân bổ chào bán theo\
+    \ nhóm đối tượng/phương thức."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "fmc_securities_offering_plan_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Fund Management Company Securities Offering Plan Code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "fmc_securities_offering_plan_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
+  etl_derived_value: "FMS_OFFERING_PLAN"
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Fund Management Company Securities Offering Id"
+  description: "FK -> OFFERING: Đợt chào bán liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.OFFERING_ID"
+  comment: "FK target: fmc_securities_offering.fmc_securities_offering_id. Hash: hash_id('FMS_OFFERING',\
+    \ OFFERING_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "fmc_securities_offering_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Fund Management Company Securities Offering Code"
+  description: "Mã đợt chào bán liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.OFFERING_ID"
+  comment: "Lookup pair: fmc_securities_offering.fmc_securities_offering_code. Pair\
+    \ with Fund Management Company Securities Offering Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "fmc_securities_offering_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Target Audience Description"
+  description: "Đối tượng chào bán mục tiêu (mô tả hoặc mã danh mục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.TARGET_AUDIENCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "target_audience_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Offering Method Code"
+  description: "Mã hình thức chào bán (enum StockOfferingPlanMethodEnum)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.METHOD_CODE"
+  comment: "SCHEMA_CODE=FMS_STOCK_OFFERING_PLAN_METHOD"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "offering_method_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Planned Quantity"
+  description: "Số lượng chứng khoán trong kế hoạch chào bán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.QUANTITY_CB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "planned_quantity"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Planned Price Amount"
+  description: "Giá chào bán theo kế hoạch (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.PRICE_CB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "planned_price_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Planned Value Amount"
+  description: "Giá trị chào bán theo kế hoạch, có thể nhập tay (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.VALUE_CB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "planned_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Planned Participant Count"
+  description: "Số lượng người/tổ chức tham gia theo kế hoạch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.PEOPLE_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "planned_participant_count"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Audience Description"
+  description: "Mô tả đối tượng mua theo kế hoạch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.AUDIENCE_DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "audience_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Swap Purpose Description"
+  description: "Mục đích hoán đổi (nếu chào bán kèm hoán đổi)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.SWAP_PURPOSE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "swap_purpose_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Actual Quantity"
+  description: "Số lượng thực tế đã bán trong kế hoạch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.ACTUAL_QUANTITY_CB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "actual_quantity"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Actual Price Amount"
+  description: "Giá bán thực tế (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.ACTUAL_PRICE_CB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "actual_price_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Actual Value Amount"
+  description: "Giá trị bán thực tế (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.ACTUAL_VALUE_CB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "actual_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Actual Participant Count"
+  description: "Số người/tổ chức tham gia thực tế."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.ACTUAL_PEOPLE_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "actual_participant_count"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Actual Audience Description"
+  description: "Mô tả đối tượng tham gia thực tế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.ACTUAL_AUDIENCE_DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "actual_audience_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Actual Swap Purpose Description"
+  description: "Mục đích hoán đổi thực tế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.ACTUAL_SWAP_PURPOSE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "actual_swap_purpose_description"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Foreign Investor Participant Count"
+  description: "Số lượng nhà đầu tư nước ngoài tham gia đợt chào bán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.FOREIGN_INVESTOR_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "foreign_investor_participant_count"
+  data_type: "int"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Fund Management Company Securities Offering Plan"
+  atomic_attribute: "Foreign Issuance Value Amount"
+  description: "Giá trị phát hành cho nhà đầu tư nước ngoài (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "OFFERING_PLAN"
+  source_column: "FMS.OFFERING_PLAN.ISSUANCE_VALUE_FOREIGN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "foreign_issuance_val_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Annual Plan Target"
   atomic_attribute: "Inspection Annual Plan Target Id"
   description: "Khóa đại diện (surrogate key)."
@@ -17873,7 +18971,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_REPORT"
   source_column: "IDS.VIOLATION_REPORT.FORM_CD"
-  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
+  comment: "FK target: financial_report.fr_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "violation_report"
@@ -19817,9 +20915,8 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_TEMPLATES"
   source_column: "IDS.VIOLATION_TEMPLATES.FORM_ID"
-  comment: "FK target: fr_template.fr_template_id. Cần ETL crosswalk sang IDS.FORMS:\
-    \ VIOLATION_TEMPLATES.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS',\
-    \ FORM_CD)."
+  comment: "FK target: financial_report.fr_id. Cần ETL crosswalk sang IDS.FORMS: VIOLATION_TEMPLATES.FORM_ID\
+    \ = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS', FORM_CD)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "vr_template"
@@ -32164,7 +33261,7 @@ attributes:
   source_system: "IDS"
   source_table: "REPORT_EXTENSIONS"
   source_column: "IDS.REPORT_EXTENSIONS.FORM_CD"
-  comment: "FK target: fr_template.fr_template_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
+  comment: "FK target: financial_report.fr_id. Hash: hash_id('IDS_FORMS', FORM_CD)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_report_extension"
@@ -48380,8 +49477,7 @@ attributes:
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REGISTRATION_INFO.LEGAL_REPRESENTATIVE_NAME"
   comment: "Prefix chủ thể — thông tin người đại diện khác chủ thể chính (doanh nghiệp).\
-    \ Denormalized, không có FK link trực tiếp tới External Tax Registration Representative\
-    \ (entity riêng, Tier 2)."
+    \ Denormalized trên entity này, lấy trực tiếp từ TAX_REGISTRATION_INFO."
   classification_context: null
   etl_derived_value: null
   atomic_table: "et_registration"
@@ -74523,7 +75619,7 @@ attributes:
   source_system: "MRMS"
   source_table: "RISK_INDICATOR_CATEGORY"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode MRMS.RISK_INDICATOR_CATEGORY."
   classification_context: null
   etl_derived_value: "MRMS.RISK_INDICATOR_CATEGORY"
   atomic_table: "cl_value"
@@ -74753,7 +75849,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "DEPARTMENTS"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode NHNCK.DEPARTMENTS."
   classification_context: null
   etl_derived_value: "NHNCK.DEPARTMENTS"
   atomic_table: "cl_value"
@@ -74866,7 +75962,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "POSITIONS"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode NHNCK.POSITIONS."
   classification_context: null
   etl_derived_value: "NHNCK.POSITIONS"
   atomic_table: "cl_value"
@@ -74984,7 +76080,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "EDUCATION_LEVELS"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode NHNCK.EDUCATION_LEVELS."
   classification_context: null
   etl_derived_value: "NHNCK.EDUCATION_LEVELS"
   atomic_table: "cl_value"
@@ -75096,7 +76192,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SOURCES"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode NHNCK.APPLICATION_SOURCES."
   classification_context: null
   etl_derived_value: "NHNCK.APPLICATION_SOURCES"
   atomic_table: "cl_value"
@@ -75208,7 +76304,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_STATUSES"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode NHNCK.APPLICATION_STATUSES."
   classification_context: null
   etl_derived_value: "NHNCK.APPLICATION_STATUSES"
   atomic_table: "cl_value"
@@ -75320,7 +76416,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "DOCUMENTS"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode NHNCK.DOCUMENTS."
   classification_context: null
   etl_derived_value: "NHNCK.DOCUMENTS"
   atomic_table: "cl_value"
@@ -75433,7 +76529,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATIONS"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode NHNCK.SPECIALIZATIONS."
   classification_context: null
   etl_derived_value: "NHNCK.SPECIALIZATIONS"
   atomic_table: "cl_value"
@@ -75546,7 +76642,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "BANKS"
   source_column: null
-  comment: "Hardcode giá trị trong etl_derived_value."
+  comment: "Hardcode NHNCK.BANKS."
   classification_context: null
   etl_derived_value: "NHNCK.BANKS"
   atomic_table: "cl_value"
@@ -83250,7 +84346,7 @@ attributes:
   source_column: null
   comment: null
   classification_context: "Source System Code = 'FMS_INVES' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: "FMS_INVES"
   atomic_table: "ip_alternative_identification"
   atomic_column: "src_stm_code"
@@ -83265,9 +84361,10 @@ attributes:
   source_system: "FMS"
   source_table: "INVES"
   source_column: "FMS.INVES.ID_TYPE"
-  comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — type lấy động từ nguồn."
+  comment: "Scheme: IP_ALT_ID_TYPE. RULE: Case when ID_TYPE = 0 then BUSINESS_LICENSE\
+    \ then ID_TYPE = 1 then CITIZEN_ID then ID_TYPE = 2 then NATIONAL_ID end."
   classification_context: "Source System Code = 'FMS_INVES' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_tp_code"
@@ -83284,7 +84381,7 @@ attributes:
   source_column: "FMS.INVES.ID_NO"
   comment: null
   classification_context: "Source System Code = 'FMS_INVES' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_nbr"
@@ -83301,7 +84398,7 @@ attributes:
   source_column: "FMS.INVES.ID_DATE"
   comment: null
   classification_context: "Source System Code = 'FMS_INVES' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_issue_dt"
@@ -83318,7 +84415,7 @@ attributes:
   source_column: "FMS.INVES.ID_PLACE"
   comment: null
   classification_context: "Source System Code = 'FMS_INVES' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_issue_place"
