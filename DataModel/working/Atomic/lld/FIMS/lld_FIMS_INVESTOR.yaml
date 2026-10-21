@@ -221,7 +221,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FIMS.INVESTOR.SecComAddId"
-  comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS_SECURITIESCOMPANY', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
+  comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', SecComAddId). Entity Securities Company gộp từ FIMS.SECURITIESCOMPANY + SCMS.SC_FIRM_INFO (xem lld_FIMS_SECURITIESCOMPANY.yaml)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -234,7 +234,7 @@ attributes:
   status: "pending"
   source_columns:
   - "FIMS.INVESTOR.SecComAddId"
-  comment: "Lookup pair: Market Participant Organization.Market Participant Organization Code. Pending — xem ghi chú ở Trading Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

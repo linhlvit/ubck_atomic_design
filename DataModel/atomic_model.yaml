@@ -4963,189 +4963,6 @@ entities:
         business_meaning: Loại nhắc nhở (Sau kiểm tra, Qua công tác giám sát).
         comment: SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE').
 - ldm:
-    id: ATM-et_high_risk_enterprise
-    logical_name_1st: External Tax High Risk Enterprise
-    physical_name_1st: et_high_risk_enterprise
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: Danh sách doanh nghiệp bị Cục Thuế xếp hạng/đánh giá thuộc diện
-      rủi ro cao về thuế theo từng năm đánh giá. Ghi nhận mã/tên DN, địa chỉ trụ sở,
-      cơ quan thuế quản lý và năm đánh giá — cùng 1 DN có thể xuất hiện lại ở nhiều
-      năm khác nhau. BCO/Table Type điều chỉnh 2026-07-19
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Business Activity
-    bcv_concept_most: "[Business Activity] Involved Party Rating Activity"
-    table_type_most: Fact Append
-    etl_pattern_most: Fact Append
-    conflict_review: null
-    sources:
-    - KNT
-    references:
-      brd:
-      - BRD-SRC-KNT-HIGH_RISK_ENTERPRISE
-  attributes:
-  - name: External Tax High Risk Enterprise Id
-    physical_name: et_high_risk_enterprise_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. BCV: \"[Business Activity] Involved Party Rating Activity\"\
-      . Cục Thuế xếp hạng/đánh giá 1 DN thuộc diện rủi ro cao theo từng năm đánh giá.\
-      \ Hash: hash_id('KNT_HIGH_RISK_ENTERPRISE', ENTERPRISE_CODE)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: HIGH_RISK_ENTERPRISE
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. BCV: \"[Business Activity] Involved Party Rating Activity\"\
-          . Cục Thuế xếp hạng/đánh giá 1 DN thuộc diện rủi ro cao theo từng năm đánh\
-          \ giá. Hash: hash_id('KNT_HIGH_RISK_ENTERPRISE', ENTERPRISE_CODE)."
-  - name: External Tax High Risk Enterprise Code
-    physical_name: et_high_risk_enterprise_code
-    business_meaning_1st: Mã số doanh nghiệp đăng ký kinh doanh. BK.
-    comment_1st: BK chính. Grain thực tế = 1 DN × 1 năm đánh giá (Fact Append) — cần
-      profile dữ liệu xác nhận ENTERPRISE_CODE có lặp lại qua nhiều năm hay không;
-      nếu có, cần ghép thêm RISK_ASSESSMENT_YEAR vào business key trước go-live. Nghi
-      vấn liên kết logic → et_registration.et_registration_code (xem KNT_HLD_Overview.md
-      mục 7e#6) — chưa xác nhận nghiệp vụ, giữ 2 entity độc lập, không tạo FK.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: HIGH_RISK_ENTERPRISE
-        source_column: KNT.HIGH_RISK_ENTERPRISE.ENTERPRISE_CODE
-        business_meaning: Mã số doanh nghiệp đăng ký kinh doanh. BK.
-        comment: BK chính. Grain thực tế = 1 DN × 1 năm đánh giá (Fact Append) — cần
-          profile dữ liệu xác nhận ENTERPRISE_CODE có lặp lại qua nhiều năm hay không;
-          nếu có, cần ghép thêm RISK_ASSESSMENT_YEAR vào business key trước go-live.
-          Nghi vấn liên kết logic → et_registration.et_registration_code (xem KNT_HLD_Overview.md
-          mục 7e#6) — chưa xác nhận nghiệp vụ, giữ 2 entity độc lập, không tạo FK.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: KNT_HIGH_RISK_ENTERPRISE
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: HIGH_RISK_ENTERPRISE
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM."
-  - name: Enterprise Name
-    physical_name: enterprise_nm
-    business_meaning_1st: Tên doanh nghiệp rủi ro cao.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: HIGH_RISK_ENTERPRISE
-        source_column: KNT.HIGH_RISK_ENTERPRISE.ENTERPRISE_NAME
-        business_meaning: Tên doanh nghiệp rủi ro cao.
-        comment: null
-  - name: Headquarters Address
-    physical_name: headquarters_adr
-    business_meaning_1st: Địa chỉ trụ sở chính của doanh nghiệp.
-    comment_1st: Denormalized — grain của entity là Rating Activity (Business Activity),
-      không phải Involved Party, không tách IP Postal Address.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: HIGH_RISK_ENTERPRISE
-        source_column: KNT.HIGH_RISK_ENTERPRISE.HQ_ADDRESS
-        business_meaning: Địa chỉ trụ sở chính của doanh nghiệp.
-        comment: Denormalized — grain của entity là Rating Activity (Business Activity),
-          không phải Involved Party, không tách IP Postal Address.
-  - name: Managing Tax Authority Name
-    physical_name: managing_tax_authority_nm
-    business_meaning_1st: Cơ quan thuế quản lý doanh nghiệp rủi ro cao.
-    comment_1st: Denormalized — cần profile dữ liệu để xác nhận free text hay trùng
-      danh mục cơ quan thuế (xem KNT_HLD_Overview.md mục 7e#7).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: HIGH_RISK_ENTERPRISE
-        source_column: KNT.HIGH_RISK_ENTERPRISE.MANAGING_TAX_AUTHORITY
-        business_meaning: Cơ quan thuế quản lý doanh nghiệp rủi ro cao.
-        comment: Denormalized — cần profile dữ liệu để xác nhận free text hay trùng
-          danh mục cơ quan thuế (xem KNT_HLD_Overview.md mục 7e#7).
-  - name: Risk Assessment Year
-    physical_name: risk_assessment_year
-    business_meaning_1st: Năm Cục Thuế đánh giá doanh nghiệp là rủi ro cao.
-    comment_1st: Giữ Text theo data type nguồn (VARCHAR2) — cùng 1 DN có thể xuất
-      hiện lại ở nhiều năm khác nhau (grain Fact Append).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: HIGH_RISK_ENTERPRISE
-        source_column: KNT.HIGH_RISK_ENTERPRISE.RISK_ASSESSMENT_YEAR
-        business_meaning: Năm Cục Thuế đánh giá doanh nghiệp là rủi ro cao.
-        comment: Giữ Text theo data type nguồn (VARCHAR2) — cùng 1 DN có thể xuất
-          hiện lại ở nhiều năm khác nhau (grain Fact Append).
-  - name: Message Packet Id
-    physical_name: message_packet_id
-    business_meaning_1st: Mã gói tin trao đổi liên quan.
-    comment_1st: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang
-      MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu
-      dạng số (NUMBER) — ETL cần convert sang string.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: HIGH_RISK_ENTERPRISE
-        source_column: KNT.HIGH_RISK_ENTERPRISE.MSG_PACKET_ID
-        business_meaning: Mã gói tin trao đổi liên quan.
-        comment: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang
-          MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn
-          lưu dạng số (NUMBER) — ETL cần convert sang string.
-- ldm:
     id: ATM-examination_annual_plan_target
     logical_name_1st: Examination Annual Plan Target
     physical_name_1st: examination_annual_plan_target
@@ -16366,7 +16183,8 @@ entities:
     bcv_concept_most: "[Event] Transaction"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: null
+    conflict_review: "bcv_core_object: ['Documentation', 'Business Activity']; bcv_concept:\
+      \ ['[Event] Transaction', '[Documentation] Regulatory Report']"
     sources:
     - SCMS
     references:
@@ -18200,7 +18018,8 @@ entities:
     bcv_concept_most: "[Event] Transaction"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: null
+    conflict_review: "bcv_core_object: ['Documentation', 'Business Activity']; bcv_concept:\
+      \ ['[Event] Transaction', '[Documentation] Regulatory Report']"
     sources:
     - SCMS
     references:
@@ -21913,10 +21732,8 @@ entities:
     version_1st: "1.0"
     status_1st: draft
     description_1st: "Theo dõi vi phạm nộp báo cáo CBTT định kỳ của CTĐC: hạn nộp,\
-      \ ngày nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm. Bao gồm cả theo dõi\
-      \ vi phạm nộp báo cáo qua module HTE (nguồn HTE_VIOLATION_REPORT). Đổi tên từ\
-      \ \"Public Company Violation Report\" (2026-08-05, theo yêu cầu tường minh Data\
-      \ Modeler)."
+      \ ngày nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm. Đổi tên từ \"Public\
+      \ Company Violation Report\" (2026-08-05, theo yêu cầu tường minh Data Modeler)."
     owner_1st:
       steward: username@ubck.com.vn
       data_modeler: username@fssc.com.vn
@@ -21968,8 +21785,7 @@ entities:
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode. Dùng để phân biệt nguồn VIOLATION_REPORT\
-      \ vs HTE_VIOLATION_REPORT khi gộp entity."
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -21982,8 +21798,7 @@ entities:
       - source_table: VIOLATION_REPORT
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM. Hardcode. Dùng để phân biệt nguồn VIOLATION_REPORT\
-          \ vs HTE_VIOLATION_REPORT khi gộp entity."
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   - name: Public Company Id
     physical_name: pc_id
     business_meaning_1st: Id công ty đại chúng vi phạm.
@@ -24846,6 +24661,173 @@ entities:
         business_meaning: Tên viết tắt đối tượng nộp báo cáo (OBJECT_SHORT_NAME).
         comment: null
 - ldm:
+    id: ATM-cl_ids_business_line
+    logical_name_1st: Classification IDS Business Line
+    physical_name_1st: cl_ids_business_line
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: Danh mục ngành nghề của công ty đại chúng theo cấu trúc phân
+      cấp 2 cấp (ngành cha - ngành con), kèm mã, tên và mô tả ngành nghề; BK = INDUSTRY_CD
+      nguồn.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Common
+    bcv_concept_most: "[Common] Industry Classification"
+    table_type_most: Classification
+    etl_pattern_most: Upsert
+    conflict_review: null
+    sources:
+    - IDS
+    references:
+      brd:
+      - BRD-SRC-IDS-CATEGORIES
+  attributes:
+  - name: Classification IDS Business Line Id
+    physical_name: cl_ids_business_line_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('IDS_CATEGORIES', INDUSTRY_CD). BCV:\
+      \ \"[Common] Industry Classification\" (cùng concept với Classification FMS\
+      \ Business)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: CATEGORIES
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('IDS_CATEGORIES', INDUSTRY_CD). BCV:\
+          \ \"[Common] Industry Classification\" (cùng concept với Classification\
+          \ FMS Business)."
+  - name: Classification IDS Business Line Code
+    physical_name: cl_ids_business_line_code
+    business_meaning_1st: Mã ngành nghề. BK.
+    comment_1st: BK của entity. Nguồn VARCHAR2(1020) — cần profile xác nhận NOT NULL/unique
+      trước go-live (Code đóng vai trò BK).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: CATEGORIES
+        source_column: IDS.CATEGORIES.INDUSTRY_CD
+        business_meaning: Mã ngành nghề. BK.
+        comment: BK của entity. Nguồn VARCHAR2(1020) — cần profile xác nhận NOT NULL/unique
+          trước go-live (Code đóng vai trò BK).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: IDS_CATEGORIES
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: CATEGORIES
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Classification IDS Business Line Name
+    physical_name: cl_ids_business_line_nm
+    business_meaning_1st: Tên ngành nghề.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: CATEGORIES
+        source_column: IDS.CATEGORIES.INDUSTRY_NAME
+        business_meaning: Tên ngành nghề.
+        comment: null
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: CATEGORIES
+        source_column: IDS.CATEGORIES.DESCRIPTION
+        business_meaning: Mô tả.
+        comment: null
+  - name: Parent Classification IDS Business Line Id
+    physical_name: parent_cl_ids_business_line_id
+    business_meaning_1st: Khóa đại diện của ngành nghề cha (mã cha). FK tự tham chiếu;
+      NULL cho ngành cấp 1 (đỉnh phân cấp).
+    comment_1st: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL\
+      \ crosswalk (self-join) sang IDS.CATEGORIES: CATEGORIES.PARENT_ID = CATEGORIES_PARENT.ID\
+      \ để lấy INDUSTRY_CD của dòng cha sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)\
+      \ | PARENT_ID là ID kỹ thuật, không hash trực tiếp (nếu hash theo ID sẽ không\
+      \ khớp Id của dòng cha — vốn hash từ INDUSTRY_CD)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: CATEGORIES
+        source_column: IDS.CATEGORIES.PARENT_ID
+        business_meaning: Khóa đại diện của ngành nghề cha (mã cha). FK tự tham chiếu;
+          NULL cho ngành cấp 1 (đỉnh phân cấp).
+        comment: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL\
+          \ crosswalk (self-join) sang IDS.CATEGORIES: CATEGORIES.PARENT_ID = CATEGORIES_PARENT.ID\
+          \ để lấy INDUSTRY_CD của dòng cha sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)\
+          \ | PARENT_ID là ID kỹ thuật, không hash trực tiếp (nếu hash theo ID sẽ\
+          \ không khớp Id của dòng cha — vốn hash từ INDUSTRY_CD)."
+  - name: Parent Classification IDS Business Line Code
+    physical_name: parent_cl_ids_business_line_code
+    business_meaning_1st: Mã ngành nghề cha — lookup pair với Parent Classification
+      IDS Business Line Id.
+    comment_1st: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair\
+      \ with Parent Classification IDS Business Line Id. Giá trị lấy từ INDUSTRY_CD\
+      \ của dòng cha (self-join CATEGORIES.PARENT_ID = CATEGORIES.ID) — chi tiết xem\
+      \ comment Parent Classification IDS Business Line Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: CATEGORIES
+        source_column: IDS.CATEGORIES.INDUSTRY_CD
+        business_meaning: Mã ngành nghề cha — lookup pair với Parent Classification
+          IDS Business Line Id.
+        comment: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair\
+          \ with Parent Classification IDS Business Line Id. Giá trị lấy từ INDUSTRY_CD\
+          \ của dòng cha (self-join CATEGORIES.PARENT_ID = CATEGORIES.ID) — chi tiết\
+          \ xem comment Parent Classification IDS Business Line Id."
+- ldm:
     id: ATM-cl_risk_indicator
     logical_name_1st: Classification Risk Indicator
     physical_name_1st: cl_risk_indicator
@@ -26457,8 +26439,8 @@ entities:
   - name: Schema Code
     physical_name: schema_code
     business_meaning_1st: Mã loại phân loại.
-    comment_1st: "Scheme: MRMS.RISK_INDICATOR_CATEGORY. Hardcode."
-    data_domain_most: Classification Value
+    comment_1st: Hardcode giá trị trong etl_derived_value.
+    data_domain_most: Text
     data_type_most: string
     nullable_most: false
     is_primary_key_most: true
@@ -26472,48 +26454,48 @@ entities:
     - NHNCK.EDUCATION_LEVELS
     - NHNCK.POSITIONS
     - NHNCK.SPECIALIZATIONS
-    conflict_review: null
+    conflict_review: "data_domain: ['Classification Value', 'Text']"
     source_mappings:
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: MRMS.RISK_INDICATOR_CATEGORY. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_SOURCES
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: NHNCK.APPLICATION_SOURCES. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
       - source_table: APPLICATION_STATUSES
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: NHNCK.APPLICATION_STATUSES. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
       - source_table: BANKS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: NHNCK.BANKS. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
       - source_table: DEPARTMENTS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: NHNCK.DEPARTMENTS. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
       - source_table: DOCUMENTS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: NHNCK.DOCUMENTS. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
       - source_table: EDUCATION_LEVELS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: NHNCK.EDUCATION_LEVELS. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
       - source_table: POSITIONS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: NHNCK.POSITIONS. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
       - source_table: SPECIALIZATIONS
         source_column: null
         business_meaning: Mã loại phân loại.
-        comment: "Scheme: NHNCK.SPECIALIZATIONS. Hardcode."
+        comment: Hardcode giá trị trong etl_derived_value.
     - source_system: TTHC
       source_tables:
       - source_table: CLASSIFICATION_VALUE
@@ -26930,198 +26912,6 @@ entities:
         source_column: VSDC.NATIONALITY.NAME
         business_meaning: Tên quốc gia
         comment: null
-- ldm:
-    id: ATM-et_information_request
-    logical_name_1st: External Tax Information Request
-    physical_name_1st: et_information_request
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: 1 lần trao đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN liên
-      quan đến 1 doanh nghiệp, kèm trạng thái phản hồi WebService.
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Communication
-    bcv_concept_most: "[Communication] Information Request"
-    table_type_most: Fact Append
-    etl_pattern_most: Fact Append
-    conflict_review: null
-    sources:
-    - KNT
-    references:
-      brd:
-      - BRD-SRC-KNT-INFO_REQUEST_DETAIL
-  attributes:
-  - name: External Tax Information Request Id
-    physical_name: et_information_request_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. BCV: \"[Communication] Information Request\". 1 lần\
-      \ trao đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT_INFO_REQUEST_DETAIL',\
-      \ ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. BCV: \"[Communication] Information Request\". 1 lần\
-          \ trao đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT_INFO_REQUEST_DETAIL',\
-          \ ID)."
-  - name: External Tax Information Request Code
-    physical_name: et_information_request_code
-    business_meaning_1st: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
-      riêng biệt, dùng PK kỹ thuật làm BK duy nhất.
-    comment_1st: BK chính. PK nguồn.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: KNT.INFO_REQUEST_DETAIL.ID
-        business_meaning: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
-          riêng biệt, dùng PK kỹ thuật làm BK duy nhất.
-        comment: BK chính. PK nguồn.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: KNT_INFO_REQUEST_DETAIL
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM."
-  - name: External Tax Registration Id
-    physical_name: et_registration_id
-    business_meaning_1st: FK đến hồ sơ đăng ký thuế của doanh nghiệp liên quan yêu
-      cầu thông tin.
-    comment_1st: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-      \ TAX_CODE)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: KNT.INFO_REQUEST_DETAIL.TAX_CODE
-        business_meaning: FK đến hồ sơ đăng ký thuế của doanh nghiệp liên quan yêu
-          cầu thông tin.
-        comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-          \ TAX_CODE)."
-  - name: External Tax Registration Code
-    physical_name: et_registration_code
-    business_meaning_1st: Mã số thuế doanh nghiệp liên quan yêu cầu thông tin.
-    comment_1st: "Lookup pair: et_registration.et_registration_code. Pair with External\
-      \ Tax Registration Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: KNT.INFO_REQUEST_DETAIL.TAX_CODE
-        business_meaning: Mã số thuế doanh nghiệp liên quan yêu cầu thông tin.
-        comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-          \ Tax Registration Id."
-  - name: Request Name
-    physical_name: request_nm
-    business_meaning_1st: Tên loại yêu cầu thông tin từ Cục Thuế.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: KNT.INFO_REQUEST_DETAIL.REQUEST_NAME
-        business_meaning: Tên loại yêu cầu thông tin từ Cục Thuế.
-        comment: null
-  - name: Status Description
-    physical_name: status_description
-    business_meaning_1st: Mô tả trạng thái xử lý yêu cầu thông tin.
-    comment_1st: Denormalized — mô tả tương ứng Response Status Code.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: KNT.INFO_REQUEST_DETAIL.STATUS_DESCRIPTION
-        business_meaning: Mô tả trạng thái xử lý yêu cầu thông tin.
-        comment: Denormalized — mô tả tương ứng Response Status Code.
-  - name: Response Status Code
-    physical_name: response_status_code
-    business_meaning_1st: Trạng thái phản hồi WebService.
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: KNT.INFO_REQUEST_DETAIL.STATUS
-        business_meaning: Trạng thái phản hồi WebService.
-        comment: null
-  - name: Message Packet Id
-    physical_name: message_packet_id
-    business_meaning_1st: Mã gói tin trao đổi liên quan.
-    comment_1st: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang
-      MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu
-      dạng số (NUMBER) — ETL cần convert sang string.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INFO_REQUEST_DETAIL
-        source_column: KNT.INFO_REQUEST_DETAIL.MSG_PACKET_ID
-        business_meaning: Mã gói tin trao đổi liên quan.
-        comment: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang
-          MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn
-          lưu dạng số (NUMBER) — ETL cần convert sang string.
 - ldm:
     id: ATM-petition
     logical_name_1st: Petition
@@ -28631,7 +28421,8 @@ entities:
     bcv_concept_most: "[Condition] Form Definition"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: null
+    conflict_review: "bcv_core_object: ['Documentation', 'Condition']; bcv_concept:\
+      \ ['[Condition] Form Definition', '[Documentation] Form Document']"
     sources:
     - IDS
     references:
@@ -33554,722 +33345,6 @@ entities:
           MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn
           lưu dạng số (NUMBER) — ETL cần convert sang string.
 - ldm:
-    id: ATM-et_enforcement_invoice_decision
-    logical_name_1st: External Tax Enforcement Invoice Decision
-    physical_name_1st: et_enforcement_invoice_decision
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: Quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành
-      đối với doanh nghiệp trên TTCK. Ghi nhận số quyết định và thời gian hiệu lực.
-      Nghi vấn liên kết logic với External Tax Enforcement Debt Decision qua Basis
-      Decision Number — xem 7e#1.
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Documentation
-    bcv_concept_most: "[Documentation] Gov. Registration Document"
-    table_type_most: Fact Append
-    etl_pattern_most: Fact Append
-    conflict_review: null
-    sources:
-    - KNT
-    references:
-      brd:
-      - BRD-SRC-KNT-TAX_ENFORCEMENT_INVOICE
-  attributes:
-  - name: External Tax Enforcement Invoice Decision Id
-    physical_name: et_enforcement_invoice_decision_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\"\
-      . Quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành. Hash: hash_id('KNT_TAX_ENFORCEMENT_INVOICE',\
-      \ DECISION_NUMBER)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\"\
-          . Quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành. Hash:\
-          \ hash_id('KNT_TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
-  - name: External Tax Enforcement Invoice Decision Code
-    physical_name: et_enforcement_invoice_decision_code
-    business_meaning_1st: Số quyết định thành lập/xử phạt. BK.
-    comment_1st: BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER
-        business_meaning: Số quyết định thành lập/xử phạt. BK.
-        comment: BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: KNT_TAX_ENFORCEMENT_INVOICE
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM."
-  - name: External Tax Registration Id
-    physical_name: et_registration_id
-    business_meaning_1st: FK đến hồ sơ đăng ký thuế của doanh nghiệp bị cưỡng chế.
-    comment_1st: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-      \ TAX_CODE)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_TAX_CODE
-        business_meaning: FK đến hồ sơ đăng ký thuế của doanh nghiệp bị cưỡng chế.
-        comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-          \ TAX_CODE)."
-  - name: External Tax Registration Code
-    physical_name: et_registration_code
-    business_meaning_1st: Mã số thuế người nộp thuế bị cưỡng chế.
-    comment_1st: "Lookup pair: et_registration.et_registration_code. Pair with External\
-      \ Tax Registration Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_TAX_CODE
-        business_meaning: Mã số thuế người nộp thuế bị cưỡng chế.
-        comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-          \ Tax Registration Id."
-  - name: Taxpayer Name
-    physical_name: taxpayer_nm
-    business_meaning_1st: Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán).
-    comment_1st: Denormalized snapshot tại thời điểm ban hành quyết định.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_NAME
-        business_meaning: Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán).
-        comment: Denormalized snapshot tại thời điểm ban hành quyết định.
-  - name: Direct Tax Authority Code
-    physical_name: direct_tax_authority_code
-    business_meaning_1st: Mã cơ quan thuế quản lý trực tiếp.
-    comment_1st: Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết
-      kế hiện tại.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.DIRECT_TAX_AUTHORITY_CODE
-        business_meaning: Mã cơ quan thuế quản lý trực tiếp.
-        comment: Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết
-          kế hiện tại.
-  - name: Direct Tax Authority Name
-    physical_name: direct_tax_authority_nm
-    business_meaning_1st: Tên cơ quan thuế quản lý trực tiếp.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.DIRECT_TAX_AUTHORITY_NAME
-        business_meaning: Tên cơ quan thuế quản lý trực tiếp.
-        comment: null
-  - name: Enforcement Method Code
-    physical_name: enforcement_method_code
-    business_meaning_1st: Mã hình thức cưỡng chế.
-    comment_1st: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification
-      Value. Trước đây dùng chung scheme KNT_ENFORCEMENT_METHOD với External Tax Enforcement
-      Debt Decision — nay cả 2 đều map Text 1:1.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_CODE
-        business_meaning: Mã hình thức cưỡng chế.
-        comment: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification
-          Value. Trước đây dùng chung scheme KNT_ENFORCEMENT_METHOD với External Tax
-          Enforcement Debt Decision — nay cả 2 đều map Text 1:1.
-  - name: Enforcement Method Name
-    physical_name: enforcement_method_nm
-    business_meaning_1st: Tên hình thức cưỡng chế.
-    comment_1st: Denormalized — tên tương ứng Enforcement Method Code.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_NAME
-        business_meaning: Tên hình thức cưỡng chế.
-        comment: Denormalized — tên tương ứng Enforcement Method Code.
-  - name: Electronic Transaction Code
-    physical_name: electronic_transaction_code
-    business_meaning_1st: Mã giao dịch điện tử trong hệ thống Cục Thuế.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.E_TRANSACTION_CODE
-        business_meaning: Mã giao dịch điện tử trong hệ thống Cục Thuế.
-        comment: null
-  - name: Decision Date
-    physical_name: decision_dt
-    business_meaning_1st: Ngày ban hành quyết định.
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_DATE
-        business_meaning: Ngày ban hành quyết định.
-        comment: null
-  - name: Enforced Entity Business Line Name
-    physical_name: enforced_entity_business_line_nm
-    business_meaning_1st: Ngành kinh doanh của đối tượng bị cưỡng chế.
-    comment_1st: Denormalized snapshot — không phải FK Classification Value KNT_BUSINESS_LINE
-      vì đây là mô tả tự do.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.ENFORCED_ENTITY_BUSINESS_LINE
-        business_meaning: Ngành kinh doanh của đối tượng bị cưỡng chế.
-        comment: Denormalized snapshot — không phải FK Classification Value KNT_BUSINESS_LINE
-          vì đây là mô tả tự do.
-  - name: Decision Effective From Date
-    physical_name: decision_effective_from_dt
-    business_meaning_1st: Ngày bắt đầu hiệu lực quyết định cưỡng chế.
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_EFFECTIVE_FROM
-        business_meaning: Ngày bắt đầu hiệu lực quyết định cưỡng chế.
-        comment: null
-  - name: Decision Effective To Date
-    physical_name: decision_effective_to_dt
-    business_meaning_1st: Ngày kết thúc hiệu lực quyết định cưỡng chế.
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_EFFECTIVE_TO
-        business_meaning: Ngày kết thúc hiệu lực quyết định cưỡng chế.
-        comment: null
-  - name: Notice Taxpayer Tax Code
-    physical_name: notice_taxpayer_tax_code
-    business_meaning_1st: "Thông báo: MST người nộp thuế."
-    comment_1st: Denormalized — snapshot MST ghi trên thông báo, có thể trùng External
-      Tax Registration Code nhưng không tạo FK riêng (tránh trùng lặp constraint).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_TAXPAYER_TAX_CODE
-        business_meaning: "Thông báo: MST người nộp thuế."
-        comment: Denormalized — snapshot MST ghi trên thông báo, có thể trùng External
-          Tax Registration Code nhưng không tạo FK riêng (tránh trùng lặp constraint).
-  - name: Notice Taxpayer Name
-    physical_name: notice_taxpayer_nm
-    business_meaning_1st: "Thông báo: tên người nộp thuế."
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_TAXPAYER_NAME
-        business_meaning: "Thông báo: tên người nộp thuế."
-        comment: null
-  - name: Notice Code
-    physical_name: notice_code
-    business_meaning_1st: "Thông báo: mã thông báo cưỡng chế."
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_CODE
-        business_meaning: "Thông báo: mã thông báo cưỡng chế."
-        comment: null
-  - name: Notice Name
-    physical_name: notice_nm
-    business_meaning_1st: "Thông báo: tên thông báo cưỡng chế."
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_NAME
-        business_meaning: "Thông báo: tên thông báo cưỡng chế."
-        comment: null
-  - name: Basis Decision Number
-    physical_name: basis_decision_nbr
-    business_meaning_1st: "Căn cứ: số quyết định gốc."
-    comment_1st: Nghi vấn liên kết logic → et_enforcement_debt_decision.et_enforcement_debt_decision_code
-      (xem KNT_HLD_Overview.md mục 7e#1) — chưa xác nhận nghiệp vụ, giữ denormalized
-      Text, không tạo FK.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.BASIS_DECISION_NUMBER
-        business_meaning: "Căn cứ: số quyết định gốc."
-        comment: Nghi vấn liên kết logic → et_enforcement_debt_decision.et_enforcement_debt_decision_code
-          (xem KNT_HLD_Overview.md mục 7e#1) — chưa xác nhận nghiệp vụ, giữ denormalized
-          Text, không tạo FK.
-  - name: Basis Decision Date
-    physical_name: basis_decision_dt
-    business_meaning_1st: "Căn cứ: ngày quyết định gốc."
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.BASIS_DECISION_DATE
-        business_meaning: "Căn cứ: ngày quyết định gốc."
-        comment: null
-  - name: Notice Debt Amount
-    physical_name: notice_debt_amt
-    business_meaning_1st: "Thông báo: số tiền nợ và tiền phạt nộp chậm."
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_DEBT_AMOUNT
-        business_meaning: "Thông báo: số tiền nợ và tiền phạt nộp chậm."
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
-  - name: Notice Debt Date
-    physical_name: notice_debt_dt
-    business_meaning_1st: "Thông báo: ngày tính tiền nợ và tiền phạt nộp chậm."
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_DEBT_DATE
-        business_meaning: "Thông báo: ngày tính tiền nợ và tiền phạt nộp chậm."
-        comment: null
-  - name: Validity Flag
-    physical_name: validity_flag
-    business_meaning_1st: Cờ hiệu lực của quyết định/thông báo cưỡng chế.
-    comment_1st: Nguồn lưu dạng string (VARCHAR2(100)) — ETL cần cast sang boolean.
-      Cần profile giá trị thực tế (có thể không phải true/false đơn thuần).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.VALIDITY_FLAG
-        business_meaning: Cờ hiệu lực của quyết định/thông báo cưỡng chế.
-        comment: Nguồn lưu dạng string (VARCHAR2(100)) — ETL cần cast sang boolean.
-          Cần profile giá trị thực tế (có thể không phải true/false đơn thuần).
-  - name: Global Unique Identifier
-    physical_name: global_unique_identifier
-    business_meaning_1st: Định danh duy nhất toàn cục (GUID/UUID) của bản ghi.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.GUID
-        business_meaning: Định danh duy nhất toàn cục (GUID/UUID) của bản ghi.
-        comment: null
-  - name: Message Packet Id
-    physical_name: message_packet_id
-    business_meaning_1st: Mã gói tin trao đổi liên quan.
-    comment_1st: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang
-      MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu
-      dạng số (NUMBER) — ETL cần convert sang string.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_ENFORCEMENT_INVOICE
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.MSG_PACKET_ID
-        business_meaning: Mã gói tin trao đổi liên quan.
-        comment: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang
-          MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn
-          lưu dạng số (NUMBER) — ETL cần convert sang string.
-- ldm:
-    id: ATM-et_invoice_detail
-    logical_name_1st: External Tax Invoice Detail
-    physical_name_1st: et_invoice_detail
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: 1 hóa đơn cụ thể bị áp dụng biện pháp cưỡng chế ngừng sử dụng,
-      thuộc 1 External Tax Enforcement Invoice Decision. Đổi tên từ "Tax Enforcement
-      Invoice Decision Item" 2026-07-19 — tên không còn chứa đầy đủ tên entity cha,
-      ngoại lệ có chủ đích, xem 7e#8.
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Documentation
-    bcv_concept_most: "[Documentation] Invoice"
-    table_type_most: Fact Append
-    etl_pattern_most: Fact Append
-    conflict_review: null
-    sources:
-    - KNT
-    references:
-      brd:
-      - BRD-SRC-KNT-INVOICE_DETAIL
-  attributes:
-  - name: External Tax Invoice Detail Id
-    physical_name: et_invoice_detail_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể\
-      \ bị áp dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT_INVOICE_DETAIL',\
-      \ ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể\
-          \ bị áp dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT_INVOICE_DETAIL',\
-          \ ID)."
-  - name: External Tax Invoice Detail Code
-    physical_name: et_invoice_detail_code
-    business_meaning_1st: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
-      đơn lẻ duy nhất (INVOICE_NUMBER cần kết hợp INVOICE_TEMPLATE_SYMBOL/INVOICE_SYMBOL
-      mới đủ định danh), dùng PK kỹ thuật làm BK duy nhất.
-    comment_1st: BK chính. PK nguồn.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: KNT.INVOICE_DETAIL.ID
-        business_meaning: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
-          đơn lẻ duy nhất (INVOICE_NUMBER cần kết hợp INVOICE_TEMPLATE_SYMBOL/INVOICE_SYMBOL
-          mới đủ định danh), dùng PK kỹ thuật làm BK duy nhất.
-        comment: BK chính. PK nguồn.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: KNT_INVOICE_DETAIL
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM."
-  - name: External Tax Enforcement Invoice Decision Id
-    physical_name: et_enforcement_invoice_decision_id
-    business_meaning_1st: "FK -> tax_enforcement_invoice: Quyết định cưỡng chế ngừng\
-      \ hóa đơn."
-    comment_1st: "FK target: et_enforcement_invoice_decision.et_enforcement_invoice_decision_id.\
-      \ Cần ETL crosswalk sang KNT.TAX_ENFORCEMENT_INVOICE: INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID\
-      \ = TAX_ENFORCEMENT_INVOICE.ID để xác nhận DECISION_NUMBER sau đó hash_id('KNT_TAX_ENFORCEMENT_INVOICE',\
-      \ DECISION_NUMBER)"
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID
-        business_meaning: "FK -> tax_enforcement_invoice: Quyết định cưỡng chế ngừng\
-          \ hóa đơn."
-        comment: "FK target: et_enforcement_invoice_decision.et_enforcement_invoice_decision_id.\
-          \ Cần ETL crosswalk sang KNT.TAX_ENFORCEMENT_INVOICE: INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID\
-          \ = TAX_ENFORCEMENT_INVOICE.ID để xác nhận DECISION_NUMBER sau đó hash_id('KNT_TAX_ENFORCEMENT_INVOICE',\
-          \ DECISION_NUMBER)"
-  - name: External Tax Enforcement Invoice Decision Code
-    physical_name: et_enforcement_invoice_decision_code
-    business_meaning_1st: Số quyết định cưỡng chế ngừng sử dụng hóa đơn liên quan.
-    comment_1st: "Lookup pair: et_enforcement_invoice_decision.et_enforcement_invoice_decision_code.\
-      \ Pair with External Tax Enforcement Invoice Decision Id. Giá trị lấy từ KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER\
-      \ sau ETL crosswalk — chi tiết xem comment External Tax Enforcement Invoice\
-      \ Decision Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER
-        business_meaning: Số quyết định cưỡng chế ngừng sử dụng hóa đơn liên quan.
-        comment: "Lookup pair: et_enforcement_invoice_decision.et_enforcement_invoice_decision_code.\
-          \ Pair with External Tax Enforcement Invoice Decision Id. Giá trị lấy từ\
-          \ KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER sau ETL crosswalk — chi tiết\
-          \ xem comment External Tax Enforcement Invoice Decision Id."
-  - name: Invoice Template Symbol
-    physical_name: invoice_template_symbol
-    business_meaning_1st: Ký hiệu mẫu hóa đơn.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: KNT.INVOICE_DETAIL.INVOICE_TEMPLATE_SYMBOL
-        business_meaning: Ký hiệu mẫu hóa đơn.
-        comment: null
-  - name: Invoice Symbol
-    physical_name: invoice_symbol
-    business_meaning_1st: Ký hiệu hóa đơn.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: KNT.INVOICE_DETAIL.INVOICE_SYMBOL
-        business_meaning: Ký hiệu hóa đơn.
-        comment: null
-  - name: Invoice Number
-    physical_name: invoice_nbr
-    business_meaning_1st: Số hóa đơn.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: KNT.INVOICE_DETAIL.INVOICE_NUMBER
-        business_meaning: Số hóa đơn.
-        comment: null
-  - name: Invoice Type Code
-    physical_name: invoice_tp_code
-    business_meaning_1st: Loại hóa đơn bị cưỡng chế ngừng sử dụng.
-    comment_1st: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification
-      Value. Giữ nguyên giá trị text từ nguồn.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: KNT.INVOICE_DETAIL.INVOICE_TYPE
-        business_meaning: Loại hóa đơn bị cưỡng chế ngừng sử dụng.
-        comment: Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification
-          Value. Giữ nguyên giá trị text từ nguồn.
-  - name: Object Id
-    physical_name: object_id
-    business_meaning_1st: ID đối tượng trong hệ thống Cục Thuế.
-    comment_1st: Denormalized — nguồn không xác định rõ entity đích, không tạo FK.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: INVOICE_DETAIL
-        source_column: KNT.INVOICE_DETAIL.OBJ_ID
-        business_meaning: ID đối tượng trong hệ thống Cục Thuế.
-        comment: Denormalized — nguồn không xác định rõ entity đích, không tạo FK.
-- ldm:
     id: ATM-et_violation_handling
     logical_name_1st: External Tax Violation Handling
     physical_name_1st: et_violation_handling
@@ -37456,7 +36531,7 @@ entities:
     business_meaning_1st: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
     comment_1st: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
       \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
-      \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier8 6f)."
+      \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier6 6f)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -37471,7 +36546,7 @@ entities:
         business_meaning: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
         comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
           \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
-          \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier8 6f)."
+          \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier6 6f)."
   - name: Classification FMS Event Type Code
     physical_name: cl_fms_event_tp_code
     business_meaning_1st: Mã loại sự vụ áp dụng.
@@ -60860,8 +59935,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Group
     bcv_concept_most: "[Group] Group"
-    table_type_most: Classification
-    etl_pattern_most: Upsert
+    table_type_most: Relative
+    etl_pattern_most: SCD2
     conflict_review: null
     sources:
     - IDS
@@ -64475,288 +63550,6 @@ entities:
         comment: Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết
           định Data Modeler 2026-10-20).
 - ldm:
-    id: ATM-et_registration_representative
-    logical_name_1st: External Tax Registration Representative
-    physical_name_1st: et_registration_representative
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: "Người đại diện theo pháp luật/chủ hộ kinh doanh của 1 hồ sơ\
-      \ External Tax Registration: họ tên, chức vụ, giấy tờ định danh. Tách IP Alt\
-      \ Identification + IP Electronic Address. FK đến External Tax Registration.\
-      \ Table Type điều chỉnh 2026-07-19 (từ Relative sang Fundamental)."
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Involved Party
-    bcv_concept_most: "[Involved Party] Designated Representative"
-    table_type_most: Fundamental
-    etl_pattern_most: SCD4A
-    conflict_review: null
-    sources:
-    - KNT
-    references:
-      brd:
-      - BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
-  attributes:
-  - name: External Tax Registration Representative Id
-    physical_name: et_registration_representative_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. BCV: \"[Involved Party] Designated Representative\"\
-      . Người đại diện pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration.\
-      \ Hash: hash_id('KNT_TAX_REG_REPRESENTATIVE', ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\"\
-          . Người đại diện pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration.\
-          \ Hash: hash_id('KNT_TAX_REG_REPRESENTATIVE', ID)."
-  - name: External Tax Registration Representative Code
-    physical_name: et_registration_representative_code
-    business_meaning_1st: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
-      riêng biệt, dùng PK kỹ thuật làm BK duy nhất.
-    comment_1st: BK chính. PK nguồn.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.ID
-        business_meaning: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
-          riêng biệt, dùng PK kỹ thuật làm BK duy nhất.
-        comment: BK chính. PK nguồn.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: KNT_TAX_REG_REPRESENTATIVE
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM."
-  - name: External Tax Registration Id
-    physical_name: et_registration_id
-    business_meaning_1st: "FK -> tax_registration_info: Hồ sơ đăng ký thuế liên quan."
-    comment_1st: "FK target: et_registration.et_registration_id. Cần ETL crosswalk\
-      \ sang KNT.TAX_REGISTRATION_INFO: TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID\
-      \ = TAX_REGISTRATION_INFO.ID để xác nhận TAX_CODE sau đó hash_id('KNT_TAX_REGISTRATION_INFO',\
-      \ TAX_CODE)"
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID
-        business_meaning: "FK -> tax_registration_info: Hồ sơ đăng ký thuế liên quan."
-        comment: "FK target: et_registration.et_registration_id. Cần ETL crosswalk\
-          \ sang KNT.TAX_REGISTRATION_INFO: TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID\
-          \ = TAX_REGISTRATION_INFO.ID để xác nhận TAX_CODE sau đó hash_id('KNT_TAX_REGISTRATION_INFO',\
-          \ TAX_CODE)"
-  - name: External Tax Registration Code
-    physical_name: et_registration_code
-    business_meaning_1st: Mã số thuế hồ sơ đăng ký thuế liên quan.
-    comment_1st: "Lookup pair: et_registration.et_registration_code. Pair with External\
-      \ Tax Registration Id. Giá trị lấy từ KNT.TAX_REGISTRATION_INFO.TAX_CODE sau\
-      \ ETL crosswalk — chi tiết xem comment External Tax Registration Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-        business_meaning: Mã số thuế hồ sơ đăng ký thuế liên quan.
-        comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-          \ Tax Registration Id. Giá trị lấy từ KNT.TAX_REGISTRATION_INFO.TAX_CODE\
-          \ sau ETL crosswalk — chi tiết xem comment External Tax Registration Id."
-  - name: Full Name
-    physical_name: full_nm
-    business_meaning_1st: Họ tên người đại diện/chủ hộ kinh doanh.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.REPRESENTATIVE_NAME
-        business_meaning: Họ tên người đại diện/chủ hộ kinh doanh.
-        comment: null
-  - name: Position
-    physical_name: position
-    business_meaning_1st: Chức vụ (tên hoặc mã).
-    comment_1st: Map 1:1 theo quyết định Data Modeler 2026-07-20 — xác nhận là free
-      text, không phải Classification Value cố định. Đổi tên từ "Position Code" vì
-      mô tả nguồn là "tên hoặc mã", không chỉ mã.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.POSITION
-        business_meaning: Chức vụ (tên hoặc mã).
-        comment: Map 1:1 theo quyết định Data Modeler 2026-07-20 — xác nhận là free
-          text, không phải Classification Value cố định. Đổi tên từ "Position Code"
-          vì mô tả nguồn là "tên hoặc mã", không chỉ mã.
-  - name: Identification Type Code
-    physical_name: identification_tp_code
-    business_meaning_1st: "Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu."
-    comment_1st: Map 1:1 từ nguồn, giữ nguyên mã nguồn (1010/2080/1020), không qua
-      Classification Value (gộp từ ip_alternative_identification, quyết định Data
-      Modeler 2026-10-20).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_TYPE
-        business_meaning: "Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu."
-        comment: Map 1:1 từ nguồn, giữ nguyên mã nguồn (1010/2080/1020), không qua
-          Classification Value (gộp từ ip_alternative_identification, quyết định Data
-          Modeler 2026-10-20).
-  - name: Identification Number
-    physical_name: identification_nbr
-    business_meaning_1st: Số giấy tờ định danh.
-    comment_1st: Map 1:1 từ nguồn (gộp từ shared entity ip_alternative_identification,
-      quyết định Data Modeler 2026-10-20).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_NUMBER
-        business_meaning: Số giấy tờ định danh.
-        comment: Map 1:1 từ nguồn (gộp từ shared entity ip_alternative_identification,
-          quyết định Data Modeler 2026-10-20).
-  - name: Identification Issue Date
-    physical_name: identification_issue_dt
-    business_meaning_1st: "Ngày cấp giấy tờ định danh. Mô tả gốc nguồn: Ngày cấp giấy\
-      \ phép thành lập."
-    comment_1st: Map 1:1 từ nguồn (gộp từ shared entity ip_alternative_identification,
-      quyết định Data Modeler 2026-10-20).
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.ISSUE_DATE
-        business_meaning: "Ngày cấp giấy tờ định danh. Mô tả gốc nguồn: Ngày cấp giấy\
-          \ phép thành lập."
-        comment: Map 1:1 từ nguồn (gộp từ shared entity ip_alternative_identification,
-          quyết định Data Modeler 2026-10-20).
-  - name: Phone Number
-    physical_name: phone_nbr
-    business_meaning_1st: Số điện thoại liên hệ.
-    comment_1st: Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết
-      định Data Modeler 2026-10-20).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.PHONE
-        business_meaning: Số điện thoại liên hệ.
-        comment: Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết
-          định Data Modeler 2026-10-20).
-  - name: Fax Number
-    physical_name: fax_nbr
-    business_meaning_1st: Số fax.
-    comment_1st: Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết
-      định Data Modeler 2026-10-20).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.FAX
-        business_meaning: Số fax.
-        comment: Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết
-          định Data Modeler 2026-10-20).
-  - name: Email Address
-    physical_name: email_adr
-    business_meaning_1st: Địa chỉ email liên hệ.
-    comment_1st: Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết
-      định Data Modeler 2026-10-20).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: KNT
-      source_tables:
-      - source_table: TAX_REG_REPRESENTATIVE
-        source_column: KNT.TAX_REG_REPRESENTATIVE.EMAIL
-        business_meaning: Địa chỉ email liên hệ.
-        comment: Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết
-          định Data Modeler 2026-10-20).
-- ldm:
     id: ATM-fmc_employee
     logical_name_1st: Fund Management Company Employee
     physical_name_1st: fmc_employee
@@ -65386,7 +64179,7 @@ entities:
     physical_name: fmc_insider_id
     business_meaning_1st: "FK -> INSIDER: Cổ đông nội bộ liên kết với người hành nghề."
     comment_1st: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER',\
-      \ INSDER_ID). Pending — entity thiết kế ở Tier 5."
+      \ INSDER_ID). Pending — entity thiết kế ở Tier 4."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -65400,12 +64193,12 @@ entities:
         source_column: FMS.TL_PROFILES.INSDER_ID
         business_meaning: "FK -> INSIDER: Cổ đông nội bộ liên kết với người hành nghề."
         comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER',\
-          \ INSDER_ID). Pending — entity thiết kế ở Tier 5."
+          \ INSDER_ID). Pending — entity thiết kế ở Tier 4."
   - name: Fund Management Company Insider Code
     physical_name: fmc_insider_code
     business_meaning_1st: Mã cổ đông nội bộ liên kết.
     comment_1st: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Fund Management\
-      \ Company Insider Id. Pending — entity thiết kế ở Tier 5."
+      \ Company Insider Id. Pending — entity thiết kế ở Tier 4."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -65419,7 +64212,7 @@ entities:
         source_column: FMS.TL_PROFILES.INSDER_ID
         business_meaning: Mã cổ đông nội bộ liên kết.
         comment: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Fund Management\
-          \ Company Insider Id. Pending — entity thiết kế ở Tier 5."
+          \ Company Insider Id. Pending — entity thiết kế ở Tier 4."
   - name: Classification FMS Business Id
     physical_name: cl_fms_business_id
     business_meaning_1st: "FK -> BUSINESS: Lĩnh vực hoạt động liên quan."
@@ -67312,10 +66105,9 @@ entities:
   - name: Securities Company Id
     physical_name: sc_id
     business_meaning_1st: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản."
-    comment_1st: "Pending — FK target: Market Participant Organization.Market Participant\
-      \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash:\
-      \ hash_id('FIMS_SECURITIESCOMPANY', CODE) sau khi Market Participant Organization\
-      \ được thiết kế và xác định cột BK."
+    comment_1st: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
+      \ SecComAddId). Entity Securities Company gộp từ FIMS.SECURITIESCOMPANY + SCMS.SC_FIRM_INFO\
+      \ (xem lld_FIMS_SECURITIESCOMPANY.yaml)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -67328,15 +66120,14 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.SecComAddId
         business_meaning: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản."
-        comment: "Pending — FK target: Market Participant Organization.Market Participant\
-          \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash:\
-          \ hash_id('FIMS_SECURITIESCOMPANY', CODE) sau khi Market Participant Organization\
-          \ được thiết kế và xác định cột BK."
+        comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
+          \ SecComAddId). Entity Securities Company gộp từ FIMS.SECURITIESCOMPANY\
+          \ + SCMS.SC_FIRM_INFO (xem lld_FIMS_SECURITIESCOMPANY.yaml)."
   - name: Securities Company Code
     physical_name: sc_code
     business_meaning_1st: Mã công ty CK nơi mở tài khoản.
-    comment_1st: "Lookup pair: Market Participant Organization.Market Participant\
-      \ Organization Code. Pending — xem ghi chú ở Trading Securities Company Id."
+    comment_1st: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -67349,8 +66140,7 @@ entities:
       - source_table: INVESTOR
         source_column: FIMS.INVESTOR.SecComAddId
         business_meaning: Mã công ty CK nơi mở tài khoản.
-        comment: "Lookup pair: Market Participant Organization.Market Participant\
-          \ Organization Code. Pending — xem ghi chú ở Trading Securities Company\
+        comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
           \ Id."
   - name: Custodian Bank Id
     physical_name: custodian_bank_id
@@ -68326,7 +67116,7 @@ entities:
     business_meaning_1st: "FK -> INSIDER: Cổ đông nội bộ sáng lập/kiểm soát công ty\
       \ QLQ."
     comment_1st: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER',\
-      \ INSIDER_ID). Pending — entity thiết kế ở Tier 5."
+      \ INSIDER_ID). Pending — entity thiết kế ở Tier 4."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -68341,12 +67131,12 @@ entities:
         business_meaning: "FK -> INSIDER: Cổ đông nội bộ sáng lập/kiểm soát công ty\
           \ QLQ."
         comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER',\
-          \ INSIDER_ID). Pending — entity thiết kế ở Tier 5."
+          \ INSIDER_ID). Pending — entity thiết kế ở Tier 4."
   - name: Fund Management Company Insider Code
     physical_name: fmc_insider_code
     business_meaning_1st: Mã cổ đông nội bộ sáng lập/kiểm soát công ty QLQ.
     comment_1st: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Fund Management\
-      \ Company Insider Id. Pending — entity thiết kế ở Tier 5."
+      \ Company Insider Id. Pending — entity thiết kế ở Tier 4."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -68360,7 +67150,7 @@ entities:
         source_column: FMS.SECURITIES.INSIDER_ID
         business_meaning: Mã cổ đông nội bộ sáng lập/kiểm soát công ty QLQ.
         comment: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Fund Management\
-          \ Company Insider Id. Pending — entity thiết kế ở Tier 5."
+          \ Company Insider Id. Pending — entity thiết kế ở Tier 4."
   - name: Description
     physical_name: description
     business_meaning_1st: Mô tả chi tiết.
@@ -76950,13 +75740,34 @@ entities:
         source_column: IDS.COMPANY_PROFILES.TREASURY_SHARES
         business_meaning: Cổ phiếu quỹ.
         comment: null
-  - name: Business Line Level 1 Type Code
-    physical_name: business_line_level_1_tp_code
-    business_meaning_1st: Mã ngành cấp 1.
-    comment_1st: "SCHEMA_CODE=BUSINESS_LINE_LEVEL_1. Values load từ CATEGORIES. Cần\
-      \ ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID\
-      \ để xác nhận INDUSTRY_CD."
-    data_domain_most: Classification Value
+  - name: Classification IDS Business Line Level 1 Id
+    physical_name: cl_ids_business_line_level_1_id
+    business_meaning_1st: Khóa đại diện của ngành nghề cấp 1.
+    comment_1st: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL\
+      \ crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID\
+      \ để xác nhận INDUSTRY_CD sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: COMPANY_PROFILES
+        source_column: IDS.COMPANY_PROFILES.CATEGORY_L1_ID
+        business_meaning: Khóa đại diện của ngành nghề cấp 1.
+        comment: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL\
+          \ crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID\
+          \ để xác nhận INDUSTRY_CD sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)."
+  - name: Classification IDS Business Line Level 1 Code
+    physical_name: cl_ids_business_line_level_1_code
+    business_meaning_1st: Mã ngành nghề cấp 1.
+    comment_1st: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair\
+      \ with Business Line Level 1 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau\
+      \ ETL crosswalk — chi tiết xem comment Business Line Level 1 Id."
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -76967,17 +75778,38 @@ entities:
       source_tables:
       - source_table: COMPANY_PROFILES
         source_column: IDS.CATEGORIES.INDUSTRY_CD
-        business_meaning: Mã ngành cấp 1.
-        comment: "SCHEMA_CODE=BUSINESS_LINE_LEVEL_1. Values load từ CATEGORIES. Cần\
-          \ ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID\
-          \ để xác nhận INDUSTRY_CD."
-  - name: Business Line Level 2 Type Code
-    physical_name: business_line_level_2_tp_code
-    business_meaning_1st: Mã ngành cấp 2.
-    comment_1st: "SCHEMA_CODE=BUSINESS_LINE_LEVEL_2. Values load từ CATEGORIES. Cần\
-      \ ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID\
-      \ để xác nhận INDUSTRY_CD."
-    data_domain_most: Classification Value
+        business_meaning: Mã ngành nghề cấp 1.
+        comment: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair\
+          \ with Business Line Level 1 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD\
+          \ sau ETL crosswalk — chi tiết xem comment Business Line Level 1 Id."
+  - name: Classification IDS Business Line Level 2 Id
+    physical_name: cl_ids_business_line_level_2_id
+    business_meaning_1st: Khóa đại diện của ngành nghề cấp 2.
+    comment_1st: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL\
+      \ crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID\
+      \ để xác nhận INDUSTRY_CD sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: COMPANY_PROFILES
+        source_column: IDS.COMPANY_PROFILES.CATEGORY_L2_ID
+        business_meaning: Khóa đại diện của ngành nghề cấp 2.
+        comment: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL\
+          \ crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID\
+          \ để xác nhận INDUSTRY_CD sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)."
+  - name: Classification IDS Business Line Level 2 Code
+    physical_name: cl_ids_business_line_level_2_code
+    business_meaning_1st: Mã ngành nghề cấp 2.
+    comment_1st: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair\
+      \ with Business Line Level 2 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau\
+      \ ETL crosswalk — chi tiết xem comment Business Line Level 2 Id."
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -76988,10 +75820,10 @@ entities:
       source_tables:
       - source_table: COMPANY_PROFILES
         source_column: IDS.CATEGORIES.INDUSTRY_CD
-        business_meaning: Mã ngành cấp 2.
-        comment: "SCHEMA_CODE=BUSINESS_LINE_LEVEL_2. Values load từ CATEGORIES. Cần\
-          \ ETL crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID\
-          \ để xác nhận INDUSTRY_CD."
+        business_meaning: Mã ngành nghề cấp 2.
+        comment: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair\
+          \ with Business Line Level 2 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD\
+          \ sau ETL crosswalk — chi tiết xem comment Business Line Level 2 Id."
   - name: Enterprise Type Code
     physical_name: enterprise_tp_code
     business_meaning_1st: Loại hình doanh nghiệp.
@@ -79878,8 +78710,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Involved Party
     bcv_concept_most: "[Involved Party] Insider"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
     conflict_review: null
     sources:
     - SCMS
@@ -80794,8 +79626,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Involved Party
     bcv_concept_most: "[Involved Party] Branch, [Involved Party] Representative Office"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
     conflict_review: null
     sources:
     - SCMS
@@ -81839,8 +80671,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Involved Party
     bcv_concept_most: "[Involved Party] Connected Person"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
     conflict_review: null
     sources:
     - SCMS
@@ -82342,8 +81174,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Involved Party
     bcv_concept_most: "[Involved Party] Senior Officer"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
     conflict_review: null
     sources:
     - SCMS
@@ -83088,8 +81920,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Involved Party
     bcv_concept_most: "[Involved Party] Shareholder"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
     conflict_review: null
     sources:
     - SCMS

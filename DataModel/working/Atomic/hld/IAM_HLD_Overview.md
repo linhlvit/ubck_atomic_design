@@ -65,52 +65,57 @@ graph TD
 ```mermaid
 erDiagram
     Identity_and_Access_Management_User {
-        bigint ds_id PK
+        string identity_and_access_management_user_id PK
+        string identity_and_access_management_user_code
+        string src_stm_code
+        string full_nm
         string user_code
-        string username
-        string full_name
-        date date_of_birth
-        string gender_code
-        string user_type_code
-        string user_sub_type_code
+        date dt_of_birth
+        string individual_gender_code
+        string ip_tp_code
+        int super_admin_ind
         string keycloak_id
         string organization_code
+        string organization_nm
         string department_id
         string position_id
         string stock_code
-        string practice_certificate_type_code
-        string representative_name
-        string representative_citizen_id
+        string practice_certificate_tp_id
+        string status_reason
+        string representative_nm
+        string representative_citizen_id_nbr
         string representative_phone
         string representative_email
-        string representative_position_id
-        string is_super_admin_ind
-        string avatar_path
-        string status_reason
-        smallint count_login_fail
-        timestamp expire_lock_ts
-        timestamp last_login_ts
+        string dial_number
+        string member_id
+        string member_nm
+        string ext_individual_member_id
+        string ext_individual_member_nm
+        string securities_company_code
     }
 
     Involved_Party_Postal_Address {
-        bigint ip_id
+        string ip_id FK
+        string ip_code
         string src_stm_code
         string adr_tp_code
         string adr_val
     }
 
     Involved_Party_Electronic_Address {
-        bigint ip_id
+        string ip_id FK
+        string ip_code
         string src_stm_code
-        string elc_adr_tp_code
-        string elc_adr_val
+        string electronic_adr_tp_code
+        string electronic_adr_val
     }
 
     Involved_Party_Alternative_Identification {
-        bigint ip_id
+        string ip_id FK
+        string ip_code
         string src_stm_code
-        string identn_tp_code
-        string identn_nbr
+        string identification_tp_code
+        string identification_nbr
     }
 
     Identity_and_Access_Management_User ||--o{ Involved_Party_Postal_Address : "ip_id"

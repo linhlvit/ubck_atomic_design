@@ -121,93 +121,108 @@ erDiagram
 
 ```mermaid
 erDiagram
-
-
     Audit_Firm {
-        string audt_firm_id PK
+        string af_id PK
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     Audit_Firm_Approval {
-        string audt_firm_aprv_id PK
-        string audt_firm_id FK
-        string audtr_prfl_id FK
-        string tgt_tp_code
-        string src_tp_code
-        string aprv_doc_nbr
-        date aprv_iss_dt
+        string af_approval_id PK
+        string af_approval_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string af_auditor_id FK
+        string af_auditor_code
+        string approval_target_tp_code
+        string approval_src_tp_code
+        string approval_document_nbr
+        date approval_issue_dt
+        date approval_start_dt
+        date approval_end_dt
+        string approval_content
+        date affiliation_end_dt
+        string affiliation_nbr
+        string affiliation_change_reason_description
     }
 
     Audit_Firm_Legal_Representative {
-        string audt_firm_lgl_rprs_id PK
-        string audt_firm_id FK
-        string pos_title_code
+        string af_legal_representative_id PK
+        string af_legal_representative_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string af_legal_representative_nm
+        string identification_nbr
+        string position_title_code
+        date appointment_start_dt
+        date appointment_end_dt
     }
 
     Audit_Firm_Auditor {
-        string audtr_prfl_id PK
-        string audt_firm_id FK
-        string full_nm
-        string prac_cert_nbr
-        date prac_strt_dt
-        date affln_end_dt
+        string af_auditor_id PK
+        string af_auditor_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string af_auditor_nm
+        string position_title_code
+        date practice_start_dt
+        date practice_end_dt
+        string auditor_status_code
+        date affiliation_end_dt
+        int email_sent_ind
+        string external_reference_id
+        string approval_status_code
+        string approver_comment
+        int working_ind
     }
 
     Audit_Firm_Status_History {
-        string audt_firm_st_his_id PK
-        string audt_firm_id FK
-        string st_tp_code
-        string dcsn_nbr
-        date eff_from_dt
+        string af_status_history_id PK
+        string af_status_history_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string status_tp_code
+        string suspension_status_tp_code
+        string decision_nbr
+        date decision_dt
+        date effective_from_dt
+        date effective_to_dt
+        date terminated_decision_dt
+        string reason_description
+        string additional_description
     }
 
     Audit_Firm_Inspection {
-        string audt_firm_inspc_id PK
-        string audt_firm_id FK
-        string inspc_dcsn_nbr
-        date inspc_strt_dt
-        date inspc_end_dt
-        string ovrl_rslt_code
+        string af_inspection_id PK
+        string af_inspection_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string inspection_authority_code
+        string inspection_team_member_list
+        string inspection_decision_nbr
+        date inspection_start_dt
+        date inspection_end_dt
+        string inspection_result_code
+        string audit_technical_result_code
+        string overall_result_code
+        string overall_action_code
+        string overall_action_tp_code
+        string overall_document_nbr
+        date overall_document_dt
+        string overall_violation_content
+        date overall_effective_from_dt
+        date overall_effective_to_dt
     }
 
-
-
-
-
-
-
-    Audit_Firm ||--o{ Audit_Firm_Approval : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Legal_Representative : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Auditor : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Status_History : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Inspection : "audt_firm_id"
-    Audit_Firm_Auditor ||--o| Audit_Firm_Approval : "audtr_prfl_id (nullable)"
+    Audit_Firm ||--o{ Audit_Firm_Approval : "af_id"
+    Audit_Firm_Auditor ||--o| Audit_Firm_Approval : "af_auditor_id (nullable)"
+    Audit_Firm ||--o{ Audit_Firm_Legal_Representative : "af_id"
+    Audit_Firm ||--o{ Audit_Firm_Auditor : "af_id"
+    Audit_Firm ||--o{ Audit_Firm_Status_History : "af_id"
+    Audit_Firm ||--o{ Audit_Firm_Inspection : "af_id"
 ```
 
 ---

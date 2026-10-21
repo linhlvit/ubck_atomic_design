@@ -8,7 +8,7 @@
 > FIMS không tự thiết kế Geographic Area nữa, chỉ tham chiếu qua lookup giá trị. Xem
 > mục 7f của `FIMS_HLD_Overview.md`.
 
-> **Cập nhật (2026-10-21):** các entity Tier 1 chưa có LLD (Market Participant Organization — phần FUNDCOMPANY/DEPOSITORYCENTER/STOCKEXCHANGE, Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price) đã gỡ khỏi HLD; bảng nguồn chuyển vào 7f nhóm `Chưa có LLD`.
+> **Cập nhật (2026-10-21):** các entity Tier 1 chưa có LLD (Market Participant Organization, Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price) đã gỡ khỏi HLD; bảng nguồn chuyển vào 7f nhóm `Chưa có LLD`; riêng FUNDCOMPANY, DEPOSITORYCENTER, STOCKEXCHANGE, BRANCHS, INFODISCREPRES, TRADINGREPRESENTATIVE là bảng đầu vào của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` nên vào 7f nhóm `Xử lý luồng khác`.
 
 ---
 
@@ -283,7 +283,7 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T1-01 | ~~FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE gộp thành 1 entity `Market Participant Organization`?~~ | **Đã cập nhật theo LLD (2026-10-21):** SECURITIESCOMPANY → `Securities Company`, BANKMONI → `Custodian Bank` (T1-10, T1-11). FUNDCOMPANY/DEPOSITORYCENTER/STOCKEXCHANGE chưa có LLD → gỡ khỏi HLD, đưa vào 7f nhóm `Chưa có LLD`. |
+| T1-01 | ~~FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE gộp thành 1 entity `Market Participant Organization`?~~ | **Đã cập nhật theo LLD (2026-10-21):** SECURITIESCOMPANY → `Securities Company`, BANKMONI → `Custodian Bank` (T1-10, T1-11). FUNDCOMPANY/DEPOSITORYCENTER/STOCKEXCHANGE không có LLD riêng — là bảng đầu vào của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`, đưa vào 7f nhóm `Xử lý luồng khác`. |
 | T1-02 | INVESTOR.ObjectType = 1 (cá nhân) và 2 (tổ chức) — có cần tách thành 2 entity riêng không? | Đề xuất: Giữ 1 entity, phân biệt bằng `investor_object_tp_code`. Cấu trúc cột đồng nhất — không có cột riêng cho từng loại. |
 | T1-04 | Geographic Area — FIMS.NATIONAL và FIMS.LOCATION có nên bổ sung vào shared entity `Geographic Area` không? | **Đã chốt (2026-07-10) — không bổ sung.** Geographic Area chỉ còn 1 nguồn duy nhất là ECAT. NATIONAL/LOCATION loại khỏi scope (xem 7f Overview). Entity FIMS FK đến NATIONAL (Securities Company, Custodian Bank, Foreign Investor) resolve bằng cặp `nationality_id/code` đối chiếu Geographic Area nguồn ECAT. |
 | T1-07 | **[GHI NHẬN 2026-07-19]** `INVESTOR` có cột `Address` và `Telephone/Fax/Email/Website` nhưng HLD ban đầu chỉ ghi "Tách IP Alt Identification". | Áp dụng quy tắc "grain = Involved Party → luôn tách đủ 3 shared entity" (`lld_FIMS_INVESTOR_IP_*.yaml`). Đã đồng bộ 7a/Entities/diagram. |

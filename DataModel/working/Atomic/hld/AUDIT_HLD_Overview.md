@@ -41,34 +41,72 @@
 
 ```mermaid
 erDiagram
-    Audit_Firm { string audt_firm_id PK }
+    Audit_Firm {
+        string af_id PK
+    }
 
-    Audit_Firm_Approval { string audt_firm_aprvl_id PK }
-    Audit_Firm_Legal_Representative { string audt_firm_lgl_rep_id PK }
-    Audit_Firm_Auditor { string audtr_prfl_id PK }
-    Audit_Firm_Status_History { string audt_firm_st_his_id PK }
-    Audit_Firm_Inspection { string audt_firm_inspc_id PK }
+    Audit_Firm_Approval {
+        string af_approval_id PK
+    }
 
-    Audit_Firm_Warning { string audt_firm_wrn_id PK }
-    Audit_Firm_Sanction { string audt_firm_snct_id PK }
-    Audit_Firm_Suspension { string audt_firm_susp_id PK }
-    Audit_Firm_Technical_Audit { string audt_firm_tec_aud_id PK }
-    Audit_Firm_Auditor_Status_History { string audtr_st_his_id PK }
+    Audit_Firm_Legal_Representative {
+        string af_legal_representative_id PK
+    }
 
+    Audit_Firm_Auditor {
+        string af_auditor_id PK
+    }
+
+    Audit_Firm_Status_History {
+        string af_status_history_id PK
+    }
+
+    Audit_Firm_Inspection {
+        string af_inspection_id PK
+    }
+
+    Audit_Firm_Warning {
+        string af_warning_id PK
+    }
+
+    Audit_Firm_Sanction {
+        string af_sanction_id PK
+    }
+
+    Audit_Firm_Suspension {
+        string af_suspension_id PK
+    }
+
+    Audit_Firm_Technical_Audit {
+        string af_technical_audit_id PK
+    }
+
+    Audit_Firm_Auditor_Practice_History {
+        string af_auditor_practice_history_id PK
+    }
+
+    Audit_Firm_Auditor_Status_History {
+        string af_auditor_status_history_id PK
+    }
 
     Audit_Firm ||--o{ Audit_Firm_Approval : ""
+    Audit_Firm_Auditor ||--o| Audit_Firm_Approval : ""
     Audit_Firm ||--o{ Audit_Firm_Legal_Representative : ""
     Audit_Firm ||--o{ Audit_Firm_Auditor : ""
     Audit_Firm ||--o{ Audit_Firm_Status_History : ""
     Audit_Firm ||--o{ Audit_Firm_Inspection : ""
     Audit_Firm ||--o{ Audit_Firm_Warning : ""
+    Audit_Firm_Auditor ||--o| Audit_Firm_Warning : ""
+    Audit_Firm_Inspection ||--o| Audit_Firm_Warning : ""
     Audit_Firm ||--o{ Audit_Firm_Sanction : ""
     Audit_Firm ||--o{ Audit_Firm_Suspension : ""
-    Audit_Firm_Auditor ||--o| Audit_Firm_Approval : ""
-    Audit_Firm_Auditor ||--o{ Audit_Firm_Auditor_Status_History : ""
-    Audit_Firm_Auditor ||--o| Audit_Firm_Warning : ""
     Audit_Firm_Auditor ||--o| Audit_Firm_Suspension : ""
+    Audit_Firm_Inspection ||--o| Audit_Firm_Suspension : ""
+    Audit_Firm ||--o{ Audit_Firm_Technical_Audit : ""
     Audit_Firm_Inspection ||--o{ Audit_Firm_Technical_Audit : ""
+    Audit_Firm_Auditor ||--o| Audit_Firm_Auditor_Practice_History : ""
+    Audit_Firm ||--o{ Audit_Firm_Auditor_Practice_History : ""
+    Audit_Firm_Auditor ||--o{ Audit_Firm_Auditor_Status_History : ""
 ```
 
 #### 7c. Bảng Classification Value

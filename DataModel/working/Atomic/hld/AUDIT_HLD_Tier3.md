@@ -126,94 +126,145 @@ erDiagram
 
 ```mermaid
 erDiagram
-
     Audit_Firm_Auditor {
-        string audtr_prfl_id PK
+        string af_auditor_id PK
     }
 
     Audit_Firm {
-        string audt_firm_id PK
+        string af_id PK
     }
 
-
-
-
-
-
-
-
-
-
-
-
     Audit_Firm_Inspection {
-        string audt_firm_inspc_id PK
-        string audt_firm_id FK
-        string inspc_dcsn_nbr
-        date inspc_strt_dt
-        date inspc_end_dt
-        string ovrl_rslt_code
+        string af_inspection_id PK
     }
 
     Audit_Firm_Warning {
-        string audt_firm_wrn_id PK
-        string audt_firm_id FK
-        string audtr_prfl_id FK
-        string wrn_doc_nbr
-        date wrn_iss_dt
-        string tgt_tp_code
+        string af_warning_id PK
+        string af_warning_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string af_auditor_id FK
+        string af_auditor_code
+        string af_inspection_id FK
+        string af_inspection_code
+        string warning_target_tp_code
+        string warning_src_tp_code
+        string warning_document_nbr
+        date warning_issue_dt
+        date warning_start_dt
+        date warning_end_dt
+        string warning_content
+        string warning_tp_code
     }
 
     Audit_Firm_Sanction {
-        string audt_firm_snct_id PK
-        string audt_firm_id FK
-        string snct_auth_code
-        string dcsn_nbr
-        date dcsn_dt
+        string af_sanction_id PK
+        string af_sanction_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string sanction_authority_code
+        string decision_nbr
+        date decision_dt
+        string sanction_content
+        string attachment_file_url
     }
 
     Audit_Firm_Suspension {
-        string audt_firm_susp_id PK
-        string audt_firm_id FK
-        string audtr_prfl_id FK
-        string susp_doc_nbr
-        date susp_strt_dt
-        string tgt_tp_code
+        string af_suspension_id PK
+        string af_suspension_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string af_auditor_id FK
+        string af_auditor_code
+        string af_inspection_id FK
+        string af_inspection_code
+        string suspension_target_tp_code
+        string suspension_src_tp_code
+        string suspension_document_nbr
+        date suspension_issue_dt
+        date suspension_start_dt
+        date suspension_end_dt
+        string suspension_content
+        string suspension_tp_code
+    }
+
+    Audit_Firm_Technical_Audit {
+        string af_technical_audit_id PK
+        string af_technical_audit_code
+        string src_stm_code
+        string af_id FK
+        string af_code
+        string af_inspection_id FK
+        string af_inspection_code
+        string inspection_entity_files
+        string inspection_year
+        string signing_auditor_nm
+        string legal_representative_nm
+        string inspection_result_code
+        string audit_action_code
+        string action_tp_code
+        string document_nbr
+        date document_dt
+        string violation_content
+        date effective_from_dt
+        date effective_to_dt
+        string reason_description
+        string leadership_inspection_result_code
+        string leadership_audit_action_code
+        string leadership_reason_description
+        string leadership_document_nbr
+        date leadership_document_dt
+        string leadership_violation_content
+        date leadership_effective_from_dt
+        date leadership_effective_to_dt
+        string inspection_unit_code
+        string inspection_tp_code
+        string inspection_other_unit_nm
+        string consider_next_year_processing_code
+        string other_processing_description
+        string leadership_consider_next_year_processing_code
+        string leadership_other_processing_description
     }
 
     Audit_Firm_Auditor_Practice_History {
         string af_auditor_practice_history_id PK
+        string af_auditor_practice_history_code
+        string src_stm_code
         string af_auditor_id FK
+        string af_auditor_code
         string af_id FK
+        string af_code
         date practice_from_dt
         date practice_to_dt
     }
 
     Audit_Firm_Auditor_Status_History {
-        string audtr_st_his_id PK
-        string audtr_prfl_id FK
-        string evnt_tp_code
-        date eff_dt
-        string rsn
+        string af_auditor_status_history_id PK
+        string af_auditor_status_history_code
+        string src_stm_code
+        string af_auditor_id FK
+        string af_auditor_code
+        string event_tp_code
+        date effective_dt
+        string reason_description
+        string additional_description
     }
 
-
-
-
-
-
-
-
-
-    Audit_Firm ||--o{ Audit_Firm_Inspection : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Warning : "audt_firm_id"
-    Audit_Firm_Auditor ||--o| Audit_Firm_Warning : "audtr_prfl_id (nullable)"
-    Audit_Firm ||--o{ Audit_Firm_Sanction : "audt_firm_id"
-    Audit_Firm ||--o{ Audit_Firm_Suspension : "audt_firm_id"
-    Audit_Firm_Auditor ||--o| Audit_Firm_Suspension : "audtr_prfl_id (nullable)"
-    Audit_Firm_Auditor ||--o{ Audit_Firm_Auditor_Practice_History : "af_auditor_id"
+    Audit_Firm ||--o{ Audit_Firm_Warning : "af_id"
+    Audit_Firm_Auditor ||--o| Audit_Firm_Warning : "af_auditor_id (nullable)"
+    Audit_Firm_Inspection ||--o| Audit_Firm_Warning : "af_inspection_id (nullable)"
+    Audit_Firm ||--o{ Audit_Firm_Sanction : "af_id"
+    Audit_Firm ||--o{ Audit_Firm_Suspension : "af_id"
+    Audit_Firm_Auditor ||--o| Audit_Firm_Suspension : "af_auditor_id (nullable)"
+    Audit_Firm_Inspection ||--o| Audit_Firm_Suspension : "af_inspection_id (nullable)"
+    Audit_Firm ||--o{ Audit_Firm_Technical_Audit : "af_id"
+    Audit_Firm_Inspection ||--o{ Audit_Firm_Technical_Audit : "af_inspection_id"
+    Audit_Firm_Auditor ||--o| Audit_Firm_Auditor_Practice_History : "af_auditor_id (nullable)"
     Audit_Firm ||--o{ Audit_Firm_Auditor_Practice_History : "af_id"
-    Audit_Firm_Auditor ||--o{ Audit_Firm_Auditor_Status_History : "audtr_prfl_id"
+    Audit_Firm_Auditor ||--o{ Audit_Firm_Auditor_Status_History : "af_auditor_id"
 ```
 
 ---

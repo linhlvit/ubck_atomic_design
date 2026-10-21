@@ -2,8 +2,6 @@
 
 **Source system:** IDS (Information Disclosure System — Hệ thống Công bố Thông tin)
 **Tier 4:** Các entity thuộc Tier 4 theo LLD (`group: T4`). Gồm:
-- Con của **Public Company Securities Offering** (T3): Public Company Securities Offering Plan, Public Company Securities Offering Result
-- Con của **Public Company Evaluation** (T3) + **Public Company Evaluation Criterion** (T2): Public Company Evaluation Detail
 - Con của **Public Company Report Submission** (T3) + **Public Company** (T1) + **Legal Entity** (T1) + **Unstructured Financial Report** (T1) + **Unstructured Financial Report Row/Column** (T2): Unstructured Financial Report Value (Tier 4 theo LLD)
 
 ---
@@ -12,9 +10,6 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Business Activity | [Business Activity] Business Activity | Business Activity | `SECURITIES_OFFERING_PLAN` | Update | Kế hoạch chi tiết chào bán chứng khoán: phương thức phân phối, loại CK, số lượng, giá, thời gian, điều kiện đặc thù theo loại CK (cổ phiếu/trái phiếu/quyền mua). | Public Company Securities Offering Plan | Fundamental | (1) Term candidate: gần nhất là `[Business Activity] Business Activity` — kế hoạch chào bán là activity con của hồ sơ phát hành CK. (2) Cấu trúc trường: 57 cột chi tiết kế hoạch (OFFERING_METHOD_CD, SECURITY_TYPE_CD, PAR_VALUE, TOTAL_REGISTERED_QTY, OFFERING_PRICE, thông tin trái phiếu INTEREST_RATE/BOND_TERM_VALUE, thông tin quyền mua EXERCISE_RATIO/EXERCISE_PERIOD). Grain = 1 kế hoạch chào bán của 1 hồ sơ. (3) Chọn `[Business Activity] Business Activity`. Fundamental theo LLD (FK → Securities Offering T3). |
-| Business Activity | [Business Activity] Business Activity | Business Activity | `SECURITIES_OFFERING_RESULT` | Update | Kết quả thực tế chào bán chứng khoán: số lượng thành công, giá thực tế, tổng giá trị huy động, phân chia trong nước/nước ngoài, chi phí phát hành (tư vấn, bảo lãnh, kiểm toán), số CK lưu hành sau phát hành. | Public Company Securities Offering Result | Fundamental | (1) Term candidate: `[Business Activity] Business Activity` — kết quả chào bán là outcome của hoạt động phát hành CK. (2) Cấu trúc trường: 65 cột kết quả (TOTAL_SUCCESSFUL_QTY, ACTUAL_OFFERING_PRICE, TOTAL_COLLECTED_AM, phân chia DOMESTIC/FOREIGN số lượng và giá trị, chi phí TOTAL_EXPENSE/UNDERWRITING_FEE/DISTRIBUTION_FEE/AUDIT_FEE, POST_ISSUANCE_TOTAL_QTY). Source Change Mode = Update nhưng về nghiệp vụ kết quả là event có thể chốt → xem điểm cần xác nhận T4-01. (3) Chọn `[Business Activity] Business Activity`. Fact Append tạm thời. |
-| Business Activity | [Business Activity] Evaluation | Business Activity | `EVALUATION_DETAILS` | Update | Chi tiết từng chỉ tiêu trong kết quả đánh giá xếp hạng CTĐC: kết quả (RESULT), điểm (SCORE), cờ đánh giá (EVALUATE). Grain = 1 chỉ tiêu × 1 kỳ đánh giá × 1 công ty. | Public Company Evaluation Detail | Fundamental | (1) Term candidate: `[Business Activity] Evaluation` — chi tiết từng chỉ tiêu là thành phần của kết quả đánh giá tổng thể. (2) Cấu trúc trường: EVALUATION_ID (FK → EVALUATIONS T3), CRITERION_ID (FK → EVALUATION_CRITERIA T2), RESULT (VARCHAR500), SCORE (NUMBER), EVALUATE (cờ). Junction table với attribute nghiệp vụ (RESULT, SCORE). (3) Chọn `[Business Activity] Evaluation`. Fundamental theo LLD (FK → Public Company Evaluation T3 + Public Company Evaluation Criterion T2). |
 | Documentation | [Documentation] Regulatory Report | Documentation | `REP_DATA` | Update | Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc (báo cáo định kỳ): mã hàng/cột, giá trị số/chuỗi, kỳ báo cáo qua liên kết đến bản ghi nộp báo cáo. | Unstructured Financial Report Value | Classification | (1) Term candidate: `[Documentation] Regulatory Report` (BCV #9297) — cùng term đã dùng cho `Financial Report Value` (`DATA`, T2): "Regulatory Information which is a report on regulations". (2) Cấu trúc trường: COMPANY_PROFILE_ID (FK tagged → COMPANY_PROFILES), LEGAL_ENTITY_ID (soft-FK, nullable — "ID Nhà đầu tư NNB/NLQ/CĐ"), COMPANY_DATA_ID (soft-FK → COMPANY_DATA, T3), REP_FORM_ID/REP_ROW_ID/REP_COL_ID (soft-FK → REP_FORMS T1/REP_ROW T2/REP_COLUMN T2), DATA_VALUE, TEXT_VALUE, REP_ROW_INDEX, REP_COL_INDEX, COL_DATA_TYPE, ROW_DATA_TYPE — mỗi dòng là 1 giá trị ô cụ thể của 1 báo cáo định kỳ, cùng vai trò với `DATA` nhưng cho họ template `REP_FORMS`/`REP_ROW`/`REP_COLUMN` thay vì `REPORT_CATALOG`/`RROW`/`RCOL`. (3) Chọn `[Documentation] Regulatory Report`. Domain Prefix `Unstructured Financial Report` (mở rộng nhóm REP_FORMS/REP_ROW/REP_COLUMN — xem 6f T4-04). Table Type = Fundamental, theo đúng pattern đã áp dụng cho toàn bộ họ Value/Template liên quan (`DATA`, `RROW`, `RCOL`, `REP_ROW`, `REP_COLUMN`, `COMPANY_DATA`) dù còn FK lên Tier 1/2/3 — xem 6f T4-05. Tier 4 theo LLD (`group: T4`; FK mềm tới Public Company Report Submission — Tier 3 theo LLD, Unstructured Financial Report Row/Column — Tier 2). Table Type Fundamental → Classification (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem Overview 7e #27. |
 
 ---
@@ -23,60 +18,26 @@
 
 ```mermaid
 erDiagram
-    SECURITIES_OFFERING {
-        int ID PK
-    }
-    EVALUATIONS {
-        int ID PK
-    }
-    EVALUATION_CRITERIA {
-        int ID PK
-    }
-
-    SECURITIES_OFFERING_PLAN {
-        int ID PK
-        int SECURITIES_OFFERING_ID FK
-        string OFFERING_METHOD_CD
-        string SECURITY_TYPE_CD
-        int TOTAL_REGISTERED_QTY
-        decimal OFFERING_PRICE
-        decimal INTEREST_RATE
-    }
-
-    SECURITIES_OFFERING_RESULT {
-        int ID PK
-        int SECURITIES_OFFERING_ID FK
-        int TOTAL_SUCCESSFUL_QTY
-        decimal ACTUAL_OFFERING_PRICE
-        decimal TOTAL_COLLECTED_AM
-        decimal TOTAL_EXPENSE
-        int POST_ISSUANCE_TOTAL_QTY
-    }
-
-    EVALUATION_DETAILS {
-        int ID PK
-        int EVALUATION_ID FK
-        int CRITERION_ID FK
-        string RESULT
-        int SCORE
-        int EVALUATE
-    }
-
     COMPANY_PROFILES {
         int ID PK
     }
+
     LEGAL_ENTITIES {
         int ID PK
     }
+
     COMPANY_DATA {
         int ID PK
     }
+
     REP_FORMS {
         int ID PK
     }
+
     REP_ROW {
         int ID PK
     }
+
     REP_COLUMN {
         int ID PK
     }
@@ -97,10 +58,6 @@ erDiagram
         string ROW_DATA_TYPE
     }
 
-    SECURITIES_OFFERING ||--o{ SECURITIES_OFFERING_PLAN : "SECURITIES_OFFERING_ID"
-    SECURITIES_OFFERING ||--o{ SECURITIES_OFFERING_RESULT : "SECURITIES_OFFERING_ID"
-    EVALUATIONS ||--o{ EVALUATION_DETAILS : "EVALUATION_ID"
-    EVALUATION_CRITERIA ||--o{ EVALUATION_DETAILS : "CRITERION_ID"
     COMPANY_PROFILES ||--o{ REP_DATA : "COMPANY_PROFILE_ID"
     LEGAL_ENTITIES ||--o{ REP_DATA : "LEGAL_ENTITY_ID"
     COMPANY_DATA ||--o{ REP_DATA : "COMPANY_DATA_ID"
@@ -115,60 +72,26 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Public_Company_Securities_Offering {
-        string scrt_ofr_id PK
-    }
-    Public_Company_Evaluation {
-        string pblc_co_eval_id PK
-    }
-    Public_Company_Evaluation_Criterion {
-        string pblc_co_eval_crt_id PK
-    }
-
-    Public_Company_Securities_Offering_Plan {
-        string scrt_ofr_pln_id PK
-        string scrt_ofr_id FK
-        string ofr_mthd_code
-        string scrt_tp_code
-        int tot_reg_qty
-        decimal ofr_prc
-        decimal intrst_rt
-    }
-
-    Public_Company_Securities_Offering_Result {
-        string scrt_ofr_rslt_id PK
-        string scrt_ofr_id FK
-        int tot_scs_qty
-        decimal actl_ofr_prc
-        decimal tot_cll_am
-        decimal tot_exp_am
-        int post_iss_tot_qty
-    }
-
-    Public_Company_Evaluation_Detail {
-        string pblc_co_eval_dtl_id PK
-        string pblc_co_eval_id FK
-        string pblc_co_eval_crt_id FK
-        string rslt
-        int scr
-        int eval_f
-    }
-
     Public_Company {
-        string public_company_id PK
+        string pblc_co_id PK
     }
+
     Legal_Entity {
-        string legal_entity_id PK
+        string lgl_enty_id PK
     }
+
     Public_Company_Report_Submission {
         string pc_report_submission_id PK
     }
+
     Unstructured_Financial_Report {
         string ufr_id PK
     }
+
     Unstructured_Financial_Report_Row {
         string ufr_row_id PK
     }
+
     Unstructured_Financial_Report_Column {
         string ufr_column_id PK
     }
@@ -189,10 +112,6 @@ erDiagram
         string row_data_tp_code
     }
 
-    Public_Company_Securities_Offering ||--o{ Public_Company_Securities_Offering_Plan : "scrt_ofr_id"
-    Public_Company_Securities_Offering ||--o{ Public_Company_Securities_Offering_Result : "scrt_ofr_id"
-    Public_Company_Evaluation ||--o{ Public_Company_Evaluation_Detail : "pblc_co_eval_id"
-    Public_Company_Evaluation_Criterion ||--o{ Public_Company_Evaluation_Detail : "pblc_co_eval_crt_id"
     Public_Company ||--o{ Unstructured_Financial_Report_Value : "public_company_id"
     Legal_Entity ||--o{ Unstructured_Financial_Report_Value : "legal_entity_id"
     Public_Company_Report_Submission ||--o{ Unstructured_Financial_Report_Value : "pc_report_submission_id"
@@ -207,11 +126,6 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| `SECURITIES_OFFERING_PLAN.OFFERING_METHOD_CD` | Phương thức chào bán (ra công chúng/riêng lẻ/quyền mua) | `IDS_SO_OFFERING_METHOD` | source_table | Values từ LOOKUP_VALUES (LOOKUP_GROUP = 'SO_OFFERING_METHOD'); dùng chung với SECURITIES_OFFERING_RESULT.OFFERING_METHOD_CD |
-| `SECURITIES_OFFERING_PLAN.DISTRIBUTION_METHOD_CD` | Phương thức phân phối CK | `IDS_SO_DISTRIBUTION_METHOD` | source_table | Values từ LOOKUP_VALUES |
-| `SECURITIES_OFFERING_PLAN.SECURITY_TYPE_CD` | Loại chứng khoán chào bán | `IDS_SECURITY_TYPE` | source_table | Dùng chung với SECURITIES_OFFERING_RESULT.SECURITY_TYPE_CD |
-| `SECURITIES_OFFERING_PLAN.GUARANTEE_TYPE_CD` | Loại bảo lãnh phát hành | `IDS_SO_GUARANTEE_TYPE` | source_table | Values từ LOOKUP_VALUES |
-| `SECURITIES_OFFERING_RESULT.APPROVAL_STATUS_CD` | Trạng thái phê duyệt kết quả chào bán | `IDS_SO_RESULT_APPROVAL_STATUS` | source_table | Values từ LOOKUP_VALUES |
 | `REP_DATA.COL_DATA_TYPE` | Kiểu dữ liệu cột (N=Number, T=Text) | `IDS_PERIODIC_FORM_COLUMN_DATA_TYPE` | source_table | Tái dùng scheme đã đăng ký cho `REP_COLUMN.DATA_TYPE_CD` (Tier2.md 6d) — cùng LOOKUP_GROUP `RF_C_DATA_TYPE`, không tạo scheme mới |
 | `REP_DATA.ROW_DATA_TYPE` | Kiểu dữ liệu hàng (V=Value, D=Description) | `IDS_PERIODIC_FORM_ROW_DATA_TYPE` | source_table | Tái dùng scheme đã đăng ký cho `REP_ROW.DATA_TYPE_CD` (Tier2.md 6d) — cùng LOOKUP_GROUP `RF_R_DATA_TYPE`, không tạo scheme mới |
 
@@ -227,9 +141,7 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T4-01 | `SECURITIES_OFFERING_RESULT` Source Change Mode = Update. Về nghiệp vụ, kết quả chào bán có thể được chỉnh sửa trước khi chốt chính thức. Table Type theo LLD = Fundamental. | Cần xác nhận với nghiệp vụ/Data Engineer về khả năng sửa đổi kết quả sau khi ghi. |
-| T4-02 | `EVALUATION_DETAILS.EVALUATION_ID` là trường FK trong DB nhưng trong BRD per-table YAML không được đánh dấu `key: FK`. Tương tự `CRITERION_ID`. Cần xác nhận FK này luôn khác NULL và join được với EVALUATIONS/EVALUATION_CRITERIA. | Cần xác nhận constraint tại DB nguồn. Nếu nullable → ETL phải xử lý orphan rows. |
-| T4-03 | Sau khi điều chỉnh các entity (DATA → T2), Tier 4 gồm: Public Company Securities Offering Plan/Result, Public Company Evaluation Detail, Unstructured Financial Report Value. Có nên gộp vào Tier 3 không? | Giữ Tier 4 riêng — dependency chain rõ ràng: T1 → T2 → T3(Securities Offering) → T4(Plan/Result). Tách giúp thể hiện độ phức tạp phân tầng. |
+| T4-03 | Sau khi điều chỉnh tier theo dependency (2026-10-21), Tier 4 chỉ còn Unstructured Financial Report Value (`REP_DATA`). Public Company Securities Offering Plan/Result và Public Company Evaluation Detail chuyển sang Tier 3; Securities Offering/Evaluation chuyển sang Tier 2. Có giữ Tier 4 riêng cho 1 entity không? | Giữ Tier 4 theo LLD (`group: T4`) — `REP_DATA` có soft-FK tới Public Company Report Submission (T3) nên nằm sau Tier 3. |
 | T4-04 | `REP_DATA` (`Unstructured Financial Report Value`) dùng Domain Prefix `Unstructured Financial Report` — quyết định 2026-08-27 (Tier2.md T2-22/Overview 7e #22) từng ghi rõ "chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN". Đề xuất mở rộng nhóm này thành 4 entity (thêm REP_DATA) do cùng gia đình template/value và cùng physical prefix `ufr`. | Cần Data Modeler xác nhận việc mở rộng phạm vi quyết định 2026-08-27. |
 | T4-05 | `REP_DATA` chỉ có `COMPANY_PROFILE_ID` được tag `key: FK` trong BRD; `LEGAL_ENTITY_ID`, `COMPANY_DATA_ID`, `REP_FORM_ID`, `REP_ROW_ID`, `REP_COL_ID` đều là soft-FK (`key: null`, `fk_note: null`) dù mô tả cột nêu rõ là khóa liên kết. Table Type tạm chọn Fundamental theo pattern đã áp dụng cho `DATA`/`RROW`/`RCOL`/`REP_ROW`/`REP_COLUMN`/`COMPANY_DATA` (cùng họ Value/Template, cùng lý do override). | Cần Data Modeler xác nhận: (1) constraint FK thực tế tại nguồn cho 5 soft-FK trên, (2) đồng ý Table Type = Fundamental theo pattern có sẵn. |
 | T4-06 | `REP_DATA` có cả `LEGAL_ENTITY_ID` (nullable, mô tả "ID Nhà đầu tư NNB/NLQ/CĐ") lẫn `COMPANY_PROFILE_ID` — chưa rõ 2 FK này loại trừ nhau (giống pattern `SECURITIES_OFFERING.APPLICANT_TYPE_FLG`) hay có thể cùng khác NULL đồng thời (báo cáo vừa gắn CTĐC vừa gắn 1 cá nhân liên quan cụ thể). Ảnh hưởng đến thiết kế grain ở bước LLD. | Cần Data Modeler xác nhận ý nghĩa nghiệp vụ khi cả 2 FK cùng có giá trị. |

@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fr_catalog-IDS.REPORT_CATALOG
+  logical_name: Financial Report Catalog
+  physical_name: fr_catalog
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  description: |
+    Danh mục báo cáo tài chính: định nghĩa loại BCTC và tập hàng/cột dùng cho template số liệu. Table Type đổi Fundamental → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-REPORT_CATALOG
+
+attributes:
+  - name: Financial Report Catalog Id
+    physical_name: fr_catalog_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition] Form Definition\"."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Catalog Code
+    physical_name: fr_catalog_code
+    business_meaning: BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.ID
+    comment: "BK chính — Nguồn NUMBER(10,0) — ETL cast sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_REPORT_CATALOG'"
+    etl_derived_value: IDS_REPORT_CATALOG
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm business reference field.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.REPORT_CD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Catalog Name
+    physical_name: fr_catalog_nm
+    business_meaning: Tên báo cáo (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.REPORT_NAME_VI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Catalog English Name
+    physical_name: fr_catalog_english_nm
+    business_meaning: Tên báo cáo (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.REPORT_NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Catalog Type Code
+    physical_name: rpt_catalog_tp_code
+    business_meaning: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.RC_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Year
+    physical_name: fr_year
+    business_meaning: Lưu năm của báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.REPORT_YEAR
+    comment: "Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay vì Date."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Scope Type Code
+    physical_name: fr_scope_tp_code
+    business_meaning: "Loại hình báo cáo (Hợp nhất, Mẹ)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.REPORT_SCOPE_CD
+    comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Enterprise Type Code
+    physical_name: enterprise_tp_code
+    business_meaning: "Loại hình doanh nghiệp (DN, BH, TD, CK)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD
+    comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Consolidated Indicator
+    physical_name: consolidated_ind
+    business_meaning: Có phải là báo cáo hợp nhất không.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.CONSOLIDATED_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Statement Type Code
+    physical_name: financial_statement_tp_code
+    business_meaning: Tham chiếu báo cáo tài chính (không có mô tả tại nguồn).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD
+    comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reporting Period Type Code
+    physical_name: reporting_period_tp_code
+    business_meaning: Loại kỳ báo cáo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.REPORTING_PERIOD_CD
+    comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Statement Component Type Code
+    physical_name: financial_statement_component_tp_code
+    business_meaning: Loại thành phần của báo cáo tài chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: REPORT_CATALOG
+    source_column: IDS.REPORT_CATALOG.REF_CD
+    comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT')."
+    classification_context: null
+    etl_derived_value: null

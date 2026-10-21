@@ -1,0 +1,110 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  atomic_entity: "Classification IDS Business Line"
+  entity_physical_name: "cl_ids_business_line"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Industry Classification"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-21] Theo yêu cầu Data Modeler: thiết kế IDS.CATEGORIES thành entity Classification IDS Business Line (đảo quyết định 2026-07-23 'không tạo entity riêng' trong pending_design.yaml). Chỉ map INDUSTRY_CD, INDUSTRY_NAME, DESCRIPTION, PARENT_ID; các cột còn lại (ID, ACTIVE_FLG, CREATED_BY, CREATED_DATE, UPDATED_BY, UPDATED_DATE, STATUS_FLG, ID_SYNC, TYPE, DELETE_FLG) chưa map — cần ghi vào pending_design.yaml. Cần đồng bộ lại HLD IDS (Overview 7a/Entities, Tier1 6a) và lld_IDS_COMPANY_PROFILES (Business Line Level 1/2) nếu muốn FK sang entity này."
+attributes:
+- attribute_name: "Classification IDS Business Line Id"
+  physical_name: "cl_ids_business_line_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('IDS_CATEGORIES', INDUSTRY_CD). BCV: \"[Common] Industry Classification\" (cùng concept với Classification FMS Business)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification IDS Business Line Code"
+  physical_name: "cl_ids_business_line_code"
+  description: "Mã ngành nghề. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.INDUSTRY_CD"
+  comment: "BK của entity. Nguồn VARCHAR2(1020) — cần profile xác nhận NOT NULL/unique trước go-live (Code đóng vai trò BK)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS_CATEGORIES"
+  etl_derived_value: "IDS_CATEGORIES"
+  data_type: "string"
+- attribute_name: "Classification IDS Business Line Name"
+  physical_name: "cl_ids_business_line_nm"
+  description: "Tên ngành nghề."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.INDUSTRY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Classification IDS Business Line Id"
+  physical_name: "parent_cl_ids_business_line_id"
+  description: "Khóa đại diện của ngành nghề cha (mã cha). FK tự tham chiếu; NULL cho ngành cấp 1 (đỉnh phân cấp)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.PARENT_ID"
+  comment: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL crosswalk (self-join) sang IDS.CATEGORIES: CATEGORIES.PARENT_ID = CATEGORIES_PARENT.ID để lấy INDUSTRY_CD của dòng cha sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD) | PARENT_ID là ID kỹ thuật, không hash trực tiếp (nếu hash theo ID sẽ không khớp Id của dòng cha — vốn hash từ INDUSTRY_CD)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Classification IDS Business Line Code"
+  physical_name: "parent_cl_ids_business_line_code"
+  description: "Mã ngành nghề cha — lookup pair với Parent Classification IDS Business Line Id."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.INDUSTRY_CD"
+  comment: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair with Parent Classification IDS Business Line Id. Giá trị lấy từ INDUSTRY_CD của dòng cha (self-join CATEGORIES.PARENT_ID = CATEGORIES.ID) — chi tiết xem comment Parent Classification IDS Business Line Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

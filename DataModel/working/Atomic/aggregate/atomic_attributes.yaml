@@ -5304,146 +5304,6 @@ attributes:
   atomic_column: "end_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  atomic_attribute: "External Tax High Risk Enterprise Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "KNT"
-  source_table: "HIGH_RISK_ENTERPRISE"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Business Activity] Involved Party Rating Activity\"\
-    . Cục Thuế xếp hạng/đánh giá 1 DN thuộc diện rủi ro cao theo từng năm đánh giá.\
-    \ Hash: hash_id('KNT_HIGH_RISK_ENTERPRISE', ENTERPRISE_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_high_risk_enterprise"
-  atomic_column: "et_high_risk_enterprise_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  atomic_attribute: "External Tax High Risk Enterprise Code"
-  description: "Mã số doanh nghiệp đăng ký kinh doanh. BK."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "HIGH_RISK_ENTERPRISE"
-  source_column: "KNT.HIGH_RISK_ENTERPRISE.ENTERPRISE_CODE"
-  comment: "BK chính. Grain thực tế = 1 DN × 1 năm đánh giá (Fact Append) — cần profile\
-    \ dữ liệu xác nhận ENTERPRISE_CODE có lặp lại qua nhiều năm hay không; nếu có,\
-    \ cần ghép thêm RISK_ASSESSMENT_YEAR vào business key trước go-live. Nghi vấn\
-    \ liên kết logic → External Tax Registration.External Tax Registration Code (xem\
-    \ KNT_HLD_Overview.md mục 7e#6) — chưa xác nhận nghiệp vụ, giữ 2 entity độc lập,\
-    \ không tạo FK."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_high_risk_enterprise"
-  atomic_column: "et_high_risk_enterprise_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "HIGH_RISK_ENTERPRISE"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
-  etl_derived_value: "KNT_HIGH_RISK_ENTERPRISE"
-  atomic_table: "et_high_risk_enterprise"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  atomic_attribute: "Enterprise Name"
-  description: "Tên doanh nghiệp rủi ro cao."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "HIGH_RISK_ENTERPRISE"
-  source_column: "KNT.HIGH_RISK_ENTERPRISE.ENTERPRISE_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_high_risk_enterprise"
-  atomic_column: "enterprise_nm"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  atomic_attribute: "Headquarters Address"
-  description: "Địa chỉ trụ sở chính của doanh nghiệp."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "HIGH_RISK_ENTERPRISE"
-  source_column: "KNT.HIGH_RISK_ENTERPRISE.HQ_ADDRESS"
-  comment: "Denormalized — grain của entity là Rating Activity (Business Activity),\
-    \ không phải Involved Party, không tách IP Postal Address."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_high_risk_enterprise"
-  atomic_column: "headquarters_adr"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  atomic_attribute: "Managing Tax Authority Name"
-  description: "Cơ quan thuế quản lý doanh nghiệp rủi ro cao."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "HIGH_RISK_ENTERPRISE"
-  source_column: "KNT.HIGH_RISK_ENTERPRISE.MANAGING_TAX_AUTHORITY"
-  comment: "Denormalized — cần profile dữ liệu để xác nhận free text hay trùng danh\
-    \ mục cơ quan thuế (xem KNT_HLD_Overview.md mục 7e#7)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_high_risk_enterprise"
-  atomic_column: "managing_tax_authority_nm"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  atomic_attribute: "Risk Assessment Year"
-  description: "Năm Cục Thuế đánh giá doanh nghiệp là rủi ro cao."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "HIGH_RISK_ENTERPRISE"
-  source_column: "KNT.HIGH_RISK_ENTERPRISE.RISK_ASSESSMENT_YEAR"
-  comment: "Giữ Text theo data type nguồn (VARCHAR2) — cùng 1 DN có thể xuất hiện\
-    \ lại ở nhiều năm khác nhau (grain Fact Append)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_high_risk_enterprise"
-  atomic_column: "risk_assessment_year"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "External Tax High Risk Enterprise"
-  atomic_attribute: "Message Packet Id"
-  description: "Mã gói tin trao đổi liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "HIGH_RISK_ENTERPRISE"
-  source_column: "KNT.HIGH_RISK_ENTERPRISE.MSG_PACKET_ID"
-  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
-    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
-    \ — ETL cần convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_high_risk_enterprise"
-  atomic_column: "message_packet_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Annual Plan Target"
   atomic_attribute: "Inspection Annual Plan Target Id"
   description: "Khóa đại diện (surrogate key)."
@@ -13984,685 +13844,6 @@ attributes:
   atomic_column: "treasury_sell_round_count"
   data_type: "int"
 - bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Adhoc Report Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: null
-  comment: "PK surrogate."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_adhoc_rpt_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Adhoc Report Code"
-  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.ID"
-  comment: "BK. NUMBER(10) — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_adhoc_rpt_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
-  etl_derived_value: "SCMS_SC_FIRM_ADHOC_REPORT"
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Id"
-  description: "FK đến Công ty chứng khoán nộp báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID"
-  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Code"
-  description: "Mã Công ty chứng khoán."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
-    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Company Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Foreign Branch Id"
-  description: "FK đến chi nhánh CTCK nước ngoài liên quan (nullable)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
-    \ SC_FIRM_FOREIGN_BRANCH_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_foreign_branch_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Foreign Branch Code"
-  description: "Mã chi nhánh CTCK nước ngoài."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-  comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with Securities\
-    \ Company Foreign Branch Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_foreign_branch_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Bank Id"
-  description: "FK đến ngân hàng liên quan đến báo cáo (nullable)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
-  comment: "FK target: sc_bank.sc_bank_id. Hash: hash_id('SCMS_BANK', BANK_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_bank_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Bank Code"
-  description: "Mã ngân hàng."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
-  comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Bank Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_bank_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Report Id"
-  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID"
-  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_rpt_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Report Code"
-  description: "Mã biểu mẫu báo cáo liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID"
-  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report\
-    \ Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_rpt_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Submitted Securities Company Report Id"
-  description: "Phiên bản biểu mẫu báo cáo. ID của FORM_REPORT tại thời điểm nộp —\
-    \ phiên bản cụ thể đã dùng khi nộp, có thể khác Securities Company Report Id nếu\
-    \ biểu mẫu đã phát sinh phiên bản mới hơn sau khi nộp (Data Modeler xác nhận 2026-09-17)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID"
-  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_VERSION_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "submitted_sc_rpt_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Submitted Securities Company Report Code"
-  description: "Mã biểu mẫu báo cáo tại thời điểm nộp."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID"
-  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Submitted Securities Company\
-    \ Report Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "submitted_sc_rpt_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Report Input Submission Id"
-  description: "FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID"
-  comment: "FK target: sc_report_input_submission.sc_rpt_input_submission_id. Hash:\
-    \ hash_id('SCMS_REPORT_INPUT_SUBMISSION', REPORT_INPUT_SUBMISSION_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_rpt_input_submission_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Securities Company Report Input Submission Code"
-  description: "Mã phiên gửi báo cáo liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID"
-  comment: "Lookup pair: sc_report_input_submission.sc_rpt_input_submission_code.\
-    \ Pair with Securities Company Report Input Submission Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sc_rpt_input_submission_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Report Name"
-  description: "Tên báo cáo/biểu mẫu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_NAME"
-  comment: "VARCHAR2(2000)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "rpt_nm"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Report Year"
-  description: "Năm báo cáo."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_YEAR"
-  comment: "NUMBER(10)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "rpt_year"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Document Number"
-  description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_NUMBER"
-  comment: "VARCHAR2(200)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "document_nbr"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Period Value"
-  description: "Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.PERIOD_VALUE"
-  comment: "NVARCHAR2(200)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "period_val"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Adhoc Report Code"
-  description: "Mã chi tiết loại báo cáo (TT96/nhóm stakeholder), tùy chọn.."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.DETAIL_TYPE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "adhoc_rpt_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Category Code"
-  description: "Phân loại báo cáo đột xuất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CATEGORY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "category_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Signature Type Code"
-  description: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload file ký;\
-    \ NONE=Không yêu cầu chữ ký."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SIGNATURE_TYPE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "signature_tp_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Report Submission Status Code"
-  description: "Trạng thái nộp báo cáo đột xuất: 0-Chưa gửi; 1-Gửi đúng hạn; 2-Gửi\
-    \ muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo cáo."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
-  comment: "SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS"
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "rpt_submission_status_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Previous Report Submission Status Code"
-  description: "Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.PREVIOUS_SUBMIT_STATUS"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "previous_rpt_submission_status_code"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Depositary Bank Scope Code"
-  description: "Phân loại ngân hàng lúc tạo báo cáo: LUU_KY=Lưu ký; GIAM_SAT=Giám\
-    \ sát."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_SCOPE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "depositary_bank_scope_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Allow Import Indicator"
-  description: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không cho phép."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.ALLOW_IMPORT"
-  comment: "NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "allow_import_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Overdue Days"
-  description: "Số ngày gửi báo cáo muộn."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.LATE_SUBMISSION_DAYS"
-  comment: "NUMBER(10). Đổi tên từ SO_NGAY_GUI_MUON — DDL UAT hiện tại: LATE_SUBMISSION_DAYS."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "overdue_days"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Submission Deadline Timestamp"
-  description: "Hạn nộp báo cáo đột xuất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SUBMISSION_DEADLINE"
-  comment: "TIMESTAMP(6). Đổi tên từ HAN_GUI — DDL UAT hiện tại: SUBMISSION_DEADLINE."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "submission_deadline_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Requires Disclosure Indicator"
-  description: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REQUIRES_DISCLOSURE"
-  comment: "NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "requires_disclosure_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Classification Securities Company Event Type Id"
-  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "cl_sc_event_tp_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Classification Securities Company Event Type Code"
-  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
-  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "cl_sc_event_tp_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Event Date"
-  description: "Ngày xảy ra sự kiện báo cáo đột xuất."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_DATE"
-  comment: "Mô tả gốc BRD trống."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "event_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Document Date"
-  description: "Ngày ký/ban hành văn bản."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "document_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Sent Timestamp"
-  description: "Thời điểm gửi báo cáo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SENT_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sent_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Cancelled Timestamp"
-  description: "Thời điểm hủy báo cáo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "cancelled_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Sender IAM User Id"
-  description: "FK đến người gửi báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', SENDER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sender_iam_user_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Sender IAM User Code"
-  description: "Mã người gửi báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Sender IAM User Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sender_iam_user_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Cancelled By IAM User Id"
-  description: "FK đến người hủy báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "cancelled_by_iam_user_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Cancelled By IAM User Code"
-  description: "Mã người hủy báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Cancelled By IAM User Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "cancelled_by_iam_user_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Import File Path"
-  description: "Đường dẫn file Excel import dữ liệu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.IMPORT_FILE_PATH"
-  comment: "VARCHAR2(2000)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "import_file_path"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Source Record Insert Timestamp"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại hệ thống\
-    \ nguồn."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CREATED_AT"
-  comment: "TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột nguồn\
-    \ CREATED_AT)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "src_record_insert_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Business Activity"
   atomic_entity: "Securities Company Bank Periodic"
   atomic_attribute: "Securities Company Bank Periodic Id"
   description: "Khóa đại diện (surrogate key)."
@@ -15917,420 +15098,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_foreign_organization_unit_periodic_report"
-  atomic_column: "previous_rpt_submission_status_code"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Securities Company Periodic Report Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: null
-  comment: "PK surrogate."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "sc_periodic_rpt_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Securities Company Periodic Report Code"
-  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.ID"
-  comment: "BK. NUMBER(19) — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "sc_periodic_rpt_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
-  etl_derived_value: "SCMS_SC_FIRM_PERIODIC_REPORT"
-  atomic_table: "sc_periodic_report"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Securities Company Id"
-  description: "FK đến Công ty chứng khoán nộp báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID"
-  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
-    \ SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "sc_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Securities Company Code"
-  description: "Mã Công ty chứng khoán."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_INFO.CODE"
-  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
-    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Company Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "sc_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Securities Company Form Report Id"
-  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID"
-  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "sc_form_rpt_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Securities Company Form Report Code"
-  description: "Mã biểu mẫu báo cáo liên quan (FORM_REPORT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID"
-  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Form\
-    \ Report Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "sc_form_rpt_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Report Name"
-  description: "Tên báo cáo/biểu mẫu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_NAME"
-  comment: "NVARCHAR2(2000)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "rpt_nm"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Report Year"
-  description: "Năm báo cáo."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_YEAR"
-  comment: "NUMBER(10) — giá trị năm (VD: 2024)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "rpt_year"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Period"
-  description: "Kỳ số (1-4 cho quý, 1-12 cho tháng)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.PERIOD"
-  comment: "NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "period"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Quarter"
-  description: "Quý trong năm (1, 2, 3, 4)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.QUARTER"
-  comment: "NUMBER(10)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "quarter"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Report Month"
-  description: "Tháng trong năm."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_MONTH"
-  comment: "NUMBER(10). Mô tả gốc BRD trống."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "rpt_month"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Report Period"
-  description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_PERIOD"
-  comment: "VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value theo\
-    \ quyết định thiết kế."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "rpt_period"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Start Date"
-  description: "Ngày bắt đầu kỳ báo cáo hoặc hiệu lực."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "start_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "End Date"
-  description: "Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "end_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Submission Deadline Date"
-  description: "Hạn nộp báo cáo theo quy định."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE"
-  comment: "SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp — ETL\
-    \ dùng SUBMISSION_DEADLINE (DATE)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "submission_deadline_dt"
-  data_type: "date"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Submission Deadline Timestamp"
-  description: "Hạn nộp báo cáo theo quy định (có giờ)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT"
-  comment: "TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE. ETL dùng cột này\
-    \ nếu cần độ chính xác giờ."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "submission_deadline_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Report Submission Status Code"
-  description: "Trạng thái nộp báo cáo định kỳ: 0-Chưa gửi; 1-Gửi đúng hạn; 2-Gửi\
-    \ muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo cáo."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.RECORD_STATUS"
-  comment: "SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS"
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "rpt_submission_status_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Overdue Days"
-  description: "Số ngày nộp báo cáo quá hạn."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.OVERDUE_DAYS"
-  comment: "NUMBER(10)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "overdue_days"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Classification Securities Company Event Type Id"
-  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "cl_sc_event_tp_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Classification Securities Company Event Type Code"
-  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "cl_sc_event_tp_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Sent Timestamp"
-  description: "Thời điểm gửi báo cáo lên UBCKNN."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.SENT_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "sent_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Valid Digital Signature Indicator"
-  description: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DIGITAL_SIGNATURE"
-  comment: "NUMBER(1). Mô tả gốc BRD trống."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "valid_digital_signature_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Valid Data Indicator"
-  description: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ; 0=Không hợp\
-    \ lệ."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DATA"
-  comment: "NUMBER(1). Mô tả gốc BRD trống."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
-  atomic_column: "valid_data_ind"
-  data_type: "int"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Previous Report Submission Status Code"
-  description: "Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.PREVIOUS_SUBMIT_STATUS"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "sc_periodic_report"
   atomic_column: "previous_rpt_submission_status_code"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -19021,8 +17788,7 @@ attributes:
   source_system: "IDS"
   source_table: "VIOLATION_REPORT"
   source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode. Dùng để phân biệt nguồn VIOLATION_REPORT\
-    \ vs HTE_VIOLATION_REPORT khi gộp entity."
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "Source System Code = 'IDS_VIOLATION_REPORT'"
   etl_derived_value: "IDS_VIOLATION_REPORT"
   atomic_table: "violation_report"
@@ -19290,158 +18056,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "violation_report"
   atomic_column: "language_code"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "External Tax Information Request Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Communication] Information Request\". 1 lần trao\
-    \ đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT_INFO_REQUEST_DETAIL',\
-    \ ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_information_request"
-  atomic_column: "et_information_request_id"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "External Tax Information Request Code"
-  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,\
-    \ dùng PK kỹ thuật làm BK duy nhất."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: "KNT.INFO_REQUEST_DETAIL.ID"
-  comment: "BK chính. PK nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_information_request"
-  atomic_column: "et_information_request_code"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
-  etl_derived_value: "KNT_INFO_REQUEST_DETAIL"
-  atomic_table: "et_information_request"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "External Tax Registration Id"
-  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp liên quan yêu cầu thông\
-    \ tin."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: "KNT.INFO_REQUEST_DETAIL.TAX_CODE"
-  comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-    \ TAX_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_information_request"
-  atomic_column: "et_registration_id"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "External Tax Registration Code"
-  description: "Mã số thuế doanh nghiệp liên quan yêu cầu thông tin."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: "KNT.INFO_REQUEST_DETAIL.TAX_CODE"
-  comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-    \ Tax Registration Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_information_request"
-  atomic_column: "et_registration_code"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "Request Name"
-  description: "Tên loại yêu cầu thông tin từ Cục Thuế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: "KNT.INFO_REQUEST_DETAIL.REQUEST_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_information_request"
-  atomic_column: "request_nm"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "Status Description"
-  description: "Mô tả trạng thái xử lý yêu cầu thông tin."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: "KNT.INFO_REQUEST_DETAIL.STATUS_DESCRIPTION"
-  comment: "Denormalized — mô tả tương ứng Response Status Code."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_information_request"
-  atomic_column: "status_description"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "Response Status Code"
-  description: "Trạng thái phản hồi WebService."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: "KNT.INFO_REQUEST_DETAIL.STATUS"
-  comment: null
-  classification_context: "KNT_INFO_REQUEST_STATUS"
-  etl_derived_value: null
-  atomic_table: "et_information_request"
-  atomic_column: "response_status_code"
-  data_type: "int"
-- bcv_core_object: "Communication"
-  atomic_entity: "External Tax Information Request"
-  atomic_attribute: "Message Packet Id"
-  description: "Mã gói tin trao đổi liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INFO_REQUEST_DETAIL"
-  source_column: "KNT.INFO_REQUEST_DETAIL.MSG_PACKET_ID"
-  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
-    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
-    \ — ETL cần convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_information_request"
-  atomic_column: "message_packet_id"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Petition"
@@ -20702,235 +19316,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
   atomic_column: "examination_note"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: null
-  comment: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
-    \ Form Definition\"."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "fr_catalog_id"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog Code"
-  description: "BK duy nhất — Id hash từ trường này."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.ID"
-  comment: "BK chính — Nguồn NUMBER(10,0) — ETL cast sang string."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "fr_catalog_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_REPORT_CATALOG'"
-  etl_derived_value: "IDS_REPORT_CATALOG"
-  atomic_table: "fr_catalog"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Report Code"
-  description: "Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm\
-    \ business reference field."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_CD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "rpt_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog Name"
-  description: "Tên báo cáo (tiếng Việt)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_NAME_VI"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "fr_catalog_nm"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Catalog English Name"
-  description: "Tên báo cáo (tiếng Anh)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_NAME_EN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "fr_catalog_english_nm"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Report Catalog Type Code"
-  description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.RC_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "rpt_catalog_tp_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Year"
-  description: "Lưu năm của báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_YEAR"
-  comment: "Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay vì\
-    \ Date."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "fr_year"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Report Scope Type Code"
-  description: "Loại hình báo cáo (Hợp nhất, Mẹ)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORT_SCOPE_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "fr_scope_tp_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Enterprise Type Code"
-  description: "Loại hình doanh nghiệp (DN, BH, TD, CK)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "enterprise_tp_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Consolidated Indicator"
-  description: "Có phải là báo cáo hợp nhất không."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.CONSOLIDATED_FLG"
-  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "consolidated_ind"
-  data_type: "int"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Statement Type Code"
-  description: "Tham chiếu báo cáo tài chính (không có mô tả tại nguồn)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD"
-  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES\
-    \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE')."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "financial_statement_tp_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Reporting Period Type Code"
-  description: "Loại kỳ báo cáo."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REPORTING_PERIOD_CD"
-  comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "reporting_period_tp_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Financial Report Catalog"
-  atomic_attribute: "Financial Statement Component Type Code"
-  description: "Loại thành phần của báo cáo tài chính."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "REPORT_CATALOG"
-  source_column: "IDS.REPORT_CATALOG.REF_CD"
-  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ LOOKUP_VALUES\
-    \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT')."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "fr_catalog"
-  atomic_column: "financial_statement_component_tp_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Public Company Evaluation Criterion"
@@ -25272,608 +23657,6 @@ attributes:
   atomic_column: "message_packet_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "External Tax Enforcement Invoice Decision Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\". Quyết\
-    \ định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành. Hash: hash_id('KNT_TAX_ENFORCEMENT_INVOICE',\
-    \ DECISION_NUMBER)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "et_enforcement_invoice_decision_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "External Tax Enforcement Invoice Decision Code"
-  description: "Số quyết định thành lập/xử phạt. BK."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER"
-  comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "et_enforcement_invoice_decision_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
-  etl_derived_value: "KNT_TAX_ENFORCEMENT_INVOICE"
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "External Tax Registration Id"
-  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp bị cưỡng chế."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_TAX_CODE"
-  comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-    \ TAX_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "et_registration_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "External Tax Registration Code"
-  description: "Mã số thuế người nộp thuế bị cưỡng chế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_TAX_CODE"
-  comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-    \ Tax Registration Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "et_registration_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Taxpayer Name"
-  description: "Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.TAXPAYER_NAME"
-  comment: "Denormalized snapshot tại thời điểm ban hành quyết định."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "taxpayer_nm"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Direct Tax Authority Code"
-  description: "Mã cơ quan thuế quản lý trực tiếp."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.DIRECT_TAX_AUTHORITY_CODE"
-  comment: "Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết\
-    \ kế hiện tại."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "direct_tax_authority_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Direct Tax Authority Name"
-  description: "Tên cơ quan thuế quản lý trực tiếp."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.DIRECT_TAX_AUTHORITY_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "direct_tax_authority_nm"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Enforcement Method Code"
-  description: "Mã hình thức cưỡng chế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_CODE"
-  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
-    \ Value. Trước đây dùng chung scheme KNT_ENFORCEMENT_METHOD với External Tax Enforcement\
-    \ Debt Decision — nay cả 2 đều map Text 1:1."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "enforcement_method_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Enforcement Method Name"
-  description: "Tên hình thức cưỡng chế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_NAME"
-  comment: "Denormalized — tên tương ứng Enforcement Method Code."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "enforcement_method_nm"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Electronic Transaction Code"
-  description: "Mã giao dịch điện tử trong hệ thống Cục Thuế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.E_TRANSACTION_CODE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "electronic_transaction_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Decision Date"
-  description: "Ngày ban hành quyết định."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.DECISION_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "decision_dt"
-  data_type: "date"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Enforced Entity Business Line Name"
-  description: "Ngành kinh doanh của đối tượng bị cưỡng chế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.ENFORCED_ENTITY_BUSINESS_LINE"
-  comment: "Denormalized snapshot — không phải FK Classification Value KNT_BUSINESS_LINE\
-    \ vì đây là mô tả tự do."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "enforced_entity_business_line_nm"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Decision Effective From Date"
-  description: "Ngày bắt đầu hiệu lực quyết định cưỡng chế."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.DECISION_EFFECTIVE_FROM"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "decision_effective_from_dt"
-  data_type: "date"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Decision Effective To Date"
-  description: "Ngày kết thúc hiệu lực quyết định cưỡng chế."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.DECISION_EFFECTIVE_TO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "decision_effective_to_dt"
-  data_type: "date"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Notice Taxpayer Tax Code"
-  description: "Thông báo: MST người nộp thuế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_TAXPAYER_TAX_CODE"
-  comment: "Denormalized — snapshot MST ghi trên thông báo, có thể trùng External\
-    \ Tax Registration Code nhưng không tạo FK riêng (tránh trùng lặp constraint)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "notice_taxpayer_tax_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Notice Taxpayer Name"
-  description: "Thông báo: tên người nộp thuế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_TAXPAYER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "notice_taxpayer_nm"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Notice Code"
-  description: "Thông báo: mã thông báo cưỡng chế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_CODE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "notice_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Notice Name"
-  description: "Thông báo: tên thông báo cưỡng chế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "notice_nm"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Basis Decision Number"
-  description: "Căn cứ: số quyết định gốc."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.BASIS_DECISION_NUMBER"
-  comment: "Nghi vấn liên kết logic → External Tax Enforcement Debt Decision.External\
-    \ Tax Enforcement Debt Decision Code (xem KNT_HLD_Overview.md mục 7e#1) — chưa\
-    \ xác nhận nghiệp vụ, giữ denormalized Text, không tạo FK."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "basis_decision_nbr"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Basis Decision Date"
-  description: "Căn cứ: ngày quyết định gốc."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.BASIS_DECISION_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "basis_decision_dt"
-  data_type: "date"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Notice Debt Amount"
-  description: "Thông báo: số tiền nợ và tiền phạt nộp chậm."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_DEBT_AMOUNT"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "notice_debt_amt"
-  data_type: "decimal(23,2)"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Notice Debt Date"
-  description: "Thông báo: ngày tính tiền nợ và tiền phạt nộp chậm."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.NOTICE_DEBT_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "notice_debt_dt"
-  data_type: "date"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Validity Flag"
-  description: "Cờ hiệu lực của quyết định/thông báo cưỡng chế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.VALIDITY_FLAG"
-  comment: "Nguồn lưu dạng string (VARCHAR2(100)) — ETL cần cast sang boolean. Cần\
-    \ profile giá trị thực tế (có thể không phải true/false đơn thuần)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "validity_flag"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Global Unique Identifier"
-  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.GUID"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "global_unique_identifier"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Invoice Decision"
-  atomic_attribute: "Message Packet Id"
-  description: "Mã gói tin trao đổi liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_INVOICE"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.MSG_PACKET_ID"
-  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
-    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
-    \ — ETL cần convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_enforcement_invoice_decision"
-  atomic_column: "message_packet_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "External Tax Invoice Detail Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể bị áp\
-    \ dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT_INVOICE_DETAIL',\
-    \ ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "et_invoice_detail_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "External Tax Invoice Detail Code"
-  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ đơn lẻ duy\
-    \ nhất (INVOICE_NUMBER cần kết hợp INVOICE_TEMPLATE_SYMBOL/INVOICE_SYMBOL mới\
-    \ đủ định danh), dùng PK kỹ thuật làm BK duy nhất."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: "KNT.INVOICE_DETAIL.ID"
-  comment: "BK chính. PK nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "et_invoice_detail_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
-  etl_derived_value: "KNT_INVOICE_DETAIL"
-  atomic_table: "et_invoice_detail"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "External Tax Enforcement Invoice Decision Id"
-  description: "FK -> tax_enforcement_invoice: Quyết định cưỡng chế ngừng hóa đơn."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: "KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID"
-  comment: "FK target: et_enforcement_invoice_decision.et_enforcement_invoice_decision_id.\
-    \ Cần ETL crosswalk sang KNT.TAX_ENFORCEMENT_INVOICE: INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID\
-    \ = TAX_ENFORCEMENT_INVOICE.ID để xác nhận DECISION_NUMBER sau đó hash_id('KNT_TAX_ENFORCEMENT_INVOICE',\
-    \ DECISION_NUMBER)"
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "et_enforcement_invoice_decision_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "External Tax Enforcement Invoice Decision Code"
-  description: "Số quyết định cưỡng chế ngừng sử dụng hóa đơn liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER"
-  comment: "Lookup pair: et_enforcement_invoice_decision.et_enforcement_invoice_decision_code.\
-    \ Pair with External Tax Enforcement Invoice Decision Id. Giá trị lấy từ KNT.TAX_ENFORCEMENT_INVOICE.DECISION_NUMBER\
-    \ sau ETL crosswalk — chi tiết xem comment External Tax Enforcement Invoice Decision\
-    \ Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "et_enforcement_invoice_decision_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "Invoice Template Symbol"
-  description: "Ký hiệu mẫu hóa đơn."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: "KNT.INVOICE_DETAIL.INVOICE_TEMPLATE_SYMBOL"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "invoice_template_symbol"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "Invoice Symbol"
-  description: "Ký hiệu hóa đơn."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: "KNT.INVOICE_DETAIL.INVOICE_SYMBOL"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "invoice_symbol"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "Invoice Number"
-  description: "Số hóa đơn."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: "KNT.INVOICE_DETAIL.INVOICE_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "invoice_nbr"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "Invoice Type Code"
-  description: "Loại hóa đơn bị cưỡng chế ngừng sử dụng."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: "KNT.INVOICE_DETAIL.INVOICE_TYPE"
-  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
-    \ Value. Giữ nguyên giá trị text từ nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "invoice_tp_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Invoice Detail"
-  atomic_attribute: "Object Id"
-  description: "ID đối tượng trong hệ thống Cục Thuế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "INVOICE_DETAIL"
-  source_column: "KNT.INVOICE_DETAIL.OBJ_ID"
-  comment: "Denormalized — nguồn không xác định rõ entity đích, không tạo FK."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_invoice_detail"
-  atomic_column: "object_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
   atomic_entity: "External Tax Violation Handling"
   atomic_attribute: "External Tax Violation Handling Id"
   description: "Khóa đại diện (surrogate key)."
@@ -26516,6 +24299,235 @@ attributes:
   etl_derived_value: null
   atomic_table: "financial_report"
   atomic_column: "operating_unit_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('IDS_REPORT_CATALOG', ID). BCV: \"[Condition]\
+    \ Form Definition\"."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog Code"
+  description: "BK duy nhất — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.ID"
+  comment: "BK chính — Nguồn NUMBER(10,0) — ETL cast sang string."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_REPORT_CATALOG'"
+  etl_derived_value: "IDS_REPORT_CATALOG"
+  atomic_table: "fr_catalog"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Report Code"
+  description: "Mã báo cáo. Trước đây là BK nhưng không đảm bảo unique — giữ lại làm\
+    \ business reference field."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "rpt_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog Name"
+  description: "Tên báo cáo (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_NAME_VI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Catalog English Name"
+  description: "Tên báo cáo (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_catalog_english_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Report Catalog Type Code"
+  description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.RC_TYPE_CD"
+  comment: "SCHEMA_CODE=IDS.REPORT_CATALOG_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='RC_TYPE')."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "rpt_catalog_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Year"
+  description: "Lưu năm của báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_YEAR"
+  comment: "Nguồn VARCHAR2(4) — chỉ lưu năm (không có tháng/ngày), giữ Text thay vì\
+    \ Date."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_year"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Report Scope Type Code"
+  description: "Loại hình báo cáo (Hợp nhất, Mẹ)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORT_SCOPE_CD"
+  comment: "SCHEMA_CODE=IDS.REPORT_SCOPE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_SCOPE')."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "fr_scope_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Enterprise Type Code"
+  description: "Loại hình doanh nghiệp (DN, BH, TD, CK)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.ENTERPRISE_TYPE_CD"
+  comment: "SCHEMA_CODE=IDS.ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTERPRISE_TYPE')."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "enterprise_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Consolidated Indicator"
+  description: "Có phải là báo cáo hợp nhất không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.CONSOLIDATED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "consolidated_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Statement Type Code"
+  description: "Tham chiếu báo cáo tài chính (không có mô tả tại nguồn)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.FINANCIAL_STATEMENT_CD"
+  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_TYPE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_TYPE')."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "financial_statement_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Reporting Period Type Code"
+  description: "Loại kỳ báo cáo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REPORTING_PERIOD_CD"
+  comment: "SCHEMA_CODE=IDS.REPORT_PERIOD_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='REPORT_PERIOD_TYPE')."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "reporting_period_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Financial Report Catalog"
+  atomic_attribute: "Financial Statement Component Type Code"
+  description: "Loại thành phần của báo cáo tài chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "REPORT_CATALOG"
+  source_column: "IDS.REPORT_CATALOG.REF_CD"
+  comment: "SCHEMA_CODE=IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='FINANCIAL_STATEMENT_COMPONENT')."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fr_catalog"
+  atomic_column: "financial_statement_component_tp_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Financial Report Column"
@@ -29889,7 +27901,7 @@ attributes:
   source_column: "FMS.RPT_MEMBER.EVENT_TYPE_ID"
   comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
     \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
-    \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier8 6f)."
+    \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier6 6f)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmr_submission"
@@ -35081,6 +33093,1099 @@ attributes:
   etl_derived_value: null
   atomic_table: "pc_report_submission"
   atomic_column: "flattened_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Adhoc Report Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: null
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_adhoc_rpt_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Adhoc Report Code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_adhoc_rpt_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
+  etl_derived_value: "SCMS_SC_FIRM_ADHOC_REPORT"
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Id"
+  description: "FK đến Công ty chứng khoán nộp báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID"
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+    \ SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_INFO.CODE"
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Foreign Branch Id"
+  description: "FK đến chi nhánh CTCK nước ngoài liên quan (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+    \ SC_FIRM_FOREIGN_BRANCH_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_foreign_branch_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Foreign Branch Code"
+  description: "Mã chi nhánh CTCK nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with Securities\
+    \ Company Foreign Branch Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_foreign_branch_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Bank Id"
+  description: "FK đến ngân hàng liên quan đến báo cáo (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
+  comment: "FK target: sc_bank.sc_bank_id. Hash: hash_id('SCMS_BANK', BANK_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_bank_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Bank Code"
+  description: "Mã ngân hàng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
+  comment: "Lookup pair: sc_bank.sc_bank_code. Pair with Bank Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_bank_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Report Id"
+  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_rpt_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Report Code"
+  description: "Mã biểu mẫu báo cáo liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Report\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_rpt_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Submitted Securities Company Report Id"
+  description: "Phiên bản biểu mẫu báo cáo. ID của FORM_REPORT tại thời điểm nộp —\
+    \ phiên bản cụ thể đã dùng khi nộp, có thể khác Securities Company Report Id nếu\
+    \ biểu mẫu đã phát sinh phiên bản mới hơn sau khi nộp (Data Modeler xác nhận 2026-09-17)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_VERSION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "submitted_sc_rpt_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Submitted Securities Company Report Code"
+  description: "Mã biểu mẫu báo cáo tại thời điểm nộp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Submitted Securities Company\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "submitted_sc_rpt_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Report Input Submission Id"
+  description: "FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID"
+  comment: "FK target: sc_report_input_submission.sc_rpt_input_submission_id. Hash:\
+    \ hash_id('SCMS_REPORT_INPUT_SUBMISSION', REPORT_INPUT_SUBMISSION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_rpt_input_submission_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Securities Company Report Input Submission Code"
+  description: "Mã phiên gửi báo cáo liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID"
+  comment: "Lookup pair: sc_report_input_submission.sc_rpt_input_submission_code.\
+    \ Pair with Securities Company Report Input Submission Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sc_rpt_input_submission_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Report Name"
+  description: "Tên báo cáo/biểu mẫu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_NAME"
+  comment: "VARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "rpt_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_YEAR"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "rpt_year"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Document Number"
+  description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_NUMBER"
+  comment: "VARCHAR2(200)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "document_nbr"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Period Value"
+  description: "Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.PERIOD_VALUE"
+  comment: "NVARCHAR2(200)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "period_val"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Adhoc Report Code"
+  description: "Mã chi tiết loại báo cáo (TT96/nhóm stakeholder), tùy chọn.."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.DETAIL_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "adhoc_rpt_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Category Code"
+  description: "Phân loại báo cáo đột xuất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CATEGORY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "category_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Signature Type Code"
+  description: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload file ký;\
+    \ NONE=Không yêu cầu chữ ký."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SIGNATURE_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "signature_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Report Submission Status Code"
+  description: "Trạng thái nộp báo cáo đột xuất: 0-Chưa gửi; 1-Gửi đúng hạn; 2-Gửi\
+    \ muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo cáo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
+  comment: "SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "rpt_submission_status_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Previous Report Submission Status Code"
+  description: "Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.PREVIOUS_SUBMIT_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "previous_rpt_submission_status_code"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Depositary Bank Scope Code"
+  description: "Phân loại ngân hàng lúc tạo báo cáo: LUU_KY=Lưu ký; GIAM_SAT=Giám\
+    \ sát."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.BANK_SCOPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "depositary_bank_scope_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Allow Import Indicator"
+  description: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không cho phép."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.ALLOW_IMPORT"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "allow_import_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Overdue Days"
+  description: "Số ngày gửi báo cáo muộn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.LATE_SUBMISSION_DAYS"
+  comment: "NUMBER(10). Đổi tên từ SO_NGAY_GUI_MUON — DDL UAT hiện tại: LATE_SUBMISSION_DAYS."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "overdue_days"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Submission Deadline Timestamp"
+  description: "Hạn nộp báo cáo đột xuất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SUBMISSION_DEADLINE"
+  comment: "TIMESTAMP(6). Đổi tên từ HAN_GUI — DDL UAT hiện tại: SUBMISSION_DEADLINE."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "submission_deadline_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Requires Disclosure Indicator"
+  description: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.REQUIRES_DISCLOSURE"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "requires_disclosure_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Classification Securities Company Event Type Id"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "cl_sc_event_tp_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Classification Securities Company Event Type Code"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "cl_sc_event_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Event Date"
+  description: "Ngày xảy ra sự kiện báo cáo đột xuất."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_DATE"
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "event_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Document Date"
+  description: "Ngày ký/ban hành văn bản."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "document_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Sent Timestamp"
+  description: "Thời điểm gửi báo cáo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SENT_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sent_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Cancelled Timestamp"
+  description: "Thời điểm hủy báo cáo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "cancelled_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Sender IAM User Id"
+  description: "FK đến người gửi báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM_USERS', SENDER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sender_iam_user_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Sender IAM User Code"
+  description: "Mã người gửi báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Sender IAM User Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "sender_iam_user_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Cancelled By IAM User Id"
+  description: "FK đến người hủy báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "cancelled_by_iam_user_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Cancelled By IAM User Code"
+  description: "Mã người hủy báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Cancelled By IAM User Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "cancelled_by_iam_user_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Import File Path"
+  description: "Đường dẫn file Excel import dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.IMPORT_FILE_PATH"
+  comment: "VARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "import_file_path"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Adhoc Report"
+  atomic_attribute: "Source Record Insert Timestamp"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại hệ thống\
+    \ nguồn."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADHOC_REPORT"
+  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CREATED_AT"
+  comment: "TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột nguồn\
+    \ CREATED_AT)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_adhoc_report"
+  atomic_column: "src_record_insert_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Securities Company Periodic Report Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: null
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "sc_periodic_rpt_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Securities Company Periodic Report Code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.ID"
+  comment: "BK. NUMBER(19) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "sc_periodic_rpt_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+  etl_derived_value: "SCMS_SC_FIRM_PERIODIC_REPORT"
+  atomic_table: "sc_periodic_report"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Securities Company Id"
+  description: "FK đến Công ty chứng khoán nộp báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID"
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+    \ SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
+    \ crosswalk 2026-07-27."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "sc_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Securities Company Code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_INFO.CODE"
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "sc_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Securities Company Form Report Id"
+  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID"
+  comment: "FK target: sc_report.sc_rpt_id. Hash: hash_id('SCMS_FORM_REPORT', FORM_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "sc_form_rpt_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Securities Company Form Report Code"
+  description: "Mã biểu mẫu báo cáo liên quan (FORM_REPORT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID"
+  comment: "Lookup pair: sc_report.sc_rpt_code. Pair with Securities Company Form\
+    \ Report Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "sc_form_rpt_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Report Name"
+  description: "Tên báo cáo/biểu mẫu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_NAME"
+  comment: "NVARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "rpt_nm"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_YEAR"
+  comment: "NUMBER(10) — giá trị năm (VD: 2024)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "rpt_year"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Period"
+  description: "Kỳ số (1-4 cho quý, 1-12 cho tháng)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.PERIOD"
+  comment: "NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "period"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Quarter"
+  description: "Quý trong năm (1, 2, 3, 4)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.QUARTER"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "quarter"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Report Month"
+  description: "Tháng trong năm."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_MONTH"
+  comment: "NUMBER(10). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "rpt_month"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Report Period"
+  description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_PERIOD"
+  comment: "VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value theo\
+    \ quyết định thiết kế."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "rpt_period"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Start Date"
+  description: "Ngày bắt đầu kỳ báo cáo hoặc hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "start_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "End Date"
+  description: "Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "end_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Submission Deadline Date"
+  description: "Hạn nộp báo cáo theo quy định."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE"
+  comment: "SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp — ETL\
+    \ dùng SUBMISSION_DEADLINE (DATE)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "submission_deadline_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Submission Deadline Timestamp"
+  description: "Hạn nộp báo cáo theo quy định (có giờ)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT"
+  comment: "TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE. ETL dùng cột này\
+    \ nếu cần độ chính xác giờ."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "submission_deadline_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Report Submission Status Code"
+  description: "Trạng thái nộp báo cáo định kỳ: 0-Chưa gửi; 1-Gửi đúng hạn; 2-Gửi\
+    \ muộn; 3-Bị hủy; -1-Từ chối; 4-Chờ duyệt gửi lại; 5-Gửi lại báo cáo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.RECORD_STATUS"
+  comment: "SCHEMA_CODE=SCMS.SC_FIRM_REPORT.RECORD_STATUS"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "rpt_submission_status_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Overdue Days"
+  description: "Số ngày nộp báo cáo quá hạn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.OVERDUE_DAYS"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "overdue_days"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Classification Securities Company Event Type Id"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID"
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "cl_sc_event_tp_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Classification Securities Company Event Type Code"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID"
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "cl_sc_event_tp_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Sent Timestamp"
+  description: "Thời điểm gửi báo cáo lên UBCKNN."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.SENT_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "sent_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Valid Digital Signature Indicator"
+  description: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DIGITAL_SIGNATURE"
+  comment: "NUMBER(1). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "valid_digital_signature_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Valid Data Indicator"
+  description: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ; 0=Không hợp\
+    \ lệ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DATA"
+  comment: "NUMBER(1). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "valid_data_ind"
+  data_type: "int"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Periodic Report"
+  atomic_attribute: "Previous Report Submission Status Code"
+  description: "Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PERIODIC_REPORT"
+  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.PREVIOUS_SUBMIT_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_periodic_report"
+  atomic_column: "previous_rpt_submission_status_code"
   data_type: "int"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report"
@@ -49896,230 +49001,6 @@ attributes:
   atomic_column: "business_email_adr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "External Tax Registration Representative Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\". Người\
-    \ đại diện pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration.\
-    \ Hash: hash_id('KNT_TAX_REG_REPRESENTATIVE', ID)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "et_registration_representative_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "External Tax Registration Representative Code"
-  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,\
-    \ dùng PK kỹ thuật làm BK duy nhất."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.ID"
-  comment: "BK chính. PK nguồn."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "et_registration_representative_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
-  etl_derived_value: "KNT_TAX_REG_REPRESENTATIVE"
-  atomic_table: "et_registration_representative"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "External Tax Registration Id"
-  description: "FK -> tax_registration_info: Hồ sơ đăng ký thuế liên quan."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID"
-  comment: "FK target: et_registration.et_registration_id. Cần ETL crosswalk sang\
-    \ KNT.TAX_REGISTRATION_INFO: TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID = TAX_REGISTRATION_INFO.ID\
-    \ để xác nhận TAX_CODE sau đó hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)"
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "et_registration_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "External Tax Registration Code"
-  description: "Mã số thuế hồ sơ đăng ký thuế liên quan."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-  comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-    \ Tax Registration Id. Giá trị lấy từ KNT.TAX_REGISTRATION_INFO.TAX_CODE sau ETL\
-    \ crosswalk — chi tiết xem comment External Tax Registration Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "et_registration_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Full Name"
-  description: "Họ tên người đại diện/chủ hộ kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.REPRESENTATIVE_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Position"
-  description: "Chức vụ (tên hoặc mã)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.POSITION"
-  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — xác nhận là free text,\
-    \ không phải Classification Value cố định. Đổi tên từ \"Position Code\" vì mô\
-    \ tả nguồn là \"tên hoặc mã\", không chỉ mã."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "position"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Identification Type Code"
-  description: "Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_TYPE"
-  comment: "Map 1:1 từ nguồn, giữ nguyên mã nguồn (1010/2080/1020), không qua Classification\
-    \ Value (gộp từ ip_alternative_identification, quyết định Data Modeler 2026-10-20)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "identification_tp_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Identification Number"
-  description: "Số giấy tờ định danh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_NUMBER"
-  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_alternative_identification,\
-    \ quyết định Data Modeler 2026-10-20)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "identification_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Identification Issue Date"
-  description: "Ngày cấp giấy tờ định danh. Mô tả gốc nguồn: Ngày cấp giấy phép thành\
-    \ lập."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.ISSUE_DATE"
-  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_alternative_identification,\
-    \ quyết định Data Modeler 2026-10-20)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "identification_issue_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Phone Number"
-  description: "Số điện thoại liên hệ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.PHONE"
-  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định\
-    \ Data Modeler 2026-10-20)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "phone_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Fax Number"
-  description: "Số fax."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.FAX"
-  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định\
-    \ Data Modeler 2026-10-20)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "fax_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Email Address"
-  description: "Địa chỉ email liên hệ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REG_REPRESENTATIVE"
-  source_column: "KNT.TAX_REG_REPRESENTATIVE.EMAIL"
-  comment: "Map 1:1 từ nguồn (gộp từ shared entity ip_electronic_address, quyết định\
-    \ Data Modeler 2026-10-20)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "et_registration_representative"
-  atomic_column: "email_adr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit"
   atomic_attribute: "Foreign Fund Management Organization Unit Id"
   description: "Khóa đại diện (surrogate key)."
@@ -51051,10 +49932,9 @@ attributes:
   source_system: "FIMS"
   source_table: "INVESTOR"
   source_column: "FIMS.INVESTOR.SecComAddId"
-  comment: "Pending — FK target: Market Participant Organization.Market Participant\
-    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS_SECURITIESCOMPANY',\
-    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
-    \ BK."
+  comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
+    \ SecComAddId). Entity Securities Company gộp từ FIMS.SECURITIESCOMPANY + SCMS.SC_FIRM_INFO\
+    \ (xem lld_FIMS_SECURITIESCOMPANY.yaml)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "foreign_investor"
@@ -51070,8 +49950,8 @@ attributes:
   source_system: "FIMS"
   source_table: "INVESTOR"
   source_column: "FIMS.INVESTOR.SecComAddId"
-  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
-    \ Code. Pending — xem ghi chú ở Trading Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "foreign_investor"
@@ -51869,7 +50749,7 @@ attributes:
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.INSIDER_ID"
   comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSIDER_ID).\
-    \ Pending — entity thiết kế ở Tier 5."
+    \ Pending — entity thiết kế ở Tier 4."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_management_company"
@@ -51886,7 +50766,7 @@ attributes:
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.INSIDER_ID"
   comment: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Fund Management Company\
-    \ Insider Id. Pending — entity thiết kế ở Tier 5."
+    \ Insider Id. Pending — entity thiết kế ở Tier 4."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_management_company"
@@ -53027,7 +51907,7 @@ attributes:
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.INSDER_ID"
   comment: "FK target: fmc_insider.fmc_insider_id. Hash: hash_id('FMS_INSIDER', INSDER_ID).\
-    \ Pending — entity thiết kế ở Tier 5."
+    \ Pending — entity thiết kế ở Tier 4."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_employee"
@@ -53044,7 +51924,7 @@ attributes:
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.INSDER_ID"
   comment: "Lookup pair: fmc_insider.fmc_insider_code. Pair with Fund Management Company\
-    \ Insider Id. Pending — entity thiết kế ở Tier 5."
+    \ Insider Id. Pending — entity thiết kế ở Tier 4."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_employee"
@@ -55737,39 +54617,75 @@ attributes:
   data_type: "int"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Public Company"
-  atomic_attribute: "Business Line Level 1 Type Code"
-  description: "Mã ngành cấp 1."
-  data_domain: "Classification Value"
+  atomic_attribute: "Classification IDS Business Line Level 1 Id"
+  description: "Khóa đại diện của ngành nghề cấp 1."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
-  source_column: "IDS.CATEGORIES.INDUSTRY_CD"
-  comment: "SCHEMA_CODE=BUSINESS_LINE_LEVEL_1. Values load từ CATEGORIES. Cần ETL\
-    \ crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID\
-    \ để xác nhận INDUSTRY_CD."
+  source_column: "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
+  comment: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL crosswalk\
+    \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L1_ID = CATEGORIES.ID để xác\
+    \ nhận INDUSTRY_CD sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
-  atomic_column: "business_line_level_1_tp_code"
+  atomic_column: "cl_ids_business_line_level_1_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Public Company"
-  atomic_attribute: "Business Line Level 2 Type Code"
-  description: "Mã ngành cấp 2."
-  data_domain: "Classification Value"
+  atomic_attribute: "Classification IDS Business Line Level 1 Code"
+  description: "Mã ngành nghề cấp 1."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.CATEGORIES.INDUSTRY_CD"
-  comment: "SCHEMA_CODE=BUSINESS_LINE_LEVEL_2. Values load từ CATEGORIES. Cần ETL\
-    \ crosswalk sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID\
-    \ để xác nhận INDUSTRY_CD."
+  comment: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair with\
+    \ Business Line Level 1 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL\
+    \ crosswalk — chi tiết xem comment Business Line Level 1 Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
-  atomic_column: "business_line_level_2_tp_code"
+  atomic_column: "cl_ids_business_line_level_1_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Public Company"
+  atomic_attribute: "Classification IDS Business Line Level 2 Id"
+  description: "Khóa đại diện của ngành nghề cấp 2."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_PROFILES"
+  source_column: "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
+  comment: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL crosswalk\
+    \ sang IDS.CATEGORIES: COMPANY_PROFILES.CATEGORY_L2_ID = CATEGORIES.ID để xác\
+    \ nhận INDUSTRY_CD sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "public_company"
+  atomic_column: "cl_ids_business_line_level_2_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Public Company"
+  atomic_attribute: "Classification IDS Business Line Level 2 Code"
+  description: "Mã ngành nghề cấp 2."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_PROFILES"
+  source_column: "IDS.CATEGORIES.INDUSTRY_CD"
+  comment: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair with\
+    \ Business Line Level 2 Id. Giá trị lấy từ IDS.CATEGORIES.INDUSTRY_CD sau ETL\
+    \ crosswalk — chi tiết xem comment Business Line Level 2 Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "public_company"
+  atomic_column: "cl_ids_business_line_level_2_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Public Company"
@@ -74050,6 +72966,129 @@ attributes:
   atomic_column: "reporting_entity_short_nm"
   data_type: "string"
 - bcv_core_object: "Common"
+  atomic_entity: "Classification IDS Business Line"
+  atomic_attribute: "Classification IDS Business Line Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('IDS_CATEGORIES', INDUSTRY_CD). BCV: \"[Common]\
+    \ Industry Classification\" (cùng concept với Classification FMS Business)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ids_business_line"
+  atomic_column: "cl_ids_business_line_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification IDS Business Line"
+  atomic_attribute: "Classification IDS Business Line Code"
+  description: "Mã ngành nghề. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  source_column: "IDS.CATEGORIES.INDUSTRY_CD"
+  comment: "BK của entity. Nguồn VARCHAR2(1020) — cần profile xác nhận NOT NULL/unique\
+    \ trước go-live (Code đóng vai trò BK)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ids_business_line"
+  atomic_column: "cl_ids_business_line_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification IDS Business Line"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_CATEGORIES'"
+  etl_derived_value: "IDS_CATEGORIES"
+  atomic_table: "cl_ids_business_line"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification IDS Business Line"
+  atomic_attribute: "Classification IDS Business Line Name"
+  description: "Tên ngành nghề."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  source_column: "IDS.CATEGORIES.INDUSTRY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ids_business_line"
+  atomic_column: "cl_ids_business_line_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification IDS Business Line"
+  atomic_attribute: "Description"
+  description: "Mô tả."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  source_column: "IDS.CATEGORIES.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ids_business_line"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification IDS Business Line"
+  atomic_attribute: "Parent Classification IDS Business Line Id"
+  description: "Khóa đại diện của ngành nghề cha (mã cha). FK tự tham chiếu; NULL\
+    \ cho ngành cấp 1 (đỉnh phân cấp)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  source_column: "IDS.CATEGORIES.PARENT_ID"
+  comment: "FK target: cl_ids_business_line.cl_ids_business_line_id. Cần ETL crosswalk\
+    \ (self-join) sang IDS.CATEGORIES: CATEGORIES.PARENT_ID = CATEGORIES_PARENT.ID\
+    \ để lấy INDUSTRY_CD của dòng cha sau đó hash_id('IDS_CATEGORIES', INDUSTRY_CD)\
+    \ | PARENT_ID là ID kỹ thuật, không hash trực tiếp (nếu hash theo ID sẽ không\
+    \ khớp Id của dòng cha — vốn hash từ INDUSTRY_CD)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ids_business_line"
+  atomic_column: "parent_cl_ids_business_line_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification IDS Business Line"
+  atomic_attribute: "Parent Classification IDS Business Line Code"
+  description: "Mã ngành nghề cha — lookup pair với Parent Classification IDS Business\
+    \ Line Id."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  source_column: "IDS.CATEGORIES.INDUSTRY_CD"
+  comment: "Lookup pair: cl_ids_business_line.cl_ids_business_line_code. Pair with\
+    \ Parent Classification IDS Business Line Id. Giá trị lấy từ INDUSTRY_CD của dòng\
+    \ cha (self-join CATEGORIES.PARENT_ID = CATEGORIES.ID) — chi tiết xem comment\
+    \ Parent Classification IDS Business Line Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ids_business_line"
+  atomic_column: "parent_cl_ids_business_line_code"
+  data_type: "string"
+- bcv_core_object: "Common"
   atomic_entity: "Classification Risk Indicator"
   atomic_attribute: "Classification Risk Indicator Id"
   description: "Khóa đại diện (surrogate key)."
@@ -75478,13 +74517,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "MRMS"
   source_table: "RISK_INDICATOR_CATEGORY"
   source_column: null
-  comment: "Scheme: MRMS.RISK_INDICATOR_CATEGORY. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "MRMS.RISK_INDICATOR_CATEGORY"
   atomic_table: "cl_value"
@@ -75708,13 +74747,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "DEPARTMENTS"
   source_column: null
-  comment: "Scheme: NHNCK.DEPARTMENTS. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "NHNCK.DEPARTMENTS"
   atomic_table: "cl_value"
@@ -75821,13 +74860,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "POSITIONS"
   source_column: null
-  comment: "Scheme: NHNCK.POSITIONS. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "NHNCK.POSITIONS"
   atomic_table: "cl_value"
@@ -75939,13 +74978,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "EDUCATION_LEVELS"
   source_column: null
-  comment: "Scheme: NHNCK.EDUCATION_LEVELS. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "NHNCK.EDUCATION_LEVELS"
   atomic_table: "cl_value"
@@ -76051,13 +75090,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "APPLICATION_SOURCES"
   source_column: null
-  comment: "Scheme: NHNCK.APPLICATION_SOURCES. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "NHNCK.APPLICATION_SOURCES"
   atomic_table: "cl_value"
@@ -76163,13 +75202,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "APPLICATION_STATUSES"
   source_column: null
-  comment: "Scheme: NHNCK.APPLICATION_STATUSES. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "NHNCK.APPLICATION_STATUSES"
   atomic_table: "cl_value"
@@ -76275,13 +75314,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "DOCUMENTS"
   source_column: null
-  comment: "Scheme: NHNCK.DOCUMENTS. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "NHNCK.DOCUMENTS"
   atomic_table: "cl_value"
@@ -76388,13 +75427,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "SPECIALIZATIONS"
   source_column: null
-  comment: "Scheme: NHNCK.SPECIALIZATIONS. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "NHNCK.SPECIALIZATIONS"
   atomic_table: "cl_value"
@@ -76501,13 +75540,13 @@ attributes:
   atomic_entity: "Classification Value"
   atomic_attribute: "Schema Code"
   description: "Mã loại phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "NHNCK"
   source_table: "BANKS"
   source_column: null
-  comment: "Scheme: NHNCK.BANKS. Hardcode."
+  comment: "Hardcode giá trị trong etl_derived_value."
   classification_context: null
   etl_derived_value: "NHNCK.BANKS"
   atomic_table: "cl_value"
@@ -85434,7 +84473,7 @@ attributes:
   comment: "SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE')."
   classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type\
     \ Code = 'IDENTIFICATION'"
-  etl_derived_value: null
+  etl_derived_value: "IDENTIFICATION"
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_tp_code"
   data_type: "string"

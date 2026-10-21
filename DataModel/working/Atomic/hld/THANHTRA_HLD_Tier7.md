@@ -9,7 +9,7 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Event | [Event] Event | Circumstance | PENALTY_DECISION_CIRCUMSTANCE | Update | Tình tiết tăng nặng/giảm nhẹ áp dụng cho từng hành vi vi phạm trong quyết định: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT — entity nhỏ nhưng cần thiết cho tính toán mức phạt | Penalty Decision Circumstance | Fundamental | (1) Conduct Violation — BCV: entity này mô tả tình tiết cụ thể của hành vi vi phạm. (2) Bảng có FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT(CLOB) — ghi nhận từng tình tiết tăng nặng hoặc giảm nhẹ ảnh hưởng đến mức phạt. (3) Conduct Violation đồng concept với chuỗi parent entities. Tên entity theo LLD: "Penalty Decision Circumstance" (prefix "Penalty Decision" của nhóm). |
+| Event | [Event] Event | Circumstance | PENALTY_DECISION_CIRCUMSTANCE | Update | Tình tiết tăng nặng/giảm nhẹ áp dụng cho từng hành vi vi phạm trong quyết định: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT — entity nhỏ nhưng cần thiết cho tính toán mức phạt | Penalty Decision Circumstance | Fundamental | (1) Event — BCV: "a happening about which the Financial Institution wishes to keep information". Đồng concept với chuỗi parent Penalty Decision. (2) Bảng: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT(CLOB) — ghi nhận từng tình tiết tăng nặng/giảm nhẹ ảnh hưởng mức phạt. (3) `[Event] Event` theo LLD. Tên entity theo LLD: "Penalty Decision Circumstance" (prefix "Penalty Decision" của nhóm). |
 
 ---
 
@@ -70,5 +70,4 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T7-01 | PENALTY_DECISION_CIRCUMSTANCE rất lean (chỉ 3 trường nghiệp vụ: FK + CIRCUMSTANCE_TYPE + CONTENT). Có nên denormalize vào PENALTY_DECISION_SUBJECT_BEHAVIOR thành ARRAY<STRUCT> không? | Giữ entity riêng vì: (1) 1 behavior có nhiều tình tiết, (2) tình tiết có nội dung chi tiết (CLOB), (3) tách entity giúp phân tích số lượng tình tiết tăng nặng/giảm nhẹ độc lập. Xác nhận với BA. |
-| T7-02 | Đây là Tier cuối (T7) — không có entity nào phụ thuộc vào PENALTY_DECISION_CIRCUMSTANCE trong scope THANHTRA. | Xác nhận qua review toàn bộ BRD — không có bảng nào FK đến PENALTY_DECISION_CIRCUMSTANCE. |
+| T7-01 | Đây là Tier cuối (T7) — không có entity nào phụ thuộc vào PENALTY_DECISION_CIRCUMSTANCE trong scope THANHTRA. | Xác nhận qua review toàn bộ BRD — không có bảng nào FK đến PENALTY_DECISION_CIRCUMSTANCE. |

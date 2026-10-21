@@ -17,12 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Gộp với IDS.HTE_VIOLATION_REPORT vào cùng entity Violation Report per HLD\
-    \ Tier3 xác nhận (mục 6/7a) — đảo ngược quyết định giữ riêng trước đó. Phân biệt\
-    \ nguồn qua Source System Code (SOURCE_SYSTEM=IDS_VIOLATION_REPORT vs SOURCE_SYSTEM=IDS_HTE_VIOLATION_REPORT),\
-    \ theo đúng pattern đã dùng cho Audit Firm (AUDIT.AF_PROFILES + SCMS.AUDIT_FIRM).\
-    \ Đổi tên từ \"Public Company Violation Report\" (2026-08-05, theo yêu cầu tường\
-    \ minh Data Modeler)."
+  notes: "Nguồn IDS.VIOLATION_REPORT. Đổi tên từ \"Public Company Violation Report\" (2026-08-05, theo yêu cầu tường minh Data Modeler)."
 attributes:
 - attribute_name: "Violation Report Id"
   physical_name: "vr_id"
@@ -57,8 +52,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode. Dùng để phân biệt nguồn VIOLATION_REPORT\
-    \ vs HTE_VIOLATION_REPORT khi gộp entity."
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=IDS_VIOLATION_REPORT"
   etl_derived_value: "IDS_VIOLATION_REPORT"
   data_type: "string"

@@ -210,19 +210,6 @@ entries:
   attribute_count: 17
   brd_ref: BRD-SRC-AUDIT-AF_WARNING
 - subfolder: Business_Activity
-  file_name: dm_atm_et_high_risk_enterprise-KNT.HIGH_RISK_ENTERPRISE.yaml
-  id: ATM-et_high_risk_enterprise-KNT.HIGH_RISK_ENTERPRISE
-  physical_name: et_high_risk_enterprise
-  logical_name: External Tax High Risk Enterprise
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Involved Party Rating Activity"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
-  status: draft
-  attribute_count: 8
-  brd_ref: BRD-SRC-KNT-HIGH_RISK_ENTERPRISE
-- subfolder: Business_Activity
   file_name: dm_atm_examination_annual_plan_target-THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET.yaml
   id: ATM-examination_annual_plan_target-THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET
   physical_name: examination_annual_plan_target
@@ -1029,6 +1016,19 @@ entries:
   attribute_count: 9
   brd_ref: BRD-SRC-FIMS-CL_FOREIGN_INVESTOR_REPORTING_ENTITY
 - subfolder: Common
+  file_name: dm_atm_cl_ids_business_line-IDS.CATEGORIES.yaml
+  id: ATM-cl_ids_business_line-IDS.CATEGORIES
+  physical_name: cl_ids_business_line
+  logical_name: Classification IDS Business Line
+  bcv_core_object: Common
+  bcv_concept: "[Common] Industry Classification"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: IDS
+  status: approved
+  attribute_count: 7
+  brd_ref: BRD-SRC-IDS-CATEGORIES
+- subfolder: Common
   file_name: dm_atm_cl_risk_indicator-MRMS.RISK_INDICATOR.yaml
   id: ATM-cl_risk_indicator-MRMS.RISK_INDICATOR
   physical_name: cl_risk_indicator
@@ -1249,19 +1249,6 @@ entries:
   status: draft
   attribute_count: 4
   brd_ref: BRD-SRC-VSDC-NATIONALITY
-- subfolder: Communication
-  file_name: dm_atm_et_information_request-KNT.INFO_REQUEST_DETAIL.yaml
-  id: ATM-et_information_request-KNT.INFO_REQUEST_DETAIL
-  physical_name: et_information_request
-  logical_name: External Tax Information Request
-  bcv_core_object: Communication
-  bcv_concept: "[Communication] Information Request"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
-  status: draft
-  attribute_count: 9
-  brd_ref: BRD-SRC-KNT-INFO_REQUEST_DETAIL
 - subfolder: Communication
   file_name: dm_atm_petition-THANHTRA.PETITION.yaml
   id: ATM-petition-THANHTRA.PETITION
@@ -1510,32 +1497,6 @@ entries:
   attribute_count: 30
   brd_ref: BRD-SRC-KNT-TAX_ENFORCEMENT_DEBT
 - subfolder: Documentation
-  file_name: dm_atm_et_enforcement_invoice_decision-KNT.TAX_ENFORCEMENT_INVOICE.yaml
-  id: ATM-et_enforcement_invoice_decision-KNT.TAX_ENFORCEMENT_INVOICE
-  physical_name: et_enforcement_invoice_decision
-  logical_name: External Tax Enforcement Invoice Decision
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
-  status: draft
-  attribute_count: 26
-  brd_ref: BRD-SRC-KNT-TAX_ENFORCEMENT_INVOICE
-- subfolder: Documentation
-  file_name: dm_atm_et_invoice_detail-KNT.INVOICE_DETAIL.yaml
-  id: ATM-et_invoice_detail-KNT.INVOICE_DETAIL
-  physical_name: et_invoice_detail
-  logical_name: External Tax Invoice Detail
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Invoice"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
-  status: draft
-  attribute_count: 10
-  brd_ref: BRD-SRC-KNT-INVOICE_DETAIL
-- subfolder: Documentation
   file_name: dm_atm_et_violation_handling-KNT.TAX_VIOLATION_HANDLING.yaml
   id: ATM-et_violation_handling-KNT.TAX_VIOLATION_HANDLING
   physical_name: et_violation_handling
@@ -1704,6 +1665,19 @@ entries:
   status: draft
   attribute_count: 10
   brd_ref: BRD-SRC-VSDC-FOREIGN_INVESTOR_INFO
+- subfolder: Documentation
+  file_name: dm_atm_fr_catalog-IDS.REPORT_CATALOG.yaml
+  id: ATM-fr_catalog-IDS.REPORT_CATALOG
+  physical_name: fr_catalog
+  logical_name: Financial Report Catalog
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-IDS-REPORT_CATALOG
 - subfolder: Documentation
   file_name: dm_atm_fr_column-IDS.RCOL.yaml
   id: ATM-fr_column-IDS.RCOL
@@ -1964,6 +1938,32 @@ entries:
   status: draft
   attribute_count: 6
   brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_TRADING
+- subfolder: Documentation
+  file_name: dm_atm_sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT.yaml
+  id: ATM-sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT
+  physical_name: sc_adhoc_report
+  logical_name: Securities Company Adhoc Report
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: draft
+  attribute_count: 41
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADHOC_REPORT
+- subfolder: Documentation
+  file_name: dm_atm_sc_periodic_report-SCMS.SC_FIRM_PERIODIC_REPORT.yaml
+  id: ATM-sc_periodic_report-SCMS.SC_FIRM_PERIODIC_REPORT
+  physical_name: sc_periodic_report
+  logical_name: Securities Company Periodic Report
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: draft
+  attribute_count: 25
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_PERIODIC_REPORT
 - subfolder: Documentation
   file_name: dm_atm_sc_report-SCMS.FORM_REPORT.yaml
   id: ATM-sc_report-SCMS.FORM_REPORT
@@ -2548,8 +2548,8 @@ entries:
   logical_name: Public Company Evaluation Group
   bcv_core_object: Group
   bcv_concept: "[Group] Group"
-  table_type: Classification
-  etl_pattern: Upsert
+  table_type: Relative
+  etl_pattern: SCD2
   source: IDS
   status: draft
   attribute_count: 6
@@ -2697,19 +2697,6 @@ entries:
   status: draft
   attribute_count: 54
   brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
-- subfolder: Involved_Party
-  file_name: dm_atm_et_registration_representative-KNT.TAX_REG_REPRESENTATIVE.yaml
-  id: ATM-et_registration_representative-KNT.TAX_REG_REPRESENTATIVE
-  physical_name: et_registration_representative
-  logical_name: External Tax Registration Representative
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Designated Representative"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: KNT
-  status: draft
-  attribute_count: 13
-  brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
 - subfolder: Involved_Party
   file_name: dm_atm_fmc_employee-FMS.TL_PROFILES.yaml
   id: ATM-fmc_employee-FMS.TL_PROFILES
@@ -4334,7 +4321,7 @@ entries:
   etl_pattern: SCD4A
   source: IDS
   status: draft
-  attribute_count: 47
+  attribute_count: 49
   brd_ref: BRD-SRC-IDS-COMPANY_PROFILES
 - subfolder: Involved_Party
   file_name: dm_atm_ra_organization_unit-NHNCK.UNITS.yaml
@@ -4449,8 +4436,8 @@ entries:
   logical_name: Securities Company Insider Related Person
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Insider"
-  table_type: Relative
-  etl_pattern: SCD2
+  table_type: Fundamental
+  etl_pattern: SCD4A
   source: SCMS
   status: draft
   attribute_count: 27
@@ -4475,8 +4462,8 @@ entries:
   logical_name: Securities Company Organization Unit
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Branch, [Involved Party] Representative Office"
-  table_type: Relative
-  etl_pattern: SCD2
+  table_type: Fundamental
+  etl_pattern: SCD4A
   source: SCMS
   status: draft
   attribute_count: 25
@@ -4488,8 +4475,8 @@ entries:
   logical_name: Securities Company Organization Unit
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Branch, [Involved Party] Representative Office"
-  table_type: Relative
-  etl_pattern: SCD2
+  table_type: Fundamental
+  etl_pattern: SCD4A
   source: SCMS
   status: draft
   attribute_count: 27
@@ -4501,8 +4488,8 @@ entries:
   logical_name: Securities Company Organization Unit
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Branch, [Involved Party] Representative Office"
-  table_type: Relative
-  etl_pattern: SCD2
+  table_type: Fundamental
+  etl_pattern: SCD4A
   source: SCMS
   status: draft
   attribute_count: 26
@@ -4528,8 +4515,8 @@ entries:
   logical_name: Securities Company Related Person
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Connected Person"
-  table_type: Relative
-  etl_pattern: SCD2
+  table_type: Fundamental
+  etl_pattern: SCD4A
   source: SCMS
   status: draft
   attribute_count: 25
@@ -4541,8 +4528,8 @@ entries:
   logical_name: Securities Company Senior Personnel
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Senior Officer"
-  table_type: Relative
-  etl_pattern: SCD2
+  table_type: Fundamental
+  etl_pattern: SCD4A
   source: SCMS
   status: draft
   attribute_count: 39
@@ -4554,8 +4541,8 @@ entries:
   logical_name: Securities Company Shareholder
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party] Shareholder"
-  table_type: Relative
-  etl_pattern: SCD2
+  table_type: Fundamental
+  etl_pattern: SCD4A
   source: SCMS
   status: draft
   attribute_count: 42

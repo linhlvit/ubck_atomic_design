@@ -66,8 +66,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INVES.ID_TYPE"
-  comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — type lấy động từ nguồn."
-  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  comment: "Scheme: IP_ALT_ID_TYPE. Rule: Case when ID_TYPE = 0 then BUSINESS_LICENSE then ID_TYPE = 1 then CITIZEN_ID then ID_TYPE = 2 then NATIONAL_ID end."
+  classification_context: "IP_ALT_ID_TYPE=(Rule)"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Number"
@@ -80,7 +80,7 @@ attributes:
   source_columns:
   - "FMS.INVES.ID_NO"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  classification_context: "IP_ALT_ID_TYPE=(Rule)"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -93,7 +93,7 @@ attributes:
   source_columns:
   - "FMS.INVES.ID_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  classification_context: "IP_ALT_ID_TYPE=(Rule)"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Issue Place"
@@ -106,6 +106,6 @@ attributes:
   source_columns:
   - "FMS.INVES.ID_PLACE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  classification_context: "IP_ALT_ID_TYPE=(Rule)"
   etl_derived_value: null
   data_type: "string"

@@ -461,17 +461,6 @@ entities:
     \ mua/bán, giá, thời gian."
   source_table: "IDS.COMPANY_TREASURY_STOCKS"
   status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Regulatory Report"
-  atomic_entity: "Securities Company Adhoc Report"
-  table_type: "Relative"
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_adhoc_report"
-  description: "Báo cáo đột xuất của CTCK nộp lên UBCKNN khi phát sinh sự kiện bất\
-    \ thường hoặc theo yêu cầu. Ghi nhận từng lần nộp báo cáo với loại sự kiện, ngày\
-    \ nộp và trạng thái xử lý."
-  source_table: "SCMS.SC_FIRM_ADHOC_REPORT"
-  status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Event] Transaction"
   atomic_entity: "Securities Company Bank Periodic"
@@ -492,17 +481,6 @@ entities:
     \ nộp lên UBCKNN. Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và\
     \ trạng thái xử lý."
   source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Regulatory Report"
-  atomic_entity: "Securities Company Periodic Report"
-  table_type: "Relative"
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_periodic_report"
-  description: "Báo cáo định kỳ của CTCK nộp lên UBCKNN (tài chính, hoạt động kinh\
-    \ doanh). Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng thái\
-    \ xử lý."
-  source_table: "SCMS.SC_FIRM_PERIODIC_REPORT"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Status Review"
@@ -630,29 +608,10 @@ entities:
   domain_prefix: "Violation Report"
   entity_physical_name: "violation_report"
   description: "Theo dõi vi phạm nộp báo cáo CBTT định kỳ của CTĐC: hạn nộp, ngày\
-    \ nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm. Bao gồm cả theo dõi vi phạm\
-    \ nộp báo cáo qua module HTE (nguồn HTE_VIOLATION_REPORT). Đổi tên từ \"Public\
-    \ Company Violation Report\" (2026-08-05, theo yêu cầu tường minh Data Modeler)."
+    \ nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm. Đổi tên từ \"Public Company\
+    \ Violation Report\" (2026-08-05, theo yêu cầu tường minh Data Modeler)."
   source_table: "IDS.VIOLATION_REPORT"
   status: "draft"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Corporate Action"
-  atomic_entity: "Fund Management Company Securities Offering"
-  table_type: "Fundamental"
-  domain_prefix: "Fund Management Company"
-  entity_physical_name: "fmc_securities_offering"
-  description: "Đợt chào bán cổ phần/trái phiếu của công ty quản lý quỹ: loại chào bán, loại chứng khoán, số lượng, giá, mục đích sử dụng vốn, thời gian dự kiến/thực tế và kết quả chào bán. 1 dòng/đợt, cập nhật xuyên suốt lifecycle (kế hoạch → thực hiện → kết quả)."
-  source_table: "FMS.OFFERING"
-  status: "approved"
-- bcv_core_object: "Business Activity"
-  bcv_concept: "[Business Activity] Corporate Action"
-  atomic_entity: "Fund Management Company Securities Offering Plan"
-  table_type: "Fundamental"
-  domain_prefix: "Fund Management Company"
-  entity_physical_name: "fmc_securities_offering_plan"
-  description: "Kế hoạch phân bổ chào bán theo từng nhóm đối tượng/phương thức của 1 đợt chào bán: số lượng, giá, giá trị, số nhà đầu tư kế hoạch và thực tế."
-  source_table: "FMS.OFFERING_PLAN"
-  status: "approved"
 - bcv_core_object: "Communication"
   bcv_concept: "[Communication] Information Request"
   atomic_entity: "External Tax Information Request"
@@ -707,17 +666,6 @@ entities:
     \ Exam Assessment và Practitioner."
   source_table: "NHNCK.EXAM_DETAILS"
   status: "approved"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Form Document"
-  atomic_entity: "Financial Report Catalog"
-  table_type: "Relative"
-  domain_prefix: "Financial Report"
-  entity_physical_name: "fr_catalog"
-  description: "Danh mục báo cáo tài chính: định nghĩa loại BCTC và tập hàng/cột dùng\
-    \ cho template số liệu. Table Type đổi Fundamental → Relative (2026-09-15, theo\
-    \ yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e."
-  source_table: "IDS.REPORT_CATALOG"
-  status: "draft"
 - bcv_core_object: "Condition"
   bcv_concept: "[Condition] Evaluation Criteria"
   atomic_entity: "Public Company Evaluation Criterion"
@@ -938,6 +886,17 @@ entities:
     \ Domain Prefix) và Table Type Fundamental → Relative (2026-09-15, theo yêu cầu\
     \ tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e."
   source_table: "IDS.FORMS"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Financial Report Catalog"
+  table_type: "Relative"
+  domain_prefix: "Financial Report"
+  entity_physical_name: "fr_catalog"
+  description: "Danh mục báo cáo tài chính: định nghĩa loại BCTC và tập hàng/cột dùng\
+    \ cho template số liệu. Table Type đổi Fundamental → Relative (2026-09-15, theo\
+    \ yêu cầu tường minh Data Modeler) — xem IDS_HLD_Overview.md 7e."
+  source_table: "IDS.REPORT_CATALOG"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -1237,6 +1196,28 @@ entities:
     \ Data Modeler) — xem IDS_HLD_Overview.md 7e."
   source_table: "IDS.COMPANY_DATA"
   status: "approved"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  atomic_entity: "Securities Company Adhoc Report"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_adhoc_report"
+  description: "Báo cáo đột xuất của CTCK nộp lên UBCKNN khi phát sinh sự kiện bất\
+    \ thường hoặc theo yêu cầu. Ghi nhận từng lần nộp báo cáo với loại sự kiện, ngày\
+    \ nộp và trạng thái xử lý."
+  source_table: "SCMS.SC_FIRM_ADHOC_REPORT"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  atomic_entity: "Securities Company Periodic Report"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_periodic_report"
+  description: "Báo cáo định kỳ của CTCK nộp lên UBCKNN (tài chính, hoạt động kinh\
+    \ doanh). Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng thái\
+    \ xử lý."
+  source_table: "SCMS.SC_FIRM_PERIODIC_REPORT"
+  status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
   atomic_entity: "Securities Company Report"
@@ -1745,7 +1726,7 @@ entities:
   bcv_concept: "[Involved Party] Individual"
   atomic_entity: "Audit Firm Auditor"
   table_type: "Fundamental"
-  domain_prefix: ""
+  domain_prefix: "Audit Firm"
   entity_physical_name: "af_auditor"
   description: "Kiểm toán viên cá nhân trực thuộc công ty kiểm toán được giao thực\
     \ hiện kiểm toán CTCK. Ghi nhận mã kiểm toán viên, số chứng chỉ, ngày bổ nhiệm\
@@ -2136,7 +2117,7 @@ entities:
   bcv_concept: "[Involved Party] Key Personnel"
   atomic_entity: "Securities Company Foreign Branch Personnel"
   table_type: "Fundamental"
-  domain_prefix: ""
+  domain_prefix: "Securities Company"
   entity_physical_name: "sc_foreign_branch_personnel"
   description: "Nhân sự tại chi nhánh CTCK nước ngoài hoạt động tại Việt Nam. Ghi\
     \ nhận họ tên, giới tính, ngày sinh, quốc tịch, bộ phận/phòng ban, chức vụ, các\
@@ -2176,7 +2157,7 @@ entities:
   bcv_concept: "[Involved Party] Key Personnel"
   atomic_entity: "Securities Company Foreign Representative Office Personnel"
   table_type: "Fundamental"
-  domain_prefix: ""
+  domain_prefix: "Securities Company"
   entity_physical_name: "sc_foreign_representative_office_personnel"
   description: "Nhân sự tại văn phòng đại diện CTCK nước ngoài hoạt động tại Việt\
     \ Nam. Ghi nhận thông tin cá nhân, vị trí công tác và các mốc thời gian bổ nhiệm/miễn\
@@ -2583,6 +2564,17 @@ entities:
   source_table: "FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY"
   status: "approved"
 - bcv_core_object: "Common"
+  bcv_concept: "[Common] Industry Classification"
+  atomic_entity: "Classification IDS Business Line"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_ids_business_line"
+  description: "Danh mục ngành nghề của công ty đại chúng theo cấu trúc phân cấp 2\
+    \ cấp (ngành cha - ngành con), kèm mã, tên và mô tả ngành nghề; BK = INDUSTRY_CD\
+    \ nguồn."
+  source_table: "IDS.CATEGORIES"
+  status: "approved"
+- bcv_core_object: "Common"
   bcv_concept: "[Common] Classification"
   atomic_entity: "Classification Risk Indicator"
   table_type: "Relative"
@@ -2686,7 +2678,7 @@ entities:
   bcv_concept: "[Classification] Common"
   atomic_entity: "Classification Value"
   table_type: "Relative"
-  domain_prefix: ""
+  domain_prefix: "Classification"
   entity_physical_name: "cl_value"
   description: "Classification Common — danh mục dùng chung TTHC, tổng hợp toàn bộ\
     \ giá trị phân loại từ Orchard Core ContentItem. ContentType = schema_code (nhóm\

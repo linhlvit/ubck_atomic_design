@@ -4995,45 +4995,6 @@ schemes:
         label: "Thuyết minh biến động vốn chủ sở hữu (THBDVCSH)"
         source_value: "9"
 
-  - scheme_code: "KNT_REPRESENTATIVE_POSITION"
-    name: "Chức vụ người đại diện trong đăng ký thuế — KNT (cần profile: free text hay danh mục cố định)"
-    source_type: "source_table"
-    source_table: "KNT.TAX_REG_REPRESENTATIVE.POSITION"
-    used_in_entities:
-      - "External Tax Registration Representative"
-    values: []
-    deprecated: true
-    deprecated_reason: "Xác nhận là free text — field liên quan (Position) đã revert\
-      \ về Text theo quyết định Data Modeler 2026-07-20."
-
-  - scheme_code: "KNT_INFO_REQUEST_STATUS"
-    name: "Trạng thái phản hồi WebService (TrangThaiResponseWsEnum) — KNT"
-    source_type: "source_table"
-    source_table: "KNT.INFO_REQUEST_DETAIL.STATUS"
-    used_in_entities:
-      - "External Tax Information Request"
-    values:
-      - code: "1"
-        label: "Thành công"
-        source_value: "1"
-      - code: "2"
-        label: "Không thành công"
-        source_value: "2"
-      - code: "3"
-        label: "Lỗi webservice"
-        source_value: "3"
-
-  - scheme_code: "KNT_INVOICE_TYPE"
-    name: "Loại hóa đơn bị cưỡng chế ngừng sử dụng — KNT (cần profile)"
-    source_type: "source_table"
-    source_table: "KNT.INVOICE_DETAIL.INVOICE_TYPE"
-    used_in_entities:
-      - "External Tax Invoice Detail"
-    values: []
-    deprecated: true
-    deprecated_reason: "Field liên quan (Invoice Type Code) đã revert về Text theo\
-      \ quyết định Data Modeler 2026-07-20."
-
   - scheme_code: "IDS_OPERATING_STATUS"
     name: "Trạng thái hoạt động — Public Company (chưa liệt kê trong HLD Tier1 6d)"
     source_type: "source_table"

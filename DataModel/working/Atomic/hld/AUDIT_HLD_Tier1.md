@@ -49,23 +49,23 @@ erDiagram
 
 ```mermaid
 erDiagram
-
-
     Audit_Firm {
-        string audt_firm_id PK
-        string audt_firm_code
-        string audt_firm_nm_vi
-        string audt_firm_nm_en
-        decimal pd_in_cptl_amt
-        boolean frgn_audt_mbr_f
+        string af_id PK
+        string af_code
+        string src_stm_code
+        string af_nm
+        string af_english_nm
+        string af_short_nm
+        decimal charter_capital_amt
+        int foreign_audit_member_ind
+        string foreign_af_nm
+        date membership_start_dt
+        date membership_end_dt
+        string af_status_code
+        string external_reference_id
+        string approval_status_code
+        string approver_comment
     }
-
-
-
-
-
-
-
 ```
 
 ---
