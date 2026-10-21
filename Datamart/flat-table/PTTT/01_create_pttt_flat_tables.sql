@@ -159,7 +159,7 @@ COMMENT 'Flat table — Fact Sector Risk Snapshot × Calendar Date Dimension × 
 
 -- ============================================================
 -- 3b. FACT: pttt_fct_cap_grp_snpst_flat
---    GTGD và tỷ trọng thanh khoản theo nhóm vốn hóa (Small/Mid/Large-cap, ngưỡng USD)
+--    GTGD và tỷ trọng thanh khoản theo nhóm vốn hóa (Smallcap/Midcap/Largecap, ngưỡng VND)
 --    Grain: 1 row / nhóm vốn hóa / ngày
 --    Joins: Calendar Date (snpst_dt_dim_id JOIN)
 -- ============================================================
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_cap_grp_snpst_flat ON CLUSTER 'my_c
 (
     -- From: FACT Cap Group Snapshot
     snpst_dt_dim_id       String                  COMMENT 'FK → Calendar Date Dimension',
-    cap_group_code        String                  COMMENT 'Nhóm vốn hóa (Small-cap/Mid-cap/Large-cap) — grain key',
+    cap_group_code        String                  COMMENT 'Nhóm vốn hóa (Smallcap/Midcap/Largecap) — grain key',
     total_trading_val     Nullable(Decimal(23,2)) COMMENT 'GTGD khớp lệnh toàn nhóm vốn hóa tại ngày t',
     liquidity_share_ratio Nullable(Decimal(5,2))  COMMENT 'Tỷ trọng thanh khoản nhóm = GTGD nhóm / GTGD toàn thị trường x 100',
 

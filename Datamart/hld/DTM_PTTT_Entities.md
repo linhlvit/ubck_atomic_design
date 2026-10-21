@@ -60,7 +60,7 @@ erDiagram
 | Fact Futures Investor Flow Snapshot | fact | new | GTGD mua/bán/dòng tiền ròng NĐTNN + Tự doanh trên HĐTL chỉ số — grain 1 row/nhóm NĐT/mã HĐTL/ngày | `securities_trade / security_trading_snapshot` |
 | Fact Market Statistics Snapshot | fact | new | Bộ chỉ tiêu thống kê theo chỉ số (Data Explorer) — grain 1 row/chỉ số/ngày | `market_index_snapshot / index_constituent_snapshot / security_trading_snapshot / securities_trade` |
 | Operational Corporate Bond Issuer Credit Monitor | operational | new | Danh sách TCPH TPDN kèm chỉ tiêu tín dụng (D/E, ROE) để giám sát rủi ro — grain 1 row/TCPH/kỳ báo cáo | `corporate_bond_trading_snapshot / public_company / pc_bond_evaluation / pc_evaluation_detail` |
-| Fact Cap Group Snapshot | fact | new | **[SỬA 2026-09-21]** GTGD và tỷ trọng thanh khoản theo nhóm vốn hóa (Small/Mid/Large-cap, ngưỡng USD) — mở khóa nhờ ngoại lệ `listed_share_information` (VSDC, đồng bộ Nhóm 7/8) — grain 1 row/nhóm vốn hóa/ngày | `security_trading_snapshot / listed_share_information / cl_risk_indicator_value` |
+| Fact Cap Group Snapshot | fact | new | **[SỬA 2026-09-21]** GTGD và tỷ trọng thanh khoản theo nhóm vốn hóa (Smallcap/Midcap/Largecap, ngưỡng VND) — mở khóa nhờ ngoại lệ `listed_share_information` (VSDC, đồng bộ Nhóm 7/8) — grain 1 row/nhóm vốn hóa/ngày | `security_trading_snapshot / listed_share_information` |
 
 ---
 

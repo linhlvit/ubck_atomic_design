@@ -5898,99 +5898,87 @@ END AS systemic_vol_level",Cấu hình từng trạng thái theo dải điểm C
 Dashboard sức khỏe thị trường và kinh tế vĩ mô,4,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống ,Chỉ số biến động hệ thống (Systemic vol),Systemic Vol (%) = σ_current / σ_max * 100,Dashboard,Chỉ tiêu phái sinh,Khó,"Ngày, MarketIndex ",MDDS,x,x,,Done,Thông tin thị trường,JAD_MARKETINFOR,"MarketIndex, TradingDate, IndexCode
 ","IndexCode = 'VNINDEX';
 20 phiên gần nhất ≤ :input_date để tính σ_current;
-σ_max = max lịch sử từ mart.volatility_history","WITH trading_dates_current AS (
-    SELECT TradingDate
-    FROM (
-        SELECT DISTINCT TradingDate,
-               ROW_NUMBER() OVER (ORDER BY TradingDate DESC) AS rn
-        FROM JAD_MARKETINFOR
-        WHERE IndexCode   = 'VNINDEX'
-          AND TradingDate <= :input_date
-    )
-    WHERE rn <= 21
-),
-close_prices_current AS (
+σ_max = max lịch sử từ mart.volatility_history","WITH ranked_prices AS (
     SELECT
-        m.TradingDate,
-        m.marketIndex AS close_index
-    FROM JAD_MARKETINFOR m
-    WHERE m.IndexCode   = 'VNINDEX'
-      AND m.TradingDate IN (SELECT TradingDate FROM trading_dates_current)
-      AND m.indexTime   = (
-            SELECT MAX(indexTime)
-            FROM JAD_MARKETINFOR
-            WHERE IndexCode   = 'VNINDEX'
-              AND TradingDate = m.TradingDate
-        )
+        TO_DATE(TradingDate, 'yyyy-MM-dd') AS trading_date,
+        CAST(marketIndex AS DOUBLE) AS close_index,
+        ROW_NUMBER() OVER (
+            PARTITION BY TO_DATE(TradingDate, 'yyyy-MM-dd')
+            ORDER BY indexTime DESC NULLS LAST
+        ) AS rn
+    FROM uat_mdds_stg.JAD_MARKETINFOR
+    WHERE marketCode  = 'HOSE'
+      AND TO_DATE(TradingDate, 'yyyy-MM-dd')
+          <= TO_DATE(:input_date, 'yyyy-MM-dd')
 ),
-daily_return_current AS (
+close_prices AS (
+    -- Giá đóng cửa từng phiên
     SELECT
-        cp.TradingDate,
-        (cp.close_index - prev.close_index)
-            / NULLIF(prev.close_index, 0) AS rt
-    FROM close_prices_current cp
-    JOIN close_prices_current prev
-        ON prev.TradingDate = (
-            SELECT MAX(TradingDate)
-            FROM close_prices_current
-            WHERE TradingDate < cp.TradingDate
-        )
+        trading_date,
+        close_index
+    FROM ranked_prices
+    WHERE rn = 1
 ),
-sigma_current AS (
-    SELECT STDDEV(rt) * SQRT(252) AS sigma_cur
-    FROM daily_return_current
-),
--- Tính σ_max: stddev cao nhất lịch sử theo rolling 20 phiên
-all_close_prices AS (
+prices_with_previous AS (
     SELECT
-        m.TradingDate,
-        m.marketIndex AS close_index
-    FROM JAD_MARKETINFOR m
-    WHERE m.IndexCode = 'VNINDEX'
-      AND m.indexTime = (
-            SELECT MAX(indexTime)
-            FROM JAD_MARKETINFOR
-            WHERE IndexCode   = 'VNINDEX'
-              AND TradingDate = m.TradingDate
-        )
+        trading_date,
+        close_index AS pt,
+        LAG(close_index) OVER (
+            ORDER BY trading_date
+        ) AS pt1
+    FROM close_prices
 ),
-all_daily_return AS (
+daily_return AS (
     SELECT
-        cp.TradingDate,
-        (cp.close_index - prev.close_index)
-            / NULLIF(prev.close_index, 0) AS rt
-    FROM all_close_prices cp
-    JOIN all_close_prices prev
-        ON prev.TradingDate = (
-            SELECT MAX(TradingDate)
-            FROM all_close_prices
-            WHERE TradingDate < cp.TradingDate
-        )
+        trading_date,
+        (pt - pt1) / NULLIF(pt1, 0) AS rt
+    FROM prices_with_previous
 ),
-rolling_sigma AS (
+rolling_stats AS (
+    -- Cửa sổ 20 phiên tại mỗi ngày
     SELECT
-        TradingDate,
-        STDDEV(rt) OVER (
-            ORDER BY TradingDate
+        trading_date,
+        COUNT(rt) OVER (
+            ORDER BY trading_date
             ROWS BETWEEN 19 PRECEDING AND CURRENT ROW
-        ) * SQRT(252) AS sigma_rolling
-    FROM all_daily_return
+        ) AS so_phien_loi_suat,
+        STDDEV_SAMP(rt) OVER (
+            ORDER BY trading_date
+            ROWS BETWEEN 19 PRECEDING AND CURRENT ROW
+        ) AS stddev_20
+    FROM daily_return
 ),
-sigma_max AS (
-    SELECT MAX(sigma_rolling) AS sigma_max
-    FROM rolling_sigma
-    WHERE TradingDate <= :input_date
+volatility AS (
+    SELECT
+        trading_date,
+        CASE
+            WHEN so_phien_loi_suat = 20
+            THEN stddev_20 * SQRT(252)
+        END AS sigma
+    FROM rolling_stats
+),
+current_volatility AS (
+    -- Phiên gần nhất không vượt ngày tra cứu
+    SELECT
+        trading_date,
+        sigma AS sigma_current
+    FROM volatility
+    ORDER BY trading_date DESC
+    LIMIT 1
+),
+max_volatility AS (
+    SELECT MAX(sigma) AS sigma_max
+    FROM volatility
 )
 SELECT
-    :input_date                                        AS trading_date,
-    sigma_current.sigma_cur                            AS sigma_current,
-    sigma_max.sigma_max                                AS sigma_max,
-    ROUND(
-        sigma_current.sigma_cur
-            / NULLIF(sigma_max.sigma_max, 0) * 100,
-        2
-    )                                                  AS systemic_vol_pct
-FROM sigma_current, sigma_max;",,,,,,,Dữ liệu tĩnh,
+    TO_DATE(:input_date, 'yyyy-MM-dd') AS ngay_tra_cuu,
+    c.trading_date AS ngay_du_lieu,
+    c.sigma_current,
+    m.sigma_max,
+    c.sigma_current / NULLIF(m.sigma_max, 0) * 100
+        AS systemic_vol_pct
+FROM current_volatility c
+CROSS JOIN max_volatility m;",,,,,,,Dữ liệu tĩnh,
 Dashboard sức khỏe thị trường và kinh tế vĩ mô,4,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống ,Độ lệch chuẩn biến động lợi suất VN-Index trong 20 phiên gần nhất ,"σ_current = StdDev(R_daily, 20) × √252",Dashboard,Chỉ tiêu phái sinh,Khó,"Ngày, MarketIndex ",MDDS,x,x,,Done,Thông tin thị trường,JAD_MARKETINFOR,"MarketIndex, TradingDate, IndexCode
 ","IndexCode = 'VNINDEX';
 21 phiên gần nhất ≤ :input_date (để tính 20 lợi suất)","WITH trading_dates AS (
@@ -5999,7 +5987,7 @@ Dashboard sức khỏe thị trường và kinh tế vĩ mô,4,,Dashboard Sức 
         SELECT DISTINCT TradingDate,
                ROW_NUMBER() OVER (ORDER BY TradingDate DESC) AS rn
         FROM JAD_MARKETINFOR
-        WHERE IndexCode   = 'VNINDEX'
+        WHERE marketCode  = 'HOSE'
           AND TradingDate <= :input_date
     )
     WHERE rn <= 21
@@ -6009,12 +5997,12 @@ close_prices AS (
         m.TradingDate,
         m.marketIndex AS close_index
     FROM JAD_MARKETINFOR m
-    WHERE m.IndexCode   = 'VNINDEX'
+    WHERE m.marketCode  = 'HOSE'
       AND m.TradingDate IN (SELECT TradingDate FROM trading_dates)
       AND m.indexTime   = (
             SELECT MAX(indexTime)
             FROM JAD_MARKETINFOR
-            WHERE IndexCode   = 'VNINDEX'
+            WHERE marketCode  = 'HOSE'
               AND TradingDate = m.TradingDate
         )
 ),
@@ -6044,33 +6032,33 @@ TradingDate ngày t và t-1;
 MarketIndex","WITH close_t AS (
     SELECT marketIndex AS close_index_t
     FROM JAD_MARKETINFOR
-    WHERE IndexCode  = 'VNINDEX'
+    WHERE indexname = 'VNINDEX'
       AND TradingDate = :input_date
       AND indexTime   = (
             SELECT MAX(indexTime)
             FROM JAD_MARKETINFOR
-            WHERE IndexCode   = 'VNINDEX'
+            WHERE marketCode  = 'HOSE'
               AND TradingDate = :input_date
         )
 ),
 close_t1 AS (
     SELECT marketIndex AS close_index_t1
     FROM JAD_MARKETINFOR
-    WHERE IndexCode   = 'VNINDEX'
+    WHERE marketCode  = 'HOSE'
       AND TradingDate = (
             SELECT MAX(TradingDate)
             FROM JAD_MARKETINFOR
-            WHERE IndexCode   = 'VNINDEX'
+            WHERE marketCode  = 'HOSE'
               AND TradingDate < :input_date
         )
       AND indexTime   = (
             SELECT MAX(indexTime)
             FROM JAD_MARKETINFOR
-            WHERE IndexCode   = 'VNINDEX'
+            WHERE marketCode  = 'HOSE'
               AND TradingDate = (
                     SELECT MAX(TradingDate)
                     FROM JAD_MARKETINFOR
-                    WHERE IndexCode   = 'VNINDEX'
+                    WHERE marketCode  = 'HOSE'
                       AND TradingDate < :input_date
                 )
         )
@@ -6086,32 +6074,32 @@ Dashboard sức khỏe thị trường và kinh tế vĩ mô,4,,Dashboard Sức 
 ","IndexCode = 'VNINDEX'; TradingDate = :input_date
 ","SELECT marketIndex AS close_index_t
 FROM uat_mdds_stg.JAD_MARKETINFOR
-WHERE IndexCode = 'VNINDEX'
+WHERE marketCode  = 'HOSE'
   AND TradingDate = :input_date
   AND indexTime = (
       SELECT MAX(indexTime)
       FROM uat_mdds_stg.JAD_MARKETINFOR
-      WHERE IndexCode = 'VNINDEX'
+      WHERE marketCode  = 'HOSE'
         AND TradingDate = :input_date
   );",Trùng dòng 9,,,,,,Dữ liệu tĩnh,
 Dashboard sức khỏe thị trường và kinh tế vĩ mô,4,,Dashboard Sức khỏe thị trường và vĩ mô/ Biểu đồ chỉ số sức khỏe hệ thống ,Giá tại thời điểm t - 1 ,Giá tại thời điểm t - 1 ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Ngày, MarketIndex ",MDDS,x,x,,Done,Thông tin thị trường,uat_mdds_stg.JAD_MARKETINFOR,"MarketIndex TradingDate, IndexCode
 ",IndexCode = 'VNINDEX'; TradingDate = :input_date -1,"SELECT marketIndex AS close_index_t1
 FROM uat_mdds_stg.JAD_MARKETINFOR
-WHERE IndexCode = 'VNINDEX'
+WHERE indexname = 'VNINDEX'
   AND TradingDate = (
       SELECT MAX(TradingDate)
       FROM uat_mdds_stg.JAD_MARKETINFOR
-      WHERE IndexCode = 'VNINDEX'
+      WHERE marketCode  = 'HOSE'
         AND TradingDate < :input_date
   )
   AND indexTime = (
       SELECT MAX(indexTime)
       FROM uat_mdds_stg.JAD_MARKETINFOR
-      WHERE IndexCode = 'VNINDEX'
+      WHERE marketCode  = 'HOSE'
         AND TradingDate = (
             SELECT MAX(TradingDate)
             FROM uat_mdds_stg.JAD_MARKETINFOR
-            WHERE IndexCode = 'VNINDEX'
+            WHERE marketCode  = 'HOSE'
               AND TradingDate < :input_date
         )
   );",Trùng dòng 10 ,,,,,,Dữ liệu tĩnh,
@@ -9021,81 +9009,115 @@ Dashboard phân tích thanh khoản và đòn bẩy thị trường,12,,Dashboar
 Dashboard phân tích thanh khoản và đòn bẩy thị trường,12,,Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa,Nhóm vốn hóa,Phân nhóm CP theo quy mô vốn hóa,Dashboard,Chiều,Dễ,,"MSS, MDDS",x,x,,Done,"Small-cap (Vốn hóa nhỏ) < 2 tỷ USD  
 Mid-cap (Vốn hóa trung bình) 2 – 10 tỷ USD                                                                 
 Large-cap (Vốn hóa lớn) ≥ 10 tỷ USD    ",,,,Chỉ tiêu phái sinh từ chỉ tiêu Vốn hóa MarketCap ,,,,,,,Dữ liệu tĩnh,
-Dashboard phân tích thanh khoản và đòn bẩy thị trường,12,,Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa,Phân loại vốn hóa ,"Small-cap (Vốn hóa nhỏ) < 2 tỷ USD  
-Mid-cap (Vốn hóa trung bình) 2 – 10 tỷ USD                                                                 
-Large-cap (Vốn hóa lớn) ≥ 10 tỷ USD    ",Dashboard,Chỉ tiêu phái sinh,TB,"Nhóm vốn hóa, Ngày ","MSS, MDDS",x,x,,Done,"- Giá đóng cửa: thông tin thị trường 
+Dashboard phân tích thanh khoản và đòn bẩy thị trường,12,,Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa,Phân loại vốn hóa ,"Vốn hóa nhỏ (Smallcap)        Từ 100 tỷ đồng đến dưới 1.000 tỷ đồng
+Vốn hóa vừa (Midcap)        Từ 1.000 tỷ đồng đến 10.000 tỷ đồng
+Vốn hóa lớn (Largecap)        Trên 10.000 tỷ đồng",Dashboard,Chỉ tiêu phái sinh,TB,"Nhóm vốn hóa, Ngày ","MSS, MDDS",x,x,,Done,"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","outstanding_shares
 
 JAD_STOCKINFOR s","outstanding_shares
 
-s.closePrice  ",,"WITH
-GDC AS (
+s.closePrice  ",,"-- :ngay_gd dạng yyyy-MM-dd
+WITH gdc AS (
     SELECT
         s.symbol,
-        TO_DATE(s.tradingdate, 'yyyy-MM-dd') AS tradingdate,
-        s.closePrice AS gia_dong_cua,
-        s.FloorCode
+        s.symbolisin,
+        s.closePrice AS gia_dong_cua
     FROM uat_mdds_stg.JAD_STOCKINFOR s
-    WHERE DATE_FORMAT(
-              TO_DATE(s.tradingdate, 'yyyy-MM-dd'),
-              'yyyyMMdd'
-          ) = :ngay_gd
+    WHERE s.tradingdate = :ngay_gd
       AND s.FloorCode IN ('02', '04', '10')
 ),
-SCPLH AS (
-    SELECT
+ma_isin AS (
+    SELECT DISTINCT
         symbol,
-        kl_luu_hanh
-    FROM (
-        SELECT
-            t.ticker_symbol AS symbol,
-            t.outstanding_shares AS kl_luu_hanh,
-            ROW_NUMBER() OVER (
-                PARTITION BY t.ticker_symbol
-                ORDER BY TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd') DESC
-            ) AS rn
-        FROM uat_vsdc_ods.outstanding_shares t
-        WHERE TO_DATE(t.ds_snpst_dt, 'yyyy-MM-dd')
-              <= TO_DATE(:ngay_gd, 'yyyyMMdd')
-    ) x
-    WHERE rn = 1
+        symbolisin
+    FROM gdc
+    WHERE symbolisin IS NOT NULL
 ),
-MARKET_CAP AS (
+giao_dich AS (
+    -- HOSE
     SELECT
-        g.symbol,
-        g.tradingdate,
-        g.FloorCode,
-        g.gia_dong_cua * s.kl_luu_hanh AS market_cap
-    FROM GDC g
-    JOIN SCPLH s ON s.symbol = g.symbol
-),
-MARKET_CAP_USD AS (
+        t.Symbol AS symbol,
+        CAST(t.Execution_Value AS DECIMAL(23, 2)) AS gt_gd
+    FROM uat_hose_stg.TRADE_BOOK t
+    WHERE t.Trade_Date = :ngay_gd
+      AND t.Market_ID = 'STK'
+      AND t.Board_Type IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8')
+
+    UNION ALL
+
+    -- HNX / UPCOM: ánh xạ ISIN sang mã chứng khoán
     SELECT
         m.symbol,
-        m.tradingdate,
-        m.FloorCode,
-        m.market_cap,
+        CAST(t.Trade_quantity AS DECIMAL(23, 2))
+            * CAST(t.Trade_price AS DECIMAL(23, 2)) AS gt_gd
+    FROM uat_hnx_stg.TRADE_BOOK t
+    JOIN ma_isin m
+      ON m.symbolisin = t.Issue_Code
+    WHERE t.Trade_date = REPLACE(:ngay_gd, '-', '')
+      AND t.Market_ID IN ('STX', 'UPX')
+      AND t.Board_ID IN ('G1', 'G2', 'G3', 'G4', 'G7', 'G8')
+),
+gtgd_theo_ma AS (
+    SELECT
+        symbol,
+        SUM(gt_gd) AS tong_gt_gd
+    FROM giao_dich
+    GROUP BY symbol
+),
+scplh AS (
+    SELECT
+        t.ticker_symbol AS symbol,
+        t.outstanding_shares AS kllh
+    FROM uat_vsdc_stg.outstanding_shares t
+    WHERE t.transaction_date = :ngay_gd
+),
+market_cap AS (
+    SELECT
+        g.symbol,
+        CAST(g.gia_dong_cua AS DECIMAL(23, 2))
+            * CAST(s.kllh AS DECIMAL(23, 0)) AS market_cap
+    FROM gdc g
+    JOIN scplh s
+      ON s.symbol = g.symbol
+),
+nhom AS (
+    SELECT
+        symbol,
+        market_cap,
         CASE
-            WHEN :ty_gia_usd > 0
-            THEN m.market_cap / :ty_gia_usd
+            -- Từ 100 tỷ đến dưới 1.000 tỷ đồng
+            WHEN market_cap >= 100000000000
+             AND market_cap < 1000000000000
+                THEN 'Smallcap'
+
+            -- Từ 1.000 tỷ đến 10.000 tỷ đồng
+            WHEN market_cap >= 1000000000000
+             AND market_cap <= 10000000000000
+                THEN 'Midcap'
+
+            -- Trên 10.000 tỷ đồng
+            WHEN market_cap > 10000000000000
+                THEN 'Largecap'
+
             ELSE NULL
-        END AS market_cap_usd
-    FROM MARKET_CAP m
+        END AS nhom_von_hoa
+    FROM market_cap
 )
 SELECT
-    symbol,
-    tradingdate,
-    FloorCode,
-    market_cap,
-    market_cap_usd,
-    CASE
-        WHEN market_cap_usd IS NULL THEN NULL
-        WHEN market_cap_usd < 2000000000 THEN 'Small-cap'
-        WHEN market_cap_usd < 10000000000 THEN 'Mid-cap'
-        ELSE 'Large-cap'
-    END AS phan_loai_von_hoa
-FROM MARKET_CAP_USD
-ORDER BY market_cap_usd DESC NULLS LAST;",,,,,,,Dữ liệu tĩnh,
+    TO_DATE(:ngay_gd, 'yyyy-MM-dd') AS ngay_gd,
+    n.nhom_von_hoa,
+    SUM(g.tong_gt_gd) AS gtgd_nhom_von_hoa,
+    SUM(n.market_cap) AS tong_von_hoa_nhom
+FROM gtgd_theo_ma g
+JOIN nhom n
+  ON n.symbol = g.symbol
+WHERE n.nhom_von_hoa IS NOT NULL
+GROUP BY n.nhom_von_hoa
+ORDER BY CASE n.nhom_von_hoa
+    WHEN 'Smallcap' THEN 1
+    WHEN 'Midcap' THEN 2
+    WHEN 'Largecap' THEN 3
+END;",,,,,,,Dữ liệu tĩnh,
 Dashboard phân tích thanh khoản và đòn bẩy thị trường,12,,Dashboard Thanh khoản và đòn bẩy/Phân bổ thanh khoản theo nhóm vốn hóa,Vốn hóa MarketCap ,Vốn hóa MarketCap = Giá đóng cửa *  Khối lượng chứng khoán lưu hành,Dashboard,Chỉ tiêu phái sinh,Trùng,"Nhóm vốn hóa, Ngày ","MDDS, CSDLTT",x,x,,Done,"- Giá đóng cửa: thông tin thị trường 
 - Số cổ phiếu đang lưu hành: Lấy từ  VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày (TT138.2025.TT.BTC - Mẫu số 01 Báo cáo ngày) ","outstanding_shares
 
