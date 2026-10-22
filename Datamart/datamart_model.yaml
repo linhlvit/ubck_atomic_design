@@ -11278,7 +11278,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN mua: ký tự thứ 4 IN ('P','E') (thay `Buy Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66."
+        description: "Giá trị mua tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN mua: ký tự thứ 4 IN ('P','E') (thay `Buy Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P')."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Proprietary Sell Value"
@@ -11287,7 +11287,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN bán: ký tự thứ 4 IN ('P','E') (thay `Sell Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66."
+        description: "Giá trị bán tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN bán: ký tự thứ 4 IN ('P','E') (thay `Sell Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P')."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Proprietary Buy Volume"
@@ -11296,7 +11296,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN mua: ký tự thứ 4 IN ('P','E') (thay `Buy Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66."
+        description: "Khối lượng mua tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN mua: ký tự thứ 4 IN ('P','E') (thay `Buy Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P')."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Proprietary Sell Volume"
@@ -11305,7 +11305,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN bán: ký tự thứ 4 IN ('P','E') (thay `Sell Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66."
+        description: "Khối lượng bán tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN bán: ký tự thứ 4 IN ('P','E') (thay `Sell Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P')."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Bond Trading Volume"
@@ -11847,9 +11847,9 @@ entities:
     module: "GSTT"
     status: "draft"
     reuse_status: "new"
-    description: "Giá trị mua/bán LŨY KẾ của NĐT nước ngoài đến cuối từng phút trong ngày (O_GSTT_8, Resolved 2026-09-04; [SỬA 2026-10-12] đổi nguồn sang Security Trading Snapshot theo mapping BA) — grain 1 row/Symbol/Trade Minute"
+    description: "Giá trị mua/bán của NĐT nước ngoài PHÁT SINH trong từng phút (O_GSTT_8, Resolved 2026-09-04; [SỬA 2026-10-12] từng đổi nguồn sang Security Trading Snapshot (lũy kế); [SỬA 2026-10-22] BA STT 25/26 quay lại sổ lệnh Securities Trade, giá trị theo phút) — grain 1 row/Symbol/Trade Minute"
     source_atomic:
-      - "security_trading_snapshot"
+      - "securities_trade"
     modules_using:
       - "GSTT"
     columns:
@@ -11859,45 +11859,45 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK tới Security Trading Snapshot Dimension. [SỬA 2026-10-12] Nguồn đổi sang Security Trading Snapshot (O_GSTT_41 mục 4) nên khớp trực tiếp theo symbol như các Fact snapshot khác; bỏ quy tắc khớp ISIN cho HNX/UPCOM/FDS vốn chỉ cần với nguồn Securities Trade."
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.ticker_symbol"
+        description: "FK tới Security Trading Snapshot Dimension. [SỬA 2026-10-22, BA STT 25/26] Nguồn quay lại Securities Trade (sổ lệnh) nên khớp mã như các Fact sổ lệnh khác (A17): HNX/UPCOM/FDS/DVX khớp bằng isin_code, chỉ HOSE dùng symbol — thay quy tắc khớp theo symbol của [SỬA 2026-10-12] (nguồn Security Trading Snapshot)."
+        source_atomic_table: "securities_trade"
+        source_atomic_column: "securities_trade.security_symbol_code"
       - logical_name: "Snapshot Date Dimension Id"
         physical_name: "snpst_dt_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK tới Calendar Date Dimension theo ngày giao dịch của snapshot"
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.trading_dt"
+        description: "FK tới Calendar Date Dimension theo ngày giao dịch của lệnh khớp"
+        source_atomic_table: "securities_trade"
+        source_atomic_column: "securities_trade.trade_dt"
       - logical_name: "Trade Minute"
         physical_name: "trade_minute_tms"
         data_domain: "Timestamp"
         data_type: "timestamp"
         nullable: false
         key: "DD"
-        description: "Mốc phút xác định grain (O_GSTT_8, Resolved 2026-09-04 — nghiệp vụ xác nhận độ chi tiết theo phút). [SỬA 2026-10-12] Cắt phút của Trading Date cùng Trading Time trên Security Trading Snapshot (thay Trade Timestamp của Securities Trade; không còn cần cột trade_tms trên Atomic). Trading Time lưu dạng string chưa chuẩn hóa — giả định HH:mm:ss, cần profile định dạng trước khi build ETL."
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.trading_time"
+        description: "Mốc phút xác định grain (O_GSTT_8, Resolved 2026-09-04 — nghiệp vụ xác nhận độ chi tiết theo phút). [SỬA 2026-10-22, BA STT 25/26] Cắt phút của Trade Date cùng Trade Time trên Securities Trade (BA: GROUP BY SUBSTR(time,1,5) = HH:mm) — thay Trading Time của Security Trading Snapshot dùng từ 2026-10-12. Trade Time lưu string nguyên định dạng nguồn: HOSE `TIME` Character(6) hh24miss, HNX `TRADE_TIME` Character(9) — ETL parse rẽ nhánh theo src_stm_code; BA `SUBSTR(time,1,5)` giả định 'HH:mm:ss' ở staging — cần profile mẫu thật trước khi build ETL (O_GSTT_75)."
+        source_atomic_table: "securities_trade"
+        source_atomic_column: "securities_trade.trade_time"
       - logical_name: "Foreign Buy Value At Minute"
         physical_name: "foreign_buy_val_at_min"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua LŨY KẾ của NĐT nước ngoài từ đầu ngày đến cuối phút (snapshot cuối trong phút của Foreign Buy Value, nguồn MDDS JAD_STOCKINFOR.FOREIGNBUYVAL). Phút không có snapshot lấy giá trị phút trước để cộng theo rổ chỉ số không bị hụt. Không cộng theo thời gian: tổng cả ngày là giá trị tại phút cuối của ngày. [SỬA 2026-10-12] Đổi nguồn từ Securities Trade (giá trị phát sinh theo phút) để khớp mapping BA."
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.foreign_buy_val"
+        description: "Giá trị mua của NĐT nước ngoài PHÁT SINH trong phút = Σ execution_val các lệnh khớp có tài khoản mua nước ngoài (ký tự thứ 4 số TK mua IN ('F','E')) — K_GSTT_78. [SỬA 2026-10-22, BA STT 25/26 'lấy theo sổ lệnh'] Đổi từ giá trị LŨY KẾ của Security Trading Snapshot (2026-10-12) về giá trị theo phút của Securities Trade: cộng được theo thời gian (tổng cả ngày = Σ các phút) và theo rổ chỉ số tại cùng phút. Phút không có lệnh khớp không có dòng (không carry-forward). Gồm khớp lệnh + thỏa thuận (BA không lọc board). O_GSTT_75."
+        source_atomic_table: "securities_trade"
+        source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Foreign Sell Value At Minute"
         physical_name: "foreign_sell_val_at_min"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán LŨY KẾ của NĐT nước ngoài từ đầu ngày đến cuối phút (snapshot cuối trong phút của Foreign Sell Value, nguồn MDDS JAD_STOCKINFOR.FOREIGNSELLVAL). Phút không có snapshot lấy giá trị phút trước để cộng theo rổ chỉ số không bị hụt. Không cộng theo thời gian: tổng cả ngày là giá trị tại phút cuối của ngày. [SỬA 2026-10-12] Đổi nguồn từ Securities Trade (giá trị phát sinh theo phút) để khớp mapping BA."
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.foreign_sell_val"
+        description: "Giá trị bán của NĐT nước ngoài PHÁT SINH trong phút = Σ execution_val các lệnh khớp có tài khoản bán nước ngoài (ký tự thứ 4 số TK bán IN ('F','E')) — K_GSTT_79. [SỬA 2026-10-22, BA STT 25/26 'lấy theo sổ lệnh'] Đổi từ giá trị LŨY KẾ của Security Trading Snapshot (2026-10-12) về giá trị theo phút của Securities Trade: cộng được theo thời gian (tổng cả ngày = Σ các phút) và theo rổ chỉ số tại cùng phút. Phút không có lệnh khớp không có dòng (không carry-forward). Gồm khớp lệnh + thỏa thuận (BA không lọc board). O_GSTT_75."
+        source_atomic_table: "securities_trade"
+        source_atomic_column: "securities_trade.execution_val"
 
   - id: "DTM-fct_investor_category_trading_snpst"
     logical_name: "Fact Investor Category Trading Snapshot"
@@ -11906,10 +11906,10 @@ entities:
     module: "GSTT"
     status: "draft"
     reuse_status: "new"
-    description: "[MỚI 2026-09-21, theo yêu cầu Data Modeler] Giá trị mua/bán theo Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách khớp lệnh/thỏa thuận — grain 1 row/mã CK/ngày/Phân loại NĐT. Tách khỏi Fact Stock Portfolio Snapshot để có cột vật lý Investor Category Code thay vì 4 cụm cột cố định + CASE WHEN"
+    description: "[MỚI 2026-09-21, theo yêu cầu Data Modeler] Giá trị mua/bán theo Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài/Không xác định [SỬA 2026-10-22, BA STT 23]), tách khớp lệnh/thỏa thuận — grain 1 row/mã CK/ngày/Phân loại NĐT. Tách khỏi Fact Stock Portfolio Snapshot để có cột vật lý Investor Category Code thay vì 4 cụm cột cố định + CASE WHEN"
     source_atomic:
       - "securities_trade"
-      - "discretionary_investment_account"
+      - "open_investor_account"
     modules_using:
       - "GSTT"
     columns:
@@ -11937,16 +11937,16 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — không phải FK sang Dimension riêng (Classification Value chuẩn, 1 trường Code). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
-        source_atomic_table: "securities_trade / discretionary_investment_account"
-        source_atomic_column: "securities_trade / discretionary_investment_account.buy_account_nbr / sell_account_nbr / investment_account_tp_code"
+        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI / KHONG_XAC_DINH — không phải FK sang Dimension riêng (Classification Value chuẩn, 1 trường Code). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67. [SỬA 2026-10-22, BA STT 23 dòng 399] Thêm phân loại KHONG_XAC_DINH = phía mua/bán không thuộc cả 4 phân loại trên (ký tự thứ 4 số TK NOT IN ('F','E','P') và `open_investor_account.investor_tp_code` NOT IN (3,5), kể cả số TK không có trong open_investor_account) — BA: 'khác >>> cho vào mua/bán không xác định'. Cá nhân/Tổ chức trong nước nay lấy từ `open_investor_account` (VSDC OPEN_INVESTORS: `investor_account_nbr`, `investor_tp_code`, bản ghi mới nhất theo `open_dt`). Khớp SQL BA: các phân loại loại trừ nhau theo thứ tự ưu tiên — O_GSTT_75."
+        source_atomic_table: "securities_trade / open_investor_account"
+        source_atomic_column: "securities_trade / open_investor_account.buy_account_nbr / sell_account_nbr / investor_tp_code"
       - logical_name: "Buy Value"
         physical_name: "buy_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Buy Volume"
@@ -11955,7 +11955,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua theo Phân loại NĐT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Khối lượng mua theo Phân loại NĐT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Sell Value"
@@ -11964,7 +11964,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Sell Volume"
@@ -11973,7 +11973,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán theo Phân loại NĐT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Khối lượng bán theo Phân loại NĐT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Matched Buy Value"
@@ -11982,7 +11982,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Matched Sell Value"
@@ -11991,7 +11991,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Buy Value"
@@ -12000,7 +12000,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Sell Value"
@@ -12009,7 +12009,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
 
@@ -12026,7 +12026,7 @@ entities:
       - "security_trading_snapshot"
       - "securities_trade"
       - "market_index_snapshot"
-      - "discretionary_investment_account"
+      - "open_investor_account"
     modules_using:
       - "GSTT"
     columns:
@@ -12054,16 +12054,16 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — Classification Value chuẩn, 1 trường Code. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
-        source_atomic_table: "securities_trade / discretionary_investment_account"
-        source_atomic_column: "securities_trade / discretionary_investment_account.buy_account_nbr / sell_account_nbr / investment_account_tp_code"
+        description: "Phân loại nhà đầu tư: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI — Classification Value chuẩn, 1 trường Code. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        source_atomic_table: "securities_trade / open_investor_account"
+        source_atomic_column: "securities_trade / open_investor_account.buy_account_nbr / sell_account_nbr / investor_tp_code"
       - logical_name: "Buy Value"
         physical_name: "buy_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Buy Volume"
@@ -12072,7 +12072,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "[MỚI 2026-10-16 v4.51, ma trận chiều × chỉ tiêu Nhóm 37 — O_GSTT_71] Khối lượng mua theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "[MỚI 2026-10-16 v4.51, ma trận chiều × chỉ tiêu Nhóm 37 — O_GSTT_71] Khối lượng mua theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Sell Value"
@@ -12081,7 +12081,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Sell Volume"
@@ -12090,7 +12090,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "[MỚI 2026-10-16 v4.51, ma trận chiều × chỉ tiêu Nhóm 37 — O_GSTT_71] Khối lượng bán theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "[MỚI 2026-10-16 v4.51, ma trận chiều × chỉ tiêu Nhóm 37 — O_GSTT_71] Khối lượng bán theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Matched Buy Value"
@@ -12099,7 +12099,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Matched Sell Value"
@@ -12108,7 +12108,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Buy Value"
@@ -12117,7 +12117,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Negotiated Sell Value"
@@ -12126,7 +12126,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `discretionary_investment_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `event_dt` — Data Modeler xác nhận 2026-10-15) có `investment_account_tp_code` = '3'; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại KHÔNG loại trừ nhau (TK loại 'E' tính ở cả Tự doanh lẫn Nước ngoài). Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Market Index Value"
@@ -12164,11 +12164,11 @@ entities:
     module: "GSTT"
     status: "draft"
     reuse_status: "new"
-    description: "[MỚI 2026-10-16, theo yêu cầu Data Modeler] Bảng phẳng cho Data Explorer Nhóm 37 (Giao dịch & thanh khoản): gộp chiều (mã CK, sàn, ngành, ngày, chỉ số), chỉ tiêu cấp mã CK, cấp chỉ số và cơ cấu nhà đầu tư (4 nhóm pivot thành cột) trên 1 bảng — không FK Dimension. Grain 1 dòng / mã CK / chỉ số (hoặc dòng 'không theo rổ', index_code = '') / ngày giao dịch. Truy vấn không chọn chiều Chỉ số phải lọc index_code = '' để không đếm trùng; cột cấp chỉ số (idx_*, điểm chỉ số) lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày"
+    description: "[MỚI 2026-10-16, theo yêu cầu Data Modeler] Bảng phẳng cho Data Explorer Nhóm 37 (Giao dịch & thanh khoản; BA đánh số lại thành Nhóm 38, [SỬA 2026-10-22] phạm vi Market ID gồm cả phái sinh DVX và TPDN riêng lẻ HCX): gộp chiều (mã CK, sàn, ngành, ngày, chỉ số), chỉ tiêu cấp mã CK, cấp chỉ số và cơ cấu nhà đầu tư (4 nhóm pivot thành cột) trên 1 bảng — không FK Dimension. Grain 1 dòng / mã CK / chỉ số (hoặc dòng 'không theo rổ', index_code = '') / ngày giao dịch. Truy vấn không chọn chiều Chỉ số phải lọc index_code = '' để không đếm trùng; cột cấp chỉ số (idx_*, điểm chỉ số) lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày"
     source_atomic:
       - "security_trading_snapshot"
       - "securities_trade"
-      - "discretionary_investment_account"
+      - "open_investor_account"
       - "index_constituent_snapshot"
       - "market_index_snapshot"
       - "public_company"
@@ -12307,7 +12307,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch trong ngày của mã chứng khoán (gộp khớp lệnh và thỏa thuận)."
+        description: "Tổng khối lượng giao dịch trong ngày của mã chứng khoán (gộp khớp lệnh và thỏa thuận). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Total Value"
@@ -12316,7 +12316,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch trong ngày của mã chứng khoán (gộp khớp lệnh và thỏa thuận)."
+        description: "Tổng giá trị giao dịch trong ngày của mã chứng khoán (gộp khớp lệnh và thỏa thuận). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Total Matched Volume"
@@ -12325,7 +12325,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng khớp lệnh thuần trong ngày của mã chứng khoán (loại giao dịch thỏa thuận)."
+        description: "Khối lượng khớp lệnh thuần trong ngày của mã chứng khoán (loại giao dịch thỏa thuận). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Total Matched Value"
@@ -12334,7 +12334,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị khớp lệnh thuần trong ngày của mã chứng khoán (loại giao dịch thỏa thuận)."
+        description: "Giá trị khớp lệnh thuần trong ngày của mã chứng khoán (loại giao dịch thỏa thuận). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. BA dòng GTGD khớp lệnh (STT 38) chỉ ghi Market ID (UPX,STX,STK) không có DVX/HCX — coi là sót vì các dòng KLGD/Tổng KL/GT cùng nhóm đã có DVX/HCX; thiết kế áp cùng phạm vi, chờ BA xác nhận (O_GSTT_77)."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Total Negotiated Volume"
@@ -12343,7 +12343,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng giao dịch thỏa thuận trong ngày của mã chứng khoán."
+        description: "Khối lượng giao dịch thỏa thuận trong ngày của mã chứng khoán. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Total Negotiated Value"
@@ -12352,7 +12352,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị giao dịch thỏa thuận trong ngày của mã chứng khoán."
+        description: "Giá trị giao dịch thỏa thuận trong ngày của mã chứng khoán. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Foreign Buy Volume"
@@ -12361,7 +12361,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản mua IN ('F','E')."
+        description: "Khối lượng mua của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản mua IN ('F','E'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Foreign Sell Volume"
@@ -12370,7 +12370,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản bán IN ('F','E')."
+        description: "Khối lượng bán của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản bán IN ('F','E'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Foreign Buy Value"
@@ -12379,7 +12379,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản mua IN ('F','E')."
+        description: "Giá trị mua của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản mua IN ('F','E'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Foreign Sell Value"
@@ -12388,7 +12388,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản bán IN ('F','E')."
+        description: "Giá trị bán của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản bán IN ('F','E'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Proprietary Buy Volume"
@@ -12397,7 +12397,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua tự doanh trong ngày — ký tự thứ 4 của số tài khoản mua IN ('P','E')."
+        description: "Khối lượng mua tự doanh trong ngày — ký tự thứ 4 của số tài khoản mua IN ('P','E'). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Proprietary Sell Volume"
@@ -12406,7 +12406,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán tự doanh trong ngày — ký tự thứ 4 của số tài khoản bán IN ('P','E')."
+        description: "Khối lượng bán tự doanh trong ngày — ký tự thứ 4 của số tài khoản bán IN ('P','E'). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Proprietary Buy Value"
@@ -12415,7 +12415,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua tự doanh trong ngày — ký tự thứ 4 của số tài khoản mua IN ('P','E')."
+        description: "Giá trị mua tự doanh trong ngày — ký tự thứ 4 của số tài khoản mua IN ('P','E'). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Proprietary Sell Value"
@@ -12424,7 +12424,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán tự doanh trong ngày — ký tự thứ 4 của số tài khoản bán IN ('P','E')."
+        description: "Giá trị bán tự doanh trong ngày — ký tự thứ 4 của số tài khoản bán IN ('P','E'). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Domestic Individual Buy Value"
@@ -12433,7 +12433,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67)."
+        description: "Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Domestic Individual Buy Volume"
@@ -12442,7 +12442,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67)."
+        description: "Khối lượng mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Domestic Individual Sell Value"
@@ -12451,7 +12451,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67)."
+        description: "Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Domestic Individual Sell Volume"
@@ -12460,7 +12460,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67)."
+        description: "Khối lượng bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Domestic Institution Buy Value"
@@ -12469,7 +12469,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67)."
+        description: "Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Domestic Institution Buy Volume"
@@ -12478,7 +12478,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67)."
+        description: "Khối lượng mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Domestic Institution Sell Value"
@@ -12487,7 +12487,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67)."
+        description: "Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Domestic Institution Sell Volume"
@@ -12496,7 +12496,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67)."
+        description: "Khối lượng bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Outstanding Share Quantity"
@@ -12649,7 +12649,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng khớp lệnh thuần (loại thỏa thuận) của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Tổng khối lượng khớp lệnh thuần (loại thỏa thuận) của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Index Total Matched Value"
@@ -12658,7 +12658,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị khớp lệnh thuần (loại thỏa thuận) của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Tổng giá trị khớp lệnh thuần (loại thỏa thuận) của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. BA dòng GTGD khớp lệnh (STT 38) chỉ ghi Market ID (UPX,STX,STK) không có DVX/HCX — coi là sót vì các dòng KLGD/Tổng KL/GT cùng nhóm đã có DVX/HCX; thiết kế áp cùng phạm vi, chờ BA xác nhận (O_GSTT_77)."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Index Total Negotiated Volume"
@@ -12667,7 +12667,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Tổng khối lượng giao dịch thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Index Total Negotiated Value"
@@ -12676,7 +12676,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Tổng giá trị giao dịch thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Index Market Cap"
@@ -12739,7 +12739,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Giá trị mua của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Index Foreign Buy Volume"
@@ -12748,7 +12748,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Khối lượng mua của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Index Foreign Sell Value"
@@ -12757,7 +12757,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Giá trị bán của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Index Foreign Sell Volume"
@@ -12766,7 +12766,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Khối lượng bán của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Index Proprietary Buy Value"
@@ -12775,7 +12775,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Giá trị mua của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Index Proprietary Buy Volume"
@@ -12784,7 +12784,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Khối lượng mua của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Index Proprietary Sell Value"
@@ -12793,7 +12793,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Giá trị bán của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Index Proprietary Sell Volume"
@@ -12802,7 +12802,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Khối lượng bán của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Index Domestic Individual Buy Value"
@@ -12811,7 +12811,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Index Domestic Individual Buy Volume"
@@ -12820,7 +12820,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Khối lượng mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Index Domestic Individual Sell Value"
@@ -12829,7 +12829,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Index Domestic Individual Sell Volume"
@@ -12838,7 +12838,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Khối lượng bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Index Domestic Institution Buy Value"
@@ -12847,7 +12847,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Index Domestic Institution Buy Volume"
@@ -12856,7 +12856,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Khối lượng mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Index Domestic Institution Sell Value"
@@ -12865,7 +12865,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Index Domestic Institution Sell Volume"
@@ -12874,7 +12874,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Khối lượng bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Source System Code"

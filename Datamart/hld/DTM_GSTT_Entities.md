@@ -3,6 +3,8 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.20 (2026-10-22, đồng bộ HLD v4.57 — BA Nhóm 38 mới = Nhóm 37 cũ, bổ sung phái sinh):** `Operational Trading Liquidity Explorer` mở phạm vi sổ lệnh thêm `DVX` (phái sinh) và `HCX` (TPDN riêng lẻ) cho 42 cột chỉ tiêu giao dịch; không đổi cột/grain (O_GSTT_77).
+**Thay đổi v2.19 (2026-10-22, đồng bộ HLD v4.56 — BA GSTT Nhóm 23/25/26):** (1) `Fact Foreign Trading Minute Snapshot` đổi nguồn Atomic từ `Security Trading Snapshot` (GTNN lũy kế) về `Securities Trade` (sổ lệnh) — GTNN mua/bán PHÁT SINH theo phút (số tài khoản mua/bán ký tự thứ 4 IN ('F','E')); grain/cột không đổi (O_GSTT_75). (2) `Fact Investor Category Trading Snapshot` thêm phân loại `KHONG_XAC_DINH` (5 dòng/mã CK/ngày); phân loại NĐT (2 Fact phân loại, `proprietary_*`, Explorer) LOẠI TRỪ NHAU theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định (khớp SQL BA). (3) Nguồn Cá nhân/Tổ chức trong nước của 2 Fact phân loại NĐT và `Operational Trading Liquidity Explorer` đổi từ `Discretionary Investment Account` (FMS INVES_ACC, sai nguồn) sang `Open Investor Account` (VSDC OPEN_INVESTORS, Atomic 21/10/2026).
 **Thay đổi v2.18 (2026-10-16, đồng bộ HLD v4.53):** Bổ sung `Operational Trading Liquidity Explorer` — bảng Operational (phẳng) riêng cho Data Explorer Nhóm 37 (grain mã CK × chỉ số × ngày, không Dimension, NĐT pivot thành cột; O_GSTT_72). Các Fact/Dimension khác không đổi.
 **Thay đổi v2.17 (2026-10-15, đồng bộ HLD v4.49):** `Fact Investor Category Trading Snapshot`/`Fact Investor Category Index Trading Snapshot` thêm nguồn Atomic `Discretionary Investment Account` (phân loại NĐT theo số tài khoản + VSDC `open_investors`, O_GSTT_66/67); `Fact Stock Portfolio Snapshot` thêm 2 cột `foreign_buy/sell_derivative_vol` (K_GSTT_374/375); `Fact Index Constituent Snapshot` thêm 4 cột `idx_foreign_buy/sell_vol/val` (K_GSTT_370–373); `Fact Major Shareholder Ownership Snapshot` thêm 5 cột 1:1 đầu/cuối kỳ (K_GSTT_364–369, O_GSTT_68). Không thêm/bớt bảng.
 **Thay đổi v2.16 (2026-10-09):** Tách `Operational Security Index Constituent Reference` thành 2 bảng: bảng này chỉ còn danh mục chỉ số/thành viên rổ; thêm `Operational Security Reference` (`opr_security_ref`, danh mục mã chứng khoán — 6 cột thuộc tính mã CK chuyển sang, đổi tên `stock_floor_code`→`floor_code`, `security_class_code`→`security_class_nm`). Khớp HLD v4.42, O_GSTT_63.
@@ -170,7 +172,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Foreign Trading Minute Snapshot | Fact Snapshot | new | Giá trị mua/bán LŨY KẾ của NĐT nước ngoài đến cuối phút (nguồn Security Trading Snapshot, cập nhật 2026-10-12) | 1 row / mã CK (Symbol) / Trade Minute (`trade_minute_tms`) — FK Calendar Date Dimension qua Trade Date | K_GSTT_78–80, K_GSTT_263–265 |
+| Fact Foreign Trading Minute Snapshot | Fact Snapshot | new | Giá trị mua/bán PHÁT SINH trong phút của NĐT nước ngoài (nguồn Securities Trade — sổ lệnh, cập nhật 2026-10-22 theo BA STT 25/26; trước đó 2026-10-12 lũy kế từ Security Trading Snapshot) | 1 row / mã CK (Symbol) / Trade Minute (`trade_minute_tms`) — FK Calendar Date Dimension qua Trade Date | K_GSTT_78–80, K_GSTT_263–265 |
 | Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
@@ -188,7 +190,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Investor Category Trading Snapshot | Fact Snapshot | new | Giá trị mua/bán theo Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách riêng khớp lệnh/thỏa thuận. **[SỬA 2026-10-15]** Phân loại theo số tài khoản (Tự doanh 'P','E'; Nước ngoài 'F','E') + Atomic `Discretionary Investment Account` (Cá nhân '3'/Tổ chức '5') | 1 row / mã CK / ngày giao dịch / Phân loại NĐT | K_GSTT_85, 90–92, 153–158 (86–89/93/94/152 DEPRECATED) |
+| Fact Investor Category Trading Snapshot | Fact Snapshot | new | Giá trị mua/bán theo Phân loại NĐT (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài/Không xác định [SỬA 2026-10-22]), tách riêng khớp lệnh/thỏa thuận. **[SỬA 2026-10-15]** Phân loại theo số tài khoản (Tự doanh 'P','E'; Nước ngoài 'F','E') + Atomic `Open Investor Account` (Cá nhân '3'/Tổ chức '5') | 1 row / mã CK / ngày giao dịch / Phân loại NĐT | K_GSTT_85, 90–92, 153–158 (86–89/93/94/152 DEPRECATED) |
 | Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mô tả chứng khoán — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
@@ -206,7 +208,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Investor Category Index Trading Snapshot | Fact Snapshot | new | GT mua/bán theo Phân loại NĐT theo rổ chỉ số + điểm/thay đổi/% thay đổi chỉ số. **[SỬA 2026-10-15]** Phân loại theo số tài khoản + Atomic `Discretionary Investment Account` (cùng quy tắc Fact cấp Mã CK) | 1 row / Index Code / ngày giao dịch / Phân loại NĐT | K_GSTT_85, 35, 38, 39, 161–169 |
+| Fact Investor Category Index Trading Snapshot | Fact Snapshot | new | GT mua/bán theo Phân loại NĐT theo rổ chỉ số + điểm/thay đổi/% thay đổi chỉ số. **[SỬA 2026-10-15]** Phân loại theo số tài khoản + Atomic `Open Investor Account` (cùng quy tắc Fact cấp Mã CK) | 1 row / Index Code / ngày giao dịch / Phân loại NĐT | K_GSTT_85, 35, 38, 39, 161–169 |
 | Index Constituent Dimension | Dimension | reuse | Mô tả rổ chỉ số — đã thiết kế ở Nhóm 1 | 1 row / Index Code (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 

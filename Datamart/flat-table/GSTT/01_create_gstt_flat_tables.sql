@@ -2,6 +2,7 @@
 -- GSTT Flat Tables — CREATE
 -- Module: Giám sát Thị trường (GSTT)
 -- Generated: Phase 3 LLD Datamart
+-- Sửa 2026-10-22: #18 gstt_opr_trading_liquidity_explorer_flat — phạm vi sổ lệnh thêm Market ID DVX (phái sinh), HCX (TPDN riêng lẻ) theo BA Nhóm 38 mới (= Nhóm 37 cũ); không đổi cột (O_GSTT_77)
 -- Sửa 2026-10-19: #18 gstt_opr_trading_liquidity_explorer_flat bổ sung cột index_nm (tên chỉ số, đặt cuối bảng — ALTER TABLE ... ADD COLUMN index_nm Nullable(String))
 -- Sửa 2026-10-16: bổ sung bảng #18 gstt_opr_trading_liquidity_explorer_flat (Fact phẳng Data Explorer Nhóm 37 — O_GSTT_72)
 -- 12 bảng: 9 fact + 3 operational (opr_security_ref — mới 2026-10-09, danh mục mã chứng khoán tách từ opr_security_index_constituent_ref; opr_security_index_constituent_ref — mới 2026-10-06, danh mục chỉ số/thành viên rổ Index Code ↔ Symbol ↔ ISIN; opr_public_company_insider_ownership — mới 2026-10-01, Nhóm 35; opr_public_company_shareholding đã bãi bỏ 2026-09-25)
@@ -383,6 +384,7 @@ COMMENT 'Flat table — Fact Security Trading Daily × Calendar Date Dimension �
 --    Dòng tiền NĐT nước ngoài theo phút — 1 row / mã CK (Symbol) / Trade Minute
 --    [SỬA 2026-10-12] Nguồn Security Trading Snapshot (MDDS JAD_STOCKINFOR, per-tick): GTNN LŨY KẾ
 --    trong ngày tại cuối phút (snapshot cuối phút, carry-forward) — khớp mapping BA, O_GSTT_41 mục 4
+--    [SỬA 2026-10-22] BA STT 25/26 lấy theo sổ lệnh: nguồn Securities Trade, GTNN PHÁT SINH trong phút (không lũy kế) — O_GSTT_75
 --    Joins: Calendar Date (snpst_dt_dim_id JOIN) × Security Trading Snapshot Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.gstt_fct_foreign_trading_min_snpst_flat ON CLUSTER 'my_cluster'
@@ -390,9 +392,9 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_foreign_trading_min_snpst_flat ON C
     -- From: FACT Foreign Trading Minute Snapshot
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
     snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
-    trade_minute_tms                    Nullable(DateTime)      COMMENT 'Mốc phút xác định grain (DD — grain component), cắt phút của Trading Date + Trading Time snapshot',
-    foreign_buy_val_at_min              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua LŨY KẾ của NĐT nước ngoài đến cuối phút (K_GSTT_78) — không cộng theo thời gian',
-    foreign_sell_val_at_min             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán LŨY KẾ của NĐT nước ngoài đến cuối phút (K_GSTT_79) — không cộng theo thời gian',
+    trade_minute_tms                    Nullable(DateTime)      COMMENT 'Mốc phút xác định grain (DD — grain component), cắt phút của Trade Date + Trade Time sổ lệnh (Securities Trade)',
+    foreign_buy_val_at_min              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của NĐT nước ngoài PHÁT SINH trong phút (K_GSTT_78, sổ lệnh) — cộng được theo thời gian',
+    foreign_sell_val_at_min             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của NĐT nước ngoài PHÁT SINH trong phút (K_GSTT_79, sổ lệnh) — cộng được theo thời gian',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
@@ -416,7 +418,7 @@ COMMENT 'Flat table — Fact Foreign Trading Minute Snapshot × Calendar Date Di
 -- ============================================================
 -- 5. FACT: gstt_fct_investor_category_trading_snpst_flat
 --    [MỚI 2026-09-21, theo yêu cầu Data Modeler] Giá trị mua/bán theo Phân loại NĐT
---    (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài), tách khớp lệnh/thỏa thuận —
+--    (Cá nhân/Tổ chức trong nước/Tự doanh/Nước ngoài/Không xác định [2026-10-22]), tách khớp lệnh/thỏa thuận —
 --    1 row / mã CK / ngày giao dịch / Phân loại NĐT. Tách khỏi Fact Stock Portfolio
 --    Snapshot để có cột vật lý Investor Category Code thay vì 4 cụm cột cố định +
 --    CASE WHEN. Phục vụ K_GSTT_85/90-92/153-158 (Nhóm 31/32, grain Mã CK — sửa 2026-09-23). Không đổi Fact Stock Portfolio
@@ -428,7 +430,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_investor_category_trading_snpst_fla
     -- From: FACT Investor Category Trading Snapshot
     security_trading_snpst_dim_id       String                  COMMENT 'FK → Security Trading Snapshot Dimension',
     snpst_dt_dim_id                       String                  COMMENT 'FK → Calendar Date Dimension',
-    investor_category_code              Nullable(String)        COMMENT 'Phân loại NĐT: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI (Classification Value)',
+    investor_category_code              Nullable(String)        COMMENT 'Phân loại NĐT: CA_NHAN / TO_CHUC_TRONG_NUOC / TU_DOANH / NUOC_NGOAI / KHONG_XAC_DINH [2026-10-22, BA Nhóm 23] (Classification Value)',
     buy_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị mua theo Phân loại NĐT (khớp lệnh + thỏa thuận) (K_GSTT_86, K_GSTT_90)',
     buy_vol                             Nullable(Int64)         COMMENT 'Khối lượng mua theo Phân loại NĐT (khớp lệnh + thỏa thuận).',
     sell_val                            Nullable(Decimal(23,2)) COMMENT 'Giá trị bán theo Phân loại NĐT (khớp lệnh + thỏa thuận) (K_GSTT_87, K_GSTT_91)',

@@ -105,7 +105,7 @@ modules:
       sửa lại profile — dừng và hỏi Data Modeler trước (giống lần 2026-09-26 gây lệch).
 
   GSTT:
-    expect_columns: 27
+    expect_columns: 26
     ma_column: null
     sql_columns: ["Câu lệnh tham khảo", "Câu lệnh màn"]
     expect_header_contains: ["STT", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo", "Câu lệnh màn"]
@@ -121,6 +121,11 @@ modules:
       dòng 2] BA THÊM LẠI cột 'Usecase' ở index 0 (842 dòng có giá trị, 24 usecase khác nhau) → 27 cột, STT về index 1.
       Parser tra cột theo TÊN nên không đổi hành vi; cột Usecase được GIỮ trong lát cắt. File BA nay 904 dòng (trước 844)
       và có 61 dòng STT rỗng (trước 2) — cần rà các dòng mới.
+      [CẬP NHẬT 2026-10-22 13:49, xác minh qua header sống: 904 dòng đều 26 cột, delimiter ',', header dòng 1, legend
+      dòng 2] BA BỎ LẠI cột 'Usecase' (không còn index 0) → 26 cột, STT về index 0; 'Trạng thái mapping' ở index 12 (cột M
+      trên Excel). Parser tra theo TÊN nên không đổi hành vi, chỉ đổi expect_columns 27 → 26. Cùng lần cập nhật: Nhóm 37 cũ
+      ('Giao dịch & thanh khoản', 38 dòng) và Nhóm 39–43 có Trạng thái mapping = Deleted; Nhóm 38 mới 'Dataexplorer Giao dịch
+      & thanh khoản' (57 dòng, có mapping phái sinh) thay Nhóm 37 cũ; sổ lệnh 43–48 → 44–49. Dòng Deleted BỎ QUA khi thiết kế.
 
   "GSĐC":
     aliases: [GSDC]
