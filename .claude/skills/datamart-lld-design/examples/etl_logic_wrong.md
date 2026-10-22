@@ -262,24 +262,23 @@ Cả 4 pattern dưới đây đều qua Gate 0–8 nhưng mỗi lần chạy qu�
 ```
 
 **Vấn đề chung:** điều kiện ngày chỉ nằm ở "outer" hoặc chỉ là `<= :etl_date` không chặn dưới thì engine vẫn phải đọc/tổng hợp mọi ngày trước đó. Mẫu dbt tương đương cũng sai:
-`FROM {{ ref('atm_market_index_snapshot') }} WHERE index_nm = 'VNINDEX' AND trading_dt <= to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')` → phải là `= :etl_date` hoặc `BETWEEN (:etl_date − N) AND :etl_date`.
+`FROM {{ ref('atm_market_index_snapshot') }} WHERE market_code = 'HOSE' AND trading_dt <= to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')` → phải là `= :etl_date` hoặc `BETWEEN (:etl_date − N) AND :etl_date`.
 Tự kiểm: `python .claude/skills/datamart-review/scripts/check_date_bound.py --module {MODULE} --file {mart_table}` (TC12).
 
 
 ---
 
-## SAI 12 — Chọn VN-Index bằng `market_code = 'HOSE'` trong khi BA ghi `IndexCode = 'VNINDEX'` (bài học PTTT 2026-10-20, H14/A21)
+## SAI 12 — Đổi lọc VN-Index sang `index_nm = 'VNINDEX'` theo BA khi Data Modeler đã chốt giữ `market_code = 'HOSE'` (PTTT 2026-10-21, H14/A21 — đảo quyết định 2026-10-20)
 
 ```csv
-❌ SAI 12a — đổi literal BA và lấy mã sàn làm đại diện (fct_market_risk_snpst, khoảng 10 cột):
-   market_index_snapshot.market_index_val WHERE market_index_snapshot.market_code = 'HOSE' AND market_index_snapshot.trading_dt = :etl_date
-   [BA Nhóm 4 dòng "Giá tại thời điểm t": WHERE IndexCode = 'VNINDEX' AND TradingDate = :input_date AND indexTime = MAX(indexTime)]
-✅ Đúng — giữ literal BA, đổi tên cột sang cột Atomic thật (INDEXNAME):
-   market_index_snapshot.market_index_val WHERE market_index_snapshot.index_nm = 'VNINDEX' AND market_index_snapshot.trading_dt = :etl_date [market_index_snapshot chỉ lấy bản ghi CUỐI NGÀY: ROW_NUMBER() OVER (PARTITION BY market_index_snapshot.index_nm, market_index_snapshot.trading_dt ORDER BY market_index_snapshot.index_time DESC) = 1]
+❌ SAI 12a — chép literal BA (`IndexCode`/`indexname = 'VNINDEX'`) thành `index_nm` (fct_market_risk_snpst, Nhóm 4 — từng làm ở commit 48e849c5, đã revert):
+   market_index_snapshot.market_index_val WHERE market_index_snapshot.index_nm = 'VNINDEX' AND market_index_snapshot.trading_dt = :etl_date
+✅ Đúng — Data Modeler chốt 2026-10-21 BA nhầm, giữ mã sàn:
+   market_index_snapshot.market_index_val WHERE market_index_snapshot.market_code = 'HOSE' AND market_index_snapshot.trading_dt = :etl_date [market_index_snapshot chỉ lấy bản ghi CUỐI NGÀY: ROW_NUMBER() OVER (PARTITION BY market_index_snapshot.market_code, market_index_snapshot.trading_dt ORDER BY market_index_snapshot.index_time DESC) = 1]
 
-❌ SAI 12b — ghi "BA dòng N" cho điều kiện mà dòng N không có (HLD K_PTTT_43: "BA dòng 107" + market_code = 'HOSE'; dòng BA đó chỉ có tên "Thời gian", điều kiện trống).
+❌ SAI 12b — ghi "BA dòng N" cho điều kiện mà dòng N không có (HLD K_PTTT_43: "BA dòng 107"; dòng BA đó chỉ có tên "Thời gian", điều kiện trống).
 ✅ Đúng — mở dòng BA trích dẫn, chép điều kiện thật; dòng không có điều kiện thì ghi "BA không nêu điều kiện" và nêu nguồn của điều kiện bổ sung.
 ```
 
-**Vấn đề chung:** kết luận "entity không có cột mã chỉ số" khi chưa liệt kê hết cột (entity có `index_nm`), rồi chốt cho Nhóm 1&2 và để lan sang Nhóm 4/5/6 mà không đọc BA từng Nhóm.
-**Không áp dụng cho khóa JOIN** Market Index Snapshot ↔ Index Constituent: khóa đó theo H7 (`market_code = index_code`), không nối `index_nm = index_code`.
+**Vấn đề chung:** khi BA và Data Modeler mâu thuẫn về giá trị lọc, quyết định của Data Modeler trong phiên là nguồn sự thật — ghi vào HLD, không tự "sửa theo BA" ở phiên sau khi BA CSV có chữ khác. Quyết định chốt cho Nhóm A không tự áp sang Nhóm B (đọc BA từng Nhóm).
+**Không áp dụng cho khóa JOIN** Market Index Snapshot ↔ Index Constituent: khóa đó theo H7 (`market_code = index_code`).

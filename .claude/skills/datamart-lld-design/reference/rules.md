@@ -24,7 +24,7 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A18 — Chỉ tiêu theo mã CK × ngày: dùng `security_trading_snapshot` cuối ngày, không tổng hợp lại từ `securities_trade` `[L3-CUMULATIVE-SNAPSHOT-NOT-DEDUPED]`
 - A19 — Bảng Atomic snapshot/event: MỌI tham chiếu phải có giới hạn ngày tường minh `[L2-DATE-BOUND-MISSING]`
 - A20 — Cột mới ở Fact/Operational phải lên flat DDL + DML TRONG CÙNG LƯỢT `[L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING]`
-- A21 — Lọc chỉ số trên `market_index_snapshot`: `index_nm`, giữ literal BA `[process]`
+- A21 — Lọc chỉ số trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (đảo quyết định `index_nm`, 2026-10-21) `[process]`
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
@@ -262,7 +262,7 @@ Ngoại lệ có truy vết: nếu SQL BA CHÍNH nó nối `Issue_Code = symbol`
 > HLD ghi "append theo ngày" nhưng etl_logic không thể hiện. Không Gate nào bắt được (Gate 0–8 đều không đọc điều kiện ngày).
 > **Gốc rễ nằm ở chính skill này:** các mẫu `lookup_date` trước đây KHÔNG có điều kiện ngày (đã sửa 2026-10-14),
 > nên thiết kế đúng theo mẫu vẫn sai. Mẫu lỗi điển hình (dbt):
-> `FROM {{ ref('atm_market_index_snapshot') }} WHERE index_nm = 'VNINDEX' AND trading_dt <= to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')`
+> `FROM {{ ref('atm_market_index_snapshot') }} WHERE market_code = 'HOSE' AND trading_dt <= to_date('{{ var("etl_date") }}', 'yyyy-MM-dd')`
 > — chỉ chặn trên, không chặn dưới.
 
 **Phạm vi — thế nào là bảng "snapshot/event":** Atomic có `table_type` = `Fact Snapshot` hoặc `Fact Append` trong
@@ -362,13 +362,12 @@ python .claude/skills/datamart-review/scripts/check_flat_table.py   --module {MO
   Chỉ cột Dimension denormalize (`snpst_cdr_dt`, `fund_type_nm`…) mới được phép có ở flat mà không có ở LLD của bảng đó.
 - Phép thử nhanh cho người thiết kế: *"cột có trong Detail Mapping mà không có trong flat DDL?"* — Gate 4 tiêu chí 1 trả lời đúng câu này.
 
-### A21 — Lọc chỉ số trên `market_index_snapshot`: `index_nm`, giữ literal BA `[process]`
+### A21 — Lọc chỉ số trên `market_index_snapshot`: giữ `market_code = 'HOSE'` `[process]`
 
-Lý do đầy đủ và sự cố PTTT 2026-10-20 nằm ở **H14** (`datamart-hld-design/reference/rules.md`). Với LLD:
-- `etl_logic` chọn VN-Index viết `market_index_snapshot.index_nm = 'VNINDEX'` (BA `IndexCode = 'VNINDEX'`), không viết
-  `market_index_snapshot.market_code = 'HOSE'`. Literal lấy từ BA; đổi literal phải có bằng chứng giá trị.
-- `ROW_NUMBER() OVER (PARTITION BY ...)` lấy bản ghi cuối ngày phải chứa `market_index_snapshot.index_nm`.
-- Đổi điều kiện này ở một cột là đổi ở MỌI cột cùng quy tắc (H11): grep `market_code = 'HOSE'` trong `Datamart/lld/{M}/`,
+Quyết định hiện hành (Data Modeler 2026-10-21, revert `48e849c5`; đảo quyết định `index_nm` 2026-10-20): BA ghi `IndexCode`/`indexname = 'VNINDEX'` là BA nhầm. Chi tiết ở **H14** (`datamart-hld-design/reference/rules.md`). Với LLD:
+- `etl_logic` chọn VN-Index viết `market_index_snapshot.market_code = 'HOSE'`, KHÔNG viết `market_index_snapshot.index_nm = 'VNINDEX'`.
+- `ROW_NUMBER() OVER (PARTITION BY ...)` lấy bản ghi cuối ngày phải chứa `market_index_snapshot.market_code`.
+- Đổi điều kiện này ở một cột là đổi ở MỌI cột cùng quy tắc (H11): grep `index_nm = 'VNINDEX'` / `market_code = 'HOSE'` trong `Datamart/lld/{M}/`,
   Detail Mapping và Ghi chú HLD, sửa đồng loạt, rồi kiểm flat DML cùng lượt (A20).
 - Cột BA ghi (`IndexCode`) không có ở Atomic: liệt kê đủ `physical_name`/`source_column` của entity trước khi kết luận
   "không có cột" (A1, A12).

@@ -18,7 +18,7 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm s
 - H12 — BA chuyển Nhóm sang nguồn/bảng mới: kiểm bảng cũ còn KPI nào dùng không `[L2-TABLE-ZERO-USAGE]`
 - H12b — Trước khi kết luận "thiếu", đọc quyết định đã duyệt của đúng KPI `[process]`
 - H13 — Sửa bảng Markdown trong HLD: mỗi dòng KPI đúng 7 ô; giải trình ánh xạ phải tra lại KPI thật `[L1-HLD-KPI-ROW-CELLS]`
-- H14 — Chọn chỉ số (VN-Index, VN30…) trên `market_index_snapshot`: lọc `index_nm`, giữ literal BA, không dùng `market_code = 'HOSE'` đại diện `[process]`
+- H14 — Chọn chỉ số (VN-Index, VN30…) trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (Data Modeler chốt 2026-10-21, đảo quyết định `index_nm` 2026-10-20) `[process]`
 - Ghi chú lịch sử
 
 ### H1 — Một HLD là MỘT nguồn sự thật: sửa Section 1 phải sửa cả Section 3/4/5
@@ -183,7 +183,9 @@ Chạy Gate 8 (`check_design_lint.py`), cảnh báo `L2-TABLE-ZERO-USAGE` nghĩa
 - Khối entity trong erDiagram của một bảng đã xuất hiện ở Nhóm khác phải chép **nguyên văn** khối đang có (Gate 5 #11 `L1-INCONSISTENT-ENTITY-BLOCKS`).
 
 
-### H14 — Chọn chỉ số (VN-Index, VN30…) trên `market_index_snapshot`: lọc `index_nm`, giữ literal BA, không dùng `market_code = 'HOSE'` đại diện `[process]`
+### H14 — Chọn chỉ số (VN-Index, VN30…) trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (đảo quyết định 2026-10-21) `[process]`
+
+> **[QUYẾT ĐỊNH HIỆN HÀNH — Data Modeler 2026-10-21, revert `48e849c5`]** BA ghi `IndexCode = 'VNINDEX'` / `indexname = 'VNINDEX'` là **BA nhầm**. Lọc VN-Index trên `market_index_snapshot` bằng `market_code = 'HOSE'` (+ `PARTITION BY market_code, trading_dt` ở bước bản ghi cuối ngày). KHÔNG đổi sang `index_nm = 'VNINDEX'` dù BA CSV/SQL có chữ `indexname`. Phần mô tả dưới đây là lịch sử quyết định 2026-10-20 (đã bị đảo) — chỉ giữ các bước quy trình (liệt kê đủ cột entity, không chép quyết định Nhóm này sang Nhóm khác, mở đúng dòng BA).
 
 Điều kiện BA kiểu `IndexCode = 'VNINDEX'` (hoặc `marketCode = 'VNINDEX'`) → ở Atomic `market_index_snapshot` viết
 `market_index_snapshot.index_nm = 'VNINDEX'` (`index_nm` ← `MDDS.JAD_MARKETINFOR.INDEXNAME`). Data Modeler chốt 2026-10-20:

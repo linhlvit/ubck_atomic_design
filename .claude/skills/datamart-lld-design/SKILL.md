@@ -172,7 +172,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | A18 | Chỉ tiêu mã CK × ngày: dùng bản tin cuối ngày của snapshot (`trading_time DESC, sequence DESC`), không `SUM` lại `securities_trade` | 1 | Gate 8 `L3-CUMULATIVE-SNAPSHOT-NOT-DEDUPED` |
 | A19 | Bảng Atomic snapshot/event: mọi tham chiếu có giới hạn ngày tường minh (R1–R6) | 1 (+ mốc ngày KPI ở Phase 2) | `check_date_bound.py` (TC12) — chưa nằm trong Gate |
 | A20 | Cột mới ở Fact/Operational lên flat DDL + DML trong cùng lượt; Gate 4 FAIL không phải "tồn đọng" | 1, 3 | Gate 4 `L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING`, Gate 9 |
-| A21 | Lọc VN-Index trên `market_index_snapshot`: `index_nm = 'VNINDEX'` (literal BA), không `market_code = 'HOSE'`; `PARTITION BY` cuối ngày chứa `index_nm`; đổi một cột thì grep và sửa đồng loạt | 1, 2 | — (quy trình) |
+| A21 | Lọc VN-Index trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (Data Modeler chốt 2026-10-21, BA `IndexCode`/`indexname` nhầm), KHÔNG đổi sang `index_nm`; `PARTITION BY` cuối ngày chứa `market_code`; đổi một cột thì grep và sửa đồng loạt | 1, 2 | — (quy trình) |
 
 ---
 

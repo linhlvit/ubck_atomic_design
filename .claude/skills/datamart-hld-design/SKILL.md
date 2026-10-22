@@ -111,7 +111,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | H12 | Nhóm chuyển sang bảng mới: bảng cũ 0 KPI dùng → All-Tier Cleanup, giữ lịch sử ở Section 4 | Gate 8 `L2-TABLE-ZERO-USAGE` |
 | H12b | Trước khi kết luận "thiếu", đọc `ghi_chu` Detail Mapping và Ghi chú HLD của đúng KPI | — (quy trình) |
 | H13 | Dòng KPI đúng 7 ô; giải trình "dòng BA → K_xxx" phải tra lại KPI thật; khối erDiagram trùng tên chép nguyên văn | Gate 8 `L1-HLD-KPI-ROW-CELLS`, Gate 5 #11 |
-| H14 | Chọn chỉ số trên `market_index_snapshot`: BA `IndexCode = 'VNINDEX'` → `index_nm = 'VNINDEX'`, giữ literal BA, không dùng `market_code = 'HOSE'` đại diện; cột BA không có ở Atomic thì liệt kê đủ cột entity trước khi kết luận; quyết định của Nhóm này không tự áp sang Nhóm khác | — (quy trình) |
+| H14 | Chọn chỉ số trên `market_index_snapshot`: Data Modeler chốt 2026-10-21 — BA `IndexCode`/`indexname = 'VNINDEX'` là BA nhầm, giữ `market_code = 'HOSE'` (KHÔNG đổi sang `index_nm`); cột BA không có ở Atomic thì liệt kê đủ cột entity trước khi kết luận; quyết định của Nhóm này không tự áp sang Nhóm khác | — (quy trình) |
 
 ---
 
