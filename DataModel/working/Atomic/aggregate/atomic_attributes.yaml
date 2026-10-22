@@ -4559,11 +4559,9 @@ attributes:
   source_system: "THANHTRA"
   source_table: "EXAMINATION_TEAM"
   source_column: "THANHTRA.EXAMINATION_TEAM.UNIT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'UNIT'). Cần ETL\
-    \ crosswalk sang NHNCK.UNITS: EXAMINATION_TEAM.UNIT_ID = UNITS.ID để xác nhận\
-    \ UNIT_CODE sau đó hash_id('NHNCK_UNITS', UNIT_CODE) | Crosswalk khác phân hệ\
-    \ (THANHTRA → NHNCK) — chưa xác nhận UNIT_ID nguồn khớp NHNCK.UNITS.ID, cần Data\
-    \ Modeler xác nhận trước go-live."
+  comment: "FK target: cl_ecat_department.cl_ecat_department_id. Cần ETL crosswalk\
+    \ sang ECAT.DEPARTMENT: EXAMINATION_TEAM.UNIT_ID = DEPARTMENT.ID để xác nhận CODE\
+    \ sau đó hash_id('ECAT_DEPARTMENT', CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "examination_team"
@@ -4578,9 +4576,10 @@ attributes:
   is_primary_key: false
   source_system: "THANHTRA"
   source_table: "EXAMINATION_TEAM"
-  source_column: "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Unit Id. Giá trị\
-    \ lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Unit Id."
+  source_column: "ECAT.DEPARTMENT.CODE"
+  comment: "Lookup pair: cl_ecat_department.cl_ecat_department_code. Pair with Unit\
+    \ Id. Giá trị lấy từ ECAT.DEPARTMENT.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Unit Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "examination_team"
@@ -4900,7 +4899,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Examination Team Member"
-  atomic_attribute: "Member Officer Id"
+  atomic_attribute: "User Id"
   description: "FK đến cán bộ là thành viên đoàn kiểm tra."
   data_domain: "Surrogate Key"
   nullable: true
@@ -4909,17 +4908,17 @@ attributes:
   source_table: "EXAMINATION_TEAM_MEMBER"
   source_column: "THANHTRA.EXAMINATION_TEAM_MEMBER.USER_ACCOUNT"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', USER_ACCOUNT) — dùng USER_ACCOUNT (cùng dòng, không\
-    \ cần crosswalk join) làm business key thay vì USER_ID kỹ thuật, nhất quán với\
-    \ Member Officer Code. Sửa 2026-09: trước đây hash sai theo USER_ID."
+    \ Hash: hash_id('IAM_USERS', USER_ACCOUNT) | Chỉ map USER_ACCOUNT (BK trùng USERNAME\
+    \ của IAM.USERS); không map USER_ID kỹ thuật của nguồn. Chưa xác nhận USER_ACCOUNT\
+    \ khớp IAM.USERS.USERNAME — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "examination_team_member"
-  atomic_column: "member_officer_id"
+  atomic_column: "user_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Examination Team Member"
-  atomic_attribute: "Member Officer Code"
+  atomic_attribute: "User Code"
   description: "Tài khoản đăng nhập của thành viên đoàn kiểm tra."
   data_domain: "Text"
   nullable: true
@@ -4928,16 +4927,15 @@ attributes:
   source_table: "EXAMINATION_TEAM_MEMBER"
   source_column: "THANHTRA.EXAMINATION_TEAM_MEMBER.USER_ACCOUNT"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Member Officer Id. Sửa 2026-09: comment cũ ghi sai entity 'Regulatory\
-    \ Authority Officer' (Title Case, sai target) — đã sửa đúng."
+    \ Pair with User Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "examination_team_member"
-  atomic_column: "member_officer_code"
+  atomic_column: "user_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Examination Team Member"
-  atomic_attribute: "Member Full Name"
+  atomic_attribute: "Full Name"
   description: "Họ tên đầy đủ thành viên đoàn kiểm tra."
   data_domain: "Text"
   nullable: true
@@ -4949,11 +4947,11 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "examination_team_member"
-  atomic_column: "member_full_nm"
+  atomic_column: "full_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Examination Team Member"
-  atomic_attribute: "Member Department Id"
+  atomic_attribute: "Department Id"
   description: "FK đến phòng ban/đơn vị của thành viên."
   data_domain: "Surrogate Key"
   nullable: true
@@ -4961,38 +4959,35 @@ attributes:
   source_system: "THANHTRA"
   source_table: "EXAMINATION_TEAM_MEMBER"
   source_column: "THANHTRA.EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'DEPARTMENT').\
-    \ Cần ETL crosswalk sang NHNCK.DEPARTMENTS: EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID\
-    \ = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK_DEPARTMENTS',\
-    \ DEPARTMENT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận\
-    \ DEPARTMENT_ID nguồn khớp NHNCK.DEPARTMENTS.ID, cần Data Modeler xác nhận trước\
-    \ go-live."
+  comment: "FK target: cl_ecat_department.cl_ecat_department_id. Cần ETL crosswalk\
+    \ sang ECAT.DEPARTMENT: EXAMINATION_TEAM_MEMBER.DEPARTMENT_ID = DEPARTMENT.ID\
+    \ để xác nhận CODE sau đó hash_id('ECAT_DEPARTMENT', CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "examination_team_member"
-  atomic_column: "member_department_id"
+  atomic_column: "department_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Examination Team Member"
-  atomic_attribute: "Member Department Code"
+  atomic_attribute: "Department Code"
   description: "Mã phòng ban/đơn vị của thành viên (denormalized lookup)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "THANHTRA"
   source_table: "EXAMINATION_TEAM_MEMBER"
-  source_column: "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Member Department\
-    \ Id. Giá trị lấy từ NHNCK.DEPARTMENTS.DEPARTMENT_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Member Department Id."
+  source_column: "ECAT.DEPARTMENT.CODE"
+  comment: "Lookup pair: cl_ecat_department.cl_ecat_department_code. Pair with Department\
+    \ Id. Giá trị lấy từ ECAT.DEPARTMENT.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Department Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "examination_team_member"
-  atomic_column: "member_department_code"
+  atomic_column: "department_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Examination Team Member"
-  atomic_attribute: "Member Department Name"
+  atomic_attribute: "Department Name"
   description: "Tên phòng ban/đơn vị của thành viên (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -5000,11 +4995,11 @@ attributes:
   source_system: "THANHTRA"
   source_table: "EXAMINATION_TEAM_MEMBER"
   source_column: "THANHTRA.EXAMINATION_TEAM_MEMBER.DEPARTMENT_NAME"
-  comment: "Denormalized snapshot tên phòng ban. Pair with Member Department Id."
+  comment: "Denormalized snapshot tên phòng ban. Pair with Department Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "examination_team_member"
-  atomic_column: "member_department_nm"
+  atomic_column: "department_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Examination Team Member"
@@ -7282,7 +7277,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Team Member"
-  atomic_attribute: "Member Officer Id"
+  atomic_attribute: "User Id"
   description: "FK đến cán bộ là thành viên đoàn thanh tra."
   data_domain: "Surrogate Key"
   nullable: true
@@ -7291,15 +7286,17 @@ attributes:
   source_table: "INSPECTION_TEAM_MEMBER"
   source_column: "THANHTRA.INSPECTION_TEAM_MEMBER.USER_ACCOUNT"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', USER_ACCOUNT)."
+    \ Hash: hash_id('IAM_USERS', USER_ACCOUNT) | Chỉ map USER_ACCOUNT (BK trùng USERNAME\
+    \ của IAM.USERS); không map USER_ID kỹ thuật của nguồn. Chưa xác nhận USER_ACCOUNT\
+    \ khớp IAM.USERS.USERNAME — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "inspection_team_member"
-  atomic_column: "member_officer_id"
+  atomic_column: "user_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Team Member"
-  atomic_attribute: "Member Officer Code"
+  atomic_attribute: "User Code"
   description: "Tài khoản đăng nhập của thành viên đoàn thanh tra."
   data_domain: "Text"
   nullable: true
@@ -7308,15 +7305,15 @@ attributes:
   source_table: "INSPECTION_TEAM_MEMBER"
   source_column: "THANHTRA.INSPECTION_TEAM_MEMBER.USER_ACCOUNT"
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Member Officer Id."
+    \ Pair with User Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "inspection_team_member"
-  atomic_column: "member_officer_code"
+  atomic_column: "user_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Team Member"
-  atomic_attribute: "Member Full Name"
+  atomic_attribute: "Full Name"
   description: "Họ tên đầy đủ thành viên đoàn thanh tra (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -7328,11 +7325,11 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "inspection_team_member"
-  atomic_column: "member_full_nm"
+  atomic_column: "full_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Team Member"
-  atomic_attribute: "Member Department Id"
+  atomic_attribute: "Department Id"
   description: "FK đến phòng ban/đơn vị của thành viên."
   data_domain: "Surrogate Key"
   nullable: true
@@ -7340,38 +7337,35 @@ attributes:
   source_system: "THANHTRA"
   source_table: "INSPECTION_TEAM_MEMBER"
   source_column: "THANHTRA.INSPECTION_TEAM_MEMBER.DEPARTMENT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'DEPARTMENT').\
-    \ Cần ETL crosswalk sang NHNCK.DEPARTMENTS: INSPECTION_TEAM_MEMBER.DEPARTMENT_ID\
-    \ = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK_DEPARTMENTS',\
-    \ DEPARTMENT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận\
-    \ DEPARTMENT_ID nguồn khớp NHNCK.DEPARTMENTS.ID, cần Data Modeler xác nhận trước\
-    \ go-live."
+  comment: "FK target: cl_ecat_department.cl_ecat_department_id. Cần ETL crosswalk\
+    \ sang ECAT.DEPARTMENT: INSPECTION_TEAM_MEMBER.DEPARTMENT_ID = DEPARTMENT.ID để\
+    \ xác nhận CODE sau đó hash_id('ECAT_DEPARTMENT', CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "inspection_team_member"
-  atomic_column: "member_department_id"
+  atomic_column: "department_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Team Member"
-  atomic_attribute: "Member Department Code"
+  atomic_attribute: "Department Code"
   description: "Mã phòng ban/đơn vị của thành viên (denormalized lookup)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "THANHTRA"
   source_table: "INSPECTION_TEAM_MEMBER"
-  source_column: "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Member Department\
-    \ Id. Giá trị lấy từ NHNCK.DEPARTMENTS.DEPARTMENT_CODE sau ETL crosswalk — chi\
-    \ tiết xem comment Member Department Id."
+  source_column: "ECAT.DEPARTMENT.CODE"
+  comment: "Lookup pair: cl_ecat_department.cl_ecat_department_code. Pair with Department\
+    \ Id. Giá trị lấy từ ECAT.DEPARTMENT.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Department Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "inspection_team_member"
-  atomic_column: "member_department_code"
+  atomic_column: "department_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Team Member"
-  atomic_attribute: "Member Department Name"
+  atomic_attribute: "Department Name"
   description: "Tên phòng ban/đơn vị của thành viên (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -7379,11 +7373,11 @@ attributes:
   source_system: "THANHTRA"
   source_table: "INSPECTION_TEAM_MEMBER"
   source_column: "THANHTRA.INSPECTION_TEAM_MEMBER.DEPARTMENT_NAME"
-  comment: "Denormalized snapshot tên phòng ban. Pair with Member Department Id."
+  comment: "Denormalized snapshot tên phòng ban. Pair with Department Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "inspection_team_member"
-  atomic_column: "member_department_nm"
+  atomic_column: "department_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Team Member"
@@ -44253,57 +44247,6 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Event"
   atomic_entity: "Penalty Decision"
-  atomic_attribute: "Reviewer Officer Id"
-  description: "FK đến cán bộ thực hiện review quyết định."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "THANHTRA"
-  source_table: "PENALTY_DECISION"
-  source_column: "THANHTRA.PENALTY_DECISION.REVIEWER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', REVIEWER_ID) | Chưa xác nhận join key THANHTRA.PENALTY_DECISION.REVIEWER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "penalty_decision"
-  atomic_column: "reviewer_officer_id"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Penalty Decision"
-  atomic_attribute: "Reviewer Officer Code"
-  description: "Tên cán bộ thực hiện review (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "THANHTRA"
-  source_table: "PENALTY_DECISION"
-  source_column: "THANHTRA.PENALTY_DECISION.REVIEWER_NAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Reviewer Officer Id. Nguồn lưu REVIEWER_NAME (text snapshot)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "penalty_decision"
-  atomic_column: "reviewer_officer_code"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Penalty Decision"
-  atomic_attribute: "Reviewed Timestamp"
-  description: "Thời điểm review quyết định."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "THANHTRA"
-  source_table: "PENALTY_DECISION"
-  source_column: "THANHTRA.PENALTY_DECISION.REVIEWED_AT"
-  comment: "Nguồn TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "penalty_decision"
-  atomic_column: "reviewed_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Event"
-  atomic_entity: "Penalty Decision"
   atomic_attribute: "Source Document URL"
   description: "URL file văn bản nguồn đính kèm quyết định."
   data_domain: "Text"
@@ -44317,43 +44260,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "penalty_decision"
   atomic_column: "src_document_url"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Penalty Decision"
-  atomic_attribute: "Reviewed By Officer Id"
-  description: "FK đến cán bộ thực hiện thao tác review (có thể khác cán bộ được phân\
-    \ công review)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "THANHTRA"
-  source_table: "PENALTY_DECISION"
-  source_column: "THANHTRA.PENALTY_DECISION.REVIEWED_BY_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', REVIEWED_BY_ID) | Chưa xác nhận join key THANHTRA.PENALTY_DECISION.REVIEWED_BY_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live. Chưa rõ phân biệt nghiệp\
-    \ vụ chính xác với Reviewer Officer Id — cần Data Modeler/BA xác nhận."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "penalty_decision"
-  atomic_column: "reviewed_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Penalty Decision"
-  atomic_attribute: "Reviewed By Officer Code"
-  description: "Mã cán bộ thực hiện thao tác review (snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "THANHTRA"
-  source_table: "PENALTY_DECISION"
-  source_column: "THANHTRA.PENALTY_DECISION.REVIEWED_BY_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Reviewed By Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  atomic_table: "penalty_decision"
-  atomic_column: "reviewed_by_officer_code"
   data_type: "string"
 - bcv_core_object: "Event"
   atomic_entity: "Penalty Decision"
@@ -72583,6 +72489,119 @@ attributes:
   etl_derived_value: null
   atomic_table: "certificate_group_x_sp_license_certificate_document_relationship"
   atomic_column: "sp_license_certificate_group_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Department"
+  atomic_attribute: "Classification ECAT Department Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "ECAT"
+  source_table: "DEPARTMENT"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('ECAT_DEPARTMENT', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_department"
+  atomic_column: "cl_ecat_department_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Department"
+  atomic_attribute: "Classification ECAT Department Code"
+  description: "Mã phòng ban. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "DEPARTMENT"
+  source_column: "ECAT.DEPARTMENT.CODE"
+  comment: "BK của entity. Nguồn VARCHAR2(80) — cần profile xác nhận NOT NULL/unique\
+    \ trước go-live (Code đóng vai trò BK)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_department"
+  atomic_column: "cl_ecat_department_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Department"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "DEPARTMENT"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'ECAT_DEPARTMENT'"
+  etl_derived_value: "ECAT_DEPARTMENT"
+  atomic_table: "cl_ecat_department"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Department"
+  atomic_attribute: "Classification ECAT Department Name"
+  description: "Tên phòng ban."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "DEPARTMENT"
+  source_column: "ECAT.DEPARTMENT.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_department"
+  atomic_column: "cl_ecat_department_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Department"
+  atomic_attribute: "Description"
+  description: "Mô tả."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "DEPARTMENT"
+  source_column: "ECAT.DEPARTMENT.DESCRIPTION"
+  comment: "Nguồn lưu dạng CLOB — ETL cần convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_department"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Department"
+  atomic_attribute: "Phone Number"
+  description: "Số điện thoại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "DEPARTMENT"
+  source_column: "ECAT.DEPARTMENT.PHONE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_department"
+  atomic_column: "phone_nbr"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Department"
+  atomic_attribute: "Email Address"
+  description: "Email."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "DEPARTMENT"
+  source_column: "ECAT.DEPARTMENT.EMAIL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_department"
+  atomic_column: "email_adr"
   data_type: "string"
 - bcv_core_object: "Common"
   atomic_entity: "Classification FIMS Company Type"

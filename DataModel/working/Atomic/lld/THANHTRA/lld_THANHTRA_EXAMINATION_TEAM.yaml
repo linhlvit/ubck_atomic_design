@@ -19,7 +19,7 @@ metadata:
   approved_at: null
   notes: "Hạ về draft (2026-08-07) để bổ sung UNIT_ID và CREATED_BY_BAN_ROLE — phát\
     \ hiện qua post_check_source_coverage.py. Thêm cặp Unit Id/Code (FK crosswalk\
-    \ sang NHNCK.UNITS qua Regulatory Authority Organization Unit); Unit Name giữ\
+    \ sang ECAT.DEPARTMENT qua Classification ECAT Department — đổi 2026-10-22 theo Data Modeler, hạ approved→draft); Unit Name giữ\
     \ nguyên làm snapshot tên đi kèm. CREATED_BY_BAN_ROLE: nguồn không có mô tả —\
     \ map tạm dạng Classification Value pending, cần Data Modeler/BA xác nhận ý nghĩa."
 attributes:
@@ -98,14 +98,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM.UNIT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'UNIT'). Cần ETL\
-    \ crosswalk sang NHNCK.UNITS: EXAMINATION_TEAM.UNIT_ID = UNITS.ID để xác nhận\
-    \ UNIT_CODE sau đó hash_id('NHNCK_UNITS', UNIT_CODE) | Crosswalk khác phân hệ\
-    \ (THANHTRA → NHNCK) — chưa xác nhận UNIT_ID nguồn khớp NHNCK.UNITS.ID, cần Data\
-    \ Modeler xác nhận trước go-live."
+  comment: "FK target: cl_ecat_department.cl_ecat_department_id. Cần ETL crosswalk sang ECAT.DEPARTMENT: EXAMINATION_TEAM.UNIT_ID = DEPARTMENT.ID để xác nhận CODE sau đó hash_id('ECAT_DEPARTMENT', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -117,9 +113,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.UNITS.UNIT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Unit Id. Giá trị\
-    \ lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Unit Id."
+  - "ECAT.DEPARTMENT.CODE"
+  comment: "Lookup pair: cl_ecat_department.cl_ecat_department_code. Pair with Unit Id. Giá trị\
+    \ lấy từ ECAT.DEPARTMENT.CODE sau ETL crosswalk — chi tiết xem comment Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

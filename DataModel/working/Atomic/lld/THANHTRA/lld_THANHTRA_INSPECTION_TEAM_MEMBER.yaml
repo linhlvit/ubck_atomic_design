@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Danh sách thành viên đoàn thanh tra. USER_ID là FK suy luận → system_user (NHNCK.USERS). Grain: 1 dòng = 1 thành viên trong 1 đoàn. Hạ về draft (2026-08-07) để bổ sung DEPARTMENT_ID — phát hiện qua post_check_source_coverage.py. Thêm cặp Member Department Id/Code (FK crosswalk sang NHNCK.DEPARTMENTS qua Regulatory Authority Organization Unit); Member Department Name giữ nguyên làm snapshot tên đi kèm. [SỬA 2026-09-11] Bổ sung Job Title (DDL UAT cập nhật). Hạ về draft (2026-09) để sửa Member Officer Id/Code: Id trước đây hash sai theo USER_ID (kỹ thuật) — đã sửa hash theo USER_ACCOUNT (đúng business key, cùng dòng). Code trước đây ghi comment sai entity target 'Regulatory Authority Officer' (Title Case) — đã sửa đúng identity_and_access_management_user."
+  notes: "[SỬA 2026-10-22] Department Id/Code chuyển FK crosswalk từ NHNCK.DEPARTMENTS (ra_organization_unit) sang ECAT.DEPARTMENT (cl_ecat_department) theo Data Modeler; User Id/Code chỉ map USER_ACCOUNT → IAM (USER_ID kỹ thuật không map), comment bỏ tham chiếu 'Member Officer' cũ. Hạ approved→draft để sửa. Danh sách thành viên đoàn thanh tra. Grain: 1 dòng = 1 thành viên trong 1 đoàn. Hạ về draft (2026-08-07) để bổ sung DEPARTMENT_ID — phát hiện qua post_check_source_coverage.py. Thêm cặp Member Department Id/Code (FK crosswalk sang NHNCK.DEPARTMENTS qua Regulatory Authority Organization Unit); Member Department Name giữ nguyên làm snapshot tên đi kèm. [SỬA 2026-09-11] Bổ sung Job Title (DDL UAT cập nhật). Hạ về draft (2026-09) để sửa Member Officer Id/Code: Id trước đây hash sai theo USER_ID (kỹ thuật) — đã sửa hash theo USER_ACCOUNT (đúng business key, cùng dòng). Code trước đây ghi comment sai entity target 'Regulatory Authority Officer' (Title Case) — đã sửa đúng identity_and_access_management_user."
 attributes:
 - attribute_name: "Inspection Team Member Id"
   physical_name: "inspection_team_member_id"
@@ -82,8 +82,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Member Officer Id"
-  physical_name: "member_officer_id"
+- attribute_name: "User Id"
+  physical_name: "user_id"
   description: "FK đến cán bộ là thành viên đoàn thanh tra."
   data_domain: "Surrogate Key"
   nullable: true
@@ -91,12 +91,12 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_TEAM_MEMBER.USER_ACCOUNT"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', USER_ACCOUNT)."
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', USER_ACCOUNT) | Chỉ map USER_ACCOUNT (BK trùng USERNAME của IAM.USERS); không map USER_ID kỹ thuật của nguồn. Chưa xác nhận USER_ACCOUNT khớp IAM.USERS.USERNAME — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Member Officer Code"
-  physical_name: "member_officer_code"
+- attribute_name: "User Code"
+  physical_name: "user_code"
   description: "Tài khoản đăng nhập của thành viên đoàn thanh tra."
   data_domain: "Text"
   nullable: true
@@ -104,12 +104,12 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_TEAM_MEMBER.USER_ACCOUNT"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Member Officer Id."
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Member Full Name"
-  physical_name: "member_full_nm"
+- attribute_name: "Full Name"
+  physical_name: "full_nm"
   description: "Họ tên đầy đủ thành viên đoàn thanh tra (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -121,34 +121,34 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Member Department Id"
-  physical_name: "member_department_id"
+- attribute_name: "Department Id"
+  physical_name: "department_id"
   description: "FK đến phòng ban/đơn vị của thành viên."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_TEAM_MEMBER.DEPARTMENT_ID"
-  comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'DEPARTMENT'). Cần ETL crosswalk sang NHNCK.DEPARTMENTS: INSPECTION_TEAM_MEMBER.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE sau đó hash_id('NHNCK_DEPARTMENTS', DEPARTMENT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận DEPARTMENT_ID nguồn khớp NHNCK.DEPARTMENTS.ID, cần Data Modeler xác nhận trước go-live."
+  comment: "FK target: cl_ecat_department.cl_ecat_department_id. Cần ETL crosswalk sang ECAT.DEPARTMENT: INSPECTION_TEAM_MEMBER.DEPARTMENT_ID = DEPARTMENT.ID để xác nhận CODE sau đó hash_id('ECAT_DEPARTMENT', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Member Department Code"
-  physical_name: "member_department_code"
+- attribute_name: "Department Code"
+  physical_name: "department_code"
   description: "Mã phòng ban/đơn vị của thành viên (denormalized lookup)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
-  comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Member Department Id. Giá trị lấy từ NHNCK.DEPARTMENTS.DEPARTMENT_CODE sau ETL crosswalk — chi tiết xem comment Member Department Id."
+  - "ECAT.DEPARTMENT.CODE"
+  comment: "Lookup pair: cl_ecat_department.cl_ecat_department_code. Pair with Department Id. Giá trị lấy từ ECAT.DEPARTMENT.CODE sau ETL crosswalk — chi tiết xem comment Department Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Member Department Name"
-  physical_name: "member_department_nm"
+- attribute_name: "Department Name"
+  physical_name: "department_nm"
   description: "Tên phòng ban/đơn vị của thành viên (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -156,7 +156,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_TEAM_MEMBER.DEPARTMENT_NAME"
-  comment: "Denormalized snapshot tên phòng ban. Pair with Member Department Id."
+  comment: "Denormalized snapshot tên phòng ban. Pair with Department Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

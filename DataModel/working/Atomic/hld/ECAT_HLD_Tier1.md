@@ -1,7 +1,7 @@
 # ECAT HLD — Tier 1
 
 **Source system:** ECAT (Dịch vụ đồng bộ danh mục dùng chung từ HTTT)
-**Tier 1:** Nhóm danh mục địa lý hành chính (Geographic Area) — Fundamental, chỉ tự tham chiếu (self-join), không FK đến entity nghiệp vụ nào khác. Phạm vi tier này: 7 bảng COUNTRY, REGION, PROVINCE_NEW, PROVINCE_OLD, DISTRICT_OLD, WARD_NEW, WARD_OLD (2 entity: Geographic Area, Geographic Area Old) — khớp LLD `lld/ECAT/`. Các bảng ECAT khác chưa có LLD — xem 7f Overview (nhóm `Chưa có LLD`).
+**Tier 1:** Nhóm danh mục địa lý hành chính (Geographic Area) — Fundamental, chỉ tự tham chiếu (self-join), không FK đến entity nghiệp vụ nào khác. Phạm vi tier này: 7 bảng COUNTRY, REGION, PROVINCE_NEW, PROVINCE_OLD, DISTRICT_OLD, WARD_NEW, WARD_OLD (2 entity: Geographic Area, Geographic Area Old) và bảng DEPARTMENT (entity Classification ECAT Department — Tier 1 vì không FK đến entity nghiệp vụ nào, bổ sung 2026-10-22) — khớp LLD `lld/ECAT/`. Các bảng ECAT khác chưa có LLD — xem 7f Overview (nhóm `Chưa có LLD`).
 
 > **Lưu ý nguồn:** `brd_ECAT.yaml` đặt tên 7 bảng này theo quy ước `ECAT_0N_TenBang` (VD `ECAT_01_Country`), nhưng khảo sát CSDL thực tế (`Source/ECAT_Tables.csv`, `Source/ECAT_Columns.csv`) dùng tên bảng thực `COUNTRY`, `REGION`, `PROVINCE_NEW`, `PROVINCE_OLD`, `DISTRICT_OLD`, `WARD_NEW`, `WARD_OLD` — khớp với tên user cung cấp. Tier này dùng tên bảng thực từ `Source/ECAT_Columns.csv` làm chuẩn (xem mục 6f-01).
 
@@ -18,6 +18,8 @@
 | Location | [Location] Geographic Area | Location | PROVINCE_OLD | Update | Danh mục Tỉnh/Thành phố (cũ, pre-2025) | **Geographic Area Old** | Fundamental | (1) Cùng term Geographic Area — không có term BCV riêng cho khái niệm "danh mục lịch sử". (2) Cấu trúc trường **khác PROVINCE_NEW**: ngoài REGION_ID/COUNTRY_ID (anchor lên Geographic Area hiện hành), PROVINCE_OLD còn có `PROVINCE_NEW_ID` — FK **successor** trỏ sang tỉnh/thành phố hiện hành tương ứng sau sáp nhập. Cấp bậc phân cấp cũ (3 cấp: Tỉnh cũ → Quận/huyện cũ → Phường/xã cũ) khác cấu trúc mới (2 cấp: Tỉnh mới → Phường/xã mới) — không thể gộp chung 1 entity với cùng field `parent_geographic_area_id` mà không mất thông tin cấp bậc. (3) Theo yêu cầu Data Modeler, **tách riêng entity "Geographic Area Old"** cho toàn bộ dữ liệu lịch sử pre-2025 — giữ nguyên concept `[Location] Geographic Area` nhưng entity riêng để phản ánh đúng cấu trúc 3 cấp và mục đích "chỉ tra cứu lịch sử, không phát sinh instance mới". |
 | Location | [Location] Geographic Area | Location | DISTRICT_OLD | Update | Danh mục Quận/Huyện (cũ, pre-2025 — cấp bị bỏ sau sáp nhập) | **Geographic Area Old** | Fundamental | (1) Cùng term Geographic Area. (2) DISTRICT_OLD chỉ có FK `PROVINCE_OLD_ID` — không có field successor (khác PROVINCE_OLD/WARD_OLD) vì cấp quận/huyện bị loại bỏ hoàn toàn trong cấu trúc mới, không có "district mới" tương ứng. (3) Geographic Area Old, `geographic_area_old_type_code = DISTRICT_OLD`, `parent_geographic_area_old_id` trỏ lên PROVINCE_OLD. |
 | Location | [Location] Geographic Area | Location | WARD_OLD | Update | Danh mục Phường/Xã/Thị trấn (cũ, pre-2025) | **Geographic Area Old** | Fundamental | (1) Cùng term Geographic Area. (2) WARD_OLD có FK `DISTRICT_OLD_ID` (parent trực tiếp) và `WARD_NEW_ID` — FK successor trỏ sang phường/xã hiện hành tương ứng. (3) Geographic Area Old, `geographic_area_old_type_code = WARD_OLD`, `parent_geographic_area_old_id` trỏ lên DISTRICT_OLD; đồng thời giữ successor link sang Geographic Area (WARD_NEW) — xem mục 6f-02. |
+
+| Common | [Common] Classification | Common | DEPARTMENT | Update | Danh mục Phòng ban | Classification ECAT Department | Relative | (1) Term "Classification" (category Common) — danh mục phân loại dùng chung; theo chỉ đạo Data Modeler 2026-10-22, bảng danh mục được promote thành Atomic entity Classification (Domain Prefix = `Classification`, physical `cl_ecat_department`) giống `Classification IDS Business Line`. (2) Cấu trúc trường: CODE + NAME + DESCRIPTION + PHONE + EMAIL (kèm thông tin liên hệ) nên giữ thành entity thay vì Classification Value đơn thuần. (3) Chọn `[Common] Classification`; BK = CODE. Chỉ map 5 trường: CODE, NAME, DESCRIPTION, PHONE, EMAIL; theo quyết định Data Modeler 2026-10-22 không map quan hệ phòng ban cha (`PARENT_ID`/`PARENT_VERSION_ID`) nên entity không tự tham chiếu. |
 
 ---
 
@@ -94,6 +96,18 @@ erDiagram
         string stable_id
     }
 
+    DEPARTMENT {
+        string id PK
+        string code
+        string name
+        string parent_id
+        string parent_version_id
+        string description
+        string phone
+        string email
+        string stable_id
+    }
+
     COUNTRY ||--o{ REGION : "country_id"
     REGION ||--o{ PROVINCE_NEW : "region_id"
     PROVINCE_NEW ||--o{ WARD_NEW : "province_new_id"
@@ -128,6 +142,12 @@ erDiagram
         bigint successor_geographic_area_id FK
     }
 
+    ClassificationEcatDepartment {
+        bigint cl_ecat_department_id PK
+        string cl_ecat_department_code
+        string cl_ecat_department_nm
+    }
+
     GeographicArea ||--o{ GeographicArea : "parent_geographic_area_id (self-join: WARD→PROVINCE→REGION→COUNTRY)"
     GeographicAreaOld ||--o{ GeographicAreaOld : "parent_geographic_area_old_id (self-join: WARD_OLD→DISTRICT_OLD→PROVINCE_OLD)"
     GeographicArea ||--o{ GeographicAreaOld : "region_geographic_area_id (anchor: REGION → PROVINCE_OLD)"
@@ -151,7 +171,7 @@ erDiagram
 
 ## 6e. Bảng chờ thiết kế
 
-*(Không có — 7/7 bảng trong phạm vi tier này đã có đủ cấu trúc cột từ `Source/ECAT_Columns.csv` và đã có LLD.)*
+*(Không có — 8/8 bảng trong phạm vi tier này đã có đủ cấu trúc cột và đã có LLD.)*
 
 Các bảng ECAT khác chưa có LLD — xem 7f Overview (nhóm `Chưa có LLD`).
 

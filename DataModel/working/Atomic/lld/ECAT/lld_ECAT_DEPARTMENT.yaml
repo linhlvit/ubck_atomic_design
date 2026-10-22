@@ -1,0 +1,110 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "ECAT"
+  source_table: "DEPARTMENT"
+  atomic_entity: "Classification ECAT Department"
+  entity_physical_name: "cl_ecat_department"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Classification"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-10-22] Theo yêu cầu Data Modeler: thiết kế ECAT.DEPARTMENT thành entity Classification ECAT Department, cùng pattern Classification IDS Business Line (IDS.CATEGORIES). Chỉ map CODE, NAME, DESCRIPTION, PHONE, EMAIL; Data Modeler quyết định 2026-10-22 KHÔNG map quan hệ cha (PARENT_ID, PARENT_VERSION_ID) nên entity không có self-reference. Các cột còn lại ghi trong pending_design.yaml. BCV Concept [Common] Classification theo chỉ đạo Data Modeler (chưa tra BCV riêng)."
+attributes:
+- attribute_name: "Classification ECAT Department Id"
+  physical_name: "cl_ecat_department_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('ECAT_DEPARTMENT', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification ECAT Department Code"
+  physical_name: "cl_ecat_department_code"
+  description: "Mã phòng ban. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.DEPARTMENT.CODE"
+  comment: "BK của entity. Nguồn VARCHAR2(80) — cần profile xác nhận NOT NULL/unique trước go-live (Code đóng vai trò BK)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=ECAT_DEPARTMENT"
+  etl_derived_value: "ECAT_DEPARTMENT"
+  data_type: "string"
+- attribute_name: "Classification ECAT Department Name"
+  physical_name: "cl_ecat_department_nm"
+  description: "Tên phòng ban."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.DEPARTMENT.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.DEPARTMENT.DESCRIPTION"
+  comment: "Nguồn lưu dạng CLOB — ETL cần convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Phone Number"
+  physical_name: "phone_number"
+  description: "Số điện thoại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.DEPARTMENT.PHONE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Email Address"
+  physical_name: "email_address"
+  description: "Email."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.DEPARTMENT.EMAIL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

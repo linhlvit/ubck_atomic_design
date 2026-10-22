@@ -3,7 +3,7 @@
 **Source system:** ECAT (Dịch vụ đồng bộ danh mục dùng chung từ HTTT)
 **Mô tả:** Hệ thống danh mục điện tử dùng chung (Electronic Catalogue) của Ủy ban Chứng khoán Nhà nước (UBCKNN) — quản lý các danh mục nền tảng dùng xuyên suốt các hệ thống nghiệp vụ khác của UBCKNN: danh mục địa lý hành chính, tổ chức & nhân sự nội bộ, tiền tệ, chứng khoán & thị trường, loại hình doanh nghiệp/nghiệp vụ, đối tượng tham gia thị trường, hành nghề & trình độ, thủ tục hành chính, vi phạm & xử phạt, thanh tra, văn bản pháp lý.
 
-> **Phạm vi tài liệu này:** Theo quyết định Data Modeler 2026-10-21, **LLD là chuẩn** — chỉ giữ trong HLD các bảng ECAT đã có LLD: 7 bảng Geographic Area (COUNTRY, REGION, PROVINCE_NEW, WARD_NEW, PROVINCE_OLD, DISTRICT_OLD, WARD_OLD → 2 entity Geographic Area / Geographic Area Old). Các bảng từng có thiết kế HLD nhưng chưa có LLD đã gỡ khỏi HLD và đưa vào mục 7f (nhóm `Chưa có LLD`). Các bảng danh mục xử lý Classification Value xem 7c. ECAT còn nhiều bảng khác (Currency Company info, Security Company, Investment Fund, Violation Behavior, Inspection Content, đồng bộ dữ liệu liên thông, bảng kỹ thuật hệ thống...) chưa thuộc phạm vi thiết kế.
+> **Phạm vi tài liệu này:** Theo quyết định Data Modeler 2026-10-21, **LLD là chuẩn** — chỉ giữ trong HLD các bảng ECAT đã có LLD: 7 bảng Geographic Area (COUNTRY, REGION, PROVINCE_NEW, WARD_NEW, PROVINCE_OLD, DISTRICT_OLD, WARD_OLD → 2 entity Geographic Area / Geographic Area Old) và bảng DEPARTMENT (→ Classification ECAT Department, bổ sung 2026-10-22). Các bảng từng có thiết kế HLD nhưng chưa có LLD đã gỡ khỏi HLD và đưa vào mục 7f (nhóm `Chưa có LLD`). Các bảng danh mục xử lý Classification Value xem 7c. ECAT còn nhiều bảng khác (Currency Company info, Security Company, Investment Fund, Violation Behavior, Inspection Content, đồng bộ dữ liệu liên thông, bảng kỹ thuật hệ thống...) chưa thuộc phạm vi thiết kế.
 
 ---
 
@@ -13,8 +13,9 @@
 |---|---|---|---|---|---|---|
 | T1 | Geographic Area | Location | [Location] Geographic Area | Fundamental | ECAT.COUNTRY, ECAT.REGION, ECAT.PROVINCE_NEW, ECAT.WARD_NEW | ECAT là nguồn duy nhất của entity theo LLD. |
 | T1 | Geographic Area Old | Location | [Location] Geographic Area | Fundamental | ECAT.PROVINCE_OLD, ECAT.DISTRICT_OLD, ECAT.WARD_OLD | Dữ liệu lịch sử pre-2025 (3 cấp), tách riêng khỏi Geographic Area hiện hành. |
+| T1 | Classification ECAT Department | Common | [Common] Classification | Relative | ECAT.DEPARTMENT | Danh mục phòng ban (CODE, NAME, DESCRIPTION, PHONE, EMAIL); không map quan hệ phòng ban cha. |
 
-**Tổng: 2 Atomic entities** (2 Tier 1, 0 Tier 2, 0 Tier 3)
+**Tổng: 3 Atomic entities** (3 Tier 1, 0 Tier 2, 0 Tier 3)
 
 ---
 
@@ -25,6 +26,7 @@ graph TD
     subgraph T1["Tier 1 — Independent (self-join only)"]
         GA["Geographic Area"]
         GAO["Geographic Area Old"]
+        CLD["Classification ECAT Department"]
     end
 
     GAO -.successor / anchor.-> GA
@@ -54,6 +56,7 @@ graph TD
 | T1 | Location | [Location] Geographic Area | Location | PROVINCE_OLD | Update | Danh mục Tỉnh/Thành phố (cũ) | Geographic Area Old | Fundamental | Xem ECAT_HLD_Tier1.md mục 6a. |
 | T1 | Location | [Location] Geographic Area | Location | DISTRICT_OLD | Update | Danh mục Quận/Huyện (cũ) | Geographic Area Old | Fundamental | Xem ECAT_HLD_Tier1.md mục 6a. |
 | T1 | Location | [Location] Geographic Area | Location | WARD_OLD | Update | Danh mục Phường/Xã/Thị trấn (cũ) | Geographic Area Old | Fundamental | Xem ECAT_HLD_Tier1.md mục 6a. |
+| T1 | Common | [Common] Classification | Common | DEPARTMENT | Update | Danh mục Phòng ban | Classification ECAT Department | Relative | Xem ECAT_HLD_Tier1.md mục 6a. |
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
@@ -72,6 +75,10 @@ erDiagram
         bigint parent_geographic_area_old_id FK
         bigint region_geographic_area_id FK
         bigint successor_geographic_area_id FK
+    }
+    ClassificationEcatDepartment {
+        bigint cl_ecat_department_id PK
+        string cl_ecat_department_code
     }
 
     GeographicArea ||--o{ GeographicArea : "self-join"
@@ -136,7 +143,6 @@ Không có junction table.
 | Chưa có LLD | LEGAL_DOCUMENT | Bảng thông tin văn bản pháp lý | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | WORKING_SCHEDULE | Danh mục Lịch làm việc | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | VIOLATION_TYPE | Danh mục loại vi phạm (kèm mức tiền phạt) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | DEPARTMENT | Danh mục Phòng ban (UBCKNN) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | SECURITY | Danh mục Chứng khoán | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | UBCK_STAFF | Danh mục nhân sự UBCKNN | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | BUSINESS_EVENT_ENTERPRISE_TYPE | N-N: Sự vụ - Loại hình doanh nghiệp | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
@@ -163,3 +169,8 @@ Không có junction table.
 **Tier:** 1 | **Source:** `ECAT.PROVINCE_OLD, ECAT.DISTRICT_OLD, ECAT.WARD_OLD` | **BCV Concept:** [Location] Geographic Area | **BCO:** Location | **Table Type:** Fundamental
 **Domain Prefix:** (none)
 **Description:** Khu vực địa lý hành chính lịch sử (pre-2025, 3 cấp Tỉnh/Quận-Huyện/Phường-Xã cũ), self-referencing riêng biệt với Geographic Area hiện hành, có liên kết successor sang tỉnh/phường mới tương ứng.
+
+### 3. Classification ECAT Department
+**Tier:** 1 | **Source:** `ECAT.DEPARTMENT` | **BCV Concept:** [Common] Classification | **BCO:** Common | **Table Type:** Relative
+**Domain Prefix:** Classification
+**Description:** Danh mục phòng ban của hệ thống danh mục dùng chung ECAT, gồm mã, tên, mô tả, số điện thoại và email; BK = CODE nguồn.
