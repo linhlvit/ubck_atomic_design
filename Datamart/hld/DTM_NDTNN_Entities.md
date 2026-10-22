@@ -136,7 +136,7 @@ erDiagram
 
 ### Nhóm 9/10 — Sở hữu NĐT nước ngoài ROOM
 
-**[MỚI 2026-09-17]** Atomic entity `Foreign Ownership Info` (VSDC.FOREIGN_INVESTOR_INFO) vừa được thiết kế (draft) — đóng gap O_NDTNN_22, chuyển Nhóm 9/10 từ PENDING sang READY.
+**[MỚI 2026-09-17]** Atomic entity `Foreign Ownership Information` (VSDC.FOREIGN_INVESTOR_INFO) vừa được thiết kế (draft) — đóng gap O_NDTNN_22, chuyển Nhóm 9/10 từ PENDING sang READY.
 
 #### Star schema
 
