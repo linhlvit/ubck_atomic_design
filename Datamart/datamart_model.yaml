@@ -18315,7 +18315,7 @@ entities:
       - "security_trading_snapshot"
       - "securities_order"
       - "securities_trade"
-      - "foreign_ownership_info"
+      - "foreign_ownership_information"
     modules_using:
       - "TKNB"
     columns:
@@ -18336,7 +18336,7 @@ entities:
         key: "FK"
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] FK → Security Trading Snapshot Dimension (conformed, sở hữu GSTT) qua Symbol"
         source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.symbol"
+        source_atomic_column: "security_trading_snapshot.ticker_symbol"
       - logical_name: "Trading Status Code"
         physical_name: "trading_status_code"
         data_domain: "Classification Value"
@@ -18524,8 +18524,8 @@ entities:
         nullable: true
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Tỷ lệ sở hữu tối đa cho phép của NĐTNN (BA dòng 1626: `uat_vsdc_stg.foreign_investor_info.max_foreign_ownership_ratio`; mapping md Bảng 9). Ngày nối: `ds_snpst_dt` thay `report_date` (Data Modeler xác nhận 2026-10-06)"
-        source_atomic_table: "foreign_ownership_info"
-        source_atomic_column: "foreign_ownership_info.max_foreign_ownership_ratio / ticker_symbol"
+        source_atomic_table: "foreign_ownership_information"
+        source_atomic_column: "foreign_ownership_information.max_foreign_ownership_ratio / ticker_symbol"
       - logical_name: "Remaining Foreign Ownership Ratio"
         physical_name: "remaining_foreign_ownership_ratio"
         data_domain: "Percentage"
@@ -18533,8 +18533,8 @@ entities:
         nullable: true
         key: ""
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Tỷ lệ còn được phép mua của NĐTNN — Data Modeler xác nhận cột nguồn là `remaining_shares_foreign_can_hold` (mapping md `remaining_foreign_holding_quantity`); quy ra % = số CP còn được mua / tổng CP phát hành × 100 (phép quy đổi do thiết kế suy ra, BA cần xác nhận — Section 5 mục 34)"
-        source_atomic_table: "foreign_ownership_info"
-        source_atomic_column: "foreign_ownership_info.remaining_foreign_holding_quantity / total_issued_share_quantity"
+        source_atomic_table: "foreign_ownership_information"
+        source_atomic_column: "foreign_ownership_information.remaining_foreign_holding_quantity / total_issued_share_quantity"
       - logical_name: "Foreign Investor Total Buy Volume"
         physical_name: "foreign_investor_total_buy_vol"
         data_domain: "Large Counter"
@@ -18794,7 +18794,7 @@ entities:
         key: "FK"
         description: "[THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] FK → Security Trading Snapshot Dimension (conformed, sở hữu GSTT) — mã hợp đồng CKPS (`floor_code='03'`); Thời gian đáo hạn và hệ số hợp đồng lấy từ Dimension (`maturity_dt`, `contract_multiplier`)"
         source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.symbol"
+        source_atomic_column: "security_trading_snapshot.ticker_symbol"
       - logical_name: "Open Interest Quantity"
         physical_name: "open_interest_quantity"
         data_domain: "Large Counter"

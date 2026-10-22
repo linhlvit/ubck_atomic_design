@@ -163,7 +163,7 @@ erDiagram
 | Private Corporate Bond Dimension | private_corp_bond_offering |
 | Fact Private Corporate Bond International Offering Snapshot | private_corp_bond_offering |
 | Fact Private Corporate Bond Issuance Snapshot | private_corp_bond_registration / private_corp_bond_offering |
-| Fact Security Trading Detail Snapshot | securities_trade / security_trading_snapshot / securities_order / foreign_ownership_info |
+| Fact Security Trading Detail Snapshot | securities_trade / security_trading_snapshot / securities_order / foreign_ownership_information |
 | Fact Derivatives Security Detail Snapshot | securities_trade / security_trading_snapshot / end_of_day_open_interest |
 | Security Trading Snapshot Dimension (reuse GSTT) | security_trading_snapshot |
 | Stock Trading Report (HNX01) | market_index_snapshot / security_trading_snapshot / securities_trade |
