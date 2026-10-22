@@ -1717,7 +1717,7 @@ entities:
     description: "CTCK — mã, tên, loại hình, trạng thái (7 nhóm derive từ Classification Firm Status). SCD4A (current state). Grain: 1 CTCK. Nguồn Atomic track draft chưa approved (DataModel/working/Atomic/lld/SCMS/)."
     source_atomic:
       - "securities_company"
-      - "cl_firm_status"
+      - "cl_securities_company_firm_status"
     modules_using:
       - "QLKD"
       - "GSTT"
@@ -2776,7 +2776,7 @@ entities:
       - "penalty_decision"
       - "pd_subject_behavior"
       - "violation_behavior"
-      - "penalty_type"
+      - "cl_thanhtra_penalty_type"
       - "inspection_team"
       - "inspection_team_target"
       - "examination_team"
@@ -3314,7 +3314,7 @@ entities:
       - "penalty_decision"
       - "pd_subject_behavior"
       - "violation_behavior"
-      - "penalty_type"
+      - "cl_thanhtra_penalty_type"
       - "violation_case"
     modules_using:
       - "QLKD"
@@ -3389,8 +3389,8 @@ entities:
         nullable: true
         key: ""
         description: "Hình thức xử phạt chính — Penalty Type WHERE penalty_category_code = 'PRIMARY_PENALTY'."
-        source_atomic_table: "penalty_type"
-        source_atomic_column: "penalty_type.penalty_tp_nm"
+        source_atomic_table: "cl_thanhtra_penalty_type"
+        source_atomic_column: "cl_thanhtra_penalty_type.penalty_tp_nm"
       - logical_name: "Decision Status Code"
         physical_name: "decision_status_code"
         data_domain: "Classification Value"
@@ -9961,7 +9961,7 @@ entities:
         key: ""
         description: "Trạng thái phiên hiện tại — Classification Value (scheme: MDDS_MARKET_STATUS)"
         source_atomic_table: "market_index_snapshot"
-        source_atomic_column: "market_index_snapshot.market_status_code"
+        source_atomic_column: "market_index_snapshot.market_status"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
