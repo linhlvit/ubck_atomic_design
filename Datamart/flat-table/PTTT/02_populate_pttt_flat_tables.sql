@@ -14,7 +14,7 @@ TRUNCATE TABLE IF EXISTS datamart.pttt_fct_market_risk_snpst_flat ON CLUSTER 'my
 INSERT INTO datamart.pttt_fct_market_risk_snpst_flat
 SELECT
     f.snpst_dt_dim_id,
-    f.volatility_30_days,
+    f.volatility_20_days,
     f.z_score_volatility,
     f.z_score_liquidity,
     f.z_score_margin_balance,
@@ -61,8 +61,8 @@ SELECT
     f.total_trading_vol_matched,
     f.total_trading_val_matched_average_50_days,
     f.total_trading_val_matched_average_n_days,
-    f.net_flow_foreign_average_30_days,
-    f.net_flow_proprietary_average_30_days,
+    f.net_flow_foreign_average_20_days,
+    f.net_flow_proprietary_average_20_days,
     f.net_flow_correlation_foreign_proprietary,
     f.total_margin_limit_amt,
     f.margin_balance_delta,
@@ -71,7 +71,6 @@ SELECT
     f.corr_index_interbank_rate,
     f.corr_index_dxy,
     f.total_market_cap_vsdc,
-    f.total_market_cap_vsdc_average_n_days,
     f.turnover_velocity_index,
     f.turnover_velocity_status,
 
