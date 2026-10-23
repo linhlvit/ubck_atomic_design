@@ -116,7 +116,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Foreign Investor Trading Statistics Report | Fact (report) | new | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo 5 nhóm loại CK | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND/FUND_CERT/WARRANT/TOTAL) | K_NDTNN_72-83,256-258 |
+| Foreign Investor Trading Statistics Report | Fact (report) | new | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo nhóm loại CK (trái phiếu chia lẻ 3 loại từ 2026-10-23) | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND_LISTED/BOND_GOVT/BOND_PRIVATE/FUND_CERT/WARRANT/TOTAL) | K_NDTNN_72-83,256-258,271-276 |
 
 ---
 

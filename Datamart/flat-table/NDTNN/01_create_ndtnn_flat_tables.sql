@@ -9,6 +9,8 @@
 -- Sửa 2026-10-17: ndtnn_fct_securities_foreign_trading_snpst_flat không đổi cấu trúc (Fact bỏ trái phiếu, stock_tp_code còn '2','3','6','4'); ndtnn_foreign_investor_trading_detail_rpt_flat chỉ đổi COMMENT report_dt (Ngày giao dịch — K_NDTNN_266)
 -- Sửa 2026-10-20: ndtnn_foreign_investor_trading_detail_rpt_flat thêm dòng TPCP (Bond Order Book HNX OUTRIGHT/REPO/REPO2) — không thêm cột;
 --   ORDER BY thêm src_stm_code (grain mới 5 thành phần) → bảng đã deploy phải DROP + CREATE lại rồi nạp lại lịch sử (O_NDTNN_50)
+-- Sửa 2026-10-23: ndtnn_foreign_investor_trading_statistics_rpt_flat — chỉ đổi giá trị security_tp_group (bỏ 'BOND', thêm BOND_LISTED/BOND_GOVT/BOND_PRIVATE; 7 giá trị), KHÔNG đổi cột/ORDER BY (O_NDTNN_54);
+--   dev phải nạp lại lịch sử (02_populate DELETE theo report_dt rồi INSERT) để xóa dòng 'BOND' cũ và sinh dòng BOND_LISTED/BOND_GOVT/BOND_PRIVATE
 -- ============================================================
 
 -- ============================================================
@@ -87,7 +89,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_foreign_investor_trading_statistics_rp
 (
     -- From: FACT Foreign Investor Trading Statistics Report
     report_dt                       Date                    COMMENT 'Ngày báo cáo',
-    security_tp_group               String                  COMMENT 'Nhóm loại CK — Classification Value nội bộ Datamart: STOCK/BOND/FUND_CERT/WARRANT/TOTAL',
+    security_tp_group               String                  COMMENT 'Nhóm loại CK — Classification Value nội bộ Datamart: STOCK/BOND_LISTED/BOND_GOVT/BOND_PRIVATE/FUND_CERT/WARRANT/TOTAL (BOND_* = TPDN niêm yết / TPCP / TPDN riêng lẻ HNX09; K_NDTNN_75-77 = SUM 3 loại BOND_*)',
     buy_val                         Decimal(23,2)            COMMENT 'GT NĐTNN mua chứng khoán',
     sell_val                        Decimal(23,2)            COMMENT 'GT NĐTNN bán chứng khoán',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'

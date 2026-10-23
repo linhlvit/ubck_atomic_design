@@ -66,6 +66,7 @@ SELECT
     f.securities_company_dim_id,
     f.report_tp_code,
     f.report_id,
+    f.rpt_nm,
     f.rpt_submission_status_code,
     f.sent_dt,
     f.submission_deadline_dt,
@@ -496,6 +497,7 @@ SELECT
     f.period_nbr,
     f.indicator_val_amt,
     f.rpt_code,
+    f.rpt_input_submission_id,
     f.submission_dt,
     f.submission_status_code,
     f.src_stm_code,
@@ -547,6 +549,7 @@ INSERT INTO datamart.qlkd_opr_securities_company_report_data_flat
 SELECT
     -- From: OPR_SECURITIES_COMPANY_REPORT_DATA
     f.rpt_cell_val_id,
+    f.rpt_input_submission_id,
     f.sc_code,
     f.sc_nm,
     f.rpt_code,

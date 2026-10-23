@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_compliance_repor
     securities_company_dim_id       String                  COMMENT 'FK CTCK nộp báo cáo',
     report_tp_code                  String                  COMMENT 'Loại báo cáo — ADHOC (đột xuất) hoặc PERIODIC (định kỳ)',
     report_id                       String                  COMMENT 'Định danh báo cáo (degenerate) — dùng làm khóa COUNT DISTINCT',
+    rpt_nm                                       Nullable(String)        COMMENT 'Tên báo cáo/biểu mẫu (nguồn REPORT_NAME) — cả 2 bộ ADHOC/PERIODIC',
     rpt_submission_status_code      Nullable(String)        COMMENT 'Mã trạng thái nộp báo cáo — giá trị riêng theo bộ ADHOC/PERIODIC',
     sent_dt                                      Nullable(Date)          COMMENT 'Ngày gửi báo cáo (nguồn SENT_AT) — bộ ADHOC',
     submission_deadline_dt                       Nullable(Date)          COMMENT 'Hạn nộp báo cáo (nguồn SUBMISSION_DEADLINE) — bộ ADHOC',
@@ -105,7 +106,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_conditio
     securities_company_dim_id       String                  COMMENT 'FK CTCK',
     indicator_code                  String        COMMENT 'Loại giấy phép — phân biệt Nhóm 5/6/7 trên cùng 1 Fact — JOIN sc_alert_indicator',
     severity_level                  Nullable(String)        COMMENT 'Mức duy trì điều kiện cấp phép (1/2/3)',
-    alert_dt                                     Nullable(Date)          COMMENT 'Ngày phát sinh cảnh báo (nguồn SC_FIRM_ALERT_VIOLATION.ALERT_DATE) — ngày của dữ liệu, dùng làm trục Chiều thời gian theo ngày của Nhóm 5/6/7 (K_QLKD_30; BA STT 5/6/7). Không phải khóa snapshot: snpst_dt_dim_id vẫn là ngày xử lý cảnh báo (processing_dt = :etl_date).',
+    alert_dt                                     Nullable(Date)          COMMENT 'Ngày phát sinh cảnh báo (nguồn SC_FIRM_ALERT_VIOLATION.ALERT_DATE) — ngày của dữ liệu, dùng làm cột ngày của trục Chiều thời gian theo ngày (date-spine Calendar Date Dimension, K_QLKD_30) của Nhóm 5/6/7/36: cận dưới trục = MIN(alert_dt), ngày trục cdr_dt_dim.cdr_dt nối alert_dt (BA STT 5/6/7/36, cập nhật 2026-10-22). Không phải khóa snapshot: snpst_dt_dim_id vẫn là ngày xử lý cảnh báo (processing_dt = :etl_date).',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'FK ngày snapshot D (Processing Date) — từ Calendar Date Dimension',
@@ -478,16 +479,17 @@ COMMENT 'Flat table — Operational Individual Violation History'
 CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FCT_SECURITIES_COMPANY_FINANCIAL_STRUCTURE_SNPST
-    snpst_dt_dim_id                              String                  COMMENT 'FK ngày snapshot — ngày cuối kỳ báo cáo hoặc ngày nộp báo cáo, lookup qua Calendar Date Dimension.',
+    snpst_dt_dim_id                              String                  COMMENT 'FK ngày snapshot — ngày kết thúc kỳ báo cáo (end_dt), lookup qua Calendar Date Dimension.',
     securities_company_dim_id                    String                  COMMENT 'FK CTCK nộp báo cáo — lookup qua Securities Company Dimension.',
     report_indicator_dim_id                      String                  COMMENT 'FK chỉ tiêu báo cáo — lookup qua Report Indicator Dimension theo cell_id.',
     rpt_year                                     Int64                   COMMENT 'Năm báo cáo tài chính.',
     rpt_period_tp_code                           String                  COMMENT 'Loại kỳ báo cáo: QUY, THANG, NAM.',
     period_nbr                                   Int64                   COMMENT 'Số thứ tự kỳ báo cáo (1-4 cho Quý, 1-12 cho Tháng).',
     indicator_val_amt                            Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ tiêu tài chính (chuyển đổi từ text item_val sang số).',
-    rpt_code                                     Nullable(String)        COMMENT 'Mã biểu mẫu báo cáo (BCTCHN, BCTCRL, BCTCRLCTCK, BCTHHDKD_TH).',
+    rpt_code                                     Nullable(String)        COMMENT 'Mã biểu mẫu báo cáo (BCTCHN, BCTCRL, BCTLAT, BCTHHD_CTCK).',
+    rpt_input_submission_id                      String                  COMMENT 'Khóa lần nộp dữ liệu báo cáo đầu vào (eForm) mà ô này thuộc về — cho biết giá trị lấy từ lần nộp nào của kỳ báo cáo.',
     submission_dt                                Nullable(Date)          COMMENT 'Ngày CTCK nộp báo cáo.',
-    submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo: 1=Đã gửi/Đúng hạn, 2=Đã duyệt/Gửi muộn.',
+    submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo định kỳ: 1 = Gửi đúng hạn, 2 = Gửi muộn.',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
     preferred_report_ind                         Nullable(String)        COMMENT 'Cờ báo cáo được ưu tiên theo logic BA: 1 = dòng thuộc BCTCHN, hoặc BCTCRL của CTCK KHÔNG có BCTCHN (trạng thái 1/2) cùng kỳ, hoặc biểu mẫu khác (BCTLAT, BCTHHD_CTCK...); 0 = BCTCRL của CTCK đã có BCTCHN cùng kỳ (BA: chỉ lấy BCTCRL cho CTCK không nộp BCTCHN — CTE ctck_co_hn). KPI đo lọc = 1 để không cộng đôi HN và RL. ETL: cửa sổ trên các dòng Fact của cùng CTCK + năm + loại kỳ + kỳ.',
 
@@ -536,6 +538,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_report_data_flat
 (
     -- From: OPR_SECURITIES_COMPANY_REPORT_DATA
     rpt_cell_val_id                              String                  COMMENT 'Khóa chính giá trị ô báo cáo tác nghiệp.',
+    rpt_input_submission_id                      String                  COMMENT 'Khóa lần nộp dữ liệu báo cáo đầu vào (eForm) chứa ô này, dùng để phân biệt các lần nộp của cùng một kỳ báo cáo.',
     sc_code                                      String                  COMMENT 'Mã CTCK.',
     sc_nm                                        Nullable(String)        COMMENT 'Tên viết tắt hoặc tên đầy đủ của CTCK.',
     rpt_code                                     String                  COMMENT 'Mã biểu mẫu báo cáo (ví dụ: BCTCHN, BCTCRL, THSLCBPHCP...).',
