@@ -4,34 +4,34 @@ source: FIMS
 table: TRADINGAUTHORIZATIONINVESHIS
 brd_ref: BRD-SRC-FIMS-TRADINGAUTHORIZATIONINVESHIS
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,0)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: PK
   fk_note: null
-- name: TradingAuthorizationHisId
+- name: TRADINGAUTHORIZATIONHISID
   data_type: NUMBER(18,0)
-  description: FK đến TRADINGAUTHORIZATIONHIS.Id — version cụ thể của hợp đồng ủy quyền
+  description: FK đến TRADINGAUTHORIZATIONHIS.ID — version cụ thể của hợp đồng ủy quyền
   key: FK
-  fk_note: FK → TRADINGAUTHORIZATIONHIS.Id
+  fk_note: FK → TRADINGAUTHORIZATIONHIS.ID
   fk_src: inferred
-- name: InvestorId
+- name: INVESTORID
   data_type: NUMBER(18,0)
   description: 'FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng'
   key: FK
-  fk_note: FK → INVESTOR.Id
+  fk_note: FK → INVESTOR.ID
   fk_src: inferred
-- name: InvestorName
+- name: INVESTORNAME
   data_type: VARCHAR2(2000)
   description: Tên NĐT NN vi phạm (tại thời điểm phát hiện)
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: TIMESTAMP(6)
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: VARCHAR2(400)
   description: Tài khoản người dùng tạo bản ghi
   key: null

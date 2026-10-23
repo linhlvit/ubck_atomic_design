@@ -4,72 +4,72 @@ source: FIMS
 table: MENUS
 brd_ref: BRD-SRC-FIMS-MENUS
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,2)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: PK
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: DATE
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: DATE
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null
   fk_note: null
-- name: Title
+- name: TITLE
   data_type: NVARCHAR2(1000)
   description: Tiêu đề thông báo
   key: null
   fk_note: null
-- name: Icon
+- name: ICON
   data_type: NVARCHAR2(200)
   description: CSS class icon hiển thị trạng thái
   key: null
   fk_note: null
-- name: Url
+- name: URL
   data_type: NVARCHAR2(1000)
   description: Đường dẫn URL của trang/chức năng tương ứng
   key: null
   fk_note: null
-- name: ParentId
+- name: PARENTID
   data_type: NUMBER(18,2)
   description: 'FK -> MENUS: Menu cha trong cây phân cấp menu'
   key: FK
-  fk_note: FK → MENUS.Id
-- name: MenuType
+  fk_note: FK → MENUS.ID
+- name: MENUTYPE
   data_type: NUMBER(1,0)
   description: 'Loại menu: 1=Menu chính, 2=Menu con, 3=Nút chức năng'
   key: null
   fk_note: null
-- name: SortOrder
+- name: SORTORDER
   data_type: NUMBER(10,0)
   description: Thứ tự sắp xếp hiển thị trong menu
   key: null
   fk_note: null
-- name: Access
+- name: ACCESS
   data_type: NCLOB
   description: Quyền truy cập menu (danh sách role được phép, JSON/CSV)
   key: null
   fk_note: null
-- name: IsActive
+- name: ISACTIVE
   data_type: NUMBER(1,0)
   description: 'Cờ menu đang hiển thị/hoạt động: 1=Hiển thị, 0=Ẩn'
   key: null

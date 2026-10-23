@@ -4,37 +4,37 @@ source: FIMS
 table: RPTPDSHT
 brd_ref: BRD-SRC-FIMS-RPTPDSHT
 columns:
-- name: ShtId
+- name: SHTID
   data_type: NUMBER(18,2)
   description: 'FK -> SHEET: Sheet biểu mẫu liên quan đến kỳ báo cáo'
   key: FK
-  fk_note: FK → SHEET.Id
-- name: RptPdId
+  fk_note: FK → SHEET.ID
+- name: RPTPDID
   data_type: NUMBER(18,2)
   description: 'FK -> RPTPERIOD: Kỳ báo cáo liên quan'
   key: FK
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: DATE
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: DATE
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null

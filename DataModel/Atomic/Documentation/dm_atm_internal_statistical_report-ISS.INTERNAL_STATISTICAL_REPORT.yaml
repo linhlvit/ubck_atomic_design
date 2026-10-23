@@ -45,7 +45,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: null
+    source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_CODE, ISS.INTERNAL_STATISTICAL_REPORT.SHEET_NAME, ISS.INTERNAL_STATISTICAL_REPORT.FIELD_CODE, ISS.INTERNAL_STATISTICAL_REPORT.ROW_INDEX, ISS.INTERNAL_STATISTICAL_REPORT.ORIGIN_DATE_VALUE"
     comment: "ETL-derived: concat(report_code, sheet_name, field_code, row_index, origin_date_value) từ ODS INTERNAL_STATISTICAL_REPORT — BK composite. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
     classification_context: null
     etl_derived_value: null
@@ -73,7 +73,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_code
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_CODE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -87,7 +87,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_name
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_NAME
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -101,7 +101,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.submit_source
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.SUBMIT_SOURCE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -115,7 +115,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.template_version
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.TEMPLATE_VERSION
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -129,7 +129,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_layout_type
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_LAYOUT_TYPE
     comment: "Ảnh hưởng cách đọc column_position/row_position và column_code/row_code: COLUMN_BASED → row_* là NULL; ROW_BASED → col_* là NULL; MIXED → cả hai đều có giá trị."
     classification_context: null
     etl_derived_value: null
@@ -143,7 +143,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.sheet_name
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.SHEET_NAME
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -157,7 +157,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_start_position
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_START_POSITION
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -171,7 +171,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_start_position
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_START_POSITION
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -185,7 +185,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_path
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_PATH
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -199,7 +199,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_path
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_PATH
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -213,7 +213,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_index
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_INDEX
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -227,7 +227,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.col_position
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.COL_POSITION
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -241,7 +241,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_position
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_POSITION
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -255,7 +255,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_code
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_CODE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -269,7 +269,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_code
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_CODE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -283,7 +283,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.field_code
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.FIELD_CODE
     comment: Thành phần BK. Không unique trong 1 sheet khi có band động — phân biệt bằng row_index.
     classification_context: null
     etl_derived_value: null
@@ -297,7 +297,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.data_type
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.DATA_TYPE
     comment: Dùng để CAST field_val phía consumer — không ép kiểu tại Atomic.
     classification_context: null
     etl_derived_value: null
@@ -311,7 +311,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.field_value
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.FIELD_VALUE
     comment: Luôn lưu dạng chuỗi; consumer tự CAST theo data_tp_code.
     classification_context: null
     etl_derived_value: null
@@ -325,7 +325,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.date_type
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.DATE_TYPE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -339,7 +339,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.origin_date_value
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.ORIGIN_DATE_VALUE
     comment: "Thành phần BK — giữ nguyên chuỗi gốc, không parse."
     classification_context: null
     etl_derived_value: null
@@ -353,7 +353,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_day
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_DAY
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -367,7 +367,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_month
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_MONTH
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -381,7 +381,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_quarter
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_QUARTER
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -395,7 +395,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_half_year
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_HALF_YEAR
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -409,7 +409,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_year
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_YEAR
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -423,7 +423,7 @@ attributes:
     is_primary_key: false
     source_system: ISS
     source_table: INTERNAL_STATISTICAL_REPORT
-    source_column: ISS.INTERNAL_STATISTICAL_REPORT.submit_status
+    source_column: ISS.INTERNAL_STATISTICAL_REPORT.SUBMIT_STATUS
     comment: null
     classification_context: null
     etl_derived_value: null

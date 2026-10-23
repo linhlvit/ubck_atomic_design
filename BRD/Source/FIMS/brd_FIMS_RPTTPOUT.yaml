@@ -4,77 +4,77 @@ source: FIMS
 table: RPTTPOUT
 brd_ref: BRD-SRC-FIMS-RPTTPOUT
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,2)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: null
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: DATE
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: DATE
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null
   fk_note: null
-- name: ShtOtId
+- name: SHTOTID
   data_type: NUMBER(18,2)
   description: 'FK -> SHEETOUT: Sheet biểu mẫu đầu ra liên kết với báo cáo này'
   key: FK
-  fk_note: FK → SHEETOUT.Id
-- name: Name
+  fk_note: FK → SHEETOUT.ID
+- name: NAME
   data_type: NVARCHAR2(4000)
   description: Tên đầy đủ (tiếng Việt)
   key: null
   fk_note: null
-- name: LegalBasis
+- name: LEGALBASIS
   data_type: NVARCHAR2(4000)
   description: Căn cứ pháp lý của biểu mẫu (tên thông tư/nghị định áp dụng)
   key: null
   fk_note: null
-- name: Code
+- name: CODE
   data_type: NVARCHAR2(4000)
   description: Mã biểu mẫu báo cáo (mã định danh ngắn gọn)
   key: null
   fk_note: null
-- name: Status
+- name: STATUS
   data_type: NUMBER(10,0)
   description: Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
   key: null
   fk_note: null
-- name: Description
+- name: DESCRIPTION
   data_type: NVARCHAR2(4000)
   description: Mô tả chi tiết / ghi chú bổ sung
   key: null
   fk_note: null
-- name: ReportGroup
+- name: REPORTGROUP
   data_type: NUMBER(10,0)
   description: Nhóm báo cáo (phân nhóm theo nghiệp vụ hoặc đối tượng)
   key: null
   fk_note: null
-- name: SystemObject
+- name: SYSTEMOBJECT
   data_type: NUMBER(10,0)
   description: 'Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN'
   key: null
   fk_note: null
-- name: SystemObjectLst
+- name: SYSTEMOBJECTLST
   data_type: NVARCHAR2(4000)
   description: Danh sách loại đối tượng áp dụng (JSON/CSV)
   key: null

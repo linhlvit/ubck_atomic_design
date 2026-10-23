@@ -27,7 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Involved Party] Broker Dealer\". Công ty chứng khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+  comment: "PK surrogate. BCV: \"[Involved Party] Broker Dealer\". Công ty chứng khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -39,7 +39,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.Id"
+  - "FIMS.SECURITIESCOMPANY.ID"
   comment: "BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm BK (cùng pattern FIMS.BANKMONI). Nguồn lưu NUMBER(18,2) — ETL cần convert sang string, bỏ phần thập phân .00."
   classification_context: null
   etl_derived_value: null
@@ -64,8 +64,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.StatusId"
-  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: SECURITIESCOMPANY.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS', Code)."
+  - "FIMS.SECURITIESCOMPANY.STATUSID"
+  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: SECURITIESCOMPANY.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -77,8 +77,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.STATUS.Code"
-  comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
+  - "FIMS.STATUS.CODE"
+  comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -90,7 +90,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.Name"
+  - "FIMS.SECURITIESCOMPANY.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -103,7 +103,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.EName"
+  - "FIMS.SECURITIESCOMPANY.ENAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -116,7 +116,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.ShortName"
+  - "FIMS.SECURITIESCOMPANY.SHORTNAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -129,8 +129,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.NaId"
-  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NaId = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  - "FIMS.SECURITIESCOMPANY.NAID"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NAID = NATIONAL.ID để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -142,8 +142,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.NATIONAL.SName"
-  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
+  - "FIMS.NATIONAL.SNAME"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -155,7 +155,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.Capital"
+  - "FIMS.SECURITIESCOMPANY.CAPITAL"
   comment: "Nguồn NUMBER(36,2). Dùng chung attribute với SCMS.SC_FIRM_INFO.CHARTER_CAPITAL."
   classification_context: null
   etl_derived_value: null
@@ -168,7 +168,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.Director"
+  - "FIMS.SECURITIESCOMPANY.DIRECTOR"
   comment: "Denormalized — không có FK."
   classification_context: null
   etl_derived_value: null
@@ -181,7 +181,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.SECURITIESCOMPANY.Description"
+  - "FIMS.SECURITIESCOMPANY.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null

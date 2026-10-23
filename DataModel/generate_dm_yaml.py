@@ -212,11 +212,7 @@ def build_yaml(atomic_table, source_system, source_table, attrs, entity_meta, et
 
     for attr in attrs:
         src_col = attr["source_column"].strip()
-        if "," in src_col:
-            # Multi-column pivot (ETL chọn 1 trong N cột nguồn tùy context) — dm.schema.json
-            # chỉ chấp nhận 1 SYSTEM.TABLE.column hoặc null. Chi tiết mapping từng cột đã có
-            # đầy đủ trong comment (ETL pivot: ...), nên không mất thông tin khi để null.
-            src_col = ""
+        # Nhiều cột nguồn: giữ nguyên chuỗi nối ", " từ LLD (dm.schema.json cho phép).
         comment = normalize_comment(attr["comment"].strip(), name_to_table)
         ctx     = normalize_classification_ctx(attr["classification_context"].strip())
         derived = attr["etl_derived_value"].strip()

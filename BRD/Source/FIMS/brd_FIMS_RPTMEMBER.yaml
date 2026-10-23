@@ -4,189 +4,189 @@ source: FIMS
 table: RPTMEMBER
 brd_ref: BRD-SRC-FIMS-RPTMEMBER
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,2)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: PK
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: DATE
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: DATE
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null
   fk_note: null
-- name: RptId
+- name: RPTID
   data_type: NUMBER(18,2)
   description: 'FK -> RPTTEMP: Biểu mẫu báo cáo liên quan'
   key: FK
-  fk_note: FK → RPTTEMP.Id
-- name: PrdId
+  fk_note: FK → RPTTEMP.ID
+- name: PRDID
   data_type: NUMBER(18,2)
   description: 'FK -> RPTPERIOD: Kỳ báo cáo liên quan'
   key: FK
   fk_note: null
-- name: FundId
+- name: FUNDID
   data_type: NUMBER(18,2)
   description: 'FK -> FUNDCOMPANY: Công ty QLQ liên quan'
   key: FK
-  fk_note: FK → FUNDCOMPANY.Id
-- name: SecId
+  fk_note: FK → FUNDCOMPANY.ID
+- name: SECID
   data_type: NUMBER(18,2)
   description: 'FK -> SECURITIESCOMPANY: Công ty CK liên quan'
   key: FK
-  fk_note: FK → SECURITIESCOMPANY.Id
-- name: BankId
+  fk_note: FK → SECURITIESCOMPANY.ID
+- name: BANKID
   data_type: NUMBER(18,2)
   description: 'FK -> BANKMONI: Ngân hàng lưu ký liên quan'
   key: FK
-  fk_note: FK → BANKMONI.Id
-- name: DepId
+  fk_note: FK → BANKMONI.ID
+- name: DEPID
   data_type: NUMBER(18,2)
   description: 'FK -> DEPOSITORYCENTER: VSDC nộp báo cáo'
   key: FK
-  fk_note: FK → DEPOSITORYCENTER.Id
-- name: StockId
+  fk_note: FK → DEPOSITORYCENTER.ID
+- name: STOCKID
   data_type: NUMBER(18,2)
   description: 'FK -> STOCKEXCHANGE: Sở GD liên kết với người hành nghề'
   key: FK
-  fk_note: FK → STOCKEXCHANGE.Id
-- name: InId
+  fk_note: FK → STOCKEXCHANGE.ID
+- name: INID
   data_type: NUMBER(18,2)
   description: 'FK -> INFODISCREPRES: Đại diện CBTT/giao dịch nộp báo cáo'
   key: FK
-  fk_note: FK → INFODISCREPRES.Id
-- name: BranId
+  fk_note: FK → INFODISCREPRES.ID
+- name: BRANID
   data_type: NUMBER(18,2)
   description: 'FK -> BRANCHS: Chi nhánh QLQ NN nộp báo cáo'
   key: FK
-  fk_note: FK → BRANCHS.Id
-- name: ReportTypeId
+  fk_note: FK → BRANCHS.ID
+- name: REPORTTYPEID
   data_type: NUMBER(18,2)
   description: 'FK -> REPORTTYPE: Loại báo cáo'
   key: FK
-  fk_note: FK → REPORTTYPE.Id
+  fk_note: FK → REPORTTYPE.ID
   fk_src: inferred
-- name: ObjectType
+- name: OBJECTTYPE
   data_type: NUMBER(18,2)
   description: 'Loại đối tượng nộp báo cáo (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD'
   key: null
   fk_note: null
-- name: IsImport
+- name: ISIMPORT
   data_type: NUMBER(1,0)
   description: 'Cờ báo cáo được nộp qua import Excel: 1=Import, 0=Nhập tay/eform'
   key: null
   fk_note: null
-- name: isWorkingDay
+- name: ISWORKINGDAY
   data_type: NUMBER(1,0)
   description: 'Cờ hạn nộp tính theo ngày làm việc: 1=Ngày LV, 0=Ngày lịch'
   key: null
   fk_note: null
-- name: SendInDay
+- name: SENDINDAY
   data_type: NUMBER(18,2)
   description: Ngày trong tháng/kỳ là hạn nộp báo cáo
   key: null
   fk_note: null
-- name: RptName
+- name: RPTNAME
   data_type: NVARCHAR2(4000)
   description: Tên báo cáo tại thời điểm nộp (snapshot tên biểu mẫu)
   key: null
   fk_note: null
-- name: YearValue
+- name: YEARVALUE
   data_type: NUMBER(18,2)
   description: Năm của kỳ CBTT/báo cáo
   key: null
   fk_note: null
-- name: PeriodValue
+- name: PERIODVALUE
   data_type: NVARCHAR2(4000)
   description: 'Giá trị kỳ báo cáo cụ thể (VD: 2024-Q1, 2024-03)'
   key: null
   fk_note: null
-- name: DayReport
+- name: DAYREPORT
   data_type: DATE
   description: Ngày chốt số liệu của báo cáo
   key: null
   fk_note: null
-- name: DeadlineSend
+- name: DEADLINESEND
   data_type: DATE
   description: Hạn nộp báo cáo theo quy định
   key: null
   fk_note: null
-- name: Status
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái kỳ báo cáo (RptMemberStatusEnum): 1=Chưa gửi, 2=Đã gửi, 3=Gửi muộn, 4=Bị hủy, 5=Đã gửi lại'
   key: null
   fk_note: null
-- name: DateSubmitted
+- name: DATESUBMITTED
   data_type: DATE
   description: Thời điểm nộp báo cáo thực tế
   key: null
   fk_note: null
-- name: FileData
+- name: FILEDATA
   data_type: NCLOB
   description: Nội dung file đính kèm (BLOB/CLOB)
   key: null
   fk_note: null
-- name: FileImport
+- name: FILEIMPORT
   data_type: NCLOB
   description: Tên file đính kèm khi xử lý báo cáo
   key: null
   fk_note: null
-- name: DataFileImport
+- name: DATAFILEIMPORT
   data_type: BLOB
   description: Dữ liệu file Excel đã import (BLOB)
   key: null
   fk_note: null
-- name: ContentSummary
+- name: CONTENTSUMMARY
   data_type: NVARCHAR2(4000)
   description: Tóm tắt nội dung báo cáo (trích yếu)
   key: null
   fk_note: null
-- name: Note
+- name: NOTE
   data_type: NVARCHAR2(4000)
   description: Ghi chú bổ sung
   key: null
   fk_note: null
-- name: PeriodType
+- name: PERIODTYPE
   data_type: NUMBER(38,0)
   description: 'Loại kỳ báo cáo (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm'
   key: null
   fk_note: null
-- name: IdOld
+- name: IDOLD
   data_type: NVARCHAR2(4000)
   description: ID trạng thái trong hệ thống cũ
   key: null
   fk_note: null
-- name: IsDataMigration
+- name: ISDATAMIGRATION
   data_type: NUMBER(1,0)
   description: 'Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không'
   key: null
   fk_note: null
-- name: InvestorId
+- name: INVESTORID
   data_type: NUMBER(18,0)
   description: 'FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng'
   key: FK
-  fk_note: FK → INVESTOR.Id
+  fk_note: FK → INVESTOR.ID
   fk_src: inferred
-- name: TradingRepresentativeId
+- name: TRADINGREPRESENTATIVEID
   data_type: NUMBER(18,0)
   description: 'FK -> TRADINGREPRESENTATIVE: Đại diện giao dịch liên kết với tài khoản người dùng'
   key: FK
@@ -198,17 +198,17 @@ columns:
   key: FK
   fk_note: FK → RPT_EVENT_TYPE.ID
   fk_src: inferred
-- name: RptVersionAtSchedule
+- name: RPTVERSIONATSCHEDULE
   data_type: NUMBER(38,0)
   description: Phiên bản biểu mẫu áp dụng khi tạo kỳ báo cáo này
   key: null
   fk_note: null
-- name: EformSubmissionJson
+- name: EFORMSUBMISSIONJSON
   data_type: NCLOB
   description: Dữ liệu eform đã điền (JSON) khi NĐT nộp báo cáo qua form động
   key: null
   fk_note: null
-- name: EformSchemaSnapshotJson
+- name: EFORMSCHEMASNAPSHOTJSON
   data_type: NCLOB
   description: Snapshot schema eform tại thời điểm nộp báo cáo (để render lại khi xem)
   key: null

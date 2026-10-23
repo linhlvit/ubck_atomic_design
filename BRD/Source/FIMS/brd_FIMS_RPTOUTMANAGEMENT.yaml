@@ -4,132 +4,132 @@ source: FIMS
 table: RPTOUTMANAGEMENT
 brd_ref: BRD-SRC-FIMS-RPTOUTMANAGEMENT
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,2)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: PK
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: DATE
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: DATE
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null
   fk_note: null
-- name: SystemObject
+- name: SYSTEMOBJECT
   data_type: NUMBER(18,2)
   description: 'Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN'
   key: null
   fk_note: null
-- name: RptOutId
+- name: RPTOUTID
   data_type: NUMBER(18,2)
   description: 'FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra được xuất'
   key: FK
   fk_note: null
-- name: IsMutiPeriod
+- name: ISMUTIPERIOD
   data_type: NUMBER(1,0)
   description: 'Cờ báo cáo cho phép nhiều kỳ cùng lúc: 1=Nhiều kỳ, 0=Một kỳ'
   key: null
   fk_note: null
-- name: PeriodValueFrom
+- name: PERIODVALUEFROM
   data_type: NVARCHAR2(4000)
   description: Kỳ báo cáo bắt đầu (khi lọc nhiều kỳ)
   key: null
   fk_note: null
-- name: PeriodValueTo
+- name: PERIODVALUETO
   data_type: NVARCHAR2(4000)
   description: Kỳ báo cáo kết thúc (khi lọc nhiều kỳ)
   key: null
   fk_note: null
-- name: Status
+- name: STATUS
   data_type: NUMBER(1,0)
   description: Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)
   key: null
   fk_note: null
-- name: PeriodType
+- name: PERIODTYPE
   data_type: NUMBER(10,0)
   description: 'Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Năm, 6=Bất thường'
   key: null
   fk_note: null
-- name: dateStart
+- name: DATESTART
   data_type: NVARCHAR2(4000)
   description: Ngày bắt đầu khoảng thời gian lọc dữ liệu
   key: null
   fk_note: null
-- name: dateEnd
+- name: DATEEND
   data_type: NVARCHAR2(4000)
   description: Ngày kết thúc khoảng thời gian lọc dữ liệu
   key: null
   fk_note: null
-- name: Name
+- name: NAME
   data_type: NVARCHAR2(4000)
   description: Tên đầy đủ (tiếng Việt)
   key: null
   fk_note: null
-- name: InvestorIds
+- name: INVESTORIDS
   data_type: NVARCHAR2(4000)
   description: Danh sách ID nhà đầu tư liên quan (lưu dạng JSON/CSV)
   key: null
   fk_note: null
-- name: InvestorTypeIds
+- name: INVESTORTYPEIDS
   data_type: NVARCHAR2(4000)
   description: Danh sách loại NĐT NN lọc khi xuất báo cáo (JSON/CSV)
   key: null
   fk_note: null
-- name: MemberIds
+- name: MEMBERIDS
   data_type: NVARCHAR2(4000)
   description: Danh sách ID thành viên lọc khi xuất báo cáo (JSON/CSV số)
   key: null
   fk_note: null
-- name: MemberStrIds
+- name: MEMBERSTRIDS
   data_type: NVARCHAR2(4000)
   description: Danh sách mã thành viên lọc khi xuất báo cáo (JSON/CSV chuỗi)
   key: null
   fk_note: null
-- name: NationId
+- name: NATIONID
   data_type: NUMBER(18,2)
   description: 'FK -> NATIONAL: Quốc gia lọc khi xuất báo cáo'
   key: FK
   fk_note: null
-- name: SecuritiesIds
+- name: SECURITIESIDS
   data_type: NVARCHAR2(4000)
   description: Danh sách mã CK lọc khi xuất báo cáo (JSON/CSV)
   key: null
   fk_note: null
-- name: Unit
+- name: UNIT
   data_type: NVARCHAR2(4000)
   description: 'Đơn vị hiển thị số liệu: 1=Đồng, 2=Nghìn đồng, 3=Triệu đồng, 4=Tỷ đồng'
   key: null
   fk_note: null
-- name: DateCompletion
+- name: DATECOMPLETION
   data_type: DATE
   description: Thời điểm hoàn thành xuất báo cáo tổng hợp
   key: null
   fk_note: null
-- name: IsRunNow
+- name: ISRUNNOW
   data_type: NUMBER(18,2)
   description: 'Cờ chạy ngay lập tức (không lên lịch): 1=Chạy ngay, 0=Lên lịch'
   key: null
   fk_note: null
-- name: IsSum
+- name: ISSUM
   data_type: NUMBER(1,0)
   description: 'Cờ tổng hợp/cộng dồn dữ liệu: 1=Tổng hợp, 0=Chi tiết'
   key: null

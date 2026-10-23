@@ -27,7 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
+  comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS_INVESTOR', TRANSACTIONCODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -39,7 +39,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.TransactionCode"
+  - "FIMS.INVESTOR.TRANSACTIONCODE"
   comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (nguồn không khai báo ràng buộc)."
   classification_context: null
   etl_derived_value: null
@@ -64,7 +64,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.ObjectType"
+  - "FIMS.INVESTOR.OBJECTTYPE"
   comment: "SCHEMA_CODE=FIMS.OBJECT_TYPE"
   classification_context: null
   etl_derived_value: null
@@ -77,7 +77,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.Name"
+  - "FIMS.INVESTOR.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -90,7 +90,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.EName"
+  - "FIMS.INVESTOR.ENAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -103,7 +103,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.Sex"
+  - "FIMS.INVESTOR.SEX"
   comment: "SCHEMA_CODE=GENDER"
   classification_context: null
   etl_derived_value: null
@@ -116,7 +116,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.DateOfBirth"
+  - "FIMS.INVESTOR.DATEOFBIRTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -129,8 +129,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.NaId"
-  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  - "FIMS.INVESTOR.NAID"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NAID = NATIONAL.ID để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -142,8 +142,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.NATIONAL.SName"
-  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment Nationality Id."
+  - "FIMS.NATIONAL.SNAME"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -155,7 +155,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.Director"
+  - "FIMS.INVESTOR.DIRECTOR"
   comment: "Denormalized — không có FK, chỉ áp dụng NĐT tổ chức."
   classification_context: null
   etl_derived_value: null
@@ -168,8 +168,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.InvestorTypeId"
-  comment: "FK target: cl_fims_investor_type.cl_fims_investor_tp_id. Cần ETL crosswalk sang FIMS.INVESTORTYPE: INVESTOR.InvestorTypeId = INVESTORTYPE.Id để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SName) | Thay scheme FIMS_INVESTOR_TYPE (deprecated) bằng FK tới entity cl_fims_investor_type (2026-10-05)."
+  - "FIMS.INVESTOR.INVESTORTYPEID"
+  comment: "FK target: cl_fims_investor_type.cl_fims_investor_tp_id. Cần ETL crosswalk sang FIMS.INVESTORTYPE: INVESTOR.INVESTORTYPEID = INVESTORTYPE.ID để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SNAME) | Thay scheme FIMS_INVESTOR_TYPE (deprecated) bằng FK tới entity cl_fims_investor_type (2026-10-05)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -181,8 +181,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTORTYPE.SName"
-  comment: "Lookup pair: cl_fims_investor_type.cl_fims_investor_tp_code. Pair with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SName sau ETL crosswalk — chi tiết xem comment Classification FIMS Investor Type Id."
+  - "FIMS.INVESTORTYPE.SNAME"
+  comment: "Lookup pair: cl_fims_investor_type.cl_fims_investor_tp_code. Pair with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SNAME sau ETL crosswalk — chi tiết xem comment Classification FIMS Investor Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -194,7 +194,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.DepAccountNumber"
+  - "FIMS.INVESTOR.DEPACCOUNTNUMBER"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -207,7 +207,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.SysObjectType"
+  - "FIMS.INVESTOR.SYSOBJECTTYPE"
   comment: "Không phải Classification Value — map 1:1 nguyên giá trị nguồn (quyết định Data Modeler 2026-07-20). Không tạo classification_context/scheme."
   classification_context: null
   etl_derived_value: null
@@ -220,7 +220,7 @@ attributes:
   is_primary_key: false
   status: "pending"
   source_columns:
-  - "FIMS.INVESTOR.SecComAddId"
+  - "FIMS.INVESTOR.SECCOMADDID"
   comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', SecComAddId). Entity Securities Company gộp từ FIMS.SECURITIESCOMPANY + SCMS.SC_FIRM_INFO (xem lld_FIMS_SECURITIESCOMPANY.yaml)."
   classification_context: null
   etl_derived_value: null
@@ -233,7 +233,7 @@ attributes:
   is_primary_key: false
   status: "pending"
   source_columns:
-  - "FIMS.INVESTOR.SecComAddId"
+  - "FIMS.INVESTOR.SECCOMADDID"
   comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id."
   classification_context: null
   etl_derived_value: null
@@ -246,7 +246,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.BankAddId"
+  - "FIMS.INVESTOR.BANKADDID"
   comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI', BankAddId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI (xem lld_FIMS_BANKMONI.yaml, 2026-10-05)."
   classification_context: null
   etl_derived_value: null
@@ -259,7 +259,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.BankAddId"
+  - "FIMS.INVESTOR.BANKADDID"
   comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank Id."
   classification_context: null
   etl_derived_value: null
@@ -272,7 +272,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.AccountInvesCapital"
+  - "FIMS.INVESTOR.ACCOUNTINVESCAPITAL"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -285,7 +285,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.BankAddCapId"
+  - "FIMS.INVESTOR.BANKADDCAPID"
   comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI', BankAddCapId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI (xem lld_FIMS_BANKMONI.yaml, 2026-10-05)."
   classification_context: null
   etl_derived_value: null
@@ -298,7 +298,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.BankAddCapId"
+  - "FIMS.INVESTOR.BANKADDCAPID"
   comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital Custodian Bank Id."
   classification_context: null
   etl_derived_value: null
@@ -311,8 +311,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.CompanyTypeId"
-  comment: "FK target: cl_fims_company_type.cl_fims_company_tp_id. Cần ETL crosswalk sang FIMS.COMPANYTYPE: INVESTOR.CompanyTypeId = COMPANYTYPE.Id để xác nhận CODE sau đó hash_id('FIMS_COMPANYTYPE', CODE) | Thay scheme FIMS_COMPANY_TYPE bằng FK tới entity cl_fims_company_type (2026-10-05). Chỉ áp dụng NĐT tổ chức."
+  - "FIMS.INVESTOR.COMPANYTYPEID"
+  comment: "FK target: cl_fims_company_type.cl_fims_company_tp_id. Cần ETL crosswalk sang FIMS.COMPANYTYPE: INVESTOR.COMPANYTYPEID = COMPANYTYPE.ID để xác nhận CODE sau đó hash_id('FIMS_COMPANYTYPE', CODE) | Thay scheme FIMS_COMPANY_TYPE bằng FK tới entity cl_fims_company_type (2026-10-05). Chỉ áp dụng NĐT tổ chức."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -337,8 +337,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.StatusId"
-  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: INVESTOR.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS', Code) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status (2026-10-05)."
+  - "FIMS.INVESTOR.STATUSID"
+  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: INVESTOR.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS', CODE) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status (2026-10-05)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -350,8 +350,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.STATUS.Code"
-  comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
+  - "FIMS.STATUS.CODE"
+  comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -363,7 +363,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.Description"
+  - "FIMS.INVESTOR.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null

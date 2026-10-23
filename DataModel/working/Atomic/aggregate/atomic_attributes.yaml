@@ -26654,7 +26654,7 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Investor Report"
   atomic_attribute: "Report Id"
-  description: "Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID = RPTTEMP.Id)."
+  description: "Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID = RPTTEMP.ID)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -27256,7 +27256,7 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Investor Report Value"
   atomic_attribute: "Report Log Id"
-  description: "Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.Id) — dùng để lọc toàn\
+  description: "Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.ID) — dùng để lọc toàn\
     \ bộ số liệu của 1 lần nộp."
   data_domain: "Text"
   nullable: true
@@ -30343,9 +30343,9 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_code, ISS.INTERNAL_STATISTICAL_REPORT.sheet_name,\
-    \ ISS.INTERNAL_STATISTICAL_REPORT.field_code, ISS.INTERNAL_STATISTICAL_REPORT.row_index,\
-    \ ISS.INTERNAL_STATISTICAL_REPORT.origin_date_value"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_CODE, ISS.INTERNAL_STATISTICAL_REPORT.SHEET_NAME,\
+    \ ISS.INTERNAL_STATISTICAL_REPORT.FIELD_CODE, ISS.INTERNAL_STATISTICAL_REPORT.ROW_INDEX,\
+    \ ISS.INTERNAL_STATISTICAL_REPORT.ORIGIN_DATE_VALUE"
   comment: "ETL-derived: concat(report_code, sheet_name, field_code, row_index, origin_date_value)\
     \ từ ODS INTERNAL_STATISTICAL_REPORT — BK composite. Cần profile dữ liệu xác nhận\
     \ NOT NULL/unique trước go-live."
@@ -30380,7 +30380,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_code"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_CODE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30396,7 +30396,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_name"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30412,7 +30412,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.submit_source"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.SUBMIT_SOURCE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30428,7 +30428,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.template_version"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.TEMPLATE_VERSION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30444,7 +30444,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_layout_type"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_LAYOUT_TYPE"
   comment: "Ảnh hưởng cách đọc column_position/row_position và column_code/row_code:\
     \ COLUMN_BASED → row_* là NULL; ROW_BASED → col_* là NULL; MIXED → cả hai đều\
     \ có giá trị."
@@ -30462,7 +30462,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.sheet_name"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.SHEET_NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30478,7 +30478,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.column_start_position"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_START_POSITION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30494,7 +30494,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.row_start_position"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.ROW_START_POSITION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30510,7 +30510,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.column_path"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_PATH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30526,7 +30526,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.row_path"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.ROW_PATH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30544,7 +30544,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.row_index"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.ROW_INDEX"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30561,7 +30561,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.col_position"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.COL_POSITION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30578,7 +30578,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.row_position"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.ROW_POSITION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30594,7 +30594,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.column_code"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_CODE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30610,7 +30610,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.row_code"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.ROW_CODE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30627,7 +30627,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.field_code"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.FIELD_CODE"
   comment: "Thành phần BK. Không unique trong 1 sheet khi có band động — phân biệt\
     \ bằng row_index."
   classification_context: null
@@ -30644,7 +30644,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.data_type"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.DATA_TYPE"
   comment: "Dùng để CAST field_val phía consumer — không ép kiểu tại Atomic."
   classification_context: null
   etl_derived_value: null
@@ -30660,7 +30660,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.field_value"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.FIELD_VALUE"
   comment: "Luôn lưu dạng chuỗi; consumer tự CAST theo data_tp_code."
   classification_context: null
   etl_derived_value: null
@@ -30676,7 +30676,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.date_type"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.DATE_TYPE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30692,7 +30692,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.origin_date_value"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.ORIGIN_DATE_VALUE"
   comment: "Thành phần BK — giữ nguyên chuỗi gốc, không parse."
   classification_context: null
   etl_derived_value: null
@@ -30708,7 +30708,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_day"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_DAY"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30724,7 +30724,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_month"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_MONTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30740,7 +30740,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_quarter"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_QUARTER"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30756,7 +30756,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_half_year"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_HALF_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30772,7 +30772,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.report_year"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.REPORT_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -30788,7 +30788,7 @@ attributes:
   is_primary_key: false
   source_system: "ISS"
   source_table: "INTERNAL_STATISTICAL_REPORT"
-  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.submit_status"
+  source_column: "ISS.INTERNAL_STATISTICAL_REPORT.SUBMIT_STATUS"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -48665,7 +48665,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Id"
+  source_column: "FIMS.BANKMONI.ID"
   comment: "BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm BK\
     \ (cùng pattern FMS.BANK_MONI). Nguồn lưu NUMBER(18,2) — ETL cần convert sang\
     \ string, bỏ phần thập phân .00."
@@ -48699,9 +48699,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.StatusId"
+  source_column: "FIMS.BANKMONI.STATUSID"
   comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
-    \ BANKMONI.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+    \ BANKMONI.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
     \ Code)."
   classification_context: null
   etl_derived_value: null
@@ -48718,9 +48718,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.STATUS.Code"
+  source_column: "FIMS.STATUS.CODE"
   comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
     \ xem comment Classification FIMS Status Id."
   classification_context: null
   etl_derived_value: null
@@ -48736,7 +48736,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Name"
+  source_column: "FIMS.BANKMONI.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -48752,7 +48752,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.EName"
+  source_column: "FIMS.BANKMONI.ENAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -48768,7 +48768,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.ShortName"
+  source_column: "FIMS.BANKMONI.SHORTNAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -48784,9 +48784,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.NaId"
+  source_column: "FIMS.BANKMONI.NAID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-    \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NaId = NATIONAL.Id\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NAID = NATIONAL.ID\
     \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
@@ -48803,9 +48803,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.NATIONAL.SName"
+  source_column: "FIMS.NATIONAL.SNAME"
   comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-    \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+    \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment\
     \ Nationality Id."
   classification_context: null
   etl_derived_value: null
@@ -48821,7 +48821,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Capital"
+  source_column: "FIMS.BANKMONI.CAPITAL"
   comment: "Nguồn NOT NULL — Atomic để nullable do entity gộp thêm nguồn FMS.BANK_MONI\
     \ không có cột vốn."
   classification_context: null
@@ -48838,7 +48838,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Director"
+  source_column: "FIMS.BANKMONI.DIRECTOR"
   comment: "Denormalized — không có FK."
   classification_context: null
   etl_derived_value: null
@@ -48854,7 +48854,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Description"
+  source_column: "FIMS.BANKMONI.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -50699,7 +50699,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.TransactionCode"
+  source_column: "FIMS.INVESTOR.TRANSACTIONCODE"
   comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (nguồn\
     \ không khai báo ràng buộc)."
   classification_context: null
@@ -50732,7 +50732,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.ObjectType"
+  source_column: "FIMS.INVESTOR.OBJECTTYPE"
   comment: "SCHEMA_CODE=FIMS.OBJECT_TYPE"
   classification_context: null
   etl_derived_value: null
@@ -50748,7 +50748,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Name"
+  source_column: "FIMS.INVESTOR.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -50764,7 +50764,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.EName"
+  source_column: "FIMS.INVESTOR.ENAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -50780,7 +50780,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Sex"
+  source_column: "FIMS.INVESTOR.SEX"
   comment: "SCHEMA_CODE=GENDER"
   classification_context: null
   etl_derived_value: null
@@ -50796,7 +50796,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.DateOfBirth"
+  source_column: "FIMS.INVESTOR.DATEOFBIRTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -50812,9 +50812,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.NaId"
+  source_column: "FIMS.INVESTOR.NAID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-    \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NAID = NATIONAL.ID\
     \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
@@ -50831,9 +50831,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.NATIONAL.SName"
+  source_column: "FIMS.NATIONAL.SNAME"
   comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-    \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+    \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment\
     \ Nationality Id."
   classification_context: null
   etl_derived_value: null
@@ -50849,7 +50849,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Director"
+  source_column: "FIMS.INVESTOR.DIRECTOR"
   comment: "Denormalized — không có FK, chỉ áp dụng NĐT tổ chức."
   classification_context: null
   etl_derived_value: null
@@ -50865,10 +50865,10 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.InvestorTypeId"
+  source_column: "FIMS.INVESTOR.INVESTORTYPEID"
   comment: "FK target: cl_fims_investor_type.cl_fims_investor_tp_id. Cần ETL crosswalk\
-    \ sang FIMS.INVESTORTYPE: INVESTOR.InvestorTypeId = INVESTORTYPE.Id để xác nhận\
-    \ SName sau đó hash_id('FIMS_INVESTORTYPE', SName) | Thay scheme FIMS_INVESTOR_TYPE\
+    \ sang FIMS.INVESTORTYPE: INVESTOR.INVESTORTYPEID = INVESTORTYPE.ID để xác nhận\
+    \ SName sau đó hash_id('FIMS_INVESTORTYPE', SNAME) | Thay scheme FIMS_INVESTOR_TYPE\
     \ (deprecated) bằng FK tới entity cl_fims_investor_type (2026-10-05)."
   classification_context: null
   etl_derived_value: null
@@ -50884,9 +50884,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTORTYPE.SName"
+  source_column: "FIMS.INVESTORTYPE.SNAME"
   comment: "Lookup pair: cl_fims_investor_type.cl_fims_investor_tp_code. Pair with\
-    \ Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SName\
+    \ Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SNAME\
     \ sau ETL crosswalk — chi tiết xem comment Classification FIMS Investor Type Id."
   classification_context: null
   etl_derived_value: null
@@ -50902,7 +50902,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.DepAccountNumber"
+  source_column: "FIMS.INVESTOR.DEPACCOUNTNUMBER"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -50918,7 +50918,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.SysObjectType"
+  source_column: "FIMS.INVESTOR.SYSOBJECTTYPE"
   comment: "Không phải Classification Value — map 1:1 nguyên giá trị nguồn (quyết\
     \ định Data Modeler 2026-07-20). Không tạo classification_context/scheme."
   classification_context: null
@@ -50935,7 +50935,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.SecComAddId"
+  source_column: "FIMS.INVESTOR.SECCOMADDID"
   comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
     \ SecComAddId). Entity Securities Company gộp từ FIMS.SECURITIESCOMPANY + SCMS.SC_FIRM_INFO\
     \ (xem lld_FIMS_SECURITIESCOMPANY.yaml)."
@@ -50953,7 +50953,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.SecComAddId"
+  source_column: "FIMS.INVESTOR.SECCOMADDID"
   comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
     \ Id."
   classification_context: null
@@ -50970,7 +50970,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.BankAddId"
+  source_column: "FIMS.INVESTOR.BANKADDID"
   comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
     \ BankAddId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI (xem\
     \ lld_FIMS_BANKMONI.yaml, 2026-10-05)."
@@ -50988,7 +50988,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.BankAddId"
+  source_column: "FIMS.INVESTOR.BANKADDID"
   comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian Bank\
     \ Id."
   classification_context: null
@@ -51005,7 +51005,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.AccountInvesCapital"
+  source_column: "FIMS.INVESTOR.ACCOUNTINVESCAPITAL"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -51021,7 +51021,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.BankAddCapId"
+  source_column: "FIMS.INVESTOR.BANKADDCAPID"
   comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
     \ BankAddCapId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI (xem\
     \ lld_FIMS_BANKMONI.yaml, 2026-10-05)."
@@ -51039,7 +51039,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.BankAddCapId"
+  source_column: "FIMS.INVESTOR.BANKADDCAPID"
   comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital Custodian\
     \ Bank Id."
   classification_context: null
@@ -51056,9 +51056,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.CompanyTypeId"
+  source_column: "FIMS.INVESTOR.COMPANYTYPEID"
   comment: "FK target: cl_fims_company_type.cl_fims_company_tp_id. Cần ETL crosswalk\
-    \ sang FIMS.COMPANYTYPE: INVESTOR.CompanyTypeId = COMPANYTYPE.Id để xác nhận CODE\
+    \ sang FIMS.COMPANYTYPE: INVESTOR.COMPANYTYPEID = COMPANYTYPE.ID để xác nhận CODE\
     \ sau đó hash_id('FIMS_COMPANYTYPE', CODE) | Thay scheme FIMS_COMPANY_TYPE bằng\
     \ FK tới entity cl_fims_company_type (2026-10-05). Chỉ áp dụng NĐT tổ chức."
   classification_context: null
@@ -51093,9 +51093,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.StatusId"
+  source_column: "FIMS.INVESTOR.STATUSID"
   comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
-    \ INVESTOR.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+    \ INVESTOR.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
     \ Code) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status (2026-10-05)."
   classification_context: null
   etl_derived_value: null
@@ -51111,9 +51111,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.STATUS.Code"
+  source_column: "FIMS.STATUS.CODE"
   comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
     \ xem comment Classification FIMS Status Id."
   classification_context: null
   etl_derived_value: null
@@ -51129,7 +51129,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Description"
+  source_column: "FIMS.INVESTOR.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -57981,7 +57981,7 @@ attributes:
   source_table: "SECURITIESCOMPANY"
   source_column: null
   comment: "PK surrogate. BCV: \"[Involved Party] Broker Dealer\". Công ty chứng khoán\
-    \ được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+    \ được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_company"
@@ -57996,7 +57996,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Id"
+  source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm BK\
     \ (cùng pattern FIMS.BANKMONI). Nguồn lưu NUMBER(18,2) — ETL cần convert sang\
     \ string, bỏ phần thập phân .00."
@@ -58030,9 +58030,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.StatusId"
+  source_column: "FIMS.SECURITIESCOMPANY.STATUSID"
   comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
-    \ SECURITIESCOMPANY.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+    \ SECURITIESCOMPANY.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
     \ Code)."
   classification_context: null
   etl_derived_value: null
@@ -58049,9 +58049,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.STATUS.Code"
+  source_column: "FIMS.STATUS.CODE"
   comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
     \ xem comment Classification FIMS Status Id."
   classification_context: null
   etl_derived_value: null
@@ -58067,7 +58067,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Name"
+  source_column: "FIMS.SECURITIESCOMPANY.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -58083,7 +58083,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.EName"
+  source_column: "FIMS.SECURITIESCOMPANY.ENAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -58099,7 +58099,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.ShortName"
+  source_column: "FIMS.SECURITIESCOMPANY.SHORTNAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -58115,10 +58115,10 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.NaId"
+  source_column: "FIMS.SECURITIESCOMPANY.NAID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-    \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NaId =\
-    \ NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NAID =\
+    \ NATIONAL.ID để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác\
     \ nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -58134,9 +58134,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.NATIONAL.SName"
+  source_column: "FIMS.NATIONAL.SNAME"
   comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-    \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+    \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment\
     \ Nationality Id."
   classification_context: null
   etl_derived_value: null
@@ -58152,7 +58152,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Capital"
+  source_column: "FIMS.SECURITIESCOMPANY.CAPITAL"
   comment: "Nguồn NUMBER(36,2). Dùng chung attribute với SCMS.SC_FIRM_INFO.CHARTER_CAPITAL."
   classification_context: null
   etl_derived_value: null
@@ -58168,7 +58168,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Director"
+  source_column: "FIMS.SECURITIESCOMPANY.DIRECTOR"
   comment: "Denormalized — không có FK."
   classification_context: null
   etl_derived_value: null
@@ -58184,7 +58184,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Description"
+  source_column: "FIMS.SECURITIESCOMPANY.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -72682,7 +72682,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "COMPANYTYPE"
-  source_column: "FIMS.COMPANYTYPE.Name"
+  source_column: "FIMS.COMPANYTYPE.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -72698,7 +72698,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "COMPANYTYPE"
-  source_column: "FIMS.COMPANYTYPE.Description"
+  source_column: "FIMS.COMPANYTYPE.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -72714,9 +72714,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "COMPANYTYPE"
-  source_column: "FIMS.COMPANYTYPE.TypeObject"
+  source_column: "FIMS.COMPANYTYPE.TYPEOBJECT"
   comment: "Scheme: FIMS_COMPANY_TYPE_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2)\
-    \ — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TypeObject\
+    \ — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TYPEOBJECT\
     \ (kết thúc bằng \"...\") — cần profile dữ liệu xác nhận bộ giá trị."
   classification_context: "FIMS_COMPANY_TYPE_OBJECT_TYPE"
   etl_derived_value: null
@@ -72749,7 +72749,7 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "INVESTORTYPE"
-  source_column: "FIMS.INVESTORTYPE.SName"
+  source_column: "FIMS.INVESTORTYPE.SNAME"
   comment: "PK surrogate. Hash: hash_id('FIMS_INVESTORTYPE', SNAME) — hash từ SNAME\
     \ theo chỉ đạo Data Modeler (SNAME là BK). BCV: \"[Common] Involved Party Type\"\
     \ — danh mục loại nhà đầu tư nước ngoài."
@@ -72768,7 +72768,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTORTYPE"
-  source_column: "FIMS.INVESTORTYPE.SName"
+  source_column: "FIMS.INVESTORTYPE.SNAME"
   comment: "BK duy nhất của entity, đồng thời là đầu vào hash Id. Nguồn NVARCHAR2(20)\
     \ — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
   classification_context: null
@@ -72801,7 +72801,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTORTYPE"
-  source_column: "FIMS.INVESTORTYPE.Name"
+  source_column: "FIMS.INVESTORTYPE.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -72817,7 +72817,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTORTYPE"
-  source_column: "FIMS.INVESTORTYPE.Description"
+  source_column: "FIMS.INVESTORTYPE.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -72850,8 +72850,8 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "STATUS"
-  source_column: "FIMS.STATUS.Code"
-  comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common] Involved\
+  source_column: "FIMS.STATUS.CODE"
+  comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', CODE). BCV: \"[Common] Involved\
     \ Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh\
     \ mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư."
   classification_context: null
@@ -72868,7 +72868,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "STATUS"
-  source_column: "FIMS.STATUS.Code"
+  source_column: "FIMS.STATUS.CODE"
   comment: "BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100))\
     \ — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
   classification_context: null
@@ -72901,7 +72901,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "STATUS"
-  source_column: "FIMS.STATUS.Name"
+  source_column: "FIMS.STATUS.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -72917,7 +72917,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "STATUS"
-  source_column: "FIMS.STATUS.Description"
+  source_column: "FIMS.STATUS.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -72933,7 +72933,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "STATUS"
-  source_column: "FIMS.STATUS.TypeObject"
+  source_column: "FIMS.STATUS.TYPEOBJECT"
   comment: "Scheme: FIMS_STATUS_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2) — ETL\
     \ cần convert sang string. Danh sách giá trị đầy đủ chưa có trong nguồn (mô tả\
     \ kết thúc bằng \"...\") — cần profile dữ liệu."
@@ -85710,7 +85710,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.BusinessNumber"
+  source_column: "FIMS.INVESTOR.BUSINESSNUMBER"
   comment: "Chỉ áp dụng NĐT tổ chức."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type\
     \ Code = 'BUSINESS_LICENSE'"
@@ -85728,8 +85728,8 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.TransactionCode"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
+  source_column: "FIMS.INVESTOR.TRANSACTIONCODE"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TRANSACTIONCODE)."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type\
     \ Code = 'IDENTIFICATION'"
   etl_derived_value: null
@@ -85745,7 +85745,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.TransactionCode"
+  source_column: "FIMS.INVESTOR.TRANSACTIONCODE"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type\
     \ Code = 'IDENTIFICATION'"
@@ -85762,7 +85762,7 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.ObjectType"
+  source_column: "FIMS.INVESTOR.OBJECTTYPE"
   comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — Lọc ObjectType = 1 (1=cá nhân\
     \ → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE)."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type\
@@ -85780,7 +85780,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.IdNo"
+  source_column: "FIMS.INVESTOR.IDNO"
   comment: null
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type\
     \ Code = 'IDENTIFICATION'"
@@ -85797,7 +85797,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.IdDate"
+  source_column: "FIMS.INVESTOR.IDDATE"
   comment: null
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type\
     \ Code = 'IDENTIFICATION'"
@@ -85814,7 +85814,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.IdAdd"
+  source_column: "FIMS.INVESTOR.IDADD"
   comment: null
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Identification Type\
     \ Code = 'IDENTIFICATION'"
@@ -85832,8 +85832,8 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Id"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI', Id)."
+  source_column: "FIMS.BANKMONI.ID"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI', ID)."
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
     \ Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
@@ -85849,7 +85849,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Id"
+  source_column: "FIMS.BANKMONI.ID"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.BANKMONI"
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
     \ Code = 'BUSINESS_LICENSE'"
@@ -85900,7 +85900,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.RegNo"
+  source_column: "FIMS.BANKMONI.REGNO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
@@ -85918,7 +85918,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.RegDate"
+  source_column: "FIMS.BANKMONI.REGDATE"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
     \ Code = 'BUSINESS_LICENSE'"
@@ -85935,7 +85935,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.RegAdd"
+  source_column: "FIMS.BANKMONI.REGADD"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
     \ Code = 'BUSINESS_LICENSE'"
@@ -85969,7 +85969,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.DepCert"
+  source_column: "FIMS.BANKMONI.DEPCERT"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
@@ -86004,7 +86004,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.IdNo"
+  source_column: "FIMS.BANKMONI.IDNO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
@@ -86022,7 +86022,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.IdDate"
+  source_column: "FIMS.BANKMONI.IDDATE"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
     \ Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
@@ -86039,7 +86039,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.IdAdd"
+  source_column: "FIMS.BANKMONI.IDADD"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Identification Type\
     \ Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
@@ -86057,7 +86057,7 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Id"
+  source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
     \ Id)."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
@@ -86075,7 +86075,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Id"
+  source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY"
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
@@ -86126,7 +86126,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.RegNo"
+  source_column: "FIMS.SECURITIESCOMPANY.REGNO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
@@ -86144,7 +86144,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.RegDate"
+  source_column: "FIMS.SECURITIESCOMPANY.REGDATE"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
@@ -86161,7 +86161,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.RegAdd"
+  source_column: "FIMS.SECURITIESCOMPANY.REGADD"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
@@ -86195,7 +86195,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.DepCert"
+  source_column: "FIMS.SECURITIESCOMPANY.DEPCERT"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
@@ -86230,7 +86230,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.IdNo"
+  source_column: "FIMS.SECURITIESCOMPANY.IDNO"
   comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
     \ Code."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
@@ -86248,7 +86248,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.IdDate"
+  source_column: "FIMS.SECURITIESCOMPANY.IDDATE"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
     \ Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
@@ -86265,7 +86265,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.IdAdd"
+  source_column: "FIMS.SECURITIESCOMPANY.IDADD"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
     \ Type Code = 'ESTABLISHMENT_OPERATION_LICENSE'"
@@ -91252,8 +91252,8 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.TransactionCode"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
+  source_column: "FIMS.INVESTOR.TRANSACTIONCODE"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TRANSACTIONCODE)."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -91269,7 +91269,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.TransactionCode"
+  source_column: "FIMS.INVESTOR.TRANSACTIONCODE"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address\
     \ Type Code = 'EMAIL'"
@@ -91320,7 +91320,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Email"
+  source_column: "FIMS.INVESTOR.EMAIL"
   comment: null
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address\
     \ Type Code = 'EMAIL'"
@@ -91354,7 +91354,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Fax"
+  source_column: "FIMS.INVESTOR.FAX"
   comment: null
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address\
     \ Type Code = 'FAX'"
@@ -91388,7 +91388,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Telephone"
+  source_column: "FIMS.INVESTOR.TELEPHONE"
   comment: null
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address\
     \ Type Code = 'PHONE'"
@@ -91422,7 +91422,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Website"
+  source_column: "FIMS.INVESTOR.WEBSITE"
   comment: null
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Electronic Address\
     \ Type Code = 'WEBSITE'"
@@ -91440,8 +91440,8 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Id"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI', Id)."
+  source_column: "FIMS.BANKMONI.ID"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI', ID)."
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -91457,7 +91457,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Id"
+  source_column: "FIMS.BANKMONI.ID"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.BANKMONI"
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address\
     \ Type Code = 'EMAIL'"
@@ -91508,7 +91508,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Email"
+  source_column: "FIMS.BANKMONI.EMAIL"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address\
     \ Type Code = 'EMAIL'"
@@ -91542,7 +91542,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Fax"
+  source_column: "FIMS.BANKMONI.FAX"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address\
     \ Type Code = 'FAX'"
@@ -91576,7 +91576,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Telephone"
+  source_column: "FIMS.BANKMONI.TELEPHONE"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address\
     \ Type Code = 'PHONE'"
@@ -91610,7 +91610,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Website"
+  source_column: "FIMS.BANKMONI.WEBSITE"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Electronic Address\
     \ Type Code = 'WEBSITE'"
@@ -91628,7 +91628,7 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Id"
+  source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
     \ Id)."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Electronic\
@@ -91646,7 +91646,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Id"
+  source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY"
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Electronic\
     \ Address Type Code = 'EMAIL'"
@@ -91697,7 +91697,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Email"
+  source_column: "FIMS.SECURITIESCOMPANY.EMAIL"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Electronic\
     \ Address Type Code = 'EMAIL'"
@@ -91731,7 +91731,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Fax"
+  source_column: "FIMS.SECURITIESCOMPANY.FAX"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Electronic\
     \ Address Type Code = 'FAX'"
@@ -91765,7 +91765,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Telephone"
+  source_column: "FIMS.SECURITIESCOMPANY.TELEPHONE"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Electronic\
     \ Address Type Code = 'PHONE'"
@@ -91799,7 +91799,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Website"
+  source_column: "FIMS.SECURITIESCOMPANY.WEBSITE"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Electronic\
     \ Address Type Code = 'WEBSITE'"
@@ -95853,8 +95853,8 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.TransactionCode"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
+  source_column: "FIMS.INVESTOR.TRANSACTIONCODE"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TRANSACTIONCODE)."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code\
     \ = 'HEAD_OFFICE'"
   etl_derived_value: null
@@ -95870,7 +95870,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.TransactionCode"
+  source_column: "FIMS.INVESTOR.TRANSACTIONCODE"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code\
     \ = 'HEAD_OFFICE'"
@@ -95922,7 +95922,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.Address"
+  source_column: "FIMS.INVESTOR.ADDRESS"
   comment: null
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code\
     \ = 'HEAD_OFFICE'"
@@ -95939,10 +95939,10 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.ProvinceId"
+  source_column: "FIMS.INVESTOR.PROVINCEID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-    \ = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.ProvinceId\
-    \ = PROVINCE_NEW.Id để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW', Code)\
+    \ = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.PROVINCEID\
+    \ = PROVINCE_NEW.ID để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW', Code)\
     \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code\
     \ = 'HEAD_OFFICE'"
@@ -95959,9 +95959,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.PROVINCE_NEW.Code"
+  source_column: "FIMS.PROVINCE_NEW.CODE"
   comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-    \ Id. Giá trị lấy từ FIMS.PROVINCE_NEW.Code sau ETL crosswalk — chi tiết xem comment\
+    \ Id. Giá trị lấy từ FIMS.PROVINCE_NEW.CODE sau ETL crosswalk — chi tiết xem comment\
     \ Province Id."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code\
     \ = 'HEAD_OFFICE'"
@@ -95978,9 +95978,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.INVESTOR.WardId"
+  source_column: "FIMS.INVESTOR.WARDID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-    \ = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WardId = WARD_NEW.Id\
+    \ = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WARDID = WARD_NEW.ID\
     \ để xác nhận Code sau đó hash_id('ECAT_WARD_NEW', Code) | Chưa xác nhận value\
     \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code\
@@ -95998,9 +95998,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.WARD_NEW.Code"
+  source_column: "FIMS.WARD_NEW.CODE"
   comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id.\
-    \ Giá trị lấy từ FIMS.WARD_NEW.Code sau ETL crosswalk — chi tiết xem comment Ward\
+    \ Giá trị lấy từ FIMS.WARD_NEW.CODE sau ETL crosswalk — chi tiết xem comment Ward\
     \ Id."
   classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code\
     \ = 'HEAD_OFFICE'"
@@ -96018,8 +96018,8 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Id"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI', Id)."
+  source_column: "FIMS.BANKMONI.ID"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI', ID)."
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Address Type Code\
     \ = 'HEAD_OFFICE'"
   etl_derived_value: null
@@ -96035,7 +96035,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Id"
+  source_column: "FIMS.BANKMONI.ID"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.BANKMONI"
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Address Type Code\
     \ = 'HEAD_OFFICE'"
@@ -96087,7 +96087,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.BANKMONI.Address"
+  source_column: "FIMS.BANKMONI.ADDRESS"
   comment: null
   classification_context: "Source System Code = 'FIMS_BANKMONI' | Address Type Code\
     \ = 'HEAD_OFFICE'"
@@ -96105,7 +96105,7 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Id"
+  source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
     \ Id)."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address\
@@ -96123,7 +96123,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Id"
+  source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY"
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address\
     \ Type Code = 'HEAD_OFFICE'"
@@ -96175,7 +96175,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.SECURITIESCOMPANY.Address"
+  source_column: "FIMS.SECURITIESCOMPANY.ADDRESS"
   comment: null
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address\
     \ Type Code = 'HEAD_OFFICE'"

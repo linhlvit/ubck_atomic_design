@@ -45,7 +45,7 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: FIR_VALUE
-    source_column: null
+    source_column: "FIMS.FIR_VALUE.REPORT_LOG_ID, FIMS.FIR_VALUE.SHEET_ID, FIMS.FIR_VALUE.INDICATOR_UID, FIMS.FIR_VALUE.ROW_ORDER"
     comment: "ETL-derived: concat(REPORT_LOG_ID, SHEET_ID, INDICATOR_UID, ROW_ORDER) từ ODS FIR_VALUE — BK composite. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
     classification_context: null
     etl_derived_value: null
@@ -73,7 +73,7 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: FIR_VALUE
-    source_column: null
+    source_column: "FIMS.FIR_VALUE.SHEET_ID, FIMS.FIR_VALUE.INDICATOR_UID"
     comment: "FK target: fir_structure.fir_structure_id. Hash: hash_id('FIMS_FIR_STRUCTURE', SHEET_ID || INDICATOR_UID). Join bắt buộc đủ sheet_id + indicator_uid — INDICATOR_UID chỉ duy nhất trong 1 sheet."
     classification_context: null
     etl_derived_value: null
@@ -87,7 +87,7 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: FIR_VALUE
-    source_column: null
+    source_column: "FIMS.FIR_VALUE.SHEET_ID, FIMS.FIR_VALUE.INDICATOR_UID"
     comment: "Lookup pair: fir_structure.fir_structure_code. Pair with Foreign Investor Report Structure Id. ETL-derived: concat(SHEET_ID, INDICATOR_UID) — khớp BK composite của fir_structure."
     classification_context: null
     etl_derived_value: null
@@ -108,7 +108,7 @@ attributes:
 
   - name: Report Log Id
     physical_name: rpt_log_id
-    business_meaning: "Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.Id) — dùng để lọc toàn bộ số liệu của 1 lần nộp."
+    business_meaning: "Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.ID) — dùng để lọc toàn bộ số liệu của 1 lần nộp."
     data_domain: Text
     data_type: string
     nullable: true

@@ -4,52 +4,52 @@ source: FIMS
 table: SELFSETPD
 brd_ref: BRD-SRC-FIMS-SELFSETPD
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,2)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: null
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: DATE
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: DATE
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null
   fk_note: null
-- name: RptId
+- name: RPTID
   data_type: NUMBER(18,2)
   description: 'FK -> RPTTEMP: Biểu mẫu báo cáo liên quan'
   key: FK
-  fk_note: FK → RPTTEMP.Id
-- name: IsSend
+  fk_note: FK → RPTTEMP.ID
+- name: ISSEND
   data_type: NUMBER(1,0)
   description: 'Cờ đã gửi báo cáo trong kỳ tự thiết lập: 1=Đã gửi, 0=Chưa'
   key: null
   fk_note: null
-- name: SysTemObject
+- name: SYSTEMOBJECT
   data_type: NUMBER(18,2)
   description: Loại đối tượng tự thiết lập kỳ báo cáo
   key: null
   fk_note: null
-- name: LstMember
+- name: LSTMEMBER
   data_type: NVARCHAR2(4000)
   description: Danh sách thành viên áp dụng kỳ tự thiết lập này (JSON/CSV ID)
   key: null

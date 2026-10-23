@@ -4,118 +4,118 @@ source: FIMS
 table: RPTTEMP
 brd_ref: BRD-SRC-FIMS-RPTTEMP
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,2)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: PK
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: DATE
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: DATE
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null
   fk_note: null
-- name: Name
+- name: NAME
   data_type: NVARCHAR2(4000)
   description: Tên đầy đủ (tiếng Việt)
   key: null
   fk_note: null
-- name: LegalBasis
+- name: LEGALBASIS
   data_type: NVARCHAR2(4000)
   description: Căn cứ pháp lý của biểu mẫu (tên thông tư/nghị định áp dụng)
   key: null
   fk_note: null
-- name: Code
+- name: CODE
   data_type: NVARCHAR2(4000)
   description: Mã biểu mẫu báo cáo (mã định danh ngắn gọn)
   key: null
   fk_note: null
-- name: ReportTypeId
+- name: REPORTTYPEID
   data_type: NUMBER(18,2)
   description: 'FK -> REPORTTYPE: Loại báo cáo'
   key: FK
-  fk_note: FK → REPORTTYPE.Id
+  fk_note: FK → REPORTTYPE.ID
   fk_src: inferred
-- name: ReportGroup
+- name: REPORTGROUP
   data_type: NUMBER(10,0)
   description: Nhóm báo cáo (phân nhóm theo nghiệp vụ hoặc đối tượng)
   key: null
   fk_note: null
-- name: IsNeedImport
+- name: ISNEEDIMPORT
   data_type: NUMBER(1,0)
   description: 'Cờ biểu mẫu yêu cầu import file Excel: 1=Bắt buộc import, 0=Không'
   key: null
   fk_note: null
-- name: IsNeedPublic
+- name: ISNEEDPUBLIC
   data_type: NUMBER(1,0)
   description: 'Cờ biểu mẫu cần CBTT khi nộp: 1=Cần CBTT, 0=Không'
   key: null
   fk_note: null
-- name: SystemObjects
+- name: SYSTEMOBJECTS
   data_type: NUMBER(10,0)
   description: Danh sách loại đối tượng áp dụng tài liệu (JSON/CSV)
   key: null
   fk_note: null
-- name: Description
+- name: DESCRIPTION
   data_type: NVARCHAR2(4000)
   description: Mô tả chi tiết / ghi chú bổ sung
   key: null
   fk_note: null
-- name: FileData
+- name: FILEDATA
   data_type: NCLOB
   description: Nội dung file đính kèm (BLOB/CLOB)
   key: null
   fk_note: null
-- name: Status
+- name: STATUS
   data_type: NUMBER(1,0)
   description: 'Trạng thái biểu mẫu báo cáo (RptTempStatusEnum): 0=Bản nháp, 1=Đang sử dụng, 2=Không sử dụng, 3=Chờ sử dụng'
   key: null
   fk_note: null
-- name: Version
+- name: VERSION
   data_type: NUMBER(18,2)
   description: Số phiên bản hiện tại của biểu mẫu
   key: null
   fk_note: null
-- name: DateUsed
+- name: DATEUSED
   data_type: TIMESTAMP(7)
   description: Ngày biểu mẫu bắt đầu được áp dụng
   key: null
   fk_note: null
-- name: IsEform
+- name: ISEFORM
   data_type: NUMBER(1,0)
   description: 'Cờ biểu mẫu có sử dụng eform động: 1=Có eform, 0=Chỉ Excel'
   key: null
   fk_note: null
-- name: EformSchemaJson
+- name: EFORMSCHEMAJSON
   data_type: NCLOB
   description: Schema eform (JSON AMIS) định nghĩa cấu trúc form động nhập liệu
   key: null
   fk_note: null
-- name: ExcelConfigJson
+- name: EXCELCONFIGJSON
   data_type: NCLOB
   description: Cấu hình ánh xạ dữ liệu giữa Excel và các ô trong sheet biểu mẫu (JSON)
   key: null
   fk_note: null
-- name: SheetsDesignerJson
+- name: SHEETSDESIGNERJSON
   data_type: NCLOB
   description: Cấu hình thiết kế các sheet trong biểu mẫu (JSON layout designer)
   key: null

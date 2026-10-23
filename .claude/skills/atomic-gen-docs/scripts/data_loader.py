@@ -245,9 +245,10 @@ def load_attributes(
         comment = r.get("comment", "")
         fk_target = _parse_fk_target(comment)
         raw_src_col = r.get("source_column", "")
-        src_col_parts = raw_src_col.split(".") if raw_src_col else []
-        # source_column có dạng "SYSTEM.TABLE.COLUMN" — tách lấy phần cuối
-        src_col_name = src_col_parts[-1] if src_col_parts else ""
+        # source_column: "SYSTEM.TABLE.COLUMN" hoặc nhiều cột nối ", " (ETL chọn/ghép theo điều kiện,
+        # khớp LLD source_columns) — tách từng cột, tên cột = phần cuối của mỗi phần tử.
+        src_col_list = [c.strip() for c in raw_src_col.split(",") if c.strip()] if raw_src_col else []
+        src_col_name = ", ".join(c.split(".")[-1] for c in src_col_list)
         out.append({
             "attribute_name": r["atomic_attribute"],
             "atomic_column": r.get("atomic_column", ""),
@@ -256,6 +257,7 @@ def load_attributes(
             "source_table": r.get("source_table", ""),
             "source_column": raw_src_col,
             "source_column_name": src_col_name,
+            "source_column_list": src_col_list,
             "description": r["description"],
             "data_domain": r["data_domain"],
             "data_type": r.get("data_type", ""),

@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[MỚI 2026-10-05] Promote từ Classification Value (scheme FIMS_ACTIVITY_STATUS) lên entity riêng, cùng pattern Classification FMS Status. Cấu trúc cột theo DDL UAT 1 (FIMS_UAT_schema 2.txt) — có thêm Code và ECATALOG_ID so với bản DDL đầu. Theo chỉ đạo Data Modeler: chỉ map Code, Name, TypeObject, Description, ECATALOG_ID; surrogate Id hash từ Code (BK = Code, nguồn nullable). Id, Deleted, DateCreated, CreatedBy, DateModified, ModifyBy, IsActive, IsSubmitReport, Icon, Color, IdOld không map — document trong pending_design.yaml. Các entity FIMS tiêu thụ StatusId (ID kỹ thuật) chưa đồng bộ: cần ETL crosswalk STATUS.Id = {TABLE}.StatusId để lấy Code rồi hash_id."
+  notes: "[MỚI 2026-10-05] Promote từ Classification Value (scheme FIMS_ACTIVITY_STATUS) lên entity riêng, cùng pattern Classification FMS Status. Cấu trúc cột theo DDL UAT 1 (FIMS_UAT_schema 2.txt) — có thêm Code và ECATALOG_ID so với bản DDL đầu. Theo chỉ đạo Data Modeler: chỉ map Code, Name, TypeObject, Description, ECATALOG_ID; surrogate Id hash từ Code (BK = Code, nguồn nullable). Id, Deleted, DateCreated, CreatedBy, DateModified, ModifyBy, IsActive, IsSubmitReport, Icon, Color, IdOld không map — document trong pending_design.yaml. Các entity FIMS tiêu thụ StatusId (ID kỹ thuật) chưa đồng bộ: cần ETL crosswalk STATUS.ID = {TABLE}.StatusId để lấy Code rồi hash_id."
 attributes:
 - attribute_name: "Classification FIMS Status Id"
   physical_name: "cl_fims_status_id"
@@ -27,8 +27,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "FIMS.STATUS.Code"
-  comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư."
+  - "FIMS.STATUS.CODE"
+  comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', CODE). BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -40,7 +40,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.STATUS.Code"
+  - "FIMS.STATUS.CODE"
   comment: "BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100)) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -65,7 +65,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.STATUS.Name"
+  - "FIMS.STATUS.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -78,7 +78,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.STATUS.Description"
+  - "FIMS.STATUS.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -91,7 +91,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.STATUS.TypeObject"
+  - "FIMS.STATUS.TYPEOBJECT"
   comment: "Scheme: FIMS_STATUS_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2) — ETL cần convert sang string. Danh sách giá trị đầy đủ chưa có trong nguồn (mô tả kết thúc bằng \"...\") — cần profile dữ liệu."
   classification_context: "FIMS_STATUS_OBJECT_TYPE"
   etl_derived_value: null

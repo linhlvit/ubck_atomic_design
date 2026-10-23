@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[MỚI 2026-10-05] Promote từ Classification Value (scheme FIMS_INVESTOR_TYPE, nay deprecated) lên entity riêng, cùng pattern các bảng Classification FMS (Status/Company Type/Stockholder Type). Theo chỉ đạo Data Modeler: chỉ map Id, SName, Name, Description, ECATALOG_ID; surrogate Id hash từ SNAME (BK = SNAME → Classification FIMS Investor Type Code). PK kỹ thuật nguồn Id (NUMBER) không thành cột Atomic. Các cột Deleted, DateCreated, CreatedBy, DateModified, ModifyBy, Status, IsDataMigration không map — document trong pending_design.yaml. Entity tiêu thụ: Foreign Investor (cột INVESTOR.InvestorTypeId là ID kỹ thuật → cần ETL crosswalk INVESTORTYPE.Id = INVESTOR.InvestorTypeId để lấy SNAME rồi hash_id) — chưa đồng bộ lld_FIMS_INVESTOR.yaml, ghi trong Điểm cần xác nhận."
+  notes: "[MỚI 2026-10-05] Promote từ Classification Value (scheme FIMS_INVESTOR_TYPE, nay deprecated) lên entity riêng, cùng pattern các bảng Classification FMS (Status/Company Type/Stockholder Type). Theo chỉ đạo Data Modeler: chỉ map Id, SName, Name, Description, ECATALOG_ID; surrogate Id hash từ SNAME (BK = SNAME → Classification FIMS Investor Type Code). PK kỹ thuật nguồn Id (NUMBER) không thành cột Atomic. Các cột Deleted, DateCreated, CreatedBy, DateModified, ModifyBy, Status, IsDataMigration không map — document trong pending_design.yaml. Entity tiêu thụ: Foreign Investor (cột INVESTOR.INVESTORTYPEID là ID kỹ thuật → cần ETL crosswalk INVESTORTYPE.ID = INVESTOR.INVESTORTYPEID để lấy SNAME rồi hash_id) — chưa đồng bộ lld_FIMS_INVESTOR.yaml, ghi trong Điểm cần xác nhận."
 attributes:
 - attribute_name: "Classification FIMS Investor Type Id"
   physical_name: "cl_fims_investor_tp_id"
@@ -27,7 +27,7 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "FIMS.INVESTORTYPE.SName"
+  - "FIMS.INVESTORTYPE.SNAME"
   comment: "PK surrogate. Hash: hash_id('FIMS_INVESTORTYPE', SNAME) — hash từ SNAME theo chỉ đạo Data Modeler (SNAME là BK). BCV: \"[Common] Involved Party Type\" — danh mục loại nhà đầu tư nước ngoài."
   classification_context: null
   etl_derived_value: null
@@ -40,7 +40,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTORTYPE.SName"
+  - "FIMS.INVESTORTYPE.SNAME"
   comment: "BK duy nhất của entity, đồng thời là đầu vào hash Id. Nguồn NVARCHAR2(20) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
@@ -65,7 +65,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTORTYPE.Name"
+  - "FIMS.INVESTORTYPE.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -78,7 +78,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTORTYPE.Description"
+  - "FIMS.INVESTORTYPE.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null

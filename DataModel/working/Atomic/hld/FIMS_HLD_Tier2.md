@@ -60,8 +60,8 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| ODS `FIR_STRUCTURE.SECTION_TYPE` (SHEET.SectionsMeta) | Loại vùng dữ liệu của ô chỉ tiêu (DYNAMIC/FIXED) | `FIMS_REPORT_SECTION_TYPE` | etl_derived | |
-| ODS `FIR_STRUCTURE.FORMAT_DATA_TYPE` (SHEET.CellsMeta) | Kiểu dữ liệu ô chỉ tiêu (numberic/percentage/string...) | `FIMS_REPORT_DATA_TYPE` | etl_derived | Giữ nguyên chính tả nguồn `numberic` |
+| ODS `FIR_STRUCTURE.SECTION_TYPE` (SHEET.SECTIONSMETA) | Loại vùng dữ liệu của ô chỉ tiêu (DYNAMIC/FIXED) | `FIMS_REPORT_SECTION_TYPE` | etl_derived | |
+| ODS `FIR_STRUCTURE.FORMAT_DATA_TYPE` (SHEET.CELLSMETA) | Kiểu dữ liệu ô chỉ tiêu (numberic/percentage/string...) | `FIMS_REPORT_DATA_TYPE` | etl_derived | Giữ nguyên chính tả nguồn `numberic` |
 
 ---
 

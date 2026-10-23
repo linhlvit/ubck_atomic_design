@@ -4,57 +4,57 @@ source: FIMS
 table: RPTHTORY
 brd_ref: BRD-SRC-FIMS-RPTHTORY
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,2)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: null
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: DATE
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: DATE
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(200)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null
   fk_note: null
-- name: RptId
+- name: RPTID
   data_type: NUMBER(18,2)
   description: 'FK -> RPTTEMP: Biểu mẫu báo cáo liên quan'
   key: FK
-  fk_note: FK → RPTTEMP.Id
-- name: Code
+  fk_note: FK → RPTTEMP.ID
+- name: CODE
   data_type: NVARCHAR2(4000)
   description: Mã biểu mẫu báo cáo (mã định danh ngắn gọn)
   key: null
   fk_note: null
-- name: Action
+- name: ACTION
   data_type: NVARCHAR2(4000)
   description: 'Hành động thực hiện: DOWNLOAD=Tải xuống, VIEW=Xem, EXPORT=Xuất'
   key: null
   fk_note: null
-- name: Version
+- name: VERSION
   data_type: NUMBER(18,2)
   description: Số phiên bản hiện tại của biểu mẫu
   key: null
   fk_note: null
-- name: IsDownload
+- name: ISDOWNLOAD
   data_type: NUMBER(1,0)
   description: 'Cờ thao tác là tải file: 1=Tải xuống, 0=Chỉ xem'
   key: null

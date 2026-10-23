@@ -4,52 +4,52 @@ source: FIMS
 table: SECURITIESACCOUNT
 brd_ref: BRD-SRC-FIMS-SECURITIESACCOUNT
 columns:
-- name: Id
+- name: ID
   data_type: NUMBER(18,0)
   description: Khóa chính của bản ghi (ID số tự tăng)
   key: PK
   fk_note: null
-- name: InvesId
+- name: INVESID
   data_type: NUMBER(18,0)
   description: 'FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán'
   key: FK
   fk_note: null
-- name: SecId
+- name: SECID
   data_type: NUMBER(18,0)
   description: 'FK -> SECURITIESCOMPANY: Công ty CK liên quan'
   key: FK
   fk_note: null
-- name: Account
+- name: ACCOUNT
   data_type: NVARCHAR2(400)
   description: Số tài khoản chứng khoán
   key: null
   fk_note: null
-- name: OpenPlace
+- name: OPENPLACE
   data_type: NVARCHAR2(1000)
   description: Nơi mở tài khoản (tên công ty CK hoặc VSDC)
   key: null
   fk_note: null
-- name: Deleted
+- name: DELETED
   data_type: NUMBER(1,0)
   description: 'Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động'
   key: null
   fk_note: null
-- name: DateCreated
+- name: DATECREATED
   data_type: TIMESTAMP(6)
   description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
-- name: DateModified
+- name: DATEMODIFIED
   data_type: TIMESTAMP(6)
   description: Thời điểm cập nhật lần cuối
   key: null
   fk_note: null
-- name: CreatedBy
+- name: CREATEDBY
   data_type: NVARCHAR2(100)
   description: Tài khoản người dùng tạo bản ghi
   key: null
   fk_note: null
-- name: ModifyBy
+- name: MODIFYBY
   data_type: NVARCHAR2(100)
   description: Tài khoản người dùng cập nhật lần cuối
   key: null

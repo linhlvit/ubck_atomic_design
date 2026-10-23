@@ -31,8 +31,8 @@ attributes:
     is_primary_key: true
     source_system: FIMS
     source_table: STATUS
-    source_column: FIMS.STATUS.Code
-    comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư."
+    source_column: FIMS.STATUS.CODE
+    comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', CODE). BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư."
     classification_context: null
     etl_derived_value: null
 
@@ -45,7 +45,7 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: STATUS
-    source_column: FIMS.STATUS.Code
+    source_column: FIMS.STATUS.CODE
     comment: "BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100)) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
     classification_context: null
     etl_derived_value: null
@@ -73,7 +73,7 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: STATUS
-    source_column: FIMS.STATUS.Name
+    source_column: FIMS.STATUS.NAME
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -87,7 +87,7 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: STATUS
-    source_column: FIMS.STATUS.Description
+    source_column: FIMS.STATUS.DESCRIPTION
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -101,7 +101,7 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: STATUS
-    source_column: FIMS.STATUS.TypeObject
+    source_column: FIMS.STATUS.TYPEOBJECT
     comment: "Scheme: FIMS_STATUS_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2) — ETL cần convert sang string. Danh sách giá trị đầy đủ chưa có trong nguồn (mô tả kết thúc bằng \"...\") — cần profile dữ liệu."
     classification_context: FIMS_STATUS_OBJECT_TYPE
     etl_derived_value: null

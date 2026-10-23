@@ -27,8 +27,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.TransactionCode"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TransactionCode)."
+  - "FIMS.INVESTOR.TRANSACTIONCODE"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR', TRANSACTIONCODE)."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -40,7 +40,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.TransactionCode"
+  - "FIMS.INVESTOR.TRANSACTIONCODE"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR"
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
@@ -78,8 +78,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.ProvinceId"
-  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.ProvinceId = PROVINCE_NEW.Id để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW', Code) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  - "FIMS.INVESTOR.PROVINCEID"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.PROVINCEID = PROVINCE_NEW.ID để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW', Code) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -91,8 +91,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.PROVINCE_NEW.Code"
-  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id. Giá trị lấy từ FIMS.PROVINCE_NEW.Code sau ETL crosswalk — chi tiết xem comment Province Id."
+  - "FIMS.PROVINCE_NEW.CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id. Giá trị lấy từ FIMS.PROVINCE_NEW.CODE sau ETL crosswalk — chi tiết xem comment Province Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -104,8 +104,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.WardId"
-  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WardId = WARD_NEW.Id để xác nhận Code sau đó hash_id('ECAT_WARD_NEW', Code) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  - "FIMS.INVESTOR.WARDID"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WARDID = WARD_NEW.ID để xác nhận Code sau đó hash_id('ECAT_WARD_NEW', Code) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -117,8 +117,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.WARD_NEW.Code"
-  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id. Giá trị lấy từ FIMS.WARD_NEW.Code sau ETL crosswalk — chi tiết xem comment Ward Id."
+  - "FIMS.WARD_NEW.CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id. Giá trị lấy từ FIMS.WARD_NEW.CODE sau ETL crosswalk — chi tiết xem comment Ward Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -130,7 +130,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.INVESTOR.Address"
+  - "FIMS.INVESTOR.ADDRESS"
   comment: null
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null

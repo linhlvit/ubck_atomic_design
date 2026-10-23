@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[MỚI 2026-10-05] Promote từ Classification Value (scheme FIMS_COMPANY_TYPE, nay deprecated khi các entity tiêu thụ đổi sang FK) lên entity riêng, cùng pattern Classification FMS Company Type / Classification FIMS Status. Theo chỉ đạo Data Modeler: chỉ map Code, Name, TypeObject, Description, ECATALOG_ID; surrogate Id hash từ Code (BK = Code, nguồn nullable). SName, Id, Deleted, DateCreated, CreatedBy, DateModified, ModifyBy, Status, IsDataMigration, IdOld không map — document trong pending_design.yaml. Entity FIMS tiêu thụ (Market Participant Organization, Foreign Investor) chưa đồng bộ: cần ETL crosswalk COMPANYTYPE.Id = {TABLE}.CompanyTypeId để lấy Code rồi hash_id."
+  notes: "[MỚI 2026-10-05] Promote từ Classification Value (scheme FIMS_COMPANY_TYPE, nay deprecated khi các entity tiêu thụ đổi sang FK) lên entity riêng, cùng pattern Classification FMS Company Type / Classification FIMS Status. Theo chỉ đạo Data Modeler: chỉ map Code, Name, TypeObject, Description, ECATALOG_ID; surrogate Id hash từ Code (BK = Code, nguồn nullable). SName, Id, Deleted, DateCreated, CreatedBy, DateModified, ModifyBy, Status, IsDataMigration, IdOld không map — document trong pending_design.yaml. Entity FIMS tiêu thụ (Market Participant Organization, Foreign Investor) chưa đồng bộ: cần ETL crosswalk COMPANYTYPE.ID = {TABLE}.CompanyTypeId để lấy Code rồi hash_id."
 attributes:
 - attribute_name: "Classification FIMS Company Type Id"
   physical_name: "cl_fims_company_tp_id"
@@ -65,7 +65,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.COMPANYTYPE.Name"
+  - "FIMS.COMPANYTYPE.NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -78,7 +78,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.COMPANYTYPE.Description"
+  - "FIMS.COMPANYTYPE.DESCRIPTION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -91,8 +91,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.COMPANYTYPE.TypeObject"
-  comment: "Scheme: FIMS_COMPANY_TYPE_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2) — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TypeObject (kết thúc bằng \"...\") — cần profile dữ liệu xác nhận bộ giá trị."
+  - "FIMS.COMPANYTYPE.TYPEOBJECT"
+  comment: "Scheme: FIMS_COMPANY_TYPE_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2) — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TYPEOBJECT (kết thúc bằng \"...\") — cần profile dữ liệu xác nhận bộ giá trị."
   classification_context: "FIMS_COMPANY_TYPE_OBJECT_TYPE"
   etl_derived_value: null
   data_type: "string"

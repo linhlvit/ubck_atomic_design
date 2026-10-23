@@ -22937,7 +22937,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: COMPANYTYPE
-        source_column: FIMS.COMPANYTYPE.Name
+        source_column: FIMS.COMPANYTYPE.NAME
         business_meaning: Tên đầy đủ (tiếng Việt) của loại hình doanh nghiệp.
         comment: null
   - name: Description
@@ -22954,14 +22954,14 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: COMPANYTYPE
-        source_column: FIMS.COMPANYTYPE.Description
+        source_column: FIMS.COMPANYTYPE.DESCRIPTION
         business_meaning: Mô tả chi tiết / ghi chú bổ sung.
         comment: null
   - name: Object Type Code
     physical_name: object_tp_code
     business_meaning_1st: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT..."
     comment_1st: "Scheme: FIMS_COMPANY_TYPE_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2)\
-      \ — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TypeObject\
+      \ — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TYPEOBJECT\
       \ (kết thúc bằng \"...\") — cần profile dữ liệu xác nhận bộ giá trị."
     data_domain_most: Classification Value
     data_type_most: string
@@ -22973,10 +22973,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: COMPANYTYPE
-        source_column: FIMS.COMPANYTYPE.TypeObject
+        source_column: FIMS.COMPANYTYPE.TYPEOBJECT
         business_meaning: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=NĐT..."
         comment: "Scheme: FIMS_COMPANY_TYPE_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2)\
-          \ — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TypeObject\
+          \ — ETL cần convert sang string. Mô tả nguồn dùng chung văn bản với FIMS.STATUS.TYPEOBJECT\
           \ (kết thúc bằng \"...\") — cần profile dữ liệu xác nhận bộ giá trị."
   - name: ECatalog Id
     physical_name: ecatalog_id
@@ -23040,7 +23040,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTORTYPE
-        source_column: FIMS.INVESTORTYPE.SName
+        source_column: FIMS.INVESTORTYPE.SNAME
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. Hash: hash_id('FIMS_INVESTORTYPE', SNAME) — hash từ\
           \ SNAME theo chỉ đạo Data Modeler (SNAME là BK). BCV: \"[Common] Involved\
@@ -23061,7 +23061,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTORTYPE
-        source_column: FIMS.INVESTORTYPE.SName
+        source_column: FIMS.INVESTORTYPE.SNAME
         business_meaning: Mã nghiệp vụ loại nhà đầu tư nước ngoài. Map từ SNAME —
           Tên viết tắt / tên ngắn.
         comment: BK duy nhất của entity, đồng thời là đầu vào hash Id. Nguồn NVARCHAR2(20)
@@ -23097,7 +23097,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTORTYPE
-        source_column: FIMS.INVESTORTYPE.Name
+        source_column: FIMS.INVESTORTYPE.NAME
         business_meaning: Tên đầy đủ (tiếng Việt) của loại nhà đầu tư nước ngoài.
         comment: null
   - name: Description
@@ -23114,7 +23114,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTORTYPE
-        source_column: FIMS.INVESTORTYPE.Description
+        source_column: FIMS.INVESTORTYPE.DESCRIPTION
         business_meaning: Mô tả chi tiết / ghi chú bổ sung.
         comment: null
   - name: ECatalog Id
@@ -23166,7 +23166,7 @@ entities:
   - name: Classification FIMS Status Id
     physical_name: cl_fims_status_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common]\
+    comment_1st: "PK surrogate. Hash: hash_id('FIMS_STATUS', CODE). BCV: \"[Common]\
       \ Involved Party Life Cycle Status\" (không có term trần \"Status\" trong Common).\
       \ Danh mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu\
       \ tư."
@@ -23180,9 +23180,9 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: STATUS
-        source_column: FIMS.STATUS.Code
+        source_column: FIMS.STATUS.CODE
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', Code). BCV: \"[Common]\
+        comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', CODE). BCV: \"[Common]\
           \ Involved Party Life Cycle Status\" (không có term trần \"Status\" trong\
           \ Common). Danh mục tình trạng hoạt động của đối tượng thành viên thị trường\
           \ / nhà đầu tư."
@@ -23201,7 +23201,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: STATUS
-        source_column: FIMS.STATUS.Code
+        source_column: FIMS.STATUS.CODE
         business_meaning: Mã trạng thái (khóa mapping đồng bộ). BK.
         comment: BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100))
           — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live.
@@ -23236,7 +23236,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: STATUS
-        source_column: FIMS.STATUS.Name
+        source_column: FIMS.STATUS.NAME
         business_meaning: Tên đầy đủ (tiếng Việt) của trạng thái.
         comment: null
   - name: Description
@@ -23253,7 +23253,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: STATUS
-        source_column: FIMS.STATUS.Description
+        source_column: FIMS.STATUS.DESCRIPTION
         business_meaning: Mô tả chi tiết / ghi chú bổ sung.
         comment: null
   - name: Object Type Code
@@ -23273,7 +23273,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: STATUS
-        source_column: FIMS.STATUS.TypeObject
+        source_column: FIMS.STATUS.TYPEOBJECT
         business_meaning: "Loại đối tượng áp dụng trạng thái: 1=QLQ, 2=CTCK, 3=NHLK,\
           \ 4=NĐT..."
         comment: "Scheme: FIMS_STATUS_OBJECT_TYPE. Nguồn lưu dạng số NUMBER(18,2)\
@@ -24621,7 +24621,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: CL_FOREIGN_INVESTOR_REPORTING_ENTITY
-        source_column: null
+        source_column: FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_ID, FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE
         business_meaning: Mã nghiệp vụ duy nhất của đối tượng nộp báo cáo = OBJECT_ID
           || OBJECT_TYPE. BK.
         comment: "ETL-derived: concat(OBJECT_ID, OBJECT_TYPE) từ ODS CL_FOREIGN_INVESTOR_REPORTING_ENTITY\
@@ -29485,7 +29485,8 @@ entities:
     - source_system: HNX
       source_tables:
       - source_table: GOV_BOND_ADDITIONAL_LISTING
-        source_column: null
+        source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.BOND_CODE, HNX.GOV_BOND_ADDITIONAL_LISTING.STATUS,
+          HNX.GOV_BOND_ADDITIONAL_LISTING.LISTING_CHANGE_DATE
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
           \ hash_id('HNX_GOV_BOND_ADDITIONAL_LISTING',\"concat_ws('-', BOND_CODE,\
@@ -30454,7 +30455,7 @@ entities:
     - source_system: HNX
       source_tables:
       - source_table: REGISTRATION_STATUS_CHANGE
-        source_column: null
+        source_column: HNX.REGISTRATION_STATUS_CHANGE.BOND_CODE, HNX.REGISTRATION_STATUS_CHANGE.TRADING_REGISTRATION_STATUS
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
           \ hash_id('HNX_REGISTRATION_STATUS_CHANGE',\"concat_ws('-', BOND_CODE, TRADING_REGISTRATION_STATUS)\"\
@@ -34341,7 +34342,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: FIR_STRUCTURE
-        source_column: null
+        source_column: FIMS.FIR_STRUCTURE.SHEET_ID, FIMS.FIR_STRUCTURE.INDICATOR_UID
         business_meaning: Mã nghiệp vụ ô chỉ tiêu = SHEET_ID || INDICATOR_UID. BK.
         comment: "ETL-derived: concat(SHEET_ID, INDICATOR_UID) từ ODS FIR_STRUCTURE\
           \ — BK composite — INDICATOR_UID chỉ duy nhất trong 1 sheet, bắt buộc đi\
@@ -34771,7 +34772,8 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: FIR_VALUE
-        source_column: null
+        source_column: FIMS.FIR_VALUE.REPORT_LOG_ID, FIMS.FIR_VALUE.SHEET_ID, FIMS.FIR_VALUE.INDICATOR_UID,
+          FIMS.FIR_VALUE.ROW_ORDER
         business_meaning: Mã nghiệp vụ ô giá trị = REPORT_LOG_ID || SHEET_ID || INDICATOR_UID
           || ROW_ORDER. BK.
         comment: "ETL-derived: concat(REPORT_LOG_ID, SHEET_ID, INDICATOR_UID, ROW_ORDER)\
@@ -34811,7 +34813,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: FIR_VALUE
-        source_column: null
+        source_column: FIMS.FIR_VALUE.SHEET_ID, FIMS.FIR_VALUE.INDICATOR_UID
         business_meaning: "FK → Foreign Investor Report Structure: ô chỉ tiêu template\
           \ tương ứng."
         comment: "FK target: fir_structure.fir_structure_id. Hash: hash_id('FIMS_FIR_STRUCTURE',\
@@ -34833,7 +34835,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: FIR_VALUE
-        source_column: null
+        source_column: FIMS.FIR_VALUE.SHEET_ID, FIMS.FIR_VALUE.INDICATOR_UID
         business_meaning: Mã ô chỉ tiêu = SHEET_ID || INDICATOR_UID.
         comment: "Lookup pair: fir_structure.fir_structure_code. Pair with Foreign\
           \ Investor Report Structure Id. ETL-derived: concat(SHEET_ID, INDICATOR_UID)\
@@ -34857,7 +34859,7 @@ entities:
         comment: null
   - name: Report Log Id
     physical_name: rpt_log_id
-    business_meaning_1st: Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.Id) — dùng
+    business_meaning_1st: Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.ID) — dùng
       để lọc toàn bộ số liệu của 1 lần nộp.
     comment_1st: Mã kỹ thuật nguồn, không phải surrogate key Atomic. Chồng lấn Member
       Periodic Report — xem 7e-13 HLD Overview.
@@ -34872,7 +34874,7 @@ entities:
       source_tables:
       - source_table: FIR_VALUE
         source_column: FIMS.FIR_VALUE.REPORT_LOG_ID
-        business_meaning: Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.Id) — dùng
+        business_meaning: Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.ID) — dùng
           để lọc toàn bộ số liệu của 1 lần nộp.
         comment: Mã kỹ thuật nguồn, không phải surrogate key Atomic. Chồng lấn Member
           Periodic Report — xem 7e-13 HLD Overview.
@@ -37341,7 +37343,7 @@ entities:
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   - name: Report Id
     physical_name: rpt_id
-    business_meaning_1st: Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID = RPTTEMP.Id).
+    business_meaning_1st: Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID = RPTTEMP.ID).
     comment_1st: Mã kỹ thuật nguồn, không phải surrogate key Atomic — 1 mẫu (RPT_ID)
       có nhiều sheet. Dùng để gom các sheet cùng mẫu.
     data_domain_most: Text
@@ -37355,7 +37357,7 @@ entities:
       source_tables:
       - source_table: FOREIGN_INVESTOR_REPORT
         source_column: FIMS.FOREIGN_INVESTOR_REPORT.RPT_ID
-        business_meaning: Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID = RPTTEMP.Id).
+        business_meaning: Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID = RPTTEMP.ID).
         comment: Mã kỹ thuật nguồn, không phải surrogate key Atomic — 1 mẫu (RPT_ID)
           có nhiều sheet. Dùng để gom các sheet cùng mẫu.
   - name: Report Code
@@ -40215,7 +40217,9 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: null
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_CODE, ISS.INTERNAL_STATISTICAL_REPORT.SHEET_NAME,
+          ISS.INTERNAL_STATISTICAL_REPORT.FIELD_CODE, ISS.INTERNAL_STATISTICAL_REPORT.ROW_INDEX,
+          ISS.INTERNAL_STATISTICAL_REPORT.ORIGIN_DATE_VALUE
         business_meaning: Mã nghiệp vụ ô giá trị = report_code || sheet_nm || field_code
           || row_index || origin_dt_val. BK.
         comment: "ETL-derived: concat(report_code, sheet_name, field_code, row_index,\
@@ -40253,7 +40257,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_code
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_CODE
         business_meaning: "Mã báo cáo (VD: HNX01A1, HSX02) — phân biệt loại báo cáo\
           \ trong hệ thống ISS."
         comment: null
@@ -40271,7 +40275,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_name
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_NAME
         business_meaning: Tên báo cáo.
         comment: null
   - name: Report Submission System Code
@@ -40288,7 +40292,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.submit_source
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.SUBMIT_SOURCE
         business_meaning: Nguồn nộp báo cáo (ICP, CDW, KDL, ...).
         comment: null
   - name: Version Number
@@ -40305,7 +40309,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.template_version
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.TEMPLATE_VERSION
         business_meaning: Phiên bản template báo cáo.
         comment: null
   - name: Report Type Code
@@ -40324,7 +40328,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_layout_type
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_LAYOUT_TYPE
         business_meaning: Kiểu layout biểu mẫu (MIXED, COLUMN_BASED, ROW_BASED).
         comment: "Ảnh hưởng cách đọc column_position/row_position và column_code/row_code:\
           \ COLUMN_BASED → row_* là NULL; ROW_BASED → col_* là NULL; MIXED → cả hai\
@@ -40343,7 +40347,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.sheet_name
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.SHEET_NAME
         business_meaning: Tên sheet trong biểu mẫu báo cáo.
         comment: null
   - name: Column Start Address
@@ -40360,7 +40364,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_start_position
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_START_POSITION
         business_meaning: "Ký tự cột bắt đầu vùng dữ liệu trong Excel (VD: C)."
         comment: null
   - name: Row Start Address
@@ -40377,7 +40381,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_start_position
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_START_POSITION
         business_meaning: "Số dòng bắt đầu vùng dữ liệu trong Excel (VD: 7)."
         comment: null
   - name: Column Path
@@ -40395,7 +40399,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_path
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_PATH
         business_meaning: Tên đầy đủ chỉ tiêu cột theo cây chỉ tiêu. NULL với layout
           ROW_BASED.
         comment: null
@@ -40414,7 +40418,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_path
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_PATH
         business_meaning: Tên đầy đủ chỉ tiêu dòng theo cây chỉ tiêu. NULL với layout
           COLUMN_BASED.
         comment: null
@@ -40434,7 +40438,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_index
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_INDEX
         business_meaning: Vị trí hàng thực tế của ô = thứ tự JSON object trong json_data
           (bắt đầu từ 1) + data_index. Dùng để phân biệt các dòng động trong cùng
           band khi field_code trùng nhau.
@@ -40454,7 +40458,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.col_position
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.COL_POSITION
         business_meaning: "Vị trí cột trong Excel của chỉ tiêu COLUMN (VD: C, D).\
           \ NULL với layout ROW_BASED."
         comment: null
@@ -40473,7 +40477,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_position
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_POSITION
         business_meaning: "Vị trí dòng trong Excel của chỉ tiêu ROW (VD: 7, 9). NULL\
           \ với layout COLUMN_BASED."
         comment: null
@@ -40491,7 +40495,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.column_code
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_CODE
         business_meaning: Metric code của chỉ tiêu COLUMN. NULL với layout ROW_BASED.
         comment: null
   - name: Row Code
@@ -40508,7 +40512,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.row_code
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.ROW_CODE
         business_meaning: Metric code của chỉ tiêu ROW. NULL với layout COLUMN_BASED.
         comment: null
   - name: Cell Code
@@ -40527,7 +40531,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.field_code
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.FIELD_CODE
         business_meaning: "Mã định danh ô gốc từ JSON: {col_code}-{row_code} (MIXED)\
           \ / {col_code} (COLUMN_BASED) / {row_code} (ROW_BASED)."
         comment: Thành phần BK. Không unique trong 1 sheet khi có band động — phân
@@ -40546,7 +40550,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.data_type
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.DATA_TYPE
         business_meaning: Kiểu dữ liệu của ô (NUMBER, CURRENCY, STRING, ...).
         comment: Dùng để CAST field_val phía consumer — không ép kiểu tại Atomic.
   - name: Cell Value
@@ -40563,7 +40567,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.field_value
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.FIELD_VALUE
         business_meaning: Giá trị của ô dữ liệu dạng chuỗi gốc từ nguồn.
         comment: Luôn lưu dạng chuỗi; consumer tự CAST theo data_tp_code.
   - name: Period Type Code
@@ -40580,7 +40584,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.date_type
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.DATE_TYPE
         business_meaning: Loại kỳ báo cáo (DAILY, MONTHLY, QUARTERLY, YEARLY, ...).
         comment: null
   - name: Period Value
@@ -40597,7 +40601,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.origin_date_value
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.ORIGIN_DATE_VALUE
         business_meaning: "Giá trị kỳ báo cáo dạng chuỗi gốc (VD: 25/11/2015, 07/2026)."
         comment: Thành phần BK — giữ nguyên chuỗi gốc, không parse.
   - name: Report Day
@@ -40614,7 +40618,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_day
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_DAY
         business_meaning: Ngày trong kỳ báo cáo.
         comment: null
   - name: Report Month
@@ -40631,7 +40635,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_month
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_MONTH
         business_meaning: Tháng trong kỳ báo cáo.
         comment: null
   - name: Report Quarter
@@ -40648,7 +40652,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_quarter
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_QUARTER
         business_meaning: Quý trong kỳ báo cáo (1–4).
         comment: null
   - name: Report Half Year
@@ -40665,7 +40669,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_half_year
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_HALF_YEAR
         business_meaning: Nửa năm trong kỳ báo cáo (1–2).
         comment: null
   - name: Report Year
@@ -40682,7 +40686,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.report_year
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.REPORT_YEAR
         business_meaning: Năm trong kỳ báo cáo.
         comment: null
   - name: Submission Status Code
@@ -40700,7 +40704,7 @@ entities:
     - source_system: ISS
       source_tables:
       - source_table: INTERNAL_STATISTICAL_REPORT
-        source_column: ISS.INTERNAL_STATISTICAL_REPORT.submit_status
+        source_column: ISS.INTERNAL_STATISTICAL_REPORT.SUBMIT_STATUS
         business_meaning: Trạng thái nộp báo cáo (SUBMITTED, LATE_SUBMITTED, RESUBMITTED,
           OVERDUE).
         comment: null
@@ -41108,7 +41112,8 @@ entities:
     - source_system: HNX
       source_tables:
       - source_table: LISTING_STATUS_CHANGE
-        source_column: null
+        source_column: HNX.LISTING_STATUS_CHANGE.DECISION_NO, HNX.LISTING_STATUS_CHANGE.DECISION_DATE,
+          HNX.LISTING_STATUS_CHANGE.TICKER_SYMBOL
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
           \ hash_id('HNX_LISTING_STATUS_CHANGE',\"concat_ws('-', DECISION_NO, DECISION_DATE,\
@@ -41116,7 +41121,8 @@ entities:
     - source_system: HOSE
       source_tables:
       - source_table: LISTING_STATUS_CHANGE
-        source_column: null
+        source_column: HOSE.LISTING_STATUS_CHANGE.DECISION_NO, HOSE.LISTING_STATUS_CHANGE.DECISION_DATE,
+          HOSE.LISTING_STATUS_CHANGE.TICKER_SYMBOL
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
           \ hash_id('HOSE_LISTING_STATUS_CHANGE',\"concat_ws('-', DECISION_NO, DECISION_DATE,\
@@ -43267,7 +43273,8 @@ entities:
     - source_system: HNX
       source_tables:
       - source_table: PRIVATE_CORP_BOND_OFFERING
-        source_column: null
+        source_column: HNX.PRIVATE_CORP_BOND_OFFERING.BOND_CODE, HNX.PRIVATE_CORP_BOND_OFFERING.MARKET_TYPE,
+          HNX.PRIVATE_CORP_BOND_OFFERING.POSTING_DATE
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
           \ hash_id('HNX_PRIVATE_CORP_BOND_OFFERING',\"concat_ws('-', BOND_CODE, MARKET_TYPE,\
@@ -49369,7 +49376,7 @@ entities:
     - source_system: HNX
       source_tables:
       - source_table: SHARE_AUCTION
-        source_column: null
+        source_column: HNX.SHARE_AUCTION.ISSUER_NAME, HNX.SHARE_AUCTION.AUCTION_TYPE
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
           \ hash_id('HNX_SHARE_AUCTION',\"concat_ws('-', ISSUER_NAME, AUCTION_TYPE)\"\
@@ -49377,7 +49384,7 @@ entities:
     - source_system: HOSE
       source_tables:
       - source_table: SHARE_AUCTION
-        source_column: null
+        source_column: HOSE.SHARE_AUCTION.ISSUER_NAME, HOSE.SHARE_AUCTION.AUCTION_TYPE
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
           \ hash_id('HOSE_SHARE_AUCTION',\"concat_ws('-', ISSUER_NAME, AUCTION_TYPE)\"\
@@ -63057,7 +63064,7 @@ entities:
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng\
       \ lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ. Hash:\
-      \ hash_id('FIMS_BANKMONI', Id)."
+      \ hash_id('FIMS_BANKMONI', ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -63072,7 +63079,7 @@ entities:
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng\
           \ lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ.\
-          \ Hash: hash_id('FIMS_BANKMONI', Id)."
+          \ Hash: hash_id('FIMS_BANKMONI', ID)."
     - source_system: FMS
       source_tables:
       - source_table: BANK_MONI
@@ -63096,7 +63103,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Id
+        source_column: FIMS.BANKMONI.ID
         business_meaning: Khóa chính của bản ghi (ID số tự tăng). BK.
         comment: BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm
           BK (cùng pattern FMS.BANK_MONI). Nguồn lưu NUMBER(18,2) — ETL cần convert
@@ -63137,8 +63144,8 @@ entities:
     business_meaning_1st: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
       \ danh mục STATUS)."
     comment_1st: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
-      \ FIMS.STATUS: BANKMONI.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-      \ Code)."
+      \ FIMS.STATUS: BANKMONI.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+      \ CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -63149,18 +63156,18 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.StatusId
+        source_column: FIMS.BANKMONI.STATUSID
         business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
           \ danh mục STATUS)."
         comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
-          \ FIMS.STATUS: BANKMONI.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-          \ Code)."
+          \ FIMS.STATUS: BANKMONI.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+          \ CODE)."
   - name: Classification FIMS Status Code
     physical_name: cl_fims_status_code
     business_meaning_1st: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong
       bảng danh mục STATUS).
     comment_1st: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
       \ xem comment Classification FIMS Status Id."
     data_domain_most: Text
     data_type_most: string
@@ -63172,11 +63179,11 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.STATUS.Code
+        source_column: FIMS.STATUS.CODE
         business_meaning: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong
           bảng danh mục STATUS).
         comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi\
+          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi\
           \ tiết xem comment Classification FIMS Status Id."
   - name: Custodian Bank Full Name
     physical_name: custodian_bank_full_nm
@@ -63192,7 +63199,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Name
+        source_column: FIMS.BANKMONI.NAME
         business_meaning: Tên đầy đủ (tiếng Việt).
         comment: null
     - source_system: FMS
@@ -63215,7 +63222,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.EName
+        source_column: FIMS.BANKMONI.ENAME
         business_meaning: Tên tiếng Anh.
         comment: null
     - source_system: FMS
@@ -63238,7 +63245,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.ShortName
+        source_column: FIMS.BANKMONI.SHORTNAME
         business_meaning: Tên viết tắt của tổ chức.
         comment: null
     - source_system: FMS
@@ -63251,7 +63258,7 @@ entities:
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc gia/quốc tịch).
     comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-      \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NaId = NATIONAL.Id\
+      \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NAID = NATIONAL.ID\
       \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value\
       \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
@@ -63264,17 +63271,17 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.NaId
+        source_column: FIMS.BANKMONI.NAID
         business_meaning: FK đến Geographic Area (quốc gia/quốc tịch).
         comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-          \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NaId = NATIONAL.Id\
+          \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NAID = NATIONAL.ID\
           \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận\
           \ value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc gia/quốc tịch.
     comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-      \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+      \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment\
       \ Nationality Id."
     data_domain_most: Text
     data_type_most: string
@@ -63286,10 +63293,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.NATIONAL.SName
+        source_column: FIMS.NATIONAL.SNAME
         business_meaning: Mã quốc gia/quốc tịch.
         comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-          \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem\
+          \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem\
           \ comment Nationality Id."
   - name: Charter Capital Amount
     physical_name: charter_capital_amt
@@ -63306,7 +63313,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Capital
+        source_column: FIMS.BANKMONI.CAPITAL
         business_meaning: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
         comment: Nguồn NOT NULL — Atomic để nullable do entity gộp thêm nguồn FMS.BANK_MONI
           không có cột vốn.
@@ -63324,7 +63331,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Director
+        source_column: FIMS.BANKMONI.DIRECTOR
         business_meaning: Họ tên Giám đốc/Tổng giám đốc.
         comment: Denormalized — không có FK.
   - name: Description
@@ -63341,7 +63348,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Description
+        source_column: FIMS.BANKMONI.DESCRIPTION
         business_meaning: Mô tả chi tiết / ghi chú bổ sung.
         comment: null
   - name: Classification FMS Status Id
@@ -67071,7 +67078,7 @@ entities:
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước\
       \ ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS_INVESTOR',\
-      \ TransactionCode)."
+      \ TRANSACTIONCODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -67086,7 +67093,7 @@ entities:
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước\
           \ ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS_INVESTOR',\
-          \ TransactionCode)."
+          \ TRANSACTIONCODE)."
   - name: Foreign Investor Code
     physical_name: foreign_investor_code
     business_meaning_1st: Mã số giao dịch của NĐT NN do VSDC cấp. BK.
@@ -67102,7 +67109,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.TransactionCode
+        source_column: FIMS.INVESTOR.TRANSACTIONCODE
         business_meaning: Mã số giao dịch của NĐT NN do VSDC cấp. BK.
         comment: BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live
           (nguồn không khai báo ràng buộc).
@@ -67137,7 +67144,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.ObjectType
+        source_column: FIMS.INVESTOR.OBJECTTYPE
         business_meaning: "Loại đối tượng: 1=Cá nhân, 2=Tổ chức."
         comment: SCHEMA_CODE=FIMS.OBJECT_TYPE
   - name: Full Name
@@ -67154,7 +67161,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Name
+        source_column: FIMS.INVESTOR.NAME
         business_meaning: Tên đầy đủ (tiếng Việt).
         comment: null
   - name: English Name
@@ -67171,7 +67178,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.EName
+        source_column: FIMS.INVESTOR.ENAME
         business_meaning: Tên tiếng Anh.
         comment: null
   - name: Gender Code
@@ -67188,7 +67195,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Sex
+        source_column: FIMS.INVESTOR.SEX
         business_meaning: "Giới tính: 1=Nam, 2=Nữ."
         comment: SCHEMA_CODE=GENDER
   - name: Date of Birth
@@ -67205,14 +67212,14 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.DateOfBirth
+        source_column: FIMS.INVESTOR.DATEOFBIRTH
         business_meaning: Ngày sinh (với NĐT cá nhân).
         comment: null
   - name: Nationality Id
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch).
     comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-      \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id\
+      \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NAID = NATIONAL.ID\
       \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value\
       \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
@@ -67225,17 +67232,17 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.NaId
+        source_column: FIMS.INVESTOR.NAID
         business_meaning: FK đến Geographic Area (quốc tịch).
         comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-          \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NaId = NATIONAL.Id\
+          \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: INVESTOR.NAID = NATIONAL.ID\
           \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận\
           \ value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc gia/quốc tịch.
     comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-      \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+      \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment\
       \ Nationality Id."
     data_domain_most: Text
     data_type_most: string
@@ -67247,10 +67254,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.NATIONAL.SName
+        source_column: FIMS.NATIONAL.SNAME
         business_meaning: Mã quốc gia/quốc tịch.
         comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-          \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem\
+          \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem\
           \ comment Nationality Id."
   - name: Director Full Name
     physical_name: director_full_nm
@@ -67266,15 +67273,15 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Director
+        source_column: FIMS.INVESTOR.DIRECTOR
         business_meaning: Họ tên Giám đốc/Tổng giám đốc.
         comment: Denormalized — không có FK, chỉ áp dụng NĐT tổ chức.
   - name: Classification FIMS Investor Type Id
     physical_name: cl_fims_investor_tp_id
     business_meaning_1st: "FK -> INVESTORTYPE: Loại nhà đầu tư nước ngoài."
     comment_1st: "FK target: cl_fims_investor_type.cl_fims_investor_tp_id. Cần ETL\
-      \ crosswalk sang FIMS.INVESTORTYPE: INVESTOR.InvestorTypeId = INVESTORTYPE.Id\
-      \ để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SName) | Thay scheme\
+      \ crosswalk sang FIMS.INVESTORTYPE: INVESTOR.INVESTORTYPEID = INVESTORTYPE.ID\
+      \ để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SNAME) | Thay scheme\
       \ FIMS_INVESTOR_TYPE (deprecated) bằng FK tới entity cl_fims_investor_type (2026-10-05)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -67286,18 +67293,18 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.InvestorTypeId
+        source_column: FIMS.INVESTOR.INVESTORTYPEID
         business_meaning: "FK -> INVESTORTYPE: Loại nhà đầu tư nước ngoài."
         comment: "FK target: cl_fims_investor_type.cl_fims_investor_tp_id. Cần ETL\
-          \ crosswalk sang FIMS.INVESTORTYPE: INVESTOR.InvestorTypeId = INVESTORTYPE.Id\
-          \ để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SName) | Thay scheme\
+          \ crosswalk sang FIMS.INVESTORTYPE: INVESTOR.INVESTORTYPEID = INVESTORTYPE.ID\
+          \ để xác nhận SName sau đó hash_id('FIMS_INVESTORTYPE', SNAME) | Thay scheme\
           \ FIMS_INVESTOR_TYPE (deprecated) bằng FK tới entity cl_fims_investor_type\
           \ (2026-10-05)."
   - name: Classification FIMS Investor Type Code
     physical_name: cl_fims_investor_tp_code
     business_meaning_1st: Mã loại nhà đầu tư nước ngoài.
     comment_1st: "Lookup pair: cl_fims_investor_type.cl_fims_investor_tp_code. Pair\
-      \ with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SName\
+      \ with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SNAME\
       \ sau ETL crosswalk — chi tiết xem comment Classification FIMS Investor Type\
       \ Id."
     data_domain_most: Text
@@ -67310,10 +67317,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTORTYPE.SName
+        source_column: FIMS.INVESTORTYPE.SNAME
         business_meaning: Mã loại nhà đầu tư nước ngoài.
         comment: "Lookup pair: cl_fims_investor_type.cl_fims_investor_tp_code. Pair\
-          \ with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SName\
+          \ with Classification FIMS Investor Type Id. Giá trị lấy từ FIMS.INVESTORTYPE.SNAME\
           \ sau ETL crosswalk — chi tiết xem comment Classification FIMS Investor\
           \ Type Id."
   - name: Depository Account Number
@@ -67330,7 +67337,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.DepAccountNumber
+        source_column: FIMS.INVESTOR.DEPACCOUNTNUMBER
         business_meaning: Số tài khoản lưu ký tại VSDC.
         comment: null
   - name: Investor System Object Type Code
@@ -67349,7 +67356,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.SysObjectType
+        source_column: FIMS.INVESTOR.SYSOBJECTTYPE
         business_meaning: Loại đối tượng trong hệ thống (phân biệt giữa các loại NĐT
           NN).
         comment: Không phải Classification Value — map 1:1 nguyên giá trị nguồn (quyết
@@ -67370,7 +67377,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.SecComAddId
+        source_column: FIMS.INVESTOR.SECCOMADDID
         business_meaning: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản."
         comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
           \ SecComAddId). Entity Securities Company gộp từ FIMS.SECURITIESCOMPANY\
@@ -67390,7 +67397,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.SecComAddId
+        source_column: FIMS.INVESTOR.SECCOMADDID
         business_meaning: Mã công ty CK nơi mở tài khoản.
         comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
           \ Id."
@@ -67411,7 +67418,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.BankAddId
+        source_column: FIMS.INVESTOR.BANKADDID
         business_meaning: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao\
           \ dịch."
         comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
@@ -67432,7 +67439,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.BankAddId
+        source_column: FIMS.INVESTOR.BANKADDID
         business_meaning: Mã ngân hàng lưu ký đăng ký tài khoản giao dịch.
         comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Custodian\
           \ Bank Id."
@@ -67450,7 +67457,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.AccountInvesCapital
+        source_column: FIMS.INVESTOR.ACCOUNTINVESCAPITAL
         business_meaning: Số tài khoản đầu tư vốn của NĐT NN.
         comment: null
   - name: Capital Custodian Bank Id
@@ -67469,7 +67476,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.BankAddCapId
+        source_column: FIMS.INVESTOR.BANKADDCAPID
         business_meaning: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn."
         comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FIMS_BANKMONI',\
           \ BankAddCapId). Entity Custodian Bank gộp từ FIMS.BANKMONI + FMS.BANK_MONI\
@@ -67489,7 +67496,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.BankAddCapId
+        source_column: FIMS.INVESTOR.BANKADDCAPID
         business_meaning: Mã ngân hàng lưu ký đăng ký tài khoản vốn.
         comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Capital\
           \ Custodian Bank Id."
@@ -67498,7 +67505,7 @@ entities:
     business_meaning_1st: "FK -> COMPANYTYPE: Loại hình doanh nghiệp (chỉ áp dụng\
       \ NĐT tổ chức)."
     comment_1st: "FK target: cl_fims_company_type.cl_fims_company_tp_id. Cần ETL crosswalk\
-      \ sang FIMS.COMPANYTYPE: INVESTOR.CompanyTypeId = COMPANYTYPE.Id để xác nhận\
+      \ sang FIMS.COMPANYTYPE: INVESTOR.COMPANYTYPEID = COMPANYTYPE.ID để xác nhận\
       \ CODE sau đó hash_id('FIMS_COMPANYTYPE', CODE) | Thay scheme FIMS_COMPANY_TYPE\
       \ bằng FK tới entity cl_fims_company_type (2026-10-05). Chỉ áp dụng NĐT tổ chức."
     data_domain_most: Surrogate Key
@@ -67511,11 +67518,11 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.CompanyTypeId
+        source_column: FIMS.INVESTOR.COMPANYTYPEID
         business_meaning: "FK -> COMPANYTYPE: Loại hình doanh nghiệp (chỉ áp dụng\
           \ NĐT tổ chức)."
         comment: "FK target: cl_fims_company_type.cl_fims_company_tp_id. Cần ETL crosswalk\
-          \ sang FIMS.COMPANYTYPE: INVESTOR.CompanyTypeId = COMPANYTYPE.Id để xác\
+          \ sang FIMS.COMPANYTYPE: INVESTOR.COMPANYTYPEID = COMPANYTYPE.ID để xác\
           \ nhận CODE sau đó hash_id('FIMS_COMPANYTYPE', CODE) | Thay scheme FIMS_COMPANY_TYPE\
           \ bằng FK tới entity cl_fims_company_type (2026-10-05). Chỉ áp dụng NĐT\
           \ tổ chức."
@@ -67546,8 +67553,8 @@ entities:
     physical_name: cl_fims_status_id
     business_meaning_1st: "FK -> STATUS: Trạng thái hoạt động của đối tượng."
     comment_1st: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
-      \ FIMS.STATUS: INVESTOR.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-      \ Code) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status\
+      \ FIMS.STATUS: INVESTOR.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+      \ CODE) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status\
       \ (2026-10-05)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -67559,17 +67566,17 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.StatusId
+        source_column: FIMS.INVESTOR.STATUSID
         business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng."
         comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
-          \ FIMS.STATUS: INVESTOR.StatusId = STATUS.Id để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-          \ Code) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status\
+          \ FIMS.STATUS: INVESTOR.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+          \ CODE) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status\
           \ (2026-10-05)."
   - name: Classification FIMS Status Code
     physical_name: cl_fims_status_code
     business_meaning_1st: Mã trạng thái hoạt động của đối tượng.
     comment_1st: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
       \ xem comment Classification FIMS Status Id."
     data_domain_most: Text
     data_type_most: string
@@ -67581,10 +67588,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.STATUS.Code
+        source_column: FIMS.STATUS.CODE
         business_meaning: Mã trạng thái hoạt động của đối tượng.
         comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi\
+          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi\
           \ tiết xem comment Classification FIMS Status Id."
   - name: Description
     physical_name: description
@@ -67600,7 +67607,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Description
+        source_column: FIMS.INVESTOR.DESCRIPTION
         business_meaning: Mô tả chi tiết / ghi chú bổ sung.
         comment: null
 - ldm:
@@ -70531,23 +70538,23 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Id
+        source_column: FIMS.BANKMONI.ID
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Custodian Bank Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI',\
-          \ Id)."
+          \ ID)."
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.TransactionCode
+        source_column: FIMS.INVESTOR.TRANSACTIONCODE
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Foreign Investor Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR',\
-          \ TransactionCode)."
+          \ TRANSACTIONCODE)."
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Id
+        source_column: FIMS.SECURITIESCOMPANY.ID
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Securities Company Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
-          \ Id)."
+          \ ID)."
     - source_system: FMS
       source_tables:
       - source_table: AGENCIES
@@ -70756,15 +70763,15 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Id
+        source_column: FIMS.BANKMONI.ID
         business_meaning: Mã Custodian Bank.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.BANKMONI
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.TransactionCode
+        source_column: FIMS.INVESTOR.TRANSACTIONCODE
         business_meaning: Mã Foreign Investor.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Id
+        source_column: FIMS.SECURITIESCOMPANY.ID
         business_meaning: Mã Securities Company.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY
     - source_system: FMS
@@ -71169,7 +71176,7 @@ entities:
         comment: "Scheme: IP_ALT_ID_TYPE. BUSINESS_LICENSE — Lọc ObjectType = 2 (1=cá\
           \ nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → BUSINESS_LICENSE)."
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.ObjectType
+        source_column: FIMS.INVESTOR.OBJECTTYPE
         business_meaning: Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT
           cá nhân).
         comment: "Scheme: IP_ALT_ID_TYPE. IDENTIFICATION — Lọc ObjectType = 1 (1=cá\
@@ -71473,40 +71480,40 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.RegNo
+        source_column: FIMS.BANKMONI.REGNO
         business_meaning: Số giấy phép/đăng ký hoạt động.
         comment: BK của shared entity cùng với Involved Party Id + Identification
           Type Code.
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.DepCert
+        source_column: FIMS.BANKMONI.DEPCERT
         business_meaning: Số chứng nhận thành viên lưu ký (VSDC).
         comment: BK của shared entity cùng với Involved Party Id + Identification
           Type Code.
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.IdNo
+        source_column: FIMS.BANKMONI.IDNO
         business_meaning: Số giấy phép thành lập và hoạt động do UBCKNN cấp.
         comment: BK của shared entity cùng với Involved Party Id + Identification
           Type Code.
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.BusinessNumber
+        source_column: FIMS.INVESTOR.BUSINESSNUMBER
         business_meaning: Số đăng ký kinh doanh/mã số doanh nghiệp.
         comment: Chỉ áp dụng NĐT tổ chức.
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.IdNo
+        source_column: FIMS.INVESTOR.IDNO
         business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.RegNo
+        source_column: FIMS.SECURITIESCOMPANY.REGNO
         business_meaning: Số giấy phép/đăng ký hoạt động.
         comment: BK của shared entity cùng với Involved Party Id + Identification
           Type Code.
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.DepCert
+        source_column: FIMS.SECURITIESCOMPANY.DEPCERT
         business_meaning: Số chứng nhận thành viên lưu ký (VSDC).
         comment: BK của shared entity cùng với Involved Party Id + Identification
           Type Code.
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.IdNo
+        source_column: FIMS.SECURITIESCOMPANY.IDNO
         business_meaning: Số giấy phép thành lập và hoạt động do UBCKNN cấp.
         comment: BK của shared entity cùng với Involved Party Id + Identification
           Type Code.
@@ -71623,7 +71630,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: PROFESSIONALS
-        source_column: null
+        source_column: NHNCK.PROFESSIONALS.IDENTITY_NUMBER, NHNCK.PROFESSIONALS.PASSPORT_NUMBE
         business_meaning: Số giấy tờ định danh (CMND/CCCD/Hộ chiếu).
         comment: Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_NUMBER
           WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_NUMBE END.
@@ -71755,23 +71762,23 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.RegDate
+        source_column: FIMS.BANKMONI.REGDATE
         business_meaning: Ngày cấp giấy phép/đăng ký.
         comment: null
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.IdDate
+        source_column: FIMS.BANKMONI.IDDATE
         business_meaning: Ngày cấp giấy tờ.
         comment: null
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.IdDate
+        source_column: FIMS.INVESTOR.IDDATE
         business_meaning: Ngày cấp giấy tờ định danh.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.RegDate
+        source_column: FIMS.SECURITIESCOMPANY.REGDATE
         business_meaning: Ngày cấp giấy phép/đăng ký.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.IdDate
+        source_column: FIMS.SECURITIESCOMPANY.IDDATE
         business_meaning: Ngày cấp giấy tờ.
         comment: null
     - source_system: FMS
@@ -71842,7 +71849,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: PROFESSIONALS
-        source_column: null
+        source_column: NHNCK.PROFESSIONALS.IDENTITY_ISSUE_DATE, NHNCK.PROFESSIONALS.PASSPORT_ISSUE_DATE
         business_meaning: Ngày cấp giấy tờ định danh.
         comment: Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_ISSUE_DATE
           WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_ISSUE_DATE END.
@@ -71927,23 +71934,23 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.RegAdd
+        source_column: FIMS.BANKMONI.REGADD
         business_meaning: Nơi cấp giấy phép/đăng ký.
         comment: null
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.IdAdd
+        source_column: FIMS.BANKMONI.IDADD
         business_meaning: Nơi cấp giấy tờ.
         comment: null
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.IdAdd
+        source_column: FIMS.INVESTOR.IDADD
         business_meaning: Nơi cấp giấy tờ định danh.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.RegAdd
+        source_column: FIMS.SECURITIESCOMPANY.REGADD
         business_meaning: Nơi cấp giấy phép/đăng ký.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.IdAdd
+        source_column: FIMS.SECURITIESCOMPANY.IDADD
         business_meaning: Nơi cấp giấy tờ.
         comment: null
     - source_system: FMS
@@ -71995,7 +72002,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: PROFESSIONALS
-        source_column: null
+        source_column: NHNCK.PROFESSIONALS.IDENTITY_ISSUE_PLACE, NHNCK.PROFESSIONALS.PASSPORT_ISSUE_PLACE
         business_meaning: Nơi cấp giấy tờ định danh.
         comment: Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_ISSUE_PLACE
           WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_ISSUE_PLACE END.
@@ -72119,23 +72126,23 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Id
+        source_column: FIMS.BANKMONI.ID
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Custodian Bank Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI',\
-          \ Id)."
+          \ ID)."
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.TransactionCode
+        source_column: FIMS.INVESTOR.TRANSACTIONCODE
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Foreign Investor Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR',\
-          \ TransactionCode)."
+          \ TRANSACTIONCODE)."
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Id
+        source_column: FIMS.SECURITIESCOMPANY.ID
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Securities Company Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
-          \ Id)."
+          \ ID)."
     - source_system: FMS
       source_tables:
       - source_table: AGENCIES
@@ -72345,15 +72352,15 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Id
+        source_column: FIMS.BANKMONI.ID
         business_meaning: Mã Custodian Bank.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.BANKMONI
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.TransactionCode
+        source_column: FIMS.INVESTOR.TRANSACTIONCODE
         business_meaning: Mã Foreign Investor.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Id
+        source_column: FIMS.SECURITIESCOMPANY.ID
         business_meaning: Mã Securities Company.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY
     - source_system: FMS
@@ -73181,51 +73188,51 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Email
+        source_column: FIMS.BANKMONI.EMAIL
         business_meaning: Địa chỉ email liên hệ.
         comment: null
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Fax
+        source_column: FIMS.BANKMONI.FAX
         business_meaning: Số fax.
         comment: null
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Telephone
+        source_column: FIMS.BANKMONI.TELEPHONE
         business_meaning: Số điện thoại liên hệ.
         comment: null
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Website
+        source_column: FIMS.BANKMONI.WEBSITE
         business_meaning: Địa chỉ website.
         comment: null
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Email
+        source_column: FIMS.INVESTOR.EMAIL
         business_meaning: Địa chỉ email liên hệ.
         comment: null
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Fax
+        source_column: FIMS.INVESTOR.FAX
         business_meaning: Số fax.
         comment: null
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Telephone
+        source_column: FIMS.INVESTOR.TELEPHONE
         business_meaning: Số điện thoại liên hệ.
         comment: null
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Website
+        source_column: FIMS.INVESTOR.WEBSITE
         business_meaning: Địa chỉ website.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Email
+        source_column: FIMS.SECURITIESCOMPANY.EMAIL
         business_meaning: Địa chỉ email liên hệ.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Fax
+        source_column: FIMS.SECURITIESCOMPANY.FAX
         business_meaning: Số fax.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Telephone
+        source_column: FIMS.SECURITIESCOMPANY.TELEPHONE
         business_meaning: Số điện thoại liên hệ.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Website
+        source_column: FIMS.SECURITIESCOMPANY.WEBSITE
         business_meaning: Địa chỉ website.
         comment: null
     - source_system: FMS
@@ -73686,23 +73693,23 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Id
+        source_column: FIMS.BANKMONI.ID
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Custodian Bank Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_BANKMONI',\
-          \ Id)."
+          \ ID)."
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.TransactionCode
+        source_column: FIMS.INVESTOR.TRANSACTIONCODE
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Foreign Investor Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_INVESTOR',\
-          \ TransactionCode)."
+          \ TRANSACTIONCODE)."
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Id
+        source_column: FIMS.SECURITIESCOMPANY.ID
         business_meaning: Khóa đại diện (surrogate key) của shared entity; cùng giá
           trị với Securities Company Id.
         comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
-          \ Id)."
+          \ ID)."
     - source_system: FMS
       source_tables:
       - source_table: AGENCIES
@@ -73911,15 +73918,15 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Id
+        source_column: FIMS.BANKMONI.ID
         business_meaning: Mã Custodian Bank.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.BANKMONI
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.TransactionCode
+        source_column: FIMS.INVESTOR.TRANSACTIONCODE
         business_meaning: Mã Foreign Investor.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.INVESTOR
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Id
+        source_column: FIMS.SECURITIESCOMPANY.ID
         business_meaning: Mã Securities Company.
         comment: Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FIMS.SECURITIESCOMPANY
     - source_system: FMS
@@ -74515,15 +74522,15 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
-        source_column: FIMS.BANKMONI.Address
+        source_column: FIMS.BANKMONI.ADDRESS
         business_meaning: Địa chỉ trụ sở/văn phòng.
         comment: null
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.Address
+        source_column: FIMS.INVESTOR.ADDRESS
         business_meaning: Địa chỉ trụ sở/văn phòng.
         comment: null
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Address
+        source_column: FIMS.SECURITIESCOMPANY.ADDRESS
         business_meaning: Địa chỉ trụ sở/văn phòng.
         comment: null
     - source_system: FMS
@@ -74695,8 +74702,8 @@ entities:
     physical_name: province_id
     business_meaning_1st: FK đến Geographic Area cấp Tỉnh/Thành phố.
     comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-      \ = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.ProvinceId\
-      \ = PROVINCE_NEW.Id để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW', Code)\
+      \ = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.PROVINCEID\
+      \ = PROVINCE_NEW.ID để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW', Code)\
       \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -74708,11 +74715,11 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.ProvinceId
+        source_column: FIMS.INVESTOR.PROVINCEID
         business_meaning: FK đến Geographic Area cấp Tỉnh/Thành phố.
         comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-          \ = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.ProvinceId\
-          \ = PROVINCE_NEW.Id để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW',\
+          \ = 'PROVINCE'). Cần ETL crosswalk sang FIMS.PROVINCE_NEW: INVESTOR.PROVINCEID\
+          \ = PROVINCE_NEW.ID để xác nhận Code sau đó hash_id('ECAT_PROVINCE_NEW',\
           \ Code) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
           \ trước go-live."
     - source_system: FMS
@@ -74828,7 +74835,7 @@ entities:
     physical_name: province_code
     business_meaning_1st: Mã Tỉnh/Thành phố (Code của Geographic Area).
     comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-      \ Id. Giá trị lấy từ FIMS.PROVINCE_NEW.Code sau ETL crosswalk — chi tiết xem\
+      \ Id. Giá trị lấy từ FIMS.PROVINCE_NEW.CODE sau ETL crosswalk — chi tiết xem\
       \ comment Province Id."
     data_domain_most: Text
     data_type_most: string
@@ -74840,10 +74847,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.PROVINCE_NEW.Code
+        source_column: FIMS.PROVINCE_NEW.CODE
         business_meaning: Mã Tỉnh/Thành phố (Code của Geographic Area).
         comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-          \ Id. Giá trị lấy từ FIMS.PROVINCE_NEW.Code sau ETL crosswalk — chi tiết\
+          \ Id. Giá trị lấy từ FIMS.PROVINCE_NEW.CODE sau ETL crosswalk — chi tiết\
           \ xem comment Province Id."
     - source_system: FMS
       source_tables:
@@ -74917,7 +74924,7 @@ entities:
     physical_name: ward_id
     business_meaning_1st: FK đến Geographic Area cấp Phường/Xã.
     comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-      \ = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WardId = WARD_NEW.Id\
+      \ = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WARDID = WARD_NEW.ID\
       \ để xác nhận Code sau đó hash_id('ECAT_WARD_NEW', Code) | Chưa xác nhận value\
       \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
@@ -74930,10 +74937,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.INVESTOR.WardId
+        source_column: FIMS.INVESTOR.WARDID
         business_meaning: FK đến Geographic Area cấp Phường/Xã.
         comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-          \ = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WardId = WARD_NEW.Id\
+          \ = 'WARD'). Cần ETL crosswalk sang FIMS.WARD_NEW: INVESTOR.WARDID = WARD_NEW.ID\
           \ để xác nhận Code sau đó hash_id('ECAT_WARD_NEW', Code) | Chưa xác nhận\
           \ value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     - source_system: FMS
@@ -75013,7 +75020,7 @@ entities:
     physical_name: ward_code
     business_meaning_1st: Mã Phường/Xã (Code của Geographic Area).
     comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward\
-      \ Id. Giá trị lấy từ FIMS.WARD_NEW.Code sau ETL crosswalk — chi tiết xem comment\
+      \ Id. Giá trị lấy từ FIMS.WARD_NEW.CODE sau ETL crosswalk — chi tiết xem comment\
       \ Ward Id."
     data_domain_most: Text
     data_type_most: string
@@ -75025,10 +75032,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: INVESTOR
-        source_column: FIMS.WARD_NEW.Code
+        source_column: FIMS.WARD_NEW.CODE
         business_meaning: Mã Phường/Xã (Code của Geographic Area).
         comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward\
-          \ Id. Giá trị lấy từ FIMS.WARD_NEW.Code sau ETL crosswalk — chi tiết xem\
+          \ Id. Giá trị lấy từ FIMS.WARD_NEW.CODE sau ETL crosswalk — chi tiết xem\
           \ comment Ward Id."
     - source_system: FMS
       source_tables:
@@ -75800,7 +75807,7 @@ entities:
     - source_system: VSDC
       source_tables:
       - source_table: MAJOR_SHAREHOLDER
-        source_column: null
+        source_column: VSDC.MAJOR_SHAREHOLDER.TICKER_SYMBOL, VSDC.MAJOR_SHAREHOLDER.ID_NUMBER
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Involved Party] Organization Ownership\".\
           \ Hash: hash_id('VSDC_MAJOR_SHAREHOLDER',\"concat_ws('-', TICKER_SYMBOL,\
@@ -84208,7 +84215,7 @@ entities:
     physical_name: sc_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Involved Party] Broker Dealer\". Công ty chứng\
-      \ khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+      \ khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -84222,7 +84229,7 @@ entities:
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Involved Party] Broker Dealer\". Công ty chứng\
-          \ khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', Id)."
+          \ khoán được UBCKNN cấp phép. Hash: hash_id('FIMS_SECURITIESCOMPANY', ID)."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_INFO
@@ -84246,7 +84253,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Id
+        source_column: FIMS.SECURITIESCOMPANY.ID
         business_meaning: Khóa chính của bản ghi (ID số tự tăng). BK.
         comment: BK chính. Nguồn không có cột mã nghiệp vụ riêng — dùng Id nguồn làm
           BK (cùng pattern FIMS.BANKMONI). Nguồn lưu NUMBER(18,2) — ETL cần convert
@@ -84290,8 +84297,8 @@ entities:
     business_meaning_1st: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
       \ danh mục STATUS)."
     comment_1st: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
-      \ FIMS.STATUS: SECURITIESCOMPANY.StatusId = STATUS.Id để xác nhận Code sau đó\
-      \ hash_id('FIMS_STATUS', Code)."
+      \ FIMS.STATUS: SECURITIESCOMPANY.STATUSID = STATUS.ID để xác nhận Code sau đó\
+      \ hash_id('FIMS_STATUS', CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -84302,18 +84309,18 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.StatusId
+        source_column: FIMS.SECURITIESCOMPANY.STATUSID
         business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng\
           \ danh mục STATUS)."
         comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang\
-          \ FIMS.STATUS: SECURITIESCOMPANY.StatusId = STATUS.Id để xác nhận Code sau\
-          \ đó hash_id('FIMS_STATUS', Code)."
+          \ FIMS.STATUS: SECURITIESCOMPANY.STATUSID = STATUS.ID để xác nhận Code sau\
+          \ đó hash_id('FIMS_STATUS', CODE)."
   - name: Classification FIMS Status Code
     physical_name: cl_fims_status_code
     business_meaning_1st: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong
       bảng danh mục STATUS).
     comment_1st: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi tiết\
+      \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
       \ xem comment Classification FIMS Status Id."
     data_domain_most: Text
     data_type_most: string
@@ -84325,11 +84332,11 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.STATUS.Code
+        source_column: FIMS.STATUS.CODE
         business_meaning: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong
           bảng danh mục STATUS).
         comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.Code sau ETL crosswalk — chi\
+          \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi\
           \ tiết xem comment Classification FIMS Status Id."
   - name: Securities Company Name
     physical_name: sc_nm
@@ -84345,7 +84352,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Name
+        source_column: FIMS.SECURITIESCOMPANY.NAME
         business_meaning: Tên đầy đủ (tiếng Việt).
         comment: null
     - source_system: SCMS
@@ -84368,7 +84375,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.EName
+        source_column: FIMS.SECURITIESCOMPANY.ENAME
         business_meaning: Tên tiếng Anh.
         comment: null
     - source_system: SCMS
@@ -84391,7 +84398,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.ShortName
+        source_column: FIMS.SECURITIESCOMPANY.SHORTNAME
         business_meaning: Tên viết tắt của tổ chức.
         comment: null
     - source_system: SCMS
@@ -84404,8 +84411,8 @@ entities:
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc gia/quốc tịch).
     comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-      \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NaId\
-      \ = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa\
+      \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NAID\
+      \ = NATIONAL.ID để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa\
       \ xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -84417,18 +84424,18 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.NaId
+        source_column: FIMS.SECURITIESCOMPANY.NAID
         business_meaning: FK đến Geographic Area (quốc gia/quốc tịch).
         comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
-          \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NaId\
-          \ = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName)\
+          \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NAID\
+          \ = NATIONAL.ID để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName)\
           \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước\
           \ go-live."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc gia/quốc tịch.
     comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-      \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem comment\
+      \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment\
       \ Nationality Id."
     data_domain_most: Text
     data_type_most: string
@@ -84440,10 +84447,10 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.NATIONAL.SName
+        source_column: FIMS.NATIONAL.SNAME
         business_meaning: Mã quốc gia/quốc tịch.
         comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-          \ Id. Giá trị lấy từ FIMS.NATIONAL.SName sau ETL crosswalk — chi tiết xem\
+          \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem\
           \ comment Nationality Id."
   - name: Charter Capital Amount
     physical_name: charter_capital_amt
@@ -84459,7 +84466,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Capital
+        source_column: FIMS.SECURITIESCOMPANY.CAPITAL
         business_meaning: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
         comment: Nguồn NUMBER(36,2). Dùng chung attribute với SCMS.SC_FIRM_INFO.CHARTER_CAPITAL.
     - source_system: SCMS
@@ -84482,7 +84489,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Director
+        source_column: FIMS.SECURITIESCOMPANY.DIRECTOR
         business_meaning: Họ tên Giám đốc/Tổng giám đốc.
         comment: Denormalized — không có FK.
   - name: Description
@@ -84499,7 +84506,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: SECURITIESCOMPANY
-        source_column: FIMS.SECURITIESCOMPANY.Description
+        source_column: FIMS.SECURITIESCOMPANY.DESCRIPTION
         business_meaning: Mô tả chi tiết / ghi chú bổ sung.
         comment: null
   - name: Parent Securities Company Id
