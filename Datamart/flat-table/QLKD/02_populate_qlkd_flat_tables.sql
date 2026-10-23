@@ -547,6 +547,7 @@ INSERT INTO datamart.qlkd_opr_securities_company_report_data_flat
 SELECT
     -- From: OPR_SECURITIES_COMPANY_REPORT_DATA
     f.rpt_cell_val_id,
+    f.rpt_input_submission_id,
     f.sc_code,
     f.sc_nm,
     f.rpt_code,
