@@ -177,7 +177,7 @@ modules:
     expect_header_contains: ["STT", "Mã dashboard/BC", "Dashboard/báo cáo", "Trạng thái mapping"]
 
   QLKD:
-    expect_columns: 28
+    expect_columns: 27
     ma_column: "PIC"
     sql_columns: ["Câu lệnh tham khảo (SIT)"]
     expect_header_contains:
@@ -196,6 +196,9 @@ modules:
       VD 'Khai thác Dashboard tổng quan...') nên toàn bộ index cũ dịch +1 → 28 cột; STT nay ở index 1, PIC index 2,
       'Câu lệnh tham khảo (SIT)' index 19. Parser tra cột theo TÊN nên không ảnh hưởng; các số index trong ghi chú
       2026-09-18 ở trên là index CŨ (trước khi thêm UC).
+      [CẬP NHẬT 2026-10-22 16:49, xác minh qua header sống: 8164 dòng đều 27 cột, delimiter ',', header dòng 1, legend dòng 2]
+      BA BỎ LẠI cột đầu 'UC' (index 0) → 27 cột; STT về index 0, PIC index 1, 'Trạng thái mapping' index 13, 'Câu lệnh tham khảo (SIT)'
+      index 18, 'Trạng thái' index 19. Số dòng không đổi (8164). Parser tra theo TÊN nên chỉ đổi expect_columns 28 → 27.
 
   TKNB:
     expect_columns: 29
