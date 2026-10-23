@@ -6,16 +6,13 @@
 
 #### Star schema
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : " "
-```
+*Không có relationship line cho K_NDTNN_1–4 — đọc dòng TOTAL của bảng tác nghiệp `Foreign Investor Trading Statistics Report` (từ 2026-10-23, O_NDTNN_55)*
 
 #### Bảng entity
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Snapshot giá trị mua/bán NĐTNN theo mã CK và toàn thị trường | 1 row = 1 mã CK × 1 ngày | K_NDTNN_1-4 |
+| Foreign Investor Trading Statistics Report | Fact (report) | new | Tổng GT mua/bán/toàn thị trường và Tỷ lệ tham gia gồm trái phiếu — dùng lại dòng TOTAL từ Nhóm 14 (BA Mã 1–4 lấy thêm trái phiếu, O_NDTNN_55) | 1 row = 1 ngày × 1 Security_Type_Group | K_NDTNN_1-4 |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 
 ---
@@ -35,7 +32,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Giá trị mua/bán ròng, Top ngành/mã | 1 row = 1 mã CK × 1 ngày | K_NDTNN_4,8-19,259-261 |
+| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Giá trị mua/bán ròng, Top ngành/mã | 1 row = 1 mã CK × 1 ngày | K_NDTNN_8-19,259-261,277 |
 | Securities Dimension | Dimension | new | Danh mục mã chứng khoán | 1 row / mã CK (SCD4A) | — |
 | Public Company Dimension | Dimension | partial | Công ty đại chúng + nhóm ngành — bảng dùng chung GSDC/QLCB, NDTNN chỉ thêm 1 cột delta (Classification Business Line Name) | 1 row / công ty đại chúng (SCD2) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
@@ -116,7 +113,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Foreign Investor Trading Statistics Report | Fact (report) | new | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo nhóm loại CK (trái phiếu chia lẻ 3 loại từ 2026-10-23) | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND_LISTED/BOND_GOVT/BOND_PRIVATE/FUND_CERT/WARRANT/TOTAL) | K_NDTNN_72-83,256-258,271-276 |
+| Foreign Investor Trading Statistics Report | Fact (report) | new | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo nhóm loại CK (trái phiếu chia lẻ 3 loại từ 2026-10-23) | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND_LISTED/BOND_GOVT/BOND_PRIVATE/FUND_CERT/WARRANT/TOTAL) | K_NDTNN_72-83,256-258 (Nhóm 14), K_NDTNN_271-276 (Nhóm 2), K_NDTNN_1-4 (Nhóm 1, dòng TOTAL; cột total_market_val mới 2026-10-23) |
 
 ---
 

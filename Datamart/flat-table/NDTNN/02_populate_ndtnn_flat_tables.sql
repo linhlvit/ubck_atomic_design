@@ -96,6 +96,7 @@ SELECT
     f.security_tp_group,
     f.buy_val,
     f.sell_val,
+    f.total_market_val,
     f.src_stm_code
 
 FROM datamart.foreign_investor_trading_statistics_rpt f

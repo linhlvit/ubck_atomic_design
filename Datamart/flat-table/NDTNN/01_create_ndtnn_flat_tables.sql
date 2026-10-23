@@ -92,6 +92,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_foreign_investor_trading_statistics_rp
     security_tp_group               String                  COMMENT 'Nhóm loại CK — Classification Value nội bộ Datamart: STOCK/BOND_LISTED/BOND_GOVT/BOND_PRIVATE/FUND_CERT/WARRANT/TOTAL (BOND_* = TPDN niêm yết / TPCP / TPDN riêng lẻ HNX09; K_NDTNN_75-77 = SUM 3 loại BOND_*)',
     buy_val                         Decimal(23,2)            COMMENT 'GT NĐTNN mua chứng khoán',
     sell_val                        Decimal(23,2)            COMMENT 'GT NĐTNN bán chứng khoán',
+    total_market_val                             Decimal(23,2)           COMMENT 'Tổng giá trị giao dịch toàn thị trường (mọi nhà đầu tư, KHÔNG lọc NĐTNN) theo từng Security Type Group (7 giá trị) — mẫu số/giá trị thị trường tương ứng với buy_val/sell_val. [MỚI 2026-10-23, BA (Dũng 2026-10-23 Mã 2-4: sửa logic → lấy thêm trái phiếu → final update): K_NDTNN_3 Tổng giá trị giao dịch toàn thị trường (Mã 4) nay gồm cả TPDN niêm yết, TPDN riêng lẻ HNX09 và TPCP nên đọc dòng TOTAL của bảng này — O_NDTNN_55(2)] Phạm vi/nhóm giống buy_val: Securities Trade lấy Execution Value (bỏ điều kiện E/F), Bond Order Book lấy Trading Value (OUTRIGHT) / First Settlement Value (REPO, REPO2) của mọi dòng sổ lệnh, Internal Statistical Report (HNX09) lấy dòng row_path = GIÁ TRỊ GIAO DỊCH (tổng giá trị giao dịch; BA SQL: `tong_gtri`). Đơn vị VND như buy_val/sell_val.',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
