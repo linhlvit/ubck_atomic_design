@@ -42,7 +42,6 @@ SELECT
     dim.end_dt,
     dim.effective_start_dt,
     dim.effective_end_dt,
-    dim.content,
     dim.src_stm_code                    AS inspection_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_inspection_team_activity f
@@ -97,7 +96,6 @@ SELECT
     team_dim.end_dt,
     team_dim.effective_start_dt,
     team_dim.effective_end_dt,
-    team_dim.content,
     team_dim.src_stm_code               AS inspection_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_inspection_team_target_activity f
@@ -317,7 +315,6 @@ SELECT
     team_dim.end_dt,
     team_dim.effective_start_dt,
     team_dim.effective_end_dt,
-    team_dim.content,
     team_dim.src_stm_code               AS inspection_team_src_stm_code,
     TO_CHAR(TO_DATE(:etl_date, 'YYYY-MM-DD'), 'YYYYMMDD') AS data_dt
 FROM datamart.fct_inspection_team_violation_behavior f
