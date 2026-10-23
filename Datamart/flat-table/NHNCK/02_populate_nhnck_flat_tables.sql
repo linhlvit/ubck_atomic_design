@@ -82,7 +82,6 @@ SELECT
     f.snpst_dt_dim_id,
     f.age,
     f.has_active_violation,
-    f.violation_record_dt,
     f.first_license_dt,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)

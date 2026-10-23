@@ -67,7 +67,6 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON C
     snpst_dt_dim_id         String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
     age                     Nullable(Int64)     COMMENT 'Tuổi NHN tại ngày snapshot',
     has_active_violation            String              COMMENT 'TRUE nếu có vi phạm đang hoạt động',
-    violation_record_dt             Nullable(Date)      COMMENT 'Ngày lập biên bản vi phạm',
     first_license_dt                Nullable(Date)      COMMENT 'Ngày cấp CCHN đầu tiên của NHN',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
@@ -161,8 +160,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_list_company_role_fla
     shares_held              Nullable(Int64)     COMMENT 'Số lượng cổ phiếu sở hữu (K_NHNCK_85) — nguồn thật SCMS, không phải NHNCK; NULL nếu không phải cổ đông/người nội bộ',
     account_nbr              Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Số tài khoản (K_NHNCK_87) — nguồn open_investors',
     account_holder_nm        Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Tên chủ tài khoản (K_NHNCK_88) — nguồn open_investors',
-    main_held_securities_code    Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Mã CK nắm giữ chính (K_NHNCK_89) — nguồn major_shareholder',
-    vsdc_held_securities_vol     Nullable(Int64)     COMMENT '(Bổ sung 2026-08-07) Số lượng CK VSDC sở hữu cuối kỳ (K_NHNCK_103) — nguồn major_shareholder',
+    main_held_securities_code    Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Mã CK nắm giữ chính (K_NHNCK_89) — nguồn major_shareholder_ownership',
+    vsdc_held_securities_vol     Nullable(Int64)     COMMENT '(Bổ sung 2026-08-07) Số lượng CK VSDC sở hữu cuối kỳ (K_NHNCK_103) — nguồn major_shareholder_ownership',
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()

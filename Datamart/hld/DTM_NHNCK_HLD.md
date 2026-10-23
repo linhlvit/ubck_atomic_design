@@ -3,7 +3,7 @@
 **Phiên bản:** 6.4  
 **Ngày:** 27/04/2026 (cập nhật 09/09/2026)  
 **Phạm vi:** Tab THỐNG KÊ CHUNG + Tab TRA CỨU HỒ SƠ 360° + Tab DATA EXPLORER
-**Thay đổi v6.4 (09/09/2026 — đồng bộ HLD theo `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`, sau khi LLD/flat-table đã được cập nhật trước đó nhưng HLD bị bỏ sót):** Bổ sung 2 cột kỹ thuật lên `Fact Practitioner Daily Snapshot` (erDiagram tại cả 3 Nhóm dùng chung — 1b/2/4): `Violation_Record_Date` (pass-through `sp_conduct_violation.violation_record_dt`) và `First_License_Date` (`MIN(issue_dt)` từ `atm_sp_license_certificate_document`). Không khai KPI mới — BA hiện hành không có chỉ tiêu tương ứng ở Nhóm 1b/2/4; giữ làm attribute nền tảng, xem ghi chú tại từng Nhóm.
+**Thay đổi v6.4 (09/09/2026 — đồng bộ HLD theo `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`, sau khi LLD/flat-table đã được cập nhật trước đó nhưng HLD bị bỏ sót):** Bổ sung 2 cột kỹ thuật lên `Fact Practitioner Daily Snapshot` (erDiagram tại cả 3 Nhóm dùng chung — 1b/2/4): `First_License_Date` (cột `Violation_Record_Date` đã gỡ 23/10/2026 — Atomic `sp_violation` không còn ngày lập biên bản) (`MIN(issue_dt)` từ `atm_sp_license_certificate_document`). Không khai KPI mới — BA hiện hành không có chỉ tiêu tương ứng ở Nhóm 1b/2/4; giữ làm attribute nền tảng, xem ghi chú tại từng Nhóm.
 
 ---
 
@@ -76,7 +76,7 @@ flowchart LR
 
     subgraph SIL["Atomic"]
         Securities_Practitioner["Securities Practitioner"]
-        Securities_Practitioner_Conduct_Violation["Securities Practitioner Conduct Violation"]
+        Securities_Practitioner_Conduct_Violation["Securities Practitioner Violation"]
         Calendar_Date["Calendar Date"]
     end
 
@@ -267,7 +267,7 @@ flowchart LR
     end
 
     subgraph SIL["Atomic"]
-        SV1["Securities Practitioner Conduct Violation"]
+        SV1["Securities Practitioner Violation"]
         SV2["Securities Practitioner License Decision Document"]
     end
 
@@ -536,7 +536,7 @@ flowchart LR
 
 > Phân loại: **Phân tích**
 > Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
-> Atomic: `Securities Practitioner Conduct Violation` ← NHNCK.Violations — **READY**
+> Atomic: `Securities Practitioner Violation` ← NHNCK.Violations — **READY**
 
 **Mockup:**
 
@@ -568,7 +568,6 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         int Age
         varchar Has_Active_Violation
-        date Violation_Record_Date
         date First_License_Date
     }
 
@@ -597,8 +596,8 @@ erDiagram
 ```
 
 > **Ghi chú erDiagram:**
-> - `Has_Active_Violation` = ETL-derived Indicator (Y/N): Y nếu NHN có ít nhất 1 bản ghi `Conduct Violation` (bất kỳ), N nếu không có — bám sát SQL BA gốc (`JOIN Violations`, không filter trạng thái). Phục vụ K_NHNCK_4 (filter = 'Y'). (Sửa 2026-07-17: đổi từ boolean sang Y/N cho đúng data domain Indicator; Sửa 2026-07-21: bỏ mô tả "đang active" — Atomic `sp_conduct_violation` không có field trạng thái vi phạm và SQL BA cũng không yêu cầu lọc, xem O_NHNCK_5)
-> - **[MỚI 2026-09-08, đồng bộ code↔design]** `Violation_Record_Date` = ETL-derived Date, pass-through `Conduct Violation.Violation Record Date` (LEFT JOIN theo Practitioner Id, không lọc trạng thái — cùng driving key với `Has_Active_Violation`). Cột kỹ thuật hỗ trợ hiển thị chi tiết, KHÔNG phải KPI riêng, không đổi logic K_NHNCK_4. Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
+> - `Has_Active_Violation` = ETL-derived Indicator (Y/N): Y nếu NHN có ít nhất 1 bản ghi `Conduct Violation` (bất kỳ), N nếu không có — bám sát SQL BA gốc (`JOIN Violations`, không filter trạng thái). Phục vụ K_NHNCK_4 (filter = 'Y'). (Sửa 2026-07-17: đổi từ boolean sang Y/N cho đúng data domain Indicator; Sửa 2026-07-21: bỏ mô tả "đang active" — Atomic `sp_violation` không có field trạng thái vi phạm và SQL BA cũng không yêu cầu lọc, xem O_NHNCK_5)
+> - **[GỠ 2026-10-23 — Atomic chốt]** Cột `Violation_Record_Date` đã gỡ khỏi `Fact Practitioner Daily Snapshot`: Atomic `sp_violation` (NHNCK.VIOLATIONS) không còn ngày lập biên bản vi phạm; 0 KPI dùng cột này. Không đổi logic K_NHNCK_4.
 > - **[MỚI 2026-09-08, đồng bộ code↔design]** `First_License_Date` = ETL-derived Date, `MIN(Issue Date)` từ `License Certificate Document` (lọc `Source System Code='NHNCK_CERTIFICATE_RECORDS'`, `Record Status='ACTIVE'`) GROUP BY NHN — Ngày cấp CCHN đầu tiên. Chưa gắn KPI/dashboard nào trong BA hiện hành (BA không có dòng con nào yêu cầu chỉ tiêu này ở Nhóm 1b/2/4) — giữ làm attribute nền tảng, cần BA xác nhận nếu muốn khai KPI mới (VD: thâm niên hành nghề). Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
 > - `Age` = ETL-derived: Year(Snapshot_Date) − Year(Birth_Date). Phục vụ Nhóm 4.
 
@@ -669,7 +668,6 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         int Age
         varchar Has_Active_Violation
-        date Violation_Record_Date
         date First_License_Date
     }
 
@@ -701,7 +699,7 @@ erDiagram
 > - Grain ngày: ETL append 1 row per NHN mỗi ngày. Slicer "chọn năm Y" = filter `Snapshot_Date = 31/12/Y` (năm quá khứ) hoặc `Snapshot_Date = MAX(Snapshot_Date) WHERE Year = Y` (năm hiện tại = ngày mới nhất có dữ liệu).
 > - `Age` = ETL-derived int = Year(Snapshot_Date) − Year(Birth_Date), tính từ `ProfessionalHistories.BirthDate`. Presentation layer tự nhóm thành age bands.
 > - `Has_Active_Violation` = ETL-derived Indicator (Y/N): Y nếu NHN có ít nhất 1 bản ghi `Conduct Violation` (bất kỳ), N nếu không có — bám sát SQL BA gốc (`JOIN Violations`, không filter trạng thái). Xem O_NHNCK_5. Phục vụ K_NHNCK_4 (filter = 'Y'). (Sửa 2026-07-17: đổi từ boolean sang Y/N; Sửa 2026-07-21: bỏ mô tả "Violation_Status_Code=1 (ACTIVE)" — Atomic không có field này và SQL BA cũng không yêu cầu lọc trạng thái)
-> - **[MỚI 2026-09-08, đồng bộ code↔design]** `Violation_Record_Date` = ETL-derived Date, pass-through `Conduct Violation.Violation Record Date` (LEFT JOIN theo Practitioner Id, không lọc trạng thái — cùng driving key với `Has_Active_Violation`). Cột kỹ thuật hỗ trợ hiển thị chi tiết, KHÔNG phải KPI riêng, không đổi logic K_NHNCK_4. Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
+> - **[GỠ 2026-10-23 — Atomic chốt]** Cột `Violation_Record_Date` đã gỡ khỏi `Fact Practitioner Daily Snapshot`: Atomic `sp_violation` (NHNCK.VIOLATIONS) không còn ngày lập biên bản vi phạm; 0 KPI dùng cột này. Không đổi logic K_NHNCK_4.
 > - **[MỚI 2026-09-08, đồng bộ code↔design]** `First_License_Date` = ETL-derived Date, `MIN(Issue Date)` từ `License Certificate Document` (lọc `Source System Code='NHNCK_CERTIFICATE_RECORDS'`, `Record Status='ACTIVE'`) GROUP BY NHN — Ngày cấp CCHN đầu tiên. Chưa gắn KPI/dashboard nào trong BA hiện hành (BA không có dòng con nào yêu cầu chỉ tiêu này ở Nhóm 1b/2/4) — giữ làm attribute nền tảng, cần BA xác nhận nếu muốn khai KPI mới (VD: thâm niên hành nghề). Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
 > - Thông tin Education_Level_Code/Name, Nationality_Code, Practitioner_Code, Practice_Status_Code/Name đọc qua JOIN `Securities Practitioner Dimension`. (Bổ sung 2026-08) `Education_Level_Name`/`Practice_Status_Name` — ETL-derived, denormalize từ Classification tại thời điểm populate Dimension; không gắn KPI riêng, chỉ là metadata mô tả bổ sung theo coverage rule cho Dimension.
 
@@ -881,7 +879,6 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         int Age
         varchar Has_Active_Violation
-        date Violation_Record_Date
         date First_License_Date
     }
 
@@ -913,7 +910,7 @@ erDiagram
 > - Grain ngày: ETL append 1 row per NHN mỗi ngày. Slicer "chọn năm Y" = filter `Snapshot_Date = 31/12/Y` (năm quá khứ) hoặc `Snapshot_Date = MAX(Snapshot_Date) WHERE Year = Y` (năm hiện tại = ngày mới nhất có dữ liệu).
 > - `Age` = ETL-derived int = Year(Snapshot_Date) − Year(Birth_Date), tính từ `ProfessionalHistories.BirthDate`. Presentation layer tự nhóm thành age bands.
 > - `Has_Active_Violation` = ETL-derived Indicator (Y/N): Y nếu NHN có ít nhất 1 bản ghi `Conduct Violation` (bất kỳ), N nếu không có — bám sát SQL BA gốc (`JOIN Violations`, không filter trạng thái). Xem O_NHNCK_5. Phục vụ K_NHNCK_4 (filter = 'Y'). (Sửa 2026-07-17: đổi từ boolean sang Y/N; Sửa 2026-07-21: bỏ mô tả "Violation_Status_Code=1 (ACTIVE)" — Atomic không có field này và SQL BA cũng không yêu cầu lọc trạng thái)
-> - **[MỚI 2026-09-08, đồng bộ code↔design]** `Violation_Record_Date` = ETL-derived Date, pass-through `Conduct Violation.Violation Record Date` (LEFT JOIN theo Practitioner Id, không lọc trạng thái — cùng driving key với `Has_Active_Violation`). Cột kỹ thuật hỗ trợ hiển thị chi tiết, KHÔNG phải KPI riêng, không đổi logic K_NHNCK_4. Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
+> - **[GỠ 2026-10-23 — Atomic chốt]** Cột `Violation_Record_Date` đã gỡ khỏi `Fact Practitioner Daily Snapshot`: Atomic `sp_violation` (NHNCK.VIOLATIONS) không còn ngày lập biên bản vi phạm; 0 KPI dùng cột này. Không đổi logic K_NHNCK_4.
 > - **[MỚI 2026-09-08, đồng bộ code↔design]** `First_License_Date` = ETL-derived Date, `MIN(Issue Date)` từ `License Certificate Document` (lọc `Source System Code='NHNCK_CERTIFICATE_RECORDS'`, `Record Status='ACTIVE'`) GROUP BY NHN — Ngày cấp CCHN đầu tiên. Chưa gắn KPI/dashboard nào trong BA hiện hành (BA không có dòng con nào yêu cầu chỉ tiêu này ở Nhóm 1b/2/4) — giữ làm attribute nền tảng, cần BA xác nhận nếu muốn khai KPI mới (VD: thâm niên hành nghề). Xem `BRD/BA/NHNCK_CodeDriftReport_2026-09-04 1.md`
 > - Thông tin Education_Level_Code/Name, Nationality_Code, Practitioner_Code, Practice_Status_Code/Name đọc qua JOIN `Securities Practitioner Dimension`. (Bổ sung 2026-08) `Education_Level_Name`/`Practice_Status_Name` — ETL-derived, denormalize từ Classification tại thời điểm populate Dimension; không gắn KPI riêng, chỉ là metadata mô tả bổ sung theo coverage rule cho Dimension.
 
@@ -1121,8 +1118,8 @@ flowchart LR
 > Phân loại: **Tác nghiệp** (2 bảng tác nghiệp riêng biệt)
 > Atomic chính (K_NHNCK_81/82/84 — Sửa 2026-08-12): `Securities Company` (`securities_company`) ← SCMS.SC_FIRM_INFO — **READY**; `Securities Company Shareholder` (`sc_shareholder`) ← SCMS.SC_FIRM_SHAREHOLDER — **READY** (`sc_shareholder.sc_id` là FK trực tiếp tới `securities_company`, không cần entity trung gian). Cầu nối CCCD: `Involved Party Alternative Identification` (`ip_alternative_identification`, nguồn NHNCK.PROFESSIONALS và SCMS.SC_FIRM_SHAREHOLDER) — **READY**.
 > Atomic phụ (K_NHNCK_85): `Securities Company Shareholder` (`sc_shareholder`) ← SCMS.SC_FIRM_SHAREHOLDER — **READY**; `Involved Party Alternative Identification` (`ip_alternative_identification`, nguồn NHNCK.PROFESSIONALS và nguồn SCMS.SC_FIRM_SHAREHOLDER) — **READY**, dùng làm cầu nối xác định đúng NHN theo CCCD giữa 2 hệ nguồn, có FK trực tiếp (`ip_id`) tới `sc_shareholder`. (Sửa 2026-07-20) Đã bỏ `Sc Insider Related Person` khỏi chuỗi join — entity này không có FK trực tiếp tới `sc_shareholder`, join qua `sc_id` (CTCK) chỉ đảm bảo cùng công ty chứng khoán, không xác định đúng người và gây fan-out
-> Atomic phụ (K_NHNCK_87/88/89/103 — Sửa 2026-08-11): `discretionary_investment_account` và `major_shareholder` — cấu trúc bảng (DDL `atomic.uat_atm.discretionary_investment_account`, `atomic.uat_atm.major_shareholder`) do Atomic designer gửi trực tiếp, chưa có file YAML LLD chính thức trong `DataModel/Atomic/`. Khác ngoại lệ "coi tên BA ghi là Atomic thật" trước đây (`open_investors`) — đây là cấu trúc Atomic thật do người thiết kế Atomic xác nhận, chỉ chờ hoàn thiện YAML LLD. `open_investors` (VSDC/MSS placeholder cũ) đã được thay thế hoàn toàn bởi `discretionary_investment_account`; `major_shareholder` giữ tên bảng nhưng đổi toàn bộ tên cột sang chuẩn Atomic (xem ghi chú schema bên dưới). Xem O_NHNCK_33.
-> Ghi chú: Panel "Vai trò tại DN niêm yết" và panel "Mạng lưới người liên quan" là 2 bảng tác nghiệp độc lập. **(Sửa 2026-08-12, K_NHNCK_81/82/84)** BA đổi nguồn từ `Securities Practitioner Organization Employment Report` (NHNCK.ORGANIZATION_REPORTS) sang chuỗi SCMS: nối CCCD qua `ip_alternative_identification` trực tiếp tới `sc_shareholder`, rồi lấy `securities_company` qua FK có sẵn `sc_shareholder.sc_id`. SQL BA tham khảo đi qua `SC_FIRM_INSIDER_RELATION` trước rồi mới join `SC_FIRM_INFO_ID` sang `SC_FIRM_SHAREHOLDER` (qua `sc_id`/CTCK) — pattern này (a) đúng là fan-out đã bị bác bỏ ngày 2026-07-20 cho K_NHNCK_85 (join qua CTCK không xác định đúng người), và (b) hoàn toàn không cần thiết vì `sc_shareholder.sc_id` đã là FK trực tiếp tới `securities_company` — không cần qua `sc_insider_related_person` để lấy thông tin công ty. Người thiết kế xác nhận sửa lại: nối `securities_practitioner` ↔ `sc_shareholder` qua CCCD (`ip_alternative_identification.identification_nbr`, 2 hop — nguồn NHNCK rồi nguồn SCMS.SC_FIRM_SHAREHOLDER), filter `sc_shareholder.individual_ind = 1` (tương ứng `s.INDIVIDUAL='1'` trong SQL BA), rồi lấy `securities_company` trực tiếp qua `sc_shareholder.sc_id` filter `listed_ind=1` — nhất quán hoàn toàn với chuỗi join K_NHNCK_85 đã dùng, bỏ hẳn `sc_insider_related_person` khỏi thiết kế Nhóm 7. **(Sửa 2026-08-12, lần 2)** BA cập nhật tiếp BA_analyst_NHNCK.csv, bỏ hẳn điều kiện `AND i.LISTING_EXCHANGE = 'UPCOM'` khỏi SQL tham khảo — phạm vi mở rộng từ "chỉ DN niêm yết sàn UPCOM" sang "mọi DN niêm yết" (HOSE/HNX/UPCOM), chỉ còn filter `listed_ind = 1`. Đổi tên KPI bỏ chữ "UPCOM" cho khớp phạm vi mới: K_NHNCK_81 "Tên DN niêm yết/UPCOM" → "Tên DN niêm yết"; K_NHNCK_82 (dòng reuse Nhóm 6) "Vai trò NHN tại DN niêm yết/UPCOM" → "Vai trò NHN tại DN niêm yết". Xem O_NHNCK_34. K_NHNCK_85 "Số lượng cổ phiếu sở hữu" đã xác nhận nguồn thật là SCMS (không phải VSDC) — chuyển READY, xem O_NHNCK_6. Sửa tên attribute: `Workplace Name` → `Practitioner Workplace At Report`; `Position Name` → `Practitioner Position At Report` (theo YAML `sp_organization_employment_report`) — **chỉ còn áp dụng cho Nhóm 8 (Quá trình hành nghề)**, không còn dùng cho Nhóm 7 sau khi đổi nguồn. **(Sửa 2026-08-07)** Panel "Tài khoản & Số dư" (K_NHNCK_87/88/89/103) chuyển từ PENDING sang READY — BA đã bổ sung tên bảng/cột nguồn cụ thể. **(Sửa 2026-08-11)** Cập nhật lại theo DDL Atomic thật: `discretionary_investment_account` thay `open_investors`; `major_shareholder` đổi tên cột (`ma_ck`→`securities_code`, `so_luong_ck_cuoi_ky`→`closing_security_quantity`); khóa join CCCD đổi từ `so_dang_ky_so_huu` sang `identification_nbr` trên cả 2 bảng. Filter "chỉ tài khoản cá nhân" nay qua `investment_account_tp_code IN ('3','4')` — xem O_NHNCK_33.
+> Atomic phụ (K_NHNCK_87/88/89/103 — Sửa 2026-08-11): `open_investor_account` và `major_shareholder_ownership` — cấu trúc bảng (DDL `atomic.uat_atm.open_investor_account`, `atomic.uat_atm.major_shareholder_ownership`) do Atomic designer gửi trực tiếp, chưa có file YAML LLD chính thức trong `DataModel/Atomic/`. Khác ngoại lệ "coi tên BA ghi là Atomic thật" trước đây (`open_investors`) — đây là cấu trúc Atomic thật do người thiết kế Atomic xác nhận, chỉ chờ hoàn thiện YAML LLD. `open_investors` (VSDC/MSS placeholder cũ) đã được thay thế hoàn toàn bởi `open_investor_account`; `major_shareholder_ownership` giữ tên bảng nhưng đổi toàn bộ tên cột sang chuẩn Atomic (xem ghi chú schema bên dưới). Xem O_NHNCK_33.
+> Ghi chú: Panel "Vai trò tại DN niêm yết" và panel "Mạng lưới người liên quan" là 2 bảng tác nghiệp độc lập. **(Sửa 2026-08-12, K_NHNCK_81/82/84)** BA đổi nguồn từ `Securities Practitioner Organization Employment Report` (NHNCK.ORGANIZATION_REPORTS) sang chuỗi SCMS: nối CCCD qua `ip_alternative_identification` trực tiếp tới `sc_shareholder`, rồi lấy `securities_company` qua FK có sẵn `sc_shareholder.sc_id`. SQL BA tham khảo đi qua `SC_FIRM_INSIDER_RELATION` trước rồi mới join `SC_FIRM_INFO_ID` sang `SC_FIRM_SHAREHOLDER` (qua `sc_id`/CTCK) — pattern này (a) đúng là fan-out đã bị bác bỏ ngày 2026-07-20 cho K_NHNCK_85 (join qua CTCK không xác định đúng người), và (b) hoàn toàn không cần thiết vì `sc_shareholder.sc_id` đã là FK trực tiếp tới `securities_company` — không cần qua `sc_insider_related_person` để lấy thông tin công ty. Người thiết kế xác nhận sửa lại: nối `securities_practitioner` ↔ `sc_shareholder` qua CCCD (`ip_alternative_identification.identification_nbr`, 2 hop — nguồn NHNCK rồi nguồn SCMS.SC_FIRM_SHAREHOLDER), filter `sc_shareholder.individual_ind = 1` (tương ứng `s.INDIVIDUAL='1'` trong SQL BA), rồi lấy `securities_company` trực tiếp qua `sc_shareholder.sc_id` filter `listed_ind=1` — nhất quán hoàn toàn với chuỗi join K_NHNCK_85 đã dùng, bỏ hẳn `sc_insider_related_person` khỏi thiết kế Nhóm 7. **(Sửa 2026-08-12, lần 2)** BA cập nhật tiếp BA_analyst_NHNCK.csv, bỏ hẳn điều kiện `AND i.LISTING_EXCHANGE = 'UPCOM'` khỏi SQL tham khảo — phạm vi mở rộng từ "chỉ DN niêm yết sàn UPCOM" sang "mọi DN niêm yết" (HOSE/HNX/UPCOM), chỉ còn filter `listed_ind = 1`. Đổi tên KPI bỏ chữ "UPCOM" cho khớp phạm vi mới: K_NHNCK_81 "Tên DN niêm yết/UPCOM" → "Tên DN niêm yết"; K_NHNCK_82 (dòng reuse Nhóm 6) "Vai trò NHN tại DN niêm yết/UPCOM" → "Vai trò NHN tại DN niêm yết". Xem O_NHNCK_34. K_NHNCK_85 "Số lượng cổ phiếu sở hữu" đã xác nhận nguồn thật là SCMS (không phải VSDC) — chuyển READY, xem O_NHNCK_6. Sửa tên attribute: `Workplace Name` → `Practitioner Workplace At Report`; `Position Name` → `Practitioner Position At Report` (theo YAML `sp_organization_employment_report`) — **chỉ còn áp dụng cho Nhóm 8 (Quá trình hành nghề)**, không còn dùng cho Nhóm 7 sau khi đổi nguồn. **(Sửa 2026-08-07)** Panel "Tài khoản & Số dư" (K_NHNCK_87/88/89/103) chuyển từ PENDING sang READY — BA đã bổ sung tên bảng/cột nguồn cụ thể. **(Sửa 2026-08-11)** Cập nhật lại theo DDL Atomic thật: `open_investor_account` thay `open_investors`; `major_shareholder_ownership` đổi tên cột (`ma_ck`→`securities_code`, `so_luong_ck_cuoi_ky`→`closing_security_quantity`); khóa join CCCD đổi từ `so_dang_ky_so_huu` sang `identification_nbr` trên cả 2 bảng. Filter "chỉ tài khoản cá nhân" nay qua `investment_account_tp_code IN ('3','4')` — xem O_NHNCK_33.
 
 **Bảng KPI:**
 
@@ -1137,10 +1134,10 @@ flowchart LR
 | K_NHNCK_76 | Mối quan hệ | Base | READY | `Securities Practitioner Related Party`.Relationship Type Code — ETL denormalize Relationship Type Name (scheme: RELATIONSHIP_TYPE) khi populate bảng | Reuse từ Nhóm 6 |
 | K_NHNCK_77 | Nghề nghiệp người liên quan | Base | READY | `Securities Practitioner Related Party`.Related Individual Occupation | Reuse từ Nhóm 6 |
 | K_NHNCK_79 | CCCD/CMND người liên quan | Base | READY | `Securities Practitioner Related Party`.Related Individual Identity Number | (Sửa 2026-08) Reuse từ Nhóm 6 — đóng O_NHNCK_11 |
-| K_NHNCK_87 | Số tài khoản | Base | READY | `discretionary_investment_account`.`investment_account_nbr` | (Sửa 2026-08-11) Đổi nguồn từ `open_investors.ma_tkgd` sang `discretionary_investment_account.investment_account_nbr` theo DDL Atomic mới — xem O_NHNCK_33 |
-| K_NHNCK_88 | Tên chủ tài khoản | Base | READY | `discretionary_investment_account`.`investor_nm` | (Sửa 2026-08-11) Đổi nguồn từ `open_investors.ten_khach_hang` sang `discretionary_investment_account.investor_nm` — xem ghi chú K_NHNCK_87 |
-| K_NHNCK_89 | Mã CK nắm giữ chính | Base | READY | `major_shareholder`.`securities_code` | (Sửa 2026-08-11) Đổi tên cột từ `ma_ck` sang `securities_code` theo DDL Atomic mới — xem ghi chú K_NHNCK_87 |
-| K_NHNCK_103 | Số lượng chứng khoán VSDC sở hữu (Cuối kỳ) | Base | READY | `major_shareholder`.`closing_security_quantity` | (Thêm 2026-07-20) BA row 60, cùng nguồn `VSDC_BM 8` với K_NHNCK_89 — BA quên điền tên KPI ở cột "Thông tin", đã bổ sung theo "Trường nguồn". (Sửa 2026-08-11) Đổi tên cột từ `so_luong_ck_cuoi_ky` sang `closing_security_quantity` — xem ghi chú K_NHNCK_87 |
+| K_NHNCK_87 | Số tài khoản | Base | READY | `open_investor_account`.`investment_account_nbr` | (Sửa 2026-08-11) Đổi nguồn từ `open_investors.ma_tkgd` sang `open_investor_account.investor_account_nbr` theo DDL Atomic mới — xem O_NHNCK_33 |
+| K_NHNCK_88 | Tên chủ tài khoản | Base | READY | `open_investor_account`.`investor_nm` | (Sửa 2026-08-11) Đổi nguồn từ `open_investors.ten_khach_hang` sang `open_investor_account.investor_nm` — xem ghi chú K_NHNCK_87 |
+| K_NHNCK_89 | Mã CK nắm giữ chính | Base | READY | `major_shareholder_ownership`.`securities_code` | (Sửa 2026-08-11) Đổi tên cột từ `ma_ck` sang `securities_code` theo DDL Atomic mới — xem ghi chú K_NHNCK_87 |
+| K_NHNCK_103 | Số lượng chứng khoán VSDC sở hữu (Cuối kỳ) | Base | READY | `major_shareholder_ownership`.`closing_security_quantity` | (Thêm 2026-07-20) BA row 60, cùng nguồn `VSDC_BM 8` với K_NHNCK_89 — BA quên điền tên KPI ở cột "Thông tin", đã bổ sung theo "Trường nguồn". (Sửa 2026-08-11) Đổi tên cột từ `so_luong_ck_cuoi_ky` sang `closing_security_quantity` — xem ghi chú K_NHNCK_87 |
 
 **Schema bảng tác nghiệp:**
 
@@ -1162,7 +1159,7 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema Nhóm 7 (Sửa 2026-08-12):** Đổi toàn bộ nguồn K_NHNCK_81/82/83/84/85 từ `Securities Practitioner Organization Employment Report` (NHNCK.ORGANIZATION_REPORTS) sang chuỗi SCMS — xem O_NHNCK_34. Chuỗi join dùng chung cho mọi KPI của Cụm này: `Securities Practitioner` → CCCD (`Involved Party Alternative Identification.identification_nbr`, nguồn NHNCK.PROFESSIONALS) → CCCD lần 2 (nguồn SCMS.SC_FIRM_SHAREHOLDER) → `Securities Company Shareholder` (filter `Individual Indicator = 1`) → `Securities Company` **trực tiếp qua FK có sẵn `Securities Company Shareholder.Securities Company Id`** (lọc `Listed Indicator=1`). **(Sửa 2026-08-12, lần 2)** BA bỏ điều kiện `Listing Exchange Code='UPCOM'` — phạm vi mở rộng sang mọi DN niêm yết (HOSE/HNX/UPCOM), không còn giới hạn riêng sàn UPCOM. Đổi tên K_NHNCK_81 bỏ chữ "UPCOM". **Không dùng `Securities Company Insider Related Person`** — ban đầu có cân nhắc dùng entity này để bắc cầu sang `Securities Company` (theo đúng SQL BA tham khảo, join `SC_FIRM_INSIDER_RELATION` trước), nhưng xác nhận lại: (1) `sc_shareholder.sc_id` đã là FK trực tiếp tới `securities_company`, không cần entity trung gian; (2) SQL BA tham khảo join `sc_id⟷sc_id` giữa `sc_insider_related_person`/`sc_shareholder` là đúng pattern fan-out đã bị bác bỏ ngày 2026-07-20 cho K_NHNCK_85 (join qua CTCK không xác định đúng người). Loại hẳn entity này khỏi thiết kế Cụm 5/Nhóm 7. `Securities_Company_Short_Name` (K_NHNCK_81) + `Securities_Company_Code` (K_NHNCK_84, đồng thời là BK phần 2) lấy từ `Securities Company` ở cuối chuỗi. `Representative_Position` (K_NHNCK_82) và `Shares_Held` (K_NHNCK_85) lấy trực tiếp từ `Securities Company Shareholder` (không cần join thêm `Securities Company`). `Practice_Status_Code` (K_NHNCK_83) ETL từ `Securities Practitioner.Practice Status Code` (NHNCK.PROFESSIONALS, denormalize STATUS_WORK — không lấy từ `sp_reason_change_history`/PROFESSIONAL_HISTORIES vì Atomic không lưu field này ở đó), không cần JOIN thêm vì đã có sẵn trên driving table. NULL ở `Shares_Held` nếu NHN không phải cổ đông của DN niêm yết đang xét. **(Sửa 2026-08-11)** `Account_Number`/`Account_Holder_Name` (K_NHNCK_87/88) direct từ `discretionary_investment_account` (`investment_account_nbr`/`investor_nm`), join `discretionary_investment_account.identification_nbr = practitioner_identity_nbr_at_rpt` filter `investment_account_tp_code IN ('3','4')` (Sửa 2026-08-12, xem O_NHNCK_33); `Main_Held_Securities_Code`/`Vsdc_Held_Securities_Volume` (K_NHNCK_89/103) direct từ `major_shareholder` (`securities_code`/`closing_security_quantity`), join `major_shareholder.identification_nbr = discretionary_investment_account.identification_nbr`. DDL 2 bảng này do Atomic designer gửi trực tiếp (`atomic.uat_atm.discretionary_investment_account`, `atomic.uat_atm.major_shareholder`), thay thế hoàn toàn `open_investors`/`major_shareholder` (cột cũ) đã dùng trước đây — xem O_NHNCK_33. Chưa có YAML LLD chính thức nên chưa qua `join_atomic` kiểm chứng FK theo quy trình chuẩn.
+> **Ghi chú schema Nhóm 7 (Sửa 2026-08-12):** Đổi toàn bộ nguồn K_NHNCK_81/82/83/84/85 từ `Securities Practitioner Organization Employment Report` (NHNCK.ORGANIZATION_REPORTS) sang chuỗi SCMS — xem O_NHNCK_34. Chuỗi join dùng chung cho mọi KPI của Cụm này: `Securities Practitioner` → CCCD (`Involved Party Alternative Identification.identification_nbr`, nguồn NHNCK.PROFESSIONALS) → CCCD lần 2 (nguồn SCMS.SC_FIRM_SHAREHOLDER) → `Securities Company Shareholder` (filter `Individual Indicator = 1`) → `Securities Company` **trực tiếp qua FK có sẵn `Securities Company Shareholder.Securities Company Id`** (lọc `Listed Indicator=1`). **(Sửa 2026-08-12, lần 2)** BA bỏ điều kiện `Listing Exchange Code='UPCOM'` — phạm vi mở rộng sang mọi DN niêm yết (HOSE/HNX/UPCOM), không còn giới hạn riêng sàn UPCOM. Đổi tên K_NHNCK_81 bỏ chữ "UPCOM". **Không dùng `Securities Company Insider Related Person`** — ban đầu có cân nhắc dùng entity này để bắc cầu sang `Securities Company` (theo đúng SQL BA tham khảo, join `SC_FIRM_INSIDER_RELATION` trước), nhưng xác nhận lại: (1) `sc_shareholder.sc_id` đã là FK trực tiếp tới `securities_company`, không cần entity trung gian; (2) SQL BA tham khảo join `sc_id⟷sc_id` giữa `sc_insider_related_person`/`sc_shareholder` là đúng pattern fan-out đã bị bác bỏ ngày 2026-07-20 cho K_NHNCK_85 (join qua CTCK không xác định đúng người). Loại hẳn entity này khỏi thiết kế Cụm 5/Nhóm 7. `Securities_Company_Short_Name` (K_NHNCK_81) + `Securities_Company_Code` (K_NHNCK_84, đồng thời là BK phần 2) lấy từ `Securities Company` ở cuối chuỗi. `Representative_Position` (K_NHNCK_82) và `Shares_Held` (K_NHNCK_85) lấy trực tiếp từ `Securities Company Shareholder` (không cần join thêm `Securities Company`). `Practice_Status_Code` (K_NHNCK_83) ETL từ `Securities Practitioner.Practice Status Code` (NHNCK.PROFESSIONALS, denormalize STATUS_WORK — không lấy từ `sp_reason_change_history`/PROFESSIONAL_HISTORIES vì Atomic không lưu field này ở đó), không cần JOIN thêm vì đã có sẵn trên driving table. NULL ở `Shares_Held` nếu NHN không phải cổ đông của DN niêm yết đang xét. **(Sửa 2026-08-11)** `Account_Number`/`Account_Holder_Name` (K_NHNCK_87/88) direct từ `open_investor_account` (`investment_account_nbr`/`investor_nm`), join `open_investor_account.identification_nbr = practitioner_identity_nbr_at_rpt` filter `investment_account_tp_code IN ('3','4')` (Sửa 2026-08-12, xem O_NHNCK_33); `Main_Held_Securities_Code`/`Vsdc_Held_Securities_Volume` (K_NHNCK_89/103) direct từ `major_shareholder_ownership` (`securities_code`/`closing_security_quantity`), join `major_shareholder_ownership.identification_nbr = open_investor_account.identification_nbr`. DDL 2 bảng này do Atomic designer gửi trực tiếp (`atomic.uat_atm.open_investor_account`, `atomic.uat_atm.major_shareholder_ownership`), thay thế hoàn toàn `open_investors`/`major_shareholder_ownership` (cột cũ) đã dùng trước đây — xem O_NHNCK_33. Chưa có YAML LLD chính thức nên chưa qua `join_atomic` kiểm chứng FK theo quy trình chuẩn.
 
 **Lineage Mart → Báo cáo — Nhóm 7:**
 
@@ -1494,7 +1491,7 @@ flowchart LR
 #### Nhóm 12 — Sub-tab Lịch sử vi phạm & xử phạt hành chính
 
 > Phân loại: **Tác nghiệp**
-> Atomic: `Securities Practitioner Conduct Violation` ← NHNCK.Violations — **READY**
+> Atomic: `Securities Practitioner Violation` ← NHNCK.Violations — **READY**
 > Atomic: `Securities Practitioner License Decision Document` ← NHNCK.Decisions — **READY**
 
 **Mockup:**
@@ -1513,9 +1510,9 @@ flowchart LR
 |---|---|---|---|---|---|
 | K_NHNCK_54 | Số quyết định xử phạt | Text | Base | `Securities Practitioner License Decision Document`.Decision Number (`decision_nbr`) ← DECISIONS.DECISION_NUMBER | |
 | K_NHNCK_55 | Ngày quyết định | Date | Base | `Securities Practitioner License Decision Document`.Decision Signed Date (`decision_signed_dt`) ← DECISIONS.SIGNED_DATE | |
-| K_NHNCK_56 | Nội dung vi phạm | Text | Base | `Securities Practitioner Conduct Violation`.Note (`note`) ← VIOLATIONS.Note | nullable |
-| K_NHNCK_57 | Hình thức xử phạt | Text | Base | (Sửa 2026-08) `Securities Practitioner Conduct Violation`.Violation Type Code — Atomic đã có `violation_tp_code` (scheme VIOLATION_TYPE: 1=Hành chính/ADMINISTRATIVE, 2=Pháp luật/LEGAL). Đóng O_NHNCK_17. | |
-| K_NHNCK_58 | Trạng thái vi phạm | Text | Base | (Sửa 2026-08) `Securities Practitioner Conduct Violation`.Violation Status Code — Atomic đã có `violation_status_code` (scheme VIOLATION_STATUS: 1=ACTIVE, 0=INACTIVE, -1=DELETED). Đóng O_NHNCK_15. | BA xác nhận lại (đã hỏi Liên - Tinh Vân): chỉ 3 mức kỹ thuật, KHÔNG phải 6 trạng thái "thực thi quyết định" như mô tả KPI ban đầu |
+| K_NHNCK_56 | Nội dung vi phạm | Text | Base | `Securities Practitioner Violation`.Note (`note`) ← VIOLATIONS.Note | nullable |
+| K_NHNCK_57 | Hình thức xử phạt | Text | Base | (Sửa 2026-08) `Securities Practitioner Violation`.Violation Type Code — Atomic đã có `violation_tp_code` (scheme VIOLATION_TYPE: 1=Hành chính/ADMINISTRATIVE, 2=Pháp luật/LEGAL). Đóng O_NHNCK_17. | |
+| K_NHNCK_58 | Trạng thái vi phạm | Text | Base | (Sửa 2026-08) `Securities Practitioner Violation`.Violation Status Code — Atomic đã có `violation_status_code` (scheme VIOLATION_STATUS: 1=ACTIVE, 0=INACTIVE, -1=DELETED). Đóng O_NHNCK_15. | BA xác nhận lại (đã hỏi Liên - Tinh Vân): chỉ 3 mức kỹ thuật, KHÔNG phải 6 trạng thái "thực thi quyết định" như mô tả KPI ban đầu |
 
 **Schema bảng tác nghiệp:**
 
@@ -1536,7 +1533,7 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema Nhóm 12:** (Sửa 2026-08) `Violation_Type_Code/Name` (K_NHNCK_57) và `Violation_Status_Code/Name` (K_NHNCK_58) đã đưa lại vào schema — Atomic `sp_conduct_violation` đã bổ sung `violation_tp_code`/`violation_status_code`, đóng O_NHNCK_17 và O_NHNCK_15. Đổi tên từ `Record_Type_Code`/`Record_Status_Code` để khớp đúng physical field Atomic. `Decision_Signed_Date` lấy từ `Securities Practitioner License Decision Document`.Decision Signed Date (`decision_signed_dt`). Presentation đọc trực tiếp.
+> **Ghi chú schema Nhóm 12:** (Sửa 2026-08) `Violation_Type_Code/Name` (K_NHNCK_57) và `Violation_Status_Code/Name` (K_NHNCK_58) đã đưa lại vào schema — Atomic `sp_violation` đã bổ sung `violation_tp_code`/`violation_status_code`, đóng O_NHNCK_17 và O_NHNCK_15. Đổi tên từ `Record_Type_Code`/`Record_Status_Code` để khớp đúng physical field Atomic. `Decision_Signed_Date` lấy từ `Securities Practitioner License Decision Document`.Decision Signed Date (`decision_signed_dt`). Presentation đọc trực tiếp.
 
 **Lineage Mart → Báo cáo — Nhóm 12:**
 
@@ -1718,7 +1715,7 @@ graph TB
 | `Operational Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM), K_NHNCK_102 (Kỳ thi) READY. (Sửa 2026-07-20) K_NHNCK_93 (Điểm CM) đã xóa — BA v2 không còn yêu cầu field này. **(Sửa 2026-08-07)** BA bổ sung lại yêu cầu điểm thi chuyên môn — khai sinh ID mới K_NHNCK_119 (không tái dùng K_NHNCK_93 đã gap). Thêm K_NHNCK_118 (Ngày kết thúc thi) | READY |
 | `Operational Practitioner Training History` | (Sửa 2026-08) 1 lần bồi dưỡng per NHN | K_NHNCK_100, K_NHNCK_96, K_NHNCK_97, K_NHNCK_98, K_NHNCK_99, K_NHNCK_66, K_NHNCK_67 READY (đóng O_NHNCK_9) | READY |
 | `Operational Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–80 READY; K_NHNCK_86 (Địa chỉ) READY | READY |
-| `Operational Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–85 READY; K_NHNCK_87–89, K_NHNCK_103 READY (Sửa 2026-08-11, nguồn `discretionary_investment_account`/`major_shareholder` theo DDL Atomic mới — xem O_NHNCK_33) | READY |
+| `Operational Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–85 READY; K_NHNCK_87–89, K_NHNCK_103 READY (Sửa 2026-08-11, nguồn `open_investor_account`/`major_shareholder_ownership` theo DDL Atomic mới — xem O_NHNCK_33) | READY |
 | `Operational Practitioner Data Explorer` | (Sửa 2026-08) 1 NHN × 1 CCHN — bao gồm cả NHN chưa có CCHN nào (slicer filter tại query time) | K_NHNCK_68–74 READY; K_NHNCK_101 (Mã định danh) READY | READY |
 
 **Bảng Dimension:**
