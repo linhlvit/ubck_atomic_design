@@ -486,6 +486,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
     period_nbr                                   Int64                   COMMENT 'Số thứ tự kỳ báo cáo (1-4 cho Quý, 1-12 cho Tháng).',
     indicator_val_amt                            Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ tiêu tài chính (chuyển đổi từ text item_val sang số).',
     rpt_code                                     Nullable(String)        COMMENT 'Mã biểu mẫu báo cáo (BCTCHN, BCTCRL, BCTLAT, BCTHHD_CTCK).',
+    rpt_input_submission_id                      String                  COMMENT 'Khóa lần nộp dữ liệu báo cáo đầu vào (eForm) mà ô này thuộc về — cho biết giá trị lấy từ lần nộp nào của kỳ báo cáo.',
     submission_dt                                Nullable(Date)          COMMENT 'Ngày CTCK nộp báo cáo.',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo định kỳ: 1 = Gửi đúng hạn, 2 = Gửi muộn.',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',

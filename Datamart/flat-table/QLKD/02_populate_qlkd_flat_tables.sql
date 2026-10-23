@@ -496,6 +496,7 @@ SELECT
     f.period_nbr,
     f.indicator_val_amt,
     f.rpt_code,
+    f.rpt_input_submission_id,
     f.submission_dt,
     f.submission_status_code,
     f.src_stm_code,
