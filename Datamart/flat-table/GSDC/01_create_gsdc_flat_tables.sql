@@ -960,10 +960,10 @@ COMMENT 'Flat table — Public Company Dimension (1-1)'
 CREATE TABLE IF NOT EXISTS datamart.gsdc_industry_flat ON CLUSTER 'my_cluster'
 (
     -- From: INDUSTRY DIMENSION
-    industry_dim_id                     String                  COMMENT 'PK — Driving: cl_business_line',
-    industry_code                       String                  COMMENT 'BK — mã ngành nghề cấp 1 (Classification Business Line Code). Chỉ lấy ngành đang hiệu lực sử dụng (Active Indicator = 1) — filter áp dụng ở tầng driving table (WHERE), không lọc theo Effective/Deleted Indicator.',
+    industry_dim_id                     String                  COMMENT 'PK — Driving: cl_ids_business_line',
+    industry_code                       String                  COMMENT 'BK — mã ngành nghề cấp 1 (Classification IDS Business Line Code). Chỉ lấy ngành cấp 1 hiện hành (parent_cl_ids_business_line_id IS NULL, ds_rcrd_st = 'ACTIVE' — Atomic không còn Active Indicator) — filter áp dụng ở tầng driving table (WHERE).',
     industry_nm                         String                  COMMENT 'Tên ngành nghề cấp 1',
-    src_stm_code                        String                  COMMENT 'src_stm_code — Driving: cl_business_line, current-state SCD4A lấy bản ghi mới nhất theo Industry Code'
+    src_stm_code                        String                  COMMENT 'src_stm_code — Driving: cl_ids_business_line, current-state SCD4A lấy bản ghi mới nhất theo Industry Code'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (industry_dim_id)
