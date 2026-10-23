@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_compliance_repor
     securities_company_dim_id       String                  COMMENT 'FK CTCK nộp báo cáo',
     report_tp_code                  String                  COMMENT 'Loại báo cáo — ADHOC (đột xuất) hoặc PERIODIC (định kỳ)',
     report_id                       String                  COMMENT 'Định danh báo cáo (degenerate) — dùng làm khóa COUNT DISTINCT',
+    rpt_nm                                       Nullable(String)        COMMENT 'Tên báo cáo/biểu mẫu (nguồn REPORT_NAME) — cả 2 bộ ADHOC/PERIODIC',
     rpt_submission_status_code      Nullable(String)        COMMENT 'Mã trạng thái nộp báo cáo — giá trị riêng theo bộ ADHOC/PERIODIC',
     sent_dt                                      Nullable(Date)          COMMENT 'Ngày gửi báo cáo (nguồn SENT_AT) — bộ ADHOC',
     submission_deadline_dt                       Nullable(Date)          COMMENT 'Hạn nộp báo cáo (nguồn SUBMISSION_DEADLINE) — bộ ADHOC',

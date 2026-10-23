@@ -66,6 +66,7 @@ SELECT
     f.securities_company_dim_id,
     f.report_tp_code,
     f.report_id,
+    f.rpt_nm,
     f.rpt_submission_status_code,
     f.sent_dt,
     f.submission_deadline_dt,
