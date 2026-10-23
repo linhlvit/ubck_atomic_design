@@ -724,7 +724,7 @@ erDiagram
 > - Không có surrogate PK riêng cho 360 Profile — dùng Composite BK thay thế
 >
 > **Cột dùng ở Nhóm 7/9/10 (mọi cột dùng ở bất kỳ Nhóm nào của `Operational Securities Offering 360 Profile` phải xuất hiện đủ trong erDiagram này):**
-> - `Classification_Business_Line_Name` (nguồn `Classification Business Line.cl_business_line_nm`, JOIN qua `Public Company.business_line_level_1_id` — giữ nguyên tên cột như `public_company_dim.classification_business_line_nm`) — dùng ở Nhóm 7 (K_QLCB_65), đệm sẵn tên ngành cho mockup cột "Ngành"
+> - `Classification_Business_Line_Name` (nguồn `Classification IDS Business Line.cl_ids_business_line_nm`, JOIN qua `Public Company.cl_ids_business_line_level_1_id` — giữ nguyên tên cột như `public_company_dim.classification_business_line_nm`) — dùng ở Nhóm 7 (K_QLCB_65), đệm sẵn tên ngành cho mockup cột "Ngành"
 > - `Processor_User_Name_Snapshot` (nguồn bảng cha Offering `processor_user_nm_snpst`) — dùng ở Nhóm 7 (K_QLCB_44)
 > - `Result_Report_Date` (nguồn `Public Company Securities Offering Result.result_rpt_dt`) — **[ĐỔI NGUỒN 2026-09-10 lần 2]** dùng ở Nhóm 7 (K_QLCB_43, thay thế `Certificate_Date` làm "Thời điểm báo cáo"). BA đổi 2 lần trong cùng ngày: Certificate Date → Submission Date (Offering cha) → Result Report Date (Result) — cột `Submission_Date` đã thêm trước đó bị thay thế hoàn toàn, không giữ lại vì chưa có KPI nào khác dùng. BA ghi Bảng nguồn = SECURITIES_OFFERING nhưng SQL thực tế lấy `result_agg.RESULT_REPORT_DATE` — xem O_QLCB_21. `Certificate_Date`/`Official_Letter_Date` vẫn giữ trên schema cho Nhóm 8
 > - `Total_Registered_Quantity` (nguồn bảng cha Offering `total_registered_quantity`) — dùng ở Nhóm 4 (K_QLCB_27) và Nhóm 9 (K_QLCB_54) — Nhóm 4 sửa lại theo BA (trước đó sai map vào Plan snapshot) khi review cross-check phát hiện gap
@@ -968,9 +968,9 @@ flowchart LR
 | K_QLCB_44 | Chuyên viên | Text | Attribute | `Public Company Securities Offering.processor_user_nm_snpst` — IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME | Tên người xử lý hồ sơ dạng snapshot | READY |
 | K_QLCB_45 | Tên công ty | Text | Attribute | `Public Company.public_company_nm` | — | READY |
 | K_QLCB_46 | Mã chứng khoán | Text | Attribute | `Public Company.equity_ticker_symbol` — IDS.COMPANY_PROFILES | — | READY |
-| K_QLCB_47 | Sàn | Text | Attribute | `Public Company.equity_listing_exchange_code` | Scheme: IDS_EQUITY_LISTING_EXCH | READY |
+| K_QLCB_47 | Sàn | Text | Attribute | `Public Company.exchange_code` | Scheme: IDS_EQUITY_LISTING_EXCH | READY |
 | K_QLCB_48 | Loại chứng khoán | Text | Attribute | `securities_tp_nm` ← `Classification Value.cl_nm` (`cl_code = Public Company Securities Offering Result.security_tp_code`, `schema_code = 'SO_SECURITY_TYPE'`) | **[ĐỔI NGUỒN 2026-09-10]** BA đổi nguồn từ `COMPANY_PROFILES.SECURITIES_TYPE_CD` sang `SECURITIES_OFFERING_RESULT.security_type_cd` JOIN `LOOKUP_VALUES` (loại CK của chính đợt chào bán/kết quả). **[SỬA 2026-10-08]** BA SQL STT 7 bổ sung điều kiện `ck.LOOKUP_GROUP = 'SO_SECURITY_TYPE'` → đóng O_QLCB_17; hiển thị TÊN (`LOOKUP_VALUE_VN`) nên đổi sang cột mới `securities_tp_nm` (cột `securities_tp_code` giữ nguyên) | READY (Atomic draft) |
-| K_QLCB_65 | Ngành | Text | Attribute | `Classification Business Line.cl_business_line_nm` — JOIN qua `Public Company.business_line_level_1_id` | Tên ngành (đệm sẵn trên `opr_securities_offering_360_profile`, cột `classification_business_line_nm` — giữ nguyên tên như `public_company_dim`) — khớp cột "Ngành" ở mockup | READY |
+| K_QLCB_65 | Ngành | Text | Attribute | `Classification IDS Business Line.cl_ids_business_line_nm` — JOIN qua `Public Company.cl_ids_business_line_level_1_id` | Tên ngành (đệm sẵn trên `opr_securities_offering_360_profile`, cột `classification_business_line_nm` — giữ nguyên tên như `public_company_dim`) — khớp cột "Ngành" ở mockup | READY |
 
 **Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung cột `Processor_User_Name_Snapshot`, `Securities_Type_Code`, `Classification_Business_Line_Name` (xem erDiagram Nhóm 4).
 
