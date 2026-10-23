@@ -263,7 +263,7 @@ erDiagram
 
 ## Nhóm 28 — Thống kê giao dịch của nhân viên công ty QLQ (Fact báo cáo — append)
 
-> **[THIẾT KẾ 2026-10-14]** Nhóm 28 (K_QLQ_106–115) trước đó PENDING (thiếu cầu nối VSDC investor registry); nay READY qua bảng Fact dạng report (`_rpt`, append) đọc `securities_trade` (HOSE/HNX), nối nhân viên theo `fmc_employee.securities_trading_account_nbr`. Phạm vi tài khoản có thể hẹp hơn BA (O_QLQ_35/36). **[SỬA 2026-10-15 — làm theo BA]** nay nối qua CCCD → `discretionary_investment_account` → `securities_trade` và khử trùng như UNION của BA (O_QLQ_35/36/39). Nạp append theo ngày `trade_dt = :etl_date`. **[SỬA 2026-10-14 — O_QLQ_38]** Đổi từ Operational (SCD4A) sang Fact report: `securities_trade` là bảng event nên bộ lọc `trade_dt = :etl_date` làm mọi giao dịch ngày trước thành INACTIVE và `_hstr` phình dần.
+> **[THIẾT KẾ 2026-10-14]** Nhóm 28 (K_QLQ_106–115) trước đó PENDING (thiếu cầu nối VSDC investor registry); nay READY qua bảng Fact dạng report (`_rpt`, append) đọc `securities_trade` (HOSE/HNX), nối nhân viên theo `fmc_employee.securities_trading_account_nbr`. Phạm vi tài khoản có thể hẹp hơn BA (O_QLQ_35/36). **[SỬA 2026-10-15 — làm theo BA]** nay nối qua CCCD → `open_investor_account` → `securities_trade` và khử trùng như UNION của BA (O_QLQ_35/36/39). Nạp append theo ngày `trade_dt = :etl_date`. **[SỬA 2026-10-14 — O_QLQ_38]** Đổi từ Operational (SCD4A) sang Fact report: `securities_trade` là bảng event nên bộ lọc `trade_dt = :etl_date` làm mọi giao dịch ngày trước thành INACTIVE và `_hstr` phình dần.
 
 ```mermaid
 erDiagram
