@@ -119,10 +119,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_ID"
-  comment: "Xử lí Case when ENTITY_TYPE = CN then hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)\
-    \  when ENTITY_TYPE = PGD then hash_id('SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)\
-    \  when ENTITY_TYPE = TRU_SO_CHINH then hash_id('SC_FIRM_INFO', ENTITY_ID)  when\
-    \ ENTITY_TYPE = VPDD then hash_id('SC_FIRM_REP_OFFICE', ENTITY_ID)  else NULL"
+  comment: "Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)\
+    \  WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)\
+    \  WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SC_FIRM_INFO', ENTITY_ID)
+    \  WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SC_FIRM_REP_OFFICE', ENTITY_ID)
+    \  ELSE NULL END."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

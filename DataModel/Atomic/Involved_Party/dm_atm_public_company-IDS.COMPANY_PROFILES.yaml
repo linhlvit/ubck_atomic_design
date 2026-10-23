@@ -316,6 +316,20 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
+  - name: Bond Exchange Code
+    physical_name: bond_exchange_code
+    business_meaning: Sàn trái phiếu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_PROFILES
+    source_column: IDS.COMPANY_PROFILES.BOND_LISTING_EXCH
+    comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+    classification_context: null
+    etl_derived_value: null
+
   - name: Bond Ticker Symbol
     physical_name: bond_ticker_symbol
     business_meaning: Mã trái phiếu.
@@ -697,7 +711,7 @@ attributes:
   - name: Approval Status Code
     physical_name: approval_status_code
     business_meaning: Trạng thái phê duyệt hồ sơ.
-    data_domain: Text
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false

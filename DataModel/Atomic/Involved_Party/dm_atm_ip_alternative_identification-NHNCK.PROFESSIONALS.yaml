@@ -61,61 +61,61 @@ attributes:
     source_table: PROFESSIONALS
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = 'PASSPORT'"
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = '(RULE)'"
     etl_derived_value: NHNCK_PROFESSIONALS
 
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning: Loại giấy tờ định danh — hộ chiếu.
+    business_meaning: Loại giấy tờ định danh.
     data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.IDENTITY_TYPE
+    comment: "Scheme: IP_ALT_ID_TYPE. RULE: CASE WHEN ID_TYPE = 0 THEN 'NATIONAL_ID' WHEN ID_TYPE = 1 THEN 'CITIZEN_ID' WHEN ID_TYPE = 2 THEN 'PASSPORT' END."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = '(RULE)'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số giấy tờ định danh (CMND/CCCD/Hộ chiếu).
+    data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: PROFESSIONALS
     source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = 'PASSPORT'"
-    etl_derived_value: PASSPORT
-
-  - name: Identification Number
-    physical_name: identification_nbr
-    business_meaning: Số hộ chiếu.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PASSPORT_NUMBER
-    comment: "Bổ sung theo DDL mới (2026-09-10)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = 'PASSPORT'"
+    comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_NUMBER WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_NUMBE END."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = '(RULE)'"
     etl_derived_value: null
 
   - name: Identification Issue Date
     physical_name: identification_issue_dt
-    business_meaning: Ngày cấp hộ chiếu.
+    business_meaning: Ngày cấp giấy tờ định danh.
     data_domain: Date
     data_type: date
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PASSPORT_ISSUE_DATE
-    comment: "Bổ sung theo DDL mới (2026-09-10)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = 'PASSPORT'"
+    source_column: null
+    comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_ISSUE_DATE WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_ISSUE_DATE END."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = '(RULE)'"
     etl_derived_value: null
 
   - name: Identification Issue Place
     physical_name: identification_issue_place
-    business_meaning: Nơi cấp hộ chiếu.
+    business_meaning: Nơi cấp giấy tờ định danh.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
     source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PASSPORT_ISSUE_PLACE
-    comment: "Bổ sung theo DDL mới (2026-09-10)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = 'PASSPORT'"
+    source_column: null
+    comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_ISSUE_PLACE WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_ISSUE_PLACE END."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification Type Code = '(RULE)'"
     etl_derived_value: null

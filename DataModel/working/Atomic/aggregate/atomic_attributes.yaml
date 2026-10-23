@@ -9661,7 +9661,8 @@ attributes:
   source_table: "SECURITIES_OFFERING"
   source_column: "IDS.SECURITIES_OFFERING.APPLICANT_TYPE_FLG"
   comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE').\
-    \ Xử lý CASE WHEN dựa trên giá trị của APPLICANT_TYPE_FLG (1-TC, 2-CN)."
+    \ Xử lý CASE WHEN APPLICANT_TYPE_FLG = 1 THEN 'TC' WHEN APPLICANT_TYPE_FLG = 2\
+    \ THEN 'CN' END."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_securities_offering"
@@ -12392,13 +12393,13 @@ attributes:
   atomic_entity: "Public Company Stock Listing History"
   atomic_attribute: "Exchange Code"
   description: "Sàn niêm yết."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "STOCK_LISTING_HISTORY"
   source_column: "IDS.STOCK_LISTING_HISTORY.EXCHANGE_CD"
-  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EXCHANGE')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_stock_listing_history"
@@ -14730,7 +14731,7 @@ attributes:
   atomic_entity: "Public Company Treasury Share Transaction Result"
   atomic_attribute: "Approval Status Code"
   description: "Trạng thái phê duyệt kết quả giao dịch."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -25607,7 +25608,7 @@ attributes:
   atomic_entity: "Financial Report Catalog"
   atomic_attribute: "Financial Statement Component Type Code"
   description: "Loại thành phần của báo cáo tài chính."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -32712,7 +32713,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "private_corp_bond_trading_summary"
   atomic_column: "ind_val"
-  data_type: "decimal(23,2)"
+  data_type: "decimal(23,4)"
 - bcv_core_object: "Documentation"
   atomic_entity: "Private Corp Bond Trading Summary"
   atomic_attribute: "Report Date"
@@ -37368,7 +37369,7 @@ attributes:
   atomic_entity: "Securities Company Report Sheet Cell"
   atomic_attribute: "Filter Code"
   description: "Điều kiện lọc."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
@@ -46861,10 +46862,11 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
   source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_ID"
-  comment: "Xử lí Case when ENTITY_TYPE = CN then hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)\
-    \  when ENTITY_TYPE = PGD then hash_id('SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)\
-    \  when ENTITY_TYPE = TRU_SO_CHINH then hash_id('SC_FIRM_INFO', ENTITY_ID)  when\
-    \ ENTITY_TYPE = VPDD then hash_id('SC_FIRM_REP_OFFICE', ENTITY_ID)  else NULL"
+  comment: "Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH',\
+    \ ENTITY_ID)  WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SC_FIRM_TRANSACTION_OFFICE',\
+    \ ENTITY_ID)  WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SC_FIRM_INFO', ENTITY_ID)\
+    \   WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SC_FIRM_REP_OFFICE', ENTITY_ID)  \
+    \ ELSE NULL END."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_profile_change"
@@ -52028,7 +52030,8 @@ attributes:
   source_system: "FMS"
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.PUBLIC_LISTED"
-  comment: "Xử lí CASE WHEN PUBLIC_LISTED = 'Y' then 1, PUBLIC_LISTED = 'N' then 0"
+  comment: "Xử lí CASE WHEN PUBLIC_LISTED = 'Y' THEN 1 WHEN PUBLIC_LISTED = 'N' THEN\
+    \ 0 END."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_management_company"
@@ -52764,7 +52767,7 @@ attributes:
   source_system: "FMS"
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.EMPLOYED"
-  comment: "Xử lí CASE WHEN EMPLOYED = 'Y' then 1, EMPLOYED = 'N' then 0"
+  comment: "Xử lí CASE WHEN EMPLOYED = 'Y' THEN 1 WHEN EMPLOYED = 'N' THEN 0 END."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_employee"
@@ -55386,7 +55389,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "major_shareholder_ownership"
   atomic_column: "opening_ratio"
-  data_type: "decimal(5,2)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Major Shareholder Ownership"
   atomic_attribute: "Closing Balance Date"
@@ -55437,7 +55440,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "major_shareholder_ownership"
   atomic_column: "closing_ratio"
-  data_type: "decimal(5,2)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Major Shareholder Ownership"
   atomic_attribute: "Note"
@@ -55802,6 +55805,22 @@ attributes:
   atomic_table: "public_company"
   atomic_column: "equity_listed_quantity"
   data_type: "int"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Public Company"
+  atomic_attribute: "Bond Exchange Code"
+  description: "Sàn trái phiếu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "COMPANY_PROFILES"
+  source_column: "IDS.COMPANY_PROFILES.BOND_LISTING_EXCH"
+  comment: "SCHEMA_CODE=IDS.EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "public_company"
+  atomic_column: "bond_exchange_code"
+  data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Public Company"
   atomic_attribute: "Bond Ticker Symbol"
@@ -56244,7 +56263,7 @@ attributes:
   atomic_entity: "Public Company"
   atomic_attribute: "Approval Status Code"
   description: "Trạng thái phê duyệt hồ sơ."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -57051,14 +57070,14 @@ attributes:
     \ License Certificate Type Relationship"
   atomic_attribute: "Department Code"
   description: "Mã phòng ban phụ trách (denormalized lookup)."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "CERTIFICATE_DEPARTMENTS"
   source_column: "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
-  comment: "Cần ETL crosswalk sang NHNCK.DEPARTMENTS: CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID\
-    \ = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE. SCHEMA_CODE=NHNCK.DEPARTMENTS"
+  comment: "SCHEMA_CODE=NHNCK.DEPARTMENTS. Cần ETL crosswalk sang NHNCK.DEPARTMENTS:\
+    \ CERTIFICATE_DEPARTMENTS.DEPARTMENT_ID = DEPARTMENTS.ID để xác nhận DEPARTMENT_CODE."
   classification_context: null
   etl_derived_value: null
   atomic_table: "ra_organization_unit_x_sp_license_certificate_type_relationship"
@@ -69546,7 +69565,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "quoted_price"
-  data_type: "decimal(23,2)"
+  data_type: "decimal(23,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Execution Price"
@@ -69564,7 +69583,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "execution_price"
-  data_type: "decimal(23,2)"
+  data_type: "decimal(23,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Yield Rate"
@@ -69582,7 +69601,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "yield_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Discount Rate"
@@ -69600,7 +69619,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "discount_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Order Bond Quantity"
@@ -70249,7 +70268,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "quoted_price"
-  data_type: "decimal(23,2)"
+  data_type: "decimal(23,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Execution Price"
@@ -70267,7 +70286,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "execution_price"
-  data_type: "decimal(23,2)"
+  data_type: "decimal(23,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Yield Rate"
@@ -70285,7 +70304,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "yield_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Discount Rate"
@@ -70303,7 +70322,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "discount_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Order Bond Quantity"
@@ -70597,7 +70616,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "repo_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Repo Interest"
@@ -70651,7 +70670,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "coupon_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Coupon Interest"
@@ -71097,7 +71116,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "quoted_price"
-  data_type: "decimal(23,2)"
+  data_type: "decimal(23,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Execution Price"
@@ -71115,7 +71134,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "execution_price"
-  data_type: "decimal(23,2)"
+  data_type: "decimal(23,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Yield Rate"
@@ -71133,7 +71152,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "yield_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Discount Rate"
@@ -71151,7 +71170,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "discount_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Order Bond Quantity"
@@ -71513,7 +71532,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "repo_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Repo Interest"
@@ -71567,7 +71586,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "coupon_rate"
-  data_type: "decimal(8,5)"
+  data_type: "decimal(7,4)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Coupon Interest"
@@ -75746,7 +75765,7 @@ attributes:
   atomic_attribute: "Schema Code"
   description: "Mã nhóm phân loại (scheme) — ContentType của content item danh mục.\
     \ BK phụ."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   source_system: "TTHC"
@@ -75770,8 +75789,8 @@ attributes:
   is_primary_key: false
   source_system: "TTHC"
   source_table: "CLASSIFICATION_VALUE"
-  source_column: null
-  comment: "Xử lý CASE WHEN theo giá trị SCHEMA_CODE."
+  source_column: "TTHC.CLASSIFICATION_VALUE.SCHEMA_NM"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "cl_value"
@@ -75818,8 +75837,8 @@ attributes:
   is_primary_key: false
   source_system: "TTHC"
   source_table: "CLASSIFICATION_VALUE"
-  source_column: "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME_ENGLISH"
-  comment: "Không có trong source TTHC — NULL."
+  source_column: null
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "cl_value"
@@ -75834,9 +75853,8 @@ attributes:
   is_primary_key: false
   source_system: "TTHC"
   source_table: "CLASSIFICATION_VALUE"
-  source_column: "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_DESCRIPTION"
-  comment: "Nguồn thực: Document.Content->{ContentType}->'MoTa'->'Text'. NULL nếu\
-    \ content item không có field mô tả."
+  source_column: null
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "cl_value"
@@ -81346,7 +81364,7 @@ attributes:
   source_column: null
   comment: null
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification\
-    \ Type Code = 'PASSPORT'"
+    \ Type Code = '(RULE)'"
   etl_derived_value: "NHNCK_PROFESSIONALS"
   atomic_table: "ip_alternative_identification"
   atomic_column: "src_stm_code"
@@ -81354,33 +81372,35 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Identification Type Code"
-  description: "Loại giấy tờ định danh — hộ chiếu."
+  description: "Loại giấy tờ định danh."
   data_domain: "Classification Value"
-  nullable: false
+  nullable: true
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
-  source_column: null
-  comment: null
+  source_column: "NHNCK.PROFESSIONALS.IDENTITY_TYPE"
+  comment: "Scheme: IP_ALT_ID_TYPE. RULE: CASE WHEN ID_TYPE = 0 THEN 'NATIONAL_ID'\
+    \ WHEN ID_TYPE = 1 THEN 'CITIZEN_ID' WHEN ID_TYPE = 2 THEN 'PASSPORT' END."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification\
-    \ Type Code = 'PASSPORT'"
-  etl_derived_value: "PASSPORT"
+    \ Type Code = '(RULE)'"
+  etl_derived_value: null
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Identification Number"
-  description: "Số hộ chiếu."
+  description: "Số giấy tờ định danh (CMND/CCCD/Hộ chiếu)."
   data_domain: "Text"
-  nullable: true
+  nullable: false
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
-  source_column: "NHNCK.PROFESSIONALS.PASSPORT_NUMBER"
-  comment: "Bổ sung theo DDL mới (2026-09-10)."
+  source_column: "NHNCK.PROFESSIONALS.IDENTITY_NUMBER, NHNCK.PROFESSIONALS.PASSPORT_NUMBE"
+  comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_NUMBER\
+    \ WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_NUMBE END."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification\
-    \ Type Code = 'PASSPORT'"
+    \ Type Code = '(RULE)'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_nbr"
@@ -81388,16 +81408,17 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Identification Issue Date"
-  description: "Ngày cấp hộ chiếu."
+  description: "Ngày cấp giấy tờ định danh."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
-  source_column: "NHNCK.PROFESSIONALS.PASSPORT_ISSUE_DATE"
-  comment: "Bổ sung theo DDL mới (2026-09-10)."
+  source_column: "NHNCK.PROFESSIONALS.IDENTITY_ISSUE_DATE, NHNCK.PROFESSIONALS.PASSPORT_ISSUE_DATE"
+  comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_ISSUE_DATE\
+    \ WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_ISSUE_DATE END."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification\
-    \ Type Code = 'PASSPORT'"
+    \ Type Code = '(RULE)'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_issue_dt"
@@ -81405,16 +81426,17 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Identification Issue Place"
-  description: "Nơi cấp hộ chiếu."
+  description: "Nơi cấp giấy tờ định danh."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
-  source_column: "NHNCK.PROFESSIONALS.PASSPORT_ISSUE_PLACE"
-  comment: "Bổ sung theo DDL mới (2026-09-10)."
+  source_column: "NHNCK.PROFESSIONALS.IDENTITY_ISSUE_PLACE, NHNCK.PROFESSIONALS.PASSPORT_ISSUE_PLACE"
+  comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_ISSUE_PLACE\
+    \ WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_ISSUE_PLACE END."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification\
-    \ Type Code = 'PASSPORT'"
+    \ Type Code = '(RULE)'"
   etl_derived_value: null
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_issue_place"
@@ -84380,8 +84402,8 @@ attributes:
   source_system: "FMS"
   source_table: "INVES"
   source_column: "FMS.INVES.ID_TYPE"
-  comment: "Scheme: IP_ALT_ID_TYPE. RULE: Case when ID_TYPE = 0 then BUSINESS_LICENSE\
-    \ then ID_TYPE = 1 then CITIZEN_ID then ID_TYPE = 2 then NATIONAL_ID end."
+  comment: "Scheme: IP_ALT_ID_TYPE. RULE: CASE WHEN ID_TYPE = 0 THEN 'BUSINESS_LICENSE'\
+    \ WHEN ID_TYPE = 1 THEN 'IDENTIFICATION' END."
   classification_context: "Source System Code = 'FMS_INVES' | Identification Type\
     \ Code = '(RULE)'"
   etl_derived_value: null

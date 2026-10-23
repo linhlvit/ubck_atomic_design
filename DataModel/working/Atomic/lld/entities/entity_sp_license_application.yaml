@@ -44,7 +44,7 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  comment: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=..."
   etl_derived_value: "NHNCK_APPLICATIONS"
   source_mappings:
@@ -55,9 +55,8 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  comment: "Scheme: APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp lại do thu hồi,\
-    \ 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
-  classification_context: "APPLICATION_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.APPLICATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
@@ -67,12 +66,8 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  comment: "Scheme: NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
-    \ APPLICATIONS.STATUS_ID = APPLICATION_STATUSES.ID để lấy STATUS_CODE. Trước đây\
-    \ map cặp FK Id+Code đến entity thật Classification Application Status — revert\
-    \ về Classification Value (scheme NHNCK.APPLICATION_STATUSES) 2026-08-20 vì APPLICATION_STATUSES\
-    \ không còn là Atomic entity riêng."
-  classification_context: "NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  classification_context: null
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATIONS: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
@@ -82,8 +77,8 @@ attributes:
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
-  comment: "Scheme: REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC, 1=Nhập tay."
-  classification_context: "REGISTRATION_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.REGISTRATION_TYPE"
+  classification_context: null
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.REGISTRATION_TYPE"
@@ -95,7 +90,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.CERTIFICATE_ID = CERTIFICATES.ID\
-    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE)\
+    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES', CERTIFICATE_CODE)\
     \ | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với\
     \ Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
@@ -212,7 +207,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: sp_license_certificate_type.sp_license_certificate_tp_id. Cần\
     \ ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.PREVIOUS_CERTIFICATE_ID\
-    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK_CERTIFICATES',\
     \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã\
     \ sửa sang crosswalk 2026-07-27."
@@ -262,9 +257,8 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN, 2=Gửi bưu\
-    \ điện, 3=Điện tử."
-  classification_context: "CERT_RECEIPT_METHOD"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD"
+  classification_context: null
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD"
@@ -290,14 +284,14 @@ attributes:
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_PHONE"
-- attribute_name: "Receipt Status Code"
-  physical_name: "receipt_status_code"
+- attribute_name: "Received Indicator"
+  physical_name: "received_ind"
   description: "Trạng thái nhận CCHN."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
-  classification_context: "RECEIPT_STATUS"
+  comment: "Giá trị: 0=Chưa nhận, 1=Đã nhận."
+  classification_context: null
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.RECEIPT_STATUS"
@@ -351,7 +345,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: securities_practitioner.sp_id. Hash: hash_id('NHNCK_PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -363,8 +357,8 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
+  comment: "Lookup pair: securities_practitioner.sp_code. Pair with Securities Practitioner\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -377,7 +371,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.CERTIFICATE_RECORD_ID\
-    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS',\
     \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID\
     \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER) — đã\
     \ sửa sang crosswalk 2026-08-15."
@@ -398,7 +392,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.CERTIFICATE_RECORDS: "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
+    NHNCK.APPLICATIONS: "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
 - attribute_name: "Previous Securities Practitioner License Certificate Document Id"
   physical_name: "previous_sp_license_certificate_document_id"
   description: "FK đến CCHN cũ (khi cấp lại)."
@@ -407,7 +401,7 @@ attributes:
   is_primary_key: false
   comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
     \ Cần ETL crosswalk sang NHNCK.CERTIFICATE_RECORDS: APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID\
-    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ = CERTIFICATE_RECORDS.ID để xác nhận CERTIFICATE_NUMBER sau đó hash_id('NHNCK_CERTIFICATE_RECORDS',\
     \ CERTIFICATE_NUMBER) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_RECORD_ID\
     \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_NUMBER)\
     \ — đã sửa sang crosswalk 2026-08-15."
@@ -429,17 +423,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.CERTIFICATE_RECORDS: "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
+    NHNCK.APPLICATIONS: "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
   physical_name: "sp_qualification_examination_assessment_id"
   description: "FK đến Exam Session (đợt thi sát hạch liên quan — nullable)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id. Nguồn lưu ID kỹ thuật\
-    \ của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy\
-    \ CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
+    \ Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID\
+    \ để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -450,9 +443,8 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
-    \ Practitioner Qualification Examination Assessment Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+    \ Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -465,8 +457,9 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', ASSIGNEE_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.ASSIGNEE_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.ASSIGNEE_ID = USERS.ID để xác\
+    \ nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value set\
+    \ khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -478,11 +471,12 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Assignee Officer Id."
+    \ Pair with Assignee Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL crosswalk\
+    \ — chi tiết xem comment Assignee Officer Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.ASSIGNEE_ID"
+    NHNCK.APPLICATIONS: "NHNCK.USERS.USERNAME"
 - attribute_name: "Info Verify Officer Id"
   physical_name: "info_verify_officer_id"
   description: "FK đến Regulatory Authority Officer — cán bộ xác minh thông tin."
@@ -490,8 +484,9 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM.USERS', INFO_VERIFY_ID) | Chưa xác nhận join key NHNCK.APPLICATIONS.INFO_VERIFY_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
+    \ Cần ETL crosswalk sang NHNCK.USERS: APPLICATIONS.INFO_VERIFY_ID = USERS.ID để\
+    \ xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME) | Chưa xác nhận value\
+    \ set khớp danh mục IAM.USERS — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -503,11 +498,12 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Info Verify Officer Id."
+    \ Pair with Info Verify Officer Id. Giá trị lấy từ NHNCK.USERS.USERNAME sau ETL\
+    \ crosswalk — chi tiết xem comment Info Verify Officer Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
+    NHNCK.APPLICATIONS: "NHNCK.USERS.USERNAME"
 - attribute_name: "Public Service Portal Content Item Code"
   physical_name: "public_service_portal_content_item_code"
   description: "ContentItemId hồ sơ TTHC trên DVC (MCĐT)."
@@ -521,3 +517,38 @@ attributes:
   etl_derived_value: null
   source_mappings:
     NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.MCDT_CONTENT_ITEM_ID"
+- attribute_name: "Re Exam Subject"
+  physical_name: "re_exam_subject"
+  description: "Môn thi lại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Bổ sung theo\
+    \ DDL mới (2026-09-10)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.RE_EXAM_SUBJECT"
+- attribute_name: "Receive Channel Code"
+  physical_name: "receive_channel_code"
+  description: "Mã kênh tiếp nhận hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.RECEIVE_CHANNEL_CODE"
+- attribute_name: "Receive Channel Name"
+  physical_name: "receive_channel_nm"
+  description: "Tên kênh tiếp nhận hồ sơ (denormalized, đi cặp với Receive Channel\
+    \ Code)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.RECEIVE_CHANNEL"

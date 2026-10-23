@@ -35,7 +35,7 @@ attributes:
 - attribute_name: "Schema Code"
   physical_name: "schema_code"
   description: "Mã nhóm phân loại (scheme) — ContentType của content item danh mục. BK phụ."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: false
   is_primary_key: true
   status: "draft"
@@ -52,8 +52,9 @@ attributes:
   nullable: true
   is_primary_key: false
   status: "draft"
-  source_columns: []
-  comment: "Xử lý CASE WHEN theo giá trị SCHEMA_CODE."
+  source_columns:
+  - "TTHC.CLASSIFICATION_VALUE.SCHEMA_NM"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -89,9 +90,8 @@ attributes:
   nullable: true
   is_primary_key: false
   status: "draft"
-  source_columns:
-  - "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME_ENGLISH"
-  comment: "Không có trong source TTHC — NULL."
+  source_columns: []
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -102,9 +102,8 @@ attributes:
   nullable: true
   is_primary_key: false
   status: "draft"
-  source_columns:
-  - "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_DESCRIPTION"
-  comment: "Nguồn thực: Document.Content->{ContentType}->'MoTa'->'Text'. NULL nếu content item không có field mô tả."
+  source_columns: []
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

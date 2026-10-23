@@ -73,8 +73,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.IDENTITY_TYPE"
-  comment: "SCHEMA_CODE=NHNCK.PROFESSIONALS.IDENTITY_TYPE"
-  classification_context: null
+  comment: "Scheme: IP_ALT_ID_TYPE. RULE: CASE WHEN ID_TYPE = 0 THEN 'NATIONAL_ID' WHEN ID_TYPE = 1 THEN 'CITIZEN_ID' WHEN ID_TYPE = 2 THEN 'PASSPORT' END."
+  classification_context: "IP_ALT_ID_TYPE=(RULE)"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Number"
@@ -86,9 +86,9 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.IDENTITY_NUMBER"
-  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
-    \ Code."
-  classification_context: null
+  - "NHNCK.PROFESSIONALS.PASSPORT_NUMBE"
+  comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_NUMBER WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_NUMBE END."
+  classification_context: "IP_ALT_ID_TYPE=(RULE)"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -100,8 +100,9 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.IDENTITY_ISSUE_DATE"
-  comment: null
-  classification_context: null
+  - "NHNCK.PROFESSIONALS.PASSPORT_ISSUE_DATE"
+  comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_ISSUE_DATE WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_ISSUE_DATE END."
+  classification_context: "IP_ALT_ID_TYPE=(RULE)"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Issue Place"
@@ -113,58 +114,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.IDENTITY_ISSUE_PLACE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh — hộ chiếu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=PASSPORT"
-  etl_derived_value: "PASSPORT"
-  data_type: "string"
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số hộ chiếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.PASSPORT_NUMBER"
-  comment: "Bổ sung theo DDL mới (2026-09-10)."
-  classification_context: "IP_ALT_ID_TYPE=PASSPORT"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp hộ chiếu."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.PASSPORT_ISSUE_DATE"
-  comment: "Bổ sung theo DDL mới (2026-09-10)."
-  classification_context: "IP_ALT_ID_TYPE=PASSPORT"
-  etl_derived_value: null
-  data_type: "date"
-- attribute_name: "Identification Issue Place"
-  physical_name: "identification_issue_place"
-  description: "Nơi cấp hộ chiếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "NHNCK.PROFESSIONALS.PASSPORT_ISSUE_PLACE"
-  comment: "Bổ sung theo DDL mới (2026-09-10)."
-  classification_context: "IP_ALT_ID_TYPE=PASSPORT"
+  comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_ISSUE_PLACE WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_ISSUE_PLACE END."
+  classification_context: "IP_ALT_ID_TYPE=(RULE)"
   etl_derived_value: null
   data_type: "string"

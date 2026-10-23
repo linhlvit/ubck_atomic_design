@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPLICANT_TYPE_FLG
-    comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE'). Xử lý CASE WHEN dựa trên giá trị của APPLICANT_TYPE_FLG (1-TC, 2-CN)."
+    comment: "SCHEMA_CODE=IDS.LEGAL_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='ENTITY_TYPE'). Xử lý CASE WHEN APPLICANT_TYPE_FLG = 1 THEN 'TC' WHEN APPLICANT_TYPE_FLG = 2 THEN 'CN' END."
     classification_context: null
     etl_derived_value: null
 

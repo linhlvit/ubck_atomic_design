@@ -102,7 +102,7 @@ attributes:
     source_system: THANHTRA
     source_table: EXAMINATION_TEAM
     source_column: THANHTRA.EXAMINATION_TEAM.UNIT_ID
-    comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'UNIT'). Cần ETL crosswalk sang NHNCK.UNITS: EXAMINATION_TEAM.UNIT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS', UNIT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận UNIT_ID nguồn khớp NHNCK.UNITS.ID, cần Data Modeler xác nhận trước go-live."
+    comment: "FK target: cl_ecat_department.cl_ecat_department_id. Cần ETL crosswalk sang ECAT.DEPARTMENT: EXAMINATION_TEAM.UNIT_ID = DEPARTMENT.ID để xác nhận CODE sau đó hash_id('ECAT_DEPARTMENT', CODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -115,8 +115,8 @@ attributes:
     is_primary_key: false
     source_system: THANHTRA
     source_table: EXAMINATION_TEAM
-    source_column: NHNCK.UNITS.UNIT_CODE
-    comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Unit Id."
+    source_column: ECAT.DEPARTMENT.CODE
+    comment: "Lookup pair: cl_ecat_department.cl_ecat_department_code. Pair with Unit Id. Giá trị lấy từ ECAT.DEPARTMENT.CODE sau ETL crosswalk — chi tiết xem comment Unit Id."
     classification_context: null
     etl_derived_value: null
 
