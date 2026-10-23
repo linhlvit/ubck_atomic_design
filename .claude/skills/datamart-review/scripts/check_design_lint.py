@@ -42,6 +42,13 @@ Bổ sung 2026-10-15 (đánh giá Harness v2.0 — tài liệu TKCSLD sinh bằn
   D9 [L2-LINEAGE-SLASH-PAIR] source_entity↔atomic_table hoặc source_attribute↔atomic_column lệch số phần tử '/'.
                               WARNING (đo 2026-10-15: 78 dòng toàn repo).
 
+Bổ sung 2026-10-23 (Fact `fct_securities_company_financial_structure_snpst` QLKD không khai báo khóa dòng — luật A22):
+  D10 [L2-FACT-NO-ROW-KEY]   Fact (LLD per-table) không có cột `key = PK`. ERROR; riêng Fact đã có trước 2026-10-23 và nằm trong
+                              `reference/fact_row_key_baseline.yaml` chỉ in 1 dòng thông tin `[i]` (nợ có tên, không chặn). PK phải
+                              `nullable = false`, đúng 1 cột PK/Fact (L2-FACT-PK-INVALID, ERROR); tên còn trong baseline dù đã có PK → WARNING (gỡ tên).
+  D11 [L4-FLAT-ORDERBY-MISSING-PK] Flat ClickHouse của Fact có PK mà `ORDER BY` không chứa cột PK. ERROR — ReplicatedReplacingMergeTree
+                              dedup theo ORDER BY nên các dòng cùng (ngày, 1 dim) bị gộp thành 1 khi merge (mất dữ liệu).
+
 Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES) = ERROR; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
@@ -309,6 +316,119 @@ def check_flat(root: Path, module: str):
     return out
 
 
+_BASELINE_FILE = _script_dir.parent / "reference" / "fact_row_key_baseline.yaml"
+
+
+def load_fact_key_baseline():
+    """Đọc baseline A22 (yaml phẳng: `MODULE:` rồi `  - table`) → {MODULE: {table}} — không phụ thuộc PyYAML."""
+    res, cur = {}, None
+    if not _BASELINE_FILE.exists():
+        return res
+    for ln in _BASELINE_FILE.read_text(encoding="utf-8-sig").splitlines():
+        s = ln.strip()
+        if not s or s.startswith("#"):
+            continue
+        if not ln.startswith((" ", "\t")) and s.endswith(":"):
+            cur = s[:-1].strip().upper()
+            res.setdefault(cur, set())
+        elif s.startswith("- ") and cur:
+            res[cur].add(s[2:].strip())
+    return res
+
+
+def fact_tables_with_rows(root: Path, module: str):
+    """{table: [rows]} của các Fact trong LLD per-table của module (Fact = tên fct_/fact_ hoặc entity bắt đầu 'Fact ')."""
+    d = root / "Datamart" / "lld" / module
+    res = {}
+    if not d.exists():
+        return res
+    for f in sorted(d.glob("*.csv")):
+        try:
+            with open(f, encoding="utf-8-sig", newline="") as fh:
+                rows = list(csv.DictReader(fh))
+        except Exception:
+            continue
+        if not rows:
+            continue
+        t = (rows[0].get("datamart_table") or "").strip()
+        e = (rows[0].get("datamart_entity") or "").strip()
+        if t.startswith(("fct_", "fact_")) or e.startswith("Fact "):
+            res[t] = rows
+    return res
+
+
+def check_fact_row_key(root: Path, module: str):
+    """D10 [L2-FACT-NO-ROW-KEY] + L2-FACT-PK-INVALID: mỗi Fact khai báo đúng 1 cột key = PK (A22)."""
+    out = []
+    base = load_fact_key_baseline().get(module.upper(), set())
+    owed = []
+    for t, rows in fact_tables_with_rows(root, module).items():
+        pks = [r for r in rows if (r.get("key") or "").strip() == "PK"]
+        if not pks:
+            if t in base:
+                owed.append(t)
+            else:
+                out.append(("ERROR", "L2-FACT-NO-ROW-KEY",
+                            f"{t}: Fact không khai báo cột key = PK (khóa dòng/khóa MERGE) — luật A22: PK = id dòng Atomic driving "
+                            f"(direct) khi grain = 1 dòng nguồn, hoặc surrogate hash toàn bộ cột grain (Generated) khi Fact gộp"))
+            continue
+        if len(pks) > 1:
+            out.append(("ERROR", "L2-FACT-PK-INVALID", f"{t}: có {len(pks)} cột key = PK, Fact chỉ được đúng 1 PK"))
+        for r in pks:
+            if (r.get("nullable") or "").strip().lower() != "false":
+                out.append(("ERROR", "L2-FACT-PK-INVALID", f"{t}.{r.get('datamart_column')}: PK phải nullable = false"))
+            col = r.get("datamart_column")
+            typ = (r.get("etl_logic_type") or "").strip().lower()
+            etl = r.get("etl_logic") or ""
+            desc = r.get("description") or ""
+            if typ == "direct":
+                if not (r.get("atomic_column") or "").strip():
+                    out.append(("ERROR", "L2-FACT-PK-INVALID", f"{t}.{col}: PK Dạng A (direct) phải map cột id của entity Atomic driving — atomic_column đang trống"))
+            elif typ == "generated":
+                if not re.search(r"grain|hash", desc, re.I):
+                    out.append(("ERROR", "L2-FACT-PK-INVALID", f"{t}.{col}: PK Dạng B (Generated) phải ghi trong description các cột grain được hash (có chữ 'grain' hoặc 'hash')"))
+            elif typ == "computed" and re.search(r"hash", etl, re.I):
+                pass  # PK hash viết tường minh trong etl_logic (VD cityHash64(...)) — chấp nhận như Dạng B
+            else:
+                out.append(("ERROR", "L2-FACT-PK-INVALID", f"{t}.{col}: etl_logic_type của PK Fact phải là direct (Dạng A: id dòng Atomic) hoặc Generated (Dạng B: hash cột grain), đang là '{typ}'"))
+        if t in base:
+            out.append(("WARNING", "L2-FACT-BASELINE-STALE", f"{t} đã có PK — gỡ khỏi reference/fact_row_key_baseline.yaml"))
+    if owed:
+        out.append(("INFO", "L2-FACT-NO-ROW-KEY-BASELINE",
+                    f"{len(owed)} Fact nợ khóa dòng (baseline A22, chưa có PK): {', '.join(sorted(owed))}"))
+    return out
+
+
+def check_flat_orderby_pk(root: Path, module: str):
+    """D11 [L4-FLAT-ORDERBY-MISSING-PK]: flat DDL của Fact có PK phải đưa PK vào ORDER BY."""
+    out = []
+    d = root / "Datamart" / "flat-table" / module
+    if not d.exists():
+        return out
+    pk_of = {}
+    for t, rows in fact_tables_with_rows(root, module).items():
+        for r in rows:
+            if (r.get("key") or "").strip() == "PK":
+                pk_of[t] = (r.get("datamart_column") or "").strip()
+                break
+    if not pk_of:
+        return out
+    for f in sorted(d.glob("*.sql")):
+        if "populate" in f.name:
+            continue
+        txt = f.read_text(encoding="utf-8-sig")
+        for t, pk in pk_of.items():
+            m = re.search(r"CREATE TABLE IF NOT EXISTS datamart\.%s_%s_flat\b(.*?)\n;" % (re.escape(module.lower()), re.escape(t)), txt, re.S)
+            if not m:
+                continue
+            ob = re.search(r"\nORDER BY \((.*)\)\s*\n", m.group(1))
+            if not ob or not re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(pk), ob.group(1)):
+                out.append(("ERROR", "L4-FLAT-ORDERBY-MISSING-PK",
+                            f"{f.name}: flat của {t} có ORDER BY ({ob.group(1) if ob else '?'}) không chứa PK `{pk}` — "
+                            f"ReplacingMergeTree sẽ gộp các dòng cùng khóa sắp xếp; sửa ORDER BY thành (…, {pk})"))
+    return out
+
+
 def run(root: Path, module: str, force_l18: bool = False):
     issues = []
     hld = resolve_module_path(root, module, "hld")
@@ -320,6 +440,8 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_flat(root, module)
     issues += check_lld_etl_patterns(root, module)
     issues += check_lld_desc_and_lineage(root, module)
+    issues += check_fact_row_key(root, module)
+    issues += check_flat_orderby_pk(root, module)
     return issues
 
 
@@ -336,11 +458,11 @@ def main():
     err = warn = 0
     for m in mods:
         iss = run(root, m, a.l18)
-        e = sum(1 for x in iss if x[0] == "ERROR"); w = len(iss) - e
+        e = sum(1 for x in iss if x[0] == "ERROR"); n_info = sum(1 for x in iss if x[0] == "INFO"); w = len(iss) - e - n_info
         err += e; warn += w
-        print(f"== Design Lint {m}: {e} ERROR, {w} WARNING")
+        print(f"== Design Lint {m}: {e} ERROR, {w} WARNING" + (f", {n_info} INFO" if n_info else ""))
         for lvl, code, msg in iss:
-            print(f"  [{'X' if lvl == 'ERROR' else '!'}] [{code}] {msg}")
+            print(f"  [{'X' if lvl == 'ERROR' else 'i' if lvl == 'INFO' else '!'}] [{code}] {msg}")
     ok = err == 0 and (warn == 0 or not a.strict)
     print("PASS" if ok else "FAIL")
     sys.exit(0 if ok else 1)

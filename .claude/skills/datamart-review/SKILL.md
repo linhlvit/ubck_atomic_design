@@ -84,7 +84,7 @@ Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay b
 | **Reference Integrity (Gate 0)** | mục A1–A4 trong `datamart-lld-design/SKILL.md` | `python scripts/check_references.py --module [M] --strict` |
 | **Cấu trúc HLD Bước 5B (Gate 5)** | Bước 5B trong `datamart-hld-design/SKILL.md` | `python scripts/check_hld_5b.py --module [M]` |
 | **LLD Self-Check TC4–TC7 (Gate 7)** | TC4/TC5/TC6/TC7 trong `datamart-lld-design/SKILL.md` | `python scripts/lld_selfcheck.py --module [M]` |
-| **Design Lint (Gate 8)** | H10–H13 `datamart-hld-design`, A12–A15 `datamart-lld-design` | `python scripts/check_design_lint.py --module [M] --strict` |
+| **Design Lint (Gate 8)** | H10–H13 `datamart-hld-design`, A12–A15 + A22 `datamart-lld-design` (Fact thiếu PK / flat ORDER BY thiếu PK) | `python scripts/check_design_lint.py --module [M] --strict` |
 | **Checklist Đánh Giá Nhanh 4 Lớp & 8 Gates** | `reference/review_checklist.md` | — |
 
 ---

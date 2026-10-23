@@ -1,0 +1,97 @@
+# Baseline luật A22 (datamart-lld-design) — Fact ĐÃ TỒN TẠI trước 2026-10-23 mà LLD per-table chưa khai báo cột `key = PK`.
+# Gate 8 (`check_design_lint.py`) chỉ BÁO THÔNG TIN (`[i]`) cho các bảng dưới đây; Fact KHÔNG nằm trong danh sách mà thiếu PK = ERROR.
+# Quy tắc: (1) CẤM thêm Fact mới vào file này; (2) khi thêm PK cho một Fact, GỠ tên khỏi đây trong cùng lượt (lint cảnh báo nếu còn);
+# (3) chủ xử lý: Data Modeler của từng phân hệ — xem `datamart-lld-design/reference/rules.md` mục A22 để biết cách khai báo PK.
+# Rủi ro đi kèm: flat ClickHouse của các Fact này dùng ReplicatedReplacingMergeTree với ORDER BY (ngày, 1 cột dim) → dòng cùng khóa bị gộp khi merge.
+
+GSDC:
+  - fct_public_company_compliance_evaluation_snpst
+  - fct_public_company_financial_evaluation_snpst
+  - fct_public_company_financial_rpt_val
+  - fct_public_company_financial_smy_snpst
+  - fct_public_company_foreign_holding_snpst
+  - fct_public_company_issuance_evaluation_snpst
+  - fct_public_company_listed_share_snpst
+  - fct_public_company_nonfinancial_evaluation_snpst
+  - fct_public_company_risk_evaluation_snpst
+  - fct_public_company_state_capital_snpst
+  - fct_violation_rpt_snpst
+GSTT:
+  - fct_foreign_trading_min_snpst
+  - fct_hnx_securities_order
+  - fct_hnx_securities_trade
+  - fct_hose_securities_order
+  - fct_hose_securities_trade
+  - fct_index_constituent_snpst
+  - fct_instrument_price_daily
+  - fct_instrument_price_intraday
+  - fct_investor_category_index_trading_snpst
+  - fct_investor_category_trading_snpst
+  - fct_major_shareholder_ownership_snpst
+  - fct_market_index_intraday
+  - fct_security_trading_daily
+  - fct_stock_portfolio_snpst
+NDTNN:
+  - fct_foreign_investor_capital_flow_snpst
+  - fct_foreign_investor_portfolio_report_snpst
+  - fct_foreign_investor_report_value
+  - fct_foreign_net_flow_market_index_snpst
+  - fct_public_company_foreign_ownership_snpst
+  - fct_securities_foreign_trading_snpst
+NHNCK:
+  - fct_practitioner_daily_snpst
+  - fct_practitioner_license_certificate_snpst
+PTTT:
+  - fct_cap_grp_snpst
+  - fct_corporate_bond_market_snpst
+  - fct_corporate_bond_maturity_wall
+  - fct_corporate_bond_sector_snpst
+  - fct_foreign_net_trade_snpst
+  - fct_futures_intraday_snpst
+  - fct_futures_investor_flow_snpst
+  - fct_investor_flow_snpst
+  - fct_macro_indicator_snpst
+  - fct_market_risk_snpst
+  - fct_market_statistics_snpst
+  - fct_order_size_snpst
+  - fct_proprietary_net_trade_snpst
+  - fct_sector_risk_snpst
+  - fct_securities_company_balance_snpst
+  - fct_securities_company_safety_snpst
+QLCB:
+  - fct_securities_offering_plan_snpst
+  - fct_securities_offering_result_snpst
+  - fct_securities_offering_snpst
+  - fct_tthc_ap_document
+QLKD:
+  - fct_market_index_snpst
+  - fct_securities_company_brokerage_market_share_snpst
+  - fct_securities_company_capital_raising_event
+  - fct_securities_company_compliance_report_snpst
+  - fct_securities_company_license_condition_snpst
+  - fct_securities_company_service_assignment_snpst
+  - fct_securities_company_status_snpst
+QLQ:
+  - fct_foreign_fund_management_organization_unit_snpst
+  - fct_fund_distribution_agent_snpst
+  - fct_fund_management_company_snpst
+  - fct_fund_management_rpt_cell_val
+  - fct_investment_fund_ccq_snpst
+  - fct_investment_fund_count_snpst
+TKNB:
+  - fct_derivatives_security_detail_snpst
+  - fct_foreign_proprietary_trading_index_snpst
+  - fct_market_trading_snpst
+  - fct_private_corporate_bond_international_offering_snpst
+  - fct_private_corporate_bond_issuance_snpst
+  - fct_security_trading_detail_snpst
+TT:
+  - fct_examination_team_activity
+  - fct_examination_team_target_activity
+  - fct_examination_team_violation_behavior
+  - fct_inspection_team_activity
+  - fct_inspection_team_target_activity
+  - fct_inspection_team_violation_behavior
+  - fct_penalty_decision
+  - fct_penalty_decision_subject
+  - fct_penalty_decision_subject_behavior

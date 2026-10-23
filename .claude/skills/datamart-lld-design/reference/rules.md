@@ -1,4 +1,4 @@
-# Luật chống tái diễn A1–A21 — LLD Datamart
+# Luật chống tái diễn A1–A22 — LLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm ví dụ sai thực tế, cách kiểm và lệnh liên quan. Đọc đúng mục cần dùng, ví dụ `grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -25,6 +25,7 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A19 — Bảng Atomic snapshot/event: MỌI tham chiếu phải có giới hạn ngày tường minh `[L2-DATE-BOUND-MISSING]`
 - A20 — Cột mới ở Fact/Operational phải lên flat DDL + DML TRONG CÙNG LƯỢT `[L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING]`
 - A21 — Lọc chỉ số trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (đảo quyết định `index_nm`, 2026-10-21) `[process]`
+- A22 — Mọi Fact khai báo khóa dòng (`key = PK`); flat `ORDER BY` chứa PK `[L2-FACT-NO-ROW-KEY]`
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
@@ -372,13 +373,56 @@ Quyết định hiện hành (Data Modeler 2026-10-21, revert `48e849c5`; đảo
 - Cột BA ghi (`IndexCode`) không có ở Atomic: liệt kê đủ `physical_name`/`source_column` của entity trước khi kết luận
   "không có cột" (A1, A12).
 
+### A22 — Mọi Fact khai báo khóa dòng (`key = PK`); flat `ORDER BY` chứa PK `[L2-FACT-NO-ROW-KEY]`
+
+**Đảo quy ước 2026-07-21/22** ("Fact không có `key = PK`"): quy ước cũ sinh ra từ việc dọn cột surrogate `_id` thừa trên Fact (TT, GSDC), nhưng
+hệ quả là Fact không có khóa dòng nào — grain chỉ tồn tại dưới dạng chữ trong description. Quy ước mới: PK bắt buộc, nhưng phải CÓ VAI TRÒ (khóa MERGE/UPSERT
+của ETL, vế trái của grain, nằm trong `ORDER BY` của flat). Cột `_id` thừa không phải PK vẫn bị coi là cột dư.
+
+Sự cố thật (QLKD `fct_securities_company_financial_structure_snpst`, phát hiện 2026-10-23): Fact EAV theo ô báo cáo, grain khai báo "1 CTCK × 1 kỳ × 1 chỉ tiêu",
+KHÔNG có cột khóa. Hậu quả đã đo:
+1. **Grain trôi qua nhiều lần sửa** — 2026-09-18 phát hiện thiếu `rpt_code`; sau đó vẫn thiếu `sheet_id` (sửa 2026-10-15) và `rpt_input_submission_id` (2026-10-23);
+   Atomic còn có `section_id`/`row_index` mà Fact không mang. Tuple CTCK×kỳ×ô KHÔNG đảm bảo duy nhất.
+2. **Không có khóa MERGE/UPSERT** — dev phải tự ghép tổ hợp FK để merge, mỗi người một kiểu.
+3. **Flat ClickHouse mất dòng** — `ReplicatedReplacingMergeTree ORDER BY (cdr_dt, snpst_dt_dim_id)`: ReplacingMergeTree dedup theo **ORDER BY**, nên mọi ô cùng ngày bị
+   gộp thành 1 dòng khi merge nền. `build_flat_tables.py` cũ lấy `*_dim_id` đầu tiên làm khóa sắp xếp.
+Khảo sát toàn repo 2026-10-23: 91/99 Fact không có khóa dòng; 164 flat có `ORDER BY` chỉ (ngày, 1 cột).
+
+**Quy tắc**
+1. Mỗi Fact có **ĐÚNG 1** dòng `key = PK`: `nullable = false`, `data_domain = Surrogate Key`, `data_type = string`, đặt **đầu bảng** (trước các FK).
+2. **Dạng A — Fact giữ nguyên grain 1 dòng Atomic driving** (không GROUP BY / UNION / pivot): PK = cột id surrogate của entity driving,
+   `etl_logic_type = direct`, `etl_logic = <driving>.<id>`, 4 cột source điền như attribute thường (VD `sc_report_input_value.sc_rpt_input_val_id` →
+   `rpt_input_val_id`). Không dùng `_code`/BK nguồn thay cho `_id` khi `_id` đã có. Đây là khóa MERGE của ETL.
+3. **Dạng B — Fact gộp nhiều dòng nguồn:** PK = surrogate sinh = hash toàn bộ cột grain (+ `src_stm_code`); format như PK Dimension (`etl_logic` trống,
+   `etl_logic_type = Generated`, `source_entity = Generated`, 3 cột source còn lại trống) và **`description` liệt kê đủ cột grain** (Gate 8 đòi có chữ "grain" hoặc "hash").
+4. **Grain nêu bằng PK:** mô tả entity ở `datamart_model.yaml`, `Entities.csv`, bảng grain Section 4 HLD và comment đầu khối flat phải nói "1 dòng Atomic X" (Dạng A)
+   hoặc liệt kê cột grain (Dạng B) **và tên cột PK**. Đổi grain = đổi PK + sửa đồng loạt LLD/master/yaml/Entities/HLD/flat (A5, H11).
+5. **Flat (Phase 3, A20):** `ORDER BY (assumeNotNull(<cột ngày>), <PK>)` — PK PHẢI nằm trong ORDER BY. `build_flat_tables.py` tự dùng PK cho khối mới; flat đã có thì sửa tay,
+   Gate 8 `L4-FLAT-ORDERBY-MISSING-PK` bắt. Không gộp PK vào `PARTITION BY`.
+6. **Cột tọa độ/ngữ cảnh không đưa vào Fact** (VD `section_id`, `row_index`) phải được giải thích trong `description` của PK vì sao PK đã đủ, không để im lặng.
+7. **Merge key của ETL = PK.** Không merge theo tổ hợp FK, trừ Dạng B (hash của chính tổ hợp đó).
+8. **Fact đã có trước 2026-10-23** mà chưa có PK nằm trong `datamart-review/reference/fact_row_key_baseline.yaml` (nợ có tên, Gate 8 in `[i]`, không chặn). **Cấm thêm Fact mới vào baseline.**
+   Thêm PK cho Fact cũ thì GỠ tên khỏi baseline trong cùng lượt và chạy A20 (flat DDL + DML + ORDER BY) — lint cảnh báo `L2-FACT-BASELINE-STALE` nếu quên.
+
+**Lệnh sau khi thêm PK:**
+
+```bash
+python .claude/skills/datamart-review/scripts/build_flat_tables.py --module {MODULE} --sync-columns --apply   # chèn cột PK vào flat DDL + DML (A20)
+# sửa tay ORDER BY của flat đã có: ORDER BY (assumeNotNull(cdr_dt), <PK>)
+python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MODULE} --strict               # D10/D11
+python .claude/skills/datamart-review/scripts/build_model_yaml.py --check                                  # yaml khớp registry
+```
+
+**Đã sửa (QLKD, 2026-10-23):** thêm `rpt_input_val_id` (`sc_report_input_value.sc_rpt_input_val_id`, Dạng A) vào LLD, master, yaml, flat DDL + DML; ORDER BY flat đổi từ
+`(cdr_dt, snpst_dt_dim_id)` sang `(cdr_dt, rpt_input_val_id)`; grain ở yaml/Entities/HLD/flat viết lại. **Chưa sửa:** 81 Fact trong baseline (và 10 Fact chỉ có ở master).
+
 ### Lệnh bổ sung — Gate 8 Design Lint
 
 ```bash
 python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MODULE} --strict
 ```
 
-Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: dòng bảng KPI HLD sai số ô (H13), bảng Datamart
+Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: Fact thiếu khóa dòng PK (A22, D10 `L2-FACT-NO-ROW-KEY`) và flat `ORDER BY` thiếu PK (A22, D11), dòng bảng KPI HLD sai số ô (H13), bảng Datamart
 0 KPI dùng (H12), comment flat SQL dính `:etl_date` (A15), KPI có MEASURE bị nhân dòng (L18, D5 — chỉ ép với
 module trong `L18_MODULES` của `check_design_lint.py`; thiết kế module mới theo L18 thì thêm module vào tập đó).
 **Gate 8 KHÔNG kiểm A19 (giới hạn ngày)** — chạy tay `check_date_bound.py` (TC12); `run_quality_gates.py` PASS không có nghĩa etl_logic đã khóa ngày.

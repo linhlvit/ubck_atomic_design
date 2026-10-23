@@ -1,4 +1,4 @@
-# Luật chống tái diễn H1–H14 — HLD Datamart
+# Luật chống tái diễn H1–H15 — HLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm sự cố gốc và cách kiểm. Đọc đúng mục cần dùng, ví dụ `grep -n "^### H7" .claude/skills/datamart-hld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -19,6 +19,7 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm s
 - H12b — Trước khi kết luận "thiếu", đọc quyết định đã duyệt của đúng KPI `[process]`
 - H13 — Sửa bảng Markdown trong HLD: mỗi dòng KPI đúng 7 ô; giải trình ánh xạ phải tra lại KPI thật `[L1-HLD-KPI-ROW-CELLS]`
 - H14 — Chọn chỉ số (VN-Index, VN30…) trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (Data Modeler chốt 2026-10-21, đảo quyết định `index_nm` 2026-10-20) `[process]`
+- H15 — Grain Fact trong HLD phải nêu cột PK và khớp LLD `[L2-FACT-NO-ROW-KEY]`
 - Ghi chú lịch sử
 
 ### H1 — Một HLD là MỘT nguồn sự thật: sửa Section 1 phải sửa cả Section 3/4/5
@@ -218,6 +219,14 @@ theo H7 (`market_code = index_code`, SQL BA STT 5 GSTT) — KHÔNG nối `index_
 
 Cách kiểm: `grep -n "market_code = 'HOSE'" Datamart/lld/{M}/*.csv Datamart/hld/DTM_{M}_HLD.md`; mỗi chỗ dùng để chọn VN-Index
 phải đối chiếu BA của từng Nhóm tiêu thụ.
+
+### H15 — Grain Fact trong HLD phải nêu cột PK và khớp LLD `[L2-FACT-NO-ROW-KEY]`
+
+Sự cố (QLKD `fct_securities_company_financial_structure_snpst`, 2026-10-23): HLD khai grain "1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ × 1 mã biểu mẫu" bằng chữ; Fact không có khóa nên
+grain bị bỏ sót `rpt_code` (2026-09-18), `sheet_id` (2026-10-15), `rpt_input_submission_id`, `section_id`/`row_index`. Quy tắc:
+- Mọi dòng grain của Fact trong HLD (Section 4), `Entities.csv`, mô tả entity yaml nêu **tên cột PK** + dạng: "1 dòng Atomic X" (Dạng A) hoặc liệt kê đủ cột grain (Dạng B). Chi tiết A22 (`datamart-lld-design/reference/rules.md`).
+- Fact mới thiết kế ở HLD phải khai PK ngay ở khối Attributes của erDiagram/Section Entities; không để LLD tự "tìm khóa" sau.
+- Sửa grain ở một nơi = grep và sửa đồng loạt mọi nơi (H11): `grep -rn "<tên Fact>" Datamart/hld Datamart/lld Datamart/datamart_model.yaml Datamart/flat-table`.
 
 ## Ghi chú lịch sử
 

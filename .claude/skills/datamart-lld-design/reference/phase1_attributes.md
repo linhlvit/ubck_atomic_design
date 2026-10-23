@@ -154,7 +154,7 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 
 | key | Chỉ dùng trên | Không dùng trên |
 |---|---|---|
-| `PK` | Dimension, Operational | Fact |
+| `PK` | Dimension, Operational, **Fact (bắt buộc đúng 1 — A22)** | — |
 | `BK` | Dimension, Operational | Fact |
 | `FK` | Fact | Dimension, Operational |
 | `DD` | Fact | — |
@@ -166,11 +166,30 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 ❌ `nullable = true` cho PK / BK / FK.
 ❌ `data_domain = Classification Value` mà `key` không trống.
 ❌ `data_domain = Surrogate Dimension Key` mà `key` không phải `FK`.
-❌ `data_domain = Surrogate Key` trên Fact table — Fact **không có `key = PK`** dù có cột surrogate id kỹ thuật cho ETL merge/upsert (cột đó để `key` trống).
+❌ Fact **không có** dòng `key = PK` (A22, đảo quy ước 2026-07-21/22) — Fact bắt buộc có ĐÚNG 1 PK = khóa dòng/khóa MERGE (xem mục "Khóa dòng của Fact" ngay dưới).
+❌ `data_domain = Surrogate Key` trên Fact ở dòng KHÔNG phải `key = PK` — cột `_id` thừa không vai trò là cột dư (xóa hẳn dòng).
 ❌ `key = FK → <bất kỳ tên Dimension/scheme>` — `key` chỉ ghi token thuần `FK`, tên Dimension đích và scheme (nếu có) ghi trong `description`, không nhồi vào `key`.
 ❌ `key = DD` trên Operational — DD chỉ hợp lệ trên Fact. Branch key của pivot trên Operational dùng `key` trống.
 ❌ `key = BK` mà `etl_logic`/`etl_logic_type` để trống — BK là business key thật (map từ Atomic), không phải surrogate generated; chỉ `PK` mới hợp lệ để trống (`source_entity = Generated`). Xem Vi phạm 5 trong `key_constraints.md`.
 ❌ `description` dùng chữ khác với token `key` thực tế của chính dòng đó (VD: `key="BK"` nhưng description viết "NK — ...", hoặc ngược lại) — nhất quán 1 token duy nhất.
+
+### Khóa dòng của Fact (A22 — `key = PK`)
+
+Mỗi Fact có **đúng 1** cột `key = PK` (`nullable = false`, `data_domain = Surrogate Key`, `data_type = string`), đặt đầu bảng. Đây là khóa MERGE/UPSERT của ETL và là bằng chứng của grain.
+
+| | Dạng A — grain = 1 dòng Atomic driving | Dạng B — Fact gộp (GROUP BY / UNION / pivot) |
+|---|---|---|
+| `etl_logic_type` | `direct` | `Generated` |
+| `etl_logic` | `<driving>.<id>` (VD `sc_report_input_value.sc_rpt_input_val_id`) | trống |
+| `source_entity` / `atomic_table` / `source_attribute` / `atomic_column` | entity/bảng/cột id của driving như attribute thường | `Generated` / trống / trống / trống |
+| `description` | "PK — id dòng …; Grain = 1 dòng Atomic X; khóa MERGE" | "PK — hash(<liệt kê ĐỦ cột grain> + `src_stm_code`)"; phải có chữ "grain" hoặc "hash" |
+| tên cột | tên cột id Atomic (bỏ prefix entity theo `physical_naming.md`) | `<fact>_id` |
+
+- Không dùng `_code`/BK nguồn thay cho `_id` khi Atomic đã có `_id`. Fact **không có** `BK` (cấm).
+- Grain ở `datamart_model.yaml`, `Entities.csv`, bảng grain Section 4 HLD, comment đầu khối flat phải nêu tên PK (A22 mục 4).
+- Flat ClickHouse: `ORDER BY (assumeNotNull(<ngày>), <PK>)` — thiếu PK thì ReplacingMergeTree gộp các dòng cùng khóa sắp xếp (A22, Phase 3).
+- Fact cũ chưa có PK: `datamart-review/reference/fact_row_key_baseline.yaml` (nợ có tên). Fact mới không được vào baseline.
+
 
 ---
 
@@ -391,7 +410,7 @@ JOIN <table_b> ON <table_b>.<fk> = <driving>.<col>
 
 ## Quy tắc mapping Atomic
 
-**`source_entity = Generated`** — chỉ dùng cho Surrogate Key (PK Dimension/Operational) và Surrogate Dimension Key (FK Fact).
+**`source_entity = Generated`** — chỉ dùng cho Surrogate Key (PK Dimension/Operational, PK Fact Dạng B) và Surrogate Dimension Key (FK Fact). PK Fact Dạng A lấy `direct` từ id Atomic driving.
 
 **Multi-source** — dùng separator ` / `:
 

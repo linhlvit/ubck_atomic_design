@@ -75,6 +75,11 @@ def ch_type(dt: str, nullable: bool) -> str:
     return "Nullable(%s)" % base if nullable else base
 
 
+# Cột PK của từng bảng (key = PK trong registry) — Fact PHẢI có (A22); flat ORDER BY của Fact dùng PK này,
+# vì ReplacingMergeTree dedup theo ORDER BY: ORDER BY thiếu khóa dòng thì các dòng cùng (ngày, 1 dim) bị gộp thành 1.
+PK_BY_TABLE: dict = {}
+
+
 def load_registry(root: Path):
     """Trả (cols_by_table, logical2physical, table_type_hint)."""
     t = read_design_csv(root / MASTER_REL, strict=True)
@@ -85,6 +90,8 @@ def load_registry(root: Path):
         ent = r[ix["datamart_entity"]].strip()
         l2p.setdefault(ent, tbl)
         col = r[ix["datamart_column"]].strip()
+        if "key" in ix and r[ix["key"]].strip() == "PK":
+            PK_BY_TABLE.setdefault(tbl, col)
         bucket = cols.setdefault(tbl, [])
         if col in [c[0] for c in bucket]:
             continue
@@ -148,6 +155,8 @@ def gen_blocks(no: int, module: str, tbl: str, ttype: str, dims, cols, desc: str
         sel.append(f"    f.{c},")
         if order_key is None and c.endswith("_dim_id"):
             order_key = c
+    if ttype == "fact" and PK_BY_TABLE.get(tbl):
+        order_key = PK_BY_TABLE[tbl]  # A22: ORDER BY phải chứa khóa dòng (PK) của Fact
     for alias, dphys, fk, dlog in dims:
         ddl.append("")
         ddl.append(f"    -- From: {dlog.upper()}")

@@ -41,7 +41,7 @@ Thiếu `mermaid` → render thành plain text trên mọi renderer.
 
 | Label | Dùng ở đâu | Điều kiện |
 |---|---|---|
-| `PK` | Dimension, Tác nghiệp | Surrogate key của entity |
+| `PK` | Dimension, Tác nghiệp, **Fact (đúng 1 — khóa dòng, A22)** | Surrogate key của entity; ở Fact là khóa dòng/khóa MERGE (id dòng Atomic driving hoặc hash cột grain) |
 | `FK` | **Chỉ** Fact entity block | Phải có `\|\|--o{` tương ứng |
 | (trống) | Mọi attribute còn lại | Measure, Classification Value, date, boolean, DD, metadata |
 

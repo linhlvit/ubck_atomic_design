@@ -136,7 +136,7 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 
 ## QUY TẮC CỨNG — TRƯỚC KHI SỬA HÀNG LOẠT / ĐỔI QUY TẮC DÙNG CHUNG (bài học 2026-09-25)
 
-Áp dụng cả khi không gọi Skill. Chi tiết: H10–H14 (`datamart-hld-design`), A12–A15, A20 và A21 (`datamart-lld-design`).
+Áp dụng cả khi không gọi Skill. Chi tiết: H10–H14 (`datamart-hld-design`), A12–A15, A20, A21 và A22 (`datamart-lld-design`), H15 (`datamart-hld-design`).
 
 1. **Không kết luận cột Atomic thiếu/rỗng từ YAML LLD.** Đối chiếu `BRD/Source/` của mọi nguồn + hỏi xác nhận dữ liệu vật lý trước khi đổi `etl_logic` hàng loạt (VD `securities_trade.execution_val` HNX có thật dù YAML không khai báo).
 2. **Câu trả lời 1 chữ cho câu hỏi kép** ("có", "ok"): nhắc lại cách hiểu 1 câu trước khi sửa ≥ 5 cột hoặc nhiều module.
@@ -147,6 +147,7 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 7. **Gate 8 (`check_design_lint.py`) nằm trong `run_quality_gates.py`**: bắt dòng bảng KPI sai số ô, bảng 0 KPI dùng (→ All-Tier Cleanup), comment flat SQL dính `:etl_date`, và (module trong `L18_MODULES`, hiện TT và QLKD) KPI có MEASURE bị nhân thành nhiều dòng Detail Mapping (Quy tắc L18).
 8. **Cột mới ở Fact/Operational phải lên flat DDL + DML trong CÙNG lượt** (A20 `datamart-lld-design`) — áp dụng mọi đường thêm cột (Phase 1, `apply_kpi_patch.py`, sửa tay), kể cả khi không ở Phase 3 và không gọi Skill. Lệnh: `build_flat_tables.py --module {M} --sync-columns [--apply]` rồi `check_flat_table.py --module {M} --strict`. **Gate FAIL không phải "tồn đọng"**: Gate 4 FAIL phải sửa hoặc ghi rõ lý do + chủ xử lý, không được gạt sang "lỗi có từ trước". Sự cố (QLQ, 2026-10-14): 29 cột `opr_*` có KPI READY (VD `assets_under_management_amt`) có trong LLD + Detail Mapping nhưng thiếu ở flat qua nhiều phiên, Gate 4 đã báo FAIL nhưng bị bỏ qua. Phép thử nhanh: *cột có trong Detail Mapping mà không có trong flat DDL?*
 9. **Chọn chỉ số (VN-Index…) trên `market_index_snapshot`:** Data Modeler chốt **2026-10-21 (đảo quyết định 2026-10-20, revert `48e849c5`)**: BA ghi `IndexCode = 'VNINDEX'` / `indexname = 'VNINDEX'` là BA nhầm → giữ lọc `market_code = 'HOSE'` (+ `PARTITION BY market_code` cuối ngày), KHÔNG đổi sang `index_nm = 'VNINDEX'` dù SQL BA có chữ `indexname`. Không chép quyết định của Nhóm này sang Nhóm khác khi chưa đọc BA Nhóm đó; cột BA ghi mà Atomic không grep thấy ≠ entity không có cột tương ứng — liệt kê đủ cột entity trước (H14, A21). Khóa JOIN Index Constituent vẫn theo H7.
+10. **Mọi Fact khai báo ĐÚNG 1 cột `key = PK`** (A22, 2026-10-23 — đảo quy ước 2026-07-21/22 "Fact không có PK"): khóa dòng = khóa MERGE/UPSERT. Dạng A (grain = 1 dòng Atomic driving): PK = id dòng Atomic, `direct` (VD QLKD `rpt_input_val_id` ← `sc_report_input_value.sc_rpt_input_val_id`). Dạng B (Fact gộp): hash mọi cột grain, `Generated`, description liệt kê cột grain. **Flat ClickHouse `ORDER BY` phải chứa PK** — ReplicatedReplacingMergeTree dedup theo ORDER BY nên `ORDER BY (ngày, 1 dim)` gộp mất dòng. Grain ở yaml/Entities/HLD/flat nêu tên PK. Fact cũ thiếu PK nằm trong `datamart-review/reference/fact_row_key_baseline.yaml` (nợ có tên; Gate 8 in `[i]`); **Fact mới thiếu PK = ERROR Gate 8** (`L2-FACT-NO-ROW-KEY`, `L4-FLAT-ORDERBY-MISSING-PK`), cấm thêm Fact mới vào baseline.
 
 ## CHỐT CHẶN MÁY (2026-10-15) — hook `dm_guard` + chốt ghi file
 

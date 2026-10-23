@@ -164,7 +164,7 @@ ORDER BY (assumeNotNull(<driving_date_col>), <grain_key>)
 ```
 
 - `<driving_date_col>`: cột `date` có `key = DD` trong Attributes.csv của bảng fact/operational
-- `<grain_key>`: cột BK hoặc FK dim (không phải Calendar Date FK) — nếu nhiều grain key thì liệt kê đủ
+- `<grain_key>`: **Fact = cột PK của Fact (A22) — BẮT BUỘC.** ReplicatedReplacingMergeTree dedup theo ORDER BY: nếu chỉ ghi (ngày, 1 cột dim) thì mọi dòng cùng ngày+dim bị gộp thành 1 khi merge nền (sự cố QLKD `fct_securities_company_financial_structure_snpst`, 2026-10-23). Operational/Dimension: cột BK hoặc FK dim (không phải Calendar Date FK) — nếu nhiều grain key thì liệt kê đủ. Gate 8 D11 `L4-FLAT-ORDERBY-MISSING-PK` bắt Fact có PK mà ORDER BY thiếu PK
 - **`assumeNotNull` bắt buộc:** cột date trong flat table thường là `Nullable(Date)` (do join từ dim hoặc dữ liệu nghiệp vụ có thể NULL). ClickHouse MergeTree không cho phép `Nullable` trong `PARTITION BY` và `ORDER BY` → luôn wrap bằng `assumeNotNull(...)`. NULL sẽ được map về `1970-01-01` khi partition/sort.
 
 ---

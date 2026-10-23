@@ -213,7 +213,8 @@ ATTRIBUTES CHECK:
 □ Operational ≥2 BK: driving = entity con; entity cha lấy direct từ FK trong entity con
 □ Mọi Dimension có ≥1 BK (join anchor cho Fact lookup)
 □ Mọi Operational dùng trường _code làm PK duy nhất — không tạo surrogate key (_id)
-□ Fact KHÔNG có dòng key = PK (dù có cột surrogate id kỹ thuật — để key trống)
+□ Fact có ĐÚNG 1 dòng key = PK (A22), nullable=false, đặt đầu bảng: Dạng A = id dòng Atomic driving (direct) khi grain = 1 dòng nguồn; Dạng B (Fact gộp) = Generated + description liệt kê đủ cột grain
+□ Grain trong yaml/Entities/HLD/flat nêu tên cột PK; flat ORDER BY chứa PK
 □ Fact TUYỆT ĐỐI KHÔNG có cột cdr_dt_dim_id (Calendar Date Dimension Id) — FK tới Calendar Date Dimension phải đặt theo vai trò nghiệp vụ (Snapshot Date Dimension Id → snpst_dt_dim_id; Fact khác dùng <Role> Date Dimension Id → <role>_dt_dim_id)
 □ A19-R1: Driving là Fact Snapshot/Fact Append → dòng lookup_date có `<driving>.<cột ngày> = :etl_date` (không chỉ `src_stm_code`)
 □ A19-R2/R3: bảng snapshot/event join thêm nối ngày vào Driving hoặc tự khóa ngày; mọi subquery/CTE khóa ngày BÊN TRONG (theo alias)
@@ -232,6 +233,6 @@ ATTRIBUTES CHECK:
 □ nullable = false cho PK / BK / FK
 □ data_domain = Classification Value → key trống
 □ data_domain = Surrogate Dimension Key → key = FK → <Dim>
-□ data_domain = Surrogate Key không xuất hiện trên Fact table
+□ data_domain = Surrogate Key trên Fact chỉ ở dòng key = PK (A22) — cột _id khác là cột dư
 □ Export UTF-8 BOM (utf-8-sig)
 ```

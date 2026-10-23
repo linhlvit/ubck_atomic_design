@@ -17,11 +17,15 @@
 > Áp dụng cho thiết kế mới từ 2026-08-03 (GSDC 5 Fact Score Snapshot). Các module cũ (GSTT, QLCB,
 > QLKD, TT) vẫn còn dùng `FK -> <Dim>`/`FK → <Dim>` — chưa hồi tố, chỉ sửa khi có yêu cầu riêng.
 
+> **Đổi quy ước 2026-10-23 (A22):** Fact **BẮT BUỘC có đúng 1 `key = PK`** = khóa dòng/khóa MERGE (đảo quy ước 2026-07-21/22 "Fact không có PK"). Dạng A: id dòng Atomic driving
+> (`direct`); Dạng B (Fact gộp): hash cột grain (`Generated`, description liệt kê cột grain). Lý do: Fact không khai báo khóa thì grain chỉ là chữ, trôi qua nhiều lần sửa và flat
+> ClickHouse `ReplacingMergeTree` gộp mất dòng (sự cố QLKD `fct_securities_company_financial_structure_snpst`). Xem `reference/rules.md` mục A22.
+
 ## Bảng tổng hợp
 
 | key | Dimension | Fact | Operational |
 |---|---|---|---|
-| `PK` | ✅ Surrogate key | ❌ | ✅ Surrogate key |
+| `PK` | ✅ Surrogate key | ✅ **Bắt buộc, đúng 1** — khóa dòng/khóa MERGE (A22) | ✅ Surrogate key |
 | `BK` | ✅ Business key join anchor | ❌ | ✅ Business key |
 | `FK` | ❌ | ✅ Surrogate dim key — tên Dimension đích ghi trong `description`, không ghi trong `key` | ❌ |
 | `DD` | ❌ | ✅ Degenerate dimension | ❌ |
@@ -55,7 +59,7 @@
 
 | key | etl_logic bắt buộc? |
 |---|---|
-| `PK` | Trống — `source_entity = Generated` (surrogate sinh mới, không map Atomic) |
+| `PK` | Dimension/Operational/Fact Dạng B: trống — `source_entity = Generated` (surrogate sinh mới, không map Atomic). **Fact Dạng A (A22): bắt buộc `direct` = id dòng Atomic driving** |
 | `BK` | **Bắt buộc đầy đủ** như attribute thường — BK lấy giá trị thật từ Atomic (thường `etl_logic_type = direct` từ driving table). ❌ Không được để trống. |
 | `FK` | Bắt buộc — `lookup_dim`/`lookup_date`/`direct` (khi driving table chính là Dimension đích, xem ví dụ Fact bên dưới) |
 | `DD` | Bắt buộc — map từ Atomic (thường `direct` hoặc `join_atomic`) |
@@ -80,6 +84,7 @@ datamart_entity,key,data_domain,nullable,etl_logic,etl_logic_type
 
 ```csv
 datamart_entity,key,data_domain,nullable,description
+"Fact FMS Snapshot","PK","Surrogate Key","false","PK — id dòng Atomic driving (direct) = khóa MERGE; grain = 1 dòng Atomic ..."   ← A22 bắt buộc, đầu bảng
 "Fact FMS Snapshot","FK","Surrogate Dimension Key","false","FK tới Calendar Date Dimension — ..."
 "Fact FMS Snapshot","FK","Surrogate Dimension Key","false","FK tới Fund Management Company Dimension — ..."
 "Fact FMS Snapshot","DD","Text","false",""                          ← degenerate dim
@@ -90,10 +95,9 @@ datamart_entity,key,data_domain,nullable,description
 > `key` chỉ ghi token `FK` thuần — tên Dimension đích (Calendar Date Dimension, Fund Management
 > Company Dimension...) nằm trong `description`, không lặp lại trong `key`.
 
-> ❌ Fact **KHÔNG có `key = PK`** dù có surrogate key. Fact chỉ có `FK`/`DD`/measure — không có
-> dòng nào định danh grain bằng surrogate `_id` riêng (bài học module TT 2026-07-21: 7/7 file Fact
-> đều sai thêm dòng PK surrogate). Nếu Fact cần 1 cột surrogate id kỹ thuật cho ETL merge/upsert
-> (VD: `fct_x_id`), cột đó vẫn để `key` trống — không gán `PK`.
+> ✅ Fact có **đúng 1** `key = PK` (A22) — Dạng A: id dòng Atomic driving, `etl_logic_type = direct`; Dạng B: hash cột grain, `Generated`.
+> Ngoài PK, Fact chỉ có `FK`/`DD`/measure; `BK` cấm trên Fact. Cột surrogate `_id` KHÔNG phải PK (key trống) là cột dư — xóa.
+> (Lịch sử: TT 2026-07-21 và GSDC 2026-07-22 từng XÓA dòng PK khỏi Fact vì là cột dư; 2026-10-23 đảo lại vì thiếu khóa dòng làm grain trôi và flat mất dòng.)
 
 ---
 
@@ -126,15 +130,25 @@ datamart_entity,key,data_domain,nullable
 
 ## Vi phạm phổ biến và cách fix
 
-### Vi phạm 1 — PK trên Fact
+### Vi phạm 1 — Fact thiếu PK (A22)
 
 ```
 ❌ Sai:
-"Fact FMS Snapshot","PK","Surrogate Key","false"
+Fact chỉ có FK / DD / measure, không dòng nào key = PK; grain chỉ ghi bằng chữ trong description.
 
-Vấn đề: Fact table không có Surrogate Key — không tạo PK cho Fact.
+Vấn đề: không có khóa MERGE/UPSERT; grain trôi qua các lần sửa (thiếu rpt_code, sheet_id, submission…);
+flat ReplacingMergeTree ORDER BY (ngày, 1 dim) gộp mất dòng.
 
-✅ Fix: Xóa dòng này. Fact chỉ có FK và measure.
+✅ Fix: thêm đúng 1 dòng key = PK, nullable = false, data_domain = Surrogate Key, đặt đầu bảng.
+  Dạng A: etl_logic = <driving>.<id>, etl_logic_type = direct (VD sc_report_input_value.sc_rpt_input_val_id).
+  Dạng B (Fact gộp): Generated, description liệt kê ĐỦ cột grain. Sau đó A20 (flat DDL+DML) và ORDER BY flat chứa PK.
+```
+
+### Vi phạm 1b — Cột `_id` surrogate trên Fact nhưng key trống
+
+```
+❌ Sai: "fct_x_id","Surrogate Key", key = "" trên Fact
+✅ Fix: nếu cột là khóa dòng → gán key = PK (A22); nếu không phải khóa dòng → xóa cột.
 ```
 
 ### Vi phạm 2 — FK trên Dimension
