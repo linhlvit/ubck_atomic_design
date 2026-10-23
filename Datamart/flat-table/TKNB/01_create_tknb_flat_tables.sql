@@ -387,7 +387,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_bm030dmss_otc_corp_bond_trading_rpt_fla
     item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM030d_MSS',
     item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
     item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, giá trị giao dịch TPDN riêng lẻ, NĐTNN, tự doanh (báo cáo HNX09, tổng field_val theo row_path)',
+    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, giá trị giao dịch TPDN riêng lẻ, NĐTNN, tự doanh (báo cáo HNX09, tổng cell_val theo row_path)',
     src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
 )
 ENGINE = ReplicatedReplacingMergeTree()
