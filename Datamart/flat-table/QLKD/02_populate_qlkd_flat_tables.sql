@@ -489,6 +489,7 @@ TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_financial_structur
 INSERT INTO datamart.qlkd_fct_securities_company_financial_structure_snpst_flat
 SELECT
     -- From: FCT_SECURITIES_COMPANY_FINANCIAL_STRUCTURE_SNPST
+    f.rpt_input_val_id,
     f.snpst_dt_dim_id,
     f.securities_company_dim_id,
     f.report_indicator_dim_id,

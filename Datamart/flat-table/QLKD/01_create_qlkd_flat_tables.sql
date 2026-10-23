@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_compliance_repor
     period_nbr                                   Nullable(Int64)         COMMENT 'Số thứ tự kỳ báo cáo (quý 1-4, tháng 1-12) — chỉ bộ PERIODIC, bộ ADHOC để NULL',
     period_val                                   Nullable(String)        COMMENT 'Giá trị kỳ báo cáo đột xuất (VD 2024-Q1, nguồn PERIOD_VALUE) — chỉ bộ ADHOC, bộ PERIODIC để NULL',
     src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn — SCMS_SC_FIRM_ADHOC_REPORT hoặc SCMS_SC_FIRM_PERIODIC_REPORT',
-    created_dt                                   Nullable(Date)          COMMENT 'Ngày tạo bản ghi báo cáo đột xuất (nguồn SC_FIRM_ADHOC_REPORT.CREATED_AT → Atomic sc_adhoc_report.src_rcrd_isrt_tms) — ngày phát sinh yêu cầu báo cáo; BA dùng làm mốc phải nộp của báo cáo đột xuất chưa nộp (RECORD_STATUS = 0 AND TRUNC(CREATED_AT) <= ngày) và mốc đầu trục Nhóm 10/38/39. — bộ ADHOC',
+    created_dt                                   Nullable(Date)          COMMENT 'Ngày tạo bản ghi báo cáo đột xuất (nguồn SC_FIRM_ADHOC_REPORT.CREATED_AT → Atomic sc_adhoc_report.src_record_insert_tms) — ngày phát sinh yêu cầu báo cáo; BA dùng làm mốc phải nộp của báo cáo đột xuất chưa nộp (RECORD_STATUS = 0 AND TRUNC(CREATED_AT) <= ngày) và mốc đầu trục Nhóm 10/38/39. — bộ ADHOC',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -414,7 +414,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_trading_account_flat ON 
     trading_account                 Nullable(String)        COMMENT 'Số tài khoản giao dịch',
     shareholder_nm                  Nullable(String)        COMMENT 'Tên chủ tài khoản',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn',
-    created_dt                                   Nullable(Date)          COMMENT 'Ngày tạo bản ghi cổ đông (nguồn SC_FIRM_SHAREHOLDER.CREATED_AT → Atomic sc_shareholder.src_rcrd_isrt_tms) — một trong 7 mốc đầu của trục Chiều thời gian theo Ngày Nhóm 41/42 (BA dòng 223) và as-of cổ đông.'
+    created_dt                                   Nullable(Date)          COMMENT 'Ngày tạo bản ghi cổ đông (nguồn SC_FIRM_SHAREHOLDER.CREATED_AT → Atomic sc_shareholder.src_record_insert_tms) — một trong 7 mốc đầu của trục Chiều thời gian theo Ngày Nhóm 41/42 (BA dòng 223) và as-of cổ đông.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
@@ -473,15 +473,16 @@ COMMENT 'Flat table — Operational Individual Violation History'
 -- ============================================================
 -- 16. FACT: qlkd_fct_securities_company_financial_structure_snpst_flat
 --    Fact Securities Company Financial Structure Snapshot — cơ cấu tài chính định kỳ CTCK (EAV)
---    Grain: 1 CTCK x 1 ky bao cao x 1 chi tieu
+--    Grain: 1 dong Atomic sc_report_input_value = 1 CTCK x 1 ky x 1 lan nop x 1 o bao cao; PK = rpt_input_val_id (khoa MERGE/UPSERT; ORDER BY phai chua PK vi ReplacingMergeTree dedup theo ORDER BY)
 --    Joins: Calendar Date Dimension, Securities Company Dimension, Report Indicator Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FCT_SECURITIES_COMPANY_FINANCIAL_STRUCTURE_SNPST
+    rpt_input_val_id                             String                  COMMENT 'PK — id dòng giá trị ô báo cáo đầu vào (Atomic `sc_report_input_value.sc_rpt_input_val_id` = hash_id của ID nguồn SCMS REPORT_INPUT_CELL_VALUE). Grain Fact = 1 dòng Atomic (không gộp): 1 CTCK × 1 kỳ × 1 lần nộp × 1 ô — nên PK này là khóa MERGE/UPSERT duy nhất của Fact. Tọa độ ô (rpt_code, sheet_id, cell_id) tra qua `report_indicator_dim_id`; section_id/row_index không đưa vào Fact vì PK đã định danh từng dòng. [MỚI 2026-10-23] Trước đây Fact không khai báo khóa dòng.',
     snpst_dt_dim_id                              String                  COMMENT 'FK ngày snapshot — ngày kết thúc kỳ báo cáo (end_dt), lookup qua Calendar Date Dimension.',
     securities_company_dim_id                    String                  COMMENT 'FK CTCK nộp báo cáo — lookup qua Securities Company Dimension.',
-    report_indicator_dim_id                      String                  COMMENT 'FK chỉ tiêu báo cáo — lookup qua Report Indicator Dimension theo cell_id.',
+    report_indicator_dim_id                      String                  COMMENT 'FK tọa độ ô báo cáo — lookup Report Indicator Dimension theo (rpt_code, sheet_id, cell_id).',
     rpt_year                                     Int64                   COMMENT 'Năm báo cáo tài chính.',
     rpt_period_tp_code                           String                  COMMENT 'Loại kỳ báo cáo: QUY, THANG, NAM.',
     period_nbr                                   Int64                   COMMENT 'Số thứ tự kỳ báo cáo (1-4 cho Quý, 1-12 cho Tháng).',
@@ -523,7 +524,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), snpst_dt_dim_id)
+ORDER BY (assumeNotNull(cdr_dt), rpt_input_val_id)
 COMMENT 'Flat table — Fact Securities Company Financial Structure Snapshot — cơ cấu tài chính định kỳ CTCK (EAV)'
 ;
 
