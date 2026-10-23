@@ -1014,7 +1014,7 @@ flowchart LR
 **KPI liên quan:** K_VP_48, K_VP_49, K_VP_50, K_VP_51, K_VP_52, K_VP_53, K_VP_54, K_VP_55, K_VP_56, K_VP_57, K_VP_58, K_VP_59
 
 **Giải pháp kỹ thuật (RESOLVED):**
-Dữ liệu giao dịch thị trường TPDN riêng lẻ được thu nhận định kỳ hàng ngày từ Sở GDCK Hà Nội (HNX) qua kênh ICP của hệ thống ISS (mã biểu mẫu `HNX09`). Tầng Atomic đã chuẩn hóa thực thể `internal_statistical_report` lưu trữ dữ liệu cell-level (origin_dt_val, field_val, row_path). Datamart thiết kế bảng `Fact OTC Bond Snapshot` (`fct_otc_bnd_snpst`) tổng hợp toàn bộ các chỉ tiêu theo ngày giao dịch.
+Dữ liệu giao dịch thị trường TPDN riêng lẻ được thu nhận định kỳ hàng ngày từ Sở GDCK Hà Nội (HNX) qua kênh ICP của hệ thống ISS (mã biểu mẫu `HNX09`). Tầng Atomic đã chuẩn hóa thực thể `internal_statistical_report` lưu trữ dữ liệu cell-level (period_val, cell_val, row_path). Datamart thiết kế bảng `Fact OTC Bond Snapshot` (`fct_otc_bnd_snpst`) tổng hợp toàn bộ các chỉ tiêu theo ngày giao dịch.
 
 Riêng chỉ tiêu `K_VP_58` và `K_VP_59` (Số mã TPDN riêng lẻ ĐKGD) lấy từ biểu mẫu ngoài HNX BM29 (danh sách mã TP), tiếp tục duy trì trạng thái PENDING cho đến khi bổ sung nguồn biểu mẫu này.
 
@@ -1022,13 +1022,13 @@ Riêng chỉ tiêu `K_VP_58` và `K_VP_59` (Số mã TPDN riêng lẻ ĐKGD) l�
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|:---:|
-| K_VP_48 | GTGD TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(field_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH'` | Ô giá trị giao dịch từ HNX09 | **READY** |
+| K_VP_48 | GTGD TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(cell_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH'` | Ô giá trị giao dịch từ HNX09 | **READY** |
 | K_VP_49 | GTGD TPDN riêng lẻ % thay đổi so kỳ trước | % | Phái sinh | `(trading_val_cur - trading_val_prev) / trading_val_prev * 100` | So với phiên liền trước | **READY** |
 | K_VP_50 | GTGD bình quân phiên TPDN riêng lẻ (YTD) | Tỷ đồng | Phái sinh | `SUM(trading_val YTD) / COUNT(DISTINCT trading_dt YTD)` | Bình quân lũy kế từ đầu năm | **READY** |
 | K_VP_51 | GTGD bình quân phiên TPDN riêng lẻ (YTD) % thay đổi so kỳ trước | % | Phái sinh | `(avg_val_cur - avg_val_prev) / avg_val_prev * 100` | % thay đổi bình quân YTD | **READY** |
-| K_VP_52 | Giá trị mua NĐTNN TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(field_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ MUA'` | NĐTNN mua từ HNX09 | **READY** |
+| K_VP_52 | Giá trị mua NĐTNN TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(cell_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ MUA'` | NĐTNN mua từ HNX09 | **READY** |
 | K_VP_53 | Giá trị mua NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | % | Phái sinh | `(foreign_buy_cur - foreign_buy_prev) / foreign_buy_prev * 100` | % thay đổi GT mua NĐTNN | **READY** |
-| K_VP_54 | Giá trị bán NĐTNN TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(field_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ BÁN'` | NĐTNN bán từ HNX09 | **READY** |
+| K_VP_54 | Giá trị bán NĐTNN TPDN riêng lẻ | Tỷ đồng | Cơ sở | `SUM(cell_val) WHERE rpt_code = 'HNX09' AND row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI-GIÁ TRỊ BÁN'` | NĐTNN bán từ HNX09 | **READY** |
 | K_VP_55 | Giá trị bán NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | % | Phái sinh | `(foreign_sell_cur - foreign_sell_prev) / foreign_sell_prev * 100` | % thay đổi GT bán NĐTNN | **READY** |
 | K_VP_56 | Giá trị mua/bán ròng NĐTNN TPDN riêng lẻ | Tỷ đồng | Phái sinh | `foreign_buy_val - foreign_sell_val` | Mua ròng (dương) / Bán ròng (âm) | **READY** |
 | K_VP_57 | Giá trị mua/bán ròng NĐTNN TPDN riêng lẻ % thay đổi so kỳ trước | % | Phái sinh | `(net_val_cur - net_val_prev) / ABS(net_val_prev) * 100` | % thay đổi mua/bán ròng | **READY** |
@@ -2322,8 +2322,8 @@ Dữ liệu hoạt động đấu giá cổ phần tại Sở GDCK TP.HCM (HOSE)
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|:---:|
-| K_VP_144 | Loại hình đấu giá | — | Chiều | `field_val WHERE UPPER(column_path) = 'LOẠI HÌNH ĐẤU GIÁ'` | Phân loại: IPO, Thoái vốn, Chào bán thêm / Đấu giá quyền mua | **READY** |
-| K_VP_145 | Tổng giá trị cổ phần trúng giá | Tỷ đồng | Cơ sở | `SUM(CAST(field_val AS DECIMAL(38,2))) WHERE column_path IN ('GIÁ TRỊ CP TRÚNG GIÁ > NĐT TRONG NƯỚC', 'GIÁ TRỊ CP TRÚNG GIÁ > NĐT NƯỚC NGOÀI', 'GIÁ TRỊ CP TRÚNG GIÁ (VND) > NĐT TRONG NƯỚC', 'GIÁ TRỊ CP TRÚNG GIÁ (VND) > NĐT NƯỚC NGOÀI')` | Tổng giá trị trúng giá đấu giá cổ phần | **READY** |
+| K_VP_144 | Loại hình đấu giá | — | Chiều | `cell_val WHERE UPPER(column_path) = 'LOẠI HÌNH ĐẤU GIÁ'` | Phân loại: IPO, Thoái vốn, Chào bán thêm / Đấu giá quyền mua | **READY** |
+| K_VP_145 | Tổng giá trị cổ phần trúng giá | Tỷ đồng | Cơ sở | `SUM(CAST(cell_val AS DECIMAL(38,2))) WHERE column_path IN ('GIÁ TRỊ CP TRÚNG GIÁ > NĐT TRONG NƯỚC', 'GIÁ TRỊ CP TRÚNG GIÁ > NĐT NƯỚC NGOÀI', 'GIÁ TRỊ CP TRÚNG GIÁ (VND) > NĐT TRONG NƯỚC', 'GIÁ TRỊ CP TRÚNG GIÁ (VND) > NĐT NƯỚC NGOÀI')` | Tổng giá trị trúng giá đấu giá cổ phần | **READY** |
 | K_VP_146 | Số phiên đấu giá | Phiên | Cơ sở | `COUNT(DISTINCT row_index)` | Tổng số phiên đấu giá tổ chức thành công trong năm | **READY** |
 | K_VP_147 | Giá trị trúng giá IPO | Tỷ đồng | Cơ sở | `SUM(winning_auction_val) WHERE auction_type_name = 'IPO'` | Giá trị cổ phần trúng giá hình thức IPO | **READY** |
 | K_VP_148 | Giá trị trúng giá thoái vốn | Tỷ đồng | Cơ sở | `SUM(winning_auction_val) WHERE auction_type_name = 'Thoái vốn'` | Giá trị cổ phần trúng giá hình thức Thoái vốn | **READY** |
