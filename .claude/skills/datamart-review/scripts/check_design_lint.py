@@ -55,7 +55,14 @@ Bổ sung 2026-10-24 (QLQ `fund_management_company_dim.fmc_id` sinh bằng hash 
                               PK Dim = id Atomic → ERROR; sửa: PK Dim `direct` ← `<driving>.<pk>` (luật A23). Dim không có cột carry thì
                               giữ `Generated` (Fact nối Dim qua lookup BK nên không phụ thuộc cách sinh PK Dim).
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12 = ERROR; D2, D4 (ngoại lệ YoY),
+Bổ sung 2026-10-24 (rà soát QLQ 28 Nhóm: Detail Mapping dùng `cdr_dt_dim.cdr_year`, `investment_fund.fund_tp_code`, `branch_tp_code`… — cột không tồn tại,
+Gate 0 vẫn PASS vì chỉ kiểm cặp `mart_table`/`mart_column`, không kiểm các `bảng.cột` viết TRONG cột `logic`):
+  D13 [L0-DM-LOGIC-COLUMN-NOT-FOUND] `bảng.cột` trong cột `logic` của Detail Mapping (bỏ phần ghi chú trong `[...]`) hoặc trong ô Công thức của
+                              bảng KPI HLD (chỉ phần trong dấu backtick), mà `bảng` là bảng Datamart/Atomic đã biết còn `cột` không có ở Attributes CSV /
+                              YAML Atomic. ERROR (luật A24). Nợ có từ trước nằm trong `reference/dm_logic_column_baseline.yaml` (chỉ in `[i]`, không chặn);
+                              mục baseline đã hết vi phạm → WARNING (gỡ tên). Sinh lại baseline: `--print-dm-logic-baseline`.
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline) = ERROR; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -516,6 +523,112 @@ def check_dim_pk_carried(root: Path, module: str):
     return out
 
 
+_DM_LOGIC_BASELINE_FILE = _script_dir.parent / "reference" / "dm_logic_column_baseline.yaml"
+_RE_BRACKET_NOTE = re.compile(r"\[[^\]]*\]")
+_ref_cache = {}
+
+
+def load_dm_logic_baseline():
+    """Đọc baseline A24 (yaml phẳng: `MODULE:` rồi `  - KPI_ID|bảng.cột` hoặc `  - HLD:KPI_ID|bảng.cột`) → {MODULE: {khóa}}."""
+    res, cur = {}, None
+    if not _DM_LOGIC_BASELINE_FILE.exists():
+        return res
+    for ln in _DM_LOGIC_BASELINE_FILE.read_text(encoding="utf-8-sig").splitlines():
+        s = ln.strip()
+        if not s or s.startswith("#"):
+            continue
+        if not ln.startswith((" ", "\t")) and s.endswith(":"):
+            cur = s[:-1].strip().upper()
+            res.setdefault(cur, set())
+        elif s.startswith("- ") and cur:
+            res[cur].add(s[2:].strip())
+    return res
+
+
+def _ref_index(root: Path):
+    key = str(root)
+    if key not in _ref_cache:
+        from datamart_common import reference_checker as rc
+        atomic = rc.build_atomic_index(root)
+        mart = rc.load_mart_columns(root)
+        mart_tables = {t for t in mart if t and t[0].islower()}
+        _ref_cache[key] = (rc, atomic, mart, mart_tables)
+    return _ref_cache[key]
+
+
+def dm_logic_violations(root: Path, module: str):
+    """D13 — [(nguồn 'DM'|'HLD', kpi_id, bảng, cột, loại 'mart'|'atomic', gợi ý)] cho mọi `bảng.cột` không tồn tại."""
+    rc, atomic, mart, mart_tables = _ref_index(root)
+    out = []
+
+    def scan(text, where, kpi):
+        seen = set()
+        for t, c in rc._RE_QUALIFIED.findall(text):
+            if t in rc._SQL_NOISE or (t, c) in seen:
+                continue
+            seen.add((t, c))
+            if t in mart_tables and t in mart:
+                kind, pool = "mart", mart[t]
+            elif t in atomic:
+                kind, pool = "atomic", atomic[t]
+            else:
+                continue
+            if c not in pool:
+                out.append((where, kpi, t, c, kind, rc._suggest(c, pool)))
+
+    dm = resolve_module_path(root, module, "detail_mapping")
+    if dm and Path(dm).exists():
+        with open(dm, encoding="utf-8-sig", newline="") as fh:
+            for r in csv.DictReader(fh):
+                scan(_RE_BRACKET_NOTE.sub(" ", r.get("logic") or ""), "DM", (r.get("kpi_id") or "").strip())
+    hld = resolve_module_path(root, module, "hld")
+    if hld and Path(hld).exists():
+        for ln in Path(hld).read_text(encoding="utf-8-sig").splitlines():
+            if not re.match(r"\| K_[A-Z0-9]+_\d+ \|", ln):
+                continue
+            s = re.sub(r"`[^`]*`", lambda m: m.group(0).replace("|", "\x00"), ln)
+            cs = [c.strip().replace("\x00", "|") for c in s.strip().strip("|").split("|")]
+            if len(cs) != 7:
+                continue
+            for tick in re.findall(r"`([^`]*)`", cs[4]):
+                scan(tick, "HLD", cs[0])
+    return out
+
+
+def dm_logic_keys(root: Path, module: str):
+    keys = {}
+    for where, kpi, t, c, kind, near in dm_logic_violations(root, module):
+        keys.setdefault(("HLD:" if where == "HLD" else "") + f"{kpi}|{t}.{c}", (where, kpi, t, c, kind, near))
+    return keys
+
+
+def check_logic_column_refs(root: Path, module: str):
+    """D13 [L0-DM-LOGIC-COLUMN-NOT-FOUND] — luật A24: cột viết trong `logic` Detail Mapping / công thức HLD phải tồn tại thật."""
+    out = []
+    base = load_dm_logic_baseline().get(module.upper(), set())
+    found = dm_logic_keys(root, module)
+    owed = 0
+    for key, (where, kpi, t, c, kind, near) in sorted(found.items()):
+        if key in base:
+            owed += 1
+            continue
+        src = "công thức bảng KPI HLD" if where == "HLD" else "cột logic Detail Mapping"
+        where_txt = "Attributes CSV của bảng Datamart" if kind == "mart" else "YAML Atomic"
+        out.append(("ERROR", "L0-DM-LOGIC-COLUMN-NOT-FOUND",
+                    f"{kpi}: {src} tham chiếu `{t}.{c}` — cột này KHÔNG có trong {where_txt}."
+                    + (f" Gợi ý gần nhất: `{near}`." if near else "")
+                    + " Luật A24: grep cột trước khi viết (Attributes CSV / YAML Atomic); cột đã đổi tên/bị xóa thì sửa cả HLD và Detail Mapping."))
+    stale = sorted(base - set(found))
+    if stale:
+        out.append(("WARNING", "L0-DM-LOGIC-BASELINE-STALE",
+                    f"{len(stale)} mục baseline A24 không còn vi phạm — gỡ khỏi reference/dm_logic_column_baseline.yaml: {', '.join(stale[:5])}"
+                    + (" …" if len(stale) > 5 else "")))
+    if owed:
+        out.append(("INFO", "L0-DM-LOGIC-COLUMN-BASELINE",
+                    f"{owed} tham chiếu cột lệch nợ từ trước (baseline A24) — sửa dần, gỡ khỏi baseline khi xong"))
+    return out
+
+
 def run(root: Path, module: str, force_l18: bool = False):
     issues = []
     hld = resolve_module_path(root, module, "hld")
@@ -530,6 +643,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_fact_row_key(root, module)
     issues += check_flat_orderby_pk(root, module)
     issues += check_dim_pk_carried(root, module)
+    issues += check_logic_column_refs(root, module)
     return issues
 
 
@@ -540,9 +654,19 @@ def main():
     ap.add_argument("--root", default=None)
     ap.add_argument("--l18", action="store_true",
                     help="Ép kiểm Quy tắc L18 (D5) cả module chưa thuộc L18_MODULES — chỉ WARNING, để đo mức nhân dòng")
+    ap.add_argument("--print-dm-logic-baseline", action="store_true",
+                    help="In yaml baseline A24 (mọi vi phạm hiện tại của --module) rồi thoát — chỉ dùng khi human duyệt nợ có từ trước")
     a = ap.parse_args()
     root = Path(a.root) if a.root else find_project_root()
     mods = get_available_modules(root) if a.module.upper() == "ALL" else [a.module]
+    if a.print_dm_logic_baseline:
+        for m in mods:
+            ks = sorted(dm_logic_keys(root, m))
+            if ks:
+                print(f"{m.upper()}:")
+                for k in ks:
+                    print(f"  - {k}")
+        sys.exit(0)
     err = warn = 0
     for m in mods:
         iss = run(root, m, a.l18)

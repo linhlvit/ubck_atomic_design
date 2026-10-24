@@ -147,8 +147,10 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat
     fmc_code                         String                  COMMENT 'PK — mã CTQLQ (Bảng Tác nghiệp)',
     fmc_full_nm                      Nullable(String)        COMMENT 'Tên hiển thị chính của công ty QLQ',
     fmc_short_nm                     Nullable(String)        COMMENT 'Tên viết tắt của công ty QLQ',
+    operation_status_nm                          Nullable(String)        COMMENT 'Trạng thái hoạt động của công ty QLQ (tên trạng thái)',
+    legal_representative_nm                      Nullable(String)        COMMENT 'Họ tên người đại diện theo pháp luật của công ty QLQ',
     fund_count                      Nullable(Int64)         COMMENT 'Số lượng quỹ đầu tư do công ty này quản lý, hiệu lực tại kỳ',
-    rank_index                      Nullable(Int64)         COMMENT 'Thứ hạng xếp loại (1=Tốt nhất) tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
+    rating_class_code                            Nullable(String)        COMMENT 'Xếp loại của công ty QLQ tại kỳ đánh giá gần nhất (1=A, 2=B, 3=C, 4=D)',
     total_score_amt                  Nullable(Int64)         COMMENT 'Tổng điểm CAMEL tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
     charter_capital_amt              Nullable(Decimal(23,2)) COMMENT 'Vốn điều lệ/vốn góp (VNĐ)',
     certified_practitioner_staff_count Nullable(Int64)         COMMENT 'Số lượng nhân viên có chứng chỉ hành nghề của CTQLQ (báo cáo kỳ mới nhất)',
@@ -197,8 +199,9 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_profile_flat ON CLUS
     -- From: OPERATIONAL Investment Fund Profile
     investment_fund_code             String                  COMMENT 'PK — mã quỹ (Bảng Tác nghiệp)',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ',
+    investment_fund_short_nm                     Nullable(String)        COMMENT 'Tên viết tắt của quỹ (BA: Tên quỹ = FUNDS.ITEM_NAME || -- || FUNDS.SHORT_NAME)',
     fund_tp_code                     Nullable(String)        COMMENT 'Phân loại quỹ — mã loại hình (join Fund Type Dimension.fund_type_code lấy tên)',
-    fmc_short_nm                     Nullable(String)        COMMENT 'Tên viết tắt công ty quản lý quỹ',
+    fmc_full_nm                      Nullable(String)        COMMENT 'Tên đầy đủ công ty quản lý quỹ',
     custodian_bank_full_nm           Nullable(String)        COMMENT 'Tên ngân hàng giám sát',
     representative_board_member_count Nullable(Int64)        COMMENT 'Số lượng thành viên ban đại diện đang hoạt động',
     manager_count                    Nullable(Int64)         COMMENT 'Số lượng người điều hành quỹ',
@@ -302,6 +305,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_distribution_agent_fund_list_fl
     fund_distribution_agent_code     String                  COMMENT 'PK (composite) — mã ĐLPP',
     investment_fund_code             String                  COMMENT 'PK (composite) — mã quỹ đang phân phối',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ đang phân phối',
+    securities_distribution_agent_code           Nullable(String)        COMMENT 'Mã đại lý phân phối (DISTRIBUTOR_AGENT) tương ứng của đại lý — nối theo tên rút gọn hoặc tên đầy đủ như SQL BA (K_QLQ_143); để popup lọc theo ĐLPP chọn ở Danh sách ĐLPP (Nhóm 22). NULL nếu không khớp tên',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()

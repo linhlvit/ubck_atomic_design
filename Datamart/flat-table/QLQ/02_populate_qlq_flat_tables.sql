@@ -117,8 +117,10 @@ SELECT
     o.fmc_code,
     o.fmc_full_nm,
     o.fmc_short_nm,
+    o.operation_status_nm,
+    o.legal_representative_nm,
     o.fund_count,
-    o.rank_index,
+    o.rating_class_code,
     o.total_score_amt,
     o.charter_capital_amt,
     o.certified_practitioner_staff_count,
@@ -157,8 +159,9 @@ INSERT INTO datamart.qlq_opr_investment_fund_profile_flat
 SELECT
     o.investment_fund_code,
     o.investment_fund_full_nm,
+    o.investment_fund_short_nm,
     o.fund_tp_code,
-    o.fmc_short_nm,
+    o.fmc_full_nm,
     o.custodian_bank_full_nm,
     o.representative_board_member_count,
     o.manager_count,
@@ -242,6 +245,7 @@ SELECT
     o.fund_distribution_agent_code,
     o.investment_fund_code,
     o.investment_fund_full_nm,
+    o.securities_distribution_agent_code,
     o.src_stm_code
 FROM datamart.opr_fund_distribution_agent_fund_list o
 ;
