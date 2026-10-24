@@ -1,0 +1,134 @@
+# Baseline luật A24 (datamart-lld-design) — `bảng.cột` viết trong cột `logic` của Detail Mapping (hoặc ô Công thức bảng KPI HLD, tiền tố `HLD:`)
+# mà cột KHÔNG tồn tại ở Attributes CSV (bảng Datamart) / YAML Atomic, đã có TRƯỚC 2026-10-24. Sinh bằng:
+#   python .claude/skills/datamart-review/scripts/check_design_lint.py --module ALL --print-dm-logic-baseline
+# Gate 8 (`check_design_lint.py`, D13) chỉ BÁO THÔNG TIN (`[i]`) cho các mục dưới đây; tham chiếu cột lệch KHÔNG nằm trong danh sách = ERROR.
+# Quy tắc: (1) CẤM thêm mục mới vào file này để "cho qua" — sửa cột trong Detail Mapping/HLD; (2) khi sửa xong một mục, GỠ khỏi đây trong cùng lượt
+# (lint cảnh báo nếu còn); (3) chủ xử lý: Data Modeler của từng phân hệ. Một số mục có thể là false positive (VD hậu tố `_i` ký hiệu mẫu trong công thức,
+# hoặc cột Atomic mới chưa vào YAML) — xác nhận từng mục rồi mới gỡ, KHÔNG gỡ hàng loạt.
+# QLQ không có mục nào (đã sạch sau rà soát 2026-10-24).
+
+GSTT:
+  - K_GSTT_124|fct_market_index_snpst.cdr_dt_dim_id
+  - K_GSTT_124|fct_market_index_snpst.market_code
+  - K_GSTT_125|fct_market_index_snpst.cdr_dt_dim_id
+  - K_GSTT_125|fct_market_index_snpst.market_code
+  - K_GSTT_75|fct_market_index_snpst.cdr_dt_dim_id
+  - K_GSTT_75|fct_market_index_snpst.market_code
+  - K_GSTT_76|fct_market_index_snpst.cdr_dt_dim_id
+  - K_GSTT_76|fct_market_index_snpst.market_code
+GSĐC:
+  - HLD:K_GSDC_1389|pc_state_capital.ds_snpst_dt
+  - K_GSDC_704|public_company_regulatory_compliance_rpt.rpt_due_count
+  - K_GSDC_704|public_company_regulatory_compliance_rpt.rpt_submitted_count
+  - K_GSDC_706|public_company_regulatory_compliance_rpt.profitable_company_count_year_n
+  - K_GSDC_708|public_company_regulatory_compliance_rpt.profitable_company_count_year_n1
+PTTT:
+  - HLD:K_PTTT_233|listed_share_information.outstanding_share_quantity_i
+  - HLD:K_PTTT_235|listed_share_information.outstanding_share_quantity_i
+  - HLD:K_PTTT_235|security_trading_snapshot.close_price_i
+  - HLD:K_PTTT_244|listed_share_information.outstanding_share_quantity_i
+  - HLD:K_PTTT_244|security_trading_snapshot.close_price_i
+  - K_PTTT_257|fct_macro_indicator_snpst.period_dt
+  - K_PTTT_258|fct_macro_indicator_snpst.period_dt
+QLKD:
+  - K_QLKD_2|fct_securities_company_financial_structure_snpst.snpst_cdr_dt
+  - K_QLKD_2|fct_securities_company_status_snpst.license_issue_cdr_dt
+  - K_QLKD_5103|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5125|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5144|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5179|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5213|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5412|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5428|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5445|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5462|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5505|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5531|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5560|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5634|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5666|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5682|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5719|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5735|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5794|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5808|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5839|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5925|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5945|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_5962|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6021|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6053|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6076|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6099|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6114|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6179|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6202|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6321|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6362|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6400|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6485|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6504|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6779|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_6880|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_7029|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_7126|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_7207|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_7368|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_7453|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_7648|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_7666|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_7945|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_8046|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_8213|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_8306|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_8379|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_8540|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_8621|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_8923|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9060|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9075|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9128|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9150|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9197|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9215|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9243|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9266|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9298|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9311|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9325|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9340|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9355|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9370|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9385|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9401|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9416|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9431|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9454|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9473|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9492|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9512|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9533|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9554|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9577|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9595|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9613|fct_securities_company_service_assignment_snpst.sc_code
+  - K_QLKD_9954|fct_securities_company_service_assignment_snpst.sc_code
+TKNB:
+  - HLD:K_TKNB_1010|cl_securities_company_firm_status.cl_firm_status_id
+  - HLD:K_TKNB_1010|securities_company.cl_firm_status_id
+  - K_TKNB_1006|public_company.equity_listing_exchange_code
+  - K_TKNB_1007|public_company.equity_listing_exchange_code
+  - K_TKNB_1008|public_company.equity_listing_exchange_code
+  - K_TKNB_1009|public_company.equity_listing_exchange_code
+  - K_TKNB_1010|cl_securities_company_firm_status.cl_firm_status_id
+  - K_TKNB_1010|securities_company.cl_firm_status_id
+  - K_TKNB_1011|fund_management_company.operation_status_code
+  - K_TKNB_113|bond_order_book.order_book_type_code
+  - K_TKNB_117|bond_order_book.order_book_type_code
+  - K_TKNB_121|bond_order_book.order_book_type_code
+  - K_TKNB_136|bond_order_book.order_book_type_code
+  - K_TKNB_159|bond_order_book.order_book_type_code
+  - K_TKNB_163|bond_order_book.order_book_type_code
+  - K_TKNB_167|bond_order_book.order_book_type_code
+  - K_TKNB_921|market_index_snapshot.market_id_code
+  - K_TKNB_922|market_index_snapshot.market_id_code
