@@ -1,4 +1,4 @@
-# Luật chống tái diễn H1–H15 — HLD Datamart
+# Luật chống tái diễn H1–H17 — HLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm sự cố gốc và cách kiểm. Đọc đúng mục cần dùng, ví dụ `grep -n "^### H7" .claude/skills/datamart-hld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -20,6 +20,8 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm s
 - H13 — Sửa bảng Markdown trong HLD: mỗi dòng KPI đúng 7 ô; giải trình ánh xạ phải tra lại KPI thật `[L1-HLD-KPI-ROW-CELLS]`
 - H14 — Chọn chỉ số (VN-Index, VN30…) trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (Data Modeler chốt 2026-10-21, đảo quyết định `index_nm` 2026-10-20) `[process]`
 - H15 — Grain Fact trong HLD phải nêu cột PK và khớp LLD `[L2-FACT-NO-ROW-KEY]`
+- H16 — Sửa HLD: câu cũ mâu thuẫn phải bị sửa/gắn nhãn Lịch sử trong CÙNG lượt; bảng mapping nguồn đúng 4 ô `[L1-HLD-MAPPING-ROW-CELLS]`
+- H17 — Đối soát CỘT OUTPUT của SQL BA và danh sách yêu cầu với KPI, không chỉ dòng BA `[L3-BA-OUTPUT-COLUMN-UNMAPPED]`
 - Ghi chú lịch sử
 
 ### H1 — Một HLD là MỘT nguồn sự thật: sửa Section 1 phải sửa cả Section 3/4/5
@@ -227,6 +229,34 @@ grain bị bỏ sót `rpt_code` (2026-09-18), `sheet_id` (2026-10-15), `rpt_inpu
 - Mọi dòng grain của Fact trong HLD (Section 4), `Entities.csv`, mô tả entity yaml nêu **tên cột PK** + dạng: "1 dòng Atomic X" (Dạng A) hoặc liệt kê đủ cột grain (Dạng B). Chi tiết A22 (`datamart-lld-design/reference/rules.md`).
 - Fact mới thiết kế ở HLD phải khai PK ngay ở khối Attributes của erDiagram/Section Entities; không để LLD tự "tìm khóa" sau.
 - Sửa grain ở một nơi = grep và sửa đồng loạt mọi nơi (H11): `grep -rn "<tên Fact>" Datamart/hld Datamart/lld Datamart/datamart_model.yaml Datamart/flat-table`.
+
+### H16 — Sửa HLD: câu cũ mâu thuẫn phải bị sửa/gắn nhãn Lịch sử trong CÙNG lượt; bảng mapping nguồn đúng 4 ô `[L1-HLD-MAPPING-ROW-CELLS]`
+
+Sự cố thật (QLQ, 2026-10-24): HLD tích lũy các khối `[CẬP NHẬT …]` chồng lên nhau mà không sửa câu cũ. Nhóm 17 còn "Chỉ `Distribution_Agent_Count` READY — … PENDING" trong khi K_QLQ_118–121 đã READY;
+Nhóm 22 còn "K_QLQ_143 HẠ xuống PENDING" cạnh khối "nâng READY" và dòng mapping "TBD / chưa có junction" dù junction đã có Atomic; K_QLQ_117 ghi `active_status_flag` (không có ở Atomic);
+K_QLQ_35 dán cả công thức + ghi chú vào dòng bảng mapping (7 ô thay vì 4). Người đọc sau — và agent — lấy nhầm câu cũ làm hiện trạng, rồi thiết kế/đánh giá dựa trên đó.
+
+**Quy tắc**
+1. Sau khi sửa một Nhóm, trong CHÍNH Nhóm đó `grep -n "PENDING\|TBD\|chưa có\|chưa gắn\|Active-only\|đã bị xóa\|HẠ xuống"`: mỗi câu còn mâu thuẫn với trạng thái/công thức hiện tại phải
+   (a) sửa tại chỗ nếu nằm trong ô bảng KPI / mapping / erDiagram, hoặc (b) gắn tiền tố `*(Lịch sử — đã thay thế bởi cập nhật YYYY-MM-DD)*` nếu là khối `[CẬP NHẬT]` cũ. Không chỉ thêm khối mới ở dưới.
+2. Công thức/ghi chú KPI chỉ nằm ở bảng KPI (7 ô, H13). Bảng "Bảng mapping nguồn" đúng 4 ô: `Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table`; KPI READY không còn "TBD" ở đó.
+3. Tên cột trong công thức HLD: `bảng.cột` phải tồn tại (A24, D13); cột đứng một mình (VD `active_status_flag`) tra tay bằng grep YAML Atomic / Attributes CSV (H5).
+
+**Máy kiểm:** Gate 8 D14 `L1-HLD-MAPPING-ROW-CELLS` (dòng mapping sai số ô), D13 (công thức có `bảng.cột` không tồn tại), D1/H13 (bảng KPI 7 ô). Câu cũ mâu thuẫn: chưa tự động —
+từ khóa quá nhiễu (TKNB/VP/QLKD có "TBD" hợp lệ cho KPI PENDING) nên chỉ là bước grep tay của quy tắc 1.
+
+### H17 — Đối soát CỘT OUTPUT của SQL BA và danh sách yêu cầu với KPI, không chỉ dòng BA `[L3-BA-OUTPUT-COLUMN-UNMAPPED]`
+
+Sự cố thật (QLQ Nhóm 3, 2026-10-24): danh sách yêu cầu nghiệp vụ có 15 chỉ tiêu nhưng BA CSV chỉ 14 dòng — thiếu "Trạng thái" (SQL BA có `s2.ITEM_NAME "Trạng thái"`); cột `Tổng`
+(`nullif(tc.total,0)+nullif(cn.total,0)+nullif(nn.total,0)`) của SELECT cuối Nhóm 18/19/20 cũng không có dòng BA nào. H9 (đối soát từng dòng BA → KPI) không bắt được vì chỉ tiêu thiếu ngay từ BA CSV.
+
+**Quy tắc**
+1. Trước khi chốt danh sách KPI của một Nhóm: liệt kê alias của SELECT cuối trong SQL BA (`"Trạng thái"`, `"Tổng"`, `"NAV/GDP"`…) và danh sách yêu cầu nghiệp vụ user cung cấp (nếu có); mỗi cột phải khớp ≥ 1 KPI.
+2. Cột output không có KPI/dòng BA ⇒ thêm KPI (ID cuối bảng khi dải ID đã dùng hết — `apply_kpi_patch.py`) + mở O_ issue "BA CSV thiếu dòng" để BA bổ sung; không bỏ qua vì "BA không có dòng".
+   Nếu việc thêm cần quyết định nghiệp vụ (VD cột "Tổng" có thật sự hiển thị không) ⇒ chỉ mở O_ issue và hỏi, chưa thêm.
+3. Tìm thấy thiếu ở một Nhóm ⇒ rà các Nhóm cùng mẫu (cùng dạng bảng / cùng khung SQL) trước khi kết thúc.
+
+**Máy kiểm:** `ba_hld_sync_check.py` S4 chỉ soi dòng BA ↔ KPI; chưa có Gate đọc alias SELECT cuối (xem `datamart-review` Checklist điểm 4).
 
 ## Ghi chú lịch sử
 

@@ -1,4 +1,4 @@
-# Luật chống tái diễn A1–A23 — LLD Datamart
+# Luật chống tái diễn A1–A26 — LLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm ví dụ sai thực tế, cách kiểm và lệnh liên quan. Đọc đúng mục cần dùng, ví dụ `grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -27,6 +27,9 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A21 — Lọc chỉ số trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (đảo quyết định `index_nm`, 2026-10-21) `[process]`
 - A22 — Mọi Fact khai báo khóa dòng (`key = PK`); flat `ORDER BY` chứa PK `[L2-FACT-NO-ROW-KEY]`
 - A23 — PK Dimension = id Atomic khi có cột khác carry id đó `[L2-DIM-PK-GENERATED-CARRIED]`
+- A24 — `bảng.cột` viết trong `logic` Detail Mapping và công thức HLD phải tồn tại thật `[L0-DM-LOGIC-COLUMN-NOT-FOUND]`
+- A25 — Thuộc tính trùng tên ở nhiều bảng Atomic: bảng nguồn do SQL BA dùng quyết định `[L3-SOURCE-TABLE-MISMATCH]`
+- A26 — Kiểm kê MỌI điều kiện của SQL BA; "Active-only" chỉ miễn điều kiện slicer thời gian `[L3-BA-FILTER-UNMAPPED]`
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
@@ -443,13 +446,68 @@ mọi bảng nối vào nó đều đi qua `lookup_dim` theo BK (Fact → Dim); 
 (per-table + master + yaml). `fund_distribution_agent_dim`, `securities_distribution_agent_dim` (trùng tên PK Atomic nhưng chưa có cột carry) giữ `Generated`.
 Atomic `fmc_code` đổi nguồn `SECURITIES.CODE` → `SECURITIES.ID`; cột `CODE` chuyển vào `pending_design.yaml`. Dev cần đổi code dbt tương ứng.
 
+### A24 — `bảng.cột` viết trong `logic` Detail Mapping và công thức HLD phải tồn tại thật `[L0-DM-LOGIC-COLUMN-NOT-FOUND]`
+
+Sự cố thật (rà soát QLQ 28 Nhóm, 2026-10-24): Detail Mapping dùng `cdr_dt_dim.cdr_year` / `cdr_month` (7 KPI; dim chỉ có `year` / `quarter` / `month`),
+`investment_fund.fund_tp_code` (Atomic: `cl_fms_fund_tp_code`), `fund_management_company.operation_status_code`, `foreign_fm_ou.branch_tp_code`, `member_rating.data_dt`…
+— cột không tồn tại, nằm yên qua nhiều phiên và nhiều lượt "rà soát". Gate 0 chỉ kiểm CẶP `mart_table` / `mart_column` (A2) và `bảng.cột` trong `etl_logic` của LLD (A1);
+**không ai kiểm các `bảng.cột` viết TRONG cột `logic` của Detail Mapping hay ô Công thức của bảng KPI HLD.** Quét toàn repo cùng ngày còn 120 tham chiếu cùng loại ở 5 module
+khác (QLKD 82, TKNB 18, GSTT 8, PTTT 7, GSDC 5 — VD `bond_order_book.order_book_type_code` đúng là `order_book_tp`, `market_index_snapshot.market_id_code` đúng là `market_code`).
+
+**Quy tắc**
+1. Trước khi viết `bảng.cột` vào `logic` / công thức: grep cột ở Attributes CSV (bảng Datamart: `grep -n "<cột>" Datamart/lld/{M}/DTM_{M}_<bảng>.csv`) hoặc YAML Atomic (A1).
+2. **Đổi tên / xóa cột ở LLD (hoặc Atomic đổi tên) ⇒ grep tên cũ trong Detail Mapping + HLD + yaml + flat NGAY TRONG LƯỢT ĐÓ** (cùng tinh thần A20):
+   `grep -rn "<tên cũ>" Datamart/hld Datamart/lld Datamart/flat-table`.
+3. Cột chưa tồn tại mà KPI cần ⇒ thêm cột vào LLD (A20); không viết trước tên "dự kiến" vào `logic`.
+4. Ghi chú lịch sử nhắc tên cột cũ phải nằm trong `[...]` (lint bỏ qua phần trong ngoặc vuông) hoặc ở `ghi_chu`, không nằm trong công thức.
+
+**Máy kiểm:** Gate 8 D13 (`check_design_lint.py`), mã `L0-DM-LOGIC-COLUMN-NOT-FOUND`. Vi phạm MỚI = ERROR. Nợ có từ trước nằm trong
+`datamart-review/reference/dm_logic_column_baseline.yaml` (in `[i]`; CẤM thêm mục mới để "cho qua"; sửa xong thì GỠ — lint báo WARNING nếu còn). Sinh lại baseline khi human duyệt:
+`check_design_lint.py --module ALL --print-dm-logic-baseline`. Giới hạn: chỉ bắt `bảng.cột` có tiền tố bảng viết liền với bảng Datamart/Atomic đã biết (bỏ alias, bỏ phần trong `[...]`);
+cột đứng một mình (VD `active_status_flag`) vẫn phải tra tay. Một số mục baseline có thể là false positive (hậu tố `_i` ký hiệu mẫu, cột Atomic mới) — xác nhận từng mục trước khi gỡ.
+
+### A25 — Thuộc tính trùng tên ở nhiều bảng Atomic: bảng nguồn do SQL BA dùng quyết định `[L3-SOURCE-TABLE-MISMATCH]`
+
+Sự cố thật (QLQ, 2026-10-24): `period_tp_code`, `period_val`, `rpt_year`, `record_tp` có ở CẢ `fmr_value` (RPT_VALUES) và `fmr_submission` (RPT_MEMBER). SQL BA chọn kỳ và loại đối tượng theo
+RPT_MEMBER (`RPT_MEMBER.RECORD_TYPE`, `PERIOD_TYPE`, `PERIOD_VALUE`, `YEAR_VALUE`, `RECORD_STATUS`) nhưng Fact `fct_fund_management_rpt_cell_val`, 2 `contract_list` và 22 subquery Operational đọc
+`fmr_value.period_*` / `fmr_value.record_tp`. Tên cột giống nhau nên không Gate nào thấy; trục thời gian của mọi KPI RPT bị gắn sai nguồn qua nhiều phiên. Cùng mẫu: `period_val` dạng chữ `'T03/2024'`
+trong khi SQL BA so với số `'3'` — định dạng cũng phải lấy từ đúng bảng.
+
+**Quy tắc**
+1. Với mỗi cột Atomic đọc vào `etl_logic` / `logic`, lập cặp (cột BA → bảng BA ở `FROM` / `JOIN` của SQL tham khảo → entity Atomic của bảng đó). Cột đọc phải thuộc entity ứng với bảng BA.
+2. Cột trùng tên ở ≥ 2 bảng cùng nguồn (`grep -rn "physical_name: {cột}" DataModel/Atomic`): chọn bảng mà SQL BA dùng; ghi lý do ở `description` và lineage (`source_entity` / `atomic_table`) đúng bảng đó.
+3. Nghi bảng BA ghi sai (hai bảng chứa cùng thuộc tính, khác nhau về kỳ nộp/phiên bản) ⇒ mở O_ issue; KHÔNG tự chọn bảng "tiện hơn".
+4. Đổi bảng nguồn của một cột dùng chung ⇒ grep mọi KPI tiêu thụ (H11) và sửa đồng loạt; ghi định dạng giá trị chưa xác nhận (chữ/số) thành O_ issue kèm câu `SELECT ... GROUP BY` cho dev.
+
+**Máy kiểm:** chưa có (đọc tay khi review Lớp 2/3; `datamart-review` mục "Checklist rà soát" điểm 1).
+
+### A26 — Kiểm kê MỌI điều kiện của SQL BA; "Active-only" chỉ miễn điều kiện slicer thời gian `[L3-BA-FILTER-UNMAPPED]`
+
+Sự cố thật (QLQ, 2026-10-24): thiết kế bỏ qua hàng loạt điều kiện có trong SQL BA — `PERIOD_TYPE = 3` (42 KPI RPT + 5 cột Operational lấy mọi loại kỳ), `ID_DATE ≤ kỳ` (số CCQ Nhóm 11 và hồ sơ quỹ Nhóm 13
+không xét ngày cấp phép), `COALESCE(START_DATE, LICENSE_DATE)` (Nhóm 24/26 chỉ dùng `START_DATE`), `BRANCH_FLAG = 1` (hồ sơ chi nhánh lẫn văn phòng đại diện), `NULLIF` hai vế và `*100` (tăng trưởng NAV, NAV/GDP),
+GDP chọn theo năm (`ord_pd = 1`), `DISTRIBUTION_CERT_DATE ≤ kỳ` (hồ sơ ĐLPP). Nguyên nhân chung: quyết định "Operational / Periodic Snapshot lấy trạng thái hiện tại, không có slicer tháng" bị áp rộng thành
+bỏ cả điều kiện loại đối tượng / loại kỳ / ngày hiệu lực; ghi chú "luôn hiển thị trạng thái hiện tại" che mất chỗ bỏ điều kiện. L17 (`phase2_detail_mapping.md`) chỉ yêu cầu `WHERE` tĩnh nằm trong `logic` hoặc "đã lọc sẵn tại ETL"
+(A10) — không có bước kiểm kê, và L17 chỉ áp cho Detail Mapping, không áp cho `etl_logic` của bảng Operational/Fact.
+
+**Quy tắc**
+1. Với mỗi KPI (hoặc cột Fact/Operational): liệt kê MỌI điều kiện trong cột Điều kiện BA và SQL tham khảo — `WHERE`, `ON` của `LEFT JOIN`, CTE, `HAVING`, `ROW_NUMBER ... = 1`, và biểu thức trong `SELECT`
+   (`NULLIF`, `*100`, `COALESCE`, `CASE`). Mỗi điều kiện thuộc đúng 1 loại: (a) **có** trong `etl_logic` / `logic` — trích đúng chỗ; (b) **thay thế có chủ ý** — VD `= :filter_month` → `<= :etl_date` ở bảng Active-only,
+   ghi ở `ghi_chu` (+ O_ issue nếu BA chưa duyệt); (c) **không áp dụng** — ghi lý do. Không có loại "quên".
+2. Chỉ **điều kiện slicer thời gian** (`:filter_month` / `_fr` / `_to`, `= "filter_value"`) được thay bằng `:etl_date` ở bảng không có chiều tháng. Điều kiện **loại đối tượng** (`RECORD_TYPE`, `BRANCH_FLAG`, `ou_tp_code`),
+   **loại kỳ** (`PERIOD_TYPE`), **trạng thái** (`RECORD_STATUS IN (...)`), **ngày hiệu lực** (`ID_DATE`, `START_DATE`, `DISTRIBUTION_CERT_DATE`) và **biểu thức tính** KHÔNG được miễn.
+3. SQL BA nghi sai/ngược (VD `CASE WHEN TERMINATION_DATE IS NOT NULL THEN 'Hoạt động'`; `ID_DATE =` thay vì `<=`; chia NAV cho GDP không quy đổi đơn vị): giữ thiết kế hợp lý HOẶC theo BA — nhưng
+   **ghi chỗ lệch và mở O_ issue (Open — chờ BA) trong CÙNG lượt**, kèm câu truy vấn dữ liệu để BA/dev xác nhận. Không im lặng đổi, không im lặng chép.
+4. Câu "Active-only / luôn hiển thị trạng thái hiện tại" ở `ghi_chu` chỉ hợp lệ khi đi kèm danh sách điều kiện loại (b)/(c) còn lại.
+
+**Máy kiểm:** chưa tự động (điều kiện là ngữ nghĩa SQL). `datamart-review` mục "Checklist rà soát" điểm 2–3 và Lớp 3 L17(e).
+
 ### Lệnh bổ sung — Gate 8 Design Lint
 
 ```bash
 python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MODULE} --strict
 ```
 
-Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: Fact thiếu khóa dòng PK (A22, D10 `L2-FACT-NO-ROW-KEY`) và flat `ORDER BY` thiếu PK (A22, D11), PK Dim `Generated` bị cột khác carry id Atomic (A23, D12), dòng bảng KPI HLD sai số ô (H13), bảng Datamart
+Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: `bảng.cột` không tồn tại trong `logic` Detail Mapping / công thức HLD (A24, D13 `L0-DM-LOGIC-COLUMN-NOT-FOUND`, nợ cũ ở `reference/dm_logic_column_baseline.yaml`), dòng "Bảng mapping nguồn" của HLD sai số ô (D14 `L1-HLD-MAPPING-ROW-CELLS`), Fact thiếu khóa dòng PK (A22, D10 `L2-FACT-NO-ROW-KEY`) và flat `ORDER BY` thiếu PK (A22, D11), PK Dim `Generated` bị cột khác carry id Atomic (A23, D12), dòng bảng KPI HLD sai số ô (H13), bảng Datamart
 0 KPI dùng (H12), comment flat SQL dính `:etl_date` (A15), KPI có MEASURE bị nhân dòng (L18, D5 — chỉ ép với
 module trong `L18_MODULES` của `check_design_lint.py`; thiết kế module mới theo L18 thì thêm module vào tập đó).
 **Gate 8 KHÔNG kiểm A19 (giới hạn ngày)** — chạy tay `check_date_bound.py` (TC12); `run_quality_gates.py` PASS không có nghĩa etl_logic đã khóa ngày.

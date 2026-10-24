@@ -84,7 +84,7 @@ Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay b
 | **Reference Integrity (Gate 0)** | mục A1–A4 trong `datamart-lld-design/SKILL.md` | `python scripts/check_references.py --module [M] --strict` |
 | **Cấu trúc HLD Bước 5B (Gate 5)** | Bước 5B trong `datamart-hld-design/SKILL.md` | `python scripts/check_hld_5b.py --module [M]` |
 | **LLD Self-Check TC4–TC7 (Gate 7)** | TC4/TC5/TC6/TC7 trong `datamart-lld-design/SKILL.md` | `python scripts/lld_selfcheck.py --module [M]` |
-| **Design Lint (Gate 8)** | H10–H13 `datamart-hld-design`, A12–A15 + A22 + A23 `datamart-lld-design` (Fact thiếu PK / flat ORDER BY thiếu PK / PK Dim `Generated` bị carry id Atomic) | `python scripts/check_design_lint.py --module [M] --strict` |
+| **Design Lint (Gate 8)** | H10–H13 + H16 `datamart-hld-design`, A12–A15 + A22 + A23 + A24 `datamart-lld-design` (Fact thiếu PK / flat ORDER BY thiếu PK / PK Dim `Generated` bị carry id Atomic / `bảng.cột` không tồn tại trong `logic`-công thức HLD, nợ cũ ở `reference/dm_logic_column_baseline.yaml` / dòng mapping nguồn HLD sai số ô) | `python scripts/check_design_lint.py --module [M] --strict` |
 | **Checklist Đánh Giá Nhanh 4 Lớp & 8 Gates** | `reference/review_checklist.md` | — |
 
 ---
@@ -278,6 +278,20 @@ KHÔNG chia theo bảng.
 3. **Gate sau khi ghi:** `run_quality_gates.py -m {M} --strict --nhom {N1} {N2} …` (Gate 10 in nguyên dòng delta
    của đúng các Nhóm vừa sửa).
 
+4. **Verify — agent chính kiểm chứng TỪNG finding trước khi sửa (bổ sung 2026-10-24).** Sub-agent báo "CHẮC" vẫn có thể sai (đọc nhầm hàng BA, nhầm Nhóm, cột đã được sửa ở lượt khác, bỏ sót
+   quyết định đã duyệt ở `ghi_chu`/MEMORY.md). Với mỗi finding: (a) mở lại dòng BA / SQL được trích (`ba_slice.py` hoặc đọc CSV bằng Python), (b) đối chiếu cột LLD/Atomic thật, (c) chỉ sửa khi cả hai khớp;
+   finding đúng một nửa thì ghi rõ nửa nào. Finding cần quyết định nghiệp vụ → O_ issue + hỏi human, không sửa. Báo cáo cuối liệt kê cả finding đã bác kèm lý do. Nhóm đã chạy `run_quality_gates.py`
+   (Gate 8 D13 trả lời sẵn điểm 6 bên dưới) thì sub-agent KHÔNG rà lại điểm đó bằng mắt.
+5. **Checklist rà soát 8 điểm cho prompt sub-agent** (mỗi điểm rút từ sự cố thật QLQ 2026-10-24 — vì sao Gate PASS mà thiết kế vẫn lệch BA; sub-agent trả CÓ/KHÔNG + trích dẫn BA và dòng LLD cho từng điểm):
+   1. **Bảng nguồn:** cột Atomic đọc có thuộc đúng entity ứng với bảng `FROM`/`JOIN` của SQL BA? Cột trùng tên ở nhiều bảng (`period_*`, `record_tp` ở `fmr_value` vs `fmr_submission`)? — A25.
+   2. **Điều kiện:** mọi `WHERE`/`ON`/CTE của SQL BA (loại kỳ, loại đối tượng, trạng thái, ngày hiệu lực) đã có trong `etl_logic`/`logic`, hoặc ghi lệch + O_ issue? "Active-only" có bị dùng để bỏ cả điều kiện không phải slicer thời gian? — A26.
+   3. **Biểu thức:** `NULLIF`, `*100`, `COALESCE`, `CASE` (kể cả HƯỚNG của `CASE`), chọn bản ghi theo năm/kỳ (`ROW_NUMBER ... = 1`) khớp SQL BA? SQL BA nghi ngược đã mở O_ issue chưa? — A26.
+   4. **Cột output:** mỗi alias SELECT cuối + dòng yêu cầu nghiệp vụ user dán có KPI? (cột "Trạng thái", "Tổng"…) — H17.
+   5. **Trục thời gian:** KPI RPT lấy kỳ từ bảng nào, loại kỳ nào, cận trên là slicer nào (`:filter_month` vs `:filter_to`)? Bảng không có slicer tháng có ghi nhận quyết định + O_ issue chưa? — A25/A26.
+   6. **Tham chiếu cột:** mọi `bảng.cột` trong `logic`/công thức HLD tồn tại? — Gate 8 D13 (chạy trước, không rà tay); cột đứng một mình tra tay. — A24.
+   7. **Văn bản cũ:** còn câu "PENDING/TBD/chưa có/HẠ xuống/tên cột cũ" mâu thuẫn trạng thái hiện tại trong Nhóm? Dòng mapping nguồn đúng 4 ô? — H16, Gate 8 D14.
+   8. **Đồng bộ nhiều tầng:** sau mỗi sửa, LLD per-table ↔ master ↔ yaml ↔ flat DDL/DML ↔ Detail Mapping ↔ HLD (+ `kpi_index.csv`) cùng nội dung? — A20, A4, H4.
+
 Ngân sách: Nhóm nặng nhất toàn repo ~66K token → mỗi sub-agent vừa 1 Nhóm; KHÔNG hứa "< 8K token".
 
 ### Bước 1: Đọc BA Nhóm N
@@ -313,7 +327,7 @@ Ngân sách: Nhóm nặng nhất toàn repo ~66K token → mỗi sub-agent vừa
   2. *Quy tắc L4 đối với dòng PENDING (`L3-PENDING-RULE-L4-VIOLATION`):* Mọi dòng PENDING (cả nhóm PENDING lẫn KPI PENDING đơn lẻ) bắt buộc để trống tuyệt đối cả 4 cột: `mart_table`, `mart_column`, `column_role`, `logic`. Blocker ghi tại `ghi_chu` theo cú pháp `Pending - [Nhóm 1-5]: ...`.
   3. *Quy tắc L15 đối với dòng REUSE (`L3-REUSE-INVALID`):* Phân biệt dứt khoát: Case 1 (Measure vật lý có sẵn) $\implies$ điền đủ `mart_table` và `mart_column`; Case 2 (Chỉ tiêu BI phái sinh) $\implies$ để trống `mart_table`/`mart_column`, `column_role = 'DERIVED'`.
   4. *Quy tắc L16 phân định DEPRECATED vs PENDING (`L3-DEPRECATED-AS-PENDING`):* Chỉ tiêu đã thống nhất bãi bỏ với BA bắt buộc đặt `column_role = 'DEPRECATED'`, để trống 2 cột mart, `logic = 'Đã loại bỏ — không tạo cột/slicer'`, ghi rõ căn cứ tại `ghi_chu`. Cấm đánh tráo thành PENDING.
-  5. *Quy tắc L17 Bám sát Câu lệnh tham khảo & Điều kiện chung BA (`L3-REFERENCE-SQL-MISALIGNMENT`):* Bắt buộc bóc tách 4 thành phần SQL tham khảo của BA: (a) SELECT: khớp đúng số đo (khớp lệnh thuần `total_matched_vol/val` vs thỏa thuận `total_negotiated_vol/val` vs gộp tổng `total_vol/val`; mua vs bán vs ròng `foreign_net_vol`); (b) WHERE: toàn bộ điều kiện lọc tĩnh (sàn `FloorCode`, loại CK `StockType`, loại bảng lệnh `Board Type`, cờ hiệu lực, loại NĐT) phải nằm trong `WHERE` của `logic` dòng MEASURE (KPI không có MEASURE: dòng `column_role = FILTER`; Quy tắc L18 cấm tách FILTER/GROUP_BY riêng cho KPI có MEASURE) HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact; (c) FROM/JOIN: đủ Dimension và FK liên kết; (d) GROUP BY/Window: đúng grain hiển thị và công thức cửa sổ rolling.
+  5. *Quy tắc L17 Bám sát Câu lệnh tham khảo & Điều kiện chung BA (`L3-REFERENCE-SQL-MISALIGNMENT`):* Bắt buộc bóc tách 4 thành phần SQL tham khảo của BA: (a) SELECT: khớp đúng số đo (khớp lệnh thuần `total_matched_vol/val` vs thỏa thuận `total_negotiated_vol/val` vs gộp tổng `total_vol/val`; mua vs bán vs ròng `foreign_net_vol`); (b) WHERE: toàn bộ điều kiện lọc tĩnh (sàn `FloorCode`, loại CK `StockType`, loại bảng lệnh `Board Type`, cờ hiệu lực, loại NĐT) phải nằm trong `WHERE` của `logic` dòng MEASURE (KPI không có MEASURE: dòng `column_role = FILTER`; Quy tắc L18 cấm tách FILTER/GROUP_BY riêng cho KPI có MEASURE) HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact; (c) FROM/JOIN: đủ Dimension và FK liên kết; (d) GROUP BY/Window: đúng grain hiển thị và công thức cửa sổ rolling; (e) **kiểm kê MỌI điều kiện** (A26): cả `ON` của LEFT JOIN/CTE, loại kỳ `PERIOD_TYPE`, loại đối tượng `RECORD_TYPE`/`BRANCH_FLAG`, ngày hiệu lực `ID_DATE`/`START_DATE`, biểu thức `NULLIF`/`*100`/`COALESCE`/`CASE` — bảng Active-only chỉ được thay điều kiện slicer thời gian bằng `:etl_date`; điều kiện bỏ có chủ ý phải có `ghi_chu` + O_ issue. Áp cho cả `etl_logic` của bảng Operational/Fact, không chỉ Detail Mapping.
   6. *Inline DERIVED:* Cột phái sinh bắt buộc inline toàn bộ công thức tính toán từ Atomic/Mart, **cấm tham chiếu mã KPI_ID khác** (như `K_01 + K_02`).
   7. *Trace cột LLD:* Cột `mart_table` và `mart_column` phải tồn tại thực tế và khớp 1-1 với Attributes.
   8. *Cú pháp JOIN Date FK:* Truy vấn Detail Mapping kết nối sang Dimension ngày theo khóa surrogate key: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = <fact>.<role>_dt_dim_id`.
